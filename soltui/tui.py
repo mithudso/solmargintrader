@@ -1682,7 +1682,8 @@ class SolTuiApp(App):
             self._bots_fit_shutdown_drained = await asyncio.to_thread(self._bots_fit_drained.wait, 5.0)
         if self._forward_running or self._forward_busy:
             self._forward_running = False
-            self._call("forwardtest.stop", quiet=True)
+            # Stop this process without clearing the saved plan; the next launch resumes it.
+            self.ctx.runtime.forward_stop.set()
 
     def _signals_pane(self) -> ComposeResult:
         """Editable signal parameters, grouped by indicator.
@@ -3038,6 +3039,10 @@ class SolTuiApp(App):
         self._wallet_restore()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
+        restored = self._call("forwardtest.restore", quiet=True)
+        if restored["ok"] and restored["result"].get("restored"):
+            self._forward_running = True
+            self._forward_show_running(restored["result"]["assets"])
         self.set_interval(5, self._forward_schedule)
         self.set_interval(5, self._advanced_context_tick)
         self.set_interval(5, self._batch_poll)

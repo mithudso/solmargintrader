@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 120
-Delta: v119 to v120; record request to continue investigation.
+Version: 121
+Delta: v120 to v121; record forward-test persistence request.
+
+## v121 - 2026-11-08
+
+```text
+In the soltui, the forward test's data doesn't seem to be saved through restarts. Make sure all of the data is recorded to disk as it arrives.
+```
 
 ## v120 - 2026-11-08
 

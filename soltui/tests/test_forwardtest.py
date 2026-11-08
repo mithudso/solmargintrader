@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+import sqlite3
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from threading import Event
@@ -54,6 +55,14 @@ class ForwardEvidence(unittest.TestCase):
         rows = {r["minutes"]: r for r in self.advance(31)["rows"]}
         self.assertEqual(rows[30]["resolved"], 1)
         self.assertEqual(rows[30]["correct"], 1)
+
+    def test_closed_candles_and_calls_survive_reopening_database(self) -> None:
+        self.advance(0)
+        db_path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+        with sqlite3.connect(db_path) as db:
+            self.assertGreater(db.execute("SELECT count(*) FROM candle WHERE asset='SOL'").fetchone()[0], 0)
+            self.assertEqual(db.execute("SELECT count(*) FROM call").fetchone()[0], 4)
+        self.assertEqual(sum(row["pending"] for row in ft.status("SOL")), 4)
 
     def test_missing_target_candle_is_not_filled_by_a_later_close(self) -> None:
         self.advance(0)
@@ -164,6 +173,25 @@ class AutoOptimizeAndDefaults(ForwardEvidence):
 
 
 class ForwardPlan(unittest.TestCase):
+    def setUp(self) -> None:
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.enterContext(patch.object(config, "CONFIG_DIR", Path(tmp.name)))
+
+    def test_running_plan_restores_and_stop_clears_it(self) -> None:
+        ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
+        commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["ETH"]}, ctx=ctx, quiet=True)
+        with patch.object(commands, "_forward_runner", lambda rt: rt.forward_stop.wait(5)):
+            self.assertTrue(commands.dispatch("forwardtest.run", {}, ctx=ctx, quiet=True)["ok"])
+            ctx.runtime.forward_stop.set()
+            ctx.runtime.forward_thread.join(5)
+            restored = commands.Context.from_settings(config.Settings(), commands.Runtime())
+            result = commands.dispatch("forwardtest.restore", {}, ctx=restored, quiet=True)
+            self.assertEqual(result["result"]["assets"], ["ETH"])
+            commands.dispatch("forwardtest.stop", {}, ctx=restored, quiet=True)
+            restored.runtime.forward_thread.join(5)
+            self.assertIsNone(ft.load_session())
+
     def test_coins_and_optimize_reach_the_plan(self) -> None:
         ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
         env = commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["eth", "SOL"], "optimize": False},
