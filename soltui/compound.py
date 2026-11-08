@@ -572,7 +572,8 @@ def read_ledger(asset: str) -> list[dict[str, Any]]:
     return out
 
 
-def _append(asset: str, rows: Sequence[Mapping[str, Any]], *, unique: bool = False) -> list[Mapping[str, Any]]:
+def _append(asset: str, rows: Sequence[Mapping[str, Any]], *, unique: bool = False,
+            not_after: int | None = None, clock: Callable[[], float] = time.time) -> list[Mapping[str, Any]]:
     """Append rows to a coin's ledger under a lock; return the rows written.
 
     unique: drop any call or resolve whose id the ledger already holds, checked inside the lock.
@@ -590,8 +591,10 @@ def _append(asset: str, rows: Sequence[Mapping[str, Any]], *, unique: bool = Fal
     try:
         fcntl.flock(fd, fcntl.LOCK_EX)
         if unique:
-            have = {(r.get("type"), r.get("id")) for r in read_ledger(asset) if r.get("type") in ("call", "resolve")}
-            rows = [r for r in rows if r.get("type") not in ("call", "resolve") or (r["type"], r.get("id")) not in have]
+            have = {(r.get("type"), r.get("id")) for r in read_ledger(asset) if r.get("type") in ("call", "resolve", "horizon_call", "horizon_resolve")}
+            rows = [r for r in rows if r.get("type") not in ("call", "resolve", "horizon_call", "horizon_resolve") or (r["type"], r.get("id")) not in have]
+        if not_after is not None and clock() >= not_after:
+            return []  # never record a forecast after its measured interval begins
         if rows:
             with path.open("a", encoding="utf-8") as fh:
                 fh.write("".join(json.dumps(r, sort_keys=True, allow_nan=False) + "\n" for r in rows))
@@ -1017,6 +1020,16 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
     if new_call and not any(r.get("type") == "call" for r in written):
         new_call = False  # another writer recorded this bar first
     n_resolved = sum(1 for r in written if r.get("type") == "resolve")
+    if new_call:
+        saved_call = next(r for r in written if r.get("type") == "call")
+        _record_horizon_calls(asset, saved_call, int(time.time() if now is None else now),
+                              clock=time.time if now is None else lambda: now)
+    try:
+        horizon_resolved = _resolve_horizons(asset, int(time.time() if now is None else now),
+                                             get=fetchers.get("get", http_json))
+    except (CompoundError, OSError, ValueError) as exc:
+        horizon_resolved = 0
+        extra["notes"]["horizon_error"] = str(exc)
     # The call above was made with the tuned settings already (tuning walks inside the evaluation);
     # adopting saves them so the next bar starts from them instead of re-deriving the walk.
     try:
@@ -1027,9 +1040,72 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
     _append(asset, adopt_rows)
     return {"asset": asset, "recorded": new_call, "call": x["call"], "composite": x["composite"],
             "bar_ts": x["bar_ts"], "regime": x["regime"], "blocked_by": x["blocked_by"],
-            "resolved": n_resolved, "notes": extra["notes"], "adopted": adopted,
+            "resolved": n_resolved, "horizon_resolved": horizon_resolved, "notes": extra["notes"], "adopted": adopted,
             "autopilot": bool(state.get("autopilot")),
             "notional_usd": sizing.get("notional_usd") if sizing.get("available") else None}
+
+
+HORIZON_MINUTES = (1, 5, 30)
+
+
+def _record_horizon_calls(asset: str, call: Mapping[str, Any], stamp: int, *,
+                          clock: Callable[[], float] = time.time) -> None:
+    """Record separate forward horizons against the first safely future minute open.
+
+    The same five-minute signal is evaluated at three horizons; these are not three
+    independently trained predictors. Historical calls are deliberately not backfilled.
+    """
+    start = (stamp // 60 + 2) * 60
+    rows = [{"type": "horizon_call", "id": f"{call['id']}:{h}m", "source_id": call["id"],
+             "asset": asset, "minutes": h, "start": start, "finish": start + h * 60,
+             "issued_at": stamp, "call": call["call"], "config_hash": call["config_hash"]}
+            for h in HORIZON_MINUTES]
+    _append(asset, rows, unique=True, not_after=start, clock=clock)
+
+
+def _resolve_horizons(asset: str, stamp: int, get: Fetcher = http_json) -> int:
+    ledger = read_ledger(asset)
+    done = {r.get("id") for r in ledger if r.get("type") == "horizon_resolve"}
+    pending = [r for r in ledger if r.get("type") == "horizon_call" and r.get("id") not in done
+               and r["finish"] <= stamp]
+    if not pending:
+        return 0
+    raw = fetch_closed_candles(asset, now=stamp, bars=600, seconds=60, get=get)
+    candles = {int(t): (float(o), float(c)) for t, o, c in zip(raw["ts"], raw["open"], raw["close"], strict=True)
+               if math.isfinite(o) and math.isfinite(c) and o > 0 and c > 0}
+    rows = []
+    for call in pending:
+        start, finish = int(call["start"]), int(call["finish"])
+        if not all(t in candles for t in range(start, finish, 60)):
+            continue
+        op, close = candles[start][0], candles[finish - 60][1]
+        if not (math.isfinite(op) and math.isfinite(close) and op > 0 and close > 0):
+            continue
+        rows.append({"type": "horizon_resolve", "id": call["id"], "open": op, "close": close,
+                     "ret_bps": round(1e4 * math.log(close / op), 4), "resolved_at": stamp})
+    return len(_append(asset, rows, unique=True))
+
+
+def horizon_status(ledger: Sequence[Mapping[str, Any]], recent: int = 30) -> dict[str, Any]:
+    """Independent results for each horizon; missing minute data stays pending."""
+    resolves = {r["id"]: r for r in ledger if r.get("type") == "horizon_resolve"}
+    calls = [r for r in ledger if r.get("type") == "horizon_call"]
+    dirs = {"UP": 1, "DOWN": -1}
+    by_horizon = {}
+    for h in HORIZON_MINUTES:
+        selected = [c for c in calls if c["minutes"] == h]
+        done = [(c, resolves[c["id"]]) for c in selected if c["id"] in resolves]
+        tally = _tally([(dirs.get(c["call"], 0), float(r["ret_bps"])) for c, r in done], 0)
+        by_horizon[h] = {"recorded": len(selected), "resolved": len(done),
+                         "pending": len(selected) - len(done), "hit_rate": tally["hit_rate"],
+                         "decided": tally["decided"]}
+    rows = []
+    for c in calls[-recent:]:
+        r = resolves.get(c["id"])
+        ret = None if r is None else r["ret_bps"]
+        rows.append({**c, "ret_bps": ret, "hit": None if ret is None or not ret or c["call"] == "FLAT"
+                     else (ret > 0) == (c["call"] == "UP")})
+    return {"horizons": by_horizon, "recent": rows}
 
 
 def _tally(pairs: Sequence[tuple[int, float]], rt: float) -> dict[str, Any]:
@@ -1089,7 +1165,7 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
             "pending": len(calls) - len(done), "round_trip_bps": rt,
             "compound": compound, "compound_ungated": ungated,
             "components": {cid: _tally(v, rt) for cid, v in sorted(per.items())},
-            "recent": rows}
+            "recent": rows, "horizon_results": horizon_status(ledger)}
 
 
 # -- backtests -------------------------------------------------------------------------------

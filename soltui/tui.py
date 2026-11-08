@@ -1378,6 +1378,8 @@ class SolTuiApp(App):
                             yield Static("", id="compound-unattended")
                         yield Static("", id="compound-forward-title", classes="table-title")
                         yield Static("", id="compound-fwd-summary")
+                        yield Static("", id="compound-horizon-summary", markup=False)
+                        yield GlossaryTable(id="compound-horizons")
                         yield GlossaryTable(id="compound-forward")
                 with TabPane("All coins", id="cmp-coins"):
                     with VerticalScroll():
@@ -2912,6 +2914,8 @@ class SolTuiApp(App):
         results.add_columns("configuration", "oos return", "buy & hold", "oos sharpe", "trades", "fees %",
                             "net bps 1h", "net bps 24h", "oos calls", "oos hit", "z", "gross bps", "max dd",
                             "rankable")
+        hz = self.query_one("#compound-horizons", GlossaryTable)
+        hz.add_columns("forecast UTC", "minutes", "prediction", "return bps", "hit")
         fwd = self.query_one("#compound-forward", GlossaryTable)
         fwd.cursor_type = "row"
         fwd.add_columns("time", "call", "composite", "regime", "price", "next 5m bps", "hit", "blocked by")
@@ -3011,7 +3015,10 @@ class SolTuiApp(App):
             "scored on the held-out last 30% of bars (OOS). Hit = next-bar direction; return and Sharpe are "
             "the engine's P&L after fees at the set leverage.")
         self.query_one("#compound-forward-title", Static).update(
-            f"[b]Forward test for {coin}[/b], most recent paper calls: one row per closed 5m bar with the "
+            f"[b]Forward test for {coin}[/b] (selected coin only). The trainer may cover other coins; "
+            "see All coins for each running status. Separate 1, 5 and 30 minute outcomes use the same "
+            "five-minute signal, starting at a future minute open. Legacy calls follow below: "
+            "one row per closed 5m bar with the "
             "call, composite score, regime, price, the next bar's move in bps, whether it hit, and any gate "
             "that forced FLAT. No order was placed.")
 
@@ -3313,6 +3320,20 @@ class SolTuiApp(App):
                 + (f"Paper $ at wallet size: {f['paper']['calls']} calls, net ${f['paper']['net_usd']:,.2f} "
                    f"after ${f['paper']['costs_usd']:,.2f} costs." if f.get("paper", {}).get("calls") else
                    "Paper $ at wallet size: no sized calls yet.")))
+            hz = f.get("horizon_results", {"horizons": {}, "recent": []})
+            htable = self.query_one("#compound-horizons", GlossaryTable)
+            htable.clear()
+            parts = []
+            for minutes in (1, 5, 30):
+                item = hz["horizons"].get(minutes, hz["horizons"].get(str(minutes), {}))
+                parts.append(f"{minutes}m: {item.get('recorded', 0)} recorded, "
+                             f"{item.get('resolved', 0)} resolved, {item.get('pending', 0)} pending, "
+                             f"hit {_pct(item.get('hit_rate'))}")
+            self.query_one("#compound-horizon-summary", Static).update(" | ".join(parts))
+            for row in reversed(hz["recent"]):
+                htable.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["issued_at"])),
+                               str(row["minutes"]), row["call"], _num(row["ret_bps"]),
+                               {True: "yes", False: "no"}.get(row["hit"], "-"))
             self._compound_forward_rows = list(reversed(f["recent"]))
             for row in reversed(f["recent"]):
                 fwd.add_row(time.strftime("%m-%d %H:%M", time.gmtime(row["bar_ts"] + 300)), row["call"],
@@ -3372,10 +3393,13 @@ class SolTuiApp(App):
             label.update(Text(f"unattended: {self._msg(env)}"))
             return
         s = env["result"]
+        running = [asset for asset, row in self._compound_overview_rows.items() if row.get("unattended")]
+        coverage = (f" Running coins ({len(running)}): {', '.join(running)}."
+                    if running else " See All coins for running coverage.")
         if s["running"]:
             since = time.strftime("%m-%d %H:%M UTC", time.gmtime(s["since"])) if s.get("since") else "?"
             label.update(Text(f"unattended training RUNNING for {s['asset']} since {since} (pid {s['pid']}); "
-                              f"log {s['log']}"))
+                              f"log {s['log']}.{coverage}"))
             # Its calls (and autopilot's adoptions) land from another process: reload once a minute.
             if time.time() - self._compound_last_refresh > 60:
                 self._compound_last_refresh = time.time()
@@ -3385,7 +3409,7 @@ class SolTuiApp(App):
                 self._compound_load_overview()
         else:
             label.update(Text(f"unattended training stopped for {s['asset']}"
-                              + (f" · last: {s['last_line'][:120]}" if s.get("last_line") else "")))
+                              + (f" · last: {s['last_line'][:120]}" if s.get("last_line") else "") + coverage))
 
     def _compound_load_overview(self) -> None:
         env = self._call("compound.overview", quiet=True)
