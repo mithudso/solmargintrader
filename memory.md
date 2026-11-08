@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 53
-Delta: v52 to v53; Bots tab, DCA bot, triangle L1 replay and the streaming price recorder.
+Version: 55
+Delta: v54 to v55; resume integration after concurrent master index repair.
 
 ## v1 - 2026-11-06
 
@@ -189,6 +189,18 @@ Target: the owner reloaded the unpacked extension from /Users/mitch/dev/solmargi
 Done: manifest.json and package.json are 0.2.0. The popup header and the dashboard title show the manifest version. The popup gains a "SolTUI console" button that opens dashboard.html#soltui. test/version.test.js keeps the two version fields equal and checks that both pages render the version. The CI extension job fails a pull request that changes extension/src or manifest.json without a version bump.
 
 Owner steps (Chrome Beta, where the extension is installed): quit and reopen Chrome Beta once so it reads the com.mitchhudson.soltui native host manifest, then reload SolMarginTrader in chrome://extensions. The popup should then read v0.2.0.
+
+## v18 - 2026-11-07 (executor, workstream E1)
+
+Target: new component `executor/` for swaps between coins with best pricing; the foundation for a later "run this strategy live" button (E2 builds the runner and the button). Branch executor-e1, worktree /Users/mitch/dev/solmargintrader-wt-executor. Stele MCP was unreachable, so the facts below are in the outbox, not yet in the graph.
+
+Completed: Python 3.13 package with uv lock, ruff and pytest (202 offline tests, 5 `-m network`); Jupiter Swap v1 quote/swap/price with an independent price reference; quote-only LI.FI cross-chain price; semantic transaction verifier (`txverify.py`, two layers, plus a re-simulation of the exact signed bytes); rails, per-strategy dry-run soak, mandatory research gate with a logged override; append-only journal with `unknown` handling and `reconcile`; CLI and loopback HTTP API over one registry with one envelope; `executor` CI job; root CLAUDE.md and docs now say seven components.
+
+Facts to keep: (1) Jupiter now marks Swap API v1 "no longer actively maintained, superseded by Swap V2"; the owner chose v1. `lite-api.jup.ag` works keyless but returns 429 on a second call inside about a second, so the client spaces calls. (2) `priceImpactPct` is a fraction ("0.001078" at 20,000 SOL = 0.108%). (3) A simulated post-state includes the fee; `simulateTransaction` with `accounts` returns the post-state of every writable account, which is what the verifier compares. (4) The wallet held no USDC, so the live round trip ran sell first (SOL to USDC, then back). (5) Config comment lines contain the text `mode = "live"`: edit the config with a line-anchored replace, not a string replace.
+
+Live validation (root CLAUDE.md conditions): reserved strategy `path-validation`, enabled only for the run, then switched off. Leg 1 SOL to USDC 0.011 SOL: 44MrREewJMLguLRw3pfMs5V3K1wFXRyxuD6pGDa5Kp1TWUWSd9TGiu9wTJ4ACYLFbqSe8WHMaLyBRDu8GvhHaYSS. Leg 2 USDC to SOL 0.99 USDC: 5veG62YXWFjX1XYeAzadLpaZ1MwaWd89dcwGt8Sjv6oS7uk1yscZKd1ggqBDFfugzP19yXc7EWB8DCao8FnpUSFH. Net cost of the round trip 51,110 lamports (about $0.005) and 47 raw USDC of dust; both post-trade checks passed.
+
+Remaining: E2 (runner, soltui button); cross-chain execution; Swap V2 decision; owner to review the `path-validation` reserved strategy.
 
 ## v18 - 2026-11-07
 
@@ -535,3 +547,23 @@ Target (Stele TASK-862): run a fresh combined registry and compound sweep across
 Checkpoint: started the data refresh from the isolated agent-01a1b61a worktree; the fetch log is in the main checkout at data/logs/full-suite-resume-fetch.log. The full suite now includes frontier variants and passes the absolute refresh cache to registry workers. The new --archive-results flag allows --skip-fetch to start a new registry ledger after a successful standalone refresh. A detached continuation waits for a successful fetch before running both sweeps; see data/logs/full-suite-resume-sweeps.log.
 
 Verified: 60 focused tests and check_docs pass. Remaining: verify per-asset fetch coverage, completed registry and compound rows, skips and errors before interpreting the new run. Keep the worktree while the continuation uses it.
+
+## v54 - 2026-11-08 (PR 46 and PR 58 integration)
+
+Target: resolve and merge the two requested PRs. Stele tasks TASK-879, TASK-880, TASK-881.
+
+Workspace: /Users/mitch/dev/solmargintrader-wt-01a1ba3b; private branch agent-01a1ba3b. Shared checkout and original PR worktrees belong to other sessions and remain untouched.
+
+Completed: inspected PR heads and merge guidance; merged origin/master into PR 46; retained both workflow histories and automatically merged source and CI changes. Conflicts were limited to generated indexes and workflow records. Executor source remains unchanged from PR 46.
+
+Verification: executor source exactly matches original PR head 00be663; 202 offline tests pass (5 network tests excluded); Ruff lint and formatting pass. Hash-index check passes. Docs counts currently read the pre-merge HEAD; rerun after the merge commit before interpreting count drift. All final-head GitHub CI checks remain required.
+
+Remaining: regenerate indexes after staging resolutions, commit and push to executor-e1, wait for CI and merge PR 46; repeat against updated master for PR 58; verify both merge receipts and clean this private worktree. No trading or service restart is part of this task.
+
+## v55 - 2026-11-08 (resumed integration)
+
+Completed: PR 46 resolution was pushed at 6c1fc4b. Executor 202 offline tests, Ruff lint and format, docs counts, index freshness and unique paths passed. Seven CI jobs passed; SolTUI was running when concurrent PR 86 updated master to ea2d288 and caused new index conflicts.
+
+Current: merge ea2d288 into this private branch. Only generated index files conflict. Resolve and stage before regeneration. PR 58 advanced to b899458; use that or a newer remote head.
+
+Remaining: commit regenerated artifacts, push executor-e1, wait for all final-head CI and merge PR 46. Then integrate latest PR 58 against the landed master, verify all CI and merge. Preserve other sessions and their worktrees.

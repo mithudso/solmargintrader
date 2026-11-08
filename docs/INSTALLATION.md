@@ -1,6 +1,6 @@
 # Installation
 
-Six components with separate dependencies. The optional soltui app and liquidity daemon
+Seven components with separate dependencies. The optional soltui app and liquidity daemon
 can each install a persistent macOS launchd service. Test commands below do not install them.
 
 | Component | Install | Persistent? |
@@ -11,6 +11,7 @@ can each install a persistent macOS launchd service. Test commands below do not 
 | `soltui/` | `pip install -r soltui/requirements.txt`, optionally install a launchd agent | Optional login service |
 | `mongo/` | `pip install -r mongo/requirements.txt`, plus backtester deps | Local MongoDB service managed separately |
 | `liquidity/` | `uv sync --extra dev -p 3.13` in its directory | Optional live daemon; separate from installation |
+| `executor/` | `uv sync --extra dev -p 3.13` in its directory | No; the API server is started by hand |
 
 ## Prerequisites
 
