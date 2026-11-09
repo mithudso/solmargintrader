@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 137
-Delta: v136 to v137; preserve all upstream and optimizer workflow histories.
+Version: 138
+Delta: v137 to v138; record the repository UI optimizer request.
+
+## v138 - 2026-11-09
+
+```text
+$ui-deep-optimizer ~/dev/solmargintrader
+```
 
 ## v137 - 2026-11-08
 
