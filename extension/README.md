@@ -7,11 +7,11 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Signal Desk workspace (0.6.0)
+## Signal Desk workspace (0.6.1)
 
 The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or
-**Bot monitor** workspace. The popup shows a one-time read-only signal/process glance and four
-shortcuts. The interface uses recorded/native-host data; it contains no demonstration values.
+**Bot monitor** workspace. The popup shows a automatically refreshed signal/process glance and four
+shortcuts. Unavailable predictions request paper recovery automatically. The interface uses recorded/native-host data; it contains no demonstration values.
 All tools, experiments, wallets/orders, settings, legacy wallet views and document editing remain
 reachable. Archived liquidity mutators are discoverable but disabled, including in expert forms.
 
@@ -35,6 +35,10 @@ CSP, engine defaults, trading rails or forecast code hashes were changed.
 
 See [Signal Desk workflows](../docs/SIGNAL-DESK.md) and
 [bridge lifecycle and verification](../docs/EXTENSION-TUI-PARITY.md).
+
+**Council** in Bot monitor aggregates eligible current strategy votes and manages
+a persistent paper position. Strong Buy opens long; Sell exits; optional shorts
+mirror this. Leverage is opt-in. See [Council rules and fill assumptions](../docs/COUNCIL.md).
 
 Manual Jupiter previews remain unsigned, and submission refuses before key loading/signing
 until independent V2 economic verification exists. Coinbase previews retain their separate confirmed
@@ -122,7 +126,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.6.0`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.6.1`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).

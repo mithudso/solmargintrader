@@ -10,6 +10,7 @@
 
 import { aggregatePredictions, agreementUnavailableReason, scoreText } from './live-score.js';
 import { attributionLine } from '../jupiter/attribution.js';
+import { predictionRecovery, renderPredictionRecovery } from './prediction-recovery.js';
 
 const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
@@ -221,7 +222,22 @@ refreshOverview().catch(() => {});
 
 
 // A transient popup reads status once; it owns no recorder, trainer or session lease.
+let glanceCommands = [], glanceBusy = false;
+const glanceRecovery = predictionRecovery({
+  supports: (name) => glanceCommands.some((c) => c.name === name),
+  ask: async (command, params) => {
+    const res = await send({ type: 'soltuiCall', command, params });
+    if (!res?.ok) throw new Error(res?.error ?? 'Native host unavailable');
+    return res.result;
+  },
+  changed: (state) => renderPredictionRecovery($('glanceRecovery'), state, {
+    start: () => glanceRecovery.start(), href: chrome.runtime.getURL('src/ui/dashboard.html#soltui/forward'), newTab: true,
+  }),
+});
 async function refreshGlance() {
+  if (glanceBusy) return;
+  glanceBusy = true;
+  try {
   const saved = await chrome.storage.local.get('signalDesk.v1');
   const value = saved?.['signalDesk.v1']?.asset;
   const asset = typeof value === 'string' && /^[A-Z0-9]{1,20}$/.test(value) ? value : 'SOL';
@@ -229,6 +245,7 @@ async function refreshGlance() {
   const listing = await send({ type: 'soltuiCommands' });
   const commands = listing?.result?.result;
   if (!listing?.ok || !listing.result?.ok || !Array.isArray(commands)) throw new Error('Native host unavailable. Open the workspace to reconnect.');
+  glanceCommands = commands;
   const read = async (command, params = {}) => {
     if (!commands.some((c) => c.name === command && c.read_only && !c.requires_confirm && !c.long_running)) return null;
     const res = await send({ type: 'soltuiCall', command, params });
@@ -247,6 +264,14 @@ async function refreshGlance() {
   $('glancePrice').textContent = usable ? `$${price.toLocaleString()} · ${q.quote_age_s ?? 'unknown'}s old at capture · ${prices.live ? 'recorder fresh' : 'last known / stale'}` : 'No usable recorder quote. Opening this popup starts no recorder.';
   $('glanceAge').textContent = `Read ${new Date().toISOString().slice(11, 19)} UTC · ${aggregate.available ? 'agreement is not success probability' : agreementUnavailableReason(predictions)}`;
   const running = (v) => typeof v === 'boolean' ? (v ? 'running' : 'stopped') : 'unavailable';
-  $('glanceProcesses').textContent = `Recorder ${running(prices?.running)} · session checks ${running(forward?.running)} · ${asset} detached trainer ${running(trainer?.running)}`;
+  $('glanceProcesses').textContent = `Recorder ${running(prices?.running)} · prediction checks ${running(forward?.running)} · ${asset} detached trainer ${running(trainer?.running)}`;
+  await glanceRecovery.update(asset, predictions);
+  } finally { glanceBusy = false; }
 }
-refreshGlance().catch((e) => { $('glancePrice').textContent = e.message; $('glanceAge').textContent = 'No current signal evidence. No service was started.'; });
+const readGlance = () => refreshGlance().catch((e) => {
+  $('glancePrice').textContent = e.message; $('glanceAge').textContent = 'Prediction data unavailable.';
+  renderPredictionRecovery($('glanceRecovery'), { needed: true, message: 'Open Forward testing to reconnect.', can_start: false });
+});
+readGlance();
+const glanceTimer = setInterval(readGlance, 10_000);
+window.addEventListener('pagehide', () => { clearInterval(glanceTimer); glanceRecovery.dispose(); }, { once: true });

@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 293
+Version: 296
+Delta: v295 to v296; implement and verify shared recovery and Council paper controls.
+Delta: v294 to v295; extend work with the Council consensus bot.
+Delta: v293 to v294; start automatic prediction recovery and actionable unavailable alerts.
 Delta: v292 to v293; finalize shared-database regression discovery counts.
 Delta: v291 to v292; record actual Chrome activation and repair the shared prediction database lock.
 Delta: v290 to v291; finalize committed suite counts and delivery checkpoint.
@@ -12,6 +15,30 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v296 - 2026-11-09
+
+Implemented unavailable-prediction recovery through separate forwardtest.health and forwardtest.ensure commands. A detached producer owns one kernel lease across consoles; explicit Stop pauses automatic recovery. Existing trials, costs, plan assets and forwardtest.revision remain intact. The alert links to Research / Forward Testing and conditionally offers Start predictions. Upgraded consoles register live protocol capability; old consoles remain conservatively excluded until relaunch.
+
+Implemented a detached Council paper bot with frozen causal votes, equal eligible-strategy weighting, entry/exit hysteresis, optional shorting/leverage, shared Jupiter fees/borrow/liquidation, future real Coinbase proxy fills, and separately trained prospective entry confidence. No live order path is added. Council status/settings/Start/Stop are exposed in Chrome Bot monitor and SolTUI Bots / Council. Polling preserves form drafts. Stop preserves open paper positions and cancels pending fills. Agent ownership: lifecycle specialist implemented backend and registry; root implemented interfaces, fixtures and integration.
+
+Verification so far: 397 JavaScript tests; 62 bridge/accounting tests; 15 existing Signal/Jupiter UI tests; three new mounted-control tests; 26 real-browser end-to-end checks; independent frozen-source recovery14/14 and Council8/8. Final106 backend tests passed, including Council23 and recovery17 with the expiry-training regression. Mongo46 passed with11 optional skips. Full941 backtester tests encountered only expected retrieval-index drift; rebuild and rerun before delivery. Endpoint and offline dry-run checks passed. Backend evidence: /tmp/prediction-recovery-backend-regression.log; UI receipts: /tmp/prediction-recovery-acceptance.json and /tmp/council-ui-acceptance.json.
+
+Remaining: finish shadow-outcome expiry regression, regenerate offline indexes, refresh committed discovery counts, complete checks, commit/push/PR/merge, safely synchronize main and activate actual Chrome0.6.1/TUI. Start Council in paper mode to collect prospective confidence; verify one shared producer, fresh predictions, retained evidence, and actual installed identity. Preserve the existing F5 worker and unrelated untracked files. Stele remains disconnected; exact lifecycle writes are queued as a8f2886e and911f08c0 with decisions4f91d7fb and6f893541. Private production evidence remains outside git.
+
+## v295 - 2026-11-09
+
+The user additionally requests a Council bot driven by successful eligible strategy votes: enter long on Strong Buy, hold until Sell, and reverse rules for shorts, with optional leverage. Continue the already-authorized prediction recovery and actionable alerts; do not replace that goal. Council must use current eligible horizon votes with recorded accuracy/sample/expiry floors, not retrospective winning strategies. Default to paper/dry-run,1x,long-only unless shorting/leverage are explicitly enabled. Reuse existing Jupiter simulation fees, borrow, liquidation, confidence and fill timing. Never enable unverified live execution or fabricate quotes. Preserve historical vote snapshots so any replay uses decisions available at the time, without lookahead. Root owns Council implementation and UI; lifecycle specialist owns prediction producer and commands, so coordinate command registrations.
+
+## v294 - 2026-11-09
+
+The user authorizes unavailable live agreement, including expired qualifying predictions with a fresh recorder, to start or recover the prediction producer automatically. Add a Forward Testing destination link and a Start predictions button when stopped. Work in /Users/mitch/dev/solmargintrader-wt-recovery-01a1beca on fix/prediction-recovery-01a1beca. Preserve the three unrelated main-checkout guides and existing workers. Stele is disconnected; task create/claim lifecycle is queued as a8f2886e.
+
+The prior feature and SQLite fixes are delivered through PR163/164, main cb4ca9b3e82cd196ce561a40418961b6777ad4e8. Final prior activation receipt is /Users/mitch/.local/state/solmargintrader-session-01a1beca/memory.md; it supersedes old checkpoint text below. Do not repeat completed migration or arbitrarily restart all workers. Source investigation shows popup refreshGlance reads prices.status, forwardtest.predictions and process-local forwardtest.state. A fresh recorder does not refresh saved forecasts. _forward_runner checks every planned coin sequentially once per minute; a14-asset cycle or optimization can outlast a1-minute forecast. Native-host process-local restoration cannot survive a short-lived popup by itself.
+
+Contract: keep read-only reads free of implicit mutations; expose a separate idempotent paper-only ensure/recovery command. Use one cross-process producer, reuse the exact saved plan/cost profile, prevent repeated starts, report Starting/Running/failure, and retain accuracy/sample/expiry evidence gates. Current assessments remain available independently. Honor a later explicit Stop and offer Start to resume. Foreground recovery should prioritize the requested asset without parallel writers. No change to live order routing or arming. Avoid editing forwardtest.py unless necessary because its hash partitions evidence.
+
+Steps: lifecycle/ownership design; backend and popup/dashboard/TUI recovery controls; focused concurrency and UI checks; final installed acceptance and full authorized PR delivery. Pending implementation. Preserve continuation here and in Stele outbox throughout.
 
 ## v292 - 2026-11-09
 

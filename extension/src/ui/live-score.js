@@ -51,7 +51,7 @@ export function agreementUnavailableReason(snapshot, now = Date.now() / 1000) {
         Number.isInteger(row[`resolved_${h}m`]) && row[`resolved_${h}m`] >= minResolved &&
         finite(issued) && finite(expires) && issued <= now && expires > issued && expires <= now;
     }));
-  return eligible ? 'Some qualifying predictions have expired; no current vote is available. Check the forward-test session.'
+  return eligible ? 'Qualifying predictions have expired; no current vote is available.'
     : 'No current predictions meet the evidence and freshness requirements.';
 }
 

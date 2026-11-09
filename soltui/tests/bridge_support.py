@@ -21,6 +21,12 @@ TOKEN = "test-token-not-a-secret"
 # Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite
 # replaces their handlers with fixed answers; the registry, validation, envelope and surfaces are real.
 HEAVY = {
+    "council.config": {"asset": "SOL", "mode": "paper"},
+    "council.status": {"state": "stopped", "mode": "paper", "running": False},
+    "council.start": {"state": "running", "mode": "paper", "running": True},
+    "council.stop": {"state": "stopped", "mode": "paper", "running": False},
+    "forwardtest.health": {"state": "paused", "running": False, "paused": True, "can_start": True, "message": "fixture paused"},
+    "forwardtest.ensure": {"state": "running", "running": True, "can_start": False, "message": "fixture running"},
     "batch.run_all": {"run_id": "a" * 32, "phase": "backtesting", "running": True},
     "batch.list": {"runs": []},
     "batch.create": {"run_id": "a" * 32, "phase": "planned"},

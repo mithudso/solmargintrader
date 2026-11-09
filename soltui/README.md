@@ -1,5 +1,9 @@
 # soltui — SOL strategy console
 
+**Bots → Council** runs the persistent consensus paper bot. It holds a position
+until opposite eligible votes arrive; shorts and leverage are opt-in.
+See [Council rules and fill assumptions](../docs/COUNCIL.md).
+
 A Textual TUI plus a macOS menu-bar indicator over the backtester. Its panes are grouped into five
 destinations (Now, Signal, Research, Money, Library) plus Settings; see [Navigation](#navigation).
 Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin

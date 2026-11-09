@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 144
+Version: 147
+Delta: v146 to v147; add the Council consensus trading bot request.
+Delta: v145 to v146; make unavailable alerts link to Forward Testing and offer Start.
+Delta: v144 to v145; automatically recover unavailable predictions.
 Delta: v143 to v144; add Jupiter and Coinbase live-feed selection.
 Delta: v142 to v143; simplify dashboard actions and add current assessments.
 Delta: v141 to v142; record shared-checkout availability.
@@ -9,6 +12,27 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v147 - 2026-11-09
+
+```text
+Create a council bot that takes the aggregated votes of the successful voting strategies and when there's a strong buy signal it puts in a buy, and holds it until there's a sell signal, and visa versa, with potential leverage.
+```
+
+## v146 - 2026-11-09
+
+```text
+Also that error should have a link to the correct section, and also have a start button on it if it is not started.
+```
+
+## v145 - 2026-11-09
+
+```text
+Make it so that whenever one of these is triggered, then it kicks off the process to start the predictions: Agreement unavailable
+$86.955 · 0.7s old at capture · recorder fresh
+
+Read 12:51:03 UTC · Some qualifying predictions have expired; no current vote is available. Check the forward-test session.
+```
 
 ## v144 - 2026-11-09
 
