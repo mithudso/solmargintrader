@@ -5,6 +5,7 @@ import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
+from uuid import uuid4
 
 from botmanager.config import resolve_config
 from botmanager.domain import BotSpec, ManagerError
@@ -102,3 +103,66 @@ class StoreTests(unittest.TestCase):
             for path in self.home.iterdir()
         }
         self.assertEqual(before, after)
+
+    def test_indexed_identity_and_body_must_agree_on_lookup_and_listing(self):
+        spec = self.store.create_spec(self.spec())
+        replacement_id = str(uuid4())
+        changes = (
+            {"bot_id": replacement_id, "source_identity": replacement_id},
+            {"display_name": "different-name"},
+        )
+        for change in changes:
+            with self.subTest(field=next(iter(change))):
+                raw = {**spec.to_dict(), **change}
+                with sqlite3.connect(self.store.path) as db:
+                    db.execute(
+                        "UPDATE specs SET body=? WHERE bot_id=?",
+                        (json.dumps(raw), spec.bot_id),
+                    )
+                for read in (
+                    lambda: self.store.get_spec(spec.bot_id),
+                    lambda: self.store.get_spec(spec.display_name),
+                    self.store.list_specs,
+                ):
+                    with self.assertRaises(ManagerError) as raised:
+                        read()
+                    self.assertEqual(raised.exception.code, "invalid_spec")
+
+    def test_reloaded_override_canary_is_refused_without_reflection(self):
+        from botmanager.domain import fingerprint
+
+        spec = self.store.create_spec(self.spec(overrides={"range_pct": 9.0}))
+        raw = spec.to_dict()
+        canary = "credential-canary-for-review"
+        raw["user_overrides"]["range_pct"] = canary
+        body = {key: raw[key] for key in spec._config_body()}
+        raw["config_hash"] = fingerprint(body)
+        with sqlite3.connect(self.store.path) as db:
+            db.execute(
+                "UPDATE specs SET body=? WHERE bot_id=?", (json.dumps(raw), spec.bot_id)
+            )
+        with self.assertRaises(ManagerError) as raised:
+            self.store.get_spec(spec.bot_id)
+        self.assertNotIn(canary, str(raised.exception))
+
+    def test_changed_source_index_is_refused_by_lookup_and_listing(self):
+        spec = self.store.create_spec(self.spec())
+        for key in ("source", "owner", "source_identity"):
+            with self.subTest(field=key):
+                with sqlite3.connect(self.store.path) as db:
+                    db.execute(
+                        f"UPDATE specs SET {key}=? WHERE bot_id=?",
+                        ("different", spec.bot_id),
+                    )
+                for read in (
+                    lambda: self.store.get_spec(spec.bot_id),
+                    self.store.list_specs,
+                ):
+                    with self.assertRaises(ManagerError) as raised:
+                        read()
+                    self.assertEqual(raised.exception.code, "invalid_spec")
+                with sqlite3.connect(self.store.path) as db:
+                    db.execute(
+                        f"UPDATE specs SET {key}=? WHERE bot_id=?",
+                        (getattr(spec, key), spec.bot_id),
+                    )

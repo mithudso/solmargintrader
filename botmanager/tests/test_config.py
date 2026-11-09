@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from botmanager.config import DEFAULT_CONTEXT, STRATEGY_VERSIONS, resolve_config
-from botmanager.domain import ManagerError
+from botmanager.domain import BotSpec, ManagerError, ResolvedConfig, fingerprint
 
 
 def learned(**changes):
@@ -23,6 +23,82 @@ def learned(**changes):
 
 
 class ConfigTests(unittest.TestCase):
+    def test_direct_resolved_overrides_and_provenance_must_match_effective_values(self):
+        base = resolve_config("grid", {}, {"range_pct": 19.0}, None)
+        for overrides in (
+            {"range_pct": "credential-canary-for-review"},
+            {"range_pct": 20.0},
+            {},
+            {"range_pct": True},
+        ):
+            forged = ResolvedConfig(
+                base.values, base.provenance, overrides, base.shared_compatibility
+            )
+            with self.subTest(case=type(overrides.get("range_pct")).__name__):
+                with self.assertRaises(ManagerError) as raised:
+                    BotSpec.create("forged", "grid", forged)
+                self.assertNotIn("credential-canary-for-review", str(raised.exception))
+        provenance = {key: dict(value) for key, value in base.provenance.items()}
+        provenance["range_pct"]["source"] = "packaged"
+        with self.assertRaises(ManagerError):
+            BotSpec.create(
+                "forged",
+                "grid",
+                ResolvedConfig(
+                    base.values,
+                    provenance,
+                    base.user_overrides,
+                    base.shared_compatibility,
+                ),
+            )
+
+    def test_reconstruction_checks_metadata_types_and_shared_compatibility(self):
+        valid = BotSpec.create("valid", "grid", resolve_config("grid", {}, {}, None))
+        malformed = (
+            {"bar_seconds": 60.0},
+            {
+                "shared_compatibility": {
+                    "accepted": "false",
+                    "reason": "no_shared_snapshot",
+                }
+            },
+            {
+                "shared_compatibility": {
+                    "accepted": False,
+                    "reason": "exact_semantics_match",
+                }
+            },
+            {
+                "shared_compatibility": {
+                    "accepted": True,
+                    "reason": "incompatible_shared_context",
+                }
+            },
+            {
+                "shared_compatibility": {
+                    "accepted": True,
+                    "reason": "exact_semantics_match",
+                }
+            },
+            {
+                "shared_compatibility": {
+                    "accepted": False,
+                    "reason": "no_shared_snapshot",
+                    "extra": 1,
+                }
+            },
+        )
+        for change in malformed:
+            raw = {**valid.to_dict(), **change}
+            raw["config_hash"] = fingerprint(
+                {key: raw[key] for key in valid._config_body()}
+            )
+            with (
+                self.subTest(field=next(iter(change))),
+                self.assertRaises(ManagerError),
+            ):
+                BotSpec.from_dict(raw)
+
     def test_complete_defaults_and_sources(self):
         for family in ("grid", "dca", "trend", "momentum"):
             result = resolve_config(family, {}, {}, None)

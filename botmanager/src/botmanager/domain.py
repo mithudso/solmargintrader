@@ -126,23 +126,79 @@ class BotSpec:
                 "bar_seconds",
                 "execution_model",
             ):
-                if getattr(self, key) != self.resolved_values[key]:
+                if (
+                    type(getattr(self, key)) is not type(self.resolved_values[key])
+                    or getattr(self, key) != self.resolved_values[key]
+                ):
                     raise ValueError
+            if not all(
+                isinstance(value, Mapping)
+                for value in (
+                    self.provenance,
+                    self.user_overrides,
+                    self.shared_compatibility,
+                )
+            ):
+                raise TypeError
             if set(self.resolved_values) != set(self.provenance):
                 raise ValueError
             if not set(self.user_overrides) <= set(self.resolved_values):
                 raise ValueError
-            for value in self.provenance.values():
+            if (
+                set(self.shared_compatibility) != {"accepted", "reason"}
+                or type(self.shared_compatibility["accepted"]) is not bool
+                or self.shared_compatibility["reason"]
+                not in (
+                    "exact_semantics_match",
+                    "no_shared_snapshot",
+                    "incompatible_shared_context",
+                )
+                or self.shared_compatibility["accepted"]
+                != (self.shared_compatibility["reason"] == "exact_semantics_match")
+            ):
+                raise ValueError
+            validate_values(
+                self.strategy_id, {**self.resolved_values, **self.user_overrides}
+            )
+            for key, value in self.user_overrides.items():
+                if (
+                    type(value) is not type(self.resolved_values[key])
+                    or value != self.resolved_values[key]
+                ):
+                    raise ValueError
+            override_fields = set()
+            for key, value in self.provenance.items():
+                if not isinstance(value, Mapping):
+                    raise TypeError
                 if set(value) != {"source", "source_revision", "reason"}:
                     raise ValueError
                 if value["source"] not in ("packaged", "shared", "override", "context"):
                     raise ValueError
                 if not all(isinstance(item, str) and item for item in value.values()):
                     raise ValueError
+                if value["source"] == "override":
+                    override_fields.add(key)
+                    if (
+                        value["source_revision"] != "creation-override-v1"
+                        or value["reason"]
+                        != "manual_pin;" + self.shared_compatibility["reason"]
+                    ):
+                        raise ValueError
+                if value["source"] == "shared" and (
+                    not self.shared_compatibility["accepted"]
+                    or value["reason"] != "exact_semantics_match"
+                ):
+                    raise ValueError
+                if value["source"] in ("packaged", "context") and not value[
+                    "reason"
+                ].endswith(";" + self.shared_compatibility["reason"]):
+                    raise ValueError
+            if override_fields != set(self.user_overrides):
+                raise ValueError
             if self.config_hash != fingerprint(self._config_body()):
                 raise ValueError
             datetime.fromisoformat(self.created_at)
-        except (ValueError, TypeError, KeyError, AttributeError) as exc:
+        except (ValueError, TypeError, KeyError, AttributeError, ManagerError) as exc:
             raise ManagerError(
                 "invalid_spec",
                 "The stored bot specification is invalid or incompatible.",

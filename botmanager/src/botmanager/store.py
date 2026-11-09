@@ -120,13 +120,34 @@ class ManagerStore:
                 4,
             ) from exc
 
+    @classmethod
+    def _decode_indexed(cls, row: tuple[Any, ...]) -> BotSpec:
+        spec = cls._decode(row[5])
+        indexed_fields = (
+            "bot_id",
+            "display_name",
+            "source",
+            "owner",
+            "source_identity",
+        )
+        if any(
+            type(stored) is not type(getattr(spec, key)) or stored != getattr(spec, key)
+            for key, stored in zip(indexed_fields, row[:5], strict=True)
+        ):
+            raise ManagerError(
+                "invalid_spec", "The stored bot identity does not match its index.", 4
+            )
+        return spec
+
     def list_specs(self) -> list[BotSpec]:
         if not self.initialized:
             return []
         with self._connection() as db:
             return [
-                self._decode(row[0])
-                for row in db.execute("SELECT body FROM specs ORDER BY display_name")
+                self._decode_indexed(row)
+                for row in db.execute(
+                    "SELECT bot_id,display_name,source,owner,source_identity,body FROM specs ORDER BY display_name"
+                )
             ]
 
     def get_spec(self, id_or_name: str) -> BotSpec | None:
@@ -134,14 +155,14 @@ class ManagerStore:
             return None
         with self._connection() as db:
             rows = db.execute(
-                "SELECT body FROM specs WHERE bot_id=? OR display_name=? COLLATE NOCASE",
+                "SELECT bot_id,display_name,source,owner,source_identity,body FROM specs WHERE bot_id=? OR display_name=? COLLATE NOCASE",
                 (id_or_name, id_or_name),
             ).fetchall()
             if len(rows) > 1:
                 raise ManagerError(
                     "ambiguous_identity", "Use a bot UUID to resolve this identity."
                 )
-            return self._decode(rows[0][0]) if rows else None
+            return self._decode_indexed(rows[0]) if rows else None
 
     def create_spec(self, spec: BotSpec) -> BotSpec:
         # Validate before any home or database creation, including direct store callers.
