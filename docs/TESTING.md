@@ -2,9 +2,9 @@
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 909 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1201 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1202 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 34 tests
-cd extension && npm test                                # 361 tests
+cd extension && npm test                                # 369 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -14,14 +14,14 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2505 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2514 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 361 tests cover
+## Extension — what the 369 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -36,12 +36,13 @@ nothing caught it.
 | Wallet | base58 against real mints and the all-zero pubkey; shortvec boundaries; signature insertion into the correct slot; non-signer refused |
 | Crypto | Sealed-seed round trip; wrong passphrase fails closed; fresh salt and IV per seal; Ed25519 signing |
 | **Surface parity** | Every command routable over the API; `GET` restricted to read-only; CLI help lists all commands and every argument; UI messages all map to real commands |
+| **Dashboard workspace** | All installed TUI commands are reachable through workflow groups; explicit false/clear values, structured tables, sortable/filterable results, CSV/JSON, sparse heatmaps, editor guards and confirmation resets have dedicated coverage. The real-browser gate uses a memory-only transport for write regressions; no real order or document write is sent |
 | **soltui bridge** | `soltuiCall` returns the identical envelope through the extension message, the CLI and the API; a refusal, an unknown command and a missing host are the same clean envelope everywhere; the confirm flag is forwarded untouched; a running soltui command does not hold the engine lock; transports (port and child process) time out, ignore other ids and reject junk frames |
 | **Market reads** | ABI decoding against the live `tickSpacings()` answer; non-read RPC methods refused; endpoint fallback; wrong-chain endpoint refused; low-confidence prices unused; unpriced unknown mints listed but not counted; Jupiter holdings first, RPC fallback; exact CL output inside the active range and refusal past it; Jupiter replies that do not match the request refused |
 | **Alerts** | Only fresh, backtest-positive, medium/high-confidence, unflagged, gauged scout pools above break-even may say "act"; a stale or undated scout cannot; an active strategy with no Top 5 record has no baseline; today's all-negative scout raises nothing; idle capital counts Base stablecoins only; quoted leads are info and do not notify by default; first scan records leads silently, and an empty read still counts as the baseline; acks survive re-scans; scans and acks run one at a time |
 | **Auto-reload gate** | First observation only stores the hash; no reload while a tick is queued or running (the change is retried, not forgotten); the reload runs inside the engine lock and holds it; an unreachable host never reloads and is logged once; a failed `reload()` restores the old hash |
 
-The parity suite probes all 34 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 35 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered
@@ -68,7 +69,7 @@ Read this before trusting anything with money.
 
 `npm run e2e` (`extension/tools/e2e.mjs`, helpers in `extension/e2e/`) launches Chrome for Testing
 headless, loads `extension/` with `Extensions.loadUnpacked` over the DevTools pipe, and drives the
-real service worker, popup and dashboard. It uses Node built-ins only. 20 checks (21 with the production soltui host):
+real service worker, popup and dashboard. It uses Node built-ins only. 23 checks (24 with the production soltui host):
 
 | Check | What it proves |
 | --- | --- |
@@ -157,7 +158,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1201 tests
+## soltui — 1202 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with

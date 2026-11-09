@@ -35,6 +35,7 @@ export const ALLOWED_MESSAGES = Object.freeze([
   'setApiKey',
   // The soltui bridge. soltuiCommands is a listing. soltuiCall can run ANY soltui
   // command, so it is allowed only through assertSoltuiCallAllowed below.
+  'soltuiSession', // dashboard lease only; never dispatches a TUI action
   'soltuiCommands',
   'soltuiCall',
 ]);

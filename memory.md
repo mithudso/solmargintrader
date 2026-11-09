@@ -1,13 +1,19 @@
 # Work continuation
 
-Version: 220
-Delta: v219 to v220; retain the independently merged Jupiter order handoff.
+Version: 227
+Delta: v226 to v227; preserve both extension and Jupiter paper histories.
 
-## v220 - 2026-11-08
+## v227 - 2026-11-08
+
+Integrated extension dashboard PR 143 after final CI passed but before PR 142 could merge. Source changes do not overlap the paper engine. Retained all extension and Jupiter requests and continuation records, then recomputed documentation counts and offline indexes. PR 142 remains the delivery receipt; CI must pass on its new integrated head. The historical Gemini handoff is not current execution guidance.
+
+## v226 - 2026-11-08
 
 Retained the separate Jupiter order handoff from PR 135 while merging its records. That record states: Owner requested handoff to Gemini. PR 134 merged incomplete at 314fe989 while docs CI failed and SolTUI CI was pending; the previous agent did not merge it. TASK-1044 released for next agent. See /Users/mitch/dev/solmargintrader/JUPITER_GEMINI_HANDOFF.md for current state, verification, risks and remaining implementation. Jupiter order execution is not implemented. These order-execution gaps are separate from the paper-only Jupiter fee and confidence controls in PR 142.
 
-## v219 - 2026-11-08
+Historical note only: the PR 143 record below corrects this earlier handoff checkpoint; consult current manual-order source and PR 137 before acting.
+
+## v225 - 2026-11-08
 
 Jupiter paper testing is implemented in simulation.py and shared by forwardtest, runner/CPCV, P&L curves, replay, F5 and new paper experiments. The owner confirmed 0.80; 1x long-only remains the default and leverage/shorts are opt-in. Existing forward evidence retains its original assumptions. Liquidation stops further paper entries for a wiped-out trial while forecasts continue. Borrow/slippage remain explicit scenarios; network/keeper/collateral-swap costs are excluded. Other assets use synthetic Jupiter economics.
 
@@ -15,17 +21,49 @@ Verified: 13 new accounting/no-lookahead/engine-parity/migration/layout tests; 2
 
 Delivery receipt: https://github.com/mithudso/solmargintrader/pull/142. This record ships with that PR; the PR's merged status and final-commit checks establish delivery. No product implementation remains. The already-open console is not restarted; the shared checkout and other sessions are preserved. Stele writes are queued as 470a5bc1, 93dc9fb7 and f07325c1 because this session has no Stele MCP. The private delivery worktree is /Users/mitch/dev/solmargintrader-wt-01a1bded.
 
-## v218 - 2026-11-08
+## v224 - 2026-11-08
 
 Integrated chart PR 141 without changing its signal/live behavior. Preserved each request and both continuation histories. Jupiter source and UI checks pass; final checks and delivery follow after refreshing generated counts and indexes. No change to the other session worktree or installed console.
 
-## v217 - 2026-11-08
+## v223 - 2026-11-08
 
 Implemented Jupiter Perps fee profiles, optional leverage/shorts, and owner-confirmed minimum confidence 0.80. Prior resolved-call confidence gates entries; no-lookahead tests cover fill delay. Each forward trial stores the cost/execution snapshot and each call stores confidence, eligibility and net return. Fees and borrow use full notional; intraminute liquidation forfeits collateral. P&L, CPCV, dry runs, F5 and new paper experiments share assumptions. Historical rows remain intact. Fresh Textual acceptance passed both forms at 180 and 100 columns, after fixing overflowing inputs. Initial keyword search auto-refreshed the already-dirty generated index in the shared checkout; no further writes there. Stele decision queued as f07325c1. Remaining: final tests and documentation/index checks, commit, PR checks and merge; existing installed console not reloaded because the shared checkout has another session and a pending merge.
 
-## v216 - 2026-11-08
+## v222 - 2026-11-08
 
 Scope: Jupiter simulation costs and forward/backtest controls for leverage, short DOWN calls, and minimum confidence. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1bded starts at origin/master 8195771. Other checkout has a live session and unfinished merge; preserve it. Preserve historical evidence and causal signals; no new live execution. Stele task/decision queued as outbox 470a5bc1 and 93dc9fb7 because no Stele MCP is available and the recall agent runtime failed. Remaining: inspect calculation paths, implement consistent controls and provenance, test accounting and no lookahead, verify UI, commit and deliver through PR.
+
+## v221 - 2026-11-08
+
+Merged the historical Gemini handoff PR 135 while preserving the current extension continuation. Its imported note below describes an earlier PR 134 checkpoint. Current source already contains the Jupiter manual-order handlers delivered in PR 137; do not treat the old handoff as the current implementation state. Live venue submission remains outside this task's verification.
+
+Imported historical note: Owner requested handoff to Gemini. PR 134 merged incomplete at 314fe989 while docs CI failed and SolTUI CI was pending; the previous agent did not merge it. TASK-1044 released for next agent. See JUPITER_GEMINI_HANDOFF.md for that earlier checkpoint.
+
+## v220 - 2026-11-08
+
+Extension dashboard parity 0.4.0 is implemented and locally verified. All 147 current SolTUI commands are accessible by workflow. Now shows automatic read-only process snapshots; Signal shows recorded prices and saved predictions; research, replay, bots, experiments/heatmaps, manual reviewed orders, wallets, documents/editor and settings use the same Python handlers. Confirmation resets on parameter/row changes and after attempts. Fresh previews override cached submit history; false values and explicit empty strings reach the backend. Optional untouched text remains omitted (caught by fixture-browser parity). Persistent native leases preserve runtime; long-call workers allow cancellation; timeouts never replay.
+
+Final local results: 369 extension tests; 24 real-host Chrome checks and 23 fixture-host Chrome checks; 42 focused Python bridge checks; 909 backtester tests; Mongo 34 tests with 17 server-dependent skips; positive offline grid round trip net $0.3492; public Jupiter read endpoints pass; documentation counts and offline metadata/text/concept indexes checked. The full 1189-test SolTUI suite is optional and was not run. Independent browser acceptance also verified a real CSV download and document read. Mock-only browser writes exercise order handoff and editor conflict paths; no live order, signing, daemon restart or trainer start occurred.
+
+Delivery receipt: https://github.com/mithudso/solmargintrader/pull/143. Read that PR for the final CI, merged state and squash commit rather than inferring them from this checkpoint. No additional product implementation remains. The shared /Users/mitch/dev/solmargintrader checkout belongs to other active sessions; preserve its branch and dirty TUI work. The owner's existing Chrome profile was not reloaded. Stele task and knowledge writes are queued under dcbde101, 17d6b326, 8a990cf6 and 867c033e because this session has no Stele MCP tools. Earlier pending-work entries below are historical.
+
+## v219 - 2026-11-08
+
+Dashboard parity PR: https://github.com/mithudso/solmargintrader/pull/143 (draft during final verification). Independent acceptance loaded Chrome 156 with extension 0.4.0 and all 147 tools. Actual CSV download, real document read, mock confirmation reset, explicit empty/false, preview handoff and editor conflict tests pass. The regression scenarios now live in extension/e2e/lib/dashboard-workspace.mjs and run inside the guarded real-browser gate. Extension: 369/369 unit/parity tests. Browser: 24/24 using real native host. Focused Python bridge: 42/42. Mongo: 34 tests, 17 skipped without server. Grid dry run closed one round trip net $0.3492. Public Jupiter endpoints reachable. Merged origin/master chart work and preserved both histories; current counts are 1189 SolTUI and 2501 total. Full TUI suite remains optional and was not run. Final offline index rebuild, final source checks, passing CI and PR merge remain. Shared checkout is active on another branch with unrelated dirty TUI work and must not be switched or overwritten.
+
+## v218 - 2026-11-08
+
+Merged current origin/master into the isolated dashboard branch without touching the active shared checkout. Preserved both tasks and prompt histories. Complete remaining verification and delivery on this combined tree.
+
+## v217 - 2026-11-08
+
+Extension parity implementation is complete in /Users/mitch/dev/solmargintrader-wt-01a1bdf1. Owner clarified dashboard-first usage. Added workflow navigation for all 147 installed commands, typed forms with false/explicit clear, structured sortable tables and CSV/JSON, live recorder chart/predictions, sparse experiment heatmaps and catalogued editor. Existing reviewed-order gates remain in Python. Native dashboard leases retain multiplexed runtime; bounded long-call dispatch permits status/cancel; auto-reload waits for dashboards. No call is retried after timeout/disconnect. Independent browser review caught and fixed stale confirmations and cached-preview replacement. Node suite passed 369 tests before the latest UI refinements; 42 focused Python bridge tests pass. Real-host browser gate passed 23 checks before the latest refinements. Backtester has one expected stale-index failure (909 total); rebuild offline generated indexes before final checks. Mongo: 34 tests, 17 skipped without mongod. Oscillating grid closes one positive round trip, net $0.3492. Stele task outbox dcbde101; knowledge outbox 17d6b326, 8a990cf6, 867c033e. Remaining: persist browser regressions, final verification, count/index documentation, push PR, passing CI, merge, remote content verification and cleanup. Do not switch or overwrite the shared active checkout.
+
+## v216 - 2026-11-08
+
+Target: full browser access to SolTUI tools through its shared registry, with usable workflow navigation, typed forms, tables/charts, CSV exports and document editing. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bdf1; branch feat/extension-tui-parity-20261108 based on origin/master. Shared checkout has active concurrent edits and MERGE_HEAD; do not touch it. Stele task creation outbox dcbde101. Recall specialist failed before execution because its fixed model is unsupported; MCP tools are absent.
+
+Steps: inventory in progress; workspace and native-session implementation pending; browser/unit verification pending; documentation, CI and delivery pending. Native transport currently kills process-local replay/job state after each request. Persist the host only while dashboard leases exist, multiplex requests, and never retry ambiguous calls. Preserve install defaults, existing order gates and archived Aero status. No live transactions or worker starts are authorized as verification.
 
 ## v215 - 2026-11-08
 

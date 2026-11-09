@@ -239,3 +239,17 @@ test('runBuildCheck: an unreachable host never reloads', async () => {
   assert.equal(await runBuildCheck({ store: new MemoryStore(), reload: () => reloads.push(1), soltui: down }), 'host-unreachable');
   assert.equal(reloads.length, 0);
 });
+
+test('runBuildCheck preserves dashboard session state until its lease ends', async () => {
+  reset();
+  const reloads = [];
+  const common = { store: new MemoryStore(), reload: () => reloads.push(1), hold: async () => {} };
+  await runBuildCheck({ ...common, soltui: hostReporting(H1) });
+  const host = { ...hostReporting(H2), busy: () => true };
+  assert.equal(await runBuildCheck({ ...common, soltui: host }), 'deferred-busy');
+  assert.equal(area.get('soltuiBuild').hash, H1, 'deferred update must not be forgotten');
+  assert.equal(reloads.length, 0);
+  host.busy = () => false;
+  assert.equal(await runBuildCheck({ ...common, soltui: host }), 'reloaded');
+  assert.equal(reloads.length, 1);
+});

@@ -86,6 +86,7 @@ key is used and nothing is signed.
 
 | Command | Arguments | Notes |
 | --- | --- | --- |
+| `soltuiSession` | `session`:string*, `active`:bool* | `POST` only. Renew/release a dashboard native-session lease; no TUI command executes. Node surfaces return `available:false` |
 | `soltuiCommands` | — | `GET`-able. The soltui command list as soltui's own envelope: `[{name, describe, params, read_only, long_running, requires_confirm}]` |
 | `soltuiCall` | `command`:string\*, `params`:json | `POST` only. Runs one soltui command by registry name and returns soltui's envelope `{ok, command, result, error}` unchanged under `result`. A `requires_confirm` command needs `confirm: true` inside `params`; soltui refuses (`forbidden`) without it. A missing or slow host is a `failed` or `timeout` envelope, still HTTP 200 |
 
