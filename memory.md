@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 305
+Version: 307
+Delta: v306 to v307; verify native-environment history and corrected workflow readiness in0.6.3.
+Delta: v305 to v306; repair installed CDP child PATH and workflow-label readiness.
 Delta: v304 to v305; finish native/source checks and committed discovery counts for release0.6.2.
 Delta: v303 to v304; implement persistent monitoring, idempotent paper orchestration and saved-vote chart tools.
 Delta: v302 to v303; add a persistent status/P&L/activity rail and one primary paper workflow.
@@ -24,6 +26,22 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v307 - 2026-11-09
+
+Runtime remediation is implemented: wallet_activity._cdp_query gives only its child a PATH containing the selected CDP executable's bin directory. Chrome's minimal environment can now resolve the /usr/bin/env node shebang. The parent environment, fixed read-only argv, credential handling and error redaction are unchanged. A real temporary executable/runtime subprocess regression reproduces and fixes the broken launch without Node installation or network. The real public reader was then verified under /usr/bin:/bin:/usr/sbin:/sbin: Base coverage available, Solana partial detail coverage explicitly reported, exit0. The original SELECT1 diagnostic is not valid CDP table SQL; a valid bounded base.transactions query proved the API itself was healthy.
+
+workflowButtonText now reports only the actual coordinator: Preparing while it runs, Paper monitoring ready when ready, otherwise Start / resume paper bots. An independently running global batch never claims the coordinator was requested. Batch phase/counts remain visible in the monitor. Release0.6.3;37/37 focused native tests,408/408 Node tests and26/26 browser e2e passed. Final native discovery1375 and total2770 are reflected in current docs. Follow-up source changes are limited to child environment, the explicit button wording, two regressions, version, docs and continuation records. Original PR166 already passed remote-master CI; its accepted feature work and all original workers/evidence remain intact.
+
+Independent installed verification now has a controlled path that does not touch the user's busy browser: actual Chrome Beta headless, actual main extension directory with the exact original extension id, fresh temporary browser profile, real nativeMessaging and a profile-only host manifest pointing at the unchanged authorized wrapper. Preflight verified0.6.2 and exactid without contacting the native host, then closed cleanly. After this follow-up merges, the verifier will load0.6.3, compare actual resource hashes, read real rail data and exercise one explicit paper workflow request with all old jobs/grid reused. It will close only its owned profile. Finish requiredchecks/merge, warm only the monitor's non-trading cache with new code, complete actual installed acceptance and update private final receipts. Do not re-open or restore user-owned tabs/helpers that the user closed. Stele taskede53db9 is still queued; recovery/Council canonical completions1082/1083 are queued986201f6/8dcb782c after transport closed during replay.
+
+## v306 - 2026-11-09
+
+PR166 mergedfba9238aeceb5235986ed54b5b4267e1659e298d after8requiredchecks; main tree exactly matched reviewedd1ccf5c. Own merged live-tools worktree/branch were removed and the three unrelated main files remain. Independent copied-source browser12/12 passed; actual user-owned helper/PiP appeared and closed while the user changed tabs, so the GUI verifier stopped interacting and accurately recorded partial installed identity capture. Pure actualmain live.rail read at15:32UTC was fresh:11eligible strategies/13horizonvotes, Council91364 running/flat/equity10000/waitingconfidence~4.94% from79samples, originalADAgridda7d73b04ef1 running with net+2.3691paperUSD/tworoundtrips; existing globalbatchbb8af1ac966b42d9ad3e20faca071fc1 forward_partial. Wallet activity returned8items but Base coverage was unavailable in the native worker.
+
+The runtime cause is reproduced: CDP's /usr/bin/env node launcher succeeds under the shell PATH, fails under /usr/bin:/bin:/usr/sbin:/sbin. Resolve only the child launcher's PATH to include the selected executable's bin directory; do not alter global environment or credential handling. Add a real temporary shebang subprocess regression. Also fix the main button's label: an independently running batch must not imply that the unrequested paper coordinator is running. Bind wording to explicit coordinator state, preserving the batch phase in the status details. Source changes stay in /Users/mitch/dev/solmargintrader-wt-live-runtime-01a1beca on fix/live-tools-runtime-01a1beca, release0.6.3, based on mergedmainfba9238. Original request remains prompt150; this is installed-acceptance remediation, not a new user request.
+
+Stele briefly reconnected: stale COMP-337 description was corrected to acknowledge separately armed manual Coinbase orders and paper-only monitoring. Offline recovery/Council tasks were created and claimed as TASK-1082/TASK-1083, then transport closed again; their verifiedPR165 completions are queued986201f6/8dcb782c. New runtime fix task is queuedede53db9. Current live-tools task creation877aa35e and knowledge writes remain pending; do not invent a task id if the failed create response is ambiguous. Final receipt /Users/mitch/.local/state/solmargintrader-session-01a1beca/live-tools-delivery.json and private memory are the authority for final merge/activation status. Remaining: implement two narrow fixes, focused tests/count/version/index/docs, merge follow-up PR, refresh only the non-trading read-model worker after main sync, verify actual main source with a separate controlled Chrome Beta profile and real native bridge, preserve user browser sessions and every original bot/producer worker.
 
 ## v305 - 2026-11-09
 
