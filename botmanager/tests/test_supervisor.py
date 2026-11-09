@@ -209,8 +209,16 @@ class SupervisorTests(unittest.TestCase):
             run.assert_not_called()
         self.assertFalse(status["installed"])
         self.assertFalse(absent.exists())
-        with self.assertRaises(ManagerError):
+        # Exercise a source checkout even when the suite imports an installed wheel.
+        with (
+            patch(
+                "botmanager.__file__",
+                str(self.home / "checkout" / "botmanager" / "__init__.py"),
+            ),
+            self.assertRaises(ManagerError) as caught,
+        ):
             installed_executable()
+        self.assertEqual(caught.exception.code, "stable_install_required")
 
     def test_process_crash_before_and_after_commit(self):
         import multiprocessing
