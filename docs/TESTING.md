@@ -2,18 +2,24 @@
 
 ## Standalone bot manager
 
-The `botmanager/` package has its own stdlib unittest suite and CI job. Install the
-package into an isolated environment, then run from the repository root:
+The `botmanager/` package has its own unittest suite and CI job. Install both
+regular local projects into an isolated Python 3.13 environment, then run from the
+repository root:
 
 ```bash
+python -m pip install ./backtester ./botmanager
 python -m unittest discover -s botmanager/tests -t botmanager
 ```
 
 The suite uses temporary `SOLBOT_HOME` directories. CLI reads must leave missing
 storage absent; defaults, pinned configurations and separate bot identities must
 survive a fresh process. Owner-integration fixtures exercise actual HTTP requests
-without starting or changing production bots. Current runtime and venue limits are
-listed in `botmanager/README.md`; tests do not establish a profitable trading edge.
+without starting or changing production bots. Runtime tests also exercise separate
+instances, crash-before/after commit, stale generations, stopped intent, dead/hung
+workers, snapshot integrity and canonical simulator parity. launchctl fixture tests
+do not establish installed service behavior; that remains an independent gate.
+Current runtime and venue limits are listed in `botmanager/README.md`; tests do not
+establish a profitable trading edge.
 
 ## Existing component suites
 

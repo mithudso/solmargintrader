@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 330
+Version: 331
+Delta: v330 to v331; verify persistent runtime source and reserve safe stop capacity.
 Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime.
 Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
 Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
@@ -946,3 +947,13 @@ TASK1108 is claimed for persistent concurrent reference-paper runtime. Use the a
 The new runtime must separate spec/run/owner/generation, persist stopped intent, fence concurrent workers and stale writes, preserve checkpoint/cursor/lots, bound queues/workers, and report data progress separately from process heartbeat. Minimum grid replay uses explicit Coinbase reference-paper identity and costs; it cannot certify Jupiter SOL/USDC or assume a stablecoin peg. No production service, bot, recorder, key or browser change is authorized by the runtime tests. Installed acceptance will use isolated state after source review.
 
 Remaining: implement task3, meaningful crash/stop/parity tests, independent review/fixes, stable installation/behavior acceptance, docs/index/CI and PR delivery. Continue milestones3–8 afterward; no profitability or unsupported live capability may be invented. Recovery ledger and briefs remain /Users/mitch/dev/solmargintrader-wt-01a1c189/.superpowers/sdd/2026-11-09-bot-manager/.
+
+## v331 — 2026-11-09 — runtime source gate approved
+
+Task3 implementatione0bcd73 and fix4b22bb1 implement manager0.2.0 plus canonical solmargintrader-backtester0.1.0. The97manager tests,87unchanged simulator/card checks, scoped Ruff/format and initial wheel builds pass. Independent review found4Important gaps and scoped re-review approved all fixes:100reserved safety-stop receipts protect bounded idempotency, fragmented socket I/O has one monotonic deadline, service activation/removal is reconciled against exact launchd registration, and EOF restart restores waiting without fake evaluation. Canonical simulator source is unchanged. Current desired-running admission counts pending plus active and caps4;100instances can be registered. Prefix2048bars/100rungs, immutableinput EOF remains a reference-data limit.
+
+The task3 source checkpoint e0bcd73 is pushed on agent-01a1c189-m2; fix4b22bb1 and parent CI/docs integration are local until the next recoverable checkpoint. Root CI installs both regular local projects together. Root docs describe explicit service lifecycle and reference-only economics. Source still defaults paper/disarmed; no newstrategy live path, recorder, optimizer or browser owner was started. Stable /Users/mitch/.venvs/solbot now has regular manager0.2.0 and canonical backtester0.1.0 installations. Independent isolated runtime/service/recording acceptance is active; no production state/service was changed.
+
+Pip dry-run resolved direct localpackages plus NumPy2.5.4, Pandas3.1.1, python-dateutil4.0.0 andtzdata2026.6. Dependency-reviewer returned external riskUNKNOWN for each exactcoordinate because Endor tools are unavailable; no lookup or approval was fabricated. Installed qualification must record these actual versions. The final actual-recording descriptor is in the ignored task3report/workspace; source snapshot7ff131f8f67ac5e20bcabd9dbc35d98e32ff20fc12e861487f86c5fe66b41fe8 binds its engine/NumPy identity. Source validation is not installed acceptance.
+
+Remaining: final whole-milestone review (including deferred expected annualization/oldSQLite warning noise), current noneditable installation, independent isolated actual daemon/launchd/recording acceptance, docs/index gates, final-head CI and PRmerge. Runtime source task gate is complete but TASK1108 is not delivered. Follow the SDD ledger; do not repeat accepted reviews/tests without a changed surface or concrete failure. Continue milestones3–8 after this release.

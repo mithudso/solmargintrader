@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T21:09:56+00:00",
+  "generatedAt": "2026-11-09T21:59:38+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1653,
+      "matchingFiles": 1655,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1386,
+      "matchingFiles": 1393,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 627,
+      "matchingFiles": 636,
       "shown": 30,
       "files": [
         {
@@ -730,7 +730,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 170
+          "hits": 175
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 574,
+      "matchingFiles": 577,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 481,
+      "matchingFiles": 486,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 202
+          "hits": 203
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
