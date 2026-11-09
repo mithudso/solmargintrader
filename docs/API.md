@@ -174,3 +174,10 @@ applies caps incrementally so a batch cannot collectively breach a cap each memb
 
 Rails **fail closed**: a missing or NaN state field is neutralised to a safe value and reported
 rather than silently disabling its rail.
+
+### Live prediction display
+
+`forwardtest.predictions` returns latest-call issue/finish timestamps per horizon, the eligible
+aggregate and its voting policy. Shared `settings.save` fields `live_vote_min_accuracy` (0–100) and
+`live_vote_min_resolved` (positive integer) control eligibility in both live displays. See
+[the score contract](LIVE-PREDICTION-SCORE.md).

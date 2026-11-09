@@ -1,9 +1,13 @@
 # Work continuation
 
-Version: 233
-Delta: v232 to v233; preserve optimizer baselines and confirmed executor findings.
+Version: 238
+Delta: v235 to v238; preserve both concurrent workflow histories.
 
-## v233 - 2026-11-08
+## v238 - 2026-11-08
+
+Integrated completed live-score PR146 while optimizer diagnostics continue. Preserved both prompt and memory histories, renumbering only the new local optimizer entries. Current source includes origin/master 2ca3041. Already-reviewed sources are unchanged; pending commands, pricefeed, browser panel and config reviews use the integrated version. Initial test baselines were dec4b5a; rerun changed package checks after remediation. The shared checkout and active sessions were untouched. Continue from the external optimizer state and scope receipts.
+
+## v237 - 2026-11-08
 
 Optimizer inventory and baseline complete; per-file review is in progress in /Users/mitch/dev/solmargintrader-wt-01a1be31. Eight of 50 primary files reviewed so far. Persisted review JSON, exact hashes, pass rows and remaining files live under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo. Use state.json, scope.json and findings-iter1.json there. Do not mistake the 50 selected candidates for completed reviews. No product edits yet; collect all first-iteration reviews before remediation.
 
@@ -11,11 +15,37 @@ Baseline: extension 369 pass; executor 202 pass (5 network deselected); liquidit
 
 Confirmed initial findings include wrapped-SOL conservation and rent accounting; final-RPC kill/quote-age staleness; missing failed-transaction fees; unchecked short journal writes; unsafe generic-RPC rejection classification; quote threshold/slippage inconsistency; credential-bearing rpc_host status; URL prefix validation; custom-parent chmod; nonfinite persisted gates and concurrent gate record loss. Each has a per-file evidence artifact. Reproduce with committed failing tests, then correct and verify. The reserve precheck also falsely blocks replenishing native SOL. Stele CLI reads work, but no write MCP is available. Tracking writes remain queued: ca66e7c8, 3a873879, 24fcdf24, c2a1c757, 44c856e1, a6951157, cae12367, 13ac6d8c, c3531170. Claim is queued on task creation.
 
-## v232 - 2026-11-08
+## v236 - 2026-11-08
 
 Target: run code-deep-optimizer against risk-ranked repository sources. Worktree /Users/mitch/dev/solmargintrader-wt-01a1be31, branch agent-01a1be31, base dec4b5a. Preserve the active shared checkout and its three untracked guides. Keep live-order defaults disarmed/dry-run, preserve ambiguous-submit refusal, and keep archived liquidity disabled. No transaction or service restart is needed for verification. Prior audit ended BLIND-AUDIT-DISSENT; current scope must be explicit. Stele creation outbox ca66e7c8. The fixed-model recall specialist failed before execution; Stele MCP tools are absent.
 
 Progress: inventory in progress; per-file review and reproduction pending; remediation and verification pending; PR delivery pending. Detected checks: Python unittest for backtester/mongo and mapped SolTUI; extension npm test, offline dryrun, e2e; executor/liquidity Ruff and offline pytest; scripts/check_docs.py and offline index freshness. Full SolTUI suite is explicit opt-in and is not run. No independent held-out benchmark exists, so empirical champion promotion is inapplicable. Run receipts: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo.
+
+## v235 - 2026-11-08
+
+Aggregate live prediction score and minimum-voting-score work is implemented in both surfaces. PR https://github.com/mithudso/solmargintrader/pull/146 is the delivery receipt. The display uses shared policy vectors, equal strategy means, -100..100 scores, 20/60 label thresholds, 60% accuracy and 20 resolved eligibility defaults, actual latest-call expiry, and immutable right-anchored tick slots. These controls are separate from paper min_confidence=0.80 and do not change training/execution. No task diff touches forwardtest.py or simulation.py relative to the integrated default branch.
+
+Final product acceptance passed: independent Chrome and headless Textual verified all five colors/labels, weak/sparse/stale/future exclusions, physical eight-column TUI movement, immutable history, missing-coin reset and obsolete success/error suppression. Integrated Python 106/106; extension 372/372; Chrome real-host 24/24 and fixture 23/23. The native installer regression passes after resolving the merge (its earlier error occurred while source still had conflict markers). Documentation counts are 1211 SolTUI and 2526 total. Full TUI suite remains optional and was not run.
+
+Current head includes delivered paper-control PRs 142/145; both source and histories were preserved. Remaining delivery gates: offline documentation/index refresh, final backtester/index checks, final-head CI, merge and cleanup. No order, signing, trainer/service start, user configuration update or existing-profile reload occurred during verification. Shared checkout is owned by another live session; leave it intact. Stele task create queued as 2f9370e6; new bug lessons queued as f07021b5, 65b7724f, 9397d749. Earlier checkpoints are historical.
+
+## v234 - 2026-11-08
+
+Resumed the aggregate live score and minimum-voting-score request after interruption. Retained the checkpoint 947f311 and merged delivered PRs 142/145 without changing their fee/leverage/short/confidence behavior. Voting accuracy/sample floors remain display-only and separate from the owner-confirmed paper min_confidence=0.80. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; shared checkout is active elsewhere and must not be touched.
+
+Verified before integration: 372 extension tests, 15 focused Python/UI tests and 24 real-host /23 fixture-host browser checks. Independent review verified the physical eight-column TUI shift and found coin-switch stale state; those view-reset fixes are implemented. Remaining: guard obsolete browser failures, bind eligibility counts/accuracy to the same latest trial as its direction, rerun independent acceptance after merge resolution, refresh counts/indexes, push PR, wait for final CI and merge. Stele task create outbox 2f9370e6; decision writes a83639ac, dbd594d9, 5d4bb1e8.
+
+## v233 - 2026-11-08
+
+Owner added: strategies need a minimum prediction score to vote. Use saved live_vote_min_accuracy=60.0 and live_vote_min_resolved=20 defaults. Require both the strategy-wide forward record and the voted horizon to meet these floors; keep excluded rows visible. Controls in dashboard and Signal Live save through settings.save. Ratings remain informational agreement. Completed: backend snapshot with latest-call expiry; shared Python/JS policy vectors; both headers and immutable score tapes; 372 Node tests and 15 focused Python/UI tests passed before final browser-regression expansion. Remaining: independent acceptance, full relevant checks, documentation/index updates and PR delivery.
+
+## v232 - 2026-11-08
+
+Target: add the same aggregate signed score and five-level colored label above live-price and prediction views in the dashboard and TUI. Preserve each tick score as observed; append on fresh source ticks and scroll left with the plotted window. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; branch feat/live-aggregate-score-20261108; base origin/master 2fc1845. Preserve the shared checkout untracked guides and other sessions. Stele task creation queued as 2f9370e6.
+
+Plan: inspect the prediction and chart data contracts; implement one read-only backend aggregation plus matching score tapes; test Python logic, headless TUI and real Chrome; refresh docs/indexes and deliver through CI/PR/merge. No trading, training, worker starts or historical result rewrites.
+
+Decision: use equal strategy weights. Within each strategy average its current UP=+1, DOWN=-1, FLAT=0 horizon votes; average strategies and multiply by 100. Ratings: Strong Buy >=60, Buy >=20, Flat between -20 and 20, Sell <=-20, Strong Sell <=-60. This is directional agreement, not an accuracy or success probability. Missing/stale/future-dated evidence produces an unavailable gray Flat instead of a made-up zero. Read actual latest call/expiry per strategy and horizon in a separate display module: do not edit forwardtest.py, whose whole-file hash partitions training evidence. Annotate only new recorder timestamps, with the score known then; never backfill cached prices with a later score.
 
 ## v231 - 2026-11-08
 

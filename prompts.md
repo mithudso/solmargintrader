@@ -1,12 +1,30 @@
 # Prompt history
 
-Version: 128
-Delta: v127 to v128; record repository deep code optimizer request.
+Version: 131
+Delta: v130 to v131; preserve both concurrent workflow histories.
+
+## v131 - 2026-11-08
+
+```text
+Run the deep code optimizer on this repo
+```
+
+## v130 - 2026-11-08
+
+```text
+resume
+```
+
+## v129 - 2026-11-08
+
+```text
+Make the strategies have a minimum prediction score to be allowed to vote.
+```
 
 ## v128 - 2026-11-08
 
 ```text
-Run the deep code optimizer on this repo
+In both the chrome extension and the TUI at the top of the live price and forward predictions tables include a aggregate score and a green Strong Buy, Buy, grey Flat,  red Sell, Strong Sell. And for for every tick put the buy score at the bottom of the chart, and move it left as the tick progresses.
 ```
 
 ## v127 - 2026-11-08

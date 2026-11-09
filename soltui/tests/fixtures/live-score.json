@@ -1,0 +1,668 @@
+[
+  {
+    "name": "no evidence",
+    "now": 150,
+    "rows": [],
+    "policy": {},
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "unanimous buy",
+    "now": 150,
+    "rows": [
+      {
+        "label": "a",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 100,
+      "label": "Strong Buy",
+      "color": "green",
+      "strategies": 1,
+      "votes": 1
+    }
+  },
+  {
+    "name": "unanimous sell",
+    "now": 150,
+    "rows": [
+      {
+        "label": "a",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": -100,
+      "label": "Strong Sell",
+      "color": "red",
+      "strategies": 1,
+      "votes": 1
+    }
+  },
+  {
+    "name": "buy boundary",
+    "now": 150,
+    "rows": [
+      {
+        "label": "u0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "u1",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "u2",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d1",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 20,
+      "label": "Buy",
+      "color": "green",
+      "strategies": 5,
+      "votes": 5
+    }
+  },
+  {
+    "name": "strong buy boundary",
+    "now": 150,
+    "rows": [
+      {
+        "label": "u0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "u1",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "u2",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "u3",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 60,
+      "label": "Strong Buy",
+      "color": "green",
+      "strategies": 5,
+      "votes": 5
+    }
+  },
+  {
+    "name": "sell boundary",
+    "now": 150,
+    "rows": [
+      {
+        "label": "u0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "u1",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d1",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d2",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": -20,
+      "label": "Sell",
+      "color": "red",
+      "strategies": 5,
+      "votes": 5
+    }
+  },
+  {
+    "name": "strong sell boundary",
+    "now": 150,
+    "rows": [
+      {
+        "label": "u0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d1",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d2",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d3",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": -60,
+      "label": "Strong Sell",
+      "color": "red",
+      "strategies": 5,
+      "votes": 5
+    }
+  },
+  {
+    "name": "balanced",
+    "now": 150,
+    "rows": [
+      {
+        "label": "u0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "d0",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 0,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 2,
+      "votes": 2
+    }
+  },
+  {
+    "name": "strategy weights do not depend on horizon coverage",
+    "now": 150,
+    "rows": [
+      {
+        "label": "four-up",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200,
+        "pred_5m": "UP",
+        "acc_5m": 80,
+        "resolved_5m": 40,
+        "issued_5m": 100,
+        "expires_5m": 200,
+        "pred_10m": "UP",
+        "acc_10m": 80,
+        "resolved_10m": 40,
+        "issued_10m": 100,
+        "expires_10m": 200,
+        "pred_30m": "UP",
+        "acc_30m": 80,
+        "resolved_30m": 40,
+        "issued_30m": 100,
+        "expires_30m": 200
+      },
+      {
+        "label": "one-down",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 0,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 2,
+      "votes": 5
+    }
+  },
+  {
+    "name": "strategy accuracy floor",
+    "now": 150,
+    "rows": [
+      {
+        "label": "weak",
+        "accuracy": 59,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "good",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": -100,
+      "label": "Strong Sell",
+      "color": "red",
+      "strategies": 1,
+      "votes": 1
+    }
+  },
+  {
+    "name": "horizon accuracy floor",
+    "now": 150,
+    "rows": [
+      {
+        "label": "weak",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 59,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "horizon sample floor",
+    "now": 150,
+    "rows": [
+      {
+        "label": "lucky",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 19,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "exact accuracy and sample floor",
+    "now": 150,
+    "rows": [
+      {
+        "label": "a",
+        "accuracy": 60,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 60,
+        "resolved_1m": 20,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 100,
+      "label": "Strong Buy",
+      "color": "green",
+      "strategies": 1,
+      "votes": 1
+    }
+  },
+  {
+    "name": "future calls do not vote",
+    "now": 150,
+    "rows": [
+      {
+        "label": "future",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 151,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "expired boundary does not vote",
+    "now": 150,
+    "rows": [
+      {
+        "label": "old",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 150
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "missing timing is unavailable",
+    "now": 150,
+    "rows": [
+      {
+        "label": "missing",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": null,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "duplicate strategy votes once",
+    "now": 150,
+    "rows": [
+      {
+        "label": "a",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      },
+      {
+        "label": "a",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "DOWN",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {},
+    "expected": {
+      "score": 100,
+      "label": "Strong Buy",
+      "color": "green",
+      "strategies": 1,
+      "votes": 1
+    }
+  },
+  {
+    "name": "owner can raise voting floor",
+    "now": 150,
+    "rows": [
+      {
+        "label": "a",
+        "accuracy": 80,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 80,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {
+      "min_accuracy": 90,
+      "min_resolved": 20
+    },
+    "expected": {
+      "score": null,
+      "label": "Flat",
+      "color": "gray",
+      "strategies": 0,
+      "votes": 0
+    }
+  },
+  {
+    "name": "owner can lower voting floor",
+    "now": 150,
+    "rows": [
+      {
+        "label": "a",
+        "accuracy": 55,
+        "resolved": 80,
+        "pred_1m": "UP",
+        "acc_1m": 55,
+        "resolved_1m": 40,
+        "issued_1m": 100,
+        "expires_1m": 200
+      }
+    ],
+    "policy": {
+      "min_accuracy": 55,
+      "min_resolved": 20
+    },
+    "expected": {
+      "score": 100,
+      "label": "Strong Buy",
+      "color": "green",
+      "strategies": 1,
+      "votes": 1
+    }
+  }
+]
