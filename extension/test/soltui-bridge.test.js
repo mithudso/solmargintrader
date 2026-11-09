@@ -278,3 +278,69 @@ test('node transport: a host that crashes, hangs or sends junk is a failed or ti
   const junk = await soltuiCall({ soltui: nodeTransport({ SOLTUI_FAKE_MODE: 'garbage' }) }, { command: 'demo.echo', timeoutMs: 3000 });
   assert.equal(junk.ok, false);
 });
+
+test('dashboard lease retains one host and multiplexes out-of-order replies', async () => {
+  const port = fakePort();
+  let connects = 0, sequence = 0;
+  const transport = createNativeTransport({ connect: () => { connects++; return port; }, newId: () => `q${++sequence}` });
+  transport.session('tab-a', true);
+  transport.session('tab-b', true);
+  const first = transport.request({ op: 'call', command: 'paper.start' }, { timeoutMs: 1000 });
+  const second = transport.request({ op: 'call', command: 'backtest.status' }, { timeoutMs: 1000 });
+  assert.equal(connects, 1);
+  port.msg[0]({ id: 'q2', response: { ok: true, result: 'status' } });
+  assert.equal((await second).result, 'status');
+  assert.equal(port.disconnected, false);
+  port.msg[0]({ id: 'q1', response: { ok: true, result: 'replay' } });
+  assert.equal((await first).result, 'replay');
+  transport.session('tab-a', false);
+  assert.equal(port.disconnected, false, 'another dashboard still owns the session');
+  transport.session('tab-b', false);
+  assert.equal(port.disconnected, true);
+  assert.equal(transport.busy(), false);
+});
+
+test('dashboard timeout never retries or closes another in-flight request', async () => {
+  const port = fakePort();
+  let id = 0;
+  const transport = createNativeTransport({ connect: () => port, newId: () => String(++id) });
+  transport.session('tab', true);
+  const slow = transport.request({ op: 'call', command: 'jupiter.order_submit' }, { timeoutMs: 5 });
+  const status = transport.request({ op: 'call', command: 'backtest.status' }, { timeoutMs: 1000 });
+  await assert.rejects(slow, /outcome is unknown/);
+  assert.equal(port.sent.length, 2, 'no retry');
+  assert.equal(port.disconnected, false);
+  port.msg[0]({ id: '2', response: { ok: true } });
+  assert.equal((await status).ok, true);
+  transport.session('tab', false);
+});
+
+test('a disconnected session rejects all calls and only an explicit new request reconnects', async () => {
+  const ports = [fakePort(), fakePort()];
+  let connects = 0, id = 0;
+  const transport = createNativeTransport({ connect: () => ports[connects++], lastError: () => '', newId: () => String(++id) });
+  transport.session('tab', true);
+  const a = transport.request({ op: 'list' }, { timeoutMs: 1000 });
+  const b = transport.request({ op: 'ping' }, { timeoutMs: 1000 });
+  ports[0].disc[0]();
+  await assert.rejects(a, /disconnected/);
+  await assert.rejects(b, /disconnected/);
+  assert.equal(connects, 1);
+  const retry = transport.request({ op: 'ping' }, { timeoutMs: 1000 });
+  ports[1].msg[0]({ id: '3', response: { ok: true } });
+  await retry;
+  assert.equal(transport.session('tab', true).generation, 2);
+  transport.session('tab', false);
+});
+
+test('crashed dashboard leases expire and release an idle host', async () => {
+  const port = fakePort();
+  const transport = createNativeTransport({ connect: () => port, newId: () => 'x', leaseMs: 10 });
+  transport.session('tab', true);
+  const req = transport.request({ op: 'ping' }, { timeoutMs: 1000 });
+  port.msg[0]({ id: 'x', response: { ok: true } });
+  await req;
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(port.disconnected, true);
+  assert.equal(transport.busy(), false);
+});

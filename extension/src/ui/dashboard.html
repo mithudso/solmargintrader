@@ -12,6 +12,16 @@
         <img src="../../icons/icon-48.png" alt="" />
         <div><strong>SolMarginTrader</strong><small id="version" title="Extension version from manifest.json"></small></div>
       </div>
+      <a class="nav-link" href="#soltui/now">Now</a>
+      <a class="nav-link" href="#soltui/signal">Signal</a>
+      <a class="nav-link" href="#soltui/research">Research &amp; replay</a>
+      <a class="nav-link" href="#soltui/bots">Bots &amp; prices</a>
+      <a class="nav-link" href="#soltui/experiments">Experiments</a>
+      <a class="nav-link" href="#soltui/money">Money &amp; orders</a>
+      <a class="nav-link" href="#soltui/library">Library &amp; editor</a>
+      <a class="nav-link" href="#soltui/settings">TUI settings</a>
+      <a class="nav-link" href="#soltui/archive">Archive</a>
+      <div class="nav-sep"></div>
       <a class="nav-link" href="#overview">Overview</a>
       <a class="nav-link" href="#holdings">Holdings</a>
       <a class="nav-link" href="#pnl">Profit &amp; loss</a>
@@ -35,6 +45,61 @@
           <button id="scanNow" type="button" class="primary">Scan now</button>
         </div>
       </div>
+
+      <section id="view-soltui" class="view" data-view="soltui" hidden>
+        <div class="view-head">
+          <div><h1>Trading &amp; research workspace</h1><p>All SolTUI tools, using the same settings, saved results and execution gates.</p></div>
+          <button id="soltuiReload" type="button">Reconnect / reload tools</button>
+        </div>
+        <p id="soltuiStatus" class="note" role="status"></p>
+        <div id="soltuiJobs" class="row" aria-live="polite"></div>
+        <div id="soltuiHistory" class="row" aria-label="Recent tool results"></div>
+        <div id="soltuiNowSummary" class="kpis" aria-label="Process status"></div>
+        <div class="card" id="soltuiLive">
+          <div class="card-head"><h2>Live price &amp; forward predictions</h2><div class="row">
+            <label>Coin <input id="soltuiLiveAsset" value="SOL" size="8" aria-label="Live price coin" /></label>
+            <button id="soltuiLiveRefresh" type="button">Refresh live view</button>
+            <label><input id="soltuiLiveStream" type="checkbox" /> Follow stream</label>
+          </div></div>
+          <p id="soltuiLiveStatus" class="note">Reads the existing recorder and saved predictions. Does not start a recorder or trainer.</p>
+          <div id="soltuiLiveChart"></div>
+          <div id="soltuiLivePredictions"></div>
+        </div>
+        <div class="card">
+          <div class="filters">
+            <label>Workspace<select id="soltuiWorkspace" aria-label="Workspace"></select></label>
+            <label>Find tool<input id="soltuiSearch" type="search" placeholder="Search names and descriptions" /></label>
+          </div>
+          <p id="soltuiWorkspaceDetail" class="note"></p>
+        </div>
+        <div class="workspace-grid">
+          <div class="card tool-list" id="soltuiTools" aria-label="Workspace tools"></div>
+          <div class="card" id="soltui">
+            <div class="card-head"><h2>Tool</h2><label>All tools <select id="soltuiCommand" aria-label="soltui command"></select></label></div>
+            <p id="soltuiDescribe" class="note"></p>
+            <form id="soltuiForm" class="form" autocomplete="off"></form>
+            <p id="soltuiRunStatus" class="note" role="status"></p>
+            <label class="poll-control"><input id="soltuiPoll" type="checkbox" disabled /> Refresh this status every 10 seconds</label>
+            <p class="note">Actions run only when you press their button. Closing every dashboard ends in-memory replay and session jobs; detached trainers and saved evidence remain on disk.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2 id="soltuiResultLabel">Results</h2><button id="soltuiExportJson" type="button" class="small">Export JSON</button></div>
+          <div id="soltuiNext" class="row"></div>
+          <div id="soltuiTables"></div>
+          <details><summary>Raw response</summary><pre id="soltuiResult" aria-live="polite"></pre></details>
+          <details><summary>Selected row</summary><pre id="soltuiSelection"></pre></details>
+        </div>
+        <div class="card" id="soltuiEditorCard" hidden>
+          <div class="card-head"><h2 id="soltuiEditorPath">Document editor</h2><div class="row">
+            <button id="soltuiSave" type="button" class="primary">Save document</button>
+            <button id="soltuiEditorReload" type="button">Reload document</button>
+            <button id="soltuiEditorExport" type="button">Export draft</button>
+          </div></div>
+          <textarea id="soltuiEditor" rows="24" spellcheck="false" aria-label="Document text"></textarea>
+          <p id="soltuiEditorStatus" class="note" role="status"></p>
+        </div>
+      </section>
 
       <!-- ================================================================ Overview -->
       <section id="view-overview" class="view" data-view="overview">
@@ -328,22 +393,6 @@
             <input name="apiKey" type="password" placeholder="x-api-key" autocomplete="off" />
             <button type="submit">Save key</button>
           </form>
-        </div>
-        <div class="card" id="soltui">
-          <div class="card-head"><h2>SolTUI console</h2></div>
-          <p class="note">
-            The same commands as the SolTUI app, <code>soltui call</code> and the soltui API, run through
-            the <code>com.mitchhudson.soltui</code> native host. Each returns soltui's own response
-            unchanged. A command that removes a safety stop asks for confirmation here and again in soltui.
-          </p>
-          <div class="row">
-            <select id="soltuiCommand" aria-label="soltui command"></select>
-            <button id="soltuiReload" type="button">Reload list</button>
-          </div>
-          <p id="soltuiStatus" class="note" role="status"></p>
-          <p id="soltuiDescribe" class="note"></p>
-          <form id="soltuiForm" class="form" autocomplete="off"></form>
-          <pre id="soltuiResult" aria-live="polite"></pre>
         </div>
         <!-- Licence display obligations (SDK & API License Agreement 8.4 and 2.3). -->
         <div class="card">

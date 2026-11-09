@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T02:04:47+00:00",
+  "generatedAt": "2026-11-09T02:12:50+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1596,
+      "matchingFiles": 1599,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 562,
+      "matchingFiles": 564,
       "shown": 30,
       "files": [
         {
@@ -817,6 +817,10 @@
           "hits": 36
         },
         {
+          "path": "extension/src/ui/ui.css",
+          "hits": 34
+        },
+        {
           "path": "backtester/README.md",
           "hits": 31
         },
@@ -831,10 +835,6 @@
         {
           "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
           "hits": 30
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 27
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -911,6 +911,10 @@
           "hits": 33
         },
         {
+          "path": "extension/src/ui/ui.css",
+          "hits": 33
+        },
+        {
           "path": "research/STRATEGIES.md",
           "hits": 32
         },
@@ -920,10 +924,6 @@
         },
         {
           "path": "docs/TRADINGVIEW-CARD-FILES.md",
-          "hits": 28
-        },
-        {
-          "path": "extension/src/ui/ui.css",
           "hits": 28
         },
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 404,
+      "matchingFiles": 408,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 137,
+      "matchingFiles": 139,
       "shown": 30,
       "files": [
         {

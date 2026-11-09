@@ -7,6 +7,7 @@ import json
 import os
 import stat
 import struct
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -158,6 +159,41 @@ class NativeFramingTests(unittest.TestCase):
             self.assertEqual(len(replies[1]["response"]["result"]), len(commands.COMMANDS))
             for r in replies:
                 self.assertEqual(set(r["response"]), {"ok", "command", "result", "error"})
+
+    def test_status_can_cancel_a_long_call_without_losing_the_shared_runtime(self) -> None:
+        started = threading.Event()
+        cancelled = threading.Event()
+
+        def long_job(ctx, params):
+            ctx.runtime.session_label = "retained"
+            started.set()
+            if not cancelled.wait(3):
+                raise RuntimeError("status/cancel was blocked behind the long job")
+            return {"cancelled": True}
+
+        def cancel_job(ctx, params):
+            if not started.wait(3):
+                raise RuntimeError("long job never started")
+            retained = ctx.runtime.session_label
+            cancelled.set()
+            return {"retained": retained}
+
+        with World(), mock.patch.dict(commands.COMMANDS, {
+            "test.long": commands.Command("test.long", "d", long_job, long_running=True),
+            "test.cancel": commands.Command("test.cancel", "d", cancel_job),
+        }):
+            source = io.BytesIO(self.frame({"id": "job", "op": "call", "command": "test.long"})
+                                + self.frame({"id": "cancel", "op": "call", "command": "test.cancel"}))
+            output = io.BytesIO()
+            native_host.serve(source, output)
+            output.seek(0)
+            replies = {}
+            while (body := native_host.read_frame(output)) is not None:
+                reply = json.loads(body)
+                replies[reply["id"]] = reply["response"]
+            self.assertTrue(replies["job"]["ok"], replies)
+            self.assertEqual(replies["cancel"]["result"], {"retained": "retained"})
+            self.assertTrue(replies["job"]["result"]["cancelled"])
 
     def test_bad_requests_get_envelopes(self) -> None:
         with World():

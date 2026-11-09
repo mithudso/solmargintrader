@@ -1,9 +1,25 @@
 # Prompt history
 
-Version: 121
-Delta: v120 to v121; record request for a Gemini handoff.
-Version: 122
-Delta: v121 to v122; record chart timestamps, price numbers and prediction streaming update request.
+Version: 125
+Delta: v124 to v125; retain historical Gemini handoff request from PR 135.
+
+## v125 - 2026-11-08 (historical request imported from PR 135)
+
+```text
+Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
+```
+
+## v124 - 2026-11-08
+
+```text
+Most of the extension's usage will likely be in the dashboard.
+```
+
+## v123 - 2026-11-08
+
+```text
+The chrome extension here: /Users/mitch/dev/solmargintrader/extension has been ignored for a long time, update it so it has all of the same tools and functionality as the TUI.
+```
 
 ## v122 - 2026-11-08
 
@@ -14,7 +30,6 @@ Add timestamps and price numbers to the chart. And schedule the strategies to up
 ## v121 - 2026-11-08
 
 ```text
-Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
 In the soltui, the forward test's data doesn't seem to be saved through restarts. Make sure all of the data is recorded to disk as it arrives.
 ```
 
