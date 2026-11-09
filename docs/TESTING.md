@@ -1,5 +1,22 @@
 # Testing
 
+## Standalone bot manager
+
+The `botmanager/` package has its own stdlib unittest suite and CI job. Install the
+package into an isolated environment, then run from the repository root:
+
+```bash
+python -m unittest discover -s botmanager/tests -t botmanager
+```
+
+The suite uses temporary `SOLBOT_HOME` directories. CLI reads must leave missing
+storage absent; defaults, pinned configurations and separate bot identities must
+survive a fresh process. Owner-integration fixtures exercise actual HTTP requests
+without starting or changing production bots. Current runtime and venue limits are
+listed in `botmanager/README.md`; tests do not establish a profitable trading edge.
+
+## Existing component suites
+
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 961 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1384 tests (~840s, optional)

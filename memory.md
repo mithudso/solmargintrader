@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 315
+Version: 318
+Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts.
+Delta: v316 to v317; record supplemental UI requirements and current foundation review.
+Delta: v315 to v316; start approved implementation in a collision-free worktree.
 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery.
 Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
@@ -777,3 +780,26 @@ Completed: original prompt retained verbatim; final optimized prompt (1114 estim
 Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/specs/2026-11-09-bot-manager-design.md; docs/superpowers/plans/2026-11-09-bot-manager.md. Proposed architecture/defaults remain proposals; actual Solana certification, multi-instance engine, learning and browser bridge are not implemented. Existing live restrictions remain. No live/installed acceptance claim applies to documents.
 
 Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.
+
+
+## EPIC-1106 — approved bot manager implementation
+
+Owner request: Yes, implement it. Design acceptance covers PR171 spec/plan. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c189, branch agent-01a1c189, baseline7846848. Other sessions hold the primary checkout; never switch/edit it. Milestone tasks1107–1114 cover the eight releases; task1107 active. Durable SDD ledger: .superpowers/sdd/2026-11-09-bot-manager/progress.md (scratch), authoritative continuation in Git and this file. Apply skill reviews per task and independent installed acceptance before claiming installed behavior. Existing services, recorder, optimizer, limits and private keys are untouched.
+
+Remaining: implement CLI/defaults/legacy controls, runtime, data/strategies, blind research, diagnostics, learning, browser integration and gated executor boundary; test/review/deliver each independent milestone. Real forward-soak elapsed time and unavailable venue/verifier evidence remain real gates, never fabricated completion.
+
+
+## Supplemental UI handoff during TASK-1107
+
+Owner supplied PR172 (f2d099e) UI design/plan/validation and asked to continue manager implementation with manager authority taking precedence. Read merged artifacts via origin/master because the private branch predates that merge; snapshot copies are in this plan's SDD workspace. Downloaded HTML is illustrative and was inspected; its prototype49 browser checks are not production manager evidence.
+
+Current milestone incorporates stable spec UUID distinct from runtime/owner/generation, config revision and strict saved provenance; versioned status --why with independent lifecycle/input/evidence/submission states and null unknown financial values; explicit capability and receipt schema; legacy family slot guards across markets. Later runtime/health/accounting/evidence/learning/browser milestones implement actual values and behavior. Manager registry remains Grid,DCA,Trend,Momentum,Arbitrage, with Council external-only; no prototype list/schema copying. Graphical work stays in planned integration phase.
+
+Foundation committed be12a00+2381777;20 tests pass on Python3.13, lint/format pass, installed wheel console probe passes outside checkout with isolated SOLBOT_HOME and source bytes matching. Independent reviewer found DB-row identity mismatch, invalid saved override/provenance validation and related exact scalar-type mismatch. Original worker owns fix round1; no adapter implementation starts before that review gate. Parent owns unstaged top docs/CI/workflow records. Merge origin/master after these owned edits are committed, preserving both histories and regenerating derived indexes.
+
+
+## TASK-1107 foundation and UI contracts checkpoint
+
+Foundation fixes4405ca7 approved by scoped independent re-review;25 tests passed. Supplemental state/receipt task1b eb31079 approved by fresh independent review;45 total manager tests passed on Python3.13, Ruff and diff checks passed. CLI status --why is registry-driven; state dimensions and runtime/spec/config identities remain distinct. Draft finances/observations are null with reasons and no capital reserved. Receipts represent acknowledged/pending/skipped/failed/unknown, never auto-retry; external config_revision is null with a fixed unavailability reason when owner does not version settings, with optional validated observed config_hash.
+
+Next: task2 safe owner adapters and actual atomic legacy control protocol. Client GET-then-POST is inadequate; extend owner registry/locks with expected-session/config checks and durable request-ID dedup. An old installed owner missing this capability remains read-only; never fall back to unsafe restart. Parent will merge UI PR172 after committing these owned integration records; regenerate derived indexes after conflict resolution. Initial package-risk review returned UNKNOWN because no Endor risk tools exist, not an unsafe verdict; local source code independently reviewed and zero runtime deps verified. Dedicated installed environment /Users/mitch/.venvs/solbot contains foundation0.1.0 at2381777 and must be refreshed before final installed acceptance. No live trading or production service mutation occurred. This is a recoverable implementation checkpoint, not completion of milestone1 or epic1106.

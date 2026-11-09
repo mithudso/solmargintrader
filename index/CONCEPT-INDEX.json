@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T18:51:47+00:00",
+  "generatedAt": "2026-11-09T19:34:57+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1641,
+      "matchingFiles": 1646,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 714,
+      "matchingFiles": 719,
       "shown": 30,
       "files": [
         {
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 373
+          "hits": 371
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 608,
+      "matchingFiles": 615,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 466,
+      "matchingFiles": 473,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 197
+          "hits": 201
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 343,
+      "matchingFiles": 348,
       "shown": 30,
       "files": [
         {
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 131
+          "hits": 130
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T18:51:47+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T19:34:57+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1641 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1646 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,7 +36,7 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1641`
+Full list: `python3 index/search.py --concept risk-rails -n 1646`
 
 ### Cost model
 
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept transfer -n 1341`
 
 ### Grid trading
 
-`grid` · **608 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **615 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -112,7 +112,7 @@ Strongest files:
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (125 hits)
 
-Full list: `python3 index/search.py --concept grid -n 608`
+Full list: `python3 index/search.py --concept grid -n 615`
 
 ### Data integrity
 
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 566`
 
 ### On-chain execution reality
 
-`execution-onchain` · **466 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **473 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -143,14 +143,14 @@ Strongest files:
 
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (197 hits)
+- `docs/FILES.md` (201 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `soltui/tui.py` (141 hits)
 - `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (124 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 466`
+Full list: `python3 index/search.py --concept execution-onchain -n 473`
 
 ### Buy-and-hold benchmark
 
@@ -257,9 +257,9 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 714 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `trend` | 719 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 462 | `rsi`, `stochastic`, `oscillator` |
-| `momentum` | 343 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `momentum` | 348 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 319 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `baseline` | 263 | `buy_and_hold`, `baseline` |
 | `breakout` | 237 | `breakout`, `bb_breakout`, `keltner` |

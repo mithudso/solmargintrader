@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4d4c7a1` (2026-11-09T18:51:47+00:00). 2781 tracked files, 61.7 MB.
+**Generated** from `index/INDEX.json` at commit `eb31079` (2026-11-09T19:34:57+00:00). 2799 tracked files, 61.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2473 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2482 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 378/403 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -46,6 +46,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.claude`](#claude) — 1 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
+- [`botmanager`](#botmanager) — 18 files
 - [`executor`](#executor) — 44 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
@@ -113,7 +114,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 200 lines · 14,519 B · description: **curated**
+`doc` · 201 lines · 14,805 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -161,7 +162,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 140 lines · 8,959 B · description: **curated**
+`doc` · 141 lines · 9,210 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -209,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 780 lines · 149,172 B · description: **extracted**
+`doc` · 806 lines · 153,713 B · description: **extracted**
 
-**Purpose.** Version: 315 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery. Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
+**Purpose.** Version: 318 Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts. Delta: v316 to v317; record supplemental UI requirements and current foundation review.
 
 **Use.** Read it.
 
@@ -225,9 +226,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1219 lines · 61,165 B · description: **extracted**
+`doc` · 1342 lines · 68,750 B · description: **extracted**
 
-**Purpose.** Version: 154 Delta: v153 to v154; save optimized prompt and its execution artifacts. Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
+**Purpose.** Version: 156 Delta: v155 to v156; incorporate the supplemental UI handoff into implementation. Delta: v154 to v155; record approval to implement the bot manager.
 
 **Use.** Read it.
 
@@ -265,9 +266,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 181 lines · 11,789 B · description: **extracted**
+`doc` · 186 lines · 12,135 B · description: **extracted**
 
-**Purpose.** Seven components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
+**Purpose.** Eight components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
 **Use.** Read it.
 
@@ -281,7 +282,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPONENTS.md`
 
-`doc` · 252 lines · 12,180 B · description: **extracted**
+`doc` · 262 lines · 12,642 B · description: **extracted**
 
 **Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. Dependency direction, strictly one-way:
 
@@ -321,7 +322,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/DEVELOPMENT.md`
 
-`doc` · 187 lines · 8,875 B · description: **extracted**
+`doc` · 193 lines · 9,232 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
 
@@ -337,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27175 lines · 1,411,394 B · description: **extracted**
+`doc` · 27253 lines · 1,414,621 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -409,9 +410,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 233 lines · 19,140 B · description: **extracted**
+`doc` · 250 lines · 19,842 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 961 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
+**Purpose.** The `botmanager/` package has its own stdlib unittest suite and CI job. Install the package into an isolated environment, then run from the repository root: python -m unittest discover -s botmanager/tests -t botmanager
 
 **Use.** Read it.
 
@@ -505,9 +506,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 371 lines · 25,818 B · description: **extracted**
+`doc` · 372 lines · 25,924 B · description: **extracted**
 
-**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Seven components, in ascending order of how much damage a bug can do: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
+**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Eight components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
 **Use.** Read it.
 
@@ -24969,7 +24970,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 378 lines · 15,989 B · description: **curated**
+`ci` · 393 lines · 16,522 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -25074,6 +25075,184 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Generated JSON object, 6 keys (files.insertFinalNewline, files.trimTrailingWhitespace, editor.detectIndentation, editor.tabSize, [python], [markdown]).
 
 **Use.** Configuration; nothing to run.
+
+---
+
+## botmanager
+
+18 files.
+
+#### `botmanager/.gitignore`
+
+`other` · 5 lines · 45 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `botmanager/README.md`
+
+`doc` · 197 lines · 11,758 B · description: **extracted**
+
+**Purpose.** The standalone `solbot` CLI creates persistent named bot drafts and inspects their pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC. There is no manager runtime in this release. Creating a draft cannot start a
+
+**Use.** Read it.
+
+#### `botmanager/pyproject.toml`
+
+`config` · 18 lines · 381 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+### `botmanager/src/botmanager/`
+
+#### `botmanager/src/botmanager/__init__.py`
+
+`code-python` · 6 lines · 136 B · description: **extracted**
+
+**Purpose.** Standalone Solana bot manager. Importing this package performs no I/O.
+
+**Use.** `import botmanager.src.botmanager.__init__`
+
+#### `botmanager/src/botmanager/__main__.py`
+
+`code-python` · 6 lines · 84 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `import botmanager.src.botmanager.__main__`
+
+#### `botmanager/src/botmanager/cli.py`
+
+`code-python` · 45 lines · 1,406 B · description: **extracted**
+
+**Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
+
+**Contents.** Defines `class InputError`, `class SafeParser`, `parser()`, `main()`.
+
+**Use.** `python3 botmanager/src/botmanager/cli.py --help`
+
+#### `botmanager/src/botmanager/config.py`
+
+`code-python` · 298 lines · 10,023 B · description: **extracted**
+
+**Purpose.** Typed constructor snapshots, with exact-context learned-default adoption.
+
+**Contents.** Defines `SOURCE_REVISION`, `SOL_MINT`, `USDC_MINT`, `STRATEGY_VERSIONS`, `MODELS`, `DEFAULT_CONTEXT`, `COMMON`, `DEFAULTS`, `SOURCE_FILES`, `SHARED_PROTECTED_FIELDS` and 4 more.
+
+**Use.** `import botmanager.src.botmanager.config`
+
+#### `botmanager/src/botmanager/domain.py`
+
+`code-python` · 279 lines · 9,767 B · description: **extracted**
+
+**Purpose.** Versioned immutable specifications; no owner imports or state access.
+
+**Contents.** Defines `SCHEMA_VERSION`, `class ManagerError`, `plain()`, `freeze()`, `canonical()`, `fingerprint()`, `utc_now()`, `class ResolvedConfig`, `class BotSpec`.
+
+**Use.** `import botmanager.src.botmanager.domain`
+
+#### `botmanager/src/botmanager/receipts.py`
+
+`code-python` · 171 lines · 6,272 B · description: **extracted**
+
+**Purpose.** Validated per-bot control records, separate from transport success envelopes. No receipt is produced by draft controls. Actual owners must supply outcomes in the delegated-control milestone. Acknowledgment is not proof of cleared exposure.
+
+**Contents.** Defines `RECEIPT_SCHEMA_VERSION`, `OPERATIONS`, `OUTCOMES`, `_reference()`, `_invalid()`, `class CommandReceipt`.
+
+**Use.** `import botmanager.src.botmanager.receipts`
+
+#### `botmanager/src/botmanager/registry.py`
+
+`code-python` · 244 lines · 8,065 B · description: **extracted**
+
+**Purpose.** One application registry, shared by CLI and future local transports.
+
+**Contents.** Defines `class CommandContext`, `class CommandSpec`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()`, `_status()`, `_runtime()` and 5 more.
+
+**Use.** `import botmanager.src.botmanager.registry`
+
+#### `botmanager/src/botmanager/status.py`
+
+`code-python` · 162 lines · 5,929 B · description: **extracted**
+
+**Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
+
+**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `_evidence()`, `draft_snapshot()`.
+
+**Use.** `import botmanager.src.botmanager.status`
+
+#### `botmanager/src/botmanager/store.py`
+
+`code-python` · 262 lines · 9,672 B · description: **extracted**
+
+**Purpose.** Local SQLite ledger. Constructing a store and reading absent state are inert.
+
+**Contents.** Defines `STORE_SCHEMA_VERSION`, `BACKUP_DESCRIPTOR_VERSION`, `MIGRATIONS`, `data_home()`, `class ManagerStore`.
+
+**Use.** `import botmanager.src.botmanager.store`
+
+### `botmanager/tests/`
+
+#### `botmanager/tests/__init__.py`
+
+`test` · 2 lines · 1 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `python3 -m pytest botmanager/tests/__init__.py -q`
+
+#### `botmanager/tests/test_cli.py`
+
+`test` · 86 lines · 3,310 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class CliTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_cli.py -q`
+
+#### `botmanager/tests/test_config.py`
+
+`test` · 279 lines · 10,959 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `learned()`, `class ConfigTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_config.py -q`
+
+#### `botmanager/tests/test_receipts.py`
+
+`test` · 189 lines · 7,723 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ReceiptTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_receipts.py -q`
+
+#### `botmanager/tests/test_status.py`
+
+`test` · 245 lines · 10,213 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StatusTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_status.py -q`
+
+#### `botmanager/tests/test_store.py`
+
+`test` · 169 lines · 7,355 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StoreTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_store.py -q`
 
 ---
 

@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 154
+Version: 156
+Delta: v155 to v156; incorporate the supplemental UI handoff into implementation.
+Delta: v154 to v155; record approval to implement the bot manager.
 Delta: v153 to v154; save optimized prompt and its execution artifacts.
 Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
@@ -1216,3 +1218,124 @@ I want to run the deep strategy optimizer on the strategies in this repo, but I 
 Run the deep prompt optimizer on this prompt and then run it: Lookup the software design, software architect, and planning superpower skills:  This repo has grown to become a  frankenstein. and the UI is cluttered. Let's take this one piece at a time. Design and plan a fully automated crypto trading bot management system that can 1) Create a long lived bot that can do any of the 5 bot strategies we hav eso far (grid, dca, trend, momentum, arbitrage). This will be solely on Solana and interact with jup.ag. 2) Have a backtest with complete data and tests that are useful, and we're going to use that backtest data to blind determine what the parameters should be. When we go to set the parameters the judge will not know what the parameters were to begin with and will solely judge what should come based on performance. 3) Forward test that bot with a dry run in real time. 4) Maintain and monitor the bot to make sure it is still running, and is performing as expected. 5) Use any incorrect calls or lossy trades to train the bot in a more profitable direction. 6) Have clear, helpful, and complete diagnostic, training, and profit and loss data throughout.  7) Have more than one bot going at a time, especially during dry run testing. For right now you can use all of the information, files, scripts, libraries, anything from this repo that will be useful but this is going to be a standalone application for now, except that it will need to be able to discover and manage the bots created by the soltui and the chrome extension. For right now let's create this as a command line tool, all values for the bot should have a default such that I don't have to plug in every number ebvery time to start/stop the bots, only the changed variables will be used. I would like it to share the data and conclusions already established by the other processes, this will get integrated soon, I just don't want this to be a zombie yet another script.
 
 Optimized prompt, full audit and structural evidence: /Users/mitch/dev/solmargintrader/docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md and sibling audit/manifest files. Executed as design/planning; design and implementation plan are saved under /Users/mitch/dev/solmargintrader/docs/superpowers/specs and /Users/mitch/dev/solmargintrader/docs/superpowers/plans.
+
+
+## 2026-11-09 — implement the approved bot-manager plan
+
+Yes, implement it
+
+Continuation of the design and eight-milestone plan delivered in PR171.
+
+
+## 2026-11-09 — supplemental UI findings for the manager
+
+Paste this into your bot-manager session:
+
+```text
+Use the completed UI design findings to inform the approved standalone bot manager. Continue the existing implementation and milestone order.
+
+Current context
+- Owner approval is recorded in KNOW-1115, “Owner approved bot-manager implementation after PR171 design.”
+- Implementation epic: EPIC-1106.
+- Current milestone task: TASK-1107, “Bot manager milestone 1: CLI specifications, defaults and legacy controls.”
+- The approved standalone manager architecture takes precedence over the UI proposal’s suggested extension integration. Use the UI as a future client of the manager’s authoritative state and controls.
+
+Read these artifacts
+1. Approved manager specification:
+   /Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md
+
+2. Approved manager implementation plan:
+   /Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-09-bot-manager.md
+
+3. Supplemental UI specification:
+   /Users/mitch/dev/solmargintrader/docs/design/bot-control-room/DESIGN.md
+
+4. Supplemental UI implementation plan:
+   /Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-09-bot-control-room.md
+
+5. UI validation and skill coverage:
+   /Users/mitch/dev/solmargintrader/docs/design/bot-control-room/REVIEW.md
+   /Users/mitch/dev/solmargintrader/docs/design/bot-control-room/SKILLS.md
+
+6. Interactive visual reference:
+   /Users/mitch/Downloads/sol-bot-control-room-2026-11-09.html
+
+The UI artifacts merged through:
+https://github.com/mithudso/solmargintrader/pull/172
+
+Merge commit: f2d099e5ecef9437f2ecf4676728cf9ba4baea91
+
+If these artifacts are absent from your worktree, inspect origin/master or integrate the merged changes while preserving your implementation. The original UI task worktree was removed after delivery.
+
+Findings to incorporate
+
+1. Separate specification, runtime identity and ownership.
+Give each bot specification a stable UUID. Keep runtime session ID, owner identity, generation and configuration revision distinct. Duplicating a specification must never replace a running session or reserve its capital again.
+
+IMPORTANT: legacy forward sessions in /Users/mitch/dev/solmargintrader/soltui/bots.py are keyed by strategy family. Per-coin settings do not establish independent workers. Legacy controls must respect that occupied slot across markets. This restriction applies to legacy adapters; the approved manager’s milestone 2 still introduces genuine multi-instance ownership.
+
+2. Make status answer “What is this bot doing, and why?”
+Expose actual lifecycle, owner reachability, process heartbeat, market-data age, last completed evaluation, latest decision/reason, blockers and next trigger. A healthy process can have stale inputs. Desired state alone cannot establish that a bot is running.
+
+These fields should support CLI status --why now and the later graphical inspector without requiring another interpretation layer.
+
+3. Keep state dimensions independent.
+Represent mode, lifecycle, input quality, evidence status and submission certainty separately. Preserve distinctions such as:
+- valid losing result versus failed measurement;
+- paused versus held by a risk/data gate;
+- stopped versus unreachable/interrupted;
+- submitted versus confirmed versus outcome_unknown.
+
+Missing financial values stay null with a reason. Never turn missing data into zero.
+
+4. Define control semantics precisely.
+Pause entries stops new entry intents.
+Stop requests the specified runtime owner to stop.
+Cancel orders and close positions are separate operations.
+Emergency stop uses the actual execution owner’s kill/disarm semantics.
+
+None of these should imply another operation occurred. Keep exposure visible after pause/stop. Report acknowledged, pending, skipped, failed and unknown outcomes per bot. Never auto-retry an ambiguous submit or claim all bots stopped after partial success.
+
+5. Preserve immutable configuration and evidence identity.
+Bind results to strategy/config revision, market, timeframe, execution model, dataset/proof identity, dates, engine version and cost model.
+
+Keep backtest, prospective paper and live results separate. Compare compatible runs only. Report realized/unrealized P&L, included costs, deposits/withdrawals and unresolved marks without double-counting fees.
+
+The prototype’s Coinbase USD examples are illustrative. They do not establish Jupiter SOL/USDC compatibility, executable prices, historical routes or a profitable edge.
+
+6. Preserve per-market control and manual pins.
+Automatic proposals can be the default; manual overrides remain explicit and protected. A new proposal must retain current/proposed values, provenance, matching evidence and adoption status. Editing a specification must not silently change an active runtime.
+
+For milestone 1, establish the identity, revision and provenance fields that make this possible. Later milestones own runtime adoption and learning.
+
+7. Derive available strategies from real capability.
+The UI mockup shows the existing five legacy choices: Grid, DCA, Trend, Council and Arbitrage.
+The approved manager plan describes Grid, DCA, Trend, Momentum and Arbitrage, with Council initially external-only.
+
+Follow the approved manager’s registry and verified adapters. Do not copy the mockup’s template list or abbreviated parameter forms into the production schema. Preserve exact strategy semantics and expose unavailable capabilities honestly.
+
+8. Keep presentation separate from execution authority.
+The later UI should consume the manager’s versioned state and command receipts. It must not create another supervisor, recorder, optimizer, signer or strategy implementation.
+
+Preserve authoritative risk gates, reconciliation, paper/disarmed defaults and existing venue-specific verification restrictions. Backend capability—not the presence of a button—determines whether an operation is available.
+
+Future UI direction
+Use a fleet roster with a selected-bot inspector, persistent blockers and an attributable activity ledger. Creation follows:
+Strategy → Market/budget → Rules/tuning → Risk boundaries → Review.
+
+Saving a draft starts no worker, reserves no capital and places no order. Preparation, historical testing, prospective observation and live activation remain explicit, receipt-backed stages.
+
+Validation already completed
+- The illustrative prototype passed 49 independent browser assertions.
+- Reviewed fixes cover 320px reflow, creation-step focus, first-Escape dialog closure and chart/value consistency.
+- All eight required repository CI checks passed before merge.
+- These results verify the prototype and delivery only. Production manager execution, human usability, screen-reader behavior and profitability are not established by them.
+
+Next action
+Read the supplemental design, then incorporate the relevant identity, provenance, capability, status and receipt requirements into the current manager milestone. Keep graphical implementation in its planned integration phase.
+
+Report:
+- Findings incorporated into the current milestone.
+- Findings assigned to later milestones.
+- Any conflict with the approved manager design, with the proposed resolution.
+```
