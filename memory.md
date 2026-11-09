@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 327
+Version: 328
+Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
 Delta: v326 to v327; approve milestone1 source and prepare verified release.
 Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
 Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
@@ -903,3 +904,9 @@ Post-integration docs agree:983backtester/1402SolTUI/408extension/46mongo total2
 Noneditable manager0.1.0 is installed in /Users/mitch/.venvs/solbot, exposed as /Users/mitch/.local/bin/solbot. Independent installed verification at6ebd6d6 matched11modules and17fresh-process behavior checks; package was refreshed after032db6c. Independent follow-up matched all11 final module hashes, passed3 fresh-process reads with absent-home preservation and4 observed/declared path fixtures. Actual default owner discovery returns incompatible_owner/bots=null; no actual installed-owner control, heartbeat or live execution success is claimed. No production bots, services, keys or browser state changed.
 
 PR175 is the canonical delivery receipt: https://github.com/mithudso/solmargintrader/pull/175. At this record, final metadata, final pushed-head CI and merge remain. Do not infer completion from this entry; inspect the PR and remote tree. After verified delivery complete TASK1107 and claim TASK1108; continue prepared task3 multi-instance reference-paper runtime in milestone order. Keep primary checkout's unrelated untracked files unchanged.
+
+## v328 — 2026-11-09 — CI bridge integration repair
+
+Final4798a71 CI passed8of9 active jobs but macOS targeted tests correctly failed test_every_required_param_command_has_a_fixture: bots.manager_control was absent from bridge_support. Commit2a20cd9 adds only11 fixture lines in /Users/mitch/dev/solmargintrader/soltui/tests/bridge_support.py. The required-fixture regression now passes; all42 existing parity/button/surface tests pass (25.990s). Positive probes for manager_control and actual unstubbed manager_snapshot succeed byte-identically over TUI/CLI/API/native host without an owner control journal. No assertion, test selection or production guard changed. Existing4fixture Ruff warnings remain unchanged.
+
+Product code stays byte-identical to independently reviewed/installed032db6c, so no reinstall or repeated product acceptance is needed. The independent scoped fixture integration review approved specification and quality with no findings. Continue with metadata refresh and new final-head CI/merge on PR175. Do not count prior8passing jobs or historical39140e7 CI as final delivery. The delayed pull_request run42694684337 was canonical; redundant queued dispatch42694722008 was canceled after that run appeared. Preserve the fixture repair and continue; no new implementation approval is needed.

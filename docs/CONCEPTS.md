@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:35:05+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:47:39+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh

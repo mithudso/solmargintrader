@@ -1,6 +1,7 @@
 # Standalone bot manager milestone 1
 
-Version: 1.0.1
+Version: 1.0.2
+Delta: v1.0.1 to v1.0.2; record complete four-surface command parity.
 Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance.
 Date: 2026-11-09
 Status: implementation and local acceptance complete; remote receipt linked below.
@@ -55,6 +56,9 @@ edge. The UI prototype's 49 browser assertions verify only that prototype.
 
 At source revision032db6c, all67 manager tests and124 affected owner tests passed.
 Scoped lint/format, six CI-selector tests and documentation checks passed.
+All42 bridge parity/button/surface tests passed, including positive byte-identical
+manager command envelopes over TUI, CLI, HTTP API and native host. The transport
+fixture does not exercise production control state; owner protocol tests cover it.
 The final broad review and scoped fix-wave review approved specification and
 quality. The guarded owner protocol now refuses malformed existing state while
 preserving its bytes. Status preserves observed versus declared configuration paths.

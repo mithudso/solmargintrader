@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `032db6c` (2026-11-09T20:35:05+00:00). 2822 tracked files, 62.7 MB.
+**Generated** from `index/INDEX.json` at commit `2a20cd9` (2026-11-09T20:47:39+00:00). 2822 tracked files, 62.7 MB.
 
 Regenerate with:
 
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 906 lines · 170,850 B · description: **extracted**
+`doc` · 913 lines · 172,253 B · description: **extracted**
 
-**Purpose.** Version: 327 Delta: v326 to v327; approve milestone1 source and prepare verified release. Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
+**Purpose.** Version: 328 Delta: v327 to v328; repair the required-command bridge fixture caught by final CI. Delta: v326 to v327; approve milestone1 source and prepare verified release.
 
 **Use.** Read it.
 
@@ -338,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27642 lines · 1,428,551 B · description: **extracted**
+`doc` · 27642 lines · 1,428,554 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -466,9 +466,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-milestone-1.md`
 
-`doc` · 75 lines · 5,827 B · description: **extracted**
+`doc` · 79 lines · 6,144 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance. Date: 2026-11-09
+**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; record complete four-surface command parity. Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance.
 
 **Use.** Read it.
 
@@ -24196,11 +24196,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 334 lines · 18,906 B · description: **extracted**
+`test` · 345 lines · 19,754 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
-**Contents.** Defines `TOKEN`, `HEAVY`, `default_params()`, `class World`, `stub_heavy()`, `via_tui()`, `via_cli()`, `class ApiServer`, `via_api()`, `host_call()` and 1 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `TOKEN`, `MANAGER_REQUEST_ID`, `MANAGER_CONFIG_HASH`, `HEAVY`, `default_params()`, `class World`, `stub_heavy()`, `via_tui()`, `via_cli()`, `class ApiServer` and 3 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/bridge_support.py -q`
 
