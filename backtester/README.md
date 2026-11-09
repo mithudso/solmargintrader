@@ -87,6 +87,8 @@ has to parse around it. The caveats live in stdout and `report.md`.
 
 ## Verified local history and result archives (experimental)
 
+For the complete acquisition history, architectural decisions, operating procedures, backup recovery, and remaining work, see [the historical backtester handoff](../docs/backtester-history-handoff.md).
+
 The history store imports a contiguous CSV as an immutable content-addressed
 snapshot. It records the operator-supplied instrument, venue, source label,
 interval and bar-open timestamp convention. The source label is an assertion,

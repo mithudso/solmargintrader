@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 332
+Version: 334
+Delta: v333 to v334; document implementation, scripts, backups and future gates.
+Delta: v332 to v333; start backtester implementation and recovery handoff.
 Delta: concurrent histories to v332; preserve monitor qualification and merged Kraken research/backup records.
 Delta: concurrent histories to v330; preserve monitor full-suite records and all merged manager/backtester work.
 
@@ -71,6 +73,10 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v333 - 2026-11-09: Backtester handoff in progress
+
+TASK-1151 created `docs/backtester-history-handoff.md` covering historical backtester work, implementation status, data acquisition, scripts, architecture, backup and restore, safety limits, verification and future implementation. The handoff links from backtester/README.md. Reverified deep snapshot, first segment and archived artifacts; reran a 1,440-bar SOL/USDC CLI smoke; and confirmed the completed Kraken script skips 14 receipts. The active worktree is `/Users/mitch/dev/solmargintrader-wt-01a1c1b1` on branch `agent-01a1c1b1-backtest-handoff`. Read the live code, `/Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md`, private backup receipts, and the integrity plan before documenting. Distinguish working functionality from unfinished backtester work; preserve other sessions.
 
 ## Monitor full-suite source and registration checkpoint - 2026-11-09
 
