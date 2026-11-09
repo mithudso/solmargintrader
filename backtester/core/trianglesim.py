@@ -339,8 +339,11 @@ def snapshots_from_closes(
 # reader keeps every complete line before the damage instead of discarding the day.
 
 
-def parse_snapshot_line(line: str) -> tuple[float, dict[str, Quote]] | None:
-    """One recorded line -> (time, {product: quote}); None for a line that is not usable."""
+def parse_snapshot_line(line: str, *, require_quote_time: bool = False) -> tuple[float, dict[str, Quote]] | None:
+    """Parse one snapshot. Forward replay requires measured product timestamps.
+
+    Historical readers retain the legacy snapshot-time fallback by default.
+    """
     import json
 
     try:
@@ -357,7 +360,11 @@ def parse_snapshot_line(line: str) -> tuple[float, dict[str, Quote]] | None:
             bid, ask = float(v[0]), float(v[1])
             bsz = float(v[3]) if len(v) > 3 and v[3] is not None else None
             asz = float(v[4]) if len(v) > 4 and v[4] is not None else None
+            if require_quote_time and (len(v) <= 5 or v[5] is None or isinstance(v[5], bool)):
+                continue
             qt = float(v[5]) if len(v) > 5 and v[5] is not None else t
+            if require_quote_time and (not math.isfinite(qt) or qt > t):
+                continue
         except (TypeError, ValueError, IndexError):
             continue
         if math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask:

@@ -1,6 +1,6 @@
 """Collection layout for the local research store: specs, validators, indexes.
 
-    python3 mongo/schema.py --create      # create everything (drops first)
+    python3 mongo/schema.py --create      # rebuild derived data; retain test receipts
     python3 mongo/schema.py --describe    # print the layout, touch nothing
 
 Design notes, because the shape is the part worth arguing about:
@@ -368,13 +368,14 @@ def connect(uri: str = "mongodb://localhost:27017"):
     return MongoClient(uri, serverSelectionTimeoutMS=3000)
 
 
-def create(db, *, drop: bool = True, only: set[str] | None = None) -> list[str]:
+def create(db, *, drop: bool = True, only: set[str] | None = None,
+           reset_test_results: bool = False) -> list[str]:
     """Create selected collections with their validators and indexes (all by default).
 
-    Drops first by default: this store is derived from files in the repo, so
-    recreating it is always safe and is the only way to keep the time series
-    collections idempotent (they accept no unique index, so a second load would
-    silently double every measurement).
+    Drops derived collections first by default to keep time series idempotent.
+    test_results contains original observations without backing files. Update
+    its validator/indexes in place unless reset_test_results explicitly permits
+    deletion. Selecting that collection alone does not permit deleting receipts.
     """
     wanted = set(ALL_COLLECTIONS) if only is None else set(only)
     if not wanted or wanted - set(ALL_COLLECTIONS):
@@ -390,14 +391,17 @@ def create(db, *, drop: bool = True, only: set[str] | None = None) -> list[str]:
         try:
             db.create_collection(name, timeseries=spec["timeseries"])
         except CollectionInvalid:
-            # Already present and not dropped; the caller asked for that.
-            pass
+            # Presence alone does not establish layout compatibility under --keep.
+            existing = db[name].options().get("timeseries")
+            expected = spec["timeseries"]
+            if not isinstance(existing, dict) or any(existing.get(key) != value for key, value in expected.items()):
+                raise ValueError(f"{name}: existing timeseries layout differs from the schema; use an explicit rebuild")
         created.append(name)
 
     for name, spec in COLLECTIONS.items():
         if name not in wanted:
             continue
-        if drop:
+        if drop and (name != "test_results" or reset_test_results):
             db.drop_collection(name)
         try:
             db.create_collection(
@@ -446,7 +450,7 @@ def describe() -> str:
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--create", action="store_true", help="create collections (drops first)")
+    ap.add_argument("--create", action="store_true", help="rebuild derived collections; retain test receipts")
     ap.add_argument("--describe", action="store_true", help="print the layout and exit")
     ap.add_argument("--uri", default="mongodb://localhost:27017")
     ap.add_argument(
@@ -454,14 +458,18 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="with --create, do not drop existing collections first",
     )
+    ap.add_argument("--reset-test-results", action="store_true",
+                    help="with --create, explicitly delete original test receipts")
     args = ap.parse_args(argv)
+    if args.reset_test_results and (not args.create or args.keep):
+        ap.error("--reset-test-results requires --create without --keep")
 
     if args.describe or not args.create:
         print(describe())
         return 0
 
     db = connect(args.uri)[DB_NAME]
-    created = create(db, drop=not args.keep)
+    created = create(db, drop=not args.keep, reset_test_results=args.reset_test_results)
     print(f"{DB_NAME}: {len(created)} collections ready")
     for name in created:
         print(f"  {name}")

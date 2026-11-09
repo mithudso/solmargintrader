@@ -253,3 +253,23 @@ test('runBuildCheck preserves dashboard session state until its lease ends', asy
   assert.equal(await runBuildCheck({ ...common, soltui: host }), 'reloaded');
   assert.equal(reloads.length, 1);
 });
+
+
+test('Chrome paper orders and fills survive dependency and worker recreation', async () => {
+  reset();
+  const { chromeDeps } = await import('../src/bg/service-worker.js');
+  const first = await (await chromeDeps({openStore: async () => new MemoryStore()})).buildVenue();
+  const receipt = await first.placeOrder({intent: {intentKey: 'paper-restart', side:'buy', level:100, baseQty:0.1}, slippageBps:50});
+  const second = await (await chromeDeps({openStore: async () => new MemoryStore()})).buildVenue();
+  assert.equal((await second.getOpenOrders())[0]?.venueOrderId, receipt.venueOrderId);
+  second.markPrice(99);
+  assert.equal((await second.getFills()).length, 1);
+  const restarted = await import('../src/bg/service-worker.js?paper-restart');
+  const third = await (await restarted.chromeDeps({openStore: async () => new MemoryStore()})).buildVenue();
+  assert.equal((await third.getOpenOrders()).length, 0);
+  assert.equal((await third.getFills())[0]?.venueOrderId, receipt.venueOrderId);
+  area.set('config', {...configOf(), baseMint:'other-mint'});
+  const other = await (await restarted.chromeDeps({openStore: async () => new MemoryStore()})).buildVenue();
+  assert.deepEqual(await other.getFills(), []);
+  assert.deepEqual(await other.getOpenOrders(), []);
+});

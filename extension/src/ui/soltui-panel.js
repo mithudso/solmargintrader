@@ -188,6 +188,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let runButton = null;
   let editor = null;
   let editorBase = null;
+  let editorRevision = null;
   let documentPath = null;
   let documentEpoch = 0;
   let lastEnvelope = null;
@@ -321,12 +322,13 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (!env.ok) { selected.textContent = env.error?.message ?? 'Could not open document.'; return; }
     documentPath = path;
     editorBase = env.result.text;
+    editorRevision = env.result.revision;
     editor = $('#soltuiEditor');
     editor.value = editorBase;
-    editor.readOnly = !env.result.editable;
+    editor.readOnly = !env.result.editable || !/^[a-f0-9]{64}$/.test(editorRevision ?? '');
     $('#soltuiEditorCard').hidden = false;
     $('#soltuiEditorPath').textContent = `${path} · ${env.result.editable ? 'Editable' : 'Read only'}`;
-    $('#soltuiSave').disabled = !env.result.editable;
+    $('#soltuiSave').disabled = editor.readOnly;
   }
   function useRow(row) {
     selected.textContent = JSON.stringify(row, null, 2);
@@ -338,6 +340,10 @@ export function mountSoltuiPanel(root = document, transport = send) {
   }
   function offerSubmit(row) {
     $('#soltuiNext').replaceChildren();
+    if (row.preview_id && row.submission_available === false) {
+      $('#soltuiNext').append(el('p', { text: 'Submission is unavailable. You can review and export this unsigned preview.' }));
+      return;
+    }
     if (row.preview_id && /^(coinbase|jupiter)\.order_.*preview$/.test(lastEnvelope?.command ?? '')) {
       const venue = lastEnvelope.command.split('.')[0];
       $('#soltuiNext').append(el('button', { class: 'danger', text: `Review ${venue} submit form`, onclick: () => {
@@ -647,18 +653,23 @@ export function mountSoltuiPanel(root = document, transport = send) {
   });
   $('#soltuiSave').addEventListener('click', async () => {
     if (!editor || editor.readOnly) return;
+    const path = documentPath, epoch = documentEpoch, target = editor;
+    const base = editorBase, expected_revision = editorRevision, text = target.value;
+    const isCurrent = () => !disposed && documentEpoch === epoch && documentPath === path && editor === target;
     const save = $('#soltuiSave');
     save.disabled = true;
     try {
-      const latest = await ask('docs.read', { path: documentPath });
-      if (!latest.ok || !latest.result.editable || latest.result.text !== editorBase) throw new Error('The document changed or became read only. Export your draft, then reload it before saving.');
-      const text = editor.value;
-      const env = await ask('docs.write', { path: documentPath, text });
+      const latest = await ask('docs.read', { path });
+      if (!isCurrent()) return;
+      if (!latest.ok || !latest.result.editable || latest.result.text !== base || latest.result.revision !== expected_revision) throw new Error('The document changed or became read only. Export your draft, then reload it before saving.');
+      const env = await ask('docs.write', { path, text, expected_revision });
+      if (!isCurrent()) return;
       if (!env.ok) throw new Error(env.error.message);
       editorBase = text;
+      editorRevision = env.result.revision;
       $('#soltuiEditorStatus').textContent = 'Saved to disk.';
-    } catch (e) { $('#soltuiEditorStatus').textContent = `Save refused: ${e.message}`; }
-    finally { save.disabled = editor.readOnly; }
+    } catch (e) { if (isCurrent()) $('#soltuiEditorStatus').textContent = `Save refused: ${e.message}`; }
+    finally { if (isCurrent()) save.disabled = target.readOnly; }
   });
   $('#soltuiEditorExport').addEventListener('click', () => {
     if (editor) download('document-draft.txt', editor.value, 'text/plain;charset=utf-8');

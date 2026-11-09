@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shlex
 import stat
 import sys
 from pathlib import Path
@@ -59,7 +60,7 @@ def allowed_origins(extra: list[str] | None = None) -> list[str]:
 
 
 def wrapper_text(repo: Path, python: Path) -> str:
-    return f'#!/bin/sh\ncd "{repo}" || exit 1\nexec "{python}" -m soltui.native_host\n'
+    return f'#!/bin/sh\ncd {shlex.quote(str(repo))} || exit 1\nexec {shlex.quote(str(python))} -m soltui.native_host\n'
 
 
 def manifest(wrapper: Path, extra: list[str] | None = None) -> dict[str, Any]:

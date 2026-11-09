@@ -51,7 +51,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 CARD_DIR = Path(__file__).resolve().parent.parent / "strategy_cards"
 
@@ -376,10 +376,10 @@ class StrategyCard:
         merged.update(self.presets.get(horizon) or {})
         return merged
 
-def load_card(path: str | Path) -> StrategyCard:
+def load_card(path: str | Path, *, text: str | None = None) -> StrategyCard:
     """Parse one card file."""
     path = Path(path)
-    data, body = parse_frontmatter(path.read_text(encoding="utf-8"), where=path.name)
+    data, body = parse_frontmatter(path.read_text(encoding="utf-8") if text is None else text, where=path.name)
 
     missing = [f for f in REQUIRED_FIELDS if f not in data]
     if missing:
@@ -552,7 +552,7 @@ def load_card(path: str | Path) -> StrategyCard:
     )
 
 
-def load_all(card_dir: str | Path | None = None) -> dict[str, StrategyCard]:
+def load_all(card_dir: str | Path | None = None, *, read_text: Callable[[Path], str] | None = None) -> dict[str, StrategyCard]:
     """Every card, keyed by id. Raises on a duplicate id."""
     directory = Path(card_dir) if card_dir else CARD_DIR
     if not directory.is_dir():
@@ -562,7 +562,7 @@ def load_all(card_dir: str | Path | None = None) -> dict[str, StrategyCard]:
     for path in sorted(directory.glob("*.md")):
         if path.name.upper().startswith("README"):
             continue
-        card = load_card(path)
+        card = load_card(path, text=read_text(path) if read_text is not None else None)
         # Two cards claiming one registry key is the collision that matters: the drift
         # test keys cards by registry_key, so the second would silently shadow the
         # first and its declared defaults would never be checked against anything.

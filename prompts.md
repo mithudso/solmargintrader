@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 136
-Delta: v135 to v136; preserve repository review and approved Signal Desk implementation requests.
+Version: 137
+Delta: v136 to v137; preserve all upstream and optimizer workflow histories.
+
+## v137 - 2026-11-08
+
+```text
+Run the deep code optimizer on this repo
+```
 
 ## v136 - 2026-11-08
 

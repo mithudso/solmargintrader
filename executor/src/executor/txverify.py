@@ -5,6 +5,7 @@ return a transaction that drains the wallet while still "being a swap". Nothing 
 
 Layer 1, `check_static` (pure, no network): reads the transaction itself.
   * the fee payer is the owner, and the owner is the only signer;
+  * the fully decoded ExactIn route spends the approved input and enforces at least the approved minimum output;
   * every program id is on PROGRAM_ALLOWLIST, and each allowed program may run only the instructions listed for it;
   * compute-budget instructions are present and bound the priority fee;
   * SOL leaving the owner through System instructions is bounded by the input amount plus token-account rent;
@@ -34,6 +35,7 @@ from typing import Any
 from solders.pubkey import Pubkey
 from solders.transaction import VersionedTransaction
 
+from .jupiter_route import decode_route
 from .tokens import WSOL_MINT
 
 # --- Program allowlist. Each entry says why the program may appear and what it may do. ---------------------------
@@ -209,14 +211,26 @@ def check_static(facts: TxFacts, exp: Expectation) -> tuple[list[str], dict[str,
     system_out = 0
     created_atas: list[dict[str, str]] = []
     jupiter_ixs = 0
+    jupiter_route: dict[str, Any] = {}
     for ix in facts.instructions:
         if ix.program not in PROGRAM_ALLOWLIST:
             problems.append(f"program {ix.program} is not on the allowlist")
             continue
         if ix.program == JUPITER_V6:
             jupiter_ixs += 1
-            if ix.data[:8] not in JUPITER_ALLOWED_DISCRIMINATORS:
+            kind = JUPITER_ALLOWED_DISCRIMINATORS.get(ix.data[:8])
+            if kind is None:
                 problems.append("Jupiter instruction is not an ExactIn route")
+            else:
+                try:
+                    bound = decode_route(ix.data, kind)
+                    jupiter_route = vars(bound)
+                    if bound.amount_in != exp.amount_in:
+                        problems.append("Jupiter route input does not match the approved amount")
+                    if exp.min_out <= 0 or bound.minimum_out < exp.min_out:
+                        problems.append("Jupiter route minimum output is below the approved minOut")
+                except ValueError as error:
+                    problems.append(str(error))
             if owner not in ix.accounts:
                 problems.append("Jupiter instruction does not involve the owner")
         elif ix.program == COMPUTE_BUDGET:
@@ -256,6 +270,7 @@ def check_static(facts: TxFacts, exp: Expectation) -> tuple[list[str], dict[str,
         "created_atas": created_atas,
         "lookup_tables": facts.lookup_tables,
         "writable_account_count": len(facts.writable),
+        "jupiter_route": jupiter_route,
     }
     return problems, info
 
@@ -431,18 +446,33 @@ def check_economics(
         return ["owner account is missing from pre/post state"], {}
     native_delta = own_post["lamports"] - own_pre["lamports"]
     fee = facts.fee_lamports
-    retained_rent = sum(
-        post_by[c["ata"]]["lamports"]
-        for c in info.get("created_atas", [])
-        if post_by.get(c["ata"]) and not pre_by.get(c["ata"])
-    )
-    wsol_pre_lamports = pre_by[wsol_ata]["lamports"] if pre_by.get(wsol_ata) else 0
+
+    def rent_total(accounts):
+        total = 0
+        for addr in expected:
+            acc = accounts.get(addr)
+            tok = parse_token_account(acc)
+            if tok and tok[1] == owner:
+                rent = acc["lamports"] - (tok[2] if tok[0] == WSOL_MINT else 0)
+                if rent < 0:
+                    problems.append("wrapped-SOL account has inconsistent lamports and token balance")
+                total += rent
+        return total
+
+    rent_delta = rent_total(post_by) - rent_total(pre_by)
+    retained_rent = max(0, rent_delta)
+    wrapped_delta = amount(post_by.get(wsol_ata)) - amount(pre_by.get(wsol_ata))
+    # Moving native SOL into WSOL or releasing old WSOL/rent changes no owned swap value.
+    sol_delta = native_delta + wrapped_delta + fee + rent_delta
     d_in = amount(post_by[in_ata]) - amount(pre_by[in_ata])
     d_out = amount(post_by[out_ata]) - amount(pre_by[out_ata])
     evidence: dict[str, Any] = {
         "native_delta_lamports": native_delta,
         "fee_lamports": fee,
         "retained_rent_lamports": retained_rent,
+        "rent_delta_lamports": rent_delta,
+        "wrapped_sol_delta_raw": wrapped_delta,
+        "economic_sol_delta_raw": sol_delta,
         "input_token_delta_raw": d_in,
         "output_token_delta_raw": d_out,
         "owner_lamports_after": own_post["lamports"],
@@ -450,21 +480,20 @@ def check_economics(
     }
 
     if exp.mint_in == WSOL_MINT:
-        expected_delta = -(exp.amount_in + fee + retained_rent)
-        if native_delta < expected_delta:
-            problems.append(f"SOL falls by {-native_delta}, more than input + fee + rent = {-expected_delta}")
-        if native_delta > expected_delta + wsol_pre_lamports:
-            problems.append(f"SOL falls by only {-native_delta}; the input {exp.amount_in} is not being spent")
+        if sol_delta < -exp.amount_in:
+            problems.append(f"SOL spend {-sol_delta} is more than input + fee + rent permits ({exp.amount_in} input)")
+        if sol_delta > -exp.amount_in:
+            problems.append(f"SOL input {exp.amount_in} is not being spent exactly (actual {-sol_delta})")
     else:
         if pre_by[in_ata] is None:
             problems.append("owner has no input token account")
         if d_in != -exp.amount_in:
             problems.append(f"input token changes by {d_in}, expected exactly {-exp.amount_in}")
-        if native_delta < -(fee + retained_rent):
-            problems.append(f"SOL falls by {-native_delta}, more than fee + rent = {fee + retained_rent}")
+        if sol_delta < 0:
+            problems.append(f"SOL falls by {-sol_delta}, more than fee + rent")
     if exp.mint_out == WSOL_MINT:
-        if native_delta + fee + retained_rent < exp.min_out:
-            problems.append(f"SOL received {native_delta + fee + retained_rent} is below minOut {exp.min_out}")
+        if sol_delta < exp.min_out:
+            problems.append(f"SOL received {sol_delta} is below minOut {exp.min_out}")
     elif d_out < exp.min_out:
         problems.append(f"output token rises by {d_out}, below minOut {exp.min_out}")
     if own_post["lamports"] < exp.min_sol_reserve_lamports:

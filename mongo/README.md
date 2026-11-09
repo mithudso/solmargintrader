@@ -179,3 +179,11 @@ This component reads the repo and writes one local database. It places no orders
 reaches no network, and touches no database other than `solmargintrader`. Nothing
 in `backtester/`, `research/`, `extension/` or `soltui/` imports it, so the store
 can be rebuilt or dropped without affecting any of them.
+
+## Rebuilding without deleting test receipts
+
+`python3 mongo/schema.py --create` rebuilds derived collections, but retains `test_results`
+and updates its validator and indexes in place. These test receipts are original observations;
+the loader cannot regenerate them. Deleting them requires the explicit
+`python3 mongo/schema.py --create --reset-test-results` command. The reset flag refuses with
+`--keep` or without `--create`.

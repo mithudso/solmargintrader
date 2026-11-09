@@ -110,6 +110,7 @@ MAX_BRIDGED_FRACTION = 0.02  # an optimize window may be at most this share brid
 MIN_BACKTEST_BARS = 24
 MIN_HOUR_MINUTES = 30  # an hour resampled from 1m needs this many minutes, or it counts as missing
 MAX_FORWARD_GAP_MIN = 2
+MAX_FORWARD_QUOTE_AGE_S = 5.0
 OPTIMIZE_WINDOWS = 6
 PER_COIN_OPTIMIZE_WINDOWS = 6  # half are holdout; incremental decisions are labeled tentative
 PER_COIN_MIN_DECIDED_CELLS = 3
@@ -163,9 +164,12 @@ def _read_json(path: Path, default: Any) -> Any:
 
 def _write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(_json_safe(data), indent=2, allow_nan=False), encoding="utf-8")
-    tmp.replace(path)
+    tmp = path.with_name(path.name + ".tmp." + uuid.uuid4().hex)
+    try:
+        tmp.write_text(json.dumps(_json_safe(data), indent=2, allow_nan=False), encoding="utf-8")
+        tmp.replace(path)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def _json_safe(value: Any) -> Any:
@@ -433,8 +437,10 @@ def hourly(asset: str, settings: Any = None) -> dict[str, Any]:
     h_path, m_path = base / f"{a}_1h.csv", base / f"{a}_1m.csv"
     h = _load_hourly(h_path, "1h") if h_path.exists() else None
     m = _load_hourly(m_path, "1m->1h") if m_path.exists() else None
+    h = h if h is not None and h["ts"].size else None
+    m = m if m is not None and m["ts"].size else None
     if h is None and m is None:
-        raise BotError(f"no cached bars for {a}: expected {h_path} or {a}_1m.csv. "
+        raise BotError(f"no usable cached bars for {a} (sources missing or empty): expected {h_path} or {a}_1m.csv. "
                        f"Fetch: python -m backtester.core.fetch --asset {a} --interval 1h --start 2024-01-01")
     if h is None or not h["ts"].size:
         return {**m, "source": "1m->1h"}
@@ -846,6 +852,7 @@ class SnapshotCursor:
         self.root = root
         self.offsets: dict[str, int] = {}
         self._committed = 0
+        self._pending: list[tuple[float, dict]] = []
 
     def _complete_members(self, data: bytes) -> list[str]:
         """Lines of every complete gzip member in `data`; sets `_committed` to the end of the last.
@@ -882,7 +889,8 @@ class SnapshotCursor:
         return lines
 
     def read_new(self, end_ts: float | None = None) -> list[tuple[float, dict]]:
-        out: list[tuple[float, dict]] = []
+        out = [r for r in self._pending if end_ts is None or r[0] <= end_ts]
+        self._pending = [r for r in self._pending if end_ts is not None and r[0] > end_ts]
         first_day = datetime.fromtimestamp(self.start_ts, tz=timezone.utc).strftime("%Y-%m-%d")
         for path in pricefeed.recorded_files(self.root):
             if path.name[:10] < first_day:
@@ -895,10 +903,11 @@ class SnapshotCursor:
             except OSError:
                 continue
             for line in self._complete_members(data):
-                parsed = parse_snapshot_line(line)
+                parsed = parse_snapshot_line(line, require_quote_time=True)
                 if parsed is None or parsed[0] < self.start_ts:
                     continue
                 if end_ts is not None and parsed[0] > end_ts:
+                    self._pending.append(parsed)
                     continue
                 out.append(parsed)
             pos = self._committed
@@ -916,9 +925,16 @@ class MinuteBars:
 
     def feed(self, t: float, quotes: dict[str, Any]) -> None:
         q = quotes.get(self.product)
-        if q is None:
+        if q is None or len(q) != 5:
             return
-        mid = (q[0] + q[1]) / 2.0
+        try:
+            bid, ask, quote_time = float(q[0]), float(q[1]), float(q[4])
+        except (TypeError, ValueError):
+            return
+        if (not all(math.isfinite(v) for v in (t, bid, ask, quote_time))
+                or not 0 < bid <= ask or not 0 <= t - quote_time <= MAX_FORWARD_QUOTE_AGE_S):
+            return
+        mid = bid + (ask - bid) / 2.0
         minute = int(t // 60) * 60
         bar = self.bars.get(minute)
         if bar is None:
@@ -949,6 +965,15 @@ class MinuteBars:
                 bridged += max(0, missing)
             o, h, low, c = self.bars[m]
             rows.append([m, o, h, low, c])
+        if rows and gap_at is None:
+            missing = (cutoff - int(rows[-1][0])) // 60 - 1
+            if missing > MAX_FORWARD_GAP_MIN:
+                gap_at = int(rows[-1][0])
+            else:
+                last = rows[-1][4]
+                for _ in range(max(0, missing)):
+                    rows.append([rows[-1][0] + 60, last, last, last, last])
+                bridged += max(0, missing)
         arr = np.asarray(rows, dtype="float64").reshape(-1, 5)
         return ({"ts": arr[:, 0].astype("int64"), "open": arr[:, 1], "high": arr[:, 2], "low": arr[:, 3],
                  "close": arr[:, 4]}, gap_at, bridged)
@@ -989,6 +1014,17 @@ def _forward_all() -> dict[str, Any]:
     return raw if isinstance(raw, dict) else {}
 
 
+@contextmanager
+def _forward_lock():
+    home().mkdir(parents=True, exist_ok=True)
+    with (home() / "forward.lock").open("a+b") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
 def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder: bool = True,
                   now: float | None = None) -> dict[str, Any]:
     """Start (or restart) the bot's forward test now, on the current config."""
@@ -998,24 +1034,26 @@ def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder
     if bot != "triangle" and f"{a}-USD" not in _triangle_products():
         raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
     recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
-    raw = _forward_all()
-    raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
-                "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
-                "slippage_bps": _costs(settings).slippage_bps}
-    _write_json(forward_path(), raw)
-    runtime().sessions.pop(bot, None)
+    with runtime().lock, _forward_lock():
+        raw = _forward_all()
+        raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
+                    "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
+                    "slippage_bps": _costs(settings).slippage_bps}
+        _write_json(forward_path(), raw)
+        runtime().sessions.pop(bot, None)
     return {"forward": raw[bot], "recorder": recorder}
 
 
 def forward_stop(bot: str, *, now: float | None = None) -> dict[str, Any]:
     bot = _bot(bot)
-    raw = _forward_all()
-    rec = raw.get(bot)
-    if not rec:
-        return {"stopped": False, "message": f"no {bot} forward test is running"}
-    if rec.get("stopped_at") is None:
-        rec["stopped_at"] = time.time() if now is None else now
-        _write_json(forward_path(), raw)
+    with runtime().lock, _forward_lock():
+        raw = _forward_all()
+        rec = raw.get(bot)
+        if not rec:
+            return {"stopped": False, "message": f"no {bot} forward test is running"}
+        if rec.get("stopped_at") is None:
+            rec["stopped_at"] = time.time() if now is None else now
+            _write_json(forward_path(), raw)
     return {"stopped": True, "forward": rec}
 
 

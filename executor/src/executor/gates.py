@@ -49,6 +49,7 @@ def _atomic_write(path: Path, doc: Any) -> None:
             json.dump(doc, fh, indent=2, sort_keys=True, allow_nan=False)
             fh.flush()
             os.fsync(fh.fileno())
+        os.chmod(tmp, 0o600)
         os.replace(tmp, path)
         # A recorded failure must remain the latest evidence after a power loss too.
         _sync_directory(path.parent)

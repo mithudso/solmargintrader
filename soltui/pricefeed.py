@@ -12,7 +12,7 @@ What it does:
 
 * **Subscribes** to `wss://ws-feed.exchange.coinbase.com` for every USD market of the cached
   coins that Coinbase lists plus every cross pair among them (`stream_products`), on two
-  public channels. `level2_batch` sends a book snapshot and then batched changes every 50 ms;
+  public channels plus a heartbeat. `level2_batch` sends a book snapshot and then batched changes every 50 ms;
   `Book` keeps each product's book, which gives the true best bid and ask with their sizes.
   `ticker` arrives on each trade and gives the last price.
   The ticker's own best bid/ask is **not** used for a book that is synced: it only changes on
@@ -21,16 +21,19 @@ What it does:
   exactly where triangular arbitrage would have to look.
 * **Samples** every product once per second into one snapshot line:
   ``{"t": <epoch s>, "q": {"SOL-USD": [bid, ask, last, bid_size, ask_size, quote_time]}}``.
-  `quote_time` is the snapshot time for a synced book (the book is live as of then) and the
+  `quote_time` is the snapshot time for a synced book (the book is live as of then) while feed activity proves the connection live, and the
   exchange trade time for a ticker-only quote, so a reader ages a stale touch out instead of
   trusting it. After a disconnect every book is dropped and rebuilt from a fresh snapshot.
 * **Records** snapshots to `<config dir>/prices/YYYY-MM-DD.jsonl.gz` (UTC day). Each flush is
-  one gzip member, so a crash loses at most the unflushed batch and the reader
+  one gzip member. Before the first append after restart, the recorder removes an incomplete
+  or corrupt tail under its recorder lock and logs the recovered byte count. A crash loses
+  at most the unflushed batch and the damaged final member; the reader
   (`backtester.core.trianglesim.read_snapshot_files`) keeps every complete line before it.
 * **Publishes** the newest snapshot to `<config dir>/prices/latest.json` (atomic replace),
   which is how the console shows live prices without holding the socket itself.
 
 Exactly one recorder runs: it holds `fcntl.flock` on `<config dir>/prices/recorder.lock`.
+Stop requests name a unique recorder instance; the PID file is diagnostic only.
 Recording is always on, because the recording is the data the bots backtest and train on.
 `ensure_recorder` (the console calls it at start and every minute) installs a LaunchAgent,
 `com.mitchhudson.soltui.pricefeed` (RunAtLoad, KeepAlive), which keeps the recorder alive across
@@ -51,11 +54,14 @@ import hashlib
 import json
 import math
 import os
+import secrets
 import socket
 import ssl
 import struct
 import sys
+import tempfile
 import time
+import zlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Sequence
@@ -81,6 +87,7 @@ FALLBACK_PRODUCTS = (
 SNAPSHOT_SECONDS = 1.0
 FLUSH_SECONDS = 10.0
 RECV_TIMEOUT_S = 1.0
+RECEIVE_IDLE_S = 10.0
 MAX_FRAME_BYTES = 8 * 1024 * 1024
 
 
@@ -179,6 +186,7 @@ class WebSocket:
                  connect: Callable[..., socket.socket] = socket.create_connection) -> None:
         self.url = url
         self.timeout = timeout
+        self._recv_timeout = timeout
         self._connect = connect
         self.sock: Any = None
         self._buf = bytearray()
@@ -190,39 +198,56 @@ class WebSocket:
             raise PriceFeedError(f"not a WebSocket URL: {self.url}")
         port = parts.port or (443 if parts.scheme == "wss" else 80)
         raw = self._connect((parts.hostname, port), timeout=self.timeout)
-        sock = ssl.create_default_context().wrap_socket(raw, server_hostname=parts.hostname) \
-            if parts.scheme == "wss" else raw
-        key = base64.b64encode(os.urandom(16)).decode()
-        path = (parts.path or "/") + (f"?{parts.query}" if parts.query else "")
-        sock.sendall((f"GET {path} HTTP/1.1\r\nHost: {parts.hostname}\r\nUpgrade: websocket\r\n"
-                      f"Connection: Upgrade\r\nSec-WebSocket-Key: {key}\r\n"
-                      "Sec-WebSocket-Version: 13\r\nUser-Agent: soltui-pricefeed\r\n\r\n").encode())
-        head = bytearray()
-        while b"\r\n\r\n" not in head:
-            chunk = sock.recv(4096)
-            if not chunk:
-                raise PriceFeedError("connection closed during the WebSocket handshake")
-            head += chunk
-            if len(head) > 65536:
-                raise PriceFeedError("oversized handshake response")
-        header, _, rest = bytes(head).partition(b"\r\n\r\n")
-        lines = header.decode("latin-1").split("\r\n")
-        if not lines or " 101 " not in f"{lines[0]} ":
-            raise PriceFeedError(f"WebSocket upgrade refused: {lines[0] if lines else '?'}")
-        fields = {k.strip().lower(): v.strip() for k, _, v in (ln.partition(":") for ln in lines[1:])}
-        if fields.get("sec-websocket-accept") != accept_key(key):
-            raise PriceFeedError("WebSocket handshake returned the wrong Sec-WebSocket-Accept")
-        self.sock = sock
-        self._buf = bytearray(rest)
+        sock = raw
+        try:
+            if parts.scheme == "wss":
+                sock = ssl.create_default_context().wrap_socket(raw, server_hostname=parts.hostname)
+            key = base64.b64encode(os.urandom(16)).decode()
+            path = (parts.path or "/") + (f"?{parts.query}" if parts.query else "")
+            sock.sendall((f"GET {path} HTTP/1.1\r\nHost: {parts.hostname}\r\nUpgrade: websocket\r\n"
+                          f"Connection: Upgrade\r\nSec-WebSocket-Key: {key}\r\n"
+                          "Sec-WebSocket-Version: 13\r\nUser-Agent: soltui-pricefeed\r\n\r\n").encode())
+            head = bytearray()
+            deadline = time.monotonic() + self.timeout
+            while b"\r\n\r\n" not in head:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise socket.timeout("WebSocket handshake deadline expired")
+                sock.settimeout(remaining)
+                chunk = sock.recv(4096)
+                if not chunk:
+                    raise PriceFeedError("connection closed during the WebSocket handshake")
+                head += chunk
+                if len(head) > 65536:
+                    raise PriceFeedError("oversized handshake response")
+            header, _, rest = bytes(head).partition(b"\r\n\r\n")
+            lines = header.decode("latin-1").split("\r\n")
+            if not lines or " 101 " not in f"{lines[0]} ":
+                raise PriceFeedError(f"WebSocket upgrade refused: {lines[0] if lines else '?'}")
+            fields = {k.strip().lower(): v.strip() for k, _, v in (ln.partition(":") for ln in lines[1:])}
+            if fields.get("sec-websocket-accept") != accept_key(key):
+                raise PriceFeedError("WebSocket handshake returned the wrong Sec-WebSocket-Accept")
+            self.sock = sock
+            self._buf = bytearray(rest)
+        except BaseException:
+            sock.close()
+            raise
 
     def send_text(self, text: str) -> None:
         self.sock.sendall(encode_frame(OP_TEXT, text.encode("utf-8")))
 
     def recv_text(self) -> str:
         """The next complete text message. Raises socket.timeout when none arrives in time."""
+        # Per-recv timeouts alone never yield when a peer keeps sending pings or
+        # partial frames. Bound the whole call so recording and Stop can run.
+        deadline = time.monotonic() + self._recv_timeout
         while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise socket.timeout("WebSocket message deadline expired")
             frame = parse_frame(self._buf)
             if frame is None:
+                self.sock.settimeout(remaining)
                 chunk = self.sock.recv(65536)
                 if not chunk:
                     raise ConnectionClosed("server closed the connection")
@@ -242,6 +267,7 @@ class WebSocket:
                     return text
 
     def settimeout(self, seconds: float) -> None:
+        self._recv_timeout = seconds
         self.sock.settimeout(seconds)
 
     def close(self) -> None:
@@ -406,19 +432,84 @@ def _try_lock(path: Path) -> int | None:
     return fd
 
 
+def _repair_gzip_tail(path: Path) -> tuple[int, Path | None]:
+    """Keep the valid gzip-member prefix; caller holds the recorder lock.
+
+    Scan once per day file after restart, with bounded compressed and decoded
+    chunks. Gzip validates each member's CRC/footer before we commit its end.
+    Bytes after the first invalid/incomplete member cannot be replayed safely.
+    Preserve that suffix in a private quarantine before truncating the stream.
+    """
+    chunk_size = 64 * 1024
+    try:
+        fh = path.open("r+b")
+    except FileNotFoundError:
+        return 0, None
+    with fh:
+        valid_end = 0
+        decoder = zlib.decompressobj(wbits=31)
+        corrupt = False
+        while data := fh.read(chunk_size):
+            while data:
+                try:
+                    decoded = decoder.decompress(data, chunk_size)
+                    # A size-limited decode can retain output without retaining
+                    # input. Drain that output before reading another chunk.
+                    while not decoder.eof and not decoder.unconsumed_tail and len(decoded) == chunk_size:
+                        decoded = decoder.decompress(b"", chunk_size)
+                except zlib.error:
+                    corrupt = True
+                    break
+                if decoder.eof:
+                    data = decoder.unused_data
+                    valid_end = fh.tell() - len(data)
+                    decoder = zlib.decompressobj(wbits=31)
+                else:
+                    data = decoder.unconsumed_tail
+            if corrupt:
+                break
+        size = os.fstat(fh.fileno()).st_size
+        removed = size - valid_end
+        quarantine = None
+        if removed:
+            fd, name = tempfile.mkstemp(prefix=f"{path.name}.", suffix=".damaged-tail", dir=path.parent)
+            quarantine = Path(name)
+            try:
+                with os.fdopen(fd, "wb") as tail:
+                    fh.seek(valid_end)
+                    while data := fh.read(chunk_size):
+                        tail.write(data)
+                    tail.flush()
+                    os.fsync(tail.fileno())
+                directory_fd = os.open(path.parent, os.O_RDONLY)
+                try:
+                    os.fsync(directory_fd)
+                finally:
+                    os.close(directory_fd)
+            except OSError:
+                quarantine.unlink(missing_ok=True)
+                raise  # leave the original stream intact when quarantine failed
+            fh.truncate(valid_end)
+            fh.flush()
+            os.fsync(fh.fileno())
+        return removed, quarantine
+
+
 class Recorder:
     """Owns the socket and the files. `run` is the loop; everything it decides is testable."""
 
     def __init__(self, products: Sequence[str], *, root: Path | None = None,
                  snapshot_s: float = SNAPSHOT_SECONDS, flush_s: float = FLUSH_SECONDS,
                  clock: Callable[[], float] = time.time,
-                 ws_factory: Callable[[], WebSocket] = WebSocket) -> None:
+                 ws_factory: Callable[[], WebSocket] = WebSocket,
+                 stop_requested: Callable[[], bool] | None = None) -> None:
         self.products = list(products)
         self.root = root or prices_dir()
         self.snapshot_s = snapshot_s
         self.flush_s = flush_s
         self.clock = clock
         self.ws_factory = ws_factory
+        self.stop_requested = stop_requested
         self.state: dict[str, list[Any]] = {}
         self.books: dict[str, Book] = {}
         self.last_trade: dict[str, float] = {}
@@ -428,9 +519,11 @@ class Recorder:
         self.reconnects = 0
         self.last_error = ""
         self.connected_at: float | None = None
+        self.last_received_at: float | None = None
         self._next_snapshot = 0.0
         self._next_flush = 0.0
         self.stopping = False
+        self._repaired_days: set[Path] = set()
 
     def snapshot(self, now: float) -> str | None:
         """One snapshot line from the current state, or None before the first quote."""
@@ -439,7 +532,9 @@ class Recorder:
         return json.dumps({"t": round(now, 3), "q": self.state}, separators=(",", ":"))
 
     def refresh_from_books(self, now: float) -> None:
-        """A synced book's top replaces the ticker's touch; it is live as of `now`."""
+        """Refresh quiet books only while feed activity proves the connection live."""
+        if self.last_received_at is None or now - self.last_received_at >= RECEIVE_IDLE_S:
+            return
         for product, book in self.books.items():
             top = book.top()
             if top is None:
@@ -481,8 +576,23 @@ class Recorder:
             by_day.setdefault(day_path(t, self.root), []).append(line)
         self.root.mkdir(parents=True, exist_ok=True)
         for path, lines in by_day.items():
-            with gzip.open(path, "at", encoding="utf-8") as fh:
-                fh.write("\n".join(lines) + "\n")
+            if path not in self._repaired_days:
+                removed, quarantine = _repair_gzip_tail(path)
+                if removed:
+                    self.last_error = (f"Recovered {removed} bytes of incomplete/corrupt gzip tail from {path.name}; "
+                                       f"preserved as {quarantine.name}")
+                    # Detached/LaunchAgent stdout is recorder.log; keep evidence
+                    # even if the next latest.json snapshot never gets written.
+                    print(f"{datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} {self.last_error}", flush=True)
+            try:
+                with gzip.open(path, "at", encoding="utf-8") as fh:
+                    fh.write("\n".join(lines) + "\n")
+            except OSError:
+                # A failed append may itself leave a partial member. Repair it
+                # before a subsequent retry in this recorder instance too.
+                self._repaired_days.discard(path)
+                raise
+            self._repaired_days.add(path)
         self.pending = []
 
     def handle(self, text: str, now: float) -> None:
@@ -498,11 +608,13 @@ class Recorder:
                 self.last_error = str(msg.get("message") or msg.get("reason") or "error")[:300]
             elif kind == "snapshot" and isinstance(product, str):
                 self.books.setdefault(product, Book()).load(msg.get("bids") or [], msg.get("asks") or [], now)
+                self.last_received_at = now
                 self.messages += 1
             elif kind == "l2update" and isinstance(product, str) and product in self.books:
                 book = self.books[product]
                 for side, price, size in msg.get("changes") or []:
                     book.change(side, price, size, now)
+                self.last_received_at = now
                 self.messages += 1
             elif kind == "ticker":
                 last = _num(msg.get("price"))
@@ -511,30 +623,43 @@ class Recorder:
                 # A ticker quote stands in only where no synced book exists.
                 if product not in self.books and apply_ticker(self.state, msg, now):
                     pass
+                self.last_received_at = now
+                self.messages += 1
+            elif kind == "heartbeat" and product in self.products:
+                self.last_received_at = now
                 self.messages += 1
         except (TypeError, ValueError):
             return  # one malformed message never ends the recording
 
+    def _should_stop(self) -> bool:
+        if self.stop_requested is not None and self.stop_requested():
+            self.stopping = True
+        return self.stopping
+
     def run_once(self, max_seconds: float | None = None) -> None:
         """One connection: subscribe, then read until it fails or `max_seconds` pass."""
         ws = self.ws_factory()
-        ws.open()
-        # A new connection starts from fresh book snapshots; a book carried across a gap would
-        # have missed every change made while disconnected.
-        self.books.clear()
-        ws.send_text(json.dumps({"type": "subscribe", "product_ids": self.products,
-                                 "channels": ["level2_batch", "ticker"]}))
-        ws.settimeout(RECV_TIMEOUT_S)
-        self.connected_at = self.clock()
-        started = self.clock()
         try:
-            while not self.stopping:
+            ws.open()
+            # Reconnects missed book changes and must await fresh snapshots.
+            self.books.clear()
+            self.last_received_at = None
+            ws.send_text(json.dumps({"type": "subscribe", "product_ids": self.products,
+                                     "channels": ["level2_batch", "ticker", "heartbeat"]}))
+            ws.settimeout(RECV_TIMEOUT_S)
+            self.connected_at = self.clock()
+            started = self.clock()
+            while not self._should_stop():
                 try:
                     text = ws.recv_text()
                     self.handle(text, self.clock())
                 except (socket.timeout, TimeoutError):
                     pass
                 now = self.clock()
+                if self._should_stop():
+                    return
+                if now - (self.last_received_at if self.last_received_at is not None else started) >= RECEIVE_IDLE_S:
+                    raise PriceFeedError("price feed idle; reconnecting before refreshing old books")
                 self.maybe_snapshot(now)
                 if max_seconds is not None and now - started >= max_seconds:
                     return
@@ -546,7 +671,7 @@ class Recorder:
         backoff = 1.0
         started = self.clock()
         try:
-            while not self.stopping:
+            while not self._should_stop():
                 remaining = None if max_seconds is None else max_seconds - (self.clock() - started)
                 if remaining is not None and remaining <= 0:
                     break
@@ -649,18 +774,44 @@ def start_recorder(root: Path | None = None) -> dict[str, Any]:
             "log": str(p["log"])}
 
 
+def _recorder_instance(fd: int) -> str | None:
+    try:
+        owner = json.loads(os.pread(fd, 512, 0))
+        nonce = owner.get("nonce") if isinstance(owner, dict) and owner.get("version") == 1 else None
+        if isinstance(nonce, str) and len(nonce) == 32 and all(c in "0123456789abcdef" for c in nonce):
+            return nonce
+    except (OSError, ValueError, UnicodeError):
+        pass
+    return None
+
+
 def stop_recorder(root: Path | None = None) -> dict[str, Any]:
-    import signal
+    """Queue Stop for the locked recorder instance; a PID is never authority."""
+    import fcntl
 
     p = paths(root)
-    if not recorder_running(root):
-        return {"stopping": False, "message": "no recorder is running"}
     try:
-        pid = int(p["pid"].read_text().strip())
-        os.kill(pid, signal.SIGTERM)
-    except (OSError, ValueError) as exc:
-        return {"stopping": False, "message": f"could not signal the recorder: {exc}"}
-    return {"stopping": True, "pid": pid}
+        fd = os.open(p["lock"], os.O_RDWR)
+        try:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                nonce = _recorder_instance(fd)
+                if nonce is None:
+                    return {"stopping": False, "message": "recorder has no instance control metadata; retry after startup"}
+                # The unique request cannot stop a replacement, even if the
+                # observed owner exits between the lock probe and this write.
+                _atomic_write(p["lock"].parent / f".stop-{nonce}", nonce)
+                try:
+                    pid = int(p["pid"].read_text().strip())
+                except (OSError, ValueError):
+                    pid = 0
+                return {"stopping": True, "pid": pid if pid > 0 else None}
+            return {"stopping": False, "message": "no recorder is running"}
+        finally:
+            os.close(fd)
+    except OSError as exc:
+        return {"stopping": False, "message": f"could not request recorder stop: {exc}"}
 
 
 def _wait_lock(path: Path) -> int:
@@ -692,22 +843,34 @@ def record_main(root: Path | None = None, max_seconds: float | None = None, *, w
     if fd is None:
         print("another recorder holds the lock; exiting", flush=True)
         return 1
-    p["pid"].write_text(f"{os.getpid()}\n")
-    products = stream_products(root=root)
-    rec = Recorder(products, root=root)
-
-    def on_term(signum: int, frame: Any) -> None:
-        rec.stopping = True
-
-    signal.signal(signal.SIGTERM, on_term)
-    signal.signal(signal.SIGINT, on_term)
-    print(f"{datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} recording {len(products)} products "
-          f"to {rec.root}", flush=True)
+    nonce = secrets.token_hex(16)
+    stop_path = p["lock"].parent / f".stop-{nonce}"
+    handlers = {}
     try:
+        os.ftruncate(fd, 0)
+        payload = json.dumps({"version": 1, "nonce": nonce}).encode()
+        with os.fdopen(os.dup(fd), "wb") as owner:
+            owner.write(payload)
+        p["pid"].write_text(f"{os.getpid()}\n")
+        products = stream_products(root=root)
+        rec = Recorder(products, root=root, stop_requested=stop_path.exists)
+
+        def on_term(signum: int, frame: Any) -> None:
+            rec.stopping = True
+
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            handlers[sig] = signal.signal(sig, on_term)
+        print(f"{datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} recording {len(products)} products "
+              f"to {rec.root}", flush=True)
         return rec.run(max_seconds=max_seconds)
     finally:
-        p["pid"].unlink(missing_ok=True)
-        os.close(fd)
+        try:
+            for sig, previous in handlers.items():
+                signal.signal(sig, previous)
+            p["pid"].unlink(missing_ok=True)
+            stop_path.unlink(missing_ok=True)
+        finally:
+            os.close(fd)
 
 
 # -- the LaunchAgent: recording survives a closed console, a crash and a reboot -------------------
@@ -807,13 +970,15 @@ def ensure_recorder(root: Path | None = None, *, repo: Path = REPO, install: boo
     Idempotent and cheap when a recorder already runs; the console calls it at start and every
     minute, so a recorder that died comes back without anyone pressing anything.
     """
+    import subprocess
+
     out: dict[str, Any] = {"running": recorder_running(root)}
     agent = agent_status()
     out["agent"] = agent
     if install and root is None and not (agent["installed"] and agent["loaded"]):
         try:
             out["installed"] = install_agent(repo=repo)
-        except PriceFeedError as exc:
+        except (PriceFeedError, OSError, subprocess.TimeoutExpired) as exc:
             out["agent_error"] = str(exc)
     if not recorder_running(root):
         for _ in range(30):  # the agent's process takes a moment to take the lock

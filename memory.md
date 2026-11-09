@@ -1,19 +1,105 @@
 # Work continuation
 
-Version: 259
-Delta: v258 to v259; stabilize the CI navigation test and retain optimizer continuation.
+Version: 271
+Delta: v268 to v271; preserve SolTUI UI audit and CI test continuation during integration.
 
-## v259 - 2026-11-09
+## v271 - 2026-11-09
 
-CI for PR 154 twice failed test_goto_signal_live_button: its fixed 0.2-second pause ended before the queued button event changed tabs on the loaded macOS runner. The test now waits for the expected navigation with a bounded 4-second timeout and still asserts both target tabs. The focused test passed locally. Rebuild the offline indexes and rerun final-head CI before merging; do not treat either failed CI attempt as a pass. UI optimizer remains incomplete as described in v258 and its ledger.
+CI for PR 154 twice failed test_goto_signal_live_button: its fixed 0.2-second pause ended before the queued button event changed tabs on the loaded macOS runner. The test now waits for the expected navigation with a bounded 4-second timeout and still asserts both target tabs. The focused test passed locally. Rebuild the offline indexes and rerun final-head CI before merging; do not treat either failed CI attempt as a pass. UI optimizer remains incomplete as described in v270 and its ledger.
 
-## v258 - 2026-11-09
+## v270 - 2026-11-09
 
 UI optimizer checkpoint: source f1e8efa plus the Money banner repair. The former banner falsely stated that Money views only read while Coinbase forms can submit real orders. The replacement says Coinbase orders can move real money and forms start disarmed. Headless Textual rendering at 80x24 and 160x50 and the focused keyboard navigation regression passed; no order was submitted. The optimizer has NOT completed: P01 is partial, P02-P48 are uninspected, and P49-P70 are out of scope without authorized research. Ledger, frozen 18-cell matrix, source fingerprint, captures and test log are in /Users/mitch/.local/state/soltui-ui-optimizer-20261109/ledger.json. Ledger validation passed; it does not verify the truth of observations. Continue from P01 after comparing fingerprints and perform every remaining selected pass, repairs, fresh full sweep and final review. No clean or convergence claim is supported. Stele task and risk are queued as outbox f3cb2cc0 and 9a00cb3a.
 
-## v257 - 2026-11-09
+## v269 - 2026-11-09
 
 The owner requested ui-deep-optimizer on SolTUI. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bec1 starts at f1e8efa. Preserve the other active checkout and worktrees, real-money safeguards, stopped services and personal data. Stele MCP is unavailable; task creation and claim are queued as outbox f3cb2cc0. The audit must freeze its matrix and method selection, save evidence and source fingerprints, complete each selected method sequentially, repair verified Medium+ issues immediately, and perform rendered verification and a complete fresh sweep after edits. Missing selected evidence precludes CLEAN. Next: establish safe runtime and scope, create the versioned ledger and conduct the first method.
+
+## v268 - 2026-11-09
+
+PR https://github.com/mithudso/solmargintrader/pull/153 carries the optimizer delivery. Its first CI run passed Node, browser, executor, backtester, docs and Mongo, but the full-package liquidity Ruff format check found six unformatted files. Local earlier checks covered later-owned files only. Formatted those six files; AST comparison proved no behavior changed. All 51 package files now pass formatting and lint. The full liquidity suite passed again with sockets blocked: 579 passed, six network tests deselected. External proof is ci-format-proof.json.
+
+The audit result stays unchanged: 98 repaired by the run, two additional original residuals closed by upstream integration, and 13 remaining (seven High, six Medium). Update the source/report hashes and offline indexes, obtain passing metadata/backtester checks, commit and push this correction, then wait for all required checks on the final tip before merging. Preserve active shared-checkout leases and the three unrelated guides.
+
+## v267 - 2026-11-09
+
+Accepted source commit 40bb601 includes the delivered executor integrity and Signal Desk changes. Integration preserved all optimizer repairs. Completed checks: 429 executor tests and Ruff; 579 liquidity tests with sockets blocked and Ruff; 389 extension tests; 941 backtester tests; 321 mapped SolTUI tests; 89 focused integration checks with overlap; and 46 Mongo tests with 11 server integrations skipped. The fresh browser and production native host passed 26 checks at version 0.5.1. Twelve loaded resource hashes matched. The offline round trip closed at net $0.3492. Full optional SolTUI coverage and historical sweeps were not run.
+
+The final census includes the newly committed test_desk module: 2647 total, comprising 941 backtester, 1271 SolTUI, 46 Mongo and 389 extension cases. Census does not establish execution coverage. Final count, report and index changes receive passing checks before delivery. The optimizer repaired 98 findings. Delivered PR151 separately closed two original gate2 residuals. Thirteen remain: seven High and six Medium. Status remains BLIND-AUDIT-DISSENT under the skill's second-dissent rule. Final reviewers disclosed partial per-file coverage. No third optimization pass or blind gate ran.
+
+Original gate2 receipts bind candidate a1a0929. The scope JSON records candidate and integrated hashes. integration-executor.json and integration-tui.json record conflict resolution and preserved controls. live-acceptance-integrated.json records the loaded surface. Stele integration decision cf752317 supersedes two queued risk writes; the follow-up task queued as 121bc907 must show 13 remaining at replay. No server acknowledgment exists.
+
+This is the pre-delivery snapshot for branch agent-01a1be31. Remaining steps are the final metadata commit, PR checks, squash merge, remote content verification and task worktree cleanup. Consult GitHub for the final receipt before resuming; do not infer current progress from this historical entry. Preserve the shared checkout, its three unrelated guides and owner services.
+
+## v266 - 2026-11-09
+
+Integrated completed upstream PR151 executor integrity and PR152 SignalDesk after verified optimizer checkpoint a1a0929. Preserve both delivered features and optimizer repairs. Executor worker resolves four overlapping engine/journal/gate/ledger files and verifies strict state plus economics; TUI worker verifies merged desk/CAS/busy/bridge paths. Root owns docs, workflow histories, generated indexes and extension version0.5.1. The earlier15-item final dissent describes the pre-integration candidate; PR151 appears to close processed-status and postverify KILL ordering risks. Revalidate before retiring them and update report with final13 remaining if both are confirmed. No new optimization iteration or third blind gate is authorized by the current skill.
+
+Before next commit: finish merge conflict integration, complete affected executor/TUI/Node/real-browser gates, refresh truthful census and offline indexes, obtain full backtester/docs success, then commit, push PR, pass final CI, merge and verify remote content. The docs counter uses HEAD test filenames; the newly merged committed test_desk module becomes visible to that counter after merge commit. Recompute counts immediately after merge and deliver their final correction through passing gates. Preserve shared checkout/owner services and all unrelated work. Exact external state remains /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo.
+
+## v265 - 2026-11-09
+
+All required local suites have completed successfully for final source:941backtester,384extension,274executor,579liquidity,269mappedSolTUI and46Mongo (11 integration skips). Python package Ruff, JavaScript syntax84modules,25real browser/native checks, offline net$0.3492, keyless endpoint reads, documentation2635census and offline index checks passed. Report/index-only updates receive a final freshness/check rerun before commit. Status remains BLIND-AUDIT-DISSENT:98 repaired and15 retained (9High,6Medium). Passing tests do not close these source findings.
+
+Final gate production hashes match the frozen tree. CLAUDE.md received only count updates after the gate. Several final reviewers disclosed partial inspection; no full-gate or repository-wide cleanliness claim. The report lists residuals and the source-based rejection of a proposed trend-exit behavior change. Follow-up task creation queued121bc907; separate risks do not resolve when this audit closes. Remaining delivery: PR, required final-head CI, merge/content verification and cleanup of only this task's clean worktree/branch. Other active checkouts and private outputs stay intact.
+
+## v264 - 2026-11-09
+
+The requested deep code optimizer reviewed50 primary sources out of261 candidates at base2ca3041, with211 explicitly deferred paths. Two remediation iterations repaired98 findings: initial76, gate1 twenty, plus protected-document alias and Aero deny-before-engine defects. Final gate2 retained15 corroborated residuals (9 High,6 Medium); one suggested trend-exit policy change was rejected because the documented gate constrains calls. Status BLIND-AUDIT-DISSENT follows code-deep-optimizer1.16.0 second-dissent stop rule. No repository-wide cleanliness claim. Final reviewers explicitly disclosed partial coverage of some hashed files; hashing alone is not review.
+
+Completed acceptance: executor274 offline tests and Ruff; liquidity579 with all socket connections blocked and Ruff; extension384; mapped SolTUI269; Mongo46 run/11 server integrations skipped; real Chrome plus production native host25/25 with loaded version0.4.3 and nine reviewed source hashes; offline closed round trip net$0.3492; keyless endpoint checks passed (keyed price skipped). The full941-test backtester needs a final passing rerun after all report/index changes. Census is2635 (941backtester,1264SolTUI,46Mongo,384extension); census is not execution coverage. Full optional TUI suite and historical sweeps remain unrun.
+
+Manual Jupiter previews remain unsigned and submit refuses before keys/signing/send. Liquidity stays archived; owner services/profiles/state stay untouched. A preliminary liquidity suite made one unintended public eth_chainId read before its gate; cmd_run now refuses before Engine construction and the final suite blocked sockets. Three completed concurrent PRs148-150 were integrated at6212fd8; their histories and cadence/proposal work remain intact. The shared checkout still belongs to other sessions.
+
+Final report: docs/code-deep-optimizer-2026-11-08.md; exact scope/residuals: docs/code-optimizer-scope-2026-11-08.json. External continuation root: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo. Remaining delivery: finish final report/offline indexes, obtain successful full backtester/docs/index exits, commit owned paths, push PR, wait for required final-head CI, merge and verify remote content, then remove only this task's clean worktree/branch. Stele current-task creation remains queued ca66e7c8. Residual follow-up task creation queued121bc907;15 risk writes map in stele-final-residual-outbox.json and must not auto-archive when this audit closes.
+
+## v263 - 2026-11-08
+
+All seven gate1 packets are collected: 20 corroborated findings (4 High, 16 Medium). They authorize iteration2; all have queued Stele writes in stele-findings-iter2-outbox.json. Source base now includes delivered PRs 148, 149 and 150 at origin/master 6212fd8. Preserve their UI cadence, proposal and workflow histories. Merge conflicts are resolved without dropping either session. Do not commit the merge or repairs until required local checks finish successfully; stale indexes are a required repair, not an accepted final failure.
+
+Iteration2 ownership: executor strict Jupiter Borsh binding; analysis six engine/research/Mongo findings; TUI commands/state and backend document CAS; root extension persistence/CSV/browser revision handling; lifecycle gzip crash recovery and Aero safe-exit corrections follow. Snapshot every changed path before writes. No full optional TUI suite, owner-state use, keys, signing, transaction or service activation. Final blind gate2, required checks, independent loaded-state acceptance, report/count/index refresh and verified PR merge remain. Current task worktree stays /Users/mitch/dev/solmargintrader-wt-01a1be31.
+
+## v262 - 2026-11-08
+
+All 76 initial findings have implementation receipts in /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/fixes-*.json. Executor: 268 offline tests and Ruff pass. TUI owner: 110 focused pass. Lifecycle owner: 110 focused pass. Extension: 382 unit and 23 fixture-browser checks pass; version 0.4.2. Liquidity: 561 offline tests and Ruff pass. Analysis: 347 targeted pass; full lean backtester runs 935 with only expected stale-index failure. Mongo offline run: 45 tests with 11 integrations skipped. No owner services/state, keys, live orders or historical reports changed.
+
+Fresh gate1 is in progress. Executor found EX-G1-001: structural verification never binds encoded Jupiter route input/minOut to the quote. Schema-aware Borsh decoding with exact consumption is required; a last-19-byte check alone is unsafe. Pinned public schema evidence is in jupiter-v6-idl.json and jupiter-parser-idl.ts in the run directory. Their old jupiter-cpi-idl.json predecessor has only 39 variants and is not sufficient for the recorded tag48 fixture. TUI gate reports additionally found preview price acquisition, forward busy ownership, YAML restoration, malformed-record state, truncated gzip append, stale per-product bar quotes and invalid persisted OHLC issues. Collect all gate1 findings before the second remediation batch. Do not claim CLEAN.
+
+Current worktree /Users/mitch/dev/solmargintrader-wt-01a1be31; branch agent-01a1be31; source base 2ca3041. Preserve the active shared checkout and its guides. Remaining: finish fresh gate1 packets, corroborate/triage, fix their findings in iteration2 with new snapshots and red/green checks, run gate2, refresh truthful docs/counts/offline indexes, final verification, PR CI/merge/content verification and cleanup. Stele writes remain queued; exact IDs are in stele-findings-outbox.json and the manual decision receipt.
+
+## v261 - 2026-11-08
+
+All 50 primary per-file diagnostics are complete, with 76 raw independent Medium+ findings. The exact coverage cap is 50 of 261 production sources; remaining paths and per-pass evidence are explicit in /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/scope.json. No product changes preceded collection. The first remediation iteration is authorized in state.json. Implementation briefs define disjoint ownership; every changed/new source and regression path must be recorded by snapshot.py before its first write.
+
+Manual Jupiter V2 lacks independent economic verification. Preserve unsigned previews/history/reconciliation, but refuse submission before key loading/signing/sending. Do not invent a bypass or claim a new V2 verifier. This durable decision is queued in Stele; receipt is manual-jupiter-decision-outbox.txt. All 76 findings have queued graph writes mapped in stele-findings-outbox.json.
+
+Progress: inventory/baseline and primary diagnostics complete; reproduction/remediation in progress; final verification, fresh audit gate, report/index/count refresh, CI and delivery remain. Preserve shared checkout, paused services, archived liquidity and all unrelated work.
+
+## v260 - 2026-11-08
+
+Deep optimizer diagnostics continue in /Users/mitch/dev/solmargintrader-wt-01a1be31 on agent-01a1be31. Source includes completed live-score PR146 at 2ca3041; current local merge bbc9c22 preserved both workflow histories. 33 of the 50 selected production sources are reviewed, of 261 candidates; 44 raw independent Medium+ findings are recorded. No product edits have been applied. Continue per-file briefs and receipts before the first remediation batch. External run state: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/state.json. scope.json records exact hashes and every deferred file. findings-iter1.json aggregates concrete findings. stele-findings-outbox.json maps each to its queued graph write.
+
+Priorities: prevent unverified manual Jupiter signing and retain ambiguous sends until chain proof; repair executor conservation, quote, journal, gates and failed-fee accounting; preserve text during browser document saves; keep bot/job persistence updates atomic. Backtest review also reproduced shifted fine bars that admit future data, near-threshold liquidation suppression, fee-bearing resize refusal, ladder parity drift and incomplete compound data hashes. Do not publish old archived figures as corrected-engine results.
+
+Baselines remain in baseline-*.log. The new private executor/.venv matches executor/uv.lock; its Ruff, formatting and 202 offline tests pass. Post-integration documentation census agrees at 2526 tests. Full optional SolTUI remains unrun. Stele reads via CLI are available; writes remain queued because MCP tools are absent. Do not touch the shared active checkout, restart the installed console/recorders, or reactivate archived liquidity. Remaining: finish primary diagnostics, write red regressions and minimal fixes, verify, run any required fresh audit gate, publish the exact scope/report and deliver the final PR through passing CI and merge.
+
+## v259 - 2026-11-08
+
+Integrated completed live-score PR146 while optimizer diagnostics continue. Preserved both prompt and memory histories, renumbering only the new local optimizer entries. Current source includes origin/master 2ca3041. Already-reviewed sources are unchanged; pending commands, pricefeed, browser panel and config reviews use the integrated version. Initial test baselines were dec4b5a; rerun changed package checks after remediation. The shared checkout and active sessions were untouched. Continue from the external optimizer state and scope receipts.
+
+## v258 - 2026-11-08
+
+Optimizer inventory and baseline complete; per-file review is in progress in /Users/mitch/dev/solmargintrader-wt-01a1be31. Eight of 50 primary files reviewed so far. Persisted review JSON, exact hashes, pass rows and remaining files live under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo. Use state.json, scope.json and findings-iter1.json there. Do not mistake the 50 selected candidates for completed reviews. No product edits yet; collect all first-iteration reviews before remediation.
+
+Baseline: extension 369 pass; executor 202 pass (5 network deselected); liquidity 473 pass (6 network deselected); Mongo 34 run with 11 server-dependent skips; 198 targeted SolTUI pass; browser 24/24 dry-run-only checks; offline round trip net $0.3492; executor and liquidity Ruff pass; docs census 2515 agrees. Backtester ran 909 with one index-freshness failure caused by the required prompt/memory updates. Refresh offline indexes after final edits. Do not run the full optional SolTUI suite or reactivate archived liquidity.
+
+Confirmed initial findings include wrapped-SOL conservation and rent accounting; final-RPC kill/quote-age staleness; missing failed-transaction fees; unchecked short journal writes; unsafe generic-RPC rejection classification; quote threshold/slippage inconsistency; credential-bearing rpc_host status; URL prefix validation; custom-parent chmod; nonfinite persisted gates and concurrent gate record loss. Each has a per-file evidence artifact. Reproduce with committed failing tests, then correct and verify. The reserve precheck also falsely blocks replenishing native SOL. Stele CLI reads work, but no write MCP is available. Tracking writes remain queued: ca66e7c8, 3a873879, 24fcdf24, c2a1c757, 44c856e1, a6951157, cae12367, 13ac6d8c, c3531170. Claim is queued on task creation.
+
+## v257 - 2026-11-08
+
+Target: run code-deep-optimizer against risk-ranked repository sources. Worktree /Users/mitch/dev/solmargintrader-wt-01a1be31, branch agent-01a1be31, base dec4b5a. Preserve the active shared checkout and its three untracked guides. Keep live-order defaults disarmed/dry-run, preserve ambiguous-submit refusal, and keep archived liquidity disabled. No transaction or service restart is needed for verification. Prior audit ended BLIND-AUDIT-DISSENT; current scope must be explicit. Stele creation outbox ca66e7c8. The fixed-model recall specialist failed before execution; Stele MCP tools are absent.
+
+Progress: inventory in progress; per-file review and reproduction pending; remediation and verification pending; PR delivery pending. Detected checks: Python unittest for backtester/mongo and mapped SolTUI; extension npm test, offline dryrun, e2e; executor/liquidity Ruff and offline pytest; scripts/check_docs.py and offline index freshness. Full SolTUI suite is explicit opt-in and is not run. No independent held-out benchmark exists, so empirical champion promotion is inapplicable. Run receipts: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo.
 
 ## v256 - 2026-11-09
 

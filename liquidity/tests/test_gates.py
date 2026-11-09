@@ -183,6 +183,7 @@ def test_cli_refuses_live_daemon_before_touching_the_signer(tmp_path, monkeypatc
     cfgfile.write_text(f'owner = "{OWNER}"\n')
     monkeypatch.setattr("aero_lp.wallet.load_signer", lambda *a, **k: pytest.fail("signer must not load"))
     monkeypatch.setattr(cli, "AeroChain", lambda *a, **k: pytest.fail("no chain access before the gate"))
+    monkeypatch.setattr(cli, "Engine", lambda *a, **k: pytest.fail("no engine construction before the gate"))
     assert cli.main(["daemon", "-c", str(cfgfile), "--live"]) == 3
     assert "refusing live mode" in capsys.readouterr().err
     assert cli.main(["run", "-c", str(cfgfile), "--live", "--once"]) == 3

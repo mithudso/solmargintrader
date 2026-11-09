@@ -332,7 +332,7 @@ class Forward(Isolated):
         for minute in (0, 1, 3, 4, 10):  # minute 2 missing (bridged), 5..9 missing (gap)
             for sec in (0, 30):
                 mid = 100.0 + minute
-                mb.feed(t0 + minute * 60 + sec, {"SOL-USD": [mid - 0.01, mid + 0.01, mid, 1, 1, 0]})
+                mb.feed(t0 + minute * 60 + sec, {"SOL-USD": (mid - 0.01, mid + 0.01, 1, 1, t0 + minute * 60 + sec)})
         arrays, gap, bridged = mb.arrays(before=t0 + 11 * 60)
         self.assertEqual(list((arrays["ts"] - t0) // 60), [0, 1, 2, 3, 4])
         self.assertEqual(bridged, 1)

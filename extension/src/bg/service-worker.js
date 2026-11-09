@@ -25,6 +25,7 @@ import { createNativeTransport } from './soltui-transport.js';
 import { DEFAULT_LIMITS } from '../core/risk.js';
 import { RequestBudget } from '../jupiter/http.js';
 import { makeSigner } from '../wallet/signer.js';
+import { restorePaperVenue } from './paper-venue.js';
 
 const ALARM = 'solmargintrader-tick';
 
@@ -56,7 +57,7 @@ const nativeTransport = createNativeTransport();
  * `passphrase` is never persisted: a full-auto session key can only be unsealed
  * while the user is present to supply it, which is the point.
  */
-async function chromeDeps({ passphrase, openStore = () => Store.open(), soltui = nativeTransport } = {}) {
+export async function chromeDeps({ passphrase, openStore = () => Store.open(), soltui = nativeTransport } = {}) {
   const store = await openStore();
   return {
     store,
@@ -68,7 +69,8 @@ async function chromeDeps({ passphrase, openStore = () => Store.open(), soltui =
       const config = await configStore.getConfig();
       const secrets = await configStore.get('secrets', {});
       const signer = await makeSigner({ mode: config.mode, passphrase });
-      return buildVenue({ config, signer, apiKey: secrets.apiKey, budget });
+      const venue = buildVenue({ config, signer, apiKey: secrets.apiKey, budget });
+      return config.mode === MODE.DRY_RUN ? restorePaperVenue(venue, config, configStore) : venue;
     },
     clock: () => Date.now(),
     log: (e) => console[e.level === 'error' ? 'error' : 'warn']('[smt]', e.msg, e),

@@ -21,6 +21,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any, Sequence
 
 import numpy as np
 import pandas as pd
@@ -30,6 +31,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from backtester.core.cpcv import cpcv_evaluate, pbo_cscv  # noqa: E402
+from backtester.core.engine import EngineConfig  # noqa: E402
 from backtester.core.strategies import FAMILY, build, build_composite  # noqa: E402
 from research.sweep import (  # noqa: E402
     COMBO_CANDIDATES,
@@ -97,7 +99,7 @@ configuration, instead of the single arbitrary train/test split it replaces.
 PBO_NOISE = 0.50
 PBO_INFORMATIVE = 0.35
 # Below this share of evaluable configs being positive, a low PBO is not good
-# news -- it means the in-sample winner generalises reliably as a loser.
+# news by itself: rank stability does not establish winner profitability.
 LOW_POSITIVE_SHARE = 0.25
 
 
@@ -144,8 +146,8 @@ def interpret(evaluable: int, total: int, positive: int, pbo: float) -> list[str
             f"({share:.0%}) are positive."
         )
         lines.append(
-            "         Low PBO means in-sample rank GENERALISES -- here it generalises "
-            "reliably as a loser."
+            "         Most tested configurations lose. Low PBO concerns rank stability; "
+            "verify the selected winner's actual held-out returns before claiming profitability."
         )
     elif pbo < PBO_INFORMATIVE:
         lines.append(
@@ -176,6 +178,37 @@ TRIPLE_CANDIDATES = (
     "zscore",           # mean reversion
     "obv_trend",        # volume flow
 )
+
+
+def experiment_metadata(
+    arrays: dict[str, np.ndarray], cfg: EngineConfig, horizon: str, n_groups: int, k_test: int,
+    *, gate: str | None = None, candidates: Sequence[str] = (), modes: Sequence[str] = (), size: int = 1,
+) -> dict[str, Any]:
+    from dataclasses import asdict
+    from research.evidence import array_checksum, canonical, identity, source_hashes
+    from research.sweep import data_dir
+    manifest = {
+        "asset": "SOL", "horizon": horizon, "data_checksum": array_checksum(arrays),
+        "data_source": str((data_dir() / Path(HORIZONS[horizon]["data"]).name).resolve()),
+        "bars": len(arrays["ts"]), "from_ts": int(arrays["ts"][0]), "to_ts": int(arrays["ts"][-1]),
+        "engine_config": asdict(cfg), "n_groups": n_groups, "k_test": k_test,
+        "parameters": {n: HORIZONS[horizon]["params"][n] for n in candidates},
+        "pair_gate": gate, "candidates": list(candidates), "modes": list(modes), "size": size,
+        "source_sha256": source_hashes(),
+    }
+    manifest = json.loads(canonical(manifest))
+    fields = ("data_checksum", "engine_config", "n_groups", "k_test", "parameters", "pair_gate")
+    return {"run_id": identity(manifest), "manifest": manifest, **{k: manifest[k] for k in fields}}
+
+
+def bind_experiment(
+    rows: list[dict[str, Any]], pbo: dict[str, Any], metadata: dict[str, Any],
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    for row in rows:
+        row.update({key: json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value
+                    for key, value in metadata.items() if key != "manifest"})
+    pbo.update(metadata)
+    return pd.DataFrame(rows), pbo
 
 
 def run_horizon(horizon: str, n_groups: int, k_test: int) -> tuple[pd.DataFrame, dict]:
@@ -240,7 +273,8 @@ def run_horizon(horizon: str, n_groups: int, k_test: int) -> tuple[pd.DataFrame,
     pbo["horizon"] = horizon
     pbo["common_blocks"] = order
     pbo["configs_included"] = sorted(block_returns)
-    return pd.DataFrame(rows), pbo
+    metadata = experiment_metadata(arrays, cfg, horizon, n_groups, k_test, candidates=tuple(params))
+    return bind_experiment(rows, pbo, metadata)
 
 
 def run_combos(
@@ -265,7 +299,8 @@ def run_combos(
     rows: list[dict] = []
     per_config_blocks: dict[str, dict[int, np.ndarray]] = {}
 
-    for combo in independent_combos(usable, size, horizon, gate):
+    admitted = independent_combos(usable, size, horizon, gate, arrays)
+    for combo in admitted:
         specs = [(n, params[n]) for n in combo]
         for mode in modes:
             label = f"{mode}({'+'.join(combo)})"
@@ -310,7 +345,12 @@ def run_combos(
     pbo["horizon"] = horizon
     pbo["kind"] = {2: "pair", 3: "triple"}.get(size, f"n{size}")
     pbo["common_blocks"] = order
-    return pd.DataFrame(rows), pbo
+    metadata = experiment_metadata(arrays, cfg, horizon, n_groups, k_test, gate=gate,
+                                   candidates=tuple(usable), modes=modes, size=size)
+    metadata["manifest"]["admitted_combinations"] = [list(c) for c in admitted]
+    from research.evidence import identity
+    metadata["run_id"] = identity(metadata["manifest"])
+    return bind_experiment(rows, pbo, metadata)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -395,6 +435,8 @@ def main(argv: list[str] | None = None) -> int:
                 f"\n### {h.upper()} — {kind}s under CPCV "
                 f"({len(sub)} evaluated, {len(ok)} evaluable, "
                 f"{int((ok.median_sharpe > 0).sum())} with positive median Sharpe)\n\n"
+                f"Run `{pbo['run_id']}`; {pbo['n_groups']} blocks, k={pbo['k_test']}, gate={pbo['pair_gate']}. "
+                "The matching PBO JSON embeds the experiment manifest.\n\n"
                 f"**PBO = {pbo['pbo']:.3f}** across {int(pbo['n_splits'])} splits of "
                 f"{int(pbo['n_configs'])} configurations.\n\n"
                 "| # | combination | families | median Sharpe | IQR | % paths + | "
@@ -447,6 +489,7 @@ def main(argv: list[str] | None = None) -> int:
             f"{int(ok.n_paths.max()) if len(ok) else 0} paths per configuration)\n"
         )
         lines.append(
+            f"Run `{pbo['run_id']}`; the matching PBO JSON embeds the experiment manifest.\n\n"
             f"**PBO = {pbo['pbo']:.3f}** across {int(pbo['n_splits'])} splits of "
             f"{int(pbo['n_configs'])} fully-evaluable configurations.\n\n"
         )

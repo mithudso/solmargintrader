@@ -22,6 +22,7 @@ import math
 import os
 import time
 from collections.abc import Iterator
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -96,7 +97,13 @@ def _apply_record(rec: dict[str, Any], states: dict[str, dict[str, Any]]) -> str
             if state in TERMINAL:
                 return None
         else:
-            if state in TERMINAL:
+            repairing_failed_fee = (
+                kind == "reconciled"
+                and rec.get("status") == "failed"
+                and failed_accounting_missing(st)
+                and not failed_accounting_missing({"outcome": rec})
+            )
+            if state in TERMINAL and not repairing_failed_fee:
                 return "terminal outcome is already recorded"
             st["outcome"] = rec
     st["state"] = kind
@@ -192,7 +199,9 @@ class Journal:
 
     def unresolved(self) -> list[dict[str, Any]]:
         """Intents that may have landed and have no outcome: they block new live swaps."""
-        return [s for s in self.states().values() if s["state"] in ("sending", "unknown")]
+        return [
+            s for s in self.states().values() if s["state"] in ("sending", "unknown") or failed_accounting_missing(s)
+        ]
 
     def corrupt_lines(self) -> int:
         return sum(1 for r in self.records() if r.get("kind") == "corrupt")
@@ -200,6 +209,22 @@ class Journal:
     def tail(self, limit: int = 20) -> list[dict[str, Any]]:
         recs = list(self.records())
         return recs[-limit:] if limit > 0 else []
+
+
+def failed_accounting_missing(state: dict[str, Any]) -> bool:
+    """Legacy failed outcomes remain blocking until their charged fee is measured."""
+    outcome = state.get("outcome") or {}
+    if outcome.get("status") != "failed":
+        return False
+    fee = outcome.get("fee_lamports")
+    try:
+        value = outcome["fee_usd"]
+        if isinstance(value, bool) or not isinstance(value, str | int | float | Decimal):
+            return True
+        usd = Decimal(value)
+    except (KeyError, TypeError, ValueError, InvalidOperation):
+        return True
+    return not (type(fee) is int and 0 <= fee < 2**64 and usd.is_finite() and usd >= 0)
 
 
 def require_clear(journal: Journal) -> None:

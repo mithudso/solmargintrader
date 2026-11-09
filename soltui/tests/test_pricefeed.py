@@ -246,7 +246,7 @@ class Recording(unittest.TestCase):
                               flush_s=0.0)
             rec.run_once(max_seconds=5)
             sub = json.loads(FakeWS.sent[0])
-            self.assertEqual(sub["channels"], ["level2_batch", "ticker"])
+            self.assertEqual(sub["channels"], ["level2_batch", "ticker", "heartbeat"])
             self.assertGreater(rec.snapshots, 0)
             self.assertTrue(pf.recorded_files(Path(tmp)))
 
@@ -257,6 +257,9 @@ class Recording(unittest.TestCase):
             def open(self) -> None:
                 attempts.append(1)
                 raise OSError("network down")
+
+            def close(self) -> None:
+                pass
 
         ticks = iter(float(t) for t in range(0, 1000, 10))
         sleeps: list[float] = []
