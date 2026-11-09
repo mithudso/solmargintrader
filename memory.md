@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 229
-Delta: v228 to v229; align zero-delay confidence entries with close fills.
+Version: 230
+Delta: v229 to v230; integrate the independently delivered tab-switch guard.
+
+## v230 - 2026-11-08
+
+Integrated PR 144, which independently guarded the same compound row callback during tab switches. The combined handler preserves its active-tab condition and resolves both widgets before updating them. All fee, leverage, short and confidence behavior remains unchanged. Final CI must run against this integrated head before PR 142 merges. Other sessions are now back on master; only fast-forward a clean tracked checkout after delivery, preserving the two untracked guides.
 
 ## v229 - 2026-11-08
 

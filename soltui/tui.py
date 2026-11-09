@@ -3915,6 +3915,8 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#compound-table")
     def _compound_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if not self._on_compound_tab():
+            return
         # A queued highlight can outlive the compound widgets during shutdown.
         try:
             detail = self.query_one("#compound-detail", Static)
