@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 304
+Version: 305
+Delta: v304 to v305; finish native/source checks and committed discovery counts for release0.6.2.
 Delta: v303 to v304; implement persistent monitoring, idempotent paper orchestration and saved-vote chart tools.
 Delta: v302 to v303; add a persistent status/P&L/activity rail and one primary paper workflow.
 Delta: v301 to v302; start live vote explanations, floating view, chart selections and Follow Stream default.
@@ -23,6 +24,16 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v305 - 2026-11-09
+
+Source checkpointf19b909 implements the requested live tools and persistent workspace. Final backend is frozen.145/145 native regression tests passed in27.981s(/tmp/live-tools-native-regression-final-retry.log);108/108 bot/CDO integration tests passed in20.970s. The earlier recovery subprocess test stopped waiting after an expected zero-call check at the minute freshness boundary; its wait now requires the real4-call generation within the same10s deadline. All strict SQLite and shutdown assertions remain.36new native cases produce1374SolTUI discovery cases and2768total across941backtester+407Node+46mongo+1374SolTUI. The full optional SolTUI suite was not run; focused native, real subprocess, parity and browser checks cover this change.
+
+Completed local gates:941/941backtester,407/407Node,46mongo(11optional skips),26/26realChromee2e,positiveofflinegridroundtrip(net0.3492),keylessJupiterprice/challengeendpointreads,docsinterimcountcheck,diffwhitespacecheckand all offlineindexhashes. Independent copied-Chrome0.6.2 acceptance has verified persistent rail, separate paper/wallet ledgers, no workflow/order start on load, exact scopeall single action, stale/expired votes, actual-rule hover, two-selection/deselection/asset-race behavior. The actual trusted action-popup→registeredcommand→synchronousSWPort→persistentowner requestWindow path produced Chrome alwaysOnTop:true, survived popup closure and closed with its owner. Final cold-helper/race/link checks and loaded-main activation still finish before completion.
+
+The grid retains its actual ADA session/config/start and reports Waiting if the recorder is stale. Read-only rail calls recompute the whole cached vote aggregate at request time before returning capped eligible rows; expiry never waits for the next worker poll. The atomically locked preserve_existing grid creation option closes the cross-surface start race. Strategy graphics show saved Coinbase candles, actual forecast markers and only proven indicator lines. Section links in PiP open a separate workspace tab because PiP cannot navigate itself. Wallet history remains explicitly bounded and partial; wallet valuation cannot be presented as reconciled trading profit.
+
+Remaining delivery: final committed-count/docs/index gate, push/PR required checks and merge, preserve all original jobs while synchronizing main, reload only this extension and verify the actual loaded monitor/current Council/grid/vote readings. Root final delivery and acceptance receipts live privately under /Users/mitch/.local/state/solmargintrader-session-01a1beca/live-tools-delivery.json and /tmp/live-tools-installed-acceptance.json; use their status as the final publication/activation authority rather than inferring completion from this source checkpoint. Stele task creation remains queued877aa35e; no canonical task id exists until replay, so completion must bind the returned id to the final receipt. Preserve other worktrees and the three unrelated main files.
 
 ## v304 - 2026-11-09
 
