@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T02:22:36+00:00",
+  "generatedAt": "2026-11-09T02:34:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1229,6 +1229,10 @@
           "hits": 46
         },
         {
+          "path": "memory.md",
+          "hits": 39
+        },
+        {
           "path": "extension/src/market/holdings.js",
           "hits": 37
         },
@@ -1243,10 +1247,6 @@
         {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
           "hits": 35
-        },
-        {
-          "path": "soltui/simulation.py",
-          "hits": 32
         }
       ],
       "source": "curated-from-repo-vocabulary"
