@@ -1082,3 +1082,9 @@ Run the repo-bootstrapper skill on this repo.
 ```text
 In the Soltui, under the Signal tab add a live page that shows a graph of the chosen coin, and shows real time subscribed streaming price information. And have a table of all of the top performing forward test strategies giving 1, 5, 10, and 30 min predictions  of what the price will do.
 ```
+
+## v118 - 2026-11-09
+
+```text
+$ui-deep-optimizer  ~/dev/solmargintrader/soltui
+```

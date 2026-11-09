@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 256
-Delta: v255 to v256; preserve concurrent executor and Signal Desk histories and integration checkpoint.
+Version: 258
+Delta: v257 to v258; repair misleading Money banner and preserve the incomplete UI audit.
+
+## v258 - 2026-11-09
+
+UI optimizer checkpoint: source f1e8efa plus the Money banner repair. The former banner falsely stated that Money views only read while Coinbase forms can submit real orders. The replacement says Coinbase orders can move real money and forms start disarmed. Headless Textual rendering at 80x24 and 160x50 and the focused keyboard navigation regression passed; no order was submitted. The optimizer has NOT completed: P01 is partial, P02-P48 are uninspected, and P49-P70 are out of scope without authorized research. Ledger, frozen 18-cell matrix, source fingerprint, captures and test log are in /Users/mitch/.local/state/soltui-ui-optimizer-20261109/ledger.json. Ledger validation passed; it does not verify the truth of observations. Continue from P01 after comparing fingerprints and perform every remaining selected pass, repairs, fresh full sweep and final review. No clean or convergence claim is supported. Stele task and risk are queued as outbox f3cb2cc0 and 9a00cb3a.
+
+## v257 - 2026-11-09
+
+The owner requested ui-deep-optimizer on SolTUI. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bec1 starts at f1e8efa. Preserve the other active checkout and worktrees, real-money safeguards, stopped services and personal data. Stele MCP is unavailable; task creation and claim are queued as outbox f3cb2cc0. The audit must freeze its matrix and method selection, save evidence and source fingerprints, complete each selected method sequentially, repair verified Medium+ issues immediately, and perform rendered verification and a complete fresh sweep after edits. Missing selected evidence precludes CLEAN. Next: establish safe runtime and scope, create the versioned ledger and conduct the first method.
 
 ## v256 - 2026-11-09
 
