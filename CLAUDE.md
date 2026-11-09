@@ -160,6 +160,11 @@ wallet responses, execution USD valuation and fee attribution remain unverified.
 has no semantic transaction verifier, so Trigger live signing stays blocked. `executor/src/executor/txverify.py` is a semantic verifier for Jupiter Swap v1 transactions (not for Trigger). Do not present live
 execution as working.
 
+SolTUI's manual Jupiter V2 path provides unsigned, structurally checked previews only. Submit and
+quick-submit refuse before key loading, signing or sending until independent V2 economic verification
+exists. Keep uncertain historical submissions blocking until chain evidence resolves them. A timeout
+alone never proves absence. Manual Coinbase orders remain a separately armed path.
+
 ## Related
 
 `AGENTS.md` points here. Component detail lives in `backtester/README.md` and

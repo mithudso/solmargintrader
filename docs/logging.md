@@ -10,6 +10,7 @@ currently record nothing.
 | `extension/` | IndexedDB: the `events` store, the intent journal, the fill log (`src/storage/store.js`) | Yes |
 | `extension/` | `console.error` in the service worker | No — lost when the worker is evicted |
 | Jupiter transport | Structured attempt/outcome metadata on Node stderr or browser debug console | No shared persistent sink |
+| Local HTTP API | Structured, secret-free security/error events on stderr | Only when the operator captures stderr |
 | `backtester/` | The run manifest and report (`core/report.py`), written per run | Yes, as output files |
 | `research/` | stdout, plus written result files | Output files only |
 | `soltui/` | App stdout/stderr plus detached sweep/fetch logs | Yes, via launchd or worker files |
@@ -28,6 +29,13 @@ const recent = await store.recentEvents(100);                          // for th
 ```
 
 `logEvent` stamps `tsMs` itself, so a call site supplies only the event body.
+
+Every engine tick outcome now reaches that sink, including early accounting holds and venue/limit
+preparation failures. Summaries retain bounded hold codes, unresolved intent identities and failure
+stage/class/HTTP status. Upstream exception messages and response bodies are excluded. An early
+failure still throws to its caller after recording the diagnostic; the event does not authorize a retry.
+The production HTTP API emits authentication, browser-origin and request-failure events to stderr.
+Its logger excludes tokens, request URLs/bodies, headers and arbitrary upstream error text.
 
 ## Levels
 

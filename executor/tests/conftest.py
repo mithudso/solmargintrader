@@ -341,6 +341,7 @@ def jup_http_for(
         elif mint_in == WSOL_MINT:
             q["outAmount"] = str(int(int(params["amount"]) * 90.1 / 1000))
             q["otherAmountThreshold"] = str(int(int(q["outAmount"]) * 0.995))
+        q["otherAmountThreshold"] = str(int(q["outAmount"]) * (10_000 - q["slippageBps"]) // 10_000)
         return q
 
     def swap(body):

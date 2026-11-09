@@ -49,6 +49,19 @@ class LedgerRecovery:
     def _group_slot(self, group: list[dict[str, Any]]) -> str | None:
         """Resolve once from durable identities, then persist before closing/replacing an NFT."""
         slots = {s for r in group if (s := self.ledger.transaction_slot(r["hash"])) is not None}
+        wallet_scope = False
+        for record in group:
+            context = record.get("accounting")
+            if context is None:
+                continue
+            if not isinstance(context, dict):
+                raise PendingSubmission("invalid receipt accounting attribution")
+            if context.get("scope") == "wallet":
+                wallet_scope = True
+            elif context.get("scope") == "slot" and isinstance(context.get("slot"), str) and context["slot"].strip():
+                slots.add(context["slot"])
+            else:
+                raise PendingSubmission("invalid receipt accounting attribution")
         token_ids = {
             tid
             for r in group
@@ -67,6 +80,14 @@ class LedgerRecovery:
         if len(slots) > 1:
             raise PendingSubmission("receipt group belongs to multiple strategy slots; cannot allocate its effects")
         slot = next(iter(slots), None)
+        if slot is None and not wallet_scope:
+            raise PendingSubmission("receipt group lacks provable accounting attribution; reconcile its origin first")
+        # A wallet-funded deployment acquires a slot only if its own receipt proves a new NFT.
+        # If it fails at an approval, its explicit wallet context still identifies the gas expense.
+        if slot is not None and wallet_scope and not (minted and token_ids <= minted):
+            raise PendingSubmission("receipt group has conflicting wallet and slot attribution")
+        if slot is not None and not minted and self.ledger.slot_row(slot) is None:
+            raise PendingSubmission("receipt accounting attribution names an unknown strategy slot")
         if slot is not None:
             self.ledger.bind_transaction_slots([r["hash"] for r in group], slot)
         return slot
@@ -135,7 +156,8 @@ class LedgerRecovery:
                     h0, h1 = a0 / 10**pool.token0.decimals, a1 / 10**pool.token1.decimals
                     self.ledger.flow(slot, "withdraw", h0, h1, h0 * u0 + h1 * u1, receipt_hash=tx_hash)
                     self.ledger.close_slot(slot)
-            if kind in ("claim", "unstake") and (kind == "claim" or not self._pool_has_aero(pool)):
+            removed = any(r["intent"]["kind"] == "remove" and r["receipt"]["status"] == 1 for r in group)
+            if kind in ("claim", "unstake") and (kind == "claim" or not self._pool_has_aero(pool) or not removed):
                 claimed = token_delta(receipt["logs"], addresses.AERO_TOKEN, self.cfg.owner)
                 if claimed:
                     price = prices.get(addresses.AERO_TOKEN.lower(), 0.0)

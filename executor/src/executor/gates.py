@@ -14,10 +14,13 @@ or unreadable record counts as "not satisfied".
 
 from __future__ import annotations
 
+import fcntl
 import json
+import math
 import os
 import tempfile
 import time
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -32,12 +35,58 @@ MAX_TICK_GAP_S = 1800.0
 def _atomic_write(path: Path, doc: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
-    with os.fdopen(fd, "w") as fh:
-        json.dump(doc, fh, indent=2, sort_keys=True, default=str)
-        fh.flush()
-        os.fsync(fh.fileno())
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, path)
+    try:
+        with os.fdopen(fd, "w") as fh:
+            json.dump(doc, fh, indent=2, sort_keys=True, allow_nan=False)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.chmod(tmp, 0o600)
+        os.replace(tmp, path)
+    finally:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+
+
+@contextmanager
+def _mutation_lock(path: Path):
+    """Lock the stable sidecar, since replacement changes the data file's inode."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(path.with_name(path.name + ".lock"), os.O_CREAT | os.O_WRONLY, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(fd)
+
+
+def _finite_nonnegative(value: Any) -> bool:
+    try:
+        return type(value) in (int, float) and math.isfinite(value) and value >= 0
+    except OverflowError:
+        return False
+
+
+def _valid_soak(cur: Any) -> bool:
+    return (
+        isinstance(cur, dict)
+        and isinstance(cur.get("fingerprint"), str)
+        and all(_finite_nonnegative(cur.get(name)) for name in ("started_at", "last_tick_at", "accumulated_s"))
+        and type(cur.get("dry_runs")) is int
+        and cur["dry_runs"] >= 0
+        and isinstance(cur.get("resets"), list)
+    )
+
+
+def _valid_research(row: Any) -> bool:
+    return (
+        isinstance(row, dict)
+        and isinstance(row.get("strategy"), str)
+        and bool(row["strategy"].strip())
+        and row.get("result") in ("pass", "fail")
+        and _finite_nonnegative(row.get("checked_at"))
+        and isinstance(row.get("source"), str)
+        and bool(row["source"].strip())
+    )
 
 
 def _iso(ts: Any) -> str:
@@ -66,10 +115,13 @@ def load_soak(root: Path) -> dict[str, Any]:
 
 def record_dry_run(root: Path, cfg: Config, strategy: str, now: float | None = None) -> dict[str, Any]:
     now = time.time() if now is None else now
+    if not _finite_nonnegative(now):
+        raise BadParams("dry-run timestamp must be finite and nonnegative")
     fp = fingerprint(cfg, strategy)
     doc = load_soak(root)
     cur = doc["strategies"].get(strategy)
-    if not cur or cur.get("fingerprint") != fp:
+    if not _valid_soak(cur) or cur.get("fingerprint") != fp:
+        cur = cur if _valid_soak(cur) else None
         resets = (cur or {}).get("resets", [])
         if cur:
             resets = (resets + [{"at": now, "from": cur.get("fingerprint")}])[-20:]
@@ -94,8 +146,8 @@ def record_dry_run(root: Path, cfg: Config, strategy: str, now: float | None = N
 def soak_status(root: Path, cfg: Config, strategy: str) -> tuple[bool, str]:
     required = cfg.gates.soak_hours * 3600
     cur = load_soak(root)["strategies"].get(strategy)
-    if not cur:
-        return False, f"no dry-run soak recorded for '{strategy}': run it in dry-run first"
+    if not _valid_soak(cur):
+        return False, f"no valid dry-run soak recorded for '{strategy}': run it in dry-run first"
     if cur.get("fingerprint") != fingerprint(cfg, strategy):
         return False, "the rails or owner changed since the last dry-run; the soak restarts at the next dry-run"
     done = float(cur.get("accumulated_s", 0.0))
@@ -125,29 +177,35 @@ def record_research_result(
     if not strategy.strip() or not source.strip():
         raise BadParams("strategy and source are required")
     path = research_path(root, cfg)
-    try:
-        results = json.loads(path.read_text())["results"]
-        if not isinstance(results, list):
-            results = []
-    except (OSError, ValueError, KeyError, TypeError):
-        results = []
     now = time.time() if now is None else now
-    results.append({"strategy": strategy, "result": result, "checked_at": now, "source": source, "note": note})
-    _atomic_write(path, {"schema": RESEARCH_SCHEMA, "results": results})
-    return results[-1]
+    if not _finite_nonnegative(now):
+        raise BadParams("research timestamp must be finite and nonnegative")
+    row = {"strategy": strategy, "result": result, "checked_at": now, "source": source, "note": note}
+    with _mutation_lock(path):
+        try:
+            doc = json.loads(path.read_text())
+            results = doc["results"]
+            if doc.get("schema") != RESEARCH_SCHEMA or not isinstance(results, list):
+                results = []
+        except (OSError, ValueError, KeyError, TypeError):
+            results = []
+        results.append(row)
+        _atomic_write(path, {"schema": RESEARCH_SCHEMA, "results": results})
+    return row
 
 
 def latest_research_result(root: Path, cfg: Config, strategy: str) -> dict[str, Any] | None:
     try:
-        results = json.loads(research_path(root, cfg).read_text())["results"]
-        mine = [
-            r
-            for r in results
-            if isinstance(r, dict) and r.get("strategy") == strategy and isinstance(r.get("checked_at"), int | float)
-        ]
+        doc = json.loads(research_path(root, cfg).read_text())
+        results = doc["results"]
+        if doc.get("schema") != RESEARCH_SCHEMA or not isinstance(results, list):
+            return None
+        if any(not _valid_research(row) for row in results):
+            return None
+        mine = [row for row in results if row["strategy"] == strategy]
     except (OSError, ValueError, KeyError, TypeError):
         return None
-    return max(mine, key=lambda r: r["checked_at"]) if mine else None
+    return max(mine, key=lambda row: row["checked_at"]) if mine else None
 
 
 def research_status(root: Path, cfg: Config, strategy: str) -> tuple[bool, str]:
@@ -165,10 +223,12 @@ def research_status(root: Path, cfg: Config, strategy: str) -> tuple[bool, str]:
 def log_override(root: Path, strategy: str, why: str, now: float | None = None) -> None:
     now = time.time() if now is None else now
     root.mkdir(parents=True, exist_ok=True)
+    if not _finite_nonnegative(now):
+        raise BadParams("override timestamp must be finite and nonnegative")
     line = {"at": now, "iso": _iso(now), "gate": "research", "strategy": strategy, "why": why}
     fd = os.open(root / "gate-overrides.jsonl", os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
     try:
-        os.write(fd, (json.dumps(line) + "\n").encode())
+        os.write(fd, (json.dumps(line, allow_nan=False) + "\n").encode())
         os.fsync(fd)
     finally:
         os.close(fd)

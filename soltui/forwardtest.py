@@ -514,12 +514,29 @@ def status(asset: str, *, db_path: Path | None = None) -> list[dict]:
 
 def top_forward_predictions(asset: str, *, min_resolved: int = 1, limit: int = 50,
                             db_path: Path | None = None) -> list[dict[str, Any]]:
-    """Rank top performing forward test strategies and extract 1, 5, 10, and 30 min price predictions."""
+    """Rank current trial evidence per label/horizon before applying the display limit."""
     path = db_path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
     if not path.exists():
         return []
     with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         rows = db.execute("""
+            WITH per_trial AS (
+                SELECT t.id, t.label, t.minutes, t.active,
+                       count(c.outcome) as resolved,
+                       coalesce(sum(c.outcome=c.prediction),0) as hits,
+                       (SELECT prediction FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_call,
+                       (SELECT issued FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_issued,
+                       max(c.bar) as last_bar
+                FROM trial t JOIN call c ON t.id=c.trial
+                WHERE t.asset=? AND t.minutes IN (1,5,10,30)
+                GROUP BY t.id
+            ), ranked AS (
+                SELECT *, row_number() OVER (
+                    PARTITION BY label,minutes ORDER BY last_issued DESC,last_bar DESC,id DESC
+                ) as revision_rank FROM per_trial
+            ), current AS (
+                SELECT * FROM ranked WHERE revision_rank=1
+            )
             SELECT label,
                    sum(resolved) as total_resolved,
                    sum(hits) as total_hits,
@@ -536,20 +553,12 @@ def top_forward_predictions(asset: str, *, min_resolved: int = 1, limit: int = 5
                    max(CASE WHEN minutes=10 THEN resolved ELSE 0 END) as n10,
                    max(CASE WHEN minutes=30 THEN resolved ELSE 0 END) as n30,
                    max(last_issued) as max_issued,
-                   max(active) as active_json
-            FROM (
-                SELECT t.label, t.minutes, t.active,
-                       count(c.outcome) as resolved,
-                       sum(c.outcome=c.prediction) as hits,
-                       (SELECT prediction FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_call,
-                       max(c.issued) as last_issued
-                FROM trial t LEFT JOIN call c ON t.id=c.trial
-                WHERE t.asset=?
-                GROUP BY t.id
-            )
+                   (SELECT active FROM current selected WHERE selected.label=cur.label
+                    ORDER BY last_issued DESC,last_bar DESC,id DESC LIMIT 1) as active_json
+            FROM current cur
             GROUP BY label
             HAVING total_resolved >= ?
-            ORDER BY (CAST(total_hits AS REAL) / total_resolved) DESC, total_resolved DESC
+            ORDER BY (CAST(total_hits AS REAL) / total_resolved) DESC, total_resolved DESC,label
             LIMIT ?
         """, (asset, min_resolved, limit)).fetchall()
         dirs = {1: "UP", -1: "DOWN", 0: "FLAT"}

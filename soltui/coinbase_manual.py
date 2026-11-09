@@ -316,10 +316,22 @@ def status(order_id: str, call: Callable[[list[str]], dict[str, Any]] | None = N
             raise ValueError('Coinbase returned a different order')
         for p in _dir().glob('*.json'):
             record = _read(p)
-            if record.get('order_id') == order_id:
-                if result.get('product_id') != record.get('product_id') or result.get('side') != record.get('side'):
+            known_order = record.get('order_id') == order_id
+            recovered_order = (not record.get('order_id')
+                and record.get('state') in ('submitting', 'unknown', 'pending')
+                and isinstance(record.get('client_order_id'), str)
+                and bool(record['client_order_id'])
+                and result.get('client_order_id') == record['client_order_id']
+                and result.get('product_id') == record.get('product_id')
+                and result.get('side') == record.get('side'))
+            if known_order or recovered_order:
+                if (result.get('product_id') != record.get('product_id')
+                        or result.get('side') != record.get('side')
+                        or (result.get('client_order_id') is not None
+                            and result['client_order_id'] != record.get('client_order_id'))):
                     raise ValueError('Coinbase order identity differs from the saved submission')
-                if str(result.get('status') or '').upper() in TERMINAL:
-                    record.update(state='complete', status=str(result['status']).upper())
-                    _save(p,record)
+                verified_status = str(result.get('status') or '').upper()
+                record.update(order_id=order_id, status=verified_status or 'UNKNOWN',
+                              state='complete' if verified_status in TERMINAL else 'pending')
+                _save(p, record)
         return _public_order(result) | {'unresolved':_has_unresolved()}

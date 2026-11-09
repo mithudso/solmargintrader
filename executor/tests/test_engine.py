@@ -231,6 +231,7 @@ def test_reconcile_failed_on_chain(cfg, chain, owner):
     with pytest.raises(Ambiguous):
         swap(engine, live=True, reason="t")
     chain.default_status = {"confirmationStatus": "confirmed", "err": {"InstructionError": [4, {"Custom": 1}]}}
+    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
     assert engine.reconcile()["results"][0]["outcome"] == "failed_on_chain"
     assert not engine.journal.unresolved()
 
@@ -238,6 +239,7 @@ def test_reconcile_failed_on_chain(cfg, chain, owner):
 def test_failed_on_chain_is_a_definite_failure(cfg, chain, owner):
     engine = live_engine(cfg, chain, owner)
     chain.default_status = {"confirmationStatus": "confirmed", "err": {"InstructionError": [4, {"Custom": 6001}]}}
+    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
     with pytest.raises(ExecutorError, match="failed on chain"):
         swap(engine, live=True, reason="t")
     assert engine.journal.unresolved() == []
@@ -338,7 +340,7 @@ def test_wrong_key_file_stops_live(cfg, chain, owner, tmp_path):
 
 
 def test_slippage_can_only_be_tightened(cfg, chain, owner):
-    engine = make_engine(cfg, chain, sell_setup(owner, cfg, chain))
+    engine = make_engine(cfg, chain, sell_setup(owner, cfg, chain, out=901_000))
     with pytest.raises(Refused, match="only tightens"):
         swap(engine, strategy=None, slippage_bps=cfg.rails.max_slippage_bps + 1)
     out = swap(engine, strategy=None, slippage_bps=10)

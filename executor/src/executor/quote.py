@@ -97,6 +97,10 @@ def evaluate(
     problems = []
     if quote.slippage_bps > r.max_slippage_bps:
         problems.append(f"slippage {quote.slippage_bps} bps exceeds max_slippage_bps {r.max_slippage_bps}")
+    # Jupiter floors the integer ExactIn threshold after applying the requested tolerance.
+    minimum = quote.out_raw * (10_000 - quote.slippage_bps) // 10_000
+    if quote.min_out_raw < minimum:
+        problems.append(f"minimum output threshold {quote.min_out_raw} is below slippage minimum {minimum}")
     if quote.price_impact_bps > r.max_price_impact_bps:
         problems.append(
             f"price impact {float(quote.price_impact_bps):.2f} bps exceeds max_price_impact_bps {r.max_price_impact_bps}"

@@ -10,6 +10,7 @@ export async function verifyDashboardWorkflows(page, browser) {
   };
 await ev(`(async()=>{
  const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';
+ window.fixtureDocs=null;window.holdDocRead=false;window.holdDocWrite=false;window.docHeldRead=null;window.docHeldWrite=null;window.previewAvailable=true;
  window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;
  const spec=[
  {name:'prices.status',describe:'Prices',params:[],read_only:true},
@@ -25,10 +26,10 @@ await ev(`(async()=>{
  if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
  if(m.command==='forwardtest.predictions'){const response={ok:true,result:en(m.command,{asset:m.params.asset,voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};if(m.params.asset===liveHoldAsset)return new Promise((resolve,reject)=>{liveHeld={resolve:()=>resolve(response),reject:()=>reject(new Error('old coin failed'))}});return response;}
  if(m.command==='settings.save' && m.params.live_vote_min_accuracy!==undefined){liveVoting={min_accuracy:m.params.live_vote_min_accuracy,min_resolved:m.params.live_vote_min_resolved};return {ok:true,result:en(m.command,{settings:liveVoting})};}
- if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW'})};
+ if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW',submission_available:previewAvailable,notice:previewAvailable?'Review preview':'Jupiter submission is unavailable.'})};
  if(m.command==='jupiter.order_submit')return {ok:true,result:en(m.command,{preview_id:m.params.preview_id,status:'FILLED',rows:[{preview_id:'row-choice'}]})};
- if(m.command==='docs.read')return {ok:true,result:en(m.command,{path:m.params.path,text:fixtureDoc,editable:true})};
- if(m.command==='docs.write'){fixtureDoc=m.params.text;return {ok:true,result:en(m.command,{path:m.params.path,bytes:fixtureDoc.length})}};
+ if(m.command==='docs.read'){const answer={ok:true,result:en(m.command,{path:m.params.path,text:fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc,editable:true})};if(holdDocRead){holdDocRead=false;return new Promise(resolve=>{docHeldRead=()=>resolve(answer)})}return answer;}
+ if(m.command==='docs.write'){if(fixtureDocs)fixtureDocs[m.params.path]=m.params.text;else fixtureDoc=m.params.text;const answer={ok:true,result:en(m.command,{path:m.params.path,bytes:m.params.text.length})};if(holdDocWrite){holdDocWrite=false;return new Promise(resolve=>{docHeldWrite=()=>resolve(answer)})}return answer;};
  return {ok:true,result:en(m.command,{rows:[{name:'apple',value:2},{name:'pear',value:1}]})};};
  await (await import(chrome.runtime.getURL('src/ui/soltui-panel.js'))).mountSoltuiPanel(r,tx);
  window.pick=name=>{const s=r.querySelector('#soltuiCommand');s.value=name;s.dispatchEvent(new Event('change'))};
@@ -63,6 +64,30 @@ await ev(`r.querySelector('#soltuiEditor').value='my draft';fixtureDoc='external
 await wait(`r.querySelector('#soltuiEditorStatus').textContent.startsWith('Save refused:')`);
 assert.equal(await ev(`calls.filter(x=>x.command==='docs.write').length`),1);
 console.log('PASS editor preserves whitespace and refuses external-edit overwrite');
+await ev(`fixtureDocs={'A.md':'base','B.md':'base'};r.querySelector('#soltuiEditor').value='  saved\\n\\n';pick('docs.read');r.querySelector('[name=path]').value='A.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('A.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft A';holdDocRead=true;r.querySelector('#soltuiSave').click()`);
+await wait(`docHeldRead!==null`);
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='B.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('B.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft B';r.querySelector('#soltuiEditorStatus').textContent='Editing B';docHeldRead();docHeldRead=null;new Promise(resolve=>setTimeout(resolve,0))`);
+assert.equal(await ev(`calls.filter(x=>x.command==='docs.write' && x.params.path==='B.md').length`),0,'a safety read for A must never authorize a write to B');
+assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'draft B');
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='A.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('A.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft A';holdDocWrite=true;r.querySelector('#soltuiSave').click()`);
+await wait(`docHeldWrite!==null`);
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='B.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('B.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft B';r.querySelector('#soltuiEditorStatus').textContent='Editing B';docHeldWrite();docHeldWrite=null;new Promise(resolve=>setTimeout(resolve,0))`);
+assert.equal(await ev(`r.querySelector('#soltuiEditorStatus').textContent`),'Editing B','a late acknowledgement cannot mark a new document saved');
+assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'draft B');
+console.log('PASS editor binds saves and acknowledgements to the original document');
+await ev(`previewAvailable=false;pick('jupiter.order_preview');r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`preview===3`);
+assert.equal(await ev(`r.querySelector('#soltuiNext button')`),null);
+assert.ok(await ev(`r.querySelector('#soltuiNext').textContent.includes('unavailable')`));
+console.log('PASS unavailable unsigned Jupiter previews offer no submission handoff');
 await ev(`r.querySelector('#soltuiLiveRefresh').click()`);
 await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelectorAll('#soltuiLiveChart g[data-tick-time]').length===1`);
 assert.ok(await ev(`r.querySelector('#soltuiLiveScore').classList.contains('signal-score-green')`));

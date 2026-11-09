@@ -390,8 +390,11 @@ def create(db, *, drop: bool = True, only: set[str] | None = None) -> list[str]:
         try:
             db.create_collection(name, timeseries=spec["timeseries"])
         except CollectionInvalid:
-            # Already present and not dropped; the caller asked for that.
-            pass
+            # Presence alone does not establish layout compatibility under --keep.
+            existing = db[name].options().get("timeseries")
+            expected = spec["timeseries"]
+            if not isinstance(existing, dict) or any(existing.get(key) != value for key, value in expected.items()):
+                raise ValueError(f"{name}: existing timeseries layout differs from the schema; use an explicit rebuild")
         created.append(name)
 
     for name, spec in COLLECTIONS.items():

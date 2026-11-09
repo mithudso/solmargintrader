@@ -1,6 +1,6 @@
 """Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day.
 
-Only confirmed, on-chain outcomes count. The quote asset is always USDC, so cost and proceeds are exact USDC amounts
+Only confirmed swaps affect positions. Confirmed swaps and measured failed-transaction fees affect P&L. The quote asset is always USDC, so cost and proceeds are exact USDC amounts
 taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
 
 A position is long or flat: `qty_raw` never goes below zero, and a sell larger than the open quantity is refused by
@@ -64,7 +64,7 @@ def utc_day(ts: float) -> str:
 
 
 def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str | None = None) -> Decimal:
-    """Realized P&L minus network fees (in USD) of confirmed trades on one UTC day. Loss is negative."""
+    """Realized P&L minus measured network fees on one UTC day. Loss is negative."""
     total = Decimal(0)
     books: dict[tuple[str, str], Position] = {}
     for ts, intent, out in _confirmed_trades(states):
@@ -89,6 +89,12 @@ def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str 
                 pos.cost_usd = Decimal(0)
         if utc_day(ts) == day and (strategy is None or s == strategy):
             total += realized - Decimal(out.get("fee_usd", "0"))
+    for state in states.values():
+        intent, outcome = state.get("intent") or {}, state.get("outcome") or {}
+        if outcome.get("status") != "failed" or "fee_usd" not in outcome:
+            continue
+        if utc_day(outcome.get("ts", 0)) == day and (strategy is None or intent.get("strategy") == strategy):
+            total -= Decimal(outcome["fee_usd"])
     return total
 
 

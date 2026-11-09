@@ -263,7 +263,7 @@ def _convert_live(eng: Engine, plan: PositionPlan, step: ConvertStep, target: st
         return
     eng._gate()
     res = rb.swap_exact(
-        route, token, step.amount_raw, eng._live_runner(signer, tokens, route.address), fresh.min_out_raw
+        route, token, step.amount_raw, eng._live_runner(signer, tokens, route.address, wallet=True), fresh.min_out_raw
     )
     step.route_pool, step.tx_hashes, step.out_raw = fresh.route_pool, res.tx_hashes, res.amount_out
 

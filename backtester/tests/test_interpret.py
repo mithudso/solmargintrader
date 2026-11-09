@@ -62,7 +62,9 @@ class TestLowPboTrap(unittest.TestCase):
         """PBO 0.086 with 6/61 positive is a trap, not a win."""
         text = joined(61, 70, 6, 0.086)
         self.assertIn("trap", text)
-        self.assertIn("generalises reliably as a loser", text)
+        self.assertIn("most tested configurations lose", text)
+        self.assertIn("selected winner's actual held-out returns", text)
+        self.assertNotIn("reliably as a loser", text)
 
     def test_low_pbo_with_many_positives_is_not_a_trap(self) -> None:
         """Low PBO plus a healthy positive share is genuinely encouraging."""

@@ -265,10 +265,26 @@ def _stitch(slices: Sequence[_Slice | None]) -> dict[str, Any]:
 
 
 def _hash_frame(df: pd.DataFrame) -> str:
-    h = hashlib.sha1()
-    h.update(df[["timestamp", "close"]].to_numpy(dtype="float64").tobytes())
-    return h.hexdigest()[:12]
+    # Include every OHLCV/quality column; wick and volume changes can alter
+    # liquidations and signals even when every timestamp/close is unchanged.
+    columns = ["timestamp", "open", "high", "low", "close", "volume"]
+    columns += sorted(set(df.columns) - set(columns))
+    h = hashlib.sha256()
+    h.update(json.dumps(columns, separators=(",", ":")).encode())
+    h.update(pd.util.hash_pandas_object(df[columns], index=False).to_numpy(dtype="<u8").tobytes())
+    return h.hexdigest()
 
+
+
+def _hash_auxiliary(value: Any) -> str:
+    def encode(item):
+        if isinstance(item, np.ndarray):
+            return item.tolist()
+        if isinstance(item, np.generic):
+            return item.item()
+        raise TypeError(f"unsupported auxiliary input type: {type(item).__name__}")
+    canonical = json.dumps(value, sort_keys=True, separators=(",", ":"), default=encode)
+    return hashlib.sha256(canonical.encode()).hexdigest()
 
 def prepare(asset: str, data_dir: Path | None = None, *, bars: pd.DataFrame | None = None,
             source: str = "") -> dict[str, Any]:
@@ -338,9 +354,16 @@ def run_compound(asset: str, config: Mapping[str, Any] | None = None, *, label: 
     if not evals:
         raise CompoundDataError(f"{asset}: no contiguous run of {MIN_SEGMENT_BARS}+ bars")
     enabled = sorted(c for c, e in cfg["components"].items() if e["enabled"])
+    auxiliary_hashes = {"funding": _hash_auxiliary(prep.get("funding")),
+                        "btc_close": _hash_auxiliary(prep.get("btc")),
+                        "events": _hash_auxiliary(list(events or []))}
+    data_hash = _hash_frame(df)
+    input_hash = _hash_auxiliary({"bars": data_hash, "source": prep.get("source", ""),
+                                  "auxiliary": auxiliary_hashes})
     report = {
         "asset": prep["asset"], "label": label, "config_hash": sc.config_hash(cfg),
-        "enabled": enabled, "source": prep.get("source", ""), "data_hash": prep["data_hash"],
+        "enabled": enabled, "source": prep.get("source", ""), "data_hash": data_hash,
+        "input_hash": input_hash, "auxiliary_hashes": auxiliary_hashes,
         "from_ts": int(ts_all[0]), "to_ts": int(ts_all[-1]), "split_ts": split_ts,
         "segments": len(segments), "bars": int(len(ts_all)), "errors": errors,
         "data_incomplete_pct": prep.get("incomplete_pct"),

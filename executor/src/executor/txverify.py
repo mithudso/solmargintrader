@@ -431,18 +431,33 @@ def check_economics(
         return ["owner account is missing from pre/post state"], {}
     native_delta = own_post["lamports"] - own_pre["lamports"]
     fee = facts.fee_lamports
-    retained_rent = sum(
-        post_by[c["ata"]]["lamports"]
-        for c in info.get("created_atas", [])
-        if post_by.get(c["ata"]) and not pre_by.get(c["ata"])
-    )
-    wsol_pre_lamports = pre_by[wsol_ata]["lamports"] if pre_by.get(wsol_ata) else 0
+
+    def rent_total(accounts):
+        total = 0
+        for addr in expected:
+            acc = accounts.get(addr)
+            tok = parse_token_account(acc)
+            if tok and tok[1] == owner:
+                rent = acc["lamports"] - (tok[2] if tok[0] == WSOL_MINT else 0)
+                if rent < 0:
+                    problems.append("wrapped-SOL account has inconsistent lamports and token balance")
+                total += rent
+        return total
+
+    rent_delta = rent_total(post_by) - rent_total(pre_by)
+    retained_rent = max(0, rent_delta)
+    wrapped_delta = amount(post_by.get(wsol_ata)) - amount(pre_by.get(wsol_ata))
+    # Moving native SOL into WSOL or releasing old WSOL/rent changes no owned swap value.
+    sol_delta = native_delta + wrapped_delta + fee + rent_delta
     d_in = amount(post_by[in_ata]) - amount(pre_by[in_ata])
     d_out = amount(post_by[out_ata]) - amount(pre_by[out_ata])
     evidence: dict[str, Any] = {
         "native_delta_lamports": native_delta,
         "fee_lamports": fee,
         "retained_rent_lamports": retained_rent,
+        "rent_delta_lamports": rent_delta,
+        "wrapped_sol_delta_raw": wrapped_delta,
+        "economic_sol_delta_raw": sol_delta,
         "input_token_delta_raw": d_in,
         "output_token_delta_raw": d_out,
         "owner_lamports_after": own_post["lamports"],
@@ -450,21 +465,20 @@ def check_economics(
     }
 
     if exp.mint_in == WSOL_MINT:
-        expected_delta = -(exp.amount_in + fee + retained_rent)
-        if native_delta < expected_delta:
-            problems.append(f"SOL falls by {-native_delta}, more than input + fee + rent = {-expected_delta}")
-        if native_delta > expected_delta + wsol_pre_lamports:
-            problems.append(f"SOL falls by only {-native_delta}; the input {exp.amount_in} is not being spent")
+        if sol_delta < -exp.amount_in:
+            problems.append(f"SOL spend {-sol_delta} is more than input + fee + rent permits ({exp.amount_in} input)")
+        if sol_delta > -exp.amount_in:
+            problems.append(f"SOL input {exp.amount_in} is not being spent exactly (actual {-sol_delta})")
     else:
         if pre_by[in_ata] is None:
             problems.append("owner has no input token account")
         if d_in != -exp.amount_in:
             problems.append(f"input token changes by {d_in}, expected exactly {-exp.amount_in}")
-        if native_delta < -(fee + retained_rent):
-            problems.append(f"SOL falls by {-native_delta}, more than fee + rent = {fee + retained_rent}")
+        if sol_delta < 0:
+            problems.append(f"SOL falls by {-sol_delta}, more than fee + rent")
     if exp.mint_out == WSOL_MINT:
-        if native_delta + fee + retained_rent < exp.min_out:
-            problems.append(f"SOL received {native_delta + fee + retained_rent} is below minOut {exp.min_out}")
+        if sol_delta < exp.min_out:
+            problems.append(f"SOL received {sol_delta} is below minOut {exp.min_out}")
     elif d_out < exp.min_out:
         problems.append(f"output token rises by {d_out}, below minOut {exp.min_out}")
     if own_post["lamports"] < exp.min_sol_reserve_lamports:

@@ -23,6 +23,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 
 from . import clmath
+from .validation import finite_number
 
 
 class Action(StrEnum):
@@ -53,6 +54,17 @@ class StrategyConfig:
     lvr_weight: float = 1.0
 
     def __post_init__(self) -> None:
+        for name in (
+            "fixed_half_width_pct", "vol_k", "horizon_days", "min_half_width_pct", "max_half_width_pct",
+            "edge_buffer", "cooldown_minutes", "benefit_cost_ratio", "max_slippage_bps",
+            "expected_price_impact_bps", "lvr_weight",
+        ):
+            finite_number(getattr(self, name), name, positive=name in (
+                "fixed_half_width_pct", "vol_k", "horizon_days", "min_half_width_pct", "max_half_width_pct",
+            ))
+        finite_number(self.confirm_checks, "confirm_checks", positive=True, integer=True)
+        if self.max_slippage_bps >= 10_000:
+            raise ValueError("max_slippage_bps must be below 10000")
         if self.width_mode not in ("optimal", "vol", "fixed"):
             raise ValueError("width_mode must be 'optimal', 'vol' or 'fixed'")
         if self.lvr_weight < 0:

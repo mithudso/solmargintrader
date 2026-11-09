@@ -163,9 +163,12 @@ def _read_json(path: Path, default: Any) -> Any:
 
 def _write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(_json_safe(data), indent=2, allow_nan=False), encoding="utf-8")
-    tmp.replace(path)
+    tmp = path.with_name(path.name + ".tmp." + uuid.uuid4().hex)
+    try:
+        tmp.write_text(json.dumps(_json_safe(data), indent=2, allow_nan=False), encoding="utf-8")
+        tmp.replace(path)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def _json_safe(value: Any) -> Any:
@@ -433,8 +436,10 @@ def hourly(asset: str, settings: Any = None) -> dict[str, Any]:
     h_path, m_path = base / f"{a}_1h.csv", base / f"{a}_1m.csv"
     h = _load_hourly(h_path, "1h") if h_path.exists() else None
     m = _load_hourly(m_path, "1m->1h") if m_path.exists() else None
+    h = h if h is not None and h["ts"].size else None
+    m = m if m is not None and m["ts"].size else None
     if h is None and m is None:
-        raise BotError(f"no cached bars for {a}: expected {h_path} or {a}_1m.csv. "
+        raise BotError(f"no usable cached bars for {a} (sources missing or empty): expected {h_path} or {a}_1m.csv. "
                        f"Fetch: python -m backtester.core.fetch --asset {a} --interval 1h --start 2024-01-01")
     if h is None or not h["ts"].size:
         return {**m, "source": "1m->1h"}
@@ -846,6 +851,7 @@ class SnapshotCursor:
         self.root = root
         self.offsets: dict[str, int] = {}
         self._committed = 0
+        self._pending: list[tuple[float, dict]] = []
 
     def _complete_members(self, data: bytes) -> list[str]:
         """Lines of every complete gzip member in `data`; sets `_committed` to the end of the last.
@@ -882,7 +888,8 @@ class SnapshotCursor:
         return lines
 
     def read_new(self, end_ts: float | None = None) -> list[tuple[float, dict]]:
-        out: list[tuple[float, dict]] = []
+        out = [r for r in self._pending if end_ts is None or r[0] <= end_ts]
+        self._pending = [r for r in self._pending if end_ts is not None and r[0] > end_ts]
         first_day = datetime.fromtimestamp(self.start_ts, tz=timezone.utc).strftime("%Y-%m-%d")
         for path in pricefeed.recorded_files(self.root):
             if path.name[:10] < first_day:
@@ -899,6 +906,7 @@ class SnapshotCursor:
                 if parsed is None or parsed[0] < self.start_ts:
                     continue
                 if end_ts is not None and parsed[0] > end_ts:
+                    self._pending.append(parsed)
                     continue
                 out.append(parsed)
             pos = self._committed
@@ -989,6 +997,17 @@ def _forward_all() -> dict[str, Any]:
     return raw if isinstance(raw, dict) else {}
 
 
+@contextmanager
+def _forward_lock():
+    home().mkdir(parents=True, exist_ok=True)
+    with (home() / "forward.lock").open("a+b") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
 def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder: bool = True,
                   now: float | None = None) -> dict[str, Any]:
     """Start (or restart) the bot's forward test now, on the current config."""
@@ -998,24 +1017,26 @@ def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder
     if bot != "triangle" and f"{a}-USD" not in _triangle_products():
         raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
     recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
-    raw = _forward_all()
-    raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
-                "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
-                "slippage_bps": _costs(settings).slippage_bps}
-    _write_json(forward_path(), raw)
-    runtime().sessions.pop(bot, None)
+    with runtime().lock, _forward_lock():
+        raw = _forward_all()
+        raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
+                    "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
+                    "slippage_bps": _costs(settings).slippage_bps}
+        _write_json(forward_path(), raw)
+        runtime().sessions.pop(bot, None)
     return {"forward": raw[bot], "recorder": recorder}
 
 
 def forward_stop(bot: str, *, now: float | None = None) -> dict[str, Any]:
     bot = _bot(bot)
-    raw = _forward_all()
-    rec = raw.get(bot)
-    if not rec:
-        return {"stopped": False, "message": f"no {bot} forward test is running"}
-    if rec.get("stopped_at") is None:
-        rec["stopped_at"] = time.time() if now is None else now
-        _write_json(forward_path(), raw)
+    with runtime().lock, _forward_lock():
+        raw = _forward_all()
+        rec = raw.get(bot)
+        if not rec:
+            return {"stopped": False, "message": f"no {bot} forward test is running"}
+        if rec.get("stopped_at") is None:
+            rec["stopped_at"] = time.time() if now is None else now
+            _write_json(forward_path(), raw)
     return {"stopped": True, "forward": rec}
 
 

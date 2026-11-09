@@ -11,6 +11,11 @@ Every action lives in one registry: `extension/src/core/commands.js`. Three surf
 `test/surfaces.test.js` fails the build if any surface is missing a command, so the three cannot
 drift apart.
 
+SolTUI tools reached through `soltuiCall` retain their own safety gates. Manual Jupiter V2 preview
+results set `submission_available=false`; the dashboard offers no submit handoff for those results.
+Jupiter submit and quick-submit refuse before keys or network calls. History and chain reconciliation
+remain available, and uncertain historical submissions are never cleared solely by elapsed time.
+
 **The canonical, always-current listing is generated, not this file:**
 
 ```bash

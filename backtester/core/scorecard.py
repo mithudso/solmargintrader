@@ -1755,7 +1755,7 @@ def evaluate(bars: Bars, config: Mapping[str, Any] | None = None,
     if agg["entry_quantile"] > 0 and n:
         # Trailing quantile of |composite| through bar t: known at t, so the call stays causal.
         window = int(agg["adaptive_window"])
-        q = pd.Series(np.abs(composite)).rolling(window, min_periods=max(20, window // 4)).quantile(
+        q = pd.Series(np.abs(composite)).rolling(window, min_periods=min(window, max(20, window // 4))).quantile(
             agg["entry_quantile"]).to_numpy()
         threshold = np.where(np.isfinite(q), np.maximum(threshold, q), np.inf)
     call = np.where(composite >= threshold, 1, np.where(composite <= -threshold, -1, 0))
@@ -1954,9 +1954,9 @@ def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
         r = np.diff(np.log(b.close))[sel] * 1e4
         rows.append((ev.indication[:-1][sel], r, ev.composite[:-1][sel]))
         for h in HORIZONS:
-            if len(b) <= h + 1:
+            if len(b) <= h:
                 continue
-            k = len(b) - h - 1
+            k = len(b) - h
             hsel = sel[:k]
             call_h = ev.indication[:k][hsel].astype(float)
             # What a next-open fill earns over h bars: open[t+1] -> close[t+h].

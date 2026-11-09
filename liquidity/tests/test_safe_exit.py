@@ -218,7 +218,7 @@ def test_live_conversion_simulates_then_sends_only_the_withdrawn_amount(tmp_path
     monkeypatch.setattr(safe_exit, "SimRunner", lambda *a, **k: type("SimRunner", (), {})())
     eng = ConvEngine(tmp_path, route(2000 * 1e-12))
     eng.chain.gas_price_wei = lambda: 10**6
-    eng._live_runner = lambda *a: type("LiveRunner", (), {})()
+    eng._live_runner = lambda *a, **kw: type("LiveRunner", (), {})()
     rep = run(eng, tmp_path, live=True, convert_to="USDC")
     step = rep.positions[0].converts[0]
     assert [s[0] for s in sent] == ["SimRunner", "LiveRunner"] and sent[0][1] == sent[1][1] == 10**18

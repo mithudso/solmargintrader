@@ -503,6 +503,9 @@ export const COMMANDS = {
 
   ackAlerts: {
     describe: 'Acknowledge one alert by id, or all current alerts, so it stops showing as new.',
+    // alertQueue already serializes these keys. Waiting for a scan must not
+    // prevent the engine from reconciling or applying new safety limits.
+    unlocked: true,
     params: [
       { name: 'id', type: TYPE.STRING, describe: 'Alert id from overview or scanAlerts.' },
       { name: 'all', type: TYPE.BOOL, describe: 'Acknowledge every current alert.' },

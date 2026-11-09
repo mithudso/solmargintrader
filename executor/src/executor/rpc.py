@@ -107,11 +107,23 @@ class Rpc:
         resp = self.http.post_json(self.url, body)  # deliberately not wrapped: the caller treats any raise as unknown
         if not isinstance(resp, dict):
             raise RpcError("sendTransaction returned a non-object")
-        if resp.get("error"):
+        if "error" in resp:
             err = resp["error"]
-            raise SendRejected(
-                f"sendTransaction rejected: {str(err.get('message') if isinstance(err, dict) else err)[:300]}"
+            definite = (
+                resp.get("jsonrpc") == "2.0"
+                and resp.get("id") == body["id"]
+                and "result" not in resp
+                and isinstance(err, dict)
+                and type(err.get("code")) is int
+                and isinstance(err.get("message"), str)
+                and err["code"] == -32002
+                and isinstance(err.get("data"), dict)
+                and isinstance(err["data"].get("err"), (str, dict))
+                and bool(err["data"]["err"])
             )
+            if definite:
+                raise SendRejected("sendTransaction rejected by preflight simulation")
+            raise RpcError("sendTransaction returned an ambiguous RPC error; reconciliation is required")
         sig = resp.get("result")
         if not isinstance(sig, str) or not sig:
             raise RpcError("sendTransaction returned no signature")

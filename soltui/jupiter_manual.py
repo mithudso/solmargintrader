@@ -1,15 +1,14 @@
-"""Explicitly reviewed Jupiter Swap API v2 spot orders with semantic verification and disk locking.
+"""Unsigned Jupiter Swap API v2 previews with structural checks and disk locking.
 
-Never retries an ambiguous submission.
-Enforces $100 MAX_QUOTE cap.
-Requires verified token metadata, positive price valuation, and semantic transaction verification.
+Enforces the $100 input-value cap using positive independent USD valuation.
+Submission is unavailable until the exact V2 transaction has independent economic verification.
+Historical ambiguous submissions remain blocked until chain evidence resolves them.
 """
 from __future__ import annotations
 
 import base64
 import fcntl
 import json
-import math
 import os
 import re
 import sys
@@ -34,12 +33,10 @@ except ImportError:
     from executor import txverify
     from executor.signer import load_keypair
 
-from solders.pubkey import Pubkey
-from solders.transaction import VersionedTransaction
-
 from . import jupiter_tokens
 
 MAX_QUOTE = Decimal("100")  # Hard per-order cap in USD / USDC
+SUBMISSION_UNAVAILABLE = "Jupiter Swap v2 submission is unavailable without independent economic verification"
 PREVIEW_SECONDS = 45
 DEFAULT_SLIPPAGE_BPS = 50
 MAX_PRIORITY_FEE_LAMPORTS = 50_000
@@ -171,6 +168,18 @@ def _resolve_token(query: str, *, is_quote: bool = False) -> dict[str, Any]:
     return res
 
 
+def _usd_price(token: dict[str, Any]) -> Decimal:
+    if token["mint"] in STABLE_MINTS:
+        return Decimal(1)
+    price = token.get("usdPrice")
+    try:
+        if isinstance(price, bool):
+            raise ValueError
+        return _decimal(price, "USD price")
+    except ValueError:
+        raise ValueError(f"Cannot value input or size base units without a verified price for {token['symbol']}") from None
+
+
 def _get_rpc_account_info(rpc_url: str, pubkey: str, http_call: Callable[..., Any] | None = None) -> dict[str, Any] | None:
     payload = {
         "jsonrpc": "2.0",
@@ -297,10 +306,7 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
                 in_amount_dec = amount_dec
                 in_amount_raw = int(in_amount_dec * (Decimal(10) ** in_tok["decimals"]))
             else:
-                price = base_tok.get("usdPrice")
-                if price is None or not (isinstance(price, (int, float)) and math.isfinite(price) and price > 0):
-                    raise ValueError(f"Cannot size base units for BUY without a verified price for {base_tok['symbol']}. Sizing in quote units (e.g. USDC) is required.")
-                in_amount_dec = amount_dec * Decimal(str(price))
+                in_amount_dec = amount_dec * _usd_price(base_tok) / _usd_price(quote_tok)
                 in_amount_raw = int(in_amount_dec * (Decimal(10) ** in_tok["decimals"]))
         else:
             in_tok, out_tok = base_tok, quote_tok
@@ -310,17 +316,10 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
         if in_amount_raw <= 0:
             raise ValueError("Calculated input amount must be positive")
 
-        # Enforce MAX_QUOTE cap ($100)
-        if in_tok["mint"] in STABLE_MINTS:
-            est_usd = in_amount_dec
-        elif in_tok.get("usdPrice") and in_tok["usdPrice"] > 0:
-            est_usd = in_amount_dec * Decimal(str(in_tok["usdPrice"]))
-        elif out_tok["mint"] in STABLE_MINTS:
-            est_usd = in_amount_dec * Decimal(str(base_tok.get("usdPrice") or 0))
-        else:
-            est_usd = None
-
-        if est_usd is not None and est_usd > MAX_QUOTE:
+        # Price the actual rounded input, independently of Jupiter's quoted output.
+        input_price = _usd_price(in_tok)
+        est_usd = Decimal(in_amount_raw) / (Decimal(10) ** in_tok["decimals"]) * input_price
+        if est_usd > MAX_QUOTE:
             raise ValueError(f"Order value ${est_usd:.2f} exceeds the ${MAX_QUOTE:.2f} limit")
 
         # Balance check
@@ -369,11 +368,7 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
         out_amount_dec = Decimal(out_amount_raw) / (Decimal(10) ** out_tok["decimals"])
         min_out_raw = int(quote_data.get("otherAmountThreshold") or out_amount_raw)
 
-        # Check output value if receiving stable
-        if out_tok["mint"] in STABLE_MINTS and out_amount_dec > MAX_QUOTE * Decimal("1.05"):
-            raise ValueError(f"Order value ${out_amount_dec:.2f} exceeds ${MAX_QUOTE:.2f} limit")
-
-        # Semantic transaction verification
+        # Structural checks do not establish amounts, owner deltas, or reserve economics.
         exp = txverify.Expectation(
             owner=taker_pubkey,
             mint_in=in_tok["mint"],
@@ -386,7 +381,7 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
         facts = txverify.inspect_tx(tx, tables=tables)
         problems, info = txverify.check_static(facts, exp)
         if problems:
-            raise ValueError("Transaction failed semantic safety verification: " + "; ".join(problems))
+            raise ValueError("Transaction failed structural safety verification: " + "; ".join(problems))
 
         preview_id = uuid.uuid4().hex
         now = time.time()
@@ -411,6 +406,7 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
             "created_at": now,
             "expires_at": expires_at,
             "state": "preview",
+            "verification": "structural_only",
             "info": info,
         }
         _save(_preview_path(preview_id), record)
@@ -433,120 +429,16 @@ def order_preview(params: dict[str, Any], taker_pubkey: str,
                     for leg in quote_data.get("routePlan", []) if isinstance(leg, dict)
                 ],
             },
-            "notice": "Jupiter Swap v2 transaction semantically verified. Single-use preview expires in 45s.",
+            "submission_available": False,
+            "notice": "Unsigned Jupiter Swap v2 preview; structural checks only. Submission unavailable without independent economic verification. Preview expires in 45s.",
         }
 
 
 def order_submit(preview_id: str, keypair_path: str, expected_pubkey: str,
                  *, api_key: str | None = None, http_client: Any = None) -> dict[str, Any]:
-    expected_pubkey = expected_pubkey.strip()
-    api_key = api_key or os.environ.get("JUPITER_API_KEY", "").strip() or None
-    base_api = JUPITER_PROD_URL if api_key else JUPITER_LITE_URL
-
-    with _lock():
-        path = _preview_path(preview_id)
-        if not path.is_file():
-            raise ValueError("Preview record not found")
-        record = _read(path)
-
-        if record.get("state") != "preview":
-            raise ValueError("This preview has already been used; do not submit it again")
-        if time.time() >= record.get("expires_at", 0):
-            raise ValueError("Preview expired; review a new quote")
-        if record.get("taker") != expected_pubkey:
-            raise ValueError("Configured Solana wallet does not match the reviewed preview taker")
-
-        _block_unresolved()
-
-        # Load keypair with strict mode 0600 and matching owner checks
-        keypair = load_keypair(keypair_path, expected_pubkey)
-
-        # Durable state transition BEFORE network call
-        record["state"] = "submitting"
-        record["submit_started_at"] = time.time()
-        _save(path, record)
-
-        # Sign transaction message
-        raw_tx_bytes = base64.b64decode(record["transaction_b64"])
-        tx = VersionedTransaction.from_bytes(raw_tx_bytes)
-        message_bytes = bytes(tx.message)
-        sig = keypair.sign_message(message_bytes)
-
-        account_keys = list(tx.message.account_keys)
-        try:
-            signer_idx = account_keys.index(keypair.pubkey())
-        except ValueError:
-            record["state"] = "failed"
-            record["submit_error"] = "Taker public key not found in transaction account keys"
-            _save(path, record)
-            raise ValueError("Taker public key not found in transaction account keys") from None
-
-        signatures = list(tx.signatures)
-        signatures[signer_idx] = sig
-        signed_tx = VersionedTransaction.populate(tx.message, signatures)
-        signed_b64 = base64.b64encode(bytes(signed_tx)).decode("utf-8")
-
-        payload = {
-            "signedTransaction": signed_b64,
-            "requestId": record["request_id"],
-        }
-
-        url = f"{base_api}/swap/v2/execute"
-        try:
-            if http_client and hasattr(http_client, "post"):
-                result = http_client.post(url, json=payload)
-            else:
-                data_bytes = json.dumps(payload).encode("utf-8")
-                req = urllib.request.Request(
-                    url,
-                    data=data_bytes,
-                    headers={
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        **({"x-api-key": api_key} if api_key else {}),
-                    },
-                )
-                with urllib.request.urlopen(req, timeout=30.0) as resp:
-                    result = json.loads(resp.read().decode("utf-8"))
-        except Exception as exc:
-            record["state"] = "unknown"
-            record["submit_error"] = f"{type(exc).__name__}: {exc}"
-            _save(path, record)
-            raise RuntimeError("Order outcome is unknown. Check onchain status before placing another order; do not retry.") from None
-
-        if not isinstance(result, dict):
-            record["state"] = "unknown"
-            record["submit_error"] = "Invalid execute response format"
-            _save(path, record)
-            raise RuntimeError("Order outcome is unknown. Check onchain status before placing another order; do not retry.")
-
-        status = result.get("status")
-        signature = result.get("signature")
-
-        if status == "Success" and signature:
-            record["state"] = "complete"
-            record["status"] = "FILLED"
-            record["signature"] = signature
-            record["execute_result"] = result
-            _save(path, record)
-            return {
-                "order_id": signature,
-                "signature": signature,
-                "status": "FILLED",
-                "venue": "jupiter",
-                "solscan_url": f"https://solscan.io/tx/{signature}",
-                "product_id": record["product_id"],
-                "side": record["side"],
-                "in_amount": str(record["in_amount_raw"]),
-                "out_amount": str(record["out_amount_raw"]),
-            }
-        else:
-            record["state"] = "failed"
-            record["status"] = "FAILED"
-            record["execute_result"] = result
-            _save(path, record)
-            err_msg = result.get("error") or result.get("message") or status
-            raise ValueError(f"Jupiter execution failed: {err_msg}")
+    # No independent V2 economic verifier exists here. Refuse before key loading,
+    # signing, network access, or modifying an unsigned preview or historical intent.
+    raise ValueError(SUBMISSION_UNAVAILABLE)
 
 
 def order_reconcile(preview_id_or_sig: str, *, rpc_url: str | None = None, http_client: Any = None) -> dict[str, Any]:
@@ -602,18 +494,8 @@ def order_reconcile(preview_id_or_sig: str, *, rpc_url: str | None = None, http_
                     target_rec["state"] = "complete"
                     target_rec["status"] = "FILLED"
                 _save(target_path, target_rec)
-            else:
-                started = target_rec.get("submit_started_at", 0)
-                if started and time.time() - started > 90:
-                    target_rec["state"] = "failed"
-                    target_rec["status"] = "EXPIRED"
-                    _save(target_path, target_rec)
-        else:
-            started = target_rec.get("submit_started_at", 0)
-            if started and time.time() - started > 90:
-                target_rec["state"] = "failed"
-                target_rec["status"] = "EXPIRED"
-                _save(target_path, target_rec)
+            # A missing status is not proof of failure or expiry. Old intents can
+            # have landed outside this response, including records without a signature.
 
         return {
             "preview_id": target_rec.get("preview_id"),

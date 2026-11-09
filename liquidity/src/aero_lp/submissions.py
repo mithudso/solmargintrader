@@ -119,6 +119,10 @@ class SubmissionJournal:
         doc = json.loads(self.path.read_text())
         if doc.get("version") != 1 or doc.get("owner", "").lower() != self.owner.lower():
             raise PendingSubmission("submission journal owner or version does not match")
+        if not isinstance(doc.get("ledger_path"), str) or not doc["ledger_path"]:
+            raise PendingSubmission("submission journal has no valid ledger binding")
+        if self.ledger_path is not None and Path(doc["ledger_path"]).resolve() != self.ledger_path:
+            raise PendingSubmission("submission journal is bound to a different ledger")
         return doc
 
     @contextmanager
@@ -162,8 +166,18 @@ class SubmissionJournal:
     def records(self) -> list[dict[str, Any]]:
         return list(self._read()["transactions"].values())
 
-    def before_submit(self, tx_hash: str, nonce: int, tx: Any, group: str, pool: str | None, tokens: list[str]) -> None:
+    def before_submit(
+        self, tx_hash: str, nonce: int, tx: Any, group: str, pool: str | None, tokens: list[str],
+        *, accounting: dict[str, str] | None = None,
+    ) -> None:
         intent = transaction_intent(tx)
+        if accounting is not None and (
+            not isinstance(accounting, dict) or accounting.get("scope") not in ("wallet", "slot")
+            or (accounting["scope"] == "slot" and (
+                not isinstance(accounting.get("slot"), str) or not accounting["slot"].strip()
+            ))
+        ):
+            raise PendingSubmission("invalid submission accounting attribution")
         if intent.get("recipient", self.owner).lower() != self.owner.lower():
             raise PendingSubmission("transaction intent recipient is not the journal owner")
         with self._edit() as doc:
@@ -186,6 +200,7 @@ class SubmissionJournal:
                 "tokens": tokens,
                 "receipt": None,
                 "processed": False,
+                "accounting": accounting,
             }
 
     def receipt(self, tx_hash: str, receipt: Any) -> None:

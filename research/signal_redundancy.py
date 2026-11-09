@@ -379,7 +379,7 @@ def twin_verdict(va: pd.Series, vb: pd.Series) -> dict[str, Any]:
 
 
 def combination_redundancy(
-    asset: str, horizon: str, sizes: Sequence[int], modes: Sequence[str]
+    asset: str, horizon: str, sizes: Sequence[int], modes: Sequence[str], *, discovery: bool = True
 ) -> pd.DataFrame:
     """Measure whether candidate twin COMBINATIONS are actually redundant.
 
@@ -401,7 +401,12 @@ def combination_redundancy(
     from research.sweep import COMBO_CANDIDATES, redundancy_classes
 
     arrays, params, note = load_series(asset, horizon)
-    canonical, _ = redundancy_classes(horizon, asset)
+    from research.evidence import discovery_context
+    from research.sweep import SPLIT
+    context = None
+    if discovery:
+        arrays, context = discovery_context(arrays, params, asset, horizon, SPLIT)
+    canonical, _ = redundancy_classes(horizon, asset, discovery=context)
     usable = [n for n in COMBO_CANDIDATES if n in params]
     rows: list[dict[str, Any]] = []
 
@@ -427,7 +432,9 @@ def combination_redundancy(
                         **twin_verdict(measured[ka], measured[kb]),
                     })
     print(f"source: {note}", file=sys.stderr)
-    return pd.DataFrame(rows)
+    table = pd.DataFrame(rows)
+    table.attrs["discovery_context"] = context
+    return table
 
 
 def load_series(
@@ -452,8 +459,9 @@ def load_series(
     """
     spec = HORIZONS[horizon]
     interval = spec["interval"]
+    from research.sweep import data_dir
     loader = CsvLoader(
-        REPO / "data" / f"{asset}_{interval}.csv", allow_gaps=spec["allow_gaps"]
+        data_dir() / f"{asset}_{interval}.csv", allow_gaps=spec["allow_gaps"]
     )
     frame = loader.load(asset, None, None, interval)
     stamps = pd.to_datetime(frame["timestamp"], unit="s", utc=True)
@@ -492,6 +500,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--asset", default="SOL", help="ticker, e.g. SOL, BTC, ETH")
     parser.add_argument("--horizon", default="medium", choices=sorted(HORIZONS))
+    parser.add_argument("--scope", choices=("discovery", "full"), default="discovery",
+                        help="model-selection evidence uses discovery bars only (default)")
     parser.add_argument(
         "--top", type=int, default=15, help="rows of the redundant-pair table to print"
     )
@@ -511,7 +521,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.combinations:
         table = combination_redundancy(
-            args.asset, args.horizon, sizes=(2, 3), modes=("all", "any", "vote")
+            args.asset, args.horizon, sizes=(2, 3), modes=("all", "any", "vote"), discovery=args.scope == "discovery"
         )
         flagged = int(table["redundant"].sum()) if len(table) else 0
         print(f"\n=== combination redundancy: {args.asset} {args.horizon} ===")
@@ -533,10 +543,17 @@ def main(argv: list[str] | None = None) -> int:
         target = resolve_output_path(name, force=args.force)
         target.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(target, index=False)
+        from research.evidence import write_gate_proof
+        write_gate_proof(target, table.attrs.get("discovery_context") or {"scope": "full"})
         print(f"\nwrote {len(table)} rows to {target}")
         return 0
 
     arrays, params, note = load_series(args.asset, args.horizon)
+    from research.evidence import discovery_context, write_gate_proof
+    from research.sweep import SPLIT
+    context = None
+    if args.scope == "discovery":
+        arrays, context = discovery_context(arrays, params, args.asset, args.horizon, SPLIT)
     raw, warmups = exposure_matrix(arrays, params)
 
     burn_in = max(warmups.values())
@@ -614,6 +631,7 @@ def main(argv: list[str] | None = None) -> int:
         target = resolve_output_path(name, force=args.force)
         target.parent.mkdir(parents=True, exist_ok=True)
         pairs.to_csv(target, index=False)
+        write_gate_proof(target, context or {"scope": "full"})
         print(f"\nwrote {len(pairs)} pair rows to {target}")
 
     print(

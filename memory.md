@@ -1,7 +1,31 @@
 # Work continuation
 
-Version: 238
-Delta: v235 to v238; preserve both concurrent workflow histories.
+Version: 241
+Delta: v240 to v241; checkpoint first repairs and independent audit dissent.
+
+## v241 - 2026-11-08
+
+All 76 initial findings have implementation receipts in /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/fixes-*.json. Executor: 268 offline tests and Ruff pass. TUI owner: 110 focused pass. Lifecycle owner: 110 focused pass. Extension: 382 unit and 23 fixture-browser checks pass; version 0.4.2. Liquidity: 561 offline tests and Ruff pass. Analysis: 347 targeted pass; full lean backtester runs 935 with only expected stale-index failure. Mongo offline run: 45 tests with 11 integrations skipped. No owner services/state, keys, live orders or historical reports changed.
+
+Fresh gate1 is in progress. Executor found EX-G1-001: structural verification never binds encoded Jupiter route input/minOut to the quote. Schema-aware Borsh decoding with exact consumption is required; a last-19-byte check alone is unsafe. Pinned public schema evidence is in jupiter-v6-idl.json and jupiter-parser-idl.ts in the run directory. Their old jupiter-cpi-idl.json predecessor has only 39 variants and is not sufficient for the recorded tag48 fixture. TUI gate reports additionally found preview price acquisition, forward busy ownership, YAML restoration, malformed-record state, truncated gzip append, stale per-product bar quotes and invalid persisted OHLC issues. Collect all gate1 findings before the second remediation batch. Do not claim CLEAN.
+
+Current worktree /Users/mitch/dev/solmargintrader-wt-01a1be31; branch agent-01a1be31; source base 2ca3041. Preserve the active shared checkout and its guides. Remaining: finish fresh gate1 packets, corroborate/triage, fix their findings in iteration2 with new snapshots and red/green checks, run gate2, refresh truthful docs/counts/offline indexes, final verification, PR CI/merge/content verification and cleanup. Stele writes remain queued; exact IDs are in stele-findings-outbox.json and the manual decision receipt.
+
+## v240 - 2026-11-08
+
+All 50 primary per-file diagnostics are complete, with 76 raw independent Medium+ findings. The exact coverage cap is 50 of 261 production sources; remaining paths and per-pass evidence are explicit in /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/scope.json. No product changes preceded collection. The first remediation iteration is authorized in state.json. Implementation briefs define disjoint ownership; every changed/new source and regression path must be recorded by snapshot.py before its first write.
+
+Manual Jupiter V2 lacks independent economic verification. Preserve unsigned previews/history/reconciliation, but refuse submission before key loading/signing/sending. Do not invent a bypass or claim a new V2 verifier. This durable decision is queued in Stele; receipt is manual-jupiter-decision-outbox.txt. All 76 findings have queued graph writes mapped in stele-findings-outbox.json.
+
+Progress: inventory/baseline and primary diagnostics complete; reproduction/remediation in progress; final verification, fresh audit gate, report/index/count refresh, CI and delivery remain. Preserve shared checkout, paused services, archived liquidity and all unrelated work.
+
+## v239 - 2026-11-08
+
+Deep optimizer diagnostics continue in /Users/mitch/dev/solmargintrader-wt-01a1be31 on agent-01a1be31. Source includes completed live-score PR146 at 2ca3041; current local merge bbc9c22 preserved both workflow histories. 33 of the 50 selected production sources are reviewed, of 261 candidates; 44 raw independent Medium+ findings are recorded. No product edits have been applied. Continue per-file briefs and receipts before the first remediation batch. External run state: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/state.json. scope.json records exact hashes and every deferred file. findings-iter1.json aggregates concrete findings. stele-findings-outbox.json maps each to its queued graph write.
+
+Priorities: prevent unverified manual Jupiter signing and retain ambiguous sends until chain proof; repair executor conservation, quote, journal, gates and failed-fee accounting; preserve text during browser document saves; keep bot/job persistence updates atomic. Backtest review also reproduced shifted fine bars that admit future data, near-threshold liquidation suppression, fee-bearing resize refusal, ladder parity drift and incomplete compound data hashes. Do not publish old archived figures as corrected-engine results.
+
+Baselines remain in baseline-*.log. The new private executor/.venv matches executor/uv.lock; its Ruff, formatting and 202 offline tests pass. Post-integration documentation census agrees at 2526 tests. Full optional SolTUI remains unrun. Stele reads via CLI are available; writes remain queued because MCP tools are absent. Do not touch the shared active checkout, restart the installed console/recorders, or reactivate archived liquidity. Remaining: finish primary diagnostics, write red regressions and minimal fixes, verify, run any required fresh audit gate, publish the exact scope/report and deliver the final PR through passing CI and merge.
 
 ## v238 - 2026-11-08
 

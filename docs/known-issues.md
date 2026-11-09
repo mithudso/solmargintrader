@@ -101,6 +101,20 @@ looking hung. Not a bug — the price of engine parity.
 
 ## soltui
 
+### Manual Jupiter V2 is preview-only
+
+The manual path has structural transaction checks, but independent economic verification is
+incomplete. Submit and quick-submit refuse before key loading, signing or sending. Unsigned
+previews require a known input valuation; history and chain reconciliation remain available.
+Historical unknown submissions stay blocked until chain proof resolves them. No elapsed-time
+rule clears that uncertainty. This limitation does not change separately armed Coinbase orders.
+
+### Legacy recorder Stop metadata
+
+Recorder Stop uses a nonce bound to the active recorder lock and never sends a signal to a PID
+from a file. A recorder started by an older version without this metadata cannot be stopped through
+that fallback. The command reports the refusal instead of risking an unrelated process.
+
 ### The packaging paths have no tests
 
 Unit tests cover signal derivation, state, rendering, launchers and service/plist helpers.

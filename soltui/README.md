@@ -560,6 +560,11 @@ order."* This package holds to that:
   by `validate()` with an explanatory error.
 - **Manual order arming is session-only.** The Wallet form starts disarmed each time the
   console starts; the simulation setting `armed` does not arm Coinbase orders.
+- **Manual Jupiter V2 submission is unavailable.** The app retains unsigned previews with
+  structural checks, history and chain reconciliation. Submit and quick-submit refuse before
+  key loading, signing or sending because independent economic verification is incomplete.
+  Missing input valuation refuses the preview. Historical unknown submissions remain blocking;
+  elapsed time alone never proves that a transaction failed.
 - **The Execute tab is a replay, not a live loop.** Stepping bars and computing
   fills would create a *second* order-execution path alongside
   `backtester/core/engine.py`, outside the coverage of the engine's known-answer

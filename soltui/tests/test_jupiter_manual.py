@@ -1,4 +1,4 @@
-"""Tests for explicit Jupiter manual orders: fail closed, semantic verification, disk locking."""
+"""Unsigned Jupiter previews, structural checks and conservative historic recovery."""
 from __future__ import annotations
 
 import base64
@@ -145,10 +145,7 @@ class JupiterManualOrderTests(unittest.TestCase):
         p_dir.start()
         self.addCleanup(p_dir.stop)
 
-        # Write test keypair file
-        self.key_path = Path(self.tmp.name) / "test.private"
-        self.key_path.write_text(json.dumps(list(bytes(OWNER_KEYPAIR))))
-        self.key_path.chmod(0o600)
+        self.key_path = Path(self.tmp.name) / "never-read.private"
 
         self.http = MockHttpClient(OWNER)
 
@@ -215,7 +212,7 @@ class JupiterManualOrderTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Insufficient USDC balance"):
             self.preview(size="1", unit="quote")
 
-    def test_semantic_verification_catches_unauthorized_program(self):
+    def test_structural_verification_catches_unauthorized_program(self):
         # Create a malicious transaction with an unknown program (drain attempt)
         bad_ix = Instruction(Pubkey.from_string("11111111111111111111111111111112"), b"\x00", [
             AccountMeta(Pubkey.from_string(OWNER), True, True)
@@ -225,10 +222,10 @@ class JupiterManualOrderTests(unittest.TestCase):
             OWNER
         )
         self.http.simulated_tx_b64 = malicious_tx
-        with self.assertRaisesRegex(ValueError, "semantic safety verification"):
+        with self.assertRaisesRegex(ValueError, "structural safety verification"):
             self.preview()
 
-    def test_semantic_verification_catches_wrong_fee_payer(self):
+    def test_structural_verification_catches_wrong_fee_payer(self):
         other_payer = Keypair()
         bad_tx = make_test_tx(
             valid_swap_ixs(OWNER, jm.USDC_MINT, jm.WSOL_MINT, 1_000_000),
@@ -236,54 +233,35 @@ class JupiterManualOrderTests(unittest.TestCase):
             [other_payer, OWNER_KEYPAIR]
         )
         self.http.simulated_tx_b64 = bad_tx
-        with self.assertRaisesRegex(ValueError, "semantic safety verification"):
+        with self.assertRaisesRegex(ValueError, "structural safety verification"):
             self.preview()
 
-    def test_submit_flow_single_use_and_signing(self):
+    def test_submit_remains_disabled_without_reading_a_key(self):
         prev = self.preview()
-        pid = prev["preview_id"]
+        for _ in range(2):
+            with mock.patch.object(jm, "load_keypair") as load:
+                with self.assertRaisesRegex(ValueError, "economic verification"):
+                    jm.order_submit(prev["preview_id"], str(self.key_path), OWNER, http_client=self.http)
+                load.assert_not_called()
+        self.assertEqual(jm._read(jm._preview_path(prev["preview_id"]))["state"], "preview")
+        self.assertFalse(any(c[0] == "post" for c in self.http.calls))
 
-        result = jm.order_submit(pid, str(self.key_path), OWNER, http_client=self.http)
-        self.assertEqual(result["status"], "FILLED")
-        self.assertEqual(result["order_id"], "5Hx...validSignature")
-        self.assertIn("solscan.io", result["solscan_url"])
-
-        # Cannot submit twice
-        with self.assertRaisesRegex(ValueError, "already been used"):
-            jm.order_submit(pid, str(self.key_path), OWNER, http_client=self.http)
-
-    def test_timeout_marks_unknown_state_blocking_further_orders(self):
+    def test_historical_unknown_state_blocks_further_orders(self):
         prev = self.preview()
-        pid = prev["preview_id"]
-
-        self.http.execute_timeout = True
-        with self.assertRaisesRegex(RuntimeError, "Order outcome is unknown"):
-            jm.order_submit(pid, str(self.key_path), OWNER, http_client=self.http)
-
-        # State should now be unknown
-        st = jm.state()
-        self.assertTrue(st["unresolved"])
-        self.assertEqual(st["orders"][0]["state"], "unknown")
-
-        # Further previews must be blocked
+        path = jm._preview_path(prev["preview_id"])
+        record = jm._read(path)
+        record.update(state="unknown", submit_started_at=1)
+        jm._save(path, record)
+        self.assertTrue(jm.state()["unresolved"])
         with self.assertRaisesRegex(ValueError, "unresolved"):
             self.preview()
 
-    def test_reconcile_resolves_unknown_order(self):
+    def test_reconcile_resolves_historical_unknown_order_from_chain_evidence(self):
         prev = self.preview()
-        pid = prev["preview_id"]
-        self.http.execute_timeout = True
-        try:
-            jm.order_submit(pid, str(self.key_path), OWNER, http_client=self.http)
-        except RuntimeError:
-            pass
-
-        # Manually attach signature to simulate partial submit
-        path = jm._preview_path(pid)
-        rec = jm._read(path)
-        rec["signature"] = "sig123"
-        jm._save(path, rec)
-
+        path = jm._preview_path(prev["preview_id"])
+        record = jm._read(path)
+        record.update(state="unknown", signature="sig123", submit_started_at=1)
+        jm._save(path, record)
         rec_result = jm.order_reconcile("sig123", http_client=self.http)
         self.assertEqual(rec_result["status"], "FILLED")
         self.assertFalse(rec_result["unresolved"])

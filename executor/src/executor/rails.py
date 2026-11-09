@@ -121,7 +121,7 @@ def check_trade(
 
     # -- native SOL reserve (pre-check; the verifier re-checks against the simulated post-state) ----------
     needed = report.quote.in_raw if report.token_in.mint == WSOL_MINT else 0
-    if native_lamports - needed < r.min_sol_reserve_lamports:
+    if report.token_out.mint != WSOL_MINT and native_lamports - needed < r.min_sol_reserve_lamports:
         problems.append(
             f"native SOL {native_lamports} lamports minus the input {needed} would fall below "
             f"min_sol_reserve_lamports {r.min_sol_reserve_lamports}"

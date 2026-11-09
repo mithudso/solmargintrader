@@ -21,6 +21,7 @@ import json
 import os
 import time
 from collections.abc import Iterator
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -41,7 +42,12 @@ class Journal:
             seq = self._next_seq()
             rec = {"seq": seq, "ts": time.time(), "kind": kind, "id": intent_id, **fields}
             line = (json.dumps(rec, sort_keys=True, default=str, separators=(",", ":")) + "\n").encode()
-            os.write(fd, line)
+            pending = memoryview(line)
+            while pending:
+                written = os.write(fd, pending)
+                if written <= 0:
+                    raise OSError("journal write made no progress")
+                pending = pending[written:]
             os.fsync(fd)
             return rec
         finally:
@@ -99,7 +105,9 @@ class Journal:
 
     def unresolved(self) -> list[dict[str, Any]]:
         """Intents that may have landed and have no outcome: they block new live swaps."""
-        return [s for s in self.states().values() if s["state"] in ("sending", "unknown")]
+        return [
+            s for s in self.states().values() if s["state"] in ("sending", "unknown") or failed_accounting_missing(s)
+        ]
 
     def corrupt_lines(self) -> int:
         return sum(1 for r in self.records() if r.get("kind") == "corrupt")
@@ -107,6 +115,19 @@ class Journal:
     def tail(self, limit: int = 20) -> list[dict[str, Any]]:
         recs = list(self.records())
         return recs[-limit:] if limit > 0 else []
+
+
+def failed_accounting_missing(state: dict[str, Any]) -> bool:
+    """Legacy failed outcomes remain blocking until their charged fee is measured."""
+    outcome = state.get("outcome") or {}
+    if outcome.get("status") != "failed":
+        return False
+    fee = outcome.get("fee_lamports")
+    try:
+        usd = Decimal(outcome["fee_usd"])
+    except (KeyError, TypeError, ValueError, InvalidOperation):
+        return True
+    return not (isinstance(fee, int) and not isinstance(fee, bool) and fee >= 0 and usd.is_finite() and usd >= 0)
 
 
 def require_clear(journal: Journal) -> None:

@@ -280,16 +280,20 @@ class _Book:
         direction = 1.0 if side is Side.LONG else -1.0
 
         if delta_notional > 0:
-            # -- increase: merge at a blended average entry price ----------
+            # The target uses pre-fill equity. Reserve costs before spending the
+            # remaining cash, just as open() does for a full allocation.
+            collateral_rate = 1.0 if self.cfg.mode is Mode.SPOT else 1.0 / self.cfg.leverage
+            cost_rate = (fee + slip) / delta_notional
+            delta_notional = min(delta_notional, max(0.0, self.cash) / (collateral_rate + cost_rate))
+            if delta_notional <= 1e-12:
+                return
+            fee, slip = self._costs_on(delta_notional)
+            delta_units = delta_notional / price
             if self.cfg.mode is Mode.SPOT:
-                if delta_notional + fee + slip > self.cash:
-                    return
-                self.cash -= delta_notional + fee + slip
+                self.cash = max(0.0, self.cash - delta_notional - fee - slip)
             else:
                 add_collateral = delta_notional / self.cfg.leverage
-                if add_collateral + fee + slip > self.cash:
-                    return
-                self.cash -= add_collateral + fee + slip
+                self.cash = max(0.0, self.cash - add_collateral - fee - slip)
                 self.pos.collateral += add_collateral
             new_units = cur_units + delta_units
             self.pos.entry_price = (
@@ -495,7 +499,13 @@ def run_backtest(
             b_ix = np.searchsorted(lay.ts, ts + span, side="left")
             lo_idx.append(a_ix)
             hi_idx.append(b_ix)
-            full = (b_ix - a_ix) == span // lay.seconds
+            expected = span // lay.seconds
+            full = (b_ix - a_ix) == expected
+            # IntrabarLayer permits gaps. A matching count alone can hide a
+            # shifted last candle that closes after this coarse decision.
+            for i in np.flatnonzero(full):
+                grid = ts[i] + np.arange(expected, dtype="int64") * lay.seconds
+                full[i] = span % lay.seconds == 0 and np.array_equal(lay.ts[a_ix[i]:b_ix[i]], grid)
             layer_of = np.where((layer_of < 0) & full, k, layer_of)
 
     for i in range(n):
@@ -680,14 +690,14 @@ def _walk_fine_bar(book, config, lay, a, b, c_low, c_high, c_open, c_close, inde
     # Fine path found nothing. If the coarse range reaches past the fine range,
     # trust the more severe one: a daily low that no hourly bar shows is a data
     # disagreement, and ignoring it would let the cleaner feed rescue the position.
-    if mismatch:
-        liq = perps.liquidation_price(
-            pos.entry_price, side, pos.collateral, pos.entry_notional,
-            pos.accrued_borrow_fee, costs,
-        )
-        if perps.is_liquidated(side, liq, c_low, c_high):
-            _liquidate(book, config, liq, c_open, c_close, int(lay.ts[b - 1]), index)
-            return True, mismatch
+    # Diagnostic rounding tolerance must never suppress a known coarse touch.
+    liq = perps.liquidation_price(
+        pos.entry_price, side, pos.collateral, pos.entry_notional,
+        pos.accrued_borrow_fee, costs,
+    )
+    if perps.is_liquidated(side, liq, c_low, c_high):
+        _liquidate(book, config, liq, c_open, c_close, int(lay.ts[b - 1]), index)
+        return True, mismatch
     return False, mismatch
 
 
