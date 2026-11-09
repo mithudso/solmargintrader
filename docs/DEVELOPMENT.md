@@ -16,6 +16,12 @@ The extension has no build step. The optional soltui app bundle is built with py
 
 ## Setup
 
+The standalone manager is packaged separately under `botmanager/`. Its `solbot`
+entry point does not import the SolTUI UI. Install it with `python -m pip install
+./botmanager` in its own Python 3.13 environment; see `botmanager/README.md` for
+configuration, delivered commands and current capability limits. No service is
+installed by a read-only command.
+
 ```bash
 git clone https://github.com/mithudso/solmargintrader.git
 cd solmargintrader
@@ -122,8 +128,8 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 961 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1384 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 999 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE

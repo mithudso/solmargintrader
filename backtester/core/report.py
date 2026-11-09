@@ -165,7 +165,8 @@ def render_report(
         f"Mode           : {manifest.mode}"
         + (f" @ {manifest.leverage:g}x" if manifest.mode == "perp" else "")
     )
-    lines.append(f"Capital        : {manifest.initial_capital:,.2f}")
+    lines.append(f"Capital        : {manifest.initial_capital:,.2f} {manifest.quote_currency}")
+    lines.append(f"Accounting     : monetary values are in {manifest.quote_currency}; no USD conversion")
     lines.append(
         f"Costs          : fee {manifest.costs['fee_bps']:g}bps, "
         f"slippage {manifest.costs['slippage_bps']:g}bps"

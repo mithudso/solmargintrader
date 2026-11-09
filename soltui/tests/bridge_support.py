@@ -17,6 +17,8 @@ from unittest import mock
 from soltui import api, bgcontrol, bgqueue, cli, commands, live_run, native_host
 
 TOKEN = "test-token-not-a-secret"
+MANAGER_REQUEST_ID = "11111111-1111-4111-8111-111111111111"
+MANAGER_CONFIG_HASH = "a" * 64
 
 # Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite
 # replaces their handlers with fixed answers; the registry, validation, envelope and surfaces are real.
@@ -117,6 +119,12 @@ HEAVY = {
     "bots.backtest": {"bot": "grid", "coins": ["SOL"], "runs": [], "errors": {}, "summary": [],
                       "beat_hold": 0, "ran": 0},
     "bots.forward_start": {"forward": {"id": "stub", "bot": "grid"}, "recorder": {"started": False}},
+    # Guarded controls persist request receipts. Keep that stateful handler
+    # deterministic here; the owner protocol has separate real persistence tests.
+    "bots.manager_control": {"protocol_version": 1, "request_id": MANAGER_REQUEST_ID,
+                             "bot": "grid", "operation": "stop", "outcome": "skipped",
+                             "reason": "already_stopped", "session_id": None,
+                             "config_hash": MANAGER_CONFIG_HASH, "source_hash": "b" * 64},
     "bots.optimize": {"bot": "grid", "verdict": {"reliable": False, "adopted": False}, "table": []},
     "bots.schedule_start": {"enabled": True, "running": True, "phase": "running", "items": []},
     "bots.schedule_stop": {"enabled": False, "running": False, "phase": "stopped", "items": []},
@@ -180,6 +188,9 @@ def default_params() -> dict[str, dict]:
         "bots.rank_coins": {"bot": "grid"},
         "bots.audit_coin": {"bot": "grid", "asset": "SOL"},
         "bots.forward_start": {"bot": "grid"},
+        "bots.manager_control": {"bot": "grid", "operation": "stop", "asset": "SOL",
+                                 "request_id": MANAGER_REQUEST_ID, "expected_session": None,
+                                 "expected_config_hash": MANAGER_CONFIG_HASH},
         "bots.forward_stop": {"bot": "grid"},
         "bots.forward_status": {"bot": "grid"},
         "bots.optimize": {"bot": "grid"},

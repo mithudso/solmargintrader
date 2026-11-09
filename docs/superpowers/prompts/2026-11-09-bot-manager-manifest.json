@@ -1,0 +1,98 @@
+{
+  "status": "CLEAN",
+  "sections": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "final": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "evidence": {
+    "6a0": "ISOLATED",
+    "6a": "SIMULATED",
+    "6a2": "ISOLATED",
+    "edit-dist": "EXECUTED"
+  },
+  "active_passes": 13,
+  "skipped": [
+    "L",
+    "N",
+    "O"
+  ],
+  "wrote_target": false,
+  "blocked_rows": 0,
+  "profile": "small",
+  "empirical": false,
+  "example_plan": {
+    "task_kind": "authoring",
+    "examples": [
+      {
+        "role": "primary",
+        "input_class": "existing_repository",
+        "covers": "authoring",
+        "summary": "Inventory reuse, write design and phased plan, review coverage and source claims, save and deliver both artifacts."
+      },
+      {
+        "role": "edge",
+        "input_class": "missing_route_history",
+        "covers": "missing evidence",
+        "summary": "Specify data acquisition and restrict claims instead of manufacturing a backtest."
+      },
+      {
+        "role": "edge",
+        "input_class": "external_bot_owner",
+        "covers": "ownership conflict",
+        "summary": "Keep discovered bot externally managed until verified handoff."
+      }
+    ]
+  },
+  "acceptance": {
+    "schema_version": 1,
+    "artifacts": [
+      {
+        "id": "prompt",
+        "path": "2026-11-09-bot-manager-optimized.md",
+        "sha256": "cfd63952fa93dddf19b876a91fe7c8c60121657c9f74ebb2e83b5264e9de41a1"
+      }
+    ],
+    "artifact_sha256": "c10050df1642ddc3610fe90f28c88fc5c986799dc1ae7a3c6885b3638e7645a5",
+    "checks": [
+      {
+        "kind": "EXECUTED",
+        "completed": true,
+        "artifact_sha256": "c10050df1642ddc3610fe90f28c88fc5c986799dc1ae7a3c6885b3638e7645a5",
+        "command": "pdo_tools.py tokens, scan, examples and editdist; actual commands captured in proof",
+        "exit_code": 0,
+        "proof": {
+          "path": "2026-11-09-bot-manager-checks.txt",
+          "sha256": "352bb9fb4644980feb80bed896767efe487f852ceebc3c1a4e542f0819745890"
+        }
+      }
+    ],
+    "review": {
+      "kind": "ISOLATED",
+      "completed": true,
+      "artifact_sha256": "c10050df1642ddc3610fe90f28c88fc5c986799dc1ae7a3c6885b3638e7645a5",
+      "reviewer": "/root/pdo_blind",
+      "verdict": "PASS",
+      "proof": {
+        "path": "2026-11-09-bot-manager-review.txt",
+        "sha256": "93dd75945a0514bf9730561ba5b814d5d41be86f90517cd1edf8bd1eedd6160b"
+      }
+    },
+    "correctness_findings": [],
+    "regressions": [],
+    "installation": {
+      "required": false
+    }
+  }
+}

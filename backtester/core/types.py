@@ -442,6 +442,9 @@ class RunManifest:
     split: float | None
     library_versions: dict[str, str] = field(default_factory=dict)
     periods_per_year: float = 0.0
+    quote_currency: str = "USD"
+    first_bar_ts: int | None = None
+    last_bar_ts: int | None = None
     sharpe_convention: str = (
         "mean(excess)/stdev(excess, ddof=1) * sqrt(periods_per_year); "
         "365-day crypto year; risk-free rate is an explicit parameter"
