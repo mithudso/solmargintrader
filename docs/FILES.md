@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d7b91125` (2026-11-09T22:31:19+00:00). 2843 tracked files, 63.0 MB.
+**Generated** from `index/INDEX.json` at commit `a8db64b5` (2026-11-09T22:40:23+00:00). 2843 tracked files, 63.0 MB.
 
 Regenerate with:
 
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1045 lines · 196,544 B · description: **extracted**
+`doc` · 1052 lines · 197,724 B · description: **extracted**
 
-**Purpose.** Version: 338 Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates. Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
+**Purpose.** Version: 339 Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run. Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
 
 **Use.** Read it.
 
@@ -338,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27826 lines · 1,435,438 B · description: **extracted**
+`doc` · 27842 lines · 1,436,584 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -482,9 +482,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-milestone-2.md`
 
-`doc` · 93 lines · 5,536 B · description: **extracted**
+`doc` · 100 lines · 5,996 B · description: **extracted**
 
-**Purpose.** Version:1.0.2 Delta:1.0.1 to1.0.2; record final source and installed acceptance with immutable runtime identity. Date:2026-11-09
+**Purpose.** Version:1.0.3 Delta:1.0.2 to1.0.3; verify service-origin fixtures in source and installed import modes. Delta:1.0.1 to1.0.2; record final source and installed acceptance with immutable runtime identity.
 
 **Use.** Read it.
 
@@ -25656,7 +25656,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_supervisor.py`
 
-`test` · 620 lines · 24,760 B · description: **none**
+`test` · 628 lines · 25,104 B · description: **none**
 
 **Purpose.** _No description available._
 

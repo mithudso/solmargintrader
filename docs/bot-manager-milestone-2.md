@@ -1,6 +1,7 @@
 # Persistent reference-paper runtime milestone
 
-Version:1.0.2
+Version:1.0.3
+Delta:1.0.2 to1.0.3; verify service-origin fixtures in source and installed import modes.
 Delta:1.0.1 to1.0.2; record final source and installed acceptance with immutable runtime identity.
 Date:2026-11-09
 Status: source and installed acceptance passed; final CI and remote delivery are the release gates.
@@ -64,6 +65,12 @@ process crashes before/after commit, concurrent commits, stale generations,
 supervisor death, dead/hung workers, stop retention and data integrity. Independent
 task review, final broad review and the single scoped final fix review approved
 the source.
+
+CI's regular wheel installation exposed one source-origin assumption in the test
+fixture. The fixture now supplies an explicit source path and checks its refusal
+code. All 17 supervisor tests pass in both source and installed import modes;
+independent review approved the test-only repair. Production service guards and
+the accepted installed runtime remain unchanged.
 
 Independent acceptance verified 69 loaded Python files against the reviewed
 source in the stable noneditable installation. Two isolated virtual accounts

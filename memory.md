@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 338
+Version: 339
+Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run.
 Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
 Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
 Delta: v335 to v336; resolve current branch conflicts and record the explicit merge request.
@@ -1042,3 +1043,9 @@ The independent installed acceptance receipt1.0.5 is complete against reviewed39
 Installed actual recording replay consumed115samples/2bars with zero fills/lots and unchanged raw source. The Coinbase proxy remains separate from Jupiter SOL/USDC; illustrative costs and unknown book/ticker provenance remain explicit. Earlier real empty-home launchd install/status/cleanup evidence is retained because service.py is unchanged. First removal returned4/unconfirmed; explicit retry returned0 and verified absence. Both owned test supervisors exited0 and locks released. No production state or service changed.
 
 All source/review/installed gates passed. Existing short-fixture annualization and old SQLite test warnings are nonblocking hygiene, not suppressed. Final offline catalog/docs checks, current-head CI, PR180 merge and remote content verification remain. Do not re-run accepted source suites without a relevant change. TASK1108 remains active until delivery. Then continue the approved milestone order; milestone3 adds remaining strategy adapters and prospective/certified Solana data, not graphics or another recorder.
+
+## v339 — 2026-11-09 — installed-import CI fixture repair
+
+CI42712960866 for4bbabce6 completed with8activejobs passed,2expectedskips and one manager-test failure. test_local_socket_dispatch_and_inert_service_status expected installed_executable() to reject the current package. Its assumption held under local source PYTHONPATH but was wrong for the intended regular wheel CI installation. The production guard correctly accepted the wheel. Durable lesson KNOW1160 anchors the exact test and guard.
+
+Test-only commita8db64b5 supplies an explicit source-checkout origin and verifies stable_install_required. Installed-import RED reproduced the exact failure; all17supervisor tests now pass in both source and installed modes. Ruff/format and independent scoped CI review passed. Product bytes remain39e0c262, so installed acceptance1.0.5 remains valid without repeating installation or OS changes. This repair does not reopen the completed final product fix wave. Refresh catalogs, push final records, obtain a new final-head CI success and mergePR180 before markingTASK1108done.
