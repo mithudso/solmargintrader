@@ -1,10 +1,31 @@
 # Work continuation
 
-Version: 286
+Version: 291
+Delta: v290 to v291; finalize committed suite counts and delivery checkpoint.
+Delta: v289 to v290; record passing final checks before delivery.
+Delta: v288 to v289; complete final integration checks and parity fixtures.
+Delta: v287 to v288; verify Jupiter feeds and dashboard interactions.
+Delta: v286 to v287; implement dashboard interaction simplification.
 Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v288 - 2026-11-09
+
+TASK-1069 implementation is complete in /Users/mitch/dev/solmargintrader-wt-dashboard-01a1beca, extension 0.6.0. Both Live Signals pages offer Coinbase or Jupiter USD reference prices. The Jupiter reader resolves exact mints, refuses ambiguous symbols and unusable prices, and labels fetch time separately from absent source quote time. SolTUI uses a responsive single-reader worker, discards old coin/source results and keeps source histories separate. Jupiter display selection does not change live execution routing. Saved predictions and the embedded TradingView COINBASE chart retain explicit Coinbase candle labels.
+
+Chrome tables sort from headers, tools with sufficient default inputs run directly and expand results, and live-order confirmations remain intact. Start all tests creates the existing detached all-eligible-market/all-supported-interval paper batch, suppresses duplicates, and continues forward checks. This explicit action selects each cached series' longest continuous original window and records its source hash, excluded gaps and exact timestamps in batch.proof. Existing saved batch policies are unchanged. Missing histories and unsupported strategies remain visible. No production batch or live order was started.
+
+Manually check independently fetches the latest closed Coinbase minute candles and evaluates current strategy directions without saved expiry, accuracy or sample gates. It refuses stale latest candles and reports warm-up/errors. It does not create historical outcomes or relax saved voting rules. Manual checks and Jupiter quotes both succeeded against real public APIs. Current simulation assumptions remain Jupiter Perps paper accounting, not a proven executable swap quote.
+
+Verification: 391 Node tests, 941 backtester tests and 26/26 real-Chrome/native-host e2e checks passed. Independent browser acceptance passed 8/8, including real TradingView candlesticks at 1440px and 390px. The final e2e compares parsed JSON across Python and JavaScript because 25.0 and 25 represent the same number. Jupiter lifecycle tests cover failure recovery, held-reader responsiveness, source/coin switches and shutdown. Batch regression tests cover original contiguous bars with proof and retained default gap refusal. Logs: /tmp/dashboard-e2e-real-final.log, /tmp/dashboard-actions-acceptance.json, /tmp/dashboard-batch-final.log, /tmp/dashboard-node-tests.log, /tmp/dashboard-backtester-tests.log. Actual user's Chrome Beta profile is inaccessible to DevTools; do not claim that existing window reloaded. Stele transport is closed; implementation completion is queued as 8c535287 and verification claim as a66e70b9, following earlier queued transitions e003d659, 00d1be6e and 7a858888. Postman CLI is absent and Orbit returned HTTP 403; official Jupiter docs, public read and local contract tests provide integration evidence.
+
+Parity fixtures now include batch.run_all, signals.check and prices.quote so cross-surface equality tests do not launch a temporary batch or compare independently changing timestamps. The first parity pass exposed those missing fixtures; no fixture-owned worker remained. Decisions are queued as Stele outbox 130041de and 69cf79fe. The final combined Python run passed 34 tests in 31.885 seconds. It includes four-surface parity, current assessments, batch orchestration and Jupiter lifecycle. The lifecycle fixture waits for the queued Select.Changed event before accepting a drained read. Static indexes, syntax, documentation counts, 391 Node tests and public endpoint checks passed. Implementation committed as 99d8a74. The newly committed test files bring discovery to 1286 SolTUI tests and 2664 total across the four documented suites. Remaining: final CI checks, PR delivery, merge, safely sync the main checkout, verify the merged source/native host, and close the task. Preserve the three unrelated untracked guide files in the main checkout.
+
+## v287 - 2026-11-09
+
+TASK-1069: retain palette/layout while implementing sortable tables, direct tool actions and expanded results, top-level start-all durable paper batch, independent manual current strategy check and selected-pair TradingView chart. Private worktree /Users/mitch/dev/solmargintrader-wt-dashboard-01a1beca. Reuse f5_batch; preserve real-order confirmations and evidence histories. Manual assessment must fetch fresh closed bars, declare warm-up/staleness and avoid historical eligibility gates. Remaining: implementation, focused tests, independent browser acceptance and delivery.
 
 ## v286 - 2026-11-09
 

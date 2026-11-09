@@ -1015,6 +1015,37 @@ def _signal_view(ctx: Context) -> dict[str, Any]:
             "groups": [{"group": g, "names": list(names)} for g, names in SIGNAL_GROUPS]}
 
 
+@command("prices.quote", "Read the selected live price feed.",
+         (P("asset", "string", "Coin symbol or exact Solana mint."),
+          P("source", "string", "coinbase or jupiter.")), long_running=True)
+def prices_quote(ctx: Context, p: dict[str, Any]) -> Any:
+    source = p.get("source", "coinbase")
+    asset = p.get("asset", ctx.settings.asset)
+    if source == "jupiter":
+        from . import live_price
+        return live_price.jupiter(asset)
+    if source != "coinbase":
+        raise ValueError("Choose coinbase or jupiter")
+    from . import pricefeed
+    state = pricefeed.status()
+    quote = state.get("prices", {}).get(f"{asset.upper()}-USD", {})
+    return {"source": "coinbase", "asset": asset, "price": quote.get("mid") or quote.get("last"),
+            "fetched_at": time.time(), "source_timestamp": quote.get("quote_ts"), "quote": quote,
+            "live": state.get("live", False)}
+
+
+@command("signals.check", "Compute a fresh current assessment for the selected coin.",
+         (P("asset", "string", "Coin symbol; defaults to the current asset."),), long_running=True)
+def signals_check(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import current_signal
+    asset = bgqueue.validate_asset(p.get("asset", ctx.settings.asset))
+    plan = forwardtest.load_session()
+    trials = plan["trials"] if plan and plan.get("trials") else [
+        {"label": e.label, "mode": "all", "members": [forwardtest.member(e.name, e.params)]}
+        for e in ctx.roster]
+    return current_signal.check(asset, trials)
+
+
 @command("signals.get", "Signal parameter defaults, grouped by indicator.")
 def signals_get(ctx: Context, p: dict[str, Any]) -> Any:
     return _signal_view(ctx)
@@ -1073,6 +1104,22 @@ def batch_list(ctx: Context, p: dict[str, Any]) -> Any:
         except (KeyError, OSError):
             return 0.0
     return {"runs": sorted(runs, key=changed, reverse=True)}
+
+
+@command("batch.run_all", "Start all-market backtests, then keep paper forward tests running.",
+         read_only=False, long_running=True)
+def batch_run_all(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import f5_batch, coinbase_account
+    running = next((r for r in f5_batch.list_runs() if r.get("running")), None)
+    if running:
+        return {**running, "message": "Already running; no duplicate batch started."}
+    try:
+        f5_batch.catalog_coins()
+    except ValueError:
+        coinbase_account.download_spot_pairs()
+    plan = f5_batch.create(ctx.settings, longest_contiguous=True)
+    worker = f5_batch.start(plan["run_id"])
+    return {**plan, **worker, "message": "Backtests started on each series' longest continuous cached window. Paper forward checks continue; missing history is reported."}
 
 
 @command("batch.create", "Create a frozen all-market batch without starting it.",

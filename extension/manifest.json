@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
   "minimum_chrome_version": "120",
   "background": {
@@ -35,7 +35,7 @@
     "https://yields.llama.fi/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'"
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'; frame-src https://www.tradingview-widget.com"
   },
   "icons": {
     "16": "icons/icon-16.png",

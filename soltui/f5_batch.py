@@ -121,7 +121,7 @@ def catalog_coins() -> tuple[list[str], dict[str, Any]]:
 
 def create(settings: config.Settings, coins: Sequence[str] | None = None, *, root: Path | None = None,
            intervals: Sequence[str] = config.INTERVALS, strategies: Sequence[str] | None = None,
-           horizons: Sequence[str] = HORIZONS) -> dict[str, Any]:
+           horizons: Sequence[str] = HORIZONS, longest_contiguous: bool = False) -> dict[str, Any]:
     """Create a frozen plan. Missing series are recorded by the worker, not guessed.
 
     This may create a large plan; callers must run it off the UI thread. `start`
@@ -168,6 +168,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
             """)
             for key, value in {"version": 1, "id": run_id, "phase": "planned", "created_at": time.time(),
                                "assets": assets, "intervals": intervals, "strategies": names, "horizons": horizons,
+                               "longest_contiguous": longest_contiguous,
                                "settings": frozen, "code_id": _code_id(code_sources), "code_sources": code_sources,
                                "current": "", "universe": universe,
                                "notice": "Jupiter Perps scenario simulation. Each input is frozen when its series is first processed; selection uses CPCV results and is not independent validation. Leverage tiers require a perp-aware runner and are reported unsupported. Unresolved forward outcomes older than seven days remain pending until minute data can be recovered."}.items():
@@ -181,7 +182,8 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
         raise
     return {"run_id": run_id, "directory": str(directory), "cells": total,
             "assets": assets, "intervals": list(intervals), "strategies": len(names),
-            "horizons": list(horizons), "phase": "planned", "universe": universe}
+            "horizons": list(horizons), "phase": "planned", "universe": universe,
+            "longest_contiguous": longest_contiguous}
 
 
 def _lock(directory: Path) -> int | None:
@@ -293,6 +295,7 @@ def status(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
                 "total": sum(counts.values()), "current": _meta(db, "current", ""),
                 "assets": _meta(db, "assets", []), "intervals": _meta(db, "intervals", []),
                 "universe": _meta(db, "universe", {}),
+                "longest_contiguous": _meta(db, "longest_contiguous", False),
                 "problems": problems, "problems_truncated": sum(counts.get(k, 0) for k in ("failed", "missing", "unsupported", "partial")) > len(problems),
                 "forward_checks": checks, "forward_backlog": _forward_backlog(directory),
                 "notice": _meta(db, "notice", ""),
@@ -357,7 +360,8 @@ def proof(run_id: str, asset: str, interval: str, *, root: Path | None = None) -
         series = db.execute("SELECT path,sha256 FROM series WHERE asset=? AND interval=?", (asset, interval)).fetchone()
         return {"run_id": run_id, "settings": _meta(db, "settings", {}),
                 "code_id": _meta(db, "code_id", ""), "code_sources": _meta(db, "code_sources", {}),
-                "series": dict(series) if series else None, "universe": _meta(db, "universe", {})}
+                "series": dict(series) if series else None, "universe": _meta(db, "universe", {}),
+                "data_selection": _meta(db, f"data_selection:{asset}:{interval}", None)}
 
 
 def forward_results(run_id: str, asset: str, *, root: Path | None = None) -> list[dict[str, Any]]:
@@ -454,8 +458,14 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
         arrays = bgworker.ArrayCache(settings).get(asset, interval)
         if _series_hash(db, settings, asset, interval) != digest:
             raise ValueError("price input changed while loading")
-        # Fail closed on gaps rather than invent prices or claim a truncated series starts at the beginning.
-        validate_bar_arrays(arrays, interval)
+        if _meta(db, "longest_contiguous", False):
+            from .runner import select_contiguous
+            arrays, selection = select_contiguous(arrays, interval, longest=True)
+            _set(db, f"data_selection:{asset}:{interval}", selection)
+            db.commit()
+        else:
+            # Existing plans keep their original strict input policy.
+            validate_bar_arrays(arrays, interval)
     except Exception as exc:
         _finish_cell(db, cell_id, "failed", f"{type(exc).__name__}: {exc}")
         return
@@ -483,9 +493,13 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
         return
     winner = max(valid, key=lambda r: r["median_sharpe"])
     bad = sum(r["state"] != "evaluated" for r in outcomes)
-    _finish_cell(db, cell_id, "partial" if bad else "completed",
-                 f"{bad} of {len(outcomes)} variants did not produce an evaluable result" if bad else "",
-                 {"name": name, "params": winner["params"], "selection": "highest CPCV median Sharpe; selected on these results"},
+    selection = _meta(db, f"data_selection:{asset}:{interval}", None)
+    reasons = [f"{bad} of {len(outcomes)} variants did not produce an evaluable result"] if bad else []
+    if selection:
+        reasons.append(f"Longest continuous window: {selection['selected_bars']} of {selection['source_bars']} original bars; {selection['gaps_excluded']} gaps excluded. See batch.proof for timestamps.")
+    _finish_cell(db, cell_id, "partial" if bad else "completed", " ".join(reasons),
+                 {"name": name, "params": winner["params"], "selection": "highest CPCV median Sharpe; selected on these results",
+                  "data_selection": selection},
                  float(winner["median_sharpe"]))
 
 

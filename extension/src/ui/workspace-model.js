@@ -3,7 +3,7 @@ import { spreadsheetText } from '../core/csv.js';
 /** Registry-derived navigation and result adapters shared by the dashboard and tests. */
 export const WORKSPACES = [
   { id: 'now', title: 'Now', detail: 'Processes, prices, current recommendations and saved results.', tools: ['prices.status', 'backtest.status', 'queue.progress', 'forwardtest.state', 'compound.autopilot_status', 'bots.schedule_status', 'portfolio.last'] },
-  { id: 'signal', title: 'Live signals', detail: 'Compound metrics, live predictions, forward testing and unattended training.', prefixes: ['compound'] },
+  { id: 'signal', title: 'Live signals', detail: 'Compound metrics, live predictions, forward testing and unattended training.', tools: ['signals.check', 'prices.quote'], prefixes: ['compound'] },
   { id: 'forward', title: 'Forward testing', detail: 'Prospective paper trials, frozen costs, resolved evidence and session controls.', prefixes: ['forwardtest'] },
   { id: 'research', title: 'Backtesting', detail: 'Strategies, roster, CPCV backtests, sweep queue, cumulative results, analysis and replay.', prefixes: ['strategies', 'roster', 'backtest', 'queue', 'top5', 'analyze', 'cumulative', 'paper', 'live', 'signals', 'research', 'batch', 'paperexperiment'] },
   { id: 'bots', title: 'Bot monitor', detail: 'Grid, DCA, triangle simulations, coin suitability, optimization and the price recorder.', prefixes: ['bots', 'prices'] },

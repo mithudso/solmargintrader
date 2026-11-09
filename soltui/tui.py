@@ -1041,6 +1041,13 @@ class SolTuiApp(App):
         self._signal_live_alive.set()
         self._signal_live_drained = threading.Event()
         self._signal_live_drained.set()
+        self._jupiter_price_busy = False
+        self._signal_live_jupiter_at = 0.0
+        self._signal_live_jupiter_generation = 0
+        self._signal_live_jupiter_coin: str | None = None
+        self._signal_live_jupiter_state = "idle"
+        self._signal_live_jupiter_drained = threading.Event()
+        self._signal_live_jupiter_drained.set()
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -1779,6 +1786,13 @@ class SolTuiApp(App):
         self._signal_live_alive.clear()
         self._signal_live_pred_generation += 1
         self._signal_live_refresh_requested = False
+        self._signal_live_jupiter_generation += 1
+        self._signal_live_jupiter_state = "interrupted"
+        if self._jupiter_price_busy:
+            # urllib reads have their own bounded timeout. A closing app stops
+            # publication immediately even when the read cannot be interrupted.
+            self._jupiter_price_shutdown_drained = await asyncio.to_thread(
+                self._signal_live_jupiter_drained.wait, 5.0)
         if self._signal_live_prediction_timer is not None:
             self._signal_live_prediction_timer.stop()
             self._signal_live_prediction_timer = None
@@ -1856,8 +1870,7 @@ class SolTuiApp(App):
                 with TabPane("Live", id="cmp-live"):
                     with VerticalScroll():
                         yield Static(
-                            "Real-time streaming prices from Coinbase WebSocket feeds and top forward test "
-                            "strategy direction predictions across 1m, 5m, 10m, and 30m horizons.",
+                            "Choose Coinbase stream or Jupiter reference prices. Saved predictions use Coinbase candles.",
                             classes="hint",
                         )
                         with Horizontal(classes="controls"):
@@ -1865,6 +1878,9 @@ class SolTuiApp(App):
                             yield Input(str(self.settings.live_vote_min_accuracy), id="signal-live-vote-min-score", type="number")
                             yield Label("Min resolved / horizon:")
                             yield Input(str(self.settings.live_vote_min_resolved), id="signal-live-vote-min-resolved", type="integer")
+                        with Horizontal(classes="controls"):
+                            yield Label("Price feed:")
+                            yield Select([("Coinbase", "coinbase"), ("Jupiter / jup.ag", "jupiter")], value="coinbase", allow_blank=False, id="signal-live-price-source")
                         yield Static("", id="signal-live-vote-status", markup=False)
                         yield Static("Aggregate score — · Flat", id="signal-live-price-score", markup=False)
                         yield Static("price recorder: checking…", id="signal-live-stream", markup=True)
@@ -4091,6 +4107,11 @@ class SolTuiApp(App):
         if not self.query("#signal-live-stream"):
             return
         coin = getattr(self, "_compound_coin", "SOL")
+        if self.query("#signal-live-price-source") and self.query_one("#signal-live-price-source", Select).value == "jupiter":
+            self._signal_live_refresh_predictions()
+            self._signal_live_update_score(time.time())
+            self._signal_live_jupiter_tick(coin)
+            return
         product = f"{coin}-USD"
         now = time.time()
         self._signal_live_refresh_predictions()
@@ -4251,6 +4272,91 @@ class SolTuiApp(App):
                 self.query_one("#signal-live-chart-yaxis", Static).update("")
             if self.query("#signal-live-chart-xaxis"):
                 self.query_one("#signal-live-chart-xaxis", Static).update("")
+
+    @on(Select.Changed, "#signal-live-price-source")
+    def _signal_live_source_changed(self, event: Select.Changed) -> None:
+        self._signal_live_jupiter_generation += 1
+        self._signal_live_jupiter_at = 0.0
+        self._signal_live_clear_price()
+        self._signal_live_tick()
+
+    def _signal_live_clear_price(self) -> None:
+        if not self.query("#signal-live-chart"):
+            return
+        self.query_one("#signal-live-chart", Sparkline).data = []
+        for selector in ("#signal-live-score-tape", "#signal-live-chart-stats",
+                         "#signal-live-chart-yaxis", "#signal-live-chart-xaxis"):
+            self.query_one(selector, Static).update("")
+        self.query_one("#signal-live-stream", Static).update("Loading selected price feed…")
+        self.query_one("#signal-live-chart-context", Static).update("Price graph: loading…")
+
+    def _signal_live_jupiter_tick(self, coin: str) -> None:
+        if not self._signal_live_alive.is_set():
+            return
+        if self._signal_live_jupiter_coin != coin:
+            self._signal_live_jupiter_coin = coin
+            self._signal_live_jupiter_generation += 1
+            self._signal_live_jupiter_at = 0.0
+            self._signal_live_clear_price()
+        if self._jupiter_price_busy or time.time() - self._signal_live_jupiter_at < 10:
+            return
+        self._jupiter_price_busy = True
+        self._signal_live_jupiter_state = "running"
+        self._signal_live_jupiter_at = time.time()
+        drained = self._signal_live_jupiter_drained = threading.Event()
+        self._signal_live_jupiter_job(coin, self._signal_live_jupiter_generation, drained)
+
+    @work(thread=True, exit_on_error=False, group="signal-jupiter-price")
+    def _signal_live_jupiter_job(self, coin: str, generation: int, drained: threading.Event) -> None:
+        delivered = False
+        try:
+            try:
+                env = self._call("prices.quote", {"asset": coin, "source": "jupiter"}, quiet=True)
+            except Exception as exc:
+                env = {"ok": False, "error": {"message": f"Jupiter price read failed ({type(exc).__name__})"}}
+            if self._signal_live_alive.is_set():
+                try:
+                    self.call_from_thread(self._signal_live_jupiter_done, coin, generation, env)
+                    delivered = True
+                except RuntimeError:
+                    pass  # The app closed after the read completed.
+        finally:
+            if not delivered:
+                self._jupiter_price_busy = False
+            drained.set()
+
+    def _signal_live_jupiter_done(self, coin: str, generation: int, env: dict[str, Any]) -> None:
+        self._jupiter_price_busy = False
+        if not self._signal_live_alive.is_set() or not self.query("#signal-live-price-source"):
+            return
+        current_coin = getattr(self, "_compound_coin", "SOL")
+        jupiter_selected = self.query_one("#signal-live-price-source", Select).value == "jupiter"
+        if generation != self._signal_live_jupiter_generation or coin != current_coin or not jupiter_selected:
+            self._signal_live_jupiter_state = "discarded"
+            if jupiter_selected:
+                self._signal_live_jupiter_at = 0.0
+                self._signal_live_jupiter_tick(current_coin)
+            return
+        quote = env.get("result") if isinstance(env, dict) and env.get("ok") else None
+        price, at = (quote.get("price"), quote.get("fetched_at")) if isinstance(quote, dict) else (None, None)
+        if (isinstance(price, bool) or not isinstance(price, (int, float)) or not math.isfinite(price) or price <= 0
+                or isinstance(at, bool) or not isinstance(at, (int, float)) or not math.isfinite(at) or at > time.time()):
+            self._signal_live_jupiter_state = "failed"
+            message = ((env.get("error") or {}).get("message") if isinstance(env, dict) else None) or "Jupiter returned an unusable price"
+            self.query_one("#signal-live-stream", Static).update(Text(message))
+            return
+        self._signal_live_jupiter_state = "completed"
+        history = self._signal_live_price_history.setdefault(f"jupiter:{coin}", [])
+        if not history or at > history[-1][0]:
+            history.append((at, price))
+            del history[:-120]
+        self.query_one("#signal-live-chart", Sparkline).data = [p for _, p in history]
+        self.query_one("#signal-live-chart-context", Static).update(Text(f"Jupiter {coin}/USD ${price:,.6f} · block {quote.get('block_id') or 'unknown'}"))
+        self.query_one("#signal-live-stream", Static).update(Text(f"Jupiter reference price · fetched {time.strftime('%H:%M:%S UTC', time.gmtime(at))}"))
+        self.query_one("#signal-live-chart-stats", Static).update("Predictions use Coinbase candles. Jupiter prices do not supply bid/ask or executable swap quotes.")
+        self.query_one("#signal-live-score-tape", Static).update("")
+        self.query_one("#signal-live-chart-yaxis", Static).update("")
+        self.query_one("#signal-live-chart-xaxis", Static).update("")
 
     def _signal_live_poll_predictions(self) -> None:
         # Keep the ten-second schedule independent of chart ticks and read

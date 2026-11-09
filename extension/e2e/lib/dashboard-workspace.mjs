@@ -14,6 +14,10 @@ await ev(`(async()=>{
  window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;window.liveFailNext=false;
 
  const spec=[
+ {name:'signals.check',describe:'Current check',params:[],read_only:true,long_running:true},
+ {name:'prices.quote',describe:'Jupiter price',params:[],read_only:true,long_running:true},
+ {name:'batch.run_all',describe:'All tests',params:[],read_only:false,long_running:true},
+ {name:'batch.status',describe:'Batch status',params:[],read_only:true,long_running:true},
  {name:'prices.status',describe:'Prices',params:[],read_only:true},
  {name:'forwardtest.predictions',describe:'Predictions',params:[{name:'asset',type:'string'}],read_only:true},
  {name:'demo.rows',describe:'Rows',params:[],read_only:true},
@@ -25,6 +29,10 @@ await ev(`(async()=>{
  const revision=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))).map(x=>x.toString(16).padStart(2,'0')).join('');
  const en=(command,result)=>({ok:true,command,result,error:null});
  const tx=async m=>{calls.push(m);if(m.type==='soltuiSession')return {ok:true,result:{available:true,connected:true,generation:1}};if(m.type==='soltuiCommands')return {ok:true,result:en('list',spec)};
+ if(m.command==='signals.check')return {ok:true,result:en(m.command,{score:100,checked_at:Date.now()/1000,strategies:1,rows:[{strategy:'fresh fixture',prediction:'UP',error:''}]})};
+ if(m.command==='prices.quote')return {ok:true,result:en(m.command,{price:87.25,source:'jupiter',block_id:123,fetched_at:Date.now()/1000})};
+ if(m.command==='batch.run_all')return {ok:true,result:en(m.command,{run_id:'fixture-batch',running:true,message:'Backtesting then forward'})};
+ if(m.command==='batch.status')return {ok:true,result:en(m.command,{run_id:'fixture-batch',running:true,phase:'backtesting',assets:['SOL'],intervals:['1m','5m'],counts:{pending:2}})};
  if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
  if(m.command==='forwardtest.predictions'){if(liveFailNext){liveFailNext=false;throw new Error('temporary prediction read failure')};const response={ok:true,result:en(m.command,{asset:m.params.asset,voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};if(m.params.asset===liveHoldAsset)return new Promise((resolve,reject)=>{liveHeld={resolve:()=>resolve(response),reject:()=>reject(new Error('old coin failed'))}});return response;}
  if(m.command==='settings.save' && m.params.live_vote_min_accuracy!==undefined){liveVoting={min_accuracy:m.params.live_vote_min_accuracy,min_resolved:m.params.live_vote_min_resolved};return {ok:true,result:en(m.command,{settings:liveVoting})};}
@@ -165,6 +173,26 @@ await wait(`calls.filter(x=>x.command==='forwardtest.predictions').length===${ba
 await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated')`);
 await ev(`Date.now=realNow`);
 console.log('PASS automatic ten-second prediction refresh with Follow off, changed rows, retry, single request and hidden-view guards');
+
+// Direct controls must call the backend, not just select a second form.
+await ev(`liveAccuracy=0;r.querySelector('#soltuiLiveRefresh').click()`);
+await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('No qualifying')`);
+await ev(`r.querySelector('#soltuiManualCheck').click()`);
+await wait(`r.querySelector('#manualSignalResult').textContent.includes('fresh fixture')`);
+assert.ok(await ev(`r.querySelector('#manualSignalResult').textContent.includes('UP')`));
+await ev(`r.querySelector('#soltuiPriceSource').value='jupiter';r.querySelector('#soltuiPriceSource').dispatchEvent(new Event('change'))`);
+await wait(`r.querySelector('#soltuiLiveStatus').textContent.startsWith('Jupiter SOL/USD')`);
+assert.ok(await ev(`calls.some(x=>x.command==='prices.quote'&&x.params.source==='jupiter')`));
+await ev(`r.querySelector('#deskStartAll').click()`);
+await wait(`calls.some(x=>x.command==='batch.run_all') && r.querySelector('#deskStartAll').disabled`);
+assert.equal(await ev(`calls.filter(x=>x.command==='batch.run_all').length`),1);
+await ev(`r.querySelector('#deskStartAll').click()`);
+assert.equal(await ev(`calls.filter(x=>x.command==='batch.run_all').length`),1,'disabled running batch cannot duplicate');
+await ev(`r.querySelector('#soltuiWorkspace').value='all';r.querySelector('#soltuiWorkspace').dispatchEvent(new Event('change'));[...r.querySelectorAll('.tool-card')].find(b=>b.textContent.includes('demo › rows')).click()`);
+await wait(`r.querySelector('#soltuiResultCard').classList.contains('expanded-output') && r.querySelector('#soltuiResultLabel').textContent.startsWith('demo.rows')`);
+assert.ok(await ev(`calls.some(x=>x.command==='demo.rows')`));
+assert.ok(await ev(`r.querySelector('#tradingViewChart iframe').src.includes('tradingview-widget.com/embed-widget/advanced-chart/')`));
+console.log('PASS direct actions, expanded results, manual fresh assessment, Jupiter source and one-button batch');
 
 await ev(`window.dispatchEvent(new PageTransitionEvent('pagehide'))`);
 

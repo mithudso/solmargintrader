@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T10:07:26+00:00",
+  "generatedAt": "2026-11-09T11:15:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 428,
+      "matchingFiles": 431,
       "shown": 30,
       "files": [
         {
@@ -1135,6 +1135,10 @@
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
           "hits": 163
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 140
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -1161,10 +1165,6 @@
           "hits": 98
         },
         {
-          "path": "soltui/tui.py",
-          "hits": 85
-        },
-        {
           "path": "docs/archive/memory-2026-11-08.md",
           "hits": 81
         },
@@ -1189,6 +1189,10 @@
           "hits": 67
         },
         {
+          "path": "extension/README.md",
+          "hits": 67
+        },
+        {
           "path": "research/5minleveragestrategies.json",
           "hits": 66
         },
@@ -1201,8 +1205,12 @@
           "hits": 66
         },
         {
-          "path": "extension/README.md",
-          "hits": 64
+          "path": "soltui/commands.py",
+          "hits": 59
+        },
+        {
+          "path": "memory.md",
+          "hits": 58
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -1213,20 +1221,12 @@
           "hits": 58
         },
         {
-          "path": "soltui/commands.py",
-          "hits": 54
-        },
-        {
           "path": "docs/short-horizon-leverage-concept-family.md",
           "hits": 53
         },
         {
           "path": "research/tradingview-card-coverage.json",
           "hits": 50
-        },
-        {
-          "path": "memory.md",
-          "hits": 48
         },
         {
           "path": "soltui/wallet.py",
@@ -1620,6 +1620,10 @@
           "hits": 12
         },
         {
+          "path": "soltui/tests/test_f5_batch.py",
+          "hits": 11
+        },
+        {
           "path": "memory.md",
           "hits": 11
         },
@@ -1649,10 +1653,6 @@
         },
         {
           "path": "extension/e2e/lib/dashboard-workspace.mjs",
-          "hits": 9
-        },
-        {
-          "path": "research/tradingview-card-readiness.json",
           "hits": 9
         }
       ],
@@ -1868,6 +1868,10 @@
           "hits": 12
         },
         {
+          "path": "soltui/tests/test_f5_batch.py",
+          "hits": 11
+        },
+        {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
           "hits": 11
         },
@@ -1897,10 +1901,6 @@
         },
         {
           "path": "backtester/strategy_cards/buy_and_hold.md",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_f5_batch.py",
           "hits": 8
         },
         {

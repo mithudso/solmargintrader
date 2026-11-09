@@ -159,6 +159,51 @@ class BatchTests(unittest.TestCase):
         self.assertEqual(len(proof["sha256"]), 64)
 
 
+class GapWindowTests(unittest.TestCase):
+    def exercise(self, enabled):
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            settings = config.default_settings()
+            settings.data_dir = d
+            (root / "SOL_1m.csv").write_text("frozen fixture source")
+            ts = np.array([0, 60, 120, 600, 660, 720, 780], dtype="int64")
+            arrays = {"ts": ts, **{k: np.full(7, 100.0) for k in ("open", "high", "low", "close")},
+                      "volume": np.ones(7)}
+            card = mock.Mock(buildable=True, data_available=True)
+            job = bgqueue.Job("buy_and_hold", "medium", "SOL", "1m", {})
+            with mock.patch.object(f5_batch, "_code_id", return_value="fixture"), \
+                 mock.patch.object(f5_batch, "_card_map", return_value={"buy_and_hold": card}), \
+                 mock.patch.object(bgqueue, "jobs_for_card", return_value=[job]), \
+                 mock.patch.object(f5_batch.bgworker, "ArrayCache", return_value=mock.Mock(get=mock.Mock(return_value=arrays))), \
+                 mock.patch.object(f5_batch.bgworker, "evaluate", side_effect=_ok) as evaluate:
+                plan = f5_batch.create(settings, ["SOL"], root=root, intervals=["1m"],
+                                       strategies=["buy_and_hold"], horizons=["medium"],
+                                       longest_contiguous=enabled)
+                f5_batch.run(plan["run_id"], root=root, forward_cycles=1,
+                             tick=lambda *a, **k: {"recorded": 0, "message": "fixture"})
+                cells = f5_batch.cells(plan["run_id"], root=root)
+                proof = f5_batch.proof(plan["run_id"], "SOL", "1m", root=root)
+                if enabled:
+                    self.assertEqual(cells[0]["state"], "completed")
+                    np.testing.assert_array_equal(evaluate.call_args.args[1]["ts"], ts[3:])
+                    self.assertEqual(proof["data_selection"], {"policy": "longest_contiguous",
+                        "gaps_excluded": 1, "source_bars": 7, "selected_bars": 4,
+                        "first_ts": 600, "last_ts": 780})
+                    self.assertEqual(len(proof["series"]["sha256"]), 64)
+                    self.assertIn("4 of 7 original bars", cells[0]["reason"])
+                    np.testing.assert_array_equal(arrays["ts"], ts)
+                else:
+                    self.assertEqual(cells[0]["state"], "failed")
+                    self.assertIn("timestamp cadence must equal 1m", cells[0]["reason"])
+                    evaluate.assert_not_called()
+
+    def test_start_all_policy_uses_original_contiguous_bars_with_proof(self):
+        self.exercise(True)
+
+    def test_existing_batch_policy_keeps_refusing_gaps(self):
+        self.exercise(False)
+
+
 class SignalIntervalTests(unittest.TestCase):
     def test_forward_signal_uses_matching_closed_day_candles(self):
         with TemporaryDirectory() as d, mock.patch.object(config, "CONFIG_DIR", Path(d)):
