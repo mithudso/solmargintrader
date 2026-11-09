@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 169
+Version: 171
+Delta: v170 to v171; record additional GoonFi documentation and supplied swap enum.
+Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
 Delta: v168 to v169; clarify that either trade direction can prove execution.
 Delta: v167 to v168; record SOL/USDC buy-direction clarification.
 Delta: v166 to v167; record strategy agent and Jupiter proof purchase request.
@@ -1470,3 +1472,13 @@ It's my understanding that the right side or bottom side of a coin pair is the o
 ## Jupiter proof-trade clarification - 2026-11-09
 
 I just meant to prove that you can make a trade, not that you necessarily need to acquire USDC.
+
+## Jupiter documentation supplied - 2026-11-09
+
+/Users/mitch/dev/solmargintrader/llms/jupsol-llms-full.txt Here is the full documentation.
+
+You can also query the Jup.ag docs mcp server. https://developers.jup.ag/docs/mcp
+
+## Additional GoonFi sources - 2026-11-09
+
+The owner supplied a full Codama-generated Rust `Swap` enum including `GoonFiV3 { is_bid: bool }`, and https://docs.bitquery.io/docs/blockchain/Solana/goonfi-api/ . The enum matches the independently queried on-chain IDL for ordinal 151.

@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 345
+Version: 347
+Delta: v346 to v347; record on-chain variant evidence, offline tests and network refusal.
+Delta: v345 to v346; record Jupiter documentation and fresh unsigned route evidence.
 Delta: v344 to v345; record proof-trade clarification and verifier refusals.
 Delta: v343 to v344; record clarified SOL/USDC buy direction and current funding blocker.
 Delta: v342 to v343; clarify read-only manager discovery before reporting begins.
@@ -1073,3 +1075,11 @@ The owner clarified the SOL/USDC buy direction: spend USDC to purchase SOL. Exec
 ## Proof trade — 2026-11-09
 
 The owner clarified that either direction can prove a trade. A 0.005 SOL to USDC quote was acceptable at about $0.43 under the configured quote rails. A dry-run swap for that amount refused at static verification: `Jupiter route minimum output is below the approved minOut`. A 0.01 SOL dry run and a second 0.005 SOL dry run refused `unsupported Jupiter swap variant`. No simulation, key load, signature, send or configuration change occurred. The causes are unconfirmed. Keep the verifier fail-closed and investigate the current route layouts before changing money-moving code. The proof trade and strategy-agent implementation remain incomplete.
+
+## Jupiter documentation and route investigation — 2026-11-09
+
+The owner supplied /Users/mitch/dev/solmargintrader/llms/jupsol-llms-full.txt and the Jupiter developer docs MCP. The file identifies itself as user-facing docs and does not define the binary route enum. The MCP documents current Swap V2 flows; the executor is deliberately pinned to V1. A fresh read-only quote and unsigned build for 0.005 SOL to USDC returned a route labeled GoonFi V2 with first swap enum ordinal 151, outside the pinned decoder list. The current main-branch jup-ag/jupiter-amm-implementation aggregator IDL retrieved during this investigation defines only 90 variants; it does not establish ordinal 151. The earlier minimum-output refusal is separately unresolved. No keys, signature, send or config change. The static verifier must remain fail-closed.
+
+## Jupiter verifier investigation checkpoint
+
+On-chain Jupiter V6 Anchor IDL account C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa, owned by JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4, identified Swap ordinal 151 as GoonFiV3 { is_bid: bool }. Owner supplied an independently consistent enum. A local uncommitted sparse decoder change and tests add only ordinal 151 and continue to reject gaps. Offline tests: 437 passed, 5 deselected; Ruff check and format passed. Network tests: 4 passed, 1 failed because the selected route required an unknown variant and intermediate ATA; no live transaction sent. A later unsigned GoonFi route had out_raw 432480, quote minimum 430318 and the deliberate conservative floor 430317. The official April 2024 V6 audit documents checked_ceil_div; current runtime equivalence needs independent verification. Do not weaken the minimum bound to force a swap. The Bitquery GoonFi page concerns market/trade analytics, not the Jupiter instruction encoding. Source code and tests are uncommitted because required network checks failed.
