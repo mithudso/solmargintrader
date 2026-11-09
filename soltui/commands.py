@@ -924,6 +924,15 @@ def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
     return {"asset": assets[0], "assets": assets, "rows": [r for a in assets for r in forwardtest.status(a)]}
 
 
+@command("forwardtest.predictions", "Top performing forward test strategies and their 1, 5, 10, and 30 min price predictions for an asset.",
+         (P("asset", "string", "The asset / coin symbol (e.g. SOL)."),
+          P("limit", "number", "Maximum number of strategies to return (default 50).", False)))
+def forwardtest_predictions(ctx: Context, p: dict[str, Any]) -> Any:
+    asset = bgqueue.validate_asset(p.get("asset") or ctx.settings.asset)
+    limit = int(p.get("limit") or 50)
+    return {"asset": asset, "rows": forwardtest.top_forward_predictions(asset, limit=limit)}
+
+
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)
 def roster_reset(ctx: Context, p: dict[str, Any]) -> Any:
     ctx.roster = Roster.default()

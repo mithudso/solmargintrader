@@ -450,3 +450,77 @@ def status(asset: str, *, db_path: Path | None = None) -> list[dict]:
               GROUP BY t.id ORDER BY t.label,t.minutes,t.id
             """, (asset,))
         ]
+
+
+def top_forward_predictions(asset: str, *, min_resolved: int = 1, limit: int = 50,
+                            db_path: Path | None = None) -> list[dict[str, Any]]:
+    """Rank top performing forward test strategies and extract 1, 5, 10, and 30 min price predictions."""
+    path = db_path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+    if not path.exists():
+        return []
+    with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
+        rows = db.execute("""
+            SELECT label,
+                   sum(resolved) as total_resolved,
+                   sum(hits) as total_hits,
+                   max(CASE WHEN minutes=1 THEN last_call END) as p1,
+                   max(CASE WHEN minutes=5 THEN last_call END) as p5,
+                   max(CASE WHEN minutes=10 THEN last_call END) as p10,
+                   max(CASE WHEN minutes=30 THEN last_call END) as p30,
+                   max(CASE WHEN minutes=1 THEN hits*100.0/nullif(resolved,0) END) as acc1,
+                   max(CASE WHEN minutes=5 THEN hits*100.0/nullif(resolved,0) END) as acc5,
+                   max(CASE WHEN minutes=10 THEN hits*100.0/nullif(resolved,0) END) as acc10,
+                   max(CASE WHEN minutes=30 THEN hits*100.0/nullif(resolved,0) END) as acc30,
+                   max(CASE WHEN minutes=1 THEN resolved ELSE 0 END) as n1,
+                   max(CASE WHEN minutes=5 THEN resolved ELSE 0 END) as n5,
+                   max(CASE WHEN minutes=10 THEN resolved ELSE 0 END) as n10,
+                   max(CASE WHEN minutes=30 THEN resolved ELSE 0 END) as n30,
+                   max(last_issued) as max_issued,
+                   max(active) as active_json
+            FROM (
+                SELECT t.label, t.minutes, t.active,
+                       count(c.outcome) as resolved,
+                       sum(c.outcome=c.prediction) as hits,
+                       (SELECT prediction FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_call,
+                       max(c.issued) as last_issued
+                FROM trial t LEFT JOIN call c ON t.id=c.trial
+                WHERE t.asset=?
+                GROUP BY t.id
+            )
+            GROUP BY label
+            HAVING total_resolved >= ?
+            ORDER BY (CAST(total_hits AS REAL) / total_resolved) DESC, total_resolved DESC
+            LIMIT ?
+        """, (asset, min_resolved, limit)).fetchall()
+        dirs = {1: "UP", -1: "DOWN", 0: "FLAT"}
+        out = []
+        for r in rows:
+            acc = round(r[2] * 100.0 / r[1], 1) if r[1] else 0.0
+            settings = []
+            if r[16]:
+                try:
+                    settings = json.loads(r[16])
+                except (ValueError, TypeError):
+                    pass
+            out.append({
+                "label": r[0],
+                "asset": asset,
+                "resolved": r[1],
+                "hits": r[2],
+                "accuracy": acc,
+                "pred_1m": dirs.get(r[3], "-"),
+                "pred_5m": dirs.get(r[4], "-"),
+                "pred_10m": dirs.get(r[5], "-"),
+                "pred_30m": dirs.get(r[6], "-"),
+                "acc_1m": round(r[7], 1) if r[7] is not None else None,
+                "acc_5m": round(r[8], 1) if r[8] is not None else None,
+                "acc_10m": round(r[9], 1) if r[9] is not None else None,
+                "acc_30m": round(r[10], 1) if r[10] is not None else None,
+                "resolved_1m": r[11],
+                "resolved_5m": r[12],
+                "resolved_10m": r[13],
+                "resolved_30m": r[14],
+                "last_issued": r[15],
+                "settings": settings,
+            })
+        return out

@@ -76,6 +76,7 @@ HEAVY = {
     # Compound: live reads hit public market-data endpoints; backtests read the real 5m cache.
     "forwardtest.tick": {"asset": "SOL", "bar": None, "recorded": 0, "rows": [], "message": "stub"},
     "forwardtest.status": {"asset": "SOL", "rows": []},
+    "forwardtest.predictions": {"asset": "SOL", "rows": []},
     "compound.signal": {"call": "FLAT", "composite": None, "components": []},
     "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
     "compound.unattended_start": {"started": True, "asset": "SOL", "pid": 1, "log": "x"},

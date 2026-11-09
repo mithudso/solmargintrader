@@ -985,3 +985,10 @@ In the money add a clear border and title to the coinbase order form. Also add a
 ```text
 Run the repo-bootstrapper skill on this repo.
 ```
+
+
+## v117 - 2026-11-08
+
+```text
+In the Soltui, under the Signal tab add a live page that shows a graph of the chosen coin, and shows real time subscribed streaming price information. And have a table of all of the top performing forward test strategies giving 1, 5, 10, and 30 min predictions  of what the price will do.
+```
