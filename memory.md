@@ -1,15 +1,27 @@
 # Work continuation
 
-Version: 215
-Delta: v214 to v215; record accepted 0.80 confidence and verification checkpoint.
+Version: 218
+Delta: v217 to v218; retain both chart and Jupiter continuation histories.
 
-## v215 - 2026-11-08
+## v218 - 2026-11-08
+
+Integrated chart PR 141 without changing its signal/live behavior. Preserved each request and both continuation histories. Jupiter source and UI checks pass; final checks and delivery follow after refreshing generated counts and indexes. No change to the other session worktree or installed console.
+
+## v217 - 2026-11-08
 
 Implemented Jupiter Perps fee profiles, optional leverage/shorts, and owner-confirmed minimum confidence 0.80. Prior resolved-call confidence gates entries; no-lookahead tests cover fill delay. Each forward trial stores the cost/execution snapshot and each call stores confidence, eligibility and net return. Fees and borrow use full notional; intraminute liquidation forfeits collateral. P&L, CPCV, dry runs, F5 and new paper experiments share assumptions. Historical rows remain intact. Fresh Textual acceptance passed both forms at 180 and 100 columns, after fixing overflowing inputs. Initial keyword search auto-refreshed the already-dirty generated index in the shared checkout; no further writes there. Stele decision queued as f07325c1. Remaining: final tests and documentation/index checks, commit, PR checks and merge; existing installed console not reloaded because the shared checkout has another session and a pending merge.
 
-## v214 - 2026-11-08
+## v216 - 2026-11-08
 
 Scope: Jupiter simulation costs and forward/backtest controls for leverage, short DOWN calls, and minimum confidence. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1bded starts at origin/master 8195771. Other checkout has a live session and unfinished merge; preserve it. Preserve historical evidence and causal signals; no new live execution. Stele task/decision queued as outbox 470a5bc1 and 93dc9fb7 because no Stele MCP is available and the recall agent runtime failed. Remaining: inspect calculation paths, implement consistent controls and provenance, test accounting and no lookahead, verify UI, commit and deliver through PR.
+
+## v215 - 2026-11-08
+
+TASK-1064: In SolTUI under Signal tab Live page (`cmp-live`), added `#signal-live-chart-yaxis` (High, Mid, Low price levels with vertical ticks) and `#signal-live-chart-xaxis` (Start, Mid, End UTC timestamps matching data points). Implemented strategy prediction scheduler in `_signal_live_tick()` running every 1 minute (60s) or on candle minute rollover, preserving table cursor and detail selection. Added unit tests in `soltui/tests/test_signal_live.py` (7 tests pass); synchronized test counts across doc suite (soltui: 1183, total: 2487). All suites and checks pass (`check_docs.py`, `npm test`, `backtester`, `mongo`, `dryrun.js`).
+
+## v214 - 2026-11-08
+
+TASK-1064: In SolTUI under Signal tab Live page (`cmp-live`), add timestamps and price numbers to the price chart. Schedule top-performing forward-test strategy predictions to update with incoming streaming prices from the pricefeed daemon or on a 1-minute cadence. Preserve read-only SolTUI guarantees and non-lookahead semantics.
 
 ## v213 - 2026-11-08
 

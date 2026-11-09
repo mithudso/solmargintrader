@@ -1,18 +1,24 @@
 # Prompt history
 
-Version: 123
-Delta: v122 to v123; record accepted 0.80 confidence and verification checkpoint.
+Version: 124
+Delta: v123 to v124; retain chart request and owner-confirmed Jupiter controls.
 
-## v123 - 2026-11-08
+## v124 - 2026-11-08
 
 ```text
 Use 0.80
 ```
 
-## v122 - 2026-11-08
+## v123 - 2026-11-08
 
 ```text
 Update the fee schedule to be Jupiter's fees rather than Coinbase's for the profit and testing estimation. Also have an option in the forward and backtests to 1) use leveraged positions, 2) short down positions. 3) minimum confidence score to make a trade, meaning if the strategies are at a .65 I'm not going to bet a leveraged trade on it.
+```
+
+## v122 - 2026-11-08
+
+```text
+Add timestamps and price numbers to the chart. And schedule the strategies to update their prediction with the streaming price coming in, or if that's not possible then every 1 minute.
 ```
 
 ## v121 - 2026-11-08
