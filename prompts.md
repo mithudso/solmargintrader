@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 152
+Version: 154
+Delta: v153 to v154; save optimized prompt and its execution artifacts.
+Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
 Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
@@ -1207,3 +1209,10 @@ $ui-deep-optimizer  ~/dev/solmargintrader/soltui
 ## 2026-11-09 — strategy DSO comparison
 
 I want to run the deep strategy optimizer on the strategies in this repo, but I also want a before and after with comparisons of accuracy. Make a copy of all of the strategies into a separate folder, run the deep strategy optimizer on all of them, and then run the both the old and the new side by side and see how they shake out.
+
+
+## 2026-11-09 — standalone Solana bot manager design (TASK-1092)
+
+Run the deep prompt optimizer on this prompt and then run it: Lookup the software design, software architect, and planning superpower skills:  This repo has grown to become a  frankenstein. and the UI is cluttered. Let's take this one piece at a time. Design and plan a fully automated crypto trading bot management system that can 1) Create a long lived bot that can do any of the 5 bot strategies we hav eso far (grid, dca, trend, momentum, arbitrage). This will be solely on Solana and interact with jup.ag. 2) Have a backtest with complete data and tests that are useful, and we're going to use that backtest data to blind determine what the parameters should be. When we go to set the parameters the judge will not know what the parameters were to begin with and will solely judge what should come based on performance. 3) Forward test that bot with a dry run in real time. 4) Maintain and monitor the bot to make sure it is still running, and is performing as expected. 5) Use any incorrect calls or lossy trades to train the bot in a more profitable direction. 6) Have clear, helpful, and complete diagnostic, training, and profit and loss data throughout.  7) Have more than one bot going at a time, especially during dry run testing. For right now you can use all of the information, files, scripts, libraries, anything from this repo that will be useful but this is going to be a standalone application for now, except that it will need to be able to discover and manage the bots created by the soltui and the chrome extension. For right now let's create this as a command line tool, all values for the bot should have a default such that I don't have to plug in every number ebvery time to start/stop the bots, only the changed variables will be used. I would like it to share the data and conclusions already established by the other processes, this will get integrated soon, I just don't want this to be a zombie yet another script.
+
+Optimized prompt, full audit and structural evidence: /Users/mitch/dev/solmargintrader/docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md and sibling audit/manifest files. Executed as design/planning; design and implementation plan are saved under /Users/mitch/dev/solmargintrader/docs/superpowers/specs and /Users/mitch/dev/solmargintrader/docs/superpowers/plans.

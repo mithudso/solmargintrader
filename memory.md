@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 313
+Version: 315
+Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery.
+Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
 Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
@@ -759,3 +761,19 @@ Final registry run exit 0: 544 successful cells, zero failures, unchanged source
 ## PR167 integration receipt
 
 PR https://github.com/mithudso/solmargintrader/pull/167 preserves all strategy experiment artifacts. Concurrent default branch PR166 was merged without discarding either prompt/memory history; no backtester core changed. Integrated local backtester suite960 passed; extension suite407 passed. Docs total2787 includes current1374 SolTUI tests. Index rebuilt over final owned paths. Full experiment file inventory is research/strategy_experiment/FILES.md, including expanded archive contents and durable-export absolute paths. Final CI, merge identity and standalone export acceptance remain delivery receipts reported after completion.
+
+
+## 2026-11-09 — standalone bot manager planning start (TASK-1092)
+
+Target: optimize the owner prompt, then deliver a source-grounded architecture and phased implementation plan. Working branch docs/bot-manager-plan-1092 in /Users/mitch/dev/solmargintrader-wt-bot-plan-1092, baseline 4d4c7a1. No product code, service starts, training runs or live trades are part of this planning task. Preserve three original untracked files and other worktrees. Existing related scheduler TASK-1049 and research TASK-1087 remain separate work.
+
+Progress: read root workflow and development/testing guidance; semantic search returned mostly other worktrees, so targeted current-source inspection follows. Retrieved KNOW-871/891/885/685; verify against source before design claims. Original prompt measured 471 estimated tokens. Explicit deep-optimizer request retained with small profile rather than substituting another workflow. Remaining: audit/rewrite/validate prompt, inspect current reuse/data/ownership boundaries, write and independently review design/plan, documentation/index checks, commit/push/PR/CI/merge, sync preserving unrelated work.
+
+
+## TASK-1092 planning verification and delivery checkpoint
+
+Completed: original prompt retained verbatim; final optimized prompt (1114 estimated tokens versus471 original); two audit iterations, fresh independent audit, two independent smoke agents on three contexts, helper selfcheck8/8. Design covers all seven requirements and source reuse; plan has eight milestones and a fully detailed first CLI slice. Builder review verified source claims and found one sequencing dependency; milestone2 now owns the minimum grid/recorded-input slice, explicitly Coinbase reference paper; reviewer confirmed fixed. No runtime/product code changed.
+
+Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/specs/2026-11-09-bot-manager-design.md; docs/superpowers/plans/2026-11-09-bot-manager.md. Proposed architecture/defaults remain proposals; actual Solana certification, multi-instance engine, learning and browser bridge are not implemented. Existing live restrictions remain. No live/installed acceptance claim applies to documents.
+
+Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.

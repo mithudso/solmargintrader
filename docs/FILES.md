@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `8996cbc` (2026-11-09T16:04:33+00:00). 2772 tracked files, 61.6 MB.
+**Generated** from `index/INDEX.json` at commit `4d4c7a1` (2026-11-09T18:51:47+00:00). 2781 tracked files, 61.7 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2469 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (156 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2473 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 85 files
+- [`docs`](#docs) — 94 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1916 files
 - [`research`](#research) — 206 files
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 762 lines · 145,995 B · description: **extracted**
+`doc` · 780 lines · 149,172 B · description: **extracted**
 
-**Purpose.** Version: 313 Delta: v312 to v313; fix duplicate index rows found by final macOS CI. Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
+**Purpose.** Version: 315 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery. Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
 
 **Use.** Read it.
 
@@ -225,9 +225,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1210 lines · 58,609 B · description: **extracted**
+`doc` · 1219 lines · 61,165 B · description: **extracted**
 
-**Purpose.** Version: 152 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories. Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
+**Purpose.** Version: 154 Delta: v153 to v154; save optimized prompt and its execution artifacts. Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
 
 **Use.** Read it.
 
@@ -253,7 +253,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-85 files.
+94 files.
 
 #### `docs/API.md`
 
@@ -337,7 +337,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27287 lines · 1,415,968 B · description: **extracted**
+`doc` · 27175 lines · 1,411,394 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -950,6 +950,84 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 34 lines · 1,249 B · description: **extracted**
 
 **Purpose.** Identify the offending commit and the component it changes. Preserve unrelated dirty work. If the behavior can move funds, use `docs/runbooks/incident.md` first and record venue/chain state. Rolling back source cannot reverse a mined transaction or venue order.
+
+**Use.** Read it.
+
+### `docs/superpowers/plans/`
+
+#### `docs/superpowers/plans/2026-11-09-bot-manager.md`
+
+`doc` · 165 lines · 22,038 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data. Status: plan only; no steps below are implemented by this planning task.
+
+**Use.** Read it.
+
+### `docs/superpowers/prompts/`
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-audit.md`
+
+`doc` · 108 lines · 14,255 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial structural audit and execution receipt. Target: owner-provided standalone Solana bot manager design request.
+
+**Use.** Read it.
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-checks.txt`
+
+`doc` · 65 lines · 2,138 B · description: **derived**
+
+**Purpose.** Generated report. Opens: COMMAND: python3 /Users/mitch/.agents/skills/prompt-deep-optimizer/scripts/pdo_tools.py tokens /Users/mitch/dev/solmargintrader-wt-bot-plan-1092/docs/superpowers/prompts/2026-11-09-bot-manager-original.txt --one-off / {
+
+**Use.** Read it.
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-examples.json`
+
+`doc` · 2 lines · 574 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (task_kind, examples).
+
+**Use.** Read it.
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-manifest.json`
+
+`doc` · 99 lines · 2,568 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (status, sections, final, evidence, active_passes, skipped...).
+
+**Use.** Read it.
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md`
+
+`doc` · 28 lines · 4,457 B · description: **extracted**
+
+**Purpose.** Act as a software architect. Read the applicable repository instructions and look up the software design, software architect, and Superpowers planning skills, including their current replacement skills where names have changed. Design and plan a standalone CLI application for managing long-lived crypto trading bots on Solana through Jupiter (jup.ag).
+
+**Use.** Read it.
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-original.txt`
+
+`doc` · 2 lines · 1,884 B · description: **derived**
+
+**Purpose.** Generated report. Opens: Lookup the software design, software architect, and planning superpower skills:  This repo has grown to become a  frankenstein. and the UI is cluttered. Let's take this one piece at a time. Design and plan a fully automated crypto trading bot management system that can 1) Cr
+
+**Use.** Read it.
+
+#### `docs/superpowers/prompts/2026-11-09-bot-manager-review.txt`
+
+`doc` · 6 lines · 561 B · description: **derived**
+
+**Purpose.** Generated report. Opens: Reviewer: /root/pdo_blind (fresh context, original candidate/finding history withheld) / Actual returned result:
+
+**Use.** Read it.
+
+### `docs/superpowers/specs/`
+
+#### `docs/superpowers/specs/2026-11-09-bot-manager-design.md`
+
+`doc` · 205 lines · 34,027 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; make the first paper runtime independently buildable after builder review. Status: proposed architecture; design and planning delivered, product not implemented.
 
 **Use.** Read it.
 
