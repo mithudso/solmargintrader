@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:56:57+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T21:09:56+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -127,7 +127,7 @@ Strongest files:
 - `research/tradingview-script-understanding.json` (144 hits)
 - `research/tradingview-card-readiness.json` (106 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
-- `docs/FILES.md` (71 hits)
+- `docs/FILES.md` (73 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (61 hits)
 - `docs/design/bot-control-room/mockup.css` (60 hits)
 

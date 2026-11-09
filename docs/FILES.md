@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `53853a2` (2026-11-09T20:56:57+00:00). 2826 tracked files, 62.8 MB.
+**Generated** from `index/INDEX.json` at commit `4a65a06` (2026-11-09T21:09:56+00:00). 2826 tracked files, 62.8 MB.
 
 Regenerate with:
 
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 938 lines · 177,445 B · description: **extracted**
+`doc` · 949 lines · 179,515 B · description: **extracted**
 
-**Purpose.** Version: 329 Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories. Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
+**Purpose.** Version: 330 Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime. Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
 
 **Use.** Read it.
 
@@ -338,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27642 lines · 1,428,616 B · description: **extracted**
+`doc` · 27682 lines · 1,430,425 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1076,9 +1076,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/superpowers/plans/2026-11-09-bot-manager.md`
 
-`doc` · 165 lines · 22,038 B · description: **extracted**
+`doc` · 166 lines · 22,168 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data. Status: plan only; no steps below are implemented by this planning task.
+**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1. Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
 
 **Use.** Read it.
 

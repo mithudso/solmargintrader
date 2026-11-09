@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 329
+Version: 330
+Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime.
 Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
 Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
 Delta: v326 to v327; approve milestone1 source and prepare verified release.
@@ -935,3 +936,13 @@ The first KuCoin collector version mistakenly requested hi-60 even though live t
 ## v329 — 2026-11-09 — integrate the concurrent minute-history release
 
 All9active CI checks passed release53853a2 in run42696562259. The gated merge then refused because concurrent PR177 advanced master to b6f9586 and conflicted only in shared count/history/index records. Integrate its minute-history source unchanged; retain both exact prompt histories and all continuation entries. Manager/owner production code remains identical to independently reviewed and installed032db6c. Combined discovery is999backtester/1402SolTUI/408extension/46mongo total2855. Fresh combined-head CI and actual merge remain; do not count the older green head as delivered. Primary checkout and the other session's ongoing datasets/downloads remain untouched.
+
+## v330 — 2026-11-09 — milestone1 delivered, milestone2 active
+
+PR175 merged at4a65a06bf0d5968f56ab861deb2d588aefe42f2d after all9active checks passed final headfaba7c5 in run42698400902. Quiet full-tree comparison confirms the merge equals the reviewed branch, and the merge is on origin/master. Installed product modules still equal reviewed032db6c. TASK1107 is complete. The old task branch is removed; the private worktree continues on agent-01a1c189-m2 from4a65a06. The original primary checkout remains untouched.
+
+TASK1108 is claimed for persistent concurrent reference-paper runtime. Use the approved milestone2 and existing SDD task3 brief. Canonical backtester will be packaged as solmargintrader-backtester0.1.0, with manager's exact dependency and stable noneditable installation; no algorithm copying or disposable PYTHONPATH. Stele KNOW1143 records this architecture. Existing price recorder ownership and quote-age lessons are KNOW872/885/875. PR177 minute/history source and ongoing downloads remain owned by their existing process.
+
+The new runtime must separate spec/run/owner/generation, persist stopped intent, fence concurrent workers and stale writes, preserve checkpoint/cursor/lots, bound queues/workers, and report data progress separately from process heartbeat. Minimum grid replay uses explicit Coinbase reference-paper identity and costs; it cannot certify Jupiter SOL/USDC or assume a stablecoin peg. No production service, bot, recorder, key or browser change is authorized by the runtime tests. Installed acceptance will use isolated state after source review.
+
+Remaining: implement task3, meaningful crash/stop/parity tests, independent review/fixes, stable installation/behavior acceptance, docs/index/CI and PR delivery. Continue milestones3–8 afterward; no profitability or unsupported live capability may be invented. Recovery ledger and briefs remain /Users/mitch/dev/solmargintrader-wt-01a1c189/.superpowers/sdd/2026-11-09-bot-manager/.
