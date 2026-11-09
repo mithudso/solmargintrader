@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { aggregatePredictions, appendScoreTick, scoreTickLayout } from '../src/ui/live-score.js';
+import { aggregatePredictions, agreementUnavailableReason, appendScoreTick, scoreTickLayout } from '../src/ui/live-score.js';
 
 test('browser votes match the shared Python policy vectors', async () => {
   const cases = JSON.parse(await readFile(new URL('../../soltui/tests/fixtures/live-score.json', import.meta.url), 'utf8'));
@@ -30,4 +30,16 @@ test('unknown tick scores remain unavailable and the rolling window is bounded',
   assert.deepEqual(history.map((p) => p.x), [2, 3, 4]);
   assert.equal(history[0].score, null);
   assert.equal(history[0].color, 'gray');
+});
+
+
+test('unavailable agreement explains stale evidence without inventing a vote', () => {
+  const row = { label: 'example', accuracy: 70, resolved: 30, pred_1m: 'UP',
+    acc_1m: 70, resolved_1m: 30, issued_1m: 10, expires_1m: 70 };
+  assert.equal(aggregatePredictions([row], 100).available, false);
+  assert.match(agreementUnavailableReason({ rows: [row] }, 100), /expired/);
+  assert.match(agreementUnavailableReason(null, 100), /data unavailable/);
+  assert.match(agreementUnavailableReason({ rows: [] }, 100), /No prediction history/);
+  assert.match(agreementUnavailableReason({ rows: [{ ...row, accuracy: 40 }] }, 100), /evidence and freshness/);
+  assert.match(agreementUnavailableReason({ rows: [row], voting: { min_accuracy: 101 } }, 100), /policy/);
 });

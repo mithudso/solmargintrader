@@ -1,7 +1,17 @@
 # Work continuation
 
-Version: 283
+Version: 285
+Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
+Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v285 - 2026-11-09
+
+The SOL popup had 36 strategy rows, 22 evidence-qualified, and no current unexpired votes; the newest one-minute forecast had expired roughly 70 minutes earlier. No persistent native host or SolTUI process was observed. The saved forward session has 34 trials, 14 assets and horizons 1/5/10/30; restoration starts a process-local daemon thread and must occur in a persistent owner, not a one-shot popup. Preserve the saved plan and do not run competing trainers. Popup now distinguishes unavailable data, absent history, expired predictions and evidence/freshness failures without changing scoring. A real offline SOL 1m CPCV run completed on 1713 gap-free bars selected from a 3180-bar Nov 6-8 cache slice. The private 0.5.5 browser passed 26/26 checks and 390 Node tests passed. Chrome Beta remains on the old shared checkout held by another session; installed activation is unverified. Remaining: index refresh, delivery, coordinate safe activation and verify actual loaded host/browser and current predictions. TASK-1066; knowledge KNOW-1067 and KNOW-1068.
+
+## v284 - 2026-11-09
+
+TASK-1066: Activate merged PR155 backtest gap fix and diagnose frequent SOL popup Agreement unavailable. Native host currently imports old shared checkout f1e8efa; another session holds it, so preserve its active work and services. Current real snapshot has 36 rows, 22 qualified by evidence floors, and zero unexpired one-minute predictions. Do not fabricate calls or lower evidence gates. Worktree /Users/mitch/dev/solmargintrader-wt-01a1beca based on origin/master d388292. Determine forward trainer lifecycle, remedy actual failure and improve unavailable explanation, verify loaded interface, deliver. Stele risk KNOW-1067.
 
 ## v283 - 2026-11-09
 

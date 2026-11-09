@@ -1,10 +1,22 @@
 # Prompt history
 
-Version: 140
+Version: 141
+Delta: v140 to v141; record backtest activation and unavailable agreement report.
 Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v141 - 2026-11-09
+
+```text
+OK you're good to go try again. But I see this error in the console a lot: SOL / USD
+Observation only
+Agreement unavailable
+$86.645 · 0.1s old at capture · recorder fresh
+
+Read 09:32:26 UTC · agreement is not success probability
+```
 
 ## v140 - 2026-11-09
 
