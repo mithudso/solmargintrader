@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 301
+Version: 304
+Delta: v303 to v304; record final paired outcomes and verification target.
+Delta: v302 to v303; checkpoint copied sources, audit findings and initial comparison.
+Delta: v301 to v302; record paired all-strategy DSO experiment.
 Delta: v300 to v301; align autostart coverage with the shared worker and refresh its header.
 Delta: v299 to v300; finalize native-host discovery and delivery checkpoint.
 Delta: v298 to v299; protect migration from an old native-host writer.
@@ -638,3 +641,18 @@ Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after
 ## v204 - 2026-11-08
 
 The owner requested adding a live page under the Signal tab in SolTUI that displays a price graph of the chosen coin, real-time subscribed streaming price information, and a table of top performing forward test strategies giving 1, 5, 10, and 30 min price predictions. Stele TASK-1063 was created and claimed under COMP-337. Stele decision queued as outbox 37afb21a. Implementation integrates `pricefeed.py` snapshot streaming, interactive `Sparkline` charting with mid-price history, and ranked strategy prediction evaluation across canonical horizons (1m, 5m, 10m, 30m) from `forwardtest.py` trials.
+
+
+## 2026-11-09 — strategy DSO comparison
+
+Task TASK-1076. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c0e9. Preserve all baseline core modules and cards; audit candidate copies, paired cached-data evaluation, defined signal accuracy plus costed outcomes. No live changes. In progress: inventory and baseline tests, DSO family audits and runner implementation. Remaining: triage all findings, fix candidate only, run comparison, verification, PR/CI/merge.
+
+
+## DSO comparison checkpoint 2026-11-09
+
+34 registry strategies copied with all core modules, 1,822 baseline files including cards and research-only specs. DSO reports contain all 273 family pass rows with insufficient evidence and live-data gaps explicit. Candidate volatility annualization fixed and tested (4 tests). Original full suite 941 tests: one stale generated-index failure after workflow records changed; no strategy failures. Initial paired run: 408 completed cells across SOL/BTC/ETH daily, all unchanged; 136 SOL hourly cells refused because source cache has 3 gaps. Retain initial run. Remaining: deterministic latest contiguous hourly tail comparison; auxiliary pairs/grid/DCA/indicator comparison; candidate scorecard and triangle timing fixes; package archives (expanded copies stay local and reproducibly extract in fresh clones); final checks, index metadata, CI and merged delivery.
+
+
+## DSO empirical result 2026-11-09
+
+Final registry run exit 0: 544 successful cells, zero failures, unchanged source hashes. No directional accuracy delta. Hourly SOL voltarget return -11.50% to -12.24%; garch_voltarget -11.50% to -12.43%; both 46.02% accuracy. All daily results equal. Hourly structural suffix4410 bars, holdout1323. Auxiliary default pairs/grid/DCA/triangle parity; scorecard executable accuracy149/318 both. Candidate-only scorecard measurement alignment and future-quote refusal covered by four tests. Source archives packaged and fresh extraction/tamper refusal checked. Final test discovery960. Remaining: independent review, final suite/doc/index gates, commit/push/PR/CI/merge receipts. No CLEAN convergence or live edge claimed.

@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 147
+Version: 148
+Delta: v147 to v148; record paired all-strategy DSO experiment.
 Delta: v146 to v147; add the Council consensus trading bot request.
 Delta: v145 to v146; make unavailable alerts link to Forward Testing and offer Start.
 Delta: v144 to v145; automatically recover unavailable predictions.
@@ -1173,3 +1174,8 @@ In the Soltui, under the Signal tab add a live page that shows a graph of the ch
 ```text
 $ui-deep-optimizer  ~/dev/solmargintrader/soltui
 ```
+
+
+## 2026-11-09 — strategy DSO comparison
+
+I want to run the deep strategy optimizer on the strategies in this repo, but I also want a before and after with comparisons of accuracy. Make a copy of all of the strategies into a separate folder, run the deep strategy optimizer on all of them, and then run the both the old and the new side by side and see how they shake out.
