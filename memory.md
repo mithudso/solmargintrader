@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 280
-Delta: v279 to v280; record the macOS table-click CI diagnosis.
+Version: 281
+Delta: v280 to v281; record the fail-closed Now status repair.
+
+## v281 - 2026-11-09
+
+The Now dashboard previously displayed All clear when status read envelopes were missing or failed. It now reports Status unavailable for incomplete reads, retains known warnings, accepts a successful null wallet notice, and limits the clean message to no flagged issues in checked sources. Isolated headless tests covered missing, malformed, healthy and mixed warning states at 80x24 and 160x50. The status area uses compact labels so its heading remains visible on small terminals. The editor repair and simulated Money safety walkthrough also passed. Both optimizer audits remain incomplete; full selected methods and independent review remain. Earlier terminal captures included local cached status and stay private; final fixtures use an isolated SOLTUI_CONFIG_DIR. Stele risk queued 87a43045.
 
 ## v280 - 2026-11-09
 
