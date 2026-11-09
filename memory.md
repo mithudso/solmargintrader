@@ -1,7 +1,23 @@
 # Work continuation
 
-Version: 242
-Delta: v241 to v242; integrate PR148 and finalize proposal delivery evidence.
+Version: 245
+Delta: v244 to v245; preserve concurrent histories and approved reflection delivery.
+
+## v245 - 2026-11-08
+
+The owner replied I approved the three hooks. Persisted that explicit approval through version-checked Codex config/batchWrite for only the three reviewed hook hashes. Parsed read-back confirms all unrelated configuration values unchanged. Native discovery reports the skill enabled and all three hooks enabled and trusted. The independent managed-daemon receipt is /Users/mitch/.claude/backups/session-reflection/install-20261108/acceptance.json; the approval receipt is owner-approval.json in that directory. Global continuation record: /Users/mitch/.claude/docs/maintenance/session-reflection-2026-11-08/memory.md. No further owner decision remains.
+
+The implementation sources are merged in claude-config PR 36 and skills PR 98; their receipts and approved activation are preserved in those repositories. This repository changes only its request/continuation records and deterministic offline indexes. Final delivery is established by https://github.com/mithudso/solmargintrader/pull/149 and its final-head CI and merge state. Preserve the active default checkout and unrelated work. Remaining future evaluation is suggestion quality on real sessions; no measured quality gain or unobserved automatic event is claimed.
+
+## v244 - 2026-11-08
+
+Global session-reflection sources are delivered: https://github.com/mithudso/claude-config/pull/36 at c5288f6da0dec1f3017206835c541c5cea16d78a and https://github.com/mithudso/skills/pull/98 at b0d4c0c5139c4dfd8cafa0155ee1b66b62434de8. PDO completed two iterations, independent blind review, contrastive prose smoke judgments and executed selfcheck 8/8. The scheduler and installer passed 109 tests. Installed bytes and exact registered-command behavior passed independent acceptance; actual managed daemon discovers the skill enabled and all three hooks enabled but untrusted. Owner approval through Codex /hooks remains, then automatic activation can be verified. Receipt: /Users/mitch/.claude/backups/session-reflection/install-20261108/acceptance.json. No trust change, inference, daemon restart, trading code or paused service change occurred. Stele writes remain queued as 9ab0d70c and c0e315a3.
+
+This workflow-record PR is https://github.com/mithudso/solmargintrader/pull/149. Initial docs and backtester CI failures both came from the stale hashes of prompts.md and memory.md. Refreshed the established offline metadata/text/concept indexes, without semantic embeddings. Final-head CI, merge and task-worktree cleanup remain delivery gates. Preserve other sessions and the original checkout.
+
+## v243 - 2026-11-08
+
+This request creates a global skill and hook; no trading code changes. Prompt-deep-optimizer completed two iterations and an independent blind audit with no remaining Medium+ findings. Canonical sources are the separate skills and claude-config repositories. Worktrees: /Users/mitch/dev/skills-wt-session-reflection and /Users/mitch/dev/claude-wt-session-reflection. This private trading worktree owns only workflow records. Preserve the active shared checkout and its untracked files. Stele task and decision writes queued as 9ab0d70c and c0e315a3. Remaining: behavioral tests, source delivery, installation and native discovery; record final receipts here.
 
 ## v242 - 2026-11-08
 
