@@ -803,7 +803,9 @@ class LegacyAdapter:
                         "outcome_unknown",
                         session=receipt.runtime_id,
                         config_hash=receipt.metadata.get("config_hash"),
-                        owner_revision=receipt.metadata.get("owner_revision"),
+                        owner_revision=receipt.metadata.get("owner_revision")
+                        if receipt.outcome == "unknown"
+                        else None,
                     )
                 return receipt
             if not self._rows:
@@ -844,6 +846,7 @@ class LegacyAdapter:
                 "submission_pending",
                 session=session,
                 config_hash=config_hash,
+                owner_revision=None,
             )
             db.execute(
                 "INSERT INTO requests VALUES (?,?,?,?,?)",

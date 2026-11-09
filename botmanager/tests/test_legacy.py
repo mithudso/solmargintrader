@@ -320,6 +320,78 @@ class Legacy(unittest.TestCase):
             )
             self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
 
+    def test_crash_after_pending_commit_never_attributes_discovery_revision_to_response(
+        self,
+    ):
+        import hashlib
+        import sqlite3
+        from contextlib import closing
+
+        from botmanager.domain import canonical
+
+        with owner() as (url, calls):
+            adapter = self.adapter(url)
+            adapter.discover()
+            request_id = str(uuid.uuid4())
+            original_call = adapter._call
+
+            def interrupt_after_submit(name, **kwargs):
+                result = original_call(name, **kwargs)
+                if name == "bots.manager_control":
+                    raise SystemExit(
+                        "simulated process interruption before response persistence"
+                    )
+                return result
+
+            with (
+                patch.object(adapter, "_call", side_effect=interrupt_after_submit),
+                self.assertRaises(SystemExit),
+            ):
+                adapter.control("grid", "stop", request_id, None)
+            with closing(
+                sqlite3.connect(self.root / "manager" / "controls.sqlite3")
+            ) as db:
+                pending = json.loads(
+                    db.execute(
+                        "SELECT body FROM requests WHERE request_id=?", (request_id,)
+                    ).fetchone()[0]
+                )
+            self.assertEqual(pending["outcome"], "pending")
+            replay = self.adapter(url).control("grid", "stop", request_id, None)
+            self.assertEqual(
+                (replay.outcome, replay.reason), ("unknown", "outcome_unknown")
+            )
+            self.assertTrue(replay.reconciliation_required)
+            self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
+            self.assertIsNone(replay.metadata.get("owner_revision"))
+            self.assertNotIn("owner_revision", pending["metadata"])
+
+            # Earlier schema-2 pending records may carry the cached discovery
+            # revision. Upgrade must discard that attribution on replay too.
+            pending["metadata"]["owner_revision"] = "a" * 64
+            with (
+                closing(
+                    sqlite3.connect(self.root / "manager" / "controls.sqlite3")
+                ) as db,
+                db,
+            ):
+                binding = json.loads(
+                    db.execute(
+                        "SELECT binding FROM requests WHERE request_id=?", (request_id,)
+                    ).fetchone()[0]
+                )
+                binding["receipt_hash"] = hashlib.sha256(
+                    canonical(pending).encode()
+                ).hexdigest()
+                db.execute(
+                    "UPDATE requests SET body=?,binding=? WHERE request_id=?",
+                    (canonical(pending), canonical(binding), request_id),
+                )
+            old_pending = self.adapter(url).control("grid", "stop", request_id, None)
+            self.assertEqual(old_pending.outcome, "unknown")
+            self.assertIsNone(old_pending.metadata.get("owner_revision"))
+            self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
+
     def test_ack_session_relationships_and_responding_revision_are_bound(self):
         cases = (
             (
