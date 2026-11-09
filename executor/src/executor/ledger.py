@@ -1,7 +1,8 @@
 """Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day.
 
-Only confirmed swaps affect positions. Confirmed swaps and measured failed-transaction fees affect P&L. The quote asset is always USDC, so cost and proceeds are exact USDC amounts
-taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
+Only confirmed trades create positions or trading profit. Confirmed and failed on-chain attempts both incur
+network fees. The quote asset is always USDC, so cost and proceeds are exact USDC amounts taken from the transaction
+itself; the base-asset quantity is the transaction's measured delta.
 
 A position is long or flat: `qty_raw` never goes below zero, and a sell larger than the open quantity is refused by
 `rails.py` before it is built. Average-cost method: a sell realizes proceeds minus average cost times the amount sold.
@@ -11,9 +12,10 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any
 
+from .errors import Refused
 from .tokens import QUOTE_MINT
 
 
@@ -63,9 +65,31 @@ def utc_day(ts: float) -> str:
     return time.strftime("%Y-%m-%d", time.gmtime(ts))
 
 
+def _failed_fee_usd(outcome: dict[str, Any]) -> Decimal:
+    """A failed attempt still spends a fee; missing evidence cannot mean a free attempt."""
+    value = outcome.get("fee_usd")
+    try:
+        if isinstance(value, bool) or not isinstance(value, str | int | float | Decimal):
+            raise ValueError
+        fee = Decimal(str(value))
+        if not fee.is_finite() or fee < 0:
+            raise ValueError
+    except (InvalidOperation, ValueError):
+        raise Refused(
+            "failed on-chain fee evidence is missing or invalid; inspect the journal before new trades"
+        ) from None
+    return fee
+
+
 def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str | None = None) -> Decimal:
-    """Realized P&L minus measured network fees on one UTC day. Loss is negative."""
+    """Realized P&L minus confirmed and failed on-chain fees on one UTC day. Loss is negative."""
     total = Decimal(0)
+    for state in states.values():
+        outcome, intent = state.get("outcome"), state.get("intent")
+        if not outcome or not intent or outcome.get("status") != "failed":
+            continue
+        if (strategy is None or intent.get("strategy") == strategy) and utc_day(outcome.get("ts", 0)) == day:
+            total -= _failed_fee_usd(outcome)
     books: dict[tuple[str, str], Position] = {}
     for ts, intent, out in _confirmed_trades(states):
         s = intent.get("strategy")
@@ -89,12 +113,6 @@ def realized_pnl_usd(states: dict[str, dict[str, Any]], day: str, strategy: str 
                 pos.cost_usd = Decimal(0)
         if utc_day(ts) == day and (strategy is None or s == strategy):
             total += realized - Decimal(out.get("fee_usd", "0"))
-    for state in states.values():
-        intent, outcome = state.get("intent") or {}, state.get("outcome") or {}
-        if outcome.get("status") != "failed" or "fee_usd" not in outcome:
-            continue
-        if utc_day(outcome.get("ts", 0)) == day and (strategy is None or intent.get("strategy") == strategy):
-            total -= Decimal(outcome["fee_usd"])
     return total
 
 

@@ -7,10 +7,10 @@ SOL trading research and execution tooling, in seven parts:
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
 | [`extension/`](extension/README.md) | Holdings, P&L, pool discovery, backtests and strategy changes, swap quotes and alerts for Base and Solana, plus an experimental grid on Jupiter (Solana) with hard risk rails — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **The grid is the part that can place real orders.** | JavaScript (ESM, no deps) |
-| [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI that surfaces signals and paper positions, supervised by launchd. Read-only over the research side. | Python 3.13 |
+| [`soltui/`](soltui/README.md) | macOS menu-bar app and TUI for signals, paper positions and research, supervised by launchd. Manual Coinbase spot orders use a separately armed path. | Python 3.13 |
 | [`mongo/`](mongo/README.md) | Local MongoDB copy of everything measured — bars, strategies, readouts, backtests, CPCV results — plus a runnable query reference. Derived; the files stay the source of truth. | Python 3.13 + pymongo |
 | [`executor/`](executor/README.md) | **Guarded live swaps.** Jupiter spot swaps on Solana behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. CLI and loopback API share one JSON envelope. Dry-run by default. | Python 3.13 (own venv) |
-| [`liquidity/`](liquidity/README.md) | **Liquidity instead of trading strategies.** It manages Aero (aero.xyz) Slipstream LP positions on Base: per-pool profitability measures, a pool scout, auto-rebalancing, auto-compounding, deployment of idle coins, and side-by-side experiments with P&L tracking. It moves real money in live mode; soltui's Liquidity tab shows it. | Python 3.13 + web3 (own venv) |
+| [`liquidity/`](liquidity/README.md) | **Archived on 2026-11-08.** Aero Slipstream LP manager and pool scout on Base, retained for reference. The service stays disabled with its kill switch set. | Python 3.13 + web3 (own venv) |
 
 > Research and educational tooling, not financial advice. Simulated past performance does not
 > predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
@@ -33,7 +33,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 384 tests
+npm test                                               # 389 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -47,7 +47,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 python3 -m unittest discover -s backtester/tests -t .   # 941 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1264 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 384 tests
+cd extension && npm test                                # 389 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than
@@ -99,6 +99,7 @@ ships.
 
 **Working in it**
 
+- [docs/repository-review-2026-11-08.md](docs/repository-review-2026-11-08.md) — architecture review, executor integrity repairs and remaining limits
 - [CONTRIBUTING.md](CONTRIBUTING.md) — focused changes, verification and workflow records
 - [docs/requirements.md](docs/requirements.md) — implemented requirements and runtime boundaries
 - [docs/MCP.md](docs/MCP.md) — connector boundaries and offline retrieval

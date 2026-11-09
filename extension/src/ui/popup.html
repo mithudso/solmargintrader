@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>SolMarginTrader</title>
     <link rel="stylesheet" href="ui.css" />
+    <link rel="stylesheet" href="signal-desk.css" />
   </head>
   <body class="popup">
     <header>
@@ -15,34 +16,23 @@
       <button id="scanNow" class="small" title="Re-read holdings, the Aero scout, Top 5 and pools">Scan</button>
     </header>
 
-    <div class="card">
-      <div class="muted">Total holdings</div>
-      <div class="total" id="total">—</div>
-      <div class="chains"><span id="baseTotal">Base —</span><span id="solTotal">Solana —</span><span id="scanAge"></span></div>
+    <p class="eyebrow">Signal Desk</p>
+    <div class="card" aria-label="Signal glance">
+      <div class="row"><strong id="glanceAsset">Live signal</strong><span class="chip plain">Observation only</span></div>
+      <div id="glanceScore" class="glance-value">Unavailable</div>
+      <p id="glancePrice" class="note">Reading existing recorder and saved predictions…</p>
+      <p id="glanceAge" class="note">Agreement is not a success probability.</p>
     </div>
-
-    <div class="card">
-      <div class="row" style="justify-content: space-between">
-        <strong>Alerts</strong>
-        <button id="openAlerts" class="link">All →</button>
-      </div>
-      <div id="alerts" class="alerts"></div>
+    <div class="tiles primary-tiles">
+      <button data-view="soltui/signal">Live signals<span>Chart &amp; strategy evidence</span></button>
+      <button data-view="soltui/research">Backtesting<span>Evaluate &amp; compare</span></button>
+      <button data-view="soltui/forward">Forward testing<span>Prospective paper outcomes</span></button>
+      <button data-view="soltui/bots">Bot monitor<span>Health &amp; process lifetimes</span></button>
     </div>
-
-    <div class="tiles">
-      <button data-view="holdings"><span>◎</span>Holdings</button>
-      <button data-view="pnl"><span>±</span>P&amp;L</button>
-      <button data-view="discover"><span>⌕</span>Pools</button>
-      <button data-view="soltui/research"><span>▤</span>Backtest</button>
-      <button data-view="soltui/signal"><span>↗</span>Signal</button>
-      <button data-view="soltui/bots"><span>▦</span>Bots</button>
-      <button data-view="soltui/experiments"><span>⌁</span>Experiments</button>
-      <button data-view="soltui/money"><span>＄</span>Money</button>
-      <button data-view="soltui/library"><span>▤</span>Library</button>
-      <button data-view="swap"><span>⇄</span>Swap</button>
-      <button data-view="settings"><span>⚙</span>Settings</button>
-    </div>
-
+    <div class="card"><strong>Process glance</strong><p id="glanceProcesses" class="note">Status unavailable until the native host answers.</p><p class="note">Session checks and detached workers have different lifetimes.</p></div>
+    <div class="card"><div class="row" style="justify-content: space-between"><strong>Needs attention</strong><button id="openAlerts" class="link">All alerts →</button></div><div id="alerts" class="alerts"></div></div>
+    <details class="card popup-section"><summary>Wallet snapshot</summary><div class="total" id="total">—</div><div class="chains"><span id="baseTotal">Base —</span><span id="solTotal">Solana —</span><span id="scanAge"></span></div><div class="tiles"><button data-view="holdings">Holdings</button><button data-view="pnl">P&amp;L</button><button data-view="soltui/money">Orders</button></div></details>
+    <div class="row popup-section"><button data-extra-view="soltui/all">All tools &amp; library</button><button data-extra-view="settings">Settings</button></div>
     <details class="card" id="gridDetails">
       <summary>Grid <span class="chip plain">experimental</span> <span id="mode" class="pill" title="Grid mode">…</span></summary>
       <div id="banner" class="banner hidden" style="margin-top: 8px"></div>
@@ -68,14 +58,12 @@
         <button id="confirmArm" class="danger">Confirm</button>
         <button id="cancelArm">Cancel</button>
       </div>
-    </details>
-
     <div class="row">
       <button id="kill" class="danger" title="Latching hard stop for the grid: disarms and blocks every order">KILL SWITCH</button>
       <button id="clearKill" class="hidden">Clear kill</button>
-      <button id="openDashboard" class="link">Dashboard →</button>
-      <button id="openSoltui" class="link">Full workspace →</button>
     </div>
+    </details>
+    <div class="row"><button id="openDashboard" class="primary">Open full workspace →</button><button id="openSoltui" class="link">Resume signals →</button></div>
 
     <p id="err" class="err hidden"></p>
 

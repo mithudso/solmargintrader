@@ -20,6 +20,7 @@ import fcntl
 import os
 import time
 import uuid
+from contextlib import suppress
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
@@ -213,7 +214,7 @@ class Engine:
         if problems:
             raise Refused([f"verifier (signed tx): {p}" for p in problems])
         age = self.clock() - report.fetched_at
-        if age > cfg.rails.max_quote_age_s:
+        if not 0 <= age <= cfg.rails.max_quote_age_s:
             raise Refused(f"quote is {age:.1f} s old, over max_quote_age_s {cfg.rails.max_quote_age_s:g}")
         if (self.root / "KILL").exists() and not exit_only:
             raise Refused("KILL file appeared while the swap was being prepared")
@@ -222,14 +223,14 @@ class Engine:
             raise Refused("the blockhash is about to expire; try again")
         native_now = self.rpc.balance(cfg.owner)
         # Re-run the position rails against the journal as it is NOW (a concurrent writer cannot have raced past the lock).
-        rails.check_trade(
+        decision = rails.check_trade(
             cfg, self.root, self.journal, report, strategy=strategy, live=True, exit_only=exit_only,
             kill_present=(self.root / "KILL").exists(), native_lamports=native_now, now=self.clock(),
         )  # fmt: skip
-
-        # These checks must follow every final RPC read and the journal/gate reads above.
+        base_evidence["decision"] = decision.to_dict()
+        # Every final RPC and gate read precedes the last pre-journal safety check.
         age = self.clock() - report.fetched_at
-        if age > cfg.rails.max_quote_age_s:
+        if not 0 <= age <= cfg.rails.max_quote_age_s:
             raise Refused(f"quote is {age:.1f} s old, over max_quote_age_s {cfg.rails.max_quote_age_s:g}")
         if (self.root / "KILL").exists() and not exit_only:
             raise Refused("KILL file appeared while the swap was being prepared")
@@ -247,6 +248,16 @@ class Engine:
         self.journal.append(
             "sending", intent_id, signature=signature, last_valid_block_height=built["lastValidBlockHeight"]
         )
+        # Both journal writes can block on disk. A stop or expired quote during either write still wins.
+        age = self.clock() - report.fetched_at
+        refusal = None
+        if (self.root / "KILL").exists() and not exit_only:
+            refusal = "KILL file appeared while the intent was being journalled; nothing was sent"
+        elif not 0 <= age <= cfg.rails.max_quote_age_s:
+            refusal = f"quote is {age:.1f} s old after journalling; outside max_quote_age_s; nothing was sent"
+        if refusal:
+            self.journal.append("result", intent_id, status="rejected", signature=signature, reason=refusal)
+            raise Refused(refusal)
         try:
             sent_sig = self.rpc.send_transaction(signed_b64)
         except SendRejected as exc:
@@ -263,48 +274,64 @@ class Engine:
             self.journal.append("unknown", intent_id, signature=signature, reason="node returned a different signature")
             raise Ambiguous(f"node returned signature {sent_sig}, expected {signature}; run `executor reconcile`")
 
-        status = self._confirm(signature)
-        if status is None:
-            self.journal.append("unknown", intent_id, signature=signature, reason="not confirmed within the timeout")
-            raise Ambiguous(
-                f"{signature} was not confirmed in {cfg.rails.confirm_timeout_s:g} s; it may still land. Run `executor reconcile`"
-            )
-        if status.get("err") is not None:
-            fee = self._read_failed_fee(signature, report.sol_price_usd)
-            if fee is None:
+        try:
+            status = self._confirm(signature)
+            if status is None:
                 self.journal.append(
-                    "unknown", intent_id, signature=signature, reason="failed on chain but fee accounting unreadable"
+                    "unknown", intent_id, signature=signature, reason="not confirmed within the timeout"
                 )
                 raise Ambiguous(
-                    f"{signature} failed on chain but its fee accounting is unreadable; run `executor reconcile`"
+                    f"{signature} was not confirmed in {cfg.rails.confirm_timeout_s:g} s; it may still land. Run `executor reconcile`"
                 )
-            self.journal.append(
-                "result", intent_id, status="failed", signature=signature, error=str(status["err"]), **fee
+            if status.get("err") is not None:
+                fees = self._failed_fee_fields(signature, report.sol_price_usd)
+                if fees is None:
+                    self.journal.append(
+                        "unknown", intent_id, signature=signature, reason="failed on chain but fee evidence unreadable"
+                    )
+                    raise Ambiguous(f"{signature} failed but its fees could not be read; run `executor reconcile`")
+                self.journal.append(
+                    "result", intent_id, status="failed", signature=signature, error=str(status["err"]), **fees
+                )
+                raise ExecutorError(f"transaction {signature} failed on chain: {status['err']}", "failed")
+            realized = self._read_realized(
+                signature, report.token_in, report.token_out, evidence2.get("retained_rent_lamports", 0)
             )
-            raise ExecutorError(f"transaction {signature} failed on chain: {status['err']}", "failed")
-        realized = self._read_realized(
-            signature, report.token_in, report.token_out, evidence2.get("retained_rent_lamports", 0)
-        )
-        if realized is None:
-            self.journal.append("unknown", intent_id, signature=signature, reason="confirmed but balances unreadable")
-            raise Ambiguous(f"{signature} confirmed but its balances could not be read; run `executor reconcile`")
-        outcome = self._outcome_fields(
-            decision.side,
-            report.token_in,
-            report.token_out,
-            realized,
-            report.sol_price_usd,
-            report.quote.min_out_raw,
-            report.quote.in_raw,
-        )
-        self.journal.append("result", intent_id, status="confirmed", signature=signature, **outcome)
-        if not outcome["post_verify_ok"]:
-            (self.root / "KILL").write_text(f"auto-kill: post-trade check failed for {signature}\n")
-        return {
-            "mode": "live", "sent": True, "id": intent_id, "signature": signature, "strategy": strategy, "reason": reason,
-            "post_verify_ok": outcome["post_verify_ok"], "in_raw": outcome["in_raw"], "out_raw": outcome["out_raw"],
-            "fee_lamports": outcome["fee_lamports"], **base_evidence,
-        }  # fmt: skip
+            if realized is None:
+                self.journal.append(
+                    "unknown", intent_id, signature=signature, reason="confirmed but balances unreadable"
+                )
+                raise Ambiguous(f"{signature} confirmed but its balances could not be read; run `executor reconcile`")
+            outcome = self._outcome_fields(
+                decision.side,
+                report.token_in,
+                report.token_out,
+                realized,
+                report.sol_price_usd,
+                report.quote.min_out_raw,
+                report.quote.in_raw,
+            )
+            if not outcome["post_verify_ok"]:
+                (self.root / "KILL").write_text(f"auto-kill: post-trade check failed for {signature}\n")
+            self.journal.append("result", intent_id, status="confirmed", signature=signature, **outcome)
+            return {
+                "mode": "live", "sent": True, "id": intent_id, "signature": signature, "strategy": strategy, "reason": reason,
+                "post_verify_ok": outcome["post_verify_ok"], "in_raw": outcome["in_raw"], "out_raw": outcome["out_raw"],
+                "fee_lamports": outcome["fee_lamports"], **base_evidence,
+            }  # fmt: skip
+        except Ambiguous:
+            raise
+        except Exception as exc:  # an accepted send stays ambiguous when a reader or persistence fails
+            if self.journal.states().get(intent_id, {}).get("state") in ("result", "reconciled"):
+                raise
+            # The durable sending record still holds the block if storage itself failed.
+            with suppress(Exception):
+                self.journal.append(
+                    "unknown", intent_id, signature=signature, reason=f"post-send raised {type(exc).__name__}"
+                )
+            raise Ambiguous(
+                f"post-send outcome unknown for {signature}; it was NOT retried. Run `executor reconcile`"
+            ) from None
 
     def _base_and_quote(self, side, report: QuoteReport):
         if side == "buy":
@@ -320,7 +347,7 @@ class Engine:
                 st = self.rpc.signature_statuses([signature])[0]
             except RpcError:
                 st = None
-            if st and (st.get("err") is not None or st.get("confirmationStatus") in ("confirmed", "finalized")):
+            if isinstance(st, dict) and "err" in st and st.get("confirmationStatus") in ("confirmed", "finalized"):
                 return st
             self.sleep(1.0)
         return None
@@ -336,7 +363,7 @@ class Engine:
             self.sleep(1.5)
         return None
 
-    def _read_failed_fee(self, signature: str, sol_price: Decimal | None) -> dict[str, Any] | None:
+    def _failed_fee_fields(self, signature: str, sol_price: Decimal | None) -> dict[str, Any] | None:
         if sol_price is None or not sol_price.is_finite() or sol_price <= 0:
             return None
         for _ in range(8):
@@ -352,7 +379,7 @@ class Engine:
                 payer = keys[0] if isinstance(keys, list) and keys else None
                 payer = payer.get("pubkey") if isinstance(payer, dict) else payer
                 fee = meta.get("fee")
-                if meta.get("err") is not None and payer == self.cfg.owner and type(fee) is int and fee >= 0:
+                if meta.get("err") is not None and payer == self.cfg.owner and type(fee) is int and 0 <= fee < 2**64:
                     return {"fee_lamports": fee, "fee_usd": str(raw_to_ui(fee, 9) * sol_price), "slot": tx.get("slot")}
             self.sleep(1.5)
         return None
@@ -376,6 +403,10 @@ class Engine:
 
     def reconcile(self) -> dict[str, Any]:
         """Resolve every unknown send from the chain. The only way to clear the block; never re-sends anything."""
+        with self._swap_lock():
+            return self._reconcile_locked()
+
+    def _reconcile_locked(self) -> dict[str, Any]:
         out: list[dict[str, Any]] = []
         for st in self.journal.unresolved():
             iid = st["id"]
@@ -387,23 +418,28 @@ class Engine:
                 out.append({"id": iid, "outcome": "unresolvable", "why": "no signature was journalled"})
                 continue
             status = self.rpc.signature_statuses([signature])[0]
-            if (status and status.get("err") is not None) or (st.get("outcome") or {}).get("status") == "failed":
-                sol_price = _recorded_sol_price(intent)
-                fee = self._read_failed_fee(signature, sol_price)
-                if fee is None:
+            terminal = (
+                isinstance(status, dict)
+                and "err" in status
+                and status.get("confirmationStatus") in ("confirmed", "finalized")
+            )
+            if terminal and status["err"] is not None:
+                fees = self._failed_fee_fields(signature, _recorded_sol_price(intent))
+                if fees is None:
                     out.append(
                         {
                             "id": iid,
                             "signature": signature,
                             "outcome": "still_unknown",
-                            "why": "failed-transaction fee accounting unreadable",
+                            "why": "failed fee evidence unreadable",
                         }
                     )
                     continue
-                error = status.get("err") if status else (st.get("outcome") or {}).get("error")
-                self.journal.append("reconciled", iid, status="failed", signature=signature, error=str(error), **fee)
+                self.journal.append(
+                    "reconciled", iid, status="failed", signature=signature, error=str(status["err"]), **fees
+                )
                 out.append({"id": iid, "signature": signature, "outcome": "failed_on_chain"})
-            elif status and status.get("confirmationStatus") in ("confirmed", "finalized"):
+            elif terminal:
                 token_in, token_out = _tokens(intent)
                 evidence = (intent.get("evidence") or {}).get("signed_check") or {}
                 realized = None
@@ -442,11 +478,11 @@ class Engine:
                     int(intent["min_out_raw"]),
                     int(intent["in_raw"]),
                 )
-                self.journal.append("reconciled", iid, status="confirmed", signature=signature, **fields)
                 if not fields["post_verify_ok"]:
                     (self.root / "KILL").write_text(
                         f"auto-kill: reconciled trade {signature} did not match its quote\n"
                     )
+                self.journal.append("reconciled", iid, status="confirmed", signature=signature, **fields)
                 out.append(
                     {
                         "id": iid,
@@ -458,13 +494,14 @@ class Engine:
             else:
                 lvbh = sending.get("last_valid_block_height")
                 height = self.rpc.block_height()
-                if isinstance(lvbh, int) and height > lvbh + 150:
+                # Expiry prevents future inclusion; it cannot disprove an already observed processed transaction.
+                if status is None and type(lvbh) is int and height > lvbh + 150:
                     self.journal.append("reconciled", iid, status="dropped", signature=signature,
                                         why=f"not on chain and block height {height} is past {lvbh}")  # fmt: skip
                     out.append({"id": iid, "signature": signature, "outcome": "dropped"})
                 else:
                     out.append({"id": iid, "signature": signature, "outcome": "still_unknown",
-                                "why": "not found yet and the blockhash may still be valid"})  # fmt: skip
+                                "why": "no confirmed outcome yet; a present pending status remains unresolved"})  # fmt: skip
         return {"checked": len(out), "results": out, "still_blocking": len(self.journal.unresolved())}
 
 
@@ -484,61 +521,96 @@ def realized_from_meta(
     tx: dict[str, Any], owner: str, token_in: Token, token_out: Token, retained_rent: int
 ) -> dict[str, Any] | None:
     """Exact owner deltas of a confirmed transaction, from its metadata. None when the metadata is unusable."""
-    meta = tx.get("meta")
-    msg = (tx.get("transaction") or {}).get("message") or {}
-    if not meta or meta.get("err") is not None:
-        return None
-    keys = list(msg.get("accountKeys") or [])
-    loaded = meta.get("loadedAddresses") or {}
-    keys += list(loaded.get("writable") or []) + list(loaded.get("readonly") or [])
-    keys = [k if isinstance(k, str) else k.get("pubkey") for k in keys]
-    if owner not in keys:
-        return None
-    idx = keys.index(owner)
-    try:
-        native_delta = int(meta["postBalances"][idx]) - int(meta["preBalances"][idx])
-        fee = int(meta["fee"])
-    except (KeyError, IndexError, TypeError, ValueError):
-        return None
 
-    pre_tokens, post_tokens = meta.get("preTokenBalances") or [], meta.get("postTokenBalances") or []
+    def unsigned(value: Any) -> int:
+        if type(value) is not int or not 0 <= value < 2**64:
+            raise ValueError("invalid unsigned amount")
+        return value
 
-    def token_total(entries, mint) -> int:
-        return sum(
-            int(e["uiTokenAmount"]["amount"]) for e in entries if e.get("owner") == owner and e.get("mint") == mint
-        )
-
-    def spl_delta(mint: str) -> int:
-        return token_total(post_tokens, mint) - token_total(pre_tokens, mint)
-
-    def rent_total(entries, balances) -> int:
+    def token_total(entries: Any, mint: str) -> int:
+        if not isinstance(entries, list):
+            raise ValueError("missing token balance evidence")
         total = 0
-        seen = set()
+        indices: set[int] = set()
         for entry in entries:
-            if entry.get("owner") != owner:
-                continue
-            index = entry["accountIndex"]
-            if type(index) is not int or index < 0 or index >= len(keys) or index in seen:
-                raise ValueError("invalid owner token account index")
-            seen.add(index)
-            amount = int(entry["uiTokenAmount"]["amount"]) if entry.get("mint") == WSOL_MINT else 0
-            rent = int(balances[index]) - amount
-            if rent < 0:
-                raise ValueError("inconsistent wrapped-SOL balance")
-            total += rent
+            # An omitted owner cannot establish that a balance belongs to somebody else.
+            if not isinstance(entry, dict) or not isinstance(entry.get("owner"), str) or not entry["owner"]:
+                raise ValueError("unattributed token balance")
+            if not isinstance(entry.get("mint"), str) or not entry["mint"]:
+                raise ValueError("missing token mint")
+            index = entry.get("accountIndex")
+            if type(index) is not int or not 0 <= index < len(keys) or index in indices:
+                raise ValueError("invalid or duplicate token account index")
+            indices.add(index)
+            amount = entry["uiTokenAmount"]["amount"]
+            if not isinstance(amount, str) or not amount.isascii() or not amount.isdecimal():
+                raise ValueError("invalid token amount")
+            raw = unsigned(int(amount))
+            if entry["owner"] == owner and entry["mint"] == mint:
+                total += raw
         return total
 
     try:
-        rent_delta = rent_total(post_tokens, meta["postBalances"]) - rent_total(pre_tokens, meta["preBalances"])
-        sol_delta = native_delta + spl_delta(WSOL_MINT) + fee + rent_delta
-        delta_in, delta_out = spl_delta(token_in.mint), spl_delta(token_out.mint)
+        meta = tx["meta"]
+        msg = tx["transaction"]["message"]
+        if not isinstance(meta, dict) or "err" not in meta or meta["err"] is not None:
+            return None
+        keys = msg["accountKeys"]
+        if not isinstance(keys, list):
+            return None
+        loaded = meta.get("loadedAddresses", {"writable": [], "readonly": []})
+        keys = keys + loaded["writable"] + loaded["readonly"]
+        keys = [key if isinstance(key, str) else key["pubkey"] for key in keys]
+        if any(not isinstance(key, str) or not key for key in keys) or keys.count(owner) != 1:
+            return None
+        idx = keys.index(owner)
+        before, after = meta["preBalances"], meta["postBalances"]
+        if (
+            not isinstance(before, list)
+            or not isinstance(after, list)
+            or len(before) != len(keys)
+            or len(after) != len(keys)
+        ):
+            return None
+        native_delta = unsigned(after[idx]) - unsigned(before[idx])
+        fee = unsigned(meta["fee"])
+        unsigned(retained_rent)  # Reject malformed persisted simulation evidence; actual rent is measured below.
+        # Explicit empty arrays can describe a newly created token account. Missing arrays cannot.
+        deltas = {
+            tok.mint: token_total(meta["postTokenBalances"], tok.mint) - token_total(meta["preTokenBalances"], tok.mint)
+            for tok in (token_in, token_out)
+        }
+    except (KeyError, IndexError, TypeError, ValueError, AttributeError):
+        return None
+
+    # Actual owner token-account balances establish retained/refunded rent. A
+    # simulated rent estimate cannot account for closing pre-existing WSOL.
+    def rent_total(entries: list[dict[str, Any]], balances: list[int]) -> int:
+        total = 0
+        for entry in entries:
+            if entry["owner"] != owner:
+                continue
+            index = entry["accountIndex"]
+            amount = int(entry["uiTokenAmount"]["amount"]) if entry["mint"] == WSOL_MINT else 0
+            account_rent = unsigned(balances[index]) - amount
+            if account_rent < 0:
+                raise ValueError("inconsistent wrapped-SOL balance")
+            total += account_rent
+        return total
+
+    try:
+        rent_delta = rent_total(meta["postTokenBalances"], after) - rent_total(meta["preTokenBalances"], before)
+        wsol_delta = token_total(meta["postTokenBalances"], WSOL_MINT) - token_total(
+            meta["preTokenBalances"], WSOL_MINT
+        )
+        sol_delta = native_delta + wsol_delta + fee + rent_delta
     except (KeyError, IndexError, TypeError, ValueError):
         return None
 
     def side_amount(tok: Token, is_input: bool) -> int:
         if tok.mint == WSOL_MINT:
             return -sol_delta if is_input else sol_delta
-        return -delta_in if is_input else delta_out
+        return -deltas[tok.mint] if is_input else deltas[tok.mint]
 
     return {
         "in_raw": side_amount(token_in, True),

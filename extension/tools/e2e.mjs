@@ -33,6 +33,7 @@ import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
 import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
+import { verifySignalDesk } from '../e2e/lib/signal-desk.mjs';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOL = 'So11111111111111111111111111111111111111112';
@@ -217,7 +218,8 @@ try {
     assert(await sw.ev('chrome.runtime.getManifest().version') === manifest.version, 'loaded extension version differs');
     const files = ['src/bg/service-worker.js', 'src/bg/paper-venue.js', 'src/core/engine.js',
       'src/core/commands.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/core/csv.js',
-      'src/ui/soltui-panel.js', 'src/ui/workspace-model.js'];
+      'src/ui/soltui-panel.js', 'src/ui/workspace-model.js', 'src/ui/signal-desk.js',
+      'src/ui/desk-model.js', 'src/ui/signal-desk.css'];
     for (const file of files) {
       const loaded = await sw.ev(`fetch(chrome.runtime.getURL(${JSON.stringify(file)})).then(r => {if(!r.ok)throw new Error('source unavailable');return r.text()})`);
       const expected = createHash('sha256').update(fs.readFileSync(path.join(EXT, file))).digest('hex');
@@ -545,6 +547,10 @@ try {
 
   await check('dashboard order handoff, confirmation, explicit clear and editor regression scenarios (mock writes)', async () => {
     await verifyDashboardWorkflows(dash, browser);
+  });
+
+  await check('Signal Desk source identity, workflows, pinned paper setup, search, archive policy and responsive layout (memory-only native fixture)', async () => {
+    await verifySignalDesk(dash, browser);
   });
 
   await check('the 1-minute soltui build probe alarm is scheduled', async () => {

@@ -1,4 +1,6 @@
 /** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
+import { mountSignalDesk } from './signal-desk.js';
+import { commandBlock, eligibilityReason } from './desk-model.js';
 import { el, clear, table, lineChart } from './ui-kit.js';
 import { aggregatePredictions, scoreText, appendScoreTick, renderScoreChart } from './live-score.js';
 import { WORKSPACES, filterCommands, workspaceFor, cellText, columnsFor, rowsToCsv, resultTables, valuesFromRow, seriesFromRows } from './workspace-model.js';
@@ -6,7 +8,7 @@ import { WORKSPACES, filterCommands, workspaceFor, cellText, columnsFor, rowsToC
 const send = (msg) => chrome.runtime.sendMessage(msg);
 const LIVE_PREDICTIONS_MS = 10_000;
 const POLLABLE = new Set(['prices.status', 'forwardtest.predictions', 'forwardtest.state', 'forwardtest.status',
-  'backtest.status', 'queue.progress', 'compound.autopilot_status', 'compound.unattended_status',
+  'backtest.status', 'backtest.results', 'queue.progress', 'compound.autopilot_status', 'compound.unattended_status',
   'compound.forward_status', 'bots.progress', 'bots.fit_status', 'bots.schedule_status']);
 
 export function coerceField(param, raw) {
@@ -47,7 +49,8 @@ export function buildParams(command, values, { confirmed = false, emptyFields = 
 export const commandNames = (commands) => new Set((commands ?? []).map((c) => c.name));
 
 function fieldFor(param) {
-  const label = el('label', { text: `${param.name}${param.required ? ' *' : ''}` });
+  const labels = { labels: 'Strategy roster labels (optional)', use_leverage: 'Use leveraged paper positions', leverage: 'Leverage multiplier', allow_short: 'Allow paper shorts', min_confidence: 'Minimum paper-entry confidence', horizons: 'Forecast horizons (minutes)', scope: 'Strategy scope', coins: 'Coins to observe', optimize: 'Enable adaptive tuning', source_label: 'Pinned source strategy', snapshot: 'Pinned backtest snapshot' };
+  const label = el('label', { text: `${labels[param.name] ?? param.name}${param.required ? ' *' : ''}` });
   let input;
   if (param.type === 'bool') {
     input = el('select', {}, [el('option', { value: '', text: 'Use saved/default value' }),
@@ -210,6 +213,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
   const session = crypto.randomUUID();
   $('#soltui').dataset.session = session;
   const current = () => commands.find((c) => c.name === select.value);
+  const desk = mountSignalDesk(root, { ask, openTool: choose, refreshLive, transport });
+  let deskPage = null;
 
   async function ask(command, params = {}) {
     const res = await transport({ type: 'soltuiCall', command, params });
@@ -245,7 +250,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     form.dataset.command = c?.name ?? '';
     if (!c) { describe.textContent = ''; return; }
     const live = /^(coinbase|jupiter)\.order_/.test(c.name) && !/preview|status|state|reconcile/.test(c.name);
-    describe.textContent = `${c.describe}${c.read_only ? ' · Read only.' : ' · Changes state.'}${c.long_running ? ' May take minutes; other tools stay available.' : ''}`;
+    describe.textContent = `${c.name === 'docs.search' ? 'Explicit search: every mode checks the idle index; semantic mode can start Ollama. ' : ''}${c.describe}${c.read_only ? ' · Read only.' : ' · Changes state.'}${c.long_running ? ' May take minutes; other tools stay available.' : ''}`;
     describe.className = live ? 'banner danger' : 'note';
     for (const p of c.params ?? []) {
       if (p.name === 'confirm') continue;
@@ -268,8 +273,9 @@ export function mountSoltuiPanel(root = document, transport = send) {
     }
     runButton = el('button', { class: live ? 'danger' : 'primary', text: live ? 'Submit live order' : c.read_only ? 'Run / refresh' : 'Run action' });
     runButton.type = 'submit';
-    runButton.disabled = pending.has(c.name) || !!confirmBox;
-    if (confirmBox) confirmBox.addEventListener('change', () => { runButton.disabled = pending.has(c.name) || !confirmBox.checked; });
+    runButton.disabled = pending.has(c.name) || !!confirmBox || !!commandBlock(c);
+    if (commandBlock(c)) { describe.textContent = commandBlock(c); for (const input of inputs.values()) input.disabled = true; }
+    if (confirmBox) confirmBox.addEventListener('change', () => { runButton.disabled = pending.has(c.name) || !confirmBox.checked || !!commandBlock(c); });
     form.append(runButton);
     poll.disabled = !POLLABLE.has(c.name) || c.read_only !== true || c.requires_confirm;
     poll.checked = false;
@@ -277,6 +283,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   function choose(name, values = {}) {
     if (!commandNames(commands).has(name)) return;
     remember();
+    if (name === 'forwardtest.start' && Object.hasOwn(values, 'snapshot')) drafts.delete(name);
     select.value = name;
     renderForm();
     if (results.has(name)) display(results.get(name));
@@ -286,12 +293,14 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const spec = WORKSPACES.find((w) => w.id === workspace.value) ?? WORKSPACES.at(-1);
     $('#soltuiWorkspaceDetail').textContent = spec.detail;
     $('#soltuiLive').hidden = !['signal', 'now'].includes(spec.id);
+    if (deskPage !== spec.id) { deskPage = spec.id; desk.route(spec.id); }
+    if (!['signal', 'research', 'forward', 'bots'].includes(spec.id) && $('#soltuiToolbox')) $('#soltuiToolbox').open = true;
     if (commands.length && !predictionAttempted && liveVisible()) refreshLive();
     $('#soltuiNowSummary').hidden = spec.id !== 'now';
     if (spec.id === 'now' && commands.length && !nowLoaded) refreshNow();
     const filtered = filterCommands(commands, spec.id, search.value);
-    clear(tools, ...filtered.map((c) => el('button', { class: 'tool-card', title: c.describe, onclick: () => choose(c.name) },
-      el('strong', { text: c.name }), el('small', { text: `${c.read_only ? 'Read' : 'Action'}${c.requires_confirm ? ' · Confirm' : ''} — ${c.describe}` }))));
+    clear(tools, ...filtered.map((c) => el('button', { class: 'tool-card', title: commandBlock(c) ?? c.describe, disabled: !!commandBlock(c), onclick: () => choose(c.name) },
+      el('strong', { text: c.name }), el('small', { text: `${commandBlock(c) ? 'Archived / unavailable' : c.read_only ? 'Read' : 'Action'}${c.requires_confirm ? ' · Confirm' : ''} — ${c.describe}` }))));
     if (!filtered.length) tools.append(el('p', { class: 'empty', text: 'No matching tools in this workspace. Try All tools.' }));
   }
   function applyRoute() {
@@ -374,10 +383,11 @@ export function mountSoltuiPanel(root = document, transport = send) {
     $('#soltuiResultLabel').textContent = `${env.command} · ${new Date().toLocaleTimeString()}`;
   }
   function paintJobs() {
+    desk.jobs([...pending.keys()]);
     clear($('#soltuiJobs'), ...[...pending.keys()].map((name) => el('span', { class: 'chip backtest', text: `${name} running` })));
   }
   async function run(c, params, polling = false) {
-    if (pending.has(c.name)) return;
+    if (pending.has(c.name) || commandBlock(c)) return;
     pending.set(c.name, true);
     paintJobs();
     if (select.value === c.name && runButton) runButton.disabled = true;
@@ -388,6 +398,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       if (disposed) return;
       $('#soltuiRunStatus').textContent = env?.ok ? `${c.name} completed.` : `${c.name}: ${env?.error?.message ?? 'No response'}`;
       results.set(c.name, env);
+      desk.receive(env);
       if (results.size > 30) results.delete(results.keys().next().value);
       clear($('#soltuiHistory'), ...[...results].reverse().map(([name, saved]) => el('button', { class: 'small', text: `${name} ${saved?.ok ? '✓' : 'failed'}`, onclick: () => choose(name) })));
       // A response for a previous tool never replaces the current tool's view.
@@ -402,7 +413,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       paintJobs();
       if (select.value === c.name) {
         if (confirmBox) confirmBox.checked = false;
-        if (runButton) runButton.disabled = !!confirmBox;
+        if (runButton) runButton.disabled = !!confirmBox || !!commandBlock(c);
       }
     }
   }
@@ -435,9 +446,36 @@ export function mountSoltuiPanel(root = document, transport = send) {
       }));
     } finally { nowBusy = false; }
   }
+  function renderPredictionEvidence(target, rows, asset) {
+    const input = el('input', { placeholder: 'Filter strategies', 'aria-label': 'Filter strategy evidence' });
+    input.type = 'search';
+    const state = stateFor(`live:${asset}`);
+    input.value = state.query ?? '';
+    const output = el('div', { class: 'table-wrap' });
+    const count = el('p', { class: 'note', role: 'status' });
+    const reset = el('button', { class: 'link', text: 'Clear filter' }); reset.type = 'button';
+    const paint = () => {
+      state.query = input.value;
+      const shown = rows.filter((r) => String(r.label ?? '').toLowerCase().includes(input.value.toLowerCase()));
+      const fmt = (n) => typeof n === 'number' && Number.isFinite(n) ? n.toFixed(1) : '—';
+      const now = Date.now() / 1000;
+      clear(output, table([
+        { label: 'Strategy', value: (r) => r.label },
+        { label: 'Prior accuracy', value: (r) => `${fmt(r.accuracy)}% · n=${r.resolved ?? '—'}` },
+        ...[1, 5, 10, 30].map((h) => ({ label: `${h}m`, value: (r) => `${typeof r[`issued_${h}m`] === 'number' && typeof r[`expires_${h}m`] === 'number' && r[`issued_${h}m`] <= now && now < r[`expires_${h}m`] ? r[`pred_${h}m`] ?? 'Unavailable' : 'Unavailable / expired'} · ${fmt(r[`acc_${h}m`])}% · n=${r[`resolved_${h}m`] ?? '—'}` })),
+        { label: 'Vote eligibility', value: (r) => eligibilityReason(r, voting, now) },
+        { label: 'Evidence', value: (r) => { const button = el('button', { class: 'small', text: 'Inspect', onclick: () => desk.inspect('Strategy and horizon evidence', { asset, ...r, policy: voting, current: aggregatePredictions([r], Date.now() / 1000, voting) }) }); button.type = 'button'; return button; } },
+      ], shown));
+      count.textContent = shown.length ? `${shown.length} of ${rows.length} strategy rows · current eligibility uses both record and horizon floors` : 'No matching strategies. Clear the filter to recover.';
+      reset.hidden = !input.value;
+    };
+    input.oninput = paint;
+    reset.onclick = () => { input.value = ''; paint(); input.focus(); };
+    target.append(el('div', { class: 'row' }, input, reset), count, output); paint();
+  }
   function paintAggregate(target, aggregate) {
     target.className = `signal-score signal-score-${aggregate.color}`;
-    target.textContent = `Aggregate score ${scoreText(aggregate)} / 100 · ${aggregate.label} · ${aggregate.strategies} voting strategies / ${aggregate.votes} horizon votes · floor ${aggregate.min_accuracy}%, ${aggregate.min_resolved} resolved/horizon${aggregate.available ? '' : ' · No qualifying current predictions'}`;
+    target.textContent = `Aggregate score ${scoreText(aggregate)} / 100 · ${aggregate.available ? aggregate.label : 'Unavailable'} · ${aggregate.strategies} voting strategies / ${aggregate.votes} horizon votes · floor ${aggregate.min_accuracy}%, ${aggregate.min_resolved} resolved/horizon${aggregate.available ? '' : ' · No qualifying current predictions'}`;
     target.title = 'Average eligible current horizon votes within each strategy, then average strategies equally. Directional agreement, not a probability.';
   }
   async function refreshLive(force = false) {
@@ -475,9 +513,12 @@ export function mountSoltuiPanel(root = document, transport = send) {
           if (document.activeElement !== $('#soltuiVoteMinScore')) $('#soltuiVoteMinScore').value = voting.min_accuracy;
           if (document.activeElement !== $('#soltuiVoteMinResolved')) $('#soltuiVoteMinResolved').value = voting.min_resolved;
           const target = $('#soltuiLivePredictions');
+          const filtering = target.contains(document.activeElement) && document.activeElement.matches('input[type=search]');
+          const cursor = filtering ? document.activeElement.selectionStart : null;
           target.replaceChildren();
-          if (predictionRows.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictionRows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
+          if (predictionRows.length) renderPredictionEvidence(target, predictionRows, asset);
           else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
+          if (filtering) { const input = target.querySelector('input[type=search]'); input?.focus({ preventScroll: true }); if (input && cursor !== null) input.setSelectionRange(cursor, cursor); }
           predictionsAt = Date.now();
           const updated = new Date(predictionsAt).toISOString().slice(11, 19);
           $('#soltuiLivePredictionStatus').textContent = `Updated ${updated} UTC · refresh every 10s · saved closed-candle predictions`;
@@ -497,11 +538,12 @@ export function mountSoltuiPanel(root = document, transport = send) {
       paintAggregate($('#soltuiPredictionsScore'), aggregate);
       const q = env.result.prices?.[`${asset}-USD`];
       const age = q?.quote_age_s;
+      desk.live({ asset, quote: q, aggregate, updated: predictionsAt, fresh: !!env.result.live && typeof age === 'number' && age >= 0 && age < 15 });
       const price = q?.mid ?? q?.last;
       if (typeof price === 'number' && Number.isFinite(price) && price > 0 && typeof age === 'number' && Number.isFinite(age) && age >= 0) {
         const at = typeof q.quote_ts === 'number' && Number.isFinite(q.quote_ts) ? q.quote_ts * 1000 : Math.round((Date.now() - age * 1000) / 1000) * 1000;
         const current = env.result.live && age < 15;
-        if (at <= Date.now()) livePoints = appendScoreTick(livePoints, { at, price, aggregate: current ? aggregate : { score: null, color: 'gray', label: 'Flat' } });
+        if (at <= Date.now()) livePoints = appendScoreTick(livePoints, { at, price, aggregate: current && aggregate.available ? aggregate : { score: null, color: 'gray', label: 'Unavailable' } });
         const width = Math.max(320, Math.round($('#soltuiLiveChart').getBoundingClientRect().width) || 720);
         clear($('#soltuiLiveChart'), renderScoreChart(livePoints, { width }));
         $('#soltuiLiveStatus').textContent = `${asset}-USD $${price} · bid ${q.bid ?? '—'} · ask ${q.ask ?? '—'} · spread ${q.spread_bps ?? '—'} bps · ${age}s old · ${current ? 'LIVE' : 'STALE / recorder offline'} · chart scores are observed agreement, not win probability`;
@@ -513,6 +555,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const unavailable = aggregatePredictions([]);
       paintAggregate($('#soltuiLiveScore'), unavailable);
       paintAggregate($('#soltuiPredictionsScore'), unavailable);
+      desk.live({ asset, quote: null, aggregate: unavailable, updated: null, fresh: false });
       $('#soltuiLiveStatus').textContent = `Live view unavailable: ${e.message} · automatic refresh will retry`;
     } finally {
       liveBusy = false;
@@ -563,6 +606,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     } catch (e) { status.textContent = `Session unavailable: ${e.message}`; }
   }
   async function loadList() {
+    await desk.restore;
     status.textContent = 'Connecting to SolTUI…';
     await renew();
     try {
@@ -570,6 +614,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const env = res?.result;
       if (!res?.ok || !env?.ok || !Array.isArray(env.result)) throw new Error(env?.error?.message ?? res?.error ?? 'SolTUI is not available.');
       commands = env.result;
+      desk.commands(commands);
+      deskPage = null;
       remember();
       const old = select.value;
       clear(select, ...commands.map((c) => el('option', { value: c.name, text: c.name })));
@@ -585,7 +631,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   }
 
   clear(workspace, ...WORKSPACES.map((w) => el('option', { value: w.id, text: w.title })));
-  workspace.value = 'now';
+  workspace.value = 'signal';
   select.addEventListener('change', () => { remember(); renderForm(); });
   search.addEventListener('input', renderTools);
   workspace.addEventListener('change', () => { location.hash = `soltui/${workspace.value}`; renderTools(); });
@@ -634,6 +680,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   });
   $('#soltuiLiveAsset').addEventListener('change', () => {
     liveGeneration += 1;
+    desk.assetChanged();
     liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
     $('#soltuiLiveChart').replaceChildren();
     $('#soltuiLivePredictions').replaceChildren();
@@ -670,6 +717,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   }, 5000);
   function dispose() {
     disposed = true;
+    desk.dispose();
     clearInterval(heartbeat);
     clearInterval(pollTimer);
     clearInterval(liveTimer);

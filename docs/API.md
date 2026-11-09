@@ -199,3 +199,18 @@ rather than silently disabling its rail.
 aggregate and its voting policy. Shared `settings.save` fields `live_vote_min_accuracy` (0–100) and
 `live_vote_min_resolved` (positive integer) control eligibility in both live displays. See
 [the score contract](LIVE-PREDICTION-SCORE.md).
+
+## Signal Desk research evidence
+
+The existing soltuiCall bridge exposes native backtest.results (read only), which returns the last
+completed/partial sweep and its context. backtest.run includes the same immutable snapshot: actual
+loaded-array SHA-256, strategy parameters/code revision, historical dates, CPCV geometry, capital,
+fill timing and full execution assumptions. Results do not invent unsupported path metrics.
+
+Native forwardtest.start additionally accepts optional snapshot (JSON) and source_label (string).
+It verifies the snapshot hash/current strategy revision and prepares exactly one paper strategy
+with its frozen execution scenario. Snapshot use refuses asset/strategy/cost overrides and wrapper
+translations that cannot be exact. It starts no worker; forwardtest.run is still separate and explicit.
+forwardtest.state includes the source receipt when a pinned plan is prepared. The full source
+snapshot persists with the saved session once checking is explicitly started. No real order path
+or extension message name was added.

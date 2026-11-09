@@ -19,7 +19,7 @@ from decimal import Decimal
 from . import gates, ledger
 from .config import VALIDATION_MAX_DAILY_USD, VALIDATION_MAX_TRADE_USD, VALIDATION_STRATEGY, Config
 from .errors import Refused
-from .journal import Journal
+from .journal import TERMINAL, Journal, failed_accounting_missing
 from .quote import QuoteReport
 from .tokens import QUOTE_MINT, WSOL_MINT, raw_to_ui
 
@@ -133,6 +133,20 @@ def check_trade(
         if kill_present and not exit_only:
             problems.append("KILL file present: live swaps are halted (only --exit is allowed)")
         pending = journal.unresolved()
+        proven_tracked_exit = (
+            exit_only
+            and not is_validation
+            and strategy is not None
+            and side == "sell"
+            and 0 < report.quote.in_raw <= pos.qty_raw
+        )
+        if proven_tracked_exit:
+            # A terminal failed attempt cannot land again. Its missing fee
+            # blocks new risk, but cannot prevent a measured position reduction.
+            # Actual sending/unknown records always retain the submit barrier.
+            pending = [
+                state for state in pending if state["state"] not in TERMINAL or not failed_accounting_missing(state)
+            ]
         if pending:
             problems.append(f"unresolved send(s) {', '.join(p['id'] for p in pending)}: run `executor reconcile`")
         if journal.corrupt_lines():

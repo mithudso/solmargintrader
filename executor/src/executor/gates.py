@@ -20,16 +20,25 @@ import math
 import os
 import tempfile
 import time
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
 from .config import Config, fingerprint
-from .errors import BadParams
+from .errors import BadParams, ExecutorError
 
 SOAK_SCHEMA = "executor-soak/1"
 RESEARCH_SCHEMA = "executor-research-gate/1"
 MAX_TICK_GAP_S = 1800.0
+
+
+def _sync_directory(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
 
 
 def _atomic_write(path: Path, doc: Any) -> None:
@@ -42,16 +51,18 @@ def _atomic_write(path: Path, doc: Any) -> None:
             os.fsync(fh.fileno())
         os.chmod(tmp, 0o600)
         os.replace(tmp, path)
+        # A recorded failure must remain the latest evidence after a power loss too.
+        _sync_directory(path.parent)
     finally:
         if os.path.exists(tmp):
             os.unlink(tmp)
 
 
 @contextmanager
-def _mutation_lock(path: Path):
-    """Lock the stable sidecar, since replacement changes the data file's inode."""
+def _state_lock(path: Path) -> Iterator[None]:
+    # The data inode changes at replace(). Every writer must lock the stable sidecar instead.
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd = os.open(path.with_name(path.name + ".lock"), os.O_CREAT | os.O_WRONLY, 0o600)
+    fd = os.open(path.with_name(path.name + ".lock"), os.O_WRONLY | os.O_CREAT, 0o600)
     try:
         fcntl.flock(fd, fcntl.LOCK_EX)
         yield
@@ -59,34 +70,41 @@ def _mutation_lock(path: Path):
         os.close(fd)
 
 
-def _finite_nonnegative(value: Any) -> bool:
+def _nonnegative_number(value: Any) -> bool:
+    if not isinstance(value, int | float) or isinstance(value, bool):
+        return False
     try:
-        return type(value) in (int, float) and math.isfinite(value) and value >= 0
+        return math.isfinite(value) and value >= 0
     except OverflowError:
         return False
 
 
-def _valid_soak(cur: Any) -> bool:
-    return (
-        isinstance(cur, dict)
-        and isinstance(cur.get("fingerprint"), str)
-        and all(_finite_nonnegative(cur.get(name)) for name in ("started_at", "last_tick_at", "accumulated_s"))
-        and type(cur.get("dry_runs")) is int
-        and cur["dry_runs"] >= 0
-        and isinstance(cur.get("resets"), list)
-    )
+def _nonblank(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
 
 
-def _valid_research(row: Any) -> bool:
-    return (
-        isinstance(row, dict)
-        and isinstance(row.get("strategy"), str)
-        and bool(row["strategy"].strip())
-        and row.get("result") in ("pass", "fail")
-        and _finite_nonnegative(row.get("checked_at"))
-        and isinstance(row.get("source"), str)
-        and bool(row["source"].strip())
-    )
+def _json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in out:
+            raise ValueError("duplicate gate record field")
+        out[key] = value
+    return out
+
+
+def _invalid_constant(_value: str) -> None:
+    raise ValueError("non-finite gate record value")
+
+
+def _read_document(path: Path) -> Any:
+    return json.loads(path.read_text(), object_pairs_hook=_json_object, parse_constant=_invalid_constant)
+
+
+def _recording_time(now: float | None) -> float:
+    value = time.time() if now is None else now
+    if not _timestamp(value):
+        raise BadParams("gate recording time must be a finite nonnegative timestamp")
+    return value
 
 
 def _iso(ts: Any) -> str:
@@ -96,6 +114,10 @@ def _iso(ts: Any) -> str:
         return "unknown time"
 
 
+def _timestamp(value: Any) -> bool:
+    return _nonnegative_number(value) and _iso(value) != "unknown time"
+
+
 # -- soak ----------------------------------------------------------------------------------------------------
 
 
@@ -103,51 +125,75 @@ def _soak_path(root: Path) -> Path:
     return root / "soak.json"
 
 
+def _valid_soak(cur: Any) -> bool:
+    if not isinstance(cur, dict) or not _nonblank(cur.get("fingerprint")):
+        return False
+    if not all(_timestamp(cur.get(key)) for key in ("started_at", "last_tick_at")):
+        return False
+    if not _nonnegative_number(cur.get("accumulated_s")):
+        return False
+    runs = cur.get("dry_runs")
+    if not isinstance(runs, int) or isinstance(runs, bool) or runs < 1:
+        return False
+    start, last, done = cur["started_at"], cur["last_tick_at"], cur["accumulated_s"]
+    if last < start or done > last - start + 1e-6 or done / MAX_TICK_GAP_S > runs - 1:
+        return False
+    resets = cur.get("resets")
+    return isinstance(resets, list) and all(
+        isinstance(reset, dict) and _timestamp(reset.get("at")) and _nonblank(reset.get("from")) for reset in resets
+    )
+
+
 def load_soak(root: Path) -> dict[str, Any]:
     try:
-        doc = json.loads(_soak_path(root).read_text())
+        doc = _read_document(_soak_path(root))
     except (OSError, ValueError):
         return {"schema": SOAK_SCHEMA, "strategies": {}}
     if not isinstance(doc, dict) or doc.get("schema") != SOAK_SCHEMA or not isinstance(doc.get("strategies"), dict):
         return {"schema": SOAK_SCHEMA, "strategies": {}}
-    return doc
+    # Invalid credit is discarded; it can only be rebuilt by successful dry-runs.
+    return {
+        "schema": SOAK_SCHEMA,
+        "strategies": {key: cur for key, cur in doc["strategies"].items() if _nonblank(key) and _valid_soak(cur)},
+    }
 
 
 def record_dry_run(root: Path, cfg: Config, strategy: str, now: float | None = None) -> dict[str, Any]:
-    now = time.time() if now is None else now
-    if not _finite_nonnegative(now):
-        raise BadParams("dry-run timestamp must be finite and nonnegative")
+    now = _recording_time(now)
+    if not _nonblank(strategy):
+        raise BadParams("strategy is required")
     fp = fingerprint(cfg, strategy)
-    doc = load_soak(root)
-    cur = doc["strategies"].get(strategy)
-    if not _valid_soak(cur) or cur.get("fingerprint") != fp:
-        cur = cur if _valid_soak(cur) else None
-        resets = (cur or {}).get("resets", [])
-        if cur:
-            resets = (resets + [{"at": now, "from": cur.get("fingerprint")}])[-20:]
-        cur = {
-            "fingerprint": fp,
-            "started_at": now,
-            "last_tick_at": now,
-            "accumulated_s": 0.0,
-            "dry_runs": 1,
-            "resets": resets,
-        }
-    else:
-        gap = max(0.0, now - float(cur.get("last_tick_at", now)))
-        cur["accumulated_s"] = float(cur.get("accumulated_s", 0.0)) + min(gap, MAX_TICK_GAP_S)
-        cur["last_tick_at"] = now
-        cur["dry_runs"] = int(cur.get("dry_runs", 0)) + 1
-    doc["strategies"][strategy] = cur
-    _atomic_write(_soak_path(root), doc)
+    path = _soak_path(root)
+    with _state_lock(path):
+        doc = load_soak(root)
+        cur = doc["strategies"].get(strategy)
+        if not cur or cur["fingerprint"] != fp or now < cur["last_tick_at"]:
+            resets = cur["resets"] if cur else []
+            if cur:
+                resets = (resets + [{"at": now, "from": cur["fingerprint"]}])[-20:]
+            cur = {
+                "fingerprint": fp,
+                "started_at": now,
+                "last_tick_at": now,
+                "accumulated_s": 0.0,
+                "dry_runs": 1,
+                "resets": resets,
+            }
+        else:
+            gap = now - cur["last_tick_at"]
+            cur["accumulated_s"] += min(gap, MAX_TICK_GAP_S)
+            cur["last_tick_at"] = now
+            cur["dry_runs"] += 1
+        doc["strategies"][strategy] = cur
+        _atomic_write(path, doc)
     return cur
 
 
 def soak_status(root: Path, cfg: Config, strategy: str) -> tuple[bool, str]:
     required = cfg.gates.soak_hours * 3600
     cur = load_soak(root)["strategies"].get(strategy)
-    if not _valid_soak(cur):
-        return False, f"no valid dry-run soak recorded for '{strategy}': run it in dry-run first"
+    if not cur:
+        return False, f"no dry-run soak recorded for '{strategy}': run it in dry-run first"
     if cur.get("fingerprint") != fingerprint(cfg, strategy):
         return False, "the rails or owner changed since the last dry-run; the soak restarts at the next dry-run"
     done = float(cur.get("accumulated_s", 0.0))
@@ -169,43 +215,66 @@ def research_path(root: Path, cfg: Config) -> Path:
     )
 
 
+def _research_results(path: Path) -> list[dict[str, Any]]:
+    try:
+        doc = _read_document(path)
+    except FileNotFoundError:
+        return []
+    except (OSError, ValueError):
+        raise ExecutorError(
+            "research gate record is unreadable; inspect it before recording new results", "refused"
+        ) from None
+    if not isinstance(doc, dict) or doc.get("schema") != RESEARCH_SCHEMA or not isinstance(doc.get("results"), list):
+        raise ExecutorError("research gate record is malformed; inspect it before recording new results", "refused")
+    results = doc["results"]
+    if not all(
+        isinstance(row, dict)
+        and _nonblank(row.get("strategy"))
+        and row.get("result") in ("pass", "fail")
+        and _timestamp(row.get("checked_at"))
+        and _nonblank(row.get("source"))
+        and isinstance(row.get("note", ""), str)
+        for row in results
+    ):
+        # A malformed later failure must never silently revive an older pass.
+        raise ExecutorError("research gate evidence is malformed; inspect it before recording new results", "refused")
+    last_checked: dict[str, int | float] = {}
+    for row in results:
+        strategy, checked = row["strategy"], row["checked_at"]
+        if strategy in last_checked and checked < last_checked[strategy]:
+            raise ExecutorError(
+                "research gate chronology is inconsistent; inspect it before recording new results", "refused"
+            )
+        last_checked[strategy] = checked
+    return results
+
+
 def record_research_result(
     root: Path, cfg: Config, strategy: str, result: str, source: str, note: str = "", now: float | None = None
 ) -> dict[str, Any]:
     if result not in ("pass", "fail"):
         raise BadParams("result must be pass or fail")
-    if not strategy.strip() or not source.strip():
+    if not _nonblank(strategy) or not _nonblank(source):
         raise BadParams("strategy and source are required")
+    if not isinstance(note, str):
+        raise BadParams("note must be text")
+    now = _recording_time(now)
     path = research_path(root, cfg)
-    now = time.time() if now is None else now
-    if not _finite_nonnegative(now):
-        raise BadParams("research timestamp must be finite and nonnegative")
-    row = {"strategy": strategy, "result": result, "checked_at": now, "source": source, "note": note}
-    with _mutation_lock(path):
-        try:
-            doc = json.loads(path.read_text())
-            results = doc["results"]
-            if doc.get("schema") != RESEARCH_SCHEMA or not isinstance(results, list):
-                results = []
-        except (OSError, ValueError, KeyError, TypeError):
-            results = []
-        results.append(row)
+    with _state_lock(path):
+        results = _research_results(path)
+        # Retain a clock-regressed result. Readers then block on the chronology instead of reviving an older pass.
+        results.append({"strategy": strategy, "result": result, "checked_at": now, "source": source, "note": note})
         _atomic_write(path, {"schema": RESEARCH_SCHEMA, "results": results})
-    return row
+    return results[-1]
 
 
 def latest_research_result(root: Path, cfg: Config, strategy: str) -> dict[str, Any] | None:
     try:
-        doc = json.loads(research_path(root, cfg).read_text())
-        results = doc["results"]
-        if doc.get("schema") != RESEARCH_SCHEMA or not isinstance(results, list):
-            return None
-        if any(not _valid_research(row) for row in results):
-            return None
-        mine = [row for row in results if row["strategy"] == strategy]
-    except (OSError, ValueError, KeyError, TypeError):
+        results = _research_results(research_path(root, cfg))
+    except ExecutorError:
         return None
-    return max(mine, key=lambda row: row["checked_at"]) if mine else None
+    mine = [(index, row) for index, row in enumerate(results) if row["strategy"] == strategy]
+    return max(mine, key=lambda item: (item[1]["checked_at"], item[0]))[1] if mine else None
 
 
 def research_status(root: Path, cfg: Config, strategy: str) -> tuple[bool, str]:
@@ -221,15 +290,28 @@ def research_status(root: Path, cfg: Config, strategy: str) -> tuple[bool, str]:
 
 
 def log_override(root: Path, strategy: str, why: str, now: float | None = None) -> None:
-    now = time.time() if now is None else now
+    now = _recording_time(now)
     root.mkdir(parents=True, exist_ok=True)
-    if not _finite_nonnegative(now):
-        raise BadParams("override timestamp must be finite and nonnegative")
     line = {"at": now, "iso": _iso(now), "gate": "research", "strategy": strategy, "why": why}
-    fd = os.open(root / "gate-overrides.jsonl", os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+    fd = os.open(root / "gate-overrides.jsonl", os.O_RDWR | os.O_APPEND | os.O_CREAT, 0o600)
     try:
-        os.write(fd, (json.dumps(line, allow_nan=False) + "\n").encode())
+        # Short writes are legal. Keep the record locked until all bytes are durable so writers cannot interleave it.
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        size = os.fstat(fd).st_size
+        if size and os.pread(fd, 1, size - 1) != b"\n":
+            raise ExecutorError(
+                "research gate override audit record is incomplete; inspect it before proceeding", "refused"
+            )
+        pending = memoryview((json.dumps(line, allow_nan=False) + "\n").encode())
+        while pending:
+            written = os.write(fd, pending)
+            if written <= 0:
+                raise ExecutorError("could not persist the research gate override audit record", "refused")
+            pending = pending[written:]
         os.fsync(fd)
+        _sync_directory(root)
+    except OSError:
+        raise ExecutorError("could not persist the research gate override audit record", "refused") from None
     finally:
         os.close(fd)
 

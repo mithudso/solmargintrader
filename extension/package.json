@@ -1,9 +1,9 @@
 {
   "name": "solmargintrader",
-  "version": "0.4.3",
+  "version": "0.5.1",
   "private": true,
   "type": "module",
-  "description": "SolTUI dashboard workspace: signals, backtests, bots, experiments, wallets, reviewed orders and document editing; experimental grid disarmed and dry-run by default.",
+  "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
   "bin": {
     "smt": "tools/cli.js"
   },

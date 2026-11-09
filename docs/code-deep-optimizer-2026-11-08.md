@@ -4,6 +4,8 @@ Status: **BLIND-AUDIT-DISSENT**. This is a capped review of **50 primary sources
 
 The run applied the default 18-pass standard profile. No advisory or feature phase ran. There is no separate held-out benchmark and no empirical champion was promoted. Trading defaults remain disarmed/dry-run; archived liquidity stays disabled. Manual Jupiter V2 submission refuses until an independent economic verifier exists.
 
+After the bounded audit, concurrent deliveries https://github.com/mithudso/solmargintrader/pull/151 and https://github.com/mithudso/solmargintrader/pull/152 were integrated. Executor integrity and Signal Desk are preserved. PR151 independently closed2 of the original15 residuals;13 remain (7 High,6 Medium). The task repaired98 findings; the two upstream closures are reported separately. Extension version0.5.1 is checked in a fresh profile. No third optimizer iteration or blind gate ran.
+
 ## 1. Per-iteration severity
 
 | Iteration / gate | Critical | High | Medium | Action |
@@ -11,7 +13,8 @@ The run applied the default 18-pass standard profile. No advisory or feature pha
 | Initial diagnostics / repair 1 | 4 | 32 | 40 | 76 findings repaired |
 | Blind gate 1 / repair 2 | 0 | 4 | 16 | 20 findings repaired |
 | Related repair-time findings | 0 | 0 | 2 | Protected alias and deny-before-engine defects repaired |
-| Final blind gate 2 | 0 | 9 | 6 | Residual findings retained; no third gate |
+| Original blind gate 2 | 0 | 9 | 6 | 15 retained before concurrent PR151 |
+| After upstream integration | 0 | 7 | 6 | Residual findings retained; no third gate |
 
 Counts identify diagnostic findings, not a claim that every row is a distinct root cause. Low/Nit taste changes were skipped.
 
@@ -118,8 +121,6 @@ Counts identify diagnostic findings, not a claim that every row is a distinct ro
 |  | /Users/mitch/dev/solmargintrader/soltui/docs_browser.py:0 | Medium | Editable document aliases bypass protected research result prefix | Check NO_WRITE_PREFIXES on the canonical repository-relative target before opening the write path. Preserve existing lexical and catalogue guards. | Repaired (TUI-ITER2-ALIAS) |
 |  | /Users/mitch/dev/solmargintrader/liquidity/src/aero_lp/cli.py:0 | Medium | Liquidity run gate constructs a network engine before refusing live mode | Run the live gate before constructing Engine; test forbidden engine construction with sockets blocked. | Repaired (LQ-VERIFY-01) |
 | C3, S1, S3 | /Users/mitch/dev/solmargintrader/executor/src/executor/rails.py:100 | High | With validation enabled, strategy path-validation, exit_only=true, an empty position and KILL present, a SOL-to-USDC sell passes the rails. The validation exception skips the quantity check, while exit_only skips the KILL check. | Require every exit, including path-validation, to sell no more than its tracked position before granting exit exemptions. | Unfixed final dissent (BLIND-G2-EXECUTOR-1) |
-| C1, C3, S1 | /Users/mitch/dev/solmargintrader/executor/src/executor/engine.py:458 | High | RPC returns a non-error processed status, and the current block height exceeds last_valid_block_height plus 150. | Keep any observed but insufficiently confirmed status unresolved. Consider dropping only when the signature is absent and the required finality and history evidence supports that conclusion. | Unfixed final dissent (BLIND-G2-EXECUTOR-2) |
-| C3, P2, S2 | /Users/mitch/dev/solmargintrader/executor/src/executor/engine.py:300 | High | A confirmed transaction fails post-trade verification, and the process stops after the terminal result is fsynced but before the KILL file is written. The same ordering exists in Engine.reconcile at lines 445–448. | Make a failed post-verification outcome itself a durable blocking condition during journal replay, or durably establish the kill condition before making the outcome terminal; serialize reconciliation with swap admission. | Unfixed final dissent (BLIND-G2-EXECUTOR-3) |
 | ['S1', 'S3', 'S5'] | /Users/mitch/dev/solmargintrader/extension/src/core/engine.js:584 | High | An upstream venue operation throws an error whose message contains credential material. The engine copies the raw message into result.errors; the tick command persists that result as lastTick at /Users/mitch/dev/solmargintrader-wt-01a1be31/extension/src/core/commands.js:747 and returns it to callers. The submit failure path also stores and logs raw errors at /Users/mitch/dev/solmargintrader-wt-01a1be31/extension/src/core/engine.js:573. | Keep only allowlisted, secret-free diagnostic fields in returned results, intent records and logs; do not persist or return raw upstream exception messages. | Unfixed final dissent (BLIND-G2-EXTENSION-1) |
 | ['C1', 'C3'] | /Users/mitch/dev/solmargintrader/extension/src/core/pnl.js:64 | Medium | A buy and its later sell have the same recorded timestamp and the sell's arbitrary ID sorts before the buy's ID. | Use a reliable execution sequence or higher-resolution ordering supplied by the venue. If ordering cannot be established for conflicting equal-time fills, surface the ambiguity and hold accounting rather than treating lexicographic IDs as chronology. | Unfixed final dissent (BLIND-G2-EXTENSION-2) |
 | ['C1', 'C3', 'S3'] | /Users/mitch/dev/solmargintrader/liquidity/src/aero_lp/daemon.py:1303 | High | Every dry-run tick records soak time before check_fresh and the rest of the tick. During a persistent RPC outage, run catches each tick failure and continues polling, so elapsed intervals can satisfy the pre-live soak even though no tick got past the freshness check. | Credit soak only after the required dry-run work succeeds; define and test which failures make an interval ineligible. | Unfixed final dissent (BLIND-G2-LIQUIDITY-1) |
@@ -133,22 +134,24 @@ Counts identify diagnostic findings, not a claim that every row is a distinct ro
 | ['C1', 'S3'] | /Users/mitch/dev/solmargintrader/backtester/core/trianglesim.py:361 | Medium | The parser accepts negative and non-finite displayed sizes. A mocked snapshot with an ask size of -1 produced a cycle with negative 100 USD notional and negative 20 USD P&L. | Reject invalid supplied sizes or reject the affected quote; require finite nonnegative sizes and do not record an execution with nonpositive capacity. | Unfixed final dissent (BLIND-G2-TUI-3) |
 | ['C1', 'S2'] | /Users/mitch/dev/solmargintrader/soltui/pricefeed.py:578 | Medium | When pending snapshots span two UTC day files, the first append succeeds and the second raises OSError. The pending list remains intact, so a retry appends the already-written first-day lines again. A mocked retry produced writes to the first file twice. | Remove or checkpoint each successfully appended day's pending lines before proceeding to the next file, while retaining failed and unwritten lines for retry. Add a two-day partial-failure regression. | Unfixed final dissent (BLIND-G2-TUI-4) |
 
+Two original final-gate findings were closed by already-delivered upstream PR151 during integration: processed-status retention and KILL-before-terminal ordering. Source and seven integration regressions verify this; no third blind gate ran. The remaining13 are retained.
+
 The final gate stops under the code-deep-optimizer 1.16.0 rule: “second dissent exits `BLIND-AUDIT-DISSENT`.” Residuals are listed, not applied. The applicable skill is /Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md.
 
 ## 3. Verify gate
 
 | Command / package | Baseline | Final result | Verdict |
 | --- | --- | --- | --- |
-| cd extension && node --test | 369 (372 after PR146) | 384 pass | PASS |
-| executor/.venv/bin/pytest -q; Ruff lint/format | 202 pass,5 network deselected | 274 pass,5 network deselected; Ruff pass | PASS |
+| cd extension && node --test | 369 (372 after PR146) | 389 integrated Node tests pass | PASS |
+| executor/.venv/bin/pytest -q; Ruff lint/format | 202 pass,5 network deselected | 429 pass,5 network deselected; integrated Ruff lint/format pass | PASS |
 | liquidity offline pytest with socket connections blocked; Ruff lint/format | 473 pass,6 network deselected | 579 pass,6 network deselected; Ruff pass | PASS |
-| backtester full unittest | 909; index becomes stale after workflow records | 941 tests pass; generated index freshness included | PASS |
+| backtester full unittest | 909; index becomes stale after workflow records | Final integration report/index refresh and rerun required | PENDING |
 | Mongo fake-only unittest | 34 run,11 skipped | 46 run,11 skipped | PASS |
-| SolTUI mapped and focused tests | 198 focused pass | 269 mapped tests pass; additional focused checks pass (overlapping counts) | PASS |
-| real Chrome + production native host in fresh isolated profile | 24/24 loading/dry-run checks | 25/25 pass; version0.4.3 and9 loaded source hashes match; owner profiles unchanged | PASS |
+| SolTUI mapped and focused tests | 198 focused pass | 89 integration-focused pass; final mapped gate still running | PENDING |
+| real Chrome + production native host in fresh isolated profile | 24/24 loading/dry-run checks | 26/26 integrated checks pass; version0.5.1 and12 source hashes match; SignalDesk behavior checked | PASS |
 | offline 8-tick dryrun | closed net $0.3492 | closed net $0.3492; 1 closed round trip, no unknown fee | PASS |
 | node tools/verify-endpoints.js | read-only reachability | keyless price and auth route reachable; keyed price skipped without API key | PASS (limited) |
-| scripts/check_docs.py; offline index freshness | 2515 test census (2526 after PR146) | 2635 census agrees; offline index freshness passed | PASS |
+| scripts/check_docs.py; offline index freshness | 2515 test census (2526 after PR146) | Final integration report/index refresh and rerun required | PENDING |
 
 All required check processes must finish successfully before commit. A running process, expected index failure or queued CI is not a pass. Full optional SolTUI tests and live orders were not run.
 
@@ -162,13 +165,13 @@ All required check processes must finish successfully before commit. A running p
 
 ## 5. Per-file diff preview
 
-Each preview is capped at 12 patch lines. The merged Git diff is the complete change; these previews are intentionally truncated. Concurrent PRs 148–150 are preserved and excluded from the task diff.
+Each preview is capped at 12 patch lines. The merged Git diff is the complete change; these previews are intentionally truncated. Delivered PRs148–152 are preserved and excluded from the task diff. Post-audit integration changed some reviewed source; their before/after hashes are explicit in the scope JSON and affected checks were rerun.
 
 ### /Users/mitch/dev/solmargintrader/.github/copilot-instructions.md
 
 ```diff
 diff --git a/.github/copilot-instructions.md b/.github/copilot-instructions.md
-index e45e520..38c2676 100644
+index 3087d76..d1a25bc 100644
 --- a/.github/copilot-instructions.md
 +++ b/.github/copilot-instructions.md
 @@ -57,10 +57,10 @@ ## Non-negotiables — backtester
@@ -176,9 +179,9 @@ index e45e520..38c2676 100644
 
  ```bash
 -python3 -m unittest discover -s backtester/tests -t .   # 909 tests
--python3 -m unittest discover -s soltui/tests -t .       # 1214 tests (~840s, optional)
+-python3 -m unittest discover -s soltui/tests -t .       # 1221 tests (~840s, optional)
 -python3 -m unittest discover -s mongo/tests -t .        # 34 tests
--cd extension && npm test                                # 372 tests
+-cd extension && npm test                                # 377 tests
 ```
 7 further patch lines omitted.
 
@@ -186,7 +189,7 @@ index e45e520..38c2676 100644
 
 ```diff
 diff --git a/CLAUDE.md b/CLAUDE.md
-index 041b550..bcc327f 100644
+index 7a87117..0cc1df0 100644
 --- a/CLAUDE.md
 +++ b/CLAUDE.md
 @@ -114,10 +114,10 @@ ## Non-negotiables — backtester
@@ -194,9 +197,9 @@ index 041b550..bcc327f 100644
 
  ```bash
 -python3 -m unittest discover -s backtester/tests -t .   # 909 tests
--python3 -m unittest discover -s soltui/tests -t .       # 1214 tests (~840s, optional)
+-python3 -m unittest discover -s soltui/tests -t .       # 1221 tests (~840s, optional)
 -python3 -m unittest discover -s mongo/tests -t .        # 34 tests
--cd extension && npm test                                # 372 tests
+-cd extension && npm test                                # 377 tests
 ```
 19 further patch lines omitted.
 
@@ -204,7 +207,7 @@ index 041b550..bcc327f 100644
 
 ```diff
 diff --git a/GEMINI.md b/GEMINI.md
-index f56808d..b0927af 100644
+index b5b9cd5..7953fe4 100644
 --- a/GEMINI.md
 +++ b/GEMINI.md
 @@ -37,10 +37,10 @@ ## The rules most often broken here
@@ -212,9 +215,9 @@ index f56808d..b0927af 100644
 
  ```bash
 -python3 -m unittest discover -s backtester/tests -t .   # 909 tests
--python3 -m unittest discover -s soltui/tests -t .       # 1214 tests (~840s, optional)
+-python3 -m unittest discover -s soltui/tests -t .       # 1221 tests (~840s, optional)
 -python3 -m unittest discover -s mongo/tests -t .        # 34 tests
--cd extension && npm test                                # 372 tests
+-cd extension && npm test                                # 377 tests
 ```
 7 further patch lines omitted.
 
@@ -222,15 +225,15 @@ index f56808d..b0927af 100644
 
 ```diff
 diff --git a/README.md b/README.md
-index 969bbb9..f19ddac 100644
+index d839483..c2a1734 100644
 --- a/README.md
 +++ b/README.md
 @@ -33,7 +33,7 @@ # Backtester — fetch once, then simulate offline
 
  # Extension — no install step, no dependencies
  cd extension
--npm test                                               # 372 tests
-+npm test                                               # 384 tests
+-npm test                                               # 377 tests
++npm test                                               # 389 tests
  node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
  node tools/cli.js                                      # every available command
 ```
@@ -474,7 +477,7 @@ index b2a84af..66115d7 100644
 
 ```diff
 diff --git a/docs/API.md b/docs/API.md
-index b494068..1e6cb2d 100644
+index 228f08b..8f966bd 100644
 --- a/docs/API.md
 +++ b/docs/API.md
 @@ -11,6 +11,11 @@ # API and CLI reference
@@ -510,15 +513,15 @@ index c1842df..df50f12 100644
 
 ```diff
 diff --git a/docs/DEVELOPMENT.md b/docs/DEVELOPMENT.md
-index e8c2e98..f53b11d 100644
+index d4d0f54..56413ee 100644
 --- a/docs/DEVELOPMENT.md
 +++ b/docs/DEVELOPMENT.md
 @@ -66,7 +66,7 @@ ### Extension
 
  ```bash
  cd extension
--npm test                                              # 372 tests
-+npm test                                              # 384 tests
+-npm test                                              # 377 tests
++npm test                                              # 389 tests
  node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # the integration gate
  node tools/cli.js                                     # lists every command in the registry
 ```
@@ -528,7 +531,7 @@ index e8c2e98..f53b11d 100644
 
 ```diff
 diff --git a/docs/TESTING.md b/docs/TESTING.md
-index 330521e..cd829f0 100644
+index 832f801..8bae03b 100644
 --- a/docs/TESTING.md
 +++ b/docs/TESTING.md
 @@ -1,10 +1,10 @@
@@ -536,9 +539,9 @@ index 330521e..cd829f0 100644
 
  ```bash
 -python3 -m unittest discover -s backtester/tests -t .   # 909 tests
--python3 -m unittest discover -s soltui/tests -t .       # 1214 tests (~840s, optional)
+-python3 -m unittest discover -s soltui/tests -t .       # 1221 tests (~840s, optional)
 -python3 -m unittest discover -s mongo/tests -t .        # 34 tests
--cd extension && npm test                                # 372 tests
+-cd extension && npm test                                # 377 tests
 ```
 51 further patch lines omitted.
 
@@ -600,46 +603,45 @@ index 9c858ea..f8cc5c5 100644
 
 ```diff
 diff --git a/executor/src/executor/engine.py b/executor/src/executor/engine.py
-index 034cdcf..c021b36 100644
+index 1d98cb2..6fa6206 100644
 --- a/executor/src/executor/engine.py
 +++ b/executor/src/executor/engine.py
-@@ -20,7 +20,7 @@
- import os
+@@ -21,7 +21,7 @@
  import time
  import uuid
+ from contextlib import suppress
 -from decimal import Decimal
 +from decimal import Decimal, InvalidOperation
  from pathlib import Path
  from typing import Any
 ```
-171 further patch lines omitted.
+135 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/executor/src/executor/gates.py
 
 ```diff
 diff --git a/executor/src/executor/gates.py b/executor/src/executor/gates.py
-index 43e0f36..cf35cce 100644
+index cf4f8f8..b0a1b15 100644
 --- a/executor/src/executor/gates.py
 +++ b/executor/src/executor/gates.py
-@@ -14,10 +14,13 @@
-
- from __future__ import annotations
-
-+import fcntl
- import json
-+import math
- import os
+@@ -49,6 +49,7 @@ def _atomic_write(path: Path, doc: Any) -> None:
+             json.dump(doc, fh, indent=2, sort_keys=True, allow_nan=False)
+             fh.flush()
+             os.fsync(fh.fileno())
++        os.chmod(tmp, 0o600)
+         os.replace(tmp, path)
+         # A recorded failure must remain the latest evidence after a power loss too.
+         _sync_directory(path.parent)
 ```
-163 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/executor/src/executor/journal.py
 
 ```diff
 diff --git a/executor/src/executor/journal.py b/executor/src/executor/journal.py
-index e4e40ea..22f5a8b 100644
+index 1993013..8844a55 100644
 --- a/executor/src/executor/journal.py
 +++ b/executor/src/executor/journal.py
-@@ -21,6 +21,7 @@
+@@ -22,6 +22,7 @@
  import os
  import time
  from collections.abc import Iterator
@@ -648,7 +650,7 @@ index e4e40ea..22f5a8b 100644
  from typing import Any
 
 ```
-45 further patch lines omitted.
+49 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/executor/src/executor/jupiter_route.py
 
@@ -667,24 +669,6 @@ index 0000000..99d0ee7
 +
 ```
 202 further patch lines omitted.
-
-### /Users/mitch/dev/solmargintrader/executor/src/executor/ledger.py
-
-```diff
-diff --git a/executor/src/executor/ledger.py b/executor/src/executor/ledger.py
-index dd8ea07..d3e61a3 100644
---- a/executor/src/executor/ledger.py
-+++ b/executor/src/executor/ledger.py
-@@ -1,6 +1,6 @@
- """Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day.
-
--Only confirmed, on-chain outcomes count. The quote asset is always USDC, so cost and proceeds are exact USDC amounts
-+Only confirmed swaps affect positions. Confirmed swaps and measured failed-transaction fees affect P&L. The quote asset is always USDC, so cost and proceeds are exact USDC amounts
- taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
-
- A position is long or flat: `qty_raw` never goes below zero, and a sell larger than the open quantity is refused by
-```
-22 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/executor/src/executor/quote.py
 
@@ -708,19 +692,19 @@ index 039c6aa..617ea0d 100644
 
 ```diff
 diff --git a/executor/src/executor/rails.py b/executor/src/executor/rails.py
-index 8559737..59e3ad6 100644
+index 8559737..5d6a38f 100644
 --- a/executor/src/executor/rails.py
 +++ b/executor/src/executor/rails.py
-@@ -121,7 +121,7 @@ def check_trade(
-
-     # -- native SOL reserve (pre-check; the verifier re-checks against the simulated post-state) ----------
-     needed = report.quote.in_raw if report.token_in.mint == WSOL_MINT else 0
--    if native_lamports - needed < r.min_sol_reserve_lamports:
-+    if report.token_out.mint != WSOL_MINT and native_lamports - needed < r.min_sol_reserve_lamports:
-         problems.append(
-             f"native SOL {native_lamports} lamports minus the input {needed} would fall below "
+@@ -19,7 +19,7 @@
+ from . import gates, ledger
+ from .config import VALIDATION_MAX_DAILY_USD, VALIDATION_MAX_TRADE_USD, VALIDATION_STRATEGY, Config
+ from .errors import Refused
+-from .journal import Journal
++from .journal import TERMINAL, Journal, failed_accounting_missing
+ from .quote import QuoteReport
+ from .tokens import QUOTE_MINT, WSOL_MINT, raw_to_ui
 ```
-1 further patch lines omitted.
+31 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/executor/src/executor/rpc.py
 
@@ -812,15 +796,51 @@ index e7a3d52..9cdb743 100644
 ```
 17 further patch lines omitted.
 
+### /Users/mitch/dev/solmargintrader/executor/tests/test_engine_integrity.py
+
+```diff
+diff --git a/executor/tests/test_engine_integrity.py b/executor/tests/test_engine_integrity.py
+index 7812639..0ff53c9 100644
+--- a/executor/tests/test_engine_integrity.py
++++ b/executor/tests/test_engine_integrity.py
+@@ -37,6 +37,7 @@ def test_processed_error_remains_unknown_until_confirmed(cfg, chain, owner):
+     chain.default_status = {"confirmationStatus": "processed", "err": {"InstructionError": [0, "failure"]}}
+     assert engine.reconcile()["still_blocking"] == 1
+     chain.default_status["confirmationStatus"] = "confirmed"
++    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
+     assert engine.reconcile()["results"][0]["outcome"] == "failed_on_chain"
+
+
+```
+13 further patch lines omitted.
+
+### /Users/mitch/dev/solmargintrader/executor/tests/test_failed_fees.py
+
+```diff
+diff --git a/executor/tests/test_failed_fees.py b/executor/tests/test_failed_fees.py
+index 96e05e8..e572b90 100644
+--- a/executor/tests/test_failed_fees.py
++++ b/executor/tests/test_failed_fees.py
+@@ -23,7 +23,9 @@
+ def failed_attempt(journal, *, strategy="regular", fee="1.25", ts=NOW, iid="failed"):
+     journal.append("intent", iid, ts=ts, strategy=strategy, side="buy", base_mint=WSOL_MINT, in_usd="1")
+     journal.append("sending", iid, ts=ts, signature=f"sig-{iid}")
+-    fields = {} if fee is MISSING else {"fee_usd": fee}
++    fields = {"fee_lamports": FEE}
++    if fee is not MISSING:
++        fields["fee_usd"] = fee
+```
+27 further patch lines omitted.
+
 ### /Users/mitch/dev/solmargintrader/executor/tests/test_optimizer_regressions.py
 
 ```diff
 diff --git a/executor/tests/test_optimizer_regressions.py b/executor/tests/test_optimizer_regressions.py
 new file mode 100644
-index 0000000..81a1127
+index 0000000..0314598
 --- /dev/null
 +++ b/executor/tests/test_optimizer_regressions.py
-@@ -0,0 +1,578 @@
+@@ -0,0 +1,696 @@
 +"""Offline regression coverage for reviewed safety boundaries."""
 +
 +import copy
@@ -828,7 +848,7 @@ index 0000000..81a1127
 +import os
 +import stat
 ```
-572 further patch lines omitted.
+690 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/executor/tests/test_txverify.py
 
@@ -852,19 +872,19 @@ index 5a001e8..af908ba 100644
 
 ```diff
 diff --git a/extension/README.md b/extension/README.md
-index 20672f8..f8a95c9 100644
+index d3961f6..ec0f342 100644
 --- a/extension/README.md
 +++ b/extension/README.md
-@@ -7,13 +7,14 @@ # SolMarginTrader
+@@ -7,7 +7,7 @@ # SolMarginTrader
  change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
  which is why 0.3.0 moved it off the front page.
 
--## Dashboard workspace (0.4.2)
-+## Dashboard workspace (0.4.3)
+-## Signal Desk workspace (0.5.0)
++## Signal Desk workspace (0.5.1)
 
- The dashboard now exposes the complete installed SolTUI registry in workspaces for Now, Signal,
+ The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or
 ```
-19 further patch lines omitted.
+23 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/extension/e2e/lib/dashboard-workspace.mjs
 
@@ -888,16 +908,16 @@ index f1ccde4..28a7415 100644
 
 ```diff
 diff --git a/extension/manifest.json b/extension/manifest.json
-index 7309b6e..c983d47 100644
+index 20320b2..476c955 100644
 --- a/extension/manifest.json
 +++ b/extension/manifest.json
 @@ -1,7 +1,7 @@
  {
    "manifest_version": 3,
    "name": "SolMarginTrader",
--  "version": "0.4.2",
-+  "version": "0.4.3",
-   "description": "SolTUI dashboard workspace: signals, backtests, bots, experiments, wallets, reviewed orders and document editing; experimental grid disarmed and dry-run by default.",
+-  "version": "0.5.0",
++  "version": "0.5.1",
+   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
    "minimum_chrome_version": "120",
 ```
 1 further patch lines omitted.
@@ -906,17 +926,17 @@ index 7309b6e..c983d47 100644
 
 ```diff
 diff --git a/extension/package.json b/extension/package.json
-index 7ddc923..d1cb09c 100644
+index 31dce2c..119763f 100644
 --- a/extension/package.json
 +++ b/extension/package.json
 @@ -1,6 +1,6 @@
  {
    "name": "solmargintrader",
--  "version": "0.4.2",
-+  "version": "0.4.3",
+-  "version": "0.5.0",
++  "version": "0.5.1",
    "private": true,
    "type": "module",
-   "description": "SolTUI dashboard workspace: signals, backtests, bots, experiments, wallets, reviewed orders and document editing; experimental grid disarmed and dry-run by default.",
+   "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
 ```
 
 ### /Users/mitch/dev/solmargintrader/extension/src/bg/paper-venue.js
@@ -1049,10 +1069,10 @@ index 3d3ce59..b967142 100644
 
 ```diff
 diff --git a/extension/src/ui/soltui-panel.js b/extension/src/ui/soltui-panel.js
-index 1604c03..3e92701 100644
+index 10ed146..e3dd426 100644
 --- a/extension/src/ui/soltui-panel.js
 +++ b/extension/src/ui/soltui-panel.js
-@@ -185,6 +185,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
+@@ -188,6 +188,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
    let runButton = null;
    let editor = null;
    let editorBase = null;
@@ -1067,7 +1087,7 @@ index 1604c03..3e92701 100644
 
 ```diff
 diff --git a/extension/src/ui/workspace-model.js b/extension/src/ui/workspace-model.js
-index da6a9f9..708f356 100644
+index ed3cfa3..3fd796e 100644
 --- a/extension/src/ui/workspace-model.js
 +++ b/extension/src/ui/workspace-model.js
 @@ -1,3 +1,5 @@
@@ -1076,7 +1096,7 @@ index da6a9f9..708f356 100644
  /** Registry-derived navigation and result adapters shared by the dashboard and tests. */
  export const WORKSPACES = [
    { id: 'now', title: 'Now', detail: 'Processes, prices, current recommendations and saved results.', tools: ['prices.status', 'backtest.status', 'queue.progress', 'forwardtest.state', 'compound.autopilot_status', 'bots.schedule_status', 'portfolio.last'] },
-@@ -36,9 +38,7 @@ export function columnsFor(rows) {
+@@ -37,9 +39,7 @@ export function columnsFor(rows) {
  export function rowsToCsv(rows) {
 ```
 9 further patch lines omitted.
@@ -1121,15 +1141,15 @@ index c4ec9c0..b683901 100644
 
 ```diff
 diff --git a/extension/test/wallet-pubkey.test.js b/extension/test/wallet-pubkey.test.js
-index 46e8e6b..3be52fb 100644
+index ff869bc..adda7ea 100644
 --- a/extension/test/wallet-pubkey.test.js
 +++ b/extension/test/wallet-pubkey.test.js
 @@ -125,9 +125,9 @@ test('the dashboard has the button, loads the module, and the module uses textCo
    assert.ok(!/wallet\.private|solana\.private|xpub/i.test(code.replace(/the extension|never an extended/g, '')), 'no key material handling');
  });
 
--test('the manifest and package agree on the version (0.4.2, the dashboard workspace)', async () => {
-+test('the manifest and package agree on the version (0.4.3, the dashboard workspace)', async () => {
+-test('the manifest and package agree on the version (0.5.0, Signal Desk)', async () => {
++test('the manifest and package agree on the version (0.5.1, Signal Desk)', async () => {
    const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'));
    const pkg = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8'));
 ```
@@ -1157,7 +1177,7 @@ index d5c2b71..236d68c 100644
 
 ```diff
 diff --git a/extension/tools/e2e.mjs b/extension/tools/e2e.mjs
-index 829208b..1acd675 100644
+index ebb0324..cc0ebad 100644
 --- a/extension/tools/e2e.mjs
 +++ b/extension/tools/e2e.mjs
 @@ -26,6 +26,7 @@
@@ -1169,7 +1189,7 @@ index 829208b..1acd675 100644
  import { findChromeForTesting, launch } from '../e2e/lib/cdp.mjs';
  import { execFile } from 'node:child_process';
 ```
-21 further patch lines omitted.
+22 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/src/aero_lp/cli.py
 
@@ -1444,19 +1464,19 @@ index 960b0dd..cc61ce3 100644
 
 ```diff
 diff --git a/memory.md b/memory.md
-index 82b4267..d7109cc 100644
+index 95f3e94..f8c2344 100644
 --- a/memory.md
 +++ b/memory.md
-@@ -1,7 +1,71 @@
+@@ -1,7 +1,77 @@
  # Work continuation
 
--Version: 245
--Delta: v244 to v245; preserve concurrent histories and approved reflection delivery.
-+Version: 254
-+Delta: v253 to v254; completed verification before final delivery.
+-Version: 256
+-Delta: v255 to v256; preserve concurrent executor and Signal Desk histories and integration checkpoint.
++Version: 266
++Delta: v265 to v266; preserve all upstream and optimizer workflow histories.
 +
 ```
-66 further patch lines omitted.
+72 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/mongo/README.md
 
@@ -1534,16 +1554,16 @@ index 0000000..0608b19
 
 ```diff
 diff --git a/prompts.md b/prompts.md
-index 725540c..a4c7b14 100644
+index eb7ef64..b66f9da 100644
 --- a/prompts.md
 +++ b/prompts.md
 @@ -1,7 +1,13 @@
  # Prompt history
 
--Version: 134
--Delta: v133 to v134; preserve concurrent histories and approved reflection delivery.
-+Version: 135
-+Delta: v134 to v135; preserve concurrent histories and current optimizer continuation.
+-Version: 136
+-Delta: v135 to v136; preserve repository review and approved Signal Desk implementation requests.
++Version: 137
++Delta: v136 to v137; preserve all upstream and optimizer workflow histories.
 +
 ```
 8 further patch lines omitted.
@@ -1696,7 +1716,7 @@ index f8c1c2c..4a38d13 100644
 
 ```diff
 diff --git a/soltui/commands.py b/soltui/commands.py
-index aaba3da..ad75680 100644
+index c22bafa..b920629 100644
 --- a/soltui/commands.py
 +++ b/soltui/commands.py
 @@ -746,19 +746,22 @@ def _forward_runner(rt: "Runtime") -> None:
@@ -2072,7 +2092,7 @@ index ac1f512..95b7cf0 100644
 
 ## 6. Blind re-audit
 
-Gate1 corroborated20 additional defects; one further remediation iteration repaired them. Repair-time checks closed2 related defects. Final gate2 corroborated15 residuals (9 High,6 Medium), which remain listed under the explicit second-dissent stop rule. One uncorroborated trend-exit reinterpretation was rejected. Several final reviewers disclosed partial per-file coverage; the initial50 primary reviews remain fully recorded.
+The original gate2 retained15 corroborated findings. Already-delivered PR151 closed2 during source integration, leaving13. Integration is covered by source preservation checks,429 executor tests and application acceptance; it is not a third blind optimization gate. Some final-gate file coverage was partial.
 One suggested backtester trend-exit finding was rejected: the documented filter constrains entry calls, not held positions. Changing that policy would invent behavior. Raw reviewer packets and the source-based triage are preserved.
 
 Fresh contexts received final source and the pass rubric without author findings or diffs. The native agent API reached its thread limit; the final gate used ephemeral read-only Codex CLI contexts. Their JSON and process exit receipts are under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo. A non-clean exit has no CLEAN-gate claim.
@@ -2087,7 +2107,7 @@ N/A — `--implement-features` was not requested. Changes repair corroborated de
 
 ## 9. Summary
 
-2 iterations · 18 active passes · profile: standard · Final C/H/M/L: 0/9/6/0 · Verify: PASS · Status: BLIND-AUDIT-DISSENT
+2 iterations · 18 active passes · profile: standard · Final C/H/M/L: 0/7/6/0 · Verify: PENDING · Status: BLIND-AUDIT-DISSENT
 
 ## 10. Snapshot and rollback
 
@@ -2112,3 +2132,4 @@ memory-central: 2 lessons · 10 conventions consulted. Prior audit status and sa
 - Mongo integration cases require a database and remain skipped locally; CI provides an ephemeral MongoDB server.
 - A preliminary liquidity suite unexpectedly performed one public eth_chainId read. The pre-gate Engine construction is now fixed; the final579 tests passed with socket connections blocked.
 - Stele writes are queued locally; no server acknowledgment was available.
+- Post-audit integration of already-delivered executor integrity and SignalDesk changes altered some reviewed sources; the scope JSON preserves audit-candidate and integrated hashes. Integration verification is separate from a fresh blind audit.

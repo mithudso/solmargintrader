@@ -70,7 +70,7 @@ function show() {
   const name = current();
   for (const section of document.querySelectorAll('[data-view]')) section.hidden = section.dataset.view !== name;
   for (const link of document.querySelectorAll('.nav-link')) {
-    if (link.getAttribute('href') === location.hash || (link.getAttribute('href') === '#soltui/now' && (!location.hash || location.hash === '#soltui'))) link.setAttribute('aria-current', 'page');
+    if (link.getAttribute('href') === location.hash || (link.getAttribute('href') === '#soltui/signal' && (!location.hash || location.hash === '#soltui'))) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
 
@@ -189,5 +189,5 @@ refreshGrid().then(async () => {
   $('#banner').className = 'banner danger';
 });
 
-window.addEventListener('hashchange', show);
+window.addEventListener('hashchange', () => { show(); const heading = document.querySelector('[data-view]:not([hidden]) h1'); if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); } });
 loadOverview().catch(() => null).finally(show);

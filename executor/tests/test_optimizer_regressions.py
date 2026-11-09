@@ -171,9 +171,12 @@ def test_journal_short_write(tmp_path, monkeypatch):
 
 
 def test_journal_zero_write(tmp_path, monkeypatch):
+    journal = Journal(tmp_path / "j.jsonl")
+    journal.append("intent", "s")
     monkeypatch.setattr(os, "write", lambda *_: 0)
-    with pytest.raises(OSError, match="write|progress"):
-        Journal(tmp_path / "j.jsonl").append("sending", "s", signature="synthetic")
+    with pytest.raises(ExecutorError, match="write|progress"):
+        journal.append("sending", "s", signature="synthetic")
+    assert journal.states()["s"]["state"] == "intent"
 
 
 def test_replenishing_buy(tmp_path):
@@ -576,3 +579,118 @@ def test_serialized_route_uses_consumed_schema_for_economic_fields(shared):
         assert info["jupiter_route"]["minimum_out"] >= 896_771
         weak = _route_payload(shared=shared, step=variant + b"\x64\x00\x01", quoted=1, slippage=0)
         assert _recorded_route_check(weak)[0]
+
+
+@pytest.mark.parametrize("via_reconcile", [False, True])
+def test_integrated_auto_kill_precedes_terminal_result(cfg, chain, owner, monkeypatch, via_reconcile):
+    engine = live_engine(cfg, chain, owner)
+    if via_reconcile:
+        chain.default_status = None
+        with pytest.raises(Ambiguous):
+            swap(engine, live=True, reason="synthetic delayed mismatch")
+    chain.default_status = {"confirmationStatus": "confirmed", "err": None}
+    chain.tx_meta = tx_json(owner, -(AMOUNT + FEE), FEE, {USDC_MINT: (0, 10)})
+    append = engine.journal.append
+    terminal_checks = []
+
+    def guarded_terminal(kind, iid, **fields):
+        if kind in ("result", "reconciled") and fields.get("status") == "confirmed":
+            terminal_checks.append((engine.root / "KILL").is_file())
+        return append(kind, iid, **fields)
+
+    monkeypatch.setattr(engine.journal, "append", guarded_terminal)
+    if via_reconcile:
+        assert engine.reconcile()["results"][0]["post_verify_ok"] is False
+    else:
+        assert swap(engine, live=True, reason="synthetic immediate mismatch")["post_verify_ok"] is False
+    assert terminal_checks == [True]
+    assert engine.journal.unresolved() == []
+    assert len(chain.sent) == 1
+
+
+def test_integrated_reconcile_kill_failure_retains_unresolved_send(cfg, chain, owner, monkeypatch):
+    from pathlib import Path
+
+    engine = live_engine(cfg, chain, owner)
+    chain.default_status = None
+    with pytest.raises(Ambiguous):
+        swap(engine, live=True, reason="synthetic delayed mismatch")
+    chain.default_status = {"confirmationStatus": "confirmed", "err": None}
+    chain.tx_meta = tx_json(owner, -(AMOUNT + FEE), FEE, {USDC_MINT: (0, 10)})
+    write_text = Path.write_text
+
+    def failed_stop(path, *args, **kwargs):
+        if path.name == "KILL":
+            raise OSError("synthetic stop persistence failure")
+        return write_text(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", failed_stop)
+    with pytest.raises(OSError, match="stop persistence"):
+        engine.reconcile()
+    assert engine.journal.unresolved()[0]["state"] == "unknown"
+    with pytest.raises(ExecutorError, match="unresolved"):
+        require_clear(engine.journal)
+    assert len(chain.sent) == 1
+
+
+def _integrated_tracked_exit(engine, *, tracked=True, unknown=False):
+    journal = engine.journal
+    strategy = "tracked"
+    if tracked:
+        journal.append("intent", "prior-buy", strategy=strategy, side="buy", base_mint=WSOL_MINT, in_usd="0.9")
+        journal.append("sending", "prior-buy", signature="buy-signature")
+        journal.append(
+            "result",
+            "prior-buy",
+            status="confirmed",
+            signature="buy-signature",
+            base_raw=AMOUNT,
+            quote_usd="0.9",
+            fee_usd="0",
+        )
+    journal.append("intent", "legacy-fee", strategy=strategy, side="sell", base_mint=WSOL_MINT, in_usd="0.1")
+    journal.append("sending", "legacy-fee", signature="failed-signature")
+    journal.append("result", "legacy-fee", status="failed", signature="failed-signature")
+    if unknown:
+        journal.append("intent", "pending-send", strategy=strategy, side="sell", base_mint=WSOL_MINT, in_usd="0.1")
+        journal.append("sending", "pending-send", signature="unknown-signature")
+        journal.append("unknown", "pending-send", signature="unknown-signature")
+    return journal
+
+
+def test_integrated_engine_allows_only_proven_exit_past_terminal_fee_hold(cfg, chain, owner):
+    engine = live_engine(cfg, chain, owner)
+    journal = _integrated_tracked_exit(engine)
+    (engine.root / "KILL").write_text("synthetic stop")
+    with pytest.raises(ExecutorError, match="unresolved"):
+        require_clear(journal)
+    result = engine.swap(
+        "SOL",
+        "USDC",
+        "0.01",
+        strategy="tracked",
+        live=True,
+        exit_only=True,
+        reason="reduce measured position despite terminal fee-only hold",
+    )
+    assert result["sent"] is True and result["post_verify_ok"] is True
+    assert ledger.positions(journal.states(), "tracked")[WSOL_MINT].qty_raw == 0
+    assert [state["id"] for state in journal.unresolved()] == ["legacy-fee"]
+    with pytest.raises(ExecutorError, match="unresolved"):
+        require_clear(journal)
+    assert len(chain.sent) == 1
+
+
+@pytest.mark.parametrize(
+    "strategy,tracked,unknown", [("tracked", True, True), ("tracked", False, False), ("path-validation", True, False)]
+)
+def test_integrated_fee_exit_exception_never_admits_unknown_or_wallet_sell(
+    cfg, chain, owner, strategy, tracked, unknown
+):
+    engine = live_engine(cfg, chain, owner)
+    _integrated_tracked_exit(engine, tracked=tracked, unknown=unknown)
+    with pytest.raises(Refused, match="unresolved"):
+        engine.swap(
+            "SOL", "USDC", "0.01", strategy=strategy, live=True, exit_only=True, reason="must retain unresolved barrier"
+        )
+    assert chain.sent == []

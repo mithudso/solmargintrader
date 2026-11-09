@@ -7,11 +7,13 @@
     {
       "path": "executor/src/executor/engine.py",
       "bytes": 22773,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-01.json",
       "finding_count": 3,
       "audited_base_sha256": "531f46cdeffb3f74777b141233d38a8131d75ee902521a3626f37556faedb44a",
-      "final_sha256": "e7b63b457e4783c04838fa087d162f33c22ec8b447edf7588bf421ff3194743e"
+      "audit_candidate_sha256": "e7b63b457e4783c04838fa087d162f33c22ec8b447edf7588bf421ff3194743e",
+      "final_sha256": "03f3997a8f0e43c93c2b336e1879ce2f3e4f51d2b401d105157e1c642513eb65",
+      "post_audit_changed": true
     },
     {
       "path": "executor/src/executor/txverify.py",
@@ -20,25 +22,31 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-02.json",
       "finding_count": 1,
       "audited_base_sha256": "60b3b3cf812863f1de108e1c5058364979836b0057eb92e6ecaf5ea432cfd631",
-      "final_sha256": "1b76ccc98a37f8e9151ed1c11f663ec9a91cd967b9ec02cd27a67dae9dd90968"
+      "audit_candidate_sha256": "1b76ccc98a37f8e9151ed1c11f663ec9a91cd967b9ec02cd27a67dae9dd90968",
+      "final_sha256": "1b76ccc98a37f8e9151ed1c11f663ec9a91cd967b9ec02cd27a67dae9dd90968",
+      "post_audit_changed": false
     },
     {
       "path": "executor/src/executor/journal.py",
       "bytes": 4703,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-03.json",
       "finding_count": 1,
       "audited_base_sha256": "ea1651a3ac9ebfcdce742fb057c49a29a37ab4f215abe876cd18fc19561d5d65",
-      "final_sha256": "ff4b455f42995c825f4718c4b7ba742d0a9e8cd879da09fa4503511333b1caf4"
+      "audit_candidate_sha256": "ff4b455f42995c825f4718c4b7ba742d0a9e8cd879da09fa4503511333b1caf4",
+      "final_sha256": "5af6f69dedaf9a9edbf468d63b994a43c66282efa480aed067f0da7b421a1b32",
+      "post_audit_changed": true
     },
     {
       "path": "executor/src/executor/rails.py",
       "bytes": 7808,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-04.json",
       "finding_count": 1,
       "audited_base_sha256": "e1731687ad2f89d5b2ef54d9dda4af6beb53b0516bfc92d8114d6eb6c596c20d",
-      "final_sha256": "dd0c34515d8166deabd1f74e1f94356a3c9017335efc7593be07ebdc99d9f197"
+      "audit_candidate_sha256": "dd0c34515d8166deabd1f74e1f94356a3c9017335efc7593be07ebdc99d9f197",
+      "final_sha256": "e801a51716fd332cf5126d7708fd081c62b8bf8be687bf6fbdae5600e671b5f8",
+      "post_audit_changed": true
     },
     {
       "path": "executor/src/executor/config.py",
@@ -47,7 +55,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-05.json",
       "finding_count": 3,
       "audited_base_sha256": "9102ad548f1b2e27025030331d809986909b4cf7d8020df74f4dec57f9d1ca60",
-      "final_sha256": "c2071ce33b752c1cc4b69bfb17fef55409791c7999f7560b663486d709e0ce48"
+      "audit_candidate_sha256": "c2071ce33b752c1cc4b69bfb17fef55409791c7999f7560b663486d709e0ce48",
+      "final_sha256": "c2071ce33b752c1cc4b69bfb17fef55409791c7999f7560b663486d709e0ce48",
+      "post_audit_changed": false
     },
     {
       "path": "executor/src/executor/quote.py",
@@ -56,7 +66,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-06.json",
       "finding_count": 1,
       "audited_base_sha256": "f45ebdf48be415111c9874ed6cefa3f98ee38ca393b40cf6bf7cdf14e9c3bfb4",
-      "final_sha256": "8faa4beec9cee0898d10b267da2ff7a5a771cf6f8d0d955a581ef543f62883f8"
+      "audit_candidate_sha256": "8faa4beec9cee0898d10b267da2ff7a5a771cf6f8d0d955a581ef543f62883f8",
+      "final_sha256": "8faa4beec9cee0898d10b267da2ff7a5a771cf6f8d0d955a581ef543f62883f8",
+      "post_audit_changed": false
     },
     {
       "path": "executor/src/executor/rpc.py",
@@ -65,25 +77,31 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-07.json",
       "finding_count": 1,
       "audited_base_sha256": "4e1a3fa9fc7b01054dd141202e039f4010fa13b4b9f37865435c4d189af45959",
-      "final_sha256": "b68971ed4a9fdd1ec9672053e406c31e2542ad587020f5bb1050b743d6472c78"
+      "audit_candidate_sha256": "b68971ed4a9fdd1ec9672053e406c31e2542ad587020f5bb1050b743d6472c78",
+      "final_sha256": "b68971ed4a9fdd1ec9672053e406c31e2542ad587020f5bb1050b743d6472c78",
+      "post_audit_changed": false
     },
     {
       "path": "executor/src/executor/gates.py",
       "bytes": 8542,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-08.json",
       "finding_count": 2,
       "audited_base_sha256": "ea53243a0613e397b4e07b1035e33377e444737d247e5097bec25027a3c74a58",
-      "final_sha256": "706c0e97a28abf962abbfe160f5f0bdc1b7951e15a8f1ddbba987290bd07bb28"
+      "audit_candidate_sha256": "706c0e97a28abf962abbfe160f5f0bdc1b7951e15a8f1ddbba987290bd07bb28",
+      "final_sha256": "ae8f1160eadbe205af59d33deb9d825f716eaeab35f0d49ec35935b5d1f0606c",
+      "post_audit_changed": true
     },
     {
       "path": "executor/src/executor/ledger.py",
       "bytes": 4162,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-09.json",
       "finding_count": 0,
       "audited_base_sha256": "b329bacccd9eaf24f8eb6860d5a58f9b59d6f3a0d038d905856bf4994c0cbf88",
-      "final_sha256": "9d7057d6c914e30c7ba2d88e8e8f27ced36f91291a6b6400a46f6af9a9365198"
+      "audit_candidate_sha256": "9d7057d6c914e30c7ba2d88e8e8f27ced36f91291a6b6400a46f6af9a9365198",
+      "final_sha256": "ef6d6613601c9254784ab7463f0a17106f7a2952d321061569d1135b8b774c93",
+      "post_audit_changed": true
     },
     {
       "path": "executor/src/executor/signer.py",
@@ -92,7 +110,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-10.json",
       "finding_count": 1,
       "audited_base_sha256": "1fa16d47c7ea633ae0b25043e50beffac5f4029fb449439f68e15f8f27666ac8",
-      "final_sha256": "f1ceff478edbfa0d6798152181f7c539875a81cd1f45c478c6d110f5cb6108f2"
+      "audit_candidate_sha256": "f1ceff478edbfa0d6798152181f7c539875a81cd1f45c478c6d110f5cb6108f2",
+      "final_sha256": "f1ceff478edbfa0d6798152181f7c539875a81cd1f45c478c6d110f5cb6108f2",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/jupiter_manual.py",
@@ -101,7 +121,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-11.json",
       "finding_count": 6,
       "audited_base_sha256": "068a5bc863596f38fa9407696f6193d6136f4ae8f5e5f7e242daff172cfdc3dc",
-      "final_sha256": "715a0a7d53d04bee9c0b07eb4d6240f9f7af375c5ae02be6152627188a04fa30"
+      "audit_candidate_sha256": "715a0a7d53d04bee9c0b07eb4d6240f9f7af375c5ae02be6152627188a04fa30",
+      "final_sha256": "715a0a7d53d04bee9c0b07eb4d6240f9f7af375c5ae02be6152627188a04fa30",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/coinbase_manual.py",
@@ -110,7 +132,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-12.json",
       "finding_count": 1,
       "audited_base_sha256": "93d90b2eacc7e5ff582234d673dee768647976d3ca6b4c9a6c9befe9ceebab27",
-      "final_sha256": "0780be3411ae71418ab0401c71081bb78e0311a428fc7872f30ec25a4b85defe"
+      "audit_candidate_sha256": "0780be3411ae71418ab0401c71081bb78e0311a428fc7872f30ec25a4b85defe",
+      "final_sha256": "0780be3411ae71418ab0401c71081bb78e0311a428fc7872f30ec25a4b85defe",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/native_host.py",
@@ -119,17 +143,21 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-13.json",
       "finding_count": 2,
       "audited_base_sha256": "0edd7de572d2ae45b432b8710d7e5d151f1e3300aee6f6a8dbbe66a8f79f8728",
-      "final_sha256": "3a4e7ae419dbffdd7df2b19ea3aee7e5253fe1fda0d5390082d0293ff88d3a28"
+      "audit_candidate_sha256": "3a4e7ae419dbffdd7df2b19ea3aee7e5253fe1fda0d5390082d0293ff88d3a28",
+      "final_sha256": "3a4e7ae419dbffdd7df2b19ea3aee7e5253fe1fda0d5390082d0293ff88d3a28",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/commands.py",
       "bytes": 152912,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "preintegration_sha256": "287ea2089b72abd9d91b6fd3ac1f4254ab174abb2b3f1a300dd647466949cc61",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-14.json",
       "finding_count": 1,
       "audited_base_sha256": "b194379d99fba0c226e127ed1b387e46c15f0d4496f8cc8250c66dc6886ab050",
-      "final_sha256": "80540f966ec3d7ffcdf6c30cd34e4f82ba5296f9b71e4c6ff22ebe16bafb20e3"
+      "audit_candidate_sha256": "80540f966ec3d7ffcdf6c30cd34e4f82ba5296f9b71e4c6ff22ebe16bafb20e3",
+      "final_sha256": "d9d1ab9924953bbdf826e8dc9b6ef217243abd0aa47cf2b6250bf7670afadd66",
+      "post_audit_changed": true
     },
     {
       "path": "soltui/simulation.py",
@@ -138,7 +166,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-15.json",
       "finding_count": 0,
       "audited_base_sha256": "7a92a40b07515c6336165a6379eaca829b61b2b58d1a1794b00b01789eb741b4",
-      "final_sha256": "7a92a40b07515c6336165a6379eaca829b61b2b58d1a1794b00b01789eb741b4"
+      "audit_candidate_sha256": "7a92a40b07515c6336165a6379eaca829b61b2b58d1a1794b00b01789eb741b4",
+      "final_sha256": "7a92a40b07515c6336165a6379eaca829b61b2b58d1a1794b00b01789eb741b4",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/forwardtest.py",
@@ -147,7 +177,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-16.json",
       "finding_count": 1,
       "audited_base_sha256": "3e0057c192bc91135311cc8bae6beb9eeb40a30a3cd2d856790d95844557a803",
-      "final_sha256": "b74dd1a4362ded32e73d1c29dd43abb601f2c9347aa76982eff66b048b7b88a3"
+      "audit_candidate_sha256": "b74dd1a4362ded32e73d1c29dd43abb601f2c9347aa76982eff66b048b7b88a3",
+      "final_sha256": "b74dd1a4362ded32e73d1c29dd43abb601f2c9347aa76982eff66b048b7b88a3",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/bots.py",
@@ -156,7 +188,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-17.json",
       "finding_count": 3,
       "audited_base_sha256": "f85439f66e69d7d6dedbc5179541e76a366daf83fa0b5f34e867116e8a4a2b9d",
-      "final_sha256": "1fa4346bde9f4d610aeb2d8cc7c5e574d059a5b19c8782a7d201c097fbaeac38"
+      "audit_candidate_sha256": "1fa4346bde9f4d610aeb2d8cc7c5e574d059a5b19c8782a7d201c097fbaeac38",
+      "final_sha256": "1fa4346bde9f4d610aeb2d8cc7c5e574d059a5b19c8782a7d201c097fbaeac38",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/pricefeed.py",
@@ -166,7 +200,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-18.json",
       "finding_count": 3,
       "audited_base_sha256": "a19e7c0a380985c317d256ebf38cd6f1a3610ed02bd5b279cb5c15772821d617",
-      "final_sha256": "ccef518d3fad640ff4a2429fa71110342150adb9fcdf394baee3a650a693614d"
+      "audit_candidate_sha256": "ccef518d3fad640ff4a2429fa71110342150adb9fcdf394baee3a650a693614d",
+      "final_sha256": "ccef518d3fad640ff4a2429fa71110342150adb9fcdf394baee3a650a693614d",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/experiment_runner.py",
@@ -175,7 +211,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-19.json",
       "finding_count": 1,
       "audited_base_sha256": "df9ac90d60d7267af3255e67390768810286b65fc5be660f28e60db7e1a53d31",
-      "final_sha256": "fe6f3f298c4760b597d661f94e0e980c00172eac0ceaaa0917e2834b2764f294"
+      "audit_candidate_sha256": "fe6f3f298c4760b597d661f94e0e980c00172eac0ceaaa0917e2834b2764f294",
+      "final_sha256": "fe6f3f298c4760b597d661f94e0e980c00172eac0ceaaa0917e2834b2764f294",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/core/engine.js",
@@ -184,7 +222,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-20.json",
       "finding_count": 1,
       "audited_base_sha256": "01f47ee6121b915204e81c47396b9ab3986375c45e24a403218ca58fd49ab834",
-      "final_sha256": "5c7f793948237b1fea3cac2f3f676d2444f7cb4583ce002e2c304f36a56719c3"
+      "audit_candidate_sha256": "5c7f793948237b1fea3cac2f3f676d2444f7cb4583ce002e2c304f36a56719c3",
+      "final_sha256": "5c7f793948237b1fea3cac2f3f676d2444f7cb4583ce002e2c304f36a56719c3",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/core/risk.js",
@@ -193,7 +233,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-21.json",
       "finding_count": 0,
       "audited_base_sha256": "abbcd1f48f738a4bfea79d0ed5fd699c6a518003097bf99a56dc8fb1804cb255",
-      "final_sha256": "abbcd1f48f738a4bfea79d0ed5fd699c6a518003097bf99a56dc8fb1804cb255"
+      "audit_candidate_sha256": "abbcd1f48f738a4bfea79d0ed5fd699c6a518003097bf99a56dc8fb1804cb255",
+      "final_sha256": "abbcd1f48f738a4bfea79d0ed5fd699c6a518003097bf99a56dc8fb1804cb255",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/core/commands.js",
@@ -202,7 +244,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-22.json",
       "finding_count": 1,
       "audited_base_sha256": "2a666fc3dd35b1127f35c168ad56c561fc29a1ebc8c2312266482496b3360804",
-      "final_sha256": "cdb1367a1f7a9ae816b02a38fe014193fce3202703f450c6cb694a56785f59f5"
+      "audit_candidate_sha256": "cdb1367a1f7a9ae816b02a38fe014193fce3202703f450c6cb694a56785f59f5",
+      "final_sha256": "cdb1367a1f7a9ae816b02a38fe014193fce3202703f450c6cb694a56785f59f5",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/core/pnl.js",
@@ -211,7 +255,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-23.json",
       "finding_count": 2,
       "audited_base_sha256": "ee56a5e01c0780fea288195c75884209555c349d6148199e130bbfd4abeacf3c",
-      "final_sha256": "d1f78c859a8bbc0950a243f67c947dd974c3f2a2678e1f0a760ec4b8c985d741"
+      "audit_candidate_sha256": "d1f78c859a8bbc0950a243f67c947dd974c3f2a2678e1f0a760ec4b8c985d741",
+      "final_sha256": "d1f78c859a8bbc0950a243f67c947dd974c3f2a2678e1f0a760ec4b8c985d741",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/venues/triggerVenue.js",
@@ -220,7 +266,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-24.json",
       "finding_count": 0,
       "audited_base_sha256": "5afd20494ddb0d2b6d3fc694230a4d223130ff82fda4d7fa6f6ff42eca624b54",
-      "final_sha256": "5afd20494ddb0d2b6d3fc694230a4d223130ff82fda4d7fa6f6ff42eca624b54"
+      "audit_candidate_sha256": "5afd20494ddb0d2b6d3fc694230a4d223130ff82fda4d7fa6f6ff42eca624b54",
+      "final_sha256": "5afd20494ddb0d2b6d3fc694230a4d223130ff82fda4d7fa6f6ff42eca624b54",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/wallet/solana.js",
@@ -229,7 +277,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-25.json",
       "finding_count": 0,
       "audited_base_sha256": "4897269e757a3708e5ae591b6eb7dc99ff4d9202d00df537ff8dee5f2c20837b",
-      "final_sha256": "4897269e757a3708e5ae591b6eb7dc99ff4d9202d00df537ff8dee5f2c20837b"
+      "audit_candidate_sha256": "4897269e757a3708e5ae591b6eb7dc99ff4d9202d00df537ff8dee5f2c20837b",
+      "final_sha256": "4897269e757a3708e5ae591b6eb7dc99ff4d9202d00df537ff8dee5f2c20837b",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/bg/service-worker.js",
@@ -238,17 +288,21 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-26.json",
       "finding_count": 0,
       "audited_base_sha256": "a2167a671483b0d001fa5d34c3347e103794bea79091ff2bd289ae803ca6d86e",
-      "final_sha256": "3f59476f4d030d6b0cab72f1a8a8f10bf88ed49595c61f5fba7cdd55209046d6"
+      "audit_candidate_sha256": "3f59476f4d030d6b0cab72f1a8a8f10bf88ed49595c61f5fba7cdd55209046d6",
+      "final_sha256": "3f59476f4d030d6b0cab72f1a8a8f10bf88ed49595c61f5fba7cdd55209046d6",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/ui/soltui-panel.js",
       "bytes": 34687,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "preintegration_sha256": "cc2ba6a0e193eeed08a108a50c5716e1ac4fff98499791d2222052389ffd18ac",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-27.json",
       "finding_count": 1,
       "audited_base_sha256": "40ec67ae3fc3765426d74d492a916bc3c5bcb40e8dca19bd5aa4fc83722773b6",
-      "final_sha256": "7e2049020ac022a2f4bfeb627b902a3f349b53ed328d1ca9400572757996cfb6"
+      "audit_candidate_sha256": "7e2049020ac022a2f4bfeb627b902a3f349b53ed328d1ca9400572757996cfb6",
+      "final_sha256": "d73c2a22e76356953d7b4f8a62df1478ea256fbf7356a70254bfc1a960c4fa1f",
+      "post_audit_changed": true
     },
     {
       "path": "extension/tools/api-server.js",
@@ -257,7 +311,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-28.json",
       "finding_count": 2,
       "audited_base_sha256": "5cff19314e27bbe608aebfa29eae10ed6429de3298a9f046d77d1a9dafe686a0",
-      "final_sha256": "903458b4259dcec50e217273b27b3203c7189fd85b332771f987376f1155179d"
+      "audit_candidate_sha256": "903458b4259dcec50e217273b27b3203c7189fd85b332771f987376f1155179d",
+      "final_sha256": "903458b4259dcec50e217273b27b3203c7189fd85b332771f987376f1155179d",
+      "post_audit_changed": false
     },
     {
       "path": "extension/tools/deps.js",
@@ -266,7 +322,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-29.json",
       "finding_count": 0,
       "audited_base_sha256": "ff021f0bd2998afc34d12ce3773437928cd07c8f942aaa7fb17b17bd62c282d0",
-      "final_sha256": "ff021f0bd2998afc34d12ce3773437928cd07c8f942aaa7fb17b17bd62c282d0"
+      "audit_candidate_sha256": "ff021f0bd2998afc34d12ce3773437928cd07c8f942aaa7fb17b17bd62c282d0",
+      "final_sha256": "ff021f0bd2998afc34d12ce3773437928cd07c8f942aaa7fb17b17bd62c282d0",
+      "post_audit_changed": false
     },
     {
       "path": "backtester/core/engine.py",
@@ -275,7 +333,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-30.json",
       "finding_count": 3,
       "audited_base_sha256": "292e2b41fc6e127f00bfec099c16201b969b32dadf683fd6529ee9f8c2a0f78b",
-      "final_sha256": "f89b1a30129628d7d2e936c0274bf16c6e9a3ad36ec69496c5e689f79e798ced"
+      "audit_candidate_sha256": "f89b1a30129628d7d2e936c0274bf16c6e9a3ad36ec69496c5e689f79e798ced",
+      "final_sha256": "f89b1a30129628d7d2e936c0274bf16c6e9a3ad36ec69496c5e689f79e798ced",
+      "post_audit_changed": false
     },
     {
       "path": "backtester/core/types.py",
@@ -284,7 +344,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-31.json",
       "finding_count": 0,
       "audited_base_sha256": "925554b8075f9065fbc73baf136777cb7c3eb2ad3c7eafbf6eb2f4e110155dcd",
-      "final_sha256": "925554b8075f9065fbc73baf136777cb7c3eb2ad3c7eafbf6eb2f4e110155dcd"
+      "audit_candidate_sha256": "925554b8075f9065fbc73baf136777cb7c3eb2ad3c7eafbf6eb2f4e110155dcd",
+      "final_sha256": "925554b8075f9065fbc73baf136777cb7c3eb2ad3c7eafbf6eb2f4e110155dcd",
+      "post_audit_changed": false
     },
     {
       "path": "backtester/core/gridsim.py",
@@ -293,7 +355,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-32.json",
       "finding_count": 1,
       "audited_base_sha256": "ca8ec5691eb705d97f962224a787958ca44a1129895de4e9b07d5555c33c8704",
-      "final_sha256": "589bc643b63e4ab006d86010374504e747d4c16592e5922301885e01d1dc18d9"
+      "audit_candidate_sha256": "589bc643b63e4ab006d86010374504e747d4c16592e5922301885e01d1dc18d9",
+      "final_sha256": "589bc643b63e4ab006d86010374504e747d4c16592e5922301885e01d1dc18d9",
+      "post_audit_changed": false
     },
     {
       "path": "backtester/core/compound.py",
@@ -302,7 +366,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-33.json",
       "finding_count": 1,
       "audited_base_sha256": "d367a28565076bf3f381943c1c1ff435cb7d2a8524ec7c435cab2ad0a37c1f6f",
-      "final_sha256": "375562e6974fcb5248b708b63e1da741a9d015761eebbe6ac227c84b6167f2dd"
+      "audit_candidate_sha256": "375562e6974fcb5248b708b63e1da741a9d015761eebbe6ac227c84b6167f2dd",
+      "final_sha256": "375562e6974fcb5248b708b63e1da741a9d015761eebbe6ac227c84b6167f2dd",
+      "post_audit_changed": false
     },
     {
       "path": "backtester/core/scorecard.py",
@@ -311,7 +377,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-34.json",
       "finding_count": 2,
       "audited_base_sha256": "d4b67701b2070804a9f2b69b25d7bb76c678d32b96275a74883a4b3afe7aed61",
-      "final_sha256": "023a0dc49a9991c256717e693da9d0adcb708146087d2beb7c516edb156de1b3"
+      "audit_candidate_sha256": "023a0dc49a9991c256717e693da9d0adcb708146087d2beb7c516edb156de1b3",
+      "final_sha256": "023a0dc49a9991c256717e693da9d0adcb708146087d2beb7c516edb156de1b3",
+      "post_audit_changed": false
     },
     {
       "path": "backtester/core/fetch_minutes.py",
@@ -320,7 +388,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-35.json",
       "finding_count": 4,
       "audited_base_sha256": "d954bf61824a8670255336a3aaaf4dc7799c76a7de916721efc4d174835624a4",
-      "final_sha256": "66b7760f31a90682e23cb9789838de0ca79a3ad9d21c7d04b3e888a860539763"
+      "audit_candidate_sha256": "66b7760f31a90682e23cb9789838de0ca79a3ad9d21c7d04b3e888a860539763",
+      "final_sha256": "66b7760f31a90682e23cb9789838de0ca79a3ad9d21c7d04b3e888a860539763",
+      "post_audit_changed": false
     },
     {
       "path": "research/decide.py",
@@ -329,7 +399,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-36.json",
       "finding_count": 1,
       "audited_base_sha256": "ad215135f22fe42c4e465692bf3ad8fd597f01e6295c34075f2251f5fdd95aaf",
-      "final_sha256": "968c7f1a03b3f5edee0064938a36df3fa4b9da9d173768015eef19350212e97d"
+      "audit_candidate_sha256": "968c7f1a03b3f5edee0064938a36df3fa4b9da9d173768015eef19350212e97d",
+      "final_sha256": "968c7f1a03b3f5edee0064938a36df3fa4b9da9d173768015eef19350212e97d",
+      "post_audit_changed": false
     },
     {
       "path": "research/sweep.py",
@@ -338,7 +410,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-37.json",
       "finding_count": 3,
       "audited_base_sha256": "44638e373d31cafdc81ac5d338966fd34b774c3951f180df2261a538b48fe123",
-      "final_sha256": "e25ed8cc637ddede64e56de20f596822befb3d9254ab471db3ea3c814f040ed0"
+      "audit_candidate_sha256": "e25ed8cc637ddede64e56de20f596822befb3d9254ab471db3ea3c814f040ed0",
+      "final_sha256": "e25ed8cc637ddede64e56de20f596822befb3d9254ab471db3ea3c814f040ed0",
+      "post_audit_changed": false
     },
     {
       "path": "research/cpcv_sweep.py",
@@ -347,7 +421,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-38.json",
       "finding_count": 2,
       "audited_base_sha256": "e62a8ce58d89c433928f31d9825ec211604f51bc4de5ca29056f8d6f951fff41",
-      "final_sha256": "e34a65b56f8045530f9a5aa5ba5fb6e5e3f523b7099c53f42ab9552e916b5630"
+      "audit_candidate_sha256": "e34a65b56f8045530f9a5aa5ba5fb6e5e3f523b7099c53f42ab9552e916b5630",
+      "final_sha256": "e34a65b56f8045530f9a5aa5ba5fb6e5e3f523b7099c53f42ab9552e916b5630",
+      "post_audit_changed": false
     },
     {
       "path": "mongo/load.py",
@@ -356,7 +432,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-39.json",
       "finding_count": 5,
       "audited_base_sha256": "cfa0c251e001e490e79a603e2f36bc10da1b49432611a97d0a56e192e6c8a0be",
-      "final_sha256": "908a700843a38243d94b01006feb610300796bb7b677bc9271a44e3e5b571b4c"
+      "audit_candidate_sha256": "908a700843a38243d94b01006feb610300796bb7b677bc9271a44e3e5b571b4c",
+      "final_sha256": "908a700843a38243d94b01006feb610300796bb7b677bc9271a44e3e5b571b4c",
+      "post_audit_changed": false
     },
     {
       "path": "mongo/schema.py",
@@ -365,7 +443,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-40.json",
       "finding_count": 1,
       "audited_base_sha256": "a00de46aab1127649f35ce4efd6c28c72708cfbb3c1b80579b9d8dc37cf8b3c7",
-      "final_sha256": "815ad1b1fbfc047cd078a6026a70f445737757c67f9b1384468fb385f63a71fc"
+      "audit_candidate_sha256": "815ad1b1fbfc047cd078a6026a70f445737757c67f9b1384468fb385f63a71fc",
+      "final_sha256": "815ad1b1fbfc047cd078a6026a70f445737757c67f9b1384468fb385f63a71fc",
+      "post_audit_changed": false
     },
     {
       "path": "liquidity/src/aero_lp/engine.py",
@@ -374,7 +454,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-41.json",
       "finding_count": 1,
       "audited_base_sha256": "1fe615cdafbe40c307b5abbbb484ae978b7d0f8ca2b48c692acb6e66cb833542",
-      "final_sha256": "8625c8ff0aa228127d47d2a376fb59fff858e36fc2d62727bd7bf68113ba287a"
+      "audit_candidate_sha256": "8625c8ff0aa228127d47d2a376fb59fff858e36fc2d62727bd7bf68113ba287a",
+      "final_sha256": "8625c8ff0aa228127d47d2a376fb59fff858e36fc2d62727bd7bf68113ba287a",
+      "post_audit_changed": false
     },
     {
       "path": "liquidity/src/aero_lp/executor.py",
@@ -383,7 +465,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-42.json",
       "finding_count": 1,
       "audited_base_sha256": "6480982724e4279c453d80af654181a0274f54a7f51aa66996f1681c88ac832f",
-      "final_sha256": "1bb45fbf4ba7430462dc04069b2bf720d73145f62d9b7cd1d950e4ee2a22af4b"
+      "audit_candidate_sha256": "1bb45fbf4ba7430462dc04069b2bf720d73145f62d9b7cd1d950e4ee2a22af4b",
+      "final_sha256": "1bb45fbf4ba7430462dc04069b2bf720d73145f62d9b7cd1d950e4ee2a22af4b",
+      "post_audit_changed": false
     },
     {
       "path": "liquidity/src/aero_lp/gates.py",
@@ -392,7 +476,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-43.json",
       "finding_count": 2,
       "audited_base_sha256": "5f052c9f1db786fb7ed10e313d0a586de2f209c8161ba214f8ebd296e8a18ecd",
-      "final_sha256": "c99727ad3ef316fde911a24efbae9adaaa7d4f723a35dcf08d8c10a3df617456"
+      "audit_candidate_sha256": "c99727ad3ef316fde911a24efbae9adaaa7d4f723a35dcf08d8c10a3df617456",
+      "final_sha256": "c99727ad3ef316fde911a24efbae9adaaa7d4f723a35dcf08d8c10a3df617456",
+      "post_audit_changed": false
     },
     {
       "path": "liquidity/src/aero_lp/submissions.py",
@@ -401,7 +487,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-44.json",
       "finding_count": 1,
       "audited_base_sha256": "d2c49c583a7311dd87953246de83cc32e0d030b9fc896b580d2cd4aa09f9e968",
-      "final_sha256": "b9d60141d1f1717baa75a96ca966f21d4c0a6c0dc3cdaf82433530bee772f0f8"
+      "audit_candidate_sha256": "b9d60141d1f1717baa75a96ca966f21d4c0a6c0dc3cdaf82433530bee772f0f8",
+      "final_sha256": "b9d60141d1f1717baa75a96ca966f21d4c0a6c0dc3cdaf82433530bee772f0f8",
+      "post_audit_changed": false
     },
     {
       "path": "liquidity/src/aero_lp/recovery.py",
@@ -410,7 +498,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-45.json",
       "finding_count": 2,
       "audited_base_sha256": "fb809a209272e3e5e30956d6a54cf69aabacc249830ea94742bfc0b2ffa032e4",
-      "final_sha256": "f41b22eea470f0c0f6c257a909894ce37531f052851ff041d4db2193aa836b23"
+      "audit_candidate_sha256": "f41b22eea470f0c0f6c257a909894ce37531f052851ff041d4db2193aa836b23",
+      "final_sha256": "f41b22eea470f0c0f6c257a909894ce37531f052851ff041d4db2193aa836b23",
+      "post_audit_changed": false
     },
     {
       "path": "liquidity/src/aero_lp/config.py",
@@ -419,7 +509,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-46.json",
       "finding_count": 1,
       "audited_base_sha256": "be9940fcf481b59ff3757a8e97649fdfbf9702524f6e176235d4f050b3963187",
-      "final_sha256": "be9940fcf481b59ff3757a8e97649fdfbf9702524f6e176235d4f050b3963187"
+      "audit_candidate_sha256": "be9940fcf481b59ff3757a8e97649fdfbf9702524f6e176235d4f050b3963187",
+      "final_sha256": "be9940fcf481b59ff3757a8e97649fdfbf9702524f6e176235d4f050b3963187",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/native_host_install.py",
@@ -428,7 +520,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-47.json",
       "finding_count": 1,
       "audited_base_sha256": "c87aa6e7903095c8466623dd876d8c9ffc048443e2202e43a936d5569926a493",
-      "final_sha256": "67d8ef49f657ed23597b37abb8ba73494372d09bbc7a8af1fa4922362b28cd85"
+      "audit_candidate_sha256": "67d8ef49f657ed23597b37abb8ba73494372d09bbc7a8af1fa4922362b28cd85",
+      "final_sha256": "67d8ef49f657ed23597b37abb8ba73494372d09bbc7a8af1fa4922362b28cd85",
+      "post_audit_changed": false
     },
     {
       "path": "soltui/config.py",
@@ -438,7 +532,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-48.json",
       "finding_count": 4,
       "audited_base_sha256": "78e5a6f19aae753b8ee3df32b56652cee6a9ece7ca495179cc6d89c29841343e",
-      "final_sha256": "c5097572999607c167126a9a820276d748c7da008b2ac4c2cf9701b834373090"
+      "audit_candidate_sha256": "c5097572999607c167126a9a820276d748c7da008b2ac4c2cf9701b834373090",
+      "final_sha256": "c5097572999607c167126a9a820276d748c7da008b2ac4c2cf9701b834373090",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/wallet/signer.js",
@@ -447,7 +543,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-49.json",
       "finding_count": 0,
       "audited_base_sha256": "1690ad5b247b8025c2d525285bdb386a0ac9beddbf80141feeb0cae7feb5128b",
-      "final_sha256": "1690ad5b247b8025c2d525285bdb386a0ac9beddbf80141feeb0cae7feb5128b"
+      "audit_candidate_sha256": "1690ad5b247b8025c2d525285bdb386a0ac9beddbf80141feeb0cae7feb5128b",
+      "final_sha256": "1690ad5b247b8025c2d525285bdb386a0ac9beddbf80141feeb0cae7feb5128b",
+      "post_audit_changed": false
     },
     {
       "path": "extension/src/bg/soltui-transport.js",
@@ -456,7 +554,9 @@
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-50.json",
       "finding_count": 1,
       "audited_base_sha256": "7834deaf5fae41a26af0784d21d7183d84c3295f50fd1f3d11b34727ba27970c",
-      "final_sha256": "463d8eaf3cd7bdc93d00fa1b7ea4df55323217575773fc0f2dc0f0259f6f0d5c"
+      "audit_candidate_sha256": "463d8eaf3cd7bdc93d00fa1b7ea4df55323217575773fc0f2dc0f0259f6f0d5c",
+      "final_sha256": "463d8eaf3cd7bdc93d00fa1b7ea4df55323217575773fc0f2dc0f0259f6f0d5c",
+      "post_audit_changed": false
     }
   ],
   "remainder": [
@@ -675,7 +775,7 @@
   "delta": "Final-source hashes and exact audit boundary; no repository-wide cleanliness claim",
   "selection_policy": "Tracked non-vendored production sources only; 50 risk-ranked files. Test files read as dependencies and exercised, not independently exhausted.",
   "baseline_base": "dec4b5a",
-  "integrated_default_base": "6212fd81e5c33e9124a762a96efbc4662ee1ca3b",
+  "integrated_default_base": "f1e8efaab6063149a6868c7fc505bc26164824d1",
   "supplementary_changed_paths": [
     ".github/copilot-instructions.md",
     "CLAUDE.md",
@@ -700,6 +800,8 @@
     "executor/src/executor/jupiter_route.py",
     "executor/tests/conftest.py",
     "executor/tests/test_engine.py",
+    "executor/tests/test_engine_integrity.py",
+    "executor/tests/test_failed_fees.py",
     "executor/tests/test_optimizer_regressions.py",
     "executor/tests/test_txverify.py",
     "extension/README.md",
@@ -761,30 +863,6 @@
       "impact": "The documented reduce-only exit exception permits a live validation sell of untracked wallet funds while the kill switch is active, subject to the validation notional caps.",
       "correction": "Require every exit, including path-validation, to sell no more than its tracked position before granting exit exemptions.",
       "id": "BLIND-G2-EXECUTOR-1",
-      "receipt": "blind-g2-executor.json"
-    },
-    {
-      "severity": "High",
-      "criterion": "C1, C3, S1",
-      "path": "/Users/mitch/dev/solmargintrader-wt-01a1be31/executor/src/executor/engine.py",
-      "line": 458,
-      "symbol": "Engine.reconcile",
-      "trigger": "RPC returns a non-error processed status, and the current block height exceeds last_valid_block_height plus 150.",
-      "impact": "Reconciliation records the transaction as dropped and terminal even though the signature has been observed on chain. Subsequent live swaps are no longer blocked by that journal state, while the transaction may still become confirmed.",
-      "correction": "Keep any observed but insufficiently confirmed status unresolved. Consider dropping only when the signature is absent and the required finality and history evidence supports that conclusion.",
-      "id": "BLIND-G2-EXECUTOR-2",
-      "receipt": "blind-g2-executor.json"
-    },
-    {
-      "severity": "High",
-      "criterion": "C3, P2, S2",
-      "path": "/Users/mitch/dev/solmargintrader-wt-01a1be31/executor/src/executor/engine.py",
-      "line": 300,
-      "symbol": "Engine._send_live",
-      "trigger": "A confirmed transaction fails post-trade verification, and the process stops after the terminal result is fsynced but before the KILL file is written. The same ordering exists in Engine.reconcile at lines 445\u2013448.",
-      "impact": "The journal marks the transaction resolved without a durable kill switch. After restart, the failed post-trade check does not itself block another live swap. Reconciliation also has a concurrent window between resolving the journal and creating KILL.",
-      "correction": "Make a failed post-verification outcome itself a durable blocking condition during journal replay, or durably establish the kill condition before making the outcome terminal; serialize reconciliation with swap admission.",
-      "id": "BLIND-G2-EXECUTOR-3",
       "receipt": "blind-g2-executor.json"
     },
     {
@@ -972,6 +1050,12 @@
     }
   ],
   "status": "BLIND-AUDIT-DISSENT",
+  "audit_candidate_commit": "a1a0929",
+  "post_audit_integration": {
+    "base": "f1e8efaab6063149a6868c7fc505bc26164824d1",
+    "accepted_candidate": "a1a0929",
+    "source_verification": "affected suites rerun; no third blind audit"
+  },
   "gate2_triage": {
     "rejected": {
       "BLIND-G2-BACKTESTER-1": {
@@ -1002,19 +1086,29 @@
       "BLIND-G2-TUI-3": "Corroborated against final source and bounded independent probe; retained under second-dissent stop rule.",
       "BLIND-G2-TUI-4": "Corroborated against final source and bounded independent probe; retained under second-dissent stop rule."
     },
-    "status": "complete; 15 corroborated residual findings; 1 rejected contract reinterpretation"
+    "status": "Complete:15 original corroborated residuals,2 closed by upstream integration,13 remain (7 High,6 Medium);1 rejected policy reinterpretation.",
+    "resolved_by_upstream": {
+      "BLIND-G2-EXECUTOR-2": {
+        "receipt": "integration-executor.json",
+        "resolution": "Integrated PR151 admits dropped only when status is absent; processed remains unresolved."
+      },
+      "BLIND-G2-EXECUTOR-3": {
+        "receipt": "integration-executor.json",
+        "resolution": "Integrated PR151 and integration tests establish KILL before terminal for send/reconcile; failures retain uncertainty."
+      }
+    }
   },
   "verification": [
     {
       "command": "cd extension && node --test",
       "baseline": "369 (372 after PR146)",
-      "result": "384 pass",
+      "result": "389 integrated Node tests pass",
       "verdict": "PASS"
     },
     {
       "command": "executor/.venv/bin/pytest -q; Ruff lint/format",
       "baseline": "202 pass,5 network deselected",
-      "result": "274 pass,5 network deselected; Ruff pass",
+      "result": "429 pass,5 network deselected; integrated Ruff lint/format pass",
       "verdict": "PASS"
     },
     {
@@ -1026,8 +1120,8 @@
     {
       "command": "backtester full unittest",
       "baseline": "909; index becomes stale after workflow records",
-      "result": "941 tests pass; generated index freshness included",
-      "verdict": "PASS"
+      "result": "Final integration report/index refresh and rerun required",
+      "verdict": "PENDING"
     },
     {
       "command": "Mongo fake-only unittest",
@@ -1038,13 +1132,13 @@
     {
       "command": "SolTUI mapped and focused tests",
       "baseline": "198 focused pass",
-      "result": "269 mapped tests pass; additional focused checks pass (overlapping counts)",
-      "verdict": "PASS"
+      "result": "89 integration-focused pass; final mapped gate still running",
+      "verdict": "PENDING"
     },
     {
       "command": "real Chrome + production native host in fresh isolated profile",
       "baseline": "24/24 loading/dry-run checks",
-      "result": "25/25 pass; version0.4.3 and9 loaded source hashes match; owner profiles unchanged",
+      "result": "26/26 integrated checks pass; version0.5.1 and12 source hashes match; SignalDesk behavior checked",
       "verdict": "PASS"
     },
     {
@@ -1062,8 +1156,8 @@
     {
       "command": "scripts/check_docs.py; offline index freshness",
       "baseline": "2515 test census (2526 after PR146)",
-      "result": "2635 census agrees; offline index freshness passed",
-      "verdict": "PASS"
+      "result": "Final integration report/index refresh and rerun required",
+      "verdict": "PENDING"
     }
   ],
   "limitations": [
@@ -1073,6 +1167,7 @@
     "Final browser acceptance uses a temporary Chrome profile and production host from the task checkout. Existing owner-installed surfaces stay unchanged.",
     "Mongo integration cases require a database and remain skipped locally; CI provides an ephemeral MongoDB server.",
     "A preliminary liquidity suite unexpectedly performed one public eth_chainId read. The pre-gate Engine construction is now fixed; the final579 tests passed with socket connections blocked.",
-    "Stele writes are queued locally; no server acknowledgment was available."
+    "Stele writes are queued locally; no server acknowledgment was available.",
+    "Post-audit integration of already-delivered executor integrity and SignalDesk changes altered some reviewed sources; the scope JSON preserves audit-candidate and integrated hashes. Integration verification is separate from a fresh blind audit."
   ]
 }

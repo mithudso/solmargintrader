@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader",
-  "version": "0.4.3",
-  "description": "SolTUI dashboard workspace: signals, backtests, bots, experiments, wallets, reviewed orders and document editing; experimental grid disarmed and dry-run by default.",
+  "version": "0.5.1",
+  "description": "Signal Desk: live signals, backtests, paper forward tests and bot monitoring. Experimental grid installs disarmed in dry-run.",
   "minimum_chrome_version": "120",
   "background": {
     "service_worker": "src/bg/service-worker.js",
