@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import urllib.parse
@@ -44,8 +45,13 @@ def search(query: str) -> list[dict[str, Any]]:
         symbol, name = item.get("symbol"), item.get("name")
         if not isinstance(symbol, str) or not isinstance(name, str):
             continue
-        results.append({"mint": mint, "symbol": symbol[:40], "name": name[:100], "decimals": decimals,
-                        "verified": item.get("isVerified") is True})
+        token = {"mint": mint, "symbol": symbol[:40], "name": name[:100], "decimals": decimals,
+                 "verified": item.get("isVerified") is True}
+        price = item.get("usdPrice")
+        if (not isinstance(price, bool) and isinstance(price, (int, float))
+                and math.isfinite(price) and price > 0):
+            token["usdPrice"] = price
+        results.append(token)
     return results[:50]
 
 

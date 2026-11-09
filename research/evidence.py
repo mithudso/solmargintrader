@@ -36,7 +36,7 @@ def source_hashes() -> dict[str, str]:
     paths = [root / name for name in (
         "backtester/core/engine.py", "backtester/core/types.py", "backtester/core/metrics.py",
         "backtester/core/cpcv.py", "backtester/core/indicators.py", "research/sweep.py",
-        "research/signal_redundancy.py", "research/cpcv_sweep.py", "research/evidence.py")]
+        "research/signal_redundancy.py", "research/decide.py", "research/cpcv_sweep.py", "research/evidence.py")]
     paths += sorted((root / "backtester/core/strategies").glob("*.py"))
     return {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
 

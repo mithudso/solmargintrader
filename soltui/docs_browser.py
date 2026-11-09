@@ -1,7 +1,7 @@
 """Read-only catalogue and file reader behind the Docs tab.
 
-Pure logic: no Textual import, no widget, no I/O beyond reading files the
-catalogue already lists. That split is what lets this be tested without driving a
+No Textual import or widgets. Reads are limited to catalogued files; guarded
+saves use content revisions, per-document locks, and atomic replacements. That split is what lets this be tested without driving a
 terminal, and it matches `config.py`, `roster.py` and the other modules the TUI
 sits on.
 
@@ -35,7 +35,13 @@ viewer. The guards anticipated when that decision was made are implemented as:
 
 from __future__ import annotations
 
+import fcntl
+import hashlib
 import json
+import os
+import re
+import stat
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -181,7 +187,7 @@ def read_document(path: str, entries: list[DocEntry]) -> tuple[str, str, bool]:
         return (f"{path} is {size:,} bytes, above the {MAX_VIEW_BYTES:,}-byte "
                 f"viewer limit. Open it outside the console.", "", False)
     try:
-        text = target.read_text(encoding="utf-8")
+        text = target.read_bytes().decode("utf-8")
     except (UnicodeDecodeError, OSError):
         return (f"{path} is not UTF-8 text ({size:,} bytes) — nothing to display.",
                 "", False)
@@ -207,22 +213,75 @@ def is_editable(entry: DocEntry) -> bool:
     return entry.size <= MAX_VIEW_BYTES
 
 
-def write_document(path: str, text: str, entries: list[DocEntry]) -> Path:
-    """Save `text` to a catalogued, editable file. Returns the path written.
+def document_revision(text: str) -> str:
+    """Exact UTF-8 content revision; line endings are part of the precondition."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
-    Re-derives the cheap editability check rather than trusting the caller's
-    UI state, so a stale widget (e.g. a tab left open while the catalogue
-    changed underneath it) cannot turn into a write into `research/results/`.
-    Callers must additionally have confirmed `read_document`'s `is_real_text`
-    was True for this path -- this function does not re-check that, since
-    doing so here would mean reading the file twice on every save.
+
+def write_document(path: str, text: str, entries: list[DocEntry], *, expected_revision: str | None = None) -> Path:
+    """Replace editable text only while its observed revision still matches.
+
+    The stable per-document lock coordinates native/API/TUI processes across
+    configuration profiles. An atomic replacement preserves the prior complete
+    file on failure. Protected results never enter this write path.
     """
     entry = next((e for e in entries if e.path == path), None)
     if entry is None or not is_editable(entry):
         raise PermissionError(f"{path} is not editable")
     target = resolve(path, entries)
-    target.write_text(text, encoding="utf-8")
-    return target
+    canonical_path = target.relative_to(REPO.resolve()).as_posix()
+    if any(canonical_path.startswith(prefix) for prefix in NO_WRITE_PREFIXES):
+        raise PermissionError(f"{path} resolves to protected research evidence")
+    if not isinstance(expected_revision, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_revision):
+        raise ValueError("A document revision from docs.read is required")
+    payload = text.encode("utf-8")
+    if len(payload) > MAX_VIEW_BYTES:
+        raise ValueError("New document exceeds the viewer limit")
+    # A fixed host-local root keeps different TMPDIR/configuration profiles
+    # on the same lock. This application targets macOS/POSIX.
+    lock_dir = Path("/tmp") / f"soltui-doc-locks-{os.getuid()}"
+    lock_dir.mkdir(mode=0o700, exist_ok=True)
+    lock_stat = lock_dir.lstat()
+    if (not stat.S_ISDIR(lock_stat.st_mode) or lock_stat.st_uid != os.getuid()
+            or stat.S_IMODE(lock_stat.st_mode) & 0o077):
+        raise PermissionError("Document lock directory is not private")
+    lock_name = hashlib.sha256(os.fsencode(str(target))).hexdigest() + ".lock"
+    fd = os.open(lock_dir / lock_name, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+    tmp = None
+    try:
+        lock_file_stat = os.fstat(fd)
+        if (not stat.S_ISREG(lock_file_stat.st_mode) or lock_file_stat.st_uid != os.getuid()
+                or stat.S_IMODE(lock_file_stat.st_mode) & 0o077):
+            raise PermissionError("Document lock file is not private")
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        # Resolve again inside the lock: a stale catalogue cannot redirect a save.
+        if resolve(path, entries) != target:
+            raise ValueError("The document path changed; reload before saving")
+        before = target.read_bytes()
+        if len(before) > MAX_VIEW_BYTES:
+            raise ValueError("The document exceeds the viewer limit")
+        before.decode("utf-8")
+        if hashlib.sha256(before).hexdigest() != expected_revision:
+            raise ValueError("The document changed; reload before saving")
+        mode = stat.S_IMODE(target.stat().st_mode)
+        tmp_fd, tmp_name = tempfile.mkstemp(prefix=f".{target.name}.", dir=target.parent)
+        tmp = Path(tmp_name)
+        with os.fdopen(tmp_fd, "wb") as stream:
+            os.fchmod(stream.fileno(), mode)
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(tmp, target)
+        directory_fd = os.open(target.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+        return target
+    finally:
+        if tmp is not None:
+            tmp.unlink(missing_ok=True)
+        os.close(fd)
 
 
 def summarise_catalog(entries: list[DocEntry]) -> str:

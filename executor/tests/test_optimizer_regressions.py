@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import stat
+import struct
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
@@ -490,3 +491,88 @@ def test_gate_records_with_unknown_shape_are_unsatisfied(tmp_path):
 def test_gate_override_cannot_write_nonfinite_timestamp(tmp_path):
     with pytest.raises((ValueError, ExecutorError)):
         gates.log_override(tmp_path, "s", "synthetic", now=float("nan"))
+
+
+# Serialized economic fields must bind the builder response independently of simulation.
+def _route_payload(
+    *, shared=False, step=b"\x30\x64\x00\x01", amount=10_000_000, quoted=901_607, slippage=50, fee=0, count=1
+):
+    disc = "c1209b3341d69c81" if shared else "e517cb977ae3ad2a"
+    return (
+        bytes.fromhex(disc)
+        + (b"\x00" if shared else b"")
+        + struct.pack("<I", count)
+        + step
+        + struct.pack("<QQHB", amount, quoted, slippage, fee)
+    )
+
+
+def _recorded_route_check(data):
+    from test_txverify import REAL_OWNER, exp, real_tx_and_tables
+
+    tx, tables = real_tx_and_tables()
+    facts = tv.inspect_tx(tx, tables)
+    for instruction in facts.instructions:
+        if instruction.program == tv.JUPITER_V6:
+            instruction.data = data
+    return tv.check_static(facts, exp(REAL_OWNER))
+
+
+@pytest.mark.parametrize("shared", [False, True])
+def test_serialized_route_binds_input_and_minimum(shared):
+    for fields in (
+        {"amount": 10_000_001},
+        {"quoted": 1, "slippage": 0},
+        {"quoted": 901_607, "slippage": 100},
+        {"fee": 1},
+        {"slippage": 10_001},
+        {"amount": 0},
+        {"quoted": 0},
+    ):
+        problems, _ = _recorded_route_check(_route_payload(shared=shared, **fields))
+        assert problems, fields
+
+
+@pytest.mark.parametrize("shared", [False, True])
+def test_serialized_route_rejects_malformed_and_appended_fields(shared):
+    valid = _route_payload(shared=shared)
+    bad = [
+        valid + b"\x00",
+        valid + struct.pack("<QQHB", 10_000_000, 901_607, 50, 0),
+        valid[:-1],
+        _route_payload(shared=shared, count=0),
+        _route_payload(shared=shared, count=2),
+        _route_payload(shared=shared, count=0xFFFFFFFF),
+        _route_payload(shared=shared, step=b"\xff\x64\x00\x01"),
+        _route_payload(shared=shared, step=b"\x08\x02\x64\x00\x01"),
+        _route_payload(shared=shared, step=b"\x0c\x02\x64\x00\x01"),
+        _route_payload(shared=shared, step=b"\x2f\x01\x02\x64\x00\x01"),
+        _route_payload(shared=shared, step=b"\x2f\x01\x01\xff\xff\xff\xff\x64\x00\x01"),
+        _route_payload(shared=shared, step=b"\x4b\x01\x00\x00\x00\x09\x01\x64\x00\x01"),
+    ]
+    for payload in bad:
+        problems, _ = _recorded_route_check(payload)
+        assert problems, payload.hex()
+
+
+@pytest.mark.parametrize("shared", [False, True])
+def test_serialized_route_uses_consumed_schema_for_economic_fields(shared):
+    swaps = [
+        b"\x30",
+        b"\x08\x01",
+        b"\x0c\x01",
+        b"\x1d" + struct.pack("<QQ", 1, 2),
+        b"\x21" + struct.pack("<I", 7),
+        b"\x2f\x01\x00",
+        b"\x2f\x01\x01" + struct.pack("<I", 1) + b"\x06\x02",
+        b"\x4b" + struct.pack("<I", 1) + b"\x08\x02",
+        b"\x57" + struct.pack("<Q", 100) + b"\x01",
+    ]
+    for variant in swaps:
+        valid = _route_payload(shared=shared, step=variant + b"\x64\x00\x01")
+        problems, info = _recorded_route_check(valid)
+        assert problems == [], (variant.hex(), problems)
+        assert info["jupiter_route"]["amount_in"] == 10_000_000
+        assert info["jupiter_route"]["minimum_out"] >= 896_771
+        weak = _route_payload(shared=shared, step=variant + b"\x64\x00\x01", quoted=1, slippage=0)
+        assert _recorded_route_check(weak)[0]

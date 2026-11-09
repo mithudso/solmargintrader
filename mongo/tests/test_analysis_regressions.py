@@ -121,6 +121,32 @@ class AnalysisLoaderRegressions(unittest.TestCase):
 class AdditionalLoaderRegressions(unittest.TestCase):
     setUp = AnalysisLoaderRegressions.setUp
     manifest = AnalysisLoaderRegressions.manifest
+
+    def test_schema_cli_preserves_original_receipts_unless_reset_is_explicit(self):
+        from pymongo.errors import CollectionInvalid
+        class ReceiptDatabase(FakeDatabase):
+            def __init__(self):
+                super().__init__()
+                self.receipts = [{'git_sha':'original', 'suite':'backtester', 'count':900}]
+                self.exists = True
+            def drop_collection(self, name):
+                super().drop_collection(name)
+                if name == 'test_results':
+                    self.receipts.clear()
+                    self.exists = False
+            def create_collection(self, name, **kwargs):
+                if name == 'test_results' and self.exists:
+                    raise CollectionInvalid('already exists')
+                super().create_collection(name, **kwargs)
+                if name == 'test_results': self.exists = True
+        for flags, reset in ((['--create'], False), (['--create','--keep'], False),
+                             (['--create','--reset-test-results'], True)):
+            db = ReceiptDatabase()
+            with self.subTest(flags=flags), mock.patch.object(schema, 'connect', return_value={schema.DB_NAME:db}), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(schema.main(flags), 0)
+                self.assertEqual(db.receipts == [], reset)
+                self.assertEqual(('drop', 'test_results') in db.calls, reset)
+                self.assertIn(('index', 'test_results'), db.calls)
     def test_missing_artifacts_refuse_before_any_database_operation(self):
         context=self.manifest()
         (self.root/'results'/'equity_s.csv').unlink()

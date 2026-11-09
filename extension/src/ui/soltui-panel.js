@@ -4,6 +4,7 @@ import { aggregatePredictions, scoreText, appendScoreTick, renderScoreChart } fr
 import { WORKSPACES, filterCommands, workspaceFor, cellText, columnsFor, rowsToCsv, resultTables, valuesFromRow, seriesFromRows } from './workspace-model.js';
 
 const send = (msg) => chrome.runtime.sendMessage(msg);
+const LIVE_PREDICTIONS_MS = 10_000;
 const POLLABLE = new Set(['prices.status', 'forwardtest.predictions', 'forwardtest.state', 'forwardtest.status',
   'backtest.status', 'queue.progress', 'compound.autopilot_status', 'compound.unattended_status',
   'compound.forward_status', 'bots.progress', 'bots.fit_status', 'bots.schedule_status']);
@@ -184,6 +185,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let runButton = null;
   let editor = null;
   let editorBase = null;
+  let editorRevision = null;
   let documentPath = null;
   let documentEpoch = 0;
   let lastEnvelope = null;
@@ -192,12 +194,14 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let heartbeat;
   let pollTimer;
   let liveTimer;
+  let predictionTimer;
   let liveBusy = false;
   let nowBusy = false;
   let nowLoaded = false;
   let liveAsset = '';
   let livePoints = [];
   let predictionsAt = 0;
+  let predictionAttempted = false;
   let predictionRows = [];
   let voting = { min_accuracy: 60, min_resolved: 20 };
   let liveGeneration = 0;
@@ -282,6 +286,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const spec = WORKSPACES.find((w) => w.id === workspace.value) ?? WORKSPACES.at(-1);
     $('#soltuiWorkspaceDetail').textContent = spec.detail;
     $('#soltuiLive').hidden = !['signal', 'now'].includes(spec.id);
+    if (commands.length && !predictionAttempted && liveVisible()) refreshLive();
     $('#soltuiNowSummary').hidden = spec.id !== 'now';
     if (spec.id === 'now' && commands.length && !nowLoaded) refreshNow();
     const filtered = filterCommands(commands, spec.id, search.value);
@@ -308,12 +313,13 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (!env.ok) { selected.textContent = env.error?.message ?? 'Could not open document.'; return; }
     documentPath = path;
     editorBase = env.result.text;
+    editorRevision = env.result.revision;
     editor = $('#soltuiEditor');
     editor.value = editorBase;
-    editor.readOnly = !env.result.editable;
+    editor.readOnly = !env.result.editable || !/^[a-f0-9]{64}$/.test(editorRevision ?? '');
     $('#soltuiEditorCard').hidden = false;
     $('#soltuiEditorPath').textContent = `${path} · ${env.result.editable ? 'Editable' : 'Read only'}`;
-    $('#soltuiSave').disabled = !env.result.editable;
+    $('#soltuiSave').disabled = editor.readOnly;
   }
   function useRow(row) {
     selected.textContent = JSON.stringify(row, null, 2);
@@ -446,29 +452,42 @@ export function mountSoltuiPanel(root = document, transport = send) {
     liveBusy = true;
     try {
       if (asset !== liveAsset) {
-        liveAsset = asset; livePoints = []; predictionRows = []; predictionsAt = 0;
+        liveAsset = asset; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
         const unavailable = aggregatePredictions([]);
         paintAggregate($('#soltuiLiveScore'), unavailable);
         paintAggregate($('#soltuiPredictionsScore'), unavailable);
         $('#soltuiLiveStatus').textContent = `Loading ${asset} recorder and predictions…`;
+        $('#soltuiLivePredictionStatus').textContent = `Loading ${asset} predictions · refresh every 10s`;
         $('#soltuiLiveChart').replaceChildren();
         $('#soltuiLivePredictions').replaceChildren();
       }
       // Resolve the prediction snapshot before observing a new tick. Later
       // prediction refreshes must never alter a tick's recorded score.
-      if (force || Date.now() - predictionsAt >= 60_000) {
-        const predictions = await ask('forwardtest.predictions', { asset });
-        if (!predictions.ok) throw new Error(predictions.error?.message ?? 'Predictions failed.');
-        if (asset !== $('#soltuiLiveAsset').value.trim().toUpperCase() || contextGeneration !== liveGeneration) return;
-        predictionRows = predictions.result.rows ?? [];
-        voting = predictions.result.voting ?? { min_accuracy: 60, min_resolved: 20 };
-        if (document.activeElement !== $('#soltuiVoteMinScore')) $('#soltuiVoteMinScore').value = voting.min_accuracy;
-        if (document.activeElement !== $('#soltuiVoteMinResolved')) $('#soltuiVoteMinResolved').value = voting.min_resolved;
-        const target = $('#soltuiLivePredictions');
-        target.replaceChildren();
-        if (predictionRows.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictionRows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
-        else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
-        predictionsAt = Date.now();
+      if (force || !predictionAttempted) {
+        predictionAttempted = true;
+        $('#soltuiLivePredictionStatus').textContent = `Refreshing ${asset} predictions… · refresh every 10s`;
+        try {
+          const predictions = await ask('forwardtest.predictions', { asset });
+          if (!predictions.ok) throw new Error(predictions.error?.message ?? 'Predictions failed.');
+          if (disposed || asset !== $('#soltuiLiveAsset').value.trim().toUpperCase() || contextGeneration !== liveGeneration) return;
+          predictionRows = predictions.result.rows ?? [];
+          voting = predictions.result.voting ?? { min_accuracy: 60, min_resolved: 20 };
+          if (document.activeElement !== $('#soltuiVoteMinScore')) $('#soltuiVoteMinScore').value = voting.min_accuracy;
+          if (document.activeElement !== $('#soltuiVoteMinResolved')) $('#soltuiVoteMinResolved').value = voting.min_resolved;
+          const target = $('#soltuiLivePredictions');
+          target.replaceChildren();
+          if (predictionRows.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictionRows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
+          else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
+          predictionsAt = Date.now();
+          const updated = new Date(predictionsAt).toISOString().slice(11, 19);
+          $('#soltuiLivePredictionStatus').textContent = `Updated ${updated} UTC · refresh every 10s · saved closed-candle predictions`;
+        } catch (e) {
+          if (disposed || contextGeneration !== liveGeneration || asset !== $('#soltuiLiveAsset').value.trim().toUpperCase()) return;
+          predictionAttempted = true;
+          predictionRows = [];
+          $('#soltuiLivePredictions').replaceChildren();
+          $('#soltuiLivePredictionStatus').textContent = `Prediction refresh failed: ${e.message} · retrying every 10s`;
+        }
       }
       const env = await ask('prices.status');
       if (!env.ok) throw new Error(env.error?.message ?? 'Recorder status failed.');
@@ -494,8 +513,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const unavailable = aggregatePredictions([]);
       paintAggregate($('#soltuiLiveScore'), unavailable);
       paintAggregate($('#soltuiPredictionsScore'), unavailable);
-      $('#soltuiLiveStatus').textContent = `Live view unavailable: ${e.message}`;
-      $('#soltuiLiveStream').checked = false;
+      $('#soltuiLiveStatus').textContent = `Live view unavailable: ${e.message} · automatic refresh will retry`;
     } finally {
       liveBusy = false;
       if (liveRefreshRequested && !votingSaving && !disposed) { liveRefreshRequested = false; refreshLive(true); }
@@ -517,7 +535,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const env = await ask('settings.save', { live_vote_min_accuracy: min, live_vote_min_resolved: count });
       if (!env.ok) throw new Error(env.error?.message ?? 'Settings refused.');
       voting = { min_accuracy: min, min_resolved: count };
-      predictionsAt = 0;
+      predictionsAt = 0; predictionAttempted = false;
       $('#soltuiVoteStatus').textContent = 'Saved shared voting floor.';
       const aggregate = aggregatePredictions(predictionRows, Date.now() / 1000, voting);
       paintAggregate($('#soltuiLiveScore'), aggregate);
@@ -590,18 +608,19 @@ export function mountSoltuiPanel(root = document, transport = send) {
   $('#soltuiSave').addEventListener('click', async () => {
     if (!editor || editor.readOnly) return;
     const path = documentPath, epoch = documentEpoch, target = editor;
-    const base = editorBase, text = target.value;
+    const base = editorBase, expected_revision = editorRevision, text = target.value;
     const isCurrent = () => !disposed && documentEpoch === epoch && documentPath === path && editor === target;
     const save = $('#soltuiSave');
     save.disabled = true;
     try {
       const latest = await ask('docs.read', { path });
       if (!isCurrent()) return;
-      if (!latest.ok || !latest.result.editable || latest.result.text !== base) throw new Error('The document changed or became read only. Export your draft, then reload it before saving.');
-      const env = await ask('docs.write', { path, text });
+      if (!latest.ok || !latest.result.editable || latest.result.text !== base || latest.result.revision !== expected_revision) throw new Error('The document changed or became read only. Export your draft, then reload it before saving.');
+      const env = await ask('docs.write', { path, text, expected_revision });
       if (!isCurrent()) return;
       if (!env.ok) throw new Error(env.error.message);
       editorBase = text;
+      editorRevision = env.result.revision;
       $('#soltuiEditorStatus').textContent = 'Saved to disk.';
     } catch (e) { if (isCurrent()) $('#soltuiEditorStatus').textContent = `Save refused: ${e.message}`; }
     finally { if (isCurrent()) save.disabled = target.readOnly; }
@@ -615,7 +634,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   });
   $('#soltuiLiveAsset').addEventListener('change', () => {
     liveGeneration += 1;
-    liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0;
+    liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
     $('#soltuiLiveChart').replaceChildren();
     $('#soltuiLivePredictions').replaceChildren();
     const unavailable = aggregatePredictions([]);
@@ -636,14 +655,25 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const built = buildParams(c, values);
     if (!built.errors.length) run(c, built.params, true);
   }, 10_000);
+  function liveVisible() {
+    return !disposed && !document.hidden && !$('#view-soltui').hidden && !$('#soltuiLive').hidden;
+  }
+  function pollLivePredictions() {
+    // Use a separate fixed timer: read latency must not extend the ten-second
+    // cadence, and a busy reader skips a tick rather than queuing a burst.
+    if (liveVisible() && !liveBusy && !votingSaving) refreshLive(true);
+  }
+  predictionTimer = setInterval(pollLivePredictions, LIVE_PREDICTIONS_MS);
   liveTimer = setInterval(() => {
-    if (!document.hidden && !$('#view-soltui').hidden && !$('#soltuiLive').hidden && $('#soltuiLiveStream').checked) refreshLive();
+    if (disposed || document.hidden || $('#view-soltui').hidden || $('#soltuiLive').hidden) return;
+    if ($('#soltuiLiveStream').checked || !predictionAttempted) refreshLive();
   }, 5000);
   function dispose() {
     disposed = true;
     clearInterval(heartbeat);
     clearInterval(pollTimer);
     clearInterval(liveTimer);
+    clearInterval(predictionTimer);
     transport({ type: 'soltuiSession', session, active: false }).catch(() => {});
   }
   window.addEventListener('pagehide', dispose, { once: true });

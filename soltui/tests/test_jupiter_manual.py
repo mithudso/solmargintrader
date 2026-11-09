@@ -50,7 +50,8 @@ def valid_swap_ixs(owner: str, mint_in: str, mint_out: str, amount_in: int) -> l
         ]
     )
     # Valid ExactIn discriminator (e517cb977ae3ad2a)
-    jup_route = bytes.fromhex("e517cb977ae3ad2a") + b"\x00" * 28
+    jup_route = (bytes.fromhex("e517cb977ae3ad2a") + struct.pack("<I", 1)
+                 + bytes([48, 100, 0, 1]) + struct.pack("<QQHB", amount_in, int(amount_in * 0.99), 0, 0))
     jup_ix = Instruction(
         Pubkey.from_string(txverify.JUPITER_V6),
         jup_route,

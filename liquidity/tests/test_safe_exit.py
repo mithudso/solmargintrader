@@ -57,6 +57,9 @@ class StubEngine:
     def _gate(self):
         self.gated += 1
 
+    def reconcile_submissions(self):
+        pass
+
 
 def run(eng, tmp_path, ids=(1,), live=False, **kw):
     return safe_exit.run_exit(eng, list(ids), live=live, signer=object() if live else None, root=tmp_path, **kw)
@@ -223,6 +226,172 @@ def test_live_conversion_simulates_then_sends_only_the_withdrawn_amount(tmp_path
     step = rep.positions[0].converts[0]
     assert [s[0] for s in sent] == ["SimRunner", "LiveRunner"] and sent[0][1] == sent[1][1] == 10**18
     assert step.tx_hashes == ["0xbb"] and step.out_raw == 1990 * 10**6 and eng.gated == 1
+
+
+def test_actual_withdrawal_replaces_dry_conversion_budget_not_wallet_balance(tmp_path, monkeypatch):
+    sent = []
+
+    class FakeRB:
+        def __init__(self, *a):
+            pass
+
+        def swap_exact(self, _route, _token, amount, runner, _minimum):
+            sent.append((type(runner).__name__, amount))
+            return RebalanceResult(None, False, ["swap"], [], {"swap": 100_000})
+
+    monkeypatch.setattr("aero_lp.executor.Rebalancer", FakeRB)
+    monkeypatch.setattr(safe_exit, "SimRunner", lambda *a, **kw: type("SimRunner", (), {})())
+    eng = ConvEngine(tmp_path, route(2000 * 1e-12))
+    eng.chain.gas_price_wei = lambda: 10**6
+    eng.chain.erc20_balances = lambda *a, **kw: [100 * 10**18, 50_000 * 10**6]
+    eng._live_runner = lambda *a, **kw: type("LiveRunner", (), {})()
+    eng.withdraw = lambda tid, live, signer=None: (
+        pos(tid),
+        result(amounts=(5 * 10**17, 1000 * 10**6)) if live else result(),
+        0.1,
+    )
+    rep = run(eng, tmp_path, live=True, convert_to="USDC")
+    step = rep.positions[0].converts[0]
+    assert not step.refused
+    assert step.amount_raw == 5 * 10**17
+    assert sent == [("SimRunner", 5 * 10**17), ("LiveRunner", 5 * 10**17)]
+
+
+@pytest.mark.parametrize("aero_in_pool", [False, True])
+def test_actual_non_pool_reward_is_a_separate_budget_without_double_count(tmp_path, monkeypatch, aero_in_pool):
+    eng = ConvEngine(tmp_path, route(2000 * 1e-12))
+    current = pos()
+    if aero_in_pool:
+        current.pool = SimpleNamespace(**{**vars(POOL), "token0": token(addresses.AERO_TOKEN, "AERO", 18)})
+    dry = result()
+    dry.aero_claimed = 99 * 10**18
+    actual = result(amounts=(3 * 10**18, 5 * 10**6))
+    actual.aero_claimed = 2 * 10**18
+    eng.withdraw = lambda tid, live, signer=None: (current, actual if live else dry, 0.1)
+    calls = []
+    monkeypatch.setattr(
+        safe_exit,
+        "plan_conversion",
+        lambda _eng, tok, amount, target, prices: safe_exit.ConvertStep(KNOWN_TOKENS[tok.lower()], tok, amount),
+    )
+    monkeypatch.setattr(
+        safe_exit, "_convert_live", lambda _eng, plan, step, *a: calls.append((step.token, step.amount_raw))
+    )
+    rep = run(eng, tmp_path, live=True, convert_to="USDC")
+    expected = [("AERO", 3 * 10**18)] if aero_in_pool else [("WETH", 3 * 10**18), ("AERO", 2 * 10**18)]
+    assert calls == expected
+    assert [(s.token, s.amount_raw) for s in rep.positions[0].converts] == expected
+
+
+@pytest.mark.parametrize("binding", ["correct", "owner", "ledger"])
+def test_conversion_accounts_confirmed_withdrawal_through_bound_journal(tmp_path, monkeypatch, binding):
+    from test_daemon import make_pos
+    from test_executor import TX, FakeChain, transfer_log
+
+    from aero_lp.engine import Engine
+    from aero_lp.executor import Rebalancer
+    from aero_lp.ledger import Ledger
+    from aero_lp.recovery import LedgerRecovery
+    from aero_lp.state import State
+    from aero_lp.submissions import SubmissionJournal
+
+    current = make_pos(1, staked=False)
+    ledger = Ledger(tmp_path / "ledger.sqlite")
+    ledger.open_slot("1", current.pool.address, "WETH/USDC", WETH, USDC, 18, 6, 1)
+    ledger.flow("1", "deposit", 0.5, 1000, 2000)
+    journal = SubmissionJournal(tmp_path / "submissions.json", OWNER, ledger_path=ledger.path)
+    tx = Rebalancer(FakeChain(), OWNER, Config(OWNER).execution).remove_calls(current, 12345, 0.003)
+    eng = ConvEngine(tmp_path, route(2000 * 1e-12))
+    eng.state = State(eng.cfg.state_file)
+    eng.state.slot(1)
+    eng.chain.gas_price_wei = lambda: 10**6
+    eng.chain.pool_state = lambda address: current.pool if address == current.pool.address else eng.route
+    eng.recovery_handler = LedgerRecovery(eng.cfg, eng.chain, ledger, lambda: PRICES).apply
+    eng.recover_submission = lambda record, group: Engine.recover_submission(eng, record, group)
+    bound = journal
+    if binding == "owner":
+        bound = SubmissionJournal(journal.path, "0x" + "cd" * 20, ledger_path=ledger.path)
+    elif binding == "ledger":
+        bound = SubmissionJournal(journal.path, OWNER, ledger_path=tmp_path / "other.sqlite")
+    eng.submission_journal = lambda: bound
+    eng.reconcile_submissions = lambda: Engine.reconcile_submissions(eng)
+    withdraw_hash, convert_hash = "0x" + "01" * 32, "0x" + "02" * 32
+
+    def receipt(h, logs=()):
+        return {
+            "transactionHash": h,
+            "status": 1,
+            "blockNumber": 101,
+            "gasUsed": 90_000,
+            "effectiveGasPrice": 10**6,
+            "logs": list(logs),
+        }
+
+    def withdraw(tid, live, signer=None):
+        if live:
+            journal.before_submit(
+                withdraw_hash,
+                0,
+                tx,
+                "withdraw",
+                current.pool.address,
+                [WETH, USDC],
+                accounting={"scope": "slot", "slot": "1"},
+            )
+            journal.receipt(
+                withdraw_hash,
+                receipt(
+                    withdraw_hash,
+                    [
+                        transfer_log(WETH, current.pool.address, OWNER, 5 * 10**17),
+                        transfer_log(USDC, current.pool.address, OWNER, 1000 * 10**6),
+                    ],
+                ),
+            )
+        return current, result(amounts=(5 * 10**17, 1000 * 10**6), hashes=[withdraw_hash]), 0.1
+
+    eng.withdraw = withdraw
+    conversions = []
+
+    class FakeRB:
+        def __init__(self, *a):
+            pass
+
+        def swap_exact(self, _route, _token, _amount, runner, _minimum):
+            assert journal.records()[0]["processed"]
+            assert ledger.pnl("1").withdrawn_usd == 2000
+            assert ledger.slot_row("1")["closed_at"] is not None
+            conversions.append(type(runner).__name__)
+            return RebalanceResult(None, False, ["swap"], [convert_hash], {"swap": 100_000})
+
+    monkeypatch.setattr("aero_lp.executor.Rebalancer", FakeRB)
+    monkeypatch.setattr(safe_exit, "SimRunner", lambda *a, **kw: type("SimRunner", (), {})())
+
+    def live_runner(*a, **kw):
+        assert kw["wallet"]
+        journal.before_submit(
+            convert_hash, 1, TX, "conversion", eng.route.address, [WETH, USDC], accounting={"scope": "wallet"}
+        )
+        journal.receipt(convert_hash, receipt(convert_hash))
+        return type("LiveRunner", (), {})()
+
+    eng._live_runner = live_runner
+    try:
+        rep = run(eng, tmp_path, live=True, convert_to="USDC")
+        step = rep.positions[0].converts[0]
+        if binding == "correct":
+            assert not step.refused
+            assert conversions == ["SimRunner", "LiveRunner"]
+            eng.reconcile_submissions()
+            assert all(r["processed"] for r in journal.records())
+            assert ledger.pnl("1").withdrawn_usd == 2000
+        else:
+            assert binding in step.refused
+            assert conversions == []
+            assert not journal.records()[0]["processed"]
+            assert ledger.pnl("1").withdrawn_usd == 0
+    finally:
+        ledger.db.close()
 
 
 def test_live_conversion_blocked_by_gas_cap_leaves_coins_in_wallet(tmp_path, monkeypatch):

@@ -1033,7 +1033,14 @@ class SolTuiApp(App):
         self._signal_live_last_coin: str | None = None
         self._signal_live_busy = False
         self._signal_live_last_pred_update = 0.0
-        self._signal_live_last_pred_minute = 0
+        self._signal_live_prediction_timer = None
+        self._signal_live_prediction_key: tuple[str, float, int] | None = None
+        self._signal_live_pred_generation = 0
+        self._signal_live_refresh_requested = False
+        self._signal_live_alive = threading.Event()
+        self._signal_live_alive.set()
+        self._signal_live_drained = threading.Event()
+        self._signal_live_drained.set()
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -1054,6 +1061,7 @@ class SolTuiApp(App):
         self._docs_highlighted_path: str | None = None
         # The text as it was on disk when _docs_current_path was loaded, to detect unsaved edits.
         self._docs_loaded_text = ""
+        self._docs_revision: str | None = None
         self._forward_running = False
         self._forward_busy = False
         self._forward_seen: dict[str, Any] = {}
@@ -1768,6 +1776,14 @@ class SolTuiApp(App):
             table.move_cursor(row=min(cursor, len(rows) - 1))
 
     async def on_unmount(self) -> None:
+        self._signal_live_alive.clear()
+        self._signal_live_pred_generation += 1
+        self._signal_live_refresh_requested = False
+        if self._signal_live_prediction_timer is not None:
+            self._signal_live_prediction_timer.stop()
+            self._signal_live_prediction_timer = None
+        if self._signal_live_busy:
+            await asyncio.to_thread(self._signal_live_drained.wait, 5.0)
         self._bots_fit_alive.clear()
         if self._bots_fit_timer is not None:
             self._bots_fit_timer.stop()
@@ -3174,6 +3190,7 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(1, self._signal_live_tick)
+        self._signal_live_prediction_timer = self.set_interval(10, self._signal_live_poll_predictions)
         if getattr(self.settings, "forwardtest_autostart", True):
             restored = self._call("forwardtest.restore", quiet=True)
             from .commands import forward_coins
@@ -4075,10 +4092,7 @@ class SolTuiApp(App):
         coin = getattr(self, "_compound_coin", "SOL")
         product = f"{coin}-USD"
         now = time.time()
-        pred_due = now - self._signal_live_last_pred_update >= 60.0
-        new_min = int(now) // 60 > self._signal_live_last_pred_minute and now % 60 >= 1.0
-        if pred_due or new_min or coin != self._signal_live_last_coin:
-            self._signal_live_refresh_predictions(force=True)
+        self._signal_live_refresh_predictions()
         aggregate = self._signal_live_update_score(now)
         try:
             from . import pricefeed
@@ -4237,21 +4251,77 @@ class SolTuiApp(App):
             if self.query("#signal-live-chart-xaxis"):
                 self.query_one("#signal-live-chart-xaxis", Static).update("")
 
+    def _signal_live_poll_predictions(self) -> None:
+        # Keep the ten-second schedule independent of chart ticks and read
+        # latency. A busy reader skips this period, without a catch-up burst.
+        if not self._signal_live_busy:
+            self._signal_live_refresh_predictions(force=True)
+
     def _signal_live_refresh_predictions(self, force: bool = False) -> None:
-        if not self.query("#signal-live-predictions-table"):
+        if not self._signal_live_alive.is_set() or not self.query("#signal-live-predictions-table"):
             return
         coin = getattr(self, "_compound_coin", "SOL")
-        if not force and coin == self._signal_live_last_coin and self._signal_live_prediction_rows:
+        key = (coin, self.settings.live_vote_min_accuracy, self.settings.live_vote_min_resolved)
+        changed = key != self._signal_live_prediction_key
+        if changed:
+            self._signal_live_prediction_key = key
+            self._signal_live_pred_generation += 1
+            self._signal_live_last_coin = coin
+            self._signal_live_last_pred_update = 0.0
+            self._signal_live_prediction_rows = []
+            self._signal_live_render_predictions(refreshing=True)
+        if self._signal_live_busy:
+            self._signal_live_refresh_requested |= force or changed
             return
-        self._signal_live_last_coin = coin
-        self._signal_live_last_pred_update = time.time()
-        self._signal_live_last_pred_minute = int(self._signal_live_last_pred_update) // 60
+        if not force and not changed:
+            return
+        self._signal_live_busy = True
+        self._signal_live_refresh_requested = False
+        # A saved snapshot can take seconds to read. Keep it off the one-second
+        # chart timer, and never start a second database read while one is active.
+        self._signal_live_drained = threading.Event()
+        self._signal_live_predictions_job(key, self._signal_live_pred_generation, self._signal_live_drained)
+
+    @work(thread=True, exit_on_error=False, group="signal-live-predictions")
+    def _signal_live_predictions_job(self, key: tuple[str, float, int], generation: int,
+                                     drained: threading.Event) -> None:
         try:
-            env = self._call("forwardtest.predictions", {"asset": coin, "limit": 50}, quiet=True)
-            rows = env["result"]["rows"] if env["ok"] else []
-        except Exception:
-            rows = []
-        self._signal_live_prediction_rows = rows
+            try:
+                env = self._call("forwardtest.predictions", {"asset": key[0], "limit": 50}, quiet=True)
+            except Exception as exc:
+                env = {"ok": False, "error": {"message": str(exc)}}
+            if self._signal_live_alive.is_set():
+                try:
+                    self.call_from_thread(self._signal_live_predictions_done, key, generation, env)
+                except RuntimeError:
+                    pass  # The app closed after the database read.
+        finally:
+            drained.set()
+
+    def _signal_live_predictions_done(self, key: tuple[str, float, int], generation: int,
+                                      env: dict[str, Any]) -> None:
+        self._signal_live_busy = False
+        if not self._signal_live_alive.is_set() or not self.query("#signal-live-predictions-table"):
+            return
+        current = (getattr(self, "_compound_coin", "SOL"), self.settings.live_vote_min_accuracy,
+                   self.settings.live_vote_min_resolved)
+        if generation != self._signal_live_pred_generation or key != current:
+            self._signal_live_refresh_predictions(force=True)
+            return
+        error = None
+        if env.get("ok"):
+            self._signal_live_prediction_rows = env["result"]["rows"]
+            self._signal_live_last_pred_update = time.time()
+        else:
+            self._signal_live_prediction_rows = []
+            error = (env.get("error") or {}).get("message") or "Prediction read failed."
+        self._signal_live_render_predictions(error=error)
+        if self._signal_live_refresh_requested:
+            self._signal_live_refresh_predictions(force=True)
+
+    def _signal_live_render_predictions(self, *, error: str | None = None, refreshing: bool = False) -> None:
+        coin = getattr(self, "_compound_coin", "SOL")
+        rows = self._signal_live_prediction_rows
         self._signal_live_update_score(time.time())
         table = self.query_one("#signal-live-predictions-table", DataTable)
         cursor = table.cursor_row
@@ -4297,12 +4367,16 @@ class SolTuiApp(App):
             self._signal_live_show_detail(min(cursor, len(rows) - 1))
         else:
             self.query_one("#signal-live-detail", Static).update(
-                f"No forward test prediction records found for coin {coin} yet."
+                Text(f"Prediction refresh failed: {error}. Retrying every 10s." if error else
+                     f"Reading saved predictions for {coin}…" if refreshing else
+                     f"No forward test prediction records found for coin {coin} yet.")
             )
         if self.query("#signal-live-predictions-title"):
-            upd_time = time.strftime("%H:%M:%S UTC", time.gmtime(self._signal_live_last_pred_update))
+            upd_time = (time.strftime("%H:%M:%S UTC", time.gmtime(self._signal_live_last_pred_update))
+                        if self._signal_live_last_pred_update else "not yet read")
+            state = ("Refresh failed; retrying" if error else "Refreshing" if refreshing else "Updated")
             self.query_one("#signal-live-predictions-title", Static).update(
-                f"[b]Top performing forward test strategies — predictions[/b] · [dim]Updated {upd_time} (1m schedule)[/]"
+                f"[b]Top performing forward test strategies — predictions[/b] · [dim]{state} {upd_time} (10s refresh)[/]"
             )
 
     @on(TabbedContent.TabActivated)
@@ -7355,6 +7429,7 @@ class SolTuiApp(App):
         # line it would compare the new text against the *previous* file's
         # loaded text and misreport a freshly-opened file as dirty.
         self._docs_loaded_text = text
+        self._docs_revision = env["result"].get("revision")
         view.text = text
         view.read_only = not editable
         # Unknown languages must clear the previous one, or a .txt renders with
@@ -7401,11 +7476,13 @@ class SolTuiApp(App):
             return
         path = self._docs_current_path
         text = self.query_one("#docs-view", TextArea).text
-        env = self._call("docs.write", {"path": path, "text": text})
+        env = self._call("docs.write", {"path": path, "text": text,
+                                        "expected_revision": self._docs_revision})
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
             return
         self._docs_loaded_text = text
+        self._docs_revision = env["result"].get("revision")
         status.update(f"{path} — saved")
 
     # -- v2 shell ----------------------------------------------------------

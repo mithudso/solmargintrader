@@ -1,3 +1,5 @@
+import { csvCell } from './csv.js';
+
 /**
  * P&L accounting.
  *
@@ -244,10 +246,7 @@ export function fillsToCsv(fills) {
       (f.baseQty * f.priceUsd).toFixed(6),
       f.feeUsd ?? 0,
       f.level ?? '',
-    ].map((value) => {
-      const text = String(value ?? '');
-      return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-    }).join(','),
+    ].map(csvCell).join(','),
   );
   return [header, ...rows].join('\n');
 }

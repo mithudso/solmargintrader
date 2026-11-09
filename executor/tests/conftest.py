@@ -90,7 +90,24 @@ def sys_transfer(src: str, dst: str, lamports: int) -> Instruction:
     return ix(SYSTEM, struct.pack("<IQ", 2, lamports), meta(src, True, True), meta(dst, False, True))
 
 
-def jupiter_ix(owner: str, mint_in: str, mint_out: str, data: bytes = SHARED_ROUTE + b"\x00" * 28) -> Instruction:
+def jupiter_ix(
+    owner: str,
+    mint_in: str,
+    mint_out: str,
+    data: bytes | None = None,
+    *,
+    amount=10_000_000,
+    quoted=901_607,
+    slippage=50,
+) -> Instruction:
+    if data is None:
+        data = (
+            SHARED_ROUTE
+            + b"\x00"
+            + struct.pack("<I", 1)
+            + bytes([48, 100, 0, 1])
+            + struct.pack("<QQHB", amount, quoted, slippage, 0)
+        )
     return ix(
         JUP,
         data,
@@ -113,7 +130,15 @@ OTHER_MINT = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"  # USDT, real mint b
 
 
 def swap_instructions(
-    owner: str, mint_in: str, mint_out: str, amount: int, *, priority_micro: int = 50_000, cu: int = 100_000
+    owner: str,
+    mint_in: str,
+    mint_out: str,
+    amount: int,
+    *,
+    priority_micro: int = 50_000,
+    cu: int = 100_000,
+    quoted: int | None = None,
+    slippage: int = 50,
 ) -> list[Instruction]:
     out = [cu_limit(cu), cu_price(priority_micro)]
     if WSOL_MINT in (mint_in, mint_out):
@@ -122,7 +147,9 @@ def swap_instructions(
         wsol_ata = txverify.ata_address(owner, WSOL_MINT)
         out.append(sys_transfer(owner, wsol_ata, amount))
         out.append(ix(TOKEN, bytes([17]), meta(wsol_ata, False, True)))
-    out.append(jupiter_ix(owner, mint_in, mint_out))
+    if quoted is None:
+        quoted = amount * 901_607 // 10_000_000 if mint_in == WSOL_MINT else amount * 10_000_000 // 901_607
+    out.append(jupiter_ix(owner, mint_in, mint_out, amount=amount, quoted=quoted, slippage=slippage))
     if WSOL_MINT in (mint_in, mint_out):
         wsol_ata = txverify.ata_address(owner, WSOL_MINT)
         out.append(
@@ -345,7 +372,14 @@ def jup_http_for(
         return q
 
     def swap(body):
-        ixs = instructions if instructions is not None else swap_instructions(owner, mint_in, mint_out, amount)
+        q = body["quoteResponse"]
+        ixs = (
+            instructions
+            if instructions is not None
+            else swap_instructions(
+                owner, mint_in, mint_out, amount, quoted=int(q["outAmount"]), slippage=int(q["slippageBps"])
+            )
+        )
         tx = make_tx(ixs, owner)
         return {"swapTransaction": tx_b64(tx), "lastValidBlockHeight": 1200, "simulationError": None}
 

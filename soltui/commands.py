@@ -746,19 +746,22 @@ def _forward_runner(rt: "Runtime") -> None:
             now = time.time()
             minute = int(now // 60)
             if minute != checked_minute and now % 60 >= FORWARD_GRACE_S:
-                checked_minute = minute
                 with rt.lock:
-                    rt.forward_busy = True
-                try:
-                    _forward_check_all(rt, plan)
-                finally:
-                    with rt.lock:
-                        rt.forward_busy = False
+                    acquired = not rt.forward_busy
+                    if acquired:
+                        rt.forward_busy = True
+                if acquired:
+                    checked_minute = minute
+                    try:
+                        _forward_check_all(rt, plan)
+                    finally:
+                        with rt.lock:
+                            rt.forward_busy = False
             rt.forward_stop.wait(1.0)
     finally:
         with rt.lock:
             rt.forward_thread = None
-            rt.forward_busy = False
+            # An overlapping manual tick may still own the busy slot.
 
 
 _SIMULATION_PARAMS = (
@@ -1999,18 +2002,22 @@ def docs_read(ctx: Context, p: dict[str, Any]) -> Any:
     text, language, real = docs_browser.read_document(p["path"], entries)
     entry = next((e for e in entries if e.path == p["path"]), None)
     return {"path": p["path"], "text": text, "language": language, "real_text": real,
-            "editable": bool(real and entry is not None and docs_browser.is_editable(entry))}
+            "editable": bool(real and entry is not None and docs_browser.is_editable(entry)),
+            "revision": docs_browser.document_revision(text) if real else None}
 
 
 @command("docs.write", "Save text to a catalogued, editable file (never research/results/).",
-         (P("path", "string", "Catalogue path.", True), P("text", "string", "New file contents.", True)),
+         (P("path", "string", "Catalogue path.", True), P("text", "string", "New file contents.", True),
+          P("expected_revision", "string", "Exact revision returned by docs.read.", True)),
          read_only=False)
 def docs_write(ctx: Context, p: dict[str, Any]) -> Any:
     try:
-        target = docs_browser.write_document(p["path"], p["text"], ctx.catalog())
-    except (PermissionError, FileNotFoundError, OSError) as exc:
+        target = docs_browser.write_document(p["path"], p["text"], ctx.catalog(),
+                                             expected_revision=p.get("expected_revision"))
+    except (OSError, ValueError) as exc:
         raise CommandError("failed", f"save failed: {exc}") from exc
-    return {"path": p["path"], "bytes": len(p["text"].encode("utf-8")), "file": str(target)}
+    return {"path": p["path"], "bytes": len(p["text"].encode("utf-8")), "file": str(target),
+            "revision": docs_browser.document_revision(p["text"])}
 
 
 # -- P&L -----------------------------------------------------------------------------------------

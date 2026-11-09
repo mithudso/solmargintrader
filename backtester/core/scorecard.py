@@ -1777,8 +1777,9 @@ def target_path(ev: Evaluation) -> np.ndarray:
     """Position target per bar with entry/exit hysteresis.
 
     Enter on a call. Stay on while the composite keeps the same sign with |composite| >= exit
-    and no gate blocks; otherwise go flat (or flip, if the opposite call fires). Hysteresis is
-    the main defence against paying a 16 bps round trip on every 5m wiggle.
+    and no gate blocks; otherwise go flat (or flip, if the opposite call fires).
+    A blocking gate can end the minimum hold early; an opposite call cannot.
+    Hysteresis is the main defence against paying a round trip on every 5m wiggle.
     """
     agg = ev.config["aggregate"]
     hold = int(agg.get("hold", 1))
@@ -1787,19 +1788,17 @@ def target_path(ev: Evaluation) -> np.ndarray:
     held = 0
     for i in range(out.size):
         c, comp = int(ev.indication[i]), ev.composite[i]
-        if c != 0:
+        if ev.blocked[i]:
+            pos, held = 0.0, 0
+        elif pos != 0.0 and held < hold:
+            # Count the entry bar in the hold, including bars with opposite calls.
+            held += 1
+        elif c != 0:
             held = held + 1 if float(c) == pos else 1
             pos = float(c)
         elif pos != 0.0:
             held += 1
-            # Within `hold` bars only a blocking gate ends the trade: one round trip buys the
-            # whole hold. After it, the usual hysteresis decides.
-            if ev.blocked[i]:
-                keep = False
-            elif held <= hold:
-                keep = True
-            else:
-                keep = np.isfinite(comp) and comp * pos >= agg["exit"]
+            keep = np.isfinite(comp) and comp * pos >= agg["exit"]
             if not keep:
                 pos, held = 0.0, 0
         out[i] = pos
@@ -1936,6 +1935,7 @@ def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
                    ts_to: float | None = None) -> dict[str, Any]:
     """Direction accuracy of the per-bar call over the NEXT bar, within [ts_from, ts_to).
 
+    Both the call and its outcome must lie inside the requested interval.
     Outcome for a call at bar t: sign(close[t+1] - close[t]). Ties are excluded from the hit
     rate and counted. `oracle_net_bps` is what a perfect direction call would earn per one-bar
     round trip after costs -- the ceiling, which at 5m is usually negative.
@@ -1950,14 +1950,18 @@ def forecast_stats(evals: Sequence[Evaluation], ts_from: float | None = None,
         if ts_from is not None:
             sel &= b.ts[:-1] >= ts_from
         if ts_to is not None:
-            sel &= b.ts[:-1] < ts_to
+            sel &= b.ts[1:] < ts_to
         r = np.diff(np.log(b.close))[sel] * 1e4
         rows.append((ev.indication[:-1][sel], r, ev.composite[:-1][sel]))
         for h in HORIZONS:
             if len(b) <= h:
                 continue
             k = len(b) - h
-            hsel = sel[:k]
+            hsel = sel[:k].copy()
+            if ts_to is not None:
+                # Each horizon has its own outcome boundary; a one-bar mask
+                # alone still leaks longer held-out labels into the IS table.
+                hsel &= b.ts[h:h + k] < ts_to
             call_h = ev.indication[:k][hsel].astype(float)
             # What a next-open fill earns over h bars: open[t+1] -> close[t+h].
             rh = 1e4 * np.log(b.close[h:h + k] / b.open[1:1 + k])[hsel]

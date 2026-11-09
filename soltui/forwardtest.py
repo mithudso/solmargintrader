@@ -353,14 +353,30 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     ts = raw["ts"]
     if len(ts) == 0 or np.any(np.diff(ts) <= 0) or np.any(ts % 60):
         raise ValueError("No ordered closed one-minute candles")
-    # Save received closed candles before strategy calculation or a later fetch can fail.
-    with closing(_db(db_path)) as db, db:
-        db.executemany("INSERT OR IGNORE INTO candle VALUES (?,?,?,?,?,?,?)", (
-            (asset, int(t), float(o), float(h), float(l), float(c), float(v))
+    # Validate every received segment before persistence, including old rows
+    # outside the latest contiguous signal segment. Gaps remain real gaps.
+    breaks = np.flatnonzero(np.diff(ts) != 60)
+    boundaries = [0, *(int(i) + 1 for i in breaks), len(ts)]
+    for first, last in zip(boundaries[:-1], boundaries[1:], strict=True):
+        validate_bar_arrays({k: v[first:last] for k, v in raw.items()}, "1m")
+    rows = [(asset, int(t), float(o), float(h), float(l), float(c), float(v))
             for t, o, h, l, c, v in zip(*(raw[k] for k in
-                ("ts", "open", "high", "low", "close", "volume")), strict=True)
-            if all(math.isfinite(float(x)) for x in (o, h, l, c, v))
-        ))
+                ("ts", "open", "high", "low", "close", "volume")), strict=True)]
+    # Existing valid observations stay immutable. A malformed legacy row can
+    # be replaced only by a newly validated candle for that exact asset/time.
+    with closing(_db(db_path)) as db, db:
+        for row in rows:
+            old = db.execute("SELECT open,high,low,close,volume FROM candle WHERE asset=? AND ts=?",
+                             row[:2]).fetchone()
+            if old is not None:
+                o, h, low, c, v = old
+                valid = (all(isinstance(x, (int, float)) and math.isfinite(x) for x in old)
+                         and min(o, h, low, c) > 0 and v >= 0
+                         and h >= low and h >= max(o, c) - 1e-9 and low <= min(o, c) + 1e-9)
+                if valid:
+                    continue
+                db.execute("DELETE FROM candle WHERE asset=? AND ts=?", row[:2])
+            db.execute("INSERT INTO candle VALUES (?,?,?,?,?,?,?)", row)
     # Keep gaps visible for settlement. The signal itself sees only the latest contiguous segment.
     candles = {int(t): (float(o), float(c)) for t, o, c in zip(ts, raw["open"], raw["close"], strict=True)
                if math.isfinite(o) and math.isfinite(c) and o > 0 and c > 0}

@@ -10,28 +10,36 @@ export async function verifyDashboardWorkflows(page, browser) {
   };
 await ev(`(async()=>{
  const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';
- window.fixtureDocs=null;window.holdDocRead=false;window.holdDocWrite=false;window.docHeldRead=null;window.docHeldWrite=null;window.previewAvailable=true;
- window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;
+ window.interleaveDocWrite=false;window.fixtureDocs=null;window.holdDocRead=false;window.holdDocWrite=false;window.docHeldRead=null;window.docHeldWrite=null;window.previewAvailable=true;
+ window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;window.liveFailNext=false;
+
  const spec=[
  {name:'prices.status',describe:'Prices',params:[],read_only:true},
  {name:'forwardtest.predictions',describe:'Predictions',params:[{name:'asset',type:'string'}],read_only:true},
  {name:'demo.rows',describe:'Rows',params:[],read_only:true},
  {name:'docs.read',describe:'Read',params:[{name:'path',type:'string',required:true}],read_only:true},
- {name:'docs.write',describe:'Write',params:[{name:'path',type:'string',required:true},{name:'text',type:'string',required:true}],read_only:false},
+ {name:'docs.write',describe:'Write',params:[{name:'path',type:'string',required:true},{name:'text',type:'string',required:true},{name:'expected_revision',type:'string',required:true}],read_only:false},
  {name:'jupiter.order_preview',describe:'Preview',params:[],read_only:false},
  {name:'jupiter.order_submit',describe:'Submit',params:[{name:'preview_id',type:'string',required:true}],read_only:false,requires_confirm:true},
  {name:'settings.save',describe:'Settings',params:[{name:'base_address',type:'string'},{name:'forwardtest_autostart',type:'bool'}],read_only:false}];
+ const revision=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))).map(x=>x.toString(16).padStart(2,'0')).join('');
  const en=(command,result)=>({ok:true,command,result,error:null});
  const tx=async m=>{calls.push(m);if(m.type==='soltuiSession')return {ok:true,result:{available:true,connected:true,generation:1}};if(m.type==='soltuiCommands')return {ok:true,result:en('list',spec)};
  if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
- if(m.command==='forwardtest.predictions'){const response={ok:true,result:en(m.command,{asset:m.params.asset,voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};if(m.params.asset===liveHoldAsset)return new Promise((resolve,reject)=>{liveHeld={resolve:()=>resolve(response),reject:()=>reject(new Error('old coin failed'))}});return response;}
+ if(m.command==='forwardtest.predictions'){if(liveFailNext){liveFailNext=false;throw new Error('temporary prediction read failure')};const response={ok:true,result:en(m.command,{asset:m.params.asset,voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};if(m.params.asset===liveHoldAsset)return new Promise((resolve,reject)=>{liveHeld={resolve:()=>resolve(response),reject:()=>reject(new Error('old coin failed'))}});return response;}
  if(m.command==='settings.save' && m.params.live_vote_min_accuracy!==undefined){liveVoting={min_accuracy:m.params.live_vote_min_accuracy,min_resolved:m.params.live_vote_min_resolved};return {ok:true,result:en(m.command,{settings:liveVoting})};}
  if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW',submission_available:previewAvailable,notice:previewAvailable?'Review preview':'Jupiter submission is unavailable.'})};
  if(m.command==='jupiter.order_submit')return {ok:true,result:en(m.command,{preview_id:m.params.preview_id,status:'FILLED',rows:[{preview_id:'row-choice'}]})};
- if(m.command==='docs.read'){const answer={ok:true,result:en(m.command,{path:m.params.path,text:fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc,editable:true})};if(holdDocRead){holdDocRead=false;return new Promise(resolve=>{docHeldRead=()=>resolve(answer)})}return answer;}
- if(m.command==='docs.write'){if(fixtureDocs)fixtureDocs[m.params.path]=m.params.text;else fixtureDoc=m.params.text;const answer={ok:true,result:en(m.command,{path:m.params.path,bytes:m.params.text.length})};if(holdDocWrite){holdDocWrite=false;return new Promise(resolve=>{docHeldWrite=()=>resolve(answer)})}return answer;};
+ if(m.command==='docs.read'){const answer={ok:true,result:en(m.command,{path:m.params.path,text:fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc,revision:await revision(fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc),editable:true})};if(holdDocRead){holdDocRead=false;return new Promise(resolve=>{docHeldRead=()=>resolve(answer)})}return answer;}
+ if(m.command==='docs.write'){if(interleaveDocWrite){interleaveDocWrite=false;fixtureDocs[m.params.path]='concurrent writer';}const current=fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc;if(m.params.expected_revision!==await revision(current))return {ok:true,result:{ok:false,error:{message:'Document changed since it was read.'}}};if(fixtureDocs)fixtureDocs[m.params.path]=m.params.text;else fixtureDoc=m.params.text;const answer={ok:true,result:en(m.command,{path:m.params.path,bytes:m.params.text.length,revision:await revision(m.params.text)})};if(holdDocWrite){holdDocWrite=false;return new Promise(resolve=>{docHeldWrite=()=>resolve(answer)})}return answer;};
  return {ok:true,result:en(m.command,{rows:[{name:'apple',value:2},{name:'pear',value:1}]})};};
- await (await import(chrome.runtime.getURL('src/ui/soltui-panel.js'))).mountSoltuiPanel(r,tx);
+ const intervals=[],nativeSetInterval=window.setInterval;
+ window.setInterval=(fn,delay,...args)=>{const id=nativeSetInterval(fn,delay,...args);intervals.push({fn,delay,id});return id};
+ try {await (await import(chrome.runtime.getURL('src/ui/soltui-panel.js'))).mountSoltuiPanel(r,tx)}
+ finally {window.setInterval=nativeSetInterval;for(const interval of intervals)clearInterval(interval.id)}
+ const predictionTimer=intervals.find(x=>x.fn.name==='pollLivePredictions');
+ window.liveTimerTick=predictionTimer?.fn;window.liveTimerDelay=predictionTimer?.delay;
+ window.livePriceTick=intervals.find(x=>x.delay===5000)?.fn;
  window.pick=name=>{const s=r.querySelector('#soltuiCommand');s.value=name;s.dispatchEvent(new Event('change'))};
  })()`);
 await ev(`pick('jupiter.order_preview');r.querySelector('#soltuiForm').requestSubmit()`);
@@ -83,6 +91,15 @@ await ev(`r.querySelector('#soltuiEditor').value='draft B';r.querySelector('#sol
 assert.equal(await ev(`r.querySelector('#soltuiEditorStatus').textContent`),'Editing B','a late acknowledgement cannot mark a new document saved');
 assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'draft B');
 console.log('PASS editor binds saves and acknowledgements to the original document');
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='A.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('A.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='CAS draft';interleaveDocWrite=true;r.querySelector('#soltuiSave').click()`);
+await wait(`r.querySelector('#soltuiEditorStatus').textContent.startsWith('Save refused:')`);
+assert.equal(await ev(`fixtureDocs['A.md']`),'concurrent writer');
+assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'CAS draft');
+assert.match(await ev(`calls.filter(x=>x.command==='docs.write').at(-1).params.expected_revision`),/^[a-f0-9]{64}$/);
+console.log('PASS atomic revision conflict preserves concurrent text and editor draft');
+
 await ev(`previewAvailable=false;pick('jupiter.order_preview');r.querySelector('#soltuiForm').requestSubmit()`);
 await wait(`preview===3`);
 assert.equal(await ev(`r.querySelector('#soltuiNext button')`),null);
@@ -111,6 +128,43 @@ await ev(`r.querySelector('#soltuiLiveStream').checked=true;r.querySelector('#so
 await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelector('#soltuiLiveStatus').textContent.startsWith('SOL-USD')`);
 assert.equal(await ev(`r.querySelector('#soltuiLiveStream').checked`),true,'obsolete coin failures cannot stop the current stream');
 console.log('PASS coin switch clears old scores and ignores obsolete failures');
+
+// Drive the registered timer with a clock; no manual refresh may perform the
+// second read, and Follow stream stays off throughout the cadence checks.
+assert.equal(await ev(`typeof liveTimerTick`), 'function');
+assert.equal(await ev(`liveTimerDelay`), 10000, 'predictions have a dedicated ten-second timer');
+await ev(`window.realNow=Date.now;window.testNow=realNow();Date.now=()=>testNow;liveClock=testNow-1000;r.querySelector('#soltuiLiveStream').checked=false;liveDirection='UP';r.querySelector('#soltuiLiveRefresh').click()`);
+await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated') && r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy')`);
+const reads = () => ev(`calls.filter(x=>x.command==='forwardtest.predictions').length`);
+const baseline = await reads();
+await ev(`liveDirection='DOWN';testNow+=9999;livePriceTick()`);
+assert.equal(await reads(), baseline, 'no read before the ten-second deadline');
+await ev(`testNow+=1;liveTimerTick()`);
+await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Sell')`);
+assert.equal(await reads(), baseline + 1);
+assert.ok(await ev(`r.querySelector('#soltuiLivePredictions').textContent.includes('DOWN')`));
+assert.ok(await ev(`r.querySelector('#soltuiLivePredictionStatus').textContent.includes('10s')`));
+await ev(`liveFailNext=true;testNow+=10000;liveTimerTick()`);
+await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.includes('temporary prediction read failure')`);
+assert.equal(await reads(), baseline + 2);
+await ev(`liveDirection='UP';testNow+=9999;livePriceTick()`);
+assert.equal(await reads(), baseline + 2, 'failures retry at ten seconds, not every price tick');
+await ev(`testNow+=1;liveTimerTick()`);
+await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated')`);
+assert.equal(await reads(), baseline + 3);
+await ev(`liveHoldAsset='SOL';testNow+=10000;liveTimerTick()`);
+await wait(`liveHeld!==null`);
+await ev(`testNow+=10000;liveTimerTick()`);
+assert.equal(await reads(), baseline + 4, 'an in-flight request cannot overlap another read');
+await ev(`liveHoldAsset=null;liveHeld.resolve();liveHeld=null`);
+await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated')`);
+await ev(`r.querySelector('#soltuiLive').hidden=true;testNow+=10000;liveTimerTick()`);
+assert.equal(await reads(), baseline + 4, 'hidden views do not poll');
+await ev(`r.querySelector('#soltuiLive').hidden=false;liveTimerTick()`);
+await wait(`calls.filter(x=>x.command==='forwardtest.predictions').length===${baseline + 5}`);
+await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated')`);
+await ev(`Date.now=realNow`);
+console.log('PASS automatic ten-second prediction refresh with Follow off, changed rows, retry, single request and hidden-view guards');
 
 await ev(`window.dispatchEvent(new PageTransitionEvent('pagehide'))`);
 

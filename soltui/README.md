@@ -120,6 +120,8 @@ Signal Live shows an aggregate score and green Strong Buy/Buy, gray Flat or red 
 above its live price view and prediction table. Strategies and voted horizons must meet a saved
 accuracy/sample floor (defaults 60% and 20 resolved); edit the live controls and press Enter. Each
 new recorder tick keeps its observed score beneath the graph, shifting left with the price history.
+The prediction table refreshes every ten seconds in a background worker, with visible refresh
+times and automatic retry after read errors. Forecast issuance still uses closed minute candles.
 See [the scoring rule and freshness contract](../docs/LIVE-PREDICTION-SCORE.md).
 
 ## The tabs

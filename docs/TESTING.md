@@ -1,10 +1,10 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 909 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1211 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 34 tests
-cd extension && npm test                                # 372 tests
+python3 -m unittest discover -s backtester/tests -t .   # 941 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1264 tests (~840s, optional)
+python3 -m unittest discover -s mongo/tests -t .        # 46 tests
+cd extension && npm test                                # 384 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -14,18 +14,18 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2526 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2635 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 372 tests cover
+## Extension — what the 384 tests cover
 
 | Area | Examples |
 | --- | --- |
-| Live prediction score | Shared Python/browser vectors bind all five grades, accuracy/sample floors, freshness and equal strategy weighting. Headless TUI and Chrome checks prove aligned immutable tick scores, leftward motion, coin-switch reset and obsolete-response/error suppression |
+| Live prediction score | Shared Python/browser vectors bind all five grades, accuracy/sample floors, freshness and equal strategy weighting. Headless TUI and Chrome checks prove aligned immutable tick scores, leftward motion, automatic ten-second prediction refresh, error recovery, non-overlapping reads, coin-switch reset and obsolete-response/error suppression |
 | Charts | the vendored Lightweight Charts file is the pinned 5.2.1 build (sha256), ships LICENSE and NOTICE; equity points map to ascending second-resolution line data (`test/charts.test.js`); `npm run e2e` draws it under the real extension CSP with the attribution link |
 | Grid math | Arithmetic and geometric ladders against hand-computed values; endpoint pinning; degenerate configs rejected |
 | **Round-trip economics** | An exit rests one rung above its lot, never at the same level; `gross === notional × rungWidth` |
@@ -107,7 +107,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 909 tests
+## Backtester — 941 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -159,7 +159,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1211 tests
+## soltui — 1264 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
@@ -182,7 +182,7 @@ spent/explored temporal reservations, legacy fences, historical mutation, cooper
 process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
 Fixtures isolate configuration/data; tests stub the live order path and do not submit real orders.
 
-## mongo — 34 tests
+## mongo — 46 tests
 
 Split between pure helpers that need nothing and integration tests that **skip cleanly
 when no mongod is listening**, so a checkout without a database runs the suite green

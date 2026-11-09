@@ -25,7 +25,9 @@ What it does:
   exchange trade time for a ticker-only quote, so a reader ages a stale touch out instead of
   trusting it. After a disconnect every book is dropped and rebuilt from a fresh snapshot.
 * **Records** snapshots to `<config dir>/prices/YYYY-MM-DD.jsonl.gz` (UTC day). Each flush is
-  one gzip member, so a crash loses at most the unflushed batch and the reader
+  one gzip member. Before the first append after restart, the recorder removes an incomplete
+  or corrupt tail under its recorder lock and logs the recovered byte count. A crash loses
+  at most the unflushed batch and the damaged final member; the reader
   (`backtester.core.trianglesim.read_snapshot_files`) keeps every complete line before it.
 * **Publishes** the newest snapshot to `<config dir>/prices/latest.json` (atomic replace),
   which is how the console shows live prices without holding the socket itself.
@@ -57,7 +59,9 @@ import socket
 import ssl
 import struct
 import sys
+import tempfile
 import time
+import zlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Sequence
@@ -428,6 +432,69 @@ def _try_lock(path: Path) -> int | None:
     return fd
 
 
+def _repair_gzip_tail(path: Path) -> tuple[int, Path | None]:
+    """Keep the valid gzip-member prefix; caller holds the recorder lock.
+
+    Scan once per day file after restart, with bounded compressed and decoded
+    chunks. Gzip validates each member's CRC/footer before we commit its end.
+    Bytes after the first invalid/incomplete member cannot be replayed safely.
+    Preserve that suffix in a private quarantine before truncating the stream.
+    """
+    chunk_size = 64 * 1024
+    try:
+        fh = path.open("r+b")
+    except FileNotFoundError:
+        return 0, None
+    with fh:
+        valid_end = 0
+        decoder = zlib.decompressobj(wbits=31)
+        corrupt = False
+        while data := fh.read(chunk_size):
+            while data:
+                try:
+                    decoded = decoder.decompress(data, chunk_size)
+                    # A size-limited decode can retain output without retaining
+                    # input. Drain that output before reading another chunk.
+                    while not decoder.eof and not decoder.unconsumed_tail and len(decoded) == chunk_size:
+                        decoded = decoder.decompress(b"", chunk_size)
+                except zlib.error:
+                    corrupt = True
+                    break
+                if decoder.eof:
+                    data = decoder.unused_data
+                    valid_end = fh.tell() - len(data)
+                    decoder = zlib.decompressobj(wbits=31)
+                else:
+                    data = decoder.unconsumed_tail
+            if corrupt:
+                break
+        size = os.fstat(fh.fileno()).st_size
+        removed = size - valid_end
+        quarantine = None
+        if removed:
+            fd, name = tempfile.mkstemp(prefix=f"{path.name}.", suffix=".damaged-tail", dir=path.parent)
+            quarantine = Path(name)
+            try:
+                with os.fdopen(fd, "wb") as tail:
+                    fh.seek(valid_end)
+                    while data := fh.read(chunk_size):
+                        tail.write(data)
+                    tail.flush()
+                    os.fsync(tail.fileno())
+                directory_fd = os.open(path.parent, os.O_RDONLY)
+                try:
+                    os.fsync(directory_fd)
+                finally:
+                    os.close(directory_fd)
+            except OSError:
+                quarantine.unlink(missing_ok=True)
+                raise  # leave the original stream intact when quarantine failed
+            fh.truncate(valid_end)
+            fh.flush()
+            os.fsync(fh.fileno())
+        return removed, quarantine
+
+
 class Recorder:
     """Owns the socket and the files. `run` is the loop; everything it decides is testable."""
 
@@ -456,6 +523,7 @@ class Recorder:
         self._next_snapshot = 0.0
         self._next_flush = 0.0
         self.stopping = False
+        self._repaired_days: set[Path] = set()
 
     def snapshot(self, now: float) -> str | None:
         """One snapshot line from the current state, or None before the first quote."""
@@ -508,8 +576,23 @@ class Recorder:
             by_day.setdefault(day_path(t, self.root), []).append(line)
         self.root.mkdir(parents=True, exist_ok=True)
         for path, lines in by_day.items():
-            with gzip.open(path, "at", encoding="utf-8") as fh:
-                fh.write("\n".join(lines) + "\n")
+            if path not in self._repaired_days:
+                removed, quarantine = _repair_gzip_tail(path)
+                if removed:
+                    self.last_error = (f"Recovered {removed} bytes of incomplete/corrupt gzip tail from {path.name}; "
+                                       f"preserved as {quarantine.name}")
+                    # Detached/LaunchAgent stdout is recorder.log; keep evidence
+                    # even if the next latest.json snapshot never gets written.
+                    print(f"{datetime.now(timezone.utc):%Y-%m-%dT%H:%M:%SZ} {self.last_error}", flush=True)
+            try:
+                with gzip.open(path, "at", encoding="utf-8") as fh:
+                    fh.write("\n".join(lines) + "\n")
+            except OSError:
+                # A failed append may itself leave a partial member. Repair it
+                # before a subsequent retry in this recorder instance too.
+                self._repaired_days.discard(path)
+                raise
+            self._repaired_days.add(path)
         self.pending = []
 
     def handle(self, text: str, now: float) -> None:

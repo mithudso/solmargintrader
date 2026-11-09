@@ -1,6 +1,7 @@
 """Control identities, feed silence and experiment races, isolated from owner state."""
 from __future__ import annotations
 
+import gzip
 import json
 import os
 import socket
@@ -10,14 +11,122 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from backtester.core.trianglesim import read_snapshot_files
 from soltui import experiment_jobs as jobs
 from soltui import experiment_runner as runner
 from soltui import pricefeed as pf
+from soltui.bots import SnapshotCursor
 from soltui.experiments import ExperimentStore
 from soltui.tests.test_pricefeed import FakeSock, connected, server_frame
 
 
 class RecorderRegressions(unittest.TestCase):
+    def test_restart_repairs_only_the_incomplete_gzip_tail_before_appending(self):
+        t = 1_800_000_000.0
+        def line(at):
+            return json.dumps({"t": at, "q": {"ETH-USD": [10, 11, 10.5, 1, 2, at]}}) + "\n"
+        prefix = gzip.compress(line(t).encode()) + gzip.compress(line(t + 60).encode())
+        final_member = gzip.compress(line(t + 120).encode())
+        for tail in (final_member[:len(final_member) // 2], final_member[:-4], b"corrupt gzip tail"):
+            with self.subTest(tail_bytes=len(tail)), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                path = pf.day_path(t, root)
+                path.write_bytes(prefix + tail)
+                cursor = SnapshotCursor(t, root)
+                self.assertEqual([at for at, _ in cursor.read_new()], [t, t + 60])
+                rec = pf.Recorder(["ETH-USD"], root=root)
+                rec.pending = [line(t + 180).rstrip("\n")]
+                lock = pf._try_lock(pf.paths(root)["lock"])
+                self.assertIsNotNone(lock)
+                try:
+                    with mock.patch("builtins.print") as diagnostic:
+                        rec.flush(t + 181)
+                finally:
+                    os.close(lock)
+                self.assertTrue(path.read_bytes().startswith(prefix), "preserve every complete member byte")
+                self.assertEqual([at for at, _ in cursor.read_new()], [t + 180])
+                self.assertEqual([at for at, _ in read_snapshot_files([path])], [t, t + 60, t + 180])
+                self.assertEqual(cursor.read_new(), [])
+                self.assertEqual(rec.pending, [])
+                tails = list(root.glob("*.damaged-tail"))
+                self.assertEqual(len(tails), 1)
+                self.assertEqual(tails[0].read_bytes(), tail)
+                self.assertEqual(tails[0].stat().st_mode & 0o777, 0o600)
+                self.assertEqual(pf.recorded_files(root), [path])
+                self.assertIn(str(len(tail)), rec.last_error)
+                diagnostic.assert_called_once()
+
+    def test_failed_append_repairs_again_without_replaying_completed_members(self):
+        t = 1_800_000_000.0
+        def line(at):
+            return json.dumps({"t": at, "q": {"ETH-USD": [10, 11, 10.5, 1, 2, at]}})
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rec = pf.Recorder(["ETH-USD"], root=root)
+            path = pf.day_path(t, root)
+            rec.pending = [line(t)]
+            with mock.patch.object(pf, "_repair_gzip_tail", wraps=pf._repair_gzip_tail) as repair:
+                rec.flush(t)
+                prefix = path.read_bytes()
+                rec.pending = [line(t + 60)]
+                class FailedAppend:
+                    def __enter__(self):
+                        return self
+                    def __exit__(self, *args):
+                        return False
+                    def write(self, text):
+                        with path.open("ab") as partial:
+                            partial.write(gzip.compress(text.encode())[:15])
+                        raise OSError("fixture disk fault")
+                with mock.patch.object(pf.gzip, "open", return_value=FailedAppend()):
+                    with self.assertRaisesRegex(OSError, "fixture disk fault"):
+                        rec.flush(t + 60)
+                self.assertEqual(rec.pending, [line(t + 60)])
+                with mock.patch("builtins.print"):
+                    rec.flush(t + 61)
+                self.assertEqual(repair.call_count, 2, "one startup scan and one failed-append recovery")
+                self.assertTrue(path.read_bytes().startswith(prefix))
+                self.assertEqual([at for at, _ in read_snapshot_files([path])], [t, t + 60])
+                rec.pending = [line(t + 120)]
+                rec.flush(t + 121)
+                self.assertEqual(repair.call_count, 2, "successful flushes do not rescan a whole day")
+                self.assertEqual([at for at, _ in read_snapshot_files([path])], [t, t + 60, t + 120])
+
+    def test_quarantine_failure_leaves_the_original_stream_and_pending_batch_intact(self):
+        t = 1_800_000_000.0
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = pf.day_path(t, root)
+            original = gzip.compress(b'{"t":1800000000,"q":{}}\n') + b"damaged tail"
+            path.write_bytes(original)
+            rec = pf.Recorder(["ETH-USD"], root=root)
+            rec.pending = ['{"t":1800000060,"q":{}}']
+            for failure in (mock.patch.object(pf.tempfile, "mkstemp", side_effect=OSError("fixture full disk")),
+                            mock.patch.object(pf.os, "fsync", side_effect=OSError("fixture full disk"))):
+                with failure, mock.patch.object(pf.gzip, "open") as append:
+                    with self.assertRaisesRegex(OSError, "fixture full disk"):
+                        rec.flush(t + 61)
+                append.assert_not_called()
+                self.assertEqual(path.read_bytes(), original)
+                self.assertEqual(list(root.glob("*.damaged-tail")), [])
+                self.assertEqual(rec.pending, ['{"t":1800000060,"q":{}}'])
+
+    def test_repair_handles_chunk_boundaries_and_large_compression_ratios(self):
+        import random
+        t = 1_800_000_000.0
+        random_bytes = random.Random(7).randbytes(140_000)
+        for payload in (b"x" * 300_000, random_bytes):
+            with self.subTest(size=len(payload)), tempfile.TemporaryDirectory() as tmp:
+                path = pf.day_path(t, Path(tmp))
+                prefix = gzip.compress(payload) + gzip.compress(b"second member\n")
+                tail = gzip.compress(b"incomplete member\n")[:-3]
+                path.write_bytes(prefix + tail)
+                removed, quarantine = pf._repair_gzip_tail(path)
+                self.assertEqual(removed, len(tail))
+                self.assertEqual(quarantine.read_bytes(), tail)
+                self.assertEqual(path.read_bytes(), prefix)
+                self.assertEqual(gzip.decompress(path.read_bytes()), payload + b"second member\n")
+
     def test_stop_targets_only_the_current_recorder_instance_and_cleans_up(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

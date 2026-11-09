@@ -1,12 +1,36 @@
 # Prompt history
 
-Version: 131
-Delta: v130 to v131; preserve both concurrent workflow histories.
+Version: 135
+Delta: v134 to v135; preserve concurrent histories and current optimizer continuation.
+
+## v135 - 2026-11-08
+
+```text
+Run the deep code optimizer on this repo
+```
+
+## v134 - 2026-11-08
+
+```text
+I approved the three hooks
+```
+
+## v133 - 2026-11-08
+
+```text
+Run the deep prompt optimizer on this prompt and then execute it: Create a skill that is activated by a post tool use hook or whenever a stopping point is reached, looks at the whole context and memory of the session and asks how that could have been done better, what was the weakest link in the chain and is it possible to improve or correct something about that process? What was the strongest part of the session - is there something that could make those qualities even better? If there is genuinely nothing there then don't make anything up, but if you don't see anything obvious try becoming more creative. When you have one or two ideas, if is very obvious like cleaning up some trash files, or adding tagging to files then just do it and let the user know afterwards, if it is something that requires attention or a decision then prompt the user with a single question that explains the reason, what you want to do, and what you think will happen. Some common helpful cleanup actions that are often forgotten are cleaning up old branches, not committing completed code, leaving temporary files cluttering the area, but also look at the skills and agents that were used, is there something about them that needs to be resolved. Does a skill get stalled in a useless loop for too long with no benefit? Did an agent start in the wrong place or not listen to feedback? Find how the process could be improved and either do that or ask permission to do it.
+```
+
+## v132 - 2026-11-08
+
+```text
+run the deep prompt optimizer on this prompt then run it: Look at this repo and find all the things it does and can do, and then draft the ideal chrome extension UI interface for a user to gain the most utility and pleasure from it. Before submitting the proposal to the user present it to a council of advisors for critique, when all of the criticisms are implemented then present it as an option to the user. The most used items are going to be the back testing, forward testing, live signal view, and bot monitoring.
+```
 
 ## v131 - 2026-11-08
 
 ```text
-Run the deep code optimizer on this repo
+In the Live signal with the graph, the forward test strategies -predictions never update. Make it so they update every 10s.
 ```
 
 ## v130 - 2026-11-08

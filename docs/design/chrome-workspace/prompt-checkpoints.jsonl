@@ -1,0 +1,8 @@
+{"iter": 1, "step": "2-small-merged-group-1+2", "findings": ["A", "B", "D"], "applied": [], "artifact_sha256": "e3a430ca784e21f577fb037800075f1111b659ae9c3ea562601a7e75cadc45ff"}
+{"iter": 1, "step": "2-small-merged-group-3", "findings": ["E", "F", "G"], "applied": [], "artifact_sha256": "e3a430ca784e21f577fb037800075f1111b659ae9c3ea562601a7e75cadc45ff"}
+{"iter": 1, "step": "2-small-merged-group-4+5", "findings": ["H", "I", "J", "O"], "applied": [], "artifact_sha256": "e3a430ca784e21f577fb037800075f1111b659ae9c3ea562601a7e75cadc45ff"}
+{"iter": 1, "step": "4-rewrite", "findings": ["A", "B", "D", "E", "F", "G", "H", "I", "J", "O"], "applied": ["A", "B", "D", "E", "F", "G", "H", "I", "J", "O"], "artifact_sha256": "cf9645c4faa3f6bedf8af51b340e0fe308b63bd0d80ebcfbaa9097834e5175b3"}
+{"iter": 2, "step": "2-all-passes-reaudit", "findings": [], "applied": [], "artifact_sha256": "cf9645c4faa3f6bedf8af51b340e0fe308b63bd0d80ebcfbaa9097834e5175b3"}
+{"iter": 2, "step": "6a0-parent-isolated-blind-review", "findings": ["G Medium", "D Low", "M Low"], "applied": [], "artifact_sha256": "cf9645c4faa3f6bedf8af51b340e0fe308b63bd0d80ebcfbaa9097834e5175b3"}
+{"iter": 3, "step": "4-blind-review-fixes", "findings": ["G Medium", "D Low", "M Low"], "applied": ["G Medium", "D Low", "M Low"], "artifact_sha256": "ec6fe69aa3ad13bf3a661341179fe72cca99f34e87e4b6f7868feb7806ac3c53"}
+{"iter": 3, "step": "6a0-final-isolated-review-and-6f-selfcheck", "findings": [], "applied": ["G Medium", "D Low", "M Low"], "artifact_sha256": "ec6fe69aa3ad13bf3a661341179fe72cca99f34e87e4b6f7868feb7806ac3c53", "blind_evidence": "ISOLATED", "reviewer": "/root/prompt_blind_review", "self_check": "8/8 EXECUTED"}

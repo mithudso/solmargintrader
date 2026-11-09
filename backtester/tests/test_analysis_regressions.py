@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 from collections import Counter
+import io
 import json
 from pathlib import Path
 import subprocess
+import tempfile
 import unittest
 from unittest import mock
 
@@ -15,6 +17,75 @@ from backtester.core import compound, fetch_minutes as fm, gridsim, scorecard as
 from backtester.core.engine import EngineConfig, run_backtest
 from backtester.core.types import CostConfig, IntrabarLayer, Mode
 from backtester.tests.test_engine_audit import Always, bars, zero_cost
+
+
+class SecondAuditRegressions(unittest.TestCase):
+    @staticmethod
+    def evaluation(closes, calls, *, hold=1, blocked=None):
+        arrays = bars(closes)
+        b = sc.Bars.from_mapping(arrays)
+        cfg = sc.default_config()
+        cfg['aggregate']['hold'] = hold
+        return sc.Evaluation(b, cfg, {}, {}, np.full(len(b), 'neutral'),
+                             np.asarray(calls, dtype=float), np.ones(len(b)),
+                             np.asarray(blocked if blocked is not None else [False]*len(b)),
+                             np.asarray(calls, dtype='int8'))
+
+    def test_open_gap_liquidates_old_collateral_before_every_queued_target(self):
+        from backtester.core.compound import PrecomputedTargets
+        for side, gap in ((1., 84.), (-1., 116.)):
+            for queued in (0., side, -side):
+                a = bars((100., 100., gap))
+                a['ts'] = 1_700_000_100 + np.arange(3)*300
+                cfg = EngineConfig(mode=Mode.PERP, interval='5m', leverage=5,
+                                   allow_short=True, fill_delay=1,
+                                   costs=zero_cost(max_lev_constant=20,
+                                                   liquidation_forfeits_collateral=True))
+                with self.subTest(side=side, queued=queued):
+                    result = run_backtest(PrecomputedTargets([side, queued, 0.]), a, cfg)
+                    self.assertEqual(result.liquidation_count, 1)
+                    self.assertEqual(result.metrics.final_equity, 0.)
+                    gap_trades = [t for t in result.trades if t.bar_index == 2]
+                    self.assertEqual(gap_trades[0].reason, 'liquidation')
+                    self.assertFalse(any(t.reason == 'resize_down' for t in gap_trades))
+
+    def test_minimum_hold_blocks_early_opposite_calls_but_gates_still_exit(self):
+        for side in (1, -1):
+            calls = [side, -side, -side, -side, -side]
+            with self.subTest(side=side):
+                ev = self.evaluation([100.]*5, calls, hold=4)
+                np.testing.assert_array_equal(sc.target_path(ev), [side]*4+[-side])
+                ev.blocked[2] = True
+                np.testing.assert_array_equal(sc.target_path(ev), [side, side, 0., -side, -side])
+
+    def test_forecast_statistics_cannot_use_outcomes_at_or_after_split(self):
+        results = []
+        for future in (200., 50.):
+            close = [100.+i for i in range(30)] + [future]*300
+            ev = self.evaluation(close, [1]*len(close))
+            results.append(sc.forecast_stats([ev], None, ev.bars.ts[30]))
+        self.assertEqual(results[0], results[1])
+        self.assertEqual(results[0]['bars'], 29)
+        self.assertEqual({r['bars']:r['calls'] for r in results[0]['horizons']},
+                         {1:29, 6:24, 12:18})
+
+    def test_non_list_candle_json_refuses_and_leaves_fetch_window_retryable(self):
+        for raw in (b'null', b'false', b'0', b'""', b'"candles"'):
+            with self.subTest(raw=raw), mock.patch.object(fm.urllib.request, 'urlopen',
+                    side_effect=lambda *a, **k: io.BytesIO(raw)):
+                with self.assertRaises(fm.FetchError):
+                    fm.get_candles('https://invalid.example/offline')
+        with tempfile.TemporaryDirectory() as td, mock.patch.object(fm, 'DATA', Path(td)), \
+                mock.patch.object(fm, 'effective_windows', return_value=[0]), \
+                mock.patch.object(fm.urllib.request, 'urlopen', side_effect=lambda *a, **k: io.BytesIO(b'null')), \
+                mock.patch.object(fm, 'save_progress') as save, \
+                mock.patch.object(fm, 'finalise', return_value=pd.DataFrame()), \
+                mock.patch.object(fm, 'coverage', return_value='offline'):
+            self.assertEqual(fm.fetch_minutes('BTC', 1, workers=1, resume=False, verbose=False), 'offline')
+            self.assertTrue(save.called)
+            self.assertTrue(all(call.args[1] == set() for call in save.call_args_list))
+        with mock.patch.object(fm.urllib.request, 'urlopen', return_value=io.BytesIO(b'[]')):
+            self.assertEqual(fm.get_candles('https://invalid.example/offline'), [])
 
 
 class AnalysisRegressions(unittest.TestCase):

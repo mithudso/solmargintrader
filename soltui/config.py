@@ -211,7 +211,11 @@ def load_settings(path: Path | None = None) -> Settings:
     Unknown keys are ignored rather than fatal, so a config written by a newer
     build still loads in an older one.
     """
-    candidates = [path] if path else [CONFIG_PATH, CONFIG_PATH_JSON]
+    # Parser installation must not resurrect an older representation. Explicit
+    # paths stay authoritative; automatic loading follows the newest saved file.
+    candidates = ([path] if path else sorted(
+        (p for p in (CONFIG_PATH, CONFIG_PATH_JSON) if p.exists()),
+        key=lambda p: p.stat().st_mtime_ns, reverse=True))
     raw: dict[str, Any] | None = None
     for candidate in candidates:
         if candidate and candidate.exists():

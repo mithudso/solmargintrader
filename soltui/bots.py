@@ -110,6 +110,7 @@ MAX_BRIDGED_FRACTION = 0.02  # an optimize window may be at most this share brid
 MIN_BACKTEST_BARS = 24
 MIN_HOUR_MINUTES = 30  # an hour resampled from 1m needs this many minutes, or it counts as missing
 MAX_FORWARD_GAP_MIN = 2
+MAX_FORWARD_QUOTE_AGE_S = 5.0
 OPTIMIZE_WINDOWS = 6
 PER_COIN_OPTIMIZE_WINDOWS = 6  # half are holdout; incremental decisions are labeled tentative
 PER_COIN_MIN_DECIDED_CELLS = 3
@@ -902,7 +903,7 @@ class SnapshotCursor:
             except OSError:
                 continue
             for line in self._complete_members(data):
-                parsed = parse_snapshot_line(line)
+                parsed = parse_snapshot_line(line, require_quote_time=True)
                 if parsed is None or parsed[0] < self.start_ts:
                     continue
                 if end_ts is not None and parsed[0] > end_ts:
@@ -924,9 +925,16 @@ class MinuteBars:
 
     def feed(self, t: float, quotes: dict[str, Any]) -> None:
         q = quotes.get(self.product)
-        if q is None:
+        if q is None or len(q) != 5:
             return
-        mid = (q[0] + q[1]) / 2.0
+        try:
+            bid, ask, quote_time = float(q[0]), float(q[1]), float(q[4])
+        except (TypeError, ValueError):
+            return
+        if (not all(math.isfinite(v) for v in (t, bid, ask, quote_time))
+                or not 0 < bid <= ask or not 0 <= t - quote_time <= MAX_FORWARD_QUOTE_AGE_S):
+            return
+        mid = bid + (ask - bid) / 2.0
         minute = int(t // 60) * 60
         bar = self.bars.get(minute)
         if bar is None:
@@ -957,6 +965,15 @@ class MinuteBars:
                 bridged += max(0, missing)
             o, h, low, c = self.bars[m]
             rows.append([m, o, h, low, c])
+        if rows and gap_at is None:
+            missing = (cutoff - int(rows[-1][0])) // 60 - 1
+            if missing > MAX_FORWARD_GAP_MIN:
+                gap_at = int(rows[-1][0])
+            else:
+                last = rows[-1][4]
+                for _ in range(max(0, missing)):
+                    rows.append([rows[-1][0] + 60, last, last, last, last])
+                bridged += max(0, missing)
         arr = np.asarray(rows, dtype="float64").reshape(-1, 5)
         return ({"ts": arr[:, 0].astype("int64"), "open": arr[:, 1], "high": arr[:, 2], "low": arr[:, 3],
                  "close": arr[:, 4]}, gap_at, bridged)

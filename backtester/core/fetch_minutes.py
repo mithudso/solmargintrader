@@ -144,6 +144,8 @@ def get_candles(url: str, limiter: RateLimiter | None = None) -> list:
             if isinstance(payload, dict):
                 # The venue reports errors as a JSON object, not an HTTP status.
                 raise FetchError(f"venue refused the request: {payload.get('message')}")
+            if not isinstance(payload, list):
+                raise FetchError("candle response must be a list; malformed window remains retryable")
             return payload
         except urllib.error.HTTPError as exc:
             # HTTPError subclasses URLError, so without this clause a 429 falls into the

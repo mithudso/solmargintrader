@@ -5,6 +5,7 @@ return a transaction that drains the wallet while still "being a swap". Nothing 
 
 Layer 1, `check_static` (pure, no network): reads the transaction itself.
   * the fee payer is the owner, and the owner is the only signer;
+  * the fully decoded ExactIn route spends the approved input and enforces at least the approved minimum output;
   * every program id is on PROGRAM_ALLOWLIST, and each allowed program may run only the instructions listed for it;
   * compute-budget instructions are present and bound the priority fee;
   * SOL leaving the owner through System instructions is bounded by the input amount plus token-account rent;
@@ -34,6 +35,7 @@ from typing import Any
 from solders.pubkey import Pubkey
 from solders.transaction import VersionedTransaction
 
+from .jupiter_route import decode_route
 from .tokens import WSOL_MINT
 
 # --- Program allowlist. Each entry says why the program may appear and what it may do. ---------------------------
@@ -209,14 +211,26 @@ def check_static(facts: TxFacts, exp: Expectation) -> tuple[list[str], dict[str,
     system_out = 0
     created_atas: list[dict[str, str]] = []
     jupiter_ixs = 0
+    jupiter_route: dict[str, Any] = {}
     for ix in facts.instructions:
         if ix.program not in PROGRAM_ALLOWLIST:
             problems.append(f"program {ix.program} is not on the allowlist")
             continue
         if ix.program == JUPITER_V6:
             jupiter_ixs += 1
-            if ix.data[:8] not in JUPITER_ALLOWED_DISCRIMINATORS:
+            kind = JUPITER_ALLOWED_DISCRIMINATORS.get(ix.data[:8])
+            if kind is None:
                 problems.append("Jupiter instruction is not an ExactIn route")
+            else:
+                try:
+                    bound = decode_route(ix.data, kind)
+                    jupiter_route = vars(bound)
+                    if bound.amount_in != exp.amount_in:
+                        problems.append("Jupiter route input does not match the approved amount")
+                    if exp.min_out <= 0 or bound.minimum_out < exp.min_out:
+                        problems.append("Jupiter route minimum output is below the approved minOut")
+                except ValueError as error:
+                    problems.append(str(error))
             if owner not in ix.accounts:
                 problems.append("Jupiter instruction does not involve the owner")
         elif ix.program == COMPUTE_BUDGET:
@@ -256,6 +270,7 @@ def check_static(facts: TxFacts, exp: Expectation) -> tuple[list[str], dict[str,
         "created_atas": created_atas,
         "lookup_tables": facts.lookup_tables,
         "writable_account_count": len(facts.writable),
+        "jupiter_route": jupiter_route,
     }
     return problems, info
 

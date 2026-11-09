@@ -111,19 +111,27 @@ def _save(path: Path, record: dict[str, Any]) -> None:
         os.close(fd)
 
 
+def _unresolved_records() -> list[dict[str, Any]]:
+    pending = []
+    if _storage_dir().is_dir():
+        for path in sorted(_storage_dir().glob("*.json")):
+            if path.name.startswith("."):
+                continue
+            try:
+                record = _read(path)
+                if record.get("state") in ("submitting", "unknown", "pending"):
+                    pending.append({k: record.get(k) for k in (
+                        "preview_id", "product_id", "side", "state", "signature", "submit_started_at"
+                    )})
+            except (OSError, ValueError):
+                # Never expose file contents or exception text from damaged evidence.
+                record_id = path.stem if re.fullmatch(r"[0-9a-f]{32}", path.stem) else "invalid_record_id"
+                pending.append({"preview_id": record_id, "state": "unknown", "diagnostic": "unreadable_record"})
+    return pending
+
+
 def _has_unresolved() -> bool:
-    if not _storage_dir().is_dir():
-        return False
-    for p in _storage_dir().glob("*.json"):
-        if p.name.startswith("."):
-            continue
-        try:
-            r = _read(p)
-            if r.get("state") in ("submitting", "unknown", "pending"):
-                return True
-        except Exception:
-            return True
-    return False
+    return bool(_unresolved_records())
 
 
 def _block_unresolved() -> None:
@@ -132,21 +140,9 @@ def _block_unresolved() -> None:
 
 
 def state() -> dict[str, Any]:
-    """Expose unresolved intent after restart without exposing secret key material."""
-    pending = []
-    if _storage_dir().is_dir():
-        for p in _storage_dir().glob("*.json"):
-            if p.name.startswith("."):
-                continue
-            try:
-                r = _read(p)
-                if r.get("state") in ("submitting", "unknown", "pending"):
-                    pending.append({k: r.get(k) for k in (
-                        "preview_id", "product_id", "side", "state", "signature", "submit_started_at"
-                    )})
-            except Exception:
-                pass
-    return {"unresolved": bool(pending), "orders": pending}
+    """Use the same conservative evidence as the ordering gate after a restart."""
+    pending = _unresolved_records()
+    return {"unresolved": bool(pending), "orders": pending[:100], "total_unresolved": len(pending)}
 
 
 def _resolve_token(query: str, *, is_quote: bool = False) -> dict[str, Any]:
@@ -172,6 +168,15 @@ def _usd_price(token: dict[str, Any]) -> Decimal:
     if token["mint"] in STABLE_MINTS:
         return Decimal(1)
     price = token.get("usdPrice")
+    if price is None and token["mint"] == WSOL_MINT:
+        # Static SOL identity avoids unnecessary discovery for stable-funded buys.
+        # Valuation reads the exact mint's independent token price, never swap output.
+        try:
+            resolved = jupiter_tokens.resolve(WSOL_MINT)
+            if resolved["decimals"] == token["decimals"]:
+                price = resolved.get("usdPrice")
+        except ValueError:
+            pass
     try:
         if isinstance(price, bool):
             raise ValueError

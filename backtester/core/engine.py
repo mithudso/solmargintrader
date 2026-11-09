@@ -509,6 +509,16 @@ def run_backtest(
             layer_of = np.where((layer_of < 0) & full, k, layer_of)
 
     for i in range(n):
+        # A gap can breach the OLD position before any queued exit or rebalance
+        # releases collateral. Only fees through the prior boundary are due here.
+        if is_perp and book.pos.is_open:
+            liq = perps.liquidation_price(
+                book.pos.entry_price, book.pos.side, book.pos.collateral,
+                book.pos.entry_notional, book.pos.accrued_borrow_fee, config.costs,
+            )
+            if perps.is_liquidated(book.pos.side, liq, op[i], op[i]):
+                _liquidate(book, config, liq, op[i], op[i], int(ts[i]), i)
+
         # -- 1. execute open-price fills before this bar starts accruing --
         if i in pending:
             _apply_target(book, pending.pop(i), op[i], ts[i], i, config)

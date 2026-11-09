@@ -6,6 +6,17 @@ speculative — each item is either stated in the code or was reproduced.
 Source markers are not an exhaustive issue list. The dated bootstrap and optimizer
 reports record reviewed findings and residuals; this page records ongoing limitations.
 
+### 2026-11-08 optimizer residuals
+
+The bounded optimizer repaired 98 findings and stopped at `BLIND-AUDIT-DISSENT` with
+15 corroborated residuals (nine High, six Medium). These include executor reduce-only,
+reconciliation and post-verification crash gaps; raw upstream error propagation; paper
+fill ordering; historical triangle replay; research delay/selection/empty-table cases;
+and Aero soak, conversion status and concurrent evidence updates. Passing tests do not
+close these findings. See [the exact audit and scope](code-deep-optimizer-2026-11-08.md).
+The review covered 50 primary sources of 261 at its audited base; final gate coverage
+was partial on several files. Owner live-order acceptance remains unavailable.
+
 ---
 
 ## Extension — the money path
@@ -51,6 +62,13 @@ cannot load an extension from the command line, so the e2e needs Chrome for Test
 ---
 
 ## Backtester and research
+
+### Historical research artifacts need fresh producer evidence
+
+Sweep and redundancy selection requires current discovery-only provenance, source hashes and
+complete prerequisite artifacts. Legacy, tampered or full-history selection artifacts refuse.
+The optimizer did not regenerate historical sweeps or change published historical figures.
+
 
 ### The cached data is a snapshot with no freshness contract
 

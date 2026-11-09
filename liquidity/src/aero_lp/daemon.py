@@ -199,7 +199,12 @@ class Daemon:
         return self.known_prices().get(addresses.WETH.lower(), 0.0)
 
     def runner(
-        self, tokens: list[str], pool: str | None, *, slot: str | None = None, wallet: bool = False,
+        self,
+        tokens: list[str],
+        pool: str | None,
+        *,
+        slot: str | None = None,
+        wallet: bool = False,
     ) -> Any:
         if self.live:
             self.assert_acting()
@@ -207,7 +212,13 @@ class Daemon:
                 {"scope": "slot", "slot": slot} if slot is not None else ({"scope": "wallet"} if wallet else None)
             )
             return LiveRunner(
-                self.chain, self.signer, tokens, self.cfg.execution, pool, journal=self.journal, accounting=accounting,
+                self.chain,
+                self.signer,
+                tokens,
+                self.cfg.execution,
+                pool,
+                journal=self.journal,
+                accounting=accounting,
             )
         return SimRunner(self.chain, self.cfg.owner, tokens, pool)
 
@@ -540,10 +551,10 @@ class Daemon:
         pos = self.chain.position(tid, owner_hint=self.cfg.owner)
         self._require_owner(pos)
         p = self.prices()
+        u0, u1 = self._pool_prices(pos.pool, p)
         a0, a1 = pos.human_amounts()
-        usd = a0 * p.get(pos.pool.token0.address.lower(), 0) + a1 * p.get(pos.pool.token1.address.lower(), 0)
-        if not usd > 0:
-            raise RuntimeError("no USD value (a pool token has no price)")
+        usd = a0 * u0 + a1 * u1
+        finite_number(usd, "initial position USD value", positive=True)
         self.ledger.open_slot(
             str(tid),
             pos.pool.address,
@@ -813,7 +824,12 @@ class Daemon:
         try:
             res = self._send(
                 lambda: self.rb.topup(
-                    fresh, amt0, amt1, self.runner(toks, pos.pool.address, slot=slot), u0, u1,
+                    fresh,
+                    amt0,
+                    amt1,
+                    self.runner(toks, pos.pool.address, slot=slot),
+                    u0,
+                    u1,
                     include_unstake_proceeds=False,
                 )
             )
@@ -1088,7 +1104,14 @@ class Daemon:
         try:
             res = self._send(
                 lambda: self.rb.deploy(
-                    pool, rng, stake, amt0, amt1, self.runner(toks, pool.address, wallet=True), u0, u1,
+                    pool,
+                    rng,
+                    stake,
+                    amt0,
+                    amt1,
+                    self.runner(toks, pool.address, wallet=True),
+                    u0,
+                    u1,
                     on_stage=on_stage,
                 )
             )

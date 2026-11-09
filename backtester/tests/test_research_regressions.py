@@ -18,6 +18,37 @@ from backtester.tests.test_engine_audit import bars
 from research import cpcv_sweep as cpcv, decide, sweep
 
 
+class WarmupParityRegressions(unittest.TestCase):
+    def test_exposure_replay_helper_is_bound_by_evidence_identity(self):
+        from research.evidence import source_hashes
+        hashes = source_hashes()
+        replay_source = Path(decide.__file__).read_bytes()
+        self.assertEqual(hashes['research/decide.py'], hashlib.sha256(replay_source).hexdigest())
+
+    def test_stateful_single_and_composite_exposures_match_engine_warmup(self):
+        from research import signal_redundancy as producer
+        from backtester.core.strategies import build, build_composite
+        close = np.concatenate((100.-np.arange(15), np.full(305, 94.)))
+        arrays = bars(close)
+        arrays['high'] += 1
+        arrays['low'] -= 1
+        params = {'rsi':dict(period=14, oversold=30, exit_level=50),
+                  'sma_regime':dict(window=100)}
+        with mock.patch.object(producer, 'REGISTRY', {'rsi':None}):
+            singles, warmups = producer.exposure_matrix(arrays, params, progress_every=0)
+        expected = decide.replay_targets(build('rsi', **params['rsi']), arrays)
+        np.testing.assert_array_equal(singles['rsi'], expected)
+        self.assertTrue(np.isnan(singles['rsi'][:warmups['rsi']]).all())
+        for mode in ('any', 'all'):
+            with self.subTest(mode=mode):
+                combined, warmup = producer.combination_exposures(arrays, params,
+                            [('rsi', 'sma_regime')], mode, progress_every=0)
+                expected = decide.replay_targets(build_composite(list(params.items()), mode=mode), arrays)
+                np.testing.assert_array_equal(combined['rsi+sma_regime'], expected)
+                self.assertTrue(np.isnan(combined['rsi+sma_regime'][:warmup]).all())
+        self.assertEqual(singles['rsi'][250], 0.)
+
+
 class ResearchRegressions(unittest.TestCase):
     def test_exact_equal_comparisons_and_zero_signs_are_neutral(self):
         w=decide.final_window(decide.validate_arrays(bars((100.,)*300)))

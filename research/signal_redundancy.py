@@ -28,11 +28,11 @@ different position size", which is exactly the case worth catching.
 
 Four design rules, each guarding a specific way this measurement can lie:
 
-  * **The walk starts at bar 0, always.** Several strategies are stateful (a
-    `_holding` flag derived from past decisions). Their exposure at bar k
-    depends on every bar before k, so the walk cannot be started at the burn-in
-    boundary -- doing so would fabricate an entry state. Burn-in is removed
-    after the walk, never by shortening it.
+  * **The walk matches the engine's warmup.** Each fresh strategy first sees
+    `on_bar` at its declared warmup, with the original full history available.
+    Calling a stateful strategy earlier can fabricate a persistent entry the
+    engine never took. Common burn-in is removed after the walk; it does not
+    move the first decision to the cohort's burn-in boundary.
   * **One common burn-in for the whole cohort.** Comparing strategy A over bars
     where its own indicator had not yet converged measures seed artifacts, not
     signal, and recursive smoothers converge rather than becoming exact. The
@@ -85,7 +85,7 @@ from backtester.core.strategies import (  # noqa: E402
     build,
     build_composite,
 )
-from backtester.core.types import BarWindow  # noqa: E402
+from research.decide import replay_targets  # noqa: E402
 # The shared names below are defined in sweep.py, not here, so the import stays
 # one-directional -- this module already depends on that one for HORIZONS.
 from research.sweep import (  # noqa: E402
@@ -116,33 +116,19 @@ def exposure_matrix(
     """Step every registered strategy over the same bars and record exposures.
 
     Returns the raw exposure frame (no burn-in removed) and each strategy's
-    self-declared warm-up. One instance per strategy, stepped from bar 0 in
-    order, because stateful strategies derive their position from their own
-    history -- see the module docstring's first design rule.
+    self-declared warm-up. Each fresh strategy uses the shared engine-parity
+    replay, including warmup and the long-only spot exposure clamp. The raw
+    frame retains NaNs before each strategy's first decision.
     """
     names = [n for n in REGISTRY if FAMILY.get(n) not in skip_families]
     strategies = {n: build(n, **params.get(n, {})) for n in names}
-    warmups = {n: int(strategies[n].warmup_bars()) for n in names}
-
+    warmups = {n: max(0, int(strategies[n].warmup_bars())) for n in names}
     n_bars = len(arrays["close"])
-    columns = {n: np.full(n_bars, np.nan) for n in names}
-    for i in range(n_bars):
-        # Several strategies fit over a 250-bar trailing window on every bar, so
-        # the hourly horizon is minutes of work. Progress goes to stderr, which
-        # keeps `> report.txt` clean.
-        if progress_every and i and i % progress_every == 0:
-            print(f"  ... {i}/{n_bars} bars", file=sys.stderr, flush=True)
-        window = BarWindow(
-            arrays["ts"],
-            arrays["open"],
-            arrays["high"],
-            arrays["low"],
-            arrays["close"],
-            arrays["volume"],
-            i,
-        )
-        for name in names:
-            columns[name][i] = float(strategies[name].on_bar(window))
+    columns = {}
+    for name, strategy in strategies.items():
+        if progress_every and n_bars >= progress_every:
+            print(f"  ... {name}: {n_bars} bars", file=sys.stderr, flush=True)
+        columns[name] = replay_targets(strategy, arrays)
 
     return pd.DataFrame(columns), warmups
 
@@ -325,22 +311,17 @@ def combination_exposures(
 ) -> tuple[pd.DataFrame, int]:
     """Exposure vector per COMBINATION, stepped exactly like the singles walk.
 
-    Composites are stateful for the same reason their members are, so each is
-    stepped from bar 0 and the burn-in removed afterwards.
+    Each composite first acts at its longest member warmup, as it does in the
+    engine. Common burn-in is removed afterwards.
     """
     built = {c: build_composite([(n, params[n]) for n in c], mode=mode) for c in combos}
-    warmup = max(int(s.warmup_bars()) for s in built.values())
+    warmup = max(max(0, int(s.warmup_bars())) for s in built.values())
     n_bars = len(arrays["close"])
-    columns = {c: np.full(n_bars, np.nan) for c in combos}
-    for i in range(n_bars):
-        if progress_every and i and i % progress_every == 0:
-            print(f"  ... {mode} {i}/{n_bars} bars", file=sys.stderr, flush=True)
-        window = BarWindow(
-            arrays["ts"], arrays["open"], arrays["high"],
-            arrays["low"], arrays["close"], arrays["volume"], i,
-        )
-        for combo in combos:
-            columns[combo][i] = float(built[combo].on_bar(window))
+    columns = {}
+    for combo, strategy in built.items():
+        if progress_every and n_bars >= progress_every:
+            print(f"  ... {mode} {'+'.join(combo)}: {n_bars} bars", file=sys.stderr, flush=True)
+        columns[combo] = replay_targets(strategy, arrays)
     frame = pd.DataFrame({"+".join(c): v for c, v in columns.items()})
     return frame, warmup
 

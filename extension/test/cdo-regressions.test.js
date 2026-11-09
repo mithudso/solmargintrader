@@ -192,3 +192,14 @@ test('API direct startup works from paths containing spaces, hash and percent', 
     assert.match(child.stderr, /SMT_API_TOKEN must be set/);
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
+
+
+test('CSV external formula identities stay text while negative numeric amounts stay numeric', async () => {
+  for (const id of ['=1+1', '+1+1', '-1+1', '@SUM(1)', ' \t=1+1', '\u0001=1+1']) {
+    const store = new MemoryStore();
+    await store.putFill({id, gridId:'grid',tsMs:0,side:'buy',baseQty:1,priceUsd:100,feeUsd:-0.25});
+    const csv=fillsToCsv(await store.allFills());
+    assert.ok(csv.split('\n')[1].startsWith("'"), JSON.stringify(id));
+    assert.ok(csv.includes(',-0.25,'));
+  }
+});
