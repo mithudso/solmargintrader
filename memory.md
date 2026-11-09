@@ -1,9 +1,14 @@
 # Work continuation
 
-Version: 285
+Version: 286
+Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v286 - 2026-11-09
+
+At the owner's confirmation that no other session holds the checkout, fast-forwarded /Users/mitch/dev/solmargintrader from f1e8efa to 60031fb while preserving its three untracked guides. The registered native host now imports the merged code. Independent framed native-host acceptance used an isolated config and the real SOL cache: one evaluable CPCV row, 1713 original bars of 3180, one gap excluded, and loaded host build hash 03683a51fa78375a344e61af067932a8352c59e00572c2a0ca7374d4c783953e. Chrome Beta loaded version and fresh prediction session remain unverified; DevTools is attached to a different browser and the real Beta has no remote debugging listener. Do not reset unrelated state. TASK-1066 stays open until browser reload and prediction-session acceptance are established.
 
 ## v285 - 2026-11-09
 
