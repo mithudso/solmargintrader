@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 313
+Version: 317
+Delta: v316 to v317; verify documentation and checkpoint the active research.
+Delta: v315 to v316; record scoped embedding Stele outbox receipt.
+Delta: v314 to v315; scope embedding permission to new monitor packs.
+Delta: v313 to v314; start the monitor full-suite with scope and continuation context.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
 Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
@@ -32,6 +36,25 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+
+## Monitor research checkpoint verification - 2026-11-09
+
+The shell Python could not import 92 test modules because dependencies were absent. Reusing /Users/mitch/.venvs/soltui/bin/python resolved this environment mismatch: scripts/check_docs.py exited 0 with 961 backtester, 408 extension, 46 mongo and 1384 SolTUI tests discovered. The offline repository index build and --check passed. These checks validate workflow records and retrieval hashes; they do not execute trading tests or qualify research claims.
+
+The CFE delegate inventoried 2923 concept nodes and is preparing 10 monitor-specific gaps across 28 candidates in two source-sharing cohorts. Research and compilation remain in progress. Root checkout remains unchanged with its original three untracked guides.
+
+## Monitor embedding permission - 2026-11-09
+
+The user authorized embeddings only for new bot-monitor packs. Scope every embedding command to TASK-1087 new accepted units. Keep existing queues, watchers and other paused services untouched. The prior pause is lifted only for this scope. Stele Transport closed on the permission decision; exact write queued as outbox 30f8fe6a.
+
+## Crypto autotrading bot monitor full-suite - 2026-11-09
+
+Task TASK-1087 researches operational monitoring for automated crypto bots. Scope: health, market-data freshness, orders and positions, reconciliation, net P&L, risk limits, alerts and recovery. This is research and reference-pack work. It does not activate a bot or place trades. TASK-982 remains a separate user-stopped strategy-family run; retain its accepted evidence without reopening its stopped loops. Preserve paused semantic embeddings.
+
+Completed: read repository instructions and relevant prior records; checked Stele and semantic inventory; created and claimed the monitor task; isolated this task from the three untracked root guides and other worktrees. The full-suite CFE delegate owns private research under /Users/mitch/.global-ai-hub/research/crypto-autotrading-bot-monitor-task1087/. Root owns packs, repository routing and delivery.
+
+Remaining: score the concept family, scout source domains, execute evidence-bound research and gates, compile eligible packs and rollup, account for indexing limits, validate and ship task-owned records and outputs. No saturation or full-suite completion is claimed at this checkpoint.
 
 ## v313 - 2026-11-09
 

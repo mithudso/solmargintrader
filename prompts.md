@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 152
+Version: 154
+Delta: v153 to v154; authorize embeddings only for new monitor packs.
+Delta: v152 to v153; record the crypto autotrading bot monitor full-suite request.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
 Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
@@ -17,6 +19,19 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+
+## Scoped embedding authorization - 2026-11-09
+
+```text
+Enable embeddings only for new bot-monitor packs
+```
+
+## Crypto autotrading bot monitor - 2026-11-09
+
+```text
+Run the full-suite skill on crypto autotrading bot monitor
+```
 
 ## v152 - 2026-11-09
 
