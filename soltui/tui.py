@@ -7618,8 +7618,8 @@ class SolTuiApp(App):
         if dest.live_money:
             line = Text()
             line.append(" ◆ LIVE MONEY ", f"bold {shell.TOK['bg']} on {shell.TOK['live']}")
-            line.append("  Real balances and positions. These views read; the only write is the Aero LP "
-                        "Kill / Resume buttons, and Resume asks twice.", shell.TOK["live"])
+            line.append(" Coinbase orders can move real money. Order forms start disarmed.",
+                        shell.TOK["live"])
             banner.update(line)
 
     def on_resize(self) -> None:
