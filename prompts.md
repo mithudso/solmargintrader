@@ -1,7 +1,8 @@
 # Prompt history
 
-Version: 151
-Delta: v150 to v151; record the fifth Trend momentum bot request.
+Version: 152
+Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
+Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
 Delta: v148 to v149; default Follow Stream to checked.
 Delta: v147 to v148; add vote explanations, a floating live view, and selected chart graphics.
@@ -17,7 +18,7 @@ Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
-## v151 - 2026-11-09
+## v152 - 2026-11-09
 
 ```text
 Create a trend-following (momentum) bot and add it to the bot list. So we should have 5 now. DCA, Grid, Arbitrage, Trend, and Council.
@@ -1201,3 +1202,8 @@ In the Soltui, under the Signal tab add a live page that shows a graph of the ch
 ```text
 $ui-deep-optimizer  ~/dev/solmargintrader/soltui
 ```
+
+
+## 2026-11-09 — strategy DSO comparison
+
+I want to run the deep strategy optimizer on the strategies in this repo, but I also want a before and after with comparisons of accuracy. Make a copy of all of the strategies into a separate folder, run the deep strategy optimizer on all of them, and then run the both the old and the new side by side and see how they shake out.

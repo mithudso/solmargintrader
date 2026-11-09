@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `b60ff7e` (2026-11-09T15:50:32+00:00). 2742 tracked files, 45.9 MB.
+**Generated** from `index/INDEX.json` at commit `ba8197c` (2026-11-09T15:52:18+00:00). 2786 tracked files, 61.8 MB.
 
 Regenerate with:
 
@@ -14,9 +14,9 @@ python3 index/build.py --check      # fail if the index is stale
 
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
-- **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2455 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 364/382 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (143 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **curated** (46 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
+- **extracted** (2479 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (156 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -33,14 +33,14 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 85 files
+- [`(root)`](#root) — 31 files
+- [`docs`](#docs) — 89 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1913 files
-- [`research`](#research) — 179 files
+- [`backtester`](#backtester) — 1916 files
+- [`research`](#research) — 206 files
 - [`extension`](#extension) — 117 files
 - [`soltui`](#soltui) — 166 files
-- [`.github`](#github) — 9 files
+- [`.github`](#github) — 11 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.claude`](#claude) — 1 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-23 files.
+31 files.
 
 #### `.editorconfig`
 
@@ -119,6 +119,22 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Read before making changes with an agent.
 
+#### `CLAUDE.md`
+
+`doc` · 200 lines · 14,519 B · description: **curated**
+
+**Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
+
+**Use.** Read before making changes with an agent.
+
+#### `CLAUDE.md`
+
+`doc` · 200 lines · 14,519 B · description: **curated**
+
+**Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
+
+**Use.** Read before making changes with an agent.
+
 #### `CODE_OF_CONDUCT.md`
 
 `doc` · 10 lines · 469 B · description: **extracted**
@@ -132,6 +148,22 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 `doc` · 23 lines · 1,118 B · description: **extracted**
 
 **Purpose.** Read `CLAUDE.md`, then `docs/DEVELOPMENT.md` and the owning component's README before editing. The extension and liquidity manager can move money; the backtester remains simulation-only. Liquidity also has its own `liquidity/CLAUDE.md`.
+
+**Use.** Read it.
+
+#### `GEMINI.md`
+
+`doc` · 64 lines · 3,496 B · description: **extracted**
+
+**Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
+
+**Use.** Read it.
+
+#### `GEMINI.md`
+
+`doc` · 64 lines · 3,496 B · description: **extracted**
+
+**Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
 
 **Use.** Read it.
 
@@ -158,6 +190,22 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 **Purpose.** _No description available._
 
 **Use.** Read it.
+
+#### `README.md`
+
+`doc` · 140 lines · 8,959 B · description: **curated**
+
+**Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
+
+**Use.** Start here.
+
+#### `README.md`
+
+`doc` · 140 lines · 8,959 B · description: **curated**
+
+**Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
+
+**Use.** Start here.
 
 #### `README.md`
 
@@ -209,9 +257,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 749 lines · 143,770 B · description: **extracted**
+`doc` · 757 lines · 145,029 B · description: **extracted**
 
-**Purpose.** Version: 308 Delta: concurrent workflow records to v308; preserve runtime fixes and DSO outcomes. Delta: v306 to v307; verify native-environment history and corrected workflow readiness in0.6.3.
+**Purpose.** Version: 312 Delta: v311 to v312; combine Trend with both concurrent completed workstreams. Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
 
 **Use.** Read it.
 
@@ -225,9 +273,25 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1204 lines · 58,123 B · description: **extracted**
+`doc` · 1210 lines · 58,609 B · description: **extracted**
 
-**Purpose.** Version: 151 Delta: v150 to v151; record the fifth Trend momentum bot request. Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
+**Purpose.** Version: 152 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories. Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
+
+**Use.** Read it.
+
+#### `prompts.md`
+
+`doc` · 1210 lines · 58,609 B · description: **extracted**
+
+**Purpose.** Version: 152 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories. Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
+
+**Use.** Read it.
+
+#### `prompts.md`
+
+`doc` · 1210 lines · 58,609 B · description: **extracted**
+
+**Purpose.** Version: 152 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories. Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 
 **Use.** Read it.
 
@@ -253,7 +317,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-85 files.
+89 files.
 
 #### `docs/API.md`
 
@@ -327,6 +391,22 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/DEVELOPMENT.md`
+
+`doc` · 187 lines · 8,875 B · description: **extracted**
+
+**Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
+
+**Use.** Read it.
+
+#### `docs/DEVELOPMENT.md`
+
+`doc` · 187 lines · 8,875 B · description: **extracted**
+
+**Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
+
+**Use.** Read it.
+
 #### `docs/EXTENSION-TUI-PARITY.md`
 
 `doc` · 110 lines · 8,003 B · description: **extracted**
@@ -337,7 +417,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 26909 lines · 1,397,923 B · description: **extracted**
+`doc` · 26909 lines · 1,397,939 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -404,6 +484,22 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 152 lines · 10,800 B · description: **extracted**
 
 **Purpose.** Version: 1.2 Delta: native CDP child-runtime PATH and coordinator-specific readiness wording. Signal Desk is the extension's default full dashboard in version 0.5.0. Its light/dark interface
+
+**Use.** Read it.
+
+#### `docs/TESTING.md`
+
+`doc` · 233 lines · 19,140 B · description: **extracted**
+
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 960 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
+
+**Use.** Read it.
+
+#### `docs/TESTING.md`
+
+`doc` · 233 lines · 19,140 B · description: **extracted**
+
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 960 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
 
 **Use.** Read it.
 
@@ -1035,7 +1131,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1913 files.
+1916 files.
 
 #### `backtester/PROMPT.md`
 
@@ -19795,6 +19891,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_botcli.py -q`
 
+#### `backtester/tests/test_candidate_auxiliary.py`
+
+`test` · 61 lines · 2,725 B · description: **extracted**
+
+**Purpose.** Known-answer auxiliary defects: gap-aligned labels and causal quote time.
+
+**Contents.** Defines `module()`, `class CandidateAuxiliaryTests`. Depends on `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_candidate_auxiliary.py -q`
+
 #### `backtester/tests/test_candle_gap_audit.py`
 
 `test` · 114 lines · 4,400 B · description: **extracted**
@@ -20075,6 +20181,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_simulation_blind_audit.py -q`
 
+#### `backtester/tests/test_strategy_candidate.py`
+
+`test` · 57 lines · 2,623 B · description: **extracted**
+
+**Purpose.** Candidate economic corrections remain separate from the frozen baseline.
+
+**Contents.** Defines `ROOT`, `window()`, `class CandidateAnnualizationTests`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_strategy_candidate.py -q`
+
 #### `backtester/tests/test_strategy_cards.py`
 
 `test` · 660 lines · 28,152 B · description: **extracted**
@@ -20084,6 +20200,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `REPO_ROOT`, `constructor_defaults()`, `synthetic_bars()`, `class TestFrontmatterParser`, `class TestCardValidation`, `class TestCardsLoad`, `class TestSuccessRatings`, `class TestRegistryDrift`, `class TestLadderDrift`, `class TestBotCards` and 3 more. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_strategy_cards.py -q`
+
+#### `backtester/tests/test_strategy_compare.py`
+
+`test` · 155 lines · 7,676 B · description: **extracted**
+
+**Purpose.** Known-answer gates for the paired offline comparison, not performance assertions.
+
+**Contents.** Defines `arrays()`, `class TestStrategyComparison`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest backtester/tests/test_strategy_compare.py -q`
 
 #### `backtester/tests/test_strategy_duplication.py`
 
@@ -20171,7 +20297,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-179 files.
+206 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -20536,6 +20662,36 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `OUT`, `VARIANCE_TARGET`, `SKIP_FAMILIES`, `exposure_matrix()`, `redundancy()`, `pair_table()`, `per_strategy_table()`, `family_verdict()`, `twin_groups()` and 6 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/signal_redundancy.py --help`
+
+#### `research/strategy_aux_compare.py`
+
+`code-python` · 298 lines · 16,732 B · description: **extracted**
+
+**Purpose.** Offline paired comparison of executable mechanisms outside the strategy registry.
+
+**Contents.** Defines `REPO`, `sha()`, `module()`, `paired_bots()`, `paired_peer()`, `run()`, `main()`. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/strategy_aux_compare.py --help`
+
+#### `research/strategy_compare.py`
+
+`code-python` · 350 lines · 19,269 B · description: **extracted**
+
+**Purpose.** Paired, offline comparison of frozen strategy packages; never selects parameters. Run ``python3 research/strategy_compare.py --help``. Research output, not investment advice; simulation only. Every failed cell remains in the output.
+
+**Contents.** Defines `REPO`, `DEFAULT_DATASETS`, `source_hashes()`, `load_registry()`, `window()`, `targets()`, `accuracy_panel()`, `class EvaluationWindow`, `class FrozenSignals`, `load_sample()` and 6 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/strategy_compare.py --help`
+
+#### `research/strategy_snapshots.py`
+
+`code-python` · 49 lines · 2,574 B · description: **extracted**
+
+**Purpose.** Expand content-verified experiment sources without duplicating search indexes.
+
+**Contents.** Defines `DEFAULT_EXPERIMENT`, `ensure_snapshots()`.
+
+**Use.** `import research.strategy_snapshots`
 
 #### `research/sweep.py`
 
@@ -21696,6 +21852,212 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** Generated JSON object, 25 keys (asset, interval, bars, first_bar_utc, last_bar_utc, discovery_start...).
 
 **Use.** `json.load(open('research/results/triggers_sol_1h.json'))`
+
+### `research/strategy_experiment/`
+
+#### `research/strategy_experiment/.gitignore`
+
+`other` · 4 lines · 94 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/FILES.md`
+
+`doc` · 3692 lines · 659,593 B · description: **extracted**
+
+**Purpose.** Tracked task changes and expanded copies in the durable export. Index files also include current default-branch content.
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/README.md`
+
+`doc` · 73 lines · 4,066 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. The baseline comes from source commit 898f09611dc65fd8e8457ced29ac05e0b87568db. The experiment preserves all 34 registered default strategies, all core simulators,
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/REPORT.md`
+
+`doc` · 86 lines · 6,176 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. before/after directional accuracy on each of the four matched datasets. The two hourly sizing corrections produce worse net returns on the evaluated temporal
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/archives.json`
+
+`config` · 3658 lines · 555,039 B · description: **derived**
+
+**Purpose.** Generated JSON object, 2 keys (original, candidate).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/strategy_experiment/audit_integrity.json`
+
+`config` · 1198 lines · 51,369 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (version, delta, artifact, target_kind, families, strategy_count...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/strategy_experiment/audit_integrity.md`
+
+`doc` · 173 lines · 24,894 B · description: **extracted**
+
+**Purpose.** research output, not investment advice; simulation only Version: 1 Delta: Initial audit.
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/audit_realism.json`
+
+`config` · 7638 lines · 215,312 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema_version, delta, target_kind, track, research_disclaimer, registry_count...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/strategy_experiment/audit_realism.md`
+
+`doc` · 249 lines · 47,851 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. Version: 1 Delta: initial collection before candidate writes.
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/candidate.zip`
+
+`other` · 0 lines · 4,563,118 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/original.zip`
+
+`other` · 0 lines · 4,562,679 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/strategy_experiment/snapshot.json`
+
+`config` · 1829 lines · 273,936 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (source_head, scope, original_files).
+
+**Use.** Configuration; nothing to run.
+
+### `research/strategy_experiment/results/`
+
+#### `research/strategy_experiment/results/auxiliary.json`
+
+`result` · 7427 lines · 671,723 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (version, delta, disclaimer, protocol, sources, inputs...).
+
+**Use.** `json.load(open('research/strategy_experiment/results/auxiliary.json'))`
+
+#### `research/strategy_experiment/results/auxiliary.md`
+
+`result` · 35 lines · 2,247 B · description: **extracted**
+
+**Purpose.** research output, not investment advice; simulation only Frozen defaults, historical final 30%; no parameter search or promotion. Grid rails +/-15% first evaluation open, 7 geometric rungs at $100; $10000 capital. Spot fees 6bps, slippage 2bps. Scorecard common executable next-open-to-close accuracy: 149/318 (46.86%) original, 149/318 (46.86%) candidate.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/strategy_experiment/results/comparison.csv`
+
+`result` · 274 lines · 95,189 B · description: **derived**
+
+**Purpose.** Generated data: 272 rows x 34 columns (dataset, strategy, split, status, original_accuracy, candidate_accuracy, delta_accuracy, original_win_rate...).
+
+**Contents.** Columns: `dataset`, `strategy`, `split`, `status`, `original_accuracy`, `candidate_accuracy`, `delta_accuracy`, `original_win_rate`, `candidate_win_rate`, `delta_win_rate`, `original_total_return`, `candidate_total_return`, `delta_total_return`, `original_sharpe`, `candidate_sharpe`, `delta_sharpe`, `original_max_drawdown`, `candidate_max_drawdown`, `delta_max_drawdown`, `original_trade_count`, `candidate_trade_count`, `delta_trade_count`, `original_active_calls`, `candidate_active_calls`, `delta_active_calls`, `original_coverage`, `candidate_coverage`, `delta_coverage`, `original_total_fees`, `candidate_total_fees`, `delta_total_fees`, `original_total_borrow_fees`, `candidate_total_borrow_fees`, `delta_total_borrow_fees`.
+
+**Use.** `pandas.read_csv('research/strategy_experiment/results/comparison.csv')` — regenerate with the driver that names it.
+
+#### `research/strategy_experiment/results/comparison.md`
+
+`result` · 153 lines · 14,748 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. 136 holdout strategy/dataset pairs; 2 changed accuracy or net return; 0 failed pairs. All results are exploratory historical comparisons, not proof of a live edge. The final chronological 30% is a temporal holdout in this run. Previously researched data is not a fresh independent confirmation set. No parameter search or promotion runs.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/strategy_experiment/results/manifest.json`
+
+`result` · 3805 lines · 561,811 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (schema_version, split_fraction, runner_sha256, contiguous_tail_requested, strategy_count, strategies...).
+
+**Use.** `json.load(open('research/strategy_experiment/results/manifest.json'))`
+
+#### `research/strategy_experiment/results/results.csv`
+
+`result` · 546 lines · 483,031 B · description: **derived**
+
+**Purpose.** Generated data: 544 rows x 40 columns (dataset, strategy, variant, split, total_return, cagr, sharpe, sortino...).
+
+**Contents.** Columns: `dataset`, `strategy`, `variant`, `split`, `total_return`, `cagr`, `sharpe`, `sortino`, `max_drawdown`, `max_drawdown_start`, `max_drawdown_end`, `max_drawdown_bars`, `calmar`, `volatility_annual`, `win_rate`, `profit_factor`, `avg_win`, `avg_loss`, `trade_count`, `exposure_fraction`, `total_fees`, `total_borrow_fees`, `liquidation_count`, `final_equity`, `bars`, `accuracy`, `correct_calls`, `active_calls`, `eligible_bars`, `coverage`, `majority_baseline`, `accuracy_evidence`, `scored_start_index`, `scored_stop_index`, `mode`, `leverage`, `costs`, `trade_evidence`, `params`, `status`.
+
+**Use.** `pandas.read_csv('research/strategy_experiment/results/results.csv')` — regenerate with the driver that names it.
+
+#### `research/strategy_experiment/results/results.json`
+
+`result` · 32003 lines · 965,090 B · description: **derived**
+
+**Purpose.** Generated JSON array, 544 entries.
+
+**Use.** `json.load(open('research/strategy_experiment/results/results.json'))`
+
+### `research/strategy_experiment/results/initial-gapped-run/`
+
+#### `research/strategy_experiment/results/initial-gapped-run/comparison.csv`
+
+`result` · 274 lines · 75,229 B · description: **derived**
+
+**Purpose.** Generated data: 272 rows x 34 columns (dataset, strategy, split, status, original_accuracy, candidate_accuracy, delta_accuracy, original_win_rate...).
+
+**Contents.** Columns: `dataset`, `strategy`, `split`, `status`, `original_accuracy`, `candidate_accuracy`, `delta_accuracy`, `original_win_rate`, `candidate_win_rate`, `delta_win_rate`, `original_total_return`, `candidate_total_return`, `delta_total_return`, `original_sharpe`, `candidate_sharpe`, `delta_sharpe`, `original_max_drawdown`, `candidate_max_drawdown`, `delta_max_drawdown`, `original_trade_count`, `candidate_trade_count`, `delta_trade_count`, `original_active_calls`, `candidate_active_calls`, `delta_active_calls`, `original_coverage`, `candidate_coverage`, `delta_coverage`, `original_total_fees`, `candidate_total_fees`, `delta_total_fees`, `original_total_borrow_fees`, `candidate_total_borrow_fees`, `delta_total_borrow_fees`.
+
+**Use.** `pandas.read_csv('research/strategy_experiment/results/initial-gapped-run/comparison.csv')` — regenerate with the driver that names it.
+
+#### `research/strategy_experiment/results/initial-gapped-run/comparison.md`
+
+`result` · 153 lines · 13,824 B · description: **extracted**
+
+**Purpose.** Research output, not investment advice; simulation only. 136 holdout strategy/dataset pairs; 0 changed accuracy or net return; 34 failed pairs. All results are exploratory historical comparisons, not proof of a live edge. The final chronological 30% is a temporal holdout in this run. Previously researched data is not a fresh independent confirmation set. No parameter search or promotion runs.
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/strategy_experiment/results/initial-gapped-run/manifest.json`
+
+`result` · 3778 lines · 560,764 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (schema_version, split_fraction, strategy_count, strategies, sources, common_engine_sources...).
+
+**Use.** `json.load(open('research/strategy_experiment/results/initial-gapped-run/manifest.json'))`
+
+#### `research/strategy_experiment/results/initial-gapped-run/results.csv`
+
+`result` · 546 lines · 401,720 B · description: **derived**
+
+**Purpose.** Generated data: 544 rows x 41 columns (dataset, strategy, variant, split, total_return, cagr, sharpe, sortino...).
+
+**Contents.** Columns: `dataset`, `strategy`, `variant`, `split`, `total_return`, `cagr`, `sharpe`, `sortino`, `max_drawdown`, `max_drawdown_start`, `max_drawdown_end`, `max_drawdown_bars`, `calmar`, `volatility_annual`, `win_rate`, `profit_factor`, `avg_win`, `avg_loss`, `trade_count`, `exposure_fraction`, `total_fees`, `total_borrow_fees`, `liquidation_count`, `final_equity`, `bars`, `accuracy`, `correct_calls`, `active_calls`, `eligible_bars`, `coverage`, `majority_baseline`, `accuracy_evidence`, `scored_start_index`, `scored_stop_index`, `mode`, `leverage`, `costs`, `trade_evidence`, `params`, `status`, `error`.
+
+**Use.** `pandas.read_csv('research/strategy_experiment/results/initial-gapped-run/results.csv')` — regenerate with the driver that names it.
+
+#### `research/strategy_experiment/results/initial-gapped-run/results.json`
+
+`result` · 25091 lines · 773,213 B · description: **derived**
+
+**Purpose.** Generated JSON array, 544 entries.
+
+**Use.** `json.load(open('research/strategy_experiment/results/initial-gapped-run/results.json'))`
 
 ### `research/tradingview-script-profile-audits/`
 
@@ -24553,7 +24915,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 CI. Runs the test suite and the figure verifier.
 
-9 files.
+11 files.
 
 #### `.github/CODEOWNERS`
 
@@ -24584,6 +24946,22 @@ CI. Runs the test suite and the figure verifier.
 `ci` · 37 lines · 2,148 B · description: **extracted**
 
 **Purpose.** This is personal tooling with local services and no users other than its author. There is no security mailbox and no disclosure SLA. Report anything you find by opening an issue, or directly to the repository owner. The extension **can place real orders and move real money**. That makes three things
+
+**Use.** Read it.
+
+#### `.github/copilot-instructions.md`
+
+`ci` · 93 lines · 5,126 B · description: **extracted**
+
+**Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
+
+**Use.** Read it.
+
+#### `.github/copilot-instructions.md`
+
+`ci` · 93 lines · 5,126 B · description: **extracted**
+
+**Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
 
 **Use.** Read it.
 

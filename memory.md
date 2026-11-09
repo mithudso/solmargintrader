@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 308
+Version: 312
+Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
+Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
+Delta: v309 to v310; finish Trend verification and prepare delivery.
+Delta: v308 to v309; add the Trend implementation record.
 Delta: concurrent workflow records to v308; preserve runtime fixes and DSO outcomes.
 Delta: v306 to v307; verify native-environment history and corrected workflow readiness in0.6.3.
 Delta: v305 to v306; repair installed CDP child PATH and workflow-label readiness.
@@ -28,11 +32,15 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
-## v310 - 2026-11-09
+## v312 - 2026-11-09
+
+PR168's Trend implementation passed all required CI at b60ff7e. Two concurrent accepted releases advanced master while that CI ran: PR169 native monitor runtime/readiness fixes, and PR167 original-vs-DSO strategy comparison. Integrate both without changing Trend source. Use pinned main commit17bcfb5b8453b72eeeec4f1c03c986f2c1de8811 when reading their records because origin/master can advance during a multi-file read. Preserve the concurrent records, with Trend historical entries renumberedv309-v311 and its promptv152. Final combined discovery is960backtester,408Node,46mongo and1384SolTUI,2798total. Rebuild offline indexes, verify the combined checks and push the final merge commit. Required final-head CI/merge/main acceptance/cleanup remain. Final status is /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json; it supersedes the historical checkpoints. No production service or live order is started by this change.
+
+## v311 - 2026-11-09
 
 PR168 at b60ff7e passed every required CI check, including macOS targeted tests in7m32s. Its first merge attempt correctly refused because concurrent PR169 advanced master to f643867. The conflict is limited to shared counts, memory and generated indexes. Preserve PR169's native monitor runtime and readiness corrections. Trend source remains unchanged. Retain both histories and renumber Trend records asv308/v309 after the concurrentv307 entry. Combined discovery is1384SolTUI plus408Node,941backtester and46mongo,2779total. Rebuild offline indexes and recheck Trend plus wallet-runtime integration before committing this merge. Then push and wait for final-head CI again. Final receipt remains /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json; it supersedes the historical checkpoints below. No other worktree, production worker or untracked guide is changed.
 
-## v309 - 2026-11-09
+## v310 - 2026-11-09
 
 TASK-1074 implementation is verified on integrated base fba9238. Trend is the fifth named bot alongside DCA, Grid, Arbitrage and Council. The Trend policy uses long-only simple moving-average momentum with editable10/30-bar defaults, a10bps entry buffer and1000USD capital. It reuses next-open spot fills, costs, final-close valuation, per-coin settings, recorded-minute forward replay, durable experiments and the existing daily optimizer. Council routes to its dedicated panel. Coin suitability remains specific to Grid/DCA. No production bot, existing TUI or live execution was changed.
 
@@ -40,7 +48,7 @@ Final verification passed:8Trend policy/integration regressions;168surrounding b
 
 The source record is a pre-delivery checkpoint. Remaining: commit final owned changes, check committed docs counts, push/PR, required final-head CI, merge, synchronize main without disturbing unrelated files, then verify the main launcher in a fresh process and remove this task's clean worktree/branch. Final delivery status will be recorded in /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json and in Stele TASK-1074; that receipt supersedes this checkpoint's remaining-step list. Source worktree: /Users/mitch/dev/solmargintrader-wt-trend-01a1c0e5. Preserve the three unrelated main-checkout files and all other worktrees. Only this task's temporary integration stash may be dropped after restoration verification.
 
-## v308 - 2026-11-09
+## v309 - 2026-11-09
 
 TASK-1074 adds Trend alongside DCA, Grid, Arbitrage and Council. Work in /Users/mitch/dev/solmargintrader-wt-trend-01a1c0e5 on feat/trend-bot-01a1c0e5. Integrated concurrent PR166 at fba9238 without changing its live monitor or paper workflow. Preserve all unrelated worktrees and the three untracked main-checkout guides.
 
