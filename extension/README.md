@@ -7,7 +7,7 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Signal Desk workspace (0.5.5)
+## Signal Desk workspace (0.6.0)
 
 The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or
 **Bot monitor** workspace. The popup shows a one-time read-only signal/process glance and four
@@ -122,7 +122,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.5.5`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.6.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).
@@ -648,3 +648,9 @@ Two results matter here:
   export exists for that reason.
 - Minimum order size is **$10**, so a 7-rung grid needs meaningful capital before it is even legal
   on the venue. The dashboard computes the requirement for your configuration.
+
+### Dashboard controls
+
+Click table headers to sort. Tool cards run their default action directly; required inputs and live-order confirmation still open a form. Results expand below the controls. **Start all tests** creates a durable all-market, all-supported-interval batch and continues paper forward checks after backtesting. Each series uses its longest continuous cached window, with original timestamps and source hash retained in `batch.proof`. Missing history and unsupported strategies remain visible in its status. **Manually check** fetches fresh closed Coinbase minute candles and calculates current strategy directions independently of saved prediction expiry and voting floors. It does not add historical outcomes.
+
+Live Signals offers Coinbase or Jupiter prices in both Chrome and SolTUI. Jupiter is a polled USD reference price for an exact Solana mint, with its fetch time and block ID; it does not provide an executable swap quote. Existing forecast evidence uses Coinbase candles. The embedded TradingView chart is a Coinbase pair reference with visible attribution, isolated in a remote frame; extension scripts stay local.

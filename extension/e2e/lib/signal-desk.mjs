@@ -146,11 +146,11 @@ export async function verifySignalDesk(_page, browser) {
     await route('research', 'Backtesting');
     assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('-2%')`), 'backtest fractions render as percentages');
     assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('Aggregate trades')`));
-    assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('unavailable in the current sweep result contract')`));
+    assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('Drawdown, equity and itemized costs are unavailable')`));
     const archive = await ev(`(()=>{const card=[...document.querySelectorAll('#deskContent .card')].find(x=>x.querySelector('h2')?.textContent==='Existing research archives');return card?{text:card.textContent,cells:[...card.querySelectorAll('tbody tr:first-child td')].map(x=>x.textContent),comparisons:card.querySelectorAll('input[type=checkbox]').length,staging:[...card.querySelectorAll('button')].filter(x=>x.textContent==='Stage paper trial').length}:null})()`);
     assert.ok(archive, 'existing repository research archives are directly visible');
     assert.deepEqual(archive.cells, ['fixture-legacy-results.csv', '7', '3', '0.42', 'Inspect archive summary']);
-    assert.match(archive.text, /do not supply the complete context required for a pinned handoff or a comparison with a new run/);
+    assert.match(archive.text, /Archives retain their original assumptions/);
     assert.equal(archive.comparisons, 0, 'archive summaries cannot join current-context comparisons');
     assert.equal(archive.staging, 0, 'archive summaries cannot stage an unpinned paper setup');
     assert.equal(await ev(`document.querySelectorAll('#deskContent input[aria-label^="Compare run "]').length`), 3, 'archive is not imported as an additional versioned run');
@@ -252,7 +252,7 @@ export async function verifySignalDesk(_page, browser) {
     catch { throw new Error('Search Escape/focus state: '+JSON.stringify(await ev(`({open:document.querySelector('#deskSearchDialog').open,active:document.activeElement.id,focus:document.hasFocus(),trace:__escapeTrace,dialogs:[...document.querySelectorAll('dialog[open]')].map(x=>({id:x.id,closedBy:x.closedBy}))})`))); }
     await ev(`location.hash='soltui/all'`);
     await wait(`document.querySelector('#soltuiWorkspace').value==='all'`);
-    const archived = await ev(`(()=>{const b=[...document.querySelectorAll('#soltuiTools button')].find(x=>x.textContent.includes('liquidity.resume'));return {exists:!!b,disabled:b?.disabled}})()`);
+    const archived = await ev(`(()=>{const b=document.querySelector('#soltuiTools [data-command="liquidity.resume"]');return {exists:!!b,disabled:b?.disabled}})()`);
     assert.deepEqual(archived, { exists: true, disabled: true });
     await ev(`(()=>{const s=document.querySelector('#soltuiCommand');s.value='liquidity.resume';s.dispatchEvent(new Event('change'));document.querySelector('#soltuiForm').requestSubmit()})()`);
     assert.equal(await ev(`__deskFixture.writes.filter(x=>x.command==='liquidity.resume').length`), 0);
@@ -272,7 +272,7 @@ export async function verifySignalDesk(_page, browser) {
     await wait(`document.querySelector('#deskSearchDialog').open&&!document.querySelector('#view-soltui').hidden`);
     await ev(`document.querySelector('#deskSearchInput').value='backtest.run';document.querySelector('#deskSearchInput').dispatchEvent(new Event('input'));[...document.querySelectorAll('#deskSearchResults button')].find(x=>x.textContent==='backtest.run').click()`);
     await wait(`!document.querySelector('#deskSearchDialog').open&&document.querySelector('#soltuiCommand').value==='backtest.run'&&document.querySelector('#soltuiToolbox').open`);
-    assert.equal(await ev(`__deskFixture.writes.filter(x=>x.command==='backtest.run').length`), 0, 'search selection opens a form without running it');
+    assert.equal(await ev(`__deskFixture.writes.filter(x=>x.command==='backtest.run').length`), 1, 'search action runs the selected default backtest directly');
     console.log('PASS evidence dialog Escape and global search recovery from a legacy settings view');
 
     for (const width of [390, 720]) {
@@ -317,7 +317,8 @@ export async function verifySignalDesk(_page, browser) {
     await ev(`document.querySelector('#deskDensity').value='compact';document.querySelector('#deskDensity').dispatchEvent(new Event('change'))`);
     assert.equal(await ev(`document.body.dataset.density`), 'compact');
     console.log('PASS compact density preference; screenshot artifacts ' + JSON.stringify(shots));
-    assert.ok(pageRequests.every((url) => url.startsWith('chrome-extension://') || url.startsWith('data:')), 'acceptance target made no external request: '+JSON.stringify(pageRequests));
+    assert.ok(pageRequests.every((url) => url.startsWith('chrome-extension://') || url.startsWith('data:') || url === 'https://www.tradingview-widget.com/embed-widget/advanced-chart/'), 'only the isolated TradingView chart may request an external frame: '+JSON.stringify(pageRequests));
+    assert.ok(await ev(`[...document.scripts].every(s=>!s.src||s.src.startsWith(location.origin))`), 'all privileged extension scripts stay local');
     return { identity, screenshots: shots, pageRequests };
   } finally {
     off();

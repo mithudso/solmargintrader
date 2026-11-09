@@ -1,3 +1,4 @@
+import { renderTradingView } from './tradingview.js';
 /** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
 import { mountSignalDesk } from './signal-desk.js';
 import { commandBlock, eligibilityReason } from './desk-model.js';
@@ -64,7 +65,8 @@ function fieldFor(param) {
     if (param.type === 'number') input.step = 'any';
   }
   input.name = param.name;
-  label.append(input, el('span', { class: 'note', text: param.describe }));
+  input.title = param.describe;
+  label.append(input);
   if (param.type === 'string' && !param.required) {
     const clearBox = el('input');
     clearBox.type = 'checkbox';
@@ -115,6 +117,7 @@ function renderResultTable(target, data, useRow, state = {}) {
     const cols = columns.map((k) => ({ label: k, value: (r) => cellText(r[k]) }));
     cols.push({ label: 'Detail', value: (r) => el('button', { class: 'small', text: 'Inspect / use row', onclick: () => useRow(r) }) });
     const t = table(cols, shown.slice(page * 100, (page + 1) * 100));
+    t.dataset.sortable = 'false';
     for (const [i, th] of [...t.querySelectorAll('th')].entries()) {
       if (i >= columns.length) continue;
       const key = columns[i];
@@ -213,7 +216,10 @@ export function mountSoltuiPanel(root = document, transport = send) {
   const session = crypto.randomUUID();
   $('#soltui').dataset.session = session;
   const current = () => commands.find((c) => c.name === select.value);
-  const desk = mountSignalDesk(root, { ask, openTool: choose, refreshLive, transport });
+  let batchId = null;
+  let batchChecking = false;
+  let manualBusy = false;
+  const desk = mountSignalDesk(root, { ask, openTool: activate, refreshLive, transport });
   let deskPage = null;
 
   async function ask(command, params = {}) {
@@ -286,8 +292,31 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (name === 'forwardtest.start' && Object.hasOwn(values, 'snapshot')) drafts.delete(name);
     select.value = name;
     renderForm();
+    $('#soltuiRunStatus').textContent = pending.has(name) ? `${name} running…` : '';
     if (results.has(name)) display(results.get(name));
+    else { rich.replaceChildren(); result.textContent = ''; $('#soltuiNext').replaceChildren(); $('#soltuiResultLabel').textContent = name; }
     setValues(values);
+  }
+  function expandOutput() {
+    $('#soltuiToolbox').open = true;
+    $('#soltuiResultCard')?.classList.add('expanded-output');
+    $('#soltuiResultCard')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  function activate(name, values = {}) {
+    choose(name, values);
+    const c = current();
+    if (!c || c.name !== name || commandBlock(c)) return;
+    $('#soltuiToolbox').open = true;
+    const liveOrder = /^(coinbase|jupiter)\.order_/.test(name) && !/preview|status|state|reconcile/.test(name);
+    const needsInput = c.params?.some((p) => p.required && p.name !== 'confirm' && !Object.hasOwn(values, p.name));
+    if (c.requires_confirm || liveOrder || needsInput || name === 'settings.save' || Object.hasOwn(values, 'snapshot')) {
+      $('#soltui').scrollIntoView({ block: 'nearest' });
+      return;
+    }
+    const built = buildParams(c, Object.fromEntries([...inputs].map(([k, input]) => [k, input.value])));
+    if (built.errors.length) return;
+    expandOutput();
+    run(c, built.params);
   }
   function renderTools() {
     const spec = WORKSPACES.find((w) => w.id === workspace.value) ?? WORKSPACES.at(-1);
@@ -299,8 +328,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
     $('#soltuiNowSummary').hidden = spec.id !== 'now';
     if (spec.id === 'now' && commands.length && !nowLoaded) refreshNow();
     const filtered = filterCommands(commands, spec.id, search.value);
-    clear(tools, ...filtered.map((c) => el('button', { class: 'tool-card', title: commandBlock(c) ?? c.describe, disabled: !!commandBlock(c), onclick: () => choose(c.name) },
-      el('strong', { text: c.name }), el('small', { text: `${commandBlock(c) ? 'Archived / unavailable' : c.read_only ? 'Read' : 'Action'}${c.requires_confirm ? ' · Confirm' : ''} — ${c.describe}` }))));
+    clear(tools, ...filtered.map((c) => el('button', { class: 'tool-card', dataset: { command: c.name }, title: commandBlock(c) ?? c.describe, disabled: !!commandBlock(c), onclick: () => activate(c.name) },
+      el('strong', { text: c.name.replaceAll('.', ' › ').replaceAll('_', ' ') }), el('small', { text: commandBlock(c) ? 'Unavailable' : c.requires_confirm ? 'Review & confirm' : c.params?.some((p) => p.required) ? 'Set up & run' : 'Run / refresh' }))));
     if (!filtered.length) tools.append(el('p', { class: 'empty', text: 'No matching tools in this workspace. Try All tools.' }));
   }
   function applyRoute() {
@@ -391,7 +420,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     pending.set(c.name, true);
     paintJobs();
     if (select.value === c.name && runButton) runButton.disabled = true;
-    if (!polling) result.textContent = 'Running…';
+    if (!polling) { result.textContent = 'Running…'; expandOutput(); }
     $('#soltuiRunStatus').textContent = `${c.name} running…`;
     try {
       const env = await ask(c.name, params);
@@ -404,6 +433,12 @@ export function mountSoltuiPanel(root = document, transport = send) {
       // A response for a previous tool never replaces the current tool's view.
       if (select.value === c.name) display(env);
       if (!env?.ok) poll.checked = false;
+      if (env?.ok && c.name === 'batch.run_all') {
+        batchId = env.result.run_id;
+        chrome.storage.local.set({ 'signalDesk.batch': batchId });
+        $('#deskBatchStatus').textContent = env.result?.message ?? 'Batch running';
+        updateBatch();
+      }
     } catch (e) {
       poll.checked = false;
       $('#soltuiRunStatus').textContent = `${c.name} failed: ${e.message}. No automatic retry.`;
@@ -489,6 +524,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (!['prices.status', 'forwardtest.predictions'].every((name) => commands.some((c) => c.name === name && c.read_only && !c.requires_confirm))) {
       $('#soltuiLiveStatus').textContent = 'This host does not expose the read-only live view tools.'; return;
     }
+    renderTradingView($('#tradingViewChart'), asset);
     liveBusy = true;
     try {
       if (asset !== liveAsset) {
@@ -531,6 +567,19 @@ export function mountSoltuiPanel(root = document, transport = send) {
           $('#soltuiLivePredictions').replaceChildren();
           $('#soltuiLivePredictionStatus').textContent = `Prediction refresh failed: ${e.message} · retrying every 10s`;
         }
+      }
+      if ($('#soltuiPriceSource').value === 'jupiter') {
+        const env = await ask('prices.quote', { asset, source: 'jupiter' });
+        if (disposed || contextGeneration !== liveGeneration) return;
+        if (!env?.ok) throw new Error(env?.error?.message ?? 'Jupiter unavailable');
+        const quote = env.result;
+        const aggregate = aggregatePredictions(predictionRows, Date.now() / 1000, voting);
+        paintAggregate($('#soltuiLiveScore'), aggregate); paintAggregate($('#soltuiPredictionsScore'), aggregate);
+        livePoints = appendScoreTick(livePoints, { at: quote.fetched_at * 1000, price: quote.price, aggregate: { score: null, label: 'Jupiter reference price' } });
+        clear($('#soltuiLiveChart'), renderScoreChart(livePoints));
+        desk.live({ asset, source: 'Jupiter', quote: { last: quote.price }, aggregate, updated: predictionsAt, fresh: false });
+        $('#soltuiLiveStatus').textContent = `Jupiter ${asset}/USD $${quote.price} · block ${quote.block_id ?? 'unavailable'} · fetched ${new Date(quote.fetched_at * 1000).toISOString().slice(11, 19)} UTC. Saved predictions and the TradingView reference chart use Coinbase candles.`;
+        return;
       }
       const env = await ask('prices.status');
       if (!env.ok) throw new Error(env.error?.message ?? 'Recorder status failed.');
@@ -685,19 +734,52 @@ export function mountSoltuiPanel(root = document, transport = send) {
     desk.assetChanged();
     liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
     $('#soltuiLiveChart').replaceChildren();
+    $('#manualSignalResult').replaceChildren();
     $('#soltuiLivePredictions').replaceChildren();
     const unavailable = aggregatePredictions([]);
     paintAggregate($('#soltuiLiveScore'), unavailable);
     paintAggregate($('#soltuiPredictionsScore'), unavailable);
     refreshLive(true);
   });
+  $('#soltuiPriceSource').addEventListener('change', () => $('#soltuiLiveAsset').dispatchEvent(new Event('change')));
   $('#soltuiVoteMinScore').addEventListener('change', saveVoteFloor);
   $('#soltuiVoteMinResolved').addEventListener('change', saveVoteFloor);
+  async function updateBatch() {
+    if (!batchId || batchChecking || disposed) return;
+    batchChecking = true;
+    try {
+      const env = await ask('batch.status', { run_id: batchId });
+      if (!env?.ok) throw new Error(env?.error?.message ?? 'Batch status unavailable');
+      const r = env.result, counts = r.counts ?? {};
+      $('#deskBatchStatus').textContent = `${r.phase} · ${Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(' · ')} · ${r.assets?.length ?? 0} coins / ${r.intervals?.length ?? 0} intervals`;
+      $('#deskStartAll').textContent = r.running ? 'All tests running' : 'Start all tests';
+      $('#deskStartAll').disabled = r.running;
+    } catch (e) { $('#deskBatchStatus').textContent = e.message; }
+    finally { batchChecking = false; }
+  }
+  chrome.storage.local.get('signalDesk.batch').then((v) => { batchId = v?.['signalDesk.batch']; updateBatch(); }).catch(() => {});
+  $('#deskStartAll').addEventListener('click', () => activate('batch.run_all'));
+  $('#soltuiManualCheck').addEventListener('click', async () => {
+    if (manualBusy) return;
+    const button = $('#soltuiManualCheck'), target = $('#manualSignalResult');
+    const asset = $('#soltuiLiveAsset').value.trim().toUpperCase();
+    manualBusy = true; button.disabled = true; target.textContent = `Checking ${asset}…`;
+    try {
+      const env = await ask('signals.check', { asset });
+      if (asset !== $('#soltuiLiveAsset').value.trim().toUpperCase()) return;
+      if (!env?.ok) throw new Error(env?.error?.message ?? 'Check failed');
+      clear(target, el('h3', { text: `Manual ${asset} assessment · ${env.result.score ?? '—'} / 100` }),
+        el('p', { class: 'note', text: `Coinbase closed 1m candles · ${new Date(env.result.checked_at * 1000).toISOString().slice(11, 19)} UTC · ${env.result.strategies} strategies` }),
+        table([{ label: 'Strategy', value: (r) => r.strategy }, { label: 'Now', value: (r) => r.prediction }, { label: 'Details', value: (r) => r.error }], env.result.rows));
+    } catch (e) { target.textContent = e.message; }
+    finally { manualBusy = false; button.disabled = false; }
+  });
   $('#soltuiLiveRefresh').addEventListener('click', () => refreshLive(true));
   $('#soltuiLiveStream').addEventListener('change', () => { if ($('#soltuiLiveStream').checked) refreshLive(true); });
   window.addEventListener('hashchange', applyRoute);
   heartbeat = setInterval(renew, 25_000);
   pollTimer = setInterval(() => {
+    updateBatch();
     const c = current();
     if (disposed || document.hidden || $('#view-soltui').hidden || !poll.checked || !c || !POLLABLE.has(c.name) || c.read_only !== true) return;
     const values = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));

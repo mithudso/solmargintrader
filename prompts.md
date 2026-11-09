@@ -1,12 +1,26 @@
 # Prompt history
 
-Version: 142
+Version: 144
+Delta: v143 to v144; add Jupiter and Coinbase live-feed selection.
+Delta: v142 to v143; simplify dashboard actions and add current assessments.
 Delta: v141 to v142; record shared-checkout availability.
 Delta: v140 to v141; record backtest activation and unavailable agreement report.
 Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v144 - 2026-11-09
+
+```text
+Make it so on the live signals page of both the soltui and the chrome extension that you can select to view the jup.ag price feed instead of coinbase. My bot should be on jup.ag, not coinbase which would be cheaper faster, etc. less volume but whatever.
+```
+
+## v143 - 2026-11-09
+
+```text
+The lauyout and colors are great, but you clearly took text boxes and awkwardly shoved them into a web gui, and then made everything too wordy. For all tables, make it so clicking on the top row will sort by that column.  Also change all the buttons that are weird lists like this: [Image #1]  and instead of having to click multiple buttons to get the thing, just have the first button be the run/refresh button and expand the output window. And make a single button at the top start all backtests and forwardtests on all coins for all timeframes, and continue with the forward test. Also on the Live Signals page add a "manually check" button to ask for the current prediction regardless of anything else going on. For the graph on the live signal page incorporate the tradingview graph for that coinpair.
+```
 
 ## v142 - 2026-11-09
 

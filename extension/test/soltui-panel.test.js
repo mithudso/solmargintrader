@@ -67,7 +67,7 @@ test('the manifest asks for exactly the permissions and hosts it uses, and widen
     'https://mainnet.base.org/*', 'https://base-rpc.publicnode.com/*', 'https://api.mainnet-beta.solana.com/*',
     'https://coins.llama.fi/*', 'https://yields.llama.fi/*',
   ]);
-  assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self'; object-src 'self'; base-uri 'none'");
+  assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self'; object-src 'self'; base-uri 'none'; frame-src https://www.tradingview-widget.com");
   assert.equal(manifest.externally_connectable, undefined, 'no other page or extension may message this one');
   assert.equal(manifest.background.service_worker, 'src/bg/service-worker.js');
 });

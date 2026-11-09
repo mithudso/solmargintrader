@@ -5,10 +5,10 @@ import { DESK_PAGES, DESK_READS, commandBlock, finite, numberText, percentText,
 
 const STORE = 'signalDesk.v1';
 const TITLE = { signal: 'Live signals', research: 'Backtesting', forward: 'Forward testing', bots: 'Bot monitor' };
-const PURPOSE = { signal: 'See what your strategies can support, with the evidence close by.',
-  research: 'Compare historical evidence before carrying a strategy forward.',
-  forward: 'Observe prospective paper outcomes. Keep each trial and its costs distinct.',
-  bots: 'Process health, evidence freshness and execution permission are separate facts.' };
+const PURPOSE = { signal: 'Prices and current strategy signals.',
+  research: 'Run and compare backtests.',
+  forward: 'Track paper predictions and outcomes.',
+  bots: 'Monitor running jobs.' };
 const action = (text, fn, primary = false) => { const b = el('button', { text, class: primary ? 'primary' : '', onclick: fn }); b.type = 'button'; return b; };
 const note = (text, warning = false) => el('p', { class: warning ? 'banner warn' : 'note', text });
 const stamp = (ts) => finite(ts) ? new Date(ts * 1000).toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : 'Unavailable';
@@ -26,7 +26,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
   const activity = [], waiting = new Map();
   const asset = () => $('#soltuiLiveAsset').value.trim().toUpperCase();
   async function save() {
-    const val = { runs, selected: [...selected], draft, asset: asset(), page,
+    const val = { runs, selected: [...selected], draft, asset: asset(), page, source: $('#soltuiPriceSource')?.value ?? 'coinbase',
       density: $('#deskDensity')?.value ?? 'comfortable' };
     try {
       if (!storage) throw new Error('Browser storage unavailable');
@@ -39,6 +39,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
   const restore = Promise.resolve(storage?.get(STORE)).then((value) => {
     const s = value?.[STORE];
     if (!s || disposed) return;
+    if (['coinbase', 'jupiter'].includes(s.source) && $('#soltuiPriceSource')) $('#soltuiPriceSource').value = s.source;
     runs = Array.isArray(s.runs) ? s.runs.filter((r) => r?.context?.schema === 1 && Array.isArray(r.rows)).slice(0, 12) : [];
     selected = new Set(Array.isArray(s.selected) ? s.selected.filter((id) => runs.some((r) => r.id === id)) : []);
     draft = s.draft?.run && s.draft?.row ? s.draft : null;
@@ -65,8 +66,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     $('#soltuiToolbox').open = true;
     $('#soltuiToolbox').dataset.focused = 'true';
     openTool(name, values);
-    $('#soltui').scrollIntoView({ block: 'nearest' });
-    $('#soltuiCommand').focus();
+
   }
   function buttons(items) {
     return el('div', { class: 'desk-actions' }, ...items.map(([label, name, values, primary]) => action(label, () => choose(name, values), primary)));
@@ -144,9 +144,9 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       kpi('Saved run snapshots', String(runs.length), 'Saved in this browser · source context retained'),
       kpi('Current backend asset', actual?.asset ?? 'Unavailable', `${actual?.interval ?? '—'} · historical settings are independent of the live-view asset`)));
     target.append(buttons([['New backtest', 'backtest.run', {}, true], ['Review dates & costs', 'settings.save'], ['Edit roster', 'roster.list'], ['Inspect research queue', 'queue.progress'], ['Review cancel sweep', 'backtest.cancel']]));
-    if (actual) target.append(note(`New sweeps use saved backend settings: ${actual.asset} / ${actual.interval} · ${actual.start || 'beginning'} to ${actual.end || 'end of cache'} · capital ${numberText(actual.capital)}. Change them explicitly in Review dates & costs.`));
+    if (actual) target.append(note(`Run settings: ${actual.asset} / ${actual.interval} · ${actual.start || 'beginning'} to ${actual.end || 'end of cache'} · capital ${numberText(actual.capital)}.`));
     const section = el('div', { class: 'card' }, el('div', { class: 'card-head' }, el('h2', { text: 'Historical evidence' }),
-      action('Compare selected runs', () => compare())), note('Median CPCV path net return and Sharpe are recorded summaries. Aggregate trades is not a median path trade count.'));
+      action('Compare selected runs', () => compare())), note('CPCV results · net returns include recorded costs.'));
     if (!runs.length) section.append(note('No versioned sweep is saved in this browser or native session yet. Run a backtest explicitly. Existing research remains available in the queue, strategy history and All tools.'));
     if (runs.length) section.append(tableScrollHint());
     for (const run of runs) {
@@ -167,14 +167,14 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
         { label: 'Positive paths', value: (r) => percentText(r.frac_positive) }, { label: 'Aggregate trades', value: (r) => numberText(r.trades, 0) },
         { label: 'Next step', value: (r) => action('Stage paper trial', () => stage(run, r)) },
       ], run.rows)));
-      if (run.skipped.length) runCard.append(note(`Excluded configurations: ${run.skipped.map((r) => `${r.label}: ${r.reason}`).join(' · ')}`));
+      if (run.skipped.length) runCard.append(note(`Skipped: ${run.skipped.map((r) => `${r.label}: ${r.reason}`).join(' · ')}`));
       section.append(runCard);
     }
-    section.append(note('Per-path drawdown, equity, turnover, itemized cost totals and a matched benchmark are unavailable in the current sweep result contract. They are not reconstructed from Sharpe.'));
+    section.append(note('Drawdown, equity and itemized costs are unavailable. Inspect a run for provenance.'));
     target.append(section, buttons([['Replay a decision', 'paper.start'], ['Strategy history', 'strategies.history'], ['Cumulative research', 'cumulative.summary'], ['Experiment workbench', 'experiments.list']]));
     const archives = data['cumulative.summary']?.files ?? [];
     if (archives.length) target.append(el('div', { class: 'card' }, el('h2', { text: 'Existing research archives' }),
-      note('These saved summaries retain their original assumptions. They do not supply the complete context required for a pinned handoff or a comparison with a new run.'),
+      note('Archives retain their original assumptions.'),
       tableScrollHint(), el('div', { class: 'table-wrap' }, table([
         { label: 'Source', value: (r) => r.source }, { label: 'Rankable configurations', value: (r) => numberText(r.rankable, 0) },
         { label: 'Below evidence floor', value: (r) => numberText(r.below_floor, 0) },
@@ -201,7 +201,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       kpi('Paper entry confidence', state?.execution ? numberText(state.execution.min_confidence) : 'Unavailable', 'Separate from live vote accuracy and sample floors')));
     target.append(buttons([['New paper setup', 'forwardtest.start', {}, true], ['Start prepared checks', 'forwardtest.run'], ['Review stop checks', 'forwardtest.stop'], ['Review saved session', 'forwardtest.state'], ['Resume saved session', 'forwardtest.restore']]));
     if (state?.execution) target.append(note(costText(state.execution)));
-    target.append(note('Stopping checks does not cancel orders or stop detached trainers. Pending observations are not wins. Historical replay is not prospective testing.'));
+    target.append(note('Paper checks. Stop applies to this session only.'));
     const section = el('div', { class: 'card' }, el('h2', { text: `${asset()} prospective evidence` }));
     if (!rows.length) section.append(note(failures['forwardtest.status'] ?? 'No saved trial results for this asset. Prepare a paper setup explicitly; reading this view starts nothing.'));
     else section.append(tableScrollHint(), el('div', { class: 'table-wrap' }, table([
@@ -210,7 +210,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       { label: 'Pending', value: (r) => numberText(r.pending, 0) }, { label: 'Net paper return', value: (r) => percentText(r.net_pct) },
       { label: 'Evidence', value: (r) => action('Inspect trial', () => inspect('Saved forward trial / horizon', r)) },
     ], rows)));
-    section.append(note('Accuracy is a classification measure, not a profit probability. Inspect the resolved sample count and horizon; dependent observations weaken naive confidence intervals. A matched baseline is unavailable unless the recorded evidence supplies it.'));
+    section.append(note('Accuracy describes resolved predictions; it is not a profit probability.'));
     target.append(section, buttons([['Current predictions', 'forwardtest.predictions', { asset: asset() }], ['Compound paper evidence', 'compound.forward_status', { asset: asset() }], ['Training history', 'compound.results', { asset: asset() }]]));
   }
   function bots(target) {
@@ -280,7 +280,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     liveSnapshot = snapshot;
     const q = snapshot.quote, a = snapshot.aggregate;
     clear($('#deskLiveMetrics'),
-      kpi(`${snapshot.asset} / USD · ${snapshot.fresh ? 'current quote' : 'last known / unavailable'}`, finite(q?.mid ?? q?.last) ? `$${numberText(q.mid ?? q.last, 4)}` : 'Unavailable', `Coinbase recorder · ${numberText(q?.quote_age_s, 1)}s old`),
+      kpi(`${snapshot.asset} / USD · ${snapshot.source === 'Jupiter' ? 'Jupiter reference' : snapshot.fresh ? 'current quote' : 'last known / unavailable'}`, finite(q?.mid ?? q?.last) ? `$${numberText(q.mid ?? q.last, 4)}` : 'Unavailable', snapshot.source === 'Jupiter' ? 'Jupiter reference price · request time shown below' : `Coinbase recorder · ${numberText(q?.quote_age_s, 1)}s old`),
       kpi('Directional agreement', a?.available ? `${numberText(a.score, 0)} / 100` : 'Unavailable', a?.available ? `${a.label} · not success probability` : 'No qualifying current predictions'),
       kpi('Eligible strategies', a?.available ? String(a.strategies) : '0', 'Equal strategy weights; inspect horizon eligibility'),
       kpi('Prediction snapshot', snapshot.updated ? new Date(snapshot.updated).toISOString().slice(11, 19) + ' UTC' : 'Unavailable', 'Saved closed-candle predictions · refresh every 10s'));

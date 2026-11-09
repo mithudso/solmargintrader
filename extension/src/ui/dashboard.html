@@ -55,10 +55,10 @@
       <section id="view-soltui" class="view" data-view="soltui" hidden>
         <div class="view-head">
           <div><p class="eyebrow">SolMarginTrader / Signal Desk</p><h1 id="deskTitle" tabindex="-1">Live signals</h1><p id="deskPurpose">Evidence, research and monitoring in one workspace.</p></div>
-          <button id="soltuiReload" type="button">Reconnect / reload tools</button>
+          <button id="deskStartAll" class="primary" type="button" title="All eligible coins and supported timeframes; uses each cached series' longest continuous window. Missing history is reported.">Start all tests</button><button id="soltuiReload" type="button">Reconnect / reload tools</button>
         </div>
-        <div class="desk-context"><label>View asset <input id="soltuiLiveAsset" value="SOL" maxlength="20" size="8" aria-label="Workspace asset" /></label><span class="chip backtest">Research &amp; paper observation</span><span class="note">New backtests use their saved research asset and dates.</span></div>
-        <p id="soltuiStatus" class="note" role="status"></p><p id="deskStorageStatus" class="err" role="status"></p>
+        <div class="desk-context"><label>View asset <input id="soltuiLiveAsset" value="SOL" maxlength="20" size="8" aria-label="Workspace asset" /></label><label>Price feed <select id="soltuiPriceSource"><option value="coinbase">Coinbase</option><option value="jupiter">Jupiter / jup.ag</option></select></label><span class="chip backtest">Research &amp; paper observation</span><span class="note">New backtests use their saved research asset and dates.</span></div>
+        <p id="deskBatchStatus" class="note" role="status"></p><p id="soltuiStatus" class="note" role="status"></p><p id="deskStorageStatus" class="err" role="status"></p>
         <div id="soltuiJobs" class="row" aria-live="polite"></div>
         <div id="soltuiHistory" class="row" aria-label="Recent tool results"></div>
         <div id="soltuiNowSummary" class="kpis" aria-label="Process status"></div>
@@ -71,11 +71,11 @@
         <div id="soltuiLive" class="desk-live-grid">
           <div class="card desk-chart-card">
             <div class="card-head"><div><h2>Price &amp; observed signal</h2><p class="note">Source timestamps · UTC</p></div><div class="row">
-              <button id="soltuiLiveRefresh" type="button">Refresh live view</button>
+              <button id="soltuiManualCheck" class="primary" type="button">Manually check</button><button id="soltuiLiveRefresh" type="button">Refresh live view</button>
               <label><input id="soltuiLiveStream" type="checkbox" /> Follow stream</label>
             </div></div>
-            <div id="soltuiLiveChart"><p class="empty">Waiting for an existing recorder quote. This view starts no services.</p></div>
-            <p id="soltuiLiveStatus" class="note">Reads the existing recorder and saved predictions. Does not start a recorder or trainer.</p>
+            <div id="tradingViewChart" class="tradingview-chart"></div><details><summary>Recorder history &amp; saved votes</summary><div id="soltuiLiveChart"><p class="empty">Waiting for an existing recorder quote. This view starts no services.</p></div>
+            </details><div id="manualSignalResult" aria-live="polite"></div><p id="soltuiLiveStatus" class="note">Reads the existing recorder and saved predictions. Does not start a recorder or trainer.</p>
           </div>
           <aside class="card desk-interpretation">
             <p class="eyebrow">Current interpretation</p><h2 id="deskInterpretation" class="desk-score">Agreement unavailable</h2>
@@ -88,13 +88,13 @@
             </div><p id="soltuiVoteStatus" class="note" role="status">Changes save shared voting settings. Both strategy-wide and horizon floors apply.</p></details>
           </aside>
           <div class="card desk-evidence-card">
-            <div class="card-head"><div><h2>Strategy evidence</h2><p class="note">Excluded strategies stay visible. Inspect the exact horizon, sample count and expiry.</p></div></div>
+            <div class="card-head"><div><h2>Strategy evidence</h2><p class="note">Click a column to sort. Inspect a strategy for details.</p></div></div>
             <div id="soltuiPredictionsScore" class="signal-score signal-score-gray">Aggregate score unavailable</div>
             <p id="soltuiLivePredictionStatus" class="note">Saved predictions refresh every 10 seconds.</p>
             <div id="soltuiLivePredictions"></div>
           </div>
         </div>
-        <details id="soltuiToolbox" class="desk-toolbox"><summary>Tools &amp; detailed results <span class="note">Review parameters before running an action</span></summary>
+        <details id="soltuiToolbox" class="desk-toolbox"><summary>Tools &amp; results</summary>
         <div class="card">
           <div class="filters">
             <label>Workspace<select id="soltuiWorkspace" aria-label="Workspace"></select></label>
@@ -110,10 +110,10 @@
             <form id="soltuiForm" class="form" autocomplete="off"></form>
             <p id="soltuiRunStatus" class="note" role="status"></p>
             <label class="poll-control"><input id="soltuiPoll" type="checkbox" disabled /> Refresh this status every 10 seconds</label>
-            <p class="note">Actions run only when you press their button. Closing every dashboard ends in-memory replay and session jobs; detached trainers and saved evidence remain on disk.</p>
+            <p class="note">Session jobs stop when every dashboard closes. Batches keep running.</p>
           </div>
         </div>
-        <div class="card">
+        <div class="card" id="soltuiResultCard">
           <div class="card-head"><h2 id="soltuiResultLabel">Results</h2><button id="soltuiExportJson" type="button" class="small">Export JSON</button></div>
           <div id="soltuiNext" class="row"></div>
           <div id="soltuiTables"></div>

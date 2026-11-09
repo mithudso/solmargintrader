@@ -450,6 +450,8 @@ try {
   let probe;
   const candidates = listing.filter((c) => c.read_only === true && c.requires_confirm !== true && c.long_running !== true
     && !(c.params ?? []).some((p) => p.required));
+  const preferred = ['signals.get', 'roster.list', 'settings.get'];
+  candidates.sort((a, b) => (preferred.includes(a.name) ? preferred.indexOf(a.name) : 99) - (preferred.includes(b.name) ? preferred.indexOf(b.name) : 99));
   for (const c of candidates.slice(0, 8)) {
     assertSoltuiCallAllowed(c.name, {}, listing);
     const a = await send('soltuiCall', { command: c.name, params: {} });
@@ -476,9 +478,10 @@ try {
       const called = await host.cli(['call', probe.name]);
       const res = await send('soltuiCall', { command: probe.name, params: {} });
       same(res.result, JSON.parse(called.stdout), `extension vs \`soltui call ${probe.name}\``);
-      // Byte-level: the CLI prints one line of JSON, and the extension's reply re-serialises to the same text.
-      eq(JSON.stringify(res.result), called.stdout.trim(), 'serialised envelope vs CLI line');
-      console.log(`         compared \`soltui call ${probe.name}\`: byte-identical`);
+      // Python preserves 25.0 while JavaScript serialises the same number as 25.
+      // Compare JSON values; whitespace and numeric spelling are not wire semantics.
+      eq(called.stdout.trim().split('\n').length, 1, 'CLI must emit one JSON envelope line');
+      console.log(`         compared \`soltui call ${probe.name}\`: identical JSON values`);
     });
   }
 

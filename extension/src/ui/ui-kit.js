@@ -92,6 +92,49 @@ export function table(columns, rows, { emptyText = 'Nothing to show.', rowClass 
   return el('table', {}, el('thead', {}, head), el('tbody', {}, body));
 }
 
+/** Sort existing rows without rebuilding their buttons or losing event handlers. */
+const tableSorts = new Map();
+export function sortableTable(node) {
+  if (node.dataset.sortable === 'true' || node.dataset.sortable === 'false') return;
+  const headers = [...node.querySelectorAll('thead tr:first-child th')];
+  if (!headers.length) return;
+  node.dataset.sortable = 'true';
+  const key = `${node.closest('[id]')?.id ?? ''}:${headers.map((h) => h.textContent).join('|')}`;
+  const value = (cell) => {
+    const text = (cell?.dataset.sortValue ?? cell?.textContent ?? '').trim();
+    if (!text || ['—', 'Unavailable', 'N/A'].includes(text)) return null;
+    const numeric = text.replace(/^[+$€£]/, '').replace(/−/g, '-').replace(/,/g, '').match(/^(-?\d+(?:\.\d+)?)(%|[kKmMbB])?(?:$|\s| ·)/);
+    if (numeric) return Number(numeric[1]) * ({ k: 1e3, m: 1e6, b: 1e9 }[numeric[2]?.toLowerCase()] ?? 1);
+    return text;
+  };
+  function sort(index, direction) {
+    const body = node.tBodies[0];
+    if (!body) return;
+    const rows = [...body.rows].map((row, position) => ({ row, position, v: value(row.cells[index]) }));
+    rows.sort((a, b) => a.v === null ? (b.v === null ? a.position - b.position : 1) : b.v === null ? -1 :
+      direction * (typeof a.v === 'number' && typeof b.v === 'number' ? a.v - b.v : String(a.v).localeCompare(String(b.v), undefined, { numeric: true })) || a.position - b.position);
+    body.append(...rows.map((r) => r.row));
+    headers.forEach((h, i) => h.setAttribute('aria-sort', i === index ? (direction === 1 ? 'ascending' : 'descending') : 'none'));
+    tableSorts.set(key, { index, direction });
+  }
+  headers.forEach((header, index) => {
+    const button = el('button', { class: 'column-sort', text: header.textContent, title: `Sort by ${header.textContent}` });
+    button.type = 'button';
+    button.onclick = () => { const previous = tableSorts.get(key); sort(index, previous?.index === index ? -previous.direction : 1); };
+    header.replaceChildren(button);
+  });
+  const previous = tableSorts.get(key);
+  if (previous) sort(previous.index, previous.direction);
+}
+
+export function observeSortableTables(root = document) {
+  const scan = () => root.querySelectorAll('table').forEach(sortableTable);
+  scan();
+  const observer = new MutationObserver(scan);
+  observer.observe(root, { childList: true, subtree: true });
+  return () => observer.disconnect();
+}
+
 /* ------------------------------------------------------------- formats -- */
 
 const finite = (n) => typeof n === 'number' && Number.isFinite(n);

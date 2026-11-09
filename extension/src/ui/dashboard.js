@@ -11,11 +11,13 @@
 import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 import { mountSoltuiPanel } from './soltui-panel.js';
 import { mountWalletPubkeyButton } from './wallet-pubkey.js';
-import { call, soltui, $, ago } from './ui-kit.js';
+import { call, soltui, $, ago, observeSortableTables } from './ui-kit.js';
 import { renderOverview, renderAlerts, mountAlertPrefs } from './view-overview.js';
 import { renderHoldings, refreshHoldings, mountHoldings, refreshPnl, mountPnl, refreshScout, refreshPools, mountDiscover } from './view-markets.js';
 import { refreshStrategies, mountStrategies, refreshSwap, mountSwap } from './view-trade.js';
 import { refreshGrid, mountGrid } from './view-grid.js';
+
+observeSortableTables(document);
 
 const send = (msg) => chrome.runtime.sendMessage(msg);
 

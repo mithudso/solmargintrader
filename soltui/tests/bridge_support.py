@@ -21,6 +21,7 @@ TOKEN = "test-token-not-a-secret"
 # Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite
 # replaces their handlers with fixed answers; the registry, validation, envelope and surfaces are real.
 HEAVY = {
+    "batch.run_all": {"run_id": "a" * 32, "phase": "backtesting", "running": True},
     "batch.list": {"runs": []},
     "batch.create": {"run_id": "a" * 32, "phase": "planned"},
     "batch.start": {"run_id": "a" * 32, "pid": 1},
@@ -77,6 +78,8 @@ HEAVY = {
     "forwardtest.tick": {"asset": "SOL", "bar": None, "recorded": 0, "rows": [], "message": "stub"},
     "forwardtest.status": {"asset": "SOL", "rows": []},
     "forwardtest.predictions": {"asset": "SOL", "rows": []},
+    "signals.check": {"asset": "SOL", "checked_at": 100, "score": 0, "strategies": 0, "rows": []},
+    "prices.quote": {"asset": "SOL", "source": "coinbase", "fetched_at": 100, "price": None},
     "compound.signal": {"call": "FLAT", "composite": None, "components": []},
     "compound.forward_tick": {"asset": "SOL", "recorded": False, "call": "FLAT", "resolved": 0},
     "compound.unattended_start": {"started": True, "asset": "SOL", "pid": 1, "log": "x"},

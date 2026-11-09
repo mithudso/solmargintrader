@@ -137,3 +137,16 @@ body.popup { width: 380px; padding: 15px; }
 .desk-toolbox[data-focused=true] .tool-list { display: none; }
 .desk-toolbox[data-focused=true] .workspace-grid { grid-template-columns: minmax(0, 1fr); }
 .desk-toolbox[data-focused=true] > .card:first-of-type { display: none; }
+
+.column-sort { border: 0; background: transparent; color: inherit; padding: 4px 0; text-align: inherit; font: inherit; cursor: pointer; width: 100%; }
+th[aria-sort=ascending] .column-sort::after { content: ' ↑'; }
+th[aria-sort=descending] .column-sort::after { content: ' ↓'; }
+#soltuiResultCard.expanded-output { min-height: 55vh; }
+#soltuiResultCard .table-wrap { max-height: 65vh; overflow: auto; }
+.desk-toolbox .tool-list { max-height: 320px; }
+.tradingview-chart { height: 470px; width: 100%; }
+.tradingview-chart iframe { width: 100%; height: calc(100% - 28px); border: 0; }
+#manualSignalResult { margin-top: 16px; }
+
+#soltuiResultCard table { min-width: 600px; }
+#soltuiResultCard td, #soltuiResultCard th { white-space: nowrap; }
