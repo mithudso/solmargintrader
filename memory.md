@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 219
-Delta: v218 to v219; record independent dashboard acceptance and recoverable PR.
+Version: 220
+Delta: v219 to v220; preserve final dashboard acceptance and canonical delivery receipt.
+
+## v220 - 2026-11-08
+
+Extension dashboard parity 0.4.0 is implemented and locally verified. All 147 current SolTUI commands are accessible by workflow. Now shows automatic read-only process snapshots; Signal shows recorded prices and saved predictions; research, replay, bots, experiments/heatmaps, manual reviewed orders, wallets, documents/editor and settings use the same Python handlers. Confirmation resets on parameter/row changes and after attempts. Fresh previews override cached submit history; false values and explicit empty strings reach the backend. Optional untouched text remains omitted (caught by fixture-browser parity). Persistent native leases preserve runtime; long-call workers allow cancellation; timeouts never replay.
+
+Final local results: 369 extension tests; 24 real-host Chrome checks and 23 fixture-host Chrome checks; 42 focused Python bridge checks; 909 backtester tests; Mongo 34 tests with 17 server-dependent skips; positive offline grid round trip net $0.3492; public Jupiter read endpoints pass; documentation counts and offline metadata/text/concept indexes checked. The full 1189-test SolTUI suite is optional and was not run. Independent browser acceptance also verified a real CSV download and document read. Mock-only browser writes exercise order handoff and editor conflict paths; no live order, signing, daemon restart or trainer start occurred.
+
+Delivery receipt: https://github.com/mithudso/solmargintrader/pull/143. Read that PR for the final CI, merged state and squash commit rather than inferring them from this checkpoint. No additional product implementation remains. The shared /Users/mitch/dev/solmargintrader checkout belongs to other active sessions; preserve its branch and dirty TUI work. The owner's existing Chrome profile was not reloaded. Stele task and knowledge writes are queued under dcbde101, 17d6b326, 8a990cf6 and 867c033e because this session has no Stele MCP tools. Earlier pending-work entries below are historical.
 
 ## v219 - 2026-11-08
 

@@ -86,6 +86,7 @@ test('dashboard forms can disable saved booleans and preserve document whitespac
   const c = { params: [{ name: 'enabled', type: 'bool' }, { name: 'text', type: 'string', required: true }] };
   assert.deepEqual(buildParams(c, { enabled: 'false', text: '  hello\n\n' }).params, { enabled: false, text: '  hello\n\n' });
   assert.deepEqual(buildParams(c, { enabled: '', text: '' }).params, { text: '' });
+  assert.deepEqual(coerceField({ name: 'text', type: 'string' }, ''), { skip: true }, 'untouched optional text remains omitted');
   assert.match(coerceField({ name: 'b', type: 'bool', required: true }, '').error, /required/);
 });
 

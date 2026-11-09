@@ -15,7 +15,7 @@ export function coerceField(param, raw) {
   }
   const text = typeof raw === 'string' ? raw.trim() : '';
   // Document bodies must preserve whitespace, and an explicit empty document is valid.
-  if (param.name === 'text' && param.type === 'string' && typeof raw === 'string') return { value: raw };
+  if (param.name === 'text' && param.type === 'string' && typeof raw === 'string' && (param.required || text !== '')) return { value: raw };
   if (text === '') return param.required ? { error: `${param.name} is required` } : { skip: true };
   if (param.type === 'number') {
     const n = Number(text);
@@ -192,6 +192,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let pollTimer;
   let liveTimer;
   let liveBusy = false;
+  let nowBusy = false;
+  let nowLoaded = false;
   let liveAsset = '';
   let livePoints = [];
   let predictionsAt = 0;
@@ -274,6 +276,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const spec = WORKSPACES.find((w) => w.id === workspace.value) ?? WORKSPACES.at(-1);
     $('#soltuiWorkspaceDetail').textContent = spec.detail;
     $('#soltuiLive').hidden = !['signal', 'now'].includes(spec.id);
+    $('#soltuiNowSummary').hidden = spec.id !== 'now';
+    if (spec.id === 'now' && commands.length && !nowLoaded) refreshNow();
     const filtered = filterCommands(commands, spec.id, search.value);
     clear(tools, ...filtered.map((c) => el('button', { class: 'tool-card', title: c.describe, onclick: () => choose(c.name) },
       el('strong', { text: c.name }), el('small', { text: `${c.read_only ? 'Read' : 'Action'}${c.requires_confirm ? ' · Confirm' : ''} — ${c.describe}` }))));
@@ -381,6 +385,35 @@ export function mountSoltuiPanel(root = document, transport = send) {
       }
     }
   }
+  async function refreshNow() {
+    if (nowBusy || disposed) return;
+    nowBusy = true;
+    nowLoaded = true;
+    const target = $('#soltuiNowSummary');
+    clear(target);
+    const names = WORKSPACES.find((w) => w.id === 'now').tools;
+    try {
+      await Promise.all(names.map(async (name) => {
+        const c = commands.find((tool) => tool.name === name && tool.read_only && !tool.requires_confirm && !tool.long_running
+          && !tool.params?.some((p) => p.required));
+        if (!c) return;
+        const value = el('div', { class: 'value', text: '…' });
+        const sub = el('div', { class: 'sub' });
+        const card = el('div', { class: 'kpi' }, el('div', { class: 'label', text: name }), value, sub,
+          el('button', { class: 'small', text: 'Open tool', onclick: () => choose(name) }));
+        target.append(card);
+        try {
+          const env = await ask(name);
+          if (!env.ok) throw new Error(env.error?.message ?? 'Unavailable');
+          const r = env.result;
+          const running = r?.running;
+          value.textContent = typeof running === 'boolean' ? (running ? 'Running' : 'Stopped')
+            : (r?.phase ?? (r == null ? 'No saved data' : 'Available'));
+          sub.textContent = r?.title ?? r?.message ?? r?.last_error ?? r?.label ?? 'Read only · open tool for details';
+        } catch (e) { value.textContent = 'Unavailable'; sub.textContent = e.message; }
+      }));
+    } finally { nowBusy = false; }
+  }
   async function refreshLive(force = false) {
     if (liveBusy || disposed) return;
     const asset = $('#soltuiLiveAsset').value.trim().toUpperCase();
@@ -445,6 +478,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const old = select.value;
       clear(select, ...commands.map((c) => el('option', { value: c.name, text: c.name })));
       if (commands.some((c) => c.name === old)) select.value = old;
+      else select.value = filterCommands(commands, workspace.value)[0]?.name ?? commands[0]?.name ?? '';
+      nowLoaded = false;
       status.textContent = `${commands.length} TUI tools connected · session retained while a dashboard is open`;
       renderForm();
       renderTools();
