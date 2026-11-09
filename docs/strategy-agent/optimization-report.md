@@ -28,3 +28,5 @@ does not override that authorization. Order direction, feasible amount and all
 existing technical gates still need to be established.
 
 A final fresh-context review after the checkpoint found an unresolved conflict: the candidate requires a manager record before the first agent action, although read-only discovery must happen first. It also found that the primary example does not demonstrate the full authoring and delivery sequence and that material capability and outcome claims need traceable source or receipt references. These findings remain unresolved in the candidate. Optimizer status is incomplete; no CLEAN, blind-gate pass, or convergence is claimed.
+
+Reflection corrected the manager discovery ordering in the draft candidate. The example and source-tracing findings remain; the corrected candidate has not passed a fresh independent review.

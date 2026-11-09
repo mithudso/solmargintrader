@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 342
+Version: 343
+Delta: v342 to v343; clarify read-only manager discovery before reporting begins.
 Delta: v341 to v342; record final prompt audit dissent and draft checkpoint.
 Delta: v340 to v341; record optimizer and initial SOL backtest evidence and unresolved integrations.
 Delta: v339 to v340; start strategy agent proof of concept and guarded Jupiter proof investigation.
@@ -1062,3 +1063,5 @@ Task TASK-1161. Worktree /Users/mitch/dev/solmargintrader-wt-strategy-poc based 
 The prompt candidate and partial optimizer record are in docs/strategy-agent/. Fresh independent review of the final revision, optimizer run manifest/self-check, and actual agent implementation remain. The existing momentum card's default 60-day strategy ran on SOL_1d.csv in the isolated worktree with a 70/30 split, 6 bps fee, 2 bps slippage and next-open fills. The CLI reported out-of-sample return -15.79%; this is historical USD proxy data, not a blind prospective or Jupiter execution result. Artifacts: /tmp/strategy-agent-sol-backtest/. Manager's installed list returned no drafts; manager events and financials currently cover its own bounded grid reference-paper runtime, not arbitrary strategy-agent events or P&L. Oracle implementation remains open in TASK-1154. No new P&L ledger or agent has been implemented. Executor status reported 0.084924546 SOL and 0.000047 USDC, mode dry-run, validation disabled, no unresolved journal sends. SOL/USDC was specified without direction; no quote, simulation, signature, or swap was made. Await trade direction; use existing owner wallet and rails. Remaining: build and verify actual manager-integrated strategy agent, all-coin data inventory, bounded development experiments and truly prospective blind handoff; finish optimizer gates; validate and perform the specifically defined proof swap only if executor gates pass; deliver and complete TASK-1161.
 
 Draft checkpoint PR: https://github.com/mithudso/solmargintrader/pull/182 . Final fresh-context prompt review found an ordering contradiction for read-only discovery versus manager event initialization, an incomplete authoring example, and insufficient sources for material capability claims. Repair and re-audit before claiming prompt convergence.
+
+Reflection corrected the prompt ordering conflict. Fresh blind review and the example and source-tracing findings remain open.
