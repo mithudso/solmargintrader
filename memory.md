@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 313
+Version: 315
+Delta: v314 to v315; record reviewed bot UI design, browser acceptance and delivery preparation.
+Delta: v313 to v314; start isolated bot-control-room design and continuation.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
 Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
@@ -759,3 +761,21 @@ Final registry run exit 0: 544 successful cells, zero failures, unchanged source
 ## PR167 integration receipt
 
 PR https://github.com/mithudso/solmargintrader/pull/167 preserves all strategy experiment artifacts. Concurrent default branch PR166 was merged without discarding either prompt/memory history; no backtester core changed. Integrated local backtester suite960 passed; extension suite407 passed. Docs total2787 includes current1374 SolTUI tests. Index rebuilt over final owned paths. Full experiment file inventory is research/strategy_experiment/FILES.md, including expanded archive contents and durable-export absolute paths. Final CI, merge identity and standalone export acceptance remain delivery receipts reported after completion.
+
+
+## v314 - 2026-11-09 — bot control room design
+
+Task TASK-1096 with steps TASK-1097 (design), TASK-1098 (interactive mockup), TASK-1099 (verification and delivery). Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c198, branch agent-01a1c198. Deliver design artifacts only: browser control room, five-stage bot creation, skill applicability ledger and Superpowers plan. Platform is a designer assumption, not a user-approved product change. Active CLI design TASK-1092 and SolTUI work remain separate. Preserve all other work. Current baseline is 4d4c7a1. Paper/disarmed defaults, separate result modes, stale/unknown execution refusal, backend risk authority, no secrets, and archived liquidity remain constraints. Remaining: design, mockup render/review, plan, docs/index checks, PR/CI/merge. Stele knowledge transport closed; exact writes queued below.
+
+Stele outbox receipts: 54a6a0d6 | 03979d84
+
+
+## v315 - 2026-11-09 — bot control room reviewed
+
+TASK-1096 design artifacts are in docs/design/bot-control-room/; Superpowers plan is docs/superpowers/plans/2026-11-09-bot-control-room.md. Designer chose responsive browser fleet/inspector and five-stage draft creation; all five templates appear. No production module or service changed. Read DESIGN.md, SKILLS.md and REVIEW.md before resuming. TASK-1097 design and TASK-1098 mockup are done; TASK-1099 delivery is active.
+
+Independent browser review passed 49/49 assertions with final source identity, ten sampled contrast pairs, 1440/390/320px reflow and no external requests. Fixed narrow overflow, step focus, first-Escape dialog handling and chart value coordinates. Fresh builder review found a runtime identity gap: current forward sessions occupy strategy-scoped slots across markets. Design/plan v1.0.1 now use stable draft UUIDs, distinct runtime sessions and occupied-slot refusal. Duplicate instances require a future explicit backend capability; duplication cannot overwrite an active bot. Builder recheck: nothing important left.
+
+Durable self-contained preview: /Users/mitch/Downloads/sol-bot-control-room-2026-11-09.html. It inlines the reviewed CSS and JavaScript exactly; no backend or accounts. Documentation checker passed with current suite counts. Remaining delivery: exported-file acceptance, final documentation/index freshness and diff checks, commit/push/PR/final-head CI/merge, remote content verification and only this task's worktree cleanup. Preserve the shared original checkout; another live session owns it. Existing queued knowledge outbox IDs: 54a6a0d6 and 03979d84. These are queued writes, not confirmed knowledge nodes.
+
+Runtime-slot decision outbox receipt: cf778cd2

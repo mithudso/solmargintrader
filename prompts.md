@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 152
+Version: 153
+Delta: v152 to v153; record ideal bot-management UI design request.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
 Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
@@ -1207,3 +1208,10 @@ $ui-deep-optimizer  ~/dev/solmargintrader/soltui
 ## 2026-11-09 — strategy DSO comparison
 
 I want to run the deep strategy optimizer on the strategies in this repo, but I also want a before and after with comparisons of accuracy. Make a copy of all of the strategies into a separate folder, run the deep strategy optimizer on all of them, and then run the both the old and the new side by side and see how they shake out.
+
+
+## v153 - 2026-11-09 — bot control room design
+
+```text
+Lookup and use all of the software architect, design, and UI skills as well as the planning superpower and design an ideal crypto trading bot management and creation UI.
+```
