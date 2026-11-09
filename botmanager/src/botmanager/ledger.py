@@ -28,6 +28,7 @@ MAX_REQUESTS = 100000
 # for every supported registered instance, including queued running intents.
 # Accepted request IDs remain durable; no-op IDs cannot consume this reserve.
 STOP_RECEIPT_RESERVE = MAX_INSTANCES
+INTEGRITY_ERRORS = frozenset({"corrupt_checkpoint", "invalid_spec"})
 
 
 class RuntimeLedger:
@@ -50,8 +51,9 @@ class RuntimeLedger:
                 db.execute("PRAGMA query_only=ON")
             db.row_factory = sqlite3.Row
             db.execute("PRAGMA foreign_keys=ON")
-            if write:
-                db.execute("BEGIN IMMEDIATE")
+            # Every multi-SELECT decoder must use one snapshot. Query-only mode
+            # prevents writes but does not, by itself, pin a read transaction.
+            db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
             version = db.execute("PRAGMA user_version").fetchone()[0]
             if version == 0 and write:
                 db.execute(
@@ -61,14 +63,20 @@ class RuntimeLedger:
                     "CREATE TABLE fills (bot_id TEXT NOT NULL REFERENCES runs(bot_id), sequence INTEGER NOT NULL, body TEXT NOT NULL, PRIMARY KEY(bot_id,sequence))"
                 )
                 db.execute(
-                    "CREATE TABLE requests (request_id TEXT PRIMARY KEY, binding TEXT NOT NULL, receipt TEXT NOT NULL, checksum TEXT NOT NULL)"
+                    "CREATE TABLE requests (request_id TEXT PRIMARY KEY, binding TEXT NOT NULL, receipt TEXT NOT NULL, checksum TEXT NOT NULL, acceptance TEXT)"
                 )
                 db.execute(
                     "CREATE TABLE events (sequence INTEGER PRIMARY KEY, bot_id TEXT NOT NULL, generation INTEGER NOT NULL, kind TEXT NOT NULL, cursor INTEGER NOT NULL, at REAL NOT NULL)"
                 )
-                db.execute("PRAGMA user_version=1")
-                version = 1
-            if version != 1:
+                db.execute("PRAGMA user_version=2")
+                version = 2
+            if version == 1 and write:
+                # Historical acceptance context cannot be reconstructed from a
+                # mutable receipt. Retain every legacy row and mark it unproven.
+                db.execute("ALTER TABLE requests ADD COLUMN acceptance TEXT")
+                db.execute("PRAGMA user_version=2")
+                version = 2
+            if version not in (1, 2):
                 raise ManagerError(
                     "incompatible_store", "Runtime journal schema is incompatible.", 4
                 )
@@ -93,6 +101,8 @@ class RuntimeLedger:
         )
 
     def _decode(self, db, row):
+        from .strategies.grid import validate_checkpoint
+
         if row is None:
             return None
         try:
@@ -122,11 +132,10 @@ class RuntimeLedger:
                 fingerprint(checkpoint) != row["checkpoint_hash"]
                 or checkpoint["cursor"] != row["cursor"]
                 or checkpoint["fills"] != fills
-                or checkpoint["identity"]["config_hash"] != spec.config_hash
-                or checkpoint["identity"]["snapshot_hash"]
-                != result["input"]["snapshot_hash"]
             ):
                 raise ValueError
+            if checkpoint is not None:
+                validate_checkpoint(spec, result["input"], checkpoint)
             return result
         except (ValueError, KeyError, TypeError) as exc:
             raise ManagerError(
@@ -234,6 +243,111 @@ class RuntimeLedger:
             "registered": True,
         }
 
+    @staticmethod
+    def _accepted_receipt(context):
+        required = {
+            "schema_version",
+            "request_id",
+            "bot_id",
+            "operation",
+            "config_hash",
+            "config_revision",
+            "runtime_id",
+            "owner_id",
+            "owner_generation",
+            "prior_generation",
+            "prior_desired",
+            "already",
+        }
+        if not isinstance(context, dict) or set(context) != required:
+            raise ValueError
+        if (
+            type(context["schema_version"]) is not int
+            or context["schema_version"] != 1
+            or context["operation"] not in ("start", "stop")
+            or type(context["already"]) is not bool
+            or context["prior_desired"] not in ("running", "stopped")
+            or type(context["prior_generation"]) is not int
+            or context["prior_generation"] < 0
+            or type(context["owner_generation"]) is not int
+        ):
+            raise ValueError
+        desired = "running" if context["operation"] == "start" else "stopped"
+        if context["already"] != (context["prior_desired"] == desired):
+            raise ValueError
+        generation = context["prior_generation"] + (
+            1 if desired == "stopped" and not context["already"] else 0
+        )
+        if context["owner_generation"] != generation:
+            raise ValueError
+        return CommandReceipt(
+            schema_version=1,
+            bot_id=context["bot_id"],
+            operation=context["operation"],
+            request_id=context["request_id"],
+            runtime_id=context["runtime_id"],
+            owner_id=context["owner_id"],
+            owner_generation=generation,
+            config_revision=context["config_revision"],
+            outcome="skipped" if context["already"] else "pending",
+            reason="already_requested" if context["already"] else "desired_state_saved",
+            metadata={"config_hash": context["config_hash"]},
+        ).to_dict()
+
+    def _replay_receipt(self, db, old, spec, operation, request_id, binding):
+        if old["acceptance"] is None:
+            raise ManagerError(
+                "invalid_receipt",
+                "Legacy runtime receipt lacks acceptance context; reconciliation is required.",
+                4,
+            )
+        if old["binding"] != binding:
+            raise ManagerError(
+                "identity_conflict",
+                "Request UUID already belongs to a different control.",
+            )
+        try:
+            context = json.loads(old["acceptance"])
+            receipt = json.loads(old["receipt"])
+            expected_receipt = self._accepted_receipt(context)
+            run = db.execute(
+                "SELECT spec,runtime_id FROM runs WHERE bot_id=?", (spec.bot_id,)
+            ).fetchone()
+            if run is None:
+                raise ValueError
+            pinned = BotSpec.from_dict(json.loads(run["spec"]))
+            immutable = {
+                "request_id": request_id,
+                "bot_id": spec.bot_id,
+                "operation": operation,
+                "config_hash": spec.config_hash,
+                "config_revision": spec.config_revision,
+                "runtime_id": run["runtime_id"],
+            }
+            if (
+                old["request_id"] != request_id
+                or pinned.bot_id != spec.bot_id
+                or pinned.config_hash != spec.config_hash
+                or pinned.config_revision != spec.config_revision
+                or canonical({key: context[key] for key in immutable})
+                != canonical(immutable)
+                or canonical(receipt) != canonical(expected_receipt)
+                or fingerprint(
+                    {"binding": binding, "acceptance": context, "receipt": receipt}
+                )
+                != old["checksum"]
+            ):
+                raise ValueError
+            # Owner and generation belong to this immutable acceptance context,
+            # not to the current worker after later stop/restart transitions.
+            return expected_receipt
+        except (KeyError, TypeError, ValueError, ManagerError) as exc:
+            raise ManagerError(
+                "invalid_receipt",
+                "Durable runtime receipt does not match its accepted request.",
+                4,
+            ) from exc
+
     def control(self, spec: BotSpec, operation: str, request_id: str):
         try:
             if str(UUID(request_id)) != request_id or operation not in (
@@ -248,8 +362,10 @@ class RuntimeLedger:
             ) from exc
         binding = fingerprint(
             {
+                "request_id": request_id,
                 "bot_id": spec.bot_id,
                 "config_hash": spec.config_hash,
+                "config_revision": spec.config_revision,
                 "operation": operation,
             }
         )
@@ -258,22 +374,9 @@ class RuntimeLedger:
                 "SELECT * FROM requests WHERE request_id=?", (request_id,)
             ).fetchone()
             if old:
-                if old["binding"] != binding:
-                    raise ManagerError(
-                        "identity_conflict",
-                        "Request UUID already belongs to a different control.",
-                    )
-                receipt = json.loads(old["receipt"])
-                if (
-                    fingerprint({"binding": binding, "receipt": receipt})
-                    != old["checksum"]
-                ):
-                    raise ManagerError(
-                        "invalid_receipt",
-                        "Durable control receipt failed integrity validation.",
-                        4,
-                    )
-                return CommandReceipt.from_dict(receipt).to_dict()
+                return self._replay_receipt(
+                    db, old, spec, operation, request_id, binding
+                )
             raw = db.execute(
                 "SELECT * FROM runs WHERE bot_id=?", (spec.bot_id,)
             ).fetchone()
@@ -314,6 +417,8 @@ class RuntimeLedger:
                     "Failed or corrupt reference runs require investigation before restart.",
                     3,
                 )
+            prior_generation = row["generation"]
+            prior_desired = row["desired"]
             desired = "running" if operation == "start" else "stopped"
             already = row["desired"] == desired
             capacity = MAX_REQUESTS + (
@@ -350,29 +455,56 @@ class RuntimeLedger:
                 )
                 row.update(generation=generation)
                 self._event(db, row, operation + ".requested")
-            receipt = CommandReceipt(
-                schema_version=1,
-                bot_id=spec.bot_id,
-                operation=operation,
-                request_id=request_id,
-                runtime_id=row["runtime_id"],
-                owner_id=row["owner"],
-                owner_generation=row["generation"],
-                config_revision=spec.config_revision,
-                outcome="skipped" if already else "pending",
-                reason="already_requested" if already else "desired_state_saved",
-                metadata={"config_hash": spec.config_hash},
-            ).to_dict()
+            acceptance = {
+                "schema_version": 1,
+                "request_id": request_id,
+                "bot_id": spec.bot_id,
+                "operation": operation,
+                "config_hash": spec.config_hash,
+                "config_revision": spec.config_revision,
+                "runtime_id": row["runtime_id"],
+                "owner_id": row["owner"],
+                "owner_generation": row["generation"],
+                "prior_generation": prior_generation,
+                "prior_desired": prior_desired,
+                "already": already,
+            }
+            receipt = self._accepted_receipt(acceptance)
             db.execute(
-                "INSERT INTO requests VALUES (?,?,?,?)",
+                "INSERT INTO requests(request_id,binding,receipt,checksum,acceptance) VALUES (?,?,?,?,?)",
                 (
                     request_id,
                     binding,
                     canonical(receipt),
-                    fingerprint({"binding": binding, "receipt": receipt}),
+                    fingerprint(
+                        {
+                            "binding": binding,
+                            "acceptance": acceptance,
+                            "receipt": receipt,
+                        }
+                    ),
+                    canonical(acceptance),
                 ),
             )
             return receipt
+
+    def quarantine_if_corrupt(self, bot_id: str) -> bool:
+        """Confirm an integrity fault under the write lock before fencing a run."""
+        with self.connection(True) as db:
+            row = db.execute("SELECT * FROM runs WHERE bot_id=?", (bot_id,)).fetchone()
+            if row is None:
+                return False
+            try:
+                self._decode(db, row)
+            except ManagerError as exc:
+                if exc.code not in INTEGRITY_ERRORS:
+                    raise
+                db.execute(
+                    "UPDATE runs SET generation=generation+1,observed='blocked',reason='corrupt_checkpoint',pid=NULL WHERE bot_id=? AND observed!='blocked'",
+                    (bot_id,),
+                )
+                return True
+            return False
 
     def recover(self, owner: str):
         if not self.path.exists():
@@ -381,7 +513,9 @@ class RuntimeLedger:
             for row in db.execute("SELECT * FROM runs").fetchall():
                 try:
                     self._decode(db, row)
-                except ManagerError:
+                except ManagerError as exc:
+                    if exc.code not in INTEGRITY_ERRORS:
+                        raise
                     db.execute(
                         "UPDATE runs SET generation=generation+1,observed='blocked',reason='corrupt_checkpoint',owner=?,pid=NULL,tick_started=NULL WHERE bot_id=?",
                         (owner, row["bot_id"]),
@@ -477,8 +611,16 @@ class RuntimeLedger:
     def commit_tick(
         self, bot_id, generation, expected_cursor, checkpoint, *, before_commit=None
     ):
+        from .strategies.grid import validate_checkpoint
+
         with self.connection(True) as db:
             row = self._decode(db, self._fence(db, bot_id, generation))
+            validate_checkpoint(
+                BotSpec.from_dict(row["spec"]),
+                row["input"],
+                checkpoint,
+                code="reconciliation_required",
+            )
             if (
                 row["cursor"] != expected_cursor
                 or checkpoint["cursor"] <= expected_cursor
@@ -490,12 +632,7 @@ class RuntimeLedger:
                     3,
                 )
             old = row["checkpoint"]["fills"] if row["checkpoint"] else []
-            if (
-                checkpoint["fills"][: len(old)] != old
-                or checkpoint["identity"]["config_hash"] != row["spec"]["config_hash"]
-                or checkpoint["identity"]["snapshot_hash"]
-                != row["input"]["snapshot_hash"]
-            ):
+            if checkpoint["fills"][: len(old)] != old:
                 raise ManagerError(
                     "reconciliation_required",
                     "Replay results disagree with the durable run.",

@@ -10,7 +10,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from .domain import ManagerError
-from .ledger import MAX_ACTIVE, RuntimeLedger
+from .ledger import INTEGRITY_ERRORS, MAX_ACTIVE, RuntimeLedger
 from .transport import CommandServer
 from .worker import STALE_SECONDS, lifetime_lock, lock_held, run_worker
 
@@ -65,16 +65,19 @@ class Supervisor:
         for bot_id in self.ledger.ids():
             try:
                 row = self.ledger.get(bot_id)
-            except ManagerError:
-                child = self.children.get(bot_id)
-                if child and self._terminate(child[0]):
-                    self.children.pop(bot_id)
-                # Reconcile one corrupt run without disturbing healthy generations.
-                with self.ledger.connection(True) as db:
-                    db.execute(
-                        "UPDATE runs SET generation=generation+1,observed='blocked',reason='corrupt_checkpoint',pid=NULL WHERE bot_id=? AND observed!='blocked'",
-                        (bot_id,),
-                    )
+            except ManagerError as exc:
+                # Busy/unavailable reads are not proof of corrupt durable data.
+                # Revalidate even an integrity error in a fresh write snapshot.
+                if exc.code not in INTEGRITY_ERRORS:
+                    continue
+                try:
+                    corrupt = self.ledger.quarantine_if_corrupt(bot_id)
+                except ManagerError:
+                    continue
+                if corrupt:
+                    child = self.children.get(bot_id)
+                    if child and self._terminate(child[0]):
+                        self.children.pop(bot_id)
                 continue
             child = self.children.get(bot_id)
             if row["desired"] == "stopped":

@@ -9,19 +9,9 @@ from ..data import engine_identity, validate_snapshot
 from ..domain import BotSpec, ManagerError, fingerprint
 
 
-def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]:
-    import numpy as np
+def _configuration(spec: BotSpec, data: dict[str, Any]):
+    from backtester.core.gridsim import GridConfig
 
-    from backtester.core.gridsim import GridConfig, run_grid_backtest
-    from backtester.core.types import CostConfig
-
-    validate_snapshot(data)
-    if data["identity"]["engine_identity"] != engine_identity():
-        raise ManagerError(
-            "engine_identity_changed",
-            "Pinned simulation engine differs from the loaded engine.",
-            3,
-        )
     if (
         spec.strategy_id != "grid"
         or spec.mode != "paper"
@@ -32,10 +22,6 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
             "capability_unavailable",
             "Only disarmed one-minute grid reference replay is available.",
             3,
-        )
-    if type(cursor) is not int or not 1 <= cursor <= len(data["bars"]):
-        raise ManagerError(
-            "invalid_input", "Replay cursor is outside the immutable input."
         )
     values = spec.resolved_values
     if values["rungs"] > 100:
@@ -55,7 +41,7 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
             "Reference sizing or range disagrees with the pinned constructor.",
             3,
         )
-    cfg = GridConfig(
+    return GridConfig(
         mid * (1 - span),
         mid * (1 + span),
         values["rungs"],
@@ -64,6 +50,76 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
         values["deadband_bps"],
         d["min_order_quote"],
     )
+
+
+def run_identity(spec: BotSpec, data: dict[str, Any]) -> dict[str, Any]:
+    """Reconstruct every immutable evidence field from the pinned run inputs."""
+    return {
+        "bot_id": spec.bot_id,
+        "config_hash": spec.config_hash,
+        "config_revision": spec.config_revision,
+        "strategy_version": spec.strategy_version,
+        "snapshot_hash": data["snapshot_hash"],
+        "reference": data["identity"],
+        "target": {
+            "venue": spec.venue,
+            "base_mint": spec.base_mint,
+            "quote_mint": spec.quote_mint,
+            "execution_model": spec.execution_model,
+        },
+        "virtual_account": "independent_not_a_funded_wallet",
+        "grid": _configuration(spec, data).to_dict(),
+    }
+
+
+def validate_checkpoint(
+    spec: BotSpec,
+    data: dict[str, Any],
+    checkpoint: dict[str, Any],
+    *,
+    code: str = "corrupt_checkpoint",
+) -> None:
+    """A matching config alone cannot attribute a result to a virtual account."""
+    try:
+        expected = run_identity(spec, data)
+        expected_hash = fingerprint(expected)
+        cursor = checkpoint["cursor"]
+        if (
+            type(checkpoint["schema_version"]) is not int
+            or checkpoint["schema_version"] != 1
+            or type(cursor) is not int
+            or not 1 <= cursor <= len(data["bars"])
+            or checkpoint["last_bar_ts"] != data["bars"][cursor - 1]["ts"]
+            or checkpoint["quote_currency"] != data["identity"]["quote_currency"]
+            or fingerprint(checkpoint["identity"]) != expected_hash
+            or checkpoint["run_hash"] != expected_hash
+        ):
+            raise ValueError
+    except (KeyError, TypeError, ValueError, ManagerError) as exc:
+        raise ManagerError(
+            code, "Checkpoint identity does not match the pinned reference run.", 4
+        ) from exc
+
+
+def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]:
+    import numpy as np
+
+    from backtester.core.gridsim import run_grid_backtest
+    from backtester.core.types import CostConfig
+
+    validate_snapshot(data)
+    if data["identity"]["engine_identity"] != engine_identity():
+        raise ManagerError(
+            "engine_identity_changed",
+            "Pinned simulation engine differs from the loaded engine.",
+            3,
+        )
+    if type(cursor) is not int or not 1 <= cursor <= len(data["bars"]):
+        raise ManagerError(
+            "invalid_input", "Replay cursor is outside the immutable input."
+        )
+    cfg = _configuration(spec, data)
+    d = data["descriptor"]
     arrays = {
         key: np.array([b[key] for b in data["bars"][:cursor]])
         for key in ("ts", "high", "low", "close")
@@ -84,22 +140,7 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
         )
     exposure = result.unmatched_inventory_qty * float(arrays["close"][-1])
     equity = float(result.equity[-1])
-    identity = {
-        "bot_id": spec.bot_id,
-        "config_hash": spec.config_hash,
-        "config_revision": spec.config_revision,
-        "strategy_version": spec.strategy_version,
-        "snapshot_hash": data["snapshot_hash"],
-        "reference": data["identity"],
-        "target": {
-            "venue": spec.venue,
-            "base_mint": spec.base_mint,
-            "quote_mint": spec.quote_mint,
-            "execution_model": spec.execution_model,
-        },
-        "virtual_account": "independent_not_a_funded_wallet",
-        "grid": cfg.to_dict(),
-    }
+    identity = run_identity(spec, data)
     return {
         "schema_version": 1,
         "cursor": cursor,

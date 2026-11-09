@@ -409,11 +409,28 @@ registry for local bot controls and reads. Registration and service administrati
 are explicit CLI operations outside the supervisor request loop. CLI controls
 write durable intent directly, so an unavailable socket cannot prevent a stop.
 
-`runtime.sqlite3` is independently schema version 1 and must be backed up using
+`runtime.sqlite3` is independently schema version 2 and must be backed up using
 SQLite's backup API together with `manager.sqlite3` and `controls.sqlite3` when
 present. Runtime specs and inputs are immutable; fills, checkpoints, generations,
 control receipts and reference-only events are durable. There is no reset/adopt
 command that silently discards a failed run or its inventory.
+
+Runtime reads hold one explicit SQLite snapshot across row and fill decoding.
+A concurrent valid commit cannot mix a previous checkpoint with newer fills.
+The supervisor rechecks suspected integrity faults under a write lock before
+quarantine; transient journal-access errors do not become permanent corruption.
+Checkpoint writes and reads reconcile the complete bot/config/input/target/grid
+identity and run hash against the pinned run, even for identical-config bots.
+
+Schema-2 receipts bind the canonical request UUID and immutable acceptance context,
+including the then-accepted owner/generation and prior desired state. Replay checks
+the receipt against that context and the pinned bot/runtime identity; later worker
+or stop generations do not rewrite historical receipts. Schema-1 runtime state
+remains readable without migration. An authorized writer migrates the journal,
+preserving every legacy request ID and body with a null acceptance context.
+Those legacy receipts refuse replay with `invalid_receipt`: their historical
+acceptance cannot be proven. They are never deleted, resubmitted or given invented
+context. A fresh explicit stop still persists and fences the worker after migration.
 
 ## Explicit launchd service
 

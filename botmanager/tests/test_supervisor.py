@@ -524,6 +524,75 @@ class SupervisorTests(unittest.TestCase):
             )
             self.assertFalse(path.exists())
 
+    def test_supervisor_valid_interleaved_commit_cannot_quarantine(self):
+        import sqlite3
+        from contextlib import closing
+
+        from botmanager.strategies.grid import evaluate
+
+        from tests.test_recovery import InterleavingLedger
+
+        with closing(sqlite3.connect(self.ledger.path)) as db:
+            db.execute("PRAGMA journal_mode=WAL")
+        self.supervisor = Supervisor(self.home).open()
+        self.start()
+        generation = self.ledger.claim(self.spec.bot_id, self.supervisor.owner)
+        self.ledger.commit_tick(
+            self.spec.bot_id, generation, 0, evaluate(self.spec, self.data, 4)
+        )
+        state = evaluate(self.spec, self.data, 8)
+        self.supervisor.ledger = InterleavingLedger(
+            self.home,
+            lambda db: self.ledger.commit_tick(self.spec.bot_id, generation, 4, state),
+        )
+        self.supervisor.step()
+        after = self.ledger.get(self.spec.bot_id)
+        self.assertEqual(after["observed"], "waiting")
+        self.assertEqual(after["checkpoint"], state)
+        self.assertEqual(after["generation"], generation)
+
+    def test_supervisor_transient_access_or_unconfirmed_integrity_is_not_quarantined(
+        self,
+    ):
+        self.supervisor = Supervisor(self.home).open()
+        self.start()
+        self.ledger.claim(self.spec.bot_id, self.supervisor.owner)
+        before = self.ledger.get(self.spec.bot_id)
+        for code in ("store_unavailable", "corrupt_checkpoint"):
+            with (
+                self.subTest(code=code),
+                patch.object(
+                    self.supervisor.ledger,
+                    "get",
+                    side_effect=ManagerError(code, "isolated fixture", 4),
+                ),
+            ):
+                self.supervisor.step()
+            self.assertEqual(self.ledger.get(self.spec.bot_id), before)
+
+    def test_supervisor_quarantines_only_confirmed_durable_corruption(self):
+        from botmanager.strategies.grid import evaluate
+
+        self.supervisor = Supervisor(self.home).open()
+        self.start()
+        generation = self.ledger.claim(self.spec.bot_id, self.supervisor.owner)
+        self.ledger.commit_tick(
+            self.spec.bot_id, generation, 0, evaluate(self.spec, self.data, 4)
+        )
+        with self.ledger.connection(True) as db:
+            db.execute("UPDATE runs SET checkpoint='{}'")
+        self.supervisor.step()
+        with self.ledger.connection() as db:
+            row = db.execute("SELECT observed,reason,generation FROM runs").fetchone()
+        self.assertEqual(row["observed"], "blocked")
+        self.assertEqual(row["reason"], "corrupt_checkpoint")
+        self.assertGreater(row["generation"], generation)
+        self.ledger.control(self.spec, "stop", str(uuid4()))
+        with self.ledger.connection() as db:
+            self.assertEqual(
+                db.execute("SELECT desired FROM runs").fetchone()[0], "stopped"
+            )
+
 
 class LaunchctlFixture:
     def __init__(self, fail_bootstrap=0):
