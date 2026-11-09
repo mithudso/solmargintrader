@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T04:06:27+00:00",
+  "generatedAt": "2026-11-09T04:08:30+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1598,
+      "matchingFiles": 1603,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1333,
+      "matchingFiles": 1335,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 675,
+      "matchingFiles": 676,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 564,
+      "matchingFiles": 566,
       "shown": 30,
       "files": [
         {
@@ -805,6 +805,10 @@
           "hits": 43
         },
         {
+          "path": "docs/design/chrome-workspace/prototype.html",
+          "hits": 39
+        },
+        {
           "path": "docs/archive/memory-2026-11-08.md",
           "hits": 37
         },
@@ -831,10 +835,6 @@
         {
           "path": "backtester/tests/test_gridcli.py",
           "hits": 30
-        },
-        {
-          "path": "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md",
-          "hits": 30
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 527,
+      "matchingFiles": 532,
       "shown": 30,
       "files": [
         {
@@ -927,6 +927,10 @@
           "hits": 28
         },
         {
+          "path": "docs/design/chrome-workspace/prototype.html",
+          "hits": 28
+        },
+        {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md",
           "hits": 27
         },
@@ -969,10 +973,6 @@
         {
           "path": "pagesource",
           "hits": 16
-        },
-        {
-          "path": "soltui/tests/test_bots.py",
-          "hits": 15
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 411,
+      "matchingFiles": 417,
       "shown": 30,
       "files": [
         {
@@ -1229,11 +1229,11 @@
           "hits": 46
         },
         {
-          "path": "extension/src/market/holdings.js",
-          "hits": 37
+          "path": "memory.md",
+          "hits": 38
         },
         {
-          "path": "memory.md",
+          "path": "extension/src/market/holdings.js",
           "hits": 37
         },
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 311,
+      "matchingFiles": 312,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 263,
+      "matchingFiles": 269,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 214,
+      "matchingFiles": 220,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 140,
+      "matchingFiles": 143,
       "shown": 30,
       "files": [
         {
@@ -2214,7 +2214,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 132,
+      "matchingFiles": 133,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 122,
+      "matchingFiles": 123,
       "shown": 30,
       "files": [
         {

@@ -1,0 +1,38 @@
+{
+  "status": "CLEAN",
+  "iterations": 3,
+  "active_passes": 13,
+  "skipped": [
+    "L",
+    "N",
+    "O"
+  ],
+  "profile": "small",
+  "final": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "sections": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "evidence": {
+    "6a0": "ISOLATED",
+    "6a": "SIMULATED",
+    "6a2": "SIMULATED",
+    "edit_distance": "EXECUTED"
+  },
+  "blocked_rows": 0,
+  "redactions": 0,
+  "wrote_target": false,
+  "reviewer": "/root/prompt_blind_review",
+  "final_sha256": "ec6fe69aa3ad13bf3a661341179fe72cca99f34e87e4b6f7868feb7806ac3c53"
+}
