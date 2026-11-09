@@ -1,5 +1,7 @@
 # Work continuation
 
+Version: 316
+Delta: v315 to v316; checkpoint forward signal research preparation.
 Version: 335
 Delta: v334 to v335; record streaming and snapshot refresh recommendation.
 Delta: v333 to v334; document implementation, scripts, backups and future gates.
@@ -873,6 +875,9 @@ Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/s
 
 Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.
 
+## v316 - 2026-11-09
+
+TASK-1104: Research a streaming, restart-safe forward-testing signal daemon with selective subscriptions and MCP. Backtester implementation is deferred. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c1a0 on agent-01a1c1a0 starts at 7846848; shared checkout has another live session and three untracked files. Read prompt-deep-optimizer and llms-txt-tooling full-suite reference. Stele KNOW-655 warns parameter selection can overfit; TASK-1057 is active persistence work. Remaining: execute optimizer and full-suite, review current project and sources, produce evidence-backed design and validation, then deliver. No research saturation or optimizer convergence has been established.
 
 ## EPIC-1106 — approved bot manager implementation
 
