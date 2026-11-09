@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `fba9238` (2026-11-09T15:40:17+00:00). 2742 tracked files, 45.9 MB.
+**Generated** from `index/INDEX.json` at commit `b60ff7e` (2026-11-09T15:50:32+00:00). 2742 tracked files, 45.9 MB.
 
 Regenerate with:
 
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 703 lines · 133,637 B · description: **extracted**
+`doc` · 749 lines · 143,770 B · description: **extracted**
 
-**Purpose.** Version: 307 Delta: v306 to v307; finish Trend verification and prepare final delivery. Delta: v305 to v306; integrate Trend with concurrent workspace delivery and record verification.
+**Purpose.** Version: 308 Delta: concurrent workflow records to v308; preserve runtime fixes and DSO outcomes. Delta: v306 to v307; verify native-environment history and corrected workflow readiness in0.6.3.
 
 **Use.** Read it.
 
@@ -337,7 +337,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 26909 lines · 1,397,946 B · description: **extracted**
+`doc` · 26909 lines · 1,397,923 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -401,9 +401,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SIGNAL-DESK.md`
 
-`doc` · 150 lines · 10,596 B · description: **extracted**
+`doc` · 152 lines · 10,800 B · description: **extracted**
 
-**Purpose.** Version: 1.1 Delta: persistent live monitor, one paper workflow, saved-vote explanations and floating charts. Signal Desk is the extension's default full dashboard in version 0.5.0. Its light/dark interface
+**Purpose.** Version: 1.2 Delta: native CDP child-runtime PATH and coordinator-specific readiness wording. Signal Desk is the extension's default full dashboard in version 0.5.0. Its light/dark interface
 
 **Use.** Read it.
 
@@ -411,7 +411,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 233 lines · 19,140 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 941 tests python3 -m unittest discover -s soltui/tests -t . # 1383 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 960 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
 
 **Use.** Read it.
 
@@ -22219,11 +22219,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/live-panel.js`
 
-`code-js` · 153 lines · 12,129 B · description: **none**
+`code-js` · 159 lines · 12,351 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `mountLivePanel`, `paint`, `pnlLines`, `pnlNode`, `setAsset`, `tick`, `workflowText`.
+**Contents.** Defines `mountLivePanel`, `paint`, `pnlLines`, `pnlNode`, `setAsset`, `tick`, `workflowButtonText`, `workflowText`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -22255,7 +22255,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/live-workspace.js`
 
-`code-js` · 45 lines · 2,728 B · description: **none**
+`code-js` · 45 lines · 2,665 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -22603,7 +22603,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/live-tools.test.js`
 
-`code-js` · 119 lines · 6,816 B · description: **none**
+`code-js` · 126 lines · 7,394 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -23651,7 +23651,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/wallet_activity.py`
 
-`code-python` · 213 lines · 12,151 B · description: **extracted**
+`code-python` · 217 lines · 12,475 B · description: **extracted**
 
 **Purpose.** Bounded, read-only wallet history. CLI credentials and stderr stay outside replies. The rail worker calls this module; a status poll never starts network requests. Base uses the same configured CDP CLI as wallet discovery. Unsolicited token contracts are neither called nor visited. Solana history has explicit address- only coverage rather than claiming an exhaustive token-account index.
 
@@ -24483,7 +24483,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_wallet_activity.py`
 
-`test` · 135 lines · 7,376 B · description: **extracted**
+`test` · 152 lines · 8,342 B · description: **extracted**
 
 **Purpose.** History coverage, source isolation and the real read-only transport boundaries.
 

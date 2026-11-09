@@ -1,7 +1,7 @@
 # Signal Desk
 
-Version: 1.1
-Delta: persistent live monitor, one paper workflow, saved-vote explanations and floating charts.
+Version: 1.2
+Delta: native CDP child-runtime PATH and coordinator-specific readiness wording.
 
 Signal Desk is the extension's default full dashboard in version 0.5.0. Its light/dark interface
 puts Live signals, Backtesting, Forward testing and Bot monitor in permanent navigation. The
@@ -16,7 +16,8 @@ active historical/forward batch, ensures the shared prediction producer, preserv
 grid forward session and its costs, assesses that grid on cached historical data, starts or reuses
 the paper Council, and starts or reuses the validated bot optimizer. A prior grid Stop remains
 stopped. The coordinator does not replace settings, lower adoption gates or arm live execution.
-Missing cached history and failed stages remain visible. Prepared orchestration stages are not
+Missing cached history and failed stages remain visible. A running independent batch does not
+label an unrequested coordinator as running. Prepared orchestration stages are not
 completed tests: the batch phase and counts show actual work still outstanding.
 
 The right monitor persists across all sections. It shows current eligible votes, producer health,
@@ -29,7 +30,8 @@ historical behavior; forward testing evaluates new data. Neither guarantees prof
 The monitor polls bounded cached evidence every ten seconds. Its read-model worker ends after
 three minutes without a viewed-asset heartbeat. Replays run at most once per thirty seconds and
 wallet history caches are bound to owner addresses. Base history uses fourteen-day CDP SQL with
-trusted-token/reorg filtering. Solana uses finalized owner-address signatures and limited transaction
+trusted-token/reorg filtering. The CDP child adds its selected bin directory to its own PATH so
+Chrome's restricted native-host environment can resolve the CLI runtime. Solana uses finalized owner-address signatures and limited transaction
 detail reads. Coverage and failures are explicit: owner-only history can miss token-account-only
 transfers. Local submitted intents do not imply confirmed fills. Wallet valuation is not trading P&L;
 deposits, withdrawals and cost basis have not been reconciled. Paper actions cannot crowd out wallet actions.

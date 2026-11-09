@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T15:40:17+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T15:50:32+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -265,7 +265,7 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 | `breakout` | 221 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 116 | `obv`, `volume-flow` |
 | `mean-reversion` | 104 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
-| `risk-overlay` | 40 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
+| `risk-overlay` | 41 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
 
 ---
 

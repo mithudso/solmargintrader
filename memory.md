@@ -1,8 +1,9 @@
 # Work continuation
 
-Version: 307
-Delta: v306 to v307; finish Trend verification and prepare final delivery.
-Delta: v305 to v306; integrate Trend with concurrent workspace delivery and record verification.
+Version: 308
+Delta: concurrent workflow records to v308; preserve runtime fixes and DSO outcomes.
+Delta: v306 to v307; verify native-environment history and corrected workflow readiness in0.6.3.
+Delta: v305 to v306; repair installed CDP child PATH and workflow-label readiness.
 Delta: v304 to v305; finish native/source checks and committed discovery counts for release0.6.2.
 Delta: v303 to v304; implement persistent monitoring, idempotent paper orchestration and saved-vote chart tools.
 Delta: v302 to v303; add a persistent status/P&L/activity rail and one primary paper workflow.
@@ -27,7 +28,11 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
-## v307 - 2026-11-09
+## v310 - 2026-11-09
+
+PR168 at b60ff7e passed every required CI check, including macOS targeted tests in7m32s. Its first merge attempt correctly refused because concurrent PR169 advanced master to f643867. The conflict is limited to shared counts, memory and generated indexes. Preserve PR169's native monitor runtime and readiness corrections. Trend source remains unchanged. Retain both histories and renumber Trend records asv308/v309 after the concurrentv307 entry. Combined discovery is1384SolTUI plus408Node,941backtester and46mongo,2779total. Rebuild offline indexes and recheck Trend plus wallet-runtime integration before committing this merge. Then push and wait for final-head CI again. Final receipt remains /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json; it supersedes the historical checkpoints below. No other worktree, production worker or untracked guide is changed.
+
+## v309 - 2026-11-09
 
 TASK-1074 implementation is verified on integrated base fba9238. Trend is the fifth named bot alongside DCA, Grid, Arbitrage and Council. The Trend policy uses long-only simple moving-average momentum with editable10/30-bar defaults, a10bps entry buffer and1000USD capital. It reuses next-open spot fills, costs, final-close valuation, per-coin settings, recorded-minute forward replay, durable experiments and the existing daily optimizer. Council routes to its dedicated panel. Coin suitability remains specific to Grid/DCA. No production bot, existing TUI or live execution was changed.
 
@@ -35,7 +40,7 @@ Final verification passed:8Trend policy/integration regressions;168surrounding b
 
 The source record is a pre-delivery checkpoint. Remaining: commit final owned changes, check committed docs counts, push/PR, required final-head CI, merge, synchronize main without disturbing unrelated files, then verify the main launcher in a fresh process and remove this task's clean worktree/branch. Final delivery status will be recorded in /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json and in Stele TASK-1074; that receipt supersedes this checkpoint's remaining-step list. Source worktree: /Users/mitch/dev/solmargintrader-wt-trend-01a1c0e5. Preserve the three unrelated main-checkout files and all other worktrees. Only this task's temporary integration stash may be dropped after restoration verification.
 
-## v306 - 2026-11-09
+## v308 - 2026-11-09
 
 TASK-1074 adds Trend alongside DCA, Grid, Arbitrage and Council. Work in /Users/mitch/dev/solmargintrader-wt-trend-01a1c0e5 on feat/trend-bot-01a1c0e5. Integrated concurrent PR166 at fba9238 without changing its live monitor or paper workflow. Preserve all unrelated worktrees and the three untracked main-checkout guides.
 
@@ -44,6 +49,22 @@ Trend uses long-only fast/slow simple moving-average momentum, next-open fills, 
 Initial eight policy/integration tests and mounted acceptance cover signal prefix invariance, next-open fills, costs, settings, forward warmup/snapshot/stop and Council routing. Independent fresh-process acceptance passed (/tmp/trend-acceptance-01a1c0e5.json). Broader136-test run found two check issues: the optimizer fixture must use the existing minimum3-day window, and the triangle suitability message must retain its explicit limitation. Backtester940/941 passed; its only failure was the expected stale generated index.
 
 Remaining: finish these two corrections, rerun affected owning checks on integrated source, update docs counts to1383SolTUI/2777total, regenerate offline indexes, review/commit/push/CI/merge and fresh-process acceptance from main. Tracker steps: implementationTASK-1079done, verificationTASK-1080in progress, deliveryTASK-1081open. All current changes are task-owned. Integration stash trend-integration-01a1c0e5 must be dropped after restoration is verified.
+
+## v307 - 2026-11-09
+
+Runtime remediation is implemented: wallet_activity._cdp_query gives only its child a PATH containing the selected CDP executable's bin directory. Chrome's minimal environment can now resolve the /usr/bin/env node shebang. The parent environment, fixed read-only argv, credential handling and error redaction are unchanged. A real temporary executable/runtime subprocess regression reproduces and fixes the broken launch without Node installation or network. The real public reader was then verified under /usr/bin:/bin:/usr/sbin:/sbin: Base coverage available, Solana partial detail coverage explicitly reported, exit0. The original SELECT1 diagnostic is not valid CDP table SQL; a valid bounded base.transactions query proved the API itself was healthy.
+
+workflowButtonText now reports only the actual coordinator: Preparing while it runs, Paper monitoring ready when ready, otherwise Start / resume paper bots. An independently running global batch never claims the coordinator was requested. Batch phase/counts remain visible in the monitor. Release0.6.3;37/37 focused native tests,408/408 Node tests and26/26 browser e2e passed. Final native discovery1375 and total2770 are reflected in current docs. Follow-up source changes are limited to child environment, the explicit button wording, two regressions, version, docs and continuation records. Original PR166 already passed remote-master CI; its accepted feature work and all original workers/evidence remain intact.
+
+Independent installed verification now has a controlled path that does not touch the user's busy browser: actual Chrome Beta headless, actual main extension directory with the exact original extension id, fresh temporary browser profile, real nativeMessaging and a profile-only host manifest pointing at the unchanged authorized wrapper. Preflight verified0.6.2 and exactid without contacting the native host, then closed cleanly. After this follow-up merges, the verifier will load0.6.3, compare actual resource hashes, read real rail data and exercise one explicit paper workflow request with all old jobs/grid reused. It will close only its owned profile. Finish requiredchecks/merge, warm only the monitor's non-trading cache with new code, complete actual installed acceptance and update private final receipts. Do not re-open or restore user-owned tabs/helpers that the user closed. Stele taskede53db9 is still queued; recovery/Council canonical completions1082/1083 are queued986201f6/8dcb782c after transport closed during replay.
+
+## v306 - 2026-11-09
+
+PR166 mergedfba9238aeceb5235986ed54b5b4267e1659e298d after8requiredchecks; main tree exactly matched reviewedd1ccf5c. Own merged live-tools worktree/branch were removed and the three unrelated main files remain. Independent copied-source browser12/12 passed; actual user-owned helper/PiP appeared and closed while the user changed tabs, so the GUI verifier stopped interacting and accurately recorded partial installed identity capture. Pure actualmain live.rail read at15:32UTC was fresh:11eligible strategies/13horizonvotes, Council91364 running/flat/equity10000/waitingconfidence~4.94% from79samples, originalADAgridda7d73b04ef1 running with net+2.3691paperUSD/tworoundtrips; existing globalbatchbb8af1ac966b42d9ad3e20faca071fc1 forward_partial. Wallet activity returned8items but Base coverage was unavailable in the native worker.
+
+The runtime cause is reproduced: CDP's /usr/bin/env node launcher succeeds under the shell PATH, fails under /usr/bin:/bin:/usr/sbin:/sbin. Resolve only the child launcher's PATH to include the selected executable's bin directory; do not alter global environment or credential handling. Add a real temporary shebang subprocess regression. Also fix the main button's label: an independently running batch must not imply that the unrequested paper coordinator is running. Bind wording to explicit coordinator state, preserving the batch phase in the status details. Source changes stay in /Users/mitch/dev/solmargintrader-wt-live-runtime-01a1beca on fix/live-tools-runtime-01a1beca, release0.6.3, based on mergedmainfba9238. Original request remains prompt150; this is installed-acceptance remediation, not a new user request.
+
+Stele briefly reconnected: stale COMP-337 description was corrected to acknowledge separately armed manual Coinbase orders and paper-only monitoring. Offline recovery/Council tasks were created and claimed as TASK-1082/TASK-1083, then transport closed again; their verifiedPR165 completions are queued986201f6/8dcb782c. New runtime fix task is queuedede53db9. Current live-tools task creation877aa35e and knowledge writes remain pending; do not invent a task id if the failed create response is ambiguous. Final receipt /Users/mitch/.local/state/solmargintrader-session-01a1beca/live-tools-delivery.json and private memory are the authority for final merge/activation status. Remaining: implement two narrow fixes, focused tests/count/version/index/docs, merge follow-up PR, refresh only the non-trading read-model worker after main sync, verify actual main source with a separate controlled Chrome Beta profile and real native bridge, preserve user browser sessions and every original bot/producer worker.
 
 ## v305 - 2026-11-09
 
@@ -700,3 +721,28 @@ Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after
 ## v204 - 2026-11-08
 
 The owner requested adding a live page under the Signal tab in SolTUI that displays a price graph of the chosen coin, real-time subscribed streaming price information, and a table of top performing forward test strategies giving 1, 5, 10, and 30 min price predictions. Stele TASK-1063 was created and claimed under COMP-337. Stele decision queued as outbox 37afb21a. Implementation integrates `pricefeed.py` snapshot streaming, interactive `Sparkline` charting with mid-price history, and ranked strategy prediction evaluation across canonical horizons (1m, 5m, 10m, 30m) from `forwardtest.py` trials.
+
+
+## 2026-11-09 — strategy DSO comparison
+
+Task TASK-1076. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c0e9. Preserve all baseline core modules and cards; audit candidate copies, paired cached-data evaluation, defined signal accuracy plus costed outcomes. No live changes. In progress: inventory and baseline tests, DSO family audits and runner implementation. Remaining: triage all findings, fix candidate only, run comparison, verification, PR/CI/merge.
+
+
+## DSO comparison checkpoint 2026-11-09
+
+34 registry strategies copied with all core modules, 1,822 baseline files including cards and research-only specs. DSO reports contain all 273 family pass rows with insufficient evidence and live-data gaps explicit. Candidate volatility annualization fixed and tested (4 tests). Original full suite 941 tests: one stale generated-index failure after workflow records changed; no strategy failures. Initial paired run: 408 completed cells across SOL/BTC/ETH daily, all unchanged; 136 SOL hourly cells refused because source cache has 3 gaps. Retain initial run. Remaining: deterministic latest contiguous hourly tail comparison; auxiliary pairs/grid/DCA/indicator comparison; candidate scorecard and triangle timing fixes; package archives (expanded copies stay local and reproducibly extract in fresh clones); final checks, index metadata, CI and merged delivery.
+
+
+## DSO empirical result 2026-11-09
+
+Final registry run exit 0: 544 successful cells, zero failures, unchanged source hashes. No directional accuracy delta. Hourly SOL voltarget return -11.50% to -12.24%; garch_voltarget -11.50% to -12.43%; both 46.02% accuracy. All daily results equal. Hourly structural suffix4410 bars, holdout1323. Auxiliary default pairs/grid/DCA/triangle parity; scorecard executable accuracy149/318 both. Candidate-only scorecard measurement alignment and future-quote refusal covered by four tests. Source archives packaged and fresh extraction/tamper refusal checked. Final test discovery960. Remaining: independent review, final suite/doc/index gates, commit/push/PR/CI/merge receipts. No CLEAN convergence or live edge claimed.
+
+
+## DSO verification and delivery protocol
+
+960 backtester tests passed (33.001s, exit0); independent fresh-context review found no corroborated Medium+ source/provenance defects. 1084 historical archive figures verify (exit0); this verifies archival transcription, not a fresh statistical edge. Fresh archive expansion, idempotence and alteration refusal passed. Doc gate initially used HEAD-only test counts and then exposed total-count drift; corrected total2741. Both zip archives explicitly staged despite global zip ignore. Final source packages match measured hashes. Delivery: push branch and merge PR only after final doc/index/CI gates. Preserve other live worktrees and shared checkout. After merge export a durable standalone experiment to /Users/mitch/dev/solmargintrader-strategy-comparison-20261109 (data symlink read-only in practice to main cached data), expand both copies and verify its tests. Remove only this clean merged task worktree/branch. Report actual PR/merge/CI receipts; missing scientific validation remains a limitation, not a future implementation blocker.
+
+
+## PR167 integration receipt
+
+PR https://github.com/mithudso/solmargintrader/pull/167 preserves all strategy experiment artifacts. Concurrent default branch PR166 was merged without discarding either prompt/memory history; no backtester core changed. Integrated local backtester suite960 passed; extension suite407 passed. Docs total2787 includes current1374 SolTUI tests. Index rebuilt over final owned paths. Full experiment file inventory is research/strategy_experiment/FILES.md, including expanded archive contents and durable-export absolute paths. Final CI, merge identity and standalone export acceptance remain delivery receipts reported after completion.

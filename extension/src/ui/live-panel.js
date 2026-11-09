@@ -17,6 +17,12 @@ export function workflowText(workflow = {}) {
   return workflow.message ?? (workflow.state === 'ready' ? 'Paper monitoring prepared; inspect measured results below.' : text(workflow.state, 'Paper workflow has not been requested.'));
 }
 
+export function workflowButtonText(workflow = {}) {
+  if (workflow.running) return 'Preparing paper workflow…';
+  if (workflow.state === 'ready') return 'Paper monitoring ready';
+  return 'Start / resume paper bots';
+}
+
 /** These are separate ledgers. A saved wallet balance is never called profit. */
 export function pnlLines(pnl) {
   if (!pnl) return [];

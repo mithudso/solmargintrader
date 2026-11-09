@@ -1,5 +1,5 @@
 import { soltui } from './ui-kit.js';
-import { mountLivePanel, workflowText } from './live-panel.js';
+import { mountLivePanel, workflowText, workflowButtonText } from './live-panel.js';
 import { mountFloatingOwner } from './floating-owner.js';
 import { voteHint } from './vote-tools.js';
 
@@ -13,7 +13,7 @@ export function mountLiveWorkspace(root = document, read = soltui) {
   const hints = new Set();
   const panel = mountLivePanel(host, { read, asset: asset(), onSnapshot(snapshot) {
     for (const old of hints) if (!old.button.isConnected) { old.dispose(); hints.delete(old); }
-    if (!starting) primary.textContent = snapshot.workflow?.running || snapshot.workflow?.batch?.running ? 'Paper workflow running' : 'Start / resume paper bots';
+    if (!starting) primary.textContent = workflowButtonText(snapshot.workflow);
     primary.title = workflowText(snapshot.workflow);
   }, onAsset(coin) { if (input && input.value !== coin) { input.value = coin; input.dispatchEvent(new Event('change')); } }, voteButton(row, coin) {
     const hint = voteHint({ row, asset: coin, read }); hints.add(hint);
