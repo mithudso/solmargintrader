@@ -1,7 +1,17 @@
 # Work continuation
 
-Version: 230
-Delta: v229 to v230; integrate the independently delivered tab-switch guard.
+Version: 231
+Delta: v230 to v231; record verified Jupiter controls delivery and cleanup.
+
+## v231 - 2026-11-08
+
+COMPLETED: Jupiter paper fee and execution controls delivered in https://github.com/mithudso/solmargintrader/pull/142 at squash cd4002806241d1315abf31e2d9660f2adbf9d73a (2026-11-09 02:30:23 UTC). All eight required CI jobs passed on final reviewed head 9e6b3b840a0be6e316542528fa2ea8670a400707. The remote merged tree exactly matched that head. The full SolTUI suite was not run; required mapped macOS tests and targeted integration checks passed.
+
+Both Forwardtest and Backtest expose opt-in leverage and short DOWN positions, plus the owner-confirmed default minimum confidence 0.80. Jupiter Perps uses 6 bps per entry/exit on notional, with explicit borrow/slippage scenarios and isolated liquidation. Confidence uses prior resolved calls; unknown confidence blocks a trade. Short combinations require directional agreement, and confidence respects open/close fill timing. Forecasts continue even when paper trades are skipped. Histories and per-trial cost snapshots persist. No live trading path was added.
+
+Local master was fast-forwarded to the merge. The two pre-existing untracked guides retained their hashes. The feature branch, remote branch and private feature worktree were removed. The installed /Users/mitch/.local/bin/soltui launcher returned jupiter-perps, fee_bps=6, min_confidence=0.8, use_leverage=false, allow_short=false, mode=dry-run, armed=false under isolated config. Fourteen regressions passed again from /Users/mitch/dev/solmargintrader. Fresh Textual checks covered 100/180-column controls. The already-open console was left running; no owner state was restarted.
+
+No product work remains. This completion record ships through its documentation PR. Stele requests remain queued because this session has no Stele MCP: 470a5bc1, 93dc9fb7, f07325c1, cd0f7955, 58f42fcb. Treat earlier pending checkpoints below as historical and use PR 142 for the product delivery receipt.
 
 ## v230 - 2026-11-08
 
