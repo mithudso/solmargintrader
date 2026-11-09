@@ -23,6 +23,16 @@ flag. It never signs or imports the liquidity executor.
 
 ---
 
+## `botmanager/`
+
+The standalone `solbot` application separates durable bot specifications, typed default
+resolution, command dispatch and SQLite persistence. Its CLI delegates to one registry.
+Read commands do not initialize a data directory. Legacy discovery/control adapters
+preserve the existing owner and distinguish unreachable or incompatible installations
+from an empty inventory. See `botmanager/README.md` for delivered commands and limitations.
+
+---
+
 ## `backtester/`
 
 ### `core/engine.py` — the bar loop

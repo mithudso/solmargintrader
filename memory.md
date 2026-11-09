@@ -1,8 +1,19 @@
 # Work continuation
 
-Version: 330
+Version: 331
+Delta: concurrent histories to v331; preserve Kraken and bot manager continuation records.
 Delta: v329 to v330; verify both private GitHub backup archives.
 Delta: v328 to v329; record Kraken archive research, JitoSOL identity and GitHub backup.
+Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
+Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
+Delta: v326 to v327; approve milestone1 source and prepare verified release.
+Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
+Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
+Delta: v318 to v319; integrate PR172 while preserving implementation and UI histories.
+Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts.
+Delta: v316 to v317; record supplemental UI requirements and current foundation review.
+Delta: v315 to v316; start approved implementation in a collision-free worktree.
+
 Delta: v327 to v328; complete source audits and indexed deep SOL and KMNO datasets.
 Delta: v326 to v327; checkpoint verified minute datasets and ongoing downloads.
 Delta: v325 to v326; begin detailed historical market data acquisition.
@@ -818,9 +829,45 @@ Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/s
 Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.
 
 
+## EPIC-1106 — approved bot manager implementation
+
+Owner request: Yes, implement it. Design acceptance covers PR171 spec/plan. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c189, branch agent-01a1c189, baseline7846848. Other sessions hold the primary checkout; never switch/edit it. Milestone tasks1107–1114 cover the eight releases; task1107 active. Durable SDD ledger: .superpowers/sdd/2026-11-09-bot-manager/progress.md (scratch), authoritative continuation in Git and this file. Apply skill reviews per task and independent installed acceptance before claiming installed behavior. Existing services, recorder, optimizer, limits and private keys are untouched.
+
+Remaining: implement CLI/defaults/legacy controls, runtime, data/strategies, blind research, diagnostics, learning, browser integration and gated executor boundary; test/review/deliver each independent milestone. Real forward-soak elapsed time and unavailable venue/verifier evidence remain real gates, never fabricated completion.
+
+
+## Supplemental UI handoff during TASK-1107
+
+Owner supplied PR172 (f2d099e) UI design/plan/validation and asked to continue manager implementation with manager authority taking precedence. Read merged artifacts via origin/master because the private branch predates that merge; snapshot copies are in this plan's SDD workspace. Downloaded HTML is illustrative and was inspected; its prototype49 browser checks are not production manager evidence.
+
+Current milestone incorporates stable spec UUID distinct from runtime/owner/generation, config revision and strict saved provenance; versioned status --why with independent lifecycle/input/evidence/submission states and null unknown financial values; explicit capability and receipt schema; legacy family slot guards across markets. Later runtime/health/accounting/evidence/learning/browser milestones implement actual values and behavior. Manager registry remains Grid,DCA,Trend,Momentum,Arbitrage, with Council external-only; no prototype list/schema copying. Graphical work stays in planned integration phase.
+
+Foundation committed be12a00+2381777;20 tests pass on Python3.13, lint/format pass, installed wheel console probe passes outside checkout with isolated SOLBOT_HOME and source bytes matching. Independent reviewer found DB-row identity mismatch, invalid saved override/provenance validation and related exact scalar-type mismatch. Original worker owns fix round1; no adapter implementation starts before that review gate. Parent owns unstaged top docs/CI/workflow records. Merge origin/master after these owned edits are committed, preserving both histories and regenerating derived indexes.
+
+
+## TASK-1107 foundation and UI contracts checkpoint
+
+Foundation fixes4405ca7 approved by scoped independent re-review;25 tests passed. Supplemental state/receipt task1b eb31079 approved by fresh independent review;45 total manager tests passed on Python3.13, Ruff and diff checks passed. CLI status --why is registry-driven; state dimensions and runtime/spec/config identities remain distinct. Draft finances/observations are null with reasons and no capital reserved. Receipts represent acknowledged/pending/skipped/failed/unknown, never auto-retry; external config_revision is null with a fixed unavailability reason when owner does not version settings, with optional validated observed config_hash.
+
+Next: task2 safe owner adapters and actual atomic legacy control protocol. Client GET-then-POST is inadequate; extend owner registry/locks with expected-session/config checks and durable request-ID dedup. An old installed owner missing this capability remains read-only; never fall back to unsafe restart. Parent will merge UI PR172 after committing these owned integration records; regenerate derived indexes after conflict resolution. Initial package-risk review returned UNKNOWN because no Endor risk tools exist, not an unsafe verdict; local source code independently reviewed and zero runtime deps verified. Dedicated installed environment /Users/mitch/.venvs/solbot contains foundation0.1.0 at2381777 and must be refreshed before final installed acceptance. No live trading or production service mutation occurred. This is a recoverable implementation checkpoint, not completion of milestone1 or epic1106.
+
+
 ## Bot UI integration and final acceptance
 
 Merged current origin/master from CLI planning PR171 while preserving both designs and all prompt/memory history. Export acceptance passed through file:// with no errors or external requests; inline assets match the reviewed sources. Design and browser work are complete; the proposed product implementation remains unstarted. Delivery receipts are authoritative in TASK-1096/TASK-1099 and the UI design PR. Remaining operational gates at commit time: final integrated docs/index checks and final-head CI/merge. After those pass, no design steps remain; preserve the occupied main checkout and remove only this task worktree. Queued knowledge IDs54a6a0d6,03979d84,cf778cd2 are not confirmed nodes.
+
+
+## PR172 integrated into active implementation
+
+Merged f2d099e from origin/master in private implementation worktree. Preserved both UI and manager histories and accepted UI artifacts unchanged; regenerated derived indexes. Task1107 remains in progress. Reviewed foundation/status/receipts are implemented; legacy adapter and safe owner control task2 is next. No graphical or live-trading implementation was substituted. Primary checkout remains untouched because other sessions hold it.
+
+## v320 — 2026-11-09 — milestone1 legacy control review
+
+Milestone1 source reaches995246f after guarded owner protocol3e2b9e1 and fix round1. The64 manager tests and121 affected owner tests pass. Focused lint/format and CI selector6 tests pass; the33 pre-existing owner Ruff diagnostics remain unchanged. Independent review reproduced and the worker fixed exact-config startup, acknowledgment session/revision binding and persisted receipt/request binding. Scoped re-review is pending. The manager controls journal is now schema2; migration preserves old request IDs but refuses unbound v1 replay. Never resubmit an ambiguous request. Current API port8788 is incompatible; no installed SolTUI control success is claimed.
+
+Supplemental UI contracts are implemented in status/receipt/spec fields. The full current-versus-later mapping is /Users/mitch/dev/solmargintrader/docs/bot-manager-milestone-1.md. Legacy slots remain family-wide; manager authority takes precedence over prototype integration. Parent added CI selector dependency tests so owner edits run the guarded-control regressions. Other sessions and production state remain unchanged.
+
+Draft PR175 at39140e7 passed9 active CI checks; latest995246f is not yet pushed. Origin/master advanced to e0c6934 with PR174/176 historical snapshot/archive work; integrate preserving both histories before final broad review. Final docs/index gates, current installed-console acceptance, final-head CI and merge remain. Continue milestones1108–1114 after delivering TASK1107.
 
 ## v317 - 2026-11-09
 
@@ -862,6 +909,26 @@ The previously recorded 14-asset daily inventory remains valid. KuCoin returned 
 
 The storage foundation in https://github.com/mithudso/solmargintrader/pull/174 merged to remote master as 2a61908580266c49878963deea6312c2b8034ecc. All required final-head CI checks passed. The local backtester suite passed 983 tests and documentation/index checks passed. The original checkout remains in use by other sessions and was not changed. TASK-1117 remains open: the continuation requirements in v323 and v324, the implementation plan, source data and off-machine backup gaps still apply. The v324 description of PR 174 as a draft is historical and superseded by this entry.
 
+## v326 — integrated manager and historical storage histories
+
+Integrated e0c6934 without changing its verified historical snapshot/archive source. Both active task histories and exact requests remain. Manager task2 re-review accepted the exact-config and durable identity fixes but found a remaining crash-window provenance issue: pending receipts must not report the discovery hash as a responding owner revision. Original implementer owns focused fix round2; final review and delivery remain pending.
+
+## v327 — 2026-11-09 — milestone1 source approved
+
+Source032db6c passed all67 manager tests (23.397s),124 affected owner tests, scoped Ruff/format and diff checks. CI selector6 tests pass. Final broad review and its single scoped fix-wave re-review approve spec and quality. Strict manager-only forward loading now refuses malformed existing state without replacing its bytes. Observed owner configuration paths stay distinct from declared descriptor candidates. All original receipt/config findings and final review findings are resolved.
+
+Post-integration docs agree:983backtester/1402SolTUI/408extension/46mongo total2839; manager has a separate CI job. The incoming historical snapshot/archive source and accepted UI artifacts remain unchanged. The67-test manager suite is separate from those quoted legacy suite counts. Existing33owner Ruff findings are unchanged; no broad cleanup occurred.
+
+Noneditable manager0.1.0 is installed in /Users/mitch/.venvs/solbot, exposed as /Users/mitch/.local/bin/solbot. Independent installed verification at6ebd6d6 matched11modules and17fresh-process behavior checks; package was refreshed after032db6c. Independent follow-up matched all11 final module hashes, passed3 fresh-process reads with absent-home preservation and4 observed/declared path fixtures. Actual default owner discovery returns incompatible_owner/bots=null; no actual installed-owner control, heartbeat or live execution success is claimed. No production bots, services, keys or browser state changed.
+
+PR175 is the canonical delivery receipt: https://github.com/mithudso/solmargintrader/pull/175. At this record, final metadata, final pushed-head CI and merge remain. Do not infer completion from this entry; inspect the PR and remote tree. After verified delivery complete TASK1107 and claim TASK1108; continue prepared task3 multi-instance reference-paper runtime in milestone order. Keep primary checkout's unrelated untracked files unchanged.
+
+## v328 — 2026-11-09 — CI bridge integration repair
+
+Final4798a71 CI passed8of9 active jobs but macOS targeted tests correctly failed test_every_required_param_command_has_a_fixture: bots.manager_control was absent from bridge_support. Commit2a20cd9 adds only11 fixture lines in /Users/mitch/dev/solmargintrader/soltui/tests/bridge_support.py. The required-fixture regression now passes; all42 existing parity/button/surface tests pass (25.990s). Positive probes for manager_control and actual unstubbed manager_snapshot succeed byte-identically over TUI/CLI/API/native host without an owner control journal. No assertion, test selection or production guard changed. Existing4fixture Ruff warnings remain unchanged.
+
+Product code stays byte-identical to independently reviewed/installed032db6c, so no reinstall or repeated product acceptance is needed. The independent scoped fixture integration review approved specification and quality with no findings. Continue with metadata refresh and new final-head CI/merge on PR175. Do not count prior8passing jobs or historical39140e7 CI as final delivery. The delayed pull_request run42694684337 was canonical; redundant queued dispatch42694722008 was canceled after that run appeared. Preserve the fixture repair and continue; no new implementation approval is needed.
+
 ## v326 - 2026-11-09
 
 TASK-1128: find, download, normalize and index history for the 14 owner-selected assets, emphasizing SOL/USDC and the finest supported timeframe. Work in /Users/mitch/dev/solmargintrader-wt-01a1c1b1 on branch agent-01a1c1b1-history. Preserve active sessions and existing source files. Never fabricate observations to hide gaps; retain and report unknown intervals. Existing daily snapshots and run artifacts live at /Users/mitch/.local/share/solmargintrader/backtester-task-1117. First audit existing minute caches and their provenance, then fetch or repair feasible gaps, publish verified contiguous segments and manifest coverage. Full availability, venue and quote must remain explicit.
@@ -873,3 +940,7 @@ TASK-1128 continuation: /Users/mitch/.local/share/solmargintrader/historical-dat
 Eleven legacy minute CSV files were copied to legacy-segments, indexed into gap-free checksum-verified chunks, and accompanied by exact gap ledgers. The 28,045,077 observations contain 2,436,585 unobserved minute slots; venue/quote identity is not cryptographically bound for most. Existing reconstructed samples are separate. Funding files with irregular cadence are quarantined rather than rounded or forward-filled.
 
 The first KuCoin collector version mistakenly requested hi-60 even though live tests proved endAt exclusive; affected stores are preserved with boundary-omission-v1 names. Schema-2 stores use endAt=hi. Concurrent collectors now coordinate using KUCOIN_HTTP_LOCK and atomically detect identical or conflicting simultaneous pages. Ongoing deeper jobs must be checked before restart: SOL-USDC [1653264000,1794255240), KMNO-USDT [1714435200,1794255480). Their separate SQLite stores retain every raw page, normalized rows and window-level checkpoints; they are not complete until final verification and exact gap ledgers. See TASK-1128 and KNOW-1131/1132/1138. Postman CLI was unavailable and Orbit returned HTTP 403; Context7 and live source evidence were used, with local HTTP simulation tests.
+
+## v329 — 2026-11-09 — integrate the concurrent minute-history release
+
+All9active CI checks passed release53853a2 in run42696562259. The gated merge then refused because concurrent PR177 advanced master to b6f9586 and conflicted only in shared count/history/index records. Integrate its minute-history source unchanged; retain both exact prompt histories and all continuation entries. Manager/owner production code remains identical to independently reviewed and installed032db6c. Combined discovery is999backtester/1402SolTUI/408extension/46mongo total2855. Fresh combined-head CI and actual merge remain; do not count the older green head as delivered. Primary checkout and the other session's ongoing datasets/downloads remain untouched.

@@ -29,6 +29,13 @@ class TimingTests(unittest.TestCase):
 
 
 class TargetedTests(unittest.TestCase):
+    def test_manager_owner_changes_keep_control_and_legacy_regressions(self):
+        for path in ('soltui/bots.py', 'soltui/commands.py'):
+            with self.subTest(path=path):
+                modules = targeted_modules([path])
+                self.assertIn('soltui.tests.test_manager_controls', modules)
+                self.assertIn('soltui.tests.test_bots', modules)
+
     def test_forwardtest_and_ui_dependencies_are_included(self):
         modules = targeted_modules(['soltui/forwardtest.py', 'soltui/tui.py'])
         for name in ('test_forwardtest', 'test_coin_fit_ui', 'test_v2_shell', 'test_bridge_buttons'):
