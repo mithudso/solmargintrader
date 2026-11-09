@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 339
+Version: 341
+Delta: v340 to v341; record optimizer and initial SOL backtest evidence and unresolved integrations.
+Delta: v339 to v340; start strategy agent proof of concept and guarded Jupiter proof investigation.
 Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run.
 Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
 Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
@@ -1049,3 +1051,11 @@ All source/review/installed gates passed. Existing short-fixture annualization a
 CI42712960866 for4bbabce6 completed with8activejobs passed,2expectedskips and one manager-test failure. test_local_socket_dispatch_and_inert_service_status expected installed_executable() to reject the current package. Its assumption held under local source PYTHONPATH but was wrong for the intended regular wheel CI installation. The production guard correctly accepted the wheel. Durable lesson KNOW1160 anchors the exact test and guard.
 
 Test-only commita8db64b5 supplies an explicit source-checkout origin and verifies stable_install_required. Installed-import RED reproduced the exact failure; all17supervisor tests now pass in both source and installed modes. Ruff/format and independent scoped CI review passed. Product bytes remain39e0c262, so installed acceptance1.0.5 remains valid without repeating installation or OS changes. This repair does not reopen the completed final product fix wave. Refresh catalogs, push final records, obtain a new final-head CI success and mergePR180 before markingTASK1108done.
+
+## Strategy agent proof of concept - 2026-11-09
+
+Task TASK-1161. Worktree /Users/mitch/dev/solmargintrader-wt-strategy-poc based on origin/master 2810f4b2. Preserve existing concurrent Bot Manager, forward testing and Oracle work. User requests an optimized prompt, strategy backtests and prospective blind testing, manager reporting and a small Jupiter SOL/USDC purchase. The pair alone does not establish swap direction. Executor requires quote, semantic verification, simulation and its existing rails; never invent results or bypass gates. Implementation, testing, optimizer evidence, transaction details and delivery remain.
+
+## Strategy agent checkpoint — current findings
+
+The prompt candidate and partial optimizer record are in docs/strategy-agent/. Fresh independent review of the final revision, optimizer run manifest/self-check, and actual agent implementation remain. The existing momentum card's default 60-day strategy ran on SOL_1d.csv in the isolated worktree with a 70/30 split, 6 bps fee, 2 bps slippage and next-open fills. The CLI reported out-of-sample return -15.79%; this is historical USD proxy data, not a blind prospective or Jupiter execution result. Artifacts: /tmp/strategy-agent-sol-backtest/. Manager's installed list returned no drafts; manager events and financials currently cover its own bounded grid reference-paper runtime, not arbitrary strategy-agent events or P&L. Oracle implementation remains open in TASK-1154. No new P&L ledger or agent has been implemented. Executor status reported 0.084924546 SOL and 0.000047 USDC, mode dry-run, validation disabled, no unresolved journal sends. SOL/USDC was specified without direction; no quote, simulation, signature, or swap was made. Await trade direction; use existing owner wallet and rails. Remaining: build and verify actual manager-integrated strategy agent, all-coin data inventory, bounded development experiments and truly prospective blind handoff; finish optimizer gates; validate and perform the specifically defined proof swap only if executor gates pass; deliver and complete TASK-1161.

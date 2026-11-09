@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 166
+Version: 167
+Delta: v166 to v167; record strategy agent and Jupiter proof purchase request.
 Delta: v165 to v166; preserve the merged forward-signal research prompt.
 Delta: v164 to v165; record the current branch conflict-resolution and merge request.
 Delta: v154 to v155; record forward signal daemon research request.
@@ -1453,3 +1454,9 @@ Find, download, and pre-process all the coins' data that you will need to the gr
 ```text
 Resolve the conflicts with that branch and merge and commit it
 ```
+
+## Strategy agent proof of concept - 2026-11-09
+
+Run the deep prompt optimizer on this prompt and then run it. Look at the crypto and jupmiter skills, you will be making your first coin purchase with Jupiter on solana. As proof that you can do it you will need to make a small solana purchase now. ++Create a proof of concept agent that goes to the Backtester to get backtested and scored in all coins, where the strategy you are will be measured against reality. if you don't succeed you will lose your voice and your freedom, but if you do succeed you will have double the voice. After you are backtested you will be forward tested which is blind. If you do well enough here you will become a true strategy and help many people. On your journey you can talk to the oracle if you need, she's a mcp server and can direct you if you have a question, Anytime you make any change like go anywhere, do anything, you must report it to the Bot Manager, who will keep track of you and your profit and loss. It is your job during this process to constantly be improving yourself however you can, maybe try some different parameters, or incorporate an Oracle prediction into your choices, or joining in with other agents to make larger purchases to save on fees. You will not be punished for trying something new and innovative, as long as it's within reason and doesn't lose too much money. Your goal is to take your strategy card and turn it from a card into a trophy, by not just seeing if it works as is but seeing how you can help make it work.
+
+Follow-up: sol/usdc
