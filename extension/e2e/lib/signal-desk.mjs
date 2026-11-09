@@ -202,7 +202,7 @@ export async function verifySignalDesk(_page, browser) {
     assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('Model output 18m old')`));
     console.log('PASS forward accuracy, pending count, net units and process-lifetime distinctions');
     await browser.call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: false }, sessionId);
-    const tableScroll = await ev(`(()=>{const card=[...document.querySelectorAll('#deskContent .card')].find(x=>x.querySelector('h2')?.textContent==='Process responsibilities');const wrap=card.querySelector('.table-wrap');const hint=card.textContent.includes('Scroll horizontally to see process lifetime and inspect controls.');const before={width:wrap.clientWidth,content:wrap.scrollWidth,offset:wrap.scrollLeft};wrap.scrollLeft=wrap.scrollWidth;const last=wrap.querySelector('tbody tr button').getBoundingClientRect();const bounds=wrap.getBoundingClientRect();return {hint,before,offset:wrap.scrollLeft,buttonVisible:last.right<=bounds.right&&last.left>=bounds.left}})()`);
+    const tableScroll = await ev(`(()=>{const card=[...document.querySelectorAll('#deskContent .card')].find(x=>x.querySelector('h2')?.textContent==='Process responsibilities');const wrap=card.querySelector('.table-wrap');const hint=card.textContent.includes('Scroll horizontally to see all table columns and actions.');const before={width:wrap.clientWidth,content:wrap.scrollWidth,offset:wrap.scrollLeft};wrap.scrollLeft=wrap.scrollWidth;const last=wrap.querySelector('tbody tr button').getBoundingClientRect();const bounds=wrap.getBoundingClientRect();return {hint,before,offset:wrap.scrollLeft,buttonVisible:last.right<=bounds.right&&last.left>=bounds.left}})()`);
     assert.ok(tableScroll.hint, 'narrow process table explains the hidden controls');
     assert.ok(tableScroll.before.content > tableScroll.before.width && tableScroll.offset > 0, 'narrow process table scrolls horizontally');
     assert.ok(tableScroll.buttonVisible, 'scrolling reveals the Inspect action');
@@ -284,6 +284,25 @@ export async function verifySignalDesk(_page, browser) {
       assert.ok(await ev(`[...document.querySelectorAll('.sidebar a')].some(x=>x.textContent.trim()==='Settings'&&x.getBoundingClientRect().width>0)`));
     }
     console.log('PASS 390px and 200%-equivalent 720px CSS viewport containment with all primary routes and Settings');
+
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: false }, sessionId);
+    for (const [id, title, heading, actionLabel] of [
+      ['signal', 'Live signals', null, 'Inspect'],
+      ['research', 'Backtesting', 'Historical evidence', 'Stage paper trial'],
+      ['research', 'Backtesting', 'Existing research archives', 'Inspect archive summary'],
+      ['forward', 'Forward testing', 'SOL prospective evidence', 'Inspect trial'],
+      ['bots', 'Bot monitor', 'Process responsibilities', 'Inspect'],
+      ['bots', 'Bot monitor', 'Paper bot research', 'Inspect bot'],
+    ]) {
+      await route(id, title);
+      const result = await ev(`(()=>{const heading=${JSON.stringify(heading)};const root=heading?[...document.querySelectorAll('#deskContent .card')].find(x=>x.querySelector('h2')?.textContent===heading):document.querySelector('#soltuiLivePredictions');const wrap=root?.querySelector('.table-wrap');const hint=root?.querySelector('.table-scroll-hint');const button=[...(wrap?.querySelectorAll('button')||[])].find(x=>x.textContent.trim()===${JSON.stringify(actionLabel)});if(!wrap||!button)return {missing:true};const before={client:wrap.clientWidth,scroll:wrap.scrollWidth};wrap.scrollLeft=wrap.scrollWidth;const b=button.getBoundingClientRect(),w=wrap.getBoundingClientRect();const context=root.querySelector('.desk-run .card-head label');const cr=context?.getBoundingClientRect(),cost=root.querySelector('.desk-run > .note')?.getBoundingClientRect(),rr=root.getBoundingClientRect();return {hint:hint?.textContent||'',before,offset:wrap.scrollLeft,visible:b.left>=w.left&&b.right<=w.right,contextVisible:!cr||(cr.left>=rr.left&&cr.right<=rr.right&&cost&&cost.left>=rr.left&&cost.right<=rr.right)}})()`);
+      assert.match(result.hint ?? '', /Scroll horizontally to see all table columns and actions/ , `${id}: ${heading ?? 'strategy evidence'} scroll cue`);
+      assert.ok(result.before.scroll > result.before.client && result.offset > 0, `${id}: ${heading ?? 'strategy evidence'} overflows and scrolls`);
+      assert.ok(result.visible, `${id}: ${actionLabel} is visible after scrolling`);
+      if (heading === 'Historical evidence') assert.ok(result.contextVisible, 'run identity stays visible while scrolling the results table');
+    }
+    console.log('PASS all six narrow evidence tables expose scroll cues and actions');
+
     await browser.call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false }, sessionId);
     await route('signal', 'Live signals');
     const shots = {};
