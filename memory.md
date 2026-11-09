@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 292
+Version: 293
+Delta: v292 to v293; finalize shared-database regression discovery counts.
 Delta: v291 to v292; record actual Chrome activation and repair the shared prediction database lock.
 Delta: v290 to v291; finalize committed suite counts and delivery checkpoint.
 Delta: v289 to v290; record passing final checks before delivery.
@@ -16,7 +17,7 @@ Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
 PR163 merged as0c1fb81160b153060f242fe7b6021fc9f6c1d460 after all required CI passed. Main was safely synchronized, preserving its three unrelated untracked guides. Actual Chrome Beta extension pnokcppamfghgaimmmghoegjllhonhbh reloaded as0.6.0 from the main checkout at11:36:10UTC through existing Accessibility permission. The actual page shows direct controls, Jupiter/jup.ag selected, real public SOL prices and TradingView COINBASE:SOLUSD1minute. The registered nativehost also returned a real Jupiter quote. No live order or production all-market batch was started. Existing tabs were preserved. Receipt: /tmp/dashboard-actions-acceptance.json.
 
-Actual acceptance also exposed OperationalError: database is locked from saved prediction reads. The existing user TUI PID87461 is running its saved paper plan onttys003; do not start a competing Chrome worker. Its visible shared editor is a read-only BTC overview. The persistence fix makes load_session actually readonly, uses WAL only when explicitly opening a writer, migrates incomplete schemas atomically and closes failed connections. Six held-writer regressions plus the surrounding forward/current-assessment/live-score/bridge suites passed94 tests. Historical evidence stays intact. The changed forwardtest.py intentionally changes revision(); new runs must keep their separate evidence hash.
+Actual acceptance also exposed OperationalError: database is locked from saved prediction reads. The existing user TUI PID87461 is running its saved paper plan onttys003; do not start a competing Chrome worker. Its visible shared editor is a read-only BTC overview. The persistence fix makes load_session actually readonly, uses WAL only when explicitly opening a writer, migrates incomplete schemas atomically and closes failed connections. Six held-writer regressions plus the surrounding forward/current-assessment/live-score/bridge suites passed94 tests. Committed discovery is now1292 SolTUI tests and2670 total across the four documented suites. Historical evidence stays intact. The changed forwardtest.py intentionally changes revision(); new runs must keep their separate evidence hash.
 
 Private final delivery and installed-runtime receipts continue in /Users/mitch/.local/state/solmargintrader-session-01a1beca/memory.md. That file is the current deployment/activation state after this committed checkpoint. The source-fix branch is fix/forwardtest-read-locks-01a1beca in /Users/mitch/dev/solmargintrader-wt-dashboard-01a1beca. Remaining at this checkpoint: deliver the verified lock fix, preserve the saved plan and backup before graceful TUI activation, verify both live interfaces with one paper writer and close tracking. Stele activation updates are queued as07fe944a and1209cb01; lock risk asbe003114. Do not change signal economics or bypass evidence revision boundaries.
 
