@@ -1,9 +1,9 @@
 # Work continuation
 
-Version: 238
-Delta: v237 to v238; record completed prompt execution, council convergence and prototype acceptance.
+Version: 241
+Delta: v238 to v241; retain both concurrent histories and council-reviewed UI proposal records.
 
-## v238 - 2026-11-08
+## v241 - 2026-11-08
 
 Implemented the proposal-only request. Final prompt v1.1.0 passed isolated blind re-review with zero residual findings and helper selfcheck 8/8; semantic intent/smoke remain honestly SIMULATED. Source inventory covers 147 native and 35 extension commands. Signal Desk proposal and standalone synthetic prototype prioritize four workflows, preserve complete registry discoverability and distinguish backend result-contract gaps.
 
@@ -11,13 +11,13 @@ All three independent council advisors verified 13 corrections in round 2 with z
 
 Local docs gate passes using /Users/mitch/.venvs/soltui/bin/python; system Python lacks dependencies and was not used to fabricate counts. Remaining: integrate remote master (advanced with PR148), preserve concurrent workflow histories, refresh offline documentation indexes, commit/push, final CI, PR merge and task cleanup. Stele lifecycle pending outbox 7ed3844f/4a536eeb/f058c5d1; new durable lessons b8c3af5b/b573ebfc. Shared checkout stays with its active session; three unrelated untracked paths preserved and temporary Playwright snapshots relocated by verifier.
 
-## v237 - 2026-11-08
+## v240 - 2026-11-08
 
 Completed: source inventory at 2ca3041 found 147 native and 35 extension commands; current dashboard already exposes the full installed native registry. Final optimized prompt v1.1 passed fresh-context blind re-review with zero residual findings. Primary audit was self-judged and helpers are graded separately. Draft proposal and standalone synthetic mockup exist under docs/design/chrome-workspace. Mockup JS parses and loads in Chrome on loopback port 8914; no operational connection.
 
 In progress: independent product/accessibility and quant council review; operations/extension review and final live prototype acceptance next. Then implement every actionable critique, re-review, verify documentation/index gates and final-head CI, merge and clean only task worktree. Lifecycle outbox ids: create 7ed3844f; claim 4a536eeb; scope decision f058c5d1. Stele recall unavailable; do not claim graph dedup or writes succeeded. Key constraints: detached vs session workers differ; docs.search may start local model/index services so keyword search is default; manual Jupiter spot is distinct from blocked Trigger signing; archived LP remains disabled.
 
-## v236 - 2026-11-08
+## v239 - 2026-11-08
 
 Target: optimize the owner prompt, inventory repository capabilities, draft an ideal dashboard-first Chrome extension proposal and isolated mockup, resolve advisor council criticisms, verify artifacts and deliver through final-head CI and PR merge. Production UI, service states, live execution and user settings remain unchanged.
 
@@ -26,6 +26,26 @@ Private worktree: /Users/mitch/dev/solmargintrader-wt-01a1be64; branch agent-01a
 Steps: (1) optimize prompt [in progress]; (2) source inventory [pending]; (3) proposal/mockup [pending]; (4) independent council critique and revisions [pending]; (5) verification, commit and PR delivery [pending].
 
 No product implementation is authorized by this proposal request. Workflow versions are independent from package versions.
+
+## v238 - 2026-11-08
+
+PR https://github.com/mithudso/solmargintrader/pull/148 is the canonical delivery receipt for this task. Real-clock acceptance exposed an extra second in the v237 cooldown approach. Both interfaces now use a dedicated ten-second periodic prediction timer, separate from chart timers and read duration. Periodic polls skip busy readers without queuing catch-up bursts. The dashboard takes an initial visible snapshot and retains its five-second Follow stream price timer. The TUI graph timer only requests initial or changed-context snapshots. Manual/coin/floor refreshes, error recovery, generation guards and shutdown safety remain intact.
+
+Reverified after the timer correction: 372 extension tests, 24 real-host Chrome checks, 23 fixture-host Chrome checks and 12 focused TUI tests passed. Independent real-clock TUI start gaps were 10.069 and 9.997 seconds with a 250ms read delay; changed rows, read-failure recovery, one-reader admission, responsive graph, context guards and shutdown drain passed. Independent steady-state browser start gaps were 10,000 and 10,000 milliseconds with Follow stream off and no Refresh clicks. Five automatic reads included changed rows and failure/recovery; maximum reader count was one, and hidden/disposed panels stopped polling. All 909 backtester tests passed after index regeneration. Remaining: final-head CI, merge, safe master sync and own branch/worktree cleanup. Earlier v237 eleven-second cadence and head 0c0d714 are historical checkpoints, not the final behavior. The PR's final pushed head, checks and merged status establish final delivery. No trainer, order, user-session or service state changed.
+
+## v237 - 2026-11-08
+
+Implemented automatic ten-second prediction-read cooldowns in both Live views. The dashboard polls with Follow stream off while visible, retries failed reads, shows successful refresh times, suppresses obsolete coin/floor responses and admits only one read. The TUI reads in one background Textual worker, preserves graph responsiveness, applies coin/floor generation guards, reports failed reads and retries, advances only successful refresh timestamps and drains safely at shutdown. Both preserve saved closed-minute forecast issuance, quality floors, immutable tick scores and all training/execution paths. Extension version is 0.4.2.
+
+Verified: 372/372 extension unit/parity tests; 12/12 focused TUI tests plus an expanded stale-success/failure regression; Chrome 24/24 real-host and 23/23 fixture-host checks; Mongo 34 tests with 17 server-dependent skips; positive offline grid round trip net $0.3492; public Jupiter endpoint checks; changed-source syntax checks. Independent real-clock Chrome and Textual acceptance observed automatic UP/DOWN/UP row changes and recovery after a failed fourth read. Ten-second cooldown plus one-second timer yielded approximately eleven-second start gaps. Each surface admitted only one reader. Hidden/disposed browser views stopped polling; held TUI reads kept the chart responsive and stale contexts were discarded. Existing user sessions and services were not restarted.
+
+Delivery branch fix/live-predictions-10s-20261108 in /Users/mitch/dev/solmargintrader-wt-refresh-10s is the current checkpoint. Remaining gates at this checkpoint: rebuild offline indexes, repeat the backtester after index regeneration, final-head CI, merge, safe master sync and own worktree cleanup. The first backtester run passed 908 cases and failed only the expected stale-index assertion while files were still being edited. Documentation discovery is 1214 SolTUI / 2529 total. The full optional SolTUI suite was not run. On resume, use the branch's PR merged status and final-commit checks as the delivery receipt. Stele task create 0a351c54 and diagnosis knowledge 470f5f70 remain queued because MCP is unavailable.
+
+## v236 - 2026-11-08
+
+Target: refresh the Live graph forward-predictions table every ten seconds in the TUI and dashboard. The SOL store contains recent calls. Both views currently gate table reads at sixty seconds; the dashboard also requires Follow stream for polling and switches it off after a transient read failure. A saved snapshot read took 1.17 seconds, so move the TUI read to a single background worker with stale-coin/result guards. Keep retries visible and continue them after failures.
+
+Preserve closed-minute forecast issuance and trainer evidence; do not edit forwardtest.py or historical results. Keep score floors, immutable tick history and all order paths unchanged. Worktree /Users/mitch/dev/solmargintrader-wt-refresh-10s; branch fix/live-predictions-10s-20261108; base 2ca3041. Shared checkout has three unrelated untracked guides and other active worktrees. Task create queued as Stele outbox 0a351c54 because MCP is unavailable. Remaining: implement, verify ten-second cadence and recovery in fresh UI instances, refresh docs/indexes, then commit, push, pass CI, merge and clean up.
 
 ## v235 - 2026-11-08
 

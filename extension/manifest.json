@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SolMarginTrader",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "SolTUI dashboard workspace: signals, backtests, bots, experiments, wallets, reviewed orders and document editing; experimental grid disarmed and dry-run by default.",
   "minimum_chrome_version": "120",
   "background": {
