@@ -1,7 +1,17 @@
 # Work continuation
 
-Version: 266
-Delta: v265 to v266; preserve all upstream and optimizer workflow histories.
+Version: 267
+Delta: v266 to v267; accepted integrated source and final census.
+
+## v267 - 2026-11-09
+
+Accepted source commit 40bb601 includes the delivered executor integrity and Signal Desk changes. Integration preserved all optimizer repairs. Completed checks: 429 executor tests and Ruff; 579 liquidity tests with sockets blocked and Ruff; 389 extension tests; 941 backtester tests; 321 mapped SolTUI tests; 89 focused integration checks with overlap; and 46 Mongo tests with 11 server integrations skipped. The fresh browser and production native host passed 26 checks at version 0.5.1. Twelve loaded resource hashes matched. The offline round trip closed at net $0.3492. Full optional SolTUI coverage and historical sweeps were not run.
+
+The final census includes the newly committed test_desk module: 2647 total, comprising 941 backtester, 1271 SolTUI, 46 Mongo and 389 extension cases. Census does not establish execution coverage. Final count, report and index changes receive passing checks before delivery. The optimizer repaired 98 findings. Delivered PR151 separately closed two original gate2 residuals. Thirteen remain: seven High and six Medium. Status remains BLIND-AUDIT-DISSENT under the skill's second-dissent rule. Final reviewers disclosed partial per-file coverage. No third optimization pass or blind gate ran.
+
+Original gate2 receipts bind candidate a1a0929. The scope JSON records candidate and integrated hashes. integration-executor.json and integration-tui.json record conflict resolution and preserved controls. live-acceptance-integrated.json records the loaded surface. Stele integration decision cf752317 supersedes two queued risk writes; the follow-up task queued as 121bc907 must show 13 remaining at replay. No server acknowledgment exists.
+
+This is the pre-delivery snapshot for branch agent-01a1be31. Remaining steps are the final metadata commit, PR checks, squash merge, remote content verification and task worktree cleanup. Consult GitHub for the final receipt before resuming; do not infer current progress from this historical entry. Preserve the shared checkout, its three unrelated guides and owner services.
 
 ## v266 - 2026-11-09
 

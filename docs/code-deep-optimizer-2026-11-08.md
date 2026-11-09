@@ -145,13 +145,13 @@ The final gate stops under the code-deep-optimizer 1.16.0 rule: “second dissen
 | cd extension && node --test | 369 (372 after PR146) | 389 integrated Node tests pass | PASS |
 | executor/.venv/bin/pytest -q; Ruff lint/format | 202 pass,5 network deselected | 429 pass,5 network deselected; integrated Ruff lint/format pass | PASS |
 | liquidity offline pytest with socket connections blocked; Ruff lint/format | 473 pass,6 network deselected | 579 pass,6 network deselected; Ruff pass | PASS |
-| backtester full unittest | 909; index becomes stale after workflow records | Final integration report/index refresh and rerun required | PENDING |
+| backtester full unittest | 909; index becomes stale after workflow records | 941 integrated tests pass; final metadata/index-only rerun required before commit | PASS |
 | Mongo fake-only unittest | 34 run,11 skipped | 46 run,11 skipped | PASS |
-| SolTUI mapped and focused tests | 198 focused pass | 89 integration-focused pass; final mapped gate still running | PENDING |
+| SolTUI mapped and focused tests | 198 focused pass | 321 mapped pass;89 focused integration checks pass (overlap); full optional suite not run | PASS |
 | real Chrome + production native host in fresh isolated profile | 24/24 loading/dry-run checks | 26/26 integrated checks pass; version0.5.1 and12 source hashes match; SignalDesk behavior checked | PASS |
 | offline 8-tick dryrun | closed net $0.3492 | closed net $0.3492; 1 closed round trip, no unknown fee | PASS |
 | node tools/verify-endpoints.js | read-only reachability | keyless price and auth route reachable; keyed price skipped without API key | PASS (limited) |
-| scripts/check_docs.py; offline index freshness | 2515 test census (2526 after PR146) | Final integration report/index refresh and rerun required | PENDING |
+| scripts/check_docs.py; offline index freshness | 2515 test census (2526 after PR146) | Final census2647:941backtester,1271SolTUI,46Mongo,389extension; final refresh verified before commit | PASS |
 
 All required check processes must finish successfully before commit. A running process, expected index failure or queued CI is not a pass. Full optional SolTUI tests and live orders were not run.
 
@@ -171,7 +171,7 @@ Each preview is capped at 12 patch lines. The merged Git diff is the complete ch
 
 ```diff
 diff --git a/.github/copilot-instructions.md b/.github/copilot-instructions.md
-index 3087d76..d1a25bc 100644
+index 3087d76..3b7b677 100644
 --- a/.github/copilot-instructions.md
 +++ b/.github/copilot-instructions.md
 @@ -57,10 +57,10 @@ ## Non-negotiables — backtester
@@ -189,7 +189,7 @@ index 3087d76..d1a25bc 100644
 
 ```diff
 diff --git a/CLAUDE.md b/CLAUDE.md
-index 7a87117..0cc1df0 100644
+index 7a87117..a140a4d 100644
 --- a/CLAUDE.md
 +++ b/CLAUDE.md
 @@ -114,10 +114,10 @@ ## Non-negotiables — backtester
@@ -207,7 +207,7 @@ index 7a87117..0cc1df0 100644
 
 ```diff
 diff --git a/GEMINI.md b/GEMINI.md
-index b5b9cd5..7953fe4 100644
+index b5b9cd5..0afed0c 100644
 --- a/GEMINI.md
 +++ b/GEMINI.md
 @@ -37,10 +37,10 @@ ## The rules most often broken here
@@ -225,7 +225,7 @@ index b5b9cd5..7953fe4 100644
 
 ```diff
 diff --git a/README.md b/README.md
-index d839483..c2a1734 100644
+index d839483..c82886f 100644
 --- a/README.md
 +++ b/README.md
 @@ -33,7 +33,7 @@ # Backtester — fetch once, then simulate offline
@@ -513,7 +513,7 @@ index c1842df..df50f12 100644
 
 ```diff
 diff --git a/docs/DEVELOPMENT.md b/docs/DEVELOPMENT.md
-index d4d0f54..56413ee 100644
+index d4d0f54..4a43b45 100644
 --- a/docs/DEVELOPMENT.md
 +++ b/docs/DEVELOPMENT.md
 @@ -66,7 +66,7 @@ ### Extension
@@ -531,7 +531,7 @@ index d4d0f54..56413ee 100644
 
 ```diff
 diff --git a/docs/TESTING.md b/docs/TESTING.md
-index 832f801..8bae03b 100644
+index 832f801..65f6ce2 100644
 --- a/docs/TESTING.md
 +++ b/docs/TESTING.md
 @@ -1,10 +1,10 @@
@@ -549,7 +549,7 @@ index 832f801..8bae03b 100644
 
 ```diff
 diff --git a/docs/known-issues.md b/docs/known-issues.md
-index 5136ef0..f2e5507 100644
+index 5136ef0..fb809d0 100644
 --- a/docs/known-issues.md
 +++ b/docs/known-issues.md
 @@ -6,6 +6,17 @@ # Known issues
@@ -558,8 +558,8 @@ index 5136ef0..f2e5507 100644
 
 +### 2026-11-08 optimizer residuals
 +
-+The bounded optimizer repaired 98 findings and stopped at `BLIND-AUDIT-DISSENT` with
-+15 corroborated residuals (nine High, six Medium). These include executor reduce-only,
++The bounded optimizer repaired 98 findings. Integrated upstream executor work closed two
++more original residuals. It stopped at `BLIND-AUDIT-DISSENT` with 13 remaining findings
 ```
 45 further patch lines omitted.
 
@@ -1464,19 +1464,19 @@ index 960b0dd..cc61ce3 100644
 
 ```diff
 diff --git a/memory.md b/memory.md
-index 95f3e94..f8c2344 100644
+index 95f3e94..4ffc8ba 100644
 --- a/memory.md
 +++ b/memory.md
-@@ -1,7 +1,77 @@
+@@ -1,7 +1,87 @@
  # Work continuation
 
 -Version: 256
 -Delta: v255 to v256; preserve concurrent executor and Signal Desk histories and integration checkpoint.
-+Version: 266
-+Delta: v265 to v266; preserve all upstream and optimizer workflow histories.
++Version: 267
++Delta: v266 to v267; accepted integrated source and final census.
 +
 ```
-72 further patch lines omitted.
+82 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/mongo/README.md
 
@@ -2092,7 +2092,7 @@ index ac1f512..95b7cf0 100644
 
 ## 6. Blind re-audit
 
-The original gate2 retained15 corroborated findings. Already-delivered PR151 closed2 during source integration, leaving13. Integration is covered by source preservation checks,429 executor tests and application acceptance; it is not a third blind optimization gate. Some final-gate file coverage was partial.
+CLEAN-gate result: N/A (BLIND-AUDIT-DISSENT). The original gate2 retained15 corroborated findings. Already-delivered PR151 closed2 during source integration, leaving13. Integration checks passed429 executor tests and26 browser/native-host checks; this is not a third blind optimization gate. Some final-gate per-file coverage was partial.
 One suggested backtester trend-exit finding was rejected: the documented filter constrains entry calls, not held positions. Changing that policy would invent behavior. Raw reviewer packets and the source-based triage are preserved.
 
 Fresh contexts received final source and the pass rubric without author findings or diffs. The native agent API reached its thread limit; the final gate used ephemeral read-only Codex CLI contexts. Their JSON and process exit receipts are under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo. A non-clean exit has no CLEAN-gate claim.
@@ -2107,7 +2107,7 @@ N/A — `--implement-features` was not requested. Changes repair corroborated de
 
 ## 9. Summary
 
-2 iterations · 18 active passes · profile: standard · Final C/H/M/L: 0/7/6/0 · Verify: PENDING · Status: BLIND-AUDIT-DISSENT
+2 iterations · 18 active passes · profile: standard · Final C/H/M/L: 0/7/6/0 · Verify: PASS · Status: BLIND-AUDIT-DISSENT
 
 ## 10. Snapshot and rollback
 

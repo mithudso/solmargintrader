@@ -8,9 +8,9 @@ reports record reviewed findings and residuals; this page records ongoing limita
 
 ### 2026-11-08 optimizer residuals
 
-The bounded optimizer repaired 98 findings and stopped at `BLIND-AUDIT-DISSENT` with
-15 corroborated residuals (nine High, six Medium). These include executor reduce-only,
-reconciliation and post-verification crash gaps; raw upstream error propagation; paper
+The bounded optimizer repaired 98 findings. Integrated upstream executor work closed two
+more original residuals. It stopped at `BLIND-AUDIT-DISSENT` with 13 remaining findings
+(seven High, six Medium). These include executor reduce-only admission; raw upstream error propagation; paper
 fill ordering; historical triangle replay; research delay/selection/empty-table cases;
 and Aero soak, conversion status and concurrent evidence updates. Passing tests do not
 close these findings. See [the exact audit and scope](code-deep-optimizer-2026-11-08.md).
