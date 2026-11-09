@@ -350,7 +350,11 @@ compound.fetch_closed_candles = candles
             deadline = time.monotonic() + 10
             while time.monotonic() < deadline:
                 status = recovery.health("SOL")
-                if status["running"] and status["owner"]["pid"] != os.getpid() and status["last"].get("SOL"):
+                # A first check during the last second must correctly refuse
+                # stale-window calls. Wait for the next fresh generation,
+                # rather than treating that expected zero as test completion.
+                if (status["running"] and status["owner"]["pid"] != os.getpid()
+                        and status["last"].get("SOL", {}).get("recorded") == 4):
                     break
                 time.sleep(.05)
             else:

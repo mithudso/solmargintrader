@@ -173,6 +173,18 @@ async function soltuiRead(deps, command, params, notes) {
 /* ---------------------------------------------------------------- registry -- */
 
 export const COMMANDS = {
+  openLiveWindow: {
+    describe: 'Open or reuse a floating live view. An existing workspace can pin with one click.',
+    params: [{ name: 'asset', type: TYPE.STRING, describe: 'Optional coin symbol.' }],
+    unlocked: true,
+    browserUi: true,
+    handler({ deps, args }) {
+      const asset = args.asset ?? 'SOL';
+      if (!/^[A-Z0-9]{1,20}$/.test(asset)) throw new CommandError('Invalid signal coin', 400);
+      if (!deps.liveWindows) throw new CommandError('Floating live views require the Chrome extension.', 501);
+      return deps.liveWindows.open(asset);
+    },
+  },
   /* ---- inspection (read-only) ---- */
 
   status: {

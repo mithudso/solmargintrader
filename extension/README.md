@@ -7,11 +7,17 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Signal Desk workspace (0.6.1)
+## Signal Desk workspace (0.6.2)
 
 The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or
 **Bot monitor** workspace. The popup shows a automatically refreshed signal/process glance and four
 shortcuts. Unavailable predictions request paper recovery automatically. The interface uses recorded/native-host data; it contains no demonstration values.
+The persistent right monitor keeps voting, Council/grid status, separate paper P&L and covered wallet
+actions visible across sections. **Start / resume paper bots** coordinates historical/forward tests,
+the existing grid session, paper Council and validated optimization in one action. It preserves active
+work and does not arm live orders. Hover voting strategies for saved-rule explanations; select up to
+two saved strategy charts. **Follow stream** defaults checked. The popup can pin a live window above
+other windows through Document Picture-in-Picture; a cold helper requires its own Pin click.
 All tools, experiments, wallets/orders, settings, legacy wallet views and document editing remain
 reachable. Archived liquidity mutators are discoverable but disabled, including in expert forms.
 
@@ -126,7 +132,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.6.1`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.6.2`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).
@@ -339,7 +345,7 @@ gross $10.00, fees $1.05, **net $8.95**; with $2.00 carry, **realized $6.95**.
 
 ## Three surfaces, one registry
 
-Every action lives in `src/core/commands.js` (34 commands). The Chrome message handler, the CLI and
+Every action lives in `src/core/commands.js` (35 commands). The Chrome message handler, the CLI and
 the HTTP API are thin adapters over it, so anything you can do in the UI you can script — and
 `test/surfaces.test.js` fails the build if any surface drifts.
 

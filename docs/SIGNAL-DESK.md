@@ -1,17 +1,44 @@
 # Signal Desk
 
-Version: 1.0
-Delta: implement the council-reviewed four-workspace Chrome interface.
+Version: 1.1
+Delta: persistent live monitor, one paper workflow, saved-vote explanations and floating charts.
 
 Signal Desk is the extension's default full dashboard in version 0.5.0. Its light/dark interface
 puts Live signals, Backtesting, Forward testing and Bot monitor in permanent navigation. The
-popup provides read-only glance information and direct links. No service, training job or order
-starts because a screen opens.
+popup provides glance information, direct links and a detached live window. Opening a workspace
+warms a bounded read-model; unavailable predictions request the existing paper recovery.
+Testing, optimization and the Council start through explicit actions. Opening a screen never arms orders.
+
+## One paper workflow and a persistent monitor
+
+**Start / resume paper bots** is available at the top of every workspace. One click reuses the
+active historical/forward batch, ensures the shared prediction producer, preserves an existing
+grid forward session and its costs, assesses that grid on cached historical data, starts or reuses
+the paper Council, and starts or reuses the validated bot optimizer. A prior grid Stop remains
+stopped. The coordinator does not replace settings, lower adoption gates or arm live execution.
+Missing cached history and failed stages remain visible. Prepared orchestration stages are not
+completed tests: the batch phase and counts show actual work still outstanding.
+
+The right monitor persists across all sections. It shows current eligible votes, producer health,
+Council position and waiting reason, grid session identity, separate paper P&L, optimizer status,
+saved wallet valuation and recent wallet actions. Council confidence remains separate from vote
+agreement. Realized profit, open-position value, costs and the grid's buy-and-hold comparison keep
+their source labels. A recorded-stream grid P&L read needs no new backtest. Backtesting checks
+historical behavior; forward testing evaluates new data. Neither guarantees profitable future trades.
+
+The monitor polls bounded cached evidence every ten seconds. Its read-model worker ends after
+three minutes without a viewed-asset heartbeat. Replays run at most once per thirty seconds and
+wallet history caches are bound to owner addresses. Base history uses fourteen-day CDP SQL with
+trusted-token/reorg filtering. Solana uses finalized owner-address signatures and limited transaction
+detail reads. Coverage and failures are explicit: owner-only history can miss token-account-only
+transfers. Local submitted intents do not imply confirmed fills. Wallet valuation is not trading P&L;
+deposits, withdrawals and cost basis have not been reconciled. Paper actions cannot crowd out wallet actions.
 
 ## Live signals
 
 Choose a view asset. Read the existing recorder's price, source age, saved predictions and
-aggregate directional agreement. Every ten seconds, visible prediction evidence refreshes even
+aggregate directional agreement. **Follow stream starts checked** and controls recorder/chart
+following. Every ten seconds, visible prediction evidence refreshes even
 when Follow stream is off; Follow stream separately refreshes recorder reads every five seconds.
 Expired/future calls cannot vote. Missing evidence is Unavailable, not a valid neutral zero.
 
@@ -20,6 +47,21 @@ and exact raw evidence. Filter is local and survives refreshes. Why this score e
 strategy weighting and the ±20/±60 labels. Default eligibility floors are 60% accuracy and 20
 resolved calls for both strategy and contributed horizon; these are separate from the paper
 entry-confidence gate. Observed score ticks remain immutable as the chart moves left.
+
+Hover or keyboard-focus an eligible strategy for its saved rule, horizon, direction, prior sample
+record and issue/expiry times. Exact numeric features appear only when the original candle/input
+contract proves reconstruction. Stateful indicators without their original state say so; they do
+not borrow numbers from the current quote. Click to select up to two strategy graphics, then click
+again or remove the selection to clear them. Changing the coin clears all selected graphics and
+invalidates outstanding reads. The selected chart uses vendored TradingView Lightweight Charts
+with real saved Coinbase candles, saved-vote markers and verified SMA series. It is a saved forecast
+chart rather than a live Jupiter chart. The existing TradingView reference remains available.
+No paid TradingView studies or account chart slots are consumed.
+
+**Detach live signals · pin on top** in the action popup uses an existing persistent workspace to
+open an always-on-top Document Picture-in-Picture window in one click. With no owner open, Chrome
+requires a second **Pin on top** click in the new helper. Keep the originating workspace/helper
+open: closing it also closes its floating view. Closing the transient action popup does not.
 
 ## Backtesting and comparison
 
@@ -68,8 +110,9 @@ history. Classification accuracy is not a calibrated profit probability; depende
 limit naive uncertainty intervals. A matched baseline is unavailable unless recorded evidence
 supplies it.
 
-Worker prepare/start/stop/restore actions open their registry forms. Nothing automatically resumes
-when a dashboard opens. Native-session checks stop with their owner; detached compound trainers
+Worker prepare/start/stop/restore actions remain available in their registry forms. The one-button
+workflow coordinates shared detached work; recovery honors the existing explicit pause rules.
+Native-session checks stop with their owner; detached compound trainers
 and experiment workers retain their separate lifecycle. Stopping paper checks does not cancel real
 orders or stop other components.
 

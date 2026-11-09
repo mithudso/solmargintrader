@@ -9,7 +9,7 @@ export async function verifyDashboardWorkflows(page, browser) {
     return value;
   };
 await ev(`(async()=>{
- const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';
+ const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));for(const id of ['deskStartAll','workspacePinLive','workspaceWorkflowStatus','workspaceLiveRail'])r.append(document.getElementById(id).cloneNode(false));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';window.workflowHeld=null;
  window.interleaveDocWrite=false;window.fixtureDocs=null;window.holdDocRead=false;window.holdDocWrite=false;window.docHeldRead=null;window.docHeldWrite=null;window.previewAvailable=true;
  window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;window.liveFailNext=false;
 
@@ -31,6 +31,9 @@ await ev(`(async()=>{
  const tx=async m=>{calls.push(m);if(m.type==='soltuiSession')return {ok:true,result:{available:true,connected:true,generation:1}};if(m.type==='soltuiCommands')return {ok:true,result:en('list',spec)};
  if(m.command==='signals.check')return {ok:true,result:en(m.command,{score:100,checked_at:Date.now()/1000,strategies:1,rows:[{strategy:'fresh fixture',prediction:'UP',error:''}]})};
  if(m.command==='prices.quote')return {ok:true,result:en(m.command,{price:87.25,source:'jupiter',block_id:123,fetched_at:Date.now()/1000})};
+ if(m.command==='live.rail_refresh')return {ok:true,result:en(m.command,{running:true})};
+ if(m.command==='live.rail')return {ok:true,result:en(m.command,{observed_at:Date.now()/1000,age_seconds:0,stale:false,voting:{},activity:{items:[],wallet_items:[]},workflow:{}})};
+ if(m.command==='paper.workflow_ensure')return new Promise(resolve=>{workflowHeld=()=>resolve({ok:true,result:en(m.command,{state:'running',running:true,stages:{}})})});
  if(m.command==='batch.run_all')return {ok:true,result:en(m.command,{run_id:'fixture-batch',running:true,message:'Backtesting then forward'})};
  if(m.command==='batch.status')return {ok:true,result:en(m.command,{run_id:'fixture-batch',running:true,phase:'backtesting',assets:['SOL'],intervals:['1m','5m'],counts:{pending:2}})};
  if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
@@ -43,7 +46,7 @@ await ev(`(async()=>{
  return {ok:true,result:en(m.command,{rows:[{name:'apple',value:2},{name:'pear',value:1}]})};};
  const intervals=[],nativeSetInterval=window.setInterval;
  window.setInterval=(fn,delay,...args)=>{const id=nativeSetInterval(fn,delay,...args);intervals.push({fn,delay,id});return id};
- try {await (await import(chrome.runtime.getURL('src/ui/soltui-panel.js'))).mountSoltuiPanel(r,tx)}
+ try {await (await import(chrome.runtime.getURL('src/ui/soltui-panel.js'))).mountSoltuiPanel(r,tx);(await import(chrome.runtime.getURL('src/ui/live-workspace.js'))).mountLiveWorkspace(r,async(command,params)=>{const response=await tx({type:'soltuiCall',command,params});return response.result.result;})}
  finally {window.setInterval=nativeSetInterval;for(const interval of intervals)clearInterval(interval.id)}
  const predictionTimer=intervals.find(x=>x.fn.name==='pollLivePredictions');
  window.liveTimerTick=predictionTimer?.fn;window.liveTimerDelay=predictionTimer?.delay;
@@ -184,15 +187,17 @@ await ev(`r.querySelector('#soltuiPriceSource').value='jupiter';r.querySelector(
 await wait(`r.querySelector('#soltuiLiveStatus').textContent.startsWith('Jupiter SOL/USD')`);
 assert.ok(await ev(`calls.some(x=>x.command==='prices.quote'&&x.params.source==='jupiter')`));
 await ev(`r.querySelector('#deskStartAll').click()`);
-await wait(`calls.some(x=>x.command==='batch.run_all') && r.querySelector('#deskStartAll').disabled`);
-assert.equal(await ev(`calls.filter(x=>x.command==='batch.run_all').length`),1);
+await wait(`calls.some(x=>x.command==='paper.workflow_ensure') && r.querySelector('#deskStartAll').disabled`);
+assert.deepEqual(await ev(`calls.find(x=>x.command==='paper.workflow_ensure').params`),{asset:'SOL',scope:'all'});
 await ev(`r.querySelector('#deskStartAll').click()`);
-assert.equal(await ev(`calls.filter(x=>x.command==='batch.run_all').length`),1,'disabled running batch cannot duplicate');
+assert.equal(await ev(`calls.filter(x=>x.command==='paper.workflow_ensure').length`),1,'pending workflow cannot duplicate');
+await ev(`workflowHeld();workflowHeld=null`);
+await wait(`!r.querySelector('#deskStartAll').disabled`);
 await ev(`r.querySelector('#soltuiWorkspace').value='all';r.querySelector('#soltuiWorkspace').dispatchEvent(new Event('change'));[...r.querySelectorAll('.tool-card')].find(b=>b.textContent.includes('demo › rows')).click()`);
 await wait(`r.querySelector('#soltuiResultCard').classList.contains('expanded-output') && r.querySelector('#soltuiResultLabel').textContent.startsWith('demo.rows')`);
 assert.ok(await ev(`calls.some(x=>x.command==='demo.rows')`));
 assert.ok(await ev(`r.querySelector('#tradingViewChart iframe').src.includes('tradingview-widget.com/embed-widget/advanced-chart/')`));
-console.log('PASS direct actions, expanded results, manual fresh assessment, Jupiter source and one-button batch');
+console.log('PASS direct actions, expanded results, manual fresh assessment, Jupiter source and one-button paper workflow');
 
 await ev(`window.dispatchEvent(new PageTransitionEvent('pagehide'))`);
 

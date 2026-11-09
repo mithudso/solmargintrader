@@ -21,6 +21,12 @@ TOKEN = "test-token-not-a-secret"
 # Commands that run for minutes, spawn processes, hit the network or write repo files. The parity suite
 # replaces their handlers with fixed answers; the registry, validation, envelope and surfaces are real.
 HEAVY = {
+    "live.rail": {"observed_at": 1800000000, "voting": {}, "council": {}, "grid": {}, "activity": {"items": []}},
+    "live.rail_refresh": {"state": "running", "running": True},
+    "paper.workflow_ensure": {"state": "running", "running": True, "stages": []},
+    "paper.workflow_status": {"state": "running", "running": True, "stages": []},
+    "paper.workflow_stop": {"state": "stopped", "running": False},
+    "forwardtest.explain": {"asset": "SOL", "label": "fixture", "available": False, "reason": "fixture"},
     "council.config": {"asset": "SOL", "mode": "paper"},
     "council.status": {"state": "stopped", "mode": "paper", "running": False},
     "council.start": {"state": "running", "mode": "paper", "running": True},
@@ -134,6 +140,7 @@ def default_params() -> dict[str, dict]:
 
     fresh = next(n for n in sorted(REGISTRY) if n not in ("buy_and_hold", "ma_crossover", "rsi", "breakout"))
     return {
+        "forwardtest.explain": {"asset": "SOL", "label": "rsi_14_30_50"},
         "batch.start": {"run_id": "a" * 32},
         "batch.status": {"run_id": "a" * 32},
         "batch.cells": {"run_id": "a" * 32},

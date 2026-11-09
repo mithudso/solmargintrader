@@ -1144,6 +1144,54 @@ def roster_reset(ctx: Context, p: dict[str, Any]) -> Any:
     return {"entries": [_entry(e) for e in ctx.roster], "count": len(ctx.roster)}
 
 
+# -- Live workspace read model and explicit paper workflow ----------------------------------------
+
+
+@command("live.rail", "Read bounded cached votes, paper P&L, worker reasons and covered wallet activity.",
+         (P("asset", "string", "Selected coin; defaults to Settings."), P("limit", "number", "Maximum visible rows, 1 to 20.")))
+def live_rail(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import live_tools
+    return live_tools.rail(bgqueue.validate_asset(p.get("asset") or ctx.settings.asset), limit=int(p.get("limit", 8)),
+                          min_accuracy=ctx.settings.live_vote_min_accuracy, min_resolved=ctx.settings.live_vote_min_resolved)
+
+
+@command("live.rail_refresh", "Warm the live workspace read model in the background; starts no trading or tests.",
+         (P("asset", "string", "Selected coin; defaults to Settings."),), read_only=False)
+def live_rail_refresh(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import live_tools
+    return live_tools.refresh(bgqueue.validate_asset(p.get("asset") or ctx.settings.asset))
+
+
+@command("paper.workflow_ensure", "Prepare backtests, prospective paper bots and validated optimization with one action.",
+         (P("asset", "string", "Selected coin; defaults to Settings."),
+          P("scope", "string", "all (default) or selected; existing shared jobs are reused.")), read_only=False)
+def paper_workflow_ensure(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_workflow
+    return paper_workflow.ensure(ctx.settings, bgqueue.validate_asset(p.get("asset") or ctx.settings.asset), p.get("scope", "all"))
+
+
+@command("paper.workflow_status", "Read saved paper-workflow stages without starting or replaying jobs.",
+         (P("asset", "string", "Optional currently selected coin."),))
+def paper_workflow_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_workflow
+    return paper_workflow.status(bgqueue.validate_asset(p.get("asset") or ctx.settings.asset))
+
+
+@command("paper.workflow_stop", "Stop this coordinator after its current assessment; shared existing workers continue.", read_only=False)
+def paper_workflow_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import paper_workflow
+    return paper_workflow.stop()
+
+
+@command("forwardtest.explain", "Explain the actual saved call, eligibility, rule and reproducible recorded basis.",
+         (P("asset", "string", "Selected coin; defaults to Settings."),
+          P("label", "string", "Exact saved strategy label.", True)), long_running=True)
+def forwardtest_explain(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import vote_explanation
+    return vote_explanation.explain(bgqueue.validate_asset(p.get("asset") or ctx.settings.asset), p["label"],
+        min_accuracy=ctx.settings.live_vote_min_accuracy, min_resolved=ctx.settings.live_vote_min_resolved)
+
+
 # -- Council: paper-only consensus bot -------------------------------------------------------------
 
 

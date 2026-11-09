@@ -128,3 +128,57 @@ export async function renderEquityChart(el, points, { label, fallbackHtml, loadL
   entry.caption.textContent = label;
   return 'lightweight-charts';
 }
+
+/** Merge only real, agreeing candles. An unavailable feature stays unplotted. */
+export function strategyChartData(explanations) {
+  const candles = new Map(), conflicting = new Set(), series = [], markers = [], missing = [];
+  for (const explanation of explanations ?? []) {
+    const c = explanation?.chart;
+    if (!c) continue;
+    for (const p of c.candles ?? []) {
+      if (!['time', 'open', 'high', 'low', 'close'].every(k => typeof p[k] === 'number' && Number.isFinite(p[k])) || p.low > Math.min(p.open, p.close) || p.high < Math.max(p.open, p.close)) continue;
+      const prior = candles.get(p.time);
+      if (prior && ['open', 'high', 'low', 'close'].some(k => prior[k] !== p[k])) conflicting.add(p.time);
+      else candles.set(p.time, { time: p.time, open: p.open, high: p.high, low: p.low, close: p.close });
+    }
+    for (const s of c.series ?? []) series.push({ ...s, name: `${explanation.label} · ${s.name}` });
+    for (const m of c.markers ?? []) markers.push({ ...m, text: `${explanation.label} · ${m.text}` });
+    missing.push(...(c.missing ?? []).map(value => `${explanation.label}: ${value}`));
+  }
+  for (const time of conflicting) candles.delete(time);
+  if (conflicting.size) missing.push('Conflicting saved candles were omitted.');
+  const data = [...candles.values()].sort((a, b) => a.time - b.time);
+  return { candles: data, series: series.map(s => ({ ...s, data: (s.data ?? []).filter(p => candles.has(p.time) && typeof p.value === 'number' && Number.isFinite(p.value)).sort((a, b) => a.time - b.time) })),
+    markers: markers.filter(m => candles.has(m.time)).sort((a, b) => a.time - b.time), missing };
+}
+
+export async function renderStrategyChart(el, explanations, { asset, follow = true, loadLib = loadLibrary } = {}) {
+  const data = strategyChartData(explanations), token = bump(el);
+  if (!data.candles.length) { disposeChart(el); el.textContent = 'Original closed candles unavailable.'; return 'unavailable'; }
+  const lib = await loadLib();
+  if (tokens.get(el) !== token) return 'stale';
+  const fingerprint = JSON.stringify(data);
+  let entry = charts.get(el);
+  if (entry?.fingerprint === fingerprint) { if (follow) entry.chart.timeScale().scrollToRealTime(); return 'lightweight-charts'; }
+  const priorRange = !follow ? entry?.chart.timeScale().getVisibleRange() : null;
+  if (entry) { entry.chart.remove(); charts.delete(el); }
+  el.replaceChildren();
+  const host = document.createElement('div'); host.style.height = '400px'; host.style.width = '100%';
+  const caption = document.createElement('p'); caption.className = 'note';
+  caption.textContent = `${asset} · saved Coinbase 1m candles · ${data.markers.length} forecast markers${data.missing.length ? ' · ' + data.missing.join(' · ') : ''}`;
+  el.append(host, caption);
+  const style = getComputedStyle(el);
+  const chart = lib.createChart(host, { autoSize: true, layout: { attributionLogo: true,
+    background: { color: style.getPropertyValue('--surface').trim() || '#ffffff' }, textColor: style.getPropertyValue('--fg').trim() || '#0f172a' },
+    rightPriceScale: { borderVisible: false }, timeScale: { timeVisible: true, secondsVisible: false },
+    localization: { timeFormatter: time => new Date(time * 1000).toISOString().slice(11, 16) + ' UTC' } });
+  const candle = chart.addSeries(lib.CandlestickSeries, { upColor: '#239978', downColor: '#d05d63', borderVisible: false, wickUpColor: '#239978', wickDownColor: '#d05d63' });
+  candle.setData(data.candles);
+  const colors = ['#d8a43b', '#759bdf', '#ba89d2', '#e47d52'];
+  data.series.forEach((s, i) => { const line = chart.addSeries(lib.LineSeries, { color: colors[i % colors.length], lineWidth: 2, title: s.name, priceLineVisible: false, lastValueVisible: false }); line.setData(s.data); });
+  lib.createSeriesMarkers(candle, data.markers.map(m => ({ time: m.time, position: m.direction === 'UP' ? 'belowBar' : 'aboveBar',
+    shape: m.direction === 'UP' ? 'arrowUp' : m.direction === 'DOWN' ? 'arrowDown' : 'circle', color: m.direction === 'UP' ? '#239978' : m.direction === 'DOWN' ? '#d05d63' : '#82998f', text: m.text })));
+  if (priorRange) chart.timeScale().setVisibleRange(priorRange); else chart.timeScale().fitContent();
+  charts.set(el, { chart, caption, fingerprint }); el.setAttribute('role', 'img'); el.setAttribute('aria-label', caption.textContent);
+  return 'lightweight-charts';
+}

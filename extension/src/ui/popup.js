@@ -14,6 +14,16 @@ import { predictionRecovery, renderPredictionRecovery } from './prediction-recov
 
 const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
+let glanceAsset = 'SOL';
+// Send immediately in the trusted click. A native/store await here would lose
+// the gesture before the persistent owner's Picture-in-Picture request.
+$('detachLive').addEventListener('click', () => {
+  const task = send({ type: 'openLiveWindow', asset: glanceAsset });
+  Promise.resolve(task).then(res => {
+    if (!res?.ok) throw new Error(res?.error ?? 'Could not open live signals');
+    $('detachStatus').textContent = res.result?.requiresPin ? 'Click Pin on top in the new live window.' : 'Live signals pinned. Keep the workspace open.';
+  }).catch(error => { $('detachStatus').textContent = error.message; });
+});
 
 const usd = (n) =>
   n == null ? '—' : `${n < 0 ? '−' : ''}$${Math.abs(n).toFixed(2)}`;
@@ -241,6 +251,7 @@ async function refreshGlance() {
   const saved = await chrome.storage.local.get('signalDesk.v1');
   const value = saved?.['signalDesk.v1']?.asset;
   const asset = typeof value === 'string' && /^[A-Z0-9]{1,20}$/.test(value) ? value : 'SOL';
+  glanceAsset = asset;
   $('glanceAsset').textContent = `${asset} / USD`;
   const listing = await send({ type: 'soltuiCommands' });
   const commands = listing?.result?.result;
