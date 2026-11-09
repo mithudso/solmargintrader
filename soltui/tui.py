@@ -3175,6 +3175,7 @@ class SolTuiApp(App):
                 if restored_assets:
                     self._call("forwardtest.stop", quiet=True)
                 self._autostart_forwardtest()
+        self._forward_controls()
         self.set_interval(5, self._forward_schedule)
         self.set_interval(5, self._advanced_context_tick)
         self.set_interval(5, self._batch_poll)
@@ -3914,6 +3915,12 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#compound-table")
     def _compound_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        # A queued highlight can outlive the compound widgets during shutdown.
+        try:
+            detail = self.query_one("#compound-detail", Static)
+            edit = self.query_one("#compound-edit", Input)
+        except NoMatches:
+            return
         cid = str(event.row_key.value) if event.row_key is not None else self._compound_selected()
         comp = sc.BY_ID.get(cid)
         if comp is None:
@@ -3921,13 +3928,13 @@ class SolTuiApp(App):
         entry = self._compound_cfg["components"][cid]
         specs = "; ".join(f"{p.name} {p.lo:g}..{p.hi:g}" + (f" ({p.describe})" if p.describe else "")
                           for p in comp.params)
-        self.query_one("#compound-detail", Static).update(Text(
+        detail.update(Text(
             f"{comp.name} [{comp.kind}, {comp.family}/{comp.style}] source: {comp.source}\n"
             f"formula: {comp.formula}\nworks: {comp.useful_when}\nfails: {comp.not_useful_when}\n"
             f"ranges: {specs or 'none'}"))
         values = " ".join([f"weight={entry['weight']:g}"]
                           + [f"{k}={v:g}" for k, v in entry["params"].items()])
-        self.query_one("#compound-edit", Input).value = values
+        edit.value = values
         self._compound_preview_metric(cid)
 
     def _compound_preview_metric(self, cid: str) -> None:
@@ -4675,8 +4682,12 @@ class SolTuiApp(App):
                 f"{row['frac_positive']:.0%}", format_pct(row["median_return"]), str(row["trades"]),
             )
         best = r["rows"][0] if r["rows"] else None
+        execution = r.get("execution") or {}
+        assumptions = (f" · Jupiter Perps {execution['leverage'] if execution['use_leverage'] else 1:g}x "
+                       f"{'long/short' if execution['allow_short'] else 'long only'}, "
+                       f"min confidence {execution['min_confidence']:g}" if execution else "")
         status.update(r["message"] + (f" · best Sharpe: {best['label']} {best['net_pct_text']}"
-                                      if best else ""))
+                                      if best else "") + assumptions)
 
     @on(Button.Pressed, "#btn-run-untested")
     def _run_untested_sweep(self) -> None:

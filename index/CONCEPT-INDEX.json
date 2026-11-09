@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T01:50:05+00:00",
+  "generatedAt": "2026-11-09T01:56:58+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1162,7 +1162,7 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 83
+          "hits": 85
         },
         {
           "path": "docs/archive/memory-2026-11-08.md",

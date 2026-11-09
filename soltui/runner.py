@@ -27,7 +27,6 @@ import numpy as np
 from backtester.core.cpcv import cpcv_evaluate
 from backtester.core.data import CsvLoader, frame_to_arrays
 from backtester.core.engine import EngineConfig, run_backtest
-from backtester.core.types import CostConfig, Mode
 
 from .config import Settings
 from .roster import Roster, RosterEntry

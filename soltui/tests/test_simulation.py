@@ -161,6 +161,12 @@ class JupiterSimulation(unittest.TestCase):
                 after = db.execute('SELECT bar,prediction,traded,net_return FROM call WHERE trial=? ORDER BY bar', (row['id'],)).fetchall()
             self.assertEqual([r for r in before if r[-1] is not None],
                              [r for r in after if r[0] <= before[-3][0]])
+            with ft._db() as db:
+                db.execute('UPDATE call SET net_return=-1 WHERE trial=? AND bar=?', (row['id'], before[0][0]))
+            final = advance(27)
+            old = next(r for r in final['rows'] if r['id'] == row['id'])
+            self.assertEqual(old['net_pct'], -1)
+            self.assertFalse(old['traded'])
 
     def test_confidence_gate_fills_only_after_the_prior_samples_and_next_open(self):
         from backtester.core.engine import run_backtest

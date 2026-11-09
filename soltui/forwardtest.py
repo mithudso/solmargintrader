@@ -449,7 +449,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                     AND outcome IS NOT NULL AND prediction!=0 AND finish<=? ORDER BY bar DESC LIMIT ?""",
                     (key, gen, start, simulation.CONFIDENCE_WINDOW)).fetchall()
                 confidence = simulation.confidence_score(sum(r[0] for r in prior), len(prior))
-                traded = int(profile.permits(prediction, confidence)) if profile else None
+                wiped_out = db.execute("""SELECT 1 FROM call WHERE trial=? AND net_return<=-1
+                    AND finish<=? LIMIT 1""", (key, bar + 60)).fetchone()
+                traded = int(profile.permits(prediction, confidence) and not wiped_out) if profile else None
                 staged.append((key, bar, start, start + h * 60, gen, _json(guesses), prediction,
                                confidence, traded))
             db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))

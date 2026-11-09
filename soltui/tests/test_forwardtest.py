@@ -180,7 +180,8 @@ class ForwardPlan(unittest.TestCase):
 
     def test_running_plan_restores_and_stop_clears_it(self) -> None:
         ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
-        commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["ETH"]}, ctx=ctx, quiet=True)
+        commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["ETH"], "use_leverage": True,
+                   "leverage": 5., "allow_short": True, "min_confidence": .9}, ctx=ctx, quiet=True)
         with patch.object(commands, "_forward_runner", lambda rt: rt.forward_stop.wait(5)):
             self.assertTrue(commands.dispatch("forwardtest.run", {}, ctx=ctx, quiet=True)["ok"])
             ctx.runtime.forward_stop.set()
@@ -188,6 +189,8 @@ class ForwardPlan(unittest.TestCase):
             restored = commands.Context.from_settings(config.Settings(), commands.Runtime())
             result = commands.dispatch("forwardtest.restore", {}, ctx=restored, quiet=True)
             self.assertEqual(result["result"]["assets"], ["ETH"])
+            profile = restored.runtime.forward_plan["execution"]
+            self.assertEqual((profile["leverage"], profile["allow_short"], profile["min_confidence"]), (5., True, .9))
             commands.dispatch("forwardtest.stop", {}, ctx=restored, quiet=True)
             restored.runtime.forward_thread.join(5)
             self.assertIsNone(ft.load_session())
@@ -320,23 +323,26 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 self.assertFalse(app.query_one("#forward-start").disabled)
 
     async def test_autostart_forwardtest_on_mount_runs_on_all_coins_and_strategies(self) -> None:
-        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=True))
-        async with app.run_test(size=TEST_SIZE) as pilot:
-            await pilot.pause()
-            self.assertTrue(app._forward_running)
-            self.assertIn("forwardtest running", app.sub_title)
-            state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
-            self.assertTrue(state["running"])
-            from soltui.commands import forward_coins
-
-            all_coins = forward_coins()
-            self.assertEqual(set(state["assets"]), set(all_coins))
-            app.query_one(TabbedContent).active = "tab-forwardtest"
-            await pilot.pause()
-            self.assertTrue(app.query_one("#forward-start", Button).disabled)
-            self.assertFalse(app.query_one("#forward-stop", Button).disabled)
-            await pilot.click("#forward-stop")
-            self.assertFalse(app._forward_running)
+        with TemporaryDirectory() as directory, patch.object(config, "CONFIG_DIR", Path(directory)), \
+                patch.object(commands, "_forward_check_all", return_value={}), \
+                patch.object(commands, "forward_coins", return_value=["BTC", "ETH", "SOL"]):
+            app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=True))
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await pilot.pause()
+                self.assertTrue(app._forward_running)
+                self.assertIn("forwardtest running", app.sub_title)
+                state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
+                self.assertTrue(state["running"])
+                from soltui.commands import forward_coins
+    
+                all_coins = forward_coins()
+                self.assertEqual(set(state["assets"]), set(all_coins))
+                app.query_one(TabbedContent).active = "tab-forwardtest"
+                await pilot.pause()
+                self.assertTrue(app.query_one("#forward-start", Button).disabled)
+                self.assertFalse(app.query_one("#forward-stop", Button).disabled)
+                await pilot.click("#forward-stop")
+                self.assertFalse(app._forward_running)
 
     async def test_autostart_forwardtest_disabled_by_settings(self) -> None:
         app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))

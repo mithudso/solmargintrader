@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 218
-Delta: v217 to v218; retain both chart and Jupiter continuation histories.
+Version: 219
+Delta: v218 to v219; record final Jupiter verification and delivery contract.
+
+## v219 - 2026-11-08
+
+Jupiter paper testing is implemented in simulation.py and shared by forwardtest, runner/CPCV, P&L curves, replay, F5 and new paper experiments. The owner confirmed 0.80; 1x long-only remains the default and leverage/shorts are opt-in. Existing forward evidence retains its original assumptions. Liquidation stops further paper entries for a wiped-out trial while forecasts continue. Borrow/slippage remain explicit scenarios; network/keeper/collateral-swap costs are excluded. Other assets use synthetic Jupiter economics.
+
+Verified: 13 new accounting/no-lookahead/engine-parity/migration/layout tests; 25 forward tests; 70 F5/paper/P&L/dry-run tests; 85 helper/background tests; 164 mapped CI tests; 909 backtester tests; 361 extension tests; 34 Mongo tests (17 server cases skip without mongod); positive offline round trip; docs/index gates. Fresh Textual acceptance passed at widths 100 and 180. Integration fixed restored-plan controls before the first timer and a queued compound selection after widget removal. CI runner now isolates config so persistent/autostart tests cannot edit the owner's saved plan.
+
+Delivery receipt: https://github.com/mithudso/solmargintrader/pull/142. This record ships with that PR; the PR's merged status and final-commit checks establish delivery. No product implementation remains. The already-open console is not restarted; the shared checkout and other sessions are preserved. Stele writes are queued as 470a5bc1, 93dc9fb7 and f07325c1 because this session has no Stele MCP. The private delivery worktree is /Users/mitch/dev/solmargintrader-wt-01a1bded.
 
 ## v218 - 2026-11-08
 
