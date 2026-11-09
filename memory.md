@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 213
-Delta: v212 to v213; run repo-bootstrapper audit, generate canonical LICENSE, implement workflow-log rotation and archive older logs.
+Version: 215
+Delta: v214 to v215; complete TASK-1064: added Y-axis price levels and X-axis timestamps to Signal Live chart, scheduled 1-minute and streaming-synced prediction updates.
+
+## v215 - 2026-11-08
+
+TASK-1064: In SolTUI under Signal tab Live page (`cmp-live`), added `#signal-live-chart-yaxis` (High, Mid, Low price levels with vertical ticks) and `#signal-live-chart-xaxis` (Start, Mid, End UTC timestamps matching data points). Implemented strategy prediction scheduler in `_signal_live_tick()` running every 1 minute (60s) or on candle minute rollover, preserving table cursor and detail selection. Added unit tests in `soltui/tests/test_signal_live.py` (7 tests pass); synchronized test counts across doc suite (soltui: 1183, total: 2487). All suites and checks pass (`check_docs.py`, `npm test`, `backtester`, `mongo`, `dryrun.js`).
+
+## v214 - 2026-11-08
+
+TASK-1064: In SolTUI under Signal tab Live page (`cmp-live`), add timestamps and price numbers to the price chart. Schedule top-performing forward-test strategy predictions to update with incoming streaming prices from the pricefeed daemon or on a 1-minute cadence. Preserve read-only SolTUI guarantees and non-lookahead semantics.
 
 ## v213 - 2026-11-08
 

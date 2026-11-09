@@ -854,7 +854,10 @@ class SolTuiApp(App):
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
     #signal-live-stream { padding: 0 1; border: round $accent; }
-    #signal-live-chart { height: 7; margin: 1 0; }
+    #signal-live-chart-container { height: 7; margin: 1 0 0 0; }
+    #signal-live-chart-yaxis { width: 14; height: 7; color: $text-muted; }
+    #signal-live-chart { width: 1fr; height: 7; margin: 0; }
+    #signal-live-chart-xaxis { height: 1; margin: 0 0 1 0; color: $text-muted; }
     #signal-live-predictions-table { height: 15; }
     #signal-live-detail { color: $text-muted; padding: 0 1; }
     #bots-top Label { width: auto; padding: 0 0 0 1; }
@@ -1020,6 +1023,8 @@ class SolTuiApp(App):
         self._signal_live_prediction_rows: list[dict[str, Any]] = []
         self._signal_live_last_coin: str | None = None
         self._signal_live_busy = False
+        self._signal_live_last_pred_update = 0.0
+        self._signal_live_last_pred_minute = 0
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -1759,9 +1764,13 @@ class SolTuiApp(App):
                         )
                         yield Static("price recorder: checking…", id="signal-live-stream", markup=True)
                         yield Static("Price graph: loading…", id="signal-live-chart-context", classes="table-title", markup=True)
-                        yield Sparkline([], id="signal-live-chart")
+                        with Horizontal(id="signal-live-chart-container"):
+                            yield Static("", id="signal-live-chart-yaxis", markup=True)
+                            yield Sparkline([], id="signal-live-chart")
+                        yield Static("", id="signal-live-chart-xaxis", markup=True)
                         yield Static("", id="signal-live-chart-stats", markup=True)
                         yield Static("[b]Top performing forward test strategies — predictions[/b]",
+                                     id="signal-live-predictions-title",
                                      classes="table-title", markup=True)
                         live_table = GlossaryTable(id="signal-live-predictions-table")
                         live_table.cursor_type = "row"
@@ -3982,6 +3991,46 @@ class SolTuiApp(App):
                 f"[b]{product} real-time price graph[/b] · [bold {color}]${mid:{fmt}} ({chg_pct:+.2f}%)[/] · "
                 f"Range: ${low:{fmt}} – ${high:{fmt}} · {len(pts)} points"
             )
+            # Render vertical price numbers on Y-axis (7 lines matching sparkline height)
+            mid_level = (high + low) / 2.0
+            high_str = f"${high:{fmt}}"[:12]
+            mid_str = f"${mid_level:{fmt}}"[:12]
+            low_str = f"${low:{fmt}}"[:12]
+            yaxis_lines = [
+                f"[dim]{high_str:>12}[/] ┤",
+                f"{' ':>12} │",
+                f"{' ':>12} │",
+                f"[dim]{mid_str:>12}[/] ┤",
+                f"{' ':>12} │",
+                f"{' ':>12} │",
+                f"[dim]{low_str:>12}[/] ┤",
+            ]
+            if self.query("#signal-live-chart-yaxis"):
+                self.query_one("#signal-live-chart-yaxis", Static).update("\n".join(yaxis_lines))
+
+            # Render horizontal timestamps on X-axis matching the sparkline width
+            if self.query("#signal-live-chart-xaxis"):
+                prefix = " " * 14
+                t_start = history[0][0]
+                t_mid = history[len(history) // 2][0]
+                t_end = history[-1][0]
+                t0_str = time.strftime("%H:%M:%S", time.gmtime(t_start))
+                t1_str = time.strftime("%H:%M:%S", time.gmtime(t_mid))
+                t2_str = time.strftime("%H:%M:%S UTC", time.gmtime(t_end))
+                chart_widget = self.query_one("#signal-live-chart", Sparkline)
+                w = chart_widget.size.width if chart_widget.size.width > 0 else 70
+                if len(history) < 2 or int(t_start) == int(t_end):
+                    xaxis = f"{prefix}[dim]{t2_str} (now)[/]"
+                elif w >= 40:
+                    gap1 = max(1, (w // 2) - len(t0_str) - (len(t1_str) // 2))
+                    pos_after_t1 = len(t0_str) + gap1 + len(t1_str)
+                    gap2 = max(1, w - pos_after_t1 - len(t2_str))
+                    xaxis = f"{prefix}[dim]{t0_str}{' ' * gap1}{t1_str}{' ' * gap2}{t2_str}[/]"
+                else:
+                    gap = max(1, w - len(t0_str) - len(t2_str))
+                    xaxis = f"{prefix}[dim]{t0_str}{' ' * gap}{t2_str}[/]"
+                self.query_one("#signal-live-chart-xaxis", Static).update(xaxis)
+
             self.query_one("#signal-live-chart-stats", Static).update(
                 f"Subscribed: wss://ws-feed.exchange.coinbase.com · Channel: level2_batch + ticker · "
                 f"Last update: {time.strftime('%H:%M:%S UTC', time.gmtime(now))}"
@@ -3990,6 +4039,17 @@ class SolTuiApp(App):
             status_widget.update(
                 f"[yellow]Waiting for {product} stream quotes from pricefeed recorder… (recorder pid: {st.get('pid', '-')})[/]"
             )
+            if self.query("#signal-live-chart-yaxis"):
+                self.query_one("#signal-live-chart-yaxis", Static).update("")
+            if self.query("#signal-live-chart-xaxis"):
+                self.query_one("#signal-live-chart-xaxis", Static).update("")
+
+        # Schedule strategy prediction updates: every 1 minute (60s) or on candle minute rollover
+        pred_due = (now - getattr(self, "_signal_live_last_pred_update", 0.0) >= 60.0)
+        curr_min = int(now) // 60
+        new_min = (curr_min > getattr(self, "_signal_live_last_pred_minute", 0) and now % 60 >= 1.0)
+        if pred_due or new_min:
+            self._signal_live_refresh_predictions(force=True)
 
     def _signal_live_refresh_predictions(self, force: bool = False) -> None:
         if not self.query("#signal-live-predictions-table"):
@@ -3998,6 +4058,8 @@ class SolTuiApp(App):
         if not force and coin == self._signal_live_last_coin and self._signal_live_prediction_rows:
             return
         self._signal_live_last_coin = coin
+        self._signal_live_last_pred_update = time.time()
+        self._signal_live_last_pred_minute = int(self._signal_live_last_pred_update) // 60
         try:
             from . import forwardtest
             rows = forwardtest.top_forward_predictions(coin, limit=50)
@@ -4045,10 +4107,15 @@ class SolTuiApp(App):
             )
         if rows:
             table.move_cursor(row=min(cursor, len(rows) - 1))
-            self._signal_live_show_detail(0)
+            self._signal_live_show_detail(min(cursor, len(rows) - 1))
         else:
             self.query_one("#signal-live-detail", Static).update(
                 f"No forward test prediction records found for coin {coin} yet."
+            )
+        if self.query("#signal-live-predictions-title"):
+            upd_time = time.strftime("%H:%M:%S UTC", time.gmtime(self._signal_live_last_pred_update))
+            self.query_one("#signal-live-predictions-title", Static).update(
+                f"[b]Top performing forward test strategies — predictions[/b] · [dim]Updated {upd_time} (1m schedule)[/]"
             )
 
     @on(TabbedContent.TabActivated)

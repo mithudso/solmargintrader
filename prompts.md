@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 121
-Delta: v120 to v121; record forward-test persistence request.
+Version: 122
+Delta: v121 to v122; record chart timestamps, price numbers and prediction streaming update request.
+
+## v122 - 2026-11-08
+
+```text
+Add timestamps and price numbers to the chart. And schedule the strategies to update their prediction with the streaming price coming in, or if that's not possible then every 1 minute.
+```
 
 ## v121 - 2026-11-08
 
