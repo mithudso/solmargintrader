@@ -82,6 +82,14 @@ class JupiterSimulation(unittest.TestCase):
         values = replay(prefix, 25)
         self.assertTrue(all(score is None for _, score in values[:21]))
         self.assertGreater(values[-1][0], 0)
+        # A close fill owns the overnight gap; intrabar gains alone must not train confidence.
+        zero_delay = sim.ConfidenceGate(Signal(), sim.Execution(), '1m', fill_delay=0)
+        for i in range(30):
+            window = BarWindow(np.arange(30) * 60, np.full(30, 50.), np.full(30, 100.),
+                               np.full(30, 50.), np.full(30, 100.), np.ones(30), i)
+            target = zero_delay.on_bar(window)
+        self.assertLess(zero_delay.confidence, .1)
+        self.assertEqual(target, 0.)
 
     def test_shorts_require_opt_in_and_flat_stays_flat(self):
         for short in (False, True):

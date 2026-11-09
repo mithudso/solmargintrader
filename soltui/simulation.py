@@ -104,6 +104,7 @@ class ConfidenceGate:
         self.strategy, self.execution = strategy, execution
         self.name, self.params = strategy.name, dict(strategy.params)
         self.delay = max(1, fill_delay)
+        self.fill_at_close = fill_delay == 0
         self.hours = hours_per_bar(interval)
         self.pending = deque()
         self.results = deque(maxlen=CONFIDENCE_WINDOW)
@@ -114,8 +115,9 @@ class ConfidenceGate:
 
     def on_bar(self, history: BarWindow) -> float:
         while self.pending and self.pending[0][0] <= history.i:
-            index, direction = self.pending.popleft()
-            ret = direction * (history.closes[index] / history.opens[index] - 1) * 10000
+            index, direction, close_entry = self.pending.popleft()
+            entry = history.opens[index] if close_entry is None else close_entry
+            ret = direction * (history.closes[index] / entry - 1) * 10000
             rate = (self.execution.borrow_long_bps_hour if direction > 0
                     else self.execution.borrow_short_bps_hour)
             self.results.append(ret > self.execution.round_trip_bps + rate * self.hours)
@@ -124,7 +126,8 @@ class ConfidenceGate:
             raise ValueError("strategy returned non-finite exposure")
         direction = (target > 0) - (target < 0)
         if direction:
-            self.pending.append((history.i + self.delay, direction))
+            self.pending.append((history.i + self.delay, direction,
+                                 float(history.closes[-1]) if self.fill_at_close else None))
         self.confidence = confidence_score(sum(self.results), len(self.results))
         return target if self.execution.permits(direction, self.confidence) else 0.0
 

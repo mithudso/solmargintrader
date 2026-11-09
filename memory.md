@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 228
-Delta: v227 to v228; correct signed combination agreement before delivery.
+Version: 229
+Delta: v228 to v229; align zero-delay confidence entries with close fills.
+
+## v229 - 2026-11-08
+
+Confidence calibration now uses the prior decision close when fill_delay=0, and the delayed bar open when fill_delay>=1. A regression with rising open-to-close bars but unchanged consecutive closes proves that same-close entries cannot learn a false success rate from intrabar moves they did not own. Both paths settle only after the predicted bar closes. This preserves the minimum 0.80 gate and no-lookahead contract. Fourteen regression tests pass. PR 142 must pass final-head CI before merge.
 
 ## v228 - 2026-11-08
 
