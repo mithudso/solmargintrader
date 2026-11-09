@@ -31,6 +31,7 @@ import { findChromeForTesting, launch } from '../e2e/lib/cdp.mjs';
 import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
+import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOL = 'So11111111111111111111111111111111111111112';
@@ -525,6 +526,10 @@ try {
       assert(await dash.ev(`[...document.querySelectorAll('#soltuiForm select option')].some((o) => o.value === 'false')`), 'false boolean value is not available');
     }
     // Inspect forms only: no write or live-money tool is run by this check.
+  });
+
+  await check('dashboard order handoff, confirmation, explicit clear and editor regression scenarios (mock writes)', async () => {
+    await verifyDashboardWorkflows(dash, browser);
   });
 
   await check('the 1-minute soltui build probe alarm is scheduled', async () => {

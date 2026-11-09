@@ -332,6 +332,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       return;
     }
     const val = env.result;
+    if (val !== null && typeof val !== 'object') rich.append(el('pre', { text: cellText(val) }));
     if (val && typeof val === 'object' && !Array.isArray(val)) {
       const simple = Object.entries(val).filter(([, v]) => v === null || typeof v !== 'object');
       if (simple.length) {
@@ -343,6 +344,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     }
     if (env.command === 'experiments.heatmap') renderHeatmap(rich, val, useRow);
     for (const t of resultTables(val)) renderResultTable(rich, t, useRow, stateFor(`${env.command}:${t.path}`));
+    if (!rich.children.length) rich.append(el('p', { class: 'empty', text: 'No rows returned. See Raw response for the full envelope.' }));
     if (env.command === 'docs.read' && val?.path) openDocument(val.path).catch((e) => { selected.textContent = e.message; });
     $('#soltuiResultLabel').textContent = `${env.command} · ${new Date().toLocaleTimeString()}`;
   }

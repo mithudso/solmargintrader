@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 218
-Delta: v217 to v218; preserve concurrent Signal chart delivery and dashboard parity histories.
+Version: 219
+Delta: v218 to v219; record independent dashboard acceptance and recoverable PR.
+
+## v219 - 2026-11-08
+
+Dashboard parity PR: https://github.com/mithudso/solmargintrader/pull/143 (draft during final verification). Independent acceptance loaded Chrome 156 with extension 0.4.0 and all 147 tools. Actual CSV download, real document read, mock confirmation reset, explicit empty/false, preview handoff and editor conflict tests pass. The regression scenarios now live in extension/e2e/lib/dashboard-workspace.mjs and run inside the guarded real-browser gate. Extension: 369/369 unit/parity tests. Browser: 24/24 using real native host. Focused Python bridge: 42/42. Mongo: 34 tests, 17 skipped without server. Grid dry run closed one round trip net $0.3492. Public Jupiter endpoints reachable. Merged origin/master chart work and preserved both histories; current counts are 1189 SolTUI and 2501 total. Full TUI suite remains optional and was not run. Final offline index rebuild, final source checks, passing CI and PR merge remain. Shared checkout is active on another branch with unrelated dirty TUI work and must not be switched or overwritten.
 
 ## v218 - 2026-11-08
 

@@ -342,3 +342,10 @@ place of them. In live mode it signs real transactions. Full detail: `liquidity/
 `build/`, `dist/`, `jup.ag/`, `jup.ag.zip`, `pagesource/` and `tradingskilllist` are
 captured artifacts and scratch material. Nothing imports them; do not treat them as
 part of any component.
+
+## Dashboard workspace
+
+| Path | Purpose |
+| --- | --- |
+| `extension/src/ui/workspace-model.js` | Registry workspace groups, structured result tables, chart points and safe CSV conversion. |
+| `docs/EXTENSION-TUI-PARITY.md` | Browser workflows, native-session lifetime, execution boundaries and verification. |
