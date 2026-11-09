@@ -502,7 +502,7 @@ class Overview(Isolated):
     def test_overview_lists_every_bot(self) -> None:
         write_hourly(self.data, "SOL", n=48)
         o = bots.overview(self.settings)
-        self.assertEqual([b["bot"] for b in o["bots"]], list(bots.BOTS))
+        self.assertEqual([b["bot"] for b in o["bots"]], list(bots.BOT_CHOICES))
         self.assertEqual(o["coins"], ["SOL"])
 
     def test_the_module_never_touches_key_files_or_order_paths(self) -> None:
@@ -585,6 +585,51 @@ class BotsTab(unittest.IsolatedAsyncioTestCase):
         self.addCleanup(patcher.stop)
         write_hourly(self.data, "SOL")
         bots._HOURLY_CACHE.clear()
+
+    async def test_five_choices_trend_settings_backtest_and_council_routing(self) -> None:
+        from textual.widgets import Button, Input, Select, Static, TabbedContent
+        from soltui.tui import BotSettingsScreen, SolTuiApp
+
+        app = SolTuiApp(Settings(data_dir=str(self.data), poll_interval_seconds=60))
+        with mock.patch.object(app, "_council_request") as council:
+            async with app.run_test(size=(170, 50)) as pilot:
+                app.query_one(TabbedContent).active = "tab-bots"
+                await pilot.pause()
+                picker = app.query_one("#bots-bot", Select)
+                self.assertEqual([value for _, value in picker._options], list(bots.BOT_CHOICES))
+                picker.value = "trend"
+                await pilot.pause()
+                self.assertEqual(app._bots_bot, "trend")
+                self.assertIn("Long-only momentum", str(app.query_one("#bots-about", Static).render()))
+                self.assertTrue(app.query_one("#bots-fit-rank", Button).disabled)
+                app.query_one("#bots-edit", Button).press()
+                await pilot.pause()
+                self.assertIsInstance(app.screen, BotSettingsScreen)
+                self.assertEqual(set(app.screen.current), set(bots.DEFAULTS["trend"]))
+                app.screen.query_one("#bot-setting-fast_period", Input).value = "5"
+                app.screen._apply()
+                await pilot.pause()
+                await app.workers.wait_for_complete()
+                self.assertEqual(bots.get_config("trend", "SOL")["fast_period"], 5)
+                app.query_one("#bots-backtest", Button).press()
+                await pilot.pause()
+                await app.workers.wait_for_complete()
+                self.assertEqual(bots.latest_results("trend", 1)[0]["bot"], "trend")
+                picker.value = "council"
+                await pilot.pause()
+                self.assertEqual(app.query_one("#bots-sections", TabbedContent).active, "bots-sec-council")
+                self.assertFalse(app.query_one("#bots-actions").display)
+                self.assertFalse(app.query_one("#bots-config").display)
+                council.assert_called()
+                picker.value = "trend"
+                await pilot.pause()
+                self.assertEqual(app.query_one("#bots-sections", TabbedContent).active, "bots-sec-backtest")
+                self.assertTrue(app.query_one("#bots-actions").display)
+                self.assertTrue(app.query_one("#bots-config").display)
+                # Clicking the existing Council tab keeps the picker consistent too.
+                app.query_one("#bots-sections", TabbedContent).active = "bots-sec-council"
+                await pilot.pause()
+                self.assertEqual(picker.value, "council")
 
     async def test_one_row_of_fields_multi_coin_backtest_and_the_optimize_window(self) -> None:
         from textual.widgets import Button, DataTable, Input, Select, Static, TabbedContent

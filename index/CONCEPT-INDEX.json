@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T15:24:38+00:00",
+  "generatedAt": "2026-11-09T15:40:20+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1362,
+      "matchingFiles": 1365,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1353,
+      "matchingFiles": 1355,
       "shown": 30,
       "files": [
         {
@@ -356,6 +356,10 @@
           "hits": 34
         },
         {
+          "path": "soltui/bots.py",
+          "hits": 33
+        },
+        {
           "path": "soltui/help.py",
           "hits": 33
         },
@@ -365,14 +369,10 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 31
+          "hits": 32
         },
         {
           "path": "research/minute_sweep.py",
-          "hits": 31
-        },
-        {
-          "path": "soltui/bots.py",
           "hits": 31
         },
         {
@@ -456,7 +456,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 75
+          "hits": 76
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 685,
+      "matchingFiles": 692,
       "shown": 30,
       "files": [
         {
@@ -588,7 +588,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 362
+          "hits": 374
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -789,12 +789,12 @@
           "hits": 53
         },
         {
-          "path": "soltui/bots.py",
-          "hits": 52
-        },
-        {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
           "hits": 51
+        },
+        {
+          "path": "soltui/bots.py",
+          "hits": 49
         },
         {
           "path": "research/tradingview-strategy-understanding.json",
@@ -872,7 +872,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 68
+          "hits": 70
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1125,12 +1125,12 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 443,
+      "matchingFiles": 445,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 179
+          "hits": 196
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1182,7 +1182,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 69
+          "hits": 70
         },
         {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 314,
+      "matchingFiles": 322,
       "shown": 30,
       "files": [
         {
@@ -1273,7 +1273,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 128
+          "hits": 131
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 282,
+      "matchingFiles": 284,
       "shown": 30,
       "files": [
         {
@@ -1545,7 +1545,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 57
+          "hits": 56
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1666,12 +1666,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 232,
+      "matchingFiles": 234,
       "shown": 30,
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 43
+          "hits": 42
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1762,6 +1762,10 @@
           "hits": 9
         },
         {
+          "path": "soltui/bots.py",
+          "hits": 9
+        },
+        {
           "path": "backtester/strategy_cards/buy_and_hold.md",
           "hits": 8
         },
@@ -1784,10 +1788,6 @@
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ppjps450_neglected_volume_by_dgt.md",
           "hits": 7
-        },
-        {
-          "path": "docs/optimization-workbench.md",
-          "hits": 7
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 229,
+      "matchingFiles": 230,
       "shown": 30,
       "files": [
         {
@@ -1833,7 +1833,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 20
+          "hits": 21
         },
         {
           "path": "index/build.py",

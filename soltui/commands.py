@@ -2834,7 +2834,7 @@ def portfolio_notice(ctx: Context, p: dict[str, Any]) -> Any:
 
 # -- bots and the price stream -------------------------------------------------------------------
 #
-# The Bots tab's grid, triangle-arbitrage and DCA bots (`bots.py`) are simulations: backtests over
+# The Bots workbench's Grid, Arbitrage, DCA and Trend bots are simulations: backtests over
 # cached bars, dry-run forward tests over the recorded Coinbase stream (`pricefeed.py`), and an
 # auto-optimizer. None places an order. `prices.ensure` keeps the recorder running (LaunchAgent or a
 # detached process); it reads public market data only and writes only under <config dir>/prices/.
@@ -2859,7 +2859,7 @@ def _bot_param(p: dict[str, Any]) -> str:
     return name
 
 
-BOT_PARAM = P("bot", "string", "grid, triangle or dca.", required=True)
+BOT_PARAM = P("bot", "string", "dca, grid, triangle (Arbitrage) or trend. Council uses council.* controls.", required=True)
 
 
 @command("bots.overview", "Every bot: what it does, its saved configuration, the latest backtest, its forward "
@@ -2904,10 +2904,10 @@ def bots_save(ctx: Context, p: dict[str, Any]) -> Any:
 
 
 @command("bots.backtest", "Start a bot at a past moment (what it would have set from the price then) and "
-         "simulate it forward with fees and slippage, on one or several coins; grid and DCA on cached hourly "
+         "simulate it forward with fees and slippage, on one or several coins; Grid, DCA and Trend on cached hourly "
          "bars from the beginning of the usable data by default, triangle on recorded quotes or, failing "
          "those, a labelled 1m candle proxy (fetched from Coinbase). Returns every run and a per-coin summary.",
-         (BOT_PARAM, P("asset", "string", "One coin for grid and DCA; default the configured asset."),
+         (BOT_PARAM, P("asset", "string", "One coin for Grid, DCA or Trend; default the configured asset."),
           P("coins", "json", "Several coins, e.g. [\"SOL\", \"BTC\"], or \"all\"; overrides asset."),
           P("start", "string", "UTC date or epoch seconds; default the beginning of the usable data."),
           P("days", "number", "How long to run; default to the end of the data.")),
@@ -2927,8 +2927,8 @@ def _coin_fit_run(ctx: Context, p: dict[str, Any], mode: str) -> Any:
     from . import coin_fit
 
     bot = _bot_param(p)
-    if bot == "triangle":
-        raise CommandError("bad_params", "coin suitability supports grid and dca, not triangle arbitrage")
+    if bot not in ("grid", "dca"):
+        raise CommandError("bad_params", "coin suitability supports grid and dca")
     coins = p.get("coins", "ALL") if mode == "quick" else [p.get("asset")]
     if isinstance(coins, str):
         if coins.upper() != "ALL":
@@ -3075,7 +3075,7 @@ def bots_results(ctx: Context, p: dict[str, Any]) -> Any:
 
 @command("bots.forward_start", "Start (or restart) a bot's dry-run forward test now, on its current "
          "configuration, replaying the recorded price stream as it arrives. Starts the recorder if needed.",
-         (BOT_PARAM, P("asset", "string", "Coin for grid and DCA; default the configured asset.")),
+         (BOT_PARAM, P("asset", "string", "Coin for Grid, DCA or Trend; default the configured asset.")),
          read_only=False)
 def bots_forward_start(ctx: Context, p: dict[str, Any]) -> Any:
     from . import bots as bots_mod
@@ -3096,7 +3096,7 @@ def bots_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(bots_mod.forward_status, _bot_param(p), ctx.settings)
 
 
-@command("bots.optimize", "Independently optimize grid or DCA per cached coin; triangle remains global. "
+@command("bots.optimize", "Independently optimize Grid, DCA or Trend per cached coin; triangle remains global. "
          "A tentative per-coin improvement may be adopted from at least three matched holdouts with 80% "
          "coverage, a positive median and more wins than losses; it is not statistically confirmed. "
          "The stronger tier requires ten decisions and sign-test p < 0.05. Manual mode blocks adoption.",

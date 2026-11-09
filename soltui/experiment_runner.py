@@ -83,7 +83,7 @@ def run_active(run_id: str, store: ExperimentStore | None = None) -> bool:
 def _code_fingerprint() -> str:
     root = Path(__file__).resolve().parents[1]
     paths = sorted((root / "backtester" / "core").rglob("*.py"))
-    paths += [root / "soltui" / name for name in ("bots.py", "experiment_runner.py", "experiments.py")]
+    paths += [root / "soltui" / name for name in ("bots.py", "trend.py", "experiment_runner.py", "experiments.py")]
     h = hashlib.sha256()
     for path in paths:
         h.update(str(path.relative_to(root)).encode())

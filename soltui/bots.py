@@ -1,16 +1,17 @@
-"""The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize.
+"""The Bots tab's grid, triangular-arbitrage, DCA and Trend simulations.
 
 Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to
 a venue's trading API; the only network reads are public market data (the recorded Coinbase
 stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
 
-The three bots and the simulator each one runs:
+The four workbench bots and the simulator each one runs (Council has dedicated controls):
 
 | bot      | simulator                            | backtest data                   | forward data            |
 |----------|--------------------------------------|---------------------------------|-------------------------|
 | grid     | `backtester.core.gridsim` (the ladder the extension trades) | cached 1h bars | recorded 1m bars |
 | triangle | `backtester.core.trianglesim`        | recorded bid/ask, else candle proxy | recorded bid/ask    |
 | dca      | `backtester.core.dcasim`             | cached 1h bars                  | recorded 1m bars        |
+| trend    | `soltui.trend` / shared event engine | cached 1h bars                  | recorded 1m bars        |
 
 **Backtest** answers "had I started this bot at that moment": the bot reads the price at the
 start bar's close and sets itself up from it (the grid's ladder around that price, the DCA bot's
@@ -66,12 +67,14 @@ from backtester.core.types import CostConfig
 
 from . import config as config_mod
 from . import pricefeed
+from .trend import TrendConfig, run_trend_backtest
 
-BOTS = ("grid", "triangle", "dca")
-# The recurring scheduler may promote grid/DCA only when this capability is present.
+BOTS = ("dca", "grid", "triangle", "trend")
+BOT_CHOICES = (*BOTS, "council")
+# The recurring scheduler may promote per-coin bots only when this capability is present.
 # Per-coin adoption uses an atomic mode and baseline check in save_config.
 PER_COIN_OPTIMIZE_ADOPTION_SAFE = True
-LABELS = {"grid": "Grid bot", "triangle": "Triangle arbitrage bot", "dca": "DCA bot"}
+LABELS = {"dca": "DCA", "grid": "Grid", "triangle": "Arbitrage", "trend": "Trend", "council": "Council"}
 ABOUT = {
     "grid": "Resting ladder of limit buys below the price and paired sells one rung above each fill "
             "(the strategy the extension trades). At its start it centres the ladder on the price: "
@@ -84,6 +87,12 @@ ABOUT = {
     "dca": "Buys a base order, rests deeper and (optionally) larger safety orders below it, and sells "
            "everything at take_profit_pct above the average entry; then starts again. Wins most deals by "
            "construction and holds the bag in a downtrend; compare it with buy-and-hold, not its win rate.",
+    "trend": "Long-only momentum: buys when the fast simple moving average exceeds the slow average "
+             "by entry_buffer_bps, holds until fast is at or below slow, then stays in cash. Decisions "
+             "use completed bars and fill at the next open with fees and slippage. Periods count bars: "
+             "hours in backtests, minutes in forward tests. Sideways markets can cause repeated losses.",
+    "council": "Persistent paper bot: eligible strategy votes open a position on Strong Buy and exit "
+               "on Sell. Optional shorts and leverage use the dedicated Council controls.",
 }
 
 GRID_DEFAULTS: dict[str, Any] = {"range_pct": 15.0, "rungs": 7, "capital_usd": 1000.0, "spacing": "geom",
@@ -92,6 +101,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
     "grid": GRID_DEFAULTS,
     "triangle": TriangleConfig().to_dict(),
     "dca": DcaConfig().to_dict(),
+    "trend": TrendConfig().to_dict(),
 }
 
 # The representative grids auto-optimize searches. Small on purpose: every extra configuration is
@@ -101,6 +111,7 @@ SPACE: dict[str, dict[str, list[Any]]] = {
     "triangle": {"min_edge_bps": [5.0, 15.0, 35.0, 60.0], "latency_s": [0.5, 1.0, 2.0]},
     "dca": {"price_deviation_pct": [1.0, 2.0, 3.5], "take_profit_pct": [1.0, 2.0, 4.0],
             "max_safety_orders": [3, 6], "volume_scale": [1.0, 1.5]},
+    "trend": {"fast_period": [5, 10, 20], "slow_period": [30, 50], "entry_buffer_bps": [0.0, 25.0]},
 }
 
 BACKTEST_INTERVAL = "1h"
@@ -232,6 +243,8 @@ def validate(bot: str, values: dict[str, Any]) -> dict[str, Any]:
             grid_sim_config(out, 100.0)
         elif bot == "dca":
             DcaConfig(**out)
+        elif bot == "trend":
+            TrendConfig(**out)
         else:
             TriangleConfig(**out)
     except (TypeError, ValueError) as exc:
@@ -554,7 +567,7 @@ def _curve(ts: np.ndarray, equity: np.ndarray, hold: np.ndarray) -> list[list[fl
 
 def run_bars(bot: str, cfg: dict[str, Any], seg: dict[str, np.ndarray], interval: str,
              costs: CostConfig) -> dict[str, Any]:
-    """Run the grid or DCA bot over a gap-free bar slice; what it set and what it made."""
+    """Run a bar-based bot over a gap-free slice; what it set and what it made."""
     price = float(seg["close"][0])
     if bot == "grid":
         gcfg = grid_sim_config(cfg, price)
@@ -583,6 +596,20 @@ def run_bars(bot: str, cfg: dict[str, Any], seg: dict[str, np.ndarray], interval
                   "open_deal_at_end": r.open_deal_at_end, "avg_deal_bars": r.avg_deal_bars,
                   "skipped": r.skipped}
         equity, hold = r.equity, r.baseline_equity
+    elif bot == "trend":
+        try:
+            r, baseline = run_trend_backtest(TrendConfig(**cfg), seg, interval=interval, costs=costs)
+        except ValueError as exc:
+            raise BotError(str(exc)) from exc
+        m, b = r.metrics, baseline.metrics
+        setup = {"start_price": price, **cfg, "fill_delay": 1, "mode": "spot",
+                 "period_units": "bars", "final_valuation": "liquidate at final close with costs"}
+        detail = {"buys": sum(t.side == "long" for t in r.trades),
+                  "sells": sum(t.side == "close" for t in r.trades),
+                  "costs_usd": sum(t.fee + t.slippage for t in r.trades),
+                  "realized_pnl_usd": m.final_equity - cfg["capital_usd"],
+                  "warmup_bars": cfg["slow_period"]}
+        equity, hold = r.equity, baseline.equity
     else:
         raise BotError(f"{bot} does not run on bars")
     return {
@@ -1079,10 +1106,10 @@ def forward_status(bot: str, settings: Any = None, *, now: float | None = None,
 
 def _forward_replay(bot: str, rec: dict[str, Any], end: float, settings: Any, stream_brief: dict[str, Any],
                     root: Path | None) -> dict[str, Any]:
+    cfg = rec["config"]
     sess = runtime().sessions.get(bot)
     if sess is None or sess.run_id != rec["id"]:
         sess = ForwardSession(rec["id"], SnapshotCursor(float(rec["started_at"]), root))
-        cfg = rec["config"]
         if bot == "triangle":
             sess.replay = TriangleReplay(TriangleConfig(**cfg), triangles_from_products(_triangle_products()))
         else:
@@ -1108,6 +1135,8 @@ def _forward_replay(bot: str, rec: dict[str, Any], end: float, settings: Any, st
     base.update({"bars": int(arrays["ts"].size), "bridged_minutes": bridged, "stopped_at_gap": _iso(gap_at)})
     if arrays["ts"].size < 2:
         return {**base, "message": "waiting for the stream: fewer than two completed minutes recorded"}
+    if bot == "trend" and arrays["ts"].size <= cfg["slow_period"]:
+        return {**base, "message": f"Trend warmup: {arrays['ts'].size}/{cfg['slow_period'] + 1} completed minutes"}
     costs = CostConfig(fee_bps=float(rec.get("fee_bps", 6.0)), slippage_bps=float(rec.get("slippage_bps", 2.0)))
     out = run_bars(bot, rec["config"], arrays, "1m", costs)
     return {**base, **out, "last_price": float(arrays["close"][-1])}
@@ -1126,6 +1155,8 @@ DOMAINS: dict[str, dict[str, tuple]] = {
             "cooldown_bars": ("int", 0, 48, "lin")},
     "triangle": {"min_edge_bps": ("float", 0.0, 100.0, "lin"), "latency_s": ("float", 0.2, 5.0, "log"),
                  "max_quote_age_s": ("float", 1.0, 20.0, "log"), "cooldown_s": ("float", 0.0, 60.0, "lin")},
+    "trend": {"fast_period": ("int", 2, 25, "log"), "slow_period": ("int", 30, 120, "log"),
+              "entry_buffer_bps": ("float", 0.0, 100.0, "lin")},
 }
 RANDOM_PER_RUN = 12
 MAX_CANDIDATES = 97
@@ -1357,4 +1388,7 @@ def overview(settings: Any = None) -> dict[str, Any]:
                      "last_backtest": last[0] if last else None, "forward": forward.get(bot),
                      "optimize": (opt or {}).get("verdict"), "optimized_at": (opt or {}).get("at"),
                      "progress": runtime().progress.get(bot)})
+    from . import council
+    rows.append({"bot": "council", "label": LABELS["council"], "about": ABOUT["council"],
+                 "config": council.config(), "controls": "council.*", "paper_only": True})
     return {"bots": rows, "coins": available_coins(settings)}

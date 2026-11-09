@@ -140,11 +140,13 @@ class ExperimentStore:
         return result
 
     def create_run(self, spec: dict[str, Any], run_id: str | None = None) -> str:
+        from .bots import BOTS
+
         if not isinstance(spec, dict) or spec.get("source") not in ("native", "tradingview"):
             raise ExperimentError("run source must be native or tradingview")
         if not isinstance(spec.get("bot"), str) or not spec["bot"]:
             raise ExperimentError("run requires a bot")
-        if spec["source"] == "native" and spec["bot"] not in ("grid", "dca", "triangle"):
+        if spec["source"] == "native" and spec["bot"] not in BOTS:
             raise ExperimentError("native experiment requires a known bot")
         if not _candidate_map(spec):
             raise ExperimentError("run requires at least one candidate")

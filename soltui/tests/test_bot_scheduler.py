@@ -25,7 +25,7 @@ class BotSchedulerTests(unittest.TestCase):
         with patch.object(sched.bots, "PER_COIN_OPTIMIZE_ADOPTION_SAFE", False, create=True):
             result = sched.run_cycle(root=self.root, settings=object(), coins=["SOL", "BTC"], optimizer=optimize, now=lambda: 100.)
         self.assertEqual(result, {"pending": 0, "failed": 0})
-        self.assertEqual(len(calls), 5)
+        self.assertEqual(len(calls), 7)
         self.assertTrue(all(not call[2] for call in calls))
         self.assertEqual({tuple(c[1]) for c in calls if c[1]}, {("SOL",), ("BTC",)})
         st = sched.status(root=self.root)
@@ -43,7 +43,8 @@ class BotSchedulerTests(unittest.TestCase):
              patch.object(sched.bots, "PER_COIN_OPTIMIZE_WINDOW_DAYS", 3, create=True):
             sched.run_cycle(root=self.root, settings=object(), coins=["SOL"], optimizer=optimize)
         self.assertEqual({b: (a, w, d) for b, a, w, d in calls},
-                         {"dca": (True, 6, 3), "grid": (True, 6, 3), "triangle": (False, None, None)})
+                         {"dca": (True, 6, 3), "grid": (True, 6, 3), "trend": (True, 6, 3),
+                          "triangle": (False, None, None)})
 
     def test_failure_does_not_abort_other_items(self):
         def optimize(bot, settings, **kw):
@@ -55,7 +56,7 @@ class BotSchedulerTests(unittest.TestCase):
         st = sched.status(root=self.root)
         self.assertEqual(st["last_result"], "partial")
         self.assertIn("missing bars", next(x["error"] for x in st["items"] if x["bot"] == "grid"))
-        self.assertEqual(sum(x["state"] == "completed" for x in st["items"]), 2)
+        self.assertEqual(sum(x["state"] == "completed" for x in st["items"]), 3)
 
     def test_per_coin_aggregate_partial_keeps_child_errors_and_cycle_partial(self):
         def optimize(bot, settings, **kw):
@@ -80,7 +81,7 @@ class BotSchedulerTests(unittest.TestCase):
             sched.stop(root=self.root)
             return {"status": "completed"}
         first = sched.run_cycle(root=self.root, settings=object(), coins=["SOL"], optimizer=stop_first)
-        self.assertEqual(first["pending"], 2)
+        self.assertEqual(first["pending"], 3)
         with closing(sched._db(self.root)) as db, db:
             sched._set(db, stop_requested=False)
         def resume(bot, settings, **kw):
@@ -88,7 +89,7 @@ class BotSchedulerTests(unittest.TestCase):
             return {"status": "completed"}
         second = sched.run_cycle(root=self.root, settings=object(), coins=["DIFFERENT"], optimizer=resume)
         self.assertEqual(second["pending"], 0)
-        self.assertEqual(sorted(calls), ["dca", "grid", "triangle"])
+        self.assertEqual(sorted(calls), ["dca", "grid", "trend", "triangle"])
         self.assertFalse(any(x["coin"] == "DIFFERENT" for x in sched.status(root=self.root)["items"]))
 
     def test_missing_coins_and_lock_liveness(self):

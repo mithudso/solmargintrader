@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 305
+Version: 307
+Delta: v306 to v307; finish Trend verification and prepare final delivery.
+Delta: v305 to v306; integrate Trend with concurrent workspace delivery and record verification.
 Delta: v304 to v305; finish native/source checks and committed discovery counts for release0.6.2.
 Delta: v303 to v304; implement persistent monitoring, idempotent paper orchestration and saved-vote chart tools.
 Delta: v302 to v303; add a persistent status/P&L/activity rail and one primary paper workflow.
@@ -24,6 +26,24 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v307 - 2026-11-09
+
+TASK-1074 implementation is verified on integrated base fba9238. Trend is the fifth named bot alongside DCA, Grid, Arbitrage and Council. The Trend policy uses long-only simple moving-average momentum with editable10/30-bar defaults, a10bps entry buffer and1000USD capital. It reuses next-open spot fills, costs, final-close valuation, per-coin settings, recorded-minute forward replay, durable experiments and the existing daily optimizer. Council routes to its dedicated panel. Coin suitability remains specific to Grid/DCA. No production bot, existing TUI or live execution was changed.
+
+Final verification passed:8Trend policy/integration regressions;168surrounding bot, editor, scheduler, experiment, bridge, suitability and concurrent monitor/workflow tests;941backtester tests; compilation and diff whitespace;offline repository index hashes. The native evidence store now validates against bots.BOTS, and experiment fingerprints include trend.py. Independent fresh-process mounted acceptance passed with five expected choices, editable Trend settings, a costed synthetic backtest, Council selection and return (/tmp/trend-acceptance-01a1c0e5.json). Discovery is1383SolTUI and2777total; full optional SolTUI suite was not run.
+
+The source record is a pre-delivery checkpoint. Remaining: commit final owned changes, check committed docs counts, push/PR, required final-head CI, merge, synchronize main without disturbing unrelated files, then verify the main launcher in a fresh process and remove this task's clean worktree/branch. Final delivery status will be recorded in /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json and in Stele TASK-1074; that receipt supersedes this checkpoint's remaining-step list. Source worktree: /Users/mitch/dev/solmargintrader-wt-trend-01a1c0e5. Preserve the three unrelated main-checkout files and all other worktrees. Only this task's temporary integration stash may be dropped after restoration verification.
+
+## v306 - 2026-11-09
+
+TASK-1074 adds Trend alongside DCA, Grid, Arbitrage and Council. Work in /Users/mitch/dev/solmargintrader-wt-trend-01a1c0e5 on feat/trend-bot-01a1c0e5. Integrated concurrent PR166 at fba9238 without changing its live monitor or paper workflow. Preserve all unrelated worktrees and the three untracked main-checkout guides.
+
+Trend uses long-only fast/slow simple moving-average momentum, next-open fills, fees and slippage through the shared engine. It shares per-coin settings, recorded-minute forward replay, gated experiments and the daily optimizer. Council appears in the five-choice picker and opens its existing dedicated paper controls. Default periods are 10/30 bars, entry buffer 10bps, capital1000USD. Periods count hours in backtests and minutes in forward replay. Final sample valuation closes with costs. No production worker or live order was started. Decisions KNOW-1075 and KNOW-871 apply.
+
+Initial eight policy/integration tests and mounted acceptance cover signal prefix invariance, next-open fills, costs, settings, forward warmup/snapshot/stop and Council routing. Independent fresh-process acceptance passed (/tmp/trend-acceptance-01a1c0e5.json). Broader136-test run found two check issues: the optimizer fixture must use the existing minimum3-day window, and the triangle suitability message must retain its explicit limitation. Backtester940/941 passed; its only failure was the expected stale generated index.
+
+Remaining: finish these two corrections, rerun affected owning checks on integrated source, update docs counts to1383SolTUI/2777total, regenerate offline indexes, review/commit/push/CI/merge and fresh-process acceptance from main. Tracker steps: implementationTASK-1079done, verificationTASK-1080in progress, deliveryTASK-1081open. All current changes are task-owned. Integration stash trend-integration-01a1c0e5 must be dropped after restoration is verified.
 
 ## v305 - 2026-11-09
 
