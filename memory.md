@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 275
-Delta: v274 to v275; preserve the failed documentation check receipt.
+Version: 277
+Delta: v276 to v277; record the verified documentation-check environment.
+
+## v277 - 2026-11-09
+
+Created /Users/mitch/.venvs/solmargintrader-docs with Homebrew Python 3.13.18. Installed the CI documentation-check dependencies from backtester/requirements.txt, soltui/requirements.txt excluding the private macos-launchd-supervisor (as CI does), mongo/requirements.txt and a non-editable local executor build. Refresh the executor install when its source changes. `uv pip check` passed. `/Users/mitch/.venvs/solmargintrader-docs/bin/python scripts/check_docs.py` exited 0: backtester 941, extension 389, mongo 46, soltui 1271, total 2647; docs agree. Frozen packages and check output are in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension. Ledger v1.0.3 preserves both failed and successful check receipts. No app or liquidity environment was changed. The UI optimizer remains incomplete; resume as v273 directs. Stele task create/claim queued f250285b.
+
+## v276 - 2026-11-09
+
+The owner requested installing the Python dependencies required by the failed documentation check in the appropriate environment. CI uses Python 3.13 and backtester, executor, SolTUI and Mongo dependencies. Create a separate /Users/mitch/.venvs/solmargintrader-docs environment so the installed SolTUI app and liquidity runtime remain untouched. Reproduce the CI dependency selection, run scripts/check_docs.py, preserve its output and update the optimizer ledger. Stele create/claim is queued in outbox f250285b because MCP is unavailable.
 
 ## v275 - 2026-11-09
 
