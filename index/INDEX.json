@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-09T19:44:59+00:00",
+  "generatedAt": "2026-11-09T20:40:36+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "2a61908",
+  "commit": "e0c6934",
   "counts": {
-    "files": 2799,
-    "bytes": 62475863,
+    "files": 2803,
+    "bytes": 62514913,
     "byKind": {
       "strategy-card": 1478,
       "doc": 597,
-      "code-python": 213,
-      "test": 188,
+      "code-python": 215,
+      "test": 190,
       "code-js": 111,
       "result": 97,
       "config": 44,
@@ -22,7 +22,7 @@
       "code-shell": 4
     },
     "byTopDir": {
-      "backtester": 1921,
+      "backtester": 1925,
       "research": 206,
       "soltui": 166,
       "extension": 117,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2665
+    "withSummary": 2667
   },
   "files": [
     {
@@ -610,9 +610,9 @@
       "title": "SOL Crypto Strategy Backtester",
       "summary": "An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.",
       "summarySource": "opening-prose",
-      "bytes": 27023,
-      "lines": 518,
-      "sha1": "c73a1c8beb43c9feca7cc8d14ae481bada6bd794",
+      "bytes": 29313,
+      "lines": 554,
+      "sha1": "b1ef3cfacffee5ce4a9f39a0a11c8d155181ef21",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -1424,6 +1424,52 @@
       "frontmatter": {}
     },
     {
+      "id": "backtester/core/kucoin_history.py",
+      "path": "backtester/core/kucoin_history.py",
+      "dir": "backtester/core",
+      "name": "kucoin_history.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "kucoin_history",
+      "summary": "Resumable, source-preserving KuCoin spot candle collection. Each completed time window commits its raw response and normalized observations in one SQLite transaction. Missing candles remain missing; no prices are invented. Only fully closed UTC minutes are requested. This module never trades.",
+      "summarySource": "docstring",
+      "bytes": 14396,
+      "lines": 286,
+      "sha1": "7919222a1e6126c61079e236e0df54b70e2e9bdc",
+      "symbols": [
+        "MINUTE",
+        "WINDOW",
+        "URL",
+        "class HistoryError",
+        "decode_page()",
+        "open_store()",
+        "_get()",
+        "_get_unlocked()",
+        "_verified_saved_page()",
+        "collect()",
+        "read_range()",
+        "audit_store()",
+        "main()"
+      ],
+      "imports": [
+        "__future__",
+        "argparse",
+        "contextlib",
+        "csv",
+        "fcntl",
+        "hashlib",
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "sqlite3",
+        "time",
+        "urllib"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
       "id": "backtester/core/leverage.py",
       "path": "backtester/core/leverage.py",
       "dir": "backtester/core",
@@ -1726,6 +1772,39 @@
         "numpy",
         "pandas",
         "typing"
+      ],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/core/segmented_history.py",
+      "path": "backtester/core/segmented_history.py",
+      "dir": "backtester/core",
+      "name": "segmented_history.py",
+      "ext": ".py",
+      "kind": "code-python",
+      "title": "segmented_history",
+      "summary": "Copy and index ordered CSV candles as verified, gap-free segments. The index never imputes a missing bar. A query crossing a gap is refused. The source file and its provenance remain separate from the private normalized copy.",
+      "summarySource": "docstring",
+      "bytes": 7099,
+      "lines": 130,
+      "sha1": "91d1994f024c9993455c31073b4122deb6090bcb",
+      "symbols": [
+        "class SegmentError",
+        "HEADER",
+        "_row()",
+        "build()",
+        "read_range()"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "hashlib",
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "sqlite3"
       ],
       "internalImports": [],
       "frontmatter": {}
@@ -62908,6 +62987,44 @@
       "frontmatter": {}
     },
     {
+      "id": "backtester/tests/test_kucoin_history.py",
+      "path": "backtester/tests/test_kucoin_history.py",
+      "dir": "backtester/tests",
+      "name": "test_kucoin_history.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_kucoin_history",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 9812,
+      "lines": 212,
+      "sha1": "9c5df9d9a8e25ff2cc8596562f4453d27cff8a9c",
+      "symbols": [
+        "class Handler",
+        "class KucoinHistoryTests"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "contextlib",
+        "hashlib",
+        "http",
+        "json",
+        "os",
+        "pathlib",
+        "sqlite3",
+        "tempfile",
+        "threading",
+        "time",
+        "unittest",
+        "urllib"
+      ],
+      "internalImports": [
+        "backtester"
+      ],
+      "frontmatter": {}
+    },
+    {
       "id": "backtester/tests/test_pairs.py",
       "path": "backtester/tests/test_pairs.py",
       "dir": "backtester/tests",
@@ -63083,6 +63200,34 @@
         "json",
         "math",
         "numpy",
+        "unittest"
+      ],
+      "internalImports": [
+        "backtester"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "backtester/tests/test_segmented_history.py",
+      "path": "backtester/tests/test_segmented_history.py",
+      "dir": "backtester/tests",
+      "name": "test_segmented_history.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_segmented_history",
+      "summary": "",
+      "summarySource": "none",
+      "bytes": 2243,
+      "lines": 45,
+      "sha1": "e5cbdd0abe3ab68985ee9ab27350904092d17434",
+      "symbols": [
+        "class SegmentedHistoryTests"
+      ],
+      "imports": [
+        "__future__",
+        "backtester",
+        "pathlib",
+        "tempfile",
         "unittest"
       ],
       "internalImports": [
@@ -72859,11 +73004,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 325 Delta: v324 to v325; record merged storage foundation and remaining backtester work. Delta: v323 to v324; record pre-2021 gap audit and recovery checkpoint.",
+      "summary": "Version: 327 Delta: v326 to v327; checkpoint verified minute datasets and ongoing downloads. Delta: v325 to v326; begin detailed historical market data acquisition.",
       "summarySource": "opening-prose",
-      "bytes": 161478,
-      "lines": 849,
-      "sha1": "27d93284ddcdb1709683535b89f54be528440d11",
+      "bytes": 164316,
+      "lines": 863,
+      "sha1": "4b158113a102c5d203dc0f693ebbc6637f575331",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -73364,11 +73509,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Prompt history",
-      "summary": "Version: 158 Delta: v157 to v158; record primary SOL/USDC pair. Delta: v156 to v157; refine optimized prompt and record confirmed universe.",
+      "summary": "Version: 159 Delta: v158 to v159; record high-resolution market data acquisition request. Delta: v157 to v158; record primary SOL/USDC pair.",
       "summarySource": "opening-prose",
-      "bytes": 67955,
-      "lines": 1274,
-      "sha1": "de7982c01e509248bea3981fa620a9c32ee19707",
+      "bytes": 68327,
+      "lines": 1281,
+      "sha1": "9e76ed628d611de2af882169af5533ae6a289ae4",
       "symbols": [],
       "imports": [],
       "internalImports": [],
