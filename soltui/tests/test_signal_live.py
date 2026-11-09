@@ -136,7 +136,7 @@ class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
             btn = app.query_one("#btn-goto-signal-live")
             self.assertTrue(btn.is_mounted)
             btn.press()
-            await pilot.pause(0.1)
+            await pilot.pause(0.2)
             from textual.widgets import TabbedContent
             tabs = app.query_one("#main-tabs", TabbedContent)
             self.assertEqual(tabs.active, "tab-compound")

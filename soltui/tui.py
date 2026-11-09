@@ -1303,6 +1303,12 @@ class SolTuiApp(App):
                     id="set-interval",
                     allow_blank=False,
                 )
+            with Horizontal(classes="form-row"):
+                yield Label("Forwardtest autostart:")
+                yield Checkbox(
+                    value=getattr(self.settings, "forwardtest_autostart", True),
+                    id="set-forwardtest_autostart",
+                )
             yield Static("[b]Signing key source[/b] (read-only; stat only, the files are never opened)",
                          classes="hint")
             yield Static("", id="key-sources")
@@ -1591,11 +1597,34 @@ class SolTuiApp(App):
             self.query_one("#forward-status", Static).update(self._msg(env))
 
     def _forward_controls(self) -> None:
+        if not self.query("#forward-start"):
+            return
         self.query_one("#forward-start", Button).disabled = self._forward_running or self._forward_busy
         self.query_one("#forward-stop", Button).disabled = not self._forward_running
         self.query_one("#forward-refresh", Button).disabled = self._forward_busy
         for wid in ("#forward-coins", "#forward-optimize", "#forward-scope", "#forward-horizon"):
-            self.query_one(wid, Select).disabled = self._forward_running
+            if self.query(wid):
+                self.query_one(wid, Select).disabled = self._forward_running
+
+    def _autostart_forwardtest(self) -> None:
+        params = {
+            "scope": "all",
+            "mode": "all",
+            "coins": "all",
+            "optimize": True,
+            "horizons": [1, 5, 10, 30],
+        }
+        env = self._call("forwardtest.start", params, quiet=True)
+        if not env["ok"]:
+            return
+        result = env["result"]
+        run = self._call("forwardtest.run", quiet=True)
+        if not run["ok"]:
+            return
+        self._forward_running = True
+        self._forward_seen = {}
+        self._forward_controls()
+        self._forward_show_running(result.get("assets", []))
 
     def _forward_show_running(self, assets: list[str]) -> None:
         """The header says the forward test runs, so it is visible from every tab."""
@@ -3081,10 +3110,23 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(1, self._signal_live_tick)
-        restored = self._call("forwardtest.restore", quiet=True)
-        if restored["ok"] and restored["result"].get("restored"):
-            self._forward_running = True
-            self._forward_show_running(restored["result"]["assets"])
+        if getattr(self.settings, "forwardtest_autostart", True):
+            restored = self._call("forwardtest.restore", quiet=True)
+            from .commands import forward_coins
+
+            all_coins = set(forward_coins())
+            restored_assets = (
+                set(restored.get("result", {}).get("assets", []))
+                if (restored["ok"] and restored["result"].get("restored"))
+                else set()
+            )
+            if restored_assets and all_coins.issubset(restored_assets):
+                self._forward_running = True
+                self._forward_show_running(restored["result"]["assets"])
+            else:
+                if restored_assets:
+                    self._call("forwardtest.stop", quiet=True)
+                self._autostart_forwardtest()
         self.set_interval(5, self._forward_schedule)
         self.set_interval(5, self._advanced_context_tick)
         self.set_interval(5, self._batch_poll)
@@ -3251,6 +3293,8 @@ class SolTuiApp(App):
             if raw or cast is str:
                 out[name] = cast(raw)
         out["interval"] = str(self.query_one("#set-interval", Select).value)
+        if self.query("#set-forwardtest_autostart"):
+            out["forwardtest_autostart"] = bool(self.query_one("#set-forwardtest_autostart", Checkbox).value)
         return out
 
     # -- roster ----------------------------------------------------------
@@ -3311,12 +3355,17 @@ class SolTuiApp(App):
         return str(row_key.value)
 
     def _update_strategy_actions(self, key: str | None = None) -> None:
+        if not self.query("#btn-add"):
+            return
         if key is None:
+            if not self.query("#available-table"):
+                return
             table = self.query_one("#available-table", DataTable)
             key = self._strategy_table_key(table) if table.row_count else ""
         card = getattr(self, "_strategy_cards", {}).get(key, {})
         self.query_one("#btn-add", Button).disabled = not card.get("registered", False)
-        self.query_one("#btn-bt-selected", Button).disabled = not card.get("testable", False)
+        if self.query("#btn-bt-selected"):
+            self.query_one("#btn-bt-selected", Button).disabled = not card.get("testable", False)
 
     def _registered_card_selected(self, key: str) -> bool:
         card = getattr(self, "_strategy_cards", {}).get(key, {})
@@ -3555,8 +3604,9 @@ class SolTuiApp(App):
         card = getattr(self, "_strategy_cards", {}).get(name)
         rel = card["path"] if card else self._strategy_source_path(name)
         if rel is None:
-            self.query_one("#docs-view-status", Static).update(
-                f"{name}: source file not in the Docs catalogue")
+            if self.query("#docs-view-status"):
+                self.query_one("#docs-view-status", Static).update(
+                    f"{name}: source file not in the Docs catalogue")
             return
         self._open_doc(rel)
 
@@ -7085,6 +7135,8 @@ class SolTuiApp(App):
         status line says so and the edits stay. An identical preview is not reloaded, so the
         periodic table refresh does not jump the editor back to the top.
         """
+        if not self.query("#docs-view") or not self.query("#docs-view-status"):
+            return
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         if self._docs_current_path is not None and view.text != self._docs_loaded_text:
@@ -7126,6 +7178,8 @@ class SolTuiApp(App):
         to discard, since the alternative is a file browser that can never be
         told to move on from a file with unsaved edits.
         """
+        if not self.query("#docs-view") or not self.query("#docs-view-status"):
+            return
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         dirty = self._docs_current_path is not None and view.text != self._docs_loaded_text

@@ -10,7 +10,7 @@ from threading import Event
 from unittest.mock import patch
 
 import numpy as np
-from textual.widgets import DataTable, Input, Static, TabbedContent
+from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 
 from soltui import commands, config
 from soltui import forwardtest as ft
@@ -282,7 +282,7 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(app.roster.entries[0].params["fast"], 9)
 
     async def test_start_runs_in_the_background_across_tabs_and_stop_drains_it(self) -> None:
-        app = SolTuiApp(config.Settings(poll_interval_seconds=60))
+        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))
         entered, released = Event(), Event()
 
         def check(asset, trials, horizons, cost, **kw):
@@ -318,3 +318,35 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                     if not app.query_one("#forward-start").disabled:
                         break
                 self.assertFalse(app.query_one("#forward-start").disabled)
+
+    async def test_autostart_forwardtest_on_mount_runs_on_all_coins_and_strategies(self) -> None:
+        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=True))
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertTrue(app._forward_running)
+            self.assertIn("forwardtest running", app.sub_title)
+            state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
+            self.assertTrue(state["running"])
+            from soltui.commands import forward_coins
+
+            all_coins = forward_coins()
+            self.assertEqual(set(state["assets"]), set(all_coins))
+            app.query_one(TabbedContent).active = "tab-forwardtest"
+            await pilot.pause()
+            self.assertTrue(app.query_one("#forward-start", Button).disabled)
+            self.assertFalse(app.query_one("#forward-stop", Button).disabled)
+            await pilot.click("#forward-stop")
+            self.assertFalse(app._forward_running)
+
+    async def test_autostart_forwardtest_disabled_by_settings(self) -> None:
+        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertFalse(app._forward_running)
+            self.assertNotIn("forwardtest running", app.sub_title)
+            state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
+            self.assertFalse(state["running"])
+            app.query_one(TabbedContent).active = "tab-forwardtest"
+            await pilot.pause()
+            self.assertFalse(app.query_one("#forward-start", Button).disabled)
+            self.assertTrue(app.query_one("#forward-stop", Button).disabled)

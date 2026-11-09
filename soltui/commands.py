@@ -505,6 +505,7 @@ _SETTING_CASTS = {
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
     "solana_address": str, "base_address": str, "eth_address": str, "hyperliquid_address": str,
     "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
+    "forwardtest_autostart": bool,
 }
 
 
@@ -518,7 +519,7 @@ def settings_get(ctx: Context, p: dict[str, Any]) -> Any:
     "settings.save",
     "Validate and save settings. Only the parameters you pass change. An empty string clears a wallet "
     "field. Private keys are refused: settings take public addresses and extended public keys only.",
-    tuple(P(n, "number" if c in (int, float) else "string", f"Setting {n}.")
+    tuple(P(n, "bool" if c is bool else ("number" if c in (int, float) else "string"), f"Setting {n}.")
           for n, c in _SETTING_CASTS.items()),
     read_only=False,
 )
@@ -534,6 +535,17 @@ def settings_save(ctx: Context, p: dict[str, Any]) -> Any:
             value = int(value)
         elif cast is float:
             value = float(value)
+        elif cast is bool:
+            if isinstance(value, str):
+                v_clean = value.strip().lower()
+                if v_clean in ("true", "1", "yes", "on"):
+                    value = True
+                elif v_clean in ("false", "0", "no", "off", ""):
+                    value = False
+                else:
+                    raise CommandError("bad_params", f'parameter "{name}" must be a boolean')
+            else:
+                value = bool(value)
         changes[name] = value
     new = Settings(**{**ctx.settings.to_dict(), **changes,
                       "enabled_strategies": [e.name for e in ctx.roster],
