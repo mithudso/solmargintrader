@@ -1,6 +1,14 @@
 # Prompt history
 
-Version: 160
+Version: 165
+Delta: v164 to v165; record the current branch conflict-resolution and merge request.
+Delta: v163 to v164; record oracle streaming versus refresh question.
+Delta: v162 to v163; record the detailed backtester handoff request.
+Delta: concurrent histories to v162; preserve monitor qualification and merged Kraken research/backup records.
+Delta: concurrent histories to v161; preserve monitor full-suite records and all merged manager/backtester work.
+
+Delta: concurrent histories to v161; preserve GitHub backup request and bot manager prompt records.
+Delta: v159 to v160; record GitHub backup choice and Firecrawl research request.
 Delta: v159 to v160; preserve manager and PR177 acquisition prompt histories.
 Delta: concurrent histories to v159; integrate PR174/176 and retain manager implementation.
 Delta: v156 to v157; preserve both merged UI request and implementation handoff.
@@ -16,6 +24,8 @@ Delta: v152 to v153; record ideal bot-management UI design request.
 
 Delta: v153 to v154; save optimized prompt and its execution artifacts.
 Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
+Delta: v153 to v154; authorize embeddings only for new monitor packs.
+Delta: v152 to v153; record the crypto autotrading bot monitor full-suite request.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
 Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
@@ -32,6 +42,31 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+
+## v164 - 2026-11-09
+
+Would it be better if the oracle streamed new price data to you, or would you rather just periodically refresh your package from the source?
+
+## v163 - 2026-11-09
+
+Do a complete and detailed write up of everything that you did, how to implement it in the future, any scripts you created and how to use them, and any architectural decisions you made.
+
+## Scoped embedding authorization - 2026-11-09
+
+```text
+Enable embeddings only for new bot-monitor packs
+```
+
+## Crypto autotrading bot monitor - 2026-11-09
+
+```text
+Run the full-suite skill on crypto autotrading bot monitor
+```
+
+## v160 - 2026-11-09
+
+The off machine backup will be with github. Use the firecrawl mcp server to search for more complete historical coverage, and for JitoSOL app site and coin.
 
 ## v152 - 2026-11-09
 
@@ -680,7 +715,6 @@ Look at https://docs.base.org/llms-full.txt and determine how to check the coins
 
 ## v55 - 2026-11-08 (TradingView card coverage)
 
-Version: 55. Delta: v54 to v55; preserve card-coverage request.
 
 ```text
 For each of the indicators and documented strategies first look to see if it already exists, if it doesn't then create a new strategy card for it.
@@ -805,7 +839,6 @@ Context: Stele TASK-904. Backup: tag soltui-ui-v1 and branch backup/soltui-ui-v1
 
 ## v64 - 2026-11-08 (resume SolTUI redesign)
 
-Version: 64. Delta: v63 to v64; preserve the recovery request.
 
 ```text
 claude ran out of tokens redesigning the UI for the TUI, see if you can resume where it left off.
@@ -813,7 +846,6 @@ claude ran out of tokens redesigning the UI for the TUI, see if you can resume w
 
 ## v65 - 2026-11-08 (CI status question)
 
-Version: 65. Delta: v64 to v65; preserve the owner's status question during delivery.
 
 ```text
 Is the CI run optional? Is this the first one you've run? What are you doing that's left?
@@ -821,7 +853,6 @@ Is the CI run optional? Is this the first one you've run? What are you doing tha
 
 ## v66 - 2026-11-08 (stop repeating full CI)
 
-Version: 66. Delta: v65 to v66; preserve the current delivery instruction.
 
 ```text
 So you don't have to run this, you've already passed the CI 3 times.
@@ -872,7 +903,6 @@ make the 999-case SolTUI suite optional, then skip it and push the code
 
 ## v73 - 2026-11-08 (owner merged the redesign)
 
-Version: 73. Delta: v72 to v73; preserve the owner's merge notification.
 
 ```text
 I merged it
@@ -880,7 +910,6 @@ I merged it
 
 ## v74 - 2026-11-08 (activate the actual console)
 
-Version: 74. Delta: v73 to v74; preserve the loaded-UI report.
 
 ```text
 I dopn't see the new ui when loading the soltui
@@ -1404,4 +1433,10 @@ The primary currency pair will be sol/usdc
 
 ```text
 Find, download, and pre-process all the coins' data that you will need to the greatest specificityu as you can. Make sure the data is normalized with no holes. You decide where you want to keep the data and how you want to query, store, index, and process it.
+```
+
+## v165 — 2026-11-09 — resolve and deliver the current branch
+
+```text
+Resolve the conflicts with that branch and merge and commit it
 ```

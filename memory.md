@@ -1,8 +1,18 @@
 # Work continuation
 
-Version: 331
+Version: 336
+Delta: v335 to v336; resolve current branch conflicts and record the explicit merge request.
 Delta: v330 to v331; verify persistent runtime source and reserve safe stop capacity.
 Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime.
+Delta: v334 to v335; record streaming and snapshot refresh recommendation.
+Delta: v333 to v334; document implementation, scripts, backups and future gates.
+Delta: v332 to v333; start backtester implementation and recovery handoff.
+Delta: concurrent histories to v332; preserve monitor qualification and merged Kraken research/backup records.
+Delta: concurrent histories to v330; preserve monitor full-suite records and all merged manager/backtester work.
+
+Delta: concurrent histories to v331; preserve Kraken and bot manager continuation records.
+Delta: v329 to v330; verify both private GitHub backup archives.
+Delta: v328 to v329; record Kraken archive research, JitoSOL identity and GitHub backup.
 Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
 Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
 Delta: v326 to v327; approve milestone1 source and prepare verified release.
@@ -31,6 +41,10 @@ Delta: v313 to v314; start isolated bot-control-room design and continuation.
 
 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery.
 Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
+Delta: v316 to v317; verify documentation and checkpoint the active research.
+Delta: v315 to v316; record scoped embedding Stele outbox receipt.
+Delta: v314 to v315; scope embedding permission to new monitor packs.
+Delta: v313 to v314; start the monitor full-suite with scope and continuation context.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
 Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
@@ -62,6 +76,47 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+
+## v335 - 2026-11-09: streaming and historical snapshots
+
+The owner asked whether an oracle should stream prices or the data package should refresh periodically. Recommend both: a durable source-labelled stream for new fine-grained data and forward testing, plus historical refresh, reconciliation and immutable versioned snapshots for offline backtesting. The existing `soltui/pricefeed.py` recorder is an integration candidate; verify its loaded health, symbols, coverage, source semantics and data quality, and do not start a competing recorder. Oracle reference prices do not establish executable prices or order-book depth. No streaming integration was implemented by the handoff.
+
+## v333 - 2026-11-09: Backtester handoff in progress
+
+TASK-1151 created `docs/backtester-history-handoff.md` covering historical backtester work, implementation status, data acquisition, scripts, architecture, backup and restore, safety limits, verification and future implementation. The handoff links from backtester/README.md. Reverified deep snapshot, first segment and archived artifacts; reran a 1,440-bar SOL/USDC CLI smoke; and confirmed the completed Kraken script skips 14 receipts. The active worktree is `/Users/mitch/dev/solmargintrader-wt-01a1c1b1` on branch `agent-01a1c1b1-backtest-handoff`. Read the live code, `/Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md`, private backup receipts, and the integrity plan before documenting. Distinguish working functionality from unfinished backtester work; preserve other sessions.
+
+## Monitor full-suite source and registration checkpoint - 2026-11-09
+
+Four accepted cohorts now contain 320 assertions across 15 monitoring concepts. Four source-qualified guides, private concept packs and a subject rollup are produced. Both intentional installed trading variants retain their old routes/settings and add four guides. Maintained and portable catalogue checks pass all 79 immutable pack files with zero High/Medium findings; Low and anchor N/A findings remain recorded. The independent full-reading bar passes 13 of 15; market reconnect/duplicate procedures and concrete evidence/incident correlation rules remain gaps. Default three-round exhaustion requires SATURATION-DISSENT if final QA leaves them open, not a coverage or frontier claim.
+
+New task-only indexes contain 492 eligible Facts vectors and 568 reference chunks. The user authorized embeddings only for these new bot-monitor packs. Other queues, paused services, stopped strategy research, wallets, signing and bots remain unchanged. Native source artifacts, old failed QA and original completion receipts remain immutable. Installed/tree/public acceptance, final reader report and merges are tracked separately in /Users/mitch/.global-ai-hub/research/crypto-autotrading-bot-monitor-task1087/delivery/memory.md. The repository summary is docs/crypto-bot-monitor-full-suite-20261109.md.
+
+This checkout integrated all six already-merged manager, UI and historical-data commits from origin/master. Preserve their implementation and prompt/memory records. Resolve only shared workflow/index conflicts, regenerate the three offline indexes from the integrated tree, run the actual docs/index checks and deliver this task through PR170. No application code is changed by the monitoring research task.
+
+## Monitor research checkpoint verification - 2026-11-09
+
+The shell Python could not import 92 test modules because dependencies were absent. Reusing /Users/mitch/.venvs/soltui/bin/python resolved this environment mismatch: scripts/check_docs.py exited 0 with 961 backtester, 408 extension, 46 mongo and 1384 SolTUI tests discovered. The offline repository index build and --check passed. These checks validate workflow records and retrieval hashes; they do not execute trading tests or qualify research claims.
+
+The CFE delegate inventoried 2923 concept nodes and is preparing 10 monitor-specific gaps across 28 candidates in two source-sharing cohorts. Research and compilation remain in progress. Root checkout remains unchanged with its original three untracked guides.
+
+## Monitor embedding permission - 2026-11-09
+
+The user authorized embeddings only for new bot-monitor packs. Scope every embedding command to TASK-1087 new accepted units. Keep existing queues, watchers and other paused services untouched. The prior pause is lifted only for this scope. Stele Transport closed on the permission decision; exact write queued as outbox 30f8fe6a.
+
+## Crypto autotrading bot monitor full-suite - 2026-11-09
+
+Task TASK-1087 researches operational monitoring for automated crypto bots. Scope: health, market-data freshness, orders and positions, reconciliation, net P&L, risk limits, alerts and recovery. This is research and reference-pack work. It does not activate a bot or place trades. TASK-982 remains a separate user-stopped strategy-family run; retain its accepted evidence without reopening its stopped loops. Preserve paused semantic embeddings.
+
+Completed: read repository instructions and relevant prior records; checked Stele and semantic inventory; created and claimed the monitor task; isolated this task from the three untracked root guides and other worktrees. The full-suite CFE delegate owns private research under /Users/mitch/.global-ai-hub/research/crypto-autotrading-bot-monitor-task1087/. Root owns packs, repository routing and delivery.
+
+Remaining: score the concept family, scout source domains, execute evidence-bound research and gates, compile eligible packs and rollup, account for indexing limits, validate and ship task-owned records and outputs. No saturation or full-suite completion is claimed at this checkpoint.
+
+## v329 - 2026-11-09: Kraken archive and JitoSOL research
+
+The owner selected GitHub for off-machine backup and requested Firecrawl research. Jito Foundation and OKX identify mainnet JitoSOL mint J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn; their public pages match the OKX JITOSOL spot listing. Exchange prices do not establish on-chain executions. Kraken's official OHLCVT full archive through 2026-09-30 contains one-minute files for all fourteen assets. Range-selective ZIP extraction verified member CRC32 and produced 8,266,148 observed candles with per-market SHA-256, gap ledgers, and verified indexes in `/Users/mitch/.local/share/solmargintrader/historical-data-1128/kraken-archive-20260930/inventory.json`. Kraken says missing minute bars indicate no trades; do not invent candles. The publisher's whole-archive SHA-256 was not verified because only selected members were downloaded. Source markets and quote currencies vary. Binance also offers checksummed monthly and daily files; spot timestamps change from milliseconds to microseconds on 2025-01-01.
+
+Private GitHub backup repository: https://github.com/mithudso/solmargintrader-history-backups . The original historical-data-1128 and backtester-task-1117 archive was uploaded as the historical-data-20261109 release, downloaded independently, SHA-256 checked, and tar-listed. The supplemental Kraken archive was uploaded and independently downloaded; both archives passed SHA-256 verification and tar listing. The deep SOL/USDC snapshot was read from the downloaded base archive and its bytes matched the local snapshot. The source archive includes the Kraken index, exact gap ledgers and extraction scripts. Restore details are in the private data catalog; retain the separate source and gap ledgers. Continue seeking complete multi-year coverage where market history permits.
 
 ## v328 - 2026-11-09: historical data acquisition checkpoint
 
@@ -957,3 +1012,13 @@ The task3 source checkpoint e0bcd73 is pushed on agent-01a1c189-m2; fix4b22bb1 a
 Pip dry-run resolved direct localpackages plus NumPy2.5.4, Pandas3.1.1, python-dateutil4.0.0 andtzdata2026.6. Dependency-reviewer returned external riskUNKNOWN for each exactcoordinate because Endor tools are unavailable; no lookup or approval was fabricated. Installed qualification must record these actual versions. The final actual-recording descriptor is in the ignored task3report/workspace; source snapshot7ff131f8f67ac5e20bcabd9dbc35d98e32ff20fc12e861487f86c5fe66b41fe8 binds its engine/NumPy identity. Source validation is not installed acceptance.
 
 Remaining: final whole-milestone review (including deferred expected annualization/oldSQLite warning noise), current noneditable installation, independent isolated actual daemon/launchd/recording acceptance, docs/index gates, final-head CI and PRmerge. Runtime source task gate is complete but TASK1108 is not delivered. Follow the SDD ledger; do not repeat accepted reviews/tests without a changed surface or concrete failure. Continue milestones3–8 after this release.
+
+## v336 — 2026-11-09 — resolve current branch and deliver
+
+The owner asks: Resolve the conflicts with that branch and merge and commit it. Current target is PR180, agent-01a1c189-m2. Work remains in the private worktree; two other live sessions use the primary checkout. Integrate origin/master f92b9291, preserving the accepted history handoff and monitor research. Incoming changes are documentation and generated records only; no runtime/canonical engine overlap.
+
+Final source review found3Important defects beyond the approved task gate: readonly row/fill SELECTs can cross a commit and falsely quarantine a healthy run, receipt replay can transplant another request's UUID/generation, and same-config bots can accept each other's checkpoint identity. One combined final fix wave is active. Schema2 will bind immutable acceptance context; legacy v1 IDs/bodies remain, but unprovable replay refuses without resubmission. Historical valid v2 receipts must remain valid after later generations. Ruling cost: legacy receipt inspection requires explicit reconciliation instead of fabricated acceptance context.
+
+Installed0.2 acceptance matched69Python files, regular origins and inert reads. Actual read-only source capture115samples/2bars passed unchanged-source checks. An empty isolated launchd job ran the stable executable; first removal was conservatively unconfirmed and cleanup retry verified job/plist/lock absence. Concurrent installed recovery remains blocked by the read-snapshot defect; stable quiet-state journals reconcile, so durable corruption was not established. No production job, bot, key, browser or recorder was changed.
+
+The conflict-resolution commit is an intermediate local integration checkpoint. Generated catalogs will be rebuilt after the worker's tested source fix, rather than hashing in-flight edits. Do not push/merge as complete until final catalog/docs checks, scoped re-review, refreshed installed behavior and final-head CI pass. PR180 remains draft while fixing. Preserve all root/source edits and retain the SDD recovery ledger.
