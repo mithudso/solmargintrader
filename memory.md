@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 274
-Delta: v273 to v274; record the draft checkpoint delivery.
+Version: 275
+Delta: v274 to v275; preserve the failed documentation check receipt.
+
+## v275 - 2026-11-09
+
+The optimizer ledger is v1.0.2 and now binds docs-check.log to the extension source fingerprint. A fresh `python3 scripts/check_docs.py` exited 1 with 79 suite modules unavailable to import; the environment lacks their dependencies. The ledger validator passed after adding the failed-check receipt. The underlying audit and draft PR 156 remain incomplete.
 
 ## v274 - 2026-11-09
 
