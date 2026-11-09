@@ -50,9 +50,13 @@ def _cdp_query(sql: str, timeout: float) -> list[dict]:
     if not executable:
         raise RuntimeError("CDP CLI unavailable")
     # SQL is generated below from validated public addresses and fixed columns.
+    # Native hosts inherit Chrome's minimal PATH. CDP's shebang resolves node
+    # with /usr/bin/env; its selected bin directory must be visible to the child.
+    child_env = {**os.environ, "PATH": os.pathsep.join(dict.fromkeys([
+        os.path.dirname(os.path.abspath(executable)), *os.get_exec_path()]))}
     result = subprocess.run([executable, "data", "query", "run", "sql=" + sql,
                              'cache:={"maxAgeMs":30000}'], stdin=subprocess.DEVNULL,
-                            capture_output=True, text=True, timeout=timeout, check=False)
+                            capture_output=True, text=True, timeout=timeout, check=False, env=child_env)
     if result.returncode:
         raise RuntimeError("CDP history unavailable")
     payload = json.loads(result.stdout)
