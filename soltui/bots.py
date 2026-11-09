@@ -1026,16 +1026,20 @@ def _forward_lock():
 
 
 def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder: bool = True,
-                  now: float | None = None) -> dict[str, Any]:
-    """Start (or restart) the bot's forward test now, on the current config."""
+                  now: float | None = None, preserve_existing: bool = False) -> dict[str, Any]:
+    """Start/restart on current config, or atomically reuse a saved session when requested."""
     bot = _bot(bot)
     now = time.time() if now is None else now
     a = "ALL" if bot == "triangle" else str(asset).upper()
-    if bot != "triangle" and f"{a}-USD" not in _triangle_products():
+    if not preserve_existing and bot != "triangle" and f"{a}-USD" not in _triangle_products():
         raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
-    recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
     with runtime().lock, _forward_lock():
         raw = _forward_all()
+        if preserve_existing and raw.get(bot):
+            return {"forward": raw[bot], "recorder": {"running": pricefeed.recorder_running()}, "reused": True}
+        if preserve_existing and bot != "triangle" and f"{a}-USD" not in _triangle_products():
+            raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
+        recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
         raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
                     "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
                     "slippage_bps": _costs(settings).slippage_bps}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T13:52:35+00:00",
+  "generatedAt": "2026-11-09T15:24:38+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1360,
+      "matchingFiles": 1362,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1348,
+      "matchingFiles": 1353,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1326,
+      "matchingFiles": 1329,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 683,
+      "matchingFiles": 685,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 578,
+      "matchingFiles": 584,
       "shown": 30,
       "files": [
         {
@@ -773,12 +773,12 @@
           "hits": 66
         },
         {
-          "path": "backtester/guides/ladder_grid.md",
-          "hits": 57
+          "path": "extension/README.md",
+          "hits": 58
         },
         {
-          "path": "extension/README.md",
-          "hits": 56
+          "path": "backtester/guides/ladder_grid.md",
+          "hits": 57
         },
         {
           "path": "extension/test/core.test.js",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 543,
+      "matchingFiles": 546,
       "shown": 30,
       "files": [
         {
@@ -963,15 +963,15 @@
           "hits": 18
         },
         {
+          "path": "extension/src/ui/signal-desk.css",
+          "hits": 18
+        },
+        {
           "path": "soltui/utxo_scan.py",
           "hits": 18
         },
         {
           "path": "backtester/tests/test_candle_gap_audit.py",
-          "hits": 16
-        },
-        {
-          "path": "pagesource",
           "hits": 16
         }
       ],
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 443,
+      "matchingFiles": 446,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 436,
+      "matchingFiles": 443,
       "shown": 30,
       "files": [
         {
@@ -1181,6 +1181,10 @@
           "hits": 72
         },
         {
+          "path": "memory.md",
+          "hits": 69
+        },
+        {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
           "hits": 68
         },
@@ -1203,10 +1207,6 @@
         {
           "path": "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md",
           "hits": 66
-        },
-        {
-          "path": "memory.md",
-          "hits": 65
         },
         {
           "path": "soltui/commands.py",
@@ -1397,7 +1397,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 301,
+      "matchingFiles": 302,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 281,
+      "matchingFiles": 282,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 231,
+      "matchingFiles": 232,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 157,
+      "matchingFiles": 158,
       "shown": 30,
       "files": [
         {

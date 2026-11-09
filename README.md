@@ -33,7 +33,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 397 tests
+npm test                                               # 407 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -45,9 +45,9 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 941 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1338 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1374 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 397 tests
+cd extension && npm test                                # 407 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than
