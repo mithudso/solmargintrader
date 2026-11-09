@@ -83,19 +83,37 @@ def prediction_snapshot(asset: str, *, limit: int = 50, now: float | None = None
         # across old trial revisions can report an old UP after a newer DOWN.
         with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
             current = db.execute("""
-                SELECT t.label,t.minutes,c.prediction,c.issued,c.finish
+                WITH evidence AS (
+                    SELECT calls.trial,count(calls.outcome) AS resolved,
+                           sum(calls.outcome=calls.prediction) AS hits
+                    FROM call calls JOIN trial trials ON calls.trial=trials.id
+                    WHERE trials.asset=? GROUP BY calls.trial
+                )
+                SELECT t.label,t.minutes,c.prediction,c.issued,c.finish,
+                       coalesce(e.resolved,0),coalesce(e.hits,0)
                 FROM trial t JOIN call c ON c.trial=t.id
+                LEFT JOIN evidence e ON e.trial=t.id
                 WHERE t.asset=? AND c.bar=(SELECT max(last.bar) FROM call last WHERE last.trial=t.id)
                 ORDER BY c.issued DESC,c.bar DESC,t.id DESC
-            """, (asset,))
-            for label, minutes, direction, issued, expires in current:
-                latest.setdefault((label, minutes), (direction, issued, expires))
+            """, (asset, asset))
+            for label, minutes, direction, issued, expires, resolved, hits in current:
+                latest.setdefault((label, minutes), (direction, issued, expires, resolved, hits))
     for row in rows:
+        total_resolved = total_hits = 0
         for h in HORIZONS:
-            direction, issued, expires = latest.get((row["label"], h), (None, None, None))
+            direction, issued, expires, resolved, hits = latest.get((row["label"], h), (None, None, None, 0, 0))
+            # Quality must belong to this latest trial too: an old winning
+            # revision cannot qualify a new weak or insufficiently tested one.
+            row[f"resolved_{h}m"] = resolved
+            row[f"acc_{h}m"] = round(100 * hits / resolved, 1) if resolved else None
+            total_resolved += resolved
+            total_hits += hits
             row[f"pred_{h}m"] = {1: "UP", -1: "DOWN", 0: "FLAT"}.get(direction, "-")
             row[f"issued_{h}m"] = issued
             row[f"expires_{h}m"] = expires
+        row["resolved"] = total_resolved
+        row["hits"] = total_hits
+        row["accuracy"] = round(100 * total_hits / total_resolved, 1) if total_resolved else 0.0
     return {"asset": asset, "rows": rows, "aggregate": aggregate_predictions(rows, now=now, min_accuracy=min_accuracy, min_resolved=min_resolved),
             "voting": {"min_accuracy": min_accuracy, "min_resolved": min_resolved}}
 

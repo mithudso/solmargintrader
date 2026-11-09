@@ -486,6 +486,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
         $('#soltuiLiveStatus').textContent = 'No usable quote. The recorder may be stopped; start it explicitly in Bots & prices if needed.';
       }
     } catch (e) {
+      if (disposed || contextGeneration !== liveGeneration || asset !== $('#soltuiLiveAsset').value.trim().toUpperCase()) return;
       const unavailable = aggregatePredictions([]);
       paintAggregate($('#soltuiLiveScore'), unavailable);
       paintAggregate($('#soltuiPredictionsScore'), unavailable);

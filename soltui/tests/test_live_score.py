@@ -44,6 +44,18 @@ class LiveScoreTests(unittest.TestCase):
             self.assertEqual(out["rows"][0]["issued_1m"], 110)
             self.assertEqual(out["rows"][0]["expires_1m"], 210)
             self.assertEqual(out["aggregate"]["score"], -100)
+            with sqlite3.connect(path) as db:
+                db.execute("UPDATE call SET outcome=-prediction WHERE trial='new' AND outcome IS NOT NULL")
+            weak = live_score.prediction_snapshot("SOL", now=150, db_path=path)
+            self.assertEqual(weak["rows"][0]["acc_1m"], 0)
+            self.assertEqual(weak["rows"][0]["resolved_1m"], 20)
+            self.assertIsNone(weak["aggregate"]["score"], "old winning evidence must not qualify a weak new revision")
+            with sqlite3.connect(path) as db:
+                db.execute("UPDATE call SET outcome=prediction WHERE trial='new'")
+                db.execute("UPDATE call SET outcome=NULL WHERE trial='new' AND bar<10")
+            sparse = live_score.prediction_snapshot("SOL", now=150, db_path=path)
+            self.assertLess(sparse["rows"][0]["resolved_1m"], 20)
+            self.assertIsNone(sparse["aggregate"]["score"], "old sample counts must not qualify a new revision")
 
     def test_score_tape_scrolls_without_rewriting_the_previous_tick(self) -> None:
         history = [(1, 100), (2, 101)]

@@ -11,7 +11,8 @@ not have reached their recorded finish time. Excluded strategies stay visible in
 
 Both surfaces expose the accuracy and sample floors beside the live view. SolTUI saves them when
 Enter is pressed; the dashboard saves a committed input change. They persist through `settings.save`
-as `live_vote_min_accuracy` and `live_vote_min_resolved`. The settings also appear in the dashboard's
+as `live_vote_min_accuracy` and `live_vote_min_resolved`. These display-only floors are separate
+from the existing paper-execution `min_confidence=0.80` setting. The settings also appear in the dashboard's
 shared TUI settings tool. An open TUI retains its loaded settings until it saves or reloads them.
 
 ## Score and labels
@@ -50,7 +51,8 @@ trainer, its revision hash, its stored evidence, execution settings or any order
 ## Implementation and verification
 
 `soltui/live_score.py` reads the actual latest call and expiry per strategy/horizon, including when
-multiple trainer revisions share a label. It binds direction to the same call instead of taking
+multiple trainer revisions share a label. Eligibility accuracy and resolved counts belong to that
+same latest trial; older winning revisions cannot qualify a newer weak or under-tested trial. It binds direction to the same call instead of taking
 `MAX(direction)` across revisions. `forwardtest.predictions` exposes these timestamps, the aggregate
 and the voting policy. The browser's display adapter and Python implementation run against shared
 vectors in `soltui/tests/fixtures/live-score.json`.

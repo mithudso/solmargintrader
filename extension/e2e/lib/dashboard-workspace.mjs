@@ -10,7 +10,7 @@ export async function verifyDashboardWorkflows(page, browser) {
   };
 await ev(`(async()=>{
  const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';
- window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};
+ window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;
  const spec=[
  {name:'prices.status',describe:'Prices',params:[],read_only:true},
  {name:'forwardtest.predictions',describe:'Predictions',params:[{name:'asset',type:'string'}],read_only:true},
@@ -23,7 +23,7 @@ await ev(`(async()=>{
  const en=(command,result)=>({ok:true,command,result,error:null});
  const tx=async m=>{calls.push(m);if(m.type==='soltuiSession')return {ok:true,result:{available:true,connected:true,generation:1}};if(m.type==='soltuiCommands')return {ok:true,result:en('list',spec)};
  if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
- if(m.command==='forwardtest.predictions')return {ok:true,result:en(m.command,{asset:'SOL',voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};
+ if(m.command==='forwardtest.predictions'){const response={ok:true,result:en(m.command,{asset:m.params.asset,voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};if(m.params.asset===liveHoldAsset)return new Promise((resolve,reject)=>{liveHeld={resolve:()=>resolve(response),reject:()=>reject(new Error('old coin failed'))}});return response;}
  if(m.command==='settings.save' && m.params.live_vote_min_accuracy!==undefined){liveVoting={min_accuracy:m.params.live_vote_min_accuracy,min_resolved:m.params.live_vote_min_resolved};return {ok:true,result:en(m.command,{settings:liveVoting})};}
  if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW'})};
  if(m.command==='jupiter.order_submit')return {ok:true,result:en(m.command,{preview_id:m.params.preview_id,status:'FILLED',rows:[{preview_id:'row-choice'}]})};
@@ -79,6 +79,14 @@ assert.ok(await ev(`r.querySelector('#soltuiLiveScore').classList.contains('sign
 assert.ok(await ev(`calls.some(x=>x.command==='settings.save' && x.params.live_vote_min_accuracy===90)`));
 assert.equal(await ev(`r.querySelector('#soltuiLiveChart g').dataset.score`), '100');
 console.log('PASS gated live score, colored labels and immutable chart scores scrolling left');
+await ev(`liveVoting={min_accuracy:60,min_resolved:20};liveDirection='UP';liveHoldAsset='ETH';r.querySelector('#soltuiLiveAsset').value='ETH';r.querySelector('#soltuiLiveAsset').dispatchEvent(new Event('change'))`);
+await wait(`liveHeld!==null`);
+assert.ok(await ev(`r.querySelector('#soltuiLiveScore').textContent.includes('No qualifying') && r.querySelector('#soltuiLiveChart').children.length===0`));
+await ev(`r.querySelector('#soltuiLiveStream').checked=true;r.querySelector('#soltuiLiveAsset').value='SOL';r.querySelector('#soltuiLiveAsset').dispatchEvent(new Event('change'));liveHoldAsset=null;liveHeld.reject();liveHeld=null`);
+await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelector('#soltuiLiveStatus').textContent.startsWith('SOL-USD')`);
+assert.equal(await ev(`r.querySelector('#soltuiLiveStream').checked`),true,'obsolete coin failures cannot stop the current stream');
+console.log('PASS coin switch clears old scores and ignores obsolete failures');
+
 await ev(`window.dispatchEvent(new PageTransitionEvent('pagehide'))`);
 
 }
