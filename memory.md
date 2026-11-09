@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 234
-Delta: v233 to v234; recover live-score work and preserve delivered paper controls.
+Version: 235
+Delta: v234 to v235; record final live-score acceptance and recoverable PR.
+
+## v235 - 2026-11-08
+
+Aggregate live prediction score and minimum-voting-score work is implemented in both surfaces. PR https://github.com/mithudso/solmargintrader/pull/146 is the delivery receipt. The display uses shared policy vectors, equal strategy means, -100..100 scores, 20/60 label thresholds, 60% accuracy and 20 resolved eligibility defaults, actual latest-call expiry, and immutable right-anchored tick slots. These controls are separate from paper min_confidence=0.80 and do not change training/execution. No task diff touches forwardtest.py or simulation.py relative to the integrated default branch.
+
+Final product acceptance passed: independent Chrome and headless Textual verified all five colors/labels, weak/sparse/stale/future exclusions, physical eight-column TUI movement, immutable history, missing-coin reset and obsolete success/error suppression. Integrated Python 106/106; extension 372/372; Chrome real-host 24/24 and fixture 23/23. The native installer regression passes after resolving the merge (its earlier error occurred while source still had conflict markers). Documentation counts are 1211 SolTUI and 2526 total. Full TUI suite remains optional and was not run.
+
+Current head includes delivered paper-control PRs 142/145; both source and histories were preserved. Remaining delivery gates: offline documentation/index refresh, final backtester/index checks, final-head CI, merge and cleanup. No order, signing, trainer/service start, user configuration update or existing-profile reload occurred during verification. Shared checkout is owned by another live session; leave it intact. Stele task create queued as 2f9370e6; new bug lessons queued as f07021b5, 65b7724f, 9397d749. Earlier checkpoints are historical.
 
 ## v234 - 2026-11-08
 
