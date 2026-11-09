@@ -852,6 +852,10 @@ class SolTuiApp(App):
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
+    #signal-live-stream { padding: 0 1; border: round $accent; }
+    #signal-live-chart { height: 7; margin: 1 0; }
+    #signal-live-predictions-table { height: 15; }
+    #signal-live-detail { color: $text-muted; padding: 0 1; }
     #bots-top Label { width: auto; padding: 0 0 0 1; }
     #bots-bot { width: 24; }
     #bots-top Button { min-width: 8; width: auto; }
@@ -1011,6 +1015,10 @@ class SolTuiApp(App):
         self._advanced_context_busy = False
         self._advanced_price_history: dict[str, list[tuple[float, float]]] = {}
         self._advanced_context_product = ""
+        self._signal_live_price_history: dict[str, list[tuple[float, float]]] = {}
+        self._signal_live_prediction_rows: list[dict[str, Any]] = []
+        self._signal_live_last_coin: str | None = None
+        self._signal_live_busy = False
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -1700,6 +1708,7 @@ class SolTuiApp(App):
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
+                yield Button("Go to Signal Live", variant="success", id="btn-goto-signal-live")
                 yield Button("Save signals", variant="primary", id="btn-save-signals")
                 yield Button("Reset to defaults", id="btn-reset-signals")
                 yield Static("", id="signals-status")
@@ -1739,7 +1748,28 @@ class SolTuiApp(App):
                 yield Button("Autopilot: on", variant="success", id="compound-autopilot")
             yield Static("", id="compound-autopilot-status")
             yield Static("", id="compound-status")
-            with TabbedContent(id="compound-sections", initial="cmp-call"):
+            with TabbedContent(id="compound-sections", initial="cmp-live"):
+                with TabPane("Live", id="cmp-live"):
+                    with VerticalScroll():
+                        yield Static(
+                            "Real-time streaming prices from Coinbase WebSocket feeds and top forward test "
+                            "strategy direction predictions across 1m, 5m, 10m, and 30m horizons.",
+                            classes="hint",
+                        )
+                        yield Static("price recorder: checking…", id="signal-live-stream", markup=True)
+                        yield Static("Price graph: loading…", id="signal-live-chart-context", classes="table-title", markup=True)
+                        yield Sparkline([], id="signal-live-chart")
+                        yield Static("", id="signal-live-chart-stats", markup=True)
+                        yield Static("[b]Top performing forward test strategies — predictions[/b]",
+                                     classes="table-title", markup=True)
+                        live_table = GlossaryTable(id="signal-live-predictions-table")
+                        live_table.cursor_type = "row"
+                        live_table.add_columns("rank", "strategy", "win rate", "resolved",
+                                               "1m pred", "5m pred", "10m pred", "30m pred",
+                                               "horizon accuracy", "settings")
+                        yield ExportPanel(live_table)
+                        yield Static("Select a strategy above to inspect its parameters and horizon history.",
+                                     id="signal-live-detail", markup=False)
                 with TabPane("Call & metrics", id="cmp-call"):
                     with VerticalScroll():
                         yield Static(
@@ -3040,6 +3070,7 @@ class SolTuiApp(App):
         self._wallet_restore()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
+        self.set_interval(1, self._signal_live_tick)
         restored = self._call("forwardtest.restore", quiet=True)
         if restored["ok"] and restored["result"].get("restored"):
             self._forward_running = True
@@ -3630,6 +3661,11 @@ class SolTuiApp(App):
         ov.cursor_type = "row"
         ov.add_columns("coin", "own settings", "data", "backtest verdict", "bt hit", "fwd calls", "fwd hit",
                        "paper $", "unattended")
+        if self.query("#signal-live-predictions-table"):
+            live_t = self.query_one("#signal-live-predictions-table", GlossaryTable)
+            live_t.cursor_type = "row"
+        self._signal_live_tick()
+        self._signal_live_refresh_predictions()
         env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
@@ -3828,10 +3864,197 @@ class SolTuiApp(App):
             f"{self._compound_coin} forward call decided at {when}", row,
             "A paper call: recorded and resolved against the next closed 5m bar. No order was placed."))
 
+    @on(Button.Pressed, "#btn-goto-signal-live")
+    def _goto_signal_live(self) -> None:
+        if getattr(self, "_v2", False):
+            self._v2_navigate("signal", 0)
+        else:
+            self.query_one("#main-tabs", TabbedContent).active = "tab-compound"
+            if self.query("#compound-sections"):
+                self.query_one("#compound-sections", TabbedContent).active = "cmp-live"
+
+    @on(DataTable.RowHighlighted, "#signal-live-predictions-table")
+    def _signal_live_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if 0 <= event.cursor_row < len(self._signal_live_prediction_rows):
+            self._signal_live_show_detail(event.cursor_row)
+
+    def _signal_live_show_detail(self, row_idx: int) -> None:
+        if not self.query("#signal-live-detail") or not (0 <= row_idx < len(self._signal_live_prediction_rows)):
+            return
+        r = self._signal_live_prediction_rows[row_idx]
+        issued = (time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(r['last_issued']))
+                  if r.get('last_issued') else '-')
+        detail_lines = [
+            f"[b]{r['label']}[/b] on {r['asset']} · Overall Accuracy: [bold green]{r['accuracy']:.1f}%[/] ({r['hits']}/{r['resolved']} correct calls)",
+            f"Predictions: 1m: [b]{r['pred_1m']}[/] ({r.get('acc_1m') or '-'}% on {r.get('resolved_1m', 0)} calls) · "
+            f"5m: [b]{r['pred_5m']}[/] ({r.get('acc_5m') or '-'}% on {r.get('resolved_5m', 0)} calls) · "
+            f"10m: [b]{r['pred_10m']}[/] ({r.get('acc_10m') or '-'}% on {r.get('resolved_10m', 0)} calls) · "
+            f"30m: [b]{r['pred_30m']}[/] ({r.get('acc_30m') or '-'}% on {r.get('resolved_30m', 0)} calls)",
+            f"Last prediction issued: {issued}",
+        ]
+        if r.get("settings"):
+            settings_str = "; ".join(
+                f"{m.get('name', '')} " + ", ".join(f"{k}={v}" for k, v in m.get("params", {}).items())
+                for m in r.get("settings", [])
+            )
+            detail_lines.append(f"Parameters: {settings_str}")
+        self.query_one("#signal-live-detail", Static).update("\n".join(detail_lines))
+
+    def _signal_live_tick(self) -> None:
+        if not self.query("#signal-live-stream"):
+            return
+        coin = getattr(self, "_compound_coin", "SOL")
+        product = f"{coin}-USD"
+        now = time.time()
+        try:
+            from . import pricefeed
+            latest = pricefeed.read_latest()
+            st = pricefeed.status()
+        except Exception:
+            latest = None
+            st = {}
+        prices = st.get("prices") or {}
+        quote = prices.get(product) or {}
+        if not quote and latest and "q" in latest:
+            q_row = latest["q"].get(product)
+            if q_row and len(q_row) >= 6:
+                bid, ask, last, bid_size, ask_size, q_time = q_row
+                mid = (bid + ask) / 2.0 if bid > 0 and ask > 0 else last
+                spread_bps = ((ask - bid) / mid * 10000.0) if mid > 0 else 0.0
+                quote = {
+                    "bid": bid, "ask": ask, "last": last, "mid": mid,
+                    "bid_size": bid_size, "ask_size": ask_size,
+                    "spread_bps": spread_bps, "quote_age_s": max(0.0, now - q_time),
+                }
+
+        mid = quote.get("mid") or quote.get("last")
+        bid = quote.get("bid")
+        ask = quote.get("ask")
+        bid_size = quote.get("bid_size")
+        ask_size = quote.get("ask_size")
+        spread_bps = quote.get("spread_bps")
+        age = quote.get("quote_age_s")
+        is_live = bool(st.get("live", False)) and (age is not None and age < 15.0)
+
+        status_widget = self.query_one("#signal-live-stream", Static)
+        if mid is not None and isinstance(mid, (int, float)) and math.isfinite(mid) and mid > 0:
+            badge = "[bold green]● LIVE STREAM[/]" if is_live else "[bold yellow]○ STREAMING (stale)[/]"
+            fmt = ",.6f" if mid < 0.01 else (",.4f" if mid < 1.0 else ",.2f")
+            bid_str = f"${bid:{fmt}}" if bid is not None else "-"
+            ask_str = f"${ask:{fmt}}" if ask is not None else "-"
+            bsize_str = f" ({bid_size:,.2f})" if bid_size is not None else ""
+            asize_str = f" ({ask_size:,.2f})" if ask_size is not None else ""
+            spr_str = f"{spread_bps:.2f} bps" if spread_bps is not None else "-"
+            age_str = f"{age:.1f}s" if age is not None else "-"
+            msgs = st.get("messages", 0)
+            reconnects = st.get("reconnects", 0)
+            status_widget.update(
+                f"{badge} · [b]{product}[/b] · Mid: [bold cyan]${mid:{fmt}}[/] · "
+                f"Bid: {bid_str}{bsize_str} · Ask: {ask_str}{asize_str} · "
+                f"Spread: {spr_str} · Quote age: {age_str} · msgs: {msgs:,} · reconns: {reconnects}"
+            )
+            history = self._signal_live_price_history.setdefault(coin, [])
+            if not history:
+                try:
+                    from . import compound as compound_mod
+                    candles = compound_mod._load_candle_cache(coin, seconds=60)
+                    for ts in sorted(candles)[-60:]:
+                        close_p = candles[ts][1]
+                        if close_p > 0 and math.isfinite(close_p):
+                            history.append((float(ts), float(close_p)))
+                except Exception:
+                    pass
+            if not history or now - history[-1][0] >= 0.5:
+                history.append((now, float(mid)))
+                del history[:-120]
+            pts = [p for _, p in history]
+            self.query_one("#signal-live-chart", Sparkline).data = pts
+            low = min(pts)
+            high = max(pts)
+            start_p = pts[0]
+            chg_pct = (mid - start_p) / start_p * 100.0 if start_p > 0 else 0.0
+            color = "green" if chg_pct >= 0 else "red"
+            self.query_one("#signal-live-chart-context", Static).update(
+                f"[b]{product} real-time price graph[/b] · [bold {color}]${mid:{fmt}} ({chg_pct:+.2f}%)[/] · "
+                f"Range: ${low:{fmt}} – ${high:{fmt}} · {len(pts)} points"
+            )
+            self.query_one("#signal-live-chart-stats", Static).update(
+                f"Subscribed: wss://ws-feed.exchange.coinbase.com · Channel: level2_batch + ticker · "
+                f"Last update: {time.strftime('%H:%M:%S UTC', time.gmtime(now))}"
+            )
+        else:
+            status_widget.update(
+                f"[yellow]Waiting for {product} stream quotes from pricefeed recorder… (recorder pid: {st.get('pid', '-')})[/]"
+            )
+
+    def _signal_live_refresh_predictions(self, force: bool = False) -> None:
+        if not self.query("#signal-live-predictions-table"):
+            return
+        coin = getattr(self, "_compound_coin", "SOL")
+        if not force and coin == self._signal_live_last_coin and self._signal_live_prediction_rows:
+            return
+        self._signal_live_last_coin = coin
+        try:
+            from . import forwardtest
+            rows = forwardtest.top_forward_predictions(coin, limit=50)
+        except Exception:
+            rows = []
+        self._signal_live_prediction_rows = rows
+        table = self.query_one("#signal-live-predictions-table", DataTable)
+        cursor = table.cursor_row
+        table.clear()
+        for idx, r in enumerate(rows, 1):
+            def badge(pred: str) -> str:
+                if pred == "UP":
+                    return "[bold green]▲ UP[/]"
+                elif pred == "DOWN":
+                    return "[bold red]▼ DOWN[/]"
+                elif pred == "FLAT":
+                    return "[yellow]— FLAT[/]"
+                return "-"
+            acc = f"[bold green]{r['accuracy']:.1f}%[/]" if r["accuracy"] >= 65 else f"{r['accuracy']:.1f}%"
+            hz_parts = []
+            for h in (1, 5, 10, 30):
+                hacc = r.get(f"acc_{h}m")
+                hn = r.get(f"resolved_{h}m", 0)
+                if hacc is not None and hn > 0:
+                    hz_parts.append(f"{h}m:{hacc:.0f}%")
+                else:
+                    hz_parts.append(f"{h}m:-")
+            hz_str = " · ".join(hz_parts)
+            settings_str = "; ".join(
+                f"{m.get('name', '')} " + ", ".join(f"{k}={v}" for k, v in m.get("params", {}).items())
+                for m in r.get("settings", [])
+            )
+            table.add_row(
+                f"#{idx}",
+                r["label"],
+                acc,
+                str(r["resolved"]),
+                badge(r["pred_1m"]),
+                badge(r["pred_5m"]),
+                badge(r["pred_10m"]),
+                badge(r["pred_30m"]),
+                hz_str,
+                settings_str or "-",
+                key=r["label"],
+            )
+        if rows:
+            table.move_cursor(row=min(cursor, len(rows) - 1))
+            self._signal_live_show_detail(0)
+        else:
+            self.query_one("#signal-live-detail", Static).update(
+                f"No forward test prediction records found for coin {coin} yet."
+            )
+
     @on(TabbedContent.TabActivated)
     def _tab_activated(self, event: TabbedContent.TabActivated) -> None:
-        if event.pane is not None and event.pane.id == "tab-compound" and hasattr(self, "_compound_cfg"):
-            self._compound_preview_metric(self._compound_selected())
+        if event.pane is not None:
+            if event.pane.id == "tab-compound" and hasattr(self, "_compound_cfg"):
+                self._compound_preview_metric(self._compound_selected())
+            if event.pane.id in ("tab-compound", "cmp-live"):
+                self._signal_live_tick()
+                self._signal_live_refresh_predictions()
 
     def _compound_save(self, patch: dict[str, Any], what: str, scope: str | None = None) -> None:
         env = self._call("compound.save", {"patch": patch, "asset": self._compound_coin,
@@ -4147,6 +4370,8 @@ class SolTuiApp(App):
         self._compound_render_table()
         self._compound_load_results()
         self._compound_show_unattended()
+        self._signal_live_tick()
+        self._signal_live_refresh_predictions(force=True)
         own = env["ok"] and env["result"]["own_settings"]
         self.query_one("#compound-status", Static).update(
             f"showing {self._compound_coin}" + (" (has its own settings)" if own else " (shared settings)"))

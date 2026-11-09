@@ -179,6 +179,7 @@ class Destination:
 DESTINATIONS: tuple[Destination, ...] = (
     Destination("now", "Now", "1", "Does anything need me?", (View("tab-now", "Overview"),)),
     Destination("signal", "Signal", "2", "What is the next 5m call, why, and does it pay after costs?", (
+        View("tab-compound", "Live", "cmp-live", "Compound 5m"),
         View("tab-compound", "Call & metrics", "cmp-call", "Compound 5m"),
         View("tab-compound", "Backtest", "cmp-backtest", "Compound 5m"),
         View("tab-compound", "Forward test", "cmp-forward", "Compound 5m"),
