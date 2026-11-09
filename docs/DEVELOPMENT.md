@@ -122,7 +122,7 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 983 tests
+python3 -m unittest discover -s backtester/tests -t .   # 999 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1384 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests

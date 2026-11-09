@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 158
+Version: 159
+Delta: v158 to v159; record high-resolution market data acquisition request.
 Delta: v157 to v158; record primary SOL/USDC pair.
 Delta: v156 to v157; refine optimized prompt and record confirmed universe.
 Delta: v155 to v156; record historical backtester design and implementation request.
@@ -1270,4 +1271,10 @@ Jitosol, kmno, usdc, xmr
 
 ```text
 The primary currency pair will be sol/usdc
+```
+
+## v159 - 2026-11-09
+
+```text
+Find, download, and pre-process all the coins' data that you will need to the greatest specificityu as you can. Make sure the data is normalized with no holes. You decide where you want to keep the data and how you want to query, store, index, and process it.
 ```

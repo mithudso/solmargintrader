@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 325
+Version: 328
+Delta: v327 to v328; complete source audits and indexed deep SOL and KMNO datasets.
+Delta: v326 to v327; checkpoint verified minute datasets and ongoing downloads.
+Delta: v325 to v326; begin detailed historical market data acquisition.
 Delta: v324 to v325; record merged storage foundation and remaining backtester work.
 Delta: v323 to v324; record pre-2021 gap audit and recovery checkpoint.
 Delta: v322 to v323; record validated 14-asset histories and real SOL/USDC run.
@@ -47,6 +50,10 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v328 - 2026-11-09: historical data acquisition checkpoint
+
+TASK-1128 acquired and audited private data under `/Users/mitch/.local/share/solmargintrader/historical-data-1128/`; `CATALOG.md` is the entry point. All fourteen assets have recent contiguous one-minute snapshots, but quote currencies and available periods differ. SOL/USDC has 2,349,374 continuous one-minute bars from 2022-05-23 08:00 UTC to 2026-11-09 20:13 UTC; 480 requested leading minutes are unobserved. The verified backtest snapshot and same-machine backup are in `backtest-ready/deep-snapshots*.sqlite`. KMNO/USDT has 1,326,148 observed bars and six internal gap runs totaling 3,467 minutes; the indexed segments refuse gap-crossing reads. Exchange rechecks returned no candles for those missing intervals. An additional USDC/USDT snapshot has 43,200 continuous bars and does not substitute for USD. The 11 legacy minute caches remain provenance-limited with explicit gap ledgers; funding is quarantined. JitoSOL exchange symbol to mint mapping remains unverified. OHLCV does not reproduce order-book depth, chain-specific execution, fees, or absent history. Backups are not off-host. Archive raw responses and do not manufacture candles. The broader backtester task remains open for execution models and integrations. The data acquisition and integrity tools are tracked in PR 177; preserve other live sessions and use the isolated worktree.
 
 ## v313 - 2026-11-09
 
@@ -846,3 +853,15 @@ The previously recorded 14-asset daily inventory remains valid. KuCoin returned 
 ## v325 - 2026-11-09
 
 The storage foundation in https://github.com/mithudso/solmargintrader/pull/174 merged to remote master as 2a61908580266c49878963deea6312c2b8034ecc. All required final-head CI checks passed. The local backtester suite passed 983 tests and documentation/index checks passed. The original checkout remains in use by other sessions and was not changed. TASK-1117 remains open: the continuation requirements in v323 and v324, the implementation plan, source data and off-machine backup gaps still apply. The v324 description of PR 174 as a draft is historical and superseded by this entry.
+
+## v326 - 2026-11-09
+
+TASK-1128: find, download, normalize and index history for the 14 owner-selected assets, emphasizing SOL/USDC and the finest supported timeframe. Work in /Users/mitch/dev/solmargintrader-wt-01a1c1b1 on branch agent-01a1c1b1-history. Preserve active sessions and existing source files. Never fabricate observations to hide gaps; retain and report unknown intervals. Existing daily snapshots and run artifacts live at /Users/mitch/.local/share/solmargintrader/backtester-task-1117. First audit existing minute caches and their provenance, then fetch or repair feasible gaps, publish verified contiguous segments and manifest coverage. Full availability, venue and quote must remain explicit.
+
+## v327 - 2026-11-09
+
+TASK-1128 continuation: /Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md describes the data. Fourteen source-labelled, verified, gap-free minute snapshots are stored in backtest-ready/recent-snapshots.sqlite and independently re-read from its same-machine backup. Eleven KuCoin USDC markets and OKX JitoSOL-USDT each cover 43,200 minutes; KMNO-USDT has 43,195 consecutive minutes then five unobserved tail minutes, which remained absent on a targeted KuCoin recheck; Kraken USDC-USD has 720 minutes. Quotes and venues are not substituted. The JitoSOL exchange-to-mint mapping remains unverified. The local primary and backup share one machine. A 43,200-bar SOL/USDC smoke backtest ran and its archive verified.
+
+Eleven legacy minute CSV files were copied to legacy-segments, indexed into gap-free checksum-verified chunks, and accompanied by exact gap ledgers. The 28,045,077 observations contain 2,436,585 unobserved minute slots; venue/quote identity is not cryptographically bound for most. Existing reconstructed samples are separate. Funding files with irregular cadence are quarantined rather than rounded or forward-filled.
+
+The first KuCoin collector version mistakenly requested hi-60 even though live tests proved endAt exclusive; affected stores are preserved with boundary-omission-v1 names. Schema-2 stores use endAt=hi. Concurrent collectors now coordinate using KUCOIN_HTTP_LOCK and atomically detect identical or conflicting simultaneous pages. Ongoing deeper jobs must be checked before restart: SOL-USDC [1653264000,1794255240), KMNO-USDT [1714435200,1794255480). Their separate SQLite stores retain every raw page, normalized rows and window-level checkpoints; they are not complete until final verification and exact gap ledgers. See TASK-1128 and KNOW-1131/1132/1138. Postman CLI was unavailable and Orbit returned HTTP 403; Context7 and live source evidence were used, with local HTTP simulation tests.
