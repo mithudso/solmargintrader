@@ -48,6 +48,8 @@ Prediction rows refresh automatically every ten seconds. The dashboard does this
 view is visible, including when Follow stream is off. The TUI reads in a background worker so the
 graph stays responsive. Both views show the last successful refresh time, report failed reads and
 retry them automatically. A slow read cannot overlap another prediction read.
+Each interface uses a dedicated ten-second timer independent of chart updates and read latency.
+If a read is still running, the timer skips that period rather than queuing another read.
 
 This refresh reads saved predictions. The forward runner still issues forecasts on closed minute
 candles; an unchanged direction between refreshes is valid. Between refreshes, both surfaces recheck

@@ -34,7 +34,9 @@ await ev(`(async()=>{
  window.setInterval=(fn,delay,...args)=>{const id=nativeSetInterval(fn,delay,...args);intervals.push({fn,delay,id});return id};
  try {await (await import(chrome.runtime.getURL('src/ui/soltui-panel.js'))).mountSoltuiPanel(r,tx)}
  finally {window.setInterval=nativeSetInterval;for(const interval of intervals)clearInterval(interval.id)}
- window.liveTimerTick=intervals.find(x=>x.delay===1000)?.fn;
+ const predictionTimer=intervals.find(x=>x.fn.name==='pollLivePredictions');
+ window.liveTimerTick=predictionTimer?.fn;window.liveTimerDelay=predictionTimer?.delay;
+ window.livePriceTick=intervals.find(x=>x.delay===5000)?.fn;
  window.pick=name=>{const s=r.querySelector('#soltuiCommand');s.value=name;s.dispatchEvent(new Event('change'))};
  })()`);
 await ev(`pick('jupiter.order_preview');r.querySelector('#soltuiForm').requestSubmit()`);
@@ -94,11 +96,12 @@ console.log('PASS coin switch clears old scores and ignores obsolete failures');
 // Drive the registered timer with a clock; no manual refresh may perform the
 // second read, and Follow stream stays off throughout the cadence checks.
 assert.equal(await ev(`typeof liveTimerTick`), 'function');
+assert.equal(await ev(`liveTimerDelay`), 10000, 'predictions have a dedicated ten-second timer');
 await ev(`window.realNow=Date.now;window.testNow=realNow();Date.now=()=>testNow;liveClock=testNow-1000;r.querySelector('#soltuiLiveStream').checked=false;liveDirection='UP';r.querySelector('#soltuiLiveRefresh').click()`);
 await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated') && r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy')`);
 const reads = () => ev(`calls.filter(x=>x.command==='forwardtest.predictions').length`);
 const baseline = await reads();
-await ev(`liveDirection='DOWN';testNow+=9999;liveTimerTick()`);
+await ev(`liveDirection='DOWN';testNow+=9999;livePriceTick()`);
 assert.equal(await reads(), baseline, 'no read before the ten-second deadline');
 await ev(`testNow+=1;liveTimerTick()`);
 await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Sell')`);
@@ -108,7 +111,7 @@ assert.ok(await ev(`r.querySelector('#soltuiLivePredictionStatus').textContent.i
 await ev(`liveFailNext=true;testNow+=10000;liveTimerTick()`);
 await wait(`r.querySelector('#soltuiLivePredictionStatus').textContent.includes('temporary prediction read failure')`);
 assert.equal(await reads(), baseline + 2);
-await ev(`liveDirection='UP';testNow+=9999;liveTimerTick()`);
+await ev(`liveDirection='UP';testNow+=9999;livePriceTick()`);
 assert.equal(await reads(), baseline + 2, 'failures retry at ten seconds, not every price tick');
 await ev(`testNow+=1;liveTimerTick()`);
 await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelector('#soltuiLivePredictionStatus').textContent.startsWith('Updated')`);

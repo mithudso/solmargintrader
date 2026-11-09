@@ -193,13 +193,14 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let heartbeat;
   let pollTimer;
   let liveTimer;
+  let predictionTimer;
   let liveBusy = false;
   let nowBusy = false;
   let nowLoaded = false;
   let liveAsset = '';
   let livePoints = [];
   let predictionsAt = 0;
-  let predictionAttemptAt = 0;
+  let predictionAttempted = false;
   let predictionRows = [];
   let voting = { min_accuracy: 60, min_resolved: 20 };
   let liveGeneration = 0;
@@ -284,6 +285,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const spec = WORKSPACES.find((w) => w.id === workspace.value) ?? WORKSPACES.at(-1);
     $('#soltuiWorkspaceDetail').textContent = spec.detail;
     $('#soltuiLive').hidden = !['signal', 'now'].includes(spec.id);
+    if (commands.length && !predictionAttempted && liveVisible()) refreshLive();
     $('#soltuiNowSummary').hidden = spec.id !== 'now';
     if (spec.id === 'now' && commands.length && !nowLoaded) refreshNow();
     const filtered = filterCommands(commands, spec.id, search.value);
@@ -444,7 +446,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     liveBusy = true;
     try {
       if (asset !== liveAsset) {
-        liveAsset = asset; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttemptAt = 0;
+        liveAsset = asset; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
         const unavailable = aggregatePredictions([]);
         paintAggregate($('#soltuiLiveScore'), unavailable);
         paintAggregate($('#soltuiPredictionsScore'), unavailable);
@@ -455,8 +457,8 @@ export function mountSoltuiPanel(root = document, transport = send) {
       }
       // Resolve the prediction snapshot before observing a new tick. Later
       // prediction refreshes must never alter a tick's recorded score.
-      if (force || !predictionAttemptAt || Date.now() - predictionAttemptAt >= LIVE_PREDICTIONS_MS) {
-        predictionAttemptAt = Date.now();
+      if (force || !predictionAttempted) {
+        predictionAttempted = true;
         $('#soltuiLivePredictionStatus').textContent = `Refreshing ${asset} predictions… · refresh every 10s`;
         try {
           const predictions = await ask('forwardtest.predictions', { asset });
@@ -470,12 +472,12 @@ export function mountSoltuiPanel(root = document, transport = send) {
           target.replaceChildren();
           if (predictionRows.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictionRows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
           else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
-          predictionsAt = predictionAttemptAt = Date.now();
+          predictionsAt = Date.now();
           const updated = new Date(predictionsAt).toISOString().slice(11, 19);
           $('#soltuiLivePredictionStatus').textContent = `Updated ${updated} UTC · refresh every 10s · saved closed-candle predictions`;
         } catch (e) {
           if (disposed || contextGeneration !== liveGeneration || asset !== $('#soltuiLiveAsset').value.trim().toUpperCase()) return;
-          predictionAttemptAt = Date.now();
+          predictionAttempted = true;
           predictionRows = [];
           $('#soltuiLivePredictions').replaceChildren();
           $('#soltuiLivePredictionStatus').textContent = `Prediction refresh failed: ${e.message} · retrying every 10s`;
@@ -527,7 +529,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const env = await ask('settings.save', { live_vote_min_accuracy: min, live_vote_min_resolved: count });
       if (!env.ok) throw new Error(env.error?.message ?? 'Settings refused.');
       voting = { min_accuracy: min, min_resolved: count };
-      predictionsAt = predictionAttemptAt = 0;
+      predictionsAt = 0; predictionAttempted = false;
       $('#soltuiVoteStatus').textContent = 'Saved shared voting floor.';
       const aggregate = aggregatePredictions(predictionRows, Date.now() / 1000, voting);
       paintAggregate($('#soltuiLiveScore'), aggregate);
@@ -621,7 +623,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   });
   $('#soltuiLiveAsset').addEventListener('change', () => {
     liveGeneration += 1;
-    liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttemptAt = 0;
+    liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
     $('#soltuiLiveChart').replaceChildren();
     $('#soltuiLivePredictions').replaceChildren();
     const unavailable = aggregatePredictions([]);
@@ -642,16 +644,25 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const built = buildParams(c, values);
     if (!built.errors.length) run(c, built.params, true);
   }, 10_000);
+  function liveVisible() {
+    return !disposed && !document.hidden && !$('#view-soltui').hidden && !$('#soltuiLive').hidden;
+  }
+  function pollLivePredictions() {
+    // Use a separate fixed timer: read latency must not extend the ten-second
+    // cadence, and a busy reader skips a tick rather than queuing a burst.
+    if (liveVisible() && !liveBusy && !votingSaving) refreshLive(true);
+  }
+  predictionTimer = setInterval(pollLivePredictions, LIVE_PREDICTIONS_MS);
   liveTimer = setInterval(() => {
     if (disposed || document.hidden || $('#view-soltui').hidden || $('#soltuiLive').hidden) return;
-    // Table refresh is automatic; Follow stream only adds intervening price reads.
-    if ($('#soltuiLiveStream').checked || !predictionAttemptAt || Date.now() - predictionAttemptAt >= LIVE_PREDICTIONS_MS) refreshLive();
-  }, 1000);
+    if ($('#soltuiLiveStream').checked || !predictionAttempted) refreshLive();
+  }, 5000);
   function dispose() {
     disposed = true;
     clearInterval(heartbeat);
     clearInterval(pollTimer);
     clearInterval(liveTimer);
+    clearInterval(predictionTimer);
     transport({ type: 'soltuiSession', session, active: false }).catch(() => {});
   }
   window.addEventListener('pagehide', dispose, { once: true });

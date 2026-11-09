@@ -1033,7 +1033,7 @@ class SolTuiApp(App):
         self._signal_live_last_coin: str | None = None
         self._signal_live_busy = False
         self._signal_live_last_pred_update = 0.0
-        self._signal_live_last_pred_attempt = 0.0
+        self._signal_live_prediction_timer = None
         self._signal_live_prediction_key: tuple[str, float, int] | None = None
         self._signal_live_pred_generation = 0
         self._signal_live_refresh_requested = False
@@ -1778,6 +1778,9 @@ class SolTuiApp(App):
         self._signal_live_alive.clear()
         self._signal_live_pred_generation += 1
         self._signal_live_refresh_requested = False
+        if self._signal_live_prediction_timer is not None:
+            self._signal_live_prediction_timer.stop()
+            self._signal_live_prediction_timer = None
         if self._signal_live_busy:
             await asyncio.to_thread(self._signal_live_drained.wait, 5.0)
         self._bots_fit_alive.clear()
@@ -3186,6 +3189,7 @@ class SolTuiApp(App):
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(1, self._signal_live_tick)
+        self._signal_live_prediction_timer = self.set_interval(10, self._signal_live_poll_predictions)
         if getattr(self.settings, "forwardtest_autostart", True):
             restored = self._call("forwardtest.restore", quiet=True)
             from .commands import forward_coins
@@ -4246,6 +4250,12 @@ class SolTuiApp(App):
             if self.query("#signal-live-chart-xaxis"):
                 self.query_one("#signal-live-chart-xaxis", Static).update("")
 
+    def _signal_live_poll_predictions(self) -> None:
+        # Keep the ten-second schedule independent of chart ticks and read
+        # latency. A busy reader skips this period, without a catch-up burst.
+        if not self._signal_live_busy:
+            self._signal_live_refresh_predictions(force=True)
+
     def _signal_live_refresh_predictions(self, force: bool = False) -> None:
         if not self._signal_live_alive.is_set() or not self.query("#signal-live-predictions-table"):
             return
@@ -4262,12 +4272,10 @@ class SolTuiApp(App):
         if self._signal_live_busy:
             self._signal_live_refresh_requested |= force or changed
             return
-        now = time.monotonic()
-        if not force and not changed and now - self._signal_live_last_pred_attempt < 10.0:
+        if not force and not changed:
             return
         self._signal_live_busy = True
         self._signal_live_refresh_requested = False
-        self._signal_live_last_pred_attempt = now
         # A saved snapshot can take seconds to read. Keep it off the one-second
         # chart timer, and never start a second database read while one is active.
         self._signal_live_drained = threading.Event()
@@ -4299,9 +4307,6 @@ class SolTuiApp(App):
         if generation != self._signal_live_pred_generation or key != current:
             self._signal_live_refresh_predictions(force=True)
             return
-        # Give a slow or failed read a full interval before retrying, rather
-        # than immediately retrying because its start time is already overdue.
-        self._signal_live_last_pred_attempt = time.monotonic()
         error = None
         if env.get("ok"):
             self._signal_live_prediction_rows = env["result"]["rows"]

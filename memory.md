@@ -1,7 +1,13 @@
 # Work continuation
 
-Version: 237
-Delta: v236 to v237; record ten-second refresh implementation and independent acceptance.
+Version: 238
+Delta: v237 to v238; replace cooldown with dedicated ten-second prediction timers.
+
+## v238 - 2026-11-08
+
+PR https://github.com/mithudso/solmargintrader/pull/148 is the canonical delivery receipt for this task. Real-clock acceptance exposed an extra second in the v237 cooldown approach. Both interfaces now use a dedicated ten-second periodic prediction timer, separate from chart timers and read duration. Periodic polls skip busy readers without queuing catch-up bursts. The dashboard takes an initial visible snapshot and retains its five-second Follow stream price timer. The TUI graph timer only requests initial or changed-context snapshots. Manual/coin/floor refreshes, error recovery, generation guards and shutdown safety remain intact.
+
+Reverified after the timer correction: 372 extension tests, 24 real-host Chrome checks, 23 fixture-host Chrome checks and 12 focused TUI tests passed. Independent real-clock TUI start gaps were 10.069 and 9.997 seconds with a 250ms read delay; changed rows, read-failure recovery, one-reader admission, responsive graph, context guards and shutdown drain passed. Independent steady-state browser start gaps were 10,000 and 10,000 milliseconds with Follow stream off and no Refresh clicks. Five automatic reads included changed rows and failure/recovery; maximum reader count was one, and hidden/disposed panels stopped polling. All 909 backtester tests passed after index regeneration. Remaining: final-head CI, merge, safe master sync and own branch/worktree cleanup. Earlier v237 eleven-second cadence and head 0c0d714 are historical checkpoints, not the final behavior. The PR's final pushed head, checks and merged status establish final delivery. No trainer, order, user-session or service state changed.
 
 ## v237 - 2026-11-08
 
