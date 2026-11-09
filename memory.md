@@ -1,9 +1,11 @@
 # Work continuation
 
-Version: 336
+Version: 337
+Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
 Delta: v335 to v336; resolve current branch conflicts and record the explicit merge request.
 Delta: v330 to v331; verify persistent runtime source and reserve safe stop capacity.
 Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime.
+Delta: v315 to v316; checkpoint forward signal research preparation.
 Delta: v334 to v335; record streaming and snapshot refresh recommendation.
 Delta: v333 to v334; document implementation, scripts, backups and future gates.
 Delta: v332 to v333; start backtester implementation and recovery handoff.
@@ -876,6 +878,9 @@ Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/s
 
 Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.
 
+## v316 - 2026-11-09
+
+TASK-1104: Research a streaming, restart-safe forward-testing signal daemon with selective subscriptions and MCP. Backtester implementation is deferred. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c1a0 on agent-01a1c1a0 starts at 7846848; shared checkout has another live session and three untracked files. Read prompt-deep-optimizer and llms-txt-tooling full-suite reference. Stele KNOW-655 warns parameter selection can overfit; TASK-1057 is active persistence work. Remaining: execute optimizer and full-suite, review current project and sources, produce evidence-backed design and validation, then deliver. No research saturation or optimizer convergence has been established.
 
 ## EPIC-1106 — approved bot manager implementation
 
@@ -1022,3 +1027,9 @@ Final source review found3Important defects beyond the approved task gate: reado
 Installed0.2 acceptance matched69Python files, regular origins and inert reads. Actual read-only source capture115samples/2bars passed unchanged-source checks. An empty isolated launchd job ran the stable executable; first removal was conservatively unconfirmed and cleanup retry verified job/plist/lock absence. Concurrent installed recovery remains blocked by the read-snapshot defect; stable quiet-state journals reconcile, so durable corruption was not established. No production job, bot, key, browser or recorder was changed.
 
 The conflict-resolution commit is an intermediate local integration checkpoint. Generated catalogs will be rebuilt after the worker's tested source fix, rather than hashing in-flight edits. Do not push/merge as complete until final catalog/docs checks, scoped re-review, refreshed installed behavior and final-head CI pass. PR180 remains draft while fixing. Preserve all root/source edits and retain the SDD recovery ledger.
+
+## v337 — 2026-11-09 — final source approval and current-default integration
+
+Conflict resolution also preserves origin/master 8dc44c9f's forward-signal research request and continuation. The incoming record carried historical version headers above the newer records and an unclosed prompt fence; merge resolution retains the full request, closes its fence and keeps one current version header. No source or runtime behavior changed during this integration.
+
+Final combined source fix39e0c262 passed109manager tests,42covering tests and Ruff/format. The single independent scoped re-review approved all three corrections with no residual Important finding. A regular manager-only installation into /Users/mitch/.venvs/solbot completed with exit0; no dependency change occurred. Independent concurrent/recovery/stop/restart and actual-recording runtime acceptance is active. Earlier service/input gates remain retained with their stated limitations. Final metadata gates, final-head CI and actual PR180 merge are still required.
