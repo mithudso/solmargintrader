@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `178c1d8` (2026-11-09T20:16:16+00:00). 2822 tracked files, 62.7 MB.
+**Generated** from `index/INDEX.json` at commit `032db6c` (2026-11-09T20:35:05+00:00). 2822 tracked files, 62.7 MB.
 
 Regenerate with:
 
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 895 lines · 168,812 B · description: **extracted**
+`doc` · 906 lines · 170,850 B · description: **extracted**
 
-**Purpose.** Version: 326 Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation. Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
+**Purpose.** Version: 327 Delta: v326 to v327; approve milestone1 source and prepare verified release. Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
 
 **Use.** Read it.
 
@@ -338,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27526 lines · 1,423,796 B · description: **extracted**
+`doc` · 27642 lines · 1,428,551 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -466,9 +466,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-milestone-1.md`
 
-`doc` · 58 lines · 4,699 B · description: **extracted**
+`doc` · 75 lines · 5,827 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Date: 2026-11-09 Status: implementation under final review; delivery not yet complete.
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance. Date: 2026-11-09
 
 **Use.** Read it.
 
@@ -23518,7 +23518,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bots.py`
 
-`code-python` · 1615 lines · 77,731 B · description: **extracted**
+`code-python` · 1648 lines · 79,295 B · description: **extracted**
 
 **Purpose.** The Bots tab's grid, triangular-arbitrage, DCA and Trend simulations. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
 
@@ -24706,7 +24706,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_manager_controls.py`
 
-`test` · 375 lines · 16,063 B · description: **extracted**
+`test` · 473 lines · 20,662 B · description: **extracted**
 
 **Purpose.** Safe delegated forward controls use isolated files and never launch a recorder.
 
@@ -25270,7 +25270,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 293 lines · 18,124 B · description: **extracted**
+`doc` · 303 lines · 18,808 B · description: **extracted**
 
 **Purpose.** The standalone `solbot` CLI creates persistent named bot drafts and inspects their pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC. There is no manager runtime in this release. Creating a draft cannot start a
 
@@ -25354,7 +25354,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/status.py`
 
-`code-python` · 333 lines · 13,421 B · description: **extracted**
+`code-python` · 341 lines · 13,835 B · description: **extracted**
 
 **Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
 
@@ -25386,7 +25386,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/adapters/soltui.py`
 
-`code-python` · 922 lines · 35,457 B · description: **extracted**
+`code-python` · 942 lines · 36,345 B · description: **extracted**
 
 **Purpose.** Bounded loopback owner adapter. Discovery never starts an owner or creates state.
 
@@ -25426,7 +25426,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_legacy.py`
 
-`test` · 783 lines · 32,921 B · description: **extracted**
+`test` · 875 lines · 36,979 B · description: **extracted**
 
 **Purpose.** Real loopback HTTP fixtures verify transport and authority, not live trading.
 

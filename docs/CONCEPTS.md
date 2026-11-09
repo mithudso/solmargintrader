@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:16:16+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:35:05+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -257,7 +257,7 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 725 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `trend` | 726 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 462 | `rsi`, `stochastic`, `oscillator` |
 | `momentum` | 351 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 319 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |

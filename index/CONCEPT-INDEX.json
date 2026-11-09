@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T20:16:16+00:00",
+  "generatedAt": "2026-11-09T20:35:05+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -206,7 +206,7 @@
         },
         {
           "path": "soltui/bots.py",
-          "hits": 48
+          "hits": 54
         },
         {
           "path": "llms-full.txt",
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 725,
+      "matchingFiles": 726,
       "shown": 30,
       "files": [
         {
@@ -789,6 +789,10 @@
           "hits": 57
         },
         {
+          "path": "botmanager/tests/test_legacy.py",
+          "hits": 55
+        },
+        {
           "path": "docs/design/bot-control-room/mockup.css",
           "hits": 55
         },
@@ -831,10 +835,6 @@
         {
           "path": "soltui/bots.py",
           "hits": 49
-        },
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 48
         }
       ],
       "source": "curated-from-repo-vocabulary"

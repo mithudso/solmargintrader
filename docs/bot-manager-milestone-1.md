@@ -1,8 +1,9 @@
 # Standalone bot manager milestone 1
 
-Version: 1.0.0
+Version: 1.0.1
+Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance.
 Date: 2026-11-09
-Status: implementation under final review; delivery not yet complete.
+Status: implementation and local acceptance complete; remote receipt linked below.
 
 The approved standalone manager design and implementation order remain authoritative.
 The control-room UI is a future client of the manager state and command receipts.
@@ -52,6 +53,22 @@ edge. The UI prototype's 49 browser assertions verify only that prototype.
 
 ## Verification and delivery
 
-Final review, installed-console acceptance and final-head CI/merge are pending.
+At source revision032db6c, all67 manager tests and124 affected owner tests passed.
+Scoped lint/format, six CI-selector tests and documentation checks passed.
+The final broad review and scoped fix-wave review approved specification and
+quality. The guarded owner protocol now refuses malformed existing state while
+preserving its bytes. Status preserves observed versus declared configuration paths.
+
+Independent installed acceptance at6ebd6d6 matched all11 module hashes and passed17
+fresh-process invocations outside the checkout. The package was refreshed after the
+last fix; independent follow-up matched all11 final module hashes and passed three
+fresh-process reads and four configuration-path fixtures. The default owner returns
+`incompatible_owner` with `bots=null`; actual installed-owner controls remain
+unavailable. This does not establish that the owner has no bots.
+
+Documentation discovery is983backtester/1402SolTUI/408extension/46mongo tests,
+2839total. The manager has its own67-test CI gate. Final remote CI and delivery
+are recorded in https://github.com/mithudso/solmargintrader/pull/175.
+
 No production service, live bot, signing path or graphical client is activated by
 this milestone. Verification results will be recorded here before delivery.

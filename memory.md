@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 326
+Version: 327
+Delta: v326 to v327; approve milestone1 source and prepare verified release.
 Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
 Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
 Delta: v318 to v319; integrate PR172 while preserving implementation and UI histories.
@@ -892,3 +893,13 @@ The storage foundation in https://github.com/mithudso/solmargintrader/pull/174 m
 ## v326 — integrated manager and historical storage histories
 
 Integrated e0c6934 without changing its verified historical snapshot/archive source. Both active task histories and exact requests remain. Manager task2 re-review accepted the exact-config and durable identity fixes but found a remaining crash-window provenance issue: pending receipts must not report the discovery hash as a responding owner revision. Original implementer owns focused fix round2; final review and delivery remain pending.
+
+## v327 — 2026-11-09 — milestone1 source approved
+
+Source032db6c passed all67 manager tests (23.397s),124 affected owner tests, scoped Ruff/format and diff checks. CI selector6 tests pass. Final broad review and its single scoped fix-wave re-review approve spec and quality. Strict manager-only forward loading now refuses malformed existing state without replacing its bytes. Observed owner configuration paths stay distinct from declared descriptor candidates. All original receipt/config findings and final review findings are resolved.
+
+Post-integration docs agree:983backtester/1402SolTUI/408extension/46mongo total2839; manager has a separate CI job. The incoming historical snapshot/archive source and accepted UI artifacts remain unchanged. The67-test manager suite is separate from those quoted legacy suite counts. Existing33owner Ruff findings are unchanged; no broad cleanup occurred.
+
+Noneditable manager0.1.0 is installed in /Users/mitch/.venvs/solbot, exposed as /Users/mitch/.local/bin/solbot. Independent installed verification at6ebd6d6 matched11modules and17fresh-process behavior checks; package was refreshed after032db6c. Independent follow-up matched all11 final module hashes, passed3 fresh-process reads with absent-home preservation and4 observed/declared path fixtures. Actual default owner discovery returns incompatible_owner/bots=null; no actual installed-owner control, heartbeat or live execution success is claimed. No production bots, services, keys or browser state changed.
+
+PR175 is the canonical delivery receipt: https://github.com/mithudso/solmargintrader/pull/175. At this record, final metadata, final pushed-head CI and merge remain. Do not infer completion from this entry; inspect the PR and remote tree. After verified delivery complete TASK1107 and claim TASK1108; continue prepared task3 multi-instance reference-paper runtime in milestone order. Keep primary checkout's unrelated untracked files unchanged.
