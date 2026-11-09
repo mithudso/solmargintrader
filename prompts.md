@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 164
+Version: 165
+Delta: v164 to v165; record the Oracle creation request.
 Delta: v163 to v164; record oracle streaming versus refresh question.
 Delta: v162 to v163; record the detailed backtester handoff request.
 Delta: concurrent histories to v162; preserve monitor qualification and merged Kraken research/backup records.
@@ -42,6 +43,12 @@ Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
+
+## v165 - 2026-11-09
+
+```text
+use the deep prompt optimizer on this skill and then execute it: Create an agent who will  be called the Oracle. The job of the oracle in the context of the crypto trading bot ecosystem I am creating is to 1) subscribe to and receive constant streaming updates about the price of the coins that are being traded. We will start with SOL/USDC on jup.ag. 2) Take a strategy card and apply it to the data to dertive a prediction of if the price will go up or down and to what degree the strategu is certain. 3) Keep track of which strategies have been consistently accurate and which have not been, and to promote the votes of the strong candidates and kill off the weaker ones. 4) Be a MCP server with a pub/sub model that wants to know the price or your prediction you send it to them. 5) You store all data into the historical archive. 6) You control the authentication and subscriptions it's your job to make sure that trades can be made and that all the keys are in place. 7) Also act as a documentation router and guide distributor, meaning you must know the lifecycle of an agent, where each agent is at, and be able to guide them to the next step. You will find these guides in the skills folders and also in the llms-explorer concept tree. You do not make purchases, but you can stop another agent from making one if you think it's a poor plan. Review the crypto bot skills and llms concept packs, as well as the bot management skills. The lifeycle of a new trading bot is to first go get vetted by the Backtester, who will give them a final score for each coin. After they are backtested they move to forward testing where they buy or sell based on their own rules but not using real money, until some arbitrary level of certainty that they won't immediately lose everything. Once they are forward tested they are ready to launch live, where they will use real money on real trades. The Bot Manager will monitor and keep track of their profit and loss, you may or may not be asked to provide a constant stream of predictions and aggregated predictions. The way you will do this is you will have 14 strategy cards, each strategy that has 100% accuracy has 100% of a vote, if they have over 100 resolved hits then it's 200% If their accuracy ever goes below 60% then they are excluded from voting until they are able to self-correct enough to be accurate again. As an agent it is your job to be on the lookout for ways to improve any aspect of what you see and to eithe ract, call it out, or someohow get it resolved. If you see a strategy that is staying under 60% accuracy,  maybe help them adjust their parameters until they are solvent again. Most of your job is going to be receiving streams of prices and sending Strong Sell, Sell, Flat, Buy, Strong Buy and the percent number you're at. You will also be an mcp server so many things will ask you what you can do and what they should do.
+```
 
 ## v164 - 2026-11-09
 

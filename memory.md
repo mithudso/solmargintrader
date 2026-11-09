@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 335
+Version: 337
+Delta: v336 to v337; checkpoint the Oracle prompt and unresolved integrations.
+Delta: v335 to v336; begin Oracle optimization and implementation in an isolated checkout.
 Delta: v334 to v335; record streaming and snapshot refresh recommendation.
 Delta: v333 to v334; document implementation, scripts, backups and future gates.
 Delta: v332 to v333; start backtester implementation and recovery handoff.
@@ -74,6 +76,14 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v337 - 2026-11-09: Oracle continuation
+
+The optimized candidate is docs/oracle-optimized-prompt.md. The PDO review found ambiguous vote doubling, freshness, signing custody, enforcement, provenance and absent success criteria. The candidate addresses these provisionally; its latest rewrite still needs a fresh blind audit and the remaining PDO checks before claiming optimizer completion. Three pass-group reviews and one non-blind independent re-audit ran; the last identified unbounded retries, now amended. No Oracle service has been implemented or deployed. Continue TASK-1154: finish optimizer evidence and execute the prompt, with independently verified tests and delivery. Jupiter Price V3 documentation describes USD token prices over authenticated HTTP, not an established SOL/USDC streaming feed. The existing soltui/pricefeed.py streams and records Coinbase products; do not label that Jupiter or start a competing recorder. backtester/core/history_store.py imports immutable contiguous OHLCV snapshots, not the existing stream: an explicit archive bridge is required. The active Bot Manager milestone work and Council work are owned elsewhere. The veto is not enforced until the actual execution path consumes it. Resolve the exact 14 strategy-card selection, bonus semantics, forward-test gates and source authenticity without fabricating evidence; retain the documented provisional interpretation. No keys, live orders, recorders or services were changed.
+
+## v336 - 2026-11-09: Oracle work in progress
+
+TASK-1154 owns the Oracle request in prompts.md v165. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1c228, branch agent-01a1c228, based on origin/master f92b9291. Another session owns the original checkout and active Bot Manager work; preserve them. User requires prompt optimization followed by execution, a streaming SOL/USDC feed, 14 strategy votes, archive, MCP subscriptions, readiness and lifecycle routing. Do not sign or submit orders. Existing prediction and recorder infrastructure must be inspected and reused where appropriate; do not start a duplicate recorder. Accuracy is not a calibrated profit probability. Missing capabilities must fail closed. Research and implementation, independent checks and delivery remain.
 
 ## v335 - 2026-11-09: streaming and historical snapshots
 
