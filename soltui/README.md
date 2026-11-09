@@ -1,5 +1,16 @@
 # soltui — SOL strategy console
 
+The Bots picker lists **DCA, Grid, Arbitrage, Trend and Council**. All five are paper bots.
+Trend follows momentum with simple moving averages: it buys after the fast average
+exceeds the slow average by the entry buffer and exits when fast falls to or below slow.
+Defaults are `fast_period=10 slow_period=30 entry_buffer_bps=10 capital_usd=1000`.
+Periods count bars (1-hour backtests; recorded 1-minute forward tests). Fills use the
+next bar's open with configured fees and slippage. Each sample closes any remaining
+position at its final close with costs, including forward replay summaries.
+Trend shares per-coin settings, backtests, forward tests and gated optimization with
+Grid and DCA. It needs 31 completed bars at its default settings. Sideways markets
+can cause repeated entry/exit losses. Coin suitability screens remain specific to Grid and DCA.
+
 **Bots → Council** runs the persistent consensus paper bot. It holds a position
 until opposite eligible votes arrive; shorts and leverage are opt-in.
 See [Council rules and fill assumptions](../docs/COUNCIL.md).
@@ -578,7 +589,7 @@ order."* This package holds to that:
   tested engine once and exposes a cursor over the result.
 - A paper replay's `summary()["live_orders_placed"]` remains `0`; it does not include
   independent manual Coinbase orders.
-- **The Bots tab simulates.** Its grid, triangle and DCA bots run the backtester's simulators
+- **The Bots tab simulates.** Its Grid, Arbitrage, DCA and Trend bots run the backtester's simulators
   over cached bars or the recorded stream; `test_bots.py` and `test_pricefeed.py` assert that
   neither module names a key file, a signer or an order call. The price recorder reads public
   Coinbase market data only and writes only under `~/.config/soltui/prices/`; the bots write only
@@ -613,7 +624,8 @@ soltui/
   bgworker.py  the background sweep process itself (python3 -m soltui.bgworker)
   bgcontrol.py spawn/stop the worker; the liveness lock
   liquidity.py pure: read/validate/format the liquidity daemon's state files; KILL toggle
-  bots.py      the Bots tab: grid / triangle / DCA bot configs, backtest, forward test, auto-optimize
+  bots.py      five-bot picker; DCA / Grid / Arbitrage / Trend workbench and Council routing
+  trend.py     long-only moving-average momentum; shared engine and next-open fills
   bots_screens.py the Bots tab's coin picker and auto-optimize window (presentation only)
   experiments.py immutable experiment/cell store, typed spaces, sparse maps, TradingView evidence
   experiment_runner.py frozen native evaluation, checkpoints and fresh final holdout guards

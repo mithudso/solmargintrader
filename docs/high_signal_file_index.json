@@ -829,8 +829,15 @@
       "path": "soltui/bots.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test",
-      "lines": 1318
+      "summary": "Five-bot list and Grid, Arbitrage, DCA and Trend settings, backtests, recorded-stream forward tests and gated optimization",
+      "lines": 1394
+    },
+    {
+      "path": "soltui/trend.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Long-only moving-average momentum paper bot using the shared next-open engine, fees and slippage",
+      "lines": 83
     },
     {
       "path": "soltui/experiments.py",

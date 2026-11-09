@@ -228,7 +228,7 @@ def run_cycle(*, root: Path | None = None, settings: Any = None,
     settings = settings if settings is not None else config.load_settings()
     optimizer = optimizer or bots.optimize
     coins = list(dict.fromkeys(coins if coins is not None else bots.available_coins(settings)))
-    work = [(bot, coin) for bot in ("grid", "dca") for coin in coins] + [("triangle", "")]
+    work = [(bot, coin) for bot in ("grid", "dca", "trend") for coin in coins] + [("triangle", "")]
     with closing(_db(root)) as db, db:
         # A fresh cycle freezes its universe. A crash resumes the unfinished cycle.
         if not _get(db, "cycle_active", False):

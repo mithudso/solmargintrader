@@ -182,7 +182,8 @@ file — not the menu-bar Quit item — is the real off switch.
 | `soltui/bgworker.py` | Detached offline sweep worker and per-process array cache |
 | `soltui/compound.py` | Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI `python3 -m soltui.compound` |
 | `soltui/liquidity.py` | Reads daemon state; creates/removes only the KILL flag |
-| `soltui/bots.py` | Bots tab backend: grid, triangle and DCA bot configs, backtest from a start point, dry-run forward test on the recorded stream, auto-optimize with an out-of-sample sign test |
+| `soltui/bots.py` | Five-bot list and Grid, Arbitrage, DCA and Trend settings, backtests, recorded-stream forward tests and gated optimization |
+| `soltui/trend.py` | Long-only moving-average momentum paper bot; shared next-open engine with fees and slippage |
 | `soltui/experiments.py` | Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison |
 | `soltui/experiment_runner.py` | Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards |
 | `soltui/experiment_jobs.py` | Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery |

@@ -1,8 +1,8 @@
 # Testing
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 960 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1375 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 961 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1384 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
@@ -14,7 +14,7 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2789 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2799 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -108,7 +108,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 960 tests
+## Backtester — 961 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -160,7 +160,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1375 tests
+## soltui — 1384 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with

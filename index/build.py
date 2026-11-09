@@ -133,8 +133,10 @@ def tracked_files() -> list[str]:
     """
     r = subprocess.run(["git", "-C", str(REPO), "ls-files"],
                        capture_output=True, text=True, check=True)
-    return sorted(x for x in r.stdout.splitlines()
-                  if x.strip() and x not in SELF_EXCLUDED)
+    # An unresolved merge reports one path per index stage. The catalog uses
+    # paths as row keys, so repeated stages must never create repeated rows.
+    return sorted({x for x in r.stdout.splitlines()
+                   if x.strip() and x not in SELF_EXCLUDED})
 
 
 def sha1_of(p: Path) -> str:
@@ -809,6 +811,14 @@ def check() -> int:
         print("  Build it: python3 index/build.py all")
         return 1
     old = json.loads(INDEX_JSON.read_text())
+    duplicates = sorted(path for path, count in Counter(e["path"] for e in old["files"]).items()
+                        if count > 1)
+    if duplicates:
+        print("INDEX CHECK FAILED: duplicate catalog paths.")
+        for path in duplicates[:12]:
+            print(f"    {path}")
+        print("  Rebuild: python3 index/build.py all")
+        return 1
     was = {e["path"]: e["sha1"] for e in old["files"]
            if e["path"] not in DERIVED_TRACKED}
     now = {rel: sha1_of(REPO / rel) for rel in tracked_files()

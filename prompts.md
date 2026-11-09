@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 151
+Version: 152
+Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
 Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
 Delta: v148 to v149; default Follow Stream to checked.
@@ -16,6 +17,12 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v152 - 2026-11-09
+
+```text
+Create a trend-following (momentum) bot and add it to the bot list. So we should have 5 now. DCA, Grid, Arbitrage, Trend, and Council.
+```
 
 ## v150 - 2026-11-09
 

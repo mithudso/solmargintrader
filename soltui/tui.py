@@ -2002,15 +2002,15 @@ class SolTuiApp(App):
                         yield ExportPanel(GlossaryTable(id="compound-overview"))
 
     def _bots_pane(self) -> ComposeResult:
-        """The grid, triangle-arbitrage and DCA bots: backtest, forward test, auto-optimize, live prices.
+        """Five paper bots; Council uses its dedicated prospective controls.
 
         Every action is a `bots.*` or `prices.*` registry command; every bot is a simulation.
         """
         with Vertical(id="bots-scroll"):
             yield Static("SIMULATION AND DRY RUN ONLY: these bots place no orders.", classes="hint")
             with Horizontal(classes="form-row", id="bots-top"):
-                yield Label("Bot")
-                yield Select([(bots_mod.LABELS[b], b) for b in bots_mod.BOTS], value="grid",
+                yield Label("Bot", id="bots-picker-label")
+                yield Select([(bots_mod.LABELS[b], b) for b in bots_mod.BOT_CHOICES], value="grid",
                              allow_blank=False, id="bots-bot")
                 yield Label("Coins")
                 yield Button("SOL", id="bots-coins")
@@ -2022,11 +2022,11 @@ class SolTuiApp(App):
                 yield Input(placeholder="range_pct=10 rungs=9", id="bots-config")
                 yield Button("Apply", variant="primary", id="bots-apply")
                 yield Button("Defaults", id="bots-reset")
-            with Horizontal(classes="form-row"):
+            with Horizontal(classes="form-row", id="bots-editor-controls"):
                 yield Button("Edit all settings", id="bots-edit")
                 yield Static("Choose a coin and automatic or manual settings.", classes="hint")
             yield Static("", id="bots-about")
-            with Horizontal(classes="form-row"):
+            with Horizontal(classes="form-row", id="bots-actions"):
                 yield Button("Test status", id="status-bots")
                 yield Button("Backtest", variant="warning", id="bots-backtest")
                 yield Button("Start forward test", variant="success", id="bots-forward-start")
@@ -2038,7 +2038,7 @@ class SolTuiApp(App):
                 yield Button("Rank all coins (quick)", variant="primary", id="bots-fit-rank")
                 yield Button("Audit selected coin", id="bots-fit-audit", disabled=True)
                 yield Button("Cancel ranking / audit", id="bots-fit-cancel", disabled=True)
-            with Horizontal(classes="form-row"):
+            with Horizontal(classes="form-row", id="bots-schedule-controls"):
                 yield Button("Start daily auto-optimize", variant="success", id="bots-schedule-start")
                 yield Button("Stop daily auto-optimize", variant="error", id="bots-schedule-stop")
                 yield Button("Daily optimizer status", id="bots-schedule-status")
@@ -2196,6 +2196,22 @@ class SolTuiApp(App):
         return True
 
     def _bots_render_selected(self) -> None:
+        council = self._bots_bot == "council"
+        for widget in self.query_one("#bots-top").children:
+            if widget.id not in ("bots-picker-label", "bots-bot"):
+                widget.display = not council
+        for selector in ("#bots-editor-controls", "#bots-actions", "#bots-fit-controls",
+                         "#bots-schedule-controls", "#bots-schedule-summary", "#bots-fit-status"):
+            self.query_one(selector).display = not council
+        sections = self.query_one("#bots-sections", TabbedContent)
+        if council:
+            self.query_one("#bots-about", Static).update(bots_mod.ABOUT["council"])
+            self._bots_forward_running = False
+            sections.active = "bots-sec-council"
+            self._council_request()
+            return
+        if sections.active == "bots-sec-council":
+            sections.active = "bots-sec-backtest"
         if not self._bots_render_config():
             return
         self.query_one("#bots-coins", Button).disabled = self._bots_bot == "triangle"
@@ -2437,6 +2453,8 @@ class SolTuiApp(App):
             self._bots_tick()
 
     def _bots_forward_refresh(self) -> None:
+        if self._bots_bot == "council":
+            return
         self._bots_job("bots.forward_status", {"bot": self._bots_bot}, "replaying the recorded stream")
 
     @on(Button.Pressed, "#council-save")
@@ -2621,6 +2639,16 @@ class SolTuiApp(App):
                     "Coin suitability: rank this bot's coins, then audit a selected row.")
                 self._bots_render_selected()
 
+    @on(TabbedContent.TabActivated, "#bots-sections")
+    def _bots_section_changed(self, event: TabbedContent.TabActivated) -> None:
+        if not self._bots_loaded or event.pane is None:
+            return
+        picker = self.query_one("#bots-bot", Select)
+        if event.pane.id == "bots-sec-council":
+            picker.value = "council"
+        elif picker.value == "council":
+            picker.value = "grid"
+
     @on(Button.Pressed, "#bots-edit")
     def _bots_edit_settings(self) -> None:
         if self._bots_fit_busy:
@@ -2777,7 +2805,7 @@ class SolTuiApp(App):
     def _bots_fit_controls(self) -> None:
         if not self.query("#bots-fit-rank"):
             return
-        unsupported = self._bots_bot == "triangle"
+        unsupported = self._bots_bot not in ("grid", "dca")
         selected = self._bots_fit_rows.get(self._bots_fit_coin or "", {})
         bound_data = selected.get("data_sha256")
         self.query_one("#bots-fit-rank", Button).disabled = self._bots_fit_busy or unsupported
@@ -2792,7 +2820,9 @@ class SolTuiApp(App):
             self.query_one(wid).disabled = self._bots_fit_busy
         if unsupported and not self._bots_fit_busy:
             self.query_one("#bots-fit-status", Static).update(
-                "Coin suitability supports the grid and averaging-down DCA bots; triangle arbitrage is not a per-coin screen.")
+                "Coin suitability supports Grid and DCA; triangle arbitrage is not a per-coin screen."
+                if self._bots_bot == "triangle" else
+                "Coin suitability supports Grid and DCA. Use Trend's own testing controls.")
 
     def _bots_fit_signature(self) -> tuple:
         return (self._bots_bot, repr(self.settings),
