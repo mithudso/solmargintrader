@@ -150,3 +150,44 @@ th[aria-sort=descending] .column-sort::after { content: ' ↓'; }
 
 #soltuiResultCard table { min-width: 600px; }
 #soltuiResultCard td, #soltuiResultCard th { white-space: nowrap; }
+
+/* Persistent monitor stays outside routed sections. */
+body.dashboard { grid-template-columns: 200px minmax(0, 1fr) 318px; }
+.workspace-live-rail { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px 16px; border-left: 1px solid var(--line); background: var(--surface); }
+.live-monitor { min-width: 0; font-size: 13px; }
+.live-monitor > .card-head { gap: 8px; flex-wrap: wrap; }
+.live-monitor input { width: 65px; min-height: 32px; padding: 4px 7px; }
+.live-monitor h2 { margin: 0; font-size: 16px; }
+.live-monitor h3 { margin: 0; font-size: 14px; }
+.live-monitor .note { font-size: 11px; margin: 5px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.live-monitor a { font-size: 12px; }
+.rail-section { padding: 16px 0; border-top: 1px solid var(--line); }
+.rail-section .card-head { margin-bottom: 6px; }
+.rail-section summary { font-size: 11px; color: var(--muted); padding: 5px 0; cursor: pointer; }
+.rail-score { font-size: 21px; font-weight: 650; margin: 4px 0; }
+.rail-numbers { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 12px; margin: 10px 0; font-variant-numeric: tabular-nums; font-size: 12px; }
+.rail-numbers dt { color: var(--muted); }
+.rail-numbers dd { margin: 0; text-align: right; }
+.rail-votes, .rail-actions { padding: 0; list-style: none; margin: 10px 0 0; }
+.rail-votes li, .rail-actions li { display: flex; flex-direction: column; padding: 6px 0; gap: 2px; overflow-wrap: anywhere; }
+.rail-votes li + li, .rail-actions li + li { border-top: 1px solid var(--line); }
+.rail-votes small, .rail-actions small { font-size: 10px; color: var(--muted); }
+.strategy-vote { border: 0; background: transparent; padding: 0; min-height: 26px; text-align: left; color: var(--accent); font: inherit; overflow-wrap: anywhere; }
+.strategy-vote:hover, .strategy-vote[aria-pressed=true] { text-decoration: underline; }
+.vote-tooltip { position: fixed; z-index: 100; width: min(380px, calc(100vw - 16px)); max-height: 270px; overflow: auto; pointer-events: none; padding: 14px; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 32px #081f2850; background: var(--surface); color: var(--fg); font-size: 12px; }
+.vote-tooltip p { margin: 5px 0; }
+.strategy-chart-controls { padding: 6px 0 12px; }
+#strategyPriceChart { min-height: 440px; }
+.floating-live { margin: 0; padding: 14px; min-width: 300px; }
+.floating-live main { padding: 0; }
+.floating-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.floating-owner-note { margin-top: 0; }
+@media (max-width: 1550px) {
+  .desk-live-grid { grid-template-columns: minmax(0, 1fr); }
+  .desk-interpretation { display: block; }
+  .desk-interpretation h2 { font-size: 21px; }
+  .topbar { align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+}
+@media (max-width: 1150px) { body.dashboard { grid-template-columns: 170px minmax(0, 1fr) 285px; } main { padding: 18px; } }
+@media (max-width: 950px) { body.dashboard { grid-template-columns: 160px minmax(0, 1fr); } .workspace-live-rail { position: static; height: auto; grid-column: 2; border-top: 1px solid var(--line); } }
+@media (max-width: 760px) { body.dashboard { display: block; } .workspace-live-rail { border-left: 0; } .tradingview-chart { height: 380px; } }

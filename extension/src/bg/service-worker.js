@@ -26,6 +26,7 @@ import { DEFAULT_LIMITS } from '../core/risk.js';
 import { RequestBudget } from '../jupiter/http.js';
 import { makeSigner } from '../wallet/signer.js';
 import { restorePaperVenue } from './paper-venue.js';
+import { createLiveWindows } from './live-windows.js';
 
 const ALARM = 'solmargintrader-tick';
 
@@ -50,6 +51,10 @@ const configStore = new ConfigStore();
 const platformFetch = (...a) => fetch(...a);
 const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
 const nativeTransport = createNativeTransport();
+const liveWindows = chrome.runtime.onConnect && chrome.windows && chrome.runtime.getURL
+  ? createLiveWindows({ runtime: chrome.runtime, windows: chrome.windows,
+    getURL: path => chrome.runtime.getURL(path) }) : null;
+const browserUiStore = {};
 
 /**
  * Dependencies for the command registry, Chrome flavour.
@@ -340,7 +345,10 @@ export async function handleMessage(msg, { openStore, soltui } = {}) {
   if (passphrase !== undefined && COMMANDS[name].params.some((p) => p.name === 'passphrase')) {
     args.passphrase = passphrase;
   }
-  const deps = await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
+  // The PiP gesture crosses the synchronous message→Port relay. Opening the
+  // order store first would discard it; UI commands never receive trading deps.
+  const deps = COMMANDS[name].browserUi ? { store: browserUiStore, liveWindows }
+    : await chromeDeps({ passphrase, openStore, ...(soltui ? { soltui } : {}) });
 
   try {
     const result = await runCommand({ name, args, deps });

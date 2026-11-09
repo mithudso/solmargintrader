@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 148
-Delta: v147 to v148; record paired all-strategy DSO experiment.
+Version: 151
+Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
+Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
+Delta: v148 to v149; default Follow Stream to checked.
+Delta: v147 to v148; add vote explanations, a floating live view, and selected chart graphics.
 Delta: v146 to v147; add the Council consensus trading bot request.
 Delta: v145 to v146; make unavailable alerts link to Forward Testing and offer Start.
 Delta: v144 to v145; automatically recover unavailable predictions.
@@ -13,6 +16,24 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v150 - 2026-11-09
+
+```text
+Right now I'm not sure if my new council bot is running or not, on the right hand side of the full workspace in the chromee extension keep a live signals voting going as well as a breakdown of the profit and loss and the most recent actions taken by anyone for my wallets. Then think hard about how to streamline and simplify the buttons and process. I want to be able to click the fewest number of buttons and get a functional, profitable, back and forward teseted, auto-optimized set of bots and strategies. Right now the sections are good I think but I still don't know if things are still voting? Where do I check the profit and loss of my grtid bot I started last nigfht/? Do I have to do a back test on the bots? forward?
+```
+
+## v149 - 2026-11-09
+
+```text
+On the live view make the Follow Stream being checked the default.
+```
+
+## v148 - 2026-11-09
+
+```text
+In thbe chrome extension when I hover over a strategy while in the live signals and it is a voting strategy, make it tell me why it voted the way it did. Also in the dropdown from the extension icon have an option to detach a live window that stays on top of other windows, so i can use the signals while watching another graph. If possible, when I click on a strategy make it bring up its chart graphics on the tradingview price chart at the top. When I deselect the coin it should also hide the chart elements. I don't have a paid version so I can only add a few charts at a time.
+```
 
 ## v147 - 2026-11-09
 

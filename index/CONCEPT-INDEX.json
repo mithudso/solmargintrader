@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T15:40:42+00:00",
+  "generatedAt": "2026-11-09T15:42:53+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1638,
+      "matchingFiles": 1639,
       "shown": 30,
       "files": [
         {
@@ -114,6 +114,10 @@
           "hits": 35
         },
         {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 34
+        },
+        {
           "path": "research/strategy_experiment/archives.json",
           "hits": 34
         },
@@ -140,10 +144,6 @@
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md",
           "hits": 31
-        },
-        {
-          "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
-          "hits": 31
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1372,
+      "matchingFiles": 1378,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1368,
+      "matchingFiles": 1370,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1335,
+      "matchingFiles": 1339,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 699,
+      "matchingFiles": 702,
       "shown": 30,
       "files": [
         {
@@ -639,6 +639,10 @@
           "hits": 164
         },
         {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 158
+        },
+        {
           "path": "research/strategy_experiment/archives.json",
           "hits": 158
         },
@@ -693,10 +697,6 @@
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS-FILES.md",
           "hits": 78
-        },
-        {
-          "path": "soltui/signals.py",
-          "hits": 67
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 596,
+      "matchingFiles": 603,
       "shown": 30,
       "files": [
         {
@@ -781,12 +781,12 @@
           "hits": 59
         },
         {
-          "path": "backtester/guides/ladder_grid.md",
-          "hits": 57
+          "path": "extension/README.md",
+          "hits": 58
         },
         {
-          "path": "extension/README.md",
-          "hits": 56
+          "path": "backtester/guides/ladder_grid.md",
+          "hits": 57
         },
         {
           "path": "extension/test/core.test.js",
@@ -813,6 +813,10 @@
           "hits": 51
         },
         {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 50
+        },
+        {
           "path": "research/strategy_experiment/archives.json",
           "hits": 50
         },
@@ -831,10 +835,6 @@
         {
           "path": "research/tradingview-strategy-understanding.json",
           "hits": 48
-        },
-        {
-          "path": "backtester/gridcli.py",
-          "hits": 43
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 559,
+      "matchingFiles": 563,
       "shown": 30,
       "files": [
         {
@@ -901,6 +901,10 @@
         {
           "path": "backtester/strategy_cards/incomplete/tv_ghocsiv7_gap_filling_strategy.md",
           "hits": 40
+        },
+        {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 38
         },
         {
           "path": "research/strategy_experiment/archives.json",
@@ -969,10 +973,6 @@
         {
           "path": "research/strategy_experiment/audit_realism.json",
           "hits": 26
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_erbzovy8_fair_value_gap.md",
-          "hits": 24
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 458,
+      "matchingFiles": 462,
       "shown": 30,
       "files": [
         {
@@ -1020,6 +1020,10 @@
         {
           "path": "research/strategy_experiment/results/manifest.json",
           "hits": 251
+        },
+        {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 248
         },
         {
           "path": "research/strategy_experiment/archives.json",
@@ -1104,10 +1108,6 @@
         {
           "path": "research/strategy_experiment/results/results.json",
           "hits": 48
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 44
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 451,
+      "matchingFiles": 459,
       "shown": 30,
       "files": [
         {
@@ -1189,6 +1189,10 @@
           "hits": 72
         },
         {
+          "path": "memory.md",
+          "hits": 69
+        },
+        {
           "path": "research/coin-intelligence/hype-hyperliquid.md",
           "hits": 68
         },
@@ -1211,10 +1215,6 @@
         {
           "path": "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md",
           "hits": 66
-        },
-        {
-          "path": "memory.md",
-          "hits": 65
         },
         {
           "path": "soltui/commands.py",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 329,
+      "matchingFiles": 330,
       "shown": 30,
       "files": [
         {
@@ -1318,6 +1318,10 @@
         {
           "path": "research/strategy_experiment/results/manifest.json",
           "hits": 48
+        },
+        {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 44
         },
         {
           "path": "research/strategy_experiment/archives.json",
@@ -1378,10 +1382,6 @@
         {
           "path": "research/strategy_experiment/snapshot.json",
           "hits": 22
-        },
-        {
-          "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
-          "hits": 20
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1397,7 +1397,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 316,
+      "matchingFiles": 318,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 306,
+      "matchingFiles": 308,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 256,
+      "matchingFiles": 258,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 236,
+      "matchingFiles": 237,
       "shown": 30,
       "files": [
         {
@@ -2003,6 +2003,10 @@
           "hits": 40
         },
         {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 40
+        },
+        {
           "path": "research/strategy_experiment/archives.json",
           "hits": 40
         },
@@ -2057,10 +2061,6 @@
         {
           "path": "docs/CONCEPTS.md",
           "hits": 19
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
-          "hits": 18
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 167,
+      "matchingFiles": 169,
       "shown": 30,
       "files": [
         {
@@ -2199,6 +2199,144 @@
         {
           "path": "backtester/strategy_cards/ou_half_life_sizing.md",
           "hits": 10
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "overfitting-pbo",
+      "label": "Overfitting and PBO",
+      "why": "PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.",
+      "terms": [
+        "pbo",
+        "overfitting",
+        "cscv",
+        "deflated",
+        "anti-informative",
+        "multiple-testing"
+      ],
+      "matchingFiles": 137,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/cpcv_sweep.py",
+          "hits": 109
+        },
+        {
+          "path": "backtester/tests/test_cpcv.py",
+          "hits": 58
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 42
+        },
+        {
+          "path": "research/verify_numbers.py",
+          "hits": 39
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 34
+        },
+        {
+          "path": "mongo/queries/06-experiments-and-pbo.js",
+          "hits": 27
+        },
+        {
+          "path": "docs/strategy-optimization-concept-family.md",
+          "hits": 25
+        },
+        {
+          "path": "backtester/tests/test_interpret.py",
+          "hits": 24
+        },
+        {
+          "path": "backtester/core/deflated_sharpe.py",
+          "hits": 21
+        },
+        {
+          "path": "research/geometry.py",
+          "hits": 18
+        },
+        {
+          "path": "backtester/tests/test_geometry.py",
+          "hits": 17
+        },
+        {
+          "path": "research/ratio_rotation.py",
+          "hits": 17
+        },
+        {
+          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/tests/test_deflated_sharpe.py",
+          "hits": 16
+        },
+        {
+          "path": "backtester/tests/test_research_regressions.py",
+          "hits": 15
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/cpcv.py",
+          "hits": 14
+        },
+        {
+          "path": "research/results/geometry_long_k2.json",
+          "hits": 14
+        },
+        {
+          "path": "research/results/geometry_medium_k2.json",
+          "hits": 14
+        },
+        {
+          "path": "research/results/geometry_short_k2.json",
+          "hits": 14
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 12
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 12
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 12
+        },
+        {
+          "path": "mongo/README.md",
+          "hits": 11
+        },
+        {
+          "path": "mongo/tests/test_load.py",
+          "hits": 10
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 10
+        },
+        {
+          "path": "skills/trading-and-investing/SKILL.md",
+          "hits": 10
+        },
+        {
+          "path": "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md",
+          "hits": 10
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 10
+        },
+        {
+          "path": "docs/dso-skill/SKILL.md",
+          "hits": 9
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2341,144 +2479,6 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
-      "id": "overfitting-pbo",
-      "label": "Overfitting and PBO",
-      "why": "PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.",
-      "terms": [
-        "pbo",
-        "overfitting",
-        "cscv",
-        "deflated",
-        "anti-informative",
-        "multiple-testing"
-      ],
-      "matchingFiles": 136,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/cpcv_sweep.py",
-          "hits": 109
-        },
-        {
-          "path": "backtester/tests/test_cpcv.py",
-          "hits": 58
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 42
-        },
-        {
-          "path": "research/verify_numbers.py",
-          "hits": 39
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 34
-        },
-        {
-          "path": "mongo/queries/06-experiments-and-pbo.js",
-          "hits": 27
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
-          "hits": 25
-        },
-        {
-          "path": "backtester/tests/test_interpret.py",
-          "hits": 24
-        },
-        {
-          "path": "backtester/core/deflated_sharpe.py",
-          "hits": 21
-        },
-        {
-          "path": "research/geometry.py",
-          "hits": 18
-        },
-        {
-          "path": "backtester/tests/test_geometry.py",
-          "hits": 17
-        },
-        {
-          "path": "research/ratio_rotation.py",
-          "hits": 17
-        },
-        {
-          "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/tests/test_deflated_sharpe.py",
-          "hits": 16
-        },
-        {
-          "path": "backtester/tests/test_research_regressions.py",
-          "hits": 15
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/cpcv.py",
-          "hits": 14
-        },
-        {
-          "path": "research/results/geometry_long_k2.json",
-          "hits": 14
-        },
-        {
-          "path": "research/results/geometry_medium_k2.json",
-          "hits": 14
-        },
-        {
-          "path": "research/results/geometry_short_k2.json",
-          "hits": 14
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 12
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 12
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 12
-        },
-        {
-          "path": "mongo/README.md",
-          "hits": 11
-        },
-        {
-          "path": "mongo/tests/test_load.py",
-          "hits": 10
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 10
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 10
-        },
-        {
-          "path": "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md",
-          "hits": 10
-        },
-        {
-          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
-          "hits": 10
-        },
-        {
-          "path": "docs/dso-skill/SKILL.md",
-          "hits": 9
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "family:volume-flow",
       "label": "Strategy family: volume-flow",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -2486,7 +2486,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 131,
+      "matchingFiles": 132,
       "shown": 30,
       "files": [
         {
@@ -2582,6 +2582,10 @@
           "hits": 12
         },
         {
+          "path": "research/strategy_experiment/FILES.md",
+          "hits": 12
+        },
+        {
           "path": "research/strategy_experiment/archives.json",
           "hits": 12
         },
@@ -2604,10 +2608,6 @@
         {
           "path": "backtester/core/scorecard.py",
           "hits": 9
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/tv_named_jxvqru4q_obv_macd.md",
-          "hits": 9
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 119,
+      "matchingFiles": 120,
       "shown": 30,
       "files": [
         {
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 56,
+      "matchingFiles": 57,
       "shown": 30,
       "files": [
         {

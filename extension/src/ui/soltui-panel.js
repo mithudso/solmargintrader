@@ -1,4 +1,5 @@
 import { renderTradingView } from './tradingview.js';
+import { mountVoteCharts } from './vote-tools.js';
 import { predictionRecovery, renderPredictionRecovery } from './prediction-recovery.js';
 /** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
 import { mountSignalDesk } from './signal-desk.js';
@@ -221,6 +222,9 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let batchChecking = false;
   let manualBusy = false;
   const desk = mountSignalDesk(root, { ask, openTool: activate, refreshLive, transport });
+  const voteCharts = $('#strategyPriceChart') ? mountVoteCharts({ host: $('#strategyPriceChart'), controls: $('#strategyChartControls'), reference: $('#tradingViewChart'),
+    follow: () => $('#soltuiLiveStream').checked, asset: () => $('#soltuiLiveAsset').value.trim().toUpperCase(),
+    read: async (command, params) => { const env = await ask(command, params); if (!env?.ok) throw new Error(env?.error?.message ?? 'Explanation unavailable'); return env.result; } }) : null;
   const recovery = predictionRecovery({ ask, supports: (name) => commands.some((c) => c.name === name),
     changed: (state) => renderPredictionRecovery($('#soltuiPredictionRecovery'), state, { start: () => recovery.start() }),
   });
@@ -500,12 +504,13 @@ export function mountSoltuiPanel(root = document, transport = send) {
       const fmt = (n) => typeof n === 'number' && Number.isFinite(n) ? n.toFixed(1) : '—';
       const now = Date.now() / 1000;
       clear(output, table([
-        { label: 'Strategy', value: (r) => r.label },
+        { label: 'Strategy', value: (r) => voteCharts && aggregatePredictions([r], now, voting).available ? voteCharts.button(r, asset) : r.label },
         { label: 'Prior accuracy', value: (r) => `${fmt(r.accuracy)}% · n=${r.resolved ?? '—'}` },
         ...[1, 5, 10, 30].map((h) => ({ label: `${h}m`, value: (r) => `${typeof r[`issued_${h}m`] === 'number' && typeof r[`expires_${h}m`] === 'number' && r[`issued_${h}m`] <= now && now < r[`expires_${h}m`] ? r[`pred_${h}m`] ?? 'Unavailable' : 'Unavailable / expired'} · ${fmt(r[`acc_${h}m`])}% · n=${r[`resolved_${h}m`] ?? '—'}` })),
         { label: 'Vote eligibility', value: (r) => eligibilityReason(r, voting, now) },
         { label: 'Evidence', value: (r) => { const button = el('button', { class: 'small', text: 'Inspect', onclick: () => desk.inspect('Strategy and horizon evidence', { asset, ...r, policy: voting, current: aggregatePredictions([r], Date.now() / 1000, voting) }) }); button.type = 'button'; return button; } },
       ], shown));
+      voteCharts?.rendered();
       count.textContent = shown.length ? `${shown.length} of ${rows.length} strategy rows · current eligibility uses both record and horizon floors` : 'No matching strategies. Clear the filter to recover.';
       reset.hidden = !input.value;
       scrollHint.hidden = !shown.length;
@@ -560,6 +565,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
           target.replaceChildren();
           if (predictionRows.length) renderPredictionEvidence(target, predictionRows, asset);
           else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
+          voteCharts?.refresh();
           if (filtering) { const input = target.querySelector('input[type=search]'); input?.focus({ preventScroll: true }); if (input && cursor !== null) input.setSelectionRange(cursor, cursor); }
           predictionsAt = Date.now();
           const updated = new Date(predictionsAt).toISOString().slice(11, 19);
@@ -655,7 +661,6 @@ export function mountSoltuiPanel(root = document, transport = send) {
       if (!res?.ok || !state?.available) { status.textContent = 'Dashboard session is unavailable. Reload the extension and native host.'; return; }
       if (generation !== null && (state.generation !== generation || (generation > 0 && !state.connected))) {
         poll.checked = false;
-        $('#soltuiLiveStream').checked = false;
         status.textContent = 'The native session changed. Check saved status before resuming replay or jobs. No action was retried.';
       }
       generation = state.generation;
@@ -735,6 +740,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (documentPath) openDocument(documentPath).catch((e) => { $('#soltuiEditorStatus').textContent = e.message; });
   });
   $('#soltuiLiveAsset').addEventListener('change', () => {
+    voteCharts?.changed();
     liveGeneration += 1;
     desk.assetChanged();
     liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0; predictionAttempted = false;
@@ -757,13 +763,10 @@ export function mountSoltuiPanel(root = document, transport = send) {
       if (!env?.ok) throw new Error(env?.error?.message ?? 'Batch status unavailable');
       const r = env.result, counts = r.counts ?? {};
       $('#deskBatchStatus').textContent = `${r.phase} · ${Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(' · ')} · ${r.assets?.length ?? 0} coins / ${r.intervals?.length ?? 0} intervals`;
-      $('#deskStartAll').textContent = r.running ? 'All tests running' : 'Start all tests';
-      $('#deskStartAll').disabled = r.running;
     } catch (e) { $('#deskBatchStatus').textContent = e.message; }
     finally { batchChecking = false; }
   }
   chrome.storage.local.get('signalDesk.batch').then((v) => { batchId = v?.['signalDesk.batch']; updateBatch(); }).catch(() => {});
-  $('#deskStartAll').addEventListener('click', () => activate('batch.run_all'));
   $('#soltuiManualCheck').addEventListener('click', async () => {
     if (manualBusy) return;
     const button = $('#soltuiManualCheck'), target = $('#manualSignalResult');
@@ -805,6 +808,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if ($('#soltuiLiveStream').checked || !predictionAttempted) refreshLive();
   }, 5000);
   function dispose() {
+    voteCharts?.dispose();
     recovery.dispose();
     disposed = true;
     desk.dispose();
