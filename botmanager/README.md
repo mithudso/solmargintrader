@@ -20,6 +20,7 @@ python3 -m venv /tmp/solbot-venv
 /tmp/solbot-venv/bin/solbot list
 /tmp/solbot-venv/bin/solbot config sol-grid --effective
 /tmp/solbot-venv/bin/solbot status sol-grid
+/tmp/solbot-venv/bin/solbot status sol-grid --why
 ```
 
 The installed console script resolves the package from its environment; it does
@@ -38,6 +39,59 @@ identity, then return `runtime_not_available` for manager drafts. Their presence
 in parser help does not advertise runnable manager bots; draft status advertises
 only `inspect`. A UUID always identifies one draft; display names are unique
 case-insensitively, ASCII, and cannot look like UUIDs.
+
+## Status and control contracts
+
+Each draft status has its own `schema_version=1`, inside the unchanged five-key
+command envelope. `status --why` includes a JSON explanation; the option is
+declared in the shared command registry. Existing status keys remain available,
+including `owner` (the saved specification's owner), `observed_state=not_running`,
+`capabilities=["inspect"]`, and `reason=runtime_not_available`.
+
+`spec_owner`, the stable `bot_id`, and `config_revision`/`config_hash` describe the
+saved configuration. `runtime_id`, `runtime_owner_id`, and `owner_generation`
+describe an actual runtime and remain null for drafts, with `runtime_reason`.
+Mode/arming, lifecycle, desired/observed state, input quality, owner reachability,
+submission certainty, heartbeat/data age, evaluation/decision, blockers and next
+trigger are separate dimensions. Unknown observations use `{value: null, reason:
+"..."}`; missing heartbeats and results never become fresh data or successful work.
+The snapshot mapper performs no I/O and does not query an owner or a clock.
+
+`financials` keeps exposure, allocated capital, realized/unrealized net P&L and
+costs null with explicit reasons. `configured_virtual_capital` is the saved
+virtual-account setting and is never reserved allocation or measured P&L.
+`evidence_identity` pins strategy/version, config revision/hash, venue/mints,
+bar duration and execution model. Backtest, paper and live evidence have separate
+records; absent dataset/proof hashes, dates, engine/cost identities and result
+references remain null. No evidence certifies a proxy venue or execution model.
+
+`action_capabilities` explains inspect, start, pause entries, stop, cancel orders,
+close position and emergency stop separately. Only inspect is available for
+drafts. Stopping a worker retains orders, positions, arming and journals;
+cancellation, closing and engine kill/disarm require their own supported actions.
+`manual_pins` preserves exact override values and provenance at the config
+revision/hash. Tuning proposals are unavailable and read-only; versioned adoption
+and automatic runtime edits are unavailable. Status never adopts new settings.
+
+`botmanager.receipts.CommandReceipt` defines the version-1 per-bot control
+contract for later owner adapters. No draft command emits a pretend owner
+receipt. It carries distinct bot/request UUIDs, operation, runtime/owner identity,
+nullable nonnegative owner generation, config revision, a symbolic
+reason and one of `acknowledged`, `pending`, `skipped`, `failed` or `unknown`.
+Pinned manager configurations require a positive integer revision. An external
+owner without numeric revisions uses `config_revision=null` with the required
+`config_revision_unavailable_reason=owner_does_not_version_configurations`.
+The reason must be null when the revision is known; never invent revision 1.
+Acknowledgment alone proves neither stopped execution nor cleared exposure.
+All receipts serialize `safe_to_retry=false`; `unknown` additionally requires
+reconciliation and never means zero exposure. Deserialization rejects forged
+retry/reconciliation flags, unsupported versions/operations/outcomes and invalid
+types. Metadata is immutable and restricted to token-like `detail_ref`,
+`reconciliation_ref`, `owner_revision`, finite nonnegative `elapsed_seconds`, and
+optional `config_hash` (exactly 64 lowercase hexadecimal characters) for an
+available legacy configuration snapshot.
+Arbitrary owner response bodies and credential fields are refused. Callers must
+keep secrets out of every identity, reason and reference.
 
 ## Configuration contract
 

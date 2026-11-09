@@ -11,6 +11,7 @@ from uuid import uuid4
 
 from .config import resolve_config
 from .domain import BotSpec, ManagerError
+from .status import draft_snapshot
 from .store import ManagerStore
 
 
@@ -104,30 +105,16 @@ def _config(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
     return _identity(params, context).to_dict()
 
 
-def _view(spec: BotSpec) -> dict[str, Any]:
-    return {
-        "bot_id": spec.bot_id,
-        "display_name": spec.display_name,
-        "source": spec.source,
-        "owner": spec.owner,
-        "strategy_id": spec.strategy_id,
-        "mode": spec.mode,
-        "armed": spec.resolved_values["armed"],
-        "config_hash": spec.config_hash,
-        "desired_state": "draft",
-        "observed_state": "not_running",
-        "capabilities": ["inspect"],
-        "reason": "runtime_not_available",
-    }
-
-
 def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
+    why = params.get("why", False)
+    if type(why) is not bool:
+        raise ManagerError("invalid_input", "The explanation option must be a boolean.")
     if params.get("identity"):
-        return _view(_identity(params, context))
+        return draft_snapshot(_identity(params, context), why=why)
     store = _store(context)
     return {
         "initialized": store.initialized,
-        "bots": [_view(spec) for spec in store.list_specs()],
+        "bots": [draft_snapshot(spec, why=why) for spec in store.list_specs()],
         "runtime": "not_available",
     }
 
@@ -182,7 +169,13 @@ COMMANDS = {
         "status",
         "Inspect observed state without starting services.",
         _status,
-        ((("identity",), {"nargs": "?"}),),
+        (
+            (("identity",), {"nargs": "?"}),
+            (
+                ("--why",),
+                {"action": "store_true", "help": "Include the state explanation"},
+            ),
+        ),
     ),
     "start": CommandSpec(
         "start",
