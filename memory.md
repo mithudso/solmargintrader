@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 273
-Delta: v272 to v273; preserve extension audit evidence and unresolved coverage.
+Version: 274
+Delta: v273 to v274; record the draft checkpoint delivery.
+
+## v274 - 2026-11-09
+
+The incomplete extension audit checkpoint is tracked in draft PR https://github.com/mithudso/solmargintrader/pull/156 on branch agent-01a1bee5. Keep it draft until the optimizer work and required checks are complete. See v273 and the external ledger for evidence, limitations and exact next action. Do not treat checkpoint delivery as audit completion.
 
 ## v273 - 2026-11-09
 
