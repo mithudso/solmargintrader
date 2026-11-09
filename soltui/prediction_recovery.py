@@ -77,7 +77,7 @@ def _locked() -> bool:
 
 
 def _legacy_owner() -> dict | None:
-    # Older consoles do not know the lease. Be conservative on the production
+    # Older consoles and native hosts do not know the lease. Be conservative on the production
     # config until they have been upgraded; isolated configs cannot conflict.
     if config.CONFIG_DIR.resolve() != (Path.home() / ".config" / "soltui").resolve():
         return None
@@ -86,13 +86,16 @@ def _legacy_owner() -> dict | None:
                                 text=True, timeout=2, check=True)
         for line in result.stdout.splitlines():
             pid, command = line.strip().split(None, 1)
-            if int(pid) == os.getpid() or "-m soltui.tui" not in command:
+            modules = {"soltui.tui": "legacy_console", "soltui.native_host": "legacy_host"}
+            if int(pid) == os.getpid() or not any(f"-m {module}" in command for module in modules):
                 continue
             words = shlex.split(command)
-            if any(words[i:i + 2] == ["-m", "soltui.tui"] for i in range(len(words) - 1)):
+            module = next((words[i + 1] for i in range(len(words) - 1)
+                           if words[i] == "-m" and words[i + 1] in modules), None)
+            if module is not None:
                 if _registered_console(int(pid)):
                     continue
-                return {"pid": int(pid), "kind": "legacy_console", "started_at": None}
+                return {"pid": int(pid), "kind": modules[module], "started_at": None}
     except (OSError, ValueError, subprocess.SubprocessError):
         # Failure to inspect legacy processes must not authorize a second writer.
         return {"pid": None, "kind": "unverified_console", "started_at": None}
@@ -109,9 +112,9 @@ def _process_identity(pid: int) -> str | None:
 
 
 def register_console():
-    """Register this console's lease protocol until its returned handle closes.
+    """Register this console/host's lease protocol until its returned handle closes.
 
-    The console owns this handle. A leftover marker cannot exempt a dead or
+    The console or host owns this handle. A leftover marker cannot exempt a dead or
     reused PID: readers require both its held kernel lock and start identity.
     """
     identity = _process_identity(os.getpid())
@@ -161,7 +164,7 @@ def health(asset: str) -> dict[str, Any]:
         if now - owner.get("heartbeat_at", now) > 30:
             state, message = "failed", "Prediction producer is unresponsive; its writer lease is still held."
     elif legacy:
-        state, message = "failed", "An existing console has no producer lease. Reopen it before starting predictions."
+        state, message = "failed", "An existing console or native host has no producer lease. Reopen it before starting predictions."
     elif state not in ("stopped", "failed"):
         state, message = "failed", "Prediction producer exited. Recovery can restart it."
     elif state == "failed":

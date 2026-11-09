@@ -153,6 +153,30 @@ class PredictionRecovery(unittest.TestCase):
                 handle.close()
             self.assertFalse(recovery._registered_console(os.getpid()), "A stale marker is not a live registration")
 
+    def test_old_native_host_blocks_start_and_stale_registration_does_not_exempt_it(self):
+        host_pid = os.getpid()
+        markers = recovery.directory()
+        process_list = subprocess.CompletedProcess([], 0, stdout=f"{host_pid} python -m soltui.native_host\n")
+        with patch.object(recovery, "_process_identity", return_value="fixture-host-start"):
+            handle = recovery.register_console()
+            try:
+                with patch.object(recovery.config, "CONFIG_DIR", Path.home() / ".config" / "soltui"), patch.object(
+                        recovery, "directory", return_value=markers), patch.object(
+                        recovery.subprocess, "run", return_value=process_list), patch.object(
+                        recovery.os, "getpid", return_value=host_pid + 1):
+                    self.assertIsNone(recovery._legacy_owner(), "A live registered new host is safe")
+                    handle.close()
+                    legacy = recovery._legacy_owner()
+                    self.assertEqual(legacy["pid"], host_pid)
+                    self.assertEqual(legacy["kind"], "legacy_host")
+            finally:
+                handle.close()
+        with patch.object(recovery, "_legacy_owner", return_value=legacy), patch.object(recovery.subprocess, "Popen") as spawn:
+            result = recovery.ensure("SOL", lambda: self.plan, manual=True)
+        self.assertFalse(result["can_start"])
+        self.assertIn("native host", result["message"])
+        spawn.assert_not_called()
+
     def test_hung_held_owner_is_reported_without_starting_another_writer(self):
         owner = self.lease()
         with owner.lock:

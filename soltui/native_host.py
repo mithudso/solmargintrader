@@ -201,11 +201,23 @@ def serve(stdin: BinaryIO, stdout: BinaryIO) -> None:
 
 
 def main() -> int:
+    from . import prediction_recovery
+
     # Chrome owns stdout; any stray print would corrupt the frame stream.
     real_out = sys.stdout.buffer
+    try:
+        registration = prediction_recovery.register_console()
+    except OSError:
+        # Read-only calls can still work without writable registration storage.
+        # Other clients conservatively treat this process as an unknown host.
+        registration = None
     sys.stdout = sys.stderr
-    serve(sys.stdin.buffer, real_out)
-    return 0
+    try:
+        serve(sys.stdin.buffer, real_out)
+        return 0
+    finally:
+        if registration is not None:
+            registration.close()
 
 
 if __name__ == "__main__":

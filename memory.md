@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 297
+Version: 299
+Delta: v298 to v299; protect migration from an old native-host writer.
+Delta: v297 to v298; fix the release-version assertion found by CI.
 Delta: v296 to v297; finalize source checks and committed test discovery.
 Delta: v295 to v296; implement and verify shared recovery and Council paper controls.
 Delta: v294 to v295; extend work with the Council consensus bot.
@@ -16,6 +18,14 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v299 - 2026-11-09
+
+The migration guard now also detects older native hosts. Updated native hosts hold a protocol registration for their entire serve lifetime and release it on EOF or failure. An old unregistered native host must drain before a new producer starts. This closes the real activation race observed with PID26379. All52 focused recovery/native/bridge tests passed; three tests were added. Final Node397 passed after replacing the stale fixed release assertion with semantic version validation plus manifest/package equality; CI separately enforces a version bump against the base. Update committed discovery after the new native-host test file reaches HEAD (final1338 SolTUI /2722 total). Browser source is unchanged from independent22/22 acceptance. Remaining delivery and actual activation steps are unchanged. Private backup/plan evidence is retained.
+
+## v298 - 2026-11-09
+
+PR165 is open at https://github.com/mithudso/solmargintrader/pull/165. Initial CI caught extension/test/wallet-pubkey.test.js still asserting0.6.0 after the release bump to0.6.1. Updated the explicit version assertion and reran the final Node suite. Browser e2e, docs, Mongo, executor and liquidity CI jobs already passed on the initial head. Rebuild the offline index and wait for all checks on the corrected final commit before merge. A fresh consistent private backup passed quick_check=ok with221263calls,19181trials and1saved session; receipt /Users/mitch/.local/state/solmargintrader-session-01a1beca/prediction-recovery-backup.json. The old Chrome native host may still own a foreground prediction thread, so actual extension reload must allow its cooperative exit before starting the new shared producer. No forced process shutdown or evidence reset is authorized or needed.
 
 ## v297 - 2026-11-09
 
