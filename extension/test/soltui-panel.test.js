@@ -13,7 +13,7 @@ test('coerceField converts by declared type and skips empty optional fields', ()
   assert.deepEqual(coerceField({ name: 's', type: 'string' }, ' hi '), { value: 'hi' });
   assert.deepEqual(coerceField({ name: 'j', type: 'json' }, '{"a":[1]}'), { value: { a: [1] } });
   assert.deepEqual(coerceField({ name: 'b', type: 'bool' }, true), { value: true });
-  assert.deepEqual(coerceField({ name: 'b', type: 'bool' }, false), { skip: true });
+  assert.deepEqual(coerceField({ name: 'b', type: 'bool' }, false), { value: false });
   assert.deepEqual(coerceField({ name: 's', type: 'string' }, ''), { skip: true });
   assert.deepEqual(coerceField({ name: 's', type: 'string', required: true }, '  '), { error: 's is required' });
   assert.match(coerceField({ name: 'n', type: 'number' }, 'abc').error, /must be a number/);
@@ -80,4 +80,34 @@ test('src/core stays free of chrome.* and node:* even with the soltui bridge', a
     assert.ok(!/\bchrome\./.test(source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')), `${file} reaches chrome.*`);
     assert.ok(!/from 'node:/.test(source), `${file} imports node:*`);
   }
+});
+
+test('dashboard forms can disable saved booleans and preserve document whitespace', () => {
+  const c = { params: [{ name: 'enabled', type: 'bool' }, { name: 'text', type: 'string', required: true }] };
+  assert.deepEqual(buildParams(c, { enabled: 'false', text: '  hello\n\n' }).params, { enabled: false, text: '  hello\n\n' });
+  assert.deepEqual(buildParams(c, { enabled: '', text: '' }).params, { text: '' });
+  assert.deepEqual(coerceField({ name: 'text', type: 'string' }, ''), { skip: true }, 'untouched optional text remains omitted');
+  assert.match(coerceField({ name: 'b', type: 'bool', required: true }, '').error, /required/);
+});
+
+test('workspace routing covers every actual TUI command and retains unknown tools', async () => {
+  const { filterCommands, workspaceFor, WORKSPACES } = await import('../src/ui/workspace-model.js');
+  const source = await readFile(join(ROOT, '..', 'soltui', 'commands.py'), 'utf8');
+  const names = [...source.matchAll(/@command\(\s*["']([a-z0-9_.]+)["']/g)].map((m) => m[1]);
+  assert.ok(names.length > 100, 'must inspect the actual registry source');
+  const listing = names.map((name) => ({ name, describe: name }));
+  for (const name of names) assert.ok(filterCommands(listing, workspaceFor(name)).some((c) => c.name === name), name);
+  assert.ok(WORKSPACES.some((w) => w.id === 'money'));
+  assert.deepEqual(filterCommands([{ name: 'new.tool', describe: 'Future functionality' }], 'all', 'future').map((c) => c.name), ['new.tool']);
+  assert.equal(workspaceFor('liquidity.resume'), 'archive');
+});
+
+test('structured results preserve source groups, numeric series and safe CSV', async () => {
+  const { resultTables, rowsToCsv, seriesFromRows, valuesFromRow } = await import('../src/ui/workspace-model.js');
+  const tables = resultTables({ sections: [{ source: 'paper', rows: [{ net_pct: 5 }] }, { source: 'wallet', rows: [{ net_pct: 3 }] }] });
+  assert.deepEqual(tables.filter((t) => t.path.endsWith('.rows')).map((t) => t.rows[0].net_pct), [5, 3]);
+  assert.match(rowsToCsv([{ name: '=IMPORTXML(1)', n: -2, text: 'a,"b\n' }]), /'=IMPORTXML/);
+  assert.match(rowsToCsv([{ n: -2 }]), /"-2"/);
+  assert.deepEqual(seriesFromRows([{ timestamp: 2, price: 4 }, { timestamp: 1, price: null }, { timestamp: 1, price: 2 }]), [{ x: 1000, y: 2 }, { x: 2000, y: 4 }]);
+  assert.deepEqual(valuesFromRow({ params: [{ name: 'preview_id' }, { name: 'confirm' }, { name: 'skip_confirm' }] }, { preview_id: 'x', confirm: true, skip_confirm: true }), { preview_id: 'x' });
 });

@@ -199,7 +199,8 @@ export async function runBuildCheck({
   return checkForUpdate({
     deps: { soltui },
     state: configStore,
-    pending: () => enginePending(target),
+    // A dashboard holds replay/job state and unsaved forms. Reload only after it closes.
+    pending: () => enginePending(target) + (soltui.busy?.() ? 2 : 0),
     withLock: (operation) => withStoreLock(target, operation),
     reload,
     ...(hold ? { hold } : {}),

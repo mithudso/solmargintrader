@@ -156,8 +156,11 @@ strategy — are documented in `backtester/README.md` and enforced by 909 tests.
 `soltui/commands.py` is the single registry for everything the console can do. The TUI, `soltui call`,
 `soltui api` and the Chrome native-messaging host (`soltui/native_host.py`, reached by the extension's
 `soltuiCall` command) all call `dispatch(name, params, surface)`. The extension shares no code with Python;
-the framed JSON protocol of the native host is the only coupling. soltui keeps its no-order-path guarantee:
-no command signs or moves funds, and `liquidity.resume` (deleting the aero-lp `KILL` file) needs `confirm`.
+the framed JSON protocol of the native host is the only coupling. Research/replay commands remain
+simulations. Manual Coinbase/Jupiter order commands retain their separate reviewed live-order gates.
+`liquidity.resume` (deleting the aero-lp `KILL` file) also needs `confirm`. Dashboard leases retain one
+multiplexed host while a dashboard is open; bounded long-call workers leave status and cancellation
+available. Native-session activity defers extension auto-reload. See `docs/EXTENSION-TUI-PARITY.md`.
 
 ## Optimization experiment evidence
 

@@ -31,6 +31,7 @@ import { findChromeForTesting, launch } from '../e2e/lib/cdp.mjs';
 import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
+import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOL = 'So11111111111111111111111111111111111111112';
@@ -496,6 +497,41 @@ try {
     }
   });
 
+  await check('dashboard workspaces expose the registry, filter tools and render sortable exportable results', async () => {
+    await dash.ev(`location.hash = '#soltui/research'`);
+    const workspace = await browser.waitFor(() => dash.ev(`document.querySelector('#soltuiWorkspace').value`).then((v) => v === 'research' ? v : null));
+    assert(workspace, 'Research navigation did not select its workspace');
+    const spec = listing.find((c) => c.name === 'strategies.list') ?? probe;
+    assertSoltuiCallAllowed(spec.name, {}, listing);
+    await dash.ev(`(() => { const s = document.querySelector('#soltuiCommand'); s.value = ${JSON.stringify(spec.name)}; s.dispatchEvent(new Event('change')); document.querySelector('#soltuiForm').requestSubmit(); })()`);
+    const response = await browser.waitFor(() => dash.ev(`document.querySelector('#soltuiResult').textContent`).then((t) => {
+      try { return JSON.parse(t).command === spec.name ? JSON.parse(t) : null; } catch { return null; }
+    }));
+    assert(response?.ok, 'read-only result did not render');
+    if (spec.name === 'strategies.list') {
+      assert(await dash.ev(`document.querySelectorAll('#soltuiTables tbody tr').length > 0`), 'structured rows missing');
+      assert(await dash.ev(`[...document.querySelectorAll('#soltuiTables button')].some((b) => b.textContent === 'Export CSV')`), 'CSV export missing');
+      await dash.ev(`document.querySelector('#soltuiTables th button').click()`);
+      assert(await dash.ev(`document.querySelector('#soltuiTables th').getAttribute('aria-sort') === 'ascending'`), 'column sort did not apply');
+      await dash.ev(`(() => { const f = document.querySelector('#soltuiTables input'); f.value = 'no-match-9bd53a'; f.dispatchEvent(new Event('input')); })()`);
+      eq(await dash.ev(`document.querySelectorAll('#soltuiTables tbody tr').length`), 0, 'filter rows');
+    }
+    await dash.ev(`(() => { const f = document.querySelector('#soltuiSearch'); f.value = 'no-match-9bd53a'; f.dispatchEvent(new Event('input')); })()`);
+    eq(await dash.ev(`document.querySelectorAll('#soltuiTools button').length`), 0, 'filter tools');
+    await dash.ev(`(() => { const f = document.querySelector('#soltuiSearch'); f.value = ''; f.dispatchEvent(new Event('input')); location.hash = '#soltui/signal'; })()`);
+    assert(await browser.waitFor(() => dash.ev(`!document.querySelector('#soltuiLive').hidden`)), 'Signal live view missing');
+    const falseCommand = listing.find((c) => c.params.some((p) => p.type === 'bool' && p.name !== 'confirm'));
+    if (falseCommand) {
+      await dash.ev(`(() => { const s = document.querySelector('#soltuiCommand'); s.value = ${JSON.stringify(falseCommand.name)}; s.dispatchEvent(new Event('change')); })()`);
+      assert(await dash.ev(`[...document.querySelectorAll('#soltuiForm select option')].some((o) => o.value === 'false')`), 'false boolean value is not available');
+    }
+    // Inspect forms only: no write or live-money tool is run by this check.
+  });
+
+  await check('dashboard order handoff, confirmation, explicit clear and editor regression scenarios (mock writes)', async () => {
+    await verifyDashboardWorkflows(dash, browser);
+  });
+
   await check('the 1-minute soltui build probe alarm is scheduled', async () => {
     const alarms = await sw.ev(`chrome.alarms.getAll()`);
     const build = alarms.find((a) => a.name === 'solmargintrader-soltui-build');
@@ -504,6 +540,9 @@ try {
   });
 
   await check('with the native host missing, the extension returns a clean failed envelope, not an exception', async () => {
+    // Close the dashboard lease first; a retained live host can outlast its manifest.
+    await send('soltuiSession', { session: await dash.ev(`document.querySelector('#soltui').dataset.session`), active: false });
+    await browser.call('Target.closeTarget', { targetId: dash.targetId });
     host.remove();
     try {
       const res = await send('soltuiCommands');
