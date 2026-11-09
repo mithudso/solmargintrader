@@ -1,0 +1,80 @@
+{
+  "baseline_sha256": "e3a430ca784e21f577fb037800075f1111b659ae9c3ea562601a7e75cadc45ff",
+  "tokens_original": {
+    "chars": 462,
+    "est_tokens": 116,
+    "band": "under-small-threshold",
+    "one_off": true,
+    "fragment": false,
+    "profile": "small",
+    "routing": "offer-handoff-to-prompt-helper-optimizer",
+    "small_threshold": 600,
+    "inline_limit": 4000,
+    "evidence": "EXECUTED"
+  },
+  "tokens_final": {
+    "chars": 4835,
+    "est_tokens": 1209,
+    "band": "standard",
+    "one_off": false,
+    "fragment": false,
+    "profile": "standard",
+    "routing": "proceed",
+    "small_threshold": 600,
+    "inline_limit": 4000,
+    "evidence": "EXECUTED"
+  },
+  "scan": {
+    "findings": [],
+    "count": 0,
+    "redaction_required": false,
+    "note": "Values are never printed. Redact as [REDACTED: <type>] before output.",
+    "evidence": "EXECUTED"
+  },
+  "edit_distance": {
+    "edit_distance": 4405,
+    "longer_chars": 4835,
+    "ratio": 0.91107,
+    "pct": "91.11%",
+    "stable_rewrite": false,
+    "threshold": 0.02,
+    "evidence": "EXECUTED"
+  },
+  "final_sha256": "ec6fe69aa3ad13bf3a661341179fe72cca99f34e87e4b6f7868feb7806ac3c53",
+  "blind_finding_corroboration": {
+    "evidence": "EXECUTED",
+    "old_example_contains_acceptance_or_ledger": false,
+    "new_example_contains_acceptance_and_critique_id": true,
+    "note": "Literal example-span anchors only; semantic completeness remains an independent reviewer judgment."
+  },
+  "revision_edit_distance": {
+    "edit_distance": 682,
+    "longer_chars": 4835,
+    "ratio": 0.14105,
+    "pct": "14.11%",
+    "stable_rewrite": false,
+    "threshold": 0.02,
+    "evidence": "EXECUTED"
+  },
+  "self_check": {
+    "self_check": "8/8",
+    "passed": 8,
+    "total": 8,
+    "failed": [],
+    "notes": [],
+    "evidence": "EXECUTED"
+  },
+  "blind_review": {
+    "grade": "ISOLATED",
+    "reviewer": "/root/prompt_blind_review",
+    "reported_by": "/root",
+    "residual": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    },
+    "final_sha256": "ec6fe69aa3ad13bf3a661341179fe72cca99f34e87e4b6f7868feb7806ac3c53",
+    "count_correction": "16 minus skipped L/N/O equals 13 active; K/P included as partial"
+  }
+}

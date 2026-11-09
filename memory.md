@@ -1,7 +1,31 @@
 # Work continuation
 
-Version: 235
-Delta: v234 to v235; record final live-score acceptance and recoverable PR.
+Version: 238
+Delta: v237 to v238; record completed prompt execution, council convergence and prototype acceptance.
+
+## v238 - 2026-11-08
+
+Implemented the proposal-only request. Final prompt v1.1.0 passed isolated blind re-review with zero residual findings and helper selfcheck 8/8; semantic intent/smoke remain honestly SIMULATED. Source inventory covers 147 native and 35 extension commands. Signal Desk proposal and standalone synthetic prototype prioritize four workflows, preserve complete registry discoverability and distinguish backend result-contract gaps.
+
+All three independent council advisors verified 13 corrections in round 2 with zero residual actionable findings. Independent live-acceptance-verifier bound served bytes and loaded script/style to disk SHA256 4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855. Desktop1440/mobile390 navigation, handoff, pause demo, search/filter recovery, stale states, evidence identity, dialogs/focus, network and console checks passed. Full WCAG and production/live trading remain outside scope. No product code, service state, configuration, wallet or order changed.
+
+Local docs gate passes using /Users/mitch/.venvs/soltui/bin/python; system Python lacks dependencies and was not used to fabricate counts. Remaining: integrate remote master (advanced with PR148), preserve concurrent workflow histories, refresh offline documentation indexes, commit/push, final CI, PR merge and task cleanup. Stele lifecycle pending outbox 7ed3844f/4a536eeb/f058c5d1; new durable lessons b8c3af5b/b573ebfc. Shared checkout stays with its active session; three unrelated untracked paths preserved and temporary Playwright snapshots relocated by verifier.
+
+## v237 - 2026-11-08
+
+Completed: source inventory at 2ca3041 found 147 native and 35 extension commands; current dashboard already exposes the full installed native registry. Final optimized prompt v1.1 passed fresh-context blind re-review with zero residual findings. Primary audit was self-judged and helpers are graded separately. Draft proposal and standalone synthetic mockup exist under docs/design/chrome-workspace. Mockup JS parses and loads in Chrome on loopback port 8914; no operational connection.
+
+In progress: independent product/accessibility and quant council review; operations/extension review and final live prototype acceptance next. Then implement every actionable critique, re-review, verify documentation/index gates and final-head CI, merge and clean only task worktree. Lifecycle outbox ids: create 7ed3844f; claim 4a536eeb; scope decision f058c5d1. Stele recall unavailable; do not claim graph dedup or writes succeeded. Key constraints: detached vs session workers differ; docs.search may start local model/index services so keyword search is default; manual Jupiter spot is distinct from blocked Trigger signing; archived LP remains disabled.
+
+## v236 - 2026-11-08
+
+Target: optimize the owner prompt, inventory repository capabilities, draft an ideal dashboard-first Chrome extension proposal and isolated mockup, resolve advisor council criticisms, verify artifacts and deliver through final-head CI and PR merge. Production UI, service states, live execution and user settings remain unchanged.
+
+Private worktree: /Users/mitch/dev/solmargintrader-wt-01a1be64; branch agent-01a1be64; baseline 2ca3041. Shared checkout has another active session and three untracked files; preserve all. Stele tools are unavailable; stele-search runtime failed with unsupported model. Lifecycle queued in outbox 7ed3844f (create); claim and scope decision also queued. Semantic search attempted; wait for result or use targeted existing index without refresh.
+
+Steps: (1) optimize prompt [in progress]; (2) source inventory [pending]; (3) proposal/mockup [pending]; (4) independent council critique and revisions [pending]; (5) verification, commit and PR delivery [pending].
+
+No product implementation is authorized by this proposal request. Workflow versions are independent from package versions.
 
 ## v235 - 2026-11-08
 
