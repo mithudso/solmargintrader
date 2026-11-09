@@ -2251,7 +2251,7 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 10967,
+    "memory.md": 10988,
     "mongo/README.md": 915,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3358,
@@ -2714,7 +2714,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-09T11:14:41+00:00",
+  "generatedAt": "2026-11-09T11:15:18+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -20908,7 +20908,7 @@
       "llms-full.txt": 7,
       "llms.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/04-decisions.js": 2,
@@ -69651,7 +69651,6 @@
       "extension/tools/e2e.mjs": 123,
       "extension/tools/measure-recentre.js": 6,
       "extension/tools/verify-endpoints.js": 7,
-      "memory.md": 1,
       "research/tradingview-card-coverage.json": 2,
       "soltui/pricefeed.py": 1,
       "soltui/tests/test_advanced_order_ui.py": 41,
@@ -108170,6 +108169,7 @@
       "docs/FILES.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/optimization-workbench-run.md": 1,
+      "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/tradingview-card-coverage.json": 25,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
@@ -150129,7 +150129,7 @@
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 1,
       "docs/repository-review-2026-11-08.md": 1,
-      "memory.md": 18,
+      "memory.md": 20,
       "research/five-minute-perps-suite/run-report.md": 2,
       "research/nonlinear-lead-lag-children/run-report.md": 2,
       "research/run_backfill.sh": 3,
@@ -174180,7 +174180,7 @@
       "liquidity/tests/test_cdo_gates.py": 1,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 30,
+      "memory.md": 29,
       "mongo/README.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/schema.py": 1,
@@ -174324,7 +174324,7 @@
       "index/search.py": 2,
       "liquidity/src/aero_lp/executor.py": 1,
       "llms-full.txt": 1,
-      "memory.md": 7,
+      "memory.md": 11,
       "research/CROSS-ASSET-TRANSFER.md": 4,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -209434,7 +209434,7 @@
       "liquidity/tests/test_gates.py": 1,
       "liquidity/tests/test_providers.py": 5,
       "llms-full.txt": 8,
-      "memory.md": 20,
+      "memory.md": 21,
       "mongo/README.md": 2,
       "mongo/load.py": 5,
       "mongo/queries/06-experiments-and-pbo.js": 2,
@@ -223813,6 +223813,9 @@
     },
     "d8a7207b883c2a9bdc5f318c04bc49a5fb1a45cc52c08dc7125d4858e7c": {
       "research/tradingview-card-coverage.json": 2
+    },
+    "d8a74": {
+      "memory.md": 1
     },
     "d8a822423a6f84dacec0644f52cf341e740ae96da55b154ffed9d59f13bb5a": {
       "research/tradingview-card-coverage.json": 1
@@ -247203,7 +247206,7 @@
       "docs/runbooks/handoff.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
-      "memory.md": 54,
+      "memory.md": 57,
       "prompts.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 3,
@@ -274607,7 +274610,7 @@
       "index/make_files_doc.py": 1,
       "llms-facts.txt": 1,
       "llms-full.txt": 12,
-      "memory.md": 3,
+      "memory.md": 4,
       "prompts.md": 2,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -367846,7 +367849,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 9,
       "llms.txt": 1,
-      "memory.md": 21,
+      "memory.md": 22,
       "mongo/README.md": 5,
       "mongo/load.py": 7,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -369808,7 +369811,7 @@
       "llms-facts.txt": 5,
       "llms-full.txt": 2,
       "llms.txt": 1,
-      "memory.md": 127,
+      "memory.md": 126,
       "mongo/queries/05-backtests.js": 1,
       "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -370030,6 +370033,7 @@
       "docs/code-deep-optimizer-2026-11-08.md": 1,
       "docs/design/chrome-workspace/prototype.html": 1,
       "docs/optimization-workbench.md": 2,
+      "memory.md": 2,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/tradingview-card-coverage.json": 2,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
@@ -377629,7 +377633,7 @@
       "extension/test/service-worker.test.js": 1,
       "extension/test/soltui-bridge.test.js": 2,
       "extension/test/soltui-parity.test.js": 2,
-      "memory.md": 7,
+      "memory.md": 6,
       "mongo/tests/test_load_audit.py": 2,
       "scripts/test_soltui_ci.py": 1,
       "soltui/README.md": 1,
@@ -388108,7 +388112,7 @@
       "llms-full.txt": 6,
       "llms-small.txt": 1,
       "llms.txt": 3,
-      "memory.md": 10,
+      "memory.md": 11,
       "mongo/README.md": 1,
       "mongo/queries/05-backtests.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -463923,7 +463927,7 @@
       "extension/README.md": 1,
       "extension/tools/dryrun.js": 2,
       "llms-full.txt": 4,
-      "memory.md": 17,
+      "memory.md": 16,
       "mongo/tests/test_load.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 9,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -574441,7 +574445,7 @@
       "extension/src/core/alerts.js": 2,
       "extension/src/ui/workspace-model.js": 1,
       "liquidity/src/aero_lp/engine.py": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -617803,7 +617807,7 @@
       "extension/tools/e2e.mjs": 1,
       "llms-facts.txt": 2,
       "llms-full.txt": 9,
-      "memory.md": 15,
+      "memory.md": 14,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 3,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 2,
@@ -673783,7 +673787,7 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 57,
       "index/make_files_doc.py": 1,
       "liquidity/tests/test_executor.py": 1,
-      "memory.md": 14,
+      "memory.md": 13,
       "mongo/queries/02-strategies-and-cards.js": 2,
       "mongo/queries/04-decisions.js": 3,
       "mongo/queries/06-experiments-and-pbo.js": 1,
@@ -805121,7 +805125,7 @@
       "llms-full.txt": 31,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 47,
+      "memory.md": 48,
       "mongo/README.md": 1,
       "mongo/load.py": 5,
       "mongo/requirements.txt": 1,
@@ -843138,7 +843142,7 @@
       "llms-full.txt": 9,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 25,
+      "memory.md": 27,
       "mongo/README.md": 4,
       "mongo/load.py": 20,
       "mongo/queries/08-provenance-and-health.js": 2,
@@ -843239,7 +843243,7 @@
       "liquidity/README.md": 1,
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/load.py": 14,
       "mongo/tests/test_analysis_regressions.py": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -874403,7 +874407,7 @@
       "llms-facts.txt": 6,
       "llms-full.txt": 53,
       "llms-small.txt": 2,
-      "memory.md": 111,
+      "memory.md": 112,
       "mongo/README.md": 6,
       "mongo/load.py": 11,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -893370,7 +893374,7 @@
       "liquidity/tests/test_gates.py": 1,
       "liquidity/tests/test_providers.py": 3,
       "llms-full.txt": 7,
-      "memory.md": 9,
+      "memory.md": 10,
       "mongo/load.py": 1,
       "mongo/queries/08-provenance-and-health.js": 4,
       "mongo/tests/test_load.py": 3,
@@ -948218,10 +948222,10 @@
       "memory.md": 3
     },
     "v288": {
-      "memory.md": 4
+      "memory.md": 3
     },
     "v289": {
-      "memory.md": 4
+      "memory.md": 3
     },
     "v29": {
       "docs/TRADINGVIEW-REFERENCE.md": 8,
@@ -948229,6 +948233,9 @@
       "prompts.md": 1
     },
     "v290": {
+      "memory.md": 4
+    },
+    "v291": {
       "memory.md": 2
     },
     "v2_autopilot": {
@@ -995019,8 +995026,8 @@
   "stats": {
     "avgDocLength": 1470.0,
     "documents": 2713,
-    "terms": 71120,
-    "termsBeforePrune": 71189,
-    "totalTokens": 3988014
+    "terms": 71122,
+    "termsBeforePrune": 71191,
+    "totalTokens": 3988035
   }
 }
