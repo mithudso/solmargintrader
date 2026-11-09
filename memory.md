@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 324
+Version: 325
+Delta: v324 to v325; record merged storage foundation and remaining backtester work.
 Delta: v323 to v324; record pre-2021 gap audit and recovery checkpoint.
 Delta: v322 to v323; record validated 14-asset histories and real SOL/USDC run.
 Delta: v321 to v322; verify USDC fixture accounting and capture remaining work.
@@ -841,3 +842,7 @@ Explicit USDT-denominated spot snapshot runs are now supported without convertin
 ## v324 - 2026-11-09
 
 The previously recorded 14-asset daily inventory remains valid. KuCoin returned BTC and ETH bars before 2021, but the combined pre-2021 series failed strict contiguous-bar validation near the start. The importer refused both revisions; no gap filling occurred. Retained responses, failed combined CSVs and inventory are under /Users/mitch/.local/share/solmargintrader/backtester-task-1117/kucoin-pre2021-daily-20261109. The latest verified same-machine copy is daily-history-extended-backup.sqlite. Other checked markets returned no pre-2021 bars in those requests. Coverage before each validated snapshot remains unproved, and local backups are not off-machine recovery. The public repository checkpoint is draft PR 174; source code and data under this worktree do not establish that the whole backtester request is complete.
+
+## v325 - 2026-11-09
+
+The storage foundation in https://github.com/mithudso/solmargintrader/pull/174 merged to remote master as 2a61908580266c49878963deea6312c2b8034ecc. All required final-head CI checks passed. The local backtester suite passed 983 tests and documentation/index checks passed. The original checkout remains in use by other sessions and was not changed. TASK-1117 remains open: the continuation requirements in v323 and v324, the implementation plan, source data and off-machine backup gaps still apply. The v324 description of PR 174 as a draft is historical and superseded by this entry.
