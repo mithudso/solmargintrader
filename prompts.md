@@ -1,7 +1,19 @@
 # Prompt history
 
-Version: 125
-Delta: v124 to v125; retain historical Gemini handoff request from PR 135.
+Version: 127
+Delta: v126 to v127; preserve both extension and Jupiter paper histories.
+
+## v127 - 2026-11-08
+
+```text
+Use 0.80
+```
+
+## v126 - 2026-11-08
+
+```text
+Update the fee schedule to be Jupiter's fees rather than Coinbase's for the profit and testing estimation. Also have an option in the forward and backtests to 1) use leveraged positions, 2) short down positions. 3) minimum confidence score to make a trade, meaning if the strategies are at a .65 I'm not going to bet a leveraged trade on it.
+```
 
 ## v125 - 2026-11-08 (historical request imported from PR 135)
 

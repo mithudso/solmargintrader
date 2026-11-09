@@ -799,6 +799,9 @@ class SolTuiApp(App):
     SUB_TITLE = "paper by default · Coinbase manual orders can be live"
     COMMANDS = App.COMMANDS | {shell.SolCommands}
     CSS = """
+    .simulation-row Input { width: 14; }
+    .simulation-row Label { width: auto; margin-right: 1; }
+    .simulation-row Checkbox { width: 25; }
     #execute-banner, #live-run-banner {
         background: $warning 30%;
         color: $text;
@@ -1266,7 +1269,11 @@ class SolTuiApp(App):
                 ("start", "Start date"),
                 ("end", "End date (blank = all)"),
                 ("capital", "Capital (USD)"),
-                ("fee_bps", "Taker fee (bps)"),
+                ("fee_bps", "Jupiter Perps fee per side (bps; default 6)"),
+                ("borrow_long_bps_hour", "Jupiter long borrow scenario (bps/hour)"),
+                ("borrow_short_bps_hour", "Jupiter short borrow scenario (bps/hour)"),
+                ("leverage", "Default paper leverage (1–250×)"),
+                ("min_confidence", "Default minimum confidence (0–1)"),
                 ("slippage_bps", "Slippage (bps)"),
                 ("fill_delay", "Fill delay (bars)"),
                 ("cpcv_groups", "CPCV blocks"),
@@ -1293,6 +1300,9 @@ class SolTuiApp(App):
                             value=str(getattr(self.settings, field_name)),
                             id=f"set-{field_name}",
                         )
+            with Horizontal(classes="form-row"):
+                yield Checkbox("Default: use leverage", value=self.settings.use_leverage, id="set-use_leverage")
+                yield Checkbox("Default: short DOWN", value=self.settings.allow_short, id="set-allow_short")
             yield Static("Wallet fields take public addresses and extended public keys only. A private key "
                          "(xprv, a 64-hex key, a Solana secret-key array) is refused.", classes="hint")
             with Horizontal(classes="form-row"):
@@ -1502,6 +1512,28 @@ class SolTuiApp(App):
                           "expired" if call["expired"] else dirs.get(call["outcome"], "?"),
                           _num(call["bps"]), _num(call["paper_pnl"]))
 
+    def _simulation_controls(self, prefix: str) -> ComposeResult:
+        s = self.settings
+        yield Static("Jupiter Perps estimate · 6 bps entry + 6 bps exit on notional (editable in Settings). "
+                     "Borrow and slippage are scenarios; network/swap costs are excluded. Other coins use "
+                     "synthetic Jupiter economics. Confidence uses the last 100 resolved directional calls "
+                     "(at least 20); it is not a calibrated probability. A threshold of 0 disables the gate.",
+                     classes="hint")
+        with Horizontal(classes="form-row simulation-row"):
+            yield Checkbox("Use leverage", value=s.use_leverage, id=f"{prefix}-use-leverage")
+            yield Label("Leverage (1–250×):")
+            yield Input(str(s.leverage), id=f"{prefix}-leverage", type="number")
+        with Horizontal(classes="form-row simulation-row"):
+            yield Checkbox("Short DOWN signals", value=s.allow_short, id=f"{prefix}-allow-short")
+            yield Label("Minimum confidence (0–1):")
+            yield Input(str(s.min_confidence), id=f"{prefix}-min-confidence", type="number")
+
+    def _simulation_form(self, prefix: str) -> dict[str, Any]:
+        return {"use_leverage": self.query_one(f"#{prefix}-use-leverage", Checkbox).value,
+                "leverage": float(self.query_one(f"#{prefix}-leverage", Input).value),
+                "allow_short": self.query_one(f"#{prefix}-allow-short", Checkbox).value,
+                "min_confidence": float(self.query_one(f"#{prefix}-min-confidence", Input).value)}
+
     def _forward_pane(self) -> ComposeResult:
         with Vertical():
             yield Static(
@@ -1526,13 +1558,14 @@ class SolTuiApp(App):
                 yield Input(placeholder="Combinations: rsi,macd; breakout,obv_trend", id="forward-combos")
                 yield Select([(m, m) for m in ("all", "any", "vote", "mean")],
                              id="forward-mode", value="all", allow_blank=False)
+            yield from self._simulation_controls("forward")
             yield Static("Forward results by coin, strategy and horizon · Stopped",
                          id="forward-status", classes="table-title", markup=False)
             table = GlossaryTable(id="forward-table")
             table.cursor_type = "row"
             table.add_columns("coin", "trial", "minutes", "resolved", "accuracy", "pending", "expired",
                               "changes", "saved default", "last call", "last outcome", "issued UTC", "cost bps",
-                              "active settings")
+                              "confidence", "trade", "net %", "trades", "liquidations", "execution", "active settings")
             yield ExportPanel(table)
 
     def _forward_coin_options(self) -> list[tuple[str, str]]:
@@ -1557,8 +1590,13 @@ class SolTuiApp(App):
                                    for c in raw.split(";") if c.strip()]}
         if horizon != "all":
             params["horizons"] = [int(horizon)]
-        env = self._call("forwardtest.start", params)
         status = self.query_one("#forward-status", Static)
+        try:
+            params.update(self._simulation_form("forward"))
+        except ValueError:
+            status.update("Enter a leverage and confidence number.")
+            return
+        env = self._call("forwardtest.start", params)
         if not env["ok"]:
             status.update(self._msg(env))
             return
@@ -1602,6 +1640,9 @@ class SolTuiApp(App):
         self.query_one("#forward-start", Button).disabled = self._forward_running or self._forward_busy
         self.query_one("#forward-stop", Button).disabled = not self._forward_running
         self.query_one("#forward-refresh", Button).disabled = self._forward_busy
+        for wid in ("use-leverage", "leverage", "allow-short", "min-confidence"):
+            if self.query(f"#forward-{wid}"):
+                self.query_one(f"#forward-{wid}").disabled = self._forward_running
         for wid in ("#forward-coins", "#forward-optimize", "#forward-scope", "#forward-horizon"):
             if self.query(wid):
                 self.query_one(wid, Select).disabled = self._forward_running
@@ -1703,7 +1744,13 @@ class SolTuiApp(App):
                           _pct(r["correct"] / r["resolved"] if r["resolved"] else None),
                           r["pending"], r["expired"], r["changes"], "yes" if r.get("saved_default") else "-",
                           directions.get(r["last_call"], "-"), directions.get(r["last_outcome"], "-"), issued,
-                          f"{r['cost_bps']:g}", r["note"] or settings, key=r["id"])
+                          f"{r['cost_bps']:g}", _pct(r.get("confidence")),
+                          "yes" if r.get("traded") else "no", _pct(r.get("net_pct")),
+                          r.get("paper_trades", 0), r.get("liquidations", 0),
+                          (f"{r['execution']['leverage'] if r['execution']['use_leverage'] else 1:g}x "
+                           f"{'long/short' if r['execution']['allow_short'] else 'long only'} "
+                           f"min={r['execution']['min_confidence']:g}" if r.get("execution") else "legacy"),
+                          r["note"] or settings, key=r["id"])
         if rows:
             if sort_state:
                 column, reverse = sort_state
@@ -2999,6 +3046,7 @@ class SolTuiApp(App):
                 yield Select([("Whole roster", self.ROSTER_PICK)], value=self.ROSTER_PICK,
                              allow_blank=False, id="backtest-pick")
                 yield Static("", id="backtest-roster")
+            yield from self._simulation_controls("backtest")
             with Horizontal(classes="form-row"):
                 yield Button("Test status", id="status-backtest")
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
@@ -3127,6 +3175,7 @@ class SolTuiApp(App):
                 if restored_assets:
                     self._call("forwardtest.stop", quiet=True)
                 self._autostart_forwardtest()
+        self._forward_controls()
         self.set_interval(5, self._forward_schedule)
         self.set_interval(5, self._advanced_context_tick)
         self.set_interval(5, self._batch_poll)
@@ -3278,6 +3327,8 @@ class SolTuiApp(App):
         casts: dict[str, Any] = {
             "asset": str, "start": str, "end": str, "capital": float,
             "fee_bps": float, "slippage_bps": float, "fill_delay": int,
+            "leverage": float, "min_confidence": float,
+            "borrow_long_bps_hour": float, "borrow_short_bps_hour": float,
             "cpcv_groups": int, "cpcv_k": int, "solana_address": str, "base_address": str,
             "eth_address": str, "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
         }
@@ -3292,6 +3343,8 @@ class SolTuiApp(App):
                 continue
             if raw or cast is str:
                 out[name] = cast(raw)
+        for name in ("use_leverage", "allow_short"):
+            out[name] = self.query_one(f"#set-{name}", Checkbox).value
         out["interval"] = str(self.query_one("#set-interval", Select).value)
         if self.query("#set-forwardtest_autostart"):
             out["forwardtest_autostart"] = bool(self.query_one("#set-forwardtest_autostart", Checkbox).value)
@@ -3862,7 +3915,13 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#compound-table")
     def _compound_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
-        if not self._on_compound_tab() or not self.query("#compound-detail") or not self.query("#compound-edit"):
+        if not self._on_compound_tab():
+            return
+        # A queued highlight can outlive the compound widgets during shutdown.
+        try:
+            detail = self.query_one("#compound-detail", Static)
+            edit = self.query_one("#compound-edit", Input)
+        except NoMatches:
             return
         cid = str(event.row_key.value) if event.row_key is not None else self._compound_selected()
         comp = sc.BY_ID.get(cid)
@@ -3871,13 +3930,13 @@ class SolTuiApp(App):
         entry = self._compound_cfg["components"][cid]
         specs = "; ".join(f"{p.name} {p.lo:g}..{p.hi:g}" + (f" ({p.describe})" if p.describe else "")
                           for p in comp.params)
-        self.query_one("#compound-detail", Static).update(Text(
+        detail.update(Text(
             f"{comp.name} [{comp.kind}, {comp.family}/{comp.style}] source: {comp.source}\n"
             f"formula: {comp.formula}\nworks: {comp.useful_when}\nfails: {comp.not_useful_when}\n"
             f"ranges: {specs or 'none'}"))
         values = " ".join([f"weight={entry['weight']:g}"]
                           + [f"{k}={v:g}" for k, v in entry["params"].items()])
-        self.query_one("#compound-edit", Input).value = values
+        edit.value = values
         self._compound_preview_metric(cid)
 
     def _compound_preview_metric(self, cid: str) -> None:
@@ -4592,12 +4651,21 @@ class SolTuiApp(App):
         log_key = self._start_log("CPCV backtest", f"Starting {labels[0] if labels else 'the whole roster'}")
         if not self.runner.running:
             self._cpcv_active_log = log_key
-        self._sweep_worker(labels, log_key)
+        try:
+            execution = self._simulation_form("backtest")
+        except ValueError:
+            self.query_one("#backtest-status", Static).update("Enter a leverage and confidence number.")
+            return
+        self._sweep_worker(labels, log_key, execution)
 
     @work(thread=True, group="sweep")
-    def _sweep_worker(self, labels: list[str] | None = None, log_key: str = "") -> None:
+    def _sweep_worker(self, labels: list[str] | None = None, log_key: str = "",
+                      execution: dict[str, Any] | None = None) -> None:
         """Thread only so the UI stays live; the sweep itself is the registry handler."""
-        env = self._call("backtest.run", {"labels": labels} if labels else {})
+        params = dict(execution or {})
+        if labels:
+            params["labels"] = labels
+        env = self._call("backtest.run", params)
         self.call_from_thread(self._render_results, env, log_key)
 
     def _render_results(self, env: dict[str, Any], log_key: str = "") -> None:
@@ -4616,8 +4684,12 @@ class SolTuiApp(App):
                 f"{row['frac_positive']:.0%}", format_pct(row["median_return"]), str(row["trades"]),
             )
         best = r["rows"][0] if r["rows"] else None
+        execution = r.get("execution") or {}
+        assumptions = (f" · Jupiter Perps {execution['leverage'] if execution['use_leverage'] else 1:g}x "
+                       f"{'long/short' if execution['allow_short'] else 'long only'}, "
+                       f"min confidence {execution['min_confidence']:g}" if execution else "")
         status.update(r["message"] + (f" · best Sharpe: {best['label']} {best['net_pct_text']}"
-                                      if best else ""))
+                                      if best else "") + assumptions)
 
     @on(Button.Pressed, "#btn-run-untested")
     def _run_untested_sweep(self) -> None:
