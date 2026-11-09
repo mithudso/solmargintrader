@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T15:38:48+00:00",
+  "generatedAt": "2026-11-09T15:40:42+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1636,
+      "matchingFiles": 1638,
       "shown": 30,
       "files": [
         {
@@ -118,6 +118,14 @@
           "hits": 34
         },
         {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 34
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
+          "hits": 34
+        },
+        {
           "path": "research/strategy_experiment/results/initial-gapped-run/manifest.json",
           "hits": 34
         },
@@ -136,14 +144,6 @@
         {
           "path": "skills/trading-and-investing/references/defi-and-onchain-trading.md",
           "hits": 31
-        },
-        {
-          "path": "skills/trading-and-investing/references/portfolio-theory-and-asset-allocation.md",
-          "hits": 31
-        },
-        {
-          "path": "soltui/help.py",
-          "hits": 30
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1370,
+      "matchingFiles": 1372,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1333,
+      "matchingFiles": 1335,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 697,
+      "matchingFiles": 699,
       "shown": 30,
       "files": [
         {
@@ -643,6 +643,14 @@
           "hits": 158
         },
         {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 158
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
+          "hits": 158
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 132
         },
@@ -689,14 +697,6 @@
         {
           "path": "soltui/signals.py",
           "hits": 67
-        },
-        {
-          "path": "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md",
-          "hits": 60
-        },
-        {
-          "path": "skills/trading-and-investing/references/technical-analysis.md",
-          "hits": 55
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 594,
+      "matchingFiles": 596,
       "shown": 30,
       "files": [
         {
@@ -817,6 +817,14 @@
           "hits": 50
         },
         {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 50
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
+          "hits": 50
+        },
+        {
           "path": "research/strategy_experiment/results/results.json",
           "hits": 48
         },
@@ -827,14 +835,6 @@
         {
           "path": "backtester/gridcli.py",
           "hits": 43
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 40
-        },
-        {
-          "path": "docs/design/chrome-workspace/prototype.html",
-          "hits": 39
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 557,
+      "matchingFiles": 559,
       "shown": 30,
       "files": [
         {
@@ -904,6 +904,14 @@
         },
         {
           "path": "research/strategy_experiment/archives.json",
+          "hits": 38
+        },
+        {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 38
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
           "hits": 38
         },
         {
@@ -965,14 +973,6 @@
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_erbzovy8_fair_value_gap.md",
           "hits": 24
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 24
-        },
-        {
-          "path": "research/CANDLE-GAP-AUDIT.md",
-          "hits": 23
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 456,
+      "matchingFiles": 458,
       "shown": 30,
       "files": [
         {
@@ -1023,6 +1023,14 @@
         },
         {
           "path": "research/strategy_experiment/archives.json",
+          "hits": 248
+        },
+        {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 248
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
           "hits": 248
         },
         {
@@ -1100,14 +1108,6 @@
         {
           "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
           "hits": 44
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_dogvqoph_stochastic_weights_basic_bigbitsio.md",
-          "hits": 41
-        },
-        {
-          "path": "backtester/tests/test_sweep_pair_gate.py",
-          "hits": 40
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 449,
+      "matchingFiles": 451,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 327,
+      "matchingFiles": 329,
       "shown": 30,
       "files": [
         {
@@ -1324,6 +1324,14 @@
           "hits": 44
         },
         {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 44
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
+          "hits": 44
+        },
+        {
           "path": "research/strategy_experiment/results/auxiliary.json",
           "hits": 44
         },
@@ -1374,14 +1382,6 @@
         {
           "path": "skills/trading-and-investing/references/algorithmic-and-quant-trading.md",
           "hits": 20
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 19
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/tv_edel00bp_risk_adjusted_momentum_oscillator.md",
-          "hits": 19
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1397,7 +1397,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 314,
+      "matchingFiles": 316,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 304,
+      "matchingFiles": 306,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 254,
+      "matchingFiles": 256,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 234,
+      "matchingFiles": 236,
       "shown": 30,
       "files": [
         {
@@ -2007,6 +2007,14 @@
           "hits": 40
         },
         {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 40
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
+          "hits": 40
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 40
         },
@@ -2053,14 +2061,6 @@
         {
           "path": "research/results/cpcv_tables.md",
           "hits": 18
-        },
-        {
-          "path": "skills/trading-and-investing/references/trading-strategies-and-styles.md",
-          "hits": 18
-        },
-        {
-          "path": "backtester/strategy_cards/bb_breakout.md",
-          "hits": 17
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 165,
+      "matchingFiles": 167,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 134,
+      "matchingFiles": 136,
       "shown": 30,
       "files": [
         {
@@ -2486,7 +2486,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 129,
+      "matchingFiles": 131,
       "shown": 30,
       "files": [
         {
@@ -2586,6 +2586,14 @@
           "hits": 12
         },
         {
+          "path": "research/strategy_experiment/candidate.zip",
+          "hits": 12
+        },
+        {
+          "path": "research/strategy_experiment/original.zip",
+          "hits": 12
+        },
+        {
           "path": "backtester/core/trigger_conditions.py",
           "hits": 11
         },
@@ -2599,14 +2607,6 @@
         },
         {
           "path": "backtester/strategy_cards/incomplete/tv_named_jxvqru4q_obv_macd.md",
-          "hits": 9
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/tv_vozihfu9_obv_traffic_lights.md",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_top5.py",
           "hits": 9
         }
       ],
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 117,
+      "matchingFiles": 119,
       "shown": 30,
       "files": [
         {
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 54,
+      "matchingFiles": 56,
       "shown": 30,
       "files": [
         {

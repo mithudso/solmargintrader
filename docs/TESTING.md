@@ -14,7 +14,7 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2722 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2741 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for

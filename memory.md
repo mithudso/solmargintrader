@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 304
+Version: 305
+Delta: v304 to v305; record accepted verification and final delivery protocol.
 Delta: v303 to v304; record final paired outcomes and verification target.
 Delta: v302 to v303; checkpoint copied sources, audit findings and initial comparison.
 Delta: v301 to v302; record paired all-strategy DSO experiment.
@@ -656,3 +657,8 @@ Task TASK-1076. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c0e9. P
 ## DSO empirical result 2026-11-09
 
 Final registry run exit 0: 544 successful cells, zero failures, unchanged source hashes. No directional accuracy delta. Hourly SOL voltarget return -11.50% to -12.24%; garch_voltarget -11.50% to -12.43%; both 46.02% accuracy. All daily results equal. Hourly structural suffix4410 bars, holdout1323. Auxiliary default pairs/grid/DCA/triangle parity; scorecard executable accuracy149/318 both. Candidate-only scorecard measurement alignment and future-quote refusal covered by four tests. Source archives packaged and fresh extraction/tamper refusal checked. Final test discovery960. Remaining: independent review, final suite/doc/index gates, commit/push/PR/CI/merge receipts. No CLEAN convergence or live edge claimed.
+
+
+## DSO verification and delivery protocol
+
+960 backtester tests passed (33.001s, exit0); independent fresh-context review found no corroborated Medium+ source/provenance defects. 1084 historical archive figures verify (exit0); this verifies archival transcription, not a fresh statistical edge. Fresh archive expansion, idempotence and alteration refusal passed. Doc gate initially used HEAD-only test counts and then exposed total-count drift; corrected total2741. Both zip archives explicitly staged despite global zip ignore. Final source packages match measured hashes. Delivery: push branch and merge PR only after final doc/index/CI gates. Preserve other live worktrees and shared checkout. After merge export a durable standalone experiment to /Users/mitch/dev/solmargintrader-strategy-comparison-20261109 (data symlink read-only in practice to main cached data), expand both copies and verify its tests. Remove only this clean merged task worktree/branch. Report actual PR/merge/CI receipts; missing scientific validation remains a limitation, not a future implementation blocker.

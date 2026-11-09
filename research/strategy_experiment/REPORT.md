@@ -62,8 +62,9 @@ remain insufficient evidence. Annualized short-window metrics are descriptive.
 ## Verification and reproducibility
 
 The baseline backtester suite ran 941 tests with one generated-index failure after
-workflow records changed. No strategy test failed. Final verification receipts
-are recorded in `memory.md`. The comparison manifests bind source packages,
+workflow records changed. No strategy test failed. The final suite passed all 960 tests. The independent final reviewer found no
+corroborated Medium+ source or provenance defects. Documentation/index gates and
+archive-number verification are recorded in `memory.md`. The comparison manifests bind source packages,
 runner, common engine, cached inputs, selected periods, costs and splits. Both
 source packages remained unchanged during evaluation. Archives verify and expand
 in a fresh directory and reject an altered expanded source tree.
