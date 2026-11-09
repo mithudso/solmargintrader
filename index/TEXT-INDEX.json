@@ -26,6 +26,7 @@
     "CODE_OF_CONDUCT.md": 73,
     "CONTRIBUTING.md": 134,
     "GEMINI.md": 358,
+    "JUPITER_GEMINI_HANDOFF.md": 903,
     "LICENSE": 90,
     "README.md": 927,
     "backtester/PROMPT.md": 1993,
@@ -2206,7 +2207,7 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 1502,
+    "memory.md": 1559,
     "mongo/README.md": 870,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3104,
@@ -2653,7 +2654,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-09T01:58:01+00:00",
+  "generatedAt": "2026-11-09T02:04:47+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -16709,6 +16710,7 @@
     },
     "acceptance": {
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/guides/tv_43000725590_time_price_opportunity_charts_explained.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0j7owdat_flowscope_hapharmonic.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive.md": 3,
@@ -16937,6 +16939,7 @@
       "pagesource": 1
     },
     "accepts": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/fetch.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/core/ticks.py": 1,
@@ -17418,6 +17421,7 @@
       "soltui/config.py": 1
     },
     "account": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
       "backtester/core/coinfit.py": 4,
@@ -21119,6 +21123,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_25py1uvb_position_cost_distribution.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_enc8rzn0_modern_portfolio_management_indicator.md": 3,
@@ -21291,6 +21296,7 @@
       "research/tradingview-strategy-understanding.json": 16
     },
     "active": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 13,
       "backtester/core/strategies/__init__.py": 1,
       "backtester/guides/README.md": 2,
@@ -21938,6 +21944,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       ".github/ISSUE_TEMPLATE/bug_report.md": 2,
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/core/gridsim.py": 1,
@@ -23737,7 +23744,7 @@
       "mongo/load.py": 6,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/schema.py": 4,
-      "prompts.md": 37,
+      "prompts.md": 36,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 10,
@@ -24162,6 +24169,7 @@
     },
     "added": {
       ".github/copilot-instructions.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 2,
       "backtester/core/scorecard.py": 16,
       "backtester/core/strategy_cards.py": 1,
@@ -24259,7 +24267,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-facts.txt": 1,
       "llms-full.txt": 3,
-      "memory.md": 5,
+      "memory.md": 4,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 2,
@@ -25006,6 +25014,7 @@
       "soltui/tests/test_hdwallet.py": 2
     },
     "addresses": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/hurst_regime_test.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_fra2t8gk_blockchain_fundamentals_active_address_sentiment_osc_cr.md": 4,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_n0f50jkv_relative_volume_at_time.md": 3,
@@ -25176,6 +25185,7 @@
     },
     "adds": {
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/core/dcasim.py": 1,
       "backtester/core/scorecard.py": 1,
@@ -26499,6 +26509,7 @@
     },
     "advanced": {
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 9,
       "backtester/core/strategies/__init__.py": 1,
       "backtester/core/strategies/advanced.py": 2,
       "backtester/guides/tv_moaqapdw_advanced_how_to_aggressively_grow_a_small_10k_account.md": 8,
@@ -30218,6 +30229,7 @@
       "soltui/tui.py": 1
     },
     "affected": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_bswaptez_breakout_volume_delta_flux_charts.md": 1,
       "backtester/strategy_cards/incomplete/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md": 1,
       "backtester/strategy_research/tv_hefekydl_sma_directional_matrix_luxalgo.md": 1,
@@ -30787,6 +30799,7 @@
       ".github/workflows/ci.yml": 1,
       "AGENTS.md": 4,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/archive_price.py": 1,
       "backtester/core/fetch.py": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -30824,6 +30837,7 @@
       "liquidity/scripts/aero-lp-service": 2,
       "llms-full.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "memory.md": 4,
       "prompts.md": 3,
       "research/coin-intelligence/eth-ethereum.md": 5,
       "research/coin-intelligence/rain-rain.md": 1,
@@ -30904,6 +30918,7 @@
       ".github/SECURITY.md": 1,
       "AGENTS.md": 6,
       "CLAUDE.md": 5,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/tests/test_index.py": 1,
       "docs/BASE-WALLET-QUERIES.md": 2,
@@ -32221,6 +32236,7 @@
     },
     "aid": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_eabatkg5_how_to_use_volume_with_trends.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_10xmhfge_volume_per_point.md": 2,
@@ -36234,6 +36250,7 @@
     },
     "allowed": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/core/dcasim.py": 1,
       "backtester/core/strategy_cards.py": 9,
@@ -36521,6 +36538,7 @@
     },
     "allows": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_ozhquifn_trader_s_guide_to_options_part_3.md": 2,
       "backtester/strategy_cards/adx_filtered_trend.md": 1,
       "backtester/strategy_cards/bb_breakout.md": 1,
@@ -38332,6 +38350,7 @@
     },
     "ambiguous": {
       "AGENTS.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 1,
       "backtester/core/metrics.py": 2,
@@ -38758,6 +38777,7 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1
     },
     "amount": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/guides/dca_bot.md": 1,
@@ -39054,6 +39074,7 @@
       "liquidity/tests/test_executor.py": 1
     },
     "amounts": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/strategies/textbook.py": 1,
       "backtester/guides/tv_ozhquifn_trader_s_guide_to_options_part_3.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md": 4,
@@ -40945,6 +40966,7 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
     },
     "ancestor": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "scripts/html_to_markdown.py": 1,
       "tools/land.sh": 1
@@ -46814,6 +46836,7 @@
       ".github/copilot-instructions.md": 1,
       ".gitignore": 5,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 14,
       "backtester/PROMPT.md": 5,
       "backtester/README.md": 2,
@@ -47165,6 +47188,7 @@
     "app": {
       ".github/copilot-instructions.md": 1,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 1,
       "backtester/strategy_cards/incomplete/tv_8lxcviym_bayesian_bbsma_oscillator.md": 1,
       "backtester/strategy_research/tv_ddvp5qaz_match_finder_theultimator5.md": 1,
@@ -48131,6 +48155,7 @@
       "research/tradingview-card-coverage.json": 2
     },
     "application": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/core/fetch_minutes_alt.py": 1,
@@ -48507,6 +48532,7 @@
       "research/decide.py": 4
     },
     "apply": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/engine.py": 4,
       "backtester/core/scorecard.py": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
@@ -49001,6 +49027,7 @@
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 1
     },
     "appropriate": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/guides/tv_43000502273_introduction_to_line_break_charts.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_16zufzf4_xel_onlinerecursion.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_94gz1qy4_pandora_vast_volatility_treasure_trove.md": 2,
@@ -52592,6 +52619,7 @@
       "soltui/tests/test_pricefeed.py": 1
     },
     "arriving": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/ladder_grid.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_49yiv1jw_machine_learning_logistic_regression.md": 2,
       "backtester/strategy_cards/obv_trend.md": 1,
@@ -59116,6 +59144,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "assume": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/guides/dca_bot.md": 1,
       "backtester/guides/tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling.md": 2,
@@ -59345,6 +59374,7 @@
       "research/tradingview-script-profiles/shard-b.jsonl": 1
     },
     "assuming": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/engine.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1i4bnwmu_js_squeeze_pro_overlays.md": 1,
@@ -63587,6 +63617,7 @@
       "research/five-minute-perps-suite/run-state.json": 1
     },
     "authorize": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/MCP.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -64028,6 +64059,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 2
     },
     "automatic": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_15kb0kgb_rsi_buy_sell_force_ver_1.md": 3,
@@ -64164,6 +64196,7 @@
     "automatically": {
       ".env.example": 2,
       ".github/SECURITY.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0sbntaqj_trading_abc.md": 1,
@@ -67665,7 +67698,7 @@
       "index/make_concepts_doc.py": 2,
       "index/make_files_doc.py": 1,
       "llms-full.txt": 1,
-      "memory.md": 4,
+      "memory.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
@@ -72940,6 +72973,9 @@
     "b8cae515f5618819192e3a8fbb018b43ef82bc5b83cff4c119cda25acb49f": {
       "research/tradingview-card-coverage.json": 1
     },
+    "b8cc700": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
     "b8d0c1fd7dac60fe43e0f3837d26d8780d169932438772d41d296900a5dcc90": {
       "research/tradingview-card-readiness.json": 1,
       "research/tradingview-script-understanding.json": 1,
@@ -74267,6 +74303,7 @@
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/data.py": 1,
@@ -78605,6 +78642,7 @@
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2
     },
     "balance": {
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/core/gridsim.py": 1,
       "backtester/core/indicators.py": 1,
       "backtester/core/scorecard.py": 5,
@@ -78849,6 +78887,7 @@
     },
     "balances": {
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/triangular_arbitrage.md": 4,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_eqk0bwy4_analytics_tables.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_f2yleyoo_delta_volume_columns_pro_lucf.md": 3,
@@ -80206,6 +80245,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 5,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -86251,6 +86291,12 @@
     "be69f54f5532977f4310b6b9ddbefbd81964b240874793f41fc2d0e611a84f44": {
       "research/tradingview-card-coverage.json": 1
     },
+    "be6c354": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
+    "be6c3545e4797ac21290eb461637615962350d72": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
     "be6d4cea7aaa3c862845f9c6e3469703ca0517f5db7f50fcfae42167e27e41": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -88145,6 +88191,7 @@
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".github/workflows/ci.yml": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/guides/tv_43000502276_learn_using_point_and_figure_charts.md": 1,
       "backtester/guides/tv_lbrwvaq7_my_trading_strategy_in_4_simple_steps.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md": 1,
@@ -88566,6 +88613,7 @@
       "docs/short-horizon-leverage-concept-family.md": 1
     },
     "behind": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -92392,6 +92440,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "bind": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 3,
       "docs/MCP.md": 1,
       "docs/TESTING.md": 1,
@@ -99188,6 +99237,7 @@
     },
     "boundary": {
       ".github/SECURITY.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/data.py": 1,
@@ -101711,6 +101761,7 @@
     "branch": {
       ".githooks/pre-merge-commit": 2,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_f2yleyoo_delta_volume_columns_pro_lucf.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_l6nreqzb_adaptive_trend_classification_moving_averages_investorunknown.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mk7uyofu_adjustable_ma_alternating_extremities_luxalgo.md": 1,
@@ -103411,6 +103462,7 @@
       "backtester/strategy_research/dex_cex_dislocation.md": 1
     },
     "broadly": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_6aln4qkl_zahorchak_measure.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ddvp5qaz_match_finder_theultimator5.md": 1,
       "backtester/strategy_cards/incomplete/tv_jz2cehpf_be_indicator_aggregator_toolkit.md": 1,
@@ -103794,6 +103846,7 @@
     "browser": {
       ".github/workflows/ci.yml": 3,
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/tv_f2yleyoo_delta_volume_columns_pro_lucf.md": 1,
       "backtester/strategy_research/tv_lcgcwwwi_bar_balance_lucf.md": 1,
       "docs/API.md": 1,
@@ -105113,6 +105166,7 @@
       ".gitignore": 7,
       ".remember/remember.md": 3,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 4,
       "backtester/PROMPT.md": 3,
       "backtester/botcli.py": 3,
@@ -107471,6 +107525,7 @@
     "buy": {
       ".github/FUNDING.yml": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 8,
       "backtester/README.md": 7,
       "backtester/cli.py": 3,
@@ -109744,6 +109799,7 @@
       "tools/land.sh": 1
     },
     "bypassing": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1
     },
     "byron": {
@@ -109835,6 +109891,7 @@
     "bytes": {
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/report.py": 2,
       "backtester/strategy_research/tv_43000778559_total_block_size_in_bytes.md": 10,
       "backtester/strategy_research/tv_43000778560_mean_block_size_in_bytes.md": 9,
@@ -126155,6 +126212,7 @@
     },
     "cap": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/cpcv.py": 1,
@@ -136573,6 +136631,7 @@
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
       "backtester/guides/triangular_arbitrage.md": 4,
@@ -137738,6 +137797,7 @@
     "changed": {
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/workflows/ci.yml": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/report.py": 2,
       "backtester/core/scorecard.py": 2,
       "backtester/strategy_cards/garch_vol_forecast.md": 1,
@@ -137989,6 +138049,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "CONTRIBUTING.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 4,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
@@ -140088,9 +140149,9 @@
       "liquidity/tests/test_providers.py": 3,
       "llms/defillama-llms-free.txt": 18,
       "llms/defillama-llms.txt": 8,
-      "memory.md": 5,
+      "memory.md": 4,
       "pagesource": 1,
-      "prompts.md": 5,
+      "prompts.md": 3,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 215,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -140915,6 +140976,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -142306,6 +142368,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 4,
@@ -142502,6 +142565,7 @@
     },
     "checked": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/PROMPT.md": 1,
       "backtester/core/coinfit.py": 10,
       "backtester/core/dcasim.py": 3,
@@ -143859,6 +143923,7 @@
       ".github/workflows/ci.yml": 10,
       ".gitignore": 1,
       ".remember/remember.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/data.py": 2,
       "docs/COMPONENTS.md": 1,
       "docs/COMPOUND-5M.md": 1,
@@ -143979,6 +144044,7 @@
       "CLAUDE.md": 3,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 8,
       "README.md": 1,
       "backtester/README.md": 1,
       "backtester/core/compound.py": 1,
@@ -146216,6 +146282,7 @@
       "skills/trading-and-investing/references/liquidation-as-an-absorbing-barrier.md": 1
     },
     "chooses": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_dluyt9rs_trader_s_guide_to_options_part_2.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed.md": 1,
@@ -146243,6 +146310,7 @@
       "soltui/help.py": 2
     },
     "choosing": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/cpcv.py": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/core/universe.py": 1,
@@ -149424,6 +149492,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "LICENSE": 1,
       "backtester/README.md": 1,
       "backtester/core/strategies/__init__.py": 1,
@@ -154421,6 +154490,7 @@
       "CLAUDE.md": 10,
       "CONTRIBUTING.md": 4,
       "GEMINI.md": 6,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/core/gridsim.py": 1,
       "backtester/guides/ladder_grid.md": 1,
@@ -154544,6 +154614,7 @@
       "research/tradingview-strategy-understanding.json": 2
     },
     "clean": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/compound.py": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/scorecard.py": 1,
@@ -156738,6 +156809,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/archive_price.py": 1,
       "backtester/core/cointegration.py": 2,
       "backtester/core/dcasim.py": 1,
@@ -161663,6 +161735,7 @@
     "coinbase": {
       ".gitignore": 2,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 2,
       "backtester/core/compound.py": 2,
@@ -166546,7 +166619,7 @@
       "backtester/strategy_cards/incomplete/tv_y5n6dljm_spearman_rank_correlation_coefficient.md": 1,
       "backtester/strategy_research/tv_43000502040_volume_profile_indicators_basic_concepts.md": 1,
       "backtester/strategy_research/tv_method_head_shoulders.md": 1,
-      "prompts.md": 2,
+      "prompts.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/tradingview-card-coverage.json": 105,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
@@ -166592,6 +166665,7 @@
       ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/cli.py": 2,
       "backtester/strategy_cards/README.md": 1,
@@ -166828,6 +166902,7 @@
       "CLAUDE.md": 2,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/strategy_cards/README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_w1ypycoi_higher_timeframe_requests.md": 5,
@@ -167227,6 +167302,7 @@
       "CLAUDE.md": 2,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_t1v41bl5_session_edge_profiler_flux_charts.md": 1,
       "docs/COMPONENTS.md": 1,
@@ -182476,6 +182552,7 @@
     },
     "confirm": {
       ".claude/agents/aero-pool-scout.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/core/fetch_minutes_alt.py": 2,
       "backtester/core/funding.py": 1,
@@ -189288,6 +189365,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "contain": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/data.py": 1,
       "backtester/core/deflated_sharpe.py": 1,
@@ -190517,6 +190595,7 @@
     },
     "contents": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "docs/FILES.md": 1551,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
@@ -190647,6 +190726,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "context": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 4,
       "backtester/core/strategies/trigger.py": 3,
       "backtester/guides/tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling.md": 3,
@@ -190999,6 +191079,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "context7": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/archive/memory-2026-11-08.md": 3
     },
     "context_factory": {
@@ -191239,6 +191320,7 @@
       ".github/copilot-instructions.md": 1,
       "AGENTS.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 9,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_23wjedff_ehlers_loops_bigbeluga.md": 5,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_5kgra3dl_dynamic_volume_clusters_with_retest_signals_zeiierman.md": 1,
@@ -191606,6 +191688,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 1
     },
     "continuing": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_pohudx82_multi_time_frame_candles.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tt0t369u_volatility_stop_mtf.md": 2,
       "backtester/strategy_cards/incomplete/tv_43000591333_rob_booker_adx_breakout.md": 1,
@@ -195233,6 +195316,7 @@
       ".github/SECURITY.md": 1,
       ".gitignore": 2,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "LICENSE": 2,
       "README.md": 1,
       "backtester/cli.py": 1,
@@ -197487,6 +197571,7 @@
       "research/tradingview-strategy-understanding-audit.json": 1
     },
     "correcting": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/deflated_sharpe.py": 1,
       "docs/dso-skill/SKILL.md": 1,
       "extension/README.md": 1,
@@ -200292,6 +200377,7 @@
       ".github/workflows/ci.yml": 2,
       ".gitignore": 1,
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 1,
@@ -201669,6 +201755,7 @@
       "research/tradingview-card-coverage.json": 3
     },
     "cover": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/archive_price.py": 1,
       "backtester/core/cointegration.py": 1,
       "backtester/core/data.py": 1,
@@ -204091,6 +204178,7 @@
       "backtester/core/cointegration.py": 4
     },
     "criteria": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/guides/tv_lfe3imad_how_to_find_the_best_trending_momentum_stocks_across_the_globe.md": 1,
       "backtester/guides/tv_lncfcfod_googl_ipo_base_to_study_for_future_trades.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0nz4m9e7_holographic_market_microstructure_alphanatt.md": 1,
@@ -207314,6 +207402,7 @@
       ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 6,
       "README.md": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 4,
@@ -208080,7 +208169,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms-free.txt": 6,
       "llms/defillama-llms.txt": 8,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/queries/04-decisions.js": 1,
       "mongo/queries/05-backtests.js": 1,
@@ -225714,6 +225803,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2
     },
     "decimals": {
+      "JUPITER_GEMINI_HANDOFF.md": 6,
       "backtester/guides/jlp_vs_sol_relative_value.md": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_10xmhfge_volume_per_point.md": 2,
@@ -225786,6 +225876,7 @@
       "soltui/wallet.py": 29
     },
     "decision": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/core/dcasim.py": 2,
@@ -232965,6 +233056,7 @@
       "skills/trading-and-investing/references/trading-risk-management.md": 1
     },
     "definite": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "executor/src/executor/engine.py": 1,
       "executor/src/executor/errors.py": 1,
       "executor/tests/test_engine.py": 4,
@@ -236184,6 +236276,7 @@
       "skills/trading-and-investing/references/strategy-backtesting-and-development-workflow.md": 1
     },
     "deliberate": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/engine.py": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_4nmghanl_redk_slow_smooth_average_rss_wma.md": 1,
@@ -237791,6 +237884,7 @@
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/dependabot.yml": 1,
       ".github/workflows/ci.yml": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/core/deflated_sharpe.py": 1,
       "backtester/core/strategies/advanced.py": 1,
@@ -237861,6 +237955,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
     },
     "dependent": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/cointegration.py": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/core/pairs.py": 1,
@@ -240339,6 +240434,7 @@
     },
     "describes": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/pairs.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/guides/jlp_vs_sol_relative_value.md": 1,
@@ -241545,6 +241641,7 @@
     "design": {
       ".github/dependabot.yml": 2,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 2,
       "backtester/README.md": 2,
       "backtester/core/cointegration.py": 3,
@@ -244688,6 +244785,7 @@
       ".githooks/pre-commit": 1,
       ".github/dependabot.yml": 2,
       ".github/workflows/ci.yml": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 10,
       "backtester/README.md": 1,
       "backtester/core/dcasim.py": 5,
       "backtester/core/scorecard.py": 4,
@@ -244721,7 +244819,7 @@
       "liquidity/scripts/aero-lp-service": 4,
       "liquidity/uv.lock": 4,
       "llms-full.txt": 6,
-      "memory.md": 5,
+      "memory.md": 6,
       "pagesource": 5,
       "prompts.md": 24,
       "research/RANKED_LISTS.md": 1,
@@ -247009,6 +247107,7 @@
       "research/turnover_table.py": 1
     },
     "dictated": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_bugfwu53_atr_based_trendlines_jd.md": 1,
       "backtester/strategy_cards/incomplete/tv_43000703071_periodic_volume_profile.md": 1,
       "backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md": 1,
@@ -255431,6 +255530,7 @@
     },
     "discovery": {
       ".github/workflows/ci.yml": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_8owcuqfq_multi_distribution_volume_profile_zeiierman.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_fk25igs7_price_convergence.md": 6,
@@ -255783,6 +255883,7 @@
       "soltui/tests/test_jupiter_manual.py": 1
     },
     "discriminators": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 1,
       "executor/src/executor/txverify.py": 4
     },
@@ -256069,6 +256170,7 @@
     },
     "dispatch": {
       ".github/workflows/ci.yml": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/ARCHITECTURE.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 5,
@@ -256298,6 +256400,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/coinfit.py": 1,
       "backtester/core/indicators.py": 1,
       "backtester/core/scorecard.py": 1,
@@ -257332,6 +257435,7 @@
       "llms/defillama-llms-free.txt": 1
     },
     "displays": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0rfqockf_exploring_unicode.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_195p3ylk_commitment_of_traders_legacy_metrics.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1kg8lh8x_cleaner_screeners_library.md": 1,
@@ -258005,6 +258109,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2
     },
     "distinct": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/gridsim.py": 2,
@@ -260391,6 +260496,7 @@
       "CLAUDE.md": 3,
       "CONTRIBUTING.md": 3,
       "GEMINI.md": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 7,
       "README.md": 56,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -260574,7 +260680,7 @@
       "llms-full.txt": 69,
       "llms-small.txt": 1,
       "llms.txt": 26,
-      "memory.md": 9,
+      "memory.md": 11,
       "mongo/README.md": 2,
       "mongo/load.py": 36,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -260757,6 +260863,7 @@
       "soltui/tui.py": 2
     },
     "docs_view_changed": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "memory.md": 2,
       "soltui/tui.py": 1
     },
@@ -261002,6 +261109,7 @@
       ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "LICENSE": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -261774,6 +261882,7 @@
     "documented": {
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 6,
       "backtester/core/archive_price.py": 2,
@@ -266195,7 +266304,7 @@
       "docs/dso-skill/SKILL.md": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "liquidity/tests/test_daemon.py": 1,
-      "prompts.md": 5,
+      "prompts.md": 6,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/tradingview-card-coverage.json": 210,
@@ -266570,6 +266679,7 @@
     },
     "double": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/deflated_sharpe.py": 2,
       "backtester/core/engine.py": 1,
       "backtester/core/funding.py": 1,
@@ -269623,6 +269733,7 @@
       ".github/workflows/ci.yml": 3,
       ".remember/remember.md": 2,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 3,
       "backtester/core/compound.py": 2,
       "backtester/core/data.py": 4,
@@ -270596,6 +270707,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 7,
       "GEMINI.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 5,
       "backtester/core/archive_price.py": 3,
       "backtester/core/gridsim.py": 1,
@@ -271279,6 +271391,7 @@
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 2
     },
     "due": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/coinfit.py": 2,
       "backtester/core/trianglesim.py": 2,
       "backtester/guides/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md": 1,
@@ -275684,6 +275797,7 @@
       ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 5,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/DEVELOPMENT.md": 2,
       "docs/FILES.md": 14,
       "docs/INSTALLATION.md": 1,
@@ -280702,6 +280816,7 @@
     },
     "earlier": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -284982,6 +285097,7 @@
     "editor": {
       ".gitignore": 1,
       ".vscode/settings.json": 5,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 3,
       "docs/MCP.md": 1,
       "docs/SCRIPTS.md": 1,
@@ -286232,6 +286348,9 @@
     },
     "ef57f4485b0f499dae2c422d1c11a9028e91ce892c8afbe46d0aa00efd9e864": {
       "research/tradingview-script-profile-audits/shard-b.jsonl": 1
+    },
+    "ef585": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
     },
     "ef5a27ba7149685f6699062e38962a1d59d203343523761ddf0c7c5b089a7ba": {
       "research/tradingview-card-coverage.json": 2
@@ -291368,6 +291487,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "enable": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/cli.py": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md": 1,
@@ -292081,6 +292201,7 @@
       ".editorconfig": 1,
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 2,
       "backtester/PROMPT.md": 8,
       "backtester/README.md": 3,
@@ -293762,6 +293883,7 @@
       ".github/copilot-instructions.md": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 8,
       "backtester/README.md": 4,
@@ -295009,6 +295131,7 @@
       "soltui/tests/test_forwardtest.py": 4
     },
     "entering": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_4psxdoyc_a_technique_from_1202_really.md": 1,
       "backtester/guides/tv_lncfcfod_googl_ipo_base_to_study_for_future_trades.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_eyhkvavh_index_generator_by_muqwishi.md": 1,
@@ -298348,6 +298471,7 @@
       ".env.example": 1,
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/SECURITY.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/core/fetch.py": 1,
       "backtester/core/funding.py": 4,
@@ -303277,6 +303401,7 @@
     "error": {
       ".github/copilot-instructions.md": 1,
       ".github/workflows/ci.yml": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/botcli.py": 4,
@@ -305363,6 +305488,7 @@
       "skills/trading-and-investing/references/why-high-frequency-strategies-die-at-leverage.md": 1
     },
     "establishing": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_2tennpoc_rsi_past_can_turn_rsi_into_a_directional_tool.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_b4jcgfrd_linear_continuation.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines.md": 1,
@@ -305768,6 +305894,7 @@
       "liquidity/src/aero_lp/executor.py": 2
     },
     "estimates": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/strategy_cards/README.md": 1,
@@ -308799,6 +308926,7 @@
     },
     "event": {
       ".github/workflows/ci.yml": 11,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "LICENSE": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 3,
@@ -316340,6 +316468,7 @@
       "research/five-minute-perps-suite/scored-concepts.json": 1
     },
     "execute": {
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/README.md": 1,
       "backtester/core/coinfit.py": 1,
       "backtester/core/engine.py": 4,
@@ -316652,6 +316781,7 @@
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 4,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 2,
@@ -317918,7 +318048,7 @@
       "llms-full.txt": 10,
       "llms-small.txt": 1,
       "llms.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/queries/04-decisions.js": 1,
       "mongo/queries/05-backtests.js": 1,
       "mongo/schema.py": 1,
@@ -318098,6 +318228,7 @@
     "executor": {
       ".github/workflows/ci.yml": 7,
       "CLAUDE.md": 11,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "README.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qvcjkcw3_mad_position_starter_calculator.md": 3,
       "docs/ARCHITECTURE.md": 3,
@@ -319899,6 +320030,7 @@
     },
     "existing": {
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/core/coinfit.py": 3,
       "backtester/core/compound.py": 1,
       "backtester/core/engine.py": 1,
@@ -325955,6 +326087,7 @@
       "skills/trading-and-investing/references/the-greeks.md": 1
     },
     "expiry": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/strategies/__init__.py": 1,
       "backtester/guides/tv_pon9i3pi_tutorial_how_smac_can_help_find_the_ideal_covered_call_strike.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_dgmumvhd_black_scholes_options_pricing_model.md": 7,
@@ -327095,6 +327228,7 @@
       ".github/copilot-instructions.md": 1,
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 2,
       "backtester/core/coinfit.py": 2,
@@ -327371,6 +327505,7 @@
       ".github/SECURITY.md": 1,
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 6,
       "backtester/core/funding.py": 1,
       "backtester/core/metrics.py": 2,
@@ -328384,6 +328519,7 @@
       "soltui/tests/test_csv_table.py": 2
     },
     "expose": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/cpcv.py": 1,
@@ -330511,6 +330647,7 @@
       "CLAUDE.md": 14,
       "CONTRIBUTING.md": 2,
       "GEMINI.md": 9,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 13,
       "backtester/README.md": 5,
       "backtester/core/gridsim.py": 12,
@@ -339586,6 +339723,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/core/engine.py": 1,
@@ -339787,6 +339925,7 @@
       ".githooks/pre-commit": 1,
       ".githooks/pre-merge-commit": 1,
       ".github/workflows/ci.yml": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/fetch.py": 2,
       "backtester/core/fetch_minutes.py": 7,
       "backtester/core/fetch_minutes_alt.py": 2,
@@ -339933,7 +340072,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 5,
+      "memory.md": 7,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 3,
       "research/5minleveragestrategies.json": 4,
@@ -340087,6 +340226,7 @@
     "failing": {
       ".githooks/pre-commit": 1,
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/funding.py": 1,
       "backtester/core/plotting.py": 2,
       "backtester/core/report.py": 1,
@@ -340397,6 +340537,7 @@
       "soltui/tui.py": 1
     },
     "failures": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/core/fetch.py": 1,
       "backtester/core/funding.py": 5,
@@ -341231,6 +341372,7 @@
     "falls": {
       ".github/CODEOWNERS": 2,
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/data.py": 1,
@@ -346162,6 +346304,12 @@
     "fe97f94c41c08872db482cf8ac4800d80e79222c6b0b7b162d5b13686": {
       "liquidity/uv.lock": 1
     },
+    "fe989": {
+      "memory.md": 2
+    },
+    "fe989a18ba16ec4e306ec6aa62a7992724cff": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
     "fe995afe32bfa58fe9439a739d50493eaa7312154523bf6292cba776db626b7f": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -346311,6 +346459,7 @@
       "skills/trading-and-investing/references/portfolio-theory-and-asset-allocation.md": 1
     },
     "feat": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/archive/memory-2026-11-08.md": 34,
       "prompts.md": 3,
       "research/tradingview-card-coverage.json": 5
@@ -346321,6 +346470,7 @@
     "feature": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 3,
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/core/universe.py": 1,
@@ -346854,6 +347004,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 3,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 1,
       "backtester/PROMPT.md": 21,
       "backtester/README.md": 19,
@@ -347842,6 +347993,7 @@
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/copilot-instructions.md": 2,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 8,
       "backtester/README.md": 9,
       "backtester/core/coinfit.py": 13,
@@ -348714,6 +348866,7 @@
     },
     "fetched": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -350216,6 +350369,7 @@
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/cpcv.py": 2,
       "backtester/core/engine.py": 2,
       "backtester/core/gridsim.py": 2,
@@ -352990,7 +353144,7 @@
       "mongo/queries/08-provenance-and-health.js": 6,
       "mongo/schema.py": 1,
       "mongo/tests/test_load.py": 2,
-      "prompts.md": 17,
+      "prompts.md": 18,
       "research/CROSS-ASSET-TRANSFER.md": 7,
       "research/GRID-REVIEW.md": 1,
       "research/LEVERAGE-TIERS.md": 1,
@@ -353424,6 +353578,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 8,
       "CONTRIBUTING.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "LICENSE": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
@@ -355246,6 +355401,7 @@
     },
     "final": {
       ".editorconfig": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 2,
       "backtester/core/coinfit.py": 4,
       "backtester/core/cpcv.py": 1,
@@ -358038,7 +358194,7 @@
       "executor/tests/test_journal_ledger_signer.py": 1,
       "executor/tests/test_rails.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
-      "prompts.md": 1,
+      "prompts.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/candle_crosscheck.py": 21,
@@ -358203,6 +358359,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "finish": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/fetch_minutes.py": 1,
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-08.md": 46,
@@ -358761,6 +358918,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 7,
       "GEMINI.md": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 6,
       "backtester/README.md": 3,
@@ -362303,6 +362461,7 @@
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       ".github/workflows/ci.yml": 1,
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/gridsim.py": 1,
@@ -366665,6 +366824,7 @@
     },
     "focused": {
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 1,
       "backtester/__init__.py": 2,
       "backtester/cli.py": 1,
@@ -366863,6 +367023,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 2,
       "CODE_OF_CONDUCT.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/strategy_cards/bb_breakout.md": 1,
@@ -367323,6 +367484,7 @@
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 2
     },
     "follows": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/core/strategies/signals.py": 1,
       "backtester/strategy_cards/bb_breakout.md": 1,
@@ -376110,6 +376272,7 @@
       ".gitignore": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/core/engine.py": 1,
@@ -377388,6 +377551,7 @@
       ".github/SECURITY.md": 1,
       ".github/workflows/ci.yml": 4,
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 8,
@@ -379638,6 +379802,7 @@
       "soltui/tests/test_v2_shell.py": 2
     },
     "functional": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_16zufzf4_xel_onlinerecursion.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -385631,6 +385796,7 @@
     "gates": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 6,
       "backtester/core/pairs.py": 1,
       "backtester/core/scorecard.py": 15,
@@ -386457,6 +386623,7 @@
     },
     "gemini": {
       "GEMINI.md": 5,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 2,
       "docs/FILES.md": 3,
       "docs/codebase-overview.md": 2,
@@ -386467,6 +386634,8 @@
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "llms-full.txt": 2,
+      "memory.md": 5,
+      "prompts.md": 3,
       "research/exchangefees.json": 6,
       "research/tradingview-card-coverage.json": 13,
       "scripts/check_docs.py": 1,
@@ -388378,7 +388547,7 @@
       "mongo/schema.py": 1,
       "mongo/tests/test_load.py": 4,
       "pagesource": 2,
-      "prompts.md": 12,
+      "prompts.md": 13,
       "research/COMPOUND-FRONTIER.md": 2,
       "research/RANKED_LISTS.md": 2,
       "research/STRATEGIES.md": 1,
@@ -389888,6 +390057,7 @@
       ".github/workflows/ci.yml": 7,
       ".gitignore": 2,
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/data.py": 6,
       "backtester/core/strategy_cards.py": 1,
@@ -391070,6 +391240,7 @@
       ".github/workflows/ci.yml": 15,
       "CODE_OF_CONDUCT.md": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "context-bundle.json": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 17,
@@ -391268,7 +391439,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_clmath.py": 1,
       "liquidity/tests/test_metrics.py": 2,
-      "prompts.md": 4,
+      "prompts.md": 5,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -394470,6 +394641,7 @@
     },
     "green": {
       ".remember/remember.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_43000502272_learn_to_use_kagi_charts.md": 1,
       "backtester/guides/tv_43000724995_understanding_volume_candle_charts.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0ghsw1kr_moving_regression.md": 2,
@@ -396632,6 +396804,7 @@
     "guard": {
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 5,
       "backtester/core/dcasim.py": 1,
@@ -396724,6 +396897,7 @@
     },
     "guarded": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/types.py": 1,
@@ -398054,6 +398228,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
     },
     "guide": {
+      "JUPITER_GEMINI_HANDOFF.md": 7,
       "backtester/guides/tv_43000762390_funding_rate_a_guide_to_market_sentiment.md": 8,
       "backtester/guides/tv_dluyt9rs_trader_s_guide_to_options_part_2.md": 10,
       "backtester/guides/tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling.md": 8,
@@ -399664,6 +399839,7 @@
       "soltui/bots.py": 1
     },
     "handle": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/archive_price.py": 4,
       "backtester/core/fetch.py": 2,
@@ -400114,6 +400290,7 @@
     },
     "handoff": {
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 9,
       "README.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_vyu6a3gb_anchored_vwap_pinch_handoff_intervals_and_signals.md": 14,
       "backtester/strategy_cards/incomplete/tv_vyu6a3gb_anchored_vwap_pinch_handoff_intervals_and_signals.md": 11,
@@ -400131,7 +400308,8 @@
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "docs/runbooks/handoff.md": 3,
       "index/make_files_doc.py": 1,
-      "memory.md": 1,
+      "memory.md": 7,
+      "prompts.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/tradingview-card-coverage.json": 10,
       "research/tradingview-card-readiness.json": 2,
@@ -402996,6 +403174,7 @@
     "head": {
       ".github/workflows/ci.yml": 6,
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/ticks.py": 1,
       "backtester/guides/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md": 4,
@@ -417519,6 +417698,7 @@
       "liquidity/src/aero_lp/chain.py": 1
     },
     "httpx": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/DEVELOPMENT.md": 2,
       "docs/FILES.md": 2,
       "docs/external-calls.md": 4,
@@ -423650,6 +423830,7 @@
       "soltui/experiments.py": 1
     },
     "immutable": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ljxwpxtt_zigzaglite.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_zewvhavq_divergence_screener_trendoscope.md": 2,
       "docs/ARCHITECTURE.md": 1,
@@ -423904,6 +424085,7 @@
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1
     },
     "implement": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 1,
@@ -424024,6 +424206,7 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
     },
     "implemented": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/strategies/__init__.py": 1,
       "backtester/core/strategy_cards.py": 10,
@@ -424111,7 +424294,7 @@
       "extension/src/venues/index.js": 2,
       "index/make_concepts_doc.py": 1,
       "llms-full.txt": 3,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/README.md": 2,
       "mongo/load.py": 1,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -426219,6 +426402,7 @@
     },
     "including": {
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "LICENSE": 2,
       "README.md": 1,
       "backtester/PROMPT.md": 2,
@@ -428259,7 +428443,7 @@
       "extension/test/market.test.js": 2,
       "llms-facts.txt": 6,
       "llms-full.txt": 3,
-      "memory.md": 1,
+      "memory.md": 5,
       "prompts.md": 11,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1386,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 36,
@@ -429281,6 +429465,7 @@
       ".remember/remember.md": 4,
       "CLAUDE.md": 7,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 3,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
@@ -429866,6 +430051,7 @@
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/gridsim.py": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_d3pho9uh_matrix_functions_jd.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_drx2sbyv_vix_curve_pro_real_time_term_structure_with_statistics.md": 2,
@@ -439654,6 +439840,7 @@
       "research/tradingview-card-coverage.json": 2
     },
     "inspect": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/guides/tv_gbc8qoy8_a_quick_guide_to_multi_timeframe_scaling.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0h0gkncy_120x_ticker_screener_composite_tickers.md": 1,
@@ -439998,6 +440185,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
     "inspects": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/tv_i5qjdpxt_redk_everex_effort_versus_results_explorer.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "docs/FILES.md": 1,
@@ -440244,6 +440432,7 @@
       ".env.example": 1,
       ".gitignore": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_w1ypycoi_higher_timeframe_requests.md": 1,
       "backtester/tests/test_index_search_tooling.py": 10,
@@ -442089,6 +442278,7 @@
     "instruction": {
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/gridcli.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_6qx7rznd_outlier_detector_with_n_sigma_confidence_intervals.md": 1,
@@ -442158,6 +442348,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 1,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_94xv1hsx_linear_correlation_oscillator.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_c7z3p2xh_dynamic_money_flow.md": 2,
@@ -444878,6 +445069,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1
     },
     "interactions": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1z60bvmr_previous_period_levels_x_alerts.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ertrxbpf_musashi_fractal_dimension.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt.md": 1,
@@ -448099,6 +448291,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "invalid": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/core/scorecard.py": 5,
       "backtester/core/strategies/textbook.py": 14,
@@ -449503,6 +449696,7 @@
       "soltui/runner.py": 1
     },
     "invariants": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/tests/test_coinfit.py": 2,
       "backtester/tests/test_engine_audit.py": 2,
       "backtester/tests/test_ratio_rotation.py": 2,
@@ -451432,6 +451626,9 @@
     "irresponsible": {
       "research/tradingview-card-coverage.json": 1
     },
+    "irreversible": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
     "irreversibly": {
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 1
     },
@@ -452696,6 +452893,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "isolation": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_4odvb8q4_relative_currency_strength.md": 2,
       "backtester/tests/test_cpcv.py": 1,
@@ -453667,6 +453865,7 @@
     "itself": {
       ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/botcli.py": 1,
       "backtester/core/compound.py": 3,
       "backtester/core/funding.py": 1,
@@ -455735,6 +455934,7 @@
     "journal": {
       ".gitignore": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tlz0mxsj_sticky_notes_checklist_to_do_journal_algoat.md": 11,
       "backtester/strategy_cards/incomplete/tv_method_value_investing.md": 1,
@@ -455876,6 +456076,7 @@
       "skills/trading-and-investing/references/strategy-backtesting-and-development-workflow.md": 2
     },
     "journals": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 2,
       "docs/TESTING.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
@@ -457255,6 +457456,7 @@
       ".github/workflows/ci.yml": 4,
       ".gitignore": 2,
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 26,
       "README.md": 6,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 8,
@@ -457359,7 +457561,7 @@
       "llms-full.txt": 49,
       "llms-small.txt": 2,
       "llms.txt": 1,
-      "memory.md": 13,
+      "memory.md": 16,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/schema.py": 2,
@@ -457431,6 +457633,7 @@
     "jupiter_api_key": {
       ".env.example": 1,
       ".github/SECURITY.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 1,
       "docs/codebase-overview.md": 1,
@@ -457450,6 +457653,10 @@
     "jupiter_defi_reference": {
       "memory.md": 1,
       "prompts.md": 1
+    },
+    "jupiter_gemini_handoff": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
+      "memory.md": 1
     },
     "jupiter_ix": {
       "executor/tests/conftest.py": 3,
@@ -457495,6 +457702,7 @@
       "soltui/commands.py": 1
     },
     "jupiter_order_widget_implementation_guide": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "docs/repo-bootstrap-audit-2026-11-08.md": 2,
       "prompts.md": 1
     },
@@ -457518,6 +457726,7 @@
       "soltui/tests/test_wallet.py": 1
     },
     "jupiter_tokens": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 1,
       "soltui/commands.py": 2,
       "soltui/jupiter_manual.py": 2,
@@ -457584,6 +457793,7 @@
       "pagesource": 4
     },
     "jupsol": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_research/staking_ratio_flow.md": 2,
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-08.md": 8,
@@ -458456,6 +458666,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 5,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/core/deflated_sharpe.py": 1,
@@ -459935,6 +460146,7 @@
     },
     "keyword": {
       "CLAUDE.md": 6,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/tests/test_index_search_tooling.py": 9,
       "docs/COMPOUND-5M-PAPER.md": 1,
@@ -460269,6 +460481,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       ".github/SECURITY.md": 1,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/tests/test_index_search_tooling.py": 1,
@@ -461144,6 +461357,7 @@
     "know": {
       "CLAUDE.md": 3,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "backtester/PROMPT.md": 2,
       "backtester/core/dcasim.py": 1,
       "backtester/core/gridsim.py": 2,
@@ -467571,6 +467785,7 @@
       "tools/land.sh": 1
     },
     "landing": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/ts_momentum.md": 1,
       "backtester/tests/test_cross_asset_cpcv.py": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -469275,6 +469490,7 @@
     },
     "later": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/archive_price.py": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/core/dcasim.py": 1,
@@ -470547,6 +470763,7 @@
     },
     "latest": {
       ".github/workflows/ci.yml": 10,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/indicators.py": 10,
       "backtester/core/scorecard.py": 1,
       "backtester/core/strategies/rsi.py": 1,
@@ -476570,6 +476787,7 @@
       "research/tradingview-strategy-understanding.json": 2
     },
     "lesson": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_xebjei3o_how_to_identify_valid_high_probability_price_action_structures.md": 1,
       "backtester/strategy_cards/README.md": 1,
       "docs/archive/memory-2026-11-08.md": 3,
@@ -477848,7 +478066,7 @@
       "extension/tools/dryrun.js": 3,
       "index/build.py": 1,
       "llms-full.txt": 11,
-      "memory.md": 3,
+      "memory.md": 2,
       "research/5minleveragestrategies.json": 3,
       "research/STRATEGIES.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 65,
@@ -482916,6 +483134,7 @@
     "limits": {
       ".claude/agents/aero-pool-scout.md": 2,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/README.md": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -486483,6 +486702,7 @@
       "CLAUDE.md": 12,
       "CONTRIBUTING.md": 6,
       "GEMINI.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 4,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -488310,6 +488530,7 @@
       "CLAUDE.md": 21,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 5,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 6,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 7,
@@ -488585,7 +488806,7 @@
       "llms-small.txt": 1,
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 19,
+      "memory.md": 18,
       "mongo/README.md": 1,
       "mongo/load.py": 9,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -489298,6 +489519,7 @@
       ".gitignore": 5,
       "AGENTS.md": 3,
       "CLAUDE.md": 16,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "docs/BASE-WALLET-QUERIES.md": 1,
       "docs/CONCEPTS.md": 4,
       "docs/FILES.md": 19,
@@ -490163,6 +490385,7 @@
     },
     "loaded": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/PROMPT.md": 2,
       "backtester/core/data.py": 1,
       "backtester/core/ticks.py": 2,
@@ -491744,6 +491967,7 @@
     "locally": {
       ".github/SECURITY.md": 1,
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ctjx82hp_extrapolated_pivot_connector_lets_make_support_and_resistances.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hyeodyzn_lowess_locally_weighted_scatterplot_smoothing_chartprime.md": 7,
@@ -492277,6 +492501,7 @@
       "research/tradingview-card-coverage.json": 4
     },
     "locking": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_sg7vk6uh_iq_trend_beams_tradingiq.md": 1,
       "research/tradingview-card-coverage.json": 3,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
@@ -492870,6 +493095,7 @@
     },
     "logic": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 9,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md": 2,
@@ -493214,6 +493440,7 @@
       "CLAUDE.md": 2,
       "CODE_OF_CONDUCT.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_cy6rizcl_probability_distribution_histogram.md": 1,
       "backtester/strategy_research/tv_hnpilzeg_market_sessions_by_leviathan.md": 1,
       "docs/BASE-WALLET-QUERIES.md": 1,
@@ -495263,6 +495490,7 @@
       "soltui/wallet.py": 1
     },
     "lookup": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/cointegration.py": 1,
       "backtester/core/pairs.py": 3,
       "backtester/guides/pairs_cointegration.md": 1,
@@ -503010,6 +503238,7 @@
     },
     "made": {
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/core/fetch.py": 3,
       "backtester/core/fetch_minutes.py": 2,
@@ -504126,6 +504355,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2
     },
     "maintain": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_5kgra3dl_dynamic_volume_clusters_with_retest_signals_zeiierman.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_5qso13ib_flare.md": 1,
@@ -504451,6 +504681,7 @@
     "make": {
       ".github/ISSUE_TEMPLATE/feature_request.md": 1,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/core/compound.py": 1,
@@ -506201,6 +506432,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "malformed": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mzhkugci_geo.md": 1,
@@ -506252,6 +506484,7 @@
       "research/coin-intelligence/eth-ethereum.md": 1
     },
     "malicious": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 1,
       "docs/SECURITY.md": 1,
       "executor/CLAUDE.md": 1,
@@ -506380,6 +506613,7 @@
       "research/tradingview-script-understanding.json": 1
     },
     "managed": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qldv6ukv_lognormal.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_xfr7xhqz_cm_macd_custom_indicator_multiple_time_frame_v2.md": 1,
       "backtester/strategy_research/tv_43000599836_consecutive_up_down_strategy.md": 1,
@@ -506606,6 +506840,7 @@
     "manages": {
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_efbdipvs_bjorgum_autotrail.md": 3,
       "backtester/strategy_cards/incomplete/tv_ksmls0hh_supertrend_parameter_sensitivity_3d_luxalgo.md": 1,
@@ -507729,6 +507964,7 @@
       ".github/workflows/ci.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1nhvl40i_fibonacci_time_price_zones.md": 1,
@@ -509489,7 +509725,7 @@
       "mongo/load.py": 2,
       "mongo/queries/07-documents-and-search.js": 2,
       "mongo/schema.py": 1,
-      "prompts.md": 3,
+      "prompts.md": 4,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/candle_gap_audit.py": 3,
@@ -510679,6 +510915,7 @@
     "master": {
       ".githooks/pre-merge-commit": 2,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_5a8qkpsh_point_of_control_v2.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_kyoaaz0p_tradingtoolslibrary.md": 1,
       "backtester/strategy_cards/incomplete/tv_8jahmkxs_bear_market_probability_model.md": 1,
@@ -510751,6 +510988,7 @@
     "match": {
       ".claude/agents/aero-pool-scout.md": 1,
       ".gitignore": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/core/report.py": 1,
       "backtester/core/scorecard.py": 1,
@@ -512491,6 +512729,7 @@
       "CLAUDE.md": 2,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_00jfil5w_security_revisited_pinecoders.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_7skzirbb_machine_learning_neural_network_engine.md": 1,
@@ -519343,6 +519582,7 @@
     "merely": {
       "CLAUDE.md": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/funding.py": 2,
       "backtester/core/strategies/advanced.py": 1,
@@ -519419,6 +519659,7 @@
     "merge": {
       ".githooks/pre-merge-commit": 12,
       ".github/dependabot.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "LICENSE": 1,
       "backtester/README.md": 1,
       "backtester/core/engine.py": 1,
@@ -519451,7 +519692,7 @@
       "extension/src/core/commands.js": 3,
       "extension/test/surfaces.test.js": 1,
       "llms-full.txt": 2,
-      "memory.md": 2,
+      "memory.md": 4,
       "prompts.md": 9,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -519508,6 +519749,7 @@
       "docs/archive/memory-2026-11-08.md": 1
     },
     "merged": {
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "backtester/core/strategy_cards.py": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hnpilzeg_market_sessions_by_leviathan.md": 1,
       "backtester/strategy_cards/incomplete/tv_b3pcu8qn_ce_42macro_equity_factor_table.md": 1,
@@ -519522,7 +519764,7 @@
       "extension/src/core/alerts.js": 4,
       "extension/src/core/commands.js": 16,
       "extension/src/core/risk.js": 14,
-      "memory.md": 6,
+      "memory.md": 10,
       "prompts.md": 4,
       "research/candle_gap_audit.py": 7,
       "research/coin-intelligence/doge-dogecoin.md": 3,
@@ -519903,6 +520145,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "messages": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_df63cmxh_quartile_vol_vol_aggregation_range_us_bars_gaps_kioseff.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_xfr7xhqz_cm_macd_custom_indicator_multiple_time_frame_v2.md": 3,
@@ -519998,6 +520241,7 @@
       "research/tradingview-card-coverage.json": 2
     },
     "met": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tjzklojn_wyckoff_theultimator5.md": 1,
@@ -525177,6 +525421,7 @@
       "liquidity/src/aero_lp/chain.py": 1
     },
     "mint": {
+      "JUPITER_GEMINI_HANDOFF.md": 6,
       "backtester/README.md": 1,
       "backtester/core/archive_price.py": 20,
       "backtester/guides/jlp_vs_sol_relative_value.md": 6,
@@ -525361,6 +525606,7 @@
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1
     },
     "mints": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/archive_price.py": 6,
       "docs/FILES.md": 4,
@@ -525676,8 +525922,8 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_gates.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 6,
-      "prompts.md": 5,
+      "memory.md": 5,
+      "prompts.md": 4,
       "research/5minleveragestrategies.json": 12,
       "research/CANDLE-GAP-AUDIT.md": 17,
       "research/COMPOUND-FRONTIER.md": 3,
@@ -526423,6 +526669,7 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1
     },
     "mismatched": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/engine.py": 3,
       "backtester/core/types.py": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md": 1,
@@ -526919,6 +527166,7 @@
     },
     "mitch": {
       ".claude/agents/aero-pool-scout.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 6,
       "backtester/README.md": 1,
       "docs/COMPOUND-5M-PAPER.md": 5,
       "docs/COMPOUND-5M.md": 7,
@@ -526934,7 +527182,7 @@
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "liquidity/README.md": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "prompts.md": 30,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/five-minute-perps-suite/archive-receipt.json": 5,
@@ -526998,6 +527246,7 @@
     "mithudso": {
       ".github/CODEOWNERS": 8,
       ".github/FUNDING.yml": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "context-bundle.json": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -527923,6 +528172,7 @@
       ".github/copilot-instructions.md": 2,
       ".gitignore": 1,
       "CLAUDE.md": 6,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 3,
@@ -531312,6 +531562,7 @@
       "CLAUDE.md": 5,
       "CONTRIBUTING.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "README.md": 1,
       "backtester/README.md": 2,
       "backtester/core/compound.py": 1,
@@ -531627,6 +531878,7 @@
       ".remember/remember.md": 3,
       "CLAUDE.md": 3,
       "GEMINI.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 5,
       "docs/COMPONENTS.md": 6,
       "docs/CONCEPTS.md": 1,
@@ -533056,6 +533308,7 @@
       "CLAUDE.md": 2,
       "CONTRIBUTING.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/core/engine.py": 2,
@@ -533413,6 +533666,7 @@
     },
     "moved": {
       ".remember/remember.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 2,
       "backtester/core/dcasim.py": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -544624,6 +544878,7 @@
       "CLAUDE.md": 4,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -548440,6 +548695,7 @@
       ".remember/remember.md": 4,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 2,
       "backtester/core/archive_price.py": 3,
       "backtester/core/dcasim.py": 2,
@@ -550577,6 +550833,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       ".githooks/pre-merge-commit": 1,
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 4,
       "backtester/core/coinfit.py": 4,
@@ -550816,6 +551073,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 11,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "memory.md": 2,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -552491,6 +552749,7 @@
       "extension/tools/deps.js": 2
     },
     "nodes": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0j7owdat_flowscope_hapharmonic.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_asr7nob2_liquidity_sentiment_profile_luxalgo.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_d4tdeuru_volume_composition_flowly_indicators.md": 1,
@@ -552882,6 +553141,7 @@
       ".github/SECURITY.md": 1,
       ".github/copilot-instructions.md": 2,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 5,
       "backtester/README.md": 3,
       "backtester/core/archive_price.py": 1,
@@ -557050,6 +557310,7 @@
       ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 3,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/core/archive_price.py": 2,
       "backtester/core/dcasim.py": 1,
@@ -558987,7 +559248,7 @@
       "mongo/queries/07-documents-and-search.js": 1,
       "mongo/schema.py": 2,
       "mongo/tests/test_load.py": 2,
-      "prompts.md": 7,
+      "prompts.md": 5,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/LEVERAGE-TIERS.md": 1,
       "research/PROMPT_STRATEGIES.md": 5,
@@ -564462,6 +564723,7 @@
       "soltui/bgqueue.py": 2
     },
     "observed": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/botcli.py": 2,
       "backtester/core/coinfit.py": 2,
       "backtester/core/deflated_sharpe.py": 3,
@@ -570356,6 +570618,7 @@
       ".github/dependabot.yml": 4,
       ".remember/remember.md": 2,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 7,
       "backtester/README.md": 8,
       "backtester/cli.py": 1,
@@ -574512,6 +574775,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 3,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 2,
       "backtester/README.md": 1,
       "backtester/botcli.py": 1,
@@ -575342,6 +575606,7 @@
     },
     "origin": {
       ".github/workflows/ci.yml": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0j7owdat_flowscope_hapharmonic.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_3bjfd0a2_circular_candlestick_chart.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman.md": 1,
@@ -575412,6 +575677,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
     },
     "original": {
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/README.md": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/core/metrics.py": 1,
@@ -578174,6 +578440,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
     "outcomes": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/funding.py": 1,
       "backtester/core/metrics.py": 1,
       "backtester/core/scorecard.py": 2,
@@ -583356,6 +583623,7 @@
       "CLAUDE.md": 10,
       "CONTRIBUTING.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 4,
@@ -583854,6 +584122,7 @@
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 13,
       "CODE_OF_CONDUCT.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/core/scorecard.py": 1,
       "backtester/core/universe.py": 1,
       "backtester/strategy_research/prediction_markets.md": 2,
@@ -583946,7 +584215,7 @@
       "liquidity/tests/test_network.py": 3,
       "liquidity/tests/test_safe_exit.py": 6,
       "liquidity/tests/test_submission_audit.py": 23,
-      "memory.md": 14,
+      "memory.md": 16,
       "prompts.md": 7,
       "research/COMPOUND-FRONTIER.md": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -584066,6 +584335,7 @@
       "soltui/tests/test_wallet_integration.py": 1
     },
     "ownership": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "docs/FILES.md": 6,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -584918,6 +585188,7 @@
     },
     "packaging": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/DEVELOPMENT.md": 2,
       "docs/FILES.md": 1,
       "docs/SCRIPTS.md": 2,
@@ -585061,6 +585332,7 @@
     "page": {
       ".claude/agents/aero-pool-scout.md": 3,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/archive_price.py": 1,
       "backtester/core/fetch_minutes_alt.py": 12,
       "backtester/core/funding.py": 11,
@@ -588560,6 +588832,7 @@
       "research/tradingview-strategy-card-locations.json": 2
     },
     "parameters": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/core/cpcv.py": 3,
       "backtester/core/fetch_minutes.py": 1,
@@ -594258,6 +594531,7 @@
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/cli.py": 1,
       "backtester/core/compound.py": 1,
@@ -594584,6 +594858,7 @@
       ".github/PULL_REQUEST_TEMPLATE.md": 2,
       "CLAUDE.md": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/universe.py": 1,
       "backtester/strategy_cards/hurst_regime_test.md": 1,
@@ -594686,6 +594961,7 @@
     },
     "passes": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/core/engine.py": 1,
       "backtester/core/ticks.py": 1,
@@ -597128,6 +597404,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "payer": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 1,
       "docs/trading-signals-concept-family.md": 2,
       "executor/CLAUDE.md": 1,
@@ -598583,6 +598860,7 @@
       "research/tradingview-card-coverage.json": 3
     },
     "pending": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/dcasim.py": 13,
       "backtester/core/engine.py": 4,
       "backtester/core/trianglesim.py": 7,
@@ -598618,6 +598896,7 @@
       "liquidity/src/aero_lp/safe_exit.py": 3,
       "liquidity/src/aero_lp/submissions.py": 2,
       "llms-full.txt": 3,
+      "memory.md": 2,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
@@ -603533,6 +603812,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 2
     },
     "persistent": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 5,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_2tennpoc_rsi_past_can_turn_rsi_into_a_directional_tool.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_66gsofej_separated_moving_average_evo.md": 1,
@@ -609127,6 +609407,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -609333,6 +609614,7 @@
       ".github/copilot-instructions.md": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/dcasim.py": 2,
       "backtester/core/gridsim.py": 7,
       "backtester/gridcli.py": 3,
@@ -611429,6 +611711,7 @@
       ".github/copilot-instructions.md": 3,
       ".gitignore": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/PROMPT.md": 5,
       "backtester/core/archive_price.py": 2,
@@ -618278,7 +618561,7 @@
       "liquidity/src/aero_lp/gates.py": 1,
       "llms-full.txt": 1,
       "mongo/tests/test_load.py": 1,
-      "prompts.md": 3,
+      "prompts.md": 2,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -620743,9 +621026,9 @@
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 2,
       "docs/trading-signals-concept-family.md": 10,
-      "memory.md": 4,
+      "memory.md": 3,
       "pagesource": 1,
-      "prompts.md": 8,
+      "prompts.md": 6,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/STRATEGIES.md": 1,
@@ -623244,6 +623527,9 @@
       "skills/trading-and-investing/references/grid-trading-strategy.md": 1,
       "soltui/live_run.py": 1
     },
+    "presently": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
     "presentperformanceclaims": {
       "docs/archive/memory-2026-11-08.md": 1
     },
@@ -623304,6 +623590,7 @@
     },
     "preserve": {
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 2,
       "backtester/core/coinfit.py": 1,
       "backtester/guides/ladder_grid.md": 1,
@@ -624979,6 +625266,7 @@
     },
     "preserves": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0h0gkncy_120x_ticker_screener_composite_tickers.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_bdk3oefq_tasc_2025_11_the_points_and_line_chart.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_efbdipvs_bjorgum_autotrail.md": 1,
@@ -626737,6 +627025,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
     "prevent": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/funding.py": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md": 2,
@@ -626914,6 +627203,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2
     },
     "preview": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_wiwhv552_custom_pattern_detection.md": 2,
       "docs/FILES.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
@@ -627028,6 +627318,7 @@
       "soltui/tui.py": 1
     },
     "previous": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/dcasim.py": 1,
       "backtester/core/fetch_minutes.py": 2,
       "backtester/core/metrics.py": 1,
@@ -627199,7 +627490,7 @@
       "index/README.md": 1,
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 2,
-      "memory.md": 1,
+      "memory.md": 3,
       "mongo/queries/01-coins-and-bars.js": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 14,
@@ -627291,6 +627582,7 @@
     },
     "previously": {
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/strategies/__init__.py": 1,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/guides/ladder_grid.md": 1,
@@ -627383,6 +627675,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 2,
       "backtester/PROMPT.md": 12,
       "backtester/README.md": 16,
@@ -628605,13 +628898,13 @@
       "llms/aero-lp-explained-2026-11-06.md": 6,
       "llms/defillama-llms-free.txt": 2,
       "llms/defillama-llms.txt": 3,
-      "memory.md": 15,
+      "memory.md": 14,
       "mongo/README.md": 5,
       "mongo/load.py": 5,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/schema.py": 3,
       "mongo/tests/test_snapshot_audit.py": 2,
-      "prompts.md": 17,
+      "prompts.md": 14,
       "research/5minleveragestrategies.json": 43,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -629226,6 +629519,7 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 1
     },
     "prices": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/botcli.py": 2,
@@ -633031,6 +633325,7 @@
       "research/tradingview-script-understanding.json": 1
     },
     "problems": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/guides/jlp_vs_sol_relative_value.md": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
@@ -637744,6 +638039,7 @@
       ".env.example": 2,
       ".github/SECURITY.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "docs/DEVELOPMENT.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/jupiter-trigger-contract.md": 1,
@@ -637999,6 +638295,7 @@
       "liquidity/tests/test_providers.py": 6
     },
     "project": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/deflated_sharpe.py": 1,
       "backtester/core/funding.py": 1,
@@ -639694,6 +639991,7 @@
       "research/exchangefees.json": 1
     },
     "prompt": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 2,
@@ -643294,6 +643592,7 @@
       ".github/workflows/ci.yml": 8,
       "CODE_OF_CONDUCT.md": 2,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/guides/pairs_cointegration.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_beczr3nb_buyers_sellers_profile_dynamic_s_r_zeiierman.md": 5,
@@ -645653,6 +645952,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 6,
       "GEMINI.md": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 5,
       "backtester/README.md": 13,
       "backtester/core/compound.py": 1,
@@ -648980,6 +649280,7 @@
     },
     "queries": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ezlwruv8_std_time.md": 1,
       "docs/BASE-WALLET-QUERIES.md": 1,
       "docs/CONCEPTS.md": 1,
@@ -649740,6 +650041,7 @@
       "soltui/tui.py": 1
     },
     "queued": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/dcasim.py": 6,
       "backtester/core/engine.py": 1,
       "backtester/guides/dca_bot.md": 1,
@@ -649814,6 +650116,7 @@
       ".githooks/pre-merge-commit": 1,
       "AGENTS.md": 1,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/README.md": 1,
       "backtester/core/coinfit.py": 2,
@@ -651580,6 +651883,7 @@
       ".github/ISSUE_TEMPLATE/bug_report.md": 2,
       ".remember/remember.md": 2,
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "backtester/core/fetch.py": 3,
       "backtester/core/fetch_minutes_alt.py": 3,
       "backtester/core/gridsim.py": 6,
@@ -653176,6 +653480,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 5,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_sg7vk6uh_iq_trend_beams_tradingiq.md": 9,
       "docs/API.md": 5,
@@ -659409,6 +659714,7 @@
       "CLAUDE.md": 11,
       "CONTRIBUTING.md": 2,
       "GEMINI.md": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/PROMPT.md": 7,
       "backtester/README.md": 3,
@@ -662726,6 +663032,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 8,
       "GEMINI.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 4,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 7,
@@ -664735,6 +665042,7 @@
     "rebuilt": {
       ".githooks/pre-commit": 2,
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/indicators.py": 2,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/strategy_cards/vol_regime_hmm.md": 1,
@@ -668587,6 +668895,7 @@
       "llms-full.txt": 1
     },
     "reconciles": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/tests/test_gridsim.py": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/dso-skill/references/passes.md": 1,
@@ -668600,6 +668909,7 @@
       "extension/src/core/engine.js": 4
     },
     "reconciliation": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_efbdipvs_bjorgum_autotrail.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_u8imfw8n_redk_portfolio_tracker_v2_few_enhancements_and_display_options.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_uftt8roh_redk_portfolio_tracker_table_version.md": 1,
@@ -670016,10 +670326,10 @@
       "llms-full.txt": 11,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 1,
+      "memory.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/05-backtests.js": 1,
-      "prompts.md": 7,
+      "prompts.md": 8,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -670469,6 +670779,7 @@
       ".gitignore": 1,
       "CLAUDE.md": 2,
       "GEMINI.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/core/fetch_minutes.py": 2,
@@ -672981,6 +673292,7 @@
     },
     "recovery": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/botcli.py": 1,
       "backtester/core/coinfit.py": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -675129,6 +675441,7 @@
     },
     "references": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/README.md": 2,
       "backtester/core/universe.py": 1,
@@ -676584,6 +676897,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "refreshes": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_sg7vk6uh_iq_trend_beams_tradingiq.md": 1,
       "backtester/strategy_cards/incomplete/tv_sg7vk6uh_iq_trend_beams_tradingiq.md": 1,
       "docs/FILES.md": 2,
@@ -676745,6 +677059,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 1,
       "backtester/core/dcasim.py": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -676991,6 +677306,7 @@
       ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 2,
       "backtester/core/archive_price.py": 1,
       "backtester/core/deflated_sharpe.py": 1,
@@ -677341,6 +677657,7 @@
     },
     "regenerate": {
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 64,
       "docs/SCRIPTS.md": 1,
       "docs/archive/memory-2026-11-08.md": 20,
@@ -677401,6 +677718,7 @@
     },
     "regeneration": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/archive/memory-2026-11-08.md": 6,
       "docs/caching-and-optimization.md": 1,
@@ -679083,6 +679401,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "rejects": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 2,
       "backtester/core/cointegration.py": 1,
       "backtester/guides/tv_gjugg1kv_key_ideas_to_trade_big_daily_structures_example_on_amat.md": 1,
@@ -679254,6 +679573,7 @@
     },
     "related": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/jlp_vs_sol_relative_value.md": 1,
       "backtester/guides/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md": 1,
       "backtester/guides/tv_43000474007_understanding_range_charts.md": 2,
@@ -681252,6 +681572,7 @@
       "research/tradingview-script-profile-audits/shard-b.jsonl": 2
     },
     "released": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/engine.py": 5,
       "backtester/strategy_cards/incomplete/tv_bmbdsegq_the_bitcoin_cheatsheet_the_price_and_time_of_the_next_top.md": 1,
       "backtester/strategy_cards/incomplete/tv_bzo4yadb_per_bak_self_organized_criticality.md": 1,
@@ -681264,6 +681585,7 @@
       "extension/src/core/commands.js": 1,
       "index/idle.py": 1,
       "liquidity/src/aero_lp/executor.py": 1,
+      "memory.md": 2,
       "research/coin-intelligence/xrp-ripple.md": 4,
       "research/tradingview-card-coverage.json": 13,
       "research/tradingview-card-readiness.json": 1,
@@ -682042,7 +682364,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/src/aero_lp/safe_exit.py": 2,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/CANDLE-GAP-AUDIT.md": 2,
@@ -682140,6 +682462,7 @@
     "remains": {
       "CLAUDE.md": 1,
       "CONTRIBUTING.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/core/archive_price.py": 1,
       "backtester/core/strategies/advanced.py": 1,
@@ -682689,6 +683012,7 @@
     },
     "remote": {
       ".githooks/pre-commit": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_df63cmxh_quartile_vol_vol_aggregation_range_us_bars_gaps_kioseff.md": 1,
       "backtester/tests/test_index_search_tooling.py": 1,
       "docs/FILES.md": 5,
@@ -688255,6 +688579,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/archive_price.py": 4,
@@ -688370,7 +688695,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 10,
       "pagesource": 1,
-      "prompts.md": 11,
+      "prompts.md": 12,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -688503,6 +688828,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 4
     },
     "requested": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/data.py": 1,
       "backtester/core/fetch_minutes.py": 8,
       "backtester/core/ticks.py": 2,
@@ -688542,7 +688868,7 @@
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_market_state.py": 2,
       "llms/defillama-llms-free.txt": 4,
-      "memory.md": 4,
+      "memory.md": 6,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/cross_asset_cpcv.py": 1,
       "research/decide.py": 1,
@@ -688620,6 +688946,7 @@
       "research/tradingview-script-understanding.json": 1
     },
     "requestid": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/trading-signals-concept-family.md": 2,
       "extension/src/jupiter/trigger.js": 2,
@@ -688788,6 +689115,7 @@
     "require": {
       ".github/SECURITY.md": 1,
       ".github/workflows/ci.yml": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/core/coinfit.py": 1,
@@ -690151,6 +690479,7 @@
     "requires": {
       ".github/SECURITY.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/deflated_sharpe.py": 1,
       "backtester/core/gridsim.py": 1,
@@ -690544,6 +690873,7 @@
       "research/five-minute-perps-suite/skill-installation-receipt.json": 2
     },
     "rerun": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 2,
       "backtester/guides/ladder_grid.md": 1,
       "docs/FILES.md": 1,
@@ -691241,6 +691571,7 @@
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1
     },
     "reset": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 2,
       "backtester/core/data.py": 3,
       "backtester/core/fetch.py": 2,
@@ -692133,6 +692464,7 @@
     },
     "resolution": {
       ".githooks/pre-merge-commit": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/core/ticks.py": 1,
@@ -693249,6 +693581,7 @@
     },
     "responses": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_i4ifuwsu_daily_play_ace_spectrum.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mheetfmn_a_useful_ma_weighting_function_for_controlling_lag_smoothness.md": 1,
       "docs/FILES.md": 2,
@@ -693564,6 +693897,7 @@
       "research/coin-intelligence/btc-bitcoin.md": 2
     },
     "restart": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/core/gridsim.py": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
@@ -694144,6 +694478,7 @@
       "research/tradingview-card-coverage.json": 3
     },
     "resubmit": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "soltui/tests/test_coinbase_manual_ui.py": 2,
       "soltui/tui.py": 3
     },
@@ -694294,6 +694629,7 @@
       ".github/workflows/ci.yml": 1,
       ".gitignore": 8,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 4,
       "backtester/PROMPT.md": 6,
       "backtester/README.md": 2,
@@ -697573,6 +697909,7 @@
     "retries": {
       ".github/SECURITY.md": 1,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/fetch.py": 5,
       "backtester/core/fetch_minutes.py": 7,
       "backtester/core/funding.py": 7,
@@ -697720,6 +698057,7 @@
       "soltui/commands.py": 1
     },
     "retrieved": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/fetch.py": 1,
       "backtester/core/funding.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_7gx1fmgo_everything_bitcoin_kioseff_trading.md": 1,
@@ -698904,6 +699242,7 @@
     },
     "retry": {
       "AGENTS.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/fetch_minutes.py": 7,
       "backtester/tests/test_fetch_minutes.py": 8,
@@ -699246,6 +699585,7 @@
       "liquidity/tests/test_submission_audit.py": 2
     },
     "returned": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/archive_price.py": 1,
       "backtester/core/engine.py": 1,
       "backtester/core/fetch.py": 1,
@@ -699906,6 +700246,7 @@
     },
     "reuse": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/guides/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md": 1,
       "backtester/guides/tv_43000474007_understanding_range_charts.md": 1,
@@ -702132,6 +702473,7 @@
     "review": {
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/workflows/ci.yml": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 6,
       "backtester/PROMPT.md": 1,
       "backtester/guides/ladder_grid.md": 1,
       "backtester/guides/tv_dluyt9rs_trader_s_guide_to_options_part_2.md": 1,
@@ -702965,6 +703307,7 @@
     },
     "reviewed": {
       ".github/CODEOWNERS": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_00jfil5w_security_revisited_pinecoders.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator.md": 1,
@@ -706188,6 +706531,7 @@
     "risks": {
       ".github/PULL_REQUEST_TEMPLATE.md": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/guides/tv_gjugg1kv_key_ideas_to_trade_big_daily_structures_example_on_amat.md": 1,
       "backtester/strategy_cards/atr_position_sizing.md": 1,
@@ -706401,6 +706745,7 @@
       "liquidity/src/aero_lp/providers_report.py": 2,
       "liquidity/tests/test_providers.py": 3,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "memory.md": 1,
       "research/STRATEGIES.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -709008,11 +709353,13 @@
       "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md": 1
     },
     "routers": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md": 6,
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 4
     },
     "routes": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_uyms0uuj_finitestatemachine.md": 1,
       "backtester/tests/test_ratio_rotation.py": 1,
       "docs/ARCHITECTURE.md": 1,
@@ -712543,6 +712890,7 @@
       "CLAUDE.md": 11,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "README.md": 6,
       "backtester/PROMPT.md": 10,
       "backtester/README.md": 15,
@@ -714755,6 +715103,7 @@
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/workflows/ci.yml": 15,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 4,
       "backtester/README.md": 8,
       "backtester/botcli.py": 1,
@@ -716096,6 +716445,7 @@
     },
     "safe": {
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/botcli.py": 3,
       "backtester/core/gridsim.py": 1,
       "backtester/core/metrics.py": 4,
@@ -716360,6 +716710,7 @@
     "safety": {
       ".github/copilot-instructions.md": 1,
       ".gitignore": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 2,
       "backtester/README.md": 2,
       "backtester/botcli.py": 3,
@@ -716769,6 +717120,7 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
     },
     "sample": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 13,
       "backtester/README.md": 21,
       "backtester/cli.py": 8,
@@ -719922,6 +720274,7 @@
       ".githooks/pre-commit": 1,
       ".github/ISSUE_TEMPLATE/bug_report.md": 1,
       ".github/SECURITY.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/core/cointegration.py": 1,
       "backtester/core/compound.py": 1,
@@ -721729,7 +722082,7 @@
       "index/make_files_doc.py": 2,
       "llms-full.txt": 2,
       "memory.md": 1,
-      "prompts.md": 4,
+      "prompts.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -721823,7 +722176,7 @@
       "docs/short-horizon-leverage-concept-family.md": 1,
       "extension/tools/e2e.mjs": 2,
       "llms-full.txt": 2,
-      "memory.md": 3,
+      "memory.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 3,
@@ -727519,6 +727872,7 @@
       ".remember/remember.md": 4,
       "CLAUDE.md": 6,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 4,
       "backtester/guides/tv_gfhcvho3_how_to_use_multi_timeframe_analysis_and_what_it_means.md": 2,
       "backtester/strategy_cards/README.md": 1,
@@ -728011,6 +728365,7 @@
     "search": {
       ".claude/agents/aero-pool-scout.md": 1,
       "CLAUDE.md": 7,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 1,
       "backtester/core/deflated_sharpe.py": 5,
@@ -731184,6 +731539,7 @@
       "liquidity/src/aero_lp/safe_exit.py": 1,
       "liquidity/src/aero_lp/scout.py": 1,
       "llms-full.txt": 18,
+      "memory.md": 1,
       "mongo/README.md": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/schema.py": 2,
@@ -733460,6 +733816,7 @@
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1
     },
     "selected": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
@@ -734036,6 +734393,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2
     },
     "selecting": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/cpcv.py": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md": 1,
@@ -734103,6 +734461,7 @@
       "soltui/tests/test_compound.py": 1
     },
     "selection": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 1,
       "backtester/core/deflated_sharpe.py": 2,
@@ -735324,6 +735683,7 @@
     "semantic": {
       ".gitignore": 7,
       "CLAUDE.md": 6,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_jjgkjumy_live_economic_calendar_by_toodegrees.md": 1,
       "backtester/tests/test_index.py": 5,
@@ -735756,6 +736116,7 @@
     },
     "sending": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/README.md": 1,
       "backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md": 1,
       "backtester/strategy_research/tv_43000778534_sending_addresses.md": 9,
@@ -736451,6 +736812,7 @@
       ".github/workflows/ci.yml": 1,
       "CLAUDE.md": 3,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 3,
       "backtester/botcli.py": 2,
@@ -737038,6 +737400,7 @@
     },
     "separately": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/compound.py": 2,
@@ -747510,6 +747873,7 @@
     "shell": {
       ".env.example": 3,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_2lgyzykc_ultimate_strategy_template.md": 4,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_wvcqygsx_mtf_oscillator_framework_pinecoders.md": 2,
@@ -747891,6 +748255,7 @@
       ".github/copilot-instructions.md": 1,
       ".remember/remember.md": 2,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/strategy_cards/bb_reversion.md": 1,
@@ -753271,7 +753636,7 @@
       "liquidity/tests/test_engine.py": 15,
       "liquidity/tests/test_engine_audit.py": 9,
       "llms-full.txt": 9,
-      "memory.md": 9,
+      "memory.md": 8,
       "mongo/README.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/03-signals-and-indicators.js": 1,
@@ -755217,6 +755582,7 @@
       "extension/src/ui/view-trade.js": 2
     },
     "signed": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 3,
       "backtester/core/engine.py": 9,
@@ -755481,6 +755847,7 @@
       "extension/src/wallet/solana.js": 6
     },
     "signers": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/ARCHITECTURE.md": 1,
       "executor/src/executor/txverify.py": 4,
       "extension/README.md": 1,
@@ -755703,6 +756070,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "CODE_OF_CONDUCT.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/ticks.py": 1,
@@ -755791,6 +756159,7 @@
       ".github/workflows/ci.yml": 2,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/tv_8hiw5vzw_tutorial_how_to_identify_potentially_strong_trend_days.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_10xmhfge_volume_per_point.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_672uph9q_enhanced_time_segmented_volume.md": 1,
@@ -758909,6 +759278,7 @@
       "executor/src/executor/engine.py": 3
     },
     "simulated": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
@@ -759012,6 +759382,7 @@
       "soltui/tests/test_jupiter_manual.py": 4
     },
     "simulates": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_nwjy3xpv_first_passage_time_distribution_analysis.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_y5ciz9cb_universal_signal_backtester_luxalgo.md": 3,
       "backtester/strategy_cards/incomplete/tv_ksmls0hh_supertrend_parameter_sensitivity_3d_luxalgo.md": 1,
@@ -759087,6 +759458,7 @@
       "CLAUDE.md": 3,
       "CONTRIBUTING.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 3,
@@ -770468,6 +770840,7 @@
     },
     "solders": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
       "executor/pyproject.toml": 1,
@@ -770631,6 +771004,7 @@
       ".claude/agents/aero-pool-scout.md": 1,
       ".gitignore": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 8,
       "README.md": 2,
       "backtester/README.md": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -770682,7 +771056,7 @@
       "llms-full.txt": 22,
       "llms-small.txt": 4,
       "llms.txt": 3,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/README.md": 4,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -770807,6 +771181,7 @@
       ".gitignore": 6,
       "CLAUDE.md": 3,
       "GEMINI.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 16,
       "README.md": 4,
       "backtester/README.md": 2,
       "backtester/botcli.py": 3,
@@ -770925,7 +771300,7 @@
       "llms-full.txt": 31,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 10,
+      "memory.md": 12,
       "mongo/README.md": 1,
       "mongo/load.py": 5,
       "mongo/requirements.txt": 1,
@@ -771389,6 +771764,7 @@
       "research/tradingview-card-coverage.json": 2
     },
     "solution": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_00jfil5w_security_revisited_pinecoders.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_rcfo5hhf_reverse_stochastic_momentum_index_on_chart.md": 1,
@@ -777350,6 +777726,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "specific": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/guides/jlp_vs_sol_relative_value.md": 2,
@@ -783872,6 +784249,7 @@
       "research/tradingview-script-understanding.json": 1
     },
     "squash": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "prompts.md": 2,
       "tools/gate.sh": 1,
@@ -784024,6 +784402,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 9,
       "GEMINI.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/README.md": 1,
       "backtester/core/gridsim.py": 4,
@@ -785599,6 +785978,7 @@
       ".github/workflows/ci.yml": 3,
       ".gitignore": 1,
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "README.md": 1,
       "backtester/core/strategy_cards.py": 1,
       "backtester/core/trianglesim.py": 3,
@@ -788137,6 +788517,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
     "starting": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 3,
       "backtester/cli.py": 3,
@@ -788580,6 +788961,7 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1
     },
     "stash": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "tools/land.sh": 1
     },
@@ -788663,6 +789045,7 @@
       ".gitignore": 5,
       "CLAUDE.md": 2,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/PROMPT.md": 3,
       "backtester/core/cointegration.py": 1,
@@ -788958,6 +789341,7 @@
       "liquidity/tests/test_safe_exit.py": 5,
       "liquidity/tests/test_submission_audit.py": 19,
       "llms-full.txt": 16,
+      "memory.md": 1,
       "pagesource": 12,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -791302,6 +791686,7 @@
     },
     "stele": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/strategy_cards/lev_high.md": 2,
       "backtester/strategy_cards/lev_low.md": 2,
       "backtester/strategy_cards/lev_medium.md": 2,
@@ -795734,7 +796119,7 @@
       "mongo/schema.py": 5,
       "mongo/tests/test_load.py": 10,
       "mongo/tests/test_snapshot_audit.py": 3,
-      "prompts.md": 21,
+      "prompts.md": 20,
       "research/5minleveragestrategies.json": 47,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -796464,8 +796849,8 @@
       "docs/TRADINGVIEW-REFERENCE.md": 13,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
-      "memory.md": 5,
-      "prompts.md": 7,
+      "memory.md": 4,
+      "prompts.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/tick_backfill.py": 2,
       "research/tradingview-card-coverage.json": 4,
@@ -801730,6 +802115,7 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 1
     },
     "submission": {
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "docs/FILES.md": 3,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
@@ -801793,6 +802179,7 @@
     },
     "submit": {
       "AGENTS.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive.md": 2,
@@ -801913,6 +802300,7 @@
       "extension/src/core/engine.js": 1
     },
     "submitting": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/ARCHITECTURE.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "extension/README.md": 2,
@@ -803256,6 +803644,7 @@
     },
     "success": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/core/fetch_minutes_alt.py": 1,
@@ -807319,6 +807708,7 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 3
     },
     "suggests": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0j7owdat_flowscope_hapharmonic.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_49yiv1jw_machine_learning_logistic_regression.md": 1,
@@ -807516,6 +807906,7 @@
       ".remember/remember.md": 4,
       "CLAUDE.md": 4,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/core/strategy_cards.py": 1,
@@ -814352,6 +814743,7 @@
     },
     "swap": {
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 7,
       "README.md": 1,
       "backtester/core/funding.py": 2,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md": 1,
@@ -814794,6 +815186,7 @@
     },
     "sweep": {
       ".gitignore": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 2,
       "backtester/core/compound.py": 1,
       "backtester/core/indicators.py": 2,
@@ -815958,6 +816351,7 @@
       "prompts.md": 4
     },
     "symbol": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/cli.py": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/fetch_minutes_alt.py": 2,
@@ -817333,7 +817727,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/requirements.md": 1,
       "llms-small.txt": 1,
-      "memory.md": 2,
+      "memory.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/manifest.yaml": 1,
@@ -819507,6 +819901,7 @@
     },
     "tab": {
       ".editorconfig": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 2,
       "backtester/core/compound.py": 1,
       "backtester/core/scorecard.py": 2,
@@ -820064,6 +820459,7 @@
     },
     "tables": {
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 2,
       "backtester/core/report.py": 1,
       "backtester/guides/ladder_grid.md": 1,
@@ -822690,6 +823086,7 @@
     "targeted": {
       ".github/workflows/ci.yml": 4,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/strategy_cards/garch_vol_forecast.md": 8,
@@ -822971,6 +823368,7 @@
     },
     "task": {
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 12,
       "backtester/README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tlz0mxsj_sticky_notes_checklist_to_do_journal_algoat.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_wpbrh5sq_simple_decesion_matrix_classification_algorithm_ss.md": 1,
@@ -822991,8 +823389,8 @@
       "docs/runbooks/handoff.md": 5,
       "extension/test/service-worker.test.js": 2,
       "extension/test/venues.test.js": 2,
-      "memory.md": 19,
-      "prompts.md": 11,
+      "memory.md": 20,
+      "prompts.md": 12,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -823746,6 +824144,7 @@
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 2
     },
     "teardown": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/archive/memory-2026-11-08.md": 2,
       "docs/coin-fit/README.md": 1,
@@ -826576,6 +826975,7 @@
       "soltui/tests/test_status_roster.py": 1
     },
     "test_advanced_order_ui": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "soltui/tests/test_advanced_order_ui.py": 1
     },
     "test_advanced_strategies": {
@@ -830138,6 +830538,7 @@
       "executor/tests/test_quote.py": 2
     },
     "test_jupiter_tokens": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "soltui/tests/test_jupiter_tokens.py": 1
     },
     "test_k_three_gives_more_paths_than_k_two": {
@@ -834474,6 +834875,7 @@
       "soltui/tests/test_utxo_scan.py": 1
     },
     "test_v2_shell": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/design/soltui-v2/DESIGN.md": 1,
@@ -835102,6 +835504,7 @@
       "prompts.md": 1
     },
     "tested": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/core/cointegration.py": 1,
       "backtester/core/scorecard.py": 1,
@@ -837046,6 +837449,7 @@
       "CLAUDE.md": 11,
       "CONTRIBUTING.md": 1,
       "GEMINI.md": 7,
+      "JUPITER_GEMINI_HANDOFF.md": 8,
       "README.md": 9,
       "backtester/PROMPT.md": 6,
       "backtester/README.md": 5,
@@ -838663,6 +839067,7 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 7
     },
     "textarea": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "extension/src/ui/soltui-panel.js": 1,
       "extension/src/ui/ui.css": 3,
       "extension/tools/e2e.mjs": 1,
@@ -841168,6 +841573,7 @@
     },
     "though": {
       ".github/workflows/ci.yml": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 1,
       "backtester/core/funding.py": 1,
       "backtester/core/ticks.py": 1,
@@ -843038,6 +843444,7 @@
       "research/tradingview-script-profiles/shard-a.jsonl": 1
     },
     "thresholds": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/trianglesim.py": 1,
       "backtester/guides/tv_lfe3imad_how_to_find_the_best_trending_momentum_stocks_across_the_globe.md": 1,
       "backtester/strategy_cards/bb_reversion.md": 1,
@@ -844695,6 +845102,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2
     },
     "ticket": {
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "docs/TRADINGVIEW-REFERENCE.md": 40,
       "memory.md": 3,
       "prompts.md": 1,
@@ -848496,6 +848904,7 @@
     },
     "timer": {
       ".claude/agents/aero-pool-scout.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tyeenu9i_time.md": 12,
       "docs/FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
@@ -849042,9 +849451,9 @@
       "llms-full.txt": 1,
       "llms/defillama-llms-free.txt": 2,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 4,
+      "memory.md": 3,
       "mongo/tests/test_load.py": 1,
-      "prompts.md": 4,
+      "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 7,
       "research/coin-intelligence/eth-ethereum.md": 2,
@@ -850342,6 +850751,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "tip": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_8njgasbv_volume_rotor_clock_hapharmonic.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_viwa6cr8_ma_sabres_luxalgo.md": 1,
       "backtester/strategy_cards/incomplete/tv_sc6a9izn_quick_tip_add_a_signal_line_to_your_indicator_no_coding.md": 8,
@@ -851865,6 +852275,7 @@
       ".env.example": 2,
       ".github/SECURITY.md": 2,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 4,
       "backtester/PROMPT.md": 1,
       "backtester/core/fetch_minutes.py": 1,
@@ -852413,6 +852824,7 @@
     "tokens": {
       ".claude/agents/aero-pool-scout.md": 3,
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/guides/jlp_vs_sol_relative_value.md": 1,
       "backtester/strategy_research/staking_ratio_flow.md": 2,
       "backtester/strategy_research/tv_43000773988_addresses_with_balance_x_usd.md": 1,
@@ -852557,6 +852969,7 @@
       "soltui/tests/test_wallet.py": 3
     },
     "tokens_search": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "soltui/commands.py": 1,
       "soltui/tests/bridge_support.py": 2,
       "soltui/tui.py": 2
@@ -852961,6 +853374,7 @@
     },
     "too": {
       ".github/workflows/ci.yml": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 3,
       "backtester/cli.py": 1,
       "backtester/core/cointegration.py": 1,
@@ -855299,6 +855713,7 @@
     "total": {
       ".gitignore": 2,
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 3,
       "backtester/README.md": 1,
       "backtester/core/coinfit.py": 2,
@@ -860024,6 +860439,7 @@
     },
     "transaction": {
       "CLAUDE.md": 4,
+      "JUPITER_GEMINI_HANDOFF.md": 7,
       "README.md": 2,
       "backtester/guides/triangular_arbitrage.md": 4,
       "backtester/guides/tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc.md": 1,
@@ -861304,6 +861720,7 @@
     },
     "transactions": {
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md": 5,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_4kigelgo_finra_daily_short_sale_volume.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_7vcb6m4j_volume_delta_footprint_map_zeiierman.md": 3,
@@ -864143,6 +864560,7 @@
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1
     },
     "treats": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/funding.py": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/core/strategies/signals.py": 2,
@@ -865954,6 +866372,7 @@
     "trigger": {
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/README.md": 1,
       "backtester/core/gridsim.py": 3,
@@ -868371,6 +868790,7 @@
     "tui": {
       ".github/copilot-instructions.md": 1,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/core/dcasim.py": 1,
       "docs/ARCHITECTURE.md": 2,
@@ -868981,6 +869401,7 @@
     },
     "turn": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/scorecard.py": 1,
       "backtester/core/strategies/signals.py": 1,
       "backtester/core/strategies/textbook.py": 2,
@@ -886956,6 +887377,7 @@
       ".github/workflows/ci.yml": 17,
       ".gitignore": 3,
       "CLAUDE.md": 7,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 2,
@@ -887040,6 +887462,7 @@
     },
     "txverify": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 4,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/codebase-overview.md": 1,
@@ -890135,6 +890558,7 @@
       "soltui/tests/test_jupiter_manual.py": 1
     },
     "unavailable": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/cli.py": 1,
       "backtester/core/fetch.py": 1,
@@ -895721,6 +896145,7 @@
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "README.md": 1,
       "backtester/cli.py": 4,
       "backtester/core/cpcv.py": 1,
@@ -896519,6 +896944,9 @@
     "unmounting": {
       "soltui/tui.py": 1
     },
+    "unmounts": {
+      "JUPITER_GEMINI_HANDOFF.md": 1
+    },
     "unnamed": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_n0f50jkv_relative_volume_at_time.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_nwjy3xpv_first_passage_time_distribution_analysis.md": 1,
@@ -897258,6 +897686,7 @@
       "executor/src/executor/engine.py": 1
     },
     "unresolved": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/coinfit.py": 1,
       "backtester/guides/triangular_arbitrage.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0enoetmo_smartphase_analyzer.md": 1,
@@ -898304,6 +898733,7 @@
       "research/cross_asset_cpcv.py": 1
     },
     "unsupported": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 1,
       "backtester/core/engine.py": 1,
       "backtester/core/strategy_cards.py": 4,
@@ -898541,6 +898971,7 @@
     },
     "until": {
       ".githooks/pre-commit": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 1,
       "backtester/core/archive_price.py": 2,
       "backtester/core/dcasim.py": 4,
@@ -898853,6 +899284,7 @@
     },
     "untracked": {
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/strategy_cards/dca.md": 1,
       "backtester/strategy_cards/ema_crossover.md": 1,
       "backtester/strategy_cards/fib_retracement.md": 1,
@@ -899115,6 +899547,7 @@
     "unverified": {
       ".github/copilot-instructions.md": 1,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/guides/ladder_grid.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0ghsw1kr_moving_regression.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0rfqockf_exploring_unicode.md": 1,
@@ -899644,6 +900077,7 @@
       ".github/dependabot.yml": 1,
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/core/compound.py": 4,
       "backtester/core/data.py": 2,
       "backtester/core/fetch_minutes.py": 1,
@@ -899803,7 +900237,7 @@
       "liquidity/tests/test_strategy.py": 1,
       "memory.md": 1,
       "mongo/load.py": 1,
-      "prompts.md": 7,
+      "prompts.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 20,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/frontier_tune.py": 1,
@@ -899903,6 +900337,7 @@
       "docs/archive/memory-2026-11-08.md": 1
     },
     "updated": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/strategies/advanced.py": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_9gviczng_sk_fibonacci_auto_trend_scouter.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_bmvtk3gh_performance_table.md": 4,
@@ -900132,7 +900567,7 @@
       "extension/src/core/alerts.js": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
       "index/make_files_doc.py": 1,
-      "memory.md": 2,
+      "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 15,
       "research/coin-intelligence/rain-rain.md": 2,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 1,
@@ -902965,6 +903400,7 @@
     "usd": {
       ".claude/agents/aero-pool-scout.md": 4,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
       "backtester/botcli.py": 2,
@@ -905791,6 +906227,7 @@
     "users": {
       ".claude/agents/aero-pool-scout.md": 2,
       ".github/SECURITY.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 6,
       "backtester/README.md": 1,
       "backtester/guides/tv_gfhcvho3_how_to_use_multi_timeframe_analysis_and_what_it_means.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_195p3ylk_commitment_of_traders_legacy_metrics.md": 2,
@@ -905914,7 +906351,7 @@
       "llms-full.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms.txt": 2,
-      "memory.md": 5,
+      "memory.md": 6,
       "prompts.md": 30,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 28,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -906555,6 +906992,7 @@
     "using": {
       ".github/workflows/ci.yml": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/funding.py": 2,
@@ -907408,6 +907846,7 @@
       "research/tradingview-card-coverage.json": 6
     },
     "utc": {
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/PROMPT.md": 2,
       "backtester/botcli.py": 1,
       "backtester/cli.py": 4,
@@ -908335,15 +908774,15 @@
     },
     "v120": {
       "docs/archive/memory-2026-11-08.md": 3,
-      "prompts.md": 1
+      "prompts.md": 3
     },
     "v121": {
       "docs/archive/memory-2026-11-08.md": 3,
-      "prompts.md": 3
+      "prompts.md": 4
     },
     "v122": {
       "docs/archive/memory-2026-11-08.md": 3,
-      "prompts.md": 3
+      "prompts.md": 2
     },
     "v123": {
       "docs/archive/memory-2026-11-08.md": 3
@@ -908688,20 +909127,20 @@
       "prompts.md": 1
     },
     "v211": {
-      "memory.md": 1
+      "memory.md": 3
     },
     "v212": {
-      "memory.md": 1
+      "memory.md": 4
     },
     "v213": {
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "memory.md": 1
     },
     "v214": {
-      "memory.md": 3
+      "memory.md": 2
     },
     "v215": {
-      "memory.md": 3
+      "memory.md": 2
     },
     "v22": {
       "docs/archive/memory-2026-11-08.md": 1,
@@ -910043,6 +910482,7 @@
     "validation": {
       ".github/copilot-instructions.md": 1,
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/cpcv.py": 2,
@@ -911645,6 +912085,7 @@
       "soltui/jupiter_manual.py": 2
     },
     "valuations": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_lbxl9oqz_financials_on_chart.md": 1,
       "backtester/strategy_cards/incomplete/tv_ektpaxcq_bloomberg_financial_conditions_index_proxy.md": 1,
@@ -915069,6 +915510,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 3,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 9,
@@ -916623,6 +917065,7 @@
     },
     "verbatim": {
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -916842,6 +917285,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 4,
       "CONTRIBUTING.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_4n9sh3lz_funamental_and_financials.md": 1,
@@ -916900,7 +917344,7 @@
       "extension/tools/dryrun.js": 2,
       "llms-full.txt": 4,
       "llms.txt": 2,
-      "memory.md": 6,
+      "memory.md": 7,
       "prompts.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/PROMPT_STRATEGIES.md": 3,
@@ -916962,6 +917406,7 @@
       ".github/copilot-instructions.md": 1,
       ".github/workflows/ci.yml": 3,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "README.md": 1,
       "backtester/PROMPT.md": 2,
       "backtester/README.md": 1,
@@ -918221,6 +918666,7 @@
     },
     "verifier": {
       "CLAUDE.md": 3,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 2,
       "backtester/tests/test_geometry.py": 1,
       "docs/FILES.md": 5,
@@ -918256,6 +918702,7 @@
     },
     "verifies": {
       ".github/workflows/ci.yml": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_tbz9rgx9_weekly_volume_heatmap.md": 1,
       "docs/DEVELOPMENT.md": 1,
       "docs/FILES.md": 3,
@@ -918291,6 +918738,7 @@
       ".github/workflows/ci.yml": 3,
       ".gitignore": 2,
       "CLAUDE.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 3,
       "backtester/README.md": 1,
       "backtester/guides/tv_43000474007_understanding_range_charts.md": 1,
@@ -919954,6 +920402,7 @@
     "via": {
       ".remember/remember.md": 1,
       "CLAUDE.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/README.md": 4,
       "backtester/core/cpcv.py": 1,
       "backtester/core/gridsim.py": 2,
@@ -920282,6 +920731,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "view": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/dcasim.py": 1,
       "backtester/core/indicators.py": 1,
       "backtester/core/types.py": 2,
@@ -927186,6 +927636,7 @@
       ".github/copilot-instructions.md": 1,
       ".gitignore": 3,
       "CLAUDE.md": 5,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 1,
       "backtester/core/engine.py": 1,
@@ -927647,7 +928098,7 @@
       "liquidity/src/aero_lp/daemon.py": 10,
       "llms/defillama-llms-free.txt": 3,
       "memory.md": 1,
-      "prompts.md": 15,
+      "prompts.md": 16,
       "research/5minleveragestrategies.json": 1,
       "research/RATIO-ROTATION.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -927752,6 +928203,7 @@
       "skills/trading-and-investing/references/selection-rule-design.md": 1
     },
     "wants": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/core/engine.py": 1,
       "backtester/core/fetch_minutes.py": 1,
       "backtester/core/funding.py": 1,
@@ -932917,6 +933369,7 @@
     },
     "weaken": {
       ".github/copilot-instructions.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_lvqopkkp_volume_surprise_luxalgo.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qt7fqntr_breakout_probability_expo.md": 1,
       "docs/optimization-workbench-plan.md": 1,
@@ -935918,6 +936371,7 @@
       ".githooks/pre-merge-commit": 1,
       ".github/workflows/ci.yml": 2,
       ".remember/remember.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/README.md": 1,
       "backtester/core/coinfit.py": 3,
       "backtester/core/cpcv.py": 1,
@@ -936679,6 +937133,7 @@
       "skills/trading-and-investing/references/grid-trading-strategy.md": 1
     },
     "widget": {
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1uw4irtx_all_time_high_low_widget.md": 8,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qypmcjka_lowest_highest_from_widget.md": 10,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_zmdzlgaj_volume_speed_by_muqwishi.md": 4,
@@ -938624,6 +939079,7 @@
     },
     "wip": {
       ".githooks/pre-commit": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/coin-fit/tasks.json": 1
     },
@@ -938654,6 +939110,7 @@
       "extension/src/core/commands.js": 1
     },
     "wire": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_q1hxs0v6_liquidity_void_detector_zeiierman.md": 2,
       "docs/FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
@@ -939682,6 +940139,7 @@
       ".remember/remember.md": 1,
       "CLAUDE.md": 2,
       "CODE_OF_CONDUCT.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 3,
       "LICENSE": 3,
       "backtester/PROMPT.md": 1,
       "backtester/README.md": 3,
@@ -940948,6 +941406,7 @@
     "work": {
       "CLAUDE.md": 1,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "README.md": 1,
       "backtester/PROMPT.md": 1,
       "backtester/core/indicators.py": 2,
@@ -941094,7 +941553,7 @@
       "liquidity/src/aero_lp/allocator.py": 2,
       "llms-facts.txt": 1,
       "llms-full.txt": 7,
-      "memory.md": 8,
+      "memory.md": 10,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "prompts.md": 10,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -941515,6 +941974,7 @@
       "AGENTS.md": 2,
       "CLAUDE.md": 2,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "README.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_1kg8lh8x_cleaner_screeners_library.md": 1,
@@ -941748,6 +942208,7 @@
       "AGENTS.md": 1,
       "CLAUDE.md": 1,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "backtester/PROMPT.md": 3,
       "backtester/core/data.py": 1,
       "backtester/core/dcasim.py": 2,
@@ -942602,6 +943063,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "workspace": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/archive/memory-2026-11-08.md": 2,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
@@ -942622,6 +943084,7 @@
     "worktree": {
       ".gitignore": 2,
       ".remember/remember.md": 2,
+      "JUPITER_GEMINI_HANDOFF.md": 5,
       "backtester/core/data.py": 3,
       "docs/COMPONENTS.md": 2,
       "docs/COMPOUND-5M.md": 1,
@@ -942659,6 +943122,7 @@
     "worktrees": {
       ".gitignore": 3,
       "CONTRIBUTING.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/INSTALLATION.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/archive/memory-2026-11-08.md": 23,
@@ -943620,6 +944084,7 @@
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1
     },
     "writable": {
+      "JUPITER_GEMINI_HANDOFF.md": 1,
       "docs/FILES.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
       "executor/src/executor/config.py": 1,
@@ -947969,6 +948434,7 @@
       "research/tradingview-strategy-understanding.json": 2
     },
     "y3seh": {
+      "JUPITER_GEMINI_HANDOFF.md": 2,
       "docs/archive/memory-2026-11-08.md": 2
     },
     "y3v": {
@@ -950997,6 +951463,7 @@
       ".remember/remember.md": 2,
       "CLAUDE.md": 3,
       "GEMINI.md": 1,
+      "JUPITER_GEMINI_HANDOFF.md": 4,
       "README.md": 1,
       "backtester/PROMPT.md": 7,
       "backtester/README.md": 8,
@@ -954266,10 +954733,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1445.0,
-    "documents": 2652,
-    "terms": 69175,
-    "termsBeforePrune": 69249,
-    "totalTokens": 3832036
+    "avgDocLength": 1444.8,
+    "documents": 2653,
+    "terms": 69185,
+    "termsBeforePrune": 69259,
+    "totalTokens": 3832996
   }
 }
