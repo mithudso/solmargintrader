@@ -201,6 +201,14 @@ export async function verifySignalDesk(_page, browser) {
     assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('Detached; survives browser closure')`));
     assert.ok(await ev(`document.querySelector('#deskContent').textContent.includes('Model output 18m old')`));
     console.log('PASS forward accuracy, pending count, net units and process-lifetime distinctions');
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: false }, sessionId);
+    const tableScroll = await ev(`(()=>{const card=[...document.querySelectorAll('#deskContent .card')].find(x=>x.querySelector('h2')?.textContent==='Process responsibilities');const wrap=card.querySelector('.table-wrap');const hint=card.textContent.includes('Scroll horizontally to see process lifetime and inspect controls.');const before={width:wrap.clientWidth,content:wrap.scrollWidth,offset:wrap.scrollLeft};wrap.scrollLeft=wrap.scrollWidth;const last=wrap.querySelector('tbody tr button').getBoundingClientRect();const bounds=wrap.getBoundingClientRect();return {hint,before,offset:wrap.scrollLeft,buttonVisible:last.right<=bounds.right&&last.left>=bounds.left}})()`);
+    assert.ok(tableScroll.hint, 'narrow process table explains the hidden controls');
+    assert.ok(tableScroll.before.content > tableScroll.before.width && tableScroll.offset > 0, 'narrow process table scrolls horizontally');
+    assert.ok(tableScroll.buttonVisible, 'scrolling reveals the Inspect action');
+    await browser.call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false }, sessionId);
+    console.log('PASS narrow process table scroll cue and Inspect action');
+
 
     await route('signal', 'Live signals');
     const priorTickAt = await ev(`Number(document.querySelector('#soltuiLiveChart [data-tick-time]:last-child').getAttribute('data-tick-time'))`);
