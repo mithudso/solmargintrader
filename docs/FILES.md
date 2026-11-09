@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4b22bb10` (2026-11-09T21:59:38+00:00). 2841 tracked files, 62.9 MB.
+**Generated** from `index/INDEX.json` at commit `d7b91125` (2026-11-09T22:31:19+00:00). 2843 tracked files, 63.0 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2507 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2509 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 109 files
+- [`docs`](#docs) — 111 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1927 files
 - [`research`](#research) — 206 files
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 960 lines · 182,080 B · description: **extracted**
+`doc` · 1045 lines · 196,544 B · description: **extracted**
 
-**Purpose.** Version: 331 Delta: v330 to v331; verify persistent runtime source and reserve safe stop capacity. Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime.
+**Purpose.** Version: 338 Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates. Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
 
 **Use.** Read it.
 
@@ -226,9 +226,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1408 lines · 76,164 B · description: **extracted**
+`doc` · 1456 lines · 79,393 B · description: **extracted**
 
-**Purpose.** Version: 160 Delta: v159 to v160; preserve manager and PR177 acquisition prompt histories. Delta: concurrent histories to v159; integrate PR174/176 and retain manager implementation.
+**Purpose.** Version: 166 Delta: v165 to v166; preserve the merged forward-signal research prompt. Delta: v164 to v165; record the current branch conflict-resolution and merge request.
 
 **Use.** Read it.
 
@@ -254,7 +254,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-109 files.
+111 files.
 
 #### `docs/API.md`
 
@@ -464,6 +464,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/backtester-history-handoff.md`
+
+`doc` · 200 lines · 33,137 B · description: **extracted**
+
+**Purpose.** Start with the local [market-data catalog](/Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md) and its per-dataset receipts for current paths and exact coverage. Those files and the datasets are not in the public source repository. The snapshot inventories are as-of records, not a live freshness service.
+
+**Use.** Read it.
+
 #### `docs/bot-manager-milestone-1.md`
 
 `doc` · 80 lines · 6,234 B · description: **extracted**
@@ -474,9 +482,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-milestone-2.md`
 
-`doc` · 63 lines · 3,605 B · description: **extracted**
+`doc` · 93 lines · 5,536 B · description: **extracted**
 
-**Purpose.** Version:1.0.1 Delta:1.0.0 to1.0.1; record source fixes and approved task review. Date:2026-11-09
+**Purpose.** Version:1.0.2 Delta:1.0.1 to1.0.2; record final source and installed acceptance with immutable runtime identity. Date:2026-11-09
 
 **Use.** Read it.
 
@@ -525,6 +533,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 372 lines · 25,933 B · description: **extracted**
 
 **Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Eight components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
+
+**Use.** Read it.
+
+#### `docs/crypto-bot-monitor-full-suite-20261109.md`
+
+`doc` · 32 lines · 3,366 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial source-qualified research and reference-pack delivery record. The suite researched 15 monitoring concepts across four native evidence-gated cohorts. It retained 320 exact assertions: 257 source-supported statements and 63 non-factual summaries or questions. Three aggregate views and the organizational subject node receive no additional research credit.
 
 **Use.** Read it.
 
@@ -1084,9 +1100,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/superpowers/plans/2026-11-09-bot-manager.md`
 
-`doc` · 166 lines · 22,168 B · description: **extracted**
+`doc` · 167 lines · 22,319 B · description: **extracted**
 
-**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1. Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
+**Purpose.** Version: 1.0.3 Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance. Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
 
 **Use.** Read it.
 
@@ -1260,7 +1276,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/README.md`
 
-`doc` · 554 lines · 29,313 B · description: **extracted**
+`doc` · 556 lines · 29,516 B · description: **extracted**
 
 **Purpose.** An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.
 
@@ -25334,7 +25350,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 448 lines · 27,503 B · description: **extracted**
+`doc` · 465 lines · 28,705 B · description: **extracted**
 
 **Purpose.** The standalone `solbot` CLI creates persistent named bot drafts and inspects their pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC. An explicit supervisor runs independent grid reference-paper accounts from a
 
@@ -25408,11 +25424,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/ledger.py`
 
-`code-python` · 558 lines · 23,021 B · description: **extracted**
+`code-python` · 695 lines · 28,823 B · description: **extracted**
 
 **Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The immutable specification database remains version 1. This separate journal has its own version and must be included in backups with the specifications.
 
-**Contents.** Defines `RESTART_DELAYS`, `FAILURE_WINDOW`, `MAX_ACTIVE`, `MAX_INSTANCES`, `MAX_REQUESTS`, `STOP_RECEIPT_RESERVE`, `class RuntimeLedger`.
+**Contents.** Defines `RESTART_DELAYS`, `FAILURE_WINDOW`, `MAX_ACTIVE`, `MAX_INSTANCES`, `MAX_REQUESTS`, `STOP_RECEIPT_RESERVE`, `INTEGRITY_ERRORS`, `class RuntimeLedger`.
 
 **Use.** `import botmanager.src.botmanager.ledger`
 
@@ -25468,7 +25484,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/supervisor.py`
 
-`code-python` · 163 lines · 6,034 B · description: **extracted**
+`code-python` · 166 lines · 6,108 B · description: **extracted**
 
 **Purpose.** Explicit foreground daemon, four process slots, no unbounded tick queue.
 
@@ -25540,11 +25556,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/strategies/grid.py`
 
-`code-python` · 126 lines · 4,322 B · description: **extracted**
+`code-python` · 167 lines · 5,809 B · description: **extracted**
 
 **Purpose.** Bounded prefix replay of the canonical ladder; no copied trading algorithm.
 
-**Contents.** Defines `evaluate()`. Depends on `backtester`.
+**Contents.** Defines `_configuration()`, `run_identity()`, `validate_checkpoint()`, `evaluate()`. Depends on `backtester`.
 
 **Use.** `import botmanager.src.botmanager.strategies.grid`
 
@@ -25610,11 +25626,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_recovery.py`
 
-`test` · 236 lines · 10,759 B · description: **none**
+`test` · 564 lines · 25,492 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `class RecoveryTests`.
+**Contents.** Defines `class RecoveryTests`, `class InterleavingLedger`.
 
 **Use.** `python3 -m pytest botmanager/tests/test_recovery.py -q`
 
@@ -25640,7 +25656,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_supervisor.py`
 
-`test` · 551 lines · 21,809 B · description: **none**
+`test` · 620 lines · 24,760 B · description: **none**
 
 **Purpose.** _No description available._
 

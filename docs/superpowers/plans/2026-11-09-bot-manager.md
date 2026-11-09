@@ -10,10 +10,11 @@
 
 **Spec:** /Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md
 
-Version: 1.0.2
+Version: 1.0.3
+Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
 Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
-Status: owner approved implementation in KNOW-1115; milestone1 delivered by PR175, milestone2 active.
+Status: owner approved implementation in KNOW-1115; milestone1 delivered by PR175. Milestone2 source and installed acceptance passed; PR180 owns final CI and delivery.
 
 ## Global constraints
 
@@ -96,10 +97,10 @@ Milestone-1 acceptance: one installable CLI, durable named specs with complete d
 
 Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/{supervisor.py,worker.py,transport.py,ledger.py}, /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/strategies/{__init__.py,base.py,grid.py}, a read-only recorded-input adapter in /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/data.py, and /Users/mitch/dev/solmargintrader/botmanager/tests/{test_supervisor.py,test_recovery.py,test_paper.py}. This milestone owns the minimum grid strategy/data vertical slice. Read current Coinbase recordings through an explicit installation descriptor and run existing pure gridsim in bounded replay. Label runs reference_paper with venue=coinbase_proxy. They prove unattended operation but cannot certify Jupiter execution or promote to live. Fixtures cover crashes; installed acceptance also uses actual read-only recording input. Milestone 3 expands the adapters and supplies Solana venue certification. No future milestone-3 module is needed to run milestone 2.
 
-- [ ] Write failing tests for duplicate start, crash before/after event commit, saved stopped intent, stale generation, two grid instances, a dead worker, hung tick, corrupted checkpoint and ledger reconciliation.
-- [ ] Implement desired/observed states, local socket commands, per-instance lifetime flock, durable idempotency, bounded worker pool/queues and transactional generation fencing. Delegate shared simulation helpers; do not fork strategy algorithms.
-- [ ] Add explicit service install/uninstall/status using a stable installed package location, never a disposable worktree. macOS launchd first; other supervisors are later adapters. Read commands cannot install it. Verify a requested stop survives supervisor restart.
-- [ ] Force-crash/restart tests reproduce identical lots/cursors/P&L to continuous replay, with no repeated fills. Test process liveness separately from data/tick progress. Stop retains positions, and independent virtual accounts are labelled.
+- [x] Write failing tests for duplicate start, crash before/after event commit, saved stopped intent, stale generation, two grid instances, a dead worker, hung tick, corrupted checkpoint and ledger reconciliation.
+- [x] Implement desired/observed states, local socket commands, per-instance lifetime flock, durable idempotency, bounded worker pool/queues and transactional generation fencing. Delegate shared simulation helpers; do not fork strategy algorithms.
+- [x] Add explicit service install/uninstall/status using a stable installed package location, never a disposable worktree. macOS launchd first; other supervisors are later adapters. Read commands cannot install it. Verify a requested stop survives supervisor restart.
+- [x] Force-crash/restart tests reproduce identical lots/cursors/P&L to continuous replay, with no repeated fills. Test process liveness separately from data/tick progress. Stop retains positions, and independent virtual accounts are labelled.
 - [ ] Verify installed revision and behavior with live-acceptance-verifier before release. No live orders. Run manager suite plus changed shared simulation suites, documentation gates, then deliver.
 
 ## Milestone 3 — shared strategy semantics and certified Solana evidence

@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 337
+Version: 338
+Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
 Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
 Delta: v335 to v336; resolve current branch conflicts and record the explicit merge request.
 Delta: v330 to v331; verify persistent runtime source and reserve safe stop capacity.
@@ -1033,3 +1034,11 @@ The conflict-resolution commit is an intermediate local integration checkpoint. 
 Conflict resolution also preserves origin/master 8dc44c9f's forward-signal research request and continuation. The incoming record carried historical version headers above the newer records and an unclosed prompt fence; merge resolution retains the full request, closes its fence and keeps one current version header. No source or runtime behavior changed during this integration.
 
 Final combined source fix39e0c262 passed109manager tests,42covering tests and Ruff/format. The single independent scoped re-review approved all three corrections with no residual Important finding. A regular manager-only installation into /Users/mitch/.venvs/solbot completed with exit0; no dependency change occurred. Independent concurrent/recovery/stop/restart and actual-recording runtime acceptance is active. Earlier service/input gates remain retained with their stated limitations. Final metadata gates, final-head CI and actual PR180 merge are still required.
+
+## v338 — 2026-11-09 — runtime acceptance complete and final delivery gates
+
+The independent installed acceptance receipt1.0.5 is complete against reviewed39e0c262. All69loaded Python hashes match. Two independent virtual accounts reached1024bars with exact canonical batch fill/lot/equity parity after an identified worker crash. Duplicate start retained identity and progress. Stop retained3lots and399.135USD exposure. Restarting only the owned fixture supervisor kept that bot stopped while its peer recovered. EOF heartbeat advanced with fixed cursor/evaluation. Replaying the original start receipt left the bot stopped. New isolated runtime journals use schema2 with complete acceptance context.
+
+Installed actual recording replay consumed115samples/2bars with zero fills/lots and unchanged raw source. The Coinbase proxy remains separate from Jupiter SOL/USDC; illustrative costs and unknown book/ticker provenance remain explicit. Earlier real empty-home launchd install/status/cleanup evidence is retained because service.py is unchanged. First removal returned4/unconfirmed; explicit retry returned0 and verified absence. Both owned test supervisors exited0 and locks released. No production state or service changed.
+
+All source/review/installed gates passed. Existing short-fixture annualization and old SQLite test warnings are nonblocking hygiene, not suppressed. Final offline catalog/docs checks, current-head CI, PR180 merge and remote content verification remain. Do not re-run accepted source suites without a relevant change. TASK1108 remains active until delivery. Then continue the approved milestone order; milestone3 adds remaining strategy adapters and prospective/certified Solana data, not graphics or another recorder.
