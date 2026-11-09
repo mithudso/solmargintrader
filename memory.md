@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 219
-Delta: v218 to v219; record final Jupiter verification and delivery contract.
+Version: 220
+Delta: v219 to v220; retain the independently merged Jupiter order handoff.
+
+## v220 - 2026-11-08
+
+Retained the separate Jupiter order handoff from PR 135 while merging its records. That record states: Owner requested handoff to Gemini. PR 134 merged incomplete at 314fe989 while docs CI failed and SolTUI CI was pending; the previous agent did not merge it. TASK-1044 released for next agent. See /Users/mitch/dev/solmargintrader/JUPITER_GEMINI_HANDOFF.md for current state, verification, risks and remaining implementation. Jupiter order execution is not implemented. These order-execution gaps are separate from the paper-only Jupiter fee and confidence controls in PR 142.
 
 ## v219 - 2026-11-08
 

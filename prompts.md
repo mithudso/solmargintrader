@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 124
-Delta: v123 to v124; retain chart request and owner-confirmed Jupiter controls.
+Version: 125
+Delta: v124 to v125; preserve the concurrent Gemini handoff request.
+
+## v125 - 2026-11-08
+
+```text
+Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
+```
 
 ## v124 - 2026-11-08
 

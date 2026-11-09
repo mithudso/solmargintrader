@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T01:58:09+00:00",
+  "generatedAt": "2026-11-09T02:00:27+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1594,
+      "matchingFiles": 1595,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 406,
+      "matchingFiles": 407,
       "shown": 30,
       "files": [
         {
