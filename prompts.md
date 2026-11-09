@@ -1,12 +1,18 @@
 # Prompt history
 
-Version: 135
-Delta: v134 to v135; record approval to implement the Signal Desk UI.
+Version: 136
+Delta: v135 to v136; preserve repository review and approved Signal Desk implementation requests.
+
+## v136 - 2026-11-08
+
+```text
+Yes, implement this as the UI for the chrome extension.
+```
 
 ## v135 - 2026-11-08
 
 ```text
-Yes, implement this as the UI for the chrome extension.
+Look at this repo, what it does, how it works, and recommend any improvements, suggestions, bug fixes, features, etc and then implement them.
 ```
 
 ## v134 - 2026-11-08

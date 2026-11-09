@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T04:55:55+00:00",
+  "generatedAt": "2026-11-09T05:02:09+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1606,
+      "matchingFiles": 1611,
       "shown": 30,
       "files": [
         {
@@ -32,6 +32,10 @@
         {
           "path": "research/tradingview-script-understanding.json",
           "hits": 317
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 156
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -48,10 +52,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 100
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 96
         },
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
@@ -106,12 +106,12 @@
           "hits": 35
         },
         {
-          "path": "executor/src/executor/registry.py",
+          "path": "executor/src/executor/engine.py",
           "hits": 34
         },
         {
-          "path": "executor/src/executor/engine.py",
-          "hits": 31
+          "path": "executor/src/executor/registry.py",
+          "hits": 34
         },
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md",
@@ -249,6 +249,10 @@
           "hits": 13
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 12
+        },
+        {
           "path": "index/build.py",
           "hits": 12
         },
@@ -278,10 +282,6 @@
         },
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_w1ypycoi_higher_timeframe_requests.md",
-          "hits": 10
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
           "hits": 10
         }
       ],
@@ -364,6 +364,10 @@
           "hits": 32
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 31
+        },
+        {
           "path": "research/minute_sweep.py",
           "hits": 31
         },
@@ -382,10 +386,6 @@
         {
           "path": "backtester/tests/test_gridsim.py",
           "hits": 28
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 26
         },
         {
           "path": "research/tradingview-script-understanding.json",
@@ -456,7 +456,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 72
+          "hits": 75
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -587,6 +587,10 @@
           "hits": 574
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 362
+        },
+        {
           "path": "research/tradingview-card-readiness.json",
           "hits": 229
         },
@@ -597,10 +601,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 199
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 193
         },
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 570,
+      "matchingFiles": 571,
       "shown": 30,
       "files": [
         {
@@ -723,6 +723,10 @@
         {
           "path": "research/tradingview-script-understanding.json",
           "hits": 256
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 169
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -743,10 +747,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 120
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 104
         },
         {
           "path": "backtester/core/gridsim.py",
@@ -871,12 +871,12 @@
           "hits": 77
         },
         {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 61
+          "path": "docs/FILES.md",
+          "hits": 68
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 52
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 61
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -998,6 +998,10 @@
           "hits": 744
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 328
+        },
+        {
           "path": "research/tradingview-card-readiness.json",
           "hits": 269
         },
@@ -1020,10 +1024,6 @@
         {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 172
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 158
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1125,16 +1125,16 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 421,
+      "matchingFiles": 422,
       "shown": 30,
       "files": [
         {
-          "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
-          "hits": 163
+          "path": "docs/FILES.md",
+          "hits": 179
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 152
+          "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
+          "hits": 163
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -1272,6 +1272,10 @@
           "hits": 166
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 128
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 102
         },
@@ -1282,10 +1286,6 @@
         {
           "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
           "hits": 71
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 69
         },
         {
           "path": "research/results/cpcv_combos_tables.md",
@@ -1409,6 +1409,10 @@
           "hits": 175
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 98
+        },
+        {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 97
         },
@@ -1419,10 +1423,6 @@
         {
           "path": "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md",
           "hits": 78
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 69
         },
         {
           "path": "research/tradingview-card-coverage.json",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 273,
+      "matchingFiles": 274,
       "shown": 30,
       "files": [
         {
@@ -1542,6 +1542,10 @@
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 68
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 57
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1554,10 +1558,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 41
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 35
         },
         {
           "path": "research/perturb.py",
@@ -1670,7 +1670,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 223,
+      "matchingFiles": 226,
       "shown": 30,
       "files": [
         {
@@ -1699,7 +1699,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "index/build.py",
@@ -1804,16 +1804,16 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 223,
+      "matchingFiles": 224,
       "shown": 30,
       "files": [
         {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 34
+          "path": "docs/FILES.md",
+          "hits": 43
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 33
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 34
         },
         {
           "path": "research/tradingview-card-coverage.json",
@@ -1951,6 +1951,10 @@
           "hits": 89
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 72
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 70
         },
@@ -1961,10 +1965,6 @@
         {
           "path": "research/results/cpcv_combos_tables.md",
           "hits": 47
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 45
         },
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
@@ -2219,7 +2219,7 @@
       "files": [
         {
           "path": "docs/FILES.md",
-          "hits": 98
+          "hits": 100
         },
         {
           "path": "research/perturb.py",
@@ -2433,7 +2433,7 @@
         },
         {
           "path": "docs/CONCEPTS.md",
-          "hits": 13
+          "hits": 12
         },
         {
           "path": "docs/SCRIPTS.md",
@@ -2502,12 +2502,12 @@
           "hits": 36
         },
         {
-          "path": "research/tradingview-script-understanding.json",
+          "path": "docs/FILES.md",
           "hits": 27
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 22
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 27
         },
         {
           "path": "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md",
