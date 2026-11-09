@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 256
-Delta: v255 to v256; preserve concurrent executor and Signal Desk histories and integration checkpoint.
+Version: 257
+Delta: v256 to v257; investigate recurring minute backtest cadence failure.
+
+## v257 - 2026-11-09
+
+The configured SOL 1m cache from 2024-01-01 contains 78 gaps and 1110 missing minutes. The engine must not invent bars; the prior synthetic authorization concerned a separate hourly proof of concept. Added explicit opt-in to select the longest contiguous window, default refusal with actionable dates, and result provenance and UI disclosure. The current longest window is 2024-12-18 20:20 UTC through 2025-08-11 19:59 UTC (339820 bars), not the full requested range. Source data and settings remain untouched. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1beca. Stele create queued 3f201901 and risk 45b70e62. Verified 909 backtester tests, 377 extension tests, 14 focused UI/provenance tests and an independent end-to-end fixture check with default refusal and opt-in execution. Installed UI remains unverified. Remaining: refresh offline indexes, commit, align committed test counts, PR, CI and merge, then verify installed state if safely possible.
 
 ## v256 - 2026-11-09
 

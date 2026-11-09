@@ -622,3 +622,7 @@ soltui/
 Anything that makes a decision lives in the pure modules. `tui.py` and `app.py` are
 deliberately dumb, which is what lets the logic be tested without a terminal or a
 macOS event loop.
+
+### Backtests with missing candles
+
+The CPCV sweep refuses gaps by default. To run on real, uninterrupted data, select **Use longest continuous window if history has gaps** in Backtest (or enable `longest_contiguous` in the `backtest.run` form). This uses only the longest contiguous window inside the configured dates. The result and its provenance report the exact evaluated window and excluded gaps. It does not fill candles or represent the entire requested period. To evaluate another period, change the configured dates or repair the source data.

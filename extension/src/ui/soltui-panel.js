@@ -49,7 +49,7 @@ export function buildParams(command, values, { confirmed = false, emptyFields = 
 export const commandNames = (commands) => new Set((commands ?? []).map((c) => c.name));
 
 function fieldFor(param) {
-  const labels = { labels: 'Strategy roster labels (optional)', use_leverage: 'Use leveraged paper positions', leverage: 'Leverage multiplier', allow_short: 'Allow paper shorts', min_confidence: 'Minimum paper-entry confidence', horizons: 'Forecast horizons (minutes)', scope: 'Strategy scope', coins: 'Coins to observe', optimize: 'Enable adaptive tuning', source_label: 'Pinned source strategy', snapshot: 'Pinned backtest snapshot' };
+  const labels = { longest_contiguous: 'Use longest continuous window when history has gaps', labels: 'Strategy roster labels (optional)', use_leverage: 'Use leveraged paper positions', leverage: 'Leverage multiplier', allow_short: 'Allow paper shorts', min_confidence: 'Minimum paper-entry confidence', horizons: 'Forecast horizons (minutes)', scope: 'Strategy scope', coins: 'Coins to observe', optimize: 'Enable adaptive tuning', source_label: 'Pinned source strategy', snapshot: 'Pinned backtest snapshot' };
   const label = el('label', { text: `${labels[param.name] ?? param.name}${param.required ? ' *' : ''}` });
   let input;
   if (param.type === 'bool') {

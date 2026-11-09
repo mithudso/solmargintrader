@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 136
-Delta: v135 to v136; preserve repository review and approved Signal Desk implementation requests.
+Version: 137
+Delta: v136 to v137; record recurring backtest cadence failure.
+
+## v137 - 2026-11-09
+
+```text
+When trying to run a backtest I get this error again: failed: ValueError: timestamp cadence must equal 1m; gapped or mismatched bars are unsupported
+```
 
 ## v136 - 2026-11-08
 

@@ -27,6 +27,7 @@ import numpy as np
 from backtester.core.cpcv import cpcv_evaluate
 from backtester.core.data import CsvLoader, frame_to_arrays
 from backtester.core.engine import EngineConfig, run_backtest
+from backtester.core.types import INTERVAL_SECONDS, validate_bar_arrays
 
 from .config import Settings
 from .roster import Roster, RosterEntry
@@ -87,6 +88,34 @@ def load_arrays(settings: Settings) -> dict[str, np.ndarray]:
     df = loader.load(settings.asset, settings.start or None, settings.end or None,
                      settings.interval)
     return frame_to_arrays(df)
+
+
+def select_contiguous(arrays: dict[str, np.ndarray], interval: str, *, longest: bool) -> tuple[dict[str, np.ndarray], dict[str, Any] | None]:
+    """Select an explicitly requested contiguous window; never manufacture candles."""
+    ts = arrays["ts"]
+    breaks = np.flatnonzero(np.diff(ts) != INTERVAL_SECONDS[interval]) + 1
+    if not len(breaks):
+        validate_bar_arrays(arrays, interval)
+        return arrays, None
+    # Only missing intervals can be resolved by narrowing the window; malformed
+    # timestamps must still fail instead of being disguised as an ordinary gap.
+    deltas = np.diff(ts)
+    if np.any(deltas < INTERVAL_SECONDS[interval]) or np.any(deltas % INTERVAL_SECONDS[interval]):
+        validate_bar_arrays(arrays, interval)
+    bounds = np.r_[0, breaks, len(ts)]
+    lengths = np.diff(bounds)
+    index = int(np.argmax(lengths))
+    start, end = int(bounds[index]), int(bounds[index + 1])
+    from datetime import datetime, timezone
+    first = datetime.fromtimestamp(int(ts[start]), timezone.utc).isoformat()
+    last = datetime.fromtimestamp(int(ts[end - 1]), timezone.utc).isoformat()
+    if not longest:
+        raise ValueError(f"{len(breaks)} gaps in {interval} history; longest continuous window is {first} to {last} UTC ({end - start} bars). Select 'longest continuous window' to test only that window, or change the date range / repair the source data.")
+    selected = {key: value[start:end] for key, value in arrays.items()}
+    validate_bar_arrays(selected, interval)
+    return selected, {"policy": "longest_contiguous", "gaps_excluded": int(len(breaks)),
+                      "source_bars": int(len(ts)), "selected_bars": end - start,
+                      "first_ts": int(ts[start]), "last_ts": int(ts[end - 1])}
 
 
 def engine_config(settings: Settings, interval: str | None = None) -> EngineConfig:
@@ -154,6 +183,7 @@ class SweepRunner:
         roster: Roster,
         settings: Settings,
         on_done: Callable[[SweepOutcome], None] | None = None,
+        *, longest_contiguous: bool = False,
     ) -> None:
         """Begin a sweep. Refuses to start a second one concurrently."""
         if self.running:
@@ -163,7 +193,7 @@ class SweepRunner:
         self._cancel.clear()
         self.outcome = None
         self._thread = threading.Thread(
-            target=self._run, args=(roster, settings, on_done), daemon=True
+            target=self._run, args=(roster, settings, on_done, longest_contiguous), daemon=True
         )
         self._thread.start()
 
@@ -172,13 +202,19 @@ class SweepRunner:
         roster: Roster,
         settings: Settings,
         on_done: Callable[[SweepOutcome], None] | None,
+        longest_contiguous: bool = False,
     ) -> None:
         """Worker body. Never raises into the thread boundary."""
         outcome = SweepOutcome()
         try:
             arrays = load_arrays(settings)
+            arrays, selection = select_contiguous(arrays, settings.interval, longest=longest_contiguous)
             from .desk import research_context
             outcome.context = research_context(settings, roster, arrays)
+            if selection:
+                from .desk import context_id
+                outcome.context["data_selection"] = selection
+                outcome.context["id"] = context_id(outcome.context)
             cfg = engine_config(settings)
             entries: Sequence[RosterEntry] = roster.entries
             total = len(entries)
