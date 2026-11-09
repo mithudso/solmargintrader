@@ -269,6 +269,69 @@ class Legacy(unittest.TestCase):
         self.assertNotIn("/v1/council.config", [c[1] for c in calls])
         self.assertFalse((self.root / "manager").exists())
 
+    def test_owner_reported_config_path_survives_descriptor_difference(self):
+        observed = "/fixture/actual-owner/config/bots/config.json"
+
+        def reported_path(path, body):
+            if path == "/v1/bots.manager_snapshot":
+                body["result"]["bots"][0]["config_path"] = observed
+            return body
+
+        with owner(mutate=reported_path) as (url, _):
+            adapter = self.adapter(url)
+            rows = adapter.discover().to_dict()["bots"]
+        grid = next(row for row in rows if row["strategy_id"] == "grid")
+        self.assertEqual(grid["config_path"], observed)
+        self.assertEqual(grid["config_path_provenance"], "owner_reported")
+        self.assertIsNone(grid["config_path_reason"])
+        self.assertEqual(
+            grid["declared_config_path"], str(self.root / "owner/bots/config.json")
+        )
+        self.assertEqual(
+            grid["declared_config_path_provenance"], "installation_descriptor"
+        )
+        council = next(row for row in rows if row["strategy_id"] == "council")
+        self.assertIsNone(council["config_path"])
+        self.assertIsNone(council["config_path_provenance"])
+        self.assertEqual(
+            council["config_path_reason"], "owner_does_not_report_configuration_path"
+        )
+
+    def test_unavailable_or_invalid_config_paths_are_not_inferred(self):
+        cases = [
+            (False, None, "owner_does_not_report_configuration_path"),
+            (True, None, "owner_does_not_report_configuration_path"),
+        ]
+        cases += [
+            (False, value, "owner_configuration_path_invalid")
+            for value in (
+                "relative/config.json",
+                "",
+                1,
+                [],
+                "/fixture/../config.json",
+                "/fixture/\nconfig.json",
+            )
+        ]
+        for old, value, reason in cases:
+            with self.subTest(old=old, value=value):
+
+                def reported_path(path, body, value=value):
+                    if path == "/v1/bots.manager_snapshot":
+                        body["result"]["bots"][0]["config_path"] = value
+                    return body
+
+                with owner(old=old, mutate=reported_path) as (url, _):
+                    rows = self.adapter(url).discover().to_dict()["bots"]
+                grid = next(row for row in rows if row["strategy_id"] == "grid")
+                self.assertIsNone(grid["config_path"])
+                self.assertIsNone(grid["config_path_provenance"])
+                self.assertEqual(grid["config_path_reason"], reason)
+                self.assertEqual(
+                    grid["declared_config_path"],
+                    str(self.root / "owner/bots/config.json"),
+                )
+
     def test_wrong_service_never_resolves_or_sends_credentials(self):
         with owner(health="global-ai-hub") as (url, calls):
             adapter = self.adapter(url)

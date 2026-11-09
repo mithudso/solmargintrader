@@ -67,6 +67,104 @@ class ManagerControls(unittest.TestCase):
         self.assertIsNone(result["bots"][0]["session_id"])
         self.assertFalse(result["bots"][0]["heartbeat_available"])
 
+    def test_malformed_present_forward_state_refuses_without_overwriting(self):
+        request = self.request()
+        valid = bots._new_forward_record("grid", "SOL", self.settings, 10.0)
+        invalid_records = [
+            None,
+            [],
+            False,
+            {},
+            {**valid, "id": ""},
+            {**valid, "bot": "trend"},
+            {**valid, "asset": None},
+            {**valid, "config": []},
+            {**valid, "config": {}},
+            {**valid, "started_at": None},
+            {**valid, "stopped_at": "10"},
+            {**valid, "fee_bps": True},
+            {**valid, "slippage_bps": -1},
+        ]
+        invalid_records += [
+            {k: v for k, v in valid.items() if k != field} for field in valid
+        ]
+        documents = [
+            json.dumps(value).encode()
+            for value in ([], [valid], None, 1, "CANARY_SECRET", False)
+        ]
+        documents += [
+            json.dumps({"grid": record}).encode() for record in invalid_records
+        ]
+        documents += [
+            b'{"CANARY_SECRET":',
+            b"\xffCANARY_SECRET",
+            json.dumps({"grid": {**valid, "started_at": float("nan")}}).encode(),
+        ]
+        bots.home().mkdir(parents=True)
+        for document in documents:
+            with self.subTest(document=document):
+                bots.forward_path().write_bytes(document)
+                before = (
+                    bots.forward_path().read_bytes(),
+                    bots.forward_path().stat().st_mtime_ns,
+                )
+                with self.assertRaisesRegex(
+                    bots.BotError, "^saved forward state is incompatible$"
+                ):
+                    self.snapshot()
+                self.assertEqual(
+                    before,
+                    (
+                        bots.forward_path().read_bytes(),
+                        bots.forward_path().stat().st_mtime_ns,
+                    ),
+                )
+                self.assertEqual(list(bots.home().iterdir()), [bots.forward_path()])
+                for operation in ("start", "stop"):
+                    with self.assertRaisesRegex(
+                        bots.BotError, "^saved forward state is incompatible$"
+                    ):
+                        self.control(**{**request, "operation": operation})
+                    self.assertEqual(bots.forward_path().read_bytes(), document)
+                    self.assertFalse((bots.home() / "manager-requests.json").exists())
+                # Only the guarded protocol is strict. Raw legacy readers retain
+                # their established handling of valid non-object JSON.
+                if document in (b"[]", b"null", b"1", b'"CANARY_SECRET"', b"false"):
+                    self.assertEqual(bots._forward_all(), {})
+                for lock in ("forward.lock", "config.lock"):
+                    (bots.home() / lock).unlink(missing_ok=True)
+
+    def test_control_rechecks_present_state_before_start_or_stop(self):
+        request = self.request()
+        bots.home().mkdir(parents=True)
+        for document in (b"[]", b"null", b'{"grid": null}', b'{"CANARY_SECRET":'):
+            for operation in ("start", "stop"):
+                with self.subTest(document=document, operation=operation):
+                    bots.forward_path().write_bytes(document)
+                    try:
+                        with self.assertRaisesRegex(
+                            bots.BotError, "^saved forward state is incompatible$"
+                        ):
+                            self.control(**{**request, "operation": operation})
+                        self.assertEqual(bots.forward_path().read_bytes(), document)
+                        self.assertFalse(
+                            (bots.home() / "manager-requests.json").exists()
+                        )
+                    finally:
+                        (bots.home() / "manager-requests.json").unlink(missing_ok=True)
+
+    def test_valid_legacy_family_record_keeps_its_exact_observed_identity(self):
+        result = bots.forward_start(
+            "grid", "SOL", self.settings, ensure_recorder=False, now=10.0
+        )
+        record = result["forward"]
+        before = bots.forward_path().read_bytes()
+        row = next(row for row in self.snapshot()["bots"] if row["bot"] == "grid")
+        self.assertEqual(row["session_id"], record["id"])
+        self.assertEqual(row["requested_state"], "running")
+        self.assertEqual(bots.forward_path().read_bytes(), before)
+        self.assertEqual(self.control(**self.request())["reason"], "already_running")
+
     def test_guarded_start_uses_exact_empty_coin_config_and_compared_costs(self):
         bots.home().mkdir(parents=True)
         bots.config_path().write_text(

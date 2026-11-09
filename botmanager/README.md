@@ -192,8 +192,12 @@ Tests use temporary homes and fresh CLI processes. They cover strict typed
 defaults, source parity, compatible/incompatible learning, manual pins, immutable
 reloads, transactional rollback, unique identities, corrupt/future schemas,
 credential canaries and read-only filesystem behavior. Existing strategy engines
-remain offline and untouched. Multi-instance runtime, actual owner discovery,
-live execution, data certification and browser integration are separate work.
+remain offline and untouched. Legacy owner discovery and guarded delegation are
+implemented and covered by isolated HTTP fixtures and owner source tests.
+Acceptance against the actual installed owner remains unavailable at the default
+endpoint; fixture/source evidence does not establish installed-owner control.
+Multi-instance runtime, live execution, data certification and browser integration
+remain separate work.
 
 ## Legacy discovery and guarded controls
 
@@ -221,6 +225,12 @@ the existing SolTUI host installation: `/Users/mitch/dev/solmargintrader` and
 execute an interpreter or assume the repository root is pip-installable.
 The reviewed revision is a descriptor pin, not proof of the running revision.
 A supporting owner separately reports its module source hash captured at load.
+Status preserves a validated owner-reported `config_path` with
+`config_path_provenance=owner_reported`. An absent or invalid owner path stays
+null with `config_path_reason`; Council and older owners report no observed path.
+`declared_config_path` is a separate installation-descriptor candidate, with
+`declared_config_path_provenance=installation_descriptor`; it does not prove which
+configuration the running owner uses.
 
 The adapter discovers the owner's actual registry and uses its
 `{ok, command, result, error}` envelopes. It reads `bots.manager_snapshot` when

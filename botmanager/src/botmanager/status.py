@@ -212,10 +212,18 @@ def legacy_snapshot(
         "active_config_hash_reason": "owner_does_not_report_active_configuration"
         if observation.get("session_config_hash") is None
         else None,
-        "config_path": str(
+        "config_path": observation.get("config_path"),
+        "config_path_provenance": observation.get("config_path_provenance"),
+        "config_path_reason": observation.get(
+            "config_path_reason", "owner_does_not_report_configuration_path"
+        )
+        if observation.get("config_path") is None
+        else None,
+        "declared_config_path": str(
             installation.config_root
             / ("council/config.json" if council else "bots/config.json")
         ),
+        "declared_config_path_provenance": "installation_descriptor",
         "source_hash": observation.get("source_hash"),
         "source_hash_reason": "owner_does_not_report_loaded_identity"
         if observation.get("source_hash") is None

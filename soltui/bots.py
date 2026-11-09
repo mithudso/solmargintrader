@@ -1100,6 +1100,41 @@ def _manager_hash(value: Any) -> str:
                                      allow_nan=False).encode()).hexdigest()
 
 
+def _manager_forward_all() -> dict[str, Any]:
+    """Read the actual legacy record schema without interpreting corruption as absence."""
+    try:
+        raw = _read_json(forward_path(), {})
+        if not isinstance(raw, dict):
+            raise TypeError
+        for bot in BOTS:
+            if bot not in raw:
+                continue
+            rec = raw[bot]
+            fields = {"id", "bot", "asset", "config", "started_at", "stopped_at",
+                      "fee_bps", "slippage_bps"}
+            if (not isinstance(rec, dict) or not fields <= rec.keys()
+                    or not isinstance(rec["id"], str)
+                    or re.fullmatch(r"[A-Za-z0-9_-]{1,64}", rec["id"]) is None
+                    or rec["bot"] != bot or not isinstance(rec["asset"], str)
+                    or re.fullmatch(r"[A-Z0-9]{1,20}", rec["asset"]) is None
+                    or (bot == "triangle" and rec["asset"] != "ALL")
+                    or not isinstance(rec["config"], dict)
+                    or set(rec["config"]) != set(DEFAULTS[bot])):
+                raise ValueError
+            for key in ("started_at", "stopped_at", "fee_bps", "slippage_bps"):
+                value = rec[key]
+                if key == "stopped_at" and value is None:
+                    continue
+                if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+                    raise ValueError
+            validate(bot, rec["config"])
+            _manager_hash(rec)
+        return raw
+    except (BotError, ValueError, TypeError, OverflowError):
+        # No document contents, path, or parser details escape this protocol.
+        raise BotError("saved forward state is incompatible") from None
+
+
 def _manager_context(bot: str) -> dict[str, Any]:
     return {"venue": "coinbase", "mode": "paper", "armed": False,
             "bar_seconds": None if bot == "triangle" else 60,
@@ -1136,12 +1171,10 @@ def manager_snapshot(settings: Any = None) -> dict[str, Any]:
     This is deliberately an observation, not a fencing claim. A subsequent
     manager_control checks the same values under both mutation locks.
     """
-    forward = _forward_all()
+    forward = _manager_forward_all()
     rows = []
     for bot in BOTS:
         rec = forward.get(bot)
-        if rec is not None and (not isinstance(rec, dict) or not isinstance(rec.get("id"), str)):
-            raise BotError("saved forward identity is incompatible")
         asset = "ALL" if bot == "triangle" else (rec or {}).get("asset", getattr(settings, "asset", "SOL"))
         current = _manager_config(bot, asset, settings)
         rows.append({**current, "config_hash": _manager_hash(current), "session_id": (rec or {}).get("id"),
@@ -1230,6 +1263,7 @@ def manager_control(bot: str, operation: str, asset: str, request_id: str,
     # Match the existing forward mutators' lock order. Config writers acquire
     # only config.lock; none can invert forward.lock -> config.lock.
     with runtime().lock, _forward_lock(), _config_lock():
+        recs = _manager_forward_all()
         path = home() / "manager-requests.json"
         journal = _read_json(path, {"schema_version": 1, "requests": {}})
         if (not isinstance(journal, dict) or journal.get("schema_version") != 1
@@ -1251,7 +1285,6 @@ def manager_control(bot: str, operation: str, asset: str, request_id: str,
             return previous.get("result") or result("unknown", "outcome_unknown")
         if len(requests) >= 10000:
             raise BotError("manager request journal capacity reached")
-        recs = _forward_all()
         rec = recs.get(bot)
         current_session = rec.get("id") if rec else None
         current = _manager_config(bot, asset, settings)

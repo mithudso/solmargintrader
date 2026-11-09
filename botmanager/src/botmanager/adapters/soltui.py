@@ -559,6 +559,23 @@ class LegacyAdapter:
                 "reference_price_source",
             )
         }
+        config_path = row.get("config_path") if safe else None
+        path_valid = (
+            isinstance(config_path, str)
+            and 0 < len(config_path) <= 4096
+            and Path(config_path).is_absolute()
+            and ".." not in Path(config_path).parts
+            and all(ord(char) >= 32 and ord(char) != 127 for char in config_path)
+        )
+        self._rows[row["bot"]].update(
+            config_path=config_path if path_valid else None,
+            config_path_provenance="owner_reported" if path_valid else None,
+            config_path_reason=None
+            if path_valid
+            else "owner_does_not_report_configuration_path"
+            if config_path is None
+            else "owner_configuration_path_invalid",
+        )
         self._rows[row["bot"]]["source_hash"] = (
             None if row["bot"] == "council" else self._loaded_hash
         )
