@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 307
+Version: 308
+Delta: concurrent workflow records to v308; preserve runtime fixes and DSO outcomes.
 Delta: v306 to v307; verify native-environment history and corrected workflow readiness in0.6.3.
 Delta: v305 to v306; repair installed CDP child PATH and workflow-label readiness.
 Delta: v304 to v305; finish native/source checks and committed discovery counts for release0.6.2.
@@ -698,3 +699,28 @@ Experiment range PR 130 merged as 514edb0651c5ba2c0c25e10f4dc44f6971c085ad after
 ## v204 - 2026-11-08
 
 The owner requested adding a live page under the Signal tab in SolTUI that displays a price graph of the chosen coin, real-time subscribed streaming price information, and a table of top performing forward test strategies giving 1, 5, 10, and 30 min price predictions. Stele TASK-1063 was created and claimed under COMP-337. Stele decision queued as outbox 37afb21a. Implementation integrates `pricefeed.py` snapshot streaming, interactive `Sparkline` charting with mid-price history, and ranked strategy prediction evaluation across canonical horizons (1m, 5m, 10m, 30m) from `forwardtest.py` trials.
+
+
+## 2026-11-09 — strategy DSO comparison
+
+Task TASK-1076. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c0e9. Preserve all baseline core modules and cards; audit candidate copies, paired cached-data evaluation, defined signal accuracy plus costed outcomes. No live changes. In progress: inventory and baseline tests, DSO family audits and runner implementation. Remaining: triage all findings, fix candidate only, run comparison, verification, PR/CI/merge.
+
+
+## DSO comparison checkpoint 2026-11-09
+
+34 registry strategies copied with all core modules, 1,822 baseline files including cards and research-only specs. DSO reports contain all 273 family pass rows with insufficient evidence and live-data gaps explicit. Candidate volatility annualization fixed and tested (4 tests). Original full suite 941 tests: one stale generated-index failure after workflow records changed; no strategy failures. Initial paired run: 408 completed cells across SOL/BTC/ETH daily, all unchanged; 136 SOL hourly cells refused because source cache has 3 gaps. Retain initial run. Remaining: deterministic latest contiguous hourly tail comparison; auxiliary pairs/grid/DCA/indicator comparison; candidate scorecard and triangle timing fixes; package archives (expanded copies stay local and reproducibly extract in fresh clones); final checks, index metadata, CI and merged delivery.
+
+
+## DSO empirical result 2026-11-09
+
+Final registry run exit 0: 544 successful cells, zero failures, unchanged source hashes. No directional accuracy delta. Hourly SOL voltarget return -11.50% to -12.24%; garch_voltarget -11.50% to -12.43%; both 46.02% accuracy. All daily results equal. Hourly structural suffix4410 bars, holdout1323. Auxiliary default pairs/grid/DCA/triangle parity; scorecard executable accuracy149/318 both. Candidate-only scorecard measurement alignment and future-quote refusal covered by four tests. Source archives packaged and fresh extraction/tamper refusal checked. Final test discovery960. Remaining: independent review, final suite/doc/index gates, commit/push/PR/CI/merge receipts. No CLEAN convergence or live edge claimed.
+
+
+## DSO verification and delivery protocol
+
+960 backtester tests passed (33.001s, exit0); independent fresh-context review found no corroborated Medium+ source/provenance defects. 1084 historical archive figures verify (exit0); this verifies archival transcription, not a fresh statistical edge. Fresh archive expansion, idempotence and alteration refusal passed. Doc gate initially used HEAD-only test counts and then exposed total-count drift; corrected total2741. Both zip archives explicitly staged despite global zip ignore. Final source packages match measured hashes. Delivery: push branch and merge PR only after final doc/index/CI gates. Preserve other live worktrees and shared checkout. After merge export a durable standalone experiment to /Users/mitch/dev/solmargintrader-strategy-comparison-20261109 (data symlink read-only in practice to main cached data), expand both copies and verify its tests. Remove only this clean merged task worktree/branch. Report actual PR/merge/CI receipts; missing scientific validation remains a limitation, not a future implementation blocker.
+
+
+## PR167 integration receipt
+
+PR https://github.com/mithudso/solmargintrader/pull/167 preserves all strategy experiment artifacts. Concurrent default branch PR166 was merged without discarding either prompt/memory history; no backtester core changed. Integrated local backtester suite960 passed; extension suite407 passed. Docs total2787 includes current1374 SolTUI tests. Index rebuilt over final owned paths. Full experiment file inventory is research/strategy_experiment/FILES.md, including expanded archive contents and durable-export absolute paths. Final CI, merge identity and standalone export acceptance remain delivery receipts reported after completion.

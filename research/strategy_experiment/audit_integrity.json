@@ -1,0 +1,1197 @@
+{
+  "version": 1,
+  "delta": "Initial DI/OV/ST/RR audit of original registry before candidate edits.",
+  "artifact": "research output, not investment advice; simulation only",
+  "target_kind": "strategy",
+  "families": [
+    "DI",
+    "OV",
+    "ST",
+    "RR"
+  ],
+  "strategy_count": 34,
+  "passes": [
+    {
+      "id": "DI-01",
+      "method": "Prefix-invariance (truncation) test",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Full sequential prefix-invariance check for every registered default at eight checkpoints not run in this sub-audit. Existing tests cover subsets only.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-02",
+      "method": "Engine future-access guard",
+      "status": "ran",
+      "evidence": "Inspected read-only owned public BarWindow arrays and passing adversarial history tests in test_engine_audit.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-03",
+      "method": "Data-slice re-run lookahead analysis",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Full trade-entry slice reruns at 20 signal checkpoints not run.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-04",
+      "method": "Static scan for future-reaching constructs",
+      "status": "ran",
+      "evidence": "Scanned every registered strategy implementation; no shift(-n), bfill, centred window or future public access found. Ichimoku displaces backwards.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-05",
+      "method": "Fill-price reachability",
+      "status": "ran",
+      "evidence": "Inspected queued next-open fills and gap liquidation handling; existing gap fixtures passed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-06",
+      "method": "Higher-timeframe resample and bin-edge leakage",
+      "status": "skipped (applicability)",
+      "evidence": "Registered defaults consume one OHLCV timeframe; no higher-timeframe resampler.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-07",
+      "method": "External series as-of alignment with staleness cutoff",
+      "status": "skipped (applicability)",
+      "evidence": "Registered defaults use OHLCV only; trigger explicitly refuses funding-dependent conditions.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-08",
+      "method": "Outcome-resolution lag",
+      "status": "skipped (applicability)",
+      "evidence": "Registered defaults have no learned weights or outcome-resolution ledger.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-09",
+      "method": "Warm-up adequacy (recursive convergence)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No >=5000-candle startup-convergence benchmark per recursive signal measured.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-10",
+      "method": "Burn-in discard",
+      "status": "ran",
+      "evidence": "Inspected engine burn-in: no decisions before warmup, but native metrics include flat startup. Comparison must trim to a common scoring start.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-11",
+      "method": "Bar-contract validation",
+      "status": "ran",
+      "evidence": "Inspected validate_bar_arrays and CsvLoader bar contract; validation tests in engine suite passed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-12",
+      "method": "Gap policy and cadence refusal",
+      "status": "ran",
+      "evidence": "Inspected simulation cadence refusal in validate_bar_arrays. No gap repair was performed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-13",
+      "method": "Tick-vs-candle gap classification (and gap sensitivity)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No tick-classified gap runs with Wilson intervals provided.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-14",
+      "method": "Cross-granularity consistency",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No matched fine/coarse granularity audit executed here.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-15",
+      "method": "Resample completeness accounting",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No per-bar minute-coverage column evaluated.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-16",
+      "method": "Outlier / bad-tick filter",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No quote/tick outlier sensitivity data.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-17",
+      "method": "Second-source data cross-check",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No second-source comparison dataset evaluated.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-18",
+      "method": "Unit and sign alignment",
+      "status": "ran",
+      "evidence": "Inspected signal, time, exposure and cost units. RR-01 identifies volatility annualization defect.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-19",
+      "method": "Point-in-time universe (survivorship)",
+      "status": "skipped (applicability)",
+      "evidence": "Individual fixed-asset runs, no portfolio-universe selection claim.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-20",
+      "method": "Terminal-value (delisting) treatment",
+      "status": "skipped (applicability)",
+      "evidence": "No delisting event series or delisting return claim in selected assets.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-21",
+      "method": "Point-in-time data and revisions",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No received-at/as-of revision ledger for cached bars.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-22",
+      "method": "Corporate actions and roll adjustment",
+      "status": "skipped (applicability)",
+      "evidence": "No corporate actions, redenomination or futures roll series used.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-23",
+      "method": "Timezone, session and bar-boundary pin",
+      "status": "ran",
+      "evidence": "Inspected UTC epoch-seconds contract and interval constants; all crypto bars use 365-day annualization.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-24",
+      "method": "Cross-series synchronisation",
+      "status": "skipped (applicability)",
+      "evidence": "Individual single-series strategies; pairs use a separate runner and are outside REGISTRY.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-25",
+      "method": "Gross-vs-net shadow book",
+      "status": "ran",
+      "evidence": "Inspected zero-cost shadow book; existing short/long resize and isolated-gap fixtures passed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-26",
+      "method": "Buy-and-hold identity (known answer)",
+      "status": "ran",
+      "evidence": "Existing zero-cost buy-and-hold identity fixtures passed in engine suite.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-27",
+      "method": "Equity reconciliation",
+      "status": "ran",
+      "evidence": "Inspected spot/perp book valuation and tested isolated collateral behavior. Close-marked equity is clamped after liquidation; this is no intrabar-equity proof.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-28",
+      "method": "Lot matching consistency",
+      "status": "skipped (applicability)",
+      "evidence": "Exposure-target strategies use one position; grid exposure is not ladder-grid lot matching.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-29",
+      "method": "Mechanism sign, symmetry and exit capture",
+      "status": "ran",
+      "evidence": "Existing strategy fixtures passed for crossover, momentum, reversions, breakout, regimes, sizing, triggers and textbook mechanisms.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-30",
+      "method": "Null-data (random-walk) canary",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No all-registry random-walk null calibration executed; a single random Sharpe is not itself proof of leakage.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-31",
+      "method": "Synthetic ground-truth environment",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No planted-edge/null environment run for every registered strategy.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-32",
+      "method": "Cross-implementation parity (ported economics)",
+      "status": "skipped (applicability)",
+      "evidence": "No paired economic port in REGISTRY; GridLong is not the extension resting-order ladder.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-33",
+      "method": "Cross-engine differential validation",
+      "status": "gap",
+      "evidence": "No independent second engine configured for these 34 strategies.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "DI-34",
+      "method": "Input and config hardening",
+      "status": "ran",
+      "evidence": "EngineConfig validates again at run entry. Existing mutation and nonfinite-cost fixtures passed. Does not prove all nondefault strategy constructor inputs valid.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-01",
+      "method": "Protocol grade",
+      "status": "ran",
+      "evidence": "Protocol identified: fixed-rule historical chronological split. Label exploratory temporal comparison, below walk-forward/CPCV.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-02",
+      "method": "Single chronological split (holdout)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Paired result rows and exact heldout observation/trade counts pending parent execution; minimum method asks >=1000 observations.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-03",
+      "method": "Split-position regime audit",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Train/test regime content not measured in this sub-audit.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-04",
+      "method": "IS-rank vs OOS-rank correlation",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "IS/OOS rank vectors not yet supplied.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-05",
+      "method": "Walk-forward (anchored or rolling)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No multiwindow walk-forward runs performed in this sub-audit.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-06",
+      "method": "Window length and refit cadence on a common test span",
+      "status": "skipped (applicability)",
+      "evidence": "No refit cadence or fitted window search in fixed default comparison.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-07",
+      "method": "Selection rule vs random baseline and oracle",
+      "status": "skipped (applicability)",
+      "evidence": "No walk-forward candidate-selection rule run.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-08",
+      "method": "Plain k-fold admissibility",
+      "status": "skipped (applicability)",
+      "evidence": "No shuffled/plain k-fold used by proposed chronological comparison.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-09",
+      "method": "Purged k-fold CV",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No purged-fold runs in paired protocol.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-10",
+      "method": "Purge and embargo width audit",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No fold-label interval purge/embargo audit for paired protocol.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-11",
+      "method": "Combinatorial purged CV (CPCV)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No new CPCV results produced for both copies.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-12",
+      "method": "CPCV path-count and independence check",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No new common usable block/path distribution produced.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-13",
+      "method": "Warm-up usable-block accounting",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No CPCV warmup/block counts produced; paired runner must use common scored span.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-14",
+      "method": "Block isolation and return stitching",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Paired runner final implementation not reviewed here; fresh instances and return stitching need checking.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-15",
+      "method": "Fit-provenance check on \"fixed-parameter\" claims",
+      "status": "ran",
+      "evidence": "Defaults and cached histories predate experiment and have been examined; fixed parameters do not make the last 30% historically untouched.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-16",
+      "method": "Nested CV",
+      "status": "skipped (applicability)",
+      "evidence": "No inner hyperparameter selection performed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-17",
+      "method": "Validation-pipeline null calibration",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No validation false-positive calibration run.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-18",
+      "method": "Predeclared-configuration holdout",
+      "status": "gap",
+      "evidence": "Pre-discovery configuration/data freeze cannot be reconstructed from an already researched cache.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-19",
+      "method": "Holdout window integrity",
+      "status": "ran",
+      "evidence": "Historical cache cannot establish post-discovery holdout; do not call it fresh out-of-sample validation.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-20",
+      "method": "Forward test / paper trading (with ledger existence check)",
+      "status": "gap",
+      "evidence": "No new prospective per-strategy ledger collected by this offline audit.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-21",
+      "method": "Live-vs-backtest performance tracking (promotion gate)",
+      "status": "gap",
+      "evidence": "No matched live fill ledger for all 34 strategies.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-22",
+      "method": "Cross-asset transfer, parameters frozen",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Cross-asset paired runs pending parent execution.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-23",
+      "method": "Cross-asset transfer, re-fit by the identical procedure",
+      "status": "skipped (applicability)",
+      "evidence": "Frozen default transfer only; no refitting procedure.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-24",
+      "method": "Generalisation-ladder rung label",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Historical comparison only; no new evidence ladder rung established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "OV-25",
+      "method": "Prequential evaluation of adaptive indicators",
+      "status": "skipped (applicability)",
+      "evidence": "No adaptive learned indicator weights in registered defaults.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-01",
+      "method": "Autocorrelation-corrected Sharpe annualisation (Lo 2002)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-02",
+      "method": "Studentized block-bootstrap Sharpe CI (Ledoit\u2013Wolf)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-03",
+      "method": "Difference-of-two-Sharpes test",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-04",
+      "method": "Probabilistic Sharpe Ratio (PSR)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-05",
+      "method": "Minimum Track Record Length (MinTRL)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-06",
+      "method": "Deflated Sharpe Ratio (DSR)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-07",
+      "method": "Trial count and effective N",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-08",
+      "method": "Minimum Backtest Length (MinBTL)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-09",
+      "method": "Probability of Backtest Overfitting (PBO, CSCV)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-10",
+      "method": "White's Reality Check",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-11",
+      "method": "Hansen SPA test",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-12",
+      "method": "Romano\u2013Wolf stepdown",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-13",
+      "method": "Bonferroni / Holm (FWER)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-14",
+      "method": "Benjamini\u2013Hochberg / Benjamini\u2013Yekutieli (FDR)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-15",
+      "method": "Harvey\u2013Liu\u2013Zhu t > 3.0 hurdle",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-16",
+      "method": "Harvey\u2013Liu haircut Sharpe",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-17",
+      "method": "Stationary bootstrap CI (Politis\u2013Romano, Politis\u2013White block length)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-18",
+      "method": "Trade-level bootstrap of expectancy",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-19",
+      "method": "Monte Carlo permutation test (MCPT, with selection)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-20",
+      "method": "Random-entry / matched-exposure null",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-21",
+      "method": "Binomial test of hit rate vs base rate (with Wilson lower bound)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-22",
+      "method": "Effective sample size (overlapping-event de-duplication)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-23",
+      "method": "Evidence floor (minimum trades / blocks / paths / calls)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-24",
+      "method": "Per-block sign test vs per-block base rate",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "ST-25",
+      "method": "Holdout-reuse count",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "New paired return vectors, trade outcomes, null/bootstrap draws, full historical trial ledger or selection-aware statistics not provided to this sub-audit. No significance or promotion claim established.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-01",
+      "method": "Annualisation constant audit",
+      "status": "ran",
+      "evidence": "Engine ppy is correct; VolTargetTrend and GarchVolTarget sizing call daily-default volatility at every cadence (finding F1).",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-02",
+      "method": "Metric implementation parity across code paths",
+      "status": "ran",
+      "evidence": "Inspected shared compute_metrics; paired runs must use this same convention. No independent engine evaluated.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-03",
+      "method": "Return-series construction",
+      "status": "ran",
+      "evidence": "Inspected simple_returns including supplied initial_equity and boundary costs. Existing boundary-cost test passed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-04",
+      "method": "CAGR on short windows",
+      "status": "ran",
+      "evidence": "Engine always computes CAGR. Comparison must prioritize period return and duration and omit annual-growth claims for short windows.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-05",
+      "method": "Sortino ratio and downside-deviation convention",
+      "status": "ran",
+      "evidence": "Sortino uses RMS of min(excess,0) over every supplied return, annualized by sqrt(ppy).",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-06",
+      "method": "Maximum drawdown with intrabar marking",
+      "status": "gap",
+      "evidence": "Leveraged native metric curve marks closes, not intrabar equity extremes; liquidations use high/low, but drawdown may understate intrabar risk.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-07",
+      "method": "Drawdown duration / time under water",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Native duration is peak-to-trough only; full underwater/recovery durations not computed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-08",
+      "method": "Win rate and decided-trade definition",
+      "status": "ran",
+      "evidence": "trade_stats counts realized fills including resize_down, excludes open/resize_up/grid_entry. Label as fill outcome rate; it is not completed-position win rate.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-09",
+      "method": "Expectancy net of all costs",
+      "status": "ran",
+      "evidence": "Realized P&L allocates entry costs and settles borrow; existing fee/basis fixtures passed. Mean fill P&L is distinct from episode expectancy.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-10",
+      "method": "Kelly fraction from thin samples",
+      "status": "skipped (applicability)",
+      "evidence": "No Kelly sizing formula or claim in registered defaults.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-11",
+      "method": "Leverage growth bound (volatility drag)",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No geometric growth bound estimate and uncertainty for selected tier leverages.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-12",
+      "method": "Leverage invariance of Sharpe across tiers",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "Tier matched-series output distributions pending; default tier signals are identical macd and leverage/cost effects must explain P&L.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-13",
+      "method": "Exposure / time-in-market definition",
+      "status": "ran",
+      "evidence": "exposure_fraction is mean absolute marked notional/equity, including leverage, not fraction of bars active. Use separate coverage name.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-14",
+      "method": "Strategy turnover and cost drag",
+      "status": "ran",
+      "evidence": "Native total_fees sums fee+slippage; borrow is separate. Report these definitions explicitly, do not call fees exchange-fee-only.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-15",
+      "method": "Risk of ruin",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No full-path bootstrap ruin simulation performed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    },
+    {
+      "id": "RR-16",
+      "method": "MAE / MFE excursion analysis",
+      "status": "insufficient evidence (inputs absent)",
+      "evidence": "No trade-window MAE/MFE table computed.",
+      "strategy_scope": "all registered defaults; shared harness unless exception stated"
+    }
+  ],
+  "strategy_coverage": [
+    {
+      "strategy": "buy_and_hold",
+      "module": "backtester.core.strategies.buy_and_hold",
+      "class_name": "BuyAndHold",
+      "warmup": 0,
+      "parameters": {},
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ma_crossover",
+      "module": "backtester.core.strategies.ma_crossover",
+      "class_name": "MaCrossover",
+      "warmup": 50,
+      "parameters": {
+        "fast": 20,
+        "slow": 50,
+        "short_when_below": false
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "rsi",
+      "module": "backtester.core.strategies.rsi",
+      "class_name": "RsiMeanReversion",
+      "warmup": 15,
+      "parameters": {
+        "period": 14,
+        "oversold": 30.0,
+        "exit_level": 50.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "breakout",
+      "module": "backtester.core.strategies.breakout",
+      "class_name": "DonchianBreakout",
+      "warmup": 21,
+      "parameters": {
+        "entry_lookback": 20,
+        "exit_lookback": 10
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "macd",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "MacdCross",
+      "warmup": 53,
+      "parameters": {
+        "fast": 12,
+        "slow": 26,
+        "signal": 9
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "bb_reversion",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "BollingerReversion",
+      "warmup": 20,
+      "parameters": {
+        "window": 20,
+        "num_std": 2.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "bb_breakout",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "BollingerBreakout",
+      "warmup": 20,
+      "parameters": {
+        "window": 20,
+        "num_std": 2.0,
+        "squeeze_lookback": 0,
+        "squeeze_quantile": 0.25
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "keltner",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "KeltnerBreakout",
+      "warmup": 61,
+      "parameters": {
+        "ema_span": 20,
+        "atr_period": 14,
+        "mult": 2.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ts_momentum",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "TsMomentum",
+      "warmup": 61,
+      "parameters": {
+        "window": 60,
+        "threshold": 0.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "stochastic",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "StochasticOversold",
+      "warmup": 18,
+      "parameters": {
+        "k_period": 14,
+        "d_period": 3,
+        "oversold": 20.0,
+        "exit_level": 80.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "vwap_reversion",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "VwapReversion",
+      "warmup": 20,
+      "parameters": {
+        "window": 20,
+        "entry_discount": 0.02
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "obv_trend",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "ObvTrend",
+      "warmup": 22,
+      "parameters": {
+        "ma_window": 20
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "zscore",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "ZScoreReversion",
+      "warmup": 20,
+      "parameters": {
+        "window": 20,
+        "entry_z": -2.0,
+        "exit_z": 0.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "sma_regime",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "Sma200Regime",
+      "warmup": 200,
+      "parameters": {
+        "window": 200
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "voltarget",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "VolTargetTrend",
+      "warmup": 101,
+      "parameters": {
+        "trend_window": 100,
+        "vol_window": 20,
+        "target_vol": 0.6
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": "F1"
+    },
+    {
+      "strategy": "grid",
+      "module": "backtester.core.strategies.signals",
+      "class_name": "GridLong",
+      "warmup": 50,
+      "parameters": {
+        "anchor_window": 50,
+        "levels": 4,
+        "step": 0.05
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "dual_momentum",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "DualMomentum",
+      "warmup": 13,
+      "parameters": {
+        "formation": 12,
+        "skip": 1
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "adx_trend",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "AdxFilteredTrend",
+      "warmup": 43,
+      "parameters": {
+        "adx_period": 14,
+        "adx_threshold": 25.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ma_ribbon",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "MaRibbon",
+      "warmup": 50,
+      "parameters": {
+        "windows": 5,
+        "base": 10
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ichimoku",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "IchimokuCloud",
+      "warmup": 78,
+      "parameters": {
+        "tenkan": 9,
+        "kijun": 26,
+        "senkou_b": 52,
+        "displacement": 26
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ou_reversion",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "OuHalfLifeReversion",
+      "warmup": 251,
+      "parameters": {
+        "fit_window": 250,
+        "entry_z": -2.0,
+        "hold_multiple": 2.5,
+        "max_half_life_bars": 30
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "hurst_switch",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "HurstRegimeSwitch",
+      "warmup": 251,
+      "parameters": {
+        "window": 250,
+        "lag": 5,
+        "trend_threshold": 0.55,
+        "revert_threshold": 0.45,
+        "trend_window": 50,
+        "entry_z": -2.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "vol_regime",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "VolRegimeSwitch",
+      "warmup": 251,
+      "parameters": {
+        "vol_window": 20,
+        "lookback": 250,
+        "calm_quantile": 0.5,
+        "trend_window": 100
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "atr_sized",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "AtrSizedTrend",
+      "warmup": 101,
+      "parameters": {
+        "atr_period": 14,
+        "risk_per_trade": 0.01,
+        "stop_atr_multiple": 2.0,
+        "trend_window": 100
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "garch_voltarget",
+      "module": "backtester.core.strategies.advanced",
+      "class_name": "GarchVolTarget",
+      "warmup": 101,
+      "parameters": {
+        "lam": 0.94,
+        "target_vol": 0.6,
+        "trend_window": 100
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": "F1"
+    },
+    {
+      "strategy": "dca",
+      "module": "backtester.core.strategies.textbook",
+      "class_name": "DollarCostAveraging",
+      "warmup": 0,
+      "parameters": {
+        "instalments": 10,
+        "interval": 7
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ema_crossover",
+      "module": "backtester.core.strategies.textbook",
+      "class_name": "EmaCrossover",
+      "warmup": 200,
+      "parameters": {
+        "fast": 50,
+        "slow": 200
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "ppo",
+      "module": "backtester.core.strategies.textbook",
+      "class_name": "PpoCross",
+      "warmup": 37,
+      "parameters": {
+        "fast": 12,
+        "slow": 26,
+        "signal": 9
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "fib_retracement",
+      "module": "backtester.core.strategies.textbook",
+      "class_name": "FibRetracement",
+      "warmup": 61,
+      "parameters": {
+        "lookback": 60,
+        "entry_ratio": 0.382,
+        "invalid_ratio": 0.786
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "swing_confluence",
+      "module": "backtester.core.strategies.textbook",
+      "class_name": "SwingConfluence",
+      "warmup": 50,
+      "parameters": {
+        "breakout": 20,
+        "exit_lookback": 10,
+        "ma_window": 50,
+        "min_confirms": 2
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "lev_low",
+      "module": "backtester.core.strategies.tiers",
+      "class_name": "LevLow",
+      "warmup": 53,
+      "parameters": {
+        "base": "macd",
+        "leverage": 2.0,
+        "base_params": ""
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "lev_medium",
+      "module": "backtester.core.strategies.tiers",
+      "class_name": "LevMedium",
+      "warmup": 53,
+      "parameters": {
+        "base": "macd",
+        "leverage": 5.0,
+        "base_params": ""
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "lev_high",
+      "module": "backtester.core.strategies.tiers",
+      "class_name": "LevHigh",
+      "warmup": 53,
+      "parameters": {
+        "base": "macd",
+        "leverage": 20.0,
+        "base_params": ""
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    },
+    {
+      "strategy": "trigger_trade",
+      "module": "backtester.core.strategies.trigger",
+      "class_name": "TriggerTrade",
+      "warmup": 120,
+      "parameters": {
+        "conditions": "rsi_lt30&bb_touch_lo",
+        "direction": 1,
+        "horizon": 3,
+        "stop": 0.0
+      },
+      "review": "source inspected; default-constructor and shared contract suites exercised",
+      "specific_finding": null
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "passes": [
+        "RR-01",
+        "DI-18"
+      ],
+      "severity": "Critical",
+      "strategies": [
+        "voltarget",
+        "garch_voltarget"
+      ],
+      "evidence": [
+        "backtester/core/strategies/signals.py:394",
+        "backtester/core/strategies/advanced.py:465",
+        "backtester/core/indicators.py:327",
+        "backtester/core/indicators.py:438"
+      ],
+      "finding": "Annual target_vol is divided by volatility annualized at 365 bars/year even on hourly data. Risk-normalized exposure is therefore oversized before cap.",
+      "fix": "Candidate copies only: infer validated cadence from visible timestamps and pass 365*86400/cadence explicitly into realised_vol and ewma_vol. Assert daily parity, hourly scaling, causal prefix invariance and refusal on invalid cadence.",
+      "status": "reported to orchestrator; candidate fix and verification owned by parent"
+    }
+  ],
+  "verification": [
+    {
+      "command": "/Users/mitch/.venvs/soltui/bin/python -m unittest backtester.tests.test_engine backtester.tests.test_engine_audit backtester.tests.test_indicators backtester.tests.test_strategy_cards backtester.tests.test_triggers backtester.tests.test_advanced_strategies backtester.tests.test_textbook_strategies",
+      "exit_code": 0,
+      "tests": 216,
+      "seconds": 13.73
+    },
+    {
+      "command": "python3 -m unittest same modules",
+      "exit_code": 1,
+      "reason": "System Python 3.15 lacks pandas; corrected to pre-existing Python 3.13 environment, no install."
+    }
+  ],
+  "status": "OPEN: F1 fix pending; statistical and data gaps remain; no convergence claim",
+  "promotion": "not run",
+  "counts": {
+    "insufficient evidence (inputs absent)": 54,
+    "ran": 25,
+    "skipped (applicability)": 16,
+    "gap": 5
+  }
+}
