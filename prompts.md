@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 168
+Version: 169
+Delta: v168 to v169; clarify that either trade direction can prove execution.
 Delta: v167 to v168; record SOL/USDC buy-direction clarification.
 Delta: v166 to v167; record strategy agent and Jupiter proof purchase request.
 Delta: v165 to v166; preserve the merged forward-signal research prompt.
@@ -1465,3 +1466,7 @@ Follow-up: sol/usdc
 ## SOL/USDC buy direction clarification - 2026-11-09
 
 It's my understanding that the right side or bottom side of a coin pair is the one spending to support or buy the top one. So sol/usd  a buy order would spend USD to buy SOL.  and a sell order would spend SOL to get USD.
+
+## Jupiter proof-trade clarification - 2026-11-09
+
+I just meant to prove that you can make a trade, not that you necessarily need to acquire USDC.

@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 344
+Version: 345
+Delta: v344 to v345; record proof-trade clarification and verifier refusals.
 Delta: v343 to v344; record clarified SOL/USDC buy direction and current funding blocker.
 Delta: v342 to v343; clarify read-only manager discovery before reporting begins.
 Delta: v341 to v342; record final prompt audit dissent and draft checkpoint.
@@ -1068,3 +1069,7 @@ Draft checkpoint PR: https://github.com/mithudso/solmargintrader/pull/182 . Fina
 Reflection corrected the prompt ordering conflict. Fresh blind review and the example and source-tracing findings remain open.
 
 The owner clarified the SOL/USDC buy direction: spend USDC to purchase SOL. Executor status on 2026-11-09 returned 0.000047 USDC and 0.084924546 SOL; funding is insufficient for a meaningful proof purchase. Do not reverse the trade. Other proof-of-concept work and optimizer review remain open.
+
+## Proof trade — 2026-11-09
+
+The owner clarified that either direction can prove a trade. A 0.005 SOL to USDC quote was acceptable at about $0.43 under the configured quote rails. A dry-run swap for that amount refused at static verification: `Jupiter route minimum output is below the approved minOut`. A 0.01 SOL dry run and a second 0.005 SOL dry run refused `unsupported Jupiter swap variant`. No simulation, key load, signature, send or configuration change occurred. The causes are unconfirmed. Keep the verifier fail-closed and investigate the current route layouts before changing money-moving code. The proof trade and strategy-agent implementation remain incomplete.
