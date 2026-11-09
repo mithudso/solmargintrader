@@ -1,5 +1,5 @@
 /** Composed Signal Desk screens over the same reviewed native command registry. */
-import { el, clear, table } from './ui-kit.js';
+import { el, clear, table, tableScrollHint } from './ui-kit.js';
 import { DESK_PAGES, DESK_READS, commandBlock, finite, numberText, percentText,
   runFromEnvelope, comparisonStatus, handoffValues, forwardColumns } from './desk-model.js';
 
@@ -148,6 +148,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     const section = el('div', { class: 'card' }, el('div', { class: 'card-head' }, el('h2', { text: 'Historical evidence' }),
       action('Compare selected runs', () => compare())), note('Median CPCV path net return and Sharpe are recorded summaries. Aggregate trades is not a median path trade count.'));
     if (!runs.length) section.append(note('No versioned sweep is saved in this browser or native session yet. Run a backtest explicitly. Existing research remains available in the queue, strategy history and All tools.'));
+    if (runs.length) section.append(tableScrollHint());
     for (const run of runs) {
       const check = el('input', { 'aria-label': `Compare run ${run.context.run_id ?? run.id}` }); check.type = 'checkbox';
       check.checked = selected.has(run.id);
@@ -160,21 +161,21 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
         const w = run.context.data_selection;
         runCard.append(note(`Gap-free window: ${new Date(w.first_ts * 1000).toISOString()} to ${new Date(w.last_ts * 1000).toISOString()} · ${w.selected_bars} of ${w.source_bars} bars · ${w.gaps_excluded} gaps outside the window`));
       }
-      runCard.append(table([
+      runCard.append(el('div', { class: 'table-wrap' }, table([
         { label: 'Strategy', value: (r) => r.label }, { label: 'Median path net', value: (r) => percentText(r.median_return) },
         { label: 'Median Sharpe', value: (r) => numberText(r.median_sharpe) }, { label: 'Sharpe IQR', value: (r) => numberText(r.iqr) },
         { label: 'Positive paths', value: (r) => percentText(r.frac_positive) }, { label: 'Aggregate trades', value: (r) => numberText(r.trades, 0) },
         { label: 'Next step', value: (r) => action('Stage paper trial', () => stage(run, r)) },
-      ], run.rows));
+      ], run.rows)));
       if (run.skipped.length) runCard.append(note(`Excluded configurations: ${run.skipped.map((r) => `${r.label}: ${r.reason}`).join(' · ')}`));
-      section.append(el('div', { class: 'table-wrap' }, runCard));
+      section.append(runCard);
     }
     section.append(note('Per-path drawdown, equity, turnover, itemized cost totals and a matched benchmark are unavailable in the current sweep result contract. They are not reconstructed from Sharpe.'));
     target.append(section, buttons([['Replay a decision', 'paper.start'], ['Strategy history', 'strategies.history'], ['Cumulative research', 'cumulative.summary'], ['Experiment workbench', 'experiments.list']]));
     const archives = data['cumulative.summary']?.files ?? [];
     if (archives.length) target.append(el('div', { class: 'card' }, el('h2', { text: 'Existing research archives' }),
       note('These saved summaries retain their original assumptions. They do not supply the complete context required for a pinned handoff or a comparison with a new run.'),
-      el('div', { class: 'table-wrap' }, table([
+      tableScrollHint(), el('div', { class: 'table-wrap' }, table([
         { label: 'Source', value: (r) => r.source }, { label: 'Rankable configurations', value: (r) => numberText(r.rankable, 0) },
         { label: 'Below evidence floor', value: (r) => numberText(r.below_floor, 0) },
         { label: 'Recorded median Sharpe', value: (r) => numberText(r.median_sharpe) },
@@ -203,7 +204,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     target.append(note('Stopping checks does not cancel orders or stop detached trainers. Pending observations are not wins. Historical replay is not prospective testing.'));
     const section = el('div', { class: 'card' }, el('h2', { text: `${asset()} prospective evidence` }));
     if (!rows.length) section.append(note(failures['forwardtest.status'] ?? 'No saved trial results for this asset. Prepare a paper setup explicitly; reading this view starts nothing.'));
-    else section.append(el('div', { class: 'table-wrap' }, table([
+    else section.append(tableScrollHint(), el('div', { class: 'table-wrap' }, table([
       { label: 'Trial', value: (r) => forwardColumns(r).label }, { label: 'Horizon (minutes)', value: (r) => String(forwardColumns(r).horizon) },
       { label: 'Resolved', value: (r) => numberText(r.resolved, 0) }, { label: 'Accuracy', value: (r) => finite(r.correct) && finite(r.resolved) && r.resolved > 0 ? `${numberText(100 * r.correct / r.resolved)}% (${r.correct}/${r.resolved})` : 'Unavailable' },
       { label: 'Pending', value: (r) => numberText(r.pending, 0) }, { label: 'Net paper return', value: (r) => percentText(r.net_pct) },
@@ -228,14 +229,14 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       { process: 'Bot optimizer schedule', state: schedule?.running ?? schedule?.enabled, output: 'Inspect next run and last result', lifetime: 'Scheduler; lifetime supplied by backend', tool: 'bots.schedule_status' },
     ];
     target.append(el('div', { class: 'card' }, el('h2', { text: 'Process responsibilities' }),
-      note('Scroll horizontally to see process lifetime and inspect controls.'),
+      tableScrollHint(),
       el('div', { class: 'table-wrap' }, table([
         { label: 'Process', value: (r) => r.process }, { label: 'Liveness', value: (r) => typeof r.state === 'boolean' ? (r.state ? 'Running' : 'Stopped') : 'Unavailable' },
         { label: 'Last output / freshness', value: (r) => r.output }, { label: 'Lifetime', value: (r) => r.lifetime },
         { label: 'Evidence', value: (r) => action('Inspect', () => choose(r.tool, r.params ?? {})) },
       ], rows)), note('An alive process can have stale output. A local stop does not prove venue cancellation; unknown submits require reconciliation.', true)));
     const sim = data['bots.overview']?.bots ?? [];
-    if (sim.length) target.append(el('div', { class: 'card' }, el('h2', { text: 'Paper bot research' }), el('div', { class: 'table-wrap' }, table([
+    if (sim.length) target.append(el('div', { class: 'card' }, el('h2', { text: 'Paper bot research' }), tableScrollHint(), el('div', { class: 'table-wrap' }, table([
       { label: 'Bot', value: (r) => r.label ?? r.bot }, { label: 'Purpose', value: (r) => r.about },
       { label: 'Last optimizer verdict', value: (r) => r.optimize ?? 'Unavailable' },
       { label: 'Research', value: (r) => action('Inspect bot', () => choose('bots.config', { bot: r.bot, asset: asset() })) },

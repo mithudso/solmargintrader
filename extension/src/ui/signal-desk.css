@@ -73,7 +73,7 @@ kbd { font: 10px var(--mono); border: 1px solid var(--line); border-radius: 4px;
 .desk-toolbox > .card { margin-top: 16px; }
 .desk-toolbox .workspace-grid { margin-top: 16px; }
 .desk-toolbox .note { font-weight: 400; }
-.desk-run { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); min-width: 650px; }
+.desk-run { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); min-width: 0; }
 .desk-run > .note { margin-bottom: 14px; }
 .desk-draft { border-left: 4px solid var(--accent); }
 .desk-draft button { margin: 12px 8px 0 0; }

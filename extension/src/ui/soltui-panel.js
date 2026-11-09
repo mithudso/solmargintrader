@@ -1,7 +1,7 @@
 /** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
 import { mountSignalDesk } from './signal-desk.js';
 import { commandBlock, eligibilityReason } from './desk-model.js';
-import { el, clear, table, lineChart } from './ui-kit.js';
+import { el, clear, table, lineChart, tableScrollHint } from './ui-kit.js';
 import { aggregatePredictions, scoreText, appendScoreTick, renderScoreChart } from './live-score.js';
 import { WORKSPACES, filterCommands, workspaceFor, cellText, columnsFor, rowsToCsv, resultTables, valuesFromRow, seriesFromRows } from './workspace-model.js';
 
@@ -453,6 +453,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     input.value = state.query ?? '';
     const output = el('div', { class: 'table-wrap' });
     const count = el('p', { class: 'note', role: 'status' });
+    const scrollHint = tableScrollHint();
     const reset = el('button', { class: 'link', text: 'Clear filter' }); reset.type = 'button';
     const paint = () => {
       state.query = input.value;
@@ -468,10 +469,11 @@ export function mountSoltuiPanel(root = document, transport = send) {
       ], shown));
       count.textContent = shown.length ? `${shown.length} of ${rows.length} strategy rows · current eligibility uses both record and horizon floors` : 'No matching strategies. Clear the filter to recover.';
       reset.hidden = !input.value;
+      scrollHint.hidden = !shown.length;
     };
     input.oninput = paint;
     reset.onclick = () => { input.value = ''; paint(); input.focus(); };
-    target.append(el('div', { class: 'row' }, input, reset), count, output); paint();
+    target.append(el('div', { class: 'row' }, input, reset), count, scrollHint, output); paint();
   }
   function paintAggregate(target, aggregate) {
     target.className = `signal-score signal-score-${aggregate.color}`;
