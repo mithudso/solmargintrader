@@ -153,7 +153,7 @@ def default_params() -> dict[str, dict]:
         "live.spawn_dryrun": {"strategy": "buy_and_hold"},
         "analyze.run": {"asset": "SOL"},
         "docs.read": {"path": "soltui/commands.py"},
-        "docs.write": {"path": "scratch.txt", "text": "x"},
+        "docs.write": {"path": "scratch.txt", "text": "x", "expected_revision": "a" * 64},
         "liquidity.resume": {"confirm": True},
         "queue.backtest": {"scope": "all"},
         "docs.search": {"query": "slippage"},

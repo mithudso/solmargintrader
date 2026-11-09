@@ -86,9 +86,6 @@ REQUEST_RETRIES = 5
 # raising --workers would walk straight past the venue's limit.
 RATE_LIMIT_PER_SECOND = 8.0
 
-# How many consecutive empty windows to believe as "before the listing". One is not
-# enough: this venue drops minutes routinely, and first_available's answer is cached.
-EMPTY_RUN_TO_BELIEVE = 3
 
 # Coinbase-listed members of the top-10 non-pegged universe. TRX and RAIN are absent
 # from the venue entirely -- see backtester/core/universe.py, which documents that
@@ -147,6 +144,8 @@ def get_candles(url: str, limiter: RateLimiter | None = None) -> list:
             if isinstance(payload, dict):
                 # The venue reports errors as a JSON object, not an HTTP status.
                 raise FetchError(f"venue refused the request: {payload.get('message')}")
+            if not isinstance(payload, list):
+                raise FetchError("candle response must be a list; malformed window remains retryable")
             return payload
         except urllib.error.HTTPError as exc:
             # HTTPError subclasses URLError, so without this clause a 429 falls into the
@@ -254,51 +253,20 @@ def _candles_url(product: str, window_start: int) -> str:
 
 def first_available(asset: str, years: float, limiter: RateLimiter | None = None,
                     now: int | None = None) -> int:
-    """Binary-search the oldest window the venue actually serves for this asset.
+    """Find the first served window without assuming outages are listing bounds.
 
-    Worth ~13 requests because the alternative is thousands of wasted ones. Planning
-    five years for every asset means BNB (listed ~286 days ago), HYPE (~180) and XRP
-    (~1,118, its relisting) would each have thousands of windows fetched only to return
-    empty -- about 22,000 of 70,000 requests across the universe, roughly an hour.
+    Only an exhaustively checked empty prefix can exclude older windows. Empty
+    midpoint runs are not monotone evidence: venues also have internal outages.
     """
     windows = plan_windows(years, now)
     if not windows:
         return 0
     product = f"{asset.upper()}-USD"
-
-    def has_data(window_start: int) -> bool:
-        return bool(get_candles(_candles_url(product, window_start), limiter))
-
-    def before_listing(index: int) -> bool:
-        """True only when a RUN of consecutive windows from here is empty.
-
-        A halt, or five quiet hours, returns the same empty list as "before the listing",
-        and this function's answer is written to the sidecar -- so treating one empty
-        window as the boundary discards history permanently. Erring low costs a couple of
-        wasted requests, which is the cheap direction.
-        """
-        for offset in range(EMPTY_RUN_TO_BELIEVE):
-            probe_index = index + offset
-            if probe_index >= len(windows):
-                break
-            if has_data(windows[probe_index]):
-                return False
-        return True
-
-    lo, hi = 0, len(windows) - 1
-    if not before_listing(lo):
-        return windows[lo]
-    if before_listing(hi):
-        raise FetchError(f"{asset}: the venue serves no 1m candles even for the most "
-                         "recent window; check the product is listed")
-    # Invariant: a run from windows[lo] is empty, windows[hi] is inside served history.
-    while lo < hi - 1:
-        mid = (lo + hi) // 2
-        if before_listing(mid):
-            lo = mid
-        else:
-            hi = mid
-    return windows[hi]
+    for window_start in windows:
+        if get_candles(_candles_url(product, window_start), limiter):
+            return window_start
+    raise FetchError(f"{asset}: the venue serves no 1m candles in the requested windows; "
+                     "check the product is listed")
 
 
 def effective_windows(asset: str, years: float, limiter: RateLimiter | None = None,
@@ -333,7 +301,7 @@ def load_probe(asset: str) -> tuple[int, int] | None:
     try:
         data = json.loads(path.read_text())
         start, floor = data.get("listing_start"), data.get("probe_floor")
-        if start is None or floor is None:
+        if start is None or floor is None or data.get("probe_method") != "prefix-scan-v1":
             return None
         return int(start), int(floor)
     except (json.JSONDecodeError, ValueError, TypeError):
@@ -398,6 +366,7 @@ def _write_sidecar(asset: str, done: set[int], listing_start: int | None,
     tmp = path.with_suffix(f".json.{os.getpid()}.tmp")
     payload: dict = {"windows_done": sorted(done)}
     if listing_start is not None:
+        payload["probe_method"] = "prefix-scan-v1"
         payload["listing_start"] = int(listing_start)
         payload["probe_floor"] = int(
             probe_floor if probe_floor is not None else listing_start)
@@ -432,12 +401,12 @@ def coverage(asset: str, df: pd.DataFrame, requested_years: float,
     see Coverage.complete_fetch for why that distinction produced a false "PARTIAL".
     """
     out = Coverage(asset=asset, requested_years=requested_years)
-    listing_start = load_listing_start(asset)
+    probe = load_probe(asset)
     if now is None:
         now = load_planned_end(asset)
     planned = plan_windows(requested_years, now)
-    if listing_start is not None:
-        planned = [w for w in planned if w >= listing_start]
+    if probe is not None and planned and probe[1] <= planned[0]:
+        planned = [w for w in planned if w >= probe[0]]
     out.windows_total = len(planned)
     out.windows_done = len({w for w in load_progress(asset) if w in set(planned)})
     if df.empty:
@@ -464,7 +433,15 @@ def coverage(asset: str, df: pd.DataFrame, requested_years: float,
 
 def _window_frame(rows: list) -> pd.DataFrame:
     """Coinbase's positional rows as a bar frame."""
-    arr = np.asarray(rows, dtype="float64")
+    try:
+        arr = np.asarray(rows, dtype="float64")
+    except (TypeError, ValueError) as exc:
+        raise FetchError("candle response must contain numeric OHLCV rows") from exc
+    if arr.ndim != 2 or arr.shape[1] != len(COINBASE_ROW) or not np.isfinite(arr).all():
+        raise FetchError("candle response must contain six finite values per row")
+    stamps = arr[:, 0]
+    if np.any(np.abs(stamps) > 10_000_000_000) or np.any(stamps != np.floor(stamps)) or np.any(stamps % MINUTE):
+        raise FetchError("candle timestamps must be integral minute-aligned epoch seconds")
     idx = {name: k for k, name in enumerate(COINBASE_ROW)}
     frame = pd.DataFrame({
         "timestamp": arr[:, idx["time"]].astype("int64"),
@@ -474,6 +451,13 @@ def _window_frame(rows: list) -> pd.DataFrame:
         "close": arr[:, idx["close"]],
         "volume": arr[:, idx["volume"]],
     }).sort_values("timestamp")
+    if (frame[["open", "high", "low", "close"]] <= 0).any().any() or (frame["volume"] < 0).any():
+        raise FetchError("candle prices must be positive and volume nonnegative")
+    if ((frame["high"] < frame[["open", "close", "low"]].max(axis=1)) |
+            (frame["low"] > frame[["open", "close"]].min(axis=1))).any():
+        raise FetchError("candle high/low must contain the open and close")
+    if frame["timestamp"].duplicated().any():
+        raise FetchError("candle timestamps must be distinct")
     return frame.loc[:, list(BAR_COLUMNS)]
 
 
@@ -523,7 +507,14 @@ def fetch_minutes(
                f"&start={pd.Timestamp(window_start, unit='s', tz='UTC').isoformat()}"
                f"&end={pd.Timestamp(end, unit='s', tz='UTC').isoformat()}")
         rows = get_candles(url, limiter)
-        return window_start, (_window_frame(rows) if rows else None)
+        frame = _window_frame(rows) if rows else None
+        # Coinbase may include the requested endpoint. It belongs to the next
+        # window; discard it without allowing unrelated out-of-window history.
+        if frame is not None:
+            if ((frame["timestamp"] < window_start) | (frame["timestamp"] > end)).any():
+                raise FetchError("candle response falls outside its requested window")
+            frame = frame[frame["timestamp"] < end]
+        return window_start, frame
 
     header_needed = not path.exists() or path.stat().st_size == 0
     empty = 0
@@ -545,13 +536,24 @@ def fetch_minutes(
                         # of `done` so a later run retries it.
                         failed += 1
                         continue
-                    done.add(window_start)
-                    completed += 1
                     if frame is None:
                         empty += 1
                     else:
-                        frame.to_csv(handle, header=header_needed, index=False)
+                        # Roll a partial append back to its prior boundary so a
+                        # resume cannot inherit a malformed half-row/header.
+                        offset = handle.tell()
+                        try:
+                            frame.to_csv(handle, header=header_needed, index=False)
+                            handle.flush()
+                            os.fsync(handle.fileno())
+                        except BaseException:
+                            handle.seek(offset)
+                            handle.truncate()
+                            handle.flush()
+                            raise
                         header_needed = False
+                    done.add(window_start)
+                    completed += 1
                     if completed % 500 == 0:
                         handle.flush()
                         save_progress(asset, done)
@@ -577,7 +579,7 @@ def fetch_minutes(
     cov = coverage(asset, df, years)
     if verbose:
         print(f"  {asset}: {cov.bars:,} bars, {completed:,} windows "
-              f"({empty:,} empty -- before listing, {failed:,} failed and left for a "
+              f"({empty:,} empty responses, {failed:,} failed and left for a "
               f"re-run), {(time.time()-t0)/60:.1f} min, "
               f"{cov.completeness:.1%} of the minute grid", file=sys.stderr)
     return cov

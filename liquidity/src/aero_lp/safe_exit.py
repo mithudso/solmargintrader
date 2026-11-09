@@ -153,6 +153,22 @@ def _value_usd(pos: PositionState, prices: dict[str, float], amounts: tuple[int,
     return amounts[0] / 10**pos.pool.token0.decimals * p0 + amounts[1] / 10**pos.pool.token1.decimals * p1
 
 
+def _conversion_steps(
+    pos: PositionState, amounts: tuple[int, int], aero_claimed: int, target: str
+) -> list[ConvertStep]:
+    """Separate exact receipt proceeds from every pre-existing wallet balance."""
+    tokens = (pos.pool.token0.address, pos.pool.token1.address)
+    pending = list(zip(tokens, amounts, strict=True))
+    # AERO received by an AERO pool leg already includes the withdrawal reward.
+    if addresses.AERO_TOKEN.lower() not in {token.lower() for token in tokens}:
+        pending.append((addresses.AERO_TOKEN, aero_claimed))
+    return [
+        ConvertStep(KNOWN_TOKENS.get(token.lower(), token[:10]), Web3.to_checksum_address(token), amount)
+        for token, amount in pending
+        if token.lower() != target.lower() and amount > 0
+    ]
+
+
 def build_plan(eng: Engine, token_id: int, convert_to: str, prices_fn: Any) -> PositionPlan:
     """Simulate the withdrawal (eth_simulateV1, nothing signed) and apply the pre-send checks."""
     cfg = eng.cfg
@@ -188,13 +204,10 @@ def build_plan(eng: Engine, token_id: int, convert_to: str, prices_fn: Any) -> P
         return plan
     if convert_to:
         target = SYMBOL_TO_ADDRESS[convert_to]
-        pending = [(t0.address, plan.receive[0]), (t1.address, plan.receive[1])]
-        if plan.aero_claimed_raw and addresses.AERO_TOKEN.lower() not in (t0.address.lower(), t1.address.lower()):
-            pending.append((addresses.AERO_TOKEN, plan.aero_claimed_raw))
-        for token, amount in pending:
-            if token.lower() == target.lower() or amount <= 0:
-                continue
-            plan.converts.append(plan_conversion(eng, Web3.to_checksum_address(token), amount, target, prices))
+        plan.converts = [
+            plan_conversion(eng, step.token_address, step.amount_raw, target, prices)
+            for step in _conversion_steps(pos, plan.receive, plan.aero_claimed_raw, target)
+        ]
     return plan
 
 
@@ -242,8 +255,13 @@ def _convert_live(eng: Engine, plan: PositionPlan, step: ConvertStep, target: st
     """Re-plan on fresh state, simulate on the real balances, then send one swap."""
     from .executor import Rebalancer
 
+    # Every swap is an independent journal group. Account the withdrawal (and
+    # any preceding conversion) before allowing a new submission group.
+    eng.reconcile_submissions()
     token = Web3.to_checksum_address(step.token_address)
     fresh = plan_conversion(eng, token, step.amount_raw, target, prices_fn([token, target]))
+    step.route_pool = fresh.route_pool
+    step.expected_out_raw, step.min_out_raw = fresh.expected_out_raw, fresh.min_out_raw
     if fresh.refused:
         step.refused = fresh.refused
         return
@@ -263,7 +281,7 @@ def _convert_live(eng: Engine, plan: PositionPlan, step: ConvertStep, target: st
         return
     eng._gate()
     res = rb.swap_exact(
-        route, token, step.amount_raw, eng._live_runner(signer, tokens, route.address), fresh.min_out_raw
+        route, token, step.amount_raw, eng._live_runner(signer, tokens, route.address, wallet=True), fresh.min_out_raw
     )
     step.route_pool, step.tx_hashes, step.out_raw = fresh.route_pool, res.tx_hashes, res.amount_out
 
@@ -312,6 +330,10 @@ def run_exit(
             break
         plan.status, plan.tx_hashes, plan.stages = "exited", res.tx_hashes, res.stages
         plan.receive, plan.aero_claimed_raw = tuple(res.amounts_in_position), res.aero_claimed
+        if target:
+            # The dry-run quantity and refusal are obsolete after a confirmed
+            # withdrawal. Fresh planning must use only the actual receipt budget.
+            plan.converts = _conversion_steps(_pos, plan.receive, plan.aero_claimed_raw, target)
         for step in plan.converts:
             if step.refused:
                 continue

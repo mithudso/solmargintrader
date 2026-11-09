@@ -379,13 +379,16 @@ def cmd_pnl(a: argparse.Namespace) -> int:
 
 
 def cmd_run(a: argparse.Namespace) -> int:
-    cfg, eng = _engine(a)
+    cfg = load(a.config)
+    # Engine construction reads the chain. Refuse from the same loaded config
+    # before any RPC or signer access, as the daemon entry point does.
+    if a.live and not _live_gate(cfg):
+        return 3
+    eng = Engine(cfg)
     signer = None
     if a.live:
         from .wallet import load_signer
 
-        if not _live_gate(cfg):
-            return 3
         problems = eng.chain.verify_deployment()
         if problems:
             print("refusing live mode:\n" + "\n".join(problems))

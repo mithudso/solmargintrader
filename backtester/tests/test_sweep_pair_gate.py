@@ -52,6 +52,15 @@ class GateFixture(unittest.TestCase):
         patcher.start()
         self.addCleanup(patcher.stop)
         self.addCleanup(self._tmp.cleanup)
+        from backtester.tests.test_engine_audit import bars
+        from backtester.core.engine import EngineConfig
+        from research.evidence import discovery_context, write_gate_proof
+        arrays = bars((100.,) * 100)
+        loader = mock.patch.object(sweep, "load_horizon", return_value=(arrays, EngineConfig()))
+        loader.start()
+        self.addCleanup(loader.stop)
+        _, self.discovery = discovery_context(arrays, sweep.HORIZONS["medium"]["params"], "SOL", "medium", sweep.SPLIT)
+        write_gate_proof(self.out / sweep.redundancy_filename("SOL", "medium"), self.discovery)
 
 
 class TestRedundancyFilename(unittest.TestCase):
@@ -284,6 +293,8 @@ class TestMeasuredRedundantCombinations(GateFixture):
         (self.out / sweep.combination_redundancy_filename("SOL", "medium")).write_text(
             COMBO_CSV
         )
+        from research.evidence import write_gate_proof
+        write_gate_proof(self.out / sweep.combination_redundancy_filename("SOL", "medium"), self.discovery)
 
     def test_absent_evidence_reads_as_none_not_as_empty(self) -> None:
         """None means 'fall back to the class rule'; an empty set would mean

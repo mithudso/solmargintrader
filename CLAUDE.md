@@ -114,10 +114,10 @@ The executor's own rails (`executor/CLAUDE.md`) are the live path for swaps: use
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 909 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1221 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 34 tests
-cd extension && npm test                                # 377 tests
+python3 -m unittest discover -s backtester/tests -t .   # 941 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1271 tests (~840s, optional)
+python3 -m unittest discover -s mongo/tests -t .        # 46 tests
+cd extension && npm test                                # 389 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
@@ -159,6 +159,11 @@ covered; live trading is not. Trigger history/cancellation have public-contract 
 wallet responses, execution USD valuation and fee attribution remain unverified. The bundled signer
 has no semantic transaction verifier, so Trigger live signing stays blocked. `executor/src/executor/txverify.py` is a semantic verifier for Jupiter Swap v1 transactions (not for Trigger). Do not present live
 execution as working.
+
+SolTUI's manual Jupiter V2 path provides unsigned, structurally checked previews only. Submit and
+quick-submit refuse before key loading, signing or sending until independent V2 economic verification
+exists. Keep uncertain historical submissions blocking until chain evidence resolves them. A timeout
+alone never proves absence. Manual Coinbase orders remain a separately armed path.
 
 ## Related
 

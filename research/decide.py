@@ -409,6 +409,12 @@ def _threshold_reading(
     return NEUTRAL
 
 
+
+def _comparison_reading(left: float, right: float) -> str:
+    if not (np.isfinite(left) and np.isfinite(right)):
+        return UNAVAILABLE
+    return BULLISH if left > right else BEARISH if left < right else NEUTRAL
+
 # The evaluators below carry no docstrings on purpose: each one's documentation
 # is the `rule` string registered next to it in SIGNAL_RULES, which is also what
 # the reader sees. A docstring restating the rule is a second copy that can drift
@@ -421,7 +427,7 @@ def _sig_macd(w: BarWindow) -> tuple[str, str]:
     line, signal, hist = ind.macd(w.closes, 12, 26, 9)
     if not (np.isfinite(line) and np.isfinite(signal)):
         return UNAVAILABLE, "insufficient history"
-    reading = BULLISH if line > signal else BEARISH
+    reading = _comparison_reading(line, signal)
     return reading, f"line {_fmt(line, 3)} vs signal {_fmt(signal, 3)} (hist {_fmt(hist, 3)})"
 
 
@@ -509,14 +515,14 @@ def _sig_sma_regime(w: BarWindow) -> tuple[str, str]:
     if not np.isfinite(ma):
         return UNAVAILABLE, "needs 200 bars"
     close = float(w.closes[-1])
-    return (BULLISH if close > ma else BEARISH), f"close {_fmt(close)} vs SMA200 {_fmt(ma)}"
+    return (_comparison_reading(close, ma)), f"close {_fmt(close)} vs SMA200 {_fmt(ma)}"
 
 
 def _sig_golden_cross(w: BarWindow) -> tuple[str, str]:
     fast, slow = ind.sma(w.closes, 50), ind.sma(w.closes, 200)
     if not (np.isfinite(fast) and np.isfinite(slow)):
         return UNAVAILABLE, "needs 200 bars"
-    return (BULLISH if fast > slow else BEARISH), f"SMA50 {_fmt(fast)} vs SMA200 {_fmt(slow)}"
+    return (_comparison_reading(fast, slow)), f"SMA50 {_fmt(fast)} vs SMA200 {_fmt(slow)}"
 
 
 def _sig_ts_momentum(w: BarWindow) -> tuple[str, str]:
@@ -524,7 +530,7 @@ def _sig_ts_momentum(w: BarWindow) -> tuple[str, str]:
     value = ind.roc(w.closes, window)
     if not np.isfinite(value):
         return UNAVAILABLE, f"needs {window + 1} bars"
-    return (BULLISH if value > 0 else BEARISH), f"{window}-bar ROC {value * 100:+.2f}%"
+    return (_comparison_reading(value, 0)), f"{window}-bar ROC {value * 100:+.2f}%"
 
 
 def _sig_vwap(w: BarWindow) -> tuple[str, str]:
@@ -534,7 +540,7 @@ def _sig_vwap(w: BarWindow) -> tuple[str, str]:
     close = float(w.closes[-1])
     gap = (close / vwap - 1.0) * 100.0 if vwap > 0 else float("nan")
     return (
-        (BULLISH if close < vwap else BEARISH),
+        (_comparison_reading(vwap, close)),
         f"close {_fmt(close)} vs VWAP20 {_fmt(vwap)} ({gap:+.2f}%)",
     )
 
@@ -554,7 +560,7 @@ def _sig_adx_di(w: BarWindow) -> tuple[str, str]:
         # there is no trend to be long or short of, so the DI comparison is
         # noise and reporting it as a direction would manufacture one.
         return NEUTRAL, detail + " -- ADX below 25, no trend"
-    return (BULLISH if plus > minus else BEARISH), detail
+    return (_comparison_reading(plus, minus)), detail
 
 
 def _sig_ichimoku(w: BarWindow) -> tuple[str, str]:
@@ -587,7 +593,7 @@ def _sig_obv(w: BarWindow) -> tuple[str, str]:
         return UNAVAILABLE, "insufficient history"
     ma = float(np.mean(series[-20:]))
     now = float(series[-1])
-    return (BULLISH if now > ma else BEARISH), f"OBV {now:,.0f} vs its SMA20 {ma:,.0f}"
+    return (_comparison_reading(now, ma)), f"OBV {now:,.0f} vs its SMA20 {ma:,.0f}"
 
 
 SIGNAL_RULES: tuple[SignalRule, ...] = (
@@ -711,7 +717,7 @@ def _ind_macd(w: BarWindow, ppy: float) -> tuple[str, str, str]:
     value = f"line {_fmt(line, 3)} signal {_fmt(signal, 3)} hist {_fmt(hist, 3)}"
     if not np.isfinite(line) or not np.isfinite(signal):
         return UNAVAILABLE, value, "insufficient history"
-    return (BULLISH if line > signal else BEARISH), value, "line vs signal"
+    return (_comparison_reading(line, signal)), value, "line vs signal"
 
 
 def _ind_ppo(w: BarWindow, ppy: float) -> tuple[str, str, str]:
@@ -719,7 +725,7 @@ def _ind_ppo(w: BarWindow, ppy: float) -> tuple[str, str, str]:
     value = f"line {_fmt(line, 3)}% signal {_fmt(signal, 3)}% hist {_fmt(hist, 3)}"
     if not np.isfinite(line) or not np.isfinite(signal):
         return UNAVAILABLE, value, "insufficient history"
-    return (BULLISH if line > signal else BEARISH), value, "line vs signal, in percent of the slow EMA"
+    return (_comparison_reading(line, signal)), value, "line vs signal, in percent of the slow EMA"
 
 
 def _ind_bollinger(w: BarWindow, ppy: float) -> tuple[str, str, str]:
@@ -769,7 +775,7 @@ def _ind_roc(w: BarWindow, ppy: float) -> tuple[str, str, str]:
     if not np.isfinite(long_roc):
         return UNAVAILABLE, shown, "needs 91 bars for the 90-bar reading"
     return (
-        BULLISH if long_roc > 0 else BEARISH,
+        _comparison_reading(long_roc, 0),
         shown,
         "reading is the 90-bar leg, sign only",
     )
@@ -803,7 +809,7 @@ def _ind_dm(w: BarWindow, ppy: float) -> tuple[str, str, str]:
         # there is no trend to be long or short of, so the DI comparison is
         # noise and calling it a direction would manufacture one.
         return NEUTRAL, value, "ADX below 25 -- no trend, DI comparison withheld"
-    return (BULLISH if plus > minus else BEARISH), value, "+DI vs -DI, gated on ADX >= 25"
+    return (_comparison_reading(plus, minus)), value, "+DI vs -DI, gated on ADX >= 25"
 
 
 def _ind_variance_ratio(w: BarWindow, ppy: float) -> tuple[str, str, str]:

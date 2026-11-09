@@ -1,3 +1,5 @@
+import { csvCell } from './csv.js';
+
 /**
  * P&L accounting.
  *
@@ -222,12 +224,10 @@ export function maxDrawdown(points) {
   for (const p of points) {
     if (p.equityUsd > peak) peak = p.equityUsd;
     const ddUsd = peak - p.equityUsd;
-    if (ddUsd > worstUsd) {
-      worstUsd = ddUsd;
-      // Percent is only meaningful against a positive peak; a curve starting
-      // at zero equity would otherwise divide by zero.
-      worstPct = peak > 0 ? (ddUsd / peak) * 100 : 0;
-    }
+    worstUsd = Math.max(worstUsd, ddUsd);
+    // Dollar and proportional maxima need not belong to the same drawdown.
+    // A zero/nonpositive peak cannot define a meaningful percentage.
+    if (peak > 0) worstPct = Math.max(worstPct, (ddUsd / peak) * 100);
   }
   return { drawdownUsd: worstUsd, drawdownPct: worstPct };
 }
@@ -246,7 +246,7 @@ export function fillsToCsv(fills) {
       (f.baseQty * f.priceUsd).toFixed(6),
       f.feeUsd ?? 0,
       f.level ?? '',
-    ].join(','),
+    ].map(csvCell).join(','),
   );
   return [header, ...rows].join('\n');
 }

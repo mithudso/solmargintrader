@@ -73,7 +73,8 @@ def status(store: ExperimentStore, run_id: str) -> dict[str, Any]:
                     with log.open("rb") as output:
                         output.seek(max(0, log.stat().st_size - 2000))
                         message += "\n" + output.read().decode("utf-8", errors="replace").strip()
-                run = store.update_run(run_id, status=state, error=message if state == "interrupted" else None)
+                run = store.settle_run(run_id, status=state, expected=[run["status"]],
+                                       error=message if state == "interrupted" else None)
             fcntl.flock(fh, fcntl.LOCK_UN)
     run["worker_active"] = busy
     run["log_path"] = str(log)
@@ -125,7 +126,8 @@ def _reap(proc: subprocess.Popen, store: ExperimentStore, run_id: str) -> None:
                 message = f"worker exited with status {code}; completed cells remain available"
                 if tail:
                     message += "\n" + tail
-                store.update_run(run_id, status="interrupted" if code else "failed", error=message)
+                store.settle_run(run_id, status="interrupted" if code else "failed",
+                                 expected=tuple(_ACTIVE), error=message)
             fcntl.flock(fh, fcntl.LOCK_UN)
     except (OSError, sqlite3.Error, ExperimentError) as exc:
         # The OS lease still makes a later status query recover process death.
@@ -218,7 +220,8 @@ def main(argv: list[str] | None = None) -> int:
         run_experiment(args.worker, settings, final=args.final, adopt=args.adopt, store=store)
         return 0
     except Exception as exc:  # noqa: BLE001 - process boundary persists diagnostics before a nonzero exit
-        store.update_run(args.worker, status="failed", error=f"{type(exc).__name__}: {exc}")
+        store.settle_run(args.worker, status="failed", expected=tuple(_ACTIVE),
+                         error=f"{type(exc).__name__}: {exc}")
         traceback.print_exc()
         return 1
 

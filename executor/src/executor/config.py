@@ -16,6 +16,7 @@ import tomllib
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
+from urllib.parse import SplitResult, urlsplit
 
 from .errors import ExecutorError
 from .tokens import TOKENS, resolve
@@ -159,6 +160,19 @@ def _merge(cls: type, raw: Any, where: str):
     return base
 
 
+def _endpoint(url: str) -> SplitResult:
+    try:
+        endpoint = urlsplit(url)
+        port = endpoint.port
+        if not endpoint.hostname or (port is not None and port == 0):
+            raise ValueError
+        if endpoint.scheme != "https" and not (endpoint.scheme == "http" and endpoint.hostname == "127.0.0.1"):
+            raise ValueError
+    except (TypeError, ValueError):
+        raise ExecutorError("config URLs must be valid https:// endpoints (or http://127.0.0.1 for tests)") from None
+    return endpoint
+
+
 def validate(cfg: Config) -> Config:
     if cfg.mode not in ("dry-run", "live"):
         raise ExecutorError('config mode must be "dry-run" or "live"')
@@ -184,8 +198,7 @@ def validate(cfg: Config) -> Config:
     if not 0 < cfg.bridge.max_cost_bps <= 1000:
         raise ExecutorError("config bridge.max_cost_bps must be in (0, 1000]")
     for url in (cfg.rpc_url, cfg.jupiter_base_url, cfg.lifi_base_url):
-        if not url.startswith("https://") and not url.startswith("http://127.0.0.1"):
-            raise ExecutorError("config URLs must be https:// (or http://127.0.0.1 for tests)")
+        _endpoint(url)
     return cfg
 
 
@@ -195,8 +208,7 @@ def load_config(path: Path | None = None, create: bool = True) -> Config:
     if not path.exists():
         if not create:
             return validate(Config(path=path))
-        path.parent.mkdir(parents=True, exist_ok=True)
-        os.chmod(path.parent, 0o700)
+        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
         with os.fdopen(fd, "w") as fh:
             fh.write(default_toml())
@@ -227,10 +239,16 @@ def fingerprint(cfg: Config, strategy: str) -> str:
 
 def public_view(cfg: Config) -> dict[str, Any]:
     """Config for `status`: nothing secret lives in it, but the key file path is shown as a name only."""
+    endpoint = _endpoint(cfg.rpc_url)
+    host = endpoint.hostname
+    if ":" in host:
+        host = f"[{host}]"
+    if endpoint.port is not None:
+        host = f"{host}:{endpoint.port}"
     return {
         "mode": cfg.mode,
         "owner": cfg.owner,
-        "rpc_host": cfg.rpc_url.split("/")[2] if "//" in cfg.rpc_url else cfg.rpc_url,
+        "rpc_host": host,
         "rails": asdict(cfg.rails),
         "gates": asdict(cfg.gates),
         "validation": asdict(cfg.validation),

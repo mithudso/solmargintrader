@@ -29,6 +29,8 @@
 
 import { createServer } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 import { runCommand, describeCommands, COMMANDS, CommandError } from '../src/core/commands.js';
 import { createNodeDeps } from './deps.js';
 
@@ -215,6 +217,17 @@ export function createApiServer({ deps, token }) {
   return createServer(createRequestHandler({ deps, token }));
 }
 
+const API_MESSAGES = new Set(['API browser request refused', 'API authentication refused',
+  'API request rejected', 'API request failed']);
+
+function logApiEvent(event) {
+  // Never serialize upstream errors, request bodies/URLs, headers or credentials.
+  const diagnostic = { type: 'api', level: event.level === 'error' ? 'error' : 'warn',
+    msg: API_MESSAGES.has(event.msg) ? event.msg : 'command diagnostic' };
+  if (Number.isInteger(event.status) && event.status >= 100 && event.status <= 599) diagnostic.status = event.status;
+  process.stderr.write(`${JSON.stringify(diagnostic)}\n`);
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const port = Number(args.port ?? process.env.SMT_API_PORT ?? 8787);
@@ -231,6 +244,7 @@ async function main() {
     configPath: typeof args['config-path'] === 'string' ? args['config-path'] : undefined,
     passphrase: typeof args.passphrase === 'string' ? args.passphrase : process.env.SMT_PASSPHRASE,
   });
+  deps.log = logApiEvent;
 
   const server = createApiServer({ deps, token });
 
@@ -254,6 +268,14 @@ async function main() {
 
 // Only start a listener when run directly; importing this module must not bind
 // a port, or the test suite would fight the running server for it.
-if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
+function ranDirectly() {
+  if (!process.argv[1]) return false;
+  try {
+    // Node resolves entrypoint symlinks; macOS /var is itself a symlink. Both
+    // sides must use filesystem paths before comparing the physical file.
+    return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1]);
+  } catch { return false; } // eval/import callers need not have a file entrypoint.
+}
+if (ranDirectly()) {
   await main();
 }

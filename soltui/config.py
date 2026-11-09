@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import tempfile
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
@@ -136,18 +137,23 @@ def validate(settings: Settings) -> Settings:
             f"mode {settings.mode!r} is not supported. This build is "
             f"{MODES[0]}-only for strategy execution. Manual Coinbase orders are separate."
         )
-    if settings.capital <= 0:
-        raise ConfigError("capital must be positive")
+    for name in ("capital", "poll_interval_seconds"):
+        value = getattr(settings, name)
+        if (isinstance(value, bool) or not isinstance(value, (int, float))
+                or not math.isfinite(value) or value <= 0):
+            raise ConfigError(f"{name} must be a finite positive number")
     if settings.fee_bps < 0 or settings.slippage_bps < 0:
         raise ConfigError("fee_bps and slippage_bps cannot be negative")
+    for name in ("fill_delay", "cpcv_groups", "cpcv_k"):
+        value = getattr(settings, name)
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ConfigError(f"{name} must be an integer")
     if settings.fill_delay < 0:
         raise ConfigError("fill_delay cannot be negative (that would be look-ahead)")
     if settings.cpcv_groups < 2:
         raise ConfigError("cpcv_groups must be at least 2")
     if not 1 <= settings.cpcv_k < settings.cpcv_groups:
         raise ConfigError("cpcv_k must be at least 1 and fewer than cpcv_groups")
-    if settings.poll_interval_seconds <= 0:
-        raise ConfigError("poll_interval_seconds must be positive")
     # Wallet addresses may be blank (no scan for that chain) but not malformed: a typo would otherwise
     # scan, or show an empty balance for, the wrong account.
     # Messages never echo the value: a private key pasted here must not be repeated into a log or screen.
@@ -205,10 +211,24 @@ def load_settings(path: Path | None = None) -> Settings:
     Unknown keys are ignored rather than fatal, so a config written by a newer
     build still loads in an older one.
     """
-    candidates = [path] if path else [CONFIG_PATH, CONFIG_PATH_JSON]
+    # Parser installation must not resurrect an older representation. Explicit
+    # paths stay authoritative; automatic loading follows the newest saved file.
+    candidates = ([path] if path else sorted(
+        (p for p in (CONFIG_PATH, CONFIG_PATH_JSON) if p.exists()),
+        key=lambda p: p.stat().st_mtime_ns, reverse=True))
     raw: dict[str, Any] | None = None
     for candidate in candidates:
         if candidate and candidate.exists():
+            if candidate.suffix in (".yaml", ".yml") and _yaml() is None:
+                # A previous YAML installation may coexist with a usable JSON
+                # replacement after its optional parser becomes unavailable.
+                try:
+                    raw = _read(candidate)  # JSON written without PyYAML remains readable.
+                except json.JSONDecodeError:
+                    if path is None and CONFIG_PATH_JSON.exists():
+                        continue
+                    raise ConfigError("PyYAML is required to read the existing YAML configuration") from None
+                break
             raw = _read(candidate)
             break
     if raw is None:
@@ -233,12 +253,23 @@ def save_settings(settings: Settings, path: Path | None = None) -> Path:
         text = yaml.safe_dump(payload, sort_keys=True)
     else:
         text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
-    # The file can hold extended public keys, which expose a wallet's whole history: owner-only, and
-    # created that way (not chmod-ed afterwards) so there is no window where it is world-readable.
-    fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as fh:
-        fh.write(text)
-    os.chmod(target, 0o600)
+    # Keep the old settings intact on failure and never place an xpub in an
+    # existing inode that another account can read.
+    fd, tmp_name = tempfile.mkstemp(prefix=f".{target.name}.", dir=target.parent)
+    tmp = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, target)
+        directory_fd = os.open(target.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        tmp.unlink(missing_ok=True)
     return target
 
 

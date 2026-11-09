@@ -30,7 +30,6 @@ from .experiments import ExperimentError, ExperimentStore, preview_space
 
 SCHEMA_VERSION = 1
 MAX_EVALUATIONS = 20_000
-_CONTROL = {"pause_requested": "paused", "cancel_requested": "cancelled"}
 
 
 def _canonical(value: Any) -> str:
@@ -380,11 +379,7 @@ def _metrics(bot: str, cfg: dict, data: Any, costs: Any, coin: str, products: li
 
 
 def _halt(store: ExperimentStore, run_id: str) -> bool:
-    status = store.get_run(run_id)["status"]
-    if status in _CONTROL:
-        store.update_run(run_id, status=_CONTROL[status])
-        return True
-    return status in ("paused", "cancelled")
+    return store.settle_run(run_id)["status"] in ("paused", "cancelled")
 
 
 def _evaluate(store: ExperimentStore, run_id: str, spec: dict, settings: Any, descriptors: list[dict],
@@ -680,8 +675,10 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
                 return finished["summary"]
         except Exception as exc:
             # Requests remain authoritative even when a simulator/source fails.
-            if not _halt(store, run_id):
-                store.update_run(run_id, status="failed", error=f"{type(exc).__name__}: {exc}")
+            store.settle_run(run_id, status="failed",
+                             expected=["created", "queued", "starting", "running", "explored",
+                                       "validating", "finalizing", "failed", "interrupted"],
+                             error=f"{type(exc).__name__}: {exc}")
             raise
 
 

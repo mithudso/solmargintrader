@@ -304,7 +304,7 @@ def walk_forward(
 ) -> tuple[Metrics, Metrics | None, Metrics | None]:
     """Run full-sample, in-sample, and out-of-sample legs.
 
-    The out-of-sample slice deliberately starts `warmup` bars BEFORE the split
+    The out-of-sample slice starts `warmup + fill_delay` bars BEFORE the split
     so indicators warm from trailing in-sample bars; trading therefore begins
     exactly at the split. Reading earlier history is not look-ahead, and
     starting cold would silently discard `warmup` bars of real out-of-sample
@@ -322,7 +322,7 @@ def walk_forward(
     is_arrays = {key: v[:k] for key, v in arrays.items()}
     is_metrics = run_backtest(make_strategy(), is_arrays, cfg).metrics
 
-    oos_start = max(0, k - warm)
+    oos_start = max(0, k - warm - cfg.fill_delay)
     oos_arrays = {key: v[oos_start:] for key, v in arrays.items()}
     oos_res = run_backtest(make_strategy(), oos_arrays, cfg)
     skip = k - oos_start
@@ -426,7 +426,7 @@ def combination_redundancy_filename(asset: str, horizon: str) -> str:
 
 
 def measured_redundant_pairs(
-    horizon: str, asset: str = "SOL"
+    horizon: str, asset: str = "SOL", *, discovery: dict | None = None
 ) -> frozenset[frozenset[str]]:
     """Strategy pairs `signal_redundancy.py` flagged at this horizon's parameters.
 
@@ -442,7 +442,8 @@ def measured_redundant_pairs(
             f"run: python3 research/signal_redundancy.py --asset {asset} "
             f"--horizon {horizon} --out auto"
         )
-    table = pd.read_csv(path)
+    from research.evidence import read_gate_table
+    table = read_gate_table(path, discovery)
     flags = table["redundant"]
     if flags.dtype != bool:
         # read_csv infers bool from True/False, so this is normally a no-op --
@@ -466,7 +467,7 @@ def measured_redundant_pairs(
 
 
 def measured_redundant_combinations(
-    horizon: str, asset: str = "SOL"
+    horizon: str, asset: str = "SOL", *, discovery: dict | None = None
 ) -> frozenset[frozenset[str]] | None:
     """Twin COMBINATIONS measured redundant as combinations, keyed by label.
 
@@ -484,7 +485,8 @@ def measured_redundant_combinations(
     path = OUT_DIR / combination_redundancy_filename(asset, horizon)
     if not path.exists():
         return None
-    table = pd.read_csv(path)
+    from research.evidence import read_gate_table
+    table = read_gate_table(path, discovery)
 
     def members(label: str) -> frozenset[str]:
         return frozenset(label[label.index("(") + 1 : -1].split("+"))
@@ -503,7 +505,7 @@ def measured_redundant_combinations(
 
 
 def redundancy_classes(
-    horizon: str, asset: str = "SOL"
+    horizon: str, asset: str = "SOL", *, discovery: dict | None = None
 ) -> tuple[dict[str, str], list[tuple[list[str], float]]]:
     """Group interchangeable strategies and pick one representative for each.
 
@@ -524,7 +526,7 @@ def redundancy_classes(
     REDUNDANT_CORR means the group over-merged and should not be trusted.
     Measured on SOL none of them chain; the loosest is 0.806.
     """
-    pairs = measured_redundant_pairs(horizon, asset)
+    pairs = measured_redundant_pairs(horizon, asset, discovery=discovery)
     parent: dict[str, str] = {}
 
     def find(x: str) -> str:
@@ -543,7 +545,8 @@ def redundancy_classes(
         grouped.setdefault(find(member), []).append(member)
 
     path = OUT_DIR / redundancy_filename(asset, horizon)
-    table = pd.read_csv(path)
+    from research.evidence import read_gate_table
+    table = read_gate_table(path, discovery)
     corr = {
         frozenset((a, b)): c
         for a, b, c in zip(table["a"], table["b"], table["corr"])
@@ -571,7 +574,7 @@ PAIR_GATES = ("both", "measured", "family")
 
 
 def independent_combos(
-    names: Sequence[str], size: int, horizon: str, gate: str = "both"
+    names: Sequence[str], size: int, horizon: str, gate: str = "both", arrays: dict[str, np.ndarray] | None = None
 ) -> list[tuple[str, ...]]:
     """Combinations of `size` members containing no redundant pair.
 
@@ -600,8 +603,12 @@ def independent_combos(
     redundant: frozenset[frozenset[str]] = frozenset()
     canonical: dict[str, str] = {}
     if gate in ("measured", "both"):
-        redundant = measured_redundant_pairs(horizon)
-        canonical, _ = redundancy_classes(horizon)
+        from research.evidence import discovery_context
+        if arrays is None:
+            arrays, _cfg = load_horizon(horizon)
+        _, discovery = discovery_context(arrays, HORIZONS[horizon]["params"], "SOL", horizon, SPLIT)
+        redundant = measured_redundant_pairs(horizon, discovery=discovery)
+        canonical, _ = redundancy_classes(horizon, discovery=discovery)
 
     # Representatives are chosen among the names actually being combined. A class
     # whose alphabetical head is not a candidate (sma_regime's class leads with
@@ -630,7 +637,7 @@ def independent_combos(
         return True
 
     combo_evidence = (
-        measured_redundant_combinations(horizon)
+        measured_redundant_combinations(horizon, discovery=discovery)
         if gate in ("measured", "both")
         else None
     )
@@ -680,14 +687,14 @@ def independent_combos(
     return out
 
 
-def gate_counts(names: Sequence[str], size: int, horizon: str) -> str:
+def gate_counts(names: Sequence[str], size: int, horizon: str, arrays: dict[str, np.ndarray] | None = None) -> str:
     """What each gate admits, for the log line.
 
     Printed on every combo stage so the multiple-testing denominator is visible
     at the moment it is chosen, not reconstructed afterwards from a CSV.
     """
     return "  ".join(
-        f"{g}={len(independent_combos(names, size, horizon, g))}" for g in PAIR_GATES
+        f"{g}={len(independent_combos(names, size, horizon, g, arrays))}" for g in PAIR_GATES
     )
 
 
@@ -701,13 +708,12 @@ def sweep_combos(
     arrays, cfg = load_horizon(horizon)
     params = HORIZONS[horizon]["params"]
     candidates = [n for n in COMBO_CANDIDATES if n in params]
-    print(
-        f"[{horizon}] size-{size} gate={gate}  admitted: "
-        f"{gate_counts(candidates, size, horizon)}",
-        file=sys.stderr,
-    )
+    admitted = independent_combos(candidates, size, horizon, gate, arrays)
+    counts = (f"family={len(admitted)}" if gate == "family"
+              else gate_counts(candidates, size, horizon, arrays))
+    print(f"[{horizon}] size-{size} gate={gate}  admitted: {counts}", file=sys.stderr)
     rows: list[Row] = []
-    for combo in independent_combos(candidates, size, horizon, gate):
+    for combo in admitted:
         specs = [(n, params[n]) for n in combo]
         for mode in modes:
             try:
@@ -804,7 +810,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     counts: dict[str, int] = {}
 
     for h in horizons:
-        if "singles" in stages:
+        if "singles" in stages or "triples" in stages:
             print(f"[{h}] singles…", file=sys.stderr)
             rows = sweep_singles(h)
             all_rows += rows
@@ -826,7 +832,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 arrays, cfg = load_horizon(h)
                 params = HORIZONS[h]["params"]
                 rows = []
-                for combo in independent_combos(top, 3, h, args.pair_gate):
+                for combo in independent_combos(top, 3, h, args.pair_gate, arrays):
                     specs = [(n, params[n]) for n in combo]
                     for mode in ("all", "vote"):
                         try:

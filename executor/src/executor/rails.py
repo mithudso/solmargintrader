@@ -19,7 +19,7 @@ from decimal import Decimal
 from . import gates, ledger
 from .config import VALIDATION_MAX_DAILY_USD, VALIDATION_MAX_TRADE_USD, VALIDATION_STRATEGY, Config
 from .errors import Refused
-from .journal import Journal
+from .journal import TERMINAL, Journal, failed_accounting_missing
 from .quote import QuoteReport
 from .tokens import QUOTE_MINT, WSOL_MINT, raw_to_ui
 
@@ -121,7 +121,7 @@ def check_trade(
 
     # -- native SOL reserve (pre-check; the verifier re-checks against the simulated post-state) ----------
     needed = report.quote.in_raw if report.token_in.mint == WSOL_MINT else 0
-    if native_lamports - needed < r.min_sol_reserve_lamports:
+    if report.token_out.mint != WSOL_MINT and native_lamports - needed < r.min_sol_reserve_lamports:
         problems.append(
             f"native SOL {native_lamports} lamports minus the input {needed} would fall below "
             f"min_sol_reserve_lamports {r.min_sol_reserve_lamports}"
@@ -133,6 +133,20 @@ def check_trade(
         if kill_present and not exit_only:
             problems.append("KILL file present: live swaps are halted (only --exit is allowed)")
         pending = journal.unresolved()
+        proven_tracked_exit = (
+            exit_only
+            and not is_validation
+            and strategy is not None
+            and side == "sell"
+            and 0 < report.quote.in_raw <= pos.qty_raw
+        )
+        if proven_tracked_exit:
+            # A terminal failed attempt cannot land again. Its missing fee
+            # blocks new risk, but cannot prevent a measured position reduction.
+            # Actual sending/unknown records always retain the submit barrier.
+            pending = [
+                state for state in pending if state["state"] not in TERMINAL or not failed_accounting_missing(state)
+            ]
         if pending:
             problems.append(f"unresolved send(s) {', '.join(p['id'] for p in pending)}: run `executor reconcile`")
         if journal.corrupt_lines():

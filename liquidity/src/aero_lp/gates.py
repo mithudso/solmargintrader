@@ -17,15 +17,18 @@ All checks fail closed: a missing or unreadable record counts as "not satisfied"
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import time
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
 from .config import Config
 from .state import atomic_write_json
+from .validation import finite_number
 
 SOAK_SCHEMA = "aero-lp-soak/1"
 RESEARCH_SCHEMA = "aero-lp-research-gate/1"
@@ -60,7 +63,35 @@ def load_soak(root: Path) -> dict[str, Any] | None:
         doc = json.loads(_soak_path(root).read_text())
     except (OSError, ValueError):
         return None
-    return doc if isinstance(doc, dict) and doc.get("schema") == SOAK_SCHEMA else None
+    try:
+        if not isinstance(doc, dict) or doc.get("schema") != SOAK_SCHEMA or not isinstance(doc["fingerprint"], str):
+            return None
+        for name in ("started_at", "last_tick_at", "accumulated_s"):
+            finite_number(doc[name], name)
+        resets = doc["resets"]
+        if not isinstance(resets, list):
+            return None
+        for reset in resets:
+            finite_number(reset["at"], "reset time")
+            if not all(isinstance(reset[k], str) for k in ("from", "to")):
+                return None
+        gf = doc.get("grandfather")
+        if gf is not None:
+            finite_number(gf["at"], "grandfather time")
+            if not all(isinstance(gf[k], str) and gf[k].strip() for k in ("fingerprint", "reason", "owner")):
+                return None
+    except (KeyError, TypeError, ValueError):
+        return None
+    return doc
+
+
+@contextmanager
+def _record_lock(path: Path):
+    """Serialize each read-modify-replace using a stable inode, including across processes."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.with_suffix(path.suffix + ".lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        yield
 
 
 def _empty(fp: str, now: float) -> dict[str, Any]:
@@ -78,6 +109,7 @@ def _empty(fp: str, now: float) -> dict[str, Any]:
 def record_dry_run_tick(root: Path, cfg: Config, now: float | None = None) -> dict[str, Any]:
     """Credit one dry-run interval to the current configuration; reset the soak when the configuration changed."""
     now = time.time() if now is None else now
+    finite_number(now, "soak time")
     fp = config_fingerprint(cfg)
     doc = load_soak(root)
     if doc is None:
@@ -106,10 +138,14 @@ def grandfather(root: Path, cfg: Config, reason: str, now: float | None = None) 
     new configuration must soak. The entry is never renewed: a second call is refused.
     """
     now = time.time() if now is None else now
+    finite_number(now, "grandfather time")
     if not reason.strip():
         raise ValueError("a grandfather entry needs a reason")
     fp = config_fingerprint(cfg)
-    doc = load_soak(root) or _empty(fp, now)
+    doc = load_soak(root)
+    if doc is None and _soak_path(root).exists():
+        raise LiveGateError("invalid soak record; cannot establish whether a grandfather entry already exists")
+    doc = doc or _empty(fp, now)
     if doc.get("grandfather"):
         raise LiveGateError("a grandfather entry already exists (it is one-time); see `aero-lp gates status`")
     doc["grandfather"] = {"fingerprint": fp, "at": now, "reason": reason.strip(), "owner": cfg.owner}
@@ -168,6 +204,19 @@ def research_path(root: Path, cfg: Config) -> Path:
     )
 
 
+def _research_document(path: Path) -> dict[str, Any]:
+    doc = json.loads(path.read_text())
+    if not isinstance(doc, dict) or doc.get("schema") != RESEARCH_SCHEMA or not isinstance(doc.get("results"), list):
+        raise ValueError("invalid research gate document")
+    for row in doc["results"]:
+        if not isinstance(row, dict) or row.get("result") not in ("pass", "fail"):
+            raise ValueError("invalid research gate result")
+        finite_number(row.get("checked_at"), "research timestamp")
+        if not all(isinstance(row.get(k), str) and row[k].strip() for k in ("strategy", "source")):
+            raise ValueError("research strategy and source are required")
+    return doc
+
+
 def record_research_result(
     root: Path, cfg: Config, strategy: str, result: str, source: str, note: str = "", now: float | None = None
 ) -> dict[str, Any]:
@@ -177,21 +226,23 @@ def record_research_result(
     if not strategy or not source.strip():
         raise ValueError("strategy and source are required")
     now = time.time() if now is None else now
+    finite_number(now, "research timestamp")
     path = research_path(root, cfg)
-    try:
-        doc = json.loads(path.read_text())
-        results = doc["results"] if isinstance(doc, dict) and isinstance(doc.get("results"), list) else []
-    except (OSError, ValueError):
-        results = []
-    results.append({"strategy": strategy, "result": result, "checked_at": now, "source": source, "note": note})
-    doc = {"schema": RESEARCH_SCHEMA, "results": results}
-    atomic_write_json(path, doc)
+    with _record_lock(path):
+        try:
+            doc = _research_document(path)
+        except FileNotFoundError:
+            doc = {"schema": RESEARCH_SCHEMA, "results": []}
+        doc["results"].append(
+            {"strategy": strategy, "result": result, "checked_at": now, "source": source, "note": note}
+        )
+        atomic_write_json(path, doc)
     return doc
 
 
 def latest_research_result(root: Path, cfg: Config) -> dict[str, Any] | None:
     try:
-        results = json.loads(research_path(root, cfg).read_text())["results"]
+        results = _research_document(research_path(root, cfg))["results"]
         mine = [
             r
             for r in results
@@ -201,7 +252,8 @@ def latest_research_result(root: Path, cfg: Config) -> dict[str, Any] | None:
         ]
     except (OSError, ValueError, KeyError, TypeError):
         return None
-    return max(mine, key=lambda r: r["checked_at"]) if mine else None
+    # Append order breaks equal timestamp ties, so a same-time failure cannot hide behind an older pass.
+    return max(enumerate(mine), key=lambda item: (item[1]["checked_at"], item[0]))[1] if mine else None
 
 
 def research_status(root: Path, cfg: Config) -> tuple[bool, str]:
@@ -224,6 +276,7 @@ def _log_override(root: Path, cfg: Config, why: str, now: float) -> None:
 def check_live_allowed(root: Path, cfg: Config, now: float | None = None) -> list[str]:
     """Return notes to print when live signing may start; raise `LiveGateError` listing every failed gate."""
     now = time.time() if now is None else now
+    finite_number(now, "gate check time")
     problems: list[str] = []
     notes: list[str] = []
     soak = soak_status(root, cfg)

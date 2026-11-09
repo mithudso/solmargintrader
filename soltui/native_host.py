@@ -91,15 +91,31 @@ def build_hash(root: Path | None = None) -> dict[str, Any]:
 
 
 def _reply(request_id: Any, envelope: dict[str, Any]) -> bytes:
-    body = ('{"id":%s,"response":%s}' % (json.dumps(request_id), commands.dumps(envelope))).encode()
+    encoded_id = json.dumps(request_id)
+    if len(encoded_id) > 4096:
+        encoded_id = "null"
+        envelope = commands.error_envelope("", "bad_params", "request id exceeds the metadata limit")
+    # JSON permits escaped unpaired surrogates. Preserve them as escapes instead
+    # of allowing UTF-8 encoding to terminate the persistent connection.
+    body = ('{"id":%s,"response":%s}' % (encoded_id, commands.dumps(envelope))).encode("utf-8", errors="backslashreplace")
     if len(body) > MAX_REPLY_BYTES:
-        small = commands.error_envelope(envelope["command"], "failed", OVERSIZE_MESSAGE)
-        body = ('{"id":%s,"response":%s}' % (json.dumps(request_id), commands.dumps(small))).encode()
+        small = commands.error_envelope("", "failed", OVERSIZE_MESSAGE)
+        body = json.dumps({"id": request_id if len(json.dumps(request_id)) <= 4096 else None,
+                           "response": small}).encode("utf-8")
+    if len(body) > MAX_REPLY_BYTES:
+        body = json.dumps({"id": None, "response": commands.error_envelope("", "failed", OVERSIZE_MESSAGE)}).encode("utf-8")
     return body
 
 
 def handle_request(raw: bytes) -> bytes:
     """Turn one request frame into one reply frame body. Never raises."""
+    try:
+        return _handle_request(raw)
+    except Exception:
+        return _reply(None, commands.error_envelope("", "failed", "request could not be processed"))
+
+
+def _handle_request(raw: bytes) -> bytes:
     try:
         request = json.loads(raw.decode("utf-8"))
         if not isinstance(request, dict):
@@ -108,6 +124,16 @@ def handle_request(raw: bytes) -> bytes:
         return _reply(None, commands.error_envelope("", "bad_params", "request is not a JSON object"))
     request_id = request.get("id")
     op = request.get("op")
+    for value in (op, request.get("command", "")):
+        if isinstance(value, str):
+            try:
+                if len(value.encode("utf-8")) <= 256:
+                    continue
+            except UnicodeEncodeError:
+                pass
+            return _reply(request_id, commands.error_envelope("", "bad_params", "invalid request operation or command"))
+    if len(json.dumps(request_id)) > 4096:
+        return _reply(None, commands.error_envelope("", "bad_params", "request id exceeds the metadata limit"))
     if op == "ping":
         env = commands.ok_envelope("ping", {"pong": True, "host": HOST_NAME, "protocol": PROTOCOL})
     elif op == "list":
@@ -163,7 +189,7 @@ def serve(stdin: BinaryIO, stdout: BinaryIO) -> None:
                 request = json.loads(raw)
                 cmd = commands.COMMANDS.get(request.get("command")) if isinstance(request, dict) else None
                 is_long = isinstance(request, dict) and request.get("op") == "call" and cmd and cmd.long_running
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, RecursionError):
                 is_long = False
             if not is_long:
                 send(handle_request(raw))
