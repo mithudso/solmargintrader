@@ -4,7 +4,7 @@ Status: **BLIND-AUDIT-DISSENT**. This is a capped review of **50 primary sources
 
 The run applied the default 18-pass standard profile. No advisory or feature phase ran. There is no separate held-out benchmark and no empirical champion was promoted. Trading defaults remain disarmed/dry-run; archived liquidity stays disabled. Manual Jupiter V2 submission refuses until an independent economic verifier exists.
 
-After the bounded audit, concurrent deliveries https://github.com/mithudso/solmargintrader/pull/151 and https://github.com/mithudso/solmargintrader/pull/152 were integrated. Executor integrity and Signal Desk are preserved. PR151 independently closed2 of the original15 residuals;13 remain (7 High,6 Medium). The task repaired98 findings; the two upstream closures are reported separately. Extension version0.5.1 is checked in a fresh profile. No third optimizer iteration or blind gate ran.
+After the bounded audit, concurrent deliveries https://github.com/mithudso/solmargintrader/pull/151 and https://github.com/mithudso/solmargintrader/pull/152 were integrated. Executor integrity and Signal Desk are preserved. PR151 independently closed2 of the original15 residuals;13 remain (7 High,6 Medium). The task repaired98 findings; the two upstream closures are reported separately. Extension version0.5.1 is checked in a fresh profile. No third optimizer iteration or blind gate ran. Final CI required Ruff formatting in six liquidity files. ASTs were unchanged, all51 package files passed formatting, and579 socket-blocked tests passed again. No behavior or audit severity changed.
 
 ## 1. Per-iteration severity
 
@@ -144,7 +144,7 @@ The final gate stops under the code-deep-optimizer 1.16.0 rule: “second dissen
 | --- | --- | --- | --- |
 | cd extension && node --test | 369 (372 after PR146) | 389 integrated Node tests pass | PASS |
 | executor/.venv/bin/pytest -q; Ruff lint/format | 202 pass,5 network deselected | 429 pass,5 network deselected; integrated Ruff lint/format pass | PASS |
-| liquidity offline pytest with socket connections blocked; Ruff lint/format | 473 pass,6 network deselected | 579 pass,6 network deselected; Ruff pass | PASS |
+| liquidity offline pytest with socket connections blocked; Ruff lint/format | 473 pass,6 network deselected | 579 pass,6 network deselected with sockets blocked; lint and full-package51-file format check pass | PASS |
 | backtester full unittest | 909; index becomes stale after workflow records | 941 integrated tests pass; final metadata/index-only rerun required before commit | PASS |
 | Mongo fake-only unittest | 34 run,11 skipped | 46 run,11 skipped | PASS |
 | SolTUI mapped and focused tests | 198 focused pass | 321 mapped pass;89 focused integration checks pass (overlap); full optional suite not run | PASS |
@@ -1231,7 +1231,7 @@ index b64aa1f..043be9d 100644
 
 ```diff
 diff --git a/liquidity/src/aero_lp/engine.py b/liquidity/src/aero_lp/engine.py
-index 74b4558..63b9035 100644
+index 74b4558..2fdc5c9 100644
 --- a/liquidity/src/aero_lp/engine.py
 +++ b/liquidity/src/aero_lp/engine.py
 @@ -143,9 +143,13 @@ def recover_submission(self, record: dict[str, Any], group: list[dict[str, Any]]
@@ -1243,13 +1243,13 @@ index 74b4558..63b9035 100644
 -                    slot.history.append({"ts": time.time(), "new": token_id, "tx": [record["hash"]], "recovered": True})
 +                    recovered_at = time.time()
 ```
-22 further patch lines omitted.
+27 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/src/aero_lp/executor.py
 
 ```diff
 diff --git a/liquidity/src/aero_lp/executor.py b/liquidity/src/aero_lp/executor.py
-index 0999267..e2cde24 100644
+index 0999267..3f7c490 100644
 --- a/liquidity/src/aero_lp/executor.py
 +++ b/liquidity/src/aero_lp/executor.py
 @@ -207,10 +207,12 @@ def __init__(
@@ -1261,7 +1261,7 @@ index 0999267..e2cde24 100644
          self.chain, self.acct, self.tokens, self.cfg, self.pool = chain, account, tokens, cfg, pool
          self.w3 = chain.w3
 ```
-70 further patch lines omitted.
+82 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/src/aero_lp/gates.py
 
@@ -1321,7 +1321,7 @@ index 8e5e47b..d1f5079 100644
 
 ```diff
 diff --git a/liquidity/src/aero_lp/strategy.py b/liquidity/src/aero_lp/strategy.py
-index 0b1af42..6c54e54 100644
+index 0b1af42..5ee2372 100644
 --- a/liquidity/src/aero_lp/strategy.py
 +++ b/liquidity/src/aero_lp/strategy.py
 @@ -23,6 +23,7 @@
@@ -1333,13 +1333,13 @@ index 0b1af42..6c54e54 100644
 
  class Action(StrEnum):
 ```
-18 further patch lines omitted.
+35 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/src/aero_lp/submissions.py
 
 ```diff
 diff --git a/liquidity/src/aero_lp/submissions.py b/liquidity/src/aero_lp/submissions.py
-index ebabd85..0d59a76 100644
+index ebabd85..25e137f 100644
 --- a/liquidity/src/aero_lp/submissions.py
 +++ b/liquidity/src/aero_lp/submissions.py
 @@ -119,6 +119,10 @@ def _read(self) -> dict[str, Any]:
@@ -1351,17 +1351,17 @@ index ebabd85..0d59a76 100644
 +        if self.ledger_path is not None and Path(doc["ledger_path"]).resolve() != self.ledger_path:
 +            raise PendingSubmission("submission journal is bound to a different ledger")
 ```
-31 further patch lines omitted.
+40 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/tests/test_cdo_execution.py
 
 ```diff
 diff --git a/liquidity/tests/test_cdo_execution.py b/liquidity/tests/test_cdo_execution.py
 new file mode 100644
-index 0000000..2949ec0
+index 0000000..b1163b7
 --- /dev/null
 +++ b/liquidity/tests/test_cdo_execution.py
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,57 @@
 +"""Mock-only confirmed outcome and cooldown regressions."""
 +
 +from types import SimpleNamespace
@@ -1369,17 +1369,17 @@ index 0000000..2949ec0
 +import pytest
 +from test_engine import make_engine
 ```
-46 further patch lines omitted.
+51 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/tests/test_cdo_gates.py
 
 ```diff
 diff --git a/liquidity/tests/test_cdo_gates.py b/liquidity/tests/test_cdo_gates.py
 new file mode 100644
-index 0000000..e56a8f5
+index 0000000..0e70800
 --- /dev/null
 +++ b/liquidity/tests/test_cdo_gates.py
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,115 @@
 +"""Offline regressions for finite, durable pre-live evidence."""
 +
 +from __future__ import annotations
@@ -1387,7 +1387,7 @@ index 0000000..e56a8f5
 +import json
 +from concurrent.futures import ThreadPoolExecutor
 ```
-102 further patch lines omitted.
+109 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/liquidity/tests/test_cdo_recovery.py
 
@@ -1464,19 +1464,19 @@ index 960b0dd..cc61ce3 100644
 
 ```diff
 diff --git a/memory.md b/memory.md
-index 95f3e94..4ffc8ba 100644
+index 95f3e94..5e5b8d1 100644
 --- a/memory.md
 +++ b/memory.md
-@@ -1,7 +1,87 @@
+@@ -1,7 +1,93 @@
  # Work continuation
 
 -Version: 256
 -Delta: v255 to v256; preserve concurrent executor and Signal Desk histories and integration checkpoint.
-+Version: 267
-+Delta: v266 to v267; accepted integrated source and final census.
++Version: 268
++Delta: v267 to v268; repair the final CI formatting gate.
 +
 ```
-82 further patch lines omitted.
+88 further patch lines omitted.
 
 ### /Users/mitch/dev/solmargintrader/mongo/README.md
 

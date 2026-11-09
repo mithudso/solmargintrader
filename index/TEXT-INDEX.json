@@ -1971,9 +1971,9 @@
     "docs/archive/memory-2026-11-08.md": 28446,
     "docs/caching-and-optimization.md": 304,
     "docs/code-deep-optimizer-2026-11-06.md": 3897,
-    "docs/code-deep-optimizer-2026-11-08.md": 13675,
+    "docs/code-deep-optimizer-2026-11-08.md": 13705,
     "docs/code-optimizer-scope-2026-11-06.json": 1369,
-    "docs/code-optimizer-scope-2026-11-08.json": 5089,
+    "docs/code-optimizer-scope-2026-11-08.json": 5127,
     "docs/codebase-overview.md": 2686,
     "docs/coin-fit/README.md": 320,
     "docs/coin-fit/merge-89-receipt.json": 110,
@@ -2249,7 +2249,7 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 8706,
+    "memory.md": 8837,
     "mongo/README.md": 915,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3358,
@@ -2707,7 +2707,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-09T05:20:01+00:00",
+  "generatedAt": "2026-11-09T05:26:58+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -17132,7 +17132,7 @@
       "docs/FILES.md": 11,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/archive/memory-2026-11-08.md": 36,
-      "docs/code-deep-optimizer-2026-11-08.md": 4,
+      "docs/code-deep-optimizer-2026-11-08.md": 3,
       "docs/code-optimizer-scope-2026-11-08.json": 2,
       "docs/design/chrome-workspace/prompt-optimization.md": 1,
       "docs/known-issues.md": 1,
@@ -17151,7 +17151,7 @@
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/tests/test_executor.py": 2,
       "llms-full.txt": 3,
-      "memory.md": 5,
+      "memory.md": 2,
       "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 6,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 3,
@@ -21984,7 +21984,7 @@
       "liquidity/tests/test_providers.py": 4,
       "liquidity/tests/test_submission_audit.py": 3,
       "llms-full.txt": 1,
-      "memory.md": 23,
+      "memory.md": 24,
       "pagesource": 22,
       "prompts.md": 4,
       "research/5minleveragestrategies.json": 4,
@@ -25308,7 +25308,7 @@
       "extension/README.md": 1,
       "extension/e2e/lib/signal-desk.mjs": 1,
       "extension/vendor/lightweight-charts/LICENSE": 5,
-      "memory.md": 2,
+      "memory.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 12,
@@ -31459,7 +31459,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "docs/archive/memory-2026-11-08.md": 2,
-      "docs/code-deep-optimizer-2026-11-08.md": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 3,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/optimization-workbench.md": 1,
       "docs/repository-review-2026-11-08.md": 1,
@@ -31483,7 +31483,7 @@
       "liquidity/tests/test_submission_audit.py": 5,
       "llms-facts.txt": 1,
       "llms-full.txt": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/README.md": 2,
       "prompts.md": 3,
       "research/CROSS-ASSET-TRANSFER.md": 2,
@@ -36380,6 +36380,9 @@
     },
     "all5": {
       "research/tradingview-script-profile-audits/shard-b.jsonl": 2
+    },
+    "all51": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "all55523characters": {
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1
@@ -44596,6 +44599,9 @@
     },
     "and556": {
       "prompts.md": 1
+    },
+    "and579": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "and59": {
       "docs/archive/memory-2026-11-08.md": 2
@@ -61570,11 +61576,16 @@
     "ast": {
       "backtester/tests/test_index.py": 13,
       "docs/archive/memory-2026-11-08.md": 1,
+      "docs/code-optimizer-scope-2026-11-08.json": 1,
       "index/build.py": 11,
+      "memory.md": 1,
       "research/five-minute-perps-suite/benchmark-scope-review.json": 3,
       "scripts/check_tradingview_cards.py": 6,
       "soltui/tests/test_bridge_buttons.py": 8,
       "soltui/tests/test_liquidity.py": 5
+    },
+    "ast_identical": {
+      "docs/code-optimizer-scope-2026-11-08.json": 1
     },
     "astana": {
       "docs/TRADINGVIEW-REFERENCE.md": 2
@@ -61692,6 +61703,9 @@
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 1
+    },
+    "asts": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "astype": {
       "backtester/core/coinfit.py": 2,
@@ -64295,7 +64309,7 @@
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 4,
       "docs/archive/memory-2026-11-08.md": 64,
       "docs/code-deep-optimizer-2026-11-06.md": 20,
-      "docs/code-deep-optimizer-2026-11-08.md": 14,
+      "docs/code-deep-optimizer-2026-11-08.md": 15,
       "docs/code-optimizer-scope-2026-11-06.json": 27,
       "docs/code-optimizer-scope-2026-11-08.json": 110,
       "docs/codebase-overview.md": 4,
@@ -64344,7 +64358,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms/defillama-llms-free.txt": 1,
-      "memory.md": 17,
+      "memory.md": 18,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 2,
@@ -70585,6 +70599,9 @@
     "b115a5bf7815813d3beb098624a872d022347f36c38024f24d60745d": {
       "research/tradingview-card-coverage.json": 1
     },
+    "b1163b7": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
+    },
     "b1174cb58d75d6e861d3802dde2cd31e34750459e3711f12af2af73dcea78d88": {
       "research/tradingview-script-understanding.json": 1
     },
@@ -75455,9 +75472,6 @@
       "research/tradingview-script-understanding.json": 1,
       "research/tradingview-strategy-understanding.json": 1
     },
-    "b9035": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
-    },
     "b903d0651f6ae60e765977cd324b327c4b02b0cfe1b53acd528c7ae80f9161c": {
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1,
       "research/tradingview-script-understanding.json": 1
@@ -75823,6 +75837,9 @@
     "b98e363adbebcfd94017e0231a7ae00eee9ba1117c47f39c41c14e6b4ca4d9ba": {
       "research/tradingview-card-coverage.json": 1
     },
+    "b9911fa7d710b93e159fd72539591343fc6281379e79019625fda678392fc259": {
+      "docs/code-optimizer-scope-2026-11-08.json": 1
+    },
     "b991fe1612703f7e0d05c0cf734c1b77aaf7c7d321df4572e8d36e7048c8": {
       "liquidity/uv.lock": 1
     },
@@ -76006,7 +76023,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "b9d60141d1f1717baa75a96ca966f21d4c0a6c0dc3cdaf82433530bee772f0f8": {
-      "docs/code-optimizer-scope-2026-11-08.json": 2
+      "docs/code-optimizer-scope-2026-11-08.json": 1
     },
     "b9d6db2fa40be96f29c0d1205c306288f0684df8fd26ca1951d461a56": {
       "liquidity/uv.lock": 1
@@ -88224,7 +88241,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "bb45fbf4ba7430462dc04069b2bf720d73145f62d9b7cd1d950e4ee2a22af4b": {
-      "docs/code-optimizer-scope-2026-11-08.json": 2
+      "docs/code-optimizer-scope-2026-11-08.json": 1
     },
     "bb4641652e58dedeac2ec51abc1f8cae4fee4ec63899a0999016229a0f2a": {
       "executor/uv.lock": 1,
@@ -88297,7 +88314,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "bb601": {
-      "memory.md": 2
+      "memory.md": 1
     },
     "bb6288264418c9eec07a5e35180969c0d5a796c7af544db3cb8a33a": {
       "liquidity/uv.lock": 1
@@ -92734,7 +92751,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/archive/memory-2026-11-08.md": 25,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 9,
+      "docs/code-deep-optimizer-2026-11-08.md": 10,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
       "docs/code-optimizer-scope-2026-11-08.json": 2,
       "docs/coin-fit/merge-99-receipt.json": 1,
@@ -92754,7 +92771,7 @@
       "docs/runbooks/handoff.md": 2,
       "docs/runbooks/rollback.md": 2,
       "extension/src/ui/signal-desk.css": 1,
-      "memory.md": 12,
+      "memory.md": 13,
       "research/5minleveragestrategies.json": 1,
       "research/GRID-REVIEW.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -99356,8 +99373,8 @@
       "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 7,
       "docs/archive/memory-2026-11-08.md": 8,
-      "docs/code-deep-optimizer-2026-11-08.md": 4,
-      "docs/code-optimizer-scope-2026-11-08.json": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 6,
+      "docs/code-optimizer-scope-2026-11-08.json": 4,
       "docs/codebase-overview.md": 1,
       "docs/design/chrome-workspace/acceptance.md": 1,
       "docs/design/chrome-workspace/council-review.md": 1,
@@ -99393,7 +99410,7 @@
       "liquidity/tests/test_safe_exit.py": 6,
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-full.txt": 3,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/04-decisions.js": 1,
@@ -108673,7 +108690,7 @@
       "extension/tools/soltui-transport.js": 3,
       "index/make_files_doc.py": 1,
       "llms-full.txt": 6,
-      "memory.md": 29,
+      "memory.md": 31,
       "pagesource": 2,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 33,
@@ -118174,9 +118191,6 @@
     "c54c07ac2c5068b365fc11b497e55e2587a28686a983042911dfab77415c": {
       "research/tradingview-script-understanding.json": 1
     },
-    "c54e54": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
-    },
     "c550982e3b2e9dd27b0f5ea4d2524faa23a4bb91d754049c5883edeee640d": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -120397,7 +120411,7 @@
       "docs/design/soltui-v2/screens/05-money.svg": 1
     },
     "c8ff0aa228127d47d2a376fb59fff858e36fc2d62727bd7bf68113ba287a": {
-      "docs/code-optimizer-scope-2026-11-08.json": 2
+      "docs/code-optimizer-scope-2026-11-08.json": 1
     },
     "c8gbqwpr": {
       "research/tradingview-card-coverage.json": 3
@@ -134879,6 +134893,7 @@
       "liquidity/src/aero_lp/providers_report.py": 1,
       "liquidity/tests/test_executor.py": 3,
       "llms-full.txt": 5,
+      "memory.md": 2,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "mongo/queries/04-decisions.js": 1,
@@ -140512,10 +140527,10 @@
       "backtester/tests/test_geometry.py": 7,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 1,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
-      "memory.md": 9,
+      "memory.md": 7,
       "mongo/tests/test_load_audit.py": 1,
       "research/five-minute-perps-suite/inventory.json": 1,
       "research/tick_backfill.py": 1,
@@ -143515,7 +143530,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 50,
       "docs/archive/memory-2026-11-08.md": 43,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
-      "docs/code-deep-optimizer-2026-11-08.md": 4,
+      "docs/code-deep-optimizer-2026-11-08.md": 5,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
       "docs/code-optimizer-scope-2026-11-08.json": 51,
       "docs/design/chrome-workspace/acceptance.md": 2,
@@ -143561,7 +143576,7 @@
       "liquidity/tests/test_gates.py": 6,
       "llms-full.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 2,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 4,
@@ -144102,7 +144117,7 @@
       "liquidity/tests/test_providers_network.py": 2,
       "llms-facts.txt": 1,
       "llms-full.txt": 5,
-      "memory.md": 16,
+      "memory.md": 15,
       "mongo/load.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
       "prompts.md": 6,
@@ -147851,9 +147866,9 @@
       "docs/archive/memory-2026-11-08.md": 74,
       "docs/caching-and-optimization.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 5,
-      "docs/code-deep-optimizer-2026-11-08.md": 21,
+      "docs/code-deep-optimizer-2026-11-08.md": 22,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
-      "docs/code-optimizer-scope-2026-11-08.json": 11,
+      "docs/code-optimizer-scope-2026-11-08.json": 12,
       "docs/codebase-overview.md": 6,
       "docs/design/chrome-workspace/acceptance.md": 3,
       "docs/design/chrome-workspace/council-review.md": 3,
@@ -147948,7 +147963,7 @@
       "llms-full.txt": 17,
       "llms-small.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 17,
+      "memory.md": 19,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -149763,7 +149778,7 @@
       "index/README.md": 1,
       "index/idle.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 34,
+      "memory.md": 35,
       "mongo/schema.py": 1,
       "mongo/tests/test_load.py": 2,
       "prompts.md": 1,
@@ -150007,7 +150022,7 @@
       "liquidity/tests/test_strategy.py": 6,
       "llms-full.txt": 7,
       "llms/aero-lp-explained-2026-11-06.md": 3,
-      "memory.md": 60,
+      "memory.md": 64,
       "mongo/load.py": 1,
       "prompts.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 3,
@@ -154775,6 +154790,9 @@
     },
     "chvljlv8": {
       "research/tradingview-card-coverage.json": 4
+    },
+    "ci_format_proof": {
+      "docs/code-optimizer-scope-2026-11-08.json": 1
     },
     "cic": {
       "soltui/SolTUI.icns": 2
@@ -160643,6 +160661,7 @@
       "docs/archive/memory-2026-11-08.md": 38,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "docs/code-deep-optimizer-2026-11-08.md": 3,
+      "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/design/chrome-workspace/prompt-manifest.json": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 1,
       "docs/design/chrome-workspace/prompt-telemetry.jsonl": 14,
@@ -164160,7 +164179,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 12,
       "llms-small.txt": 1,
-      "memory.md": 14,
+      "memory.md": 15,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -176813,7 +176832,7 @@
       "liquidity/tests/test_providers_network.py": 2,
       "llms-facts.txt": 2,
       "llms-full.txt": 3,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/load.py": 8,
       "mongo/queries/05-backtests.js": 1,
       "mongo/tests/test_analysis_regressions.py": 6,
@@ -204988,7 +205007,7 @@
       "docs/optimization-workbench-run.md": 2,
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/core/grid.js": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "prompts.md": 2,
       "research/TOP_COINS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
@@ -209489,7 +209508,7 @@
       "liquidity/src/aero_lp/providers.py": 2,
       "llms-full.txt": 6,
       "llms.txt": 1,
-      "memory.md": 1,
+      "memory.md": 3,
       "prompts.md": 1,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/LEVERAGE-TIERS.md": 2,
@@ -218383,6 +218402,9 @@
     "d033ef977b2bed5c": {
       "executor/tests/test_txverify.py": 1
     },
+    "d0353f54d360a4b0df6fd76fe6b65fe71fc66de31fe50e5266ecae3572236b87": {
+      "docs/code-optimizer-scope-2026-11-08.json": 1
+    },
     "d0356c1ef3969617eb42f2f4726069d5e25ab5daa302981b01619f4470eb": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -221648,9 +221670,6 @@
     },
     "d59a6ed5adecf24564fe77f18d020820fbc3760456332276b44cd7bde692bce2": {
       "research/tradingview-card-coverage.json": 1
-    },
-    "d59a76": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "d59d70097f6258c1d064b3a62f07fe33e72da0c1cef960bef322b4b51155c258": {
       "research/tradingview-card-coverage.json": 1
@@ -246658,7 +246677,7 @@
       "docs/design/chrome-workspace/prototype.html": 1,
       "docs/optimization-workbench-plan.md": 1,
       "docs/optimization-workbench-run.md": 1,
-      "memory.md": 11,
+      "memory.md": 10,
       "prompts.md": 1,
       "research/five-minute-perps-suite/run-state.json": 1,
       "research/tradingview-card-coverage.json": 10,
@@ -246718,7 +246737,7 @@
       "docs/runbooks/handoff.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
-      "memory.md": 47,
+      "memory.md": 49,
       "prompts.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 3,
@@ -251802,10 +251821,10 @@
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "docs/code-deep-optimizer-2026-11-08.md": 4,
-      "docs/code-optimizer-scope-2026-11-08.json": 4,
+      "docs/code-optimizer-scope-2026-11-08.json": 5,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "docs/repository-review-2026-11-08.md": 2,
-      "memory.md": 5
+      "memory.md": 6
     },
     "deserted": {
       "research/tradingview-card-coverage.json": 1
@@ -252251,7 +252270,7 @@
       "extension/test/signal-desk.test.js": 3,
       "extension/test/wallet-pubkey.test.js": 1,
       "extension/tools/e2e.mjs": 5,
-      "memory.md": 19,
+      "memory.md": 18,
       "research/tradingview-card-coverage.json": 4,
       "scripts/soltui_ci.py": 2,
       "skills/trading-and-investing/references/fixed-income-and-bond-markets.md": 1,
@@ -271637,7 +271656,7 @@
       "llms-full.txt": 69,
       "llms-small.txt": 1,
       "llms.txt": 26,
-      "memory.md": 41,
+      "memory.md": 43,
       "mongo/README.md": 2,
       "mongo/load.py": 37,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -285852,6 +285871,9 @@
     "e1372c51603aeb6c3d16c72418d50bba6508921cbfa2b0fe1f37d07649cf7986": {
       "research/tradingview-card-coverage.json": 1
     },
+    "e137f": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
+    },
     "e137fbefd5402877f29a5bd9bf9b88c114f94ad6c4c645a8ca6236a3f82b251": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -287011,9 +287033,6 @@
     },
     "e2cb51ede9f052374994f426f25546600a124f4160dd52ee6675992dab92": {
       "research/tradingview-card-coverage.json": 1
-    },
-    "e2cde24": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "e2ced63188a3e9f6bfe5d20946f966d3582e56f5239dcd9aa4a80cf16abf7a9": {
       "research/tradingview-card-coverage.json": 1
@@ -288705,9 +288724,6 @@
     "e56a4e7d1429bd41f9adff546110af25220e31d34967963fec3fa1588b6d6de8": {
       "research/tradingview-card-coverage.json": 1
     },
-    "e56a8f5": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
-    },
     "e56accddabf0ffb7b3a0284cc0c3f1f57364bdac17df8730f0ffee564fe06cc4": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -288886,6 +288902,9 @@
     },
     "e5b0f2e5b87966c76a40536e18ad34a04d00248a8abdc19aa6ed7aa3992fec9d": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "e5b8d1": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "e5ba89590606cb3cc0a8549025cf964de71be030b88f81c0a0f044c90838c9c": {
       "research/tradingview-card-coverage.json": 1
@@ -289617,6 +289636,9 @@
     },
     "e706d54133ea48934e89c259b15b9d86620e0a9a1b330d69adf0301c0aa": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "e70800": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "e708ba97ac0b3e81c0229a74ea4f4572afc4bd20b4b911448f123a48de860e0e": {
       "research/tradingview-card-coverage.json": 1
@@ -292865,7 +292887,7 @@
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/src/aero_lp/submissions.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 9,
+      "memory.md": 11,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/RANKED_LISTS.md": 7,
       "research/STRATEGIES.md": 4,
@@ -294347,9 +294369,6 @@
     },
     "ebyadinsu9w": {
       "research/tradingview-card-coverage.json": 1
-    },
-    "ec0": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "ec013ad264d58091fbb543136d6accc2195adee30b5f7242419d6c69b81e6f": {
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1,
@@ -297121,6 +297140,9 @@
     },
     "ee23277582de6b80681ff91fbf4b4a67e60cd337cf4f40815430d3b3945eb4": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "ee2372": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "ee23e47ec419313041296a497900b1910e551594f9e55f0c9f2ef0002c054109": {
       "research/tradingview-script-profile-audits/shard-b.jsonl": 2
@@ -330633,7 +330655,7 @@
       "liquidity/tests/test_network.py": 1,
       "liquidity/tests/test_safe_exit.py": 7,
       "liquidity/tests/test_submission_audit.py": 21,
-      "memory.md": 30,
+      "memory.md": 31,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
@@ -344094,7 +344116,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 6,
       "llms.txt": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 11,
       "research/candle_crosscheck.py": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
@@ -349963,6 +349985,9 @@
     },
     "f7bc987b47baa3d931cf4165edf3fea8f689b960c851c6e4156b80935fc6f965": {
       "research/tradingview-script-understanding.json": 1
+    },
+    "f7c490": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "f7c5": {
       "docs/code-deep-optimizer-2026-11-06.md": 1
@@ -358530,6 +358555,9 @@
     "fd0219cb0f843acada834a506c5231a6c9be4816d3a28d91a2076a0bc7a": {
       "research/tradingview-card-coverage.json": 1
     },
+    "fd065e37e5762dbd2f64881cbdee3ff7d6dd989cb1eced3e14605683c4fe470": {
+      "docs/code-optimizer-scope-2026-11-08.json": 1
+    },
     "fd07e1bffea1d95cd80c84ac537354f50699c22cfc4d3c02b6fc16208": {
       "liquidity/uv.lock": 1
     },
@@ -358979,6 +359007,9 @@
     },
     "fdc51055e6ff4adeb88d58a11042ec9a5eae317a0a53d12c062c8a8865909e8": {
       "liquidity/uv.lock": 1
+    },
+    "fdc5c9": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1
     },
     "fdc7085d2245ab84f88882fdb1d6ac0723124bff6ded35bfb1c00f812630d": {
       "liquidity/uv.lock": 1
@@ -363176,9 +363207,6 @@
     "ffc636d38437edd5161f803e4ce39e69fd6447131b0c85bf3a35f756ec21f8d": {
       "research/tradingview-script-understanding.json": 1
     },
-    "ffc8ba": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1
-    },
     "ffcbd4465ee65af878d5f2ef2c988b01ec7638a9a17c4576247cdf3d5d": {
       "research/tradingview-card-readiness.json": 1
     },
@@ -366496,9 +366524,9 @@
       "docs/archive/memory-2026-11-08.md": 32,
       "docs/caching-and-optimization.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 14,
-      "docs/code-deep-optimizer-2026-11-08.md": 31,
+      "docs/code-deep-optimizer-2026-11-08.md": 32,
       "docs/code-optimizer-scope-2026-11-06.json": 2,
-      "docs/code-optimizer-scope-2026-11-08.json": 6,
+      "docs/code-optimizer-scope-2026-11-08.json": 7,
       "docs/codebase-overview.md": 9,
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 2,
@@ -367101,9 +367129,9 @@
       "docs/archive/memory-2026-11-08.md": 75,
       "docs/caching-and-optimization.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 7,
-      "docs/code-deep-optimizer-2026-11-08.md": 15,
+      "docs/code-deep-optimizer-2026-11-08.md": 17,
       "docs/code-optimizer-scope-2026-11-06.json": 2,
-      "docs/code-optimizer-scope-2026-11-08.json": 6,
+      "docs/code-optimizer-scope-2026-11-08.json": 8,
       "docs/codebase-overview.md": 3,
       "docs/coin-fit/merge-89-receipt.json": 3,
       "docs/coin-fit/merge-93-receipt.json": 2,
@@ -367157,7 +367185,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 9,
       "llms.txt": 1,
-      "memory.md": 16,
+      "memory.md": 22,
       "mongo/README.md": 5,
       "mongo/load.py": 7,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -369081,7 +369109,7 @@
       "docs/archive/memory-2026-11-08.md": 234,
       "docs/caching-and-optimization.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 13,
-      "docs/code-deep-optimizer-2026-11-08.md": 34,
+      "docs/code-deep-optimizer-2026-11-08.md": 35,
       "docs/code-optimizer-scope-2026-11-06.json": 1,
       "docs/code-optimizer-scope-2026-11-08.json": 72,
       "docs/codebase-overview.md": 2,
@@ -369119,7 +369147,7 @@
       "llms-facts.txt": 5,
       "llms-full.txt": 2,
       "llms.txt": 1,
-      "memory.md": 109,
+      "memory.md": 110,
       "mongo/queries/05-backtests.js": 1,
       "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -374026,7 +374054,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 3,
-      "memory.md": 11,
+      "memory.md": 13,
       "mongo/README.md": 2,
       "mongo/load.py": 5,
       "mongo/queries/01-coins-and-bars.js": 4,
@@ -383360,8 +383388,8 @@
       "docs/TRADINGVIEW-REFERENCE.md": 35,
       "docs/archive/memory-2026-11-08.md": 11,
       "docs/code-deep-optimizer-2026-11-06.md": 3,
-      "docs/code-deep-optimizer-2026-11-08.md": 3,
-      "docs/code-optimizer-scope-2026-11-08.json": 3,
+      "docs/code-deep-optimizer-2026-11-08.md": 4,
+      "docs/code-optimizer-scope-2026-11-08.json": 7,
       "docs/codebase-overview.md": 1,
       "docs/coin-fit/README.md": 3,
       "docs/design/chrome-workspace/prompt-optimization.md": 1,
@@ -383396,7 +383424,7 @@
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_backtest.py": 4,
       "liquidity/tests/test_safe_exit.py": 2,
-      "memory.md": 5,
+      "memory.md": 8,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/decide.py": 1,
@@ -383600,6 +383628,7 @@
     "formatted": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_an7yrdfo_priceformat.md": 2,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_r7o3zulh_estimated_time_at_price_kioseff_trading.md": 1,
+      "memory.md": 1,
       "research/tradingview-card-coverage.json": 3,
       "research/tradingview-script-profiles/shard-a.jsonl": 2,
       "research/tradingview-script-profiles/shard-b.jsonl": 1
@@ -383669,12 +383698,12 @@
       "docs/FILES.md": 7,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/archive/memory-2026-11-08.md": 5,
-      "docs/code-deep-optimizer-2026-11-08.md": 1,
+      "docs/code-deep-optimizer-2026-11-08.md": 4,
       "docs/dso-skill/SKILL.md": 2,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "extension/src/ui/ui-kit.js": 2,
       "liquidity/src/aero_lp/providers_report.py": 2,
-      "memory.md": 1,
+      "memory.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/tradingview-card-coverage.json": 8,
       "research/tradingview-script-profile-audit-prompts.md": 1,
@@ -387041,7 +387070,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 3,
       "llms/defillama-llms-free.txt": 3,
-      "memory.md": 9,
+      "memory.md": 11,
       "mongo/load.py": 3,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/SWEEP-9COIN.md": 1,
@@ -393213,8 +393242,8 @@
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "docs/archive/memory-2026-11-08.md": 144,
       "docs/code-deep-optimizer-2026-11-06.md": 37,
-      "docs/code-deep-optimizer-2026-11-08.md": 16,
-      "docs/code-optimizer-scope-2026-11-08.json": 4,
+      "docs/code-deep-optimizer-2026-11-08.md": 17,
+      "docs/code-optimizer-scope-2026-11-08.json": 5,
       "docs/codebase-overview.md": 3,
       "docs/coin-fit/README.md": 1,
       "docs/coin-fit/merge-89-receipt.json": 3,
@@ -393298,7 +393327,7 @@
       "llms-full.txt": 28,
       "llms.txt": 3,
       "llms/defillama-llms.txt": 4,
-      "memory.md": 28,
+      "memory.md": 31,
       "mongo/README.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/07-documents-and-search.js": 3,
@@ -400015,7 +400044,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/archive/memory-2026-11-08.md": 54,
       "docs/code-deep-optimizer-2026-11-06.md": 19,
-      "docs/code-deep-optimizer-2026-11-08.md": 37,
+      "docs/code-deep-optimizer-2026-11-08.md": 38,
       "docs/code-optimizer-scope-2026-11-06.json": 2,
       "docs/code-optimizer-scope-2026-11-08.json": 7,
       "docs/codebase-overview.md": 3,
@@ -400088,7 +400117,7 @@
       "liquidity/tests/test_gates.py": 25,
       "liquidity/tests/test_safe_exit.py": 1,
       "llms-full.txt": 12,
-      "memory.md": 33,
+      "memory.md": 35,
       "prompts.md": 4,
       "research/5minleveragestrategies.json": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -405987,7 +406016,7 @@
       "llms-full.txt": 11,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 4,
-      "memory.md": 13,
+      "memory.md": 15,
       "pagesource": 2,
       "prompts.md": 4,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -413328,7 +413357,7 @@
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
       "extension/README.md": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "prompts.md": 3,
       "research/RATIO-ROTATION.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -417732,7 +417761,7 @@
       "liquidity/tests/test_executor_audit.py": 2,
       "liquidity/tests/test_safe_exit.py": 6,
       "llms-facts.txt": 1,
-      "memory.md": 14,
+      "memory.md": 15,
       "mongo/README.md": 2,
       "mongo/tests/test_load_audit.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
@@ -421902,7 +421931,7 @@
       "liquidity/tests/test_providers.py": 9,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-full.txt": 4,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/load.py": 2,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/queries/06-experiments-and-pbo.js": 5,
@@ -436439,6 +436468,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 8,
       "docs/archive/memory-2026-11-08.md": 5,
       "docs/code-deep-optimizer-2026-11-08.md": 1,
+      "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/design/chrome-workspace/prototype.html": 1,
       "docs/dso-skill/SKILL.md": 2,
       "docs/dso-skill/references/passes.md": 4,
@@ -443616,7 +443646,7 @@
       "liquidity/src/aero_lp/safe_exit.py": 1,
       "liquidity/tests/test_executor.py": 1,
       "llms-full.txt": 1,
-      "memory.md": 12,
+      "memory.md": 11,
       "mongo/queries/07-documents-and-search.js": 2,
       "mongo/tests/test_load_audit.py": 1,
       "research/GRID-REVIEW.md": 1,
@@ -449086,7 +449116,7 @@
       "liquidity/CLAUDE.md": 1,
       "llms-full.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 21,
+      "memory.md": 22,
       "mongo/README.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -462748,13 +462778,13 @@
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-08.md": 33,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 9,
+      "docs/code-deep-optimizer-2026-11-08.md": 8,
       "docs/code-optimizer-scope-2026-11-08.json": 8,
       "docs/known-issues.md": 1,
       "docs/optimization-workbench-run.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 3,
       "executor/tests/test_optimizer_regressions.py": 12,
-      "memory.md": 19,
+      "memory.md": 17,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/tradingview-card-coverage.json": 16,
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
@@ -463042,7 +463072,7 @@
       "docs/archive/memory-2026-11-08.md": 56,
       "docs/code-deep-optimizer-2026-11-06.md": 4,
       "docs/code-deep-optimizer-2026-11-08.md": 12,
-      "docs/code-optimizer-scope-2026-11-08.json": 16,
+      "docs/code-optimizer-scope-2026-11-08.json": 19,
       "docs/codebase-overview.md": 1,
       "docs/design/chrome-workspace/acceptance.md": 1,
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
@@ -463158,7 +463188,7 @@
       "executor/tests/test_journal_integrity.py": 2,
       "extension/vendor/lightweight-charts/README.md": 2,
       "index/build.py": 2,
-      "memory.md": 6,
+      "memory.md": 5,
       "pagesource": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/five-minute-perps-suite/coverage-resolution.json": 3,
@@ -476311,7 +476341,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 8,
       "docs/code-deep-optimizer-2026-11-08.md": 44,
       "docs/code-optimizer-scope-2026-11-06.json": 2,
-      "docs/code-optimizer-scope-2026-11-08.json": 74,
+      "docs/code-optimizer-scope-2026-11-08.json": 75,
       "docs/codebase-overview.md": 8,
       "docs/coin-fit/README.md": 4,
       "docs/coin-fit/merge-89-receipt.json": 5,
@@ -476469,7 +476499,7 @@
       "llms-facts.txt": 2,
       "llms-full.txt": 16,
       "llms/defillama-llms.txt": 2,
-      "memory.md": 30,
+      "memory.md": 31,
       "mongo/README.md": 3,
       "mongo/load.py": 12,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -491099,7 +491129,7 @@
       "liquidity/tests/test_executor.py": 1,
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
-      "memory.md": 2,
+      "memory.md": 4,
       "mongo/load.py": 1,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 2,
@@ -493225,7 +493255,7 @@
       "extension/src/bg/soltui-transport.js": 10,
       "extension/test/soltui-bridge.test.js": 1,
       "llms-facts.txt": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "research/tradingview-card-coverage.json": 1,
       "soltui/README.md": 1
     },
@@ -506891,11 +506921,12 @@
     "lint": {
       "docs/archive/memory-2026-11-08.md": 12,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 3,
-      "docs/code-optimizer-scope-2026-11-08.json": 3,
+      "docs/code-deep-optimizer-2026-11-08.md": 4,
+      "docs/code-optimizer-scope-2026-11-08.json": 4,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "executor/pyproject.toml": 1,
       "liquidity/pyproject.toml": 1,
+      "memory.md": 1,
       "prompts.md": 1,
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/five-minute-perps-suite/run-state.json": 4
@@ -507652,9 +507683,9 @@
       "docs/archive/memory-2026-11-08.md": 38,
       "docs/caching-and-optimization.md": 2,
       "docs/code-deep-optimizer-2026-11-06.md": 60,
-      "docs/code-deep-optimizer-2026-11-08.md": 100,
+      "docs/code-deep-optimizer-2026-11-08.md": 101,
       "docs/code-optimizer-scope-2026-11-06.json": 72,
-      "docs/code-optimizer-scope-2026-11-08.json": 53,
+      "docs/code-optimizer-scope-2026-11-08.json": 54,
       "docs/codebase-overview.md": 29,
       "docs/design/chrome-workspace/acceptance.md": 3,
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
@@ -507765,7 +507796,7 @@
       "llms-full.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 6,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 15,
+      "memory.md": 18,
       "mongo/queries/07-documents-and-search.js": 1,
       "pagesource": 2,
       "prompts.md": 10,
@@ -512927,7 +512958,7 @@
       "llms-full.txt": 22,
       "llms-small.txt": 3,
       "llms.txt": 2,
-      "memory.md": 17,
+      "memory.md": 19,
       "mongo/README.md": 3,
       "mongo/load.py": 2,
       "mongo/schema.py": 5,
@@ -540526,7 +540557,7 @@
       "liquidity/tests/test_providers.py": 12,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-facts.txt": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "pagesource": 22,
       "prompts.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 15,
@@ -541735,7 +541766,7 @@
       "backtester/strategy_research/tv_hnpilzeg_market_sessions_by_leviathan.md": 1,
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-08.md": 3,
-      "memory.md": 1,
+      "memory.md": 2,
       "mongo/README.md": 1,
       "mongo/schema.py": 1,
       "prompts.md": 1,
@@ -542356,7 +542387,7 @@
       "index/search.py": 2,
       "liquidity/src/aero_lp/submissions.py": 8,
       "liquidity/uv.lock": 1,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/README.md": 1,
       "mongo/load.py": 22,
       "mongo/schema.py": 1,
@@ -549464,7 +549495,7 @@
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "liquidity/scripts/aero-lp-service": 1,
       "llms-full.txt": 11,
-      "memory.md": 12,
+      "memory.md": 14,
       "prompts.md": 5,
       "research/five-minute-perps-suite/skill-installation-receipt.json": 1,
       "research/nonlinear-lead-lag-children/run-report.md": 1,
@@ -554266,7 +554297,7 @@
       "docs/repo-bootstrap-audit-2026-11-08.md": 3,
       "docs/repository-review-2026-11-08.md": 1,
       "docs/requirements.md": 1,
-      "memory.md": 14,
+      "memory.md": 16,
       "mongo/README.md": 20,
       "mongo/__init__.py": 1,
       "mongo/load.py": 14,
@@ -569422,7 +569453,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "docs/code-deep-optimizer-2026-11-08.md": 9,
       "docs/code-optimizer-scope-2026-11-06.json": 2,
-      "docs/code-optimizer-scope-2026-11-08.json": 4,
+      "docs/code-optimizer-scope-2026-11-08.json": 5,
       "docs/codebase-overview.md": 2,
       "docs/design/chrome-workspace/acceptance.md": 3,
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
@@ -569488,7 +569519,7 @@
       "liquidity/tests/test_providers_network.py": 4,
       "llms-facts.txt": 1,
       "llms-full.txt": 12,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/README.md": 1,
       "pagesource": 4,
       "prompts.md": 1,
@@ -575590,7 +575621,7 @@
       "liquidity/tests/test_executor.py": 11,
       "liquidity/tests/test_providers.py": 1,
       "llms-full.txt": 61,
-      "memory.md": 8,
+      "memory.md": 10,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
@@ -580551,7 +580582,7 @@
       "llms-full.txt": 11,
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/defillama-llms-free.txt": 1,
-      "memory.md": 21,
+      "memory.md": 22,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 1,
       "prompts.md": 15,
@@ -588252,7 +588283,7 @@
       "docs/archive/memory-2026-11-08.md": 2,
       "docs/code-deep-optimizer-2026-11-08.md": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -590008,7 +590039,7 @@
       "llms-full.txt": 13,
       "llms-small.txt": 1,
       "llms.txt": 2,
-      "memory.md": 46,
+      "memory.md": 47,
       "mongo/tests/test_load_audit.py": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -596636,7 +596667,7 @@
       "liquidity/src/aero_lp/providers_report.py": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 24,
+      "memory.md": 25,
       "prompts.md": 12,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/README.md": 1,
@@ -599510,7 +599541,7 @@
       "liquidity/tests/test_daemon_audit.py": 6,
       "liquidity/tests/test_submission_audit.py": 6,
       "llms-full.txt": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
       "mongo/schema.py": 2,
@@ -608065,7 +608096,7 @@
       "liquidity/src/aero_lp/wallet.py": 3,
       "liquidity/tests/test_abi_config_wallet.py": 2,
       "llms-full.txt": 1,
-      "memory.md": 4,
+      "memory.md": 6,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
@@ -609158,7 +609189,7 @@
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "docs/archive/memory-2026-11-08.md": 5,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 9,
+      "docs/code-deep-optimizer-2026-11-08.md": 10,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/codebase-overview.md": 1,
       "docs/design/soltui-v2/mockup.py": 1,
@@ -609176,7 +609207,7 @@
       "index/make_files_doc.py": 5,
       "liquidity/uv.lock": 55,
       "llms-full.txt": 6,
-      "memory.md": 4,
+      "memory.md": 7,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/tradingview-card-coverage.json": 21,
       "research/tradingview-script-profile-audits/shard-b.jsonl": 2,
@@ -609205,6 +609236,10 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/TESTING.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/requirements.md": 1
+    },
+    "package51": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1,
+      "docs/code-optimizer-scope-2026-11-08.json": 2
     },
     "packaged": {
       ".gitignore": 1,
@@ -618906,7 +618941,7 @@
       "docs/archive/memory-2026-11-08.md": 105,
       "docs/code-deep-optimizer-2026-11-06.md": 24,
       "docs/code-deep-optimizer-2026-11-08.md": 32,
-      "docs/code-optimizer-scope-2026-11-08.json": 23,
+      "docs/code-optimizer-scope-2026-11-08.json": 24,
       "docs/codebase-overview.md": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 8,
       "docs/design/chrome-workspace/prompt-telemetry.jsonl": 14,
@@ -618978,7 +619013,7 @@
       "liquidity/tests/test_gates.py": 4,
       "liquidity/tests/test_safe_exit.py": 5,
       "llms-full.txt": 6,
-      "memory.md": 37,
+      "memory.md": 38,
       "mongo/load.py": 2,
       "prompts.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -620809,7 +620844,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 6,
       "docs/archive/memory-2026-11-08.md": 104,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 4,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/design/chrome-workspace/acceptance.md": 1,
       "docs/design/chrome-workspace/implementation-acceptance.md": 2,
@@ -620839,7 +620874,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_gates.py": 2,
       "llms-full.txt": 3,
-      "memory.md": 41,
+      "memory.md": 45,
       "prompts.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/RATIO-ROTATION.md": 1,
@@ -621002,7 +621037,7 @@
       "liquidity/src/aero_lp/gates.py": 1,
       "liquidity/tests/test_gates.py": 7,
       "llms-full.txt": 1,
-      "memory.md": 10,
+      "memory.md": 11,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/coin-intelligence/eth-ethereum.md": 3,
       "research/cross_asset_cpcv.py": 2,
@@ -651206,7 +651241,7 @@
       "extension/src/ui/soltui-panel.js": 1,
       "extension/test/soltui-panel.test.js": 2,
       "liquidity/tests/test_executor_audit.py": 2,
-      "memory.md": 41,
+      "memory.md": 42,
       "mongo/tests/test_analysis_regressions.py": 1,
       "prompts.md": 19,
       "research/GRID-REVIEW.md": 1,
@@ -652150,7 +652185,7 @@
       "docs/repo-bootstrap-audit-2026-11-06.md": 2,
       "docs/repo-bootstrap-audit-2026-11-08.md": 2,
       "executor/tests/test_gate_integrity.py": 2,
-      "memory.md": 14,
+      "memory.md": 13,
       "mongo/queries/02-strategies-and-cards.js": 2,
       "research/FIVE-MINUTE-PERPS.md": 4,
       "research/PROMPT_STRATEGIES.md": 2,
@@ -667573,7 +667608,7 @@
       "docs/archive/memory-2026-11-08.md": 34,
       "docs/code-deep-optimizer-2026-11-06.md": 3,
       "docs/code-deep-optimizer-2026-11-08.md": 4,
-      "docs/code-optimizer-scope-2026-11-08.json": 1,
+      "docs/code-optimizer-scope-2026-11-08.json": 3,
       "docs/design/chrome-workspace/prototype.html": 1,
       "docs/external-calls.md": 1,
       "docs/jupiter-trigger-contract.md": 2,
@@ -667583,7 +667618,7 @@
       "extension/src/wallet/signer.js": 2,
       "extension/test/engine-command-audit.test.js": 1,
       "extension/tools/verify-endpoints.js": 1,
-      "memory.md": 2,
+      "memory.md": 4,
       "mongo/load.py": 1,
       "mongo/tests/test_snapshot_audit.py": 2,
       "prompts.md": 6,
@@ -669043,6 +669078,7 @@
     },
     "proved": {
       "backtester/strategy_research/tv_34r4mh5w_market_microstructure_analytics.md": 1,
+      "memory.md": 1,
       "research/tradingview-card-coverage.json": 8,
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
@@ -671180,7 +671216,7 @@
       "index/build.py": 7,
       "index/ollama_ensure.py": 16,
       "llms-full.txt": 1,
-      "memory.md": 12,
+      "memory.md": 14,
       "mongo/queries/07-documents-and-search.js": 1,
       "prompts.md": 6,
       "research/TOP_COINS.md": 1,
@@ -672519,7 +672555,7 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 57,
       "index/make_files_doc.py": 1,
       "liquidity/tests/test_executor.py": 1,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/queries/02-strategies-and-cards.js": 2,
       "mongo/queries/04-decisions.js": 3,
       "mongo/queries/06-experiments-and-pbo.js": 1,
@@ -711338,7 +711374,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/src/aero_lp/safe_exit.py": 2,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 33,
+      "memory.md": 34,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/CANDLE-GAP-AUDIT.md": 2,
@@ -714646,11 +714682,11 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/archive/memory-2026-11-08.md": 31,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
-      "docs/code-deep-optimizer-2026-11-08.md": 5,
+      "docs/code-deep-optimizer-2026-11-08.md": 6,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 2,
       "docs/repository-review-2026-11-08.md": 6,
-      "memory.md": 5,
+      "memory.md": 7,
       "prompts.md": 2,
       "research/CANDLE-GAP-AUDIT.md": 3,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -714685,7 +714721,7 @@
       "docs/code-deep-optimizer-2026-11-08.md": 103,
       "docs/known-issues.md": 1,
       "docs/repository-review-2026-11-08.md": 2,
-      "memory.md": 5,
+      "memory.md": 6,
       "research/CANDLE-GAP-AUDIT.md": 23,
       "research/candle_gap_audit.py": 9,
       "research/tick_backfill.py": 4,
@@ -714730,7 +714766,7 @@
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "docs/repository-review-2026-11-08.md": 9,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 11,
+      "memory.md": 10,
       "research/five-minute-perps-suite/run-report.md": 2,
       "research/five-minute-perps-suite/run-state.json": 4,
       "research/tradingview-script-profile-audit-prompts.md": 1,
@@ -716231,7 +716267,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/README.md": 2,
       "mongo/load.py": 5,
       "mongo/queries/04-decisions.js": 2,
@@ -721501,7 +721537,7 @@
       "docs/code-deep-optimizer-2026-11-08.md": 5,
       "docs/code-optimizer-scope-2026-11-08.json": 2,
       "docs/known-issues.md": 3,
-      "memory.md": 4,
+      "memory.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/tradingview-script-profiles/shard-a.jsonl": 6,
@@ -741609,7 +741645,7 @@
       "docs/archive/memory-2026-11-08.md": 15,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
       "docs/code-deep-optimizer-2026-11-08.md": 4,
-      "docs/code-optimizer-scope-2026-11-08.json": 4,
+      "docs/code-optimizer-scope-2026-11-08.json": 3,
       "docs/codebase-overview.md": 2,
       "docs/dso-skill/SKILL.md": 1,
       "docs/high_signal_file_index.json": 2,
@@ -741626,7 +741662,7 @@
       "liquidity/CLAUDE.md": 1,
       "liquidity/pyproject.toml": 3,
       "liquidity/uv.lock": 21,
-      "memory.md": 16,
+      "memory.md": 18,
       "prompts.md": 1
     },
     "ruff_cache": {
@@ -743555,7 +743591,7 @@
       "llms-small.txt": 2,
       "llms.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 38,
+      "memory.md": 41,
       "mongo/README.md": 11,
       "mongo/load.py": 59,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -753601,7 +753637,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 6,
       "docs/code-deep-optimizer-2026-11-08.md": 6,
       "docs/code-optimizer-scope-2026-11-06.json": 2,
-      "docs/code-optimizer-scope-2026-11-08.json": 4,
+      "docs/code-optimizer-scope-2026-11-08.json": 5,
       "docs/codebase-overview.md": 3,
       "docs/design/chrome-workspace/council-review.md": 4,
       "docs/design/chrome-workspace/implementation-acceptance.md": 5,
@@ -776412,7 +776448,7 @@
       "docs/repo-bootstrap-audit-2026-11-08.md": 9,
       "docs/repository-review-2026-11-08.md": 1,
       "liquidity/tests/test_providers.py": 3,
-      "memory.md": 5,
+      "memory.md": 6,
       "research/GRID-REVIEW.md": 2,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/RANKED_LISTS.md": 8,
@@ -776709,7 +776745,7 @@
       "docs/FILES.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
-      "docs/code-deep-optimizer-2026-11-08.md": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 3,
       "docs/code-optimizer-scope-2026-11-08.json": 13,
       "docs/design/chrome-workspace/council-review.md": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 2,
@@ -778695,7 +778731,7 @@
       "liquidity/src/aero_lp/validation.py": 2,
       "liquidity/tests/test_providers.py": 1,
       "llms-full.txt": 2,
-      "memory.md": 35,
+      "memory.md": 36,
       "mongo/README.md": 1,
       "mongo/schema.py": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -785383,7 +785419,7 @@
       "liquidity/tests/test_engine.py": 15,
       "liquidity/tests/test_engine_audit.py": 9,
       "llms-full.txt": 9,
-      "memory.md": 25,
+      "memory.md": 24,
       "mongo/README.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/03-signals-and-indicators.js": 1,
@@ -793007,6 +793043,8 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/archive/memory-2026-11-08.md": 11,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 1,
+      "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/codebase-overview.md": 1,
       "docs/design/chrome-workspace/acceptance.md": 1,
       "docs/design/chrome-workspace/prototype.html": 2,
@@ -793023,7 +793061,7 @@
       "extension/test/core.test.js": 1,
       "liquidity/tests/test_providers.py": 1,
       "llms-full.txt": 1,
-      "memory.md": 2,
+      "memory.md": 7,
       "prompts.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 3,
@@ -800995,7 +801033,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/code-deep-optimizer-2026-11-06.md": 2,
-      "docs/code-deep-optimizer-2026-11-08.md": 2,
+      "docs/code-deep-optimizer-2026-11-08.md": 3,
       "docs/code-optimizer-scope-2026-11-08.json": 2,
       "docs/codebase-overview.md": 1,
       "docs/design/soltui-v2/mockup.py": 1,
@@ -801019,9 +801057,10 @@
     "sockets": {
       "docs/FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 1,
+      "docs/code-deep-optimizer-2026-11-08.md": 2,
+      "docs/code-optimizer-scope-2026-11-08.json": 2,
       "docs/design/soltui-v2/mockup.py": 2,
-      "memory.md": 2
+      "memory.md": 3
     },
     "soe": {
       "tradingskilllist/trading-skills.md": 1
@@ -803311,7 +803350,7 @@
       "llms-full.txt": 22,
       "llms-small.txt": 4,
       "llms.txt": 3,
-      "memory.md": 45,
+      "memory.md": 47,
       "mongo/README.md": 4,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -824110,7 +824149,7 @@
       "liquidity/tests/test_executor.py": 3,
       "liquidity/tests/test_executor_audit.py": 2,
       "llms-full.txt": 3,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/05-backtests.js": 1,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -841498,7 +841537,7 @@
       "llms-full.txt": 9,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 22,
+      "memory.md": 23,
       "mongo/README.md": 4,
       "mongo/load.py": 20,
       "mongo/queries/08-provenance-and-health.js": 2,
@@ -872551,9 +872590,9 @@
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/archive/memory-2026-11-08.md": 180,
       "docs/code-deep-optimizer-2026-11-06.md": 23,
-      "docs/code-deep-optimizer-2026-11-08.md": 184,
+      "docs/code-deep-optimizer-2026-11-08.md": 185,
       "docs/code-optimizer-scope-2026-11-06.json": 68,
-      "docs/code-optimizer-scope-2026-11-08.json": 32,
+      "docs/code-optimizer-scope-2026-11-08.json": 33,
       "docs/codebase-overview.md": 11,
       "docs/coin-fit/README.md": 3,
       "docs/coin-fit/merge-98-receipt.json": 2,
@@ -872658,7 +872697,7 @@
       "llms-facts.txt": 6,
       "llms-full.txt": 53,
       "llms-small.txt": 2,
-      "memory.md": 88,
+      "memory.md": 89,
       "mongo/README.md": 6,
       "mongo/load.py": 11,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -876587,7 +876626,7 @@
       "llms-full.txt": 7,
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/README.md": 3,
       "mongo/load.py": 2,
       "mongo/queries/06-experiments-and-pbo.js": 1,
@@ -877307,7 +877346,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-full.txt": 15,
       "llms.txt": 1,
-      "memory.md": 17,
+      "memory.md": 18,
       "mongo/load.py": 1,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/queries/05-backtests.js": 2,
@@ -886153,6 +886192,7 @@
       "docs/optimization-workbench-plan.md": 1,
       "docs/optimization-workbench-run.md": 1,
       "docs/trading-signals-concept-family.md": 5,
+      "memory.md": 1,
       "prompts.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/five-minute-perps-suite/skill-installation-receipt.json": 2,
@@ -928622,7 +928662,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/archive/memory-2026-11-08.md": 39,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "docs/code-deep-optimizer-2026-11-08.md": 3,
+      "docs/code-deep-optimizer-2026-11-08.md": 4,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/design/chrome-workspace/proposal.md": 2,
       "docs/design/chrome-workspace/prototype.html": 1,
@@ -928650,7 +928690,7 @@
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_chain_vol.py": 1,
       "liquidity/tests/test_daemon.py": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -931084,6 +931124,9 @@
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/trading-regulation-compliance-and-taxes.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
+    },
+    "unformatted": {
+      "memory.md": 2
     },
     "unfortunate": {
       "backtester/strategy_cards/incomplete/tv_cghgbnh9_naked_intrabar_poc.md": 1,
@@ -934116,7 +934159,7 @@
       "extension/test/trigger-audit.test.js": 2,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/tests/test_executor_audit.py": 2,
-      "memory.md": 16,
+      "memory.md": 17,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
       "research/RANKED_LISTS.md": 1,
@@ -936927,7 +936970,7 @@
       "liquidity/tests/test_market_state.py": 1,
       "liquidity/tests/test_providers.py": 4,
       "liquidity/tests/test_strategy.py": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
       "prompts.md": 8,
@@ -937943,7 +937986,7 @@
       "docs/archive/memory-2026-11-08.md": 15,
       "docs/code-deep-optimizer-2026-11-06.md": 3,
       "docs/code-deep-optimizer-2026-11-08.md": 8,
-      "docs/code-optimizer-scope-2026-11-08.json": 11,
+      "docs/code-optimizer-scope-2026-11-08.json": 14,
       "docs/known-issues.md": 2,
       "docs/logging.md": 2,
       "docs/optimization-workbench-plan.md": 1,
@@ -937951,7 +937994,7 @@
       "extension/test/api-audit.test.js": 4,
       "extension/test/cdo-regressions.test.js": 1,
       "extension/tools/api-server.js": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "prompts.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/decide.py": 1,
@@ -946276,11 +946319,14 @@
       "memory.md": 1
     },
     "v266": {
-      "docs/code-deep-optimizer-2026-11-08.md": 1,
-      "memory.md": 3,
+      "memory.md": 1,
       "research/five-minute-perps-suite/source-leads.json": 1
     },
     "v267": {
+      "docs/code-deep-optimizer-2026-11-08.md": 1,
+      "memory.md": 3
+    },
+    "v268": {
       "docs/code-deep-optimizer-2026-11-08.md": 1,
       "memory.md": 3
     },
@@ -964673,7 +964719,7 @@
       "liquidity/tests/test_strategy.py": 3,
       "liquidity/tests/test_submission_audit.py": 3,
       "llms-full.txt": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "prompts.md": 3,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/tradingview-card-coverage.json": 85,
@@ -974159,6 +974205,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 7,
       "docs/archive/memory-2026-11-08.md": 3,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
+      "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/design/chrome-workspace/prompt-optimization.md": 1,
       "docs/design/soltui-v2/DESIGN.md": 1,
       "docs/dso-skill/SKILL.md": 5,
@@ -993014,10 +993061,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1470.5,
+    "avgDocLength": 1470.6,
     "documents": 2706,
-    "terms": 70943,
-    "termsBeforePrune": 71012,
-    "totalTokens": 3979269
+    "terms": 70954,
+    "termsBeforePrune": 71023,
+    "totalTokens": 3979468
   }
 }

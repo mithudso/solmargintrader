@@ -47,10 +47,17 @@ def test_corrupt_soak_evidence_never_opens_gate(tmp_path, field, value):
 def test_corrupt_research_timestamp_cannot_fall_back_to_pass(tmp_path, value):
     cfg = Config(OWNER)
     path = gates.research_path(tmp_path, cfg)
-    path.write_text(json.dumps({"schema": gates.RESEARCH_SCHEMA, "results": [
-        {"strategy": cfg.gates.strategy_id, "result": "pass", "checked_at": value, "source": "old"},
-        {"strategy": cfg.gates.strategy_id, "result": "fail", "checked_at": 2, "source": "new"},
-    ]}))
+    path.write_text(
+        json.dumps(
+            {
+                "schema": gates.RESEARCH_SCHEMA,
+                "results": [
+                    {"strategy": cfg.gates.strategy_id, "result": "pass", "checked_at": value, "source": "old"},
+                    {"strategy": cfg.gates.strategy_id, "result": "fail", "checked_at": 2, "source": "new"},
+                ],
+            }
+        )
+    )
     assert not gates.research_status(tmp_path, cfg)[0]
 
 

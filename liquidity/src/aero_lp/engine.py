@@ -184,7 +184,12 @@ class Engine:
 
     def _live_runner(self, signer: Any, tokens: list[str], pool: str, *, wallet: bool = False) -> LiveRunner:
         return LiveRunner(
-            self.chain, signer, tokens, self.cfg.execution, pool, journal=self.submission_journal(),
+            self.chain,
+            signer,
+            tokens,
+            self.cfg.execution,
+            pool,
+            journal=self.submission_journal(),
             accounting={"scope": "wallet"} if wallet else None,
         )
 

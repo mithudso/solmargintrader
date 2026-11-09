@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "base": "2ca304188c71bf258be5d1acb6a60ee5eefca8e9",
   "cap": 50,
   "candidate_count": 261,
@@ -450,24 +450,24 @@
     {
       "path": "liquidity/src/aero_lp/engine.py",
       "bytes": 30000,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-41.json",
       "finding_count": 1,
       "audited_base_sha256": "1fe615cdafbe40c307b5abbbb484ae978b7d0f8ca2b48c692acb6e66cb833542",
       "audit_candidate_sha256": "8625c8ff0aa228127d47d2a376fb59fff858e36fc2d62727bd7bf68113ba287a",
-      "final_sha256": "8625c8ff0aa228127d47d2a376fb59fff858e36fc2d62727bd7bf68113ba287a",
-      "post_audit_changed": false
+      "final_sha256": "3fd065e37e5762dbd2f64881cbdee3ff7d6dd989cb1eced3e14605683c4fe470",
+      "post_audit_changed": true
     },
     {
       "path": "liquidity/src/aero_lp/executor.py",
       "bytes": 50575,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-42.json",
       "finding_count": 1,
       "audited_base_sha256": "6480982724e4279c453d80af654181a0274f54a7f51aa66996f1681c88ac832f",
       "audit_candidate_sha256": "1bb45fbf4ba7430462dc04069b2bf720d73145f62d9b7cd1d950e4ee2a22af4b",
-      "final_sha256": "1bb45fbf4ba7430462dc04069b2bf720d73145f62d9b7cd1d950e4ee2a22af4b",
-      "post_audit_changed": false
+      "final_sha256": "b9911fa7d710b93e159fd72539591343fc6281379e79019625fda678392fc259",
+      "post_audit_changed": true
     },
     {
       "path": "liquidity/src/aero_lp/gates.py",
@@ -483,13 +483,13 @@
     {
       "path": "liquidity/src/aero_lp/submissions.py",
       "bytes": 10016,
-      "status": "reviewed",
+      "status": "reviewed before upstream integration",
       "review_artifact": "/Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo/review-44.json",
       "finding_count": 1,
       "audited_base_sha256": "d2c49c583a7311dd87953246de83cc32e0d030b9fc896b580d2cd4aa09f9e968",
       "audit_candidate_sha256": "b9d60141d1f1717baa75a96ca966f21d4c0a6c0dc3cdaf82433530bee772f0f8",
-      "final_sha256": "b9d60141d1f1717baa75a96ca966f21d4c0a6c0dc3cdaf82433530bee772f0f8",
-      "post_audit_changed": false
+      "final_sha256": "d0353f54d360a4b0df6fd76fe6b65fe71fc66de31fe50e5266ecae3572236b87",
+      "post_audit_changed": true
     },
     {
       "path": "liquidity/src/aero_lp/recovery.py",
@@ -1056,6 +1056,12 @@
     "accepted_candidate": "a1a0929",
     "source_verification": "affected suites rerun; no third blind audit"
   },
+  "ci_format_proof": {
+    "scope": "six liquidity files; whole package51 files format clean",
+    "evidence": "ci-format-proof.json",
+    "ast_identical": true,
+    "tests": "579 pass,6 network deselected; sockets blocked"
+  },
   "gate2_triage": {
     "rejected": {
       "BLIND-G2-BACKTESTER-1": {
@@ -1114,7 +1120,7 @@
     {
       "command": "liquidity offline pytest with socket connections blocked; Ruff lint/format",
       "baseline": "473 pass,6 network deselected",
-      "result": "579 pass,6 network deselected; Ruff pass",
+      "result": "579 pass,6 network deselected with sockets blocked; lint and full-package51-file format check pass",
       "verdict": "PASS"
     },
     {

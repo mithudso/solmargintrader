@@ -38,12 +38,17 @@ def test_recovered_replacement_resets_cooldown_once(tmp_path, monkeypatch):
     eng = make_engine(tmp_path)
     slot = eng.state.slot(42)
     slot.current_token_id, slot.last_rebalance_ts, slot.edge_checks = 77, 100, 3
-    eng.chain = SimpleNamespace(position=lambda *a, **k: SimpleNamespace(
-        owner=OWNER, pool=SimpleNamespace(address="0x" + "11" * 20)))
+    eng.chain = SimpleNamespace(
+        position=lambda *a, **k: SimpleNamespace(owner=OWNER, pool=SimpleNamespace(address="0x" + "11" * 20))
+    )
     monkeypatch.setattr(engine_module, "minted_token_id", lambda *a: 88)
     monkeypatch.setattr(engine_module.time, "time", lambda: 7200)
-    mint = {"hash": "0xmint", "pool": "0x" + "11" * 20,
-            "intent": {"kind": "mint"}, "receipt": {"status": 1, "logs": []}}
+    mint = {
+        "hash": "0xmint",
+        "pool": "0x" + "11" * 20,
+        "intent": {"kind": "mint"},
+        "receipt": {"status": 1, "logs": []},
+    }
     remove = {"intent": {"kind": "remove", "token_id": 77}, "receipt": {"status": 1}}
     eng.recover_submission(mint, [remove, mint])
     assert (slot.current_token_id, slot.last_rebalance_ts, slot.edge_checks) == (88, 7200, 0)

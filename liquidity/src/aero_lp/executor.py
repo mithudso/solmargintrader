@@ -329,7 +329,13 @@ class LiveRunner:
             # still have reached the mempool, and the hash is then the only handle on that transaction.
             self._uncertain = True
             self.journal.before_submit(
-                _hex(h), req["nonce"], tx, self.group, self.pool, self.tokens, accounting=self.accounting,
+                _hex(h),
+                req["nonce"],
+                tx,
+                self.group,
+                self.pool,
+                self.tokens,
+                accounting=self.accounting,
             )
             self._next_nonce = req["nonce"] + 1
             self.sent_hashes.append(_hex(h))
@@ -806,8 +812,13 @@ class Rebalancer:
         on_stage("stake", res)
 
     def _wrap(
-        self, op: str, res: RebalanceResult, runner: Runner, fn: Callable[[], None],
-        *, recover: Callable[[], None] | None = None,
+        self,
+        op: str,
+        res: RebalanceResult,
+        runner: Runner,
+        fn: Callable[[], None],
+        *,
+        recover: Callable[[], None] | None = None,
     ) -> RebalanceResult:
         try:
             fn()
@@ -1011,7 +1022,8 @@ class Rebalancer:
 
         def recover() -> None:
             logs = [
-                lg for record in getattr(runner, "confirmed", ())
+                lg
+                for record in getattr(runner, "confirmed", ())
                 if record.tx.label == "collect"
                 and self.npm.decode_function_input(record.tx.data)[1]["params"]["tokenId"] == pos.token_id
                 for lg in record.logs

@@ -1,7 +1,13 @@
 # Work continuation
 
-Version: 267
-Delta: v266 to v267; accepted integrated source and final census.
+Version: 268
+Delta: v267 to v268; repair the final CI formatting gate.
+
+## v268 - 2026-11-09
+
+PR https://github.com/mithudso/solmargintrader/pull/153 carries the optimizer delivery. Its first CI run passed Node, browser, executor, backtester, docs and Mongo, but the full-package liquidity Ruff format check found six unformatted files. Local earlier checks covered later-owned files only. Formatted those six files; AST comparison proved no behavior changed. All 51 package files now pass formatting and lint. The full liquidity suite passed again with sockets blocked: 579 passed, six network tests deselected. External proof is ci-format-proof.json.
+
+The audit result stays unchanged: 98 repaired by the run, two additional original residuals closed by upstream integration, and 13 remaining (seven High, six Medium). Update the source/report hashes and offline indexes, obtain passing metadata/backtester checks, commit and push this correction, then wait for all required checks on the final tip before merging. Preserve active shared-checkout leases and the three unrelated guides.
 
 ## v267 - 2026-11-09
 
