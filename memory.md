@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 276
-Delta: v275 to v276; record the isolated documentation-check environment.
+Version: 278
+Delta: v277 to v278; record a verified narrow-screen repair and remaining audit.
+
+## v278 - 2026-11-09
+
+The resumed extension audit observed that the Bot monitor process table at 390px was 478px wide inside a 330px scroll area and gave no cue that lifetime and Inspect were offscreen. Added a visible horizontal-scroll cue, bumped the extension to 0.5.3, and added a browser check that scrolls the table and confirms Inspect becomes visible. Extension tests passed 389/389; isolated Chrome fixture e2e passed 25/25 and the narrow-screen replay passed. A pre-fix image, final capture, source fingerprints and logs are in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension/resume-f610; ledger v1.2.0 retains the repaired Medium finding and invalidates all method passes after the edit. The overall UI optimizer remains NEEDS_EVIDENCE: perform a fresh full sweep and independent review, and complete the separate SolTUI audit. Stele lesson write is queued 2167411f.
+
+## v277 - 2026-11-09
+
+The owner requested the UI optimizer again. Resume extension audit in /Users/mitch/dev/solmargintrader-wt-ui-resume-01a1bee5 at f610cf6; prior extension source changed, including gap-free window disclosure, so old source-bound observations are invalidated. Preserve prior ledger and frozen matrix under /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension/resume-f610. Re-run P01 with isolated fixtures, then each selected method in order with immediate verified repairs; keep separate SolTUI audit and active work intact. The Stele task create/claim remains queued as outbox 40359ad6.
 
 ## v276 - 2026-11-09
 

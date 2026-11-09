@@ -228,6 +228,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       { process: 'Bot optimizer schedule', state: schedule?.running ?? schedule?.enabled, output: 'Inspect next run and last result', lifetime: 'Scheduler; lifetime supplied by backend', tool: 'bots.schedule_status' },
     ];
     target.append(el('div', { class: 'card' }, el('h2', { text: 'Process responsibilities' }),
+      note('Scroll horizontally to see process lifetime and inspect controls.'),
       el('div', { class: 'table-wrap' }, table([
         { label: 'Process', value: (r) => r.process }, { label: 'Liveness', value: (r) => typeof r.state === 'boolean' ? (r.state ? 'Running' : 'Stopped') : 'Unavailable' },
         { label: 'Last output / freshness', value: (r) => r.output }, { label: 'Lifetime', value: (r) => r.lifetime },
