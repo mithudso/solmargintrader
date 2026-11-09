@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 131
-Delta: v130 to v131; preserve the request for ten-second Live prediction refresh.
+Version: 132
+Delta: v131 to v132; retain both concurrent histories and council-reviewed UI proposal records.
+
+## v132 - 2026-11-08
+
+```text
+run the deep prompt optimizer on this prompt then run it: Look at this repo and find all the things it does and can do, and then draft the ideal chrome extension UI interface for a user to gain the most utility and pleasure from it. Before submitting the proposal to the user present it to a council of advisors for critique, when all of the criticisms are implemented then present it as an option to the user. The most used items are going to be the back testing, forward testing, live signal view, and bot monitoring.
+```
 
 ## v131 - 2026-11-08
 
