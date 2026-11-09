@@ -70,6 +70,7 @@ from . import bots as bots_mod
 from .bots_screens import CoinPickerScreen, OptimizeScreen
 from .experiment_screens import ExperimentScreen
 from . import compound as compound_mod
+from . import live_score
 from . import cumulative as cumulative_mod
 from . import bgqueue
 from .backtest_log import BacktestLog
@@ -856,7 +857,11 @@ class SolTuiApp(App):
     #signal-live-stream { padding: 0 1; border: round $accent; }
     #signal-live-chart-container { height: 7; margin: 1 0 0 0; }
     #signal-live-chart-yaxis { width: 14; height: 7; color: $text-muted; }
-    #signal-live-chart { width: 1fr; height: 7; margin: 0; }
+    #signal-live-plot { width: 1fr; height: 7; align-horizontal: right; }
+    #signal-live-chart { height: 7; margin: 0; }
+    #signal-live-score-tape { height: 1; }
+    #signal-live-price-score, #signal-live-predictions-score { height: auto; text-style: bold; }
+    #signal-live-vote-min-score, #signal-live-vote-min-resolved { width: 12; }
     #signal-live-chart-xaxis { height: 1; margin: 0 0 1 0; color: $text-muted; }
     #signal-live-predictions-table { height: 15; }
     #signal-live-detail { color: $text-muted; padding: 0 1; }
@@ -1021,6 +1026,7 @@ class SolTuiApp(App):
         self._advanced_context_product = ""
         self._signal_live_price_history: dict[str, list[tuple[float, float]]] = {}
         self._signal_live_prediction_rows: list[dict[str, Any]] = []
+        self._signal_live_score_history: dict[str, dict[float, float | None]] = {}
         self._signal_live_last_coin: str | None = None
         self._signal_live_busy = False
         self._signal_live_last_pred_update = 0.0
@@ -1791,13 +1797,23 @@ class SolTuiApp(App):
                             "strategy direction predictions across 1m, 5m, 10m, and 30m horizons.",
                             classes="hint",
                         )
+                        with Horizontal(classes="controls"):
+                            yield Label("Voting floor accuracy % (Enter to save):")
+                            yield Input(str(self.settings.live_vote_min_accuracy), id="signal-live-vote-min-score", type="number")
+                            yield Label("Min resolved / horizon:")
+                            yield Input(str(self.settings.live_vote_min_resolved), id="signal-live-vote-min-resolved", type="integer")
+                        yield Static("", id="signal-live-vote-status", markup=False)
+                        yield Static("Aggregate score — · Flat", id="signal-live-price-score", markup=False)
                         yield Static("price recorder: checking…", id="signal-live-stream", markup=True)
                         yield Static("Price graph: loading…", id="signal-live-chart-context", classes="table-title", markup=True)
                         with Horizontal(id="signal-live-chart-container"):
                             yield Static("", id="signal-live-chart-yaxis", markup=True)
-                            yield Sparkline([], id="signal-live-chart")
+                            with Vertical(id="signal-live-plot"):
+                                yield Sparkline([], id="signal-live-chart")
+                        yield Static("", id="signal-live-score-tape", markup=False)
                         yield Static("", id="signal-live-chart-xaxis", markup=True)
                         yield Static("", id="signal-live-chart-stats", markup=True)
+                        yield Static("Aggregate score — · Flat", id="signal-live-predictions-score", markup=False)
                         yield Static("[b]Top performing forward test strategies — predictions[/b]",
                                      id="signal-live-predictions-title",
                                      classes="table-title", markup=True)
@@ -3965,12 +3981,46 @@ class SolTuiApp(App):
             detail_lines.append(f"Parameters: {settings_str}")
         self.query_one("#signal-live-detail", Static).update("\n".join(detail_lines))
 
+    @on(Input.Submitted, "#signal-live-vote-min-score")
+    @on(Input.Submitted, "#signal-live-vote-min-resolved")
+    def _signal_live_save_vote_floor(self) -> None:
+        try:
+            values = {"live_vote_min_accuracy": float(self.query_one("#signal-live-vote-min-score", Input).value),
+                      "live_vote_min_resolved": float(self.query_one("#signal-live-vote-min-resolved", Input).value)}
+            env = self._call("settings.save", values)
+        except ValueError:
+            env = {"ok": False, "error": {"message": "Enter a valid percentage and whole resolved count."}}
+        self.query_one("#signal-live-vote-status", Static).update("Saved voting floor." if env["ok"] else self._msg(env))
+        if env["ok"]:
+            self._signal_live_refresh_predictions(force=True)
+
+    def _signal_live_update_score(self, now: float) -> dict[str, Any]:
+        rows = self._signal_live_prediction_rows if self._signal_live_last_coin == getattr(self, "_compound_coin", "SOL") else []
+        aggregate = live_score.aggregate_predictions(rows, now=now,
+            min_accuracy=self.settings.live_vote_min_accuracy, min_resolved=self.settings.live_vote_min_resolved)
+        color = "grey70" if aggregate["color"] == "gray" else aggregate["color"]
+        score = "—" if aggregate["score"] is None else f"{aggregate['score']:+.1f} / 100"
+        text = Text(f"Aggregate score {score} · {aggregate['label']}", style=f"bold {color}")
+        text.append(f" · {aggregate['strategies']} strategies / {aggregate['votes']} horizon votes · "
+                    f"floor {self.settings.live_vote_min_accuracy:g}%, {self.settings.live_vote_min_resolved} resolved/horizon", style="dim")
+        if not aggregate["available"]:
+            text.append(" · No qualifying current predictions", style="dim")
+        for selector in ("#signal-live-price-score", "#signal-live-predictions-score"):
+            if self.query(selector):
+                self.query_one(selector, Static).update(text)
+        return aggregate
+
     def _signal_live_tick(self) -> None:
         if not self.query("#signal-live-stream"):
             return
         coin = getattr(self, "_compound_coin", "SOL")
         product = f"{coin}-USD"
         now = time.time()
+        pred_due = now - self._signal_live_last_pred_update >= 60.0
+        new_min = int(now) // 60 > self._signal_live_last_pred_minute and now % 60 >= 1.0
+        if pred_due or new_min or coin != self._signal_live_last_coin:
+            self._signal_live_refresh_predictions(force=True)
+        aggregate = self._signal_live_update_score(now)
         try:
             from . import pricefeed
             latest = pricefeed.read_latest()
@@ -3999,10 +4049,14 @@ class SolTuiApp(App):
         ask_size = quote.get("ask_size")
         spread_bps = quote.get("spread_bps")
         age = quote.get("quote_age_s")
-        is_live = bool(st.get("live", False)) and (age is not None and age < 15.0)
+        is_live = bool(st.get("live", False)) and isinstance(age, (int, float)) and math.isfinite(age) and 0 <= age < 15.0
 
+        source_time = quote.get("quote_ts")
+        if source_time is None and isinstance(age, (int, float)) and math.isfinite(age) and age >= 0:
+            source_time = now - age
+        time_valid = isinstance(source_time, (int, float)) and math.isfinite(source_time) and source_time <= now
         status_widget = self.query_one("#signal-live-stream", Static)
-        if mid is not None and isinstance(mid, (int, float)) and math.isfinite(mid) and mid > 0:
+        if mid is not None and isinstance(mid, (int, float)) and math.isfinite(mid) and mid > 0 and time_valid:
             badge = "[bold green]● LIVE STREAM[/]" if is_live else "[bold yellow]○ STREAMING (stale)[/]"
             fmt = ",.6f" if mid < 0.01 else (",.4f" if mid < 1.0 else ",.2f")
             bid_str = f"${bid:{fmt}}" if bid is not None else "-"
@@ -4029,11 +4083,34 @@ class SolTuiApp(App):
                             history.append((float(ts), float(close_p)))
                 except Exception:
                     pass
-            if not history or now - history[-1][0] >= 0.5:
-                history.append((now, float(mid)))
+            quote_ts = source_time
+            if not isinstance(quote_ts, (int, float)) and isinstance(age, (int, float)) and math.isfinite(age) and age >= 0:
+                quote_ts = now - age
+            scores = self._signal_live_score_history.setdefault(coin, {})
+            if (isinstance(quote_ts, (int, float)) and math.isfinite(quote_ts) and quote_ts <= now
+                    and (not history or quote_ts > history[-1][0])):
+                history.append((float(quote_ts), float(mid)))
+                scores[float(quote_ts)] = aggregate["score"] if is_live else None
                 del history[:-120]
-            pts = [p for _, p in history]
-            self.query_one("#signal-live-chart", Sparkline).data = pts
+                scores_to_keep = {t for t, _ in history}
+                for old in list(scores):
+                    if old not in scores_to_keep:
+                        del scores[old]
+            if not history:
+                return
+            width = self.query_one("#signal-live-plot").content_size.width or 70
+            window = live_score.tick_window(history, scores, width)
+            visible = window["points"]
+            pts = [p for _, p in visible]
+            chart_widget = self.query_one("#signal-live-chart", Sparkline)
+            chart_widget.styles.width = len(pts) * window["slot"]
+            chart_widget.data = pts
+            tape = Text(" " * (14 + window["padding"]))
+            for value in window["scores"]:
+                color = "green" if value is not None and value >= 20 else "red" if value is not None and value <= -20 else "grey70"
+                label = "—" if value is None else f"{value:+.1f}"
+                tape.append(label.center(window["slot"]), style=color)
+            self.query_one("#signal-live-score-tape", Static).update(tape)
             low = min(pts)
             high = max(pts)
             start_p = pts[0]
@@ -4063,9 +4140,10 @@ class SolTuiApp(App):
             # Render horizontal timestamps on X-axis matching the sparkline width
             if self.query("#signal-live-chart-xaxis"):
                 prefix = " " * 14
-                t_start = history[0][0]
-                t_mid = history[len(history) // 2][0]
-                t_end = history[-1][0]
+                t_start = visible[0][0]
+                t_mid = visible[len(visible) // 2][0]
+                t_end = visible[-1][0]
+                prefix += " " * window["padding"]
                 t0_str = time.strftime("%H:%M:%S", time.gmtime(t_start))
                 t1_str = time.strftime("%H:%M:%S", time.gmtime(t_mid))
                 t2_str = time.strftime("%H:%M:%S UTC", time.gmtime(t_end))
@@ -4088,6 +4166,10 @@ class SolTuiApp(App):
                 f"Last update: {time.strftime('%H:%M:%S UTC', time.gmtime(now))}"
             )
         else:
+            self.query_one("#signal-live-chart", Sparkline).data = []
+            self.query_one("#signal-live-score-tape", Static).update("")
+            self.query_one("#signal-live-chart-context", Static).update(f"{product} price graph · waiting for a usable quote")
+            self.query_one("#signal-live-chart-stats", Static).update("")
             status_widget.update(
                 f"[yellow]Waiting for {product} stream quotes from pricefeed recorder… (recorder pid: {st.get('pid', '-')})[/]"
             )
@@ -4095,13 +4177,6 @@ class SolTuiApp(App):
                 self.query_one("#signal-live-chart-yaxis", Static).update("")
             if self.query("#signal-live-chart-xaxis"):
                 self.query_one("#signal-live-chart-xaxis", Static).update("")
-
-        # Schedule strategy prediction updates: every 1 minute (60s) or on candle minute rollover
-        pred_due = (now - getattr(self, "_signal_live_last_pred_update", 0.0) >= 60.0)
-        curr_min = int(now) // 60
-        new_min = (curr_min > getattr(self, "_signal_live_last_pred_minute", 0) and now % 60 >= 1.0)
-        if pred_due or new_min:
-            self._signal_live_refresh_predictions(force=True)
 
     def _signal_live_refresh_predictions(self, force: bool = False) -> None:
         if not self.query("#signal-live-predictions-table"):
@@ -4113,11 +4188,12 @@ class SolTuiApp(App):
         self._signal_live_last_pred_update = time.time()
         self._signal_live_last_pred_minute = int(self._signal_live_last_pred_update) // 60
         try:
-            from . import forwardtest
-            rows = forwardtest.top_forward_predictions(coin, limit=50)
+            env = self._call("forwardtest.predictions", {"asset": coin, "limit": 50}, quiet=True)
+            rows = env["result"]["rows"] if env["ok"] else []
         except Exception:
             rows = []
         self._signal_live_prediction_rows = rows
+        self._signal_live_update_score(time.time())
         table = self.query_one("#signal-live-predictions-table", DataTable)
         cursor = table.cursor_row
         table.clear()

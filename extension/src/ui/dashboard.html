@@ -61,8 +61,15 @@
             <button id="soltuiLiveRefresh" type="button">Refresh live view</button>
             <label><input id="soltuiLiveStream" type="checkbox" /> Follow stream</label>
           </div></div>
+          <div class="filters">
+            <label>Minimum prediction accuracy %<input id="soltuiVoteMinScore" type="number" min="0" max="100" step="1" value="60" /></label>
+            <label>Minimum resolved / horizon<input id="soltuiVoteMinResolved" type="number" min="1" step="1" value="20" /></label>
+            <span id="soltuiVoteStatus" class="note" role="status">Changes save to shared TUI settings.</span>
+          </div>
+          <div id="soltuiLiveScore" class="signal-score signal-score-gray" role="status">Aggregate score — · Flat</div>
           <p id="soltuiLiveStatus" class="note">Reads the existing recorder and saved predictions. Does not start a recorder or trainer.</p>
           <div id="soltuiLiveChart"></div>
+          <div id="soltuiPredictionsScore" class="signal-score signal-score-gray" role="status">Aggregate score — · Flat</div>
           <div id="soltuiLivePredictions"></div>
         </div>
         <div class="card">

@@ -1,5 +1,6 @@
 /** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
 import { el, clear, table, lineChart } from './ui-kit.js';
+import { aggregatePredictions, scoreText, appendScoreTick, renderScoreChart } from './live-score.js';
 import { WORKSPACES, filterCommands, workspaceFor, cellText, columnsFor, rowsToCsv, resultTables, valuesFromRow, seriesFromRows } from './workspace-model.js';
 
 const send = (msg) => chrome.runtime.sendMessage(msg);
@@ -197,6 +198,11 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let liveAsset = '';
   let livePoints = [];
   let predictionsAt = 0;
+  let predictionRows = [];
+  let voting = { min_accuracy: 60, min_resolved: 20 };
+  let liveGeneration = 0;
+  let votingSaving = false;
+  let liveRefreshRequested = false;
   const session = crypto.randomUUID();
   $('#soltui').dataset.session = session;
   const current = () => commands.find((c) => c.name === select.value);
@@ -346,6 +352,11 @@ export function mountSoltuiPanel(root = document, transport = send) {
       }
       if (val.preview_id) offerSubmit(val);
     }
+    if (env.command === 'forwardtest.predictions') {
+      const badge = el('div');
+      paintAggregate(badge, aggregatePredictions(val?.rows ?? [], Date.now() / 1000, val?.voting ?? voting));
+      rich.append(badge);
+    }
     if (env.command === 'experiments.heatmap') renderHeatmap(rich, val, useRow);
     for (const t of resultTables(val)) renderResultTable(rich, t, useRow, stateFor(`${env.command}:${t.path}`));
     if (!rich.children.length) rich.append(el('p', { class: 'empty', text: 'No rows returned. See Raw response for the full envelope.' }));
@@ -414,8 +425,15 @@ export function mountSoltuiPanel(root = document, transport = send) {
       }));
     } finally { nowBusy = false; }
   }
+  function paintAggregate(target, aggregate) {
+    target.className = `signal-score signal-score-${aggregate.color}`;
+    target.textContent = `Aggregate score ${scoreText(aggregate)} / 100 · ${aggregate.label} · ${aggregate.strategies} voting strategies / ${aggregate.votes} horizon votes · floor ${aggregate.min_accuracy}%, ${aggregate.min_resolved} resolved/horizon${aggregate.available ? '' : ' · No qualifying current predictions'}`;
+    target.title = 'Average eligible current horizon votes within each strategy, then average strategies equally. Directional agreement, not a probability.';
+  }
   async function refreshLive(force = false) {
-    if (liveBusy || disposed) return;
+    if (disposed) return;
+    if (liveBusy || votingSaving) { if (force) liveRefreshRequested = true; return; }
+    const contextGeneration = liveGeneration;
     const asset = $('#soltuiLiveAsset').value.trim().toUpperCase();
     if (!/^[A-Z0-9]{1,20}$/.test(asset)) { $('#soltuiLiveStatus').textContent = 'Enter a coin symbol such as SOL.'; return; }
     if (!['prices.status', 'forwardtest.predictions'].every((name) => commands.some((c) => c.name === name && c.read_only && !c.requires_confirm))) {
@@ -423,35 +441,90 @@ export function mountSoltuiPanel(root = document, transport = send) {
     }
     liveBusy = true;
     try {
-      if (asset !== liveAsset) { liveAsset = asset; livePoints = []; predictionsAt = 0; }
+      if (asset !== liveAsset) {
+        liveAsset = asset; livePoints = []; predictionRows = []; predictionsAt = 0;
+        const unavailable = aggregatePredictions([]);
+        paintAggregate($('#soltuiLiveScore'), unavailable);
+        paintAggregate($('#soltuiPredictionsScore'), unavailable);
+        $('#soltuiLiveStatus').textContent = `Loading ${asset} recorder and predictions…`;
+        $('#soltuiLiveChart').replaceChildren();
+        $('#soltuiLivePredictions').replaceChildren();
+      }
+      // Resolve the prediction snapshot before observing a new tick. Later
+      // prediction refreshes must never alter a tick's recorded score.
+      if (force || Date.now() - predictionsAt >= 60_000) {
+        const predictions = await ask('forwardtest.predictions', { asset });
+        if (!predictions.ok) throw new Error(predictions.error?.message ?? 'Predictions failed.');
+        if (asset !== $('#soltuiLiveAsset').value.trim().toUpperCase() || contextGeneration !== liveGeneration) return;
+        predictionRows = predictions.result.rows ?? [];
+        voting = predictions.result.voting ?? { min_accuracy: 60, min_resolved: 20 };
+        if (document.activeElement !== $('#soltuiVoteMinScore')) $('#soltuiVoteMinScore').value = voting.min_accuracy;
+        if (document.activeElement !== $('#soltuiVoteMinResolved')) $('#soltuiVoteMinResolved').value = voting.min_resolved;
+        const target = $('#soltuiLivePredictions');
+        target.replaceChildren();
+        if (predictionRows.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictionRows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
+        else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
+        predictionsAt = Date.now();
+      }
       const env = await ask('prices.status');
       if (!env.ok) throw new Error(env.error?.message ?? 'Recorder status failed.');
-      if (asset !== $('#soltuiLiveAsset').value.trim().toUpperCase()) return;
+      if (asset !== $('#soltuiLiveAsset').value.trim().toUpperCase() || contextGeneration !== liveGeneration) return;
+      const aggregate = aggregatePredictions(predictionRows, Date.now() / 1000, voting);
+      paintAggregate($('#soltuiLiveScore'), aggregate);
+      paintAggregate($('#soltuiPredictionsScore'), aggregate);
       const q = env.result.prices?.[`${asset}-USD`];
       const age = q?.quote_age_s;
       const price = q?.mid ?? q?.last;
       if (typeof price === 'number' && Number.isFinite(price) && price > 0 && typeof age === 'number' && Number.isFinite(age) && age >= 0) {
-        const at = Math.round((Date.now() - age * 1000) / 1000) * 1000;
-        if (!livePoints.length || at > livePoints.at(-1).x) livePoints.push({ x: at, y: price });
-        livePoints = livePoints.slice(-600);
-        clear($('#soltuiLiveChart'), lineChart(livePoints, { label: `${asset}-USD recorder price`, format: (v) => `$${v.toLocaleString(undefined, { maximumFractionDigits: 8 })}` }),
-          el('p', { class: 'note', text: livePoints.length ? `${new Date(livePoints[0].x).toISOString()} → ${new Date(livePoints.at(-1).x).toISOString()}` : '' }));
-        $('#soltuiLiveStatus').textContent = `${asset}-USD $${price} · bid ${q.bid ?? '—'} · ask ${q.ask ?? '—'} · spread ${q.spread_bps ?? '—'} bps · ${age}s old · ${env.result.live && age < 15 ? 'LIVE' : 'STALE / recorder offline'}`;
+        const at = typeof q.quote_ts === 'number' && Number.isFinite(q.quote_ts) ? q.quote_ts * 1000 : Math.round((Date.now() - age * 1000) / 1000) * 1000;
+        const current = env.result.live && age < 15;
+        if (at <= Date.now()) livePoints = appendScoreTick(livePoints, { at, price, aggregate: current ? aggregate : { score: null, color: 'gray', label: 'Flat' } });
+        const width = Math.max(320, Math.round($('#soltuiLiveChart').getBoundingClientRect().width) || 720);
+        clear($('#soltuiLiveChart'), renderScoreChart(livePoints, { width }));
+        $('#soltuiLiveStatus').textContent = `${asset}-USD $${price} · bid ${q.bid ?? '—'} · ask ${q.ask ?? '—'} · spread ${q.spread_bps ?? '—'} bps · ${age}s old · ${current ? 'LIVE' : 'STALE / recorder offline'} · chart scores are observed agreement, not win probability`;
       } else {
-        clear($('#soltuiLiveChart'), el('p', { class: 'empty', text: 'No usable recorded quote for this coin.' }));
         $('#soltuiLiveStatus').textContent = 'No usable quote. The recorder may be stopped; start it explicitly in Bots & prices if needed.';
       }
-      if (force || Date.now() - predictionsAt >= 60_000) {
-        const predictions = await ask('forwardtest.predictions', { asset });
-        if (!predictions.ok) throw new Error(predictions.error?.message ?? 'Predictions failed.');
-        const target = $('#soltuiLivePredictions');
-        target.replaceChildren();
-        if (predictions.result.rows?.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictions.result.rows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
-        else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
-        predictionsAt = Date.now();
-      }
-    } catch (e) { $('#soltuiLiveStatus').textContent = `Live view unavailable: ${e.message}`; $('#soltuiLiveStream').checked = false; }
-    finally { liveBusy = false; }
+    } catch (e) {
+      const unavailable = aggregatePredictions([]);
+      paintAggregate($('#soltuiLiveScore'), unavailable);
+      paintAggregate($('#soltuiPredictionsScore'), unavailable);
+      $('#soltuiLiveStatus').textContent = `Live view unavailable: ${e.message}`;
+      $('#soltuiLiveStream').checked = false;
+    } finally {
+      liveBusy = false;
+      if (liveRefreshRequested && !votingSaving && !disposed) { liveRefreshRequested = false; refreshLive(true); }
+    }
+  }
+  async function saveVoteFloor() {
+    if (votingSaving) return;
+    const rawScore = $('#soltuiVoteMinScore').value.trim();
+    const rawSamples = $('#soltuiVoteMinResolved').value.trim();
+    const min = Number(rawScore), count = Number(rawSamples);
+    if (!rawScore || !rawSamples || !Number.isFinite(min) || min < 0 || min > 100 || !Number.isInteger(count) || count < 1) {
+      $('#soltuiVoteStatus').textContent = 'Enter accuracy 0–100 and a positive whole resolved count.'; return;
+    }
+    liveGeneration += 1;
+    votingSaving = true;
+    $('#soltuiVoteMinScore').disabled = true;
+    $('#soltuiVoteMinResolved').disabled = true;
+    try {
+      const env = await ask('settings.save', { live_vote_min_accuracy: min, live_vote_min_resolved: count });
+      if (!env.ok) throw new Error(env.error?.message ?? 'Settings refused.');
+      voting = { min_accuracy: min, min_resolved: count };
+      predictionsAt = 0;
+      $('#soltuiVoteStatus').textContent = 'Saved shared voting floor.';
+      const aggregate = aggregatePredictions(predictionRows, Date.now() / 1000, voting);
+      paintAggregate($('#soltuiLiveScore'), aggregate);
+      paintAggregate($('#soltuiPredictionsScore'), aggregate);
+      liveRefreshRequested = true;
+    } catch (e) { $('#soltuiVoteStatus').textContent = `Voting floor not saved: ${e.message}`; }
+    finally {
+      votingSaving = false;
+      $('#soltuiVoteMinScore').disabled = false;
+      $('#soltuiVoteMinResolved').disabled = false;
+      if (liveRefreshRequested && !disposed) { liveRefreshRequested = false; refreshLive(true); }
+    }
   }
   async function renew() {
     try {
@@ -531,6 +604,18 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (editor && editor.value !== editorBase) { $('#soltuiEditorStatus').textContent = 'Export your draft before reloading. Clear your changes to the saved text to reload.'; return; }
     if (documentPath) openDocument(documentPath).catch((e) => { $('#soltuiEditorStatus').textContent = e.message; });
   });
+  $('#soltuiLiveAsset').addEventListener('change', () => {
+    liveGeneration += 1;
+    liveAsset = ''; livePoints = []; predictionRows = []; predictionsAt = 0;
+    $('#soltuiLiveChart').replaceChildren();
+    $('#soltuiLivePredictions').replaceChildren();
+    const unavailable = aggregatePredictions([]);
+    paintAggregate($('#soltuiLiveScore'), unavailable);
+    paintAggregate($('#soltuiPredictionsScore'), unavailable);
+    refreshLive(true);
+  });
+  $('#soltuiVoteMinScore').addEventListener('change', saveVoteFloor);
+  $('#soltuiVoteMinResolved').addEventListener('change', saveVoteFloor);
   $('#soltuiLiveRefresh').addEventListener('click', () => refreshLive(true));
   $('#soltuiLiveStream').addEventListener('change', () => { if ($('#soltuiLiveStream').checked) refreshLive(true); });
   window.addEventListener('hashchange', applyRoute);

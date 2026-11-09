@@ -286,3 +286,12 @@ body.popup header .brand { padding: 0; }
 .poll-control { display: block; margin: 16px 0 6px; }
 #soltuiEditor { min-height: 320px; resize: vertical; tab-size: 4; }
 @media (max-width: 1000px) { .workspace-grid { grid-template-columns: 1fr; } .tool-list { max-height: 210px; } }
+
+.signal-score { padding: 8px 10px; margin: 8px 0; border: 1px solid currentColor; border-radius: 8px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.signal-score-green { color: var(--pos); }
+.signal-score-red { color: var(--neg); }
+.signal-score-gray { color: var(--muted); }
+#soltuiLiveChart svg { display: block; width: 100%; height: auto; }
+#soltuiLiveChart .axis { fill: var(--muted); font-size: 10px; }
+#soltuiLiveChart .score-tick { font: 600 12px var(--mono); }
+#soltuiLive input[type="number"] { width: 120px; }

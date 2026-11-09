@@ -10,7 +10,10 @@ export async function verifyDashboardWorkflows(page, browser) {
   };
 await ev(`(async()=>{
  const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';
+ window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};
  const spec=[
+ {name:'prices.status',describe:'Prices',params:[],read_only:true},
+ {name:'forwardtest.predictions',describe:'Predictions',params:[{name:'asset',type:'string'}],read_only:true},
  {name:'demo.rows',describe:'Rows',params:[],read_only:true},
  {name:'docs.read',describe:'Read',params:[{name:'path',type:'string',required:true}],read_only:true},
  {name:'docs.write',describe:'Write',params:[{name:'path',type:'string',required:true},{name:'text',type:'string',required:true}],read_only:false},
@@ -19,6 +22,9 @@ await ev(`(async()=>{
  {name:'settings.save',describe:'Settings',params:[{name:'base_address',type:'string'},{name:'forwardtest_autostart',type:'bool'}],read_only:false}];
  const en=(command,result)=>({ok:true,command,result,error:null});
  const tx=async m=>{calls.push(m);if(m.type==='soltuiSession')return {ok:true,result:{available:true,connected:true,generation:1}};if(m.type==='soltuiCommands')return {ok:true,result:en('list',spec)};
+ if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
+ if(m.command==='forwardtest.predictions')return {ok:true,result:en(m.command,{asset:'SOL',voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};
+ if(m.command==='settings.save' && m.params.live_vote_min_accuracy!==undefined){liveVoting={min_accuracy:m.params.live_vote_min_accuracy,min_resolved:m.params.live_vote_min_resolved};return {ok:true,result:en(m.command,{settings:liveVoting})};}
  if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW'})};
  if(m.command==='jupiter.order_submit')return {ok:true,result:en(m.command,{preview_id:m.params.preview_id,status:'FILLED',rows:[{preview_id:'row-choice'}]})};
  if(m.command==='docs.read')return {ok:true,result:en(m.command,{path:m.params.path,text:fixtureDoc,editable:true})};
@@ -57,6 +63,22 @@ await ev(`r.querySelector('#soltuiEditor').value='my draft';fixtureDoc='external
 await wait(`r.querySelector('#soltuiEditorStatus').textContent.startsWith('Save refused:')`);
 assert.equal(await ev(`calls.filter(x=>x.command==='docs.write').length`),1);
 console.log('PASS editor preserves whitespace and refuses external-edit overwrite');
+await ev(`r.querySelector('#soltuiLiveRefresh').click()`);
+await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelectorAll('#soltuiLiveChart g[data-tick-time]').length===1`);
+assert.ok(await ev(`r.querySelector('#soltuiLiveScore').classList.contains('signal-score-green')`));
+const firstTick = await ev(`({time:r.querySelector('#soltuiLiveChart g').dataset.tickTime,x:Number(r.querySelector('#soltuiLiveChart .score-tick').getAttribute('x'))})`);
+await ev(`liveClock+=1000;liveDirection='DOWN';r.querySelector('#soltuiLiveRefresh').click()`);
+await wait(`r.querySelector('#soltuiPredictionsScore').textContent.includes('Strong Sell') && r.querySelectorAll('#soltuiLiveChart g[data-tick-time]').length===2`);
+assert.ok(await ev(`r.querySelector('#soltuiPredictionsScore').classList.contains('signal-score-red')`));
+const previousTick = await ev(`({score:r.querySelector('#soltuiLiveChart g').dataset.score,x:Number(r.querySelector('#soltuiLiveChart .score-tick').getAttribute('x'))})`);
+assert.equal(previousTick.score, '100');
+assert.equal(firstTick.x - previousTick.x, 56);
+await ev(`(()=>{const field=r.querySelector('#soltuiVoteMinScore');field.value='90';field.dispatchEvent(new Event('change'))})()`);
+await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('No qualifying')`);
+assert.ok(await ev(`r.querySelector('#soltuiLiveScore').classList.contains('signal-score-gray')`));
+assert.ok(await ev(`calls.some(x=>x.command==='settings.save' && x.params.live_vote_min_accuracy===90)`));
+assert.equal(await ev(`r.querySelector('#soltuiLiveChart g').dataset.score`), '100');
+console.log('PASS gated live score, colored labels and immutable chart scores scrolling left');
 await ev(`window.dispatchEvent(new PageTransitionEvent('pagehide'))`);
 
 }

@@ -18,6 +18,7 @@ separate, session-only arm control and cannot inherit this setting.
 from __future__ import annotations
 
 import json
+import math
 import os
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
@@ -88,6 +89,8 @@ class Settings:
     doge_xpub: str = ""
     # Automatically start forward testing across all coins, strategies, and timeframes on TUI launch.
     forwardtest_autostart: bool = True
+    live_vote_min_accuracy: float = 60.0
+    live_vote_min_resolved: int = 20
 
     def to_dict(self) -> dict[str, Any]:
         """Plain dict for serialisation to the config file. Holds the full xpubs."""
@@ -169,6 +172,15 @@ def validate(settings: Settings) -> Settings:
             from_dict(settings.signal_defaults)
         except SignalError as exc:
             raise ConfigError(f"signal_defaults: {exc}") from exc
+    if (isinstance(settings.live_vote_min_accuracy, bool)
+            or not isinstance(settings.live_vote_min_accuracy, (int, float))
+            or not math.isfinite(settings.live_vote_min_accuracy)
+            or not 0 <= settings.live_vote_min_accuracy <= 100):
+        raise ConfigError("live_vote_min_accuracy must be a finite percentage from 0 to 100")
+    if (isinstance(settings.live_vote_min_resolved, bool)
+            or not isinstance(settings.live_vote_min_resolved, int)
+            or settings.live_vote_min_resolved < 1):
+        raise ConfigError("live_vote_min_resolved must be a positive whole number")
     if not isinstance(settings.forwardtest_autostart, bool):
         raise ConfigError("forwardtest_autostart must be a boolean")
     return settings

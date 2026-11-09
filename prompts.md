@@ -1,7 +1,19 @@
 # Prompt history
 
-Version: 125
-Delta: v124 to v125; retain historical Gemini handoff request from PR 135.
+Version: 127
+Delta: v126 to v127; record minimum score requirement.
+
+## v127 - 2026-11-08
+
+```text
+Make the strategies have a minimum prediction score to be allowed to vote.
+```
+
+## v126 - 2026-11-08
+
+```text
+In both the chrome extension and the TUI at the top of the live price and forward predictions tables include a aggregate score and a green Strong Buy, Buy, grey Flat,  red Sell, Strong Sell. And for for every tick put the buy score at the bottom of the chart, and move it left as the tick progresses.
+```
 
 ## v125 - 2026-11-08 (historical request imported from PR 135)
 

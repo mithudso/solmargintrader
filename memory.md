@@ -1,7 +1,19 @@
 # Work continuation
 
-Version: 221
-Delta: v220 to v221; preserve historical handoff without superseding current implementation.
+Version: 223
+Delta: v222 to v223; add configurable voting eligibility gate.
+
+## v223 - 2026-11-08
+
+Owner added: strategies need a minimum prediction score to vote. Use saved live_vote_min_accuracy=60.0 and live_vote_min_resolved=20 defaults. Require both the strategy-wide forward record and the voted horizon to meet these floors; keep excluded rows visible. Controls in dashboard and Signal Live save through settings.save. Ratings remain informational agreement. Completed: backend snapshot with latest-call expiry; shared Python/JS policy vectors; both headers and immutable score tapes; 372 Node tests and 15 focused Python/UI tests passed before final browser-regression expansion. Remaining: independent acceptance, full relevant checks, documentation/index updates and PR delivery.
+
+## v222 - 2026-11-08
+
+Target: add the same aggregate signed score and five-level colored label above live-price and prediction views in the dashboard and TUI. Preserve each tick score as observed; append on fresh source ticks and scroll left with the plotted window. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; branch feat/live-aggregate-score-20261108; base origin/master 2fc1845. Preserve the shared checkout untracked guides and other sessions. Stele task creation queued as 2f9370e6.
+
+Plan: inspect the prediction and chart data contracts; implement one read-only backend aggregation plus matching score tapes; test Python logic, headless TUI and real Chrome; refresh docs/indexes and deliver through CI/PR/merge. No trading, training, worker starts or historical result rewrites.
+
+Decision: use equal strategy weights. Within each strategy average its current UP=+1, DOWN=-1, FLAT=0 horizon votes; average strategies and multiply by 100. Ratings: Strong Buy >=60, Buy >=20, Flat between -20 and 20, Sell <=-20, Strong Sell <=-60. This is directional agreement, not an accuracy or success probability. Missing/stale/future-dated evidence produces an unavailable gray Flat instead of a made-up zero. Read actual latest call/expiry per strategy and horizon in a separate display module: do not edit forwardtest.py, whose whole-file hash partitions training evidence. Annotate only new recorder timestamps, with the score known then; never backfill cached prices with a later score.
 
 ## v221 - 2026-11-08
 
