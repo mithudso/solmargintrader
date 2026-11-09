@@ -85,6 +85,46 @@ every flag.
 Machine-readable files carry no caveat prose, so a downstream consumer never
 has to parse around it. The caveats live in stdout and `report.md`.
 
+## Verified local history and result archives (experimental)
+
+The history store imports a contiguous CSV as an immutable content-addressed
+snapshot. It records the operator-supplied instrument, venue, source label,
+interval and bar-open timestamp convention. The source label is an assertion,
+not independent proof of provenance. A correction creates a new snapshot.
+Import does not alter the original CSV. The database is private (mode 0600),
+but its directory, filesystem encryption and off-machine backup remain the
+operator's responsibility. A full snapshot hash is verified on every read,
+so reading a large snapshot may be slow and use substantial memory.
+
+```bash
+python3 -m backtester.core.history_store /path/to/history.sqlite /path/to/SOL_1d.csv \
+  --instrument SOL-USD --venue coinbase --source 'operator-verified source' --interval-seconds 86400
+# Use the printed snapshot ID from the import.
+python3 -m backtester.cli --asset SOL --start 2021-06-17 --interval 1d \
+  --history-archive /path/to/history.sqlite --snapshot-id SNAPSHOT_ID \
+  --strategy buy_and_hold --out /path/to/results --archive /path/to/runs.sqlite --no-charts
+```
+
+For a verified SOL-USDC snapshot, pass `--quote USDC`; the spot engine records
+monetary values in USDC without a USD conversion. Verified USDT snapshots use
+`--quote USDT` and retain USDT accounting. Stablecoin quotes are currently
+refused for perp mode and non-snapshot inputs. Minute-level intraday end times include
+only fully completed bars. A missing venue or matching quote refuses the run.
+
+Result archives store the exact manifest and its listed artifacts in one SQLite
+transaction. Import and read verify the manifest and every listed artifact;
+charts created after the manifest are not included. `read_run()` returns the
+original bytes and rejects a missing or altered artifact. `backup_archive()`
+creates a new SQLite backup and checks stored run and history hashes; copy the
+backup to an independent location and periodically test restoration. Hashes
+detect changes but do not make an untrusted model or data source correct.
+
+This is a foundation, not a completed multi-asset backtesting system. It does
+not discover sources, fill missing histories, model chain-specific transactions
+or infer execution costs; the 14-asset coverage, comprehensive simulator
+validation, stress scenarios and representative performance benchmarks remain
+open in the implementation plan.
+
 ## How look-ahead bias is prevented
 
 Structurally, not by convention. The per-bar ordering is:

@@ -15,7 +15,7 @@ from typing import Sequence
 import numpy as np
 
 from .core import plotting, report
-from .core.data import CsvLoader, SyntheticLoader, checksum_frame, frame_to_arrays
+from .core.data import CsvLoader, SnapshotLoader, SyntheticLoader, checksum_frame, frame_to_arrays
 from .core.engine import BacktestResult, EngineConfig, Strategy, run_backtest
 from .core.metrics import compute_metrics
 from .core.report import SplitResult
@@ -41,6 +41,7 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     ap.add_argument("--asset", default="SOL", help="base asset symbol")
+    ap.add_argument("--quote", choices=["USD", "USDC", "USDT"], default="USD", help="quote and accounting currency")
     ap.add_argument("--start", default="2021-01-01", help="inclusive UTC start date")
     ap.add_argument("--end", default=None, help="inclusive UTC end date (default: all)")
     ap.add_argument("--capital", type=float, default=10_000.0, help="starting capital")
@@ -81,6 +82,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--allow-short", action="store_true", help="permit short exposure (perp only)")
     ap.add_argument("--seed", type=int, default=0, help="seed recorded in the manifest")
     ap.add_argument("--data", default=None, help="path to a cached CSV")
+    ap.add_argument("--history-archive", default=None, help="SQLite history archive")
+    ap.add_argument("--snapshot-id", default=None, help="verified history snapshot SHA-256")
+    ap.add_argument("--archive", default=None, help="archive completed results to this SQLite file; requires --out")
     ap.add_argument(
         "--synthetic",
         type=int,
@@ -209,7 +213,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
 
     # -- data ------------------------------------------------------------
-    if args.synthetic:
+    if bool(args.history_archive) != bool(args.snapshot_id) or (args.snapshot_id and (args.data or args.synthetic)):
+        print("error: --history-archive and --snapshot-id must be paired and cannot be combined with --data or --synthetic", file=sys.stderr)
+        return 2
+    if args.archive and not args.out:
+        print("error: --archive requires --out", file=sys.stderr)
+        return 2
+    if args.quote != "USD" and (mode != Mode.SPOT or not args.snapshot_id):
+        print("error: stablecoin accounting requires spot mode and a matching verified snapshot", file=sys.stderr)
+        return 2
+    if args.snapshot_id:
+        loader = SnapshotLoader(args.history_archive, args.snapshot_id, quote=args.quote)
+    elif args.synthetic:
         loader = SyntheticLoader(n_bars=args.synthetic, seed=args.seed or 42)
     else:
         path = Path(args.data) if args.data else Path("data") / f"{args.asset.upper()}_{args.interval}.csv"
@@ -280,6 +295,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     manifest = RunManifest(
         asset=args.asset.upper(),
+        quote_currency=args.quote,
+        first_bar_ts=first_ts,
+        last_bar_ts=last_ts,
         start=str(pd.Timestamp(first_ts, unit="s", tz="UTC").date()),
         end=str(pd.Timestamp(last_ts, unit="s", tz="UTC").date()),
         interval=args.interval,
@@ -290,7 +308,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         seed=args.seed,
         rebalance_threshold=args.rebalance_threshold,
         costs=vars(costs).copy(),
-        strategies={s.name: s.full.params for s in splits},
+        strategies={s.full.strategy_name: s.full.params for s in splits},
         data_source=loader.describe(),
         data_checksum=checksum_frame(df),
         bar_count=len(df),
@@ -307,12 +325,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         if not args.no_charts:
             if plotting.charts_available():
                 written += plotting.plot_comparison(
-                    [s.full for s in splits], args.out, manifest.asset
+                    [s.full for s in splits], args.out, manifest.asset, quote_currency=manifest.quote_currency
                 )
             else:
                 print(
                     "note: matplotlib unavailable; charts skipped", file=sys.stderr
                 )
+        if args.archive:
+            from .core.run_archive import import_run
+            try:
+                run_id = import_run(args.archive, args.out)
+            except (ValueError, OSError) as exc:
+                print(f"error archiving run: {exc}", file=sys.stderr)
+                return 1
+            print(f"Archived run: {run_id}", file=sys.stderr)
         print("\nWrote:", file=sys.stderr)
         for p in written:
             print(f"  {p}", file=sys.stderr)
