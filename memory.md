@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 334
+Version: 335
+Delta: v334 to v335; record streaming and snapshot refresh recommendation.
 Delta: v333 to v334; document implementation, scripts, backups and future gates.
 Delta: v332 to v333; start backtester implementation and recovery handoff.
 Delta: concurrent histories to v332; preserve monitor qualification and merged Kraken research/backup records.
@@ -73,6 +74,10 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v335 - 2026-11-09: streaming and historical snapshots
+
+The owner asked whether an oracle should stream prices or the data package should refresh periodically. Recommend both: a durable source-labelled stream for new fine-grained data and forward testing, plus historical refresh, reconciliation and immutable versioned snapshots for offline backtesting. The existing `soltui/pricefeed.py` recorder is an integration candidate; verify its loaded health, symbols, coverage, source semantics and data quality, and do not start a competing recorder. Oracle reference prices do not establish executable prices or order-book depth. No streaming integration was implemented by the handoff.
 
 ## v333 - 2026-11-09: Backtester handoff in progress
 

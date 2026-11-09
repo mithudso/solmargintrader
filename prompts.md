@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 163
+Version: 164
+Delta: v163 to v164; record oracle streaming versus refresh question.
 Delta: v162 to v163; record the detailed backtester handoff request.
 Delta: concurrent histories to v162; preserve monitor qualification and merged Kraken research/backup records.
 Delta: concurrent histories to v161; preserve monitor full-suite records and all merged manager/backtester work.
@@ -41,6 +42,10 @@ Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
+
+## v164 - 2026-11-09
+
+Would it be better if the oracle streamed new price data to you, or would you rather just periodically refresh your package from the source?
 
 ## v163 - 2026-11-09
 
