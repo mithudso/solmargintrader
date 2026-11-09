@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 323
+Version: 324
+Delta: v323 to v324; record pre-2021 gap audit and recovery checkpoint.
 Delta: v322 to v323; record validated 14-asset histories and real SOL/USDC run.
 Delta: v321 to v322; verify USDC fixture accounting and capture remaining work.
 Delta: v320 to v321; capture SOL/USDC choice and cut-off fixes.
@@ -836,3 +837,7 @@ All fourteen requested assets now have at least one source-labelled, contiguous 
 Four existing default spot strategies ran against all 1,631 SOL/USDC bars with 70/30 split and assumed 6 bps fee plus 2 bps slippage. Result bundle lives in sol-usdc-daily-results; run archive runs.sqlite and same-machine runs-backup.sqlite passed ten-artifact verification for run bc5ab419c0fa747759f6a4a332de6611c6a3beece0adc58885111be44f40d2af. Initial run exposed `ValueError: run manifest strategies do not match output strategies`; cli now uses actual strategy output names and an all-strategy integration test covers it. These costs are assumptions, not a historical fee series. No real chain execution or complete multi-bot validation is implied.
 
 Explicit USDT-denominated spot snapshot runs are now supported without converting USDT to USD or USDC. Unverified source/quote snapshots remain refused; stablecoin quotes are refused for perp and non-snapshot paths. TASK-1117 remains in progress: preserve current work, finish end-to-end data maintenance and source identity checks, funding/fees/chaos/chain accounting, non-spot bot coverage, minute-scale performance, off-machine recovery and comprehensive validation.
+
+## v324 - 2026-11-09
+
+The previously recorded 14-asset daily inventory remains valid. KuCoin returned BTC and ETH bars before 2021, but the combined pre-2021 series failed strict contiguous-bar validation near the start. The importer refused both revisions; no gap filling occurred. Retained responses, failed combined CSVs and inventory are under /Users/mitch/.local/share/solmargintrader/backtester-task-1117/kucoin-pre2021-daily-20261109. The latest verified same-machine copy is daily-history-extended-backup.sqlite. Other checked markets returned no pre-2021 bars in those requests. Coverage before each validated snapshot remains unproved, and local backups are not off-machine recovery. The public repository checkpoint is draft PR 174; source code and data under this worktree do not establish that the whole backtester request is complete.
