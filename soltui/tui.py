@@ -3745,7 +3745,10 @@ class SolTuiApp(App):
             self._compound_own = env["result"]["own_settings"]
 
     def _compound_selected(self) -> str:
-        table = self.query_one("#compound-table", GlossaryTable)
+        tables = list(self.query("#compound-table"))
+        if not tables:
+            return self._COMPOUND_IDS[0]
+        table = tables[0]
         return self._strategy_table_key(table) if table.row_count else self._COMPOUND_IDS[0]
 
     def _compound_titles(self) -> None:
@@ -4051,8 +4054,9 @@ class SolTuiApp(App):
     @on(TabbedContent.TabActivated)
     def _tab_activated(self, event: TabbedContent.TabActivated) -> None:
         if event.pane is not None:
-            if event.pane.id == "tab-compound" and hasattr(self, "_compound_cfg"):
-                self._compound_preview_metric(self._compound_selected())
+            if event.pane.id in ("tab-compound", "cmp-call") and hasattr(self, "_compound_cfg"):
+                if self.query("#compound-table"):
+                    self._compound_preview_metric(self._compound_selected())
             if event.pane.id in ("tab-compound", "cmp-live"):
                 self._signal_live_tick()
                 self._signal_live_refresh_predictions()
