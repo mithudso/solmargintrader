@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 227
-Delta: v226 to v227; preserve both extension and Jupiter paper histories.
+Version: 228
+Delta: v227 to v228; correct signed combination agreement before delivery.
+
+## v228 - 2026-11-08
+
+Short-enabled combinations now use directional agreement. The old Composite all=min rule could choose a short for contradictory +1/-1 members after enabling the MA bearish branch. The paper adapter now requires same-side unanimity for all, rejects conflicting any calls, nets signed vote counts, and preserves signed means. Each member runs once per visible bar. The regression covers mixed, bearish, flat and majority-short combinations. Long-only combination behavior remains unchanged. CI for PR 142 must validate this final correction before merge.
 
 ## v227 - 2026-11-08
 

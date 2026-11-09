@@ -98,6 +98,25 @@ class JupiterSimulation(unittest.TestCase):
         self.assertEqual(sim.ConfidenceGate(Signal(0), sim.Execution(allow_short=True,
                          min_confidence=0)).on_bar(history([100.], 0)), 0)
 
+    def test_short_combinations_require_directional_agreement_and_never_double_call_members(self):
+        from backtester.core.strategies.composite import Composite
+        from unittest.mock import Mock
+        for mode in ('all', 'any', 'vote', 'mean'):
+            with self.subTest(mode=mode):
+                members = [Signal(1), Signal(-1)]
+                for member in members:
+                    member.on_bar = Mock(wraps=member.on_bar)
+                combined = sim.prepare_strategy(Composite(members, mode), True)
+                self.assertEqual(combined.on_bar(history([100.], 0)), 0.)
+                for member in members:
+                    member.on_bar.assert_called_once()
+                bearish = sim.prepare_strategy(Composite([Signal(-1), Signal(-.5)], mode), True)
+                self.assertLess(bearish.on_bar(history([100.], 0)), 0.)
+        flat = sim.prepare_strategy(Composite([Signal(-1), Signal(0)], 'all'), True)
+        self.assertEqual(flat.on_bar(history([100.], 0)), 0.)
+        vote = sim.prepare_strategy(Composite([Signal(-1), Signal(-1), Signal(1)], 'vote'), True)
+        self.assertAlmostEqual(vote.on_bar(history([100.], 0)), -1 / 3)
+
     def test_costs_scale_with_notional_and_charge_both_sides_and_borrow(self):
         ex = sim.Execution(use_leverage=True, leverage=5, slippage_bps=2)
         result = sim.settle(ex, 1, [(100, 100, 100, 100)] * 60)

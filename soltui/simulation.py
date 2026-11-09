@@ -129,15 +129,45 @@ class ConfidenceGate:
         return target if self.execution.permits(direction, self.confidence) else 0.0
 
 
+class DirectionalComposite:
+    """Apply combination agreement to both directions when shorts are selected."""
+    def __init__(self, strategy: Any) -> None:
+        self.strategy = strategy
+        self.members, self.mode = strategy.members, strategy.mode
+        self.name, self.params = strategy.name, dict(strategy.params)
+
+    def warmup_bars(self) -> int:
+        return self.strategy.warmup_bars()
+
+    def on_bar(self, history: BarWindow) -> float:
+        values = [float(member.on_bar(history)) for member in self.members]
+        if not all(math.isfinite(v) for v in values):
+            raise ValueError("combination member returned non-finite exposure")
+        positive, negative = any(v > 0 for v in values), any(v < 0 for v in values)
+        if self.mode == "all":
+            if all(v > 0 for v in values):
+                return min(values)
+            return max(values) if all(v < 0 for v in values) else 0.0
+        if self.mode == "any":
+            if positive and negative:
+                return 0.0
+            return max(values) if positive else min(values)
+        if self.mode == "vote":
+            return sum((v > 0) - (v < 0) for v in values) / len(values)
+        return sum(values) / len(values)
+
+
 def prepare_strategy(strategy: Any, allow_short: bool) -> Any:
     """Enable a strategy's explicit bearish branch without treating FLAT as DOWN."""
     if allow_short and hasattr(strategy, "short_when_below"):
         strategy.short_when_below = True
         strategy.params = {**strategy.params, "short_when_below": True}
-    for member in getattr(strategy, "members", []):
-        prepare_strategy(member, allow_short)
+    if hasattr(strategy, "members"):
+        strategy.members = [prepare_strategy(member, allow_short) for member in strategy.members]
+        if allow_short:
+            return DirectionalComposite(strategy)
     if hasattr(strategy, "_inner"):
-        prepare_strategy(strategy._inner, allow_short)
+        strategy._inner = prepare_strategy(strategy._inner, allow_short)
     return strategy
 
 

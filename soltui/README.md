@@ -174,7 +174,10 @@ forecast. Both **Forwardtest** and **Backtest** offer **Use leverage**, a 1–25
 multiplier, **Short DOWN signals**, and **Minimum confidence**. Defaults are 1× long-only
 and minimum confidence **0.80**. Leverage only applies when enabled. Shorts execute negative
 signals; they do not turn a FLAT signal into a short. The MA crossover's explicit bearish
-branch is enabled when shorting is selected. Forward changes apply after Stop and Start.
+branch is enabled when shorting is selected. Short-enabled combinations apply agreement to
+both directions: **all** needs every member on the same side, **any** stays flat on conflicting
+sides, **vote** nets signed votes, and **mean** averages signed exposure. Forward changes apply
+after Stop and Start.
 Settings saves defaults for subsequent runs; per-run controls do not change saved settings.
 
 Estimates use the **Jupiter Perps** schedule: **6 bps (0.06%) on notional per entry and exit**.
