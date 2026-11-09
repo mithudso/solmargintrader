@@ -150,6 +150,13 @@ class JupiterSimulation(unittest.TestCase):
             self.assertGreater(row['paper_trades'], 0)
             self.assertGreater(row['net_pct'], 0)
             self.assertEqual(row['execution'], profile)
+            source = Path(sim.__file__).read_bytes()
+            contract = Path(tmp) / 'simulation-contract.py'
+            contract.write_bytes(source)
+            with patch.object(sim, '__file__', str(contract)):
+                before_revision = ft.revision()
+                contract.write_bytes(source + b'\n# revised confidence contract\n')
+                self.assertNotEqual(ft.revision(), before_revision)
             self.assertGreater(row['cost_bps'], 16)
             with ft._db() as db:
                 first = db.execute('SELECT confidence,traded,net_return FROM call ORDER BY bar LIMIT 1').fetchone()

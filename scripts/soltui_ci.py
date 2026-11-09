@@ -38,7 +38,7 @@ DEPENDENCIES = {
     'soltui/forwardtest.py': {'soltui.tests.test_forwardtest'},
     'soltui/coin_fit.py': {'soltui.tests.test_coin_fit', 'soltui.tests.test_coin_fit_ui'},
     'soltui/shell.py': {'soltui.tests.test_v2_shell'},
-    'soltui/tui.py': {'soltui.tests.test_forwardtest', 'soltui.tests.test_coin_fit_ui',
+    'soltui/tui.py': {'soltui.tests.test_forwardtest', 'soltui.tests.test_signal_live', 'soltui.tests.test_coin_fit_ui',
                       'soltui.tests.test_v2_shell', 'soltui.tests.test_bridge_buttons'},
     'soltui/commands.py': {'soltui.tests.test_bridge_buttons', 'soltui.tests.test_bridge_parity',
                            'soltui.tests.test_forwardtest', 'soltui.tests.test_experiment_interface'},

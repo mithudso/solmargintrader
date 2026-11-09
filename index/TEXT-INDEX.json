@@ -2415,7 +2415,7 @@
     "scripts/html_to_markdown.py": 1005,
     "scripts/render_tradingview_script_cards.py": 3290,
     "scripts/rotate-workflow-logs.mjs": 673,
-    "scripts/soltui_ci.py": 650,
+    "scripts/soltui_ci.py": 656,
     "scripts/test_card_readiness.py": 480,
     "scripts/test_html_to_markdown.py": 569,
     "scripts/test_soltui_ci.py": 224,
@@ -2518,7 +2518,7 @@
     "soltui/experiment_screens.py": 4200,
     "soltui/experiments.py": 4914,
     "soltui/f5_batch.py": 3627,
-    "soltui/forwardtest.py": 2832,
+    "soltui/forwardtest.py": 2836,
     "soltui/hdwallet.py": 1164,
     "soltui/help.py": 10475,
     "soltui/help_screen.py": 300,
@@ -2606,7 +2606,7 @@
     "soltui/tests/test_shortcuts_everything.py": 492,
     "soltui/tests/test_signal_live.py": 676,
     "soltui/tests/test_signals.py": 879,
-    "soltui/tests/test_simulation.py": 1169,
+    "soltui/tests/test_simulation.py": 1211,
     "soltui/tests/test_status_console.py": 608,
     "soltui/tests/test_status_roster.py": 1539,
     "soltui/tests/test_strategies_tab_history.py": 549,
@@ -2655,7 +2655,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-09T01:56:58+00:00",
+  "generatedAt": "2026-11-09T01:58:09+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -55004,6 +55004,7 @@
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_csv_table.py": 1,
       "soltui/tests/test_experiment_interface.py": 1,
+      "soltui/tests/test_simulation.py": 1,
       "soltui/tests/test_tui.py": 2,
       "soltui/tests/test_wallet.py": 1
     },
@@ -87885,6 +87886,7 @@
       "soltui/tests/test_experiment_runner.py": 5,
       "soltui/tests/test_panes.py": 4,
       "soltui/tests/test_pnl.py": 3,
+      "soltui/tests/test_simulation.py": 2,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_strategy_history.py": 2,
       "soltui/tests/test_tui.py": 1,
@@ -87901,6 +87903,9 @@
     "before_min": {
       "backtester/core/scorecard.py": 2,
       "docs/COMPOUND-5M-PAPER.md": 1
+    },
+    "before_revision": {
+      "soltui/tests/test_simulation.py": 2
     },
     "before_submit": {
       "liquidity/src/aero_lp/executor.py": 1,
@@ -110070,6 +110075,7 @@
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_pricefeed.py": 19,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_simulation.py": 3,
       "soltui/tests/test_wallet.py": 1,
       "soltui/tests/test_wallet_settings.py": 2,
       "soltui/utxo_scan.py": 4,
@@ -180167,7 +180173,7 @@
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_forwardtest.py": 3,
       "soltui/tests/test_liquidity.py": 1,
-      "soltui/tests/test_simulation.py": 21,
+      "soltui/tests/test_simulation.py": 22,
       "soltui/tests/test_wallet.py": 3,
       "soltui/tests/test_wallet_integration.py": 1,
       "soltui/tui.py": 20,
@@ -192847,6 +192853,7 @@
       "soltui/signals.py": 1,
       "soltui/tests/test_bgqueue.py": 2,
       "soltui/tests/test_paper_experiments.py": 2,
+      "soltui/tests/test_simulation.py": 6,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
       "soltui/tests/test_wallet.py": 1,
       "soltui/wallet.py": 2,
@@ -353448,7 +353455,7 @@
       "soltui/experiment_screens.py": 1,
       "soltui/experiments.py": 1,
       "soltui/f5_batch.py": 12,
-      "soltui/forwardtest.py": 4,
+      "soltui/forwardtest.py": 5,
       "soltui/help.py": 23,
       "soltui/jupiter_manual.py": 2,
       "soltui/liquidity.py": 20,
@@ -353491,6 +353498,7 @@
       "soltui/tests/test_pricefeed.py": 5,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_simulation.py": 2,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 4,
       "soltui/tests/test_strategy_history.py": 2,
@@ -353594,7 +353602,7 @@
       "soltui/experiment_jobs.py": 1,
       "soltui/experiment_runner.py": 1,
       "soltui/f5_batch.py": 1,
-      "soltui/forwardtest.py": 3,
+      "soltui/forwardtest.py": 4,
       "soltui/jupiter_manual.py": 1,
       "soltui/live_run.py": 1,
       "soltui/make_icon.py": 1,
@@ -353618,6 +353626,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_simulation.py": 2,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
       "soltui/tests/test_wallet.py": 1,
       "soltui/top5.py": 1
@@ -489133,6 +489142,7 @@
       "research/verify_numbers.py": 2,
       "script-profile-orchestration.md": 1,
       "scripts/rotate-workflow-logs.mjs": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/README.md": 5,
       "skills/coin-strategy-fit/SKILL.md": 1,
       "skills/coin-strategy-fit/references/method.md": 3,
@@ -563709,7 +563719,7 @@
       "soltui/tests/test_pricefeed.py": 12,
       "soltui/tests/test_service.py": 19,
       "soltui/tests/test_shortcuts_everything.py": 7,
-      "soltui/tests/test_simulation.py": 1,
+      "soltui/tests/test_simulation.py": 2,
       "soltui/tests/test_status_console.py": 5,
       "soltui/tests/test_strategies_tab_history.py": 4,
       "soltui/tests/test_strategy_history.py": 8,
@@ -595886,7 +595896,7 @@
       "soltui/tests/test_service_plist_parity.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 7,
       "soltui/tests/test_signal_live.py": 2,
-      "soltui/tests/test_simulation.py": 2,
+      "soltui/tests/test_simulation.py": 3,
       "soltui/tests/test_status_console.py": 5,
       "soltui/tests/test_strategies_tab_history.py": 4,
       "soltui/tests/test_strategy_history.py": 8,
@@ -596382,7 +596392,7 @@
       "soltui/experiment_screens.py": 6,
       "soltui/experiments.py": 5,
       "soltui/f5_batch.py": 52,
-      "soltui/forwardtest.py": 42,
+      "soltui/forwardtest.py": 43,
       "soltui/help.py": 10,
       "soltui/jupiter_manual.py": 41,
       "soltui/jupiter_tokens.py": 2,
@@ -596445,7 +596455,7 @@
       "soltui/tests/test_service.py": 10,
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_signals.py": 1,
-      "soltui/tests/test_simulation.py": 14,
+      "soltui/tests/test_simulation.py": 16,
       "soltui/tests/test_status_console.py": 10,
       "soltui/tests/test_status_roster.py": 5,
       "soltui/tests/test_strategies_tab_history.py": 5,
@@ -660624,6 +660634,7 @@
       "soltui/tests/test_pricefeed.py": 6,
       "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
+      "soltui/tests/test_simulation.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_top5.py": 1,
@@ -660717,6 +660728,7 @@
       "soltui/tests/test_bot_scheduler.py": 1,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_pricefeed.py": 1,
+      "soltui/tests/test_simulation.py": 1,
       "soltui/tests/test_wallet.py": 1
     },
     "read_control_owner": {
@@ -704561,7 +704573,8 @@
       "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
-      "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
+      "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
+      "soltui/tests/test_simulation.py": 1
     },
     "revising": {
       "skills/trading-and-investing/references/market-microstructure-and-execution.md": 1
@@ -704609,7 +704622,8 @@
       "soltui/forwardtest.py": 5,
       "soltui/paper_experiments.py": 6,
       "soltui/tests/test_forwardtest.py": 2,
-      "soltui/tests/test_paper_experiments.py": 5
+      "soltui/tests/test_paper_experiments.py": 5,
+      "soltui/tests/test_simulation.py": 4
     },
     "revisions": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_4n9sh3lz_funamental_and_financials.md": 1,
@@ -754140,6 +754154,7 @@
       "scripts/build_doc_index.py": 3,
       "scripts/check_docs.py": 2,
       "scripts/check_tradingview_cards.py": 1,
+      "scripts/soltui_ci.py": 1,
       "skills/README.md": 5,
       "skills/five-minute-signal/SKILL.md": 8,
       "skills/trading-and-investing/SKILL.md": 21,
@@ -757033,7 +757048,7 @@
       "soltui/help.py": 1,
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_pnl.py": 2,
-      "soltui/tests/test_simulation.py": 23,
+      "soltui/tests/test_simulation.py": 25,
       "soltui/tui.py": 2
     },
     "sim_err": {
@@ -760001,7 +760016,7 @@
       "soltui/experiment_screens.py": 1,
       "soltui/experiments.py": 2,
       "soltui/f5_batch.py": 3,
-      "soltui/forwardtest.py": 7,
+      "soltui/forwardtest.py": 8,
       "soltui/help.py": 13,
       "soltui/live_run.py": 5,
       "soltui/paper.py": 1,
@@ -760015,7 +760030,7 @@
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_experiments.py": 2,
       "soltui/tests/test_jupiter_manual.py": 1,
-      "soltui/tests/test_simulation.py": 6,
+      "soltui/tests/test_simulation.py": 7,
       "soltui/tui.py": 20
     },
     "simulation_controls": {
@@ -771768,7 +771783,7 @@
       "scripts/build_doc_index.py": 1,
       "scripts/check_docs.py": 10,
       "scripts/coin_strategy_fit.py": 3,
-      "scripts/soltui_ci.py": 43,
+      "scripts/soltui_ci.py": 44,
       "scripts/test_soltui_ci.py": 19,
       "skills/README.md": 1,
       "skills/coin-strategy-fit/SKILL.md": 5,
@@ -796185,6 +796200,7 @@
       "soltui/tests/test_service_plist_parity.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 1,
       "soltui/tests/test_signals.py": 4,
+      "soltui/tests/test_simulation.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 5,
@@ -833767,6 +833783,7 @@
     },
     "test_signal_live": {
       "memory.md": 1,
+      "scripts/soltui_ci.py": 1,
       "soltui/tests/test_signal_live.py": 1
     },
     "test_signal_redundancy": {
@@ -838187,7 +838204,7 @@
       "script-profile-orchestration.md": 1,
       "scripts/check_docs.py": 24,
       "scripts/render_tradingview_script_cards.py": 2,
-      "scripts/soltui_ci.py": 40,
+      "scripts/soltui_ci.py": 41,
       "scripts/test_soltui_ci.py": 14,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 3,
@@ -851852,7 +851869,7 @@
       "soltui/tests/test_presets_netpct.py": 9,
       "soltui/tests/test_pricefeed.py": 20,
       "soltui/tests/test_service.py": 8,
-      "soltui/tests/test_simulation.py": 6,
+      "soltui/tests/test_simulation.py": 7,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 4,
       "soltui/tests/test_top5.py": 3,
@@ -944886,7 +944903,7 @@
       "soltui/tests/test_presets_netpct.py": 4,
       "soltui/tests/test_pricefeed.py": 2,
       "soltui/tests/test_service.py": 6,
-      "soltui/tests/test_simulation.py": 2,
+      "soltui/tests/test_simulation.py": 4,
       "soltui/tests/test_status_console.py": 3,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_top5.py": 7,
@@ -944914,7 +944931,8 @@
       "soltui/pricefeed.py": 1,
       "soltui/tests/test_backtest_log.py": 1,
       "soltui/tests/test_bot_scheduler.py": 1,
-      "soltui/tests/test_docs_browser.py": 2
+      "soltui/tests/test_docs_browser.py": 2,
+      "soltui/tests/test_simulation.py": 2
     },
     "write_card": {
       "backtester/tests/test_strategy_cards.py": 18
@@ -955280,8 +955298,8 @@
   "stats": {
     "avgDocLength": 1445.4,
     "documents": 2654,
-    "terms": 69231,
-    "termsBeforePrune": 69305,
-    "totalTokens": 3836148
+    "terms": 69232,
+    "termsBeforePrune": 69306,
+    "totalTokens": 3836200
   }
 }

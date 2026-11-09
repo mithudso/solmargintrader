@@ -334,7 +334,7 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
                 self.assertTrue(state["running"])
                 from soltui.commands import forward_coins
-    
+
                 all_coins = forward_coins()
                 self.assertEqual(set(state["assets"]), set(all_coins))
                 app.query_one(TabbedContent).active = "tab-forwardtest"

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-09T01:56:58+00:00",
+  "generatedAt": "2026-11-09T01:58:09+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "a2b6e7a",
+  "commit": "d6b203e",
   "counts": {
     "files": 2654,
-    "bytes": 44034017,
+    "bytes": 44034490,
     "byKind": {
       "strategy-card": 1478,
       "doc": 549,
@@ -76134,9 +76134,9 @@
       "title": "These checks are a bounded PR gate, not a substitute for the opt-in full suite.",
       "summary": "Select and shard SolTUI tests without silently omitting shared-code coverage.",
       "summarySource": "docstring",
-      "bytes": 5831,
+      "bytes": 5864,
       "lines": 137,
-      "sha1": "c7845ed3f9dcbe2b2a6bfca49ce17380cb34a136",
+      "sha1": "04893882562824085c820dbe1aaa1e3a3106a048",
       "symbols": [
         "selected_modules()",
         "SMOKE",
@@ -79283,9 +79283,9 @@
       "title": "-- saved defaults: a setting that tested superior becomes the trial's starting point -------------",
       "summary": "Prospective, paper-only trials of registered strategies on closed Coinbase minutes.",
       "summarySource": "docstring",
-      "bytes": 29659,
+      "bytes": 29686,
       "lines": 587,
-      "sha1": "2a14d3d61415b27bf14bd544f164a3bbafb785fb",
+      "sha1": "999e66d6d4f1d101b328864f6f01a94045b34368",
       "symbols": [
         "HORIZONS",
         "HISTORY",
@@ -81879,9 +81879,9 @@
       "title": "test_forwardtest",
       "summary": "Prospective evidence, horizon isolation, and the roster keyboard workflow.",
       "summarySource": "docstring",
-      "bytes": 19158,
+      "bytes": 19154,
       "lines": 359,
-      "sha1": "795720c161aace0431acdc7f46a3ad6d3911b5c5",
+      "sha1": "cfce11c04efbb7110485c0f544843ab5259ba5fb",
       "symbols": [
         "BASE",
         "candles()",
@@ -82525,9 +82525,9 @@
       "title": "test_simulation",
       "summary": "Jupiter notional costs, confidence gates, and immutable prospective economics.",
       "summarySource": "docstring",
-      "bytes": 12678,
-      "lines": 227,
-      "sha1": "3d7adc80b4c4312ad3753c4d5d2d056c7695188c",
+      "bytes": 13095,
+      "lines": 234,
+      "sha1": "7ce1b1f3d8da1827f104010f2c8f0750f396493b",
       "symbols": [
         "class Signal",
         "history()",

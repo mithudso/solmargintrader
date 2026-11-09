@@ -32,7 +32,7 @@ Spec = list[dict[str, Any]]
 def revision() -> str:
     """Partition evidence if strategy code or the forecast/scoring contract changes."""
     core = Path(scorecard.__file__).parent
-    files = [Path(__file__), Path(compound.__file__), *sorted(core.glob("*.py")),
+    files = [Path(__file__), Path(compound.__file__), Path(simulation.__file__), *sorted(core.glob("*.py")),
              *sorted((core / "strategies").glob("*.py"))]
     return hashlib.sha256(b"".join(hashlib.sha256(p.read_bytes()).digest() for p in files)).hexdigest()
 
