@@ -1,7 +1,21 @@
 # Work continuation
 
-Version: 235
-Delta: v234 to v235; record final live-score acceptance and recoverable PR.
+Version: 237
+Delta: v236 to v237; record ten-second refresh implementation and independent acceptance.
+
+## v237 - 2026-11-08
+
+Implemented automatic ten-second prediction-read cooldowns in both Live views. The dashboard polls with Follow stream off while visible, retries failed reads, shows successful refresh times, suppresses obsolete coin/floor responses and admits only one read. The TUI reads in one background Textual worker, preserves graph responsiveness, applies coin/floor generation guards, reports failed reads and retries, advances only successful refresh timestamps and drains safely at shutdown. Both preserve saved closed-minute forecast issuance, quality floors, immutable tick scores and all training/execution paths. Extension version is 0.4.2.
+
+Verified: 372/372 extension unit/parity tests; 12/12 focused TUI tests plus an expanded stale-success/failure regression; Chrome 24/24 real-host and 23/23 fixture-host checks; Mongo 34 tests with 17 server-dependent skips; positive offline grid round trip net $0.3492; public Jupiter endpoint checks; changed-source syntax checks. Independent real-clock Chrome and Textual acceptance observed automatic UP/DOWN/UP row changes and recovery after a failed fourth read. Ten-second cooldown plus one-second timer yielded approximately eleven-second start gaps. Each surface admitted only one reader. Hidden/disposed browser views stopped polling; held TUI reads kept the chart responsive and stale contexts were discarded. Existing user sessions and services were not restarted.
+
+Delivery branch fix/live-predictions-10s-20261108 in /Users/mitch/dev/solmargintrader-wt-refresh-10s is the current checkpoint. Remaining gates at this checkpoint: rebuild offline indexes, repeat the backtester after index regeneration, final-head CI, merge, safe master sync and own worktree cleanup. The first backtester run passed 908 cases and failed only the expected stale-index assertion while files were still being edited. Documentation discovery is 1214 SolTUI / 2529 total. The full optional SolTUI suite was not run. On resume, use the branch's PR merged status and final-commit checks as the delivery receipt. Stele task create 0a351c54 and diagnosis knowledge 470f5f70 remain queued because MCP is unavailable.
+
+## v236 - 2026-11-08
+
+Target: refresh the Live graph forward-predictions table every ten seconds in the TUI and dashboard. The SOL store contains recent calls. Both views currently gate table reads at sixty seconds; the dashboard also requires Follow stream for polling and switches it off after a transient read failure. A saved snapshot read took 1.17 seconds, so move the TUI read to a single background worker with stale-coin/result guards. Keep retries visible and continue them after failures.
+
+Preserve closed-minute forecast issuance and trainer evidence; do not edit forwardtest.py or historical results. Keep score floors, immutable tick history and all order paths unchanged. Worktree /Users/mitch/dev/solmargintrader-wt-refresh-10s; branch fix/live-predictions-10s-20261108; base 2ca3041. Shared checkout has three unrelated untracked guides and other active worktrees. Task create queued as Stele outbox 0a351c54 because MCP is unavailable. Remaining: implement, verify ten-second cadence and recovery in fresh UI instances, refresh docs/indexes, then commit, push, pass CI, merge and clean up.
 
 ## v235 - 2026-11-08
 

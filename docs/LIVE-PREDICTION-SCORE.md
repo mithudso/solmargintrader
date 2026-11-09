@@ -44,8 +44,14 @@ older observations left. The visible window adapts to the available width. TUI h
 to 120 observations per coin, and the dashboard retains up to 600 for its selected coin. Cached
 historical candle points have no retroactively assigned score.
 
-Prediction rows refresh on the existing minute schedule. Between refreshes, both surfaces recheck
-expiry and eligibility before computing the next tick's aggregate. This work does not change the
+Prediction rows refresh automatically every ten seconds. The dashboard does this while the Live
+view is visible, including when Follow stream is off. The TUI reads in a background worker so the
+graph stays responsive. Both views show the last successful refresh time, report failed reads and
+retry them automatically. A slow read cannot overlap another prediction read.
+
+This refresh reads saved predictions. The forward runner still issues forecasts on closed minute
+candles; an unchanged direction between refreshes is valid. Between refreshes, both surfaces recheck
+expiry and eligibility before computing the next tick's aggregate. The refresh does not change the
 trainer, its revision hash, its stored evidence, execution settings or any order path.
 
 ## Implementation and verification
