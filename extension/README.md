@@ -7,14 +7,16 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Dashboard workspace (0.4.0)
+## Dashboard workspace (0.4.1)
 
 The dashboard now exposes the complete installed SolTUI registry in workspaces for Now, Signal,
 Research/replay, Bots/prices, Experiments, Money/orders, Library/editor, TUI settings and Archive.
 The popup's **Full workspace** link opens it. Forms include explicit true/false values; results
 include sortable/filterable tables, CSV/JSON exports, time-series charts, row detail and guarded
 catalogued-document editing. Manual order previews hand off to explicitly confirmed submit forms.
-Signal has a read-only recorder chart and saved forward predictions. Native sessions retain replay
+Signal has a read-only recorder chart and saved forward predictions. Both live headers show the
+[aggregate prediction score](../docs/LIVE-PREDICTION-SCORE.md), with configurable accuracy/sample
+voting floors and a scrolling, immutable score annotation for each observed price tick. Native sessions retain replay
 and running-job state while a dashboard is open; status and cancellation remain usable during long
 calls. See [dashboard workflows, lifecycle and verification](../docs/EXTENSION-TUI-PARITY.md).
 

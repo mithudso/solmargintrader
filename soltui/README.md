@@ -114,6 +114,14 @@ Every classic pane is still a pane of the one `#main-tabs` TabbedContent. A tab 
 under Research automatically (`shell.with_extra_views`). `soltui --classic` shows the original tab bar.
 The pre-v2 console is also preserved as the git tag `soltui-ui-v1` (branch `backup/soltui-ui-v1`).
 
+## Live prediction score
+
+Signal Live shows an aggregate score and green Strong Buy/Buy, gray Flat or red Sell/Strong Sell
+above its live price view and prediction table. Strategies and voted horizons must meet a saved
+accuracy/sample floor (defaults 60% and 20 resolved); edit the live controls and press Enter. Each
+new recorder tick keeps its observed score beneath the graph, shifting left with the price history.
+See [the scoring rule and freshness contract](../docs/LIVE-PREDICTION-SCORE.md).
+
 ## The tabs
 
 Hover any field, button, table heading or table value for plain-language help.

@@ -1,7 +1,33 @@
 # Work continuation
 
-Version: 231
-Delta: v230 to v231; record verified Jupiter controls delivery and cleanup.
+Version: 235
+Delta: v234 to v235; record final live-score acceptance and recoverable PR.
+
+## v235 - 2026-11-08
+
+Aggregate live prediction score and minimum-voting-score work is implemented in both surfaces. PR https://github.com/mithudso/solmargintrader/pull/146 is the delivery receipt. The display uses shared policy vectors, equal strategy means, -100..100 scores, 20/60 label thresholds, 60% accuracy and 20 resolved eligibility defaults, actual latest-call expiry, and immutable right-anchored tick slots. These controls are separate from paper min_confidence=0.80 and do not change training/execution. No task diff touches forwardtest.py or simulation.py relative to the integrated default branch.
+
+Final product acceptance passed: independent Chrome and headless Textual verified all five colors/labels, weak/sparse/stale/future exclusions, physical eight-column TUI movement, immutable history, missing-coin reset and obsolete success/error suppression. Integrated Python 106/106; extension 372/372; Chrome real-host 24/24 and fixture 23/23. The native installer regression passes after resolving the merge (its earlier error occurred while source still had conflict markers). Documentation counts are 1211 SolTUI and 2526 total. Full TUI suite remains optional and was not run.
+
+Current head includes delivered paper-control PRs 142/145; both source and histories were preserved. Remaining delivery gates: offline documentation/index refresh, final backtester/index checks, final-head CI, merge and cleanup. No order, signing, trainer/service start, user configuration update or existing-profile reload occurred during verification. Shared checkout is owned by another live session; leave it intact. Stele task create queued as 2f9370e6; new bug lessons queued as f07021b5, 65b7724f, 9397d749. Earlier checkpoints are historical.
+
+## v234 - 2026-11-08
+
+Resumed the aggregate live score and minimum-voting-score request after interruption. Retained the checkpoint 947f311 and merged delivered PRs 142/145 without changing their fee/leverage/short/confidence behavior. Voting accuracy/sample floors remain display-only and separate from the owner-confirmed paper min_confidence=0.80. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; shared checkout is active elsewhere and must not be touched.
+
+Verified before integration: 372 extension tests, 15 focused Python/UI tests and 24 real-host /23 fixture-host browser checks. Independent review verified the physical eight-column TUI shift and found coin-switch stale state; those view-reset fixes are implemented. Remaining: guard obsolete browser failures, bind eligibility counts/accuracy to the same latest trial as its direction, rerun independent acceptance after merge resolution, refresh counts/indexes, push PR, wait for final CI and merge. Stele task create outbox 2f9370e6; decision writes a83639ac, dbd594d9, 5d4bb1e8.
+
+## v233 - 2026-11-08
+
+Owner added: strategies need a minimum prediction score to vote. Use saved live_vote_min_accuracy=60.0 and live_vote_min_resolved=20 defaults. Require both the strategy-wide forward record and the voted horizon to meet these floors; keep excluded rows visible. Controls in dashboard and Signal Live save through settings.save. Ratings remain informational agreement. Completed: backend snapshot with latest-call expiry; shared Python/JS policy vectors; both headers and immutable score tapes; 372 Node tests and 15 focused Python/UI tests passed before final browser-regression expansion. Remaining: independent acceptance, full relevant checks, documentation/index updates and PR delivery.
+
+## v232 - 2026-11-08
+
+Target: add the same aggregate signed score and five-level colored label above live-price and prediction views in the dashboard and TUI. Preserve each tick score as observed; append on fresh source ticks and scroll left with the plotted window. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; branch feat/live-aggregate-score-20261108; base origin/master 2fc1845. Preserve the shared checkout untracked guides and other sessions. Stele task creation queued as 2f9370e6.
+
+Plan: inspect the prediction and chart data contracts; implement one read-only backend aggregation plus matching score tapes; test Python logic, headless TUI and real Chrome; refresh docs/indexes and deliver through CI/PR/merge. No trading, training, worker starts or historical result rewrites.
+
+Decision: use equal strategy weights. Within each strategy average its current UP=+1, DOWN=-1, FLAT=0 horizon votes; average strategies and multiply by 100. Ratings: Strong Buy >=60, Buy >=20, Flat between -20 and 20, Sell <=-20, Strong Sell <=-60. This is directional agreement, not an accuracy or success probability. Missing/stale/future-dated evidence produces an unavailable gray Flat instead of a made-up zero. Read actual latest call/expiry per strategy and horizon in a separate display module: do not edit forwardtest.py, whose whole-file hash partitions training evidence. Annotate only new recorder timestamps, with the score known then; never backfill cached prices with a later score.
 
 ## v231 - 2026-11-08
 

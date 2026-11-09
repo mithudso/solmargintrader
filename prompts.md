@@ -1,7 +1,25 @@
 # Prompt history
 
-Version: 127
-Delta: v126 to v127; preserve both extension and Jupiter paper histories.
+Version: 130
+Delta: v129 to v130; retain score requests, paper controls and explicit resume.
+
+## v130 - 2026-11-08
+
+```text
+resume
+```
+
+## v129 - 2026-11-08
+
+```text
+Make the strategies have a minimum prediction score to be allowed to vote.
+```
+
+## v128 - 2026-11-08
+
+```text
+In both the chrome extension and the TUI at the top of the live price and forward predictions tables include a aggregate score and a green Strong Buy, Buy, grey Flat,  red Sell, Strong Sell. And for for every tick put the buy score at the bottom of the chart, and move it left as the tick progresses.
+```
 
 ## v127 - 2026-11-08
 

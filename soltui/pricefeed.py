@@ -604,7 +604,7 @@ def status(root: Path | None = None, now: float | None = None) -> dict[str, Any]
             bid, ask, last = q[0], q[1], q[2]
             prices[product] = {"bid": bid, "ask": ask, "last": last, "mid": (bid + ask) / 2,
                                "spread_bps": 10_000 * (ask - bid) / ((ask + bid) / 2),
-                               "quote_age_s": round(now - float(q[5]), 1)}
+                               "quote_age_s": round(now - float(q[5]), 1), "quote_ts": float(q[5])}
         except (TypeError, ValueError, IndexError, ZeroDivisionError):
             continue
     pid = None

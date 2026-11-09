@@ -349,3 +349,11 @@ part of any component.
 | --- | --- |
 | `extension/src/ui/workspace-model.js` | Registry workspace groups, structured result tables, chart points and safe CSV conversion. |
 | `docs/EXTENSION-TUI-PARITY.md` | Browser workflows, native-session lifetime, execution boundaries and verification. |
+
+## Live prediction display
+
+| Path | Purpose |
+| --- | --- |
+| `soltui/live_score.py` | Current forward-vote eligibility, latest call snapshot and terminal tick-window layout. |
+| `extension/src/ui/live-score.js` | Browser score adapter and aligned immutable price/score tick chart. |
+| `docs/LIVE-PREDICTION-SCORE.md` | Scoring, eligibility, freshness and observation-history contract. |

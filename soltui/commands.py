@@ -506,6 +506,7 @@ _SETTING_CASTS = {
     "solana_address": str, "base_address": str, "eth_address": str, "hyperliquid_address": str,
     "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
     "forwardtest_autostart": bool,
+    "live_vote_min_accuracy": float, "live_vote_min_resolved": int,
     "use_leverage": bool, "leverage": float, "allow_short": bool, "min_confidence": float,
     "borrow_long_bps_hour": float, "borrow_short_bps_hour": float,
 }
@@ -967,7 +968,9 @@ def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
 def forwardtest_predictions(ctx: Context, p: dict[str, Any]) -> Any:
     asset = bgqueue.validate_asset(p.get("asset") or ctx.settings.asset)
     limit = int(p.get("limit") or 50)
-    return {"asset": asset, "rows": forwardtest.top_forward_predictions(asset, limit=limit)}
+    from .live_score import prediction_snapshot
+    return prediction_snapshot(asset, limit=limit, min_accuracy=ctx.settings.live_vote_min_accuracy,
+                               min_resolved=ctx.settings.live_vote_min_resolved)
 
 
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)
