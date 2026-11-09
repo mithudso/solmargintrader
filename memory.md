@@ -1,11 +1,21 @@
 # Work continuation
 
-Version: 320
+Version: 326
+Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
 Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
 Delta: v318 to v319; integrate PR172 while preserving implementation and UI histories.
 Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts.
 Delta: v316 to v317; record supplemental UI requirements and current foundation review.
 Delta: v315 to v316; start approved implementation in a collision-free worktree.
+Delta: v324 to v325; record merged storage foundation and remaining backtester work.
+Delta: v323 to v324; record pre-2021 gap audit and recovery checkpoint.
+Delta: v322 to v323; record validated 14-asset histories and real SOL/USDC run.
+Delta: v321 to v322; verify USDC fixture accounting and capture remaining work.
+Delta: v320 to v321; capture SOL/USDC choice and cut-off fixes.
+Delta: v319 to v320; checkpoint verified local daily snapshots and provider gap.
+Delta: v318 to v319; record implemented storage foundation and outstanding gaps.
+Delta: v317 to v318; record owner-confirmed fourteen-asset universe.
+Delta: v316 to v317; begin isolated historical backtester design and implementation.
 Delta: concurrent histories to v316; preserve CLI planning PR171 and reviewed browser UI design.
 Delta: v314 to v315; record reviewed bot UI design, browser acceptance and delivery preparation.
 Delta: v313 to v314; start isolated bot-control-room design and continuation.
@@ -838,3 +848,47 @@ Milestone1 source reaches995246f after guarded owner protocol3e2b9e1 and fix rou
 Supplemental UI contracts are implemented in status/receipt/spec fields. The full current-versus-later mapping is /Users/mitch/dev/solmargintrader/docs/bot-manager-milestone-1.md. Legacy slots remain family-wide; manager authority takes precedence over prototype integration. Parent added CI selector dependency tests so owner edits run the guarded-control regressions. Other sessions and production state remain unchanged.
 
 Draft PR175 at39140e7 passed9 active CI checks; latest995246f is not yet pushed. Origin/master advanced to e0c6934 with PR174/176 historical snapshot/archive work; integrate preserving both histories before final broad review. Final docs/index gates, current installed-console acceptance, final-head CI and merge remain. Continue milestones1108–1114 after delivering TASK1107.
+
+## v317 - 2026-11-09
+
+Task TASK-1117: optimize the user's backtester prompt, plan and implement reliable historic-data and simulation improvements. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1c1b1, based on origin/master f2d099e. Other sessions own signal generation, forward testing, UI and F5 orchestration (TASK-1046); preserve their work. Existing backtester is offline, uses next-bar fills and maintains simulation costs. Do not invent market, chain, fee or coverage data. Remaining: inspect code and data, complete prompt optimization and plan, implement and verify, then deliver.
+
+## v318 - 2026-11-09
+
+The owner identified BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX, JitoSOL, KMNO, USDC and XMR. Asset identity, venue, availability and length of each history must still be verified. Do not infer missing source or chain data.
+
+## v319 - 2026-11-09
+
+TASK-1117 in /Users/mitch/dev/solmargintrader-wt-01a1c1b1: optimized prompt and implementation plan are recorded. Implemented immutable SQLite OHLCV snapshots, strict contiguous bar validation, verified snapshot loader, transactional hash-verified run artifact archive and SQLite backup, plus fixture-level end-to-end tests. The initial full backtester run had 968 tests and one index staleness failure caused by workflow-file edits; rebuild the offline index after staging final owned files and rerun. A daily CSV coverage scan found contiguous local files for the first ten assets, 277-2138 rows, but none for JitoSOL, KMNO, USDC or XMR; XMR has a minute CSV not yet validated. Source provenance and other intervals remain unverified. Full production coverage, independent backups, chaos scenarios, chain-aware trade accounting, complete bot integration, benchmarks and fidelity verification remain outstanding. Do not claim the overall request is complete.
+
+## v320 - 2026-11-09
+
+Ten daily histories were imported and reverified at /Users/mitch/.local/share/solmargintrader/backtester-task-1117/daily-history.sqlite, with same-machine backup daily-history-backup.sqlite and snapshot inventory inventory.json. Their venue and quote are unknown; SnapshotLoader refuses them for simulation. They are not independent disaster-recovery copies. Four assets have no matching daily CSV. Coinbase Exchange lookups for JITOSOL-USD, KMNO-USD, USDC-USD and XMR-USD returned HTTP 403; this does not establish listing status. Ten daily snapshots imported in a temporary benchmark in 0.06 seconds, ~2.27 MB; this is not a minute-history benchmark. The optimizer audit was structurally reviewed including independent re-read, but formal full-protocol self-check/smoke/telemetry remain unverified. Detailed plan and prompt-review files are in docs/superpowers/plans/.
+
+## v321 - 2026-11-09
+
+The owner selected SOL/USDC as the primary pair. The snapshot-backed spot CLI now has explicit USD/USDC quote selection; its manifest, report and chart label retain the selected quote, and USDC has no implicit USD conversion. USDC for perp mode and non-snapshot inputs is refused. Fixture integration covers SOL/USDC, but no verified real SOL/USDC snapshot has been obtained. Independent review caught two lookahead errors around intraday cutoffs and explicit midnight; both were repaired with regression tests. It also caught USD chart labeling and imprecise manifest bar bounds; both were repaired. XMR's existing minute sidecar labels it KuCoin XMR-USDT, not USD or USDC; its coverage and contents remain unvalidated. Archive output does not include charts because the current report manifest excludes them; the README discloses that limitation. Remaining tasks and evidence are in the plan.
+
+## v322 - 2026-11-09
+
+Independent source review confirmed fixes for intraday bar-close and explicit-midnight cutoffs, quote-aware chart labels, and exact first/last bar timestamps in manifests. Its final bar-close boundary concern was fixed with a regression. The SOL/USDC spot fixture now independently reconciles 10,000 USDC initial capital, 8 bps entry/exit costs, entry at 10 and exit at 11 to final 10,982.414068745004 USDC. No real SOL/USDC data is yet confirmed. Snapshot and artifact archive tests cover corruption, idempotency, missing input, safe names, private mode, transaction rollback and same-machine backup/restore. The full 14-asset history, source attestation, independent backup, chain-aware ledger, all-bot simulation, stress scenarios and realistic performance remain incomplete; TASK-1117 remains open. Before delivery regenerate the offline index and rerun final checks.
+
+## v323 - 2026-11-09
+
+All fourteen requested assets now have at least one source-labelled, contiguous daily snapshot in /Users/mitch/.local/share/solmargintrader/backtester-task-1117/daily-history.sqlite. Coverage, venue, quote, timestamps and IDs are in validated-market-inventory.json. Eleven KuCoin USDC pairs include SOL/USDC 2022-05-23 through 2026-11-08; Kraken USDC/USD has 720 bars; KuCoin KMNO/USDT has 923; OKX JitoSOL/USDT has 549, with exchange mint identity still unverified. Retained source response pages are in the sibling per-venue directories. The latest same-machine verified backup is daily-history-14-assets-backup.sqlite. These are daily observations, not validated multi-year minute data; the requested full depth and an off-machine recovery copy remain open. BTC and ETH requests started 2021-01-01, so earlier available history was not checked.
+
+Four existing default spot strategies ran against all 1,631 SOL/USDC bars with 70/30 split and assumed 6 bps fee plus 2 bps slippage. Result bundle lives in sol-usdc-daily-results; run archive runs.sqlite and same-machine runs-backup.sqlite passed ten-artifact verification for run bc5ab419c0fa747759f6a4a332de6611c6a3beece0adc58885111be44f40d2af. Initial run exposed `ValueError: run manifest strategies do not match output strategies`; cli now uses actual strategy output names and an all-strategy integration test covers it. These costs are assumptions, not a historical fee series. No real chain execution or complete multi-bot validation is implied.
+
+Explicit USDT-denominated spot snapshot runs are now supported without converting USDT to USD or USDC. Unverified source/quote snapshots remain refused; stablecoin quotes are refused for perp and non-snapshot paths. TASK-1117 remains in progress: preserve current work, finish end-to-end data maintenance and source identity checks, funding/fees/chaos/chain accounting, non-spot bot coverage, minute-scale performance, off-machine recovery and comprehensive validation.
+
+## v324 - 2026-11-09
+
+The previously recorded 14-asset daily inventory remains valid. KuCoin returned BTC and ETH bars before 2021, but the combined pre-2021 series failed strict contiguous-bar validation near the start. The importer refused both revisions; no gap filling occurred. Retained responses, failed combined CSVs and inventory are under /Users/mitch/.local/share/solmargintrader/backtester-task-1117/kucoin-pre2021-daily-20261109. The latest verified same-machine copy is daily-history-extended-backup.sqlite. Other checked markets returned no pre-2021 bars in those requests. Coverage before each validated snapshot remains unproved, and local backups are not off-machine recovery. The public repository checkpoint is draft PR 174; source code and data under this worktree do not establish that the whole backtester request is complete.
+
+## v325 - 2026-11-09
+
+The storage foundation in https://github.com/mithudso/solmargintrader/pull/174 merged to remote master as 2a61908580266c49878963deea6312c2b8034ecc. All required final-head CI checks passed. The local backtester suite passed 983 tests and documentation/index checks passed. The original checkout remains in use by other sessions and was not changed. TASK-1117 remains open: the continuation requirements in v323 and v324, the implementation plan, source data and off-machine backup gaps still apply. The v324 description of PR 174 as a draft is historical and superseded by this entry.
+
+## v326 — integrated manager and historical storage histories
+
+Integrated e0c6934 without changing its verified historical snapshot/archive source. Both active task histories and exact requests remain. Manager task2 re-review accepted the exact-config and durable identity fixes but found a remaining crash-window provenance issue: pending receipts must not report the discovery hash as a responding owner revision. Original implementer owns focused fix round2; final review and delivery remain pending.

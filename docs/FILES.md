@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `999daef` (2026-11-09T19:37:48+00:00). 2810 tracked files, 62.5 MB.
+**Generated** from `index/INDEX.json` at commit `178c1d8` (2026-11-09T20:16:16+00:00). 2822 tracked files, 62.7 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2488 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 378/403 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2496 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 384/412 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,19 +34,19 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 105 files
+- [`docs`](#docs) — 108 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1916 files
+- [`backtester`](#backtester) — 1921 files
 - [`research`](#research) — 206 files
 - [`extension`](#extension) — 117 files
-- [`soltui`](#soltui) — 166 files
+- [`soltui`](#soltui) — 167 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.claude`](#claude) — 1 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
-- [`botmanager`](#botmanager) — 18 files
+- [`botmanager`](#botmanager) — 21 files
 - [`executor`](#executor) — 44 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 832 lines · 157,901 B · description: **extracted**
+`doc` · 895 lines · 168,812 B · description: **extracted**
 
-**Purpose.** Version: 319 Delta: v318 to v319; integrate PR172 while preserving implementation and UI histories. Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts.
+**Purpose.** Version: 326 Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation. Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
 
 **Use.** Read it.
 
@@ -226,9 +226,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1349 lines · 69,194 B · description: **extracted**
+`doc` · 1399 lines · 75,713 B · description: **extracted**
 
-**Purpose.** Version: 157 Delta: v156 to v157; preserve both merged UI request and implementation handoff. Delta: v155 to v156; incorporate the supplemental UI handoff into implementation.
+**Purpose.** Version: 159 Delta: concurrent histories to v159; integrate PR174/176 and retain manager implementation. Delta: v156 to v157; preserve both merged UI request and implementation handoff.
 
 **Use.** Read it.
 
@@ -254,7 +254,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-105 files.
+108 files.
 
 #### `docs/API.md`
 
@@ -306,9 +306,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 347 lines · 21,666 B · description: **extracted**
+`doc` · 321 lines · 20,737 B · description: **extracted**
 
-**Purpose.** <<<<<<< HEAD ======= python3 index/build.py all # refresh
+**Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
 **Use.** Read it.
 
@@ -338,9 +338,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27546 lines · 1,425,124 B · description: **extracted**
+`doc` · 27526 lines · 1,423,796 B · description: **extracted**
 
-**Purpose.** <<<<<<< HEAD ======= Regenerate with:
+**Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
 **Use.** Read it.
 
@@ -461,6 +461,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 736 lines · 239,149 B · description: **extracted**
 
 **Purpose.** Version:1.0.0. Delta: complete created/modified path inventory for the full-script source-card task. All691 source cards remain coin-test-incomplete.
+
+**Use.** Read it.
+
+#### `docs/bot-manager-milestone-1.md`
+
+`doc` · 58 lines · 4,699 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Date: 2026-11-09 Status: implementation under final review; delivery not yet complete.
 
 **Use.** Read it.
 
@@ -1042,6 +1050,22 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 ### `docs/superpowers/plans/`
 
+#### `docs/superpowers/plans/2026-11-09-backtester-integrity.md`
+
+`doc` · 69 lines · 6,729 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/superpowers/plans/2026-11-09-backtester-prompt-review.md`
+
+`doc` · 8 lines · 1,910 B · description: **extracted**
+
+**Purpose.** The user explicitly requested `prompt-deep-optimizer` on a one-off prompt. The helper measured 399 estimated tokens (`EXECUTED`, small profile); the skill suggests a handoff for a short one-off, but the explicit request to run this optimizer and then implement takes precedence. The original and final text are in `prompts.md` v156/v157.
+
+**Use.** Read it.
+
 #### `docs/superpowers/plans/2026-11-09-bot-control-room.md`
 
 `doc` · 134 lines · 15,592 B · description: **extracted**
@@ -1208,7 +1232,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1916 files.
+1921 files.
 
 #### `backtester/PROMPT.md`
 
@@ -1220,7 +1244,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/README.md`
 
-`doc` · 478 lines · 24,594 B · description: **extracted**
+`doc` · 518 lines · 27,023 B · description: **extracted**
 
 **Purpose.** An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.
 
@@ -1246,7 +1270,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/cli.py`
 
-`code-python` · 325 lines · 11,463 B · description: **extracted**
+`code-python` · 351 lines · 13,124 B · description: **extracted**
 
 **Purpose.** Command-line entry point. python -m backtester.cli --asset SOL --strategy all --out results/ Running with no arguments prints usage rather than starting a long fetch.
 
@@ -1344,11 +1368,11 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/data.py`
 
-`code-python` · 316 lines · 12,107 B · description: **curated**
+`code-python` · 359 lines · 14,279 B · description: **curated**
 
 **Purpose.** Loading and validating bars. Refuses gaps rather than filling them, resolves columns by name, and requires monotone de-duplicated timestamps — a forward-filled gap flatters every volatility and reversion statistic computed after it.
 
-**Contents.** Defines `resolve_data_dir()`, `class DataValidationError`, `class DataLoader`, `validate_bars()`, `_slice_dates()`, `checksum_frame()`, `class CsvLoader`, `class SyntheticLoader`, `frame_to_arrays()`.
+**Contents.** Defines `resolve_data_dir()`, `class DataValidationError`, `class DataLoader`, `validate_bars()`, `_slice_dates()`, `checksum_frame()`, `class CsvLoader`, `class SyntheticLoader`, `frame_to_arrays()`, `class SnapshotLoader`.
 
 **Use.** `CsvLoader(path, allow_gaps=False).load(asset, start, end, interval)`.
 
@@ -1432,6 +1456,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `import backtester.core.gridsim`
 
+#### `backtester/core/history_store.py`
+
+`code-python` · 165 lines · 8,200 B · description: **extracted**
+
+**Purpose.** Immutable, validated offline OHLCV snapshots backed by SQLite. Source labels are supplied by the operator; they are not independently verified. Import leaves the original file untouched. The caller owns independent backups.
+
+**Contents.** Defines `COLUMNS`, `_schema()`, `_hash_row()`, `import_history()`, `_verify()`, `snapshot_info()`, `read_history()`, `main()`.
+
+**Use.** `python3 backtester/core/history_store.py --help`
+
 #### `backtester/core/indicators.py`
 
 `code-python` · 480 lines · 19,134 B · description: **extracted**
@@ -1484,7 +1518,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/plotting.py`
 
-`code-python` · 99 lines · 2,907 B · description: **extracted**
+`code-python` · 100 lines · 2,954 B · description: **extracted**
 
 **Purpose.** Equity-curve and drawdown charts. matplotlib is imported lazily behind a guard so that a missing install degrades to "no charts" rather than failing an otherwise complete run.
 
@@ -1494,13 +1528,23 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/report.py`
 
-`code-python` · 369 lines · 13,519 B · description: **extracted**
+`code-python` · 370 lines · 13,651 B · description: **extracted**
 
 **Purpose.** Comparison reporting, with the caveats the numbers require. A sorted Sharpe table is the most misleading artifact a backtester can emit. Everything here exists to stop that: buy-and-hold is always shown as the baseline, in-sample and out-of-sample are separate columns, and the count of configurations evaluated is printed so a reader can weigh the selection bias.
 
 **Contents.** Defines `NOT_ADVICE`, `MULTIPLE_TESTING_NOTE`, `TABLE_COLUMNS`, `PERCENT_COLUMNS`, `class SplitResult`, `library_versions()`, `results_frame()`, `_fmt_cell()`, `render_table()`, `render_report()` and 1 more.
 
 **Use.** `import backtester.core.report`
+
+#### `backtester/core/run_archive.py`
+
+`code-python` · 183 lines · 8,119 B · description: **extracted**
+
+**Purpose.** Transactional archive for completed backtester artifact bundles. A manifest proves byte consistency, not the accuracy or completeness of a model. This module does not execute strategies or fetch market data.
+
+**Contents.** Defines `class ArchiveError`, `_digest()`, `_unique_object()`, `_inventory()`, `_bundle()`, `_connect()`, `import_run()`, `_read()`, `read_run()`, `backup_archive()` and 1 more.
+
+**Use.** `python3 backtester/core/run_archive.py --help`
 
 #### `backtester/core/scorecard.py`
 
@@ -1554,7 +1598,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/types.py`
 
-`code-python` · 453 lines · 17,321 B · description: **extracted**
+`code-python` · 456 lines · 17,424 B · description: **extracted**
 
 **Purpose.** Core value types for the backtester, including the look-ahead guard.
 
@@ -19958,6 +20002,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_analysis_regressions.py -q`
 
+#### `backtester/tests/test_archive_integration.py`
+
+`test` · 69 lines · 3,601 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ArchiveIntegrationTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_archive_integration.py -q`
+
 #### `backtester/tests/test_botcli.py`
 
 `test` · 62 lines · 2,327 B · description: **extracted**
@@ -20148,6 +20202,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_gridsim.py -q`
 
+#### `backtester/tests/test_history_store.py`
+
+`test` · 116 lines · 6,145 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class HistoryStoreTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_history_store.py -q`
+
 #### `backtester/tests/test_index.py`
 
 `test` · 267 lines · 12,355 B · description: **extracted**
@@ -20227,6 +20291,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `class WarmupParityRegressions`, `class ResearchRegressions`, `class DiscoveryEvidenceRegressions`. Depends on `backtester`, `research`.
 
 **Use.** `python3 -m pytest backtester/tests/test_research_regressions.py -q`
+
+#### `backtester/tests/test_run_archive.py`
+
+`test` · 101 lines · 4,787 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RunArchiveTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_run_archive.py -q`
 
 #### `backtester/tests/test_scorecard.py`
 
@@ -23336,7 +23410,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-166 files.
+167 files.
 
 #### `soltui/README.md`
 
@@ -23444,7 +23518,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/bots.py`
 
-`code-python` · 1395 lines · 64,913 B · description: **extracted**
+`code-python` · 1615 lines · 77,731 B · description: **extracted**
 
 **Purpose.** The Bots tab's grid, triangular-arbitrage, DCA and Trend simulations. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
 
@@ -23504,7 +23578,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/commands.py`
 
-`code-python` · 3401 lines · 169,370 B · description: **extracted**
+`code-python` · 3424 lines · 170,755 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -24630,6 +24704,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_live_tools.py -q`
 
+#### `soltui/tests/test_manager_controls.py`
+
+`test` · 375 lines · 16,063 B · description: **extracted**
+
+**Purpose.** Safe delegated forward controls use isolated files and never launch a recorder.
+
+**Contents.** Defines `_process_control()`, `class ManagerControls`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_manager_controls.py -q`
+
 #### `soltui/tests/test_native_host_registration.py`
 
 `test` · 53 lines · 2,153 B · description: **extracted**
@@ -25174,7 +25258,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## botmanager
 
-18 files.
+21 files.
 
 #### `botmanager/.gitignore`
 
@@ -25186,7 +25270,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 197 lines · 11,758 B · description: **extracted**
+`doc` · 293 lines · 18,124 B · description: **extracted**
 
 **Purpose.** The standalone `solbot` CLI creates persistent named bot drafts and inspects their pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC. There is no manager runtime in this release. Creating a draft cannot start a
 
@@ -25260,21 +25344,21 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/registry.py`
 
-`code-python` · 244 lines · 8,065 B · description: **extracted**
+`code-python` · 348 lines · 11,707 B · description: **extracted**
 
 **Purpose.** One application registry, shared by CLI and future local transports.
 
-**Contents.** Defines `class CommandContext`, `class CommandSpec`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()`, `_status()`, `_runtime()` and 5 more.
+**Contents.** Defines `class CommandContext`, `class CommandSpec`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()`, `_external()`, `_discover()` and 11 more.
 
 **Use.** `import botmanager.src.botmanager.registry`
 
 #### `botmanager/src/botmanager/status.py`
 
-`code-python` · 162 lines · 5,929 B · description: **extracted**
+`code-python` · 333 lines · 13,421 B · description: **extracted**
 
 **Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
 
-**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `_evidence()`, `draft_snapshot()`.
+**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `_evidence()`, `draft_snapshot()`, `legacy_snapshot()`.
 
 **Use.** `import botmanager.src.botmanager.status`
 
@@ -25287,6 +25371,28 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `STORE_SCHEMA_VERSION`, `BACKUP_DESCRIPTOR_VERSION`, `MIGRATIONS`, `data_home()`, `class ManagerStore`.
 
 **Use.** `import botmanager.src.botmanager.store`
+
+### `botmanager/src/botmanager/adapters/`
+
+#### `botmanager/src/botmanager/adapters/__init__.py`
+
+`code-python` · 94 lines · 3,240 B · description: **extracted**
+
+**Purpose.** Installation discovery is read-only and never spawns an owner/native host.
+
+**Contents.** Defines `SOURCE_REVISION`, `default_installations()`, `class Inventory`, `discover_installations()`. Depends on `soltui`.
+
+**Use.** `import botmanager.src.botmanager.adapters.__init__`
+
+#### `botmanager/src/botmanager/adapters/soltui.py`
+
+`code-python` · 922 lines · 35,457 B · description: **extracted**
+
+**Purpose.** Bounded loopback owner adapter. Discovery never starts an owner or creates state.
+
+**Contents.** Defines `SAFE_COMMANDS`, `CONTROL_PARAMS`, `FAMILIES`, `_MISSING`, `_fail()`, `_hash()`, `_sha()`, `_session()`, `_control_semantics()`, `_invalid_receipt()` and 5 more.
+
+**Use.** `import botmanager.src.botmanager.adapters.soltui`
 
 ### `botmanager/tests/`
 
@@ -25317,6 +25423,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `learned()`, `class ConfigTests`.
 
 **Use.** `python3 -m pytest botmanager/tests/test_config.py -q`
+
+#### `botmanager/tests/test_legacy.py`
+
+`test` · 783 lines · 32,921 B · description: **extracted**
+
+**Purpose.** Real loopback HTTP fixtures verify transport and authority, not live trading.
+
+**Contents.** Defines `owner()`, `class Legacy`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_legacy.py -q`
 
 #### `botmanager/tests/test_receipts.py`
 
@@ -26664,7 +26780,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/soltui_ci.py`
 
-`code-python` · 139 lines · 6,009 B · description: **extracted**
+`code-python` · 141 lines · 6,188 B · description: **extracted**
 
 **Purpose.** Select and shard SolTUI tests without silently omitting shared-code coverage.
 
@@ -26694,7 +26810,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_soltui_ci.py`
 
-`test` · 42 lines · 2,065 B · description: **none**
+`test` · 49 lines · 2,441 B · description: **none**
 
 **Purpose.** _No description available._
 

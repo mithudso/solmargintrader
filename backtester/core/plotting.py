@@ -30,6 +30,7 @@ def plot_comparison(
     asset: str,
     *,
     log_scale: bool = True,
+    quote_currency: str = "USD",
 ) -> list[Path]:
     """Write equity-curve and drawdown PNGs. Returns paths written."""
     if not charts_available():
@@ -62,7 +63,7 @@ def plot_comparison(
     if results and results[0].mode == "perp":
         title += f" -- perp {results[0].leverage:g}x"
     ax_eq.set_title(title)
-    ax_eq.set_ylabel("Equity (USD)")
+    ax_eq.set_ylabel(f"Equity ({quote_currency})")
     if log_scale and all((r.equity > 0).all() for r in results):
         ax_eq.set_yscale("log")
     ax_eq.legend(loc="upper left", fontsize=9)

@@ -8,6 +8,7 @@ CsvLoader (primary, used by the engine and every test), SyntheticLoader
 from __future__ import annotations
 
 import subprocess
+import re
 
 import hashlib
 from pathlib import Path
@@ -313,3 +314,45 @@ def frame_to_arrays(df: pd.DataFrame) -> dict[str, np.ndarray]:
         "close": np.ascontiguousarray(df["close"].to_numpy(dtype="float64")),
         "volume": np.ascontiguousarray(df["volume"].to_numpy(dtype="float64")),
     }
+
+
+class SnapshotLoader:
+    """Load a verified immutable history snapshot through the standard loader seam."""
+
+    def __init__(self, archive: str | Path, snapshot_id: str, quote: str = "USD") -> None:
+        self.archive = Path(archive)
+        self.snapshot_id = snapshot_id
+        self.quote = quote
+
+    def load(self, asset: str, start: str | None, end: str | None, interval: str) -> pd.DataFrame:
+        from .history_store import read_history, snapshot_info
+
+        info = snapshot_info(self.archive, self.snapshot_id)
+        if info["instrument"].upper() != f"{asset.upper()}-{self.quote}":
+            raise DataValidationError("snapshot must match the requested asset and quote")
+        if info["venue"].strip().lower() in {"unknown", "unverified"}:
+            raise DataValidationError("snapshot venue is not established")
+        step = INTERVAL_SECONDS[interval]
+        if info["interval_seconds"] != step:
+            raise DataValidationError("snapshot interval does not match requested interval")
+        first, last = info["first_ts"], info["last_ts"]
+        if start:
+            requested = int(pd.Timestamp(start, tz="UTC").timestamp())
+            if requested < first:
+                raise DataValidationError("snapshot starts after the requested date")
+            first = ((requested + step - 1) // step) * step
+        if end:
+            timestamp = pd.Timestamp(end, tz="UTC")
+            if re.fullmatch(r"\d{4}-\d{2}-\d{2}", end):
+                timestamp += pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
+            requested = int(timestamp.timestamp())
+            if requested > last + step:
+                raise DataValidationError("snapshot ends before the requested date")
+            # A timestamp names a bar OPEN; an intraday cutoff cannot include
+            # a bar until its entire interval has completed.
+            last = ((requested + 1 - step) // step) * step
+        _, rows = read_history(self.archive, self.snapshot_id, first, last)
+        return validate_bars(pd.DataFrame(rows, columns=BAR_COLUMNS), interval)
+
+    def describe(self) -> str:
+        return f"snapshot:sha256:{self.snapshot_id}"
