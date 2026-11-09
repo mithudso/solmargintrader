@@ -1,0 +1,5 @@
+Reviewer: /root/pdo_blind (fresh context, original candidate/finding history withheld)
+Actual returned result:
+Zero Medium+ issues found.
+Coverage: A–J, M, P pass. K partial because the target model is unspecified. L and N N/A for this static, one-off prompt. O N/A; a bounded self-check and explicit partial-result fallback are present.
+The prompt clearly bounds delivery to design artifacts, separates evidence from instructions, preserves trading safeguards, covers all seven requirements, and requires source verification and measurable acceptance gates.
