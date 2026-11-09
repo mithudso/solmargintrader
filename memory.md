@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 257
-Delta: v256 to v257; investigate recurring minute backtest cadence failure.
+Version: 258
+Delta: v257 to v258; record delivery check and version correction.
+
+## v258 - 2026-11-09
+
+PR https://github.com/mithudso/solmargintrader/pull/155 initially failed the extension version gate after all 377 extension tests passed. Bumped extension manifest, package and version assertion to 0.5.1. Recheck the final pushed head and complete delivery. Installed app/browser acceptance is still required.
 
 ## v257 - 2026-11-09
 
