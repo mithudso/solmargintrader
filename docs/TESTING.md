@@ -1,8 +1,25 @@
 # Testing
 
+## Standalone bot manager
+
+The `botmanager/` package has its own stdlib unittest suite and CI job. Install the
+package into an isolated environment, then run from the repository root:
+
+```bash
+python -m unittest discover -s botmanager/tests -t botmanager
+```
+
+The suite uses temporary `SOLBOT_HOME` directories. CLI reads must leave missing
+storage absent; defaults, pinned configurations and separate bot identities must
+survive a fresh process. Owner-integration fixtures exercise actual HTTP requests
+without starting or changing production bots. Current runtime and venue limits are
+listed in `botmanager/README.md`; tests do not establish a profitable trading edge.
+
+## Existing component suites
+
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 999 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1384 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
@@ -14,7 +31,7 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2837 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2855 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -160,7 +177,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1384 tests
+## soltui — 1402 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with

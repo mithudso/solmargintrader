@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T20:49:48+00:00",
+  "generatedAt": "2026-11-09T20:56:57+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1646,
+      "matchingFiles": 1653,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1385,
+      "matchingFiles": 1386,
       "shown": 30,
       "files": [
         {
@@ -205,6 +205,10 @@
           "hits": 54
         },
         {
+          "path": "soltui/bots.py",
+          "hits": 54
+        },
+        {
           "path": "llms-full.txt",
           "hits": 46
         },
@@ -227,10 +231,6 @@
         {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 34
-        },
-        {
-          "path": "soltui/bots.py",
-          "hits": 33
         },
         {
           "path": "soltui/help.py",
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1342,
+      "matchingFiles": 1344,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 718,
+      "matchingFiles": 726,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 616,
+      "matchingFiles": 627,
       "shown": 30,
       "files": [
         {
@@ -789,6 +789,10 @@
           "hits": 57
         },
         {
+          "path": "botmanager/tests/test_legacy.py",
+          "hits": 55
+        },
+        {
           "path": "docs/design/bot-control-room/mockup.css",
           "hits": 55
         },
@@ -831,10 +835,6 @@
         {
           "path": "soltui/bots.py",
           "hits": 49
-        },
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 48
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 470,
+      "matchingFiles": 481,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 200
+          "hits": 202
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 345,
+      "matchingFiles": 351,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 319,
+      "matchingFiles": 320,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 268,
+      "matchingFiles": 269,
       "shown": 30,
       "files": [
         {

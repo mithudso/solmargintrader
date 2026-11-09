@@ -3,10 +3,11 @@
 A file map for orientation, grouped by directory. Every path here is checked by
 `scripts/check_docs.py`, so a rename that is not reflected below fails the build.
 
-Seven components, in ascending order of how much damage a bug can do:
+Eight components with separate execution boundaries:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
+| `botmanager/` | Python 3.13 | No — standalone CLI defaults to paper/disarmed; legacy owner capabilities are explicit |
 | `mongo/` | Python 3.13 + pymongo | No — a derived datastore, rebuildable |
 | `research/` | Python 3.13 | No — analysis over the backtester |
 | `soltui/` | Python 3.13 | No — read-only display |
