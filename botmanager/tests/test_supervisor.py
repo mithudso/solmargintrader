@@ -130,6 +130,17 @@ class SupervisorTests(unittest.TestCase):
                 and self.ledger.get(self.spec.bot_id)["pid"] is not None
             )
         )
+        self.spin(
+            lambda: (
+                self.ledger.get(self.spec.bot_id)["reason"]
+                == "reference_input_exhausted"
+            )
+        )
+        after = self.ledger.get(self.spec.bot_id)
+        self.assertEqual(after["observed"], "waiting")
+        self.assertLess(time.time() - after["heartbeat"], 2.0)
+        self.assertEqual(after["checkpoint"], before["checkpoint"])
+        self.assertEqual(after["evaluated"], before["evaluated"])
         self.assertEqual(
             self.ledger.fills(self.spec.bot_id), before["checkpoint"]["fills"]
         )
@@ -279,7 +290,9 @@ class SupervisorTests(unittest.TestCase):
         with (
             patch("botmanager.service.sys.platform", "darwin"),
             patch("botmanager.service.installed_executable", return_value=executable),
-            patch("botmanager.service.subprocess.run") as launch,
+            patch(
+                "botmanager.service.subprocess.run", side_effect=LaunchctlFixture()
+            ) as launch,
         ):
             result = service("install", self.home, agents_dir=agents)
             self.assertTrue(result["installed"])
@@ -292,7 +305,246 @@ class SupervisorTests(unittest.TestCase):
                 definition["EnvironmentVariables"]["SOLBOT_HOME"], str(self.home)
             )
             self.assertTrue(definition["KeepAlive"])
-            self.assertEqual(launch.call_args.args[0][1], "bootstrap")
+            self.assertIn(
+                "bootstrap", [call.args[0][1] for call in launch.call_args_list]
+            )
+            self.assertEqual(launch.call_args.args[0][1], "print")
             service("uninstall", self.home, agents_dir=agents)
-            self.assertEqual(launch.call_args.args[0][1], "bootout")
+            self.assertIn(
+                "bootout", [call.args[0][1] for call in launch.call_args_list]
+            )
+            self.assertEqual(launch.call_args.args[0][1], "print")
             self.assertFalse(path.exists())
+
+    def test_slow_fragmented_request_cannot_suspend_supervisor_poll(self):
+        import socket
+
+        self.supervisor = Supervisor(self.home).open()
+        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        client.connect(str(self.home / "supervisor.sock"))
+        done = threading.Event()
+
+        def fragment():
+            try:
+                for part in (
+                    b"{",
+                    b'"command"',
+                    b":",
+                    b'"help"',
+                    b",",
+                    b'"params"',
+                    b":",
+                    b"{",
+                    b"}",
+                    b"}\n",
+                ):
+                    client.sendall(part)
+                    if done.wait(0.08):
+                        break
+            except OSError:
+                pass
+
+        thread = threading.Thread(target=fragment)
+        thread.start()
+        try:
+            started = time.monotonic()
+            self.supervisor.step()
+            elapsed = time.monotonic() - started
+            self.assertLess(elapsed, 0.45)
+        finally:
+            done.set()
+            client.close()
+            thread.join(1)
+
+    def test_failed_service_bootstrap_is_reconciled_on_retry(self):
+        from botmanager.service import service
+
+        fixture = LaunchctlFixture(fail_bootstrap=1)
+        agents = self.home / "retry-agents"
+        with (
+            patch("botmanager.service.sys.platform", "darwin"),
+            patch(
+                "botmanager.service.installed_executable",
+                return_value=self.home / "stable-solbot",
+            ),
+            patch("botmanager.service.subprocess.run", side_effect=fixture) as launch,
+        ):
+            with self.assertRaises(ManagerError):
+                service("install", self.home, agents_dir=agents)
+            path = next(agents.glob("*.plist"))
+            self.assertTrue(path.exists())
+            result = service("install", self.home, agents_dir=agents)
+            self.assertTrue(fixture.loaded)
+            self.assertTrue(result["registered"])
+            self.assertEqual(
+                [call.args[0][1] for call in launch.call_args_list].count("bootstrap"),
+                2,
+            )
+            result = service("install", self.home, agents_dir=agents)
+            self.assertTrue(result["already_registered"])
+            self.assertEqual(
+                [call.args[0][1] for call in launch.call_args_list].count("bootstrap"),
+                2,
+            )
+
+    def test_uninstall_cleans_retained_definition_only_after_confirmed_absence(self):
+        from botmanager.service import service
+
+        fixture = LaunchctlFixture(fail_bootstrap=1)
+        agents = self.home / "absent-agents"
+        with (
+            patch("botmanager.service.sys.platform", "darwin"),
+            patch(
+                "botmanager.service.installed_executable",
+                return_value=self.home / "stable-solbot",
+            ),
+            patch("botmanager.service.subprocess.run", side_effect=fixture) as launch,
+        ):
+            with self.assertRaises(ManagerError):
+                service("install", self.home, agents_dir=agents)
+            path = next(agents.glob("*.plist"))
+            fixture.unknown_probe = True
+            with self.assertRaises(ManagerError):
+                service("uninstall", self.home, agents_dir=agents)
+            self.assertTrue(path.exists())
+            fixture.unknown_probe = False
+            result = service("uninstall", self.home, agents_dir=agents)
+            self.assertFalse(path.exists())
+            self.assertFalse(result["registered"])
+            self.assertNotIn(
+                "bootout", [call.args[0][1] for call in launch.call_args_list]
+            )
+
+    def test_exhausted_replay_restarts_restore_waiting_without_new_evaluation(self):
+        self.start()
+        self.supervisor = Supervisor(self.home).open()
+        self.spin(lambda: self.ledger.get(self.spec.bot_id)["cursor"] == 8)
+        before = self.ledger.get(self.spec.bot_id)
+        self.supervisor.close()
+        self.supervisor = Supervisor(self.home).open()
+        for restart in ("daemon", "explicit-stop-start"):
+            if restart == "explicit-stop-start":
+                self.ledger.control(self.spec, "stop", str(uuid4()))
+                self.supervisor.step()
+                self.start()
+            self.spin(lambda: self.ledger.get(self.spec.bot_id)["pid"] is not None)
+            self.spin(
+                lambda: (
+                    self.ledger.get(self.spec.bot_id)["reason"]
+                    == "reference_input_exhausted"
+                ),
+                timeout=1.0,
+            )
+            after = self.ledger.get(self.spec.bot_id)
+            self.assertEqual(after["observed"], "waiting")
+            self.assertLess(time.time() - after["heartbeat"], 2.0)
+            self.assertEqual(after["checkpoint"], before["checkpoint"])
+            self.assertEqual(after["cursor"], before["cursor"])
+            self.assertEqual(after["evaluated"], before["evaluated"])
+            self.assertEqual(
+                self.ledger.fills(self.spec.bot_id), before["checkpoint"]["fills"]
+            )
+
+    def test_client_deadline_spans_fragmented_response(self):
+        import socket
+
+        listener = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        path = self.home / "supervisor.sock"
+        listener.bind(str(path))
+        path.chmod(0o600)
+        listener.listen(1)
+        listener.settimeout(2.0)
+        done = threading.Event()
+
+        def fragment():
+            try:
+                connection, _ = listener.accept()
+                with connection:
+                    connection.settimeout(1.0)
+                    connection.recv(65536)
+                    for part in b'{"ok":true}\n':
+                        connection.sendall(bytes([part]))
+                        if done.wait(0.08):
+                            break
+            except OSError:
+                pass
+
+        thread = threading.Thread(target=fragment)
+        thread.start()
+        try:
+            started = time.monotonic()
+            with (
+                patch("botmanager.transport.CLIENT_REQUEST_SECONDS", 0.2),
+                self.assertRaises(ManagerError) as caught,
+            ):
+                request(self.home, "help", {})
+            self.assertEqual(caught.exception.code, "supervisor_unreachable")
+            self.assertLess(time.monotonic() - started, 0.5)
+        finally:
+            done.set()
+            listener.close()
+            thread.join(2.0)
+
+    def test_service_command_success_requires_observed_registration_change(self):
+        from botmanager.service import service
+
+        fixture = LaunchctlFixture()
+        ignored = {"bootstrap"}
+
+        def launch(args, **kwargs):
+            if args[1] in ignored:
+                return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+            return fixture(args, **kwargs)
+
+        agents = self.home / "unconfirmed-agents"
+        with (
+            patch("botmanager.service.sys.platform", "darwin"),
+            patch(
+                "botmanager.service.installed_executable",
+                return_value=self.home / "stable-solbot",
+            ),
+            patch("botmanager.service.subprocess.run", side_effect=launch),
+        ):
+            with self.assertRaises(ManagerError):
+                service("install", self.home, agents_dir=agents)
+            path = next(agents.glob("*.plist"))
+            self.assertTrue(path.exists())
+            ignored.clear()
+            self.assertTrue(
+                service("install", self.home, agents_dir=agents)["registered"]
+            )
+            ignored.add("bootout")
+            with self.assertRaises(ManagerError):
+                service("uninstall", self.home, agents_dir=agents)
+            self.assertTrue(path.exists())
+            self.assertTrue(fixture.loaded)
+            ignored.clear()
+            self.assertFalse(
+                service("uninstall", self.home, agents_dir=agents)["registered"]
+            )
+            self.assertFalse(path.exists())
+
+
+class LaunchctlFixture:
+    def __init__(self, fail_bootstrap=0):
+        self.loaded = False
+        self.fail_bootstrap = fail_bootstrap
+        self.unknown_probe = False
+
+    def __call__(self, args, **kwargs):
+        command = args[1]
+        if command == "bootstrap":
+            if self.fail_bootstrap:
+                self.fail_bootstrap -= 1
+                raise subprocess.CalledProcessError(5, args)
+            self.loaded = True
+        elif command == "bootout":
+            if not self.loaded:
+                raise subprocess.CalledProcessError(113, args)
+            self.loaded = False
+        elif command == "print":
+            code = 5 if self.unknown_probe else 0 if self.loaded else 113
+            return subprocess.CompletedProcess(args, code, stdout="", stderr="")
+        else:
+            raise AssertionError("unexpected fixture launchctl command")
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")

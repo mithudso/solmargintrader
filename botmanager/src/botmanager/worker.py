@@ -69,6 +69,11 @@ def run_worker(home: str, bot_id: str, generation: int, parent_pid: int):
                 if row["generation"] != generation or row["desired"] != "running":
                     break
                 if row["cursor"] == len(row["input"]["bars"]):
+                    if (
+                        row["observed"] != "waiting"
+                        or row["reason"] != "reference_input_exhausted"
+                    ):
+                        ledger.mark_exhausted(bot_id, generation)
                     done.wait(0.25)
                     continue
                 ledger.begin_tick(bot_id, generation)

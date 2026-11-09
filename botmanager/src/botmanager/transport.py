@@ -9,12 +9,15 @@ import socket
 import stat
 import struct
 import sys
+import time
 from pathlib import Path
 
 from .domain import ManagerError, canonical
 
 MAX_REQUEST = 65536
 MAX_RESPONSE = 1024 * 1024
+CLIENT_REQUEST_SECONDS = 1.0
+SERVER_REQUEST_SECONDS = 0.2
 
 
 def _owner_path(path: Path, socket_required=True):
@@ -64,9 +67,17 @@ def _peer(connection):
             )
 
 
-def _read(connection, limit):
+def _remaining(connection, deadline):
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise TimeoutError("Local command deadline expired")
+    connection.settimeout(remaining)
+
+
+def _read(connection, limit, deadline):
     data = bytearray()
     while b"\n" not in data:
+        _remaining(connection, deadline)
         chunk = connection.recv(min(4096, limit + 1 - len(data)))
         if not chunk:
             raise ValueError
@@ -80,17 +91,19 @@ def _read(connection, limit):
 
 def request(home: Path, command: str, params: dict):
     path = home / "supervisor.sock"
+    deadline = time.monotonic() + CLIENT_REQUEST_SECONDS
     try:
         _owner_path(path)
         payload = (canonical({"command": command, "params": params}) + "\n").encode()
         if len(payload) > MAX_REQUEST:
             raise ValueError
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
-            client.settimeout(1.0)
+            _remaining(client, deadline)
             client.connect(str(path))
             _peer(client)
+            _remaining(client, deadline)
             client.sendall(payload)
-            return _read(client, MAX_RESPONSE)
+            return _read(client, MAX_RESPONSE, deadline)
     except ManagerError:
         raise
     except (OSError, ValueError, TypeError) as exc:
@@ -126,10 +139,10 @@ class CommandServer:
         except BlockingIOError:
             return
         with connection:
-            connection.settimeout(0.2)
+            deadline = time.monotonic() + SERVER_REQUEST_SECONDS
             try:
                 _peer(connection)
-                message = _read(connection, MAX_REQUEST)
+                message = _read(connection, MAX_REQUEST, deadline)
                 if (
                     set(message) != {"command", "params"}
                     or message["command"]
@@ -158,6 +171,7 @@ class CommandServer:
                 encoded = (canonical(response) + "\n").encode()
                 if len(encoded) > MAX_RESPONSE:
                     raise ValueError
+                _remaining(connection, deadline)
                 connection.sendall(encoded)
             except (OSError, ValueError, TypeError, KeyError, ManagerError):
                 return

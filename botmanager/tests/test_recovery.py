@@ -153,3 +153,83 @@ class RecoveryTests(unittest.TestCase):
             self.ledger.get(self.spec.bot_id)["input"]["snapshot_hash"],
             self.data["snapshot_hash"],
         )
+
+    def test_full_request_journal_reserves_stop_for_every_active_instance(self):
+        specs = [self.spec] + [grid("capacity-" + str(i)) for i in range(3)]
+        generations = {}
+        starts = {}
+        for index, spec in enumerate(specs):
+            self.ledger.register(spec, self.data)
+            request_id = str(uuid4())
+            starts[spec.bot_id] = (
+                request_id,
+                self.ledger.control(spec, "start", request_id),
+            )
+            # Stop queued/pending intents before the two claimed workers.
+            generations[spec.bot_id] = (
+                self.ledger.get(spec.bot_id)["generation"]
+                if index < 2
+                else self.ledger.claim(spec.bot_id, "capacity-owner")
+            )
+        stopped_specs = [grid("registered-stopped-" + str(i)) for i in range(96)]
+        for spec in stopped_specs:
+            self.ledger.register(spec, self.data)
+        with self.ledger.connection(True) as db:
+            db.execute(
+                "WITH RECURSIVE n(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM n WHERE i<99996) INSERT INTO requests SELECT 'capacity-fixture-'||i,'fixture','{}','fixture' FROM n"
+            )
+            self.assertEqual(
+                db.execute("SELECT count(*) FROM requests").fetchone()[0], 100000
+            )
+        for spec in stopped_specs:
+            with self.assertRaises(ManagerError) as refused:
+                self.ledger.control(spec, "stop", str(uuid4()))
+            self.assertEqual(refused.exception.code, "resource_limit")
+            self.assertEqual(self.ledger.get(spec.bot_id)["desired"], "stopped")
+        for spec in specs:
+            with self.assertRaises(ManagerError) as refused:
+                self.ledger.control(spec, "start", str(uuid4()))
+            self.assertEqual(refused.exception.code, "resource_limit")
+            request_id = str(uuid4())
+            receipt = self.ledger.control(spec, "stop", request_id)
+            self.assertEqual(receipt, self.ledger.control(spec, "stop", request_id))
+            with self.assertRaises(ManagerError):
+                self.ledger.commit_tick(
+                    spec.bot_id,
+                    generations[spec.bot_id],
+                    0,
+                    evaluate(spec, self.data, 2),
+                )
+            # A new-ID no-op must not consume another instance's reserved stop.
+            with self.assertRaises(ManagerError):
+                self.ledger.control(spec, "stop", str(uuid4()))
+            with self.assertRaises(ManagerError):
+                self.ledger.control(spec, "start", str(uuid4()))
+        self.ledger.recover("after-capacity-restart")
+        for spec in stopped_specs:
+            self.assertEqual(self.ledger.get(spec.bot_id)["desired"], "stopped")
+            self.assertIsNone(self.ledger.claim(spec.bot_id, "after-capacity-restart"))
+        for spec in specs:
+            self.assertEqual(self.ledger.get(spec.bot_id)["desired"], "stopped")
+            self.assertIsNone(self.ledger.claim(spec.bot_id, "after-capacity-restart"))
+            request_id, receipt = starts[spec.bot_id]
+            self.assertEqual(receipt, self.ledger.control(spec, "start", request_id))
+        with self.ledger.connection() as db:
+            self.assertEqual(
+                db.execute("SELECT count(*) FROM requests").fetchone()[0], 100004
+            )
+
+    def test_exhausted_transition_fences_stale_and_incomplete_workers(self):
+        self.start()
+        generation = self.ledger.claim(self.spec.bot_id, "test")
+        with self.assertRaises(ManagerError) as incomplete:
+            self.ledger.mark_exhausted(self.spec.bot_id, generation)
+        self.assertEqual(incomplete.exception.code, "stale_cursor")
+        self.ledger.commit_tick(
+            self.spec.bot_id, generation, 0, evaluate(self.spec, self.data, 8)
+        )
+        self.ledger.control(self.spec, "stop", str(uuid4()))
+        with self.assertRaises(ManagerError) as stale:
+            self.ledger.mark_exhausted(self.spec.bot_id, generation)
+        self.assertEqual(stale.exception.code, "stale_generation")
+        self.assertEqual(self.ledger.get(self.spec.bot_id)["desired"], "stopped")

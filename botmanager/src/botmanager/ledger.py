@@ -23,6 +23,11 @@ RESTART_DELAYS = (1.0, 5.0, 30.0)
 FAILURE_WINDOW = 600.0
 MAX_ACTIVE = 4
 MAX_INSTANCES = 100
+MAX_REQUESTS = 100000
+# Once ordinary receipts fill, no new starts can enter. Reserve a stop receipt
+# for every supported registered instance, including queued running intents.
+# Accepted request IDs remain durable; no-op IDs cannot consume this reserve.
+STOP_RECEIPT_RESERVE = MAX_INSTANCES
 
 
 class RuntimeLedger:
@@ -311,6 +316,13 @@ class RuntimeLedger:
                 )
             desired = "running" if operation == "start" else "stopped"
             already = row["desired"] == desired
+            capacity = MAX_REQUESTS + (
+                STOP_RECEIPT_RESERVE if operation == "stop" and not already else 0
+            )
+            if db.execute("SELECT count(*) FROM requests").fetchone()[0] >= capacity:
+                raise ManagerError(
+                    "resource_limit", "Durable request capacity is exhausted.", 3
+                )
             if not already:
                 if (
                     desired == "running"
@@ -351,10 +363,6 @@ class RuntimeLedger:
                 reason="already_requested" if already else "desired_state_saved",
                 metadata={"config_hash": spec.config_hash},
             ).to_dict()
-            if db.execute("SELECT count(*) FROM requests").fetchone()[0] >= 100000:
-                raise ManagerError(
-                    "resource_limit", "Durable request capacity is exhausted.", 3
-                )
             db.execute(
                 "INSERT INTO requests VALUES (?,?,?,?)",
                 (
@@ -434,6 +442,24 @@ class RuntimeLedger:
                 "UPDATE runs SET heartbeat=?,pid=? WHERE bot_id=?",
                 (time.time(), pid, bot_id),
             )
+
+    def mark_exhausted(self, bot_id, generation):
+        """Restore an observed EOF after worker claim without another evaluation."""
+        with self.connection(True) as db:
+            row = self._decode(db, self._fence(db, bot_id, generation))
+            if row["cursor"] != len(row["input"]["bars"]) or row["checkpoint"] is None:
+                raise ManagerError(
+                    "stale_cursor", "Reference input is not exhausted.", 3
+                )
+            if (
+                row["observed"] != "waiting"
+                or row["reason"] != "reference_input_exhausted"
+            ):
+                db.execute(
+                    "UPDATE runs SET observed='waiting',reason='reference_input_exhausted',tick_started=NULL WHERE bot_id=?",
+                    (bot_id,),
+                )
+                self._event(db, row, "worker.input_exhausted")
 
     def begin_tick(self, bot_id, generation):
         with self.connection(True) as db:

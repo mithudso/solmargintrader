@@ -372,8 +372,12 @@ Example commands after saving a descriptor at the stated path:
 `daemon` is an explicit foreground process. `start` persists desired intent and
 returns a pending receipt even when no supervisor is running. The optional UUID
 lets a caller inspect the exact durable receipt after a lost response; a different
-operation with the same UUID conflicts. Without a supplied UUID, one is generated
-and returned in the receipt. Repeated starts never replace an active worker.
+operation with the same UUID conflicts. Ordinary requests have a 100,000-receipt
+limit; 100 additional slots are reserved exclusively for running-to-stopped
+transitions, covering every supported registered instance, including queued
+intents. New starts and new-ID no-ops cannot consume that reserve. Accepted IDs
+are never forgotten. Without a supplied UUID, one is generated and returned in
+the receipt. Repeated starts never replace an active worker.
 `stop` persists stopped intent and fences in-flight commits before returning. It
 retains positions and simulated orders implied by the canonical replay. It never
 closes exposure or changes arming. Stopped intent survives daemon restarts.
@@ -398,7 +402,9 @@ fresh Jupiter data. Additional recordings need the later prospective-data design
 
 `events BOT --limit 100` reads the reference journal. The local supervisor socket
 is mode 0600 with same-user peer checks on macOS/Linux, a 64 KiB request ceiling,
-a bounded listen backlog and per-request deadlines. It dispatches the same
+a bounded listen backlog and monotonic whole-request I/O deadlines (0.2 seconds
+for server receipt/response and one second for client connect/send/receive).
+Receiving fragments never resets the remaining budget. It dispatches the same
 registry for local bot controls and reads. Registration and service administration
 are explicit CLI operations outside the supervisor request loop. CLI controls
 write durable intent directly, so an unavailable socket cannot prevent a stop.
@@ -420,9 +426,16 @@ command that silently discards a failed run or its inventory.
 Installation accepts only a non-editable package in a stable installed environment;
 it rejects source imports and temporary/worktree environments. Each SOLBOT_HOME
 has its own launchd label. A conflicting existing definition refuses replacement.
-`status` reads registration and the supervisor lock and never installs, starts or
-repairs anything. Install explicitly bootstraps a RunAtLoad/KeepAlive LaunchAgent;
-uninstall bootouts only its own label and retains all desired intent and journals.
+`status` reads the persisted definition and supervisor lock and never installs,
+starts or repairs anything; launchd registration remains explicitly unqueried.
+Install checks the exact launchd service target, bootstraps an absent service from
+the matching definition, and confirms registration before reporting success.
+Retrying a failed bootstrap therefore reconciles the retained definition instead
+of treating file existence as activation. Uninstall bootouts only its own label,
+confirms absence before deleting the definition, and retains all desired intent
+and journals. An already absent service permits safe cleanup of its matching
+retained definition; other probe failures retain the definition and report
+unconfirmed state.
 Other operating systems can run the foreground daemon; supervisor adapters beyond
 launchd are not implemented. Tests use isolated homes, subprocesses and mocked
 launchctl operations. They do not alter production LaunchAgents.

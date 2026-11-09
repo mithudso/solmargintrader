@@ -44,6 +44,32 @@ def installed_executable() -> Path:
     return executable
 
 
+def _registered(service_target: str) -> bool:
+    """Probe the exact launchd service, without parsing unstable print output.
+
+    launchctl error 113 is "Could not find specified service". Other failures
+    are uncertainty, including unavailable GUI domains and authorization errors.
+    """
+    try:
+        result = subprocess.run(
+            ["launchctl", "print", service_target],
+            check=False,
+            capture_output=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ManagerError(
+            "service_unavailable", "Launchd registration could not be confirmed.", 4
+        ) from exc
+    if result.returncode == 0:
+        return True
+    if result.returncode == 113:
+        return False
+    raise ManagerError(
+        "service_unavailable", "Launchd registration could not be confirmed.", 4
+    )
+
+
 def service(action: str, home: Path | None = None, *, agents_dir: Path | None = None):
     home = Path(home).absolute() if home is not None else data_home()
     label = (
@@ -62,6 +88,9 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
             "label": label,
             "plist_path": str(path),
             "installed": path.is_file(),
+            "definition_present": path.is_file(),
+            "registered": None,
+            "registration_reason": "launchd_registration_not_queried",
             "supervisor_lock_held": lock_held(home / "supervisor.lock"),
             "automatic_install": False,
         }
@@ -74,52 +103,86 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
             3,
         )
     target = f"gui/{os.getuid()}"
-    if action == "uninstall":
-        if path.exists():
-            try:
-                saved = plistlib.loads(path.read_bytes())
-                if saved.get("Label") != label or saved.get(
-                    "EnvironmentVariables", {}
-                ).get("SOLBOT_HOME") != str(home):
-                    raise ValueError
-                # bootout failing is not proof of an absent service; retain plist.
-                subprocess.run(
-                    ["launchctl", "bootout", target + "/" + label],
-                    check=True,
-                    capture_output=True,
-                    timeout=5,
-                )
-                path.unlink()
-            except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                raise ManagerError(
-                    "service_unavailable",
-                    "Service removal could not be confirmed; registration was retained.",
-                    4,
-                ) from exc
-        return {"installed": False, "desired_intent_retained": True}
-    executable = installed_executable()
-    definition = {
-        "Label": label,
-        "ProgramArguments": [str(executable), "daemon"],
-        "EnvironmentVariables": {"SOLBOT_HOME": str(home)},
-        "RunAtLoad": True,
-        "KeepAlive": True,
-        "ThrottleInterval": 5,
-        "Umask": 0o077,
-        "WorkingDirectory": str(Path.home()),
-    }
+    service_target = target + "/" + label
     try:
-        if path.exists():
-            if plistlib.loads(path.read_bytes()) != definition:
+        if action == "uninstall":
+            if path.exists():
+                saved = plistlib.loads(path.read_bytes())
+                if (
+                    not isinstance(saved, dict)
+                    or saved.get("Label") != label
+                    or saved.get("EnvironmentVariables") != {"SOLBOT_HOME": str(home)}
+                ):
+                    raise ManagerError(
+                        "identity_conflict",
+                        "Existing service definition does not match this home.",
+                    )
+                if _registered(service_target):
+                    try:
+                        subprocess.run(
+                            ["launchctl", "bootout", service_target],
+                            check=True,
+                            capture_output=True,
+                            timeout=5,
+                        )
+                    except subprocess.SubprocessError:
+                        # An interrupted/failed acknowledgment does not establish
+                        # either presence or absence. Reconcile before removing.
+                        pass
+                    if _registered(service_target):
+                        raise ManagerError(
+                            "service_unavailable",
+                            "Service removal is unconfirmed; its definition was retained.",
+                            4,
+                        )
+                path.unlink()
+            elif _registered(service_target):
                 raise ManagerError(
                     "identity_conflict",
-                    "An existing service definition differs; no replacement was made.",
+                    "A registered service has no matching local definition; no removal was attempted.",
                 )
-            return {"installed": True, "label": label, "already_registered": True}
-        directory.mkdir(parents=True, exist_ok=True)
-        with path.open("xb") as out:
-            out.write(plistlib.dumps(definition))
-        path.chmod(0o600)
+            return {
+                "installed": False,
+                "definition_present": False,
+                "registered": False,
+                "desired_intent_retained": True,
+            }
+
+        executable = installed_executable()
+        definition = {
+            "Label": label,
+            "ProgramArguments": [str(executable), "daemon"],
+            "EnvironmentVariables": {"SOLBOT_HOME": str(home)},
+            "RunAtLoad": True,
+            "KeepAlive": True,
+            "ThrottleInterval": 5,
+            "Umask": 0o077,
+            "WorkingDirectory": str(Path.home()),
+        }
+        existing = path.exists()
+        if existing and plistlib.loads(path.read_bytes()) != definition:
+            raise ManagerError(
+                "identity_conflict",
+                "An existing service definition differs; no replacement was made.",
+            )
+        if _registered(service_target):
+            if not existing:
+                raise ManagerError(
+                    "identity_conflict",
+                    "A registered service has no matching local definition; no replacement was made.",
+                )
+            return {
+                "installed": True,
+                "definition_present": True,
+                "registered": True,
+                "label": label,
+                "already_registered": True,
+            }
+        if not existing:
+            directory.mkdir(parents=True, exist_ok=True)
+            with path.open("xb") as out:
+                out.write(plistlib.dumps(definition))
+            path.chmod(0o600)
         try:
             subprocess.run(
                 ["launchctl", "bootstrap", target, str(path)],
@@ -130,13 +193,28 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
         except subprocess.SubprocessError as exc:
             raise ManagerError(
                 "service_unavailable",
-                "Service registration exists but launchd activation is unconfirmed.",
+                "Service definition exists but launchd activation is unconfirmed.",
                 4,
             ) from exc
+        if not _registered(service_target):
+            raise ManagerError(
+                "service_unavailable",
+                "Service definition exists but launchd activation is unconfirmed.",
+                4,
+            )
+        return {
+            "installed": True,
+            "definition_present": True,
+            "registered": True,
+            "label": label,
+            "executable": str(executable),
+            "already_registered": False,
+        }
     except ManagerError:
         raise
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, TypeError) as exc:
         raise ManagerError(
-            "service_unavailable", "Service definition could not be installed.", 4
+            "service_unavailable",
+            "Service operation could not be confirmed; local state was retained where possible.",
+            4,
         ) from exc
-    return {"installed": True, "label": label, "executable": str(executable)}
