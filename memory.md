@@ -1,5 +1,23 @@
 # Work continuation
 
+Version: 275
+Delta: v274 to v275; preserve the failed documentation check receipt.
+
+## v275 - 2026-11-09
+
+The optimizer ledger is v1.0.2 and now binds docs-check.log to the extension source fingerprint. A fresh `python3 scripts/check_docs.py` exited 1 with 79 suite modules unavailable to import; the environment lacks their dependencies. The ledger validator passed after adding the failed-check receipt. The underlying audit and draft PR 156 remain incomplete.
+
+## v274 - 2026-11-09
+
+The incomplete extension audit checkpoint is tracked in draft PR https://github.com/mithudso/solmargintrader/pull/156 on branch agent-01a1bee5. Keep it draft until the optimizer work and required checks are complete. See v273 and the external ledger for evidence, limitations and exact next action. Do not treat checkpoint delivery as audit completion.
+
+## v273 - 2026-11-09
+
+Extension optimizer is incomplete, status NEEDS_EVIDENCE. Source base a3c9e0b; private worktree /Users/mitch/dev/solmargintrader-wt-01a1bee5. The frozen 41-cell extension matrix and 70 method rows, 104-file source snapshot and fingerprint, two light/dark captures, command logs and validation receipt are under /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension. P01 is PARTIAL; P02-P48 have not been inspected. P49-P70 are OUT_OF_SCOPE without participant or analytics study authorization. Chrome for Testing 156, isolated profile and fixture host completed 25/25 browser checks; extension npm test completed 389/389. The sampled browser evidence is not full optimizer coverage. `python3 scripts/check_docs.py` failed because this environment lacks Python suite dependencies, including pandas; do not claim it passed. No product source changed. Next: resume P01, compare source fingerprints, build isolated fixtures for all applicable loading/empty/error/populated cells, complete each method in order with immediate verified repairs, then a fresh no-edit sweep and independent final review. The separate SolTUI audit remains incomplete as recorded in v270. Stele create/claim queued 40359ad6; do not complete that task.
+
+## v272 - 2026-11-09
+
+The repository-wide ui-deep-optimizer request is being investigated in /Users/mitch/dev/solmargintrader-wt-01a1bee5 at base a3c9e0b. The existing SolTUI audit is a separate incomplete run recorded in v270; do not overwrite its ledger or concurrent work. Audit the extension with an isolated Chrome profile and fixture native host, keep dry-run and disarmed defaults, and preserve all live trading safeguards. Stele is unavailable; task creation and claim are queued as outbox 40359ad6. Extension ledger and receipts belong in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension. Remaining: freeze the coverage matrix and method selection, inspect, repair confirmed issues, verify, record limits and deliver owned changes.
 Version: 273
 Delta: v271 to v273; preserve UI audit and backtest gap histories.
 

@@ -1,11 +1,13 @@
 # Prompt history
 
 Version: 138
+Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
 ## v138 - 2026-11-09
 
 ```text
+$ui-deep-optimizer ~/dev/solmargintrader
 When trying to run a backtest I get this error again: failed: ValueError: timestamp cadence must equal 1m; gapped or mismatched bars are unsupported
 ```
 
