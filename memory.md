@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 241
-Delta: v238 to v241; retain both concurrent histories and council-reviewed UI proposal records.
+Version: 242
+Delta: v241 to v242; integrate PR148 and finalize proposal delivery evidence.
+
+## v242 - 2026-11-08
+
+Proposal deliverables are complete and council-cleared. Artifacts: docs/design/chrome-workspace/proposal.md, prototype.html, council-review.md, acceptance.md and full prompt optimizer evidence. The private branch agent-01a1be64 integrated remote master 4142d4d (PR148) and preserved both prompt/memory histories by renumbering this task records above the concurrent ten-second-refresh records. Task diff changes documentation, isolated demonstration and offline retrieval receipts only; production source is unchanged.
+
+Local documentation/drift and prompt selfcheck gates pass; independent final browser SHA and interactions are recorded in acceptance.md. No further proposal implementation remains. Delivery receipt is the PR for branch agent-01a1be64: its final reviewed commit, passing required checks and actual merged status establish delivery. Remaining delivery actions at this checkpoint: refresh static offline indexes, push final branch, wait CI, merge, verify remote content and clean own branch/worktree. Do not mark a queued merge as completed.
+
+Preserve shared checkout ownership and all unrelated files/worktrees. Do not reload installed extension or start any product, trading, model or indexing service. Static documentation index regeneration is required for the repository drift gate and is offline; it does not perform embeddings or start an index service. Stele queued lifecycle/context/lessons remain 7ed3844f, 4a536eeb, f058c5d1, b8c3af5b, b573ebfc; complete/link operations must be queued after actual delivery because MCP remains absent.
 
 ## v241 - 2026-11-08
 
