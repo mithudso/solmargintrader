@@ -13,7 +13,7 @@ Use the name **Signal Desk** as an optional workspace label. Keep SolMarginTrade
 
 The benefit is continuity: select a strategy once, inspect its historical results, stage a paper trial, and follow its evidence and worker health without rebuilding context in separate generic forms. Pleasure comes from readable charts, quiet feedback, understandable explanations and reliable navigation.
 
-## Capability audit and current interface
+## Capability map
 
 The source audit found 147 native SolTUI registry commands and 35 extension commands at the snapshot above. These are code counts, not current installed-host acceptance. The dashboard discovers the installed registry dynamically. Its nine grouped native workspaces plus legacy sections duplicate destinations and make common tasks compete with expert tools.
 
@@ -47,7 +47,7 @@ Classification key: **E** = current extension/native bridge capability; **B** = 
 
 No source audit here establishes current live fills, a profitable strategy, universal cross-chain execution or unattended live bot support. Manual Jupiter spot and standalone executor verification must not be conflated with extension Trigger signing. The older broad README contains historical claims; the current component instructions govern the discontinued LP service.
 
-## Browser surfaces and layout
+## Screens and wireframes
 
 **Full dashboard** is the primary surface. On first use open Live signals; thereafter resume the last workspace and inspect missing connections without starting services. Archive policy applies to the generated All tools fallback too: list `liquidity.resume` and other archived mutators as unavailable with the owner-retired reason. No runnable ordinary control may reactivate that service. Keep the registry source intact; later owner reactivation is a separate scope change.
 
@@ -83,7 +83,7 @@ A **P: handoff draft** pins parent run ID, strategy/version/parameters, dataset 
 
 Distinguish mode at the panel and action: HISTORICAL SIMULATION, PAPER OBSERVATION, DRY-RUN EXECUTION or REAL EXECUTION. Never show one global green pill that implies all components are safe or armed. Wallet value change includes flows and is not automatically trading profit. Missing values remain unavailable; do not convert them to zero.
 
-## Four priority workflows
+## Four workflows
 
 ### Backtesting result-contract boundary
 
@@ -145,7 +145,11 @@ Keyboard navigation, visible focus, semantic controls, labeled filters, accessib
 | Concurrent document edit | Keep refused draft for export; explain the existing pre-read check's race instead of claiming atomic writes |
 | Archived service | Historical-only label, source date and disabled operational actions; no ordinary Resume CTA |
 
-## Integration, permissions and delivery plan
+## Integration gaps
+
+The current bridge already covers the main workflow families. New work consists of specialized screen composition, typed per-path/cost/benchmark result evidence, persisted comparison/handoff identity, comprehensive standalone executor telemetry, optional advanced-research/Mongo adapters and the optional side panel. The capability map and backtesting result-contract table mark these boundaries explicitly. Missing installed-host access is a connection/setup state; it does not mean the repository lacks that backend capability.
+
+## Rollout and acceptance
 
 **Phase 1 — workflow shell over existing capability.** Consolidate navigation without removing registry reachability; compose four screens and source-specific activity. Default global search uses the current tool registry and `docs.list` catalog plus UI-local filtering. It never calls `docs.search` on keystrokes: every mode of that command invokes an idle index check, and semantic mode can also start Ollama. A deliberate search action must disclose those effects, or a future scoped adapter must offer a truly side-effect-free full-text search. See /Users/mitch/dev/solmargintrader/soltui/README.md:327. Use current allowlisted read refreshes and native session leases; no broad permissions or new runtime dependencies. Acceptance: every current registry family discoverable with archived/policy-blocked actions disabled, main tasks within two navigation steps, data/source/mode visible, unsupported extra metrics show Unavailable, no read view triggers a mutation, no production-default changes.
 
@@ -165,7 +169,7 @@ https://developer.chrome.com/docs/extensions/reference/api/sidePanel
 
 https://developer.chrome.com/docs/extensions/get-started/tutorial/service-worker-events
 
-## Review, tradeoffs and current status
+## Council resolutions
 
 Tradeoffs: specialized screens require maintained adapters; keep generated All tools to prevent lost reachability. Fewer primary destinations add one step for less frequent wallet/library work. Rich monitoring needs precise process ownership, not a single reassuring green status. Optional side panel adds permission and lifecycle complexity and should follow the dashboard.
 

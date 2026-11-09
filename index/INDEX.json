@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-09T04:02:51+00:00",
+  "generatedAt": "2026-11-09T04:04:20+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "50a94ff",
+  "commit": "cbe510a",
   "counts": {
     "files": 2676,
-    "bytes": 44347228,
+    "bytes": 44347705,
     "byKind": {
       "strategy-card": 1478,
       "doc": 564,
@@ -64049,9 +64049,9 @@
       "title": "Signal Desk \u2014 Chrome extension design option",
       "summary": "Version: 1.2 Delta: v1.1 to v1.2; all three council advisors verified 13 corrections with no residual findings; standalone browser acceptance passed. Owner: repository owner; proposal prepared by Codex, 2026-11-08.",
       "summarySource": "opening-prose",
-      "bytes": 26663,
-      "lines": 173,
-      "sha1": "330c2a88fc1439139866fb7ffc811e1ea4bab3a9",
+      "bytes": 27140,
+      "lines": 177,
+      "sha1": "e650550c3a1b818202f8fc10e858686b04450a23",
       "symbols": [],
       "imports": [],
       "internalImports": [],
