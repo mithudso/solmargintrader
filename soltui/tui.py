@@ -3079,6 +3079,7 @@ class SolTuiApp(App):
                              allow_blank=False, id="backtest-pick")
                 yield Static("", id="backtest-roster")
             yield from self._simulation_controls("backtest")
+            yield Checkbox("Use longest continuous window if history has gaps", value=False, id="backtest-longest-contiguous")
             with Horizontal(classes="form-row"):
                 yield Button("Test status", id="status-backtest")
                 yield Button("Run backtest (r)", variant="primary", id="btn-run")
@@ -4803,6 +4804,7 @@ class SolTuiApp(App):
             self._cpcv_active_log = log_key
         try:
             execution = self._simulation_form("backtest")
+            execution["longest_contiguous"] = self.query_one("#backtest-longest-contiguous", Checkbox).value
         except ValueError:
             self.query_one("#backtest-status", Static).update("Enter a leverage and confidence number.")
             return

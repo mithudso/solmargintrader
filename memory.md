@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 271
-Delta: v268 to v271; preserve SolTUI UI audit and CI test continuation during integration.
+Version: 273
+Delta: v271 to v273; preserve UI audit and backtest gap histories.
+
+## v273 - 2026-11-09
+
+PR https://github.com/mithudso/solmargintrader/pull/155 initially failed the extension version gate after all 377 extension tests passed. Bumped extension manifest, package and version assertion to 0.5.1. Recheck the final pushed head and complete delivery. Installed app/browser acceptance is still required.
+
+## v272 - 2026-11-09
+
+The configured SOL 1m cache from 2024-01-01 contains 78 gaps and 1110 missing minutes. The engine must not invent bars; the prior synthetic authorization concerned a separate hourly proof of concept. Added explicit opt-in to select the longest contiguous window, default refusal with actionable dates, and result provenance and UI disclosure. The current longest window is 2024-12-18 20:20 UTC through 2025-08-11 19:59 UTC (339820 bars), not the full requested range. Source data and settings remain untouched. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1beca. Stele create queued 3f201901 and risk 45b70e62. Verified 909 backtester tests, 377 extension tests, 14 focused UI/provenance tests and an independent end-to-end fixture check with default refusal and opt-in execution. Installed UI remains unverified. Remaining: refresh offline indexes, commit, align committed test counts, PR, CI and merge, then verify installed state if safely possible.
 
 ## v271 - 2026-11-09
 
