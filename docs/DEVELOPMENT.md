@@ -17,8 +17,9 @@ The extension has no build step. The optional soltui app bundle is built with py
 ## Setup
 
 The standalone manager is packaged separately under `botmanager/`. Its `solbot`
-entry point does not import the SolTUI UI. Install it with `python -m pip install
-./botmanager` in its own Python 3.13 environment; see `botmanager/README.md` for
+entry point does not import the SolTUI UI. Install its canonical simulation package
+and CLI together with `python -m pip install ./backtester ./botmanager` in a stable
+Python 3.13 environment; see `botmanager/README.md` for
 configuration, delivered commands and current capability limits. No service is
 installed by a read-only command.
 

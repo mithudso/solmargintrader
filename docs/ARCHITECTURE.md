@@ -5,9 +5,12 @@ The extension, the executor and the liquidity manager each have their own live-c
 research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
 The standalone `botmanager/` application exposes the `solbot` command registry and owns
-its bot specifications. It delegates legacy operations to their existing owners. Its
-paper/disarmed default cannot sign or submit a live order. Research evidence and
-recordings retain their original owners rather than being duplicated into another runtime.
+its bot specifications and a fenced reference-paper runtime. Each grid instance
+keeps separate virtual capital, lots, cursor and generation. A versioned local
+backtester package supplies canonical offline economics. The supervisor and service
+lifecycle are explicit; reads start nothing. Legacy operations, research evidence
+and raw recording retain their existing owners. Bounded Coinbase sampled-midpoint
+replay does not certify Jupiter execution. The manager cannot sign or submit live orders.
 
 ```
 backtester/            research/              extension/

@@ -7,7 +7,7 @@ Eight components with separate execution boundaries:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
-| `botmanager/` | Python 3.13 | No — standalone CLI defaults to paper/disarmed; legacy owner capabilities are explicit |
+| `botmanager/` | Python 3.13 | No — CLI and bounded grid reference-paper runtime; paper/disarmed, legacy capabilities explicit |
 | `mongo/` | Python 3.13 + pymongo | No — a derived datastore, rebuildable |
 | `research/` | Python 3.13 | No — analysis over the backtester |
 | `soltui/` | Python 3.13 | No — read-only display |

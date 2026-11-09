@@ -1,0 +1,4 @@
+# Local wheel-build metadata is not simulation source.
+/*.egg-info/
+/build/
+/dist/

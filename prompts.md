@@ -1,8 +1,9 @@
 # Prompt history
 
-Version: 155
+Version: 166
+Delta: v165 to v166; preserve the merged forward-signal research prompt.
+Delta: v164 to v165; record the current branch conflict-resolution and merge request.
 Delta: v154 to v155; record forward signal daemon research request.
-Version: 164
 Delta: v163 to v164; record oracle streaming versus refresh question.
 Delta: v162 to v163; record the detailed backtester handoff request.
 Delta: concurrent histories to v162; preserve monitor qualification and merged Kraken research/backup records.
@@ -1273,6 +1274,7 @@ RUn the deep prompt optimizer on this prompt and run it: Run the full-suite skil
   gets a vote, and who has enough samples that it becomes data. Then The weight of their vote should shrink the lower their accuracy is, and if they are young. This daemon needs to be able to surive restarts, come up on its own, deal with missing data or lossy
   connections. BUt this piece is just a signal generator. Why don't we do a pub-sub model where any agent or bot can subscribe to whichever strategies they want and only see those. Which means this daemon will need to keep a registry of users, definitely make it an mcp
   server.  Lookup and use all of the software architect, design, and mcp and agent management  skills as well as the planning superpower and desig for this. n
+```
 
 ## 2026-11-09 — implement the approved bot-manager plan
 
@@ -1444,4 +1446,10 @@ The primary currency pair will be sol/usdc
 
 ```text
 Find, download, and pre-process all the coins' data that you will need to the greatest specificityu as you can. Make sure the data is normalized with no holes. You decide where you want to keep the data and how you want to query, store, index, and process it.
+```
+
+## v165 — 2026-11-09 — resolve and deliver the current branch
+
+```text
+Resolve the conflicts with that branch and merge and commit it
 ```

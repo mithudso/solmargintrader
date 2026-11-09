@@ -27,7 +27,11 @@ flag. It never signs or imports the liquidity executor.
 
 The standalone `solbot` application separates durable bot specifications, typed default
 resolution, command dispatch and SQLite persistence. Its CLI delegates to one registry.
-Read commands do not initialize a data directory. Legacy discovery/control adapters
+An explicit supervisor runs independent grid reference-paper workers with lifetime
+locks, generation fences and atomic cursor/fill checkpoints. It reuses the packaged
+canonical simulator. Snapshot EOF remains a visible wait; prospective Jupiter data
+and other new strategy runtimes follow later milestones. Read commands do not
+initialize a data directory. Legacy discovery/control adapters
 preserve the existing owner and distinguish unreachable or incompatible installations
 from an empty inventory. See `botmanager/README.md` for delivered commands and limitations.
 

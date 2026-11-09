@@ -338,3 +338,164 @@ def legacy_snapshot(
             "automatic_edits": False,
         },
     }
+
+
+def runtime_snapshot(
+    spec: BotSpec,
+    row: dict | None,
+    *,
+    now: float,
+    worker_alive: bool,
+    supervisor_alive: bool,
+    why: bool = False,
+) -> dict[str, Any]:
+    """Separate reference replay progress, process health and recorded data age."""
+    snapshot = draft_snapshot(spec, why=why)
+    if row is None:
+        return snapshot
+    reason = row["reason"]
+    observed = row["observed"]
+    heartbeat_age = (
+        None if row["heartbeat"] is None else max(0.0, now - row["heartbeat"])
+    )
+    if observed in ("running", "waiting") and (
+        not worker_alive or heartbeat_age is None or heartbeat_age >= 15
+    ):
+        observed = "degraded"
+        reason = "worker_not_observed" if not worker_alive else "heartbeat_stale"
+    if (
+        observed in ("running", "waiting")
+        and row["tick_started"] is not None
+        and now - row["tick_started"] >= 15
+    ):
+        observed = "degraded"
+        reason = "tick_stalled"
+    cp = row["checkpoint"]
+    data = row["input"]
+    reference = data["identity"]
+    snapshot.update(
+        runtime_id=row["runtime_id"],
+        runtime_owner_id=row["owner"],
+        owner_generation=row["generation"],
+        runtime_reason=None,
+        lifecycle=observed,
+        desired_state=row["desired"],
+        observed_state=observed,
+        reason=reason,
+        capabilities=["inspect", "start", "stop"],
+        blockers=[reason] if observed in ("degraded", "failed", "blocked") else [],
+        owner_reachability={
+            "state": "reachable" if supervisor_alive else "unreachable",
+            "reason": "supervisor_lock_observed"
+            if supervisor_alive
+            else "supervisor_not_observed",
+        },
+        heartbeat_age_seconds=unavailable("worker_has_not_heartbeated")
+        if heartbeat_age is None
+        else {"value": heartbeat_age, "reason": "worker_heartbeat"},
+        input_quality={
+            "state": "reference_snapshot",
+            "reason": "immutable_historical_replay_not_live_data",
+            "quote_provenance": reference["quote_provenance"],
+            "max_source_quote_age_seconds": reference["quote_age_max_seconds"],
+        },
+        data_age_seconds={
+            "value": max(0.0, now - reference["end_ts"]),
+            "reason": "age_of_pinned_recording_high_watermark",
+        },
+        last_completed_evaluation=unavailable("no_completed_evaluation")
+        if row["evaluated"] is None
+        else {"value": row["evaluated"], "reason": "transaction_committed"},
+        latest_decision=unavailable("no_completed_evaluation")
+        if cp is None
+        else {
+            "value": "reference_input_exhausted"
+            if cp["cursor"] == len(data["bars"])
+            else "reference_prefix_evaluated",
+            "reason": "canonical_grid_replay",
+        },
+        next_trigger=unavailable("reference_input_exhausted")
+        if cp and cp["cursor"] == len(data["bars"])
+        else {"value": "next_bounded_prefix", "reason": "reference_replay"},
+        reference_run={
+            "kind": "reference_paper",
+            "identity": reference,
+            "snapshot_hash": data["snapshot_hash"],
+            "cursor": row["cursor"],
+            "total_bars": len(data["bars"]),
+            "virtual_account": "independent_not_a_funded_wallet",
+            "live_eligible": False,
+        },
+        process_health={
+            "worker_lock_held": worker_alive,
+            "supervisor_lock_held": supervisor_alive,
+        },
+        progress={
+            "tick_started_at": row["tick_started"],
+            "last_completed_at": row["evaluated"],
+            "cursor": row["cursor"],
+        },
+    )
+    for op, capability in snapshot["action_capabilities"].items():
+        if op == "inspect":
+            continue
+        available = op == "stop" or (
+            op == "start" and row["observed"] not in ("failed", "blocked")
+        )
+        capability.update(
+            available=available,
+            reason="durable_reference_runtime_control"
+            if available
+            else "reconciliation_required"
+            if op == "start"
+            else "capability_unavailable",
+        )
+    snapshot["capabilities"] = [
+        op
+        for op, capability in snapshot["action_capabilities"].items()
+        if capability["available"]
+    ]
+    snapshot["configured_reference_capital"] = {
+        "value": reference["capital_quote"],
+        "currency": reference["quote_currency"],
+        "reserved": False,
+        "reason": "explicit_reference_virtual_account",
+    }
+    # USD-named public fields must never contain USDC amounts by a silent peg.
+    if cp is not None:
+        snapshot["reference_financials"] = {
+            k: v for k, v in cp.items() if k.endswith("_quote") or k == "quote_currency"
+        }
+        if cp["quote_currency"] == "USD":
+            snapshot["financials"].update(
+                {
+                    key: {"value": value, "reason": "measured_reference_simulation_usd"}
+                    for key, value in {
+                        "exposure_usd": cp["exposure_quote"],
+                        "realized_net_pnl_usd": cp["realized_net_pnl_quote"],
+                        "unrealized_net_pnl_usd": cp["unrealized_net_pnl_quote"],
+                        "costs_usd": cp["fees_quote"]
+                        + cp["slippage_quote"]
+                        + cp["carry_paid_quote"]
+                        + cp["carry_accrued_quote"],
+                    }.items()
+                }
+            )
+        snapshot["evidence"]["paper"].update(
+            state="reference_only",
+            reason="coinbase_proxy_does_not_certify_jupiter",
+            venue_compatibility_verified=False,
+            dataset_hash={"value": data["snapshot_hash"], "reason": "immutable_input"},
+            engine_version={
+                "value": reference["engine"],
+                "reason": "canonical_simulator",
+            },
+            result_ref={"value": cp["run_hash"], "reason": "reference_run_hash"},
+        )
+    if why:
+        snapshot["explanation"] = {
+            "reason": reason,
+            "summary": "Independent virtual-account Coinbase reference replay; stopping retains simulated lots.",
+            "remedy": "Inspect process health, recorded input and committed cursor independently.",
+        }
+    return snapshot
