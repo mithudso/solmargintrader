@@ -1,17 +1,29 @@
 # Work continuation
 
-Version: 215
-Delta: v214 to v215; implement dashboard parity and record verification.
+Version: 218
+Delta: v217 to v218; preserve concurrent Signal chart delivery and dashboard parity histories.
 
-## v215 - 2026-11-08
+## v218 - 2026-11-08
+
+Merged current origin/master into the isolated dashboard branch without touching the active shared checkout. Preserved both tasks and prompt histories. Complete remaining verification and delivery on this combined tree.
+
+## v217 - 2026-11-08
 
 Extension parity implementation is complete in /Users/mitch/dev/solmargintrader-wt-01a1bdf1. Owner clarified dashboard-first usage. Added workflow navigation for all 147 installed commands, typed forms with false/explicit clear, structured sortable tables and CSV/JSON, live recorder chart/predictions, sparse experiment heatmaps and catalogued editor. Existing reviewed-order gates remain in Python. Native dashboard leases retain multiplexed runtime; bounded long-call dispatch permits status/cancel; auto-reload waits for dashboards. No call is retried after timeout/disconnect. Independent browser review caught and fixed stale confirmations and cached-preview replacement. Node suite passed 369 tests before the latest UI refinements; 42 focused Python bridge tests pass. Real-host browser gate passed 23 checks before the latest refinements. Backtester has one expected stale-index failure (909 total); rebuild offline generated indexes before final checks. Mongo: 34 tests, 17 skipped without mongod. Oscillating grid closes one positive round trip, net $0.3492. Stele task outbox dcbde101; knowledge outbox 17d6b326, 8a990cf6, 867c033e. Remaining: persist browser regressions, final verification, count/index documentation, push PR, passing CI, merge, remote content verification and cleanup. Do not switch or overwrite the shared active checkout.
 
-## v214 - 2026-11-08
+## v216 - 2026-11-08
 
 Target: full browser access to SolTUI tools through its shared registry, with usable workflow navigation, typed forms, tables/charts, CSV exports and document editing. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bdf1; branch feat/extension-tui-parity-20261108 based on origin/master. Shared checkout has active concurrent edits and MERGE_HEAD; do not touch it. Stele task creation outbox dcbde101. Recall specialist failed before execution because its fixed model is unsupported; MCP tools are absent.
 
 Steps: inventory in progress; workspace and native-session implementation pending; browser/unit verification pending; documentation, CI and delivery pending. Native transport currently kills process-local replay/job state after each request. Persist the host only while dashboard leases exist, multiplex requests, and never retry ambiguous calls. Preserve install defaults, existing order gates and archived Aero status. No live transactions or worker starts are authorized as verification.
+
+## v215 - 2026-11-08
+
+TASK-1064: In SolTUI under Signal tab Live page (`cmp-live`), added `#signal-live-chart-yaxis` (High, Mid, Low price levels with vertical ticks) and `#signal-live-chart-xaxis` (Start, Mid, End UTC timestamps matching data points). Implemented strategy prediction scheduler in `_signal_live_tick()` running every 1 minute (60s) or on candle minute rollover, preserving table cursor and detail selection. Added unit tests in `soltui/tests/test_signal_live.py` (7 tests pass); synchronized test counts across doc suite (soltui: 1183, total: 2487). All suites and checks pass (`check_docs.py`, `npm test`, `backtester`, `mongo`, `dryrun.js`).
+
+## v214 - 2026-11-08
+
+TASK-1064: In SolTUI under Signal tab Live page (`cmp-live`), add timestamps and price numbers to the price chart. Schedule top-performing forward-test strategy predictions to update with incoming streaming prices from the pricefeed daemon or on a 1-minute cadence. Preserve read-only SolTUI guarantees and non-lookahead semantics.
 
 ## v213 - 2026-11-08
 

@@ -1,18 +1,24 @@
 # Prompt history
 
-Version: 123
-Delta: v122 to v123; record dashboard-first usage preference.
+Version: 124
+Delta: v123 to v124; retain concurrent chart prompt and dashboard parity requests.
 
-## v123 - 2026-11-08
+## v124 - 2026-11-08
 
 ```text
 Most of the extension's usage will likely be in the dashboard.
 ```
 
-## v122 - 2026-11-08
+## v123 - 2026-11-08
 
 ```text
 The chrome extension here: /Users/mitch/dev/solmargintrader/extension has been ignored for a long time, update it so it has all of the same tools and functionality as the TUI.
+```
+
+## v122 - 2026-11-08
+
+```text
+Add timestamps and price numbers to the chart. And schedule the strategies to update their prediction with the streaming price coming in, or if that's not possible then every 1 minute.
 ```
 
 ## v121 - 2026-11-08
