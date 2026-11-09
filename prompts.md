@@ -1,10 +1,13 @@
 # Prompt history
 
-Version: 159
+Version: 160
+Delta: v159 to v160; preserve manager and PR177 acquisition prompt histories.
 Delta: concurrent histories to v159; integrate PR174/176 and retain manager implementation.
 Delta: v156 to v157; preserve both merged UI request and implementation handoff.
 Delta: v155 to v156; incorporate the supplemental UI handoff into implementation.
 Delta: v154 to v155; record approval to implement the bot manager.
+
+Delta: v158 to v159; record high-resolution market data acquisition request.
 Delta: v157 to v158; record primary SOL/USDC pair.
 Delta: v156 to v157; refine optimized prompt and record confirmed universe.
 Delta: v155 to v156; record historical backtester design and implementation request.
@@ -1395,4 +1398,10 @@ Jitosol, kmno, usdc, xmr
 
 ```text
 The primary currency pair will be sol/usdc
+```
+
+## v159 - 2026-11-09
+
+```text
+Find, download, and pre-process all the coins' data that you will need to the greatest specificityu as you can. Make sure the data is normalized with no holes. You decide where you want to keep the data and how you want to query, store, index, and process it.
 ```

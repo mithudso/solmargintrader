@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `2a20cd9` (2026-11-09T20:47:39+00:00). 2822 tracked files, 62.7 MB.
+**Generated** from `index/INDEX.json` at commit `53853a2` (2026-11-09T20:56:57+00:00). 2826 tracked files, 62.8 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2496 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 384/412 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2498 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 386/416 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -36,7 +36,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`(root)`](#root) — 23 files
 - [`docs`](#docs) — 108 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1921 files
+- [`backtester`](#backtester) — 1925 files
 - [`research`](#research) — 206 files
 - [`extension`](#extension) — 117 files
 - [`soltui`](#soltui) — 167 files
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 913 lines · 172,253 B · description: **extracted**
+`doc` · 938 lines · 177,445 B · description: **extracted**
 
-**Purpose.** Version: 328 Delta: v327 to v328; repair the required-command bridge fixture caught by final CI. Delta: v326 to v327; approve milestone1 source and prepare verified release.
+**Purpose.** Version: 329 Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories. Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
 
 **Use.** Read it.
 
@@ -226,9 +226,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1399 lines · 75,713 B · description: **extracted**
+`doc` · 1408 lines · 76,164 B · description: **extracted**
 
-**Purpose.** Version: 159 Delta: concurrent histories to v159; integrate PR174/176 and retain manager implementation. Delta: v156 to v157; preserve both merged UI request and implementation handoff.
+**Purpose.** Version: 160 Delta: v159 to v160; preserve manager and PR177 acquisition prompt histories. Delta: concurrent histories to v159; integrate PR174/176 and retain manager implementation.
 
 **Use.** Read it.
 
@@ -338,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27642 lines · 1,428,554 B · description: **extracted**
+`doc` · 27642 lines · 1,428,616 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -466,9 +466,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-milestone-1.md`
 
-`doc` · 79 lines · 6,144 B · description: **extracted**
+`doc` · 80 lines · 6,234 B · description: **extracted**
 
-**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; record complete four-surface command parity. Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance.
+**Purpose.** Version: 1.0.3 Delta: v1.0.2 to v1.0.3; integrate accepted minute-history work and combined test counts. Delta: v1.0.1 to v1.0.2; record complete four-surface command parity.
 
 **Use.** Read it.
 
@@ -1232,7 +1232,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1921 files.
+1925 files.
 
 #### `backtester/PROMPT.md`
 
@@ -1244,7 +1244,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/README.md`
 
-`doc` · 518 lines · 27,023 B · description: **extracted**
+`doc` · 554 lines · 29,313 B · description: **extracted**
 
 **Purpose.** An offline, event-driven backtesting harness for crypto trading strategies, built around SOL. Supports unlevered **spot** and **Jupiter-Perps-style leveraged perpetuals** with a correctly-modelled borrow fee.
 
@@ -1476,6 +1476,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `import backtester.core.indicators`
 
+#### `backtester/core/kucoin_history.py`
+
+`code-python` · 286 lines · 14,396 B · description: **extracted**
+
+**Purpose.** Resumable, source-preserving KuCoin spot candle collection. Each completed time window commits its raw response and normalized observations in one SQLite transaction. Missing candles remain missing; no prices are invented. Only fully closed UTC minutes are requested. This module never trades.
+
+**Contents.** Defines `MINUTE`, `WINDOW`, `URL`, `class HistoryError`, `decode_page()`, `open_store()`, `_get()`, `_get_unlocked()`, `_verified_saved_page()`, `collect()` and 3 more.
+
+**Use.** `python3 backtester/core/kucoin_history.py --help`
+
 #### `backtester/core/leverage.py`
 
 `code-python` · 89 lines · 3,575 B · description: **extracted**
@@ -1555,6 +1565,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `BAR_SECONDS`, `STYLES`, `REGIMES`, `class ScorecardError`, `class Bars`, `contiguous_segments()`, `_s()`, `ema()`, `sma()`, `rstd()` and 30 more.
 
 **Use.** `import backtester.core.scorecard`
+
+#### `backtester/core/segmented_history.py`
+
+`code-python` · 130 lines · 7,099 B · description: **extracted**
+
+**Purpose.** Copy and index ordered CSV candles as verified, gap-free segments. The index never imputes a missing bar. A query crossing a gap is refused. The source file and its provenance remain separate from the private normalized copy.
+
+**Contents.** Defines `class SegmentError`, `HEADER`, `_row()`, `build()`, `read_range()`.
+
+**Use.** `import backtester.core.segmented_history`
 
 #### `backtester/core/strategy_cards.py`
 
@@ -20262,6 +20282,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_intrabar_liquidation.py -q`
 
+#### `backtester/tests/test_kucoin_history.py`
+
+`test` · 212 lines · 9,812 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Handler`, `class KucoinHistoryTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_kucoin_history.py -q`
+
 #### `backtester/tests/test_pairs.py`
 
 `test` · 204 lines · 9,082 B · description: **extracted**
@@ -20311,6 +20341,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Defines `synthetic()`, `aux_for()`, `slice_aux()`, `same()`, `class PrefixInvarianceTests`, `class ConfigTests`, `only()`, `class AggregationTests`, `class AdaptiveTests`, `class TuningTests` and 3 more. Depends on `backtester`.
 
 **Use.** `python3 -m pytest backtester/tests/test_scorecard.py -q`
+
+#### `backtester/tests/test_segmented_history.py`
+
+`test` · 45 lines · 2,243 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class SegmentedHistoryTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_segmented_history.py -q`
 
 #### `backtester/tests/test_signal_redundancy.py`
 

@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:47:39+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T20:56:57+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1652 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1653 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,7 +36,7 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1652`
+Full list: `python3 index/search.py --concept risk-rails -n 1653`
 
 ### Cost model
 
@@ -116,7 +116,7 @@ Full list: `python3 index/search.py --concept grid -n 627`
 
 ### Data integrity
 
-`data-integrity` · **570 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **574 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -131,7 +131,7 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-b.jsonl` (61 hits)
 - `docs/design/bot-control-room/mockup.css` (60 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 570`
+Full list: `python3 index/search.py --concept data-integrity -n 574`
 
 ### On-chain execution reality
 

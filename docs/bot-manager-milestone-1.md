@@ -1,6 +1,7 @@
 # Standalone bot manager milestone 1
 
-Version: 1.0.2
+Version: 1.0.3
+Delta: v1.0.2 to v1.0.3; integrate accepted minute-history work and combined test counts.
 Delta: v1.0.1 to v1.0.2; record complete four-surface command parity.
 Delta: v1.0.0 to v1.0.1; record approved source and independent installed acceptance.
 Date: 2026-11-09
@@ -70,8 +71,8 @@ fresh-process reads and four configuration-path fixtures. The default owner retu
 `incompatible_owner` with `bots=null`; actual installed-owner controls remain
 unavailable. This does not establish that the owner has no bots.
 
-Documentation discovery is983backtester/1402SolTUI/408extension/46mongo tests,
-2839total. The manager has its own67-test CI gate. Final remote CI and delivery
+Documentation discovery is999backtester/1402SolTUI/408extension/46mongo tests,
+2855total. The manager has its own67-test CI gate. Final remote CI and delivery
 are recorded in https://github.com/mithudso/solmargintrader/pull/175.
 
 No production service, live bot, signing path or graphical client is activated by
