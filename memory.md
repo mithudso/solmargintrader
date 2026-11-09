@@ -1,7 +1,13 @@
 # Work continuation
 
-Version: 236
-Delta: v235 to v236; record global session-reflection work and isolated sources.
+Version: 237
+Delta: v236 to v237; record reflection source delivery and installed acceptance.
+
+## v237 - 2026-11-08
+
+Global session-reflection sources are delivered: https://github.com/mithudso/claude-config/pull/36 at c5288f6da0dec1f3017206835c541c5cea16d78a and https://github.com/mithudso/skills/pull/98 at b0d4c0c5139c4dfd8cafa0155ee1b66b62434de8. PDO completed two iterations, independent blind review, contrastive prose smoke judgments and executed selfcheck 8/8. The scheduler and installer passed 109 tests. Installed bytes and exact registered-command behavior passed independent acceptance; actual managed daemon discovers the skill enabled and all three hooks enabled but untrusted. Owner approval through Codex /hooks remains, then automatic activation can be verified. Receipt: /Users/mitch/.claude/backups/session-reflection/install-20261108/acceptance.json. No trust change, inference, daemon restart, trading code or paused service change occurred. Stele writes remain queued as 9ab0d70c and c0e315a3.
+
+This workflow-record PR is https://github.com/mithudso/solmargintrader/pull/149. Initial docs and backtester CI failures both came from the stale hashes of prompts.md and memory.md. Refreshed the established offline metadata/text/concept indexes, without semantic embeddings. Final-head CI, merge and task-worktree cleanup remain delivery gates. Preserve other sessions and the original checkout.
 
 ## v236 - 2026-11-08
 
