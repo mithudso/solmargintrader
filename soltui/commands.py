@@ -1137,7 +1137,8 @@ def backtest_cancel(ctx: Context, p: dict[str, Any]) -> Any:
 
 @command("backtest.run", "CPCV sweep over the roster (or the listed roster labels), ranked by median "
          "Sharpe. Blocks until done.",
-         (P("labels", "json", "Roster labels to test; default the whole roster."),) + _SIMULATION_PARAMS,
+         (P("labels", "json", "Roster labels to test; default the whole roster."),
+          P("longest_contiguous", "bool", "Use only the longest gap-free window within the selected dates; results disclose the actual range.")) + _SIMULATION_PARAMS,
          read_only=False, long_running=True)
 def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
     roster = ctx.roster
@@ -1151,7 +1152,10 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         roster = Roster([e for e in roster if e.label in labels])
     try:
         settings = _simulation_settings(ctx.settings, p)
-        ctx.runner.start(roster, settings)
+        if p.get("longest_contiguous"):
+            ctx.runner.start(roster, settings, longest_contiguous=True)
+        else:
+            ctx.runner.start(roster, settings)
     except (RuntimeError, ValueError) as exc:
         raise CommandError("failed", str(exc)) from exc
     ctx.runner.join()
@@ -1171,6 +1175,12 @@ def _backtest_result(outcome, settings) -> dict[str, Any]:
         message = "cancelled — partial results shown"
     if skipped:
         message += f" · {len(skipped)} skipped (warm-up or trade floor)"
+    if outcome.context.get("data_selection"):
+        from datetime import datetime, timezone
+        window = outcome.context["data_selection"]
+        first = datetime.fromtimestamp(window["first_ts"], timezone.utc).isoformat()
+        last = datetime.fromtimestamp(window["last_ts"], timezone.utc).isoformat()
+        message += f" · continuous window {first} to {last} ({window['selected_bars']} bars; {window['gaps_excluded']} gaps excluded)"
     if outcome.error:
         message = "failed — completed rows shown as partial evidence"
     return {

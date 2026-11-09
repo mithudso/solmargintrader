@@ -156,6 +156,10 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
         `${run.context.asset} / ${run.context.interval} · ${stamp(run.context.created_at)}${run.error ? ' · FAILED / PARTIAL' : run.cancelled ? ' · CANCELED / PARTIAL' : ''}`),
         action('Costs & provenance', () => inspect('Backtest snapshot', run.context)));
       const runCard = el('article', { class: 'desk-run', dataset: { runId: run.id } }, header, note(costText(run.context.execution)));
+      if (run.context.data_selection) {
+        const w = run.context.data_selection;
+        runCard.append(note(`Gap-free window: ${new Date(w.first_ts * 1000).toISOString()} to ${new Date(w.last_ts * 1000).toISOString()} · ${w.selected_bars} of ${w.source_bars} bars · ${w.gaps_excluded} gaps outside the window`));
+      }
       runCard.append(table([
         { label: 'Strategy', value: (r) => r.label }, { label: 'Median path net', value: (r) => percentText(r.median_return) },
         { label: 'Median Sharpe', value: (r) => numberText(r.median_sharpe) }, { label: 'Sharpe IQR', value: (r) => numberText(r.iqr) },
