@@ -56,6 +56,11 @@ class ConfigTests(unittest.TestCase):
                     DEFAULT_CONTEXT, bar_seconds=3600, execution_model="trigger_ladder"
                 )
             },
+            {
+                "context": dict(
+                    DEFAULT_CONTEXT, bar_seconds=60.0, execution_model="trigger_ladder"
+                )
+            },
             {"context": {}},
         ):
             rejected = resolve_config("grid", {}, {}, learned(**changes))

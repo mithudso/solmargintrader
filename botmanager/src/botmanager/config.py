@@ -221,13 +221,19 @@ def resolve_config(
     if shared_snapshot is not None:
         if not isinstance(shared_snapshot, Mapping):
             raise _invalid()
+        shared_context = shared_snapshot.get("context")
         compatible = (
             type(shared_snapshot.get("schema_version")) is int
             and shared_snapshot.get("schema_version") == 1
             and shared_snapshot.get("strategy_id") == strategy_id
             and shared_snapshot.get("strategy_version")
             == STRATEGY_VERSIONS[strategy_id]
-            and shared_snapshot.get("context") == effective_context
+            and isinstance(shared_context, Mapping)
+            and shared_context == effective_context
+            and all(
+                type(shared_context[key]) is type(value)
+                for key, value in effective_context.items()
+            )
         )
         compatibility = {
             "accepted": compatible,
