@@ -2,9 +2,13 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import sys
 import threading
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
@@ -110,6 +114,19 @@ class WalletActivity(unittest.TestCase):
         self.assertEqual(argv[:4], ["/fake/cdp", "data", "query", "run"])
         self.assertNotIn("shell", run.call_args.kwargs)
         self.assertIs(run.call_args.kwargs["stdin"], subprocess.DEVNULL)
+
+    def test_real_shebang_transport_finds_its_runtime_under_native_host_path(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            cdp = root / "cdp"
+            cdp.write_text("#!/usr/bin/env node\nignored fake CLI input\n")
+            runtime = root / "node"
+            runtime.write_text(f'#!/bin/sh\nexec "{sys.executable}" -c \'print("{{\\"result\\":[{{\\"ok\\":1}}]}}")\'\n')
+            cdp.chmod(0o700); runtime.chmod(0o700)
+            restricted = "/usr/bin:/bin:/usr/sbin:/sbin"
+            with patch.dict(os.environ, {"PATH": restricted}), patch.object(activity.shutil, "which", return_value=str(cdp)):
+                self.assertEqual(activity._cdp_query("SELECT fixture", 3), [{"ok": 1}])
+                self.assertEqual(os.environ["PATH"], restricted, "Child launch must not mutate the native host environment")
 
     def test_real_http_transport_only_posts_documented_read_methods(self):
         requests = []

@@ -4,7 +4,7 @@ import { createLiveWindows } from '../src/bg/live-windows.js';
 import { runCommand, COMMANDS } from '../src/core/commands.js';
 import { strategyChartData } from '../src/ui/charts.js';
 import { explanationLines } from '../src/ui/vote-tools.js';
-import { pnlLines, workflowText } from '../src/ui/live-panel.js';
+import { pnlLines, workflowText, workflowButtonText } from '../src/ui/live-panel.js';
 
 function event() { const listeners = []; return { addListener(fn) { listeners.push(fn); }, fire(value) { for (const fn of listeners) fn(value); } }; }
 function fixture(timeoutMs = 200) {
@@ -115,4 +115,11 @@ test('workflow summary reports actual batch phase rather than claiming preparati
   assert.equal(workflowText({ state: 'ready', batch: { running: true, phase: 'backtesting', counts: { queued: 20, passed: 3 }, assets: ['SOL', 'ADA'] } }), 'backtesting · 20 queued · 3 passed · 2 coins');
   assert.match(workflowText({ running: true }), /Preparing/);
   assert.match(workflowText({ state: 'waiting', message: 'Grid Stop retained' }), /Stop retained/);
+});
+
+test('an independent running batch cannot label an unrequested coordinator running', () => {
+  assert.equal(workflowButtonText({ state: 'stopped', running: false, batch: { running: true, phase: 'forward_partial' } }), 'Start / resume paper bots');
+  assert.equal(workflowButtonText({ state: 'running', running: true }), 'Preparing paper workflow…');
+  assert.equal(workflowButtonText({ state: 'ready', running: false }), 'Paper monitoring ready');
+  assert.equal(workflowButtonText({ state: 'partial', running: false }), 'Start / resume paper bots');
 });
