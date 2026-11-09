@@ -1070,6 +1070,8 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             app.query_one(TabbedContent).active = "tab-compound"
+            # Give the table room so the row click is not intercepted by the detail pane.
+            await pilot.press("ctrl+e")
             await pilot.pause()
             table = app.query_one("#compound-table", CompoundTable)
             row = table.get_row_index("rsi")
@@ -1084,15 +1086,23 @@ class CompoundTabClicks(unittest.IsolatedAsyncioTestCase):
             await pilot.pause()
             self.assertEqual(self.on(app, "rsi"), "on")
             mrow = table.get_row_index("macd")
-            table.scroll_to(y=0, animate=False)
-            await pilot.pause()
+            # Cursor movement can schedule a later scroll; wait until the top position
+            # remains stable before translating a row index into a click offset.
+            for _ in range(20):
+                table.scroll_to(y=0, animate=False)
+                await pilot.pause(0.1)
+                if table.scroll_y == 0:
+                    await pilot.pause(0.1)
+                    if table.scroll_y == 0:
+                        break
+            self.assertEqual(table.scroll_y, 0, "table did not settle at the top")
             # One click on any cell of the macd row selects it and toggles nothing.
-            await pilot.click("#compound-table", offset=(2, mrow + 1))
+            self.assertTrue(await pilot.click("#compound-table", offset=(2, mrow + 1)))
             await pilot.pause()
             self.assertEqual(self.on(app, "macd"), "on")
             self.assertEqual(table.cursor_row, mrow)
             # A double-click on another column of the same row toggles it exactly once.
-            await pilot.click("#compound-table", offset=(30, mrow + 1), times=2)
+            self.assertTrue(await pilot.click("#compound-table", offset=(30, mrow + 1), times=2))
             await pilot.pause()
             self.assertEqual(self.on(app, "macd"), "off")
         saved = json.loads(compound.config_path().read_text())["config"]

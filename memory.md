@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 279
-Delta: v278 to v279; record the verified small-terminal editor repair.
+Version: 280
+Delta: v279 to v280; record the macOS table-click CI diagnosis.
+
+## v280 - 2026-11-09
+
+PR 159 macOS CI failed `CompoundTabClicks.test_double_click_and_space_toggle_and_a_single_click_only_selects` with `AssertionError: 9 != 2`. A local hit test showed the intended row coordinate hit `Static(id=compound-detail)` rather than the table. The test now hides the editor to expose the table, waits for the table scroll position to settle, and asserts Pilot.click reaches the intended widget before checking selection and double-click behavior. The focused isolated test passed. Repeat final-head CI before merging. Stele lesson queued b7e7b4d4.
 
 ## v279 - 2026-11-09
 
