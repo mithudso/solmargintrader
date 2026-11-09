@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 299
+Version: 300
+Delta: v299 to v300; finalize native-host discovery and delivery checkpoint.
 Delta: v298 to v299; protect migration from an old native-host writer.
 Delta: v297 to v298; fix the release-version assertion found by CI.
 Delta: v296 to v297; finalize source checks and committed test discovery.
@@ -18,6 +19,10 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v300 - 2026-11-09
+
+Final source includes95bb4c5 andf09a17e, with release metadataaba6e5a and this count refresh. Discovery now includes1338 SolTUI tests,397 Node tests and2722 total. Final local Node397, native-host/recovery/bridge52 and real browser26/26 passed after the host migration guard. Other verification fromv297 remains valid; only native host lifecycle and a release assertion changed afterward. PR165 contains the full authorized work. Required final-head CI and merge/sync remain before activation. Complete actual runtime acceptance and store its final receipt at /Users/mitch/.local/state/solmargintrader-session-01a1beca/prediction-recovery-delivery.json, with private memory.md as the post-merge continuation authority. That receipt must record the merged SHA, active producer and Council identities, preserved plan/call history, loaded Chrome0.6.1 and actual console checks. Preserve unrelated files and all other workers. Do not treat this checkpoint as a completed runtime acceptance claim.
 
 ## v299 - 2026-11-09
 
