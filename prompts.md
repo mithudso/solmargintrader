@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 161
+Version: 162
+Delta: concurrent histories to v162; preserve monitor qualification and merged Kraken research/backup records.
+Delta: concurrent histories to v161; preserve monitor full-suite records and all merged manager/backtester work.
+
 Delta: concurrent histories to v161; preserve GitHub backup request and bot manager prompt records.
 Delta: v159 to v160; record GitHub backup choice and Firecrawl research request.
 Delta: v159 to v160; preserve manager and PR177 acquisition prompt histories.
@@ -18,6 +21,8 @@ Delta: v152 to v153; record ideal bot-management UI design request.
 
 Delta: v153 to v154; save optimized prompt and its execution artifacts.
 Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
+Delta: v153 to v154; authorize embeddings only for new monitor packs.
+Delta: v152 to v153; record the crypto autotrading bot monitor full-suite request.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
 Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
 Delta: v149 to v150; keep voting, bot P&L and wallet activity visible and simplify orchestration.
@@ -34,6 +39,19 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+
+## Scoped embedding authorization - 2026-11-09
+
+```text
+Enable embeddings only for new bot-monitor packs
+```
+
+## Crypto autotrading bot monitor - 2026-11-09
+
+```text
+Run the full-suite skill on crypto autotrading bot monitor
+```
 
 ## v160 - 2026-11-09
 
