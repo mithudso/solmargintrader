@@ -1,12 +1,57 @@
 # Work continuation
 
-Version: 250
-Delta: v249 to v250; preserve completed implementation and final local acceptance before delivery.
+Version: 256
+Delta: v255 to v256; preserve concurrent executor and Signal Desk histories and integration checkpoint.
 
+## v256 - 2026-11-09
 
+Integrated remote master0a8f158 (executor integrity PR151) without changing either implementation. Preserved both concurrent prompt and continuation histories; renumbered Signal Desk records above the executor review records. Only workflow records and generated offline indexes conflicted. All four executor source repairs and148 new regressions remain present.
 
+Signal Desk delivery PR: https://github.com/mithudso/solmargintrader/pull/152 . Source acceptance remains frozen at Chrome24/24 fixture and25/25 real-host tests. Integration verification completed with exit0: extension377, backtester909, focused Python/bridge/CI-selector61, documentation counts2541, static source hashes and positive offline roundtrip. Final-head CI remains required. After actual merge, synchronize canonical source without changing the three unrelated untracked files, run the independent final installed acceptance gate, append its receipt to PR152, queue tracker completion, and remove only this task's clean merged worktree/branch. No product service, trade, training, or semantic indexing was started.
 
+## v255 - 2026-11-08
 
+Implementation source committed as7395276 after every required local check completed successfully. Final manifest now includes all seven provenance/handoff tests: SolTUI1221, extension377, backtester909 and Mongo34 (2541 total). Static index receipts are regenerated without embeddings or any indexing service. No source behavior changed after independent final pre-delivery Chrome24/24 fixture and25/25 real-host acceptance.
+
+Delivery branch feat/signal-desk-20261108 in /Users/mitch/dev/solmargintrader-wt-signal-desk is recoverable. Its implementation PR is the canonical receipt: final pushed head, completed passing checks and actual merged status establish Git delivery. Product is version0.5.0 with four native-data workflows, exact array/strategy/cost snapshots and explicit paper preparation/start separation. Archived summaries are visibly separate; archived liquidity mutators are unavailable. Backtesting gaps remain clearly unavailable rather than synthesized.
+
+Remaining at this checkpoint: final metadata check/commit, push PR, wait all required final-head CI, merge, synchronize canonical source where safe, independent installed-state final gate, update PR delivery/outbox receipt, remove only this task branch/worktree. The final installed receipt is /tmp/signal-desk-installed-acceptance.json. Preserve user browser sessions, service states, secrets and unrelated three untracked paths. Stele task/context pending outbox fd628838/bde61205/dff84593; provenance architecture708457a1.
+
+## v254 - 2026-11-08
+
+Final pre-commit candidate includes existing research archive summaries separately from pinned current-run snapshots. Archives expose source, evidence floor and recorded Sharpe; no archive can enter a new pinned handoff or a mixed comparison. Missing/stale chart tick tooltips now say Unavailable rather than Flat. Independent tests assert a strictly newer missing-score tick and archived evidence distinctions. Final fixture24/24 and real-host25/25 both completed exit0 at2026-11-09T04:51:59Z. Frozen acceptance report version1.3 records loaded module/style hashes.
+
+All implementation/local behavior checks are complete: 377 Node cases, 46 focused provenance/simulation/forward cases, 37 bridge/surface cases, 34 background/experiment/selector cases, 909 backtester cases and positive offline round trip0.3492 USD net. Last metadata synchronization and standard pre-commit manifest checks run before committing. After the source commit, follow the repository counter convention: final Python count1221 and total2541, regenerate offline receipts and confirm final checks. No source changes are planned after that.
+
+Remaining delivery: push/open PR; required final-head CI; merge and safe canonical synchronization; independent canonical post-install verification as the final acceptance gate; PR receipt/outbox completion and own branch/worktree cleanup. Final installation JSON is /tmp/signal-desk-installed-acceptance.json; the tracked acceptance report is a frozen pre-delivery receipt. User profiles and all running services remain untouched.
+
+## v253 - 2026-11-08
+
+Signal Desk implementation is frozen at extension version 0.5.0. Four specialized registry-backed workspaces, focused forms, real-data popup, stored comparisons and pinned paper drafts are complete. Legacy views and all installed tools remain discoverable; archived mutators are blocked. No permissions/CSP/runtime dependency or trading default changed. No forecast/scoring engine source was edited; simulation.py and forwardtest.py remain unchanged.
+
+Completed successful local checks: 377 Node tests; 46 focused Python provenance/simulation/forward tests; 37 command bridge/surface checks; 34 mapped background/experiment/selector checks; all 909 backtester tests; fixture Chrome24/24 and real-host Chrome25/25; syntax/diff and offline index/documentation gates. A stale version-specific Node assertion was corrected to0.5.0 before the final successful Node run. Independent verification fixed A01 (trusted Escape left dialog.open true); explicit Escape/focus handling now passes. Executed JS/model/applied CSS bind to disk; desktop390/720/1440, compact, filter persistence, stale/missing recovery, archived forms, exact handoff and contrast samples pass.
+
+The documentation counter intentionally uses Python test files in HEAD. Initial checkpoint docs report current committed-manifest count1214; new test_desk.py adds seven verified cases. Immediately after the source commit, set final SolTUI count1221 and total2541, regenerate static receipts and re-run the standard docs check. This is a documented repository manifest convention, not omitted testing.
+
+Remaining: final count/index receipts, push PR, all required final-head CI, merge, safe canonical source synchronization, independent post-install acceptance (last gate), task cleanup and queued tracker completion. The frozen pre-delivery acceptance report is docs/design/chrome-workspace/implementation-acceptance.md; the final installation receipt belongs in the PR delivery receipt and /tmp/signal-desk-installed-acceptance.json. Preserve active user profiles/services and unrelated worktrees. Stele queued task/context ids fd628838/bde61205/dff84593; provenance knowledge708457a1.
+
+## v252 - 2026-11-08
+
+Implemented four permanent real-data workflows, redesigned dashboard shell and glance/resume popup, evidence dialogs/search/density, browser-local run/comparison/draft persistence, explicit action forms and archived mutator blocks. UI stays on existing registries, CSP and permissions. New native backtest.results exposes completed/partial session evidence; runner records provenance from actually loaded arrays, code, parameters, CPCV geometry and execution assumptions. forwardtest.start can prepare one exact pinned snapshot and refuses overridden costs/assets or changed code; forwardtest.run remains an explicit separate action. No edit to forwardtest.py or simulation.py, whose hashes partition forecast evidence.
+
+Verified checkpoint: 376 extension Node tests; 45 focused Python provenance, paper execution and forward tests; fixture Chrome 23/23 including original order-confirmation/editor/score/timer regressions. Initial cloned-DOM fixture lacked global toolbar controls; optional toolbar bindings fixed that regression. An independent live-acceptance-verifier owns new browser workflow tests and implementation acceptance report.
+
+In progress: final specialized workflow/browser review, targeted bridge parity, polish/errors, counts/docs/static index updates and final-head CI delivery. Worktree /Users/mitch/dev/solmargintrader-wt-signal-desk. Task lifecycle queued fd628838 and bde61205; durable scope dff84593. All product services and original shared checkout remain untouched. No live trades, wallet changes, training or indexing services started.
+
+## v251 - 2026-11-08
+
+Target: implement the approved Signal Desk Chrome extension interface from docs/design/chrome-workspace/proposal.md and prototype.html. This is now production UI implementation, using real command/host data. Preserve rails, service states, archived LP, and all existing tool reachability.
+
+Private worktree: /Users/mitch/dev/solmargintrader-wt-signal-desk; branch feat/signal-desk-20261108; baseline 6212fd8. Shared checkout has three unrelated untracked paths and active sessions; preserve it. Stele MCP absent; task create fd628838 queued, with claim/scope writes queued separately. Previous proposal task is delivered in PR150; no proposal optimization is needed again.
+
+Plan: inspect host contracts and tests [in progress]; implement dashboard/popup and real workflow composition [pending]; behavior tests and independent Chrome acceptance [pending]; documentation/index receipts and final CI/merge/cleanup [pending].
+
+Do not start trainers, recorders, live engines or index/model services. Defaults stay disarmed/dry-run. UI reads are separate from explicit actions. Existing unsupported richer metrics remain unavailable unless a typed backend contract is added. Current generic forms and native host lifetime guards are load-bearing; preserve their concurrency and generation behavior.
 
 ## v250 - 2026-11-08
 

@@ -480,7 +480,7 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 628
+      "lines": 644
     },
     {
       "path": "extension/src/core/commands.js",
@@ -640,7 +640,7 @@
       "path": "extension/src/ui/dashboard.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Dashboard shell and hash router; Overview first, Grid last",
+      "summary": "Signal Desk shell and hash router; four priority workflows and advanced views",
       "lines": 193
     },
     {
@@ -675,8 +675,8 @@
       "path": "extension/src/ui/popup.js",
       "component": "extension",
       "kind": "javascript",
-      "summary": "Popup: holdings, alerts, shortcuts; grid controls collapsed",
-      "lines": 219
+      "summary": "Popup: signal/process glance, four workflow shortcuts and collapsed wallet/grid controls",
+      "lines": 252
     },
     {
       "path": "extension/tools/cli.js",
@@ -753,7 +753,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 7815
+      "lines": 7888
     },
     {
       "path": "soltui/shell.py",
@@ -795,7 +795,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The loop that refreshes state",
-      "lines": 276
+      "lines": 279
     },
     {
       "path": "soltui/bgcontrol.py",
@@ -914,7 +914,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 622
+      "lines": 624
     },
     {
       "path": "soltui/tests",
@@ -1507,14 +1507,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Registry workspace groups, structured result tables, chart points and safe CSV conversion.",
-      "lines": 83
+      "lines": 84
     },
     {
       "path": "docs/EXTENSION-TUI-PARITY.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Browser workflows, native-session lifetime, execution boundaries and verification.",
-      "lines": 100
+      "lines": 109
     },
     {
       "path": "soltui/live_score.py",
@@ -1535,7 +1535,42 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Scoring, eligibility, freshness and observation-history contract.",
-      "lines": 64
+      "lines": 72
+    },
+    {
+      "path": "extension/src/ui/signal-desk.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Real-data workflow composition, local run comparisons, pinned paper drafts, evidence dialogs and read-only refresh lifecycle.",
+      "lines": 323
+    },
+    {
+      "path": "extension/src/ui/desk-model.js",
+      "component": "extension",
+      "kind": "javascript",
+      "summary": "Pure compatibility, source snapshot, eligibility explanation and archived-control presentation contracts.",
+      "lines": 60
+    },
+    {
+      "path": "extension/src/ui/signal-desk.css",
+      "component": "extension",
+      "kind": "css",
+      "summary": "Accessible light/dark Signal Desk tokens, responsive layouts, dense mode and popup styling.",
+      "lines": 139
+    },
+    {
+      "path": "soltui/desk.py",
+      "component": "soltui",
+      "kind": "python",
+      "summary": "Loaded-array research provenance and exact paper handoff validation; no worker starts or network.",
+      "lines": 83
+    },
+    {
+      "path": "docs/SIGNAL-DESK.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "UI workflows, persistence, provenance boundaries and use instructions.",
+      "lines": 106
     }
   ]
 }

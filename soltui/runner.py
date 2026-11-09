@@ -57,6 +57,7 @@ class SweepOutcome:
     rows: list[SweepRow] = field(default_factory=list)
     cancelled: bool = False
     error: str | None = None
+    context: dict[str, Any] = field(default_factory=dict)
 
     @property
     def evaluable(self) -> list[SweepRow]:
@@ -176,6 +177,8 @@ class SweepRunner:
         outcome = SweepOutcome()
         try:
             arrays = load_arrays(settings)
+            from .desk import research_context
+            outcome.context = research_context(settings, roster, arrays)
             cfg = engine_config(settings)
             entries: Sequence[RosterEntry] = roster.entries
             total = len(entries)

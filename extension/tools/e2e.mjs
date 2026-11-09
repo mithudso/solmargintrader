@@ -32,6 +32,7 @@ import { execFile } from 'node:child_process';
 import { assertAllowedMessage, assertDisarmed, assertSoltuiCallAllowed } from '../e2e/lib/guard.mjs';
 import { installHost } from '../e2e/lib/soltui-host.mjs';
 import { verifyDashboardWorkflows } from '../e2e/lib/dashboard-workspace.mjs';
+import { verifySignalDesk } from '../e2e/lib/signal-desk.mjs';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOL = 'So11111111111111111111111111111111111111112';
@@ -530,6 +531,10 @@ try {
 
   await check('dashboard order handoff, confirmation, explicit clear and editor regression scenarios (mock writes)', async () => {
     await verifyDashboardWorkflows(dash, browser);
+  });
+
+  await check('Signal Desk source identity, workflows, pinned paper setup, search, archive policy and responsive layout (memory-only native fixture)', async () => {
+    await verifySignalDesk(dash, browser);
   });
 
   await check('the 1-minute soltui build probe alarm is scheduled', async () => {

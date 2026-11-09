@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T04:50:42+00:00",
+  "generatedAt": "2026-11-09T05:02:09+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1608,
+      "matchingFiles": 1611,
       "shown": 30,
       "files": [
         {
@@ -138,12 +138,12 @@
           "hits": 29
         },
         {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md",
+          "path": "extension/README.md",
           "hits": 26
         },
         {
-          "path": "extension/README.md",
-          "hits": 25
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md",
+          "hits": 26
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1350,
+      "matchingFiles": 1354,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1335,
+      "matchingFiles": 1339,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 676,
+      "matchingFiles": 679,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 567,
+      "matchingFiles": 571,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 532,
+      "matchingFiles": 533,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 418,
+      "matchingFiles": 422,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 270,
+      "matchingFiles": 274,
       "shown": 30,
       "files": [
         {
@@ -1670,7 +1670,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 223,
+      "matchingFiles": 226,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 221,
+      "matchingFiles": 224,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 143,
+      "matchingFiles": 152,
       "shown": 30,
       "files": [
         {

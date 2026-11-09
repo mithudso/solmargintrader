@@ -7,21 +7,34 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Dashboard workspace (0.4.2)
+## Signal Desk workspace (0.5.0)
 
-The dashboard now exposes the complete installed SolTUI registry in workspaces for Now, Signal,
-Research/replay, Bots/prices, Experiments, Money/orders, Library/editor, TUI settings and Archive.
-The popup's **Full workspace** link opens it. Forms include explicit true/false values; results
-include sortable/filterable tables, CSV/JSON exports, time-series charts, row detail and guarded
-catalogued-document editing. Manual order previews hand off to explicitly confirmed submit forms.
-Signal has a read-only recorder chart and saved forward predictions. The prediction table refreshes
-automatically every ten seconds while visible, even with Follow stream off, and retries read failures.
-The refresh timestamp tracks successful reads; forecast issuance still uses closed minute candles.
-Both live headers show the
-[aggregate prediction score](../docs/LIVE-PREDICTION-SCORE.md), with configurable accuracy/sample
-voting floors and a scrolling, immutable score annotation for each observed price tick. Native sessions retain replay
-and running-job state while a dashboard is open; status and cancellation remain usable during long
-calls. See [dashboard workflows, lifecycle and verification](../docs/EXTENSION-TUI-PARITY.md).
+The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or
+**Bot monitor** workspace. The popup shows a one-time read-only signal/process glance and four
+shortcuts. The interface uses recorded/native-host data; it contains no demonstration values.
+All tools, experiments, wallets/orders, settings, legacy wallet views and document editing remain
+reachable. Archived liquidity mutators are discoverable but disabled, including in expert forms.
+
+Backtesting retains completed/partial sweep snapshots with the actual loaded-data hash, strategy
+parameters, code revision, CPCV geometry and cost assumptions. Saved comparisons check compatibility.
+**Stage paper trial** stores a draft; **Review pinned paper setup** fills the existing prepare form.
+The backend verifies the snapshot and pins its one strategy and full cost scenario. Preparing starts
+no worker; **Start prepared checks** is a separate explicit action. Changing code or overriding a
+pinned asset/cost is refused. Unsupported wrapper translations are refused rather than approximated.
+
+Live predictions keep the existing ten-second read cadence and immutable observed score tape.
+Accuracy/sample floors and paper confidence remain separate. The bot monitor shows session and
+detached lifetimes, liveness and output freshness independently. Search filters tool descriptions
+locally; every backend docs.search remains a deliberate resource-disclosed operation.
+
+View asset, last workspace, density, up to twelve run snapshots, comparison choices and a staged
+draft persist in local browser storage. New historical sweeps use saved backend research settings,
+which are clearly labeled separately from the view asset. Additional drawdown/equity/benchmark
+figures remain unavailable until a typed backend result supplies them. No browser permissions,
+CSP, engine defaults, trading rails or forecast code hashes were changed.
+
+See [Signal Desk workflows](../docs/SIGNAL-DESK.md) and
+[bridge lifecycle and verification](../docs/EXTENSION-TUI-PARITY.md).
 
 ## Existing market views
 
@@ -104,7 +117,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.4.0`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.5.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).

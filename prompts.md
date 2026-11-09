@@ -1,8 +1,13 @@
 # Prompt history
 
-Version: 135
-Delta: v134 to v135; save repository review and implementation request.
+Version: 136
+Delta: v135 to v136; preserve repository review and approved Signal Desk implementation requests.
 
+## v136 - 2026-11-08
+
+```text
+Yes, implement this as the UI for the chrome extension.
+```
 
 ## v135 - 2026-11-08
 

@@ -1,25 +1,34 @@
 # Dashboard and SolTUI parity
 
-The dashboard is the extension's primary workspace as of version 0.4.0. The popup links into it.
+The dashboard is the extension's primary workspace as of version 0.5.0. The popup links into it.
 Open the extension's **Full workspace** link. The sidebar groups tools by the same work they perform
 in the TUI. Existing holdings, alerts, swap quotes and the experimental grid remain available.
 
 The dashboard reads the installed native host's complete command registry. It builds every form
 from the command's declared parameters, including required fields, numbers, JSON and explicit
-true/false values. **All tools** includes new registry commands without a browser update. The host
+true/false values. **All tools** includes new registry commands without a browser update. Archived mutators stay disabled; discovery is not permission to operate them. The host
 and dashboard must use the same checkout to include newly delivered tools.
 
 | Workspace | Available workflows |
 | --- | --- |
 | Now | Recorder status, running backtests, sweep queue, forward workers, autopilot, optimizer schedule and saved portfolio |
-| Signal | Compound catalog, per-coin configuration, metrics, signal, backtests, forward results, predictions, training and autopilot |
-| Research & replay | Strategy cards, roster changes, CPCV backtests, queue controls, batches, cumulative results, Top 5, per-bar analysis, indicators, prospective paper experiments and replay start/step/reset/end |
-| Bots & prices | Grid, DCA and triangle configuration, backtests, coin ranking/audit, forward testing, optimization, scheduling and recorder controls |
+| Live signals | Recorder chart, saved predictions, agreement, eligibility and compound tools |
+| Forward testing | Prospective trial results, precise pinned paper setup, explicit worker controls and saved histories |
+| Backtesting | Strategy cards, roster changes, CPCV backtests, queue controls, batches, cumulative results, Top 5, per-bar analysis, indicators, prospective paper experiments and replay start/step/reset/end |
+| Bot monitor | Grid, DCA and triangle configuration, backtests, coin ranking/audit, forward testing, optimization, scheduling and recorder controls |
 | Experiments | Schema, bounded search preview/create, saved runs, start/pause/cancel/finalize, candidates, cells, heatmap data, CSV import and comparisons |
 | Money & orders | Public wallets, portfolio snapshots/changes, P&L by source, Coinbase catalog/account, Jupiter token search, market/percentage/conditional previews, reviewed submit and reconciliation |
 | Library & editor | Document catalog/search/read, guarded save and draft export |
 | TUI settings | Shared dates, costs, capital, CPCV settings, public addresses and forward autostart |
-| Archive | Historical Aero LP status/data and existing registry controls; this release does not reactivate the discontinued service |
+| Archive | Historical Aero LP reads; archived mutators remain discoverable but unavailable in every form |
+
+## Signal Desk composition
+
+Four primary screens compose existing read-only commands; they do not start research/services when
+opened. Focused actions open the registry-backed parameter form for deliberate execution. Backtest
+snapshots and paper handoffs use the additional result/provenance contract described in
+[Signal Desk](SIGNAL-DESK.md). Missing-host and unsupported fields
+remain unavailable. The browser saves view state and bounded historical snapshots locally.
 
 ## Working in the dashboard
 

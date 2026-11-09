@@ -145,12 +145,12 @@ command registry. No npm runtime dependencies by design; one vendored charting l
 | `extension/src/market/quote.js` | Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range |
 | `extension/src/market/pools.js` | DefiLlama yields, ranked by 30-day mean; every APY labelled quoted |
 | `extension/src/market/net.js` | Read-only fetch and JSON-RPC; refuses any non-read method |
-| `extension/src/ui/dashboard.js` | Dashboard shell and hash router; Overview first, Grid last |
+| `extension/src/ui/dashboard.js` | Signal Desk shell and hash router; four priority workflows and advanced views |
 | `extension/src/ui/view-overview.js` | Overview and Alerts views |
 | `extension/src/ui/view-markets.js` | Holdings, Profit & loss and Discover views |
 | `extension/src/ui/view-trade.js` | Backtest & strategies and Swap views |
 | `extension/src/ui/view-grid.js` | The experimental grid's forms, charts and journal |
-| `extension/src/ui/popup.js` | Popup: holdings, alerts, shortcuts; grid controls collapsed |
+| `extension/src/ui/popup.js` | Popup: signal/process glance, four workflow shortcuts and collapsed wallet/grid controls |
 | `extension/tools/cli.js` | CLI surface over the registry |
 | `extension/tools/api-server.js` | Local HTTP surface; reads `SMT_API_PORT`, `SMT_API_TOKEN`, `SMT_PASSPHRASE` |
 | `extension/tools/dryrun.js` | The headless integration gate — a round trip must close positive |
@@ -357,3 +357,13 @@ part of any component.
 | `soltui/live_score.py` | Current forward-vote eligibility, latest call snapshot and terminal tick-window layout. |
 | `extension/src/ui/live-score.js` | Browser score adapter and aligned immutable price/score tick chart. |
 | `docs/LIVE-PREDICTION-SCORE.md` | Scoring, eligibility, freshness and observation-history contract. |
+
+### Signal Desk interface
+
+| Path | Purpose |
+| --- | --- |
+| `extension/src/ui/signal-desk.js` | Real-data workflow composition, local run comparisons, pinned paper drafts, evidence dialogs and read-only refresh lifecycle. |
+| `extension/src/ui/desk-model.js` | Pure compatibility, source snapshot, eligibility explanation and archived-control presentation contracts. |
+| `extension/src/ui/signal-desk.css` | Accessible light/dark Signal Desk tokens, responsive layouts, dense mode and popup styling. |
+| `soltui/desk.py` | Loaded-array research provenance and exact paper handoff validation; no worker starts or network. |
+| `docs/SIGNAL-DESK.md` | UI workflows, persistence, provenance boundaries and use instructions. |
