@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 130
-Delta: v129 to v130; retain score requests, paper controls and explicit resume.
+Version: 131
+Delta: v130 to v131; preserve the request for ten-second Live prediction refresh.
+
+## v131 - 2026-11-08
+
+```text
+In the Live signal with the graph, the forward test strategies -predictions never update. Make it so they update every 10s.
+```
 
 ## v130 - 2026-11-08
 
