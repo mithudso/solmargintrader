@@ -1,7 +1,56 @@
 # Work continuation
 
-Version: 245
-Delta: v244 to v245; preserve concurrent histories and approved reflection delivery.
+Version: 250
+Delta: v249 to v250; preserve completed implementation and final local acceptance before delivery.
+
+
+
+
+
+
+## v250 - 2026-11-08
+
+All18 selected root-cause repairs are implemented. Final executor verification completed with exit0: Ruff check/format (32 files), 350 offline tests passed and5 network tests deselected. Added148 regressions relative to the202-test baseline. Backtester909, extension372, docs counts/drift and positive offline grid roundtrip also completed successfully. Full optional SolTUI suite and real venue execution were not run; CI supplies mapped macOS/browser/Mongo/liquidity checks.
+
+Independent final private-install acceptance completed with exit0 on five CLI cases plus pure-ledger fee checks: malformed/clock-regressed gate evidence blocks; failed fee P&L is negative without a position; absent fee refuses; source SHA256 values match the final four files. The new report docs/repository-review-2026-11-08.md records architecture, all18 repairs, actual red/green evidence, source hashes and coverage limits. The code optimizer status remains BLIND-AUDIT-DISSENT because both allowed blind gates found issues; all reported findings now have focused repairs/tests, but no third blind certification is claimed.
+
+Worktree /Users/mitch/dev/solmargintrader-wt-01a1be8d and branch agent-01a1be8d contain only task-owned changes and generated offline retrieval artifacts. Remaining delivery gates: final static index/docs check, source-index-focused tests, commit/push, PR with final CI, actual merge, remote content verification and own worktree/branch cleanup. The PR for this branch, its final head and actual merged receipt are authoritative for those remaining actions. Shared checkout stays untouched while active sessions own it; do not force its branch state. No training, live order, key/config/gate mutation or installed user-service restart occurred.
+
+## v249 - 2026-11-08
+
+Both blind reviews completed with dissent. Gate1 found research clock rollback, quote expiry during journal flush and discarded final gate notes; repaired with focused tests. Gate2 found failed-chain fees bypassing the loss stop and duplicate token account indices inflating fills; both repaired. The code optimizer retains BLIND-AUDIT-DISSENT under its two-gate limit; author regressions do not establish an independent CLEAN result. Detailed review scope now includes the required ledger.py accounting dependency.
+
+Failed outcomes persist measured meta.fee and recorded SOL price valuation. Unreadable failed fees remain unknown until reconcile can read them. The ledger includes failed fees per UTC day/strategy and refuses historic missing/invalid failed fee evidence; positions and reduce-only exits remain available. Token balances require unique/in-range integer accountIndex values. No real transaction/config/gate changed.
+
+Backtester full suite completed 909 tests with exit0 after removing INDEX_NO_AUTO from its test process (its mocked auto-index tests intentionally need the default environment). The earlier attempt with INDEX_NO_AUTO=1 had8 failures/2errors from suppressed mocked starts; no product/index service change was needed. Static offline repository index generation/check passed before the last source edits and will be refreshed. Executor322 passed at the prior candidate; final expanded executor suite and renewed private CLI acceptance are in progress. Extension372, docs/drift and offline positive roundtrip passed.
+
+Steps: all18 root-cause repairs [completed]; final expanded verification [in progress]; final report/index refresh [pending]; commit/PR/checks/merge/cleanup [pending]. Stele task create953163ce and claimffe54b48 queued, scope/risk/lesson operations queued; new second-gate entries47df0b56 and49455e2b. Shared checkout remains untouched.
+
+## v248 - 2026-11-08
+
+First integrated implementation verified: executor 314 passed /5 network deselected, whole-package Ruff and format pass, extension 372 passed, documentation counts/drift pass (2529 discovered across documented suites), offline grid closed round-trip net $0.3492. Private venv CLI list returned an ok envelope and imported this worktree source; independent CLI acceptance is underway. Every reported check has a completed zero exit code.
+
+Fresh blind source review found one research history residual: pass at checked_at200 then fail at100 after clock rollback revives old pass. Gate owner is adding fail-closed monotonic per-strategy history and strict duplicate-key decoding. The first regressed failure must persist so refusal never leaves an old approval usable. Parent also reproduced/repaired failed auto-KILL persistence after terminal journal append; KILL now precedes terminal outcome so failure preserves unknown.
+
+Steps: review [completed]; primary repairs [completed]; blind-review repair [in progress]; final integrated source checks/report/offline index/backtester [pending]; commit/PR/final CI/merge/cleanup [pending]. New user instructions require completed local check exits and independent installed-state checks for changed installed surfaces; preserve those gates. Running installed user services are not changed. Shared checkout remains owned by active sessions.
+
+## v247 - 2026-11-08
+
+Architecture and focused diagnostics are complete. Three per-file reviewers found journal short-write/replay defects, malformed and concurrent gate evidence defects, plus engine pending-status expiry, stop-after-journal, incomplete metadata, reconciliation locking and ambiguity-envelope defects. Root implemented engine repairs after 24 failing counterexamples (one positive control passed); all 52 engine tests now pass. Journal/gate workers own their two files and dedicated integrity tests; parent owns engine, records, docs and generated indexes.
+
+Baseline: 202 executor tests passed, five network tests deselected; Ruff/format clean. Verification commands are executor/.venv/bin/ruff check src tests; executor/.venv/bin/ruff format --check src tests; executor/.venv/bin/pytest -q. Local locked environment created only in private worktree. No empirical held-out evaluation/champion, no live money test. Snapshot path /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-executor-integrity.
+
+Steps: review [completed]; reproduce/repair [in progress]; independent final review [pending]; report/docs/indexes/full relevant checks [pending]; commit/push/PR/checks/merge/cleanup [pending]. Stele outbox: lifecycle/context 953163ce, dda513f9; risks 7c025e24, 59aab5a0, 2ccbc9ae. No graph task ID was returned; claim/complete cannot be reported as live graph successes.
+
+## v246 - 2026-11-08
+
+Target: understand seven components, find concrete improvements and implement them with offline regression evidence. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1be8d; branch agent-01a1be8d; baseline 6212fd8. Shared checkout and other sessions are untouched.
+
+Steps: architecture/prior-state review [completed]; focused executor journal/gate/config audit [in progress]; reproduce and repair findings [pending]; verify and document recommendations [pending]; commit, PR, checks, merge and cleanup [pending].
+
+Preserve dry-run/disarmed defaults, archived liquidity, simulation-only backtester and unknown-submit holds. No wallet keys, live orders, services, inference or embeddings are needed. Prior PR35 audit coverage was limited and is not certification. Stele MCP is unavailable and stele-search failed on unsupported runtime model; exact lifecycle/context writes are queued as 953163ce and dda513f9. Hub semantic search is unresponsive; use existing offline index with INDEX_NO_AUTO=1.
+
+Verification plan: executor Ruff/format/pytest from its manifest, targeted failure counterexamples, backtester and extension cross-component safety checks, docs/index drift checks and final-head CI. No held-out optimizer evaluation surface was identified, so empirical promotion is not engaged. Scope/status will be recorded honestly.
 
 ## v245 - 2026-11-08
 

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7dd2913` (2026-11-08T13:40:15+00:00). 1916 tracked files, 32.9 MB.
+**Generated** from `index/INDEX.json` at commit `6212fd8` (2026-11-09T04:50:39+00:00). 2681 tracked files, 44.9 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (1675 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 290/305 Python modules and 56/81 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (130 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2415 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 330/347 Python modules and 58/84 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (142 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -33,24 +33,24 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 20 files
-- [`docs`](#docs) — 61 files
+- [`(root)`](#root) — 23 files
+- [`docs`](#docs) — 80 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1233 files
-- [`research`](#research) — 161 files
-- [`extension`](#extension) — 92 files
-- [`soltui`](#soltui) — 105 files
+- [`backtester`](#backtester) — 1911 files
+- [`research`](#research) — 178 files
+- [`extension`](#extension) — 96 files
+- [`soltui`](#soltui) — 140 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.claude`](#claude) — 1 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
-- [`executor`](#executor) — 38 files
+- [`executor`](#executor) — 42 files
 - [`liquidity`](#liquidity) — 57 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 17 files
-- [`scripts`](#scripts) — 9 files
+- [`scripts`](#scripts) — 14 files
 - [`skills`](#skills) — 67 files
 - [`tools`](#tools) — 3 files
 - [`tradingview`](#tradingview) — 26 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-20 files.
+23 files.
 
 #### `.editorconfig`
 
@@ -113,7 +113,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 193 lines · 13,847 B · description: **curated**
+`doc` · 195 lines · 14,134 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -143,9 +143,25 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Read it.
 
+#### `JUPITER_GEMINI_HANDOFF.md`
+
+`doc` · 49 lines · 8,454 B · description: **extracted**
+
+**Purpose.** As of 2026-11-08 22:54 UTC. The owner wants Gemini to finish the work. The work is **not complete**. Do not claim Jupiter trading works. Move the advanced order ticket from Money > Wallet to its own page under Money, and enable choosing Coinbase or Jupiter.
+
+**Use.** Read it.
+
+#### `LICENSE`
+
+`other` · 22 lines · 1,072 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
 #### `README.md`
 
-`doc` · 139 lines · 8,957 B · description: **curated**
+`doc` · 140 lines · 8,959 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -161,7 +177,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-facts.txt`
 
-`data` · 46 lines · 4,551 B · description: **derived**
+`data` · 56 lines · 6,155 B · description: **derived**
 
 **Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader: Sourced Facts
 
@@ -185,7 +201,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms.txt`
 
-`data` · 45 lines · 2,580 B · description: **derived**
+`data` · 47 lines · 2,734 B · description: **derived**
 
 **Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader
 
@@ -193,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1445 lines · 217,245 B · description: **extracted**
+`doc` · 341 lines · 55,630 B · description: **extracted**
 
-**Purpose.** Version: 144 Delta: v143 to v144; preserve PR 100 records and resolve PR 104. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723.
+**Purpose.** Version: 250 Delta: v249 to v250; preserve completed implementation and final local acceptance before delivery. All18 selected root-cause repairs are implemented. Final executor verification completed with exit0: Ruff check/format (32 files), 350 offline tests passed and5 network tests deselected. Added148 regressions relative to the202-test baseline.
 
 **Use.** Read it.
 
@@ -209,17 +225,25 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 616 lines · 33,227 B · description: **extracted**
+`doc` · 1080 lines · 52,366 B · description: **extracted**
 
-**Purpose.** Version: 76 Delta: v75 to v76; preserve PR 100 records and resolve PR 104. Run the repo-bootstrapper skill on this repo. And the deep code optimizer.
+**Purpose.** Version: 135 Delta: v134 to v135; save repository review and implementation request. Look at this repo, what it does, how it works, and recommend any improvements, suggestions, bug fixes, features, etc and then implement them.
 
 **Use.** Read it.
 
 #### `run-log.jsonl`
 
-`other` · 0 lines · 684 B · description: **none**
+`other` · 0 lines · 1,011 B · description: **none**
 
 **Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `script-profile-orchestration.md`
+
+`doc` · 78 lines · 7,695 B · description: **extracted**
+
+**Purpose.** Generator: p/2.1.0. Run:20261108-055917. Pipeline:full. Goal: Explain the idea and objective of every trading-related publication in the saved script directory. Scope:All742 native publications, including indicator studies and financial libraries; preserve the accepted21 strategy-publication cards.
 
 **Use.** Read it.
 
@@ -229,11 +253,11 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-61 files.
+80 files.
 
 #### `docs/API.md`
 
-`doc` · 176 lines · 9,221 B · description: **extracted**
+`doc` · 184 lines · 9,771 B · description: **extracted**
 
 **Purpose.** Every action lives in one registry: `extension/src/core/commands.js`. Three surfaces adapt it. drift apart. cd extension
 
@@ -241,7 +265,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 178 lines · 11,501 B · description: **extracted**
+`doc` · 181 lines · 11,789 B · description: **extracted**
 
 **Purpose.** Seven components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
@@ -281,7 +305,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 320 lines · 19,493 B · description: **extracted**
+`doc` · 321 lines · 20,385 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -295,9 +319,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/EXTENSION-TUI-PARITY.md`
+
+`doc` · 101 lines · 7,405 B · description: **extracted**
+
+**Purpose.** The dashboard is the extension's primary workspace as of version 0.4.0. The popup links into it. Open the extension's **Full workspace** link. The sidebar groups tools by the same work they perform in the TUI. Existing holdings, alerts, swap quotes and the experimental grid remain available.
+
+**Use.** Read it.
+
 #### `docs/FILES.md`
 
-`doc` · 18739 lines · 902,854 B · description: **extracted**
+`doc` · 26311 lines · 1,373,619 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -308,6 +340,22 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 184 lines · 7,745 B · description: **extracted**
 
 **Purpose.** Seven components with separate dependencies. The optional soltui app and liquidity daemon can each install a persistent macOS launchd service. Test commands below do not install them. verified against that runtime. Liquidity declares its own Python range in `pyproject.toml`.
+
+**Use.** Read it.
+
+#### `docs/JUPITER-EXPERIMENT-COSTS.md`
+
+`doc` · 33 lines · 3,252 B · description: **extracted**
+
+**Purpose.** Spot swaps and perpetual positions are separate products. Do not apply a perps fee to a spot swap. For a SOL/USDC spot round trip, derive the realized return from the actual quote or fills: `(USDC received after the sell - USDC spent on the buy - separately paid network and priority fees) / USDC spent on the buy`.
+
+**Use.** Read it.
+
+#### `docs/LIVE-PREDICTION-SCORE.md`
+
+`doc` · 73 lines · 4,815 B · description: **extracted**
+
+**Purpose.** The Signal Live page in SolTUI and the extension dashboard show the same aggregate score above the live price view and the forward-prediction table. It measures directional agreement among eligible forward-test predictions. It is not an estimated probability or an order instruction.
 
 **Use.** Read it.
 
@@ -329,7 +377,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SCRIPTS.md`
 
-`doc` · 1023 lines · 52,018 B · description: **extracted**
+`doc` · 1041 lines · 52,964 B · description: **extracted**
 
 **Purpose.** Every runnable entry point in this repo: what it is for, when to reach for it, **when not to**, its options, a real invocation, and the output you should expect. list. This page is the operator's manual — the commands you actually type.
 
@@ -345,9 +393,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 230 lines · 18,031 B · description: **extracted**
+`doc` · 232 lines · 18,802 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1010 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1214 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests
 
 **Use.** Read it.
 
@@ -369,17 +417,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TRADINGVIEW-CARD-READINESS-FILES.md`
 
-`doc` · 817 lines · 225,692 B · description: **extracted**
+`doc` · 817 lines · 225,724 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 (2026-11-08). Delta: list the complete incomplete-card separation changes. Canonical checkout paths for every created, modified or relocated file. Card contents are preserved; research cards move into the incomplete directory.
+**Purpose.** Version: 1.1.0 (2026-11-08). Delta: retain the separation inventory and refresh the13 enriched native-strategy locations. Canonical checkout paths for every created, modified or relocated file. Card contents are preserved; research cards move into the incomplete directory.
 
 **Use.** Read it.
 
 #### `docs/TRADINGVIEW-CARD-READINESS.md`
 
-`doc` · 1108 lines · 289,998 B · description: **extracted**
+`doc` · 1110 lines · 290,255 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0 (2026-11-08). Delta: separate non-runnable research, guides and templates from registered strategies. The active catalog contains 34 registered strategies. The original 1,142 cards are preserved: 42 guides and templates, 306 other research cards, 760 incomplete cards and 34 active cards. The executable registry is unchanged.
+**Purpose.** Version: 1.3.0 (2026-11-08). Delta: retain source reviews and current catalog locations. The active catalog contains 34 registered strategies. The original 1,142 cards are preserved: 42 guides and templates, 302 other research cards, 764 incomplete cards and 34 active cards. The executable registry is unchanged. The tables below preserve the earlier source-mechanics review.
 
 **Use.** Read it.
 
@@ -388,6 +436,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 3648 lines · 424,800 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0 (2026-11-07). Delta: first distillation of the `tradingview/` docs bundle. This page distills the TradingView Advanced Charts (Charting Library) and Trading Platform documentation, its TypeScript definitions, and the agentskills.io Agent Skills format into one reference for this repository.
+
+**Use.** Read it.
+
+#### `docs/TRADINGVIEW-SCRIPT-CARD-FILES.md`
+
+`doc` · 736 lines · 239,149 B · description: **extracted**
+
+**Purpose.** Version:1.0.0. Delta: complete created/modified path inventory for the full-script source-card task. All691 source cards remain coin-test-incomplete.
 
 **Use.** Read it.
 
@@ -417,7 +473,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 345 lines · 24,277 B · description: **extracted**
+`doc` · 360 lines · 24,980 B · description: **extracted**
 
 **Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Seven components, in ascending order of how much damage a bug can do: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
@@ -433,7 +489,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1507 lines · 45,254 B · description: **derived**
+`doc` · 1542 lines · 46,418 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -497,7 +553,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/optimization-workbench.md`
 
-`doc` · 58 lines · 8,151 B · description: **extracted**
+`doc` · 58 lines · 8,523 B · description: **extracted**
 
 **Purpose.** The Bots tab's **Experiment workbench** keeps complete simulated search evidence. It adds a bounded search editor, candidate/coin/window explorer, observed parameter maps, resumable workers and reported TradingView comparison. It never places an order. Open Bots, choose a bot, then open **Experiment workbench**.
 
@@ -516,6 +572,22 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 160 lines · 13,249 B · description: **extracted**
 
 **Purpose.** Version: 1.1.0. Delta: integrated code safety references and verified metadata choices. Scope: six-component repository at base `eebadbb`, isolated branch session-key worktree remain outside this change. No previous bootstrap audit ledger
+
+**Use.** Read it.
+
+#### `docs/repo-bootstrap-audit-2026-11-08.md`
+
+`doc` · 79 lines · 5,597 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: updated for seven-component architecture, resolved LICENSE from owner defaults, implemented workflow log rotation, and verified test count synchronization. Scope: seven-component repository at HEAD (`b9c8cf7`), master branch. Existing untracked research/guide files (`soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md`) preserved outside this change.
+
+**Use.** Read it.
+
+#### `docs/repository-review-2026-11-08.md`
+
+`doc` · 196 lines · 16,369 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: repair failed-transaction fee accounting and duplicate balance indices after second blind review. The repository connects market-data collection, offline strategy simulation, forward evidence, research views and guarded manual execution. It does not establish that a strategy has a live edge.
 
 **Use.** Read it.
 
@@ -548,6 +620,16 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 443 lines · 27,593 B · description: **extracted**
 
 **Purpose.** automated trading signals and their execution on Jupiter (jup.ag) on Solana. This is a *map*, not an implementation plan, and not financial advice. Facts about Jupiter APIs were verified against live `developers.jup.ag`;
+
+**Use.** Read it.
+
+### `docs/archive/`
+
+#### `docs/archive/memory-2026-11-08.md`
+
+`doc` · 1727 lines · 271,950 B · description: **extracted**
+
+**Purpose.** Archived on 2026-11-08. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723. Base: eebadbb5a937aa485825016650589bd5a4538b0d.
 
 **Use.** Read it.
 
@@ -598,6 +680,104 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 33 lines · 889 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys (version, delta, steps, final_receipt).
+
+**Use.** Read it.
+
+### `docs/design/chrome-workspace/`
+
+#### `docs/design/chrome-workspace/acceptance.md`
+
+`doc` · 71 lines · 7,068 B · description: **extracted**
+
+**Purpose.** Version: 1.0 Delta: record final operations council re-review and observed standalone browser behavior. Verifier: `live-acceptance-verifier`, definition 1.0.0, independent context `/root/council_ops`.
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/council-review.md`
+
+`doc` · 39 lines · 5,163 B · description: **extracted**
+
+**Purpose.** Version: 1.1 Delta: v1.0 to v1.1; all three advisors verified corrections in round 2; zero residual actionable findings. Scope: one UI design option and isolated synthetic prototype, no production interface change.
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-candidate-v1.txt`
+
+`doc` · 18 lines · 4,308 B · description: **derived**
+
+**Purpose.** Generated report. Opens: Act as a product designer and repository analyst. Study this repository and propose an ideal Chrome extension interface that makes its capabilities useful, understandable, and enjoyable. Prioritize backtesting, forward testing, live signals, and bot monitoring. Treat this as
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-checkpoints.jsonl`
+
+`doc` · 0 lines · 1,682 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-evidence.json`
+
+`doc` · 81 lines · 2,211 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (baseline_sha256, tokens_original, tokens_final, scan, edit_distance, final_sha256...).
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-manifest.json`
+
+`doc` · 39 lines · 609 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (status, iterations, active_passes, skipped, profile, final...).
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-optimization.md`
+
+`doc` · 136 lines · 20,129 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0 Delta: v1.1.0 to v1.2.0; record final independent acceptance, reconcile evidence and run final deterministic self-check. Skill: prompt-deep-optimizer 2.10.2. Run: chrome-workspace-20261108. Mode: full, structural only. The optimizer treated candidate content as data throughout; it did not execute the design task.
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-optimized.md`
+
+`doc` · 22 lines · 4,835 B · description: **extracted**
+
+**Purpose.** Version: 1.1.0. Owner: repository maintainer. Act as a product designer and repository analyst. Study this repository and propose an ideal Chrome extension interface that makes its capabilities useful, understandable, and enjoyable. Prioritize backtesting, forward testing, live signals, and bot monitoring.
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-original.txt`
+
+`doc` · 2 lines · 462 B · description: **derived**
+
+**Purpose.** Generated report. Opens: Look at this repo and find all the things it does and can do, and then draft the ideal chrome extension UI interface for a user to gain the most utility and pleasure from it. Before submitting the proposal to the user present it to a council of advisors for critique, when al
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prompt-telemetry.jsonl`
+
+`doc` · 0 lines · 6,142 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/proposal.md`
+
+`doc` · 177 lines · 27,140 B · description: **extracted**
+
+**Purpose.** Version: 1.2 Delta: v1.1 to v1.2; all three council advisors verified 13 corrections with no residual findings; standalone browser acceptance passed. Owner: repository owner; proposal prepared by Codex, 2026-11-08.
+
+**Use.** Read it.
+
+#### `docs/design/chrome-workspace/prototype.html`
+
+`doc` · 67 lines · 46,017 B · description: **none**
+
+**Purpose.** _No description available._
 
 **Use.** Read it.
 
@@ -815,7 +995,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1233 files.
+1911 files.
 
 #### `backtester/PROMPT.md`
 
@@ -1725,7 +1905,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/README.md`
 
-`strategy-card` · 262 lines · 13,299 B · description: **extracted**
+`strategy-card` · 274 lines · 14,052 B · description: **extracted**
 
 **Purpose.** Cards directly in this directory are registered strategies with an implemented runner. The normal card loader reads only this directory. An implemented strategy can require external data or a separate runner before it can be tested.
 
@@ -2075,9 +2255,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/README.md`
 
-`strategy-card` · 20 lines · 1,081 B · description: **extracted**
+`strategy-card` · 24 lines · 1,472 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 (2026-11-08). Delta: separate incomplete source material from the active catalog. These cards need further research before their core calculation or trading rules can be reproduced. A name, parameter list or partial description is not an
+**Purpose.** All691 source-profile cards in the expanded TradingView collection remain incomplete as standalone coin tests. Some disclose mathematical components, but no full coin-test contract or runnable implementation has been qualified. Source interpretation is a separate status. Start with the full source-card index in research/TRADINGVIEW-SCRIPT-CARDS.md. Version: 1.0.0 (2026-11-08).
 
 **Use.** Specification only — read it; there is no runner. Status: ?.
 
@@ -3711,6 +3891,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Specification only — read it; there is no runner. Status: spec-only.
 
+#### `backtester/strategy_cards/incomplete/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md`
+
+`strategy-card` · 121 lines · 6,771 B · description: **extracted**
+
+**Purpose.** Demonstrate how long-only averaging down can produce repeated recoveries while accumulating a ruinous tail exposure; the author presents it as a martingale failure experiment.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
 #### `backtester/strategy_cards/incomplete/tv_8owcuqfq_multi_distribution_volume_profile_zeiierman.md`
 
 `strategy-card` · 102 lines · 5,688 B · description: **extracted**
@@ -4143,9 +4333,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_bfxf4ixh_built_in_kelly_ratio_for_dynamic_position_sizing.md`
 
-`strategy-card` · 97 lines · 4,421 B · description: **extracted**
+`strategy-card` · 93 lines · 4,780 B · description: **extracted**
 
-**Purpose.** Specification of Built-in Kelly ratio for dynamic position sizing; not a tested trading strategy.
+**Purpose.** Demonstrate adapting position size from the strategy's own completed-trade performance using a Kelly ratio, with a Keltner-channel strategy as the host.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
 
@@ -5321,6 +5511,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Specification only — read it; there is no runner. Status: spec-only.
 
+#### `backtester/strategy_cards/incomplete/tv_ghocsiv7_gap_filling_strategy.md`
+
+`strategy-card` · 110 lines · 7,473 B · description: **extracted**
+
+**Purpose.** Trade the return to a significant opening gap's prior reference level, while offering an inverted mode that instead trades gap continuation.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
 #### `backtester/strategy_cards/incomplete/tv_gpct4m6t_machine_learning_knn_based_strategy.md`
 
 `strategy-card` · 94 lines · 4,269 B · description: **extracted**
@@ -5573,9 +5773,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_hocpm5uy_alculation_a_position_size_based_on_risk.md`
 
-`strategy-card` · 92 lines · 4,060 B · description: **extracted**
+`strategy-card` · 83 lines · 3,786 B · description: **extracted**
 
-**Purpose.** Specification of Сalculation a position size based on risk; not a tested trading strategy.
+**Purpose.** Show how a chosen risk budget and stop-loss distance can determine position size; it is a risk overlay rather than a market forecast.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -5703,9 +5903,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_i9tjotjl_lube.md`
 
-`strategy-card` · 92 lines · 4,415 B · description: **extracted**
+`strategy-card` · 100 lines · 7,107 B · description: **extracted**
 
-**Purpose.** Specification of LUBE; not a tested trading strategy.
+**Purpose.** Look for price entering a recently under-visited zone where it may move with less congestion, then trade the near-term trend until congestion returns.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -5906,6 +6106,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 `strategy-card` · 98 lines · 5,150 B · description: **extracted**
 
 **Purpose.** Specification of RedK Auto-Stepping Ladder Trader; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/incomplete/tv_jjhuhcje_stepped_trailing_strategy_example.md`
+
+`strategy-card` · 94 lines · 4,125 B · description: **extracted**
+
+**Purpose.** Protect progressively more of a favorable move by advancing a stop at three profit milestones, without defining the entry signal.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -7163,9 +7373,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_mvkdf8qh_trendmaster_pro_2_3_with_alerts.md`
 
-`strategy-card` · 106 lines · 5,019 B · description: **extracted**
+`strategy-card` · 132 lines · 7,466 B · description: **extracted**
 
-**Purpose.** Specification of TrendMaster Pro 2.3 with Alerts; not a tested trading strategy.
+**Purpose.** Trade moving-average trend changes only when configurable momentum, trend-strength, volatility and session constraints also agree, with a defined risk budget.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -7173,9 +7383,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_mvlwazsg_3commas_bot.md`
 
-`strategy-card` · 100 lines · 6,802 B · description: **extracted**
+`strategy-card` · 115 lines · 9,499 B · description: **extracted**
 
-**Purpose.** Specification of 3Commas Bot; not a tested trading strategy.
+**Purpose.** Provide a modifiable trading and alert-execution shell with predefined risk controls, using a moving-average crossover as the initial demonstration signal.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -7473,9 +7683,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_nvecqiqx_tasc_2026_03_one_percent_a_week.md`
 
-`strategy-card` · 100 lines · 5,256 B · description: **extracted**
+`strategy-card` · 128 lines · 7,909 B · description: **extracted**
 
-**Purpose.** Specification of TASC 2026.03 One Percent A Week; not a tested trading strategy.
+**Purpose.** Seek a small weekly snapback in TQQQ after a dip from Monday's open, with limited trade frequency and a Friday deadline.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -7616,6 +7826,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 `strategy-card` · 96 lines · 4,147 B · description: **extracted**
 
 **Purpose.** Specification of Reversal finder; not a tested trading strategy.
+
+**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+#### `backtester/strategy_cards/incomplete/tv_oxvr5vmy_grid_like_strategy.md`
+
+`strategy-card` · 119 lines · 9,847 B · description: **extracted**
+
+**Purpose.** Use a symmetric step-through-price process to demonstrate the apparent recovery benefits and real capital/friction problems of martingale and anti-martingale sizing.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -8133,9 +8353,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_rlkjr2sq_bjorgum_double_tap.md`
 
-`strategy-card` · 106 lines · 7,239 B · description: **extracted**
+`strategy-card` · 120 lines · 11,391 B · description: **extracted**
 
-**Purpose.** Specification of Bjorgum Double Tap; not a tested trading strategy.
+**Purpose.** Recognize a failed retest of a high or low, then trade the neckline breakout as a double-top or double-bottom reversal/breakout pattern.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -8823,9 +9043,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_vfzck3hx_tasc_2026_08_an_ag_selling_model.md`
 
-`strategy-card` · 102 lines · 5,359 B · description: **extracted**
+`strategy-card` · 127 lines · 7,768 B · description: **extracted**
 
-**Purpose.** Specification of TASC 2026.08 An Ag Selling Model; not a tested trading strategy.
+**Purpose.** Help an agricultural producer obtain an above-average selling price by staging short futures sales into seasonal strength, then covering at harvest.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -8913,9 +9133,9 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/strategy_cards/incomplete/tv_vuym89tw_grover_llorens_activator_strategy_analysis.md`
 
-`strategy-card` · 102 lines · 5,957 B · description: **extracted**
+`strategy-card` · 117 lines · 7,518 B · description: **extracted**
 
-**Purpose.** Specification of Grover Llorens Activator Strategy Analysis; not a tested trading strategy.
+**Purpose.** Test whether a price-converging trailing activator can identify reversals early enough to trade trends, while examining the false reversals created by that same convergence.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
@@ -9680,6 +9900,6790 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
 
 **Use.** Specification only — read it; there is no runner. Status: spec-only.
+
+### `backtester/strategy_cards/incomplete/native-strategy-profiles/`
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_2lgyzykc_ultimate_strategy_template.md`
+
+`strategy-card` · 83 lines · 4,614 B · description: **extracted**
+
+**Purpose.** Separate a trading signal from its execution and risk-management shell, so different indicators can be evaluated through the same strategy template.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript.md`
+
+`strategy-card` · 79 lines · 4,383 B · description: **extracted**
+
+**Purpose.** Explain how the publication configures notional exposure and simulated margin constraints; it supplies no forecasting or entry edge.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_ihvpg6ts_stop_loss_and_take_profit_in_example.md`
+
+`strategy-card` · 57 lines · 2,650 B · description: **extracted**
+
+**Purpose.** Illustrate expressing stop-loss and take-profit amounts in the traded symbol's currency, rather than establish a trading signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_kzp8e4x3_monthly_returns_in_pinescript_strategies.md`
+
+`strategy-card` · 58 lines · 2,854 B · description: **extracted**
+
+**Purpose.** Add monthly and yearly return tables to an existing strategy so a trader can inspect when its performance changes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_m9taaikp_oscillator_evaluator_analysis_tool.md`
+
+`strategy-card` · 79 lines · 4,351 B · description: **extracted**
+
+**Purpose.** Compare how different oscillators behave under several common signal interpretations, holding the evaluation framework conceptually constant.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_n8bgynwl_template_trailing_strategy_backtester.md`
+
+`strategy-card` · 91 lines · 8,161 B · description: **extracted**
+
+**Purpose.** Keep the trading hypothesis separate from order handling, position sizing and event alerts, so the same signal can be tested with different execution mechanics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_otfw8b2a_trading_report_generator_from_csv.md`
+
+`strategy-card` · 68 lines · 3,800 B · description: **extracted**
+
+**Purpose.** Reconstruct a strategy-tester performance report from an existing transaction log; it evaluates executed decisions rather than generate new ones.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/native-strategy-profiles/tv_xaeg4zjg_how_to_set_backtest_time_ranges.md`
+
+`strategy-card` · 66 lines · 3,439 B · description: **extracted**
+
+**Purpose.** Restrict an existing strategy's experiment to chosen time/date windows, including entry and exit eligibility, without supplying its trading hypothesis.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+### `backtester/strategy_cards/incomplete/publication-profiles/`
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_00jfil5w_security_revisited_pinecoders.md`
+
+`strategy-card` · 119 lines · 5,587 B · description: **extracted**
+
+**Purpose.** This PineCoders educational example compares ways of requesting higher-timeframe market values and explains why historical plots can conceal realtime repainting. Its leading correction explicitly withdraws endorsement of the bar-state technique originally presented as a universal non-repainting solution.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator.md`
+
+`strategy-card` · 176 lines · 6,663 B · description: **extracted**
+
+**Purpose.** Identify unusual price innovations and show when an adaptive Kalman filter deliberately reduces its response to those observations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0enoetmo_smartphase_analyzer.md`
+
+`strategy-card` · 120 lines · 4,930 B · description: **extracted**
+
+**Purpose.** Summarize a market regime from a selectable collection of statistical diagnostics, allowing the reader to compare a blended condition score with its recent distribution.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0ghsw1kr_moving_regression.md`
+
+`strategy-card` · 119 lines · 5,779 B · description: **extracted**
+
+**Purpose.** Moving Regression creates a rolling smooth representation of chart data while allowing the trader to tune how closely the line follows recent curvature. It combines a local polynomial fit with a moving window, so its role is broader than a fixed moving average.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0h0gkncy_120x_ticker_screener_composite_tickers.md`
+
+`strategy-card` · 127 lines · 5,821 B · description: **extracted**
+
+**Purpose.** This screener demonstrates packing multiple market prices into a synthetic composite ticker and decoding them after a shared data request. Its financial purpose is to display a wider set of ticker metrics under the request constraints discussed in the publication.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0j7owdat_flowscope_hapharmonic.md`
+
+`strategy-card` · 163 lines · 5,885 B · description: **extracted**
+
+**Purpose.** Combine several chart candles into a summary candle and a volume-at-price-style profile to inspect activity distribution within a broader interval.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0nz4m9e7_holographic_market_microstructure_alphanatt.md`
+
+`strategy-card` · 128 lines · 4,884 B · description: **extracted**
+
+**Purpose.** Combine volume/price proxies, fractal structure and intensity maps into a visually layered market-context dashboard.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0rfqockf_exploring_unicode.md`
+
+`strategy-card` · 107 lines · 4,623 B · description: **extracted**
+
+**Purpose.** Although framed as a Unicode demonstration, this publication includes actual chart-analysis examples and a bounce-confirmation function intended for trading strategies. It teaches how to annotate detected market events with readable symbols rather than introducing a standalone profitable trading method.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md`
+
+`strategy-card` · 135 lines · 6,023 B · description: **extracted**
+
+**Purpose.** Nasan estimates a trade risk percentage and position size by combining the stock’s return relative to a benchmark, its historical volatility and drawdown, and the trader’s own performance assumptions. It attempts to refine a generic capital-risk allowance for the particular stock and trader.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0sbntaqj_trading_abc.md`
+
+`strategy-card` · 115 lines · 5,005 B · description: **extracted**
+
+**Purpose.** Recognize an ABC pullback that agrees with a moving-average trend, then mark a subsequent price bounce rather than treating every zigzag correction as a trade.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_0x1dgqjw_xabcd_harmonic_pattern_custom_range_interactive.md`
+
+`strategy-card` · 129 lines · 5,690 B · description: **extracted**
+
+**Purpose.** This interactive harmonic-pattern tool automates parts of manually drawing XABCD structures and planning their potential reversal zones. A user selects initial chart points, the script snaps them to candle extremes, and a BC-ratio validity check determines whether a supported pattern is generated.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_10xmhfge_volume_per_point.md`
+
+`strategy-card` · 131 lines · 5,324 B · description: **extracted**
+
+**Purpose.** Volume per Point helps a reader compare traded activity with the distance a candle travels. Its intended use is to distinguish ordinary volume changes from unusually concentrated activity, divergence, and possible exhaustion. The author treats abnormal spikes as prompts for interpretation rather than prescribing an order.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md`
+
+`strategy-card` · 123 lines · 4,773 B · description: **extracted**
+
+**Purpose.** Provide callable ratio and tolerance helpers for recognizing named harmonic and repeated-top/bottom patterns from supplied pivot values.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_15kb0kgb_rsi_buy_sell_force_ver_1.md`
+
+`strategy-card` · 120 lines · 4,600 B · description: **extracted**
+
+**Purpose.** This RSI-derived display separates buying and selling force into colored components so the user can read the prevailing directional balance. The short source offers two alternative interpretations: compare the blue and red components, or examine their position relative to zero. It describes a visual study rather than a completed automatic signaling strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_16zufzf4_xel_onlinerecursion.md`
+
+`strategy-card` · 120 lines · 4,825 B · description: **extracted**
+
+**Purpose.** Provide stateful streaming statistics and finance-oriented recursive weighting so importing scripts can compose adaptive market models efficiently.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_17xrxgad_auto_pitchfan_fib_extension_retracement_and_zigzag_by_dgt.md`
+
+`strategy-card` · 124 lines · 5,039 B · description: **extracted**
+
+**Purpose.** Automate a shared swing-based framework for pitchfan rays, Fibonacci retracement/extension levels and connecting zigzag structure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_195p3ylk_commitment_of_traders_legacy_metrics.md`
+
+`strategy-card` · 127 lines · 5,492 B · description: **extracted**
+
+**Purpose.** Commitment of Traders: Legacy Metrics displays selected columns from legacy COT reports for futures-related markets. It exposes positioning, trader counts and concentration information as descriptive market context, rather than inferring a buy/sell signal from commercial or noncommercial activity.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md`
+
+`strategy-card` · 140 lines · 6,008 B · description: **extracted**
+
+**Purpose.** RedK i-Amp wraps another indicator’s output to provide richer visualization and alerts. It does not add independent market analysis; it maps the connected series into an equalizer-like display with gradient intensity, peak hold and configurable levels.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_1i4bnwmu_js_squeeze_pro_overlays.md`
+
+`strategy-card` · 120 lines · 4,717 B · description: **extracted**
+
+**Purpose.** Place squeeze-state context, early-event candles, channel-breach cues and customizable signal timing directly on price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_1kg8lh8x_cleaner_screeners_library.md`
+
+`strategy-card` · 123 lines · 5,529 B · description: **extracted**
+
+**Purpose.** Cleaner Screeners Library supplies the presentation layer for a configurable financial screener. It organizes symbols and indicator readings into groups and renders a common panel, allowing a caller to compare multiple symbols, timeframes, and indications without rebuilding the table structure. The library does not itself establish what an RSI value or a strong rating means for trading.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_1nhvl40i_fibonacci_time_price_zones.md`
+
+`strategy-card` · 127 lines · 5,648 B · description: **extracted**
+
+**Purpose.** Visualize Fibonacci relationships jointly in elapsed chart time and price. The tool offers curved and straight constructions from manually selected anchors, helping a trader compare potential interaction zones rather than producing a predictive entry signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_1uw4irtx_all_time_high_low_widget.md`
+
+`strategy-card` · 112 lines · 4,515 B · description: **extracted**
+
+**Purpose.** Keep historical price extremes visible and show how the current market relates to those extremes, with notifications when an extreme is exceeded.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_1z60bvmr_previous_period_levels_x_alerts.md`
+
+`strategy-card` · 126 lines · 5,461 B · description: **extracted**
+
+**Purpose.** Previous Period Levels places the completed higher-timeframe candle’s open, high, low and close on the current chart. It aims to make those reference prices visible while allowing the user to control how much annotation appears. The author also presents the script as an example of advanced input handling and clear code structure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_23wjedff_ehlers_loops_bigbeluga.md`
+
+`strategy-card` · 119 lines · 4,983 B · description: **extracted**
+
+**Purpose.** Ehlers Loops puts filtered price and volume into a two-axis phase display so traders can inspect how movement and participation evolve together. Each symbol traces a tail through quadrants that the author associates with continuation or exhaustion. Histograms summarize the latest components beside the loop, making the display useful for comparing assets.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_25py1uvb_position_cost_distribution.md`
+
+`strategy-card` · 114 lines · 4,888 B · description: **extracted**
+
+**Purpose.** Estimate the distribution of outstanding share positions by acquisition-price region rather than simply accumulating traded volume at price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_2gaiphlg_periodic_activity_tracker_luxalgo.md`
+
+`strategy-card` · 134 lines · 5,626 B · description: **extracted**
+
+**Purpose.** Periodic Activity Tracker summarizes the balance of attributed buying and selling volume within calendar aggregation periods. It is intended to help a discretionary trader compare activity across periods and see when the difference between the two sides expands or contracts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md`
+
+`strategy-card` · 206 lines · 7,751 B · description: **extracted**
+
+**Purpose.** This ETF scanner expresses Katsanos’s short-term relative-strength method as screener columns and chart annotations. It seeks comparatively strong non-leveraged ETFs that have recovered from a recent oversold pullback without becoming excessively stretched. Benchmark correlation changes the market-risk gate, so a falling benchmark favors sufficiently negatively correlated candidates.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_2tennpoc_rsi_past_can_turn_rsi_into_a_directional_tool.md`
+
+`strategy-card` · 113 lines · 5,013 B · description: **extracted**
+
+**Purpose.** RSI Past repurposes RSI extremes as evidence about direction rather than automatically treating them as reversal opportunities. It compares how recently the series reached an overbought state versus an oversold state.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_2vec0xzu_annual_returns_comparison_by_muqwishi.md`
+
+`strategy-card` · 123 lines · 5,500 B · description: **extracted**
+
+**Purpose.** Annual Returns % Comparison provides a visual history of how two chosen instruments changed from year to year. Its purpose is comparative performance inspection: the reader can see which symbol led in a given year and how the pattern changes across the chosen date range. The output is constructed as a table-based paired column display, rather than an entry signal on the price chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_2vlzhblv_modified_obv_w_divergence_detection_by_cryptorhythms.md`
+
+`strategy-card` · 109 lines · 4,988 B · description: **extracted**
+
+**Purpose.** This publication adapts Apirine’s modified on-balance-volume study to help traders compare price direction with volume-derived momentum. Its main addition to classic OBV is smoothing plus a signal line, intended to make changes in the volume trend easier to interpret.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_2vmbqbln_market_ekg.md`
+
+`strategy-card` · 113 lines · 4,735 B · description: **extracted**
+
+**Purpose.** Market EKG offers a price-only view of changing movement when conventional volume indicators cannot be used. Its visual analogy to a medical trace describes the appearance of the oscillator rather than a measured diagnostic capability.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_32oht5sq_function_highest_lowest.md`
+
+`strategy-card` · 94 lines · 3,663 B · description: **extracted**
+
+**Purpose.** Provide a reusable highest/lowest calculation building block for chart analysis, while leaving its exact interface and trading interpretation unspecified.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_34r4mh5w_market_microstructure_analytics.md`
+
+`strategy-card` · 188 lines · 12,817 B · description: **extracted**
+
+**Purpose.** Market Microstructure Analytics estimates spread and liquidity stress from ordinary chart bars, helping users compare execution conditions with their own recent history. Its outputs are statistical proxies for transaction mechanics rather than observations of the exchange order book.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_3bjfd0a2_circular_candlestick_chart.md`
+
+`strategy-card` · 108 lines · 4,576 B · description: **extracted**
+
+**Purpose.** Circular Candlestick Chart redraws historical OHLC bars as circular arcs to encourage alternative inspection of price structure. The author openly calls the arrangement impractical, but proposes that it might expose candle clusters or unfamiliar patterns.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_3jkrk2at_vqzl_z_score.md`
+
+`strategy-card` · 126 lines · 5,504 B · description: **extracted**
+
+**Purpose.** VQZL Z-Score adapts Volatility Quality Zero Line into a normalized regime gauge. The original VQZL apparently required instrument-specific adjustment; this version expresses its readings relative to their rolling mean and dispersion so the author can apply a more comparable scale across instruments.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_3lzg4gmr_machine_learning_knn_new_approach.md`
+
+`strategy-card` · 121 lines · 5,498 B · description: **extracted**
+
+**Purpose.** Explore nearest-neighbor price prediction and a moving-average-like curve using historical prices directly, without constructing a separate technical-indicator feature vector.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_3mkewfnn_10x_bull_vs_bear_vp_intraday_sessions_kioseff_trading.md`
+
+`strategy-card` · 120 lines · 5,025 B · description: **extracted**
+
+**Purpose.** Compare estimated buying and selling participation across selected intraday ranges by separating volume-at-price distributions and their important price levels.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_3w5o68jp_rs_zigzag_multiple_methods_forecast_patterns_labels.md`
+
+`strategy-card` · 106 lines · 4,324 B · description: **extracted**
+
+**Purpose.** Offer an experimental collection of zigzag methods as a basis for subsequent chart-structure tools, rather than presenting one fully specified forecasting strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_3xe8qqfr_directional_volume_shapes_zeiierman.md`
+
+`strategy-card` · 133 lines · 5,734 B · description: **extracted**
+
+**Purpose.** Classify the recent shape of estimated directional candle pressure, then display an idealized volume-scaled template of that regime. The visible columns are synthesized representations, so they should not be mistaken for observed buy/sell volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_41e5ocgx_klinger_oscillator.md`
+
+`strategy-card` · 121 lines · 5,014 B · description: **extracted**
+
+**Purpose.** This Klinger variant retains the author-described volume-momentum core while expanding how the oscillator is smoothed and displayed. The purpose is to read volume-associated directional pressure through an oscillator, its signal line and zero reference.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_49yiv1jw_machine_learning_logistic_regression.md`
+
+`strategy-card` · 135 lines · 5,747 B · description: **extracted**
+
+**Purpose.** This publication applies logistic classification to chart data to generate long-versus-short indications. Despite the author calling it a strategy, the saved publication is an indicator and the prose chiefly explains its model rather than a complete order lifecycle.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_4kigelgo_finra_daily_short_sale_volume.md`
+
+`strategy-card` · 120 lines · 5,457 B · description: **extracted**
+
+**Purpose.** Display daily FINRA-reported short-sale transaction volume for a supported US stock and highlight days with unusually high activity relative to a moving average.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_4lbygqj0_weighted_percentile_nearest_rank.md`
+
+`strategy-card` · 115 lines · 4,634 B · description: **extracted**
+
+**Purpose.** Calculate a weighted nearest-rank percentile so a numerical sample can contribute unequally to the resulting quantile.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_4n9sh3lz_funamental_and_financials.md`
+
+`strategy-card` · 112 lines · 4,922 B · description: **extracted**
+
+**Purpose.** Place a company's quarterly financial condition beside its market chart so trends in debt, cash and earnings can be reviewed together.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_4nmghanl_redk_slow_smooth_average_rss_wma.md`
+
+`strategy-card` · 120 lines · 5,323 B · description: **extracted**
+
+**Purpose.** RSS_WMA deliberately favors a slow, smooth trend baseline over rapid response. It seeks to suppress small fluctuations so the trader can see broader price behavior and compare a stable reference with a faster moving average. The author also suggests considering direction changes as exit context, because the line is intended to respond only after a sustained move.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_4odvb8q4_relative_currency_strength.md`
+
+`strategy-card` · 124 lines · 5,439 B · description: **extracted**
+
+**Purpose.** Relative Currency Strength supplies context about whether a currency pair’s movement comes from strength in its base currency, weakness in its quote currency, or both. It compares major currencies and crosses from a chosen intraday reference point. A reader considering a EURUSD long can therefore inspect broader EUR and USD behavior before deciding whether the pair-level idea is coherent.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_4rlnnl5e_polynomial_linear_regression_volume_profile_bigbeluga.md`
+
+`strategy-card` · 115 lines · 4,569 B · description: **extracted**
+
+**Purpose.** Measure historical volume concentration relative to a fitted trend path rather than fixed horizontal prices.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_51ywcziw_market_stats_panel_daveatt.md`
+
+`strategy-card` · 124 lines · 5,289 B · description: **extracted**
+
+**Purpose.** Market Stats Panel brings a watchlist-style performance summary onto the chart. It combines recent horizon returns with year-by-year historical paths so a reader can inspect current performance and compare it with previous years. The panel supports both price-level and percentage views, addressing the different questions of absolute market level and relative change.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5a8qkpsh_point_of_control_v2.md`
+
+`strategy-card` · 113 lines · 4,765 B · description: **extracted**
+
+**Purpose.** Organize volume-profile points of control by reset period and identify historical concentrations relevant to the current price without extending every old level across the chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5eglveln_relative_bandwidth_filter.md`
+
+`strategy-card` · 146 lines · 5,776 B · description: **extracted**
+
+**Purpose.** Relative Bandwidth Filter identifies volatility regimes that another strategy can use to permit or suppress trading. It compares a broad channel width with a shorter-horizon ATR, then evaluates that ratio relative to its own Bollinger bands.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5fqgmcio_adaptive_candlestick_pattern_recognition_system.md`
+
+`strategy-card` · 174 lines · 8,271 B · description: **extracted**
+
+**Purpose.** Recognize configurable candlestick formations and summarize their subsequent returns by market-range location. Adaptive label colors communicate historical pattern behavior rather than assigning textbook bullish/bearish labels unconditionally.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5ghqjxjj_vol_control_fund_positioning.md`
+
+`strategy-card` · 168 lines · 6,660 B · description: **extracted**
+
+**Purpose.** Reconstruct stylized volatility-targeting equity exposure and prospective mechanical rebalancing from public risk-control rules.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5js51rsp_multitimeframe_fair_value_gap_fvg_zeiierman.md`
+
+`strategy-card` · 128 lines · 5,650 B · description: **extracted**
+
+**Purpose.** Track unmitigated fair-value gaps from a selected timeframe and add approximate volume pressure and a smoothed directional context. The indicator organizes candidate reaction zones rather than proving that institutions caused the price move.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5kgra3dl_dynamic_volume_clusters_with_retest_signals_zeiierman.md`
+
+`strategy-card` · 122 lines · 4,831 B · description: **extracted**
+
+**Purpose.** Identify frequently revisited price regions and mark later boundary retests, combining adaptive levels with a volume-oriented visual emphasis.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5nsvcovp_industry_group_strength.md`
+
+`strategy-card` · 126 lines · 5,706 B · description: **extracted**
+
+**Purpose.** Industry Group Strength helps a trader locate leadership among peers rather than judging a stock solely against the broad market. It recognizes the charted stock’s industry, requests the predefined peer list, and ranks the group using a selected performance measure. This can reveal whether a candidate is leading a strong cohort or lagging its immediate competitors.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5qso13ib_flare.md`
+
+`strategy-card` · 123 lines · 4,958 B · description: **extracted**
+
+**Purpose.** Flare is an educational methods/objects demonstration with a genuine price-location indicator embedded in it. It builds a fan-like shape from an earlier closing price and classifies the present close by where it falls within that shape.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5qth3kyd_multi_layer_volume_profile_bigbeluga.md`
+
+`strategy-card` · 128 lines · 5,742 B · description: **extracted**
+
+**Purpose.** Multi-Layer Volume Profile compares where candle volume accumulates across nested historical windows. It aims to show accepted price regions, sparse-volume areas and overlapping points of control, giving discretionary support/resistance analysis a volume dimension. The distinct windows help a trader see whether a dominant level persists across longer and shorter contexts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5uubjdyo_range_sentiment_profile_luxalgo.md`
+
+`strategy-card` · 121 lines · 5,270 B · description: **extracted**
+
+**Purpose.** Range Sentiment Profile organizes signed candle-body movement by price area to show where bullish or bearish changes accumulated within a recent range. It resembles a volume profile visually but measures close-minus-open variation rather than volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5v1unbrn_average_force.md`
+
+`strategy-card` · 102 lines · 4,617 B · description: **extracted**
+
+**Purpose.** Average Force is presented as a trend-identification oscillator built from a sentiment calculation followed by smoothing. The intended distinction is between an underlying sentiment estimate and a more readable trend-oriented output. The complete description is only a sentence, so the financial purpose is clear but the actual meaning of sentiment is not.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_5wxlrdaq_tasc_2022_06_ehlers_loops.md`
+
+`strategy-card` · 129 lines · 5,285 B · description: **extracted**
+
+**Purpose.** Ehlers Loops visualizes the relationship between filtered price and filtered volume. It offers a way to inspect familiar claims about whether rising or falling volume confirms a price move, rather than accepting those claims without examining the joint trajectory. A conventional pane shows both streams over time, while a scatterplot turns their paired observations into a loop.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_66gsofej_separated_moving_average_evo.md`
+
+`strategy-card` · 114 lines · 4,936 B · description: **extracted**
+
+**Purpose.** Separated Moving Average splits the price history into positive-candle and negative-candle streams instead of letting every candle update the same average. The aim is to display two directional references that represent different candle populations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_672uph9q_enhanced_time_segmented_volume.md`
+
+`strategy-card` · 113 lines · 4,895 B · description: **extracted**
+
+**Purpose.** Make Time Segmented Volume easier to interpret by translating its sign and relationship to an average into directional and possible-exhaustion annotations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_680r1i3z_strength_of_divergence_across_multiple_indicators.md`
+
+`strategy-card` · 125 lines · 5,160 B · description: **extracted**
+
+**Purpose.** Rank price/indicator divergences by a weighted magnitude score and summarize agreement across multiple technical indicators.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_68z68uzz_vix_cheat_sheet.md`
+
+`strategy-card` · 130 lines · 6,689 B · description: **extracted**
+
+**Purpose.** VIX Cheat Sheet studies how the charted asset behaved around volatility-proxy extremes. It pairs either VIX or a local VixFix measure with the asset, allowing users outside large-cap US equities to avoid automatically treating VIX as the correct risk proxy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_69wrttlx_correlation_array_s.md`
+
+`strategy-card` · 112 lines · 4,629 B · description: **extracted**
+
+**Purpose.** Demonstrate a compact array-and-loop approach to comparing market correlations while avoiding inconsistent behavior of the built-in correlation function inside a local loop.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6aln4qkl_zahorchak_measure.md`
+
+`strategy-card` · 129 lines · 5,506 B · description: **extracted**
+
+**Purpose.** Zahorchak Measure supplies a broad-market trend bias to inform stock or ETF decisions. It combines relationships among moving averages of a market index and the NYSE advance-decline line, so its scope is market regime rather than the charted security’s own momentum alone. Positive values broadly indicate an uptrend and negative values a downtrend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6f7ztdvh_equity_bond_currency_dashboard.md`
+
+`strategy-card` · 120 lines · 4,987 B · description: **extracted**
+
+**Purpose.** This dashboard represents changing relative market prices as a network of apparent demand flows between currencies, equities and bond yields. It centers the diagram on the dollar and links each country’s currency to its local asset references.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6qwqyut8_tasc_2025_07_laguerre_filters.md`
+
+`strategy-card` · 124 lines · 4,759 B · description: **extracted**
+
+**Purpose.** Smooth market prices with a modified Laguerre filter and show a related normalized oscillator for trend and swing analysis.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6qx7rznd_outlier_detector_with_n_sigma_confidence_intervals.md`
+
+`strategy-card` · 120 lines · 5,149 B · description: **extracted**
+
+**Purpose.** This outlier detector looks for unusually large changes in a price series after detrending through first differences. It standardizes those changes and compares them with sigma-style bounds, providing an event screen rather than a directional forecast.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6tsfpe3w_reflex_trendflex.md`
+
+`strategy-card` · 140 lines · 4,925 B · description: **extracted**
+
+**Purpose.** Separate smoothed price behavior into cycle-like and trend-like deviation oscillators with adaptable extreme bands.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6wr1ceuo_deviation_trend_profile_bigbeluga.md`
+
+`strategy-card` · 124 lines · 5,505 B · description: **extracted**
+
+**Purpose.** Deviation Trend Profile studies how closes are distributed around a moving average during an identified trend phase. It combines slope-based trend changes with a price-frequency histogram, aiming to distinguish strong directional occupation of outer zones from contraction near the mean.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_6yqqyzp9_vicious_mortgage_rates_v1_0.md`
+
+`strategy-card` · 124 lines · 5,770 B · description: **extracted**
+
+**Purpose.** Vicious Mortgage Rates displays lender mortgage-rate series as a lower-pane financial reference. It is intended for comparison with a chart such as the US ten-year Treasury yield, helping a reader inspect mortgage borrowing costs alongside broader rates. The source describes a broad catalogue of purchase and refinance products, each separated into interest-rate and APR series.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7emr6ckb_fancy_triple_moving_averages_bigbitsio.md`
+
+`strategy-card` · 112 lines · 4,517 B · description: **extracted**
+
+**Purpose.** Provide a configurable trio of moving averages with visual inclusion windows and hypothetical forward projections.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7gx1fmgo_everything_bitcoin_kioseff_trading.md`
+
+`strategy-card` · 112 lines · 4,774 B · description: **extracted**
+
+**Purpose.** Bring Bitcoin network/fundamental statistics and lower-timeframe market observations into one dashboard with optional plots.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7jm5ebze_yelober_sector_rotation_detector.md`
+
+`strategy-card` · 161 lines · 6,239 B · description: **extracted**
+
+**Purpose.** Yelober Sector Rotation Detector monitors a fixed sector-ETF panel to highlight relative daily leadership, defensive conditions and unusual volume. It interprets a large spread between the strongest and weakest sectors as rotation and offers associated stock ideas. The risk-off label is more specific: defensive staples and utilities must be positive while technology is negative.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7kmrab2f_gann_square_of_144.md`
+
+`strategy-card` · 116 lines · 4,511 B · description: **extracted**
+
+**Purpose.** Automate placement of Gann Square-of-144 geometry for price/time reference instead of manually moving many connected lines.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7prbcbjk_stochastic_heat_map.md`
+
+`strategy-card` · 123 lines · 5,265 B · description: **extracted**
+
+**Purpose.** Stochastic Heat Map condenses momentum across many lookback horizons into a layered background and a composite oscillator. Shorter stochastics occupy lower rows and longer stochastics higher rows, so the reader can distinguish a short-term extreme from agreement across the full range of horizons.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7qjxp2op_fundamentals_graphing_kioseff_trading.md`
+
+`strategy-card` · 118 lines · 4,822 B · description: **extracted**
+
+**Purpose.** Compare company fundamental metrics across a chosen asset set using adaptable charts and sortable historical reporting-period values.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7s0lx2bw_redk_volume_accelerated_directional_energy_ratio_redk_vader.md`
+
+`strategy-card` · 120 lines · 4,758 B · description: **extracted**
+
+**Purpose.** Estimate directional participation strength by combining close-to-close displacement with volume as an effort proxy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7skzirbb_machine_learning_neural_network_engine.md`
+
+`strategy-card` · 139 lines · 6,084 B · description: **extracted**
+
+**Purpose.** Machine Learning Neural Network Engine reduces daily market context to LONG, WATCH and CASH. It combines an online neural classifier with a structural trend baseline, adjusts neural influence according to matured prediction errors, and separately checks downside stress.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_7vcb6m4j_volume_delta_footprint_map_zeiierman.md`
+
+`strategy-card` · 132 lines · 5,771 B · description: **extracted**
+
+**Purpose.** Volume Delta Footprint Map estimates directional activity within chart candles and spreads that activity across price stripes. Its aim is to reveal where buying- or selling-associated volume concentrated and how those concentrations persist over time. A trader can inspect clusters for possible support, resistance, continuation or absorption, then interpret subsequent price behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_84vjsklo_nunchucks.md`
+
+`strategy-card` · 114 lines · 4,841 B · description: **extracted**
+
+**Purpose.** Nunchucks is an alternative financial-chart display that compares its current representation with the preceding representation’s range. It is intended to be read together with the current-price line, giving a compact view of whether price is higher or lower than the previous nunchuck range.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_85fu3jne_simple_trendlines.md`
+
+`strategy-card` · 118 lines · 4,711 B · description: **extracted**
+
+**Purpose.** Manage conditional trendline drawing and continuation while optionally rejecting lines already violated before delayed pivot detection.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8ea9mvz5_technical_ratings_on_multi_frames_assets.md`
+
+`strategy-card` · 165 lines · 5,978 B · description: **extracted**
+
+**Purpose.** Technical Ratings on Multi-frames / Assets presents a compact comparison of consolidated technical opinions across assets and timeframes. It is a monitoring fork of a technical-rating indicator, designed to help a reader choose where to focus attention. The fork removes markers, visualizations and alerts in favor of a customizable table and switches between configured asset sets.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8ezad3cw_supertrend_ladder_atr.md`
+
+`strategy-card` · 124 lines · 5,317 B · description: **extracted**
+
+**Purpose.** Supertrend - Ladder ATR modifies volatility-based trailing stops to avoid widening their distance during an active trend. It argues that favorable large candles should not determine how far a protective stop sits: long positions use volatility from negative candles, while shorts use positive candles.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8jahmkxs_bear_market_probability_model.md`
+
+`strategy-card` · 148 lines · 5,776 B · description: **extracted**
+
+**Purpose.** Combine macroeconomic,technical,sentiment and breadth stress proxies into a weighted systemic-risk score labeled bear-market probability.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8lxcviym_bayesian_bbsma_oscillator.md`
+
+`strategy-card` · 119 lines · 5,135 B · description: **extracted**
+
+**Purpose.** Bayesian BBSMA Oscillator turns relationships to Bollinger bands and a moving average into competing upward/downward probability displays. The author draws inspiration from Bayesian classification and proposes scalping-oriented interpretations, but the document mixes continuation and correction assumptions and prints probability expressions without unambiguous denominator grouping.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8mvftxpg_tape_lucf.md`
+
+`strategy-card` · 131 lines · 5,736 B · description: **extracted**
+
+**Purpose.** Tape reproduces a trading-console-style stream of chart-feed updates and estimates cumulative volume delta within the live bar. It is specifically a realtime tool: historical bars cannot reconstruct its update sequence. The author distinguishes chart updates from individual exchange ticks because multiple transactions may be aggregated before Pine receives them.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8njgasbv_volume_rotor_clock_hapharmonic.md`
+
+`strategy-card` · 138 lines · 5,554 B · description: **extracted**
+
+**Purpose.** Volume Rotor Clock combines an ornamental clock with a financial volume dashboard and multi-symbol scanner. The current chart’s volume dominance appears on clock-hand tips, while scanned assets occupy bullish or bearish halves according to their attributed buy/sell totals. An additional watchlist highlights bullish assets whose volume persistently exceeds its moving average.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8owcuqfq_multi_distribution_volume_profile_zeiierman.md`
+
+`strategy-card` · 137 lines · 5,794 B · description: **extracted**
+
+**Purpose.** Test how alternative assumptions about intrabar volume location change a trend-independent price profile and its interpreted value regions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8utwhfo3_rsi_radar_multi_time_frame.md`
+
+`strategy-card` · 127 lines · 5,126 B · description: **extracted**
+
+**Purpose.** RSI Radar Multi Time Frame turns several timeframe-specific RSI readings into a radar-shaped chart overlay. The aim is simultaneous momentum inspection across horizons, including intervals above and below the chart timeframe. Its experimental polyline presentation stays in the visible chart area as the user scrolls or zooms, making it a persistent dashboard rather than a historical signal trace.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_8zsalctc_trendflex_oscillator_dr_john_ehlers.md`
+
+`strategy-card` · 128 lines · 5,340 B · description: **extracted**
+
+**Purpose.** TrendFlex Oscillator adapts Ehlers’s trend-retaining oscillator and exposes additional smoothing controls for experimentation. Its purpose is to respond to reversals while retaining the trend component, rather than serving solely as a detrended cycle display. The author emphasizes a compact output scale across sampling intervals and packages the calculation as a reusable function.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_93tde1fd_liquidity_price_depth_chart_luxalgo.md`
+
+`strategy-card` · 113 lines · 4,676 B · description: **extracted**
+
+**Purpose.** Rearrange visible-range bullish and bearish candle prices into a depth-chart-like visualization of historical price/volume concentration.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_94gz1qy4_pandora_vast_volatility_treasure_trove.md`
+
+`strategy-card` · 129 lines · 5,705 B · description: **extracted**
+
+**Purpose.** Vast Volatility Treasure Trove collects volatility-estimation functions for education and reuse in financial indicators or strategies. It offers different views of variation rather than one preferred volatility signal: range estimators, OHLC estimators, return dispersion and experimental weighted forms.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_94iacmva_movingaverages.md`
+
+`strategy-card` · 121 lines · 4,854 B · description: **extracted**
+
+**Purpose.** MovingAverages provides reusable averaging and filtering calculations for financial series, with special support for anchors, fractional lengths and long histories. Rather than inventing a new trading signal, it extends common smoothing tools so another indicator or strategy can reset calculations at events and choose a noninteger effective window.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_94xv1hsx_linear_correlation_oscillator.md`
+
+`strategy-card` · 115 lines · 5,132 B · description: **extracted**
+
+**Purpose.** Linear Correlation Oscillator measures how closely an input series follows a linear sequence over a rolling window. As a trend gauge, a strong signed relationship indicates more consistent directional alignment than a weak relationship.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_96cld5is_trend_correlation_heatmap.md`
+
+`strategy-card` · 115 lines · 4,510 B · description: **extracted**
+
+**Purpose.** Compare price-to-time correlation across horizons and chart resolutions to describe the direction and consistency of fitted market trends.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9bkoihdl_numbers_renko.md`
+
+`strategy-card` · 157 lines · 6,614 B · description: **extracted**
+
+**Purpose.** Numbers Renko annotates Renko boxes with volume and elapsed-time information to support Wyckoff-style effort-versus-result reading. It helps distinguish a box requiring unusually large activity or time from an ordinary box, and aggregates volume into Weis waves for comparison with earlier waves. The author explicitly limits exact operation to Renko charts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9gviczng_sk_fibonacci_auto_trend_scouter.md`
+
+`strategy-card` · 130 lines · 5,374 B · description: **extracted**
+
+**Purpose.** Fibonacci Auto Trend Scouter automatically draws trend references from two timeframes and Fibonacci levels from the shorter horizon. It aims to reduce manual chart annotation while keeping both near-term and broader directional context visible. Optional sights connect a trend’s midpoint to the current price, offering a visual sense of displacement.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9k34g20s_normalized_oscillators_spider_chart_luxalgo.md`
+
+`strategy-card` · 112 lines · 4,629 B · description: **extracted**
+
+**Purpose.** Place several normalized oscillators into one radial display and summarize their average stance in a sentiment meter.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9mpc4ifp_volume_spread_analysis_iq_tradingiq.md`
+
+`strategy-card` · 128 lines · 5,565 B · description: **extracted**
+
+**Purpose.** Volume Spread Analysis IQ organizes candle volume, range and recent contextual evidence into a discretionary effort-versus-result reading. It aims to distinguish strong participation that produces movement from large effort that produces little progress, and to label familiar VSA scenarios.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9pd60gmz_blackcat_l2_ehlers_swamicharts_rsi.md`
+
+`strategy-card` · 113 lines · 4,584 B · description: **extracted**
+
+**Purpose.** Display a family of modified RSI calculations across lookbacks as a heatmap to reveal how momentum interpretation varies with horizon.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9q1vcipg_monte_carlo_ct_ss.md`
+
+`strategy-card` · 141 lines · 5,725 B · description: **extracted**
+
+**Purpose.** Monte Carlo CT combines simulated price-path summaries with a separate Naive Bayes directional assessment. Instead of showing many random paths, it draws median and percentile trajectories, then asks the user to look for agreement between the simulated central path and the classifier.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9roydod6_probability_grid_luxalgo.md`
+
+`strategy-card` · 135 lines · 5,308 B · description: **extracted**
+
+**Purpose.** Probability Grid maps historical swing reversals into a joint price-and-time grid anchored at the latest reversal. It aims to show how far away and how late a next reversal might occur relative to past swings. The user can view values as probability beyond a cell or within that cell.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_9uiewdmd_trend_following_moving_averages.md`
+
+`strategy-card` · 142 lines · 6,054 B · description: **extracted**
+
+**Purpose.** Trend Following Moving Averages colors a moving average according to whether its recent movement is large enough relative to the wider price range to count as a trend. It aims to answer a common chart-reading question: whether price is trending rather than merely oscillating.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_a35ki2pb_px_external_level.md`
+
+`strategy-card` · 135 lines · 5,612 B · description: **extracted**
+
+**Purpose.** External Level converts another indicator’s event output into support/resistance annotations. It aims to decouple signal logic from drawing logic so a caller can use RSI, MACD, moving-average or volume events without rewriting the level renderer. The publication supplies a complete RSI extreme-cross event example and an explicit signed interface.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_a4lgcdz1_dominance_pie_chart.md`
+
+`strategy-card` · 107 lines · 4,310 B · description: **extracted**
+
+**Purpose.** Dominance Pie Chart puts available ticker-dominance measures into one pie-style display with percentage share and rise/fall information. It is a market-composition view rather than a trade signal. The short source does not identify its asset universe or denominator, so the displayed dominance cannot be assumed to represent a complete cryptocurrency market or any particular investable basket.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_a7a6ys0y_chart_patterns_screener_trendoscope.md`
+
+`strategy-card` · 134 lines · 5,138 B · description: **extracted**
+
+**Purpose.** Chart Patterns Screener adapts an automatic classical-pattern detector to watchlist scanning. It exposes counts of currently relevant patterns so the screener can return symbols with any pattern or a particular family.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_a8peqinu_smart_nr2_nr20_and_inside_bar_zeiierman.md`
+
+`strategy-card` · 125 lines · 4,963 B · description: **extracted**
+
+**Purpose.** Find unusually compressed price ranges and mark their first breakout, optionally constrained by trend and accompanied by exit annotations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_aapsyqft_gann_box_zeiierman.md`
+
+`strategy-card` · 117 lines · 4,723 B · description: **extracted**
+
+**Purpose.** Gann Box draws a price/time framework from the visible chart’s highest and lowest points. It aims to show possible reaction levels through percentage subdivisions, fans, angles and curves. The visible-range basis is central: scrolling or zooming can change the extrema and therefore the entire drawing. The source presents geometric forecasting claims but provides no empirical validation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_abwbbb9h_equivolume_bars.md`
+
+`strategy-card` · 106 lines · 4,029 B · description: **extracted**
+
+**Purpose.** Redraw market bars with widths that represent traded volume so participation becomes part of the candle geometry.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_agcqivzj_portfolio_alpha_beta_stdev_variance_mean_max_drawdown.md`
+
+`strategy-card` · 101 lines · 4,017 B · description: **extracted**
+
+**Purpose.** Summarize a portfolio's return, risk and market relationship using a collection of commonly named performance statistics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_akskg1ih_mcginley_dynamic_improved_john_r_mcginley_jr.md`
+
+`strategy-card` · 122 lines · 5,218 B · description: **extracted**
+
+**Purpose.** McGinley Dynamic Improved modifies an adaptive moving-average formulation to address numerical instability reported by the author. The described failure modes are collapse toward zero and explosive spikes during unusual volatility. The adaptation inserts minimum/maximum constraints into the divisor and provides plots for comparison with a generic EMA and an unconstrained version.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_an7yrdfo_priceformat.md`
+
+`strategy-card` · 120 lines · 4,620 B · description: **extracted**
+
+**Purpose.** Format prices and price changes in the instrument-appropriate notation so financial chart labels match the intended tick/pip/fraction conventions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_apsqmw8f_combo_strategy_123_reversal_fractal_chaos_bands.md`
+
+`strategy-card` · 112 lines · 4,679 B · description: **extracted**
+
+**Purpose.** Combine a reversal-style price/stochastic condition with fractal-band trend context to produce a cumulative color signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_arpbta5n_kernel_regression_toolkit.md`
+
+`strategy-card` · 130 lines · 5,014 B · description: **extracted**
+
+**Purpose.** Provide an experimental workbench for smoothing, extrapolating and blending kernel-regression lines used as trend references or custom oscillators.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_asev0vxd_tasc_2022_07_pairs_rotation_with_ehlers_loops.md`
+
+`strategy-card` · 124 lines · 4,798 B · description: **extracted**
+
+**Purpose.** Visualize relative cyclical strength of two securities to guide a long-only rotation between them.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_asr7nob2_liquidity_sentiment_profile_luxalgo.md`
+
+`strategy-card` · 119 lines · 4,732 B · description: **extracted**
+
+**Purpose.** Pair an anchored activity-at-price profile with a directional sentiment profile to inspect concentrations and low-activity regions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_asvg5mjc_monte_carlo_simulation_random_walk.md`
+
+`strategy-card` · 119 lines · 4,864 B · description: **extracted**
+
+**Purpose.** Monte Carlo Simulation Random Walk generates repeated randomized paths from historical market data and displays the resulting extremes plus selected trajectories. It is a scenario visualization that helps inspect model dispersion rather than a deterministic price target.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_atzwb4pu_bin_based_support_and_resistance_ss.md`
+
+`strategy-card` · 121 lines · 4,676 B · description: **extracted**
+
+**Purpose.** Estimate recurring price regions by grouping an entire lookback range into bins instead of relying only on isolated swing extrema.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_audl9zek_tasc_2022_6_ehlers_loops_sectors.md`
+
+`strategy-card` · 107 lines · 4,828 B · description: **extracted**
+
+**Purpose.** This publication extends a Crocker-style comparative graph to several tickers and adds a candle side panel so the visualization can stand on its own. The financial objective supported by the short source is multi-instrument comparison with the current instrument’s price action available beside it.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ausph7vf_fair_value_ms.md`
+
+`strategy-card` · 123 lines · 4,857 B · description: **extracted**
+
+**Purpose.** Define market swings from opposite-direction fair-value-gap events and form support/resistance areas only after additional structural confirmation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md`
+
+`strategy-card` · 142 lines · 6,261 B · description: **extracted**
+
+**Purpose.** FVG Profile + Rolling POC profiles where candle-gap formations concentrate, rather than simply where volume traded. It separates bullish and bearish gap counts and associated volume to describe directional imbalance by price region. A rolling peak/average and optional moving average add temporal context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_b094banp_laguerre_rsi.md`
+
+`strategy-card` · 116 lines · 4,941 B · description: **extracted**
+
+**Purpose.** Laguerre RSI uses a Laguerre-filter-based version of RSI to reduce the noise the author associates with conventional RSI. The intended interpretation combines threshold recrossings with a different meaning for sustained extremes: crossing back from an extreme is offered as a trade cue, while remaining pinned at an extreme is described as evidence of trend strength.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_b0kzf6ug_polynomial_regression_bands_channel_dw.md`
+
+`strategy-card` · 168 lines · 7,338 B · description: **extracted**
+
+**Purpose.** Fit rolling polynomial regressions and display their current endpoints as a polynomial LSMA with surrounding bands. The accompanying redrawn curve teaches the relationship between regression fitting and endpoint moving-average plots.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_b3almahh_indices_sector_sigmaspikes.md`
+
+`strategy-card` · 120 lines · 5,036 B · description: **extracted**
+
+**Purpose.** Indices Sector SigmaSpikes compares sector moves in units of their own recent return variability. The aim is to make cross-market daily changes meaningful: the same point or percentage move can be ordinary in one market and unusual in another. The screener helps locate sectors with outsized positive or negative movement, without specifying that those moves should be faded or followed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_b3pcu8qn_ce_42macro_equity_factor_table.md`
+
+`strategy-card` · 120 lines · 4,848 B · description: **extracted**
+
+**Purpose.** Combine equity-factor performance and cross-market trend/correlation information into a proposed market-regime and implied-direction dashboard.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_b4jcgfrd_linear_continuation.md`
+
+`strategy-card` · 100 lines · 4,066 B · description: **extracted**
+
+**Purpose.** Linear Continuation displays an extrapolation associated with several moving averages. The complete saved description is only one sentence, establishing the display’s broad objective without enough detail to identify the average types or the continuation rule. It remains a financial indicator profile with an explicit source gap rather than a guessed regression or slope formula.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bbeeqrdm_time_of_day_day_of_week_sigma_spike.md`
+
+`strategy-card` · 109 lines · 4,584 B · description: **extracted**
+
+**Purpose.** Time of Day/Day of Week Sigma Spike breaks an existing sigma-spike study into calendar buckets. It aims to reveal whether unusually large standardized moves concentrate at particular hours or hour-and-weekday combinations. The complete source only explains the additional grouping and required chart resolution; it does not reproduce the linked parent spike definition.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bbhc0nit_mcdonald_s_pattern_luxalgo.md`
+
+`strategy-card` · 118 lines · 4,716 B · description: **extracted**
+
+**Purpose.** Fit a deliberately humorous market-pattern drawing to observed price tops and bottoms and score its resemblance to a familiar logo.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bbidyx3r_berlin_range_index_bar_color_version.md`
+
+`strategy-card` · 107 lines · 4,215 B · description: **extracted**
+
+**Purpose.** Make choppiness-based trend/range classification respond faster by modifying it with recent changes in ATR dispersion.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bcuqpa0q_multi_time_frame_candles_with_volume_info_3d.md`
+
+`strategy-card` · 115 lines · 5,022 B · description: **extracted**
+
+**Purpose.** Multi Time Frame Candles with Volume Info overlays a configurable sequence of higher-timeframe candles and supplements it with volume information and remaining time to close. Its aim is to keep broader candle context visible without leaving the current chart. It also identifies new highs/lows or breakouts, though their exact definition is not described.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bdk3oefq_tasc_2025_11_the_points_and_line_chart.md`
+
+`strategy-card` · 132 lines · 5,458 B · description: **extracted**
+
+**Purpose.** Points and Line Chart transforms regularly sampled prices into an irregular price-movement display. Its aim is to compress long histories and clarify support/resistance or classic chart patterns while retaining actual source closes instead of always snapping them to fixed point intervals.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_beczr3nb_buyers_sellers_profile_dynamic_s_r_zeiierman.md`
+
+`strategy-card` · 147 lines · 6,838 B · description: **extracted**
+
+**Purpose.** Buyers & Sellers Profile + Dynamic S/R refines confirmed swing levels using nearby volume-profile evidence. It aims to combine structural pivots with actual historical participation proxies instead of drawing every swing. Candle volume is distributed by price-range overlap and split by closing location, explicitly as an estimate rather than true footprint data.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bfu1hmks_neural_weight_oscillator_zeiierman.md`
+
+`strategy-card` · 140 lines · 5,544 B · description: **extracted**
+
+**Purpose.** Neural Weight Oscillator blends trend, mean-reversion and momentum features using trader preference weights and an optional adaptive layer. Its Best-Worst Method converts relative importance judgments into normalized weights, while historical feature/return pairs adjust feature amplification.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_biazm7ps_timeframe_loop.md`
+
+`strategy-card` · 112 lines · 4,433 B · description: **extracted**
+
+**Purpose.** Visualize the sequence of price changes inside a parent candle as a loop with optional finer loops and miniature candles.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_biczyhq0_ta.md`
+
+`strategy-card` · 192 lines · 7,529 B · description: **extracted**
+
+**Purpose.** Supply reusable technical-analysis,performance and volatility-stop functions beyond the built-ins described at publication time.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bluvjpa3_aggregate_btc_candles.md`
+
+`strategy-card` · 106 lines · 4,334 B · description: **extracted**
+
+**Purpose.** Build a composite Bitcoin candle history that reduces reliance on one exchange and moderates exchange-specific wicks or gaps.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bmkcccil_day_trading_booster_by_dgt.md`
+
+`strategy-card` · 134 lines · 6,406 B · description: **extracted**
+
+**Purpose.** Day Trading Booster combines session timing, opening ranges and familiar price references to help the user focus on active trading periods. It provides forex-specific session context and broader day/week/month reference levels, plus custom VWAP and pivot displays.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bmvtk3gh_performance_table.md`
+
+`strategy-card` · 105 lines · 3,846 B · description: **extracted**
+
+**Purpose.** Display continuously updated percentage performance over several familiar horizons in a compact on-chart table.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bmxmwmne_momentum_acceleration_by_dgt.md`
+
+`strategy-card` · 113 lines · 4,799 B · description: **extracted**
+
+**Purpose.** Momentum Acceleration treats price change as speed and changes in that speed as acceleration. The purpose is to distinguish whether directional movement is strengthening or weakening, then show possible setup changes with arrows.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bnhlqnsp_volume_bull_bear_activity_zc.md`
+
+`strategy-card` · 114 lines · 4,498 B · description: **extracted**
+
+**Purpose.** Volume Bull/Bear Activity summarizes directional-volume readings for a selected symbol list. It aims to show where bullish or bearish activity is concentrated without switching charts. Paired green/red bars represent attributed volume, while displayed price color reflects whether the candle is up or down.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_brp7xbr2_ta_information_panel.md`
+
+`strategy-card` · 94 lines · 4,272 B · description: **extracted**
+
+**Purpose.** The full description establishes only that this publication displays multiple information in a table-based panel. It does not identify the information or explain any calculations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bswaptez_breakout_volume_delta_flux_charts.md`
+
+`strategy-card` · 125 lines · 5,169 B · description: **extracted**
+
+**Purpose.** Assess participation inside a swing-level breakout candle using lower-timeframe candle-direction volume and a split-color body overlay.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bt8hx615_solar_system_in_3d_astro_tool_w_zodiac.md`
+
+`strategy-card` · 176 lines · 6,525 B · description: **extracted**
+
+**Purpose.** Solar System in 3D is primarily a graphical rendering demonstration, but the author explicitly proposes it for financial astrology and visual comparison with price action. It therefore belongs in financial research tooling under the requested broad scope.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bugfwu53_atr_based_trendlines_jd.md`
+
+`strategy-card` · 107 lines · 4,231 B · description: **extracted**
+
+**Purpose.** Draw pivot-anchored trendlines whose slopes reflect volatility at the moment the pivot is detected.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bv2arqnd_cup_finder.md`
+
+`strategy-card` · 113 lines · 4,467 B · description: **extracted**
+
+**Purpose.** Find cup-shaped price formations by measuring how much historical price action fits within a proposed circular channel.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bvyz1cdf_bernoulli_process_binary_entropy_function.md`
+
+`strategy-card` · 133 lines · 4,932 B · description: **extracted**
+
+**Purpose.** Bernoulli Process Binary Entropy compares information-theory-style measurements of price and volume. It aims to produce a MACD-like difference and histogram for discretionary divergence inspection, with individual price/volume measures optionally visible. The source invokes Bernoulli and Shannon entropy but never defines how continuous market observations become binary probabilities.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bwbicwa6_emd_trend_investorunknown.md`
+
+`strategy-card` · 146 lines · 6,187 B · description: **extracted**
+
+**Purpose.** EMD Trend builds a volatility-sensitive envelope from exponentially averaged absolute deviations around a chosen moving average. It aims to distinguish bullish/bearish excursions from neutral inside-channel behavior and provide trend/breakout context. Separate risk-on/off alerts identify crossings into and back out of outer regions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_by9maioc_oscillator_workbench_chart_lucf.md`
+
+`strategy-card` · 157 lines · 7,759 B · description: **extracted**
+
+**Purpose.** Oscillator Workbench translates oscillator behavior into price-chart channels so traders can explore configurations in market context. It normalizes an oscillator’s position above or below its centerline, weights a price source with that percentage, and compares a weighted average with an unweighted reference.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bzgubzri_smart_trader_episode_03_by_ata_sabanci_candles_and_tradelines.md`
+
+`strategy-card` · 163 lines · 6,795 B · description: **extracted**
+
+**Purpose.** Describe market structure through aggregated candle blocks,volume-pressure estimates and a rule-generated narrative while keeping chart levels sparse.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_bzo4yadb_per_bak_self_organized_criticality.md`
+
+`strategy-card` · 149 lines · 5,962 B · description: **extracted**
+
+**Purpose.** Per Bak SOC constructs a macro fragility score from options-tail pricing, volatility regime, credit stress and put/call positioning. It uses the sandpile analogy to motivate vulnerability to cascades, rather than predicting the size or exact timing of a crash.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_c2fzxjii_evar_indicator_and_position_sizing.md`
+
+`strategy-card` · 121 lines · 4,681 B · description: **extracted**
+
+**Purpose.** Explore a Tsallis/q-exponential tail-risk proxy and use its normalized level to vary suggested exposure and stop references.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_c75af3t1_fractional_ema_kalman_filter_d7.md`
+
+`strategy-card` · 124 lines · 5,065 B · description: **extracted**
+
+**Purpose.** Fractional EMA Kalman Filter D7 conditions price through deliberately reactive fractional-EMA stages, then uses a single-state Kalman-style correction to form smoother estimates. It aims to flatten in sideways conditions while responding to structural changes through residual-dependent noise adaptation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_c7z3p2xh_dynamic_money_flow.md`
+
+`strategy-card` · 115 lines · 4,739 B · description: **extracted**
+
+**Purpose.** Dynamic Money Flow modifies Chaikin-style money flow to account for gaps, close-to-close movement and the fading influence of older data. It aims to confirm trends and breakouts through a volume-weighted pressure oscillator. A true-range-based accumulation/distribution component and a close-change component share volume automatically, then combine into a multiplier.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_c8rargoe_relative_crypto_dominance_polar_chart_luxalgo.md`
+
+`strategy-card` · 123 lines · 5,571 B · description: **extracted**
+
+**Purpose.** Relative Crypto Dominance Polar Chart compares selected instruments using a custom activity-and-volatility notion of dominance. It is not conventional market-cap dominance: radius represents volatility and arc length represents traded dollar volume. Larger polar regions therefore identify assets with greater combined activity on those dimensions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_capg3ivf_bjorgum_key_levels.md`
+
+`strategy-card` · 116 lines · 4,723 B · description: **extracted**
+
+**Purpose.** Bjorgum Key Levels identifies three related price-action situations around important levels: an initial breakout, a breakout that fails, and a later pullback to a flipped level. The idea is to help a trader distinguish momentum entries from trap reversals and trend pullback entries, each with a different balance between entry price and directional support.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cbnacnmq_volume_and_price_z_score_multi_asset_by_leviathan.md`
+
+`strategy-card` · 166 lines · 7,017 B · description: **extracted**
+
+**Purpose.** Volume and Price Z-Score screens assets by how unusual current price and activity are relative to their own histories and, optionally, relative to the group. It distinguishes a single-bar anomaly from persistent averaged deviations and cross-sectional outliers.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cdu6e9rm_volume_footprint_luxalgo.md`
+
+`strategy-card` · 134 lines · 6,037 B · description: **extracted**
+
+**Purpose.** Volume Footprint estimates how realtime volume is distributed across price intervals inside a candle. It automatically derives interval width from ATR or accepts a user width, then displays accumulated volume as absolute amounts or candle-volume shares. The tool’s purpose is local participation analysis, not identifying buyer/seller counterparties or guaranteeing a venue-accurate footprint.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cgbtzxz3_zigzag_candles.md`
+
+`strategy-card` · 121 lines · 4,497 B · description: **extracted**
+
+**Purpose.** Zigzag Candles compresses a sequence of zigzag pivots into synthetic candlesticks. It aims to visualize swing structure in a familiar OHLC-like form and explore a possible foundation for future trend-following calculations. The body represents the first and last pivot in a group, while wicks represent its extremes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cghgbnh9_naked_intrabar_poc.md`
+
+`strategy-card` · 112 lines · 4,484 B · description: **extracted**
+
+**Purpose.** Naked Intrabar POC approximates the price of greatest within-bar participation using either time-at-price or volume-at-price. It exposes that reference as a series so another indicator can use it instead of conventional OHLC. The source explicitly emphasizes approximation and the tradeoff between finer lower-timeframe sampling and the amount of usable history.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cjnk8au1_volume_bubbles_quantalgo.md`
+
+`strategy-card` · 125 lines · 5,032 B · description: **extracted**
+
+**Purpose.** Highlight unusually large total-volume or estimated directional-delta events using percentile agreement across several history windows.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cjx3k6l2_stop_loss_cascades_breakouts_kioseff_trading.md`
+
+`strategy-card` · 139 lines · 6,164 B · description: **extracted**
+
+**Purpose.** Estimate where hidden stop pressure might concentrate and contextualize possible breakout cascades. The indicator explicitly models unobservable stops rather than measuring actual stop locations, quantities or live order-book depth.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_clk71qgy_machine_learning_adaptive_supertrend_algoalpha.md`
+
+`strategy-card` · 113 lines · 4,865 B · description: **extracted**
+
+**Purpose.** Machine Learning Adaptive SuperTrend replaces a single fixed volatility assumption with a clustered ATR regime. It groups historical ATR observations into low, medium and high volatility and feeds the selected regime level into SuperTrend. The purpose is an adaptive trend display with separate information about current volatility, rather than a supervised model trained to predict returns.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cluzc70g_wavetrend_3d.md`
+
+`strategy-card` · 115 lines · 4,900 B · description: **extracted**
+
+**Purpose.** WaveTrend 3D redesigns WaveTrend around a bounded signal transform and digital filtering, then supplies several response speeds and optional mirrored waves. It seeks to reduce unbounded extremes and offer cycle/trend-reversal context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cmforvlp_dual_phase_reversal_by_dgt.md`
+
+`strategy-card` · 136 lines · 5,283 B · description: **extracted**
+
+**Purpose.** Dual-Phase Reversal separates initial momentum exhaustion from a later terminal exhaustion sequence, then adds structural levels and volume context. It aims to describe evolving overextension without treating every completed count as an immediate reversal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cojscaaa_multi_asset_similarity_matrix.md`
+
+`strategy-card` · 112 lines · 4,664 B · description: **extracted**
+
+**Purpose.** Compare multi-asset return-shape similarity through a configurable matrix of pairwise numerical measures.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cp49eqt5_probability_cones.md`
+
+`strategy-card` · 124 lines · 4,811 B · description: **extracted**
+
+**Purpose.** Project a distribution-shaped price envelope from an anchor and use departures from it to frame volatility and position-management questions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cq5x2ame_ar_forecast_scatterplot_ss.md`
+
+`strategy-card` · 113 lines · 4,607 B · description: **extracted**
+
+**Purpose.** Demonstrate an autoregressive forecast with a scatterplot and model-fit diagnostics using the author's statistical library.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ctjx82hp_extrapolated_pivot_connector_lets_make_support_and_resistances.md`
+
+`strategy-card` · 120 lines · 4,863 B · description: **extracted**
+
+**Purpose.** Extrapolate support and resistance lines from selected pairs of historical pivots, including pivots in another indicator series.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ctwzt4va_tick_travel.md`
+
+`strategy-card` · 128 lines · 5,223 B · description: **extracted**
+
+**Purpose.** Show how price changes during a live candle by marking individual platform-update observations and their direction.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cujanbts_kinetic_slippage_index_ksi.md`
+
+`strategy-card` · 129 lines · 5,153 B · description: **extracted**
+
+**Purpose.** Kinetic Slippage Index compares large price ranges with the amount of reported volume supporting them. The author interprets high readings as hollow movement and low readings as absorption, then suggests using extremes to inspect false breakouts, exhaustion or compression.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cvevoxah_monte_carlo_simulation_your_strategy_kioseff_trading.md`
+
+`strategy-card` · 123 lines · 4,977 B · description: **extracted**
+
+**Purpose.** Monte Carlo Simulation Your Strategy generates hypothetical paths from pasted strategy outcomes or historical asset returns. It aims to explore the distribution of possible outcomes rather than project a single future. Gaussian sampling and bootstrap resampling offer different distribution assumptions, while histograms and endpoint scatterplots summarize the paths.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cwm8ucfq_whale_liquidity_and_absorption_profile_algoalpha.md`
+
+`strategy-card` · 117 lines · 4,890 B · description: **extracted**
+
+**Purpose.** Map lower-timeframe participation and wick-based absorption proxies into profiles to inspect possible price-reaction regions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cy6rizcl_probability_distribution_histogram.md`
+
+`strategy-card` · 119 lines · 4,963 B · description: **extracted**
+
+**Purpose.** Probability Distribution Histogram describes the empirical distribution of an input series so a trader or researcher can examine shape, tails and model residuals. It explicitly provides no trading signals.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_czknkfns_technical_rank.md`
+
+`strategy-card` · 126 lines · 5,179 B · description: **extracted**
+
+**Purpose.** Technical Rank combines long-, medium- and short-term technical features, then compares the resulting scores across a selected group of securities. It aims to identify relative strength for pullback research and avoid weaker peers.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_cztmlgfy_magnificent_7_oscillator.md`
+
+`strategy-card` · 183 lines · 7,433 B · description: **extracted**
+
+**Purpose.** Compare momentum in a fixed group of large technology companies with an equal-weight market benchmark. The publication combines absolute momentum, relative leadership and breadth to help assess concentration and rotation; cited academic research does not validate this particular implementation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_d2nmolmk_mxwll_price_action_suite_mxwll.md`
+
+`strategy-card` · 123 lines · 4,727 B · description: **extracted**
+
+**Purpose.** Collect multiscale price-structure annotations, rolling extrema, Fibonacci references and session-volume context in one dashboard.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_d3iafa7c_trend_impulse_channels_zeiierman.md`
+
+`strategy-card` · 115 lines · 4,344 B · description: **extracted**
+
+**Purpose.** Track trends as discrete ATR-scaled steps and use a surrounding channel to visualize pauses, retests and continuation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_d3pho9uh_matrix_functions_jd.md`
+
+`strategy-card` · 125 lines · 5,130 B · description: **extracted**
+
+**Purpose.** Store row-oriented financial records in a one-dimensional Pine array while exposing convenient two-dimensional access/manipulation functions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_d4tdeuru_volume_composition_flowly_indicators.md`
+
+`strategy-card` · 141 lines · 5,694 B · description: **extracted**
+
+**Purpose.** Volume Composition decomposes lower-timeframe candle volume into directional and rising/falling-volume subsets. It aims to reveal whether total attributed pressure agrees with the subset labeled active. Here active means volume increased from the preceding intrabar, not directly observed market-order aggression.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_daukfrmd_hurst_diamond_notation_pivots.md`
+
+`strategy-card` · 112 lines · 4,589 B · description: **extracted**
+
+**Purpose.** Mark historical cycle peaks and troughs using Hurst-style diamond notation and use their spacing to frame possible future turning windows.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ddvp5qaz_match_finder_theultimator5.md`
+
+`strategy-card` · 134 lines · 5,702 B · description: **extracted**
+
+**Purpose.** Match Finder searches a chosen comparison list for the asset whose recent price shape most closely tracks the active chart. It is explicitly about current compatibility, not forecasting continued correlation. After selecting the strongest positive Pearson relationship, it rescales the matched segment for visual comparison, optionally displaying every candidate’s coefficient.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_de2slurk_average_lines.md`
+
+`strategy-card` · 115 lines · 4,766 B · description: **extracted**
+
+**Purpose.** Average Lines constructs a moving reference from projections of relationships among historical pivots. Rather than averaging prices directly, it draws a line from the latest pivot to each preceding pivot, extends those lines, and averages their values on subsequent bars. The aim is a new moving-average-like view that incorporates many pivot slopes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_df63cmxh_quartile_vol_vol_aggregation_range_us_bars_gaps_kioseff.md`
+
+`strategy-card` · 144 lines · 6,945 B · description: **extracted**
+
+**Purpose.** Compare volume distributions, alternative bar aggregations and persistent gaps in one price-action research tool. The publication provides descriptive statistics and chart transformations rather than a complete entry/exit strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dfy6orqi_intraday_volume_swings.md`
+
+`strategy-card` · 128 lines · 5,640 B · description: **extracted**
+
+**Purpose.** Intraday Volume Swings records price extremes reached during stretches of rising volume, then carries the day’s final selected high and low into the following session. It aims to distinguish participation-supported swings from arbitrary daily extremes, providing possible retracement or support/resistance references.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dgmumvhd_black_scholes_options_pricing_model.md`
+
+`strategy-card` · 129 lines · 5,437 B · description: **extracted**
+
+**Purpose.** Black-Scholes Options Pricing Model displays theoretical option price, selected sensitivity and an implied-volatility reading. It aims to support European vanilla or long binary-call analysis, not reproduce actual option quotes. The source explains many Greeks and emphasizes theoretical assumptions, while requiring users to maintain time-to-expiry manually.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dh3cpnga_doubled_numbered_square_of_nine_progression_regression.md`
+
+`strategy-card` · 114 lines · 4,852 B · description: **extracted**
+
+**Purpose.** Generate Square-of-Nine price-reference levels from a manually chosen pivot and compare their alignment with subsequent market swings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dhpw18sb_multiple_frequency_volatility_correlation.md`
+
+`strategy-card` · 114 lines · 4,968 B · description: **extracted**
+
+**Purpose.** Multiple Frequency Volatility Correlation attempts to show how volume relates to price volatility across different observation windows. Its financial purpose is to compare activity/volatility behavior at several horizons rather than judge only one lookback. Color indicates whether volatility is rising or falling, while darkness identifies shorter windows.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_djr8hv4v_waindrops_makit0.md`
+
+`strategy-card` · 154 lines · 5,427 B · description: **extracted**
+
+**Purpose.** Waindrops splits user-defined periods into two portions and draws separate price-volume distributions and VWAPs for each. It aims to make intraperiod migration of value visible, with color based on whether the later VWAP rises, falls or matches the earlier one. Custom unbalanced/session settings support overnight-versus-cash comparison.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dksawola_next_pivot_projection_trendoscope.md`
+
+`strategy-card` · 118 lines · 4,963 B · description: **extracted**
+
+**Purpose.** Project likely price/time locations of forthcoming zigzag pivots from historical swing-transition statistics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dogvqoph_stochastic_weights_basic_bigbitsio.md`
+
+`strategy-card` · 120 lines · 5,069 B · description: **extracted**
+
+**Purpose.** Stochastic Weights combines enabled oscillator components into a shared consensus reading. The design tries to temper a fast stochastic-RSI measure with a slower stochastic measure, so disagreement produces an intermediate level rather than allowing the fastest component alone to dominate.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dq9wjj11_average_volume_profile.md`
+
+`strategy-card` · 114 lines · 4,642 B · description: **extracted**
+
+**Purpose.** Average Volume Profile divides a volume-style profile by a market-profile-style measure to show average activity at each price area. It adds a highest-average-volume reference and current-volume comparisons, but the author explicitly says they are unsure how useful the result is. This is exploratory market profiling, not a validated signal or an instruction that the highlighted level should hold.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_drx2sbyv_vix_curve_pro_real_time_term_structure_with_statistics.md`
+
+`strategy-card` · 137 lines · 6,266 B · description: **extracted**
+
+**Purpose.** VIX Curve Pro displays volatility-index values across maturities as a spatial curve and summarizes their historical relationships. Its aim is to identify upward- versus downward-sloping volatility structures and whether current ratios sit near historical extremes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_du228vjm_flag_finder.md`
+
+`strategy-card` · 123 lines · 5,181 B · description: **extracted**
+
+**Purpose.** Flag Finder detects configurable bullish and bearish continuation formations. It separates an initial directional pole from the subsequent consolidation and offers alerts both when a pattern appears and when price breaks its relevant boundary. The intended application is breakout-oriented trade selection within an existing trend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dxc0pi3n_swingarm_atr_trend_indicator.md`
+
+`strategy-card` · 113 lines · 4,310 B · description: **extracted**
+
+**Purpose.** SwingArm provides a simple color-based confirmation of a perceived trend change, designed to make directional interpretation accessible to a novice. The description establishes the intended bullish/bearish display, but does not explain the actual trend calculation. The ATR language in the title is insufficient evidence for an ATR length, trailing formula or reversal threshold.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_dyb13ida_hull_candles_bigbitsio.md`
+
+`strategy-card` · 113 lines · 4,523 B · description: **extracted**
+
+**Purpose.** Smooth candle geometry to reduce visual noise and emphasize trends while retaining a separate line for current market price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_e0kaey2l_economic_calendar_import_from_spreadsheet.md`
+
+`strategy-card` · 116 lines · 4,981 B · description: **extracted**
+
+**Purpose.** Economic Calendar Import from Spreadsheet places vertical event-time markers on a chart from user-supplied text. It aims to remove repetitive manual drawing and align important scheduled announcements precisely with chart time. The user remains responsible for choosing relevant events and formatting their timestamps; the script is not described as an automatic live calendar feed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_e2s2v4fl_byo_pattern_v1_trendoscope.md`
+
+`strategy-card` · 127 lines · 4,893 B · description: **extracted**
+
+**Purpose.** Let a user define ratio-based geometric patterns and automatically search them across recent zigzag structures.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_e5azkgtc_best_dollar_cost_average.md`
+
+`strategy-card` · 112 lines · 4,498 B · description: **extracted**
+
+**Purpose.** Compare repeated equal-cash purchases with investing the corresponding capital at the start of a chosen historical period.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_e5kzxosk_tasc_2021_12_directional_movement_w_hann.md`
+
+`strategy-card` · 120 lines · 5,035 B · description: **extracted**
+
+**Purpose.** Directional Movement w/Hann applies a Hann-window filtering stage to the conventional directional-movement components. Its purpose is to explore a smoother representation of directional behavior in the Ehlers indicator family. The source starts with PlusDM and MinusDM, applies exponential averaging, then adds a finite-impulse-response smoothing stage.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_e9l1xaqd_support_resistance_mtf.md`
+
+`strategy-card` · 115 lines · 4,820 B · description: **extracted**
+
+**Purpose.** Support Resistance MTF derives higher-timeframe price references directly and uses them to draw support/resistance zones on the working chart. The author emphasizes that the higher-timeframe OHLC values are calculated without a security call.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ebb5mw6b_extreme_trend_reversal_points_hewhomustnotbenamed.md`
+
+`strategy-card` · 137 lines · 6,399 B · description: **extracted**
+
+**Purpose.** Extreme Trend Reversal Points restricts moving-average reversal candidates to strongly ordered multi-level smoothing states. It recursively smooths an average repeatedly, measures their relative ordering and highlights price crosses only when the averages are fully aligned.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_edel00bp_risk_adjusted_momentum_oscillator.md`
+
+`strategy-card` · 138 lines · 6,057 B · description: **extracted**
+
+**Purpose.** Dampen momentum according to a drawdown-based risk context, then combine normalization, adaptive smoothing and leading-style components. RAMO aims to make momentum signals risk-aware; its broad literature claims do not establish the indicator’s own empirical advantages.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eetjcnc8_dividend_calendar_zeiierman.md`
+
+`strategy-card` · 139 lines · 6,056 B · description: **extracted**
+
+**Purpose.** Dividend Calendar organizes dividend events and estimated future payments into portfolio-oriented tables. It supports payout timing, dividend growth and monthly/yearly income planning, with separate ex-date and pay-date views. Historical-pattern estimates are not declared dividends, and a calendar around ex-dates does not by itself establish a profitable dividend-capture strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_efbdipvs_bjorgum_autotrail.md`
+
+`strategy-card` · 122 lines · 5,453 B · description: **extracted**
+
+**Purpose.** Bjorgum AutoTrail manages a single existing position with an interactively anchored trailing stop. The user places crosshairs to establish an initial reference, and the script infers a long trail when placed below price or a short trail when above. Its aim is to monitor positional risk when the trader cannot continually watch the chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_efxi515c_linear_regression_channel.md`
+
+`strategy-card` · 114 lines · 4,558 B · description: **extracted**
+
+**Purpose.** Linear Regression Channel adds break detection and direction/momentum labels to a configurable regression envelope. It helps the user distinguish channel orientation from whether its momentum is strengthening or weakening. The script also retains optional broken-channel drawings, providing historical context without defining a complete breakout strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eihtlrnm_jrl_mm_fibonacci.md`
+
+`strategy-card` · 108 lines · 4,254 B · description: **extracted**
+
+**Purpose.** MM Fibonacci combines Murrey Math-derived anchor selection with Fibonacci retracement ratios. It aims to use one geometric method to decide where a long-term range begins and ends, then another to subdivide it into potential reaction levels. The author believes the combination is superior, but supplies no quantified comparison or formula.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eis1vcdx_golden_ratio_cubes_gorac.md`
+
+`strategy-card` · 108 lines · 4,309 B · description: **extracted**
+
+**Purpose.** Project golden-ratio-based cube geometry from a selected price interval to inspect potential support and resistance regions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ej53t8wv_support_resistance_channels.md`
+
+`strategy-card` · 121 lines · 4,771 B · description: **extracted**
+
+**Purpose.** Support Resistance Channels groups nearby pivots into zones, ranks their strength and displays the strongest candidates. A newly detected pivot triggers reconstruction of the channel set, so the zones respond to evolving structure rather than remain fixed manual drawings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eji1igag_binomial_option_pricing_model.md`
+
+`strategy-card` · 118 lines · 4,812 B · description: **extracted**
+
+**Purpose.** Estimate theoretical vanilla call or put value with a small binomial tree and selectable American or European exercise.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ejmwjmdf_dynamic_gap_probability_tool.md`
+
+`strategy-card` · 126 lines · 5,247 B · description: **extracted**
+
+**Purpose.** Dynamic Gap Probability Tool estimates the historical next-candle color associated with the current percentage distance from a selected moving average. It tries to avoid presenting a tiny exact-match sample as reliable by broadening the deviation sample when occurrences are scarce.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ekbuz93v_delta_ladder_kioseff_trading.md`
+
+`strategy-card` · 115 lines · 4,831 B · description: **extracted**
+
+**Purpose.** Delta Ladder renders per-price volume differences as a ladder or colored blocks around each candle. Its purpose is to make localized directional-volume imbalance and point-of-control structure visible.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ekkb1vlg_voss_predictor_a_peek_into_the_future_dr_john_ehlers.md`
+
+`strategy-card` · 112 lines · 4,939 B · description: **extracted**
+
+**Purpose.** Voss Predictor combines a bandpass-filtered cycle series with a predictive-filter transform and a correlation-based color companion. The intended use is anticipating cyclical turning points through phase response, not forecasting news or all price movements.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ektpaxcq_bloomberg_financial_conditions_index_proxy.md`
+
+`strategy-card` · 142 lines · 5,627 B · description: **extracted**
+
+**Purpose.** This Financial Conditions Index is explicitly a simplified proxy rather than a reproduction of Bloomberg’s proprietary series. It combines market-price proxies into a standardized reading intended to distinguish tighter from easier financial conditions. Negative territory is interpreted as deterioration and positive territory as accommodation, with a color gradient reinforcing that convention.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_enc8rzn0_modern_portfolio_management_indicator.md`
+
+`strategy-card` · 119 lines · 5,178 B · description: **extracted**
+
+**Purpose.** Modern Portfolio Management Indicator is a scenario planner for periodically buying selected equities. It combines historical DCA returns, allocation views, pairwise relationships and basic fundamentals, while adding a simple extrapolated portfolio projection.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eoijuoln_synthetic_vx3_vx4_continuous_vx_futures.md`
+
+`strategy-card` · 113 lines · 4,780 B · description: **extracted**
+
+**Purpose.** Approximate continuous third- and fourth-month VIX futures to study farther-out volatility exposure when the charting platform lacks those continuous series.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eolvuvxl_market_manipulation_index_mmi.md`
+
+`strategy-card` · 126 lines · 4,821 B · description: **extracted**
+
+**Purpose.** Market Manipulation Index is described internally as Composite Manipulation Index, a contextual measure of price orderliness. It combines deviation from a synthetic cycle with error in a short-lag predictive model. The goal is to distinguish structured conditions from unstable conditions before choosing a strategy style.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eos9u1qm_fair_value_bands_flowly_indicators.md`
+
+`strategy-card` · 125 lines · 5,076 B · description: **extracted**
+
+**Purpose.** Fair Value Bands estimates typical price excursions from a selected smooth basis using pivot deviations rather than continuously varying standard deviation. It aims to provide steadier normal/extreme zones and separate minor crosses from meaningful trend-state changes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eqk0bwy4_analytics_tables.md`
+
+`strategy-card` · 126 lines · 4,962 B · description: **extracted**
+
+**Purpose.** analytics_tables supplies reusable strategy-performance tables rather than a standalone market signal. It separates caller-provided win/loss statistics from table presentation and also maintains seasonality data for calendar performance views. The intended integration is a trailing-strategy framework, while the exposed objects let other strategy scripts reuse the reporting layer.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eqlogqrf_rs_simple_forecast_keltner_worms.md`
+
+`strategy-card` · 100 lines · 4,006 B · description: **extracted**
+
+**Purpose.** Create an experimental projected price region by adapting Keltner channels and shifting their displayed segments.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_er9y7zmm_log_regression_oscillator_channel_bigbeluga.md`
+
+`strategy-card` · 113 lines · 4,755 B · description: **extracted**
+
+**Purpose.** Log Regression Oscillator Channel embeds a selected momentum oscillator inside a logarithmic price-trend channel. It aims to let traders read momentum extremes in the same panel as broader trend structure, rather than switch between separate panes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_erbzovy8_fair_value_gap.md`
+
+`strategy-card` · 121 lines · 4,694 B · description: **extracted**
+
+**Purpose.** Fair Value Gap displays current-timeframe and optional higher-timeframe gaps as possible future price targets. It aims to make imbalance references and cross-timeframe confluence easy to monitor. The user can remove a gap at its midpoint instead of waiting for full fill, optionally deleting filled historical drawings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ertrxbpf_musashi_fractal_dimension.md`
+
+`strategy-card` · 128 lines · 4,756 B · description: **extracted**
+
+**Purpose.** Combine several fractal-dimension estimates with momentum and volatility context to distinguish relatively trend-like from reversal-prone market behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_etm15sgp_moving_averages_3d.md`
+
+`strategy-card` · 113 lines · 4,288 B · description: **extracted**
+
+**Purpose.** Compare a family of moving averages through a three-dimensional-looking chart display rather than separate conventional lines.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ev2tidhj_faith_indicator.md`
+
+`strategy-card` · 138 lines · 4,816 B · description: **extracted**
+
+**Purpose.** Faith Indicator contrasts volume associated with expanding highs and lows, then converts the difference into qualitative confidence-style grades. A separate Hull Agreement background summarizes price movement, allowing the user to compare price and participation classifications.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ewwysggk_smooth_theil_sen.md`
+
+`strategy-card` · 113 lines · 4,627 B · description: **extracted**
+
+**Purpose.** Smooth Theil-Sen replaces the discrete median of pairwise slopes with a Gaussian-weighted center of the sorted slope distribution. It aims to retain much of robust-regression behavior while making the displayed trend line less jumpy as the sample changes. This is a smoothing modification of the estimator rather than a claim that it exactly preserves the conventional median’s robustness.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_eyhkvavh_index_generator_by_muqwishi.md`
+
+`strategy-card` · 113 lines · 4,830 B · description: **extracted**
+
+**Purpose.** Index Generator builds a custom securities basket and displays its market-cap-weighted behavior as an index. It is intended for tracking a chosen market theme and researching historical movement, with a holdings table explaining each constituent’s contribution.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ezlwruv8_std_time.md`
+
+`strategy-card` · 134 lines · 5,218 B · description: **extracted**
+
+**Purpose.** std_time provides calendar and time infrastructure with explicitly financial components: exchange sessions, trading-day arithmetic, option expiries, day counts and economic releases. It aims to distinguish civil-calendar operations from elapsed-time arithmetic, particularly around daylight-saving changes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_f2oh2wqt_volumatic_support_resistance_levels_bigbeluga.md`
+
+`strategy-card` · 123 lines · 4,995 B · description: **extracted**
+
+**Purpose.** Volumatic Support/Resistance Levels adds volume emphasis to swing-based price zones. It aims to distinguish ordinary structural levels from areas associated with stronger participation, using histogram-like fills and high-volume marks. The author suggests those emphasized zones as context for possible reversals or breakouts alongside other structure tools.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_f2yleyoo_delta_volume_columns_pro_lucf.md`
+
+`strategy-card` · 150 lines · 8,159 B · description: **extracted**
+
+**Purpose.** Inspect estimated directional volume through five balance models, with configurable columns, signal lines, divergence context and alerts. Crucially, the publication uses different historical and realtime methods and explicitly warns that refreshed elapsed realtime bars change.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_faku8ild_example_graph_style_4th_dimension_rsi.md`
+
+`strategy-card` · 108 lines · 4,468 B · description: **extracted**
+
+**Purpose.** Fourth Dimension RSI is an experimental visualization of RSI and price change through a short time sequence. Its financial purpose is to inspect how momentum and price movement evolve together, using a scatter-like graph instead of a conventional oscillator pane. The phrase fourth dimension is descriptive artwork terminology here, not a claim of additional predictive information.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fgvtpifr_tf_segmented_linear_regression.md`
+
+`strategy-card` · 131 lines · 5,413 B · description: **extracted**
+
+**Purpose.** Separate price history into calendar-time intervals and fit a regression channel within each interval to compare local trends and residual variation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fhtldun5_portfolio_backtester_engine.md`
+
+`strategy-card` · 134 lines · 4,593 B · description: **extracted**
+
+**Purpose.** Portfolio Backtester Engine runs one strategy across several securities and aggregates separately funded results. It aims to broaden robustness research beyond one chart’s history and regime. Initial capital is split equally, so it is not an unconstrained pooled-capital allocator. The source adapts a study-based engine but explicitly removes external-indicator coupling and alerts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fk25igs7_price_convergence.md`
+
+`strategy-card` · 100 lines · 4,151 B · description: **extracted**
+
+**Purpose.** Price Convergence aims to assess potential price discovery by comparing the likelihood of upward price movement with the likelihood of downward movement. The entire source is a single conceptual sentence, so it establishes an analytical objective but provides no calculational recipe. It should remain a sparse, explicitly unresolved profile rather than acquire a probability model from its title.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fletgfxw_ss_linear_modeler.md`
+
+`strategy-card` · 134 lines · 5,013 B · description: **extracted**
+
+**Purpose.** Linear Modeler extrapolates a regression-based price path and ranges at selected candle horizons, with historical reliability summaries. It aims to pair a target with a timeframe and an empirical-looking success reading instead of presenting an unqualified projection. The author suggests comparing targets with other range tools and interpreting price action before acting.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fnlmn99w_tasc_2026_09_adaptive_supersmoother.md`
+
+`strategy-card` · 140 lines · 5,193 B · description: **extracted**
+
+**Purpose.** Adaptive SuperSmoother adjusts a filter’s critical period according to movement in a fixed-period companion filter. It aims to retain high-frequency noise suppression while responding faster to changing market direction. The adaptive line is compared with the fixed line, and their difference is displayed separately.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fnxxrrpg_auto_pitchfork_fib_retracement_and_zig_zag_by_dgt.md`
+
+`strategy-card` · 124 lines · 5,297 B · description: **extracted**
+
+**Purpose.** Auto Pitchfork, Fib Retracement and Zig Zag automates three related chart-annotation tools around detected turning points. The main goal is identifying possible support/resistance with a pitchfork placed at prior trend endpoints. Fibonacci retracement and zigzag overlays share the pivot framework.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fq7ig92h_deeptest.md`
+
+`strategy-card` · 172 lines · 7,076 B · description: **extracted**
+
+**Purpose.** Deeptest extends strategy reporting with trade statistics, risk-adjusted metrics, drawdowns, distribution diagnostics, benchmark comparison and robustness-style summaries. It reads closed trades from an existing Pine strategy, so it evaluates supplied simulated outcomes rather than creating a strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fqmvaak9_volume_profile_makit0.md`
+
+`strategy-card` · 150 lines · 6,453 B · description: **extracted**
+
+**Purpose.** Makit0 Volume Profile plots session value references for discretionary stock/futures analysis, originally motivated by regular-session ES levels. It aims to show where session volume concentrated and to retain key auction references on the chart. Its value area surrounds the most heavily traded region, while session extremes and midpoint provide broader context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fqnxjggs_cycles_analysis.md`
+
+`strategy-card` · 133 lines · 4,771 B · description: **extracted**
+
+**Purpose.** Cycles Analysis retrospectively divides history into bull/bear periods and projects a size/duration region from completed past cycles. It aims at macro visualization rather than realtime trading. Users define changes by percentage movement or absence of a new extreme for a duration. Optional stagnation marks similar inactivity without changing direction or entering statistics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fra2t8gk_blockchain_fundamentals_active_address_sentiment_osc_cr.md`
+
+`strategy-card` · 113 lines · 5,012 B · description: **extracted**
+
+**Purpose.** Active Address Sentiment Oscillator compares Bitcoin’s price growth with growth in daily active blockchain addresses. It frames unusually strong price growth relative to network-activity bands as overheating and unusually weak growth as undervaluation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ft4zyo1f_swing_structure_forecast_boswaves.md`
+
+`strategy-card` · 141 lines · 5,271 B · description: **extracted**
+
+**Purpose.** Project a next swing from recent completed-leg statistics and maintain volatility-sized reaction zones at confirmed pivot extremes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fvpgxfb3_wolfe_scanner_multi_zigzag_hewhomustnotbenamed.md`
+
+`strategy-card` · 108 lines · 4,662 B · description: **extracted**
+
+**Purpose.** Wolfe Scanner seeks wedge-based Wolfe formations from multiple zigzag structures and draws a projected target reference. The author explains that pure Fibonacci-ratio matching did not consistently agree with visual inspection, motivating a wedge-first approach.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fwb6gwpc_support_resistance_ai_k_means_median_thinklogicai.md`
+
+`strategy-card` · 131 lines · 5,261 B · description: **extracted**
+
+**Purpose.** Cluster historical price behavior into candidate support/resistance centers and characterize each cluster with density and dispersion.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_fxnublkt_revolution_volatility_bands_with_range_contraction_signal_vii.md`
+
+`strategy-card` · 106 lines · 4,686 B · description: **extracted**
+
+**Purpose.** Revolution Volatility Bands combines a volatility-envelope display with a contraction cue that the author relates to triangle or wedge structure. Its purpose is recognizing decreasing volatility and a developing contraction state rather than specifying a breakout direction.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_g30euydh_liquidity_thermal_map_bigbeluga.md`
+
+`strategy-card` · 142 lines · 6,152 B · description: **extracted**
+
+**Purpose.** Liquidity Thermal Map presents historical candle-volume concentration as a horizontal heatmap rather than a bar-shaped volume profile. It aims to reveal high-interest price zones and a dominant point of control, with a separate directional-volume gauge. The term liquidity is the author’s interpretation of past traded activity, not a measurement of resting order-book depth.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_g7gugu9i_rs_simplistic_automatic_growth_models.md`
+
+`strategy-card` · 106 lines · 4,196 B · description: **extracted**
+
+**Purpose.** Simplistic Automatic Growth Models is described as an experimental history-derived growth model. The source establishes that historical chart data drives an automatic model, but gives no mathematical family or interpretation of its output. It belongs in financial exploration while remaining too underspecified to infer a logarithmic, exponential or regression formula.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gamszeig_logarithmic_moving_average_lma_quantalgo.md`
+
+`strategy-card` · 145 lines · 6,532 B · description: **extracted**
+
+**Purpose.** Logarithmic Moving Average converts a logarithmically weighted price average into a trend-quality-adjusted slope oscillator. Its aim is to favor recent data while distinguishing cleaner directional movement from weaker drift.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gbesfgsq_nasdaq_day_and_night_breakdown.md`
+
+`strategy-card` · 102 lines · 3,990 B · description: **extracted**
+
+**Purpose.** Separate Nasdaq futures movement before and after the market open to compare overnight and daytime contributions to daily price change.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gd1gdoyi_intersection_value_functions.md`
+
+`strategy-card` · 127 lines · 4,627 B · description: **extracted**
+
+**Purpose.** Intersection Value Functions estimates where two connected series cross between samples. It offers crossover/crossunder variants and explicit moving-average/support-resistance applications. The method is linear interpolation of plotted segments, not actual intrabar transaction reconstruction. A pairwise matrix and magnified drawing extend it across average families.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gdgxyl8b_recursive_reversal_chart_patterns_trendoscope.md`
+
+`strategy-card` · 126 lines · 5,237 B · description: **extracted**
+
+**Purpose.** Recursive Reversal Chart Patterns scans nested zigzag structures for common reversal formations. It aims to find both smaller and larger structures and optionally require supporting indicator divergence. The categories include double/triple tops and bottoms, cup variants and head-and-shoulders variants.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gewgoj30_neuralib_a_native_ai_and_deep_learning_runtime.md`
+
+`strategy-card` · 168 lines · 7,447 B · description: **extracted**
+
+**Purpose.** Provide a native neural-network research runtime for financial indicators and strategies. NeuraLib packages tensor operations, automatic differentiation, training, validation and scaling, leaving the caller to define a model, target and trading interpretation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gflv7t7r_swing_profile_bigbeluga.md`
+
+`strategy-card` · 119 lines · 4,824 B · description: **extracted**
+
+**Purpose.** Swing Profile profiles volume within directional swing legs instead of fixed sessions. It updates the active leg as structure develops, then freezes the profile when direction flips, preserving a sequence of completed-swing activity maps.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gpct4m6t_machine_learning_knn_based_strategy.md`
+
+`strategy-card` · 123 lines · 5,226 B · description: **extracted**
+
+**Purpose.** This kNN publication classifies the current market state by comparing two current indicator values with historical pairs. Its purpose is to explore whether indicator-state similarity contains information about the next market move. Historical observations and their direction labels provide the reference examples, and nearby examples determine the current class.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gqklw3yv_tasc_2026_05_the_autotune_filter.md`
+
+`strategy-card` · 120 lines · 4,903 B · description: **extracted**
+
+**Purpose.** AutoTune Filter estimates a dominant cycle from negative autocorrelation of high-pass-filtered data and uses that estimate to tune a bandpass filter. It aims to preserve cycle alignment while avoiding abrupt center-period changes. The author proposes turning-point context from the tuned filter’s rate of change, but cycle structure in recent data does not guarantee the next market oscillation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gsll5pc1_regression_toolkit.md`
+
+`strategy-card` · 107 lines · 4,556 B · description: **extracted**
+
+**Purpose.** Regression Toolkit exposes several regression and feature-assessment methods for ticker-data analysis in Pine. It offers regularized, robust, logistic and quantile approaches through reusable functions rather than a specific signal. The documentation mostly lists signatures, so method names establish intended model families but not complete numerical implementations or statistical guarantees.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gsrqnt8q_trend_line_methods_tlm.md`
+
+`strategy-card` · 135 lines · 5,878 B · description: **extracted**
+
+**Purpose.** Trend Line Methods draws two complementary channel estimates: one connects stored pivots, while the other fits boundaries through segment extremes over a fixed window. It supports discretionary structure analysis and explicitly provides neither trade signals nor risk management.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_guxndiot_interactive_atr_stop_loss_tanhef.md`
+
+`strategy-card` · 115 lines · 4,821 B · description: **extracted**
+
+**Purpose.** Draw a manually anchored ATR trailing exit and optional fixed profit target to monitor a trade from a chosen starting point.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gxqp712z_portfolio_laboratory_kioseff_trading.md`
+
+`strategy-card` · 135 lines · 5,608 B · description: **extracted**
+
+**Purpose.** Portfolio Laboratory experiments with weighted historical portfolio changes without simulating a cash account. It allows long and short constituent exposures and compares the resulting portfolio with a selected benchmark and the current chart asset. The intention is portfolio research rather than broker-accurate execution accounting.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gy4ilk5n_momentum_based_zigzag_incl_qqe_non_repainting.md`
+
+`strategy-card` · 112 lines · 4,563 B · description: **extracted**
+
+**Purpose.** Confirm zigzag swings from momentum reversals rather than waiting a fixed number of bars after a candidate pivot.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_gztrrvcd_distance_to_demand_vector.md`
+
+`strategy-card` · 100 lines · 3,803 B · description: **extracted**
+
+**Purpose.** Measure the separation between current market conditions and a demand reference derived from price range.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_h0yse9xz_rsi_direction_bias_jd.md`
+
+`strategy-card` · 101 lines · 4,470 B · description: **extracted**
+
+**Purpose.** This publication supplies a market-direction bias intended for use as a filter or as part of pullback entry selection. The description establishes the intended financial role but does not explain how that bias is calculated. Even though the publication name refers to RSI, no RSI formula, threshold or timeframe is disclosed in the complete source description, so none is inferred here.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_h0yzptis_delta_volume_candles_lucf.md`
+
+`strategy-card` · 142 lines · 6,175 B · description: **extracted**
+
+**Purpose.** Delta Volume Candles augments or replaces price candles with intrabar-derived volume-pressure information. It separates up/down intrabar volume, constructs several balance measures and uses them for candle additions, moving-average channels, divergence regions, colors and configurable alerts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_h4xuu8kn_dynamic_rsi_regression_bands_zeiierman.md`
+
+`strategy-card` · 109 lines · 4,842 B · description: **extracted**
+
+**Purpose.** Dynamic RSI Regression Bands re-anchors its regression window when RSI enters an overbought or oversold zone. It treats an extreme-momentum event as a reason to reconsider the current trend model, then grows the fitted sample until a maximum length. The purpose is event-driven channel context and rejection monitoring, not a proof that RSI extremes always introduce a new regime.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_haxmmjon_risk_distribution_histogram.md`
+
+`strategy-card` · 128 lines · 4,882 B · description: **extracted**
+
+**Purpose.** Place a current risk statistic inside its historical distribution so relative risk conditions and tails can be reviewed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hbmp20tn_volume_profile_with_a_few_polylines.md`
+
+`strategy-card` · 140 lines · 5,534 B · description: **extracted**
+
+**Purpose.** Volume Profile with a few polylines accumulates volume at selected candle prices using maps, then draws the distribution efficiently with connected segments. It aims to display a broad historical profile without requiring one drawing object per price row.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hcokncdk_percent_rank_histogram.md`
+
+`strategy-card` · 113 lines · 5,083 B · description: **extracted**
+
+**Purpose.** Percent Rank Histogram compares where each selected instrument currently sits within its own historical distribution. It uses percentile position rather than directly comparing raw price levels across assets, then colors columns and adds arrows for rising/falling rank.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hdskv6q5_ltf_volume_microburst_bubbles_zeiierman.md`
+
+`strategy-card` · 131 lines · 5,636 B · description: **extracted**
+
+**Purpose.** LTF Volume Microburst Bubbles identifies unusually large, directionally efficient lower-timeframe candles inside each chart candle. It aims to distinguish concentrated bursts of participation from ordinary total-bar volume. A signed aggregate score reflects whether bullish or bearish qualifying bursts dominate.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hefekydl_sma_directional_matrix_luxalgo.md`
+
+`strategy-card` · 114 lines · 4,652 B · description: **extracted**
+
+**Purpose.** SMA Directional Matrix shows whether simple moving averages across a chosen period range are rising or falling. It aims to reveal agreement between short-, medium- and long-horizon trend readings without overlaying many lines. Divergence between short and long averages can show a recent retracement against a broader direction.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hekxth56_backward_number_of_bars.md`
+
+`strategy-card` · 100 lines · 3,840 B · description: **extracted**
+
+**Purpose.** Limit a strategy test by number of historical bars so a TradingView comparison can match an externally downloaded dataset.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hfcy7ciq_cvd_cumulative_volume_delta_chart.md`
+
+`strategy-card` · 146 lines · 6,482 B · description: **extracted**
+
+**Purpose.** CVD Chart maps cumulative or raw intrabar volume delta onto the price pane in reset-defined zones. It preserves volume-pressure context alongside price while offering multiple reset schedules, including trend-change events.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hfizhwba_rs_donchian_hl_width_cycle_information.md`
+
+`strategy-card` · 102 lines · 4,625 B · description: **extracted**
+
+**Purpose.** Donchian HL Width Cycle Information is an experimental attempt to characterize cyclical new peaks using percentage widths of Donchian channels. The financial idea supported by the source is studying cycles through changing channel breadth rather than using a plain price oscillator.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hg385dby_ichimoku_kink_hy.md`
+
+`strategy-card` · 121 lines · 5,144 B · description: **extracted**
+
+**Purpose.** This Ichimoku extension aims to make a complex multi-component framework easier to interpret while exposing extensive filtering and display options. It combines configurable Ichimoku relationships with volume and volatility context, then summarizes selected conditions through a help panel, colored bars and support/resistance drawings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hixxuhev_resampling_filter_pack_dw.md`
+
+`strategy-card` · 145 lines · 5,843 B · description: **extracted**
+
+**Purpose.** Resampling Filter Pack calculates familiar smoothing filters only when selected sampling events occur. It separates the decision to observe new data from the filter update itself, allowing bar-count, elapsed-time or price-movement sampling. The intended use is trend/noise analysis at custom event rates; lower sampling is an explicit distortion tradeoff rather than uniformly superior filtering.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md`
+
+`strategy-card` · 367 lines · 23,140 B · description: **extracted**
+
+**Purpose.** DEAM recommends a changing US-equity versus cash allocation by combining market regime, risk capacity, valuation, sentiment and macro conditions. It is a tactical exposure model with a separate crisis override, not a documented executed portfolio or verified return record.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hjjizrog_manual_harmonic_patterns_with_interactive_inputs.md`
+
+`strategy-card` · 119 lines · 4,809 B · description: **extracted**
+
+**Purpose.** Validate harmonic relationships in a manually selected XABCD drawing instead of automatically scanning historical prices.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hjxrfmmg_session_candles_reversals_flowly_indicators.md`
+
+`strategy-card` · 202 lines · 7,719 B · description: **extracted**
+
+**Purpose.** Session Candles & Reversals rebuilds candles around trading sessions, detects wick/engulfing reversals relative to the previous corresponding session, and reports historical conditional outcomes. It aims to reveal session-specific directional changes obscured by ordinary daily bars. Its statistics measure next-corresponding-session behavior, not a complete executable strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hk4bwdkh_motion.md`
+
+`strategy-card` · 106 lines · 4,135 B · description: **extracted**
+
+**Purpose.** Motion provides animated string effects, with a price-ticker user interface as its explicit financial example. Its limited role is presentation infrastructure for a caller’s ticker text, not market analysis or signal generation. The source lists transition, marquee and hold interfaces plus keyframe state, but does not explain their full update semantics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hkjvjhbt_breakouts_pullbacks_trendoscope.md`
+
+`strategy-card` · 120 lines · 4,718 B · description: **extracted**
+
+**Purpose.** Describe historical pullbacks, recoveries and later runups following sufficiently separated all-time-high close breakouts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hl1sw0i4_uhl_ma_crossover_system.md`
+
+`strategy-card` · 128 lines · 5,258 B · description: **extracted**
+
+**Purpose.** Uhl MA Crossover System pairs a corrected moving average with a faster corrected trend step to reduce unwanted crosses in sideways markets. Both adapt smoothing according to squared tracking error relative to rolling variance. When price is already close to the fast line, the line can hold its previous value rather than chase small movements. Larger departures increase responsiveness.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hl4uheb9_max_gain.md`
+
+`strategy-card` · 118 lines · 4,719 B · description: **extracted**
+
+**Purpose.** Compare recent rally and selloff magnitudes to develop discretionary price-target hypotheses from historical excursion sizes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hlktlpwc_oscillator_scatterplot_analysis_trendoscope.md`
+
+`strategy-card` · 134 lines · 5,096 B · description: **extracted**
+
+**Purpose.** Oscillator Scatterplot Analysis measures price displacement and elapsed bars between dynamic oversold and overbought transitions. It aims to show whether oscillator excursions correspond to favorable or contrary price moves, rather than assume every extreme has the same meaning.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hnpilzeg_market_sessions_by_leviathan.md`
+
+`strategy-card` · 142 lines · 6,062 B · description: **extracted**
+
+**Purpose.** Market Sessions marks customizable trading windows and summarizes their price range or open-to-close movement. It aims to keep session context visible in boxes, zones, timelines or colored candles. Optional overlap merging truncates each session at the next session’s start, changing the effective measurement windows rather than merely hiding graphics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hqh4yifa_color_gradient_framework_pinecoders.md`
+
+`strategy-card` · 127 lines · 5,403 B · description: **extracted**
+
+**Purpose.** Color Gradient Framework encodes bullish/bearish series state and strength into dynamically generated colors for financial indicator displays. It supports bounded oscillators and unbounded advancing/declining series, with examples applying different gradients to a line, fill and chart background.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hspqnbax_function_logistic_equation.md`
+
+`strategy-card` · 94 lines · 3,580 B · description: **extracted**
+
+**Purpose.** Explore a relationship between the logistic equation and market behavior in an explicitly experimental chart study.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_htaf8nf9_market_sessions_viewer_panel_by_muqwishi.md`
+
+`strategy-card` · 127 lines · 5,607 B · description: **extracted**
+
+**Purpose.** Market Sessions & Viewer Panel aggregates price action within customizable sessions and shows their candles side by side. It helps compare session range and change while retaining colored session blocks on the working chart. A projected block end is an estimate of visual extent, not a forecast of future price or volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_htj7v7sx_arbitrage_matrix_luxalgo.md`
+
+`strategy-card` · 131 lines · 5,269 B · description: **extracted**
+
+**Purpose.** Compare venue-reported prices or volumes for the same asset through a pairwise spread dashboard.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hto2ol8g_drawdown_distribution_analysis_dda.md`
+
+`strategy-card` · 174 lines · 8,815 B · description: **extracted**
+
+**Purpose.** Place the current asset-price drawdown within its historical distribution and add return/risk summaries. DDA supports contextual risk monitoring and allocation research; it does not establish a portfolio’s realized drawdown unless the supplied price series represents that portfolio.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hv8ghojp_recursive_auto_pitchfork_trendoscope.md`
+
+`strategy-card` · 108 lines · 4,337 B · description: **extracted**
+
+**Purpose.** Automatically draw pitchforks across a hierarchy of zigzag scales while demonstrating reusable financial drawing objects.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hvk0dicj_abc_123_harmonic_ratio_custom_range_interactive.md`
+
+`strategy-card` · 114 lines · 4,648 B · description: **extracted**
+
+**Purpose.** Measure harmonic retracement and projection relationships across a manually chosen ABC sequence.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hvk5wzpi_smart_money_breakout_channels_algoalpha.md`
+
+`strategy-card` · 113 lines · 4,645 B · description: **extracted**
+
+**Purpose.** Identify compressed price ranges and monitor their subsequent breakouts with a visual participation overlay.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hvn0eeko_multi_anchored_linear_regression_channels_tanhef.md`
+
+`strategy-card` · 158 lines · 7,066 B · description: **extracted**
+
+**Purpose.** Multi-Anchored Linear Regression Channels chooses lookback windows from price, indicator, time, event or statistical anchors, then fits selectable regression/deviation models. It aims to make channels adaptable to different research questions rather than assume one fixed least-squares window. Users can combine channel-position and correlation conditions for marks/alerts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hxxk64fl_sip_evaluator_and_screener_trendoscope.md`
+
+`strategy-card` · 179 lines · 6,816 B · description: **extracted**
+
+**Purpose.** Simulate recurring investment outcomes with commissions, fractional-unit rules and delayed dividend reinvestment, including screener-friendly output metrics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_hyeodyzn_lowess_locally_weighted_scatterplot_smoothing_chartprime.md`
+
+`strategy-card` · 125 lines · 4,779 B · description: **extracted**
+
+**Purpose.** LOWESS ChartPrime combines local-regression smoothing with an adaptive Gaussian moving average and pivot-break tracking. It seeks to show a smooth trend while retaining discrete structure events through pivot lines and consecutive-break counts. The randomly colored scatter points are a visualization choice, not additional predictive inputs.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_i0mhumsk_focus_bars_kioseff_trading.md`
+
+`strategy-card` · 116 lines · 4,548 B · description: **extracted**
+
+**Purpose.** Reconstruct recent candles into price-row activity profiles to compare internal participation rather than only final OHLC shape.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_i2k4hidp_pine3d_a_native_3d_graphical_rendering_engine.md`
+
+`strategy-card` · 153 lines · 6,590 B · description: **extracted**
+
+**Purpose.** Pine3D is a general rendering engine with explicit financial-analysis applications, including option-volatility surfaces, market-depth grids, oscillator-pair trails, asset/sector dashboards and signed PnL or momentum bars. It therefore remains in scope as financial visualization infrastructure despite its many purely graphical examples.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_i4ifuwsu_daily_play_ace_spectrum.md`
+
+`strategy-card` · 114 lines · 4,881 B · description: **extracted**
+
+**Purpose.** Daily Play Ace Spectrum exposes parameters that were hard-coded in Ace Spectrum, aiming to make the indicator more usable on hourly and minute charts. The disclosed contribution is configurability rather than a new calculation. It preserves the original structural form while allowing a wider range of responses to the input series.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_i4xznaoy_std_filtered_n_pole_gaussian_filter_loxx.md`
+
+`strategy-card` · 119 lines · 4,976 B · description: **extracted**
+
+**Purpose.** STD-Filtered N-Pole Gaussian Filter generalizes an Ehlers-style recursive smoother to selectable higher orders and adds a standard-deviation noise gate. It aims to suppress small fluctuations while retaining a smoother trend reference, with filtering optionally applied to price, the Gaussian output or both.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_i5qjdpxt_redk_everex_effort_versus_results_explorer.md`
+
+`strategy-card` · 129 lines · 5,015 B · description: **extracted**
+
+**Purpose.** Compare relative volume effort with relative price-movement result and aggregate their directional balance into a flow-strength oscillator.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_i8qanszp_tasc_2025_01_linear_predictive_filters.md`
+
+`strategy-card` · 120 lines · 4,731 B · description: **extracted**
+
+**Purpose.** Estimate dominant market cycles using an adaptive linear predictive filter and expose forecasts, spectrum and cycle length as separate analytical views.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_icrp4b2u_stochastic_momentum_index_smi_of_money_flow_index_mfi.md`
+
+`strategy-card` · 106 lines · 4,409 B · description: **extracted**
+
+**Purpose.** Measure momentum in a price-and-volume pressure proxy by feeding Money Flow Index into a Stochastic Momentum Index calculation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ieahireo_rs_bar_pattern_statistics_tool.md`
+
+`strategy-card` · 100 lines · 4,188 B · description: **extracted**
+
+**Purpose.** This publication is intended to mine statistics about bar patterns. Its complete description provides only that purpose, so the profile cannot responsibly identify which patterns it counts, what outcomes it studies or how a trader should act on the results.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_if0jgsn1_p_square_estimation_of_the_nth_percentile_of_a_series.md`
+
+`strategy-card` · 114 lines · 4,843 B · description: **extracted**
+
+**Purpose.** P-Square estimates a streaming percentile over available history to avoid repeatedly sorting or retaining an expensive full series. Its financial example compares return observations, mean/dispersion and exact-versus-estimated percentile curves. The aim is computationally efficient long-history distribution research, not a directional signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ifjxxalc_the_investment_clock_orbital_graph.md`
+
+`strategy-card` · 129 lines · 5,381 B · description: **extracted**
+
+**Purpose.** Place economic growth and inflation in a quadrant-based investment-clock chart to frame broad asset-allocation hypotheses.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ifw3re7j_equivolume_overlay_volume_bars.md`
+
+`strategy-card` · 100 lines · 3,842 B · description: **extracted**
+
+**Purpose.** Add volume-bar visualization to the author's separate Equivolume bar display so volume can be viewed alongside that chart form.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ih8z9vsb_automatic_trendlines.md`
+
+`strategy-card` · 112 lines · 4,376 B · description: **extracted**
+
+**Purpose.** Maintain automatic support and resistance trendlines from detected swing lows and highs.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_iini8ml2_weighted_harrell_davis_quantile_estimator_with_absolutedeviation.md`
+
+`strategy-card` · 106 lines · 4,911 B · description: **extracted**
+
+**Purpose.** Weighted Harrell-Davis Quantile Estimator explores weighted distribution-location estimates and absolute-deviation fences as alternatives to mean-based price envelopes. The author’s goal is a more robust view of non-normal financial data, based on adapted statistical research.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_iipj0kjz_timeseriesbenchmarkmeasures.md`
+
+`strategy-card` · 198 lines · 8,994 B · description: **extracted**
+
+**Purpose.** Benchmark forecast errors, temporal dependence, stationarity and interval behavior for model or strategy research. The library evaluates caller-generated predictions and observations; it provides neither forecasts nor trading decisions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ijpiemfw_rolling_largest_impulse_murreys_lines.md`
+
+`strategy-card` · 101 lines · 4,334 B · description: **extracted**
+
+**Purpose.** This experimental study chooses a dominant impulse inside a rolling window and builds Murrey-style reference lines from that selected move. The distinguishing idea is algorithmic impulse selection rather than manual selection of a chart range. The description names the maximum-subarray method but leaves the financial encoding of its input and the subsequent line construction unexplained.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_in9ftv45_divergence_for_many_indicator_v3.md`
+
+`strategy-card` · 116 lines · 4,687 B · description: **extracted**
+
+**Purpose.** Divergence for Many Indicators compares the latest pivot with the developing current bar across several familiar technical measures. It aims to show potential momentum disagreement earlier than a prior higher-timeframe-completion approach. On finding a new divergence it draws a line and removes the previous one.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ioqkeiwd_ichimoku_theories_luxalgo.md`
+
+`strategy-card` · 164 lines · 6,867 B · description: **extracted**
+
+**Purpose.** Combine conventional Ichimoku equilibrium lines with cycle, wave and price-target analysis. The tool supplies market-structure expectations and timing references; the author frames them as understanding rather than guaranteed forecasts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ipddusgl_dynamic_linear_regression_channels.md`
+
+`strategy-card` · 116 lines · 4,775 B · description: **extracted**
+
+**Purpose.** Dynamic Linear Regression Channels lets the trend window expand until price breaks the existing channel, then starts a new regression segment at that break. Its aim is to adapt the number of fitted bars to market behavior instead of repeatedly using a fixed-length regression. The author lists trend-change detection, support/resistance and mean-reversion analysis as intended uses.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ipvs7b7x_multi_ticker_anchored_candles.md`
+
+`strategy-card` · 131 lines · 5,439 B · description: **extracted**
+
+**Purpose.** Overlay several assets in a common session-relative price coordinate system so different nominal price scales can be compared visually.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_iqq6b3pk_yield_curve_percent_inverted.md`
+
+`strategy-card` · 121 lines · 4,963 B · description: **extracted**
+
+**Purpose.** Yield Curve Percent Inverted summarizes how widespread Treasury yield-curve inversion is across maturity pairs. It avoids focusing on a single spread by counting the proportion of shorter-versus-longer comparisons whose long maturity yields less. The intended use is macroeconomic risk context: broad inversion can accompany concern about the near-term economy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_iznark90_time_sales_tape_by_muqwishi.md`
+
+`strategy-card` · 118 lines · 4,658 B · description: **extracted**
+
+**Purpose.** Display a tape-style view of observed price and volume events with a summary of directional dominance over the retained rows.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_j38vuavw_intrabar_profile_kioseff_trading.md`
+
+`strategy-card` · 117 lines · 4,969 B · description: **extracted**
+
+**Purpose.** Intrabar Profile draws a mini volume or delta profile over each visible candle. It aims to expose where lower-timeframe participation concentrated, allowing price-body appearance to be compared with internal activity.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_j7vcsem2_visiblechart.md`
+
+`strategy-card` · 128 lines · 4,715 B · description: **extracted**
+
+**Purpose.** VisibleChart calculates statistics over the chart viewport, including a volume-weighted price reference. Its financial purpose is explicit through visible OHLCV, average/median prices and VWAP, even though many functions also support generic drawing placement. It aims to let research overlays follow the currently inspected price history.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_j8fs5jmi_swing_high_low_anchored_spiral.md`
+
+`strategy-card` · 106 lines · 4,133 B · description: **extracted**
+
+**Purpose.** Fit a swing-anchored Archimedean spiral to price as an exploratory chart geometry drawing.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_j8kodtbn_adapting_a_built_in_pinecoders.md`
+
+`strategy-card` · 100 lines · 3,997 B · description: **extracted**
+
+**Purpose.** Adapt the built-in volume display so current volume and its average are easier to read and their immediate context is visible.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_j9a6nwwm_volume_open_interest_footprint_by_leviathan.md`
+
+`strategy-card` · 122 lines · 5,190 B · description: **extracted**
+
+**Purpose.** This footprint-style display summarizes volume or open-interest behavior across the chart’s visible range into a single profile at the screen edge. Panning or zooming changes the sample, so it is a viewport-conditioned research view rather than a fixed historical signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jcrhuirl_tensor_market_analysis_engine_tmae.md`
+
+`strategy-card` · 214 lines · 6,960 B · description: **extracted**
+
+**Purpose.** Tensor Market Analysis Engine proposes a composite of multidimensional volatility jumps, Hurst-style regime detection and transfer-entropy-like information flow. It aims to choose context-dependent signals and express them through a heavily decorated dashboard and chart layers. Long/short confirmation uses momentum, while voting modes change how many components must agree.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jdw7ww2g_technical_ratings.md`
+
+`strategy-card` · 167 lines · 5,686 B · description: **extracted**
+
+**Purpose.** Technical Ratings condenses a collection of moving-average and oscillator biases into a common signed rating and familiar buy/neutral/sell labels. It aims to provide a configurable technical consensus rather than an executable strategy. Users can alter group weights, choose chart or confirmed higher-timeframe calculations, and configure markers/alerts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jja8tyjc_redk_auto_stepping_ladder_trader.md`
+
+`strategy-card` · 113 lines · 4,757 B · description: **extracted**
+
+**Purpose.** Auto-Stepping Ladder Trader simplifies price action into a stepped reference on a selected higher timeframe, using a smoothed signal to determine directional color. It proposes trend holds or repeated pullback entries near the ladder, with optional ATR/percentage targets.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jjgkjumy_live_economic_calendar_by_toodegrees.md`
+
+`strategy-card` · 155 lines · 6,250 B · description: **extracted**
+
+**Purpose.** Display planned and past economic-news times on price charts to support event awareness and historical review.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jlrxim5v_rsi_bar_chart.md`
+
+`strategy-card` · 115 lines · 4,216 B · description: **extracted**
+
+**Purpose.** Compare several RSI readings at once with configurable compact lines or arrows and threshold-aware coloring.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jncgedj7_order_chain_kioseff_trading.md`
+
+`strategy-card` · 135 lines · 5,923 B · description: **extracted**
+
+**Purpose.** Order Chain turns live chart-feed volume changes into price-level boxes and cumulative signed-volume readings. It aims to expose the sequence and relative size of recent activity rather than summarize only finished candles.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jpbq3j0s_t_virus_sentiment_hapharmonic.md`
+
+`strategy-card` · 133 lines · 4,949 B · description: **extracted**
+
+**Purpose.** Blend several technical conditions into a stylized sentiment gauge while separately depicting estimated volume pressure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jpkfecgc_no_duplicates_interval_range_eq.md`
+
+`strategy-card` · 106 lines · 4,328 B · description: **extracted**
+
+**Purpose.** This level-display utility reduces chart clutter when range or equilibrium references from different intervals coincide. It prefers the higher-timeframe representation instead of drawing duplicate labels or levels at the same place. That is useful for viewing hierarchical market references without mistaking overlapping drawings for multiple independent levels.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jqoxsbq8_auto_backtest_optimize_engine.md`
+
+`strategy-card` · 124 lines · 5,729 B · description: **extracted**
+
+**Purpose.** Search stop-loss and take-profit parameter combinations and inspect simulated outcomes for built-in examples or connected signals. The engine offers batch exploration and recommendations, rather than establishing that the selected historical optimum will generalize.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt.md`
+
+`strategy-card` · 147 lines · 5,415 B · description: **extracted**
+
+**Purpose.** Relative Strength of Volume Indicators applies RSI-style momentum analysis to several volume-derived series and displays the result beside ordinary price RSI. It aims to reveal whether price momentum is supported or contradicted by volume-related behavior. The author combines multiple familiar tools rather than proposing a wholly new predictor.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jumbqtqk_time_series_lag_reduction_filter_by_cryptorhythms.md`
+
+`strategy-card` · 106 lines · 4,441 B · description: **extracted**
+
+**Purpose.** This filter attempts to reduce delay in a time-series indicator, demonstrated on an exponential moving average. Its role is to modify the responsiveness of an existing series rather than provide an independent market signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_juwuaxdx_deltaflow_volume_profile_bigbeluga.md`
+
+`strategy-card` · 114 lines · 4,638 B · description: **extracted**
+
+**Purpose.** DeltaFlow Volume Profile adds a candle-direction decomposition to a recent-range volume profile. It aims to show both where volume clustered and whether candles assigned to each area leaned bullish or bearish. Its delta labels are derived from this candle-direction split, which is useful context but does not identify the aggressor of each trade or prove which participant dominated.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jxgpf0jz_tasc_2024_07_gaps_and_extreme_closes.md`
+
+`strategy-card` · 120 lines · 4,830 B · description: **extracted**
+
+**Purpose.** Gaps and Extreme Closes summarizes historical stock behavior after selected large directional price events. It aims to help research expectations during volatile conditions such as earnings periods by quantifying how often moves occur and how they retrace or close. Users choose opening gaps versus extreme closes and direction, then inspect results by magnitude bucket.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jz2cehpf_be_indicator_aggregator_toolkit.md`
+
+`strategy-card` · 150 lines · 6,494 B · description: **extracted**
+
+**Purpose.** Evaluate user-authored combinations of external indicator plots and summarize historical trade outcomes. This toolkit is a small condition language and simulated trade evaluator, rather than an independent source of market signals.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_jzxkmci2_williams_fractal_trailing_stops.md`
+
+`strategy-card` · 115 lines · 4,946 B · description: **extracted**
+
+**Purpose.** Williams Fractal Trailing Stops uses confirmed high and low fractals as moving protective references. Unlike a fixed confirmation convention, the user can choose how many bars establish a fractal. The indicator then trails those structural points and can switch between long and short orientation when price crosses the trail.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_k2br8xol_intraday_spark_chart_astrideunicorn.md`
+
+`strategy-card` · 128 lines · 5,160 B · description: **extracted**
+
+**Purpose.** Show intraday performance relative to the session's opening price through a compact percentage-change sparkline.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_k6olgkao_relative_candle.md`
+
+`strategy-card` · 106 lines · 4,167 B · description: **extracted**
+
+**Purpose.** Distinguish a stock's own behavior from broad-market movement by drawing a candle relative to a selected index or comparison symbol.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_k6xcsuxo_christmas_toolkit_luxalgo.md`
+
+`strategy-card` · 170 lines · 5,077 B · description: **extracted**
+
+**Purpose.** Christmas Toolkit uses holiday artwork to present an explicit technical-consensus score. It remains financial in scope because ornaments encode RSI/Stochastic extremes and moving-average direction, while the star aggregates those points into bullish/bearish states.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kfuhomlx_redk_supply_demand_volume_viewer_v1.md`
+
+`strategy-card` · 127 lines · 4,928 B · description: **extracted**
+
+**Purpose.** Supply/Demand Volume Viewer estimates directional volume from candle shape without bid/ask data or intrabar drilling. It smooths inferred demand/supply components and their net difference to make participation balance easier to inspect.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kiy0znxs_volume_profile_fixed_range.md`
+
+`strategy-card` · 119 lines · 4,543 B · description: **extracted**
+
+**Purpose.** This fixed-range volume profile displays how trading volume is distributed through the prices covered by a selected number of bars. It uses box drawings to present that distribution and exposes profile granularity and value-area controls.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kjd8byiq_augmented_dickey_fuller_adf_mean_reversion_test.md`
+
+`strategy-card` · 120 lines · 4,923 B · description: **extracted**
+
+**Purpose.** This rolling ADF study tests whether a selected price sample rejects a unit-root model, providing context for considering mean-reversion strategies. It does not forecast the next trade’s direction or establish that the detected property will continue.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kjj8hddk_dynamic_dots_dashboard_a_cloud_zlema_composite.md`
+
+`strategy-card` · 130 lines · 5,021 B · description: **extracted**
+
+**Purpose.** Dynamic Dots Dashboard summarizes whether price sits above or below several cloud and moving-average references. It aims to declutter the chart while preserving a quick view of dynamic support/resistance density. Each reference above price is shown in the resistance region and each below in support; an optional histogram sums the relationship.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kjpmckbt_bitcoin_power_law_clock_luxalgo.md`
+
+`strategy-card` · 121 lines · 4,829 B · description: **extracted**
+
+**Purpose.** Bitcoin Power Law Clock transforms a Bitcoin price history and average references into spirals on a cycle-clock display. It aims to contextualize the asset within a proposed power-law/cycle theory. The description’s statement about the current cycle is a publication-era interpretation, not a current market assessment.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_klnjvoaf_reminder_message_with_color_picker_apopheniapays.md`
+
+`strategy-card` · 107 lines · 4,526 B · description: **extracted**
+
+**Purpose.** This reminder overlay supports trading discipline by placing a customizable message above the latest price. The author built it to discourage overtrading, so despite its simple text-display mechanism it has an explicitly financial behavioral purpose.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kn353wpw_responsive_linear_regression_channels.md`
+
+`strategy-card` · 136 lines · 5,693 B · description: **extracted**
+
+**Purpose.** Responsive Linear Regression Channels chooses an analysis window from a desired time span and chart resolution, avoiding manual conversion into bars. It can show regression trend with RMSE envelopes or ignore slope and display average/standard-deviation references.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ks2qgulb_initial_balance_auction_intelligence_by_dgt.md`
+
+`strategy-card` · 155 lines · 7,344 B · description: **extracted**
+
+**Purpose.** Initial Balance Auction Intelligence follows how price behaves after an opening range, separating tentative probes from completed-window acceptance or failure. It layers retest continuation/rejection, session character and cumulative directional pressure over the basic IB references. The goal is auction context, explicitly not standalone signals or actual order-flow measurement.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ksmls0hh_supertrend_parameter_sensitivity_3d_luxalgo.md`
+
+`strategy-card` · 129 lines · 4,972 B · description: **extracted**
+
+**Purpose.** Supertrend Parameter Sensitivity evaluates a grid of ATR lengths and multipliers to reveal parameter robustness. It aims to distinguish an isolated best historical result from a neighborhood of comparatively strong results, reducing reliance on a single optimized peak. Each grid cell maintains an independent always-in-market long/short Supertrend simulation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kvrhsptp_elliott_wave_luxalgo.md`
+
+`strategy-card` · 136 lines · 5,221 B · description: **extracted**
+
+**Purpose.** Elliott Wave detects impulse and corrective structures from zigzag pivots, tracks their development, and draws Fibonacci retracements from recognized impulses. It aims to automate a sequential wave count while retaining invalidation information. The source demonstrates that an initially confirmed pattern can later enlarge or become invalid, so confirmed does not mean permanently fixed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kyoaaz0p_tradingtoolslibrary.md`
+
+`strategy-card` · 126 lines · 4,725 B · description: **extracted**
+
+**Purpose.** Offer object-based strategy simulation plumbing for conditions,entry sizing,DCA,pyramiding and multiple forms of exits.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_kzjqxdgq_cot_net_non_commercials_vs_commercials_updated_mtf_non_repaint.md`
+
+`strategy-card` · 127 lines · 5,358 B · description: **extracted**
+
+**Purpose.** This COT overlay compares commercial and noncommercial net positioning in one display. It aims to show whether producer/hedger-style and speculator-style groups are net positive or negative and how dense or shallow those positions appear. The author’s non-repainting wording is a claim about the script, not a verified guarantee about point-in-time report availability or data revisions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_l0aiilvh_pivot_point_supertrend.md`
+
+`strategy-card` · 137 lines · 5,078 B · description: **extracted**
+
+**Purpose.** Pivot Point Supertrend replaces an ordinary price center with a smoothed average of pivots, then builds ATR bands around it. The intended benefit is holding trends longer by reducing sensitivity to minor price noise. Optional centerline and pivot-derived support/resistance add context, and the author suggests the centerline as an earlier partial-exit reference.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_l1zvvqbx_monte_carlo_polyline_traceback_kioseff_trading.md`
+
+`strategy-card` · 113 lines · 4,663 B · description: **extracted**
+
+**Purpose.** Monte Carlo Polyline Traceback draws many simulated asset-price paths from a common origin using polyline graphics. It gives a scenario-oriented view of possible future price ranges under a selected historical-return model. The main distinguishing feature is presentation and path tracing, with performance controls to reduce visual load rather than a supplied trading signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_l2lxyays_zig_zag_volume_profile_bull_vs_bear_kioseff_trading.md`
+
+`strategy-card` · 113 lines · 4,751 B · description: **extracted**
+
+**Purpose.** Compare estimated bullish and bearish volume-at-price distributions within individual zigzag-defined market legs.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_l6nreqzb_adaptive_trend_classification_moving_averages_investorunknown.md`
+
+`strategy-card` · 139 lines · 5,094 B · description: **extracted**
+
+**Purpose.** Blend moving-average trend signals using adaptive weights tied to decayed, recency-emphasized hypothetical performance.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lbobwukj_sync_frame_mtf_charts_kioseff_trading.md`
+
+`strategy-card` · 115 lines · 4,412 B · description: **extracted**
+
+**Purpose.** Show several lower-timeframe views of the current asset together so the reader can compare local price behavior without switching the main chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lbxl9oqz_financials_on_chart.md`
+
+`strategy-card` · 130 lines · 5,738 B · description: **extracted**
+
+**Purpose.** Financials on Chart brings selected company fundamentals into a configurable chart panel. Its purpose is convenient financial inspection without leaving the price view. Users choose fields and reporting periods, including raw statement items, ratios, growth measures and several values calculated from fundamentals. Display customization changes presentation rather than investment logic.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lcgcwwwi_bar_balance_lucf.md`
+
+`strategy-card` · 193 lines · 6,690 B · description: **extracted**
+
+**Purpose.** Count bullish,bearish and unchanged lower-timeframe candles inside historical parent bars and summarize their relative balance as participation-strength context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ldxohpmz_volume_cluster_profile_vcp_zeiierman.md`
+
+`strategy-card` · 173 lines · 7,073 B · description: **extracted**
+
+**Purpose.** Build a cluster-smoothed volume-by-price map for the current lookback and prior pivot-to-pivot segments. The result emphasizes major concentrations and thin areas, providing discretionary reference zones rather than a literal record of all transactions at each price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lg5vvckk_marketholidays.md`
+
+`strategy-card` · 112 lines · 4,435 B · description: **extracted**
+
+**Purpose.** MarketHolidays supplies market-closure timestamps so other indicators and strategies can account for non-trading days. It is execution/calendar infrastructure, not a directional signal. Its datasets are split across libraries for compilation and performance reasons, then combined for the requested country.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_linquv2i_zigzag_volume_bars.md`
+
+`strategy-card` · 109 lines · 4,107 B · description: **extracted**
+
+**Purpose.** Attach volume information to zigzag swing structure so participation can be compared across market legs.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ljxwpxtt_zigzaglite.md`
+
+`strategy-card` · 141 lines · 5,199 B · description: **extracted**
+
+**Purpose.** ZigzagLite supplies a lighter pivot and zigzag object interface for financial chart scripts. It separates calculating pivot state from extracting coordinates and drawing lines, so a caller can reuse the detected structure in its own analysis instead of treating the picture as an entry signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_llaoploy_liquidation_ranges_volume_oi_dots_kioseff_trading.md`
+
+`strategy-card` · 142 lines · 5,821 B · description: **extracted**
+
+**Purpose.** This crypto analysis overlay maps possible liquidation regions around detected price ranges and highlights unusual volume or open-interest activity. Its purpose is to connect price consolidation with estimated leveraged exposure and activity concentrations. These are modelled liquidation areas and inferred activity, not observed account liquidations or verified iceberg orders.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_llg6gdb4_open_interest_footprint_iq_tradingiq.md`
+
+`strategy-card` · 151 lines · 7,124 B · description: **extracted**
+
+**Purpose.** Visualize cryptocurrency open-interest changes by intrabar price level. The footprint labels opening/closing behavior inferred from price direction and OI change, making it a positioning proxy rather than direct observation of which participant initiated a trade.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_llhsdjyh_angle_market_structure_bigbeluga.md`
+
+`strategy-card` · 115 lines · 4,733 B · description: **extracted**
+
+**Purpose.** Angle Market Structure gradually moves pivot-derived resistance downward and support upward, making potential breaks occur sooner than static pivot levels. It then marks extension zones and sequential break counts. Its purpose is a more reactive structure view; the acceleration is an intentional moving threshold rather than evidence that a static historical structure was actually broken.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_llteexke_matrix_library_linear_algebra_incl_multiple_linear_regression.md`
+
+`strategy-card` · 114 lines · 4,908 B · description: **extracted**
+
+**Purpose.** This matrix library provides array-based linear algebra for Pine scripts, with an explicit financial example regressing chart data on explanatory variables. Its main use is solving systems and constructing multiple-regression analysis rather than producing an intrinsic trade signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lmirygpg_vortex_mtf.md`
+
+`strategy-card` · 138 lines · 5,399 B · description: **extracted**
+
+**Purpose.** Vortex MTF presents the positive and negative Vortex components from a selected timeframe without requiring the user to change the chart timeframe. The components compare directional movement across adjacent bars with accumulated true range. Their relative strength is intended to help identify directional changes and confirm an existing trend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lper4qca_volume_analysis_heatmap_and_volume_profile.md`
+
+`strategy-card` · 137 lines · 5,566 B · description: **extracted**
+
+**Purpose.** Volume Analysis combines a lower-timeframe volume heatmap with a volume profile and column statistics. The user chooses the grid dimensions and history depth, and the script examines lower-timeframe price movement and volume inside chart candles. The resulting display is intended to expose where activity concentrates and how buying and selling estimates differ across time columns.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lpnsjmbh_clusters_volume_profile_luxalgo.md`
+
+`strategy-card` · 115 lines · 4,949 B · description: **extracted**
+
+**Purpose.** Clusters Volume Profile groups historical price bars by price proximity and gives each group its own volume distribution. This separates activity occurring at similar prices even when it was not adjacent in time. The author intends cluster points of control and boundaries to help identify price regimes, retests and possible support or resistance.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lr5qd0kk_screener_mean_reversion_channel.md`
+
+`strategy-card` · 112 lines · 4,526 B · description: **extracted**
+
+**Purpose.** Screen a user-defined watchlist for instruments currently inside the overbought or oversold zones of a separate Mean Reversion Channel model.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lrdshlst_sniffer.md`
+
+`strategy-card` · 125 lines · 5,241 B · description: **extracted**
+
+**Purpose.** Sniffer searches historical chart windows for formations resembling a user-selected candle sequence. It avoids a fixed named-pattern catalog by comparing feature vectors, so the same workflow can examine a single candle or a multi-candle structure. The resulting boxes provide historical analogues for further inspection; similarity is not a forecast or measured probability of a particular outcome.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ls42zpse_72s_adaptive_hull_moving_average.md`
+
+`strategy-card` · 131 lines · 6,054 B · description: **extracted**
+
+**Purpose.** Adaptive Hull Moving Average+ varies its smoothing period with either volume or volatility and colors the resulting curve according to trend direction and slope. Its purpose is to distinguish relatively inactive conditions from stronger movement while preserving a moving-average support/resistance reference.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lu0mtsud_earnings_snapshot_trendoscope.md`
+
+`strategy-card` · 143 lines · 6,399 B · description: **extracted**
+
+**Purpose.** Earnings Snapshot organizes historical stock EPS releases, future estimates and associated price growth into a chart table and release-date labels. It replaces manual comparisons of quarterly reports with a compact view of growth and price reaction. Revenue is expressly excluded because the author had not resolved its data presentation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lut7sbgg_range_filter_dw.md`
+
+`strategy-card` · 114 lines · 4,471 B · description: **extracted**
+
+**Purpose.** Range Filter is an experimental price-noise filter intended to make the prevailing trend easier to see. It borrows the idea of a volatility gate from QQE but applies the gate to price instead of smoothed RSI. The description establishes a useful conceptual separation between the measured range, the filtered price and the boundaries that would cause the filter to move.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lvqopkkp_volume_surprise_luxalgo.md`
+
+`strategy-card` · 121 lines · 5,185 B · description: **extracted**
+
+**Purpose.** Volume Surprise compares observed volume with the activity historically typical for the same calendar grouping. It distinguishes unusual participation from an ordinary recurring busy or quiet period, then extrapolates the expected pattern into future bars.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lwoxh0vh_range_volume_change.md`
+
+`strategy-card` · 121 lines · 5,582 B · description: **extracted**
+
+**Purpose.** Range Volume Change compares cumulative volume in a user-selected daily time interval with the prior day’s corresponding interval. It was motivated by premarket-volume monitoring but supports any selected range and continuous markets.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lx3zlt9l_volume_profile_3d_zeiierman.md`
+
+`strategy-card` · 115 lines · 4,836 B · description: **extracted**
+
+**Purpose.** Volume Profile 3D adds perspective and shading to a price-binned volume distribution. It maps each bar’s volume by average price, optionally splitting up-bar and down-bar contributions, then tilts and scales blocks to make concentration visually prominent. The dimensional effect is a rendering choice; it does not add a third measured market variable or reveal actual resting liquidity.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lxhedc8e_machine_learning_using_neural_networks_educational.md`
+
+`strategy-card` · 119 lines · 4,864 B · description: **extracted**
+
+**Purpose.** Teach a small neural-network training workflow on historical price data, including visual inspection of fit and loss.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_lxxlkr1w_recession_warning_traffic_light.md`
+
+`strategy-card` · 121 lines · 5,793 B · description: **extracted**
+
+**Purpose.** Recession Warning Traffic Light summarizes several macro warning proxies and compares their states with historical recession markers. It combines metal ratios, equity-growth context, yield-curve inversion, output contraction, money supply and leading indicators.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ma35whu5_r_r_trading_system_framework.md`
+
+`strategy-card` · 114 lines · 5,060 B · description: **extracted**
+
+**Purpose.** R:R Trading System Framework provides educational scaffolding for running and visualizing several trade-management ideas concurrently. It tracks entries, stops, targets, excursions and time-to-level expectations so users can study risk/reward during trades.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mb0famot_advanced_fed_decision_forecast_model_afdfm.md`
+
+`strategy-card` · 165 lines · 5,829 B · description: **extracted**
+
+**Purpose.** Combine macroeconomic categories and policy-rule context into a proposed Federal Reserve cut/hold/hike assessment.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mbxxbs1f_redk_directional_index_k_xdmi.md`
+
+`strategy-card` · 125 lines · 4,757 B · description: **extracted**
+
+**Purpose.** RedK xDMI modifies directional-movement analysis to display trend strength with a signed orientation and less cascaded smoothing. It uses weighted averages and optional volume weighting, aiming to make bullish/bearish control easier to read. The source incorrectly describes conventional ADX as restricted below zero; that historical comparison is not adopted as a technical fact.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mc8mxglm_fearzone_panel.md`
+
+`strategy-card` · 101 lines · 4,121 B · description: **extracted**
+
+**Purpose.** Look for very short rebound opportunities after a stock has fallen into conditions the author associates with fear-driven selling.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mcogjc67_strategy.md`
+
+`strategy-card` · 155 lines · 7,204 B · description: **extracted**
+
+**Purpose.** Provide strategy programmers with unit conversions, direction-aware exit levels, risk-based size helpers and a percentage-exit wrapper. These functions support a caller’s existing strategy and do not define an entry edge.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mdfcdbek_htfcandleslib.md`
+
+`strategy-card` · 121 lines · 4,966 B · description: **extracted**
+
+**Purpose.** HTFCandlesLib represents a higher-timeframe candle together with the lower-timeframe candles that established its open, high, low and close. It supports financial structural inspection and drawing, not a directional signal. A caller can retain timestamps, bar indices and a link to the prior candle, exposing more provenance than a bare OHLC tuple.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mdgjq4j5_simplified_percentile_clustering.md`
+
+`strategy-card` · 147 lines · 6,238 B · description: **extracted**
+
+**Purpose.** Simplified Percentile Clustering creates deterministic regime centers from percentiles and a mean instead of iterative k-means. It can classify one indicator or fuse several normalized indicators by their distances to corresponding centers, then interpolate toward the next closest regime. This is a clustering heuristic for interpreting market state, explicitly not a buy/sell model or forecast.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mdtqpnt0_excalibur_ehlers_autocorrelation_periodogram_modified.md`
+
+`strategy-card` · 121 lines · 4,865 B · description: **extracted**
+
+**Purpose.** Estimate dominant price-cycle periods and expose them as dynamic inputs for other financial indicators.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mekxyft0_bias_and_sentiment_strength_bass_indicator_by_mattzab.md`
+
+`strategy-card` · 119 lines · 5,049 B · description: **extracted**
+
+**Purpose.** BASS overlays several familiar momentum histograms and a volume-weighted price bias to give a quick visual view of directional agreement. It is not a weighted composite score: positive blue and negative red components can coexist, which the author calls a battle between bulls and bears.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mfupuzwd_arbitrage_detector_luxalgo.md`
+
+`strategy-card` · 121 lines · 4,744 B · description: **extracted**
+
+**Purpose.** Monitor cross-venue prices/volumes and classify the largest observed spread relative to its own historical distribution.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mgslckwl_angled_volume_profile_trendoscope.md`
+
+`strategy-card` · 122 lines · 5,151 B · description: **extracted**
+
+**Purpose.** Angled Volume Profile extends volume-profile analysis from horizontal price levels to lines with a user-selected slope. It aims to help trendline-oriented traders inspect demand/supply concentration along a trending frame of reference. Interactive start time/price and an ending price determine the angle, while the current last bar bounds the profile history.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mheetfmn_a_useful_ma_weighting_function_for_controlling_lag_smoothness.md`
+
+`strategy-card` · 118 lines · 4,668 B · description: **extracted**
+
+**Purpose.** Offer explicit control over moving-average lag and smoothness through a beta-distribution-shaped weighting function.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mi5dl7bi_sharpe_and_sortino_ratios.md`
+
+`strategy-card` · 143 lines · 5,554 B · description: **extracted**
+
+**Purpose.** Evaluate risk-adjusted price-return performance relative to a fixed annual benchmark or an aligned comparison asset.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_miig3gou_grid_bot_simulator.md`
+
+`strategy-card` · 113 lines · 4,629 B · description: **extracted**
+
+**Purpose.** Grid Bot Simulator divides a user-defined price range into trading zones and emits events as price enters a new zone. It models repeated range harvesting, while acknowledging that a trending market stacks transactions until consolidation. Its experimental status and signal-focused description should not be read as a complete accounting model or proof of a profitable grid.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mk7uyofu_adjustable_ma_alternating_extremities_luxalgo.md`
+
+`strategy-card` · 127 lines · 4,854 B · description: **extracted**
+
+**Purpose.** Control moving-average lag and overshoot through a custom weighting kernel, then display alternating extremes or synthetic candles derived from that average.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mketjg7e_periodic_linear_regressions_luxalgo.md`
+
+`strategy-card` · 120 lines · 4,995 B · description: **extracted**
+
+**Purpose.** Periodic Linear Regressions fits price from a period anchor to the current observation and optionally resets at each selected interval. It offers a refitted straight-line view or a causal sequence of fitted endpoints, plus residual-error envelopes. The distinction matters: the static line redraws the past fit as the sample grows, while rolling mode retains the endpoint observed on each bar.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mll8cpjq_range_oscillator_zeiierman.md`
+
+`strategy-card` · 121 lines · 4,783 B · description: **extracted**
+
+**Purpose.** Range Oscillator expresses the distance of the closing price from an adaptive equilibrium as a percentage of a volatility-adjusted range. Its heatmap is intended to distinguish directional pressure, transition areas and excursions beyond an ordinary range. The author offers both breakout and mean-reversion interpretations, so an extreme does not carry a single unambiguous trading instruction.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mmfinh17_zigzag.md`
+
+`strategy-card` · 120 lines · 4,333 B · description: **extracted**
+
+**Purpose.** Represent calculated zigzag structure, attached indicators and multilevel drawing state in reusable objects.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mombnm8e_tick_cvd_kioseff_trading.md`
+
+`strategy-card` · 119 lines · 4,809 B · description: **extracted**
+
+**Purpose.** Accumulate a live tick-rule estimate of cumulative volume delta alongside a tick-oriented price display.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mtpdmwlj_signal_adapter.md`
+
+`strategy-card` · 107 lines · 4,349 B · description: **extracted**
+
+**Purpose.** Signal Adapter translates user-defined conditions on external indicator series into a signal that another strategy template can consume. It supports rapid prototyping when the user has component indicators but no custom signal code.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mxdttwh8_footprint_iq_pro_tradingiq.md`
+
+`strategy-card` · 128 lines · 4,905 B · description: **extracted**
+
+**Purpose.** Build candle-level footprint displays with volume/delta metrics, imbalance flags and selected historical price-level references.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mxn4pesd_htf_volume_spike_imbalance_projection_luxalgo.md`
+
+`strategy-card` · 128 lines · 6,489 B · description: **extracted**
+
+**Purpose.** This projection tool examines lower-timeframe volume inside higher-timeframe candles and places the findings beside the working chart. A faded previous candle preserves completed context while the current block evolves live.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mykmv8br_linear_regression_oscillator_chartprime.md`
+
+`strategy-card` · 118 lines · 4,598 B · description: **extracted**
+
+**Purpose.** Turn a close-price regression calculation into an oscillator for observing trend shifts and possible mean-reversion extremes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_mzhkugci_geo.md`
+
+`strategy-card` · 165 lines · 7,246 B · description: **extracted**
+
+**Purpose.** Geo supplies reusable geometry for chart-based price analysis and drawings. Its worked example constructs points from bar indices and closing/opening prices, builds a sloping line and suggests detecting a crossing for an alert, giving the otherwise general mathematics an explicit financial application.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_n0f50jkv_relative_volume_at_time.md`
+
+`strategy-card` · 142 lines · 5,619 B · description: **extracted**
+
+**Purpose.** Relative Volume at Time compares current participation with historical participation at the same offset inside a chosen time unit. It addresses recurring intraday or weekly volume cycles that an ordinary rolling average can obscure. Users can compare either cumulative activity since the anchor or a single matched-offset bar.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_n3g6jvob_wedge_and_flag_finder_multi_zigzag.md`
+
+`strategy-card` · 115 lines · 4,551 B · description: **extracted**
+
+**Purpose.** Wedge and Flag Finder attempts to locate chart wedges and flags automatically using a multi-zigzag approach. The author changes the number of pivots considered relative to the described standard wedge detector in order to reduce common incidental formations. A flag is presented as a wedge accompanied by a tail.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_n8agnizd_divergence_for_many_indicators_v4.md`
+
+`strategy-card` · 119 lines · 4,793 B · description: **extracted**
+
+**Purpose.** Locate regular and hidden divergences between price and a collection of technical indicators or an externally supplied indicator.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_n8flt7gc_penrose_diagram.md`
+
+`strategy-card` · 106 lines · 4,322 B · description: **extracted**
+
+**Purpose.** Translate session-relative historical price excursions into repeated triangle geometry inspired by Penrose diagrams.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nbptoyxr_asset_drift_model.md`
+
+`strategy-card` · 160 lines · 5,803 B · description: **extracted**
+
+**Purpose.** Asset Drift Model tests whether historical returns support a persistent directional bias rather than reacting to the latest price swing. It combines mean-return inference with economic-size, power, sign consistency, subsample stability and mean-reversion checks.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nbswkxvu_electrocardiogram_chart.md`
+
+`strategy-card` · 125 lines · 5,132 B · description: **extracted**
+
+**Purpose.** Replace conventional candles with an electrocardiogram-style visualization that distinguishes candle direction, close-to-close movement and the order of intrabar extremes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ngljvbwa_redk_compound_ratio_moving_average_cora_wave.md`
+
+`strategy-card` · 138 lines · 5,986 B · description: **extracted**
+
+**Purpose.** CoRa Wave gives more recent observations geometrically increasing weights to create a responsive moving average. Its aim is to reduce the influence of the oldest observations while retaining a finite-window average that can be used for trend and swing tracking. An accelerator changes how aggressively weights favor recent prices, and optional smoothing moderates the response.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ni17vkdu_reflex_oscillator_dr_john_ehlers.md`
+
+`strategy-card` · 112 lines · 4,490 B · description: **extracted**
+
+**Purpose.** This Reflex Oscillator adaptation presents Ehlers’ cycle-sensitive oscillator with experimental smoothing controls. It aims to respond to reversals while retaining cyclical information, and exposes a reusable function for other scripts. The description’s near-zero-lag and bounded-range language is an author characterization rather than a verified implementation guarantee across every timeframe.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_niohixy1_logistic_rsi_stoch_roc_ao_by_dgt.md`
+
+`strategy-card` · 118 lines · 4,684 B · description: **extracted**
+
+**Purpose.** Explore repeated logistic-map transformations of familiar technical indicators and summarize the dispersion of the resulting iterations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_niy5oyf7_volume_by_session.md`
+
+`strategy-card` · 106 lines · 4,198 B · description: **extracted**
+
+**Purpose.** Judge session volume against comparable sessions instead of mixing sessions with structurally different activity levels.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nj6cmjkp_donchian_zig_zag_luxalgo.md`
+
+`strategy-card` · 128 lines · 4,892 B · description: **extracted**
+
+**Purpose.** Donchian Zig-Zag creates a line that repeatedly moves toward channel extremes, producing an experimental zigzag-like view. It aims to describe directional swings and extend relationships among successive peaks/troughs as potential support/resistance.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nlm312nk_cvd_cumulative_volume_delta_candles.md`
+
+`strategy-card` · 142 lines · 5,942 B · description: **extracted**
+
+**Purpose.** Cumulative Volume Delta Candles approximates directional volume from intrabars and displays its accumulated path as candles. It aims to expose within-bar pressure and longer reset-period progression more precisely than assigning each whole chart candle a single sign. Users can compare CVD direction, wicks and price disagreement, while choosing a precision/history tradeoff.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nlygzrmb_short_volume_stamper.md`
+
+`strategy-card` · 138 lines · 5,962 B · description: **extracted**
+
+**Purpose.** Annotate unusual short-sale-volume episodes and summarize short-volume participation around historical highs.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nlzhcxgf_hh_ll_zz.md`
+
+`strategy-card` · 115 lines · 4,564 B · description: **extracted**
+
+**Purpose.** Build zigzag structure by requiring repeated breaches of a trigger bar's high or low before recognizing a new directional trigger.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nueh5q6t_linear_regression_all_data.md`
+
+`strategy-card` · 100 lines · 4,050 B · description: **extracted**
+
+**Purpose.** Show a single broad price trend by fitting a regression line across the instrument history available on the chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nw5ogfdo_ict_killzones_pivots_tfo.md`
+
+`strategy-card` · 136 lines · 5,723 B · description: **extracted**
+
+**Purpose.** ICT Killzones + Pivots preserves the price extremes established during configurable session windows. It is designed to keep potentially relevant session highs and lows visible after the session has ended, rather than requiring the user to redraw them. Optional opening-price references and timestamps add temporal context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nwjy3xpv_first_passage_time_distribution_analysis.md`
+
+`strategy-card` · 134 lines · 5,392 B · description: **extracted**
+
+**Purpose.** First Passage Time Distribution Analysis simulates when price might first reach user-defined upper or lower percentage targets. It separates time-to-target summaries from which boundary is reached first, making it a scenario tool for holding-period and risk planning.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ny63myd9_time_volume_point_of_control_flowly_indicators.md`
+
+`strategy-card` · 131 lines · 5,389 B · description: **extracted**
+
+**Purpose.** Show where each candle's strongest time occupancy and volume concentration occurred using lower-timeframe approximations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_nzvqcush_detrended_rhythm_oscillator_dro.md`
+
+`strategy-card` · 113 lines · 4,629 B · description: **extracted**
+
+**Purpose.** Detrended Rhythm Oscillator makes cycle inspection easier by marking turns in detrended price and labeling distances between comparable turns. It is designed to identify recurring or harmonic intervals that could tune other indicators, not to predict an exact next turning point. The extra detrended-zigzag display removes amplitude differences so timing patterns are easier to see.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_o0mu1wau_cme_equity_futures_price_limits.md`
+
+`strategy-card` · 114 lines · 4,916 B · description: **extracted**
+
+**Purpose.** This overlay draws CME-equity-futures-style price-limit references as a practical warning aid. It deliberately uses a simplified prior-session reference instead of reproducing the exchange’s stated reference calculation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_o2toj6ez_bitcoin_monthly_seasonality_alpha_extract.md`
+
+`strategy-card` · 121 lines · 4,978 B · description: **extracted**
+
+**Purpose.** Summarize Bitcoin performance by calendar month to compare historical seasonal tendencies and their consistency.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md`
+
+`strategy-card` · 120 lines · 4,577 B · description: **extracted**
+
+**Purpose.** Visualize relative momentum between two fast averages while positioning that relationship against a slower trend baseline.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_o8trzczt_intrabar_efficiency_ratio.md`
+
+`strategy-card` · 129 lines · 5,545 B · description: **extracted**
+
+**Purpose.** Gauge the directional efficiency of each chart bar relative to movement observed in its lower-timeframe components. Unlike unsigned Kaufman efficiency, this variant retains direction and smooths the result into a momentum-style display.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_odyzzlzu_median_convergence_divergence.md`
+
+`strategy-card` · 119 lines · 4,838 B · description: **extracted**
+
+**Purpose.** Replace the central-tendency component of MACD with rolling medians to reduce the influence of extreme observations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_oihw2xg2_delta_rsi_oscillator_strategy.md`
+
+`strategy-card` · 119 lines · 4,704 B · description: **extracted**
+
+**Purpose.** Delta-RSI Oscillator Strategy offers several configurable ways to trade a smoothed RSI derivative. It uses the rate of change of a fitted RSI curve as momentum, then allows separate buy, sell and exit event choices. Although saved as a study, its description explicitly states a stand-alone strategy intent; the derivative and fit-error filter are still underspecified here.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_okuj0d2n_earnings_price_move_cheat_sheet_kt.md`
+
+`strategy-card` · 133 lines · 6,070 B · description: **extracted**
+
+**Purpose.** Earnings Price Move Cheat Sheet summarizes historical price behavior around earnings, separating surprises, misses and all releases. It aims to help users inspect repeatability and event risk, with average returns, post-release range and historical-tail metrics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_onab2fve_fair_value_gaps_by_dgt.md`
+
+`strategy-card` · 117 lines · 4,707 B · description: **extracted**
+
+**Purpose.** Track price-gap regions across chart, higher and lower timeframes and show how subsequent price movement interacts with each region.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_oneeyhxe_projection.md`
+
+`strategy-card` · 133 lines · 4,847 B · description: **extracted**
+
+**Purpose.** Projection draws potential future price paths using line objects and a choice of predefined shapes. Its financial purpose is scenario visualization: a trader can display an anticipated parabola, triangle or zigzag rather than manually assembling all segments. The author links related scripts but does not disclose the price-projection model here.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_oogzrqim_riskmetrics.md`
+
+`strategy-card` · 147 lines · 5,452 B · description: **extracted**
+
+**Purpose.** RiskMetrics exposes periodic-return collection and risk-adjusted ratios to financial scripts without requiring a strategy declaration. Its metrics analyze the supplied return series rather than executed trades or a realized account. The library also supports excess-return comparisons against a risky benchmark.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_oooobeta_htf_candles_pivots.md`
+
+`strategy-card` · 113 lines · 4,593 B · description: **extracted**
+
+**Purpose.** HTF Candles & Pivots overlays higher-timeframe candle ranges and pivot references on the working chart. It helps retain broader interval context while controlling how much historical information remains visible. A separate shift option can position the previous candle at the current interval, making it a comparison aid rather than a statement that those prior values are current prices.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_oqttrc35_tasc_2025_02_autocorrelation_indicator.md`
+
+`strategy-card` · 120 lines · 4,567 B · description: **extracted**
+
+**Purpose.** Map lag-by-lag correlation in a smoothed price series to inspect evolving cycle and trend structure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ostukg4q_all_candlestick_patterns_on_backtest_by_muqwishi.md`
+
+`strategy-card` · 122 lines · 5,185 B · description: **extracted**
+
+**Purpose.** All Candlestick Patterns on Backtest compares historical return percentages for multiple candle-pattern methods in a table. It is intended as a starting point for research, with configurable execution assumptions and risk/reward geometry.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ou82izcq_reversal_finder.md`
+
+`strategy-card` · 114 lines · 4,769 B · description: **extracted**
+
+**Purpose.** Reversal Finder highlights candles that reject a recent price extreme while showing a large range and close/open placement consistent with a rejection. It targets possible reversals after false breaks of support or resistance.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ouvjr45r_chartpatterns.md`
+
+`strategy-card` · 112 lines · 4,328 B · description: **extracted**
+
+**Purpose.** Scan zigzag pivots for chart patterns and encapsulate their geometry, drawings and presentation properties in reusable objects.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_oyazawb9_d_shape_breakout_signals_luxalgo.md`
+
+`strategy-card` · 120 lines · 4,977 B · description: **extracted**
+
+**Purpose.** Create curved support/resistance shapes from swing pairs, mark their first breakout and derive a conditional trailing reference from broken shapes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_p0h2afk4_probability_of_atr_index_racer8.md`
+
+`strategy-card` · 121 lines · 5,099 B · description: **extracted**
+
+**Purpose.** Probability of ATR Index estimates the chance of price reaching a selected ATR distance within a chosen future horizon. The author proposes stop-distance assessment and options-range selection as applications. It combines ATR and price standard deviation in a normal-distribution approximation evaluated through a Taylor-series integral substitute.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_p5ggwhl5_trailing_management_zeiierman.md`
+
+`strategy-card` · 122 lines · 4,855 B · description: **extracted**
+
+**Purpose.** Visualize hypothetical trailing exits and the reward/risk relationship needed for a strategy to break even at the current price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_p9avc7vy_tpo_market_profile_kioseff_trading.md`
+
+`strategy-card` · 120 lines · 4,857 B · description: **extracted**
+
+**Purpose.** Display a developing time-price-opportunity profile over a configurable session or calendar interval.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pco280uj_lsma_a_fast_and_simple_alternative_calculation.md`
+
+`strategy-card` · 107 lines · 4,733 B · description: **extracted**
+
+**Purpose.** This publication derives a simpler calculation for the least-squares moving average by expressing its linear-filter weights as a combination of WMA and SMA. The purpose is computational simplification of a familiar trend smoother, rather than a new forecast signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pej263bg_volumeheatmap_experimental_version_of_marketorders_matrix.md`
+
+`strategy-card` · 115 lines · 5,097 B · description: **extracted**
+
+**Purpose.** This experimental VolumeHeatmap publication aims to visualize where traded volume develops and to expose the price level carrying the greatest volume. The author frames that point of control as a reference for value trading and shows example chart links. The prose is a brief release note rather than an algorithm specification.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pk0aidt2_resampling_reverse_engineering_bands_dw.md`
+
+`strategy-card` · 125 lines · 4,854 B · description: **extracted**
+
+**Purpose.** Resampling Reverse Engineering Bands solves for prices that would place selected oscillators at chosen upper/lower thresholds or their center. It recasts oscillator extremes as price levels and optionally calculates them on event-sampled data. The bands are algebraic threshold projections, not statistical confidence intervals despite the source’s analogy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pkflcpyi_mandelbrot_fibonacci_cascade_vortex_mfcv.md`
+
+`strategy-card` · 216 lines · 8,065 B · description: **extracted**
+
+**Purpose.** MFCV combines a Hurst-based regime estimate, ATR-spaced bands, price-centered sinusoidal curves and Fibonacci retracement context. It aims to describe persistence, complexity and confluence across several visual components.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pkhv9soh_auto_fib_speed_resistance_fans_by_dgt.md`
+
+`strategy-card` · 123 lines · 4,890 B · description: **extracted**
+
+**Purpose.** Auto Fib Speed Resistance Fans draws time/price fan structures between alternating price extremes. The author intends the rays and grids to help assess trend correction, slope and potential support/resistance. Automatic pivot selection removes some manual drawing work, while historical fans show earlier structures.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pkzxrfha_atai_volume_pressure_analyzer_v_1_0_pure_up_down.md`
+
+`strategy-card` · 139 lines · 5,216 B · description: **extracted**
+
+**Purpose.** Summarize lower-timeframe estimated buying/selling pressure over a shared window, its older/newer halves and several optional geometric/oscillator views.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pl0ipxy0_htf_liquidity_levels.md`
+
+`strategy-card` · 114 lines · 4,951 B · description: **extracted**
+
+**Purpose.** HTF Liquidity Levels tracks previous daily, weekly and monthly extremes, emphasizing those price references that have not yet been revisited. Its purpose is to frame potential directional destinations or clusters during an intraday session. The author interprets those untouched levels as possible resting-order pools, but the indicator does not directly observe stop orders or order-book depth.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pohudx82_multi_time_frame_candles.md`
+
+`strategy-card` · 106 lines · 4,201 B · description: **extracted**
+
+**Purpose.** Multi Time Frame Candles lets a trader inspect candles from another timeframe while continuing to work on the current chart. It is a financial visualization tool even though it does not generate entries or calculate an oscillator. Its purpose is to preserve cross-timeframe context in a compact candle overlay and allow that context to update during the current period.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ppjps450_neglected_volume_by_dgt.md`
+
+`strategy-card` · 122 lines · 5,238 B · description: **extracted**
+
+**Purpose.** Neglected Volume combines relative-volume coloring with several price/volume diagnostics so traders can inspect whether movement is accompanied by unusual participation. It distinguishes long-baseline volume anomalies from short-baseline candle shading, then adds OBV momentum, optional acceleration, divergence, correlation and optional money flow.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_psnjpa2y_vwap_price_channel.md`
+
+`strategy-card` · 136 lines · 6,104 B · description: **extracted**
+
+**Purpose.** VWAP Price Channel replaces the flat corners of a Donchian channel with VWAP-derived paths anchored at new channel extremes. It is explicitly a thought experiment, implemented as a trend-flipping trail rather than a proven predictive model. The idea is to let price and volume update a reference while the underlying Donchian boundary remains flat.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ptcl4kv6_volume_profile_auto_line.md`
+
+`strategy-card` · 112 lines · 4,506 B · description: **extracted**
+
+**Purpose.** Build a volume-at-price-style display incrementally within each higher-timeframe period using line thickness to represent accumulated volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_puwmpoyc_macd_with_htf_panels_theultimator5.md`
+
+`strategy-card` · 147 lines · 5,915 B · description: **extracted**
+
+**Purpose.** MACD with HTF Panels combines a conventional chart-timeframe MACD with small independent higher-timeframe views drawn to its side. It aims to keep momentum context visible without chart switching and demonstrates a reusable presentation method for other indicators. Each panel has its own timeframe calculation while sharing common indicator settings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pvpyfz2h_atr_osc_and_volume_screener_atroscvs.md`
+
+`strategy-card` · 112 lines · 4,710 B · description: **extracted**
+
+**Purpose.** Compare volatility-normalized momentum and unusual volume across a cryptocurrency watchlist using a color-coded grid.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_pwvoxmso_machine_learning_pivot_points_knn_ss.md`
+
+`strategy-card` · 115 lines · 4,713 B · description: **extracted**
+
+**Purpose.** Compare the current regression slope with slope signatures collected before confirmed turning points to flag possible approaching pivots.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_q1hxs0v6_liquidity_void_detector_zeiierman.md`
+
+`strategy-card` · 176 lines · 6,535 B · description: **extracted**
+
+**Purpose.** Liquidity Void Detector emphasizes unusually large recent returns when volume is weak relative to its own baseline. It explicitly offers a practical OHLCV proxy, not measured order-book emptiness.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_q3jrr7sn_spy_expected_move_by_vix.md`
+
+`strategy-card` · 107 lines · 4,193 B · description: **extracted**
+
+**Purpose.** Translate VIX-implied uncertainty into an expected price-move envelope around SPY's volume-weighted average price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_q7yifaaf_multi_zigzag_harmonic_patterns.md`
+
+`strategy-card` · 115 lines · 4,499 B · description: **extracted**
+
+**Purpose.** Search harmonic price structures across multiple zigzag depths to reveal patterns visible at different swing scales.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_q7yqqq7g_volume_gaps_imbalances_zeiierman.md`
+
+`strategy-card` · 115 lines · 4,673 B · description: **extracted**
+
+**Purpose.** Map sampled volume into price rows and show directional candle-volume imbalance by row and larger vertical sector.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qaaxkw1p_ai_predictive_flow_zeiierman.md`
+
+`strategy-card` · 129 lines · 5,525 B · description: **extracted**
+
+**Purpose.** Estimate forward movement by matching multibar price-feature patterns with historical analogues. A smoothed nearest-neighbor output becomes an oscillator and projected-price regime, offering model-based directional context rather than a validated prediction guarantee.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qakfjgfu_liquidity_levels_luxalgo.md`
+
+`strategy-card` · 107 lines · 4,492 B · description: **extracted**
+
+**Purpose.** Mark prices associated with volume peaks and summarize how later closing prices occupy the intervals between those levels.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qamnmxzi_volume_forks_trendoscope.md`
+
+`strategy-card` · 120 lines · 4,862 B · description: **extracted**
+
+**Purpose.** Draw automatically detected pitchfork structures with volume-profile levels aligned to the fork direction instead of fixed Fibonacci offsets.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qe4dq4zm_chart_vwap.md`
+
+`strategy-card` · 131 lines · 5,319 B · description: **extracted**
+
+**Purpose.** Calculate viewport-anchored averages and extremes so the displayed chart segment becomes the explicit analysis interval.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qeqcsffc_dekidaka_ashi_candles_and_volume_teaming_up_again.md`
+
+`strategy-card` · 150 lines · 6,506 B · description: **extracted**
+
+**Purpose.** Dekidaka-Ashi overlays volume-sensitive price envelopes without replacing the underlying candle shape. It aims to combine candle body movement and relative volume in a price-scaled display, enabling derived bands and experimental breakout labels. The author explicitly doubts signal accuracy and observes that signals often occur in low-volume/low-volatility conditions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qetnobdk_half_causal_estimator.md`
+
+`strategy-card` · 130 lines · 5,339 B · description: **extracted**
+
+**Purpose.** Half Causal Estimator smooths intraday activity using recent observations plus typical upcoming time-of-day values learned from earlier sessions. It aims to reduce the delay of a trailing average without consuming actual future observations. The future half is a seasonal expectation, not knowledge of the next bars.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qhncxbml_relative_strength_rsmk_perks_markos_katsanos.md`
+
+`strategy-card` · 113 lines · 4,697 B · description: **extracted**
+
+**Purpose.** Compare an asset's performance with a chosen market benchmark using RSMK and an optional companion comparative-strength formulation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qibyvt4j_hurst_exponent.md`
+
+`strategy-card` · 113 lines · 4,460 B · description: **extracted**
+
+**Purpose.** Estimate persistence or mean-reverting tendency in a market series using rescaled-range analysis across several sample sizes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ql1fjjfx_security_free_mtf_example_jd.md`
+
+`strategy-card` · 100 lines · 3,773 B · description: **extracted**
+
+**Purpose.** Demonstrate how higher-timeframe candle values can be constructed from chart bars without security calls.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ql1t3hh0_fancy_bollinger_bands_bigbitsio.md`
+
+`strategy-card` · 112 lines · 4,550 B · description: **extracted**
+
+**Purpose.** Expand a Bollinger-style envelope into a configurable view of smoothing, volatility and hypothetical future band behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qldv6ukv_lognormal.md`
+
+`strategy-card` · 126 lines · 4,902 B · description: **extracted**
+
+**Purpose.** Model positive skewed price distributions in log space and expose descriptive,probability,tail-risk and quantile-mapping utilities to financial scripts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qngqtazj_exprlib.md`
+
+`strategy-card` · 123 lines · 5,338 B · description: **extracted**
+
+**Purpose.** ExprLib lets financial scripts expose user-written condition strings and calculations without hard-coding every combination. Its demonstrated use binds price, RSI and trend variables, then colors chart regions when the expression is true. The library parses a string into a reusable expression and evaluates it repeatedly with changing variables.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qnqbqiex_correlation_heatmap_tradingfinder_sessions_data_science_stats.md`
+
+`strategy-card` · 116 lines · 5,430 B · description: **extracted**
+
+**Purpose.** Correlation HeatMap tracks how each selected asset relates to a central reference through time, rather than showing only a static correlation table. Session overlays align relationship changes with market opens, helping users investigate intermarket shifts or portfolio exposure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qnx9nxw0_multi_timeframe_volume_profiles_tradingiq.md`
+
+`strategy-card` · 123 lines · 5,123 B · description: **extracted**
+
+**Purpose.** Multi Timeframe Volume Profiles stacks activity distributions from several horizons on one chart. Its purpose is to show whether short-term participation aligns with broader accepted price areas, avoiding repeated chart switching. The standard display emphasizes total volume, while a delta variant describes buying-versus-selling pressure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qrevzodw_mad_acceleration_based_dampened_sma_projections.md`
+
+`strategy-card` · 120 lines · 5,094 B · description: **extracted**
+
+**Purpose.** This projection study extrapolates a smoothed input using its latest slope and average second difference, then draws a family of curves with different acceleration dampening factors. It also serves as an educational example of nested arrays and user-defined types.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qstlq23r_auto_adjust_to_ideal_pearson_s_r_oscillator.md`
+
+`strategy-card` · 113 lines · 4,543 B · description: **extracted**
+
+**Purpose.** Show the correlation-strength behavior of an adaptive regression trend tool so short- and long-horizon trend confidence can be compared.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qt7fqntr_breakout_probability_expo.md`
+
+`strategy-card` · 118 lines · 4,588 B · description: **extracted**
+
+**Purpose.** Estimate historical next-candle level-hit frequencies conditional on whether the preceding candle closed up or down.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qt7frw7q_3d_wave_pm.md`
+
+`strategy-card` · 113 lines · 4,439 B · description: **extracted**
+
+**Purpose.** 3D Wave-PM visualizes volatility cycles through a heatmap across timeframes. It is intended to distinguish quieter, potentially compressed conditions from more active phases, using a color-plume analogy. The author connects blue/green plumes to pent-up volatility and orange/red plumes to large moves, but those expectations remain interpretation rather than a demonstrated forecast guarantee.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qtkfi42t_macd_x_overlay_more_than_macd_by_dgt.md`
+
+`strategy-card` · 121 lines · 4,485 B · description: **extracted**
+
+**Purpose.** Compare several MACD-style transformations as an oscillator projected onto the price chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qvcjkcw3_mad_position_starter_calculator.md`
+
+`strategy-card` · 119 lines · 4,776 B · description: **extracted**
+
+**Purpose.** Position Starter & Calculator is an interactive trade ruler for planning entries, staged exits and loss limits. The user selects price/time points and quantities, then the indicator estimates prospective profit/loss, ratio and leveraged liquidation context. It is a planning graphic rather than an order executor, and the source expressly warns that liquidation assumptions vary by exchange.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qvsw9gup_moving_average_entanglement.md`
+
+`strategy-card` · 113 lines · 4,544 B · description: **extracted**
+
+**Purpose.** Moving Average Entanglement uses the separation between moving averages relative to ATR to distinguish meaningful expansion from a small dead-zone movement. It is intended to assist entry/exit decisions by filtering weak gaps, with optional smoothing and standard-deviation context. The description explains breakout confirmation but does not provide complete long-versus-short or exit mechanics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qwmafztl_tasc_2025_06_cybernetic_oscillator.md`
+
+`strategy-card` · 119 lines · 4,514 B · description: **extracted**
+
+**Purpose.** Isolate a configurable band of cyclical price behavior and normalize its amplitude for trend or threshold-oriented viewing.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_qypmcjka_lowest_highest_from_widget.md`
+
+`strategy-card` · 120 lines · 4,978 B · description: **extracted**
+
+**Purpose.** Lowest / Highest From Widget contextualizes the current price by finding when the market was last beyond it. It helps answer how far back one must look for a higher or lower observation, giving a temporal reference for a notable present value. It is descriptive market-history analysis rather than a forecast of what happens after a new extreme.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_r72jbjt4_market_matrix_zeiierman.md`
+
+`strategy-card` · 139 lines · 6,363 B · description: **extracted**
+
+**Purpose.** Bring higher-timeframe structure, trend and momentum into a compact dashboard beside the current chart. Market Matrix helps a lower-timeframe trader assess broader conditions through several views; it explicitly remains a confirmation tool.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_r7o3zulh_estimated_time_at_price_kioseff_trading.md`
+
+`strategy-card` · 122 lines · 5,074 B · description: **extracted**
+
+**Purpose.** Estimated Time At Price estimates how long price occupies individual price blocks or levels. It substitutes a time-at-price perspective for the related author volume-delta study, using lower-timeframe observations to build the estimates. The resulting highlighted level and extended reference line identify the greatest estimated duration, not necessarily the largest volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_r8g2yhdg_order_block_finder_experimental.md`
+
+`strategy-card` · 122 lines · 4,983 B · description: **extracted**
+
+**Purpose.** Order Block Finder marks the final opposite-direction candle before a qualifying consecutive move. It aims to locate price regions that might later be revisited and used for discretionary limit-order planning. The author describes these as institutional order blocks, but candle sequences do not directly establish institutional participation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rbeervr5_rolling_z_score_trend_quantalgo.md`
+
+`strategy-card` · 125 lines · 4,905 B · description: **extracted**
+
+**Purpose.** Rolling Z-Score Trend standardizes closing price around a rolling mean and displays the smoothed deviation together with its bar-to-bar change. It supports both momentum and mean-reversion interpretation: an extreme can indicate a strong ongoing move or a possible reversal context, so direction alone does not decide the trade.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rcfo5hhf_reverse_stochastic_momentum_index_on_chart.md`
+
+`strategy-card` · 140 lines · 4,969 B · description: **extracted**
+
+**Purpose.** Reverse Stochastic Momentum Index On Chart translates oscillator conditions into prospective closing-price levels. Instead of asking only where SMI currently sits, the display asks what close would place it at an alert threshold, equal its signal line or leave it unchanged. This makes oscillator-based planning visible on the price chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rddlqjfh_berlin_candles.md`
+
+`strategy-card` · 120 lines · 4,615 B · description: **extracted**
+
+**Purpose.** Retain a Heikin-Ashi-like trend view while keeping synthetic candle bodies inside actual price extremes and marking the true close.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rfbdceg1_gaps_profile_vnhilton.md`
+
+`strategy-card` · 119 lines · 4,486 B · description: **extracted**
+
+**Purpose.** Gaps Profile tracks price gaps that remain unclosed and arranges them into a compact chart profile. Its gap definition uses current open versus previous close, distinct from a full-bar high/low void. The author suggests these remaining intervals as possible reaction or supply/demand areas; the display does not establish that price must fill them.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rgnbiicd_abc_on_recursive_zigzag_trendoscope.md`
+
+`strategy-card` · 122 lines · 5,019 B · description: **extracted**
+
+**Purpose.** ABC on Recursive Zigzag detects corrective patterns across nested swing scales and adds configurable trade levels and historical summaries. Its aim is to let users experiment with entry, target and stop ratios rather than accept a fixed pattern-only display.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rhj1nnlh_max_drawdown_calculating_functions_optimized.md`
+
+`strategy-card` · 128 lines · 4,986 B · description: **extracted**
+
+**Purpose.** Calculate the largest decline from an earlier peak to a later trough in an ordered numerical array, including account-balance histories.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rnkr88ze_tick_delta_volume.md`
+
+`strategy-card` · 112 lines · 4,259 B · description: **extracted**
+
+**Purpose.** Observe live intrabar volume changes and summarize their distribution while the market updates.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts.md`
+
+`strategy-card` · 117 lines · 5,001 B · description: **extracted**
+
+**Purpose.** Learn which historical pivot conditions tend to produce repeatedly respected levels, then score and monitor new support/resistance candidates.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rtofqf13_trading_activity_index_zeiierman.md`
+
+`strategy-card` · 157 lines · 5,969 B · description: **extracted**
+
+**Purpose.** Trading Activity Index measures whether smoothed price-times-volume is unusual relative to its own recent history. It highlights participation regimes using a log transform, percentile guides and color normalization.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rv3pibxo_ttp_vix_spy.md`
+
+`strategy-card` · 129 lines · 4,902 B · description: **extracted**
+
+**Purpose.** TTP VIX Spy uses VIX momentum as an external risk-context signal for entries in another asset. It assumes falling volatility from an extreme is constructive for risk assets and rising volatility is adverse. Two signal families distinguish new VIX trend confirmation from pullback out of an extreme. A collection of optional price/volatility filters attempts to remove undesirable signals.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rxrafvef_langlands_operadic_m_bius_vortex_lomv.md`
+
+`strategy-card` · 174 lines · 5,982 B · description: **extracted**
+
+**Purpose.** LOMV proposes a composite market score combining a Möbius-weighted return sum, several familiar technical components and higher-timeframe agreement. It surrounds the score with bands, projected levels, flow graphics and a performance dashboard. The mathematical branding and claims of improved win rates are author assertions without validation in the description.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_rzs7ydmi_renko_candles_overlay.md`
+
+`strategy-card` · 119 lines · 4,610 B · description: **extracted**
+
+**Purpose.** Overlay Renko-style bricks on an ordinary chart with explicit distinction between confirmed and developing bricks.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_s2clgbm5_volume_based_support_resistance_zones.md`
+
+`strategy-card` · 123 lines · 5,233 B · description: **extracted**
+
+**Purpose.** Volume-based Support & Resistance Zones marks high-volume swing extremes across several timeframes. It aims to highlight structural prices that may matter for reversal or for breakout-and-retest analysis. A zone extends from the fractal extreme to its candle close, combining a turning-point reference with the size of the rejection region.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_s40vmzm4_asset_rotation_system_investorunknown.md`
+
+`strategy-card` · 148 lines · 6,456 B · description: **extracted**
+
+**Purpose.** Asset Rotation System compares a user-selected set of assets against USD and against each other, seeking to hold the strongest relative candidate. It presents a trend matrix, hypothetical rotation equity and individual buy-and-hold comparisons. Although published as an indicator, it describes a portfolio-selection concept rather than a single-chart oscillator.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_s7hgang6_intraday_intensity_modes.md`
+
+`strategy-card` · 121 lines · 5,055 B · description: **extracted**
+
+**Purpose.** Intraday Intensity Modes applies a price-location/volume pressure concept over complete sessions, accumulated history or rolling normalized windows. It aims to preserve the original day-based interpretation even when plotted on intraday bars, updating the developing day’s OHLCV as new bars arrive. An experimental intrabar option instead measures each chart candle independently.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_s9knr6dg_crowding_model_bullvision.md`
+
+`strategy-card` · 127 lines · 5,818 B · description: **extracted**
+
+**Purpose.** Crowding Model places cryptocurrencies on an RSI-versus-price-Z-score map to show momentum alongside historical extension. It summarizes groups with sentiment-style labels and highlights extreme zones, giving the user a relative market snapshot. “Crowding” is a metaphor inferred from price behavior here; the source does not use actual holdings, leverage concentration or participant positioning.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_seduwoij_zeiierman_trend_pressure_zeiierman.md`
+
+`strategy-card` · 142 lines · 5,502 B · description: **extracted**
+
+**Purpose.** Zeiierman Trend Pressure separates fast local pressure, persistent range-based trend and a candle-structure pressure core. It aims to distinguish a short pullback within an intact trend from broader deterioration, then track sustained extreme states through confirmation and release hysteresis.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sg5cvyr9_tick_data_detailed.md`
+
+`strategy-card` · 125 lines · 4,826 B · description: **extracted**
+
+**Purpose.** Tick Data Detailed accumulates realtime price-update volume into size buckets and compares current-bar detail with cumulative observations. It aims to distinguish large and small activity and flag disagreement between candle direction and classified buy/sell volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sg7vk6uh_iq_trend_beams_tradingiq.md`
+
+`strategy-card` · 121 lines · 4,822 B · description: **extracted**
+
+**Purpose.** Maintain explicitly provisional versus committed support/resistance rails and attach trend-relative volume-density context to the currently live rails.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sgfm0bj3_elastic_volume_weighted_student_t_tension.md`
+
+`strategy-card` · 142 lines · 5,517 B · description: **extracted**
+
+**Purpose.** Elastic Volume-Weighted Student-T Tension builds adaptive location/dispersion bands and a relative-position oscillator. It aims to account for heavy tails and changing participation rather than assume fixed normal volatility. Volume influences the elastic mean and variance; true range substitutes when volume is unavailable. A higher-timeframe normalization option changes the weighting scale.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_shevujyq_machine_learning_rsi_bullvision.md`
+
+`strategy-card` · 117 lines · 4,704 B · description: **extracted**
+
+**Purpose.** Contextualize RSI using historically similar feature patterns and optionally blend/filter that contextual estimate with ordinary RSI.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_shvvlgmm_fast_fourier_transform_fft_filter.md`
+
+`strategy-card` · 114 lines · 5,174 B · description: **extracted**
+
+**Purpose.** FFT Filter decomposes a selected series into frequency components, masks selected frequencies and reconstructs a filtered time-domain series. It supports either inspecting the latest window’s spectrum/reconstruction or applying the same operation in rolling windows and extracting each endpoint.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_shy8kacw_market_structure_volume_profiles_kioseff_trading.md`
+
+`strategy-card` · 128 lines · 5,257 B · description: **extracted**
+
+**Purpose.** Market Structure Volume Profiles divides activity into structural price legs rather than arbitrary sessions. Each completed break-of-structure or change-of-character event triggers a profile for that leg, and cumulative delta adds a participation view. The intended use is to compare continuation, reversal and balanced legs by their internal volume distribution.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_skmmrme0_cagr_custom_range.md`
+
+`strategy-card` · 127 lines · 5,123 B · description: **extracted**
+
+**Purpose.** CAGR Custom Range calculates an annualized compound growth rate between two interactively selected chart times. It aims to make endpoint performance comparison convenient while demonstrating interactive inputs. The selected bars contribute closing prices, not manually chosen price coordinates.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md`
+
+`strategy-card` · 129 lines · 5,559 B · description: **extracted**
+
+**Purpose.** Modified Mannarino Market Risk Indicator displays a dollar-strength/interest-rate risk heuristic and a debt-to-GDP-adjusted variant. It aims to provide broad market-risk context, with customizable source symbols and scale factors. The score is a formula-based research proxy rather than a calibrated probability of loss or a complete trading strategy, as the source itself emphasizes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sq5xt0ez_hyperfork_matrix.md`
+
+`strategy-card` · 137 lines · 5,215 B · description: **extracted**
+
+**Purpose.** Build a manually anchored pitchfork and propagate action/reaction geometry into a price-time lattice for discretionary chart study.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sr0scav5_wavelet_trend_ml_integration_alpha_extract.md`
+
+`strategy-card` · 170 lines · 6,522 B · description: **extracted**
+
+**Purpose.** The saved title says Wavelet-Trend ML Integration, but the complete description instead documents Alpha-Extract Volatility Quality. It describes signed true-range momentum smoothed with two EMAs, optional range normalization and deviation bands.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_su8qcnj3_expected_value_monte_carlo.md`
+
+`strategy-card` · 127 lines · 5,049 B · description: **extracted**
+
+**Purpose.** Expected Value Monte Carlo contrasts historical holding-period returns with a forward GBM projection fitted to recent behavior. It expresses both in return and dollar terms, with win-rate and Sharpe summaries, so the user can inspect assumptions about horizon and recent trend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_svp0szo5_tasc_2025_04_the_ultimate_oscillator.md`
+
+`strategy-card` · 119 lines · 4,705 B · description: **extracted**
+
+**Purpose.** This Ehlers Ultimate Oscillator differs from the conventional similarly named indicator by taking the difference between two highpass-filter outputs and normalizing it with RMS. It emphasizes a wavelength band and displays directional momentum around zero. An optional cloud compares a family of parameter variations, showing agreement of their signs rather than calibrated confidence.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_swwmsmqw_indicator_panel.md`
+
+`strategy-card` · 126 lines · 5,176 B · description: **extracted**
+
+**Purpose.** Compare selected technical-indicator values across several symbols in a dynamic table and highlight whether each value has risen or fallen.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sxgyrede_dynamic_swing_anchored_vwap_zeiierman.md`
+
+`strategy-card` · 113 lines · 4,647 B · description: **extracted**
+
+**Purpose.** Dynamic Swing Anchored VWAP resets its reference at newly confirmed swings and weights recent observations more strongly through decay. It is intended to remain closer to current structure than a long cumulative anchored VWAP, making pullbacks and retests easier to inspect.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_sxzrzqzq_divergence_indicator_any_oscillator.md`
+
+`strategy-card` · 116 lines · 4,928 B · description: **extracted**
+
+**Purpose.** Divergence Indicator (any oscillator) adapts a platform divergence study to accept another indicator plot and optionally draw its results on price. The publication primarily documents chart setup rather than the divergence algorithm. It lets users keep oscillator-space and price-space annotations together by loading two instances with the same source.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_szvbr1vq_kcgmut.md`
+
+`strategy-card` · 112 lines · 4,508 B · description: **extracted**
+
+**Purpose.** Track Keltner/center-of-gravity channel width, price location and unusual volume together in a compact subpanel.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_t1rsjdsb_utils_session_input_parser.md`
+
+`strategy-card` · 100 lines · 4,325 B · description: **extracted**
+
+**Purpose.** This session-input parser is companion infrastructure for scripts that accept a session-format string. It converts that configuration into individual start/end time and weekday fields, allowing a caller to consume the components instead of repeatedly parsing the string. It supplies no market signal or order permission by itself; the caller must define any trading-session logic.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_t1v41bl5_session_edge_profiler_flux_charts.md`
+
+`strategy-card` · 218 lines · 9,034 B · description: **extracted**
+
+**Purpose.** Session Edge Profiler measures completed-session behavior and compares the developing session with its own weekday-filtered history. It aims to replace generic claims about Asia, London or New York with instrument-specific evidence. The dashboard covers range, volume, directional persistence, daily extremes and explicitly defined structural counts.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tbfrhewy_mtf_seconds_values_jd.md`
+
+`strategy-card` · 100 lines · 4,097 B · description: **extracted**
+
+**Purpose.** MTF Seconds Values provides an array-based workaround for constructing multi-timeframe inputs on seconds charts. It is indicator infrastructure with an explicit SMA example, not an independent market signal. The author discusses a historical platform limitation; the profile records that context without asserting the limitation still applies to current Pine versions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tbz9rgx9_weekly_volume_heatmap.md`
+
+`strategy-card` · 119 lines · 5,059 B · description: **extracted**
+
+**Purpose.** Map typical weekly trading-volume patterns to identify relatively active and quiet hourly slots.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tcwijygr_sigma_spike_filtered_binned_opr_adam_h_grimes.md`
+
+`strategy-card` · 106 lines · 4,349 B · description: **extracted**
+
+**Purpose.** Study where a day opens within its eventual range, specifically on unusually volatile days, to explore possible early-session directional behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tjzklojn_wyckoff_theultimator5.md`
+
+`strategy-card` · 131 lines · 5,615 B · description: **extracted**
+
+**Purpose.** Map accumulation and distribution through Wyckoff phases while showing the latest confirmed event and pending requirements. The script also supplies a movable teaching schematic, separating an idealized visual reference from its automated structural assessment.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tk7fhng9_adaptive_trend_finder_log.md`
+
+`strategy-card` · 113 lines · 4,507 B · description: **extracted**
+
+**Purpose.** Automatically choose a short- or long-horizon trend channel using statistical fit on logarithmically scaled price data.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tkzp5uj0_hancock_rsi_volume.md`
+
+`strategy-card` · 109 lines · 4,581 B · description: **extracted**
+
+**Purpose.** Hancock RSI Volume applies the relative-strength idea to estimated up and down volume instead of price changes. It is intended to compare activity associated with upward and downward price movement, providing a volume-based complement to ordinary RSI. The study obtains finer observations from a user-selected lower timeframe.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tlz0mxsj_sticky_notes_checklist_to_do_journal_algoat.md`
+
+`strategy-card` · 116 lines · 4,743 B · description: **extracted**
+
+**Purpose.** Sticky Notes, Checklist, To-do, Journal puts a trader’s own notes and plans directly on the chart. Its financial purpose is workflow support rather than price analysis: the user can record market insights, trade plans, tasks and deadlines near the chart being monitored. Generic advice about confirming indicators in the latter description does not imply this note tool computes technical signals.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tmlc5wma_adaptive_market_profile_auto_detect_dynamic_activity_zones.md`
+
+`strategy-card` · 115 lines · 4,856 B · description: **extracted**
+
+**Purpose.** Choose an adaptive trend channel and map the most active price regions in coordinates parallel to that channel.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tmqir1jp_rsi_cyclic_smoothed_v2.md`
+
+`strategy-card` · 108 lines · 4,382 B · description: **extracted**
+
+**Purpose.** Cyclic Smoothed RSI adapts RSI smoothing and overbought/oversold bands to a dominant-cycle input. The aim is to reflect the market’s current rhythm rather than use fixed responsiveness and static extremes. The author proposes signal-line crossings of adaptive bands as trading cues, but the provided historical anecdote does not establish improved forecasting or measured performance.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tng177sv_realtime_5d_profile_lucf.md`
+
+`strategy-card` · 163 lines · 6,933 B · description: **extracted**
+
+**Purpose.** Realtime 5D Profile accumulates live chart updates into price-level distributions of volume or update counts. It encodes level activity, directional imbalance and age, offering an evolving view of where observed participation occurred. Unlike a historical profile, it starts when loaded and loses its accumulated state when refreshed or re-executed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tnq7fvvw_trend_target_ribbon_boswaves.md`
+
+`strategy-card` · 142 lines · 7,293 B · description: **extracted**
+
+**Purpose.** Trend Target Ribbon combines ALMA trend confirmation with a chart-based position plan. A directional flip creates an entry reference, structural risk distance and staged reward levels, while a gradient ribbon conveys the strength of the existing trend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_toatqabg_diluted_earnings_per_share_signal_astrideunicorn.md`
+
+`strategy-card` · 115 lines · 5,204 B · description: **extracted**
+
+**Purpose.** Diluted Earnings Per Share Signal compares reported diluted EPS with the analyst EPS estimate to identify earnings surprises after accounting for potential share dilution. It aims to flag cases where an apparently positive ordinary EPS surprise may conceal weaker diluted economics.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tpseizhp_volume_x_ray_lucf.md`
+
+`strategy-card` · 129 lines · 5,627 B · description: **extracted**
+
+**Purpose.** Diagnose differences between historical intraday and end-of-day volume reporting. Volume X-ray helps identify instruments whose feeds deserve investigation; the author explicitly leaves the reporting cause and interpretation to the user.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tstsp9sk_peak_trading_activity_graphs_luxalgo.md`
+
+`strategy-card` · 114 lines · 4,956 B · description: **extracted**
+
+**Purpose.** Peak Trading Activity Graphs groups volume or volatility by calendar periods to reveal when activity has historically been relatively high or low. It is intended for choosing execution times and adjusting exposure to recurring conditions, rather than predicting the next price direction.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tt0t369u_volatility_stop_mtf.md`
+
+`strategy-card` · 126 lines · 4,792 B · description: **extracted**
+
+**Purpose.** Volatility Stop MTF displays an ATR-based trend/stop reference from a selected higher timeframe and optionally detects chart-timeframe breaches before the higher trend changes. Early Breach distinguishes an exit warning from a trend reversal by marking a limbo state.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tt7060bw_modern_portfolio_theory.md`
+
+`strategy-card` · 124 lines · 5,081 B · description: **extracted**
+
+**Purpose.** Modern Portfolio Theory visualizes selected assets and a manually weighted portfolio in risk-return space. It helps users explore how allocation changes affect an aggregate portfolio rather than supplying a fully defined automatic optimizer. Individual points place risk on the horizontal axis and return on the vertical axis, while a table records weights and remaining cash.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ttq7bdk2_real_time_candles.md`
+
+`strategy-card` · 192 lines · 7,248 B · description: **extracted**
+
+**Purpose.** real_time_candles builds candle objects from live samples of prices or other financial series. It supports chart-synchronized candles and independently sampled time/count candles, exposing both their OHLC state and drawing helpers. Its financial uses include watching an oscillator change within a bar or examining short-lived price structures.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tv3rcaj9_market_sessions_and_volume_profile_by_leviathan.md`
+
+`strategy-card` · 114 lines · 4,695 B · description: **extracted**
+
+**Purpose.** Combine session boundaries and volume profiles to compare participation and value regions across intraday and calendar periods.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_tyeenu9i_time.md`
+
+`strategy-card` · 129 lines · 6,152 B · description: **extracted**
+
+**Purpose.** Time includes condition-persistence timing infrastructure explicitly intended to delay financial exits until an exit condition has remained true long enough. Its example also turns a price-movement condition into a time-delayed chart alert. Generic date formatting and timeframe conversion accompany this financial use, but the core timer cannot be dismissed as a text-formatting utility.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_u0r2gpti_fourier_extrapolator_of_price_w_projection_forecast_loxx.md`
+
+`strategy-card` · 113 lines · 4,816 B · description: **extracted**
+
+**Purpose.** Fit a sum of oscillating components to historical prices and extend that fitted mathematical model into a future projection.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman.md`
+
+`strategy-card` · 140 lines · 5,100 B · description: **extracted**
+
+**Purpose.** Show localized directional pressure between price and an adaptive reference line, then mark fresh agreement of profile, price position and anchor slope.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_u64lz5n3_mesa_stochastic_multi_length.md`
+
+`strategy-card` · 112 lines · 4,330 B · description: **extracted**
+
+**Purpose.** MESA Stochastic Multi Length displays several Ehlers-style super-smoothed stochastic variants together to inspect market waves. The author proposes looking for tops/bottoms and combining the study with another indicator, but the source mostly relies on linked chart examples for signals. Its stated benefits should be treated as intended uses rather than measured pump/dump detection accuracy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_u8imfw8n_redk_portfolio_tracker_v2_few_enhancements_and_display_options.md`
+
+`strategy-card` · 113 lines · 4,997 B · description: **extracted**
+
+**Purpose.** Portfolio Tracker v2 monitors user-entered holdings and summarizes portfolio value and profit/loss in an infobox. This revision emphasizes displaying the summary as a floating panel and including free cash in overall portfolio accounting. It is a manually configured valuation aid rather than a brokerage reconciliation system or a buy/sell strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ucux0rjl_tops_bottoms_time_of_day_report.md`
+
+`strategy-card` · 113 lines · 4,496 B · description: **extracted**
+
+**Purpose.** Describe when daily highs and lows have historically occurred to help readers understand intraday timing tendencies for a market.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_udti2iuw_central_bank_liquidity_gap_indicator.md`
+
+`strategy-card` · 124 lines · 5,257 B · description: **extracted**
+
+**Purpose.** Central Bank Liquidity Gap compares growth in a global liquidity aggregate with growth in the S&P 500. The author interprets positive divergence as potential long-term accumulation context, particularly when liquidity growth materially exceeds market growth. It is expressly aimed at daily/weekly investment analysis rather than precise bottoms or day trading.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uftt8roh_redk_portfolio_tracker_table_version.md`
+
+`strategy-card` · 113 lines · 4,748 B · description: **extracted**
+
+**Purpose.** The table version of RedK Portfolio Tracker presents manually configured holdings and gain/loss information in a chart-overlay table. It replaces the older infobox presentation with more flexible colors, text size and placement. Its purpose is quick monitoring of a small portfolio, not automated account discovery or trading execution; dividends are mentioned only as a possible future addition.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uiiesmwo_optipine_high_performance_caching_and_data_pipelines.md`
+
+`strategy-card` · 144 lines · 5,919 B · description: **extracted**
+
+**Purpose.** OptiPine provides caching, sparse-update and reusable-storage infrastructure, with complete financial examples that make it relevant beyond a generic platform utility. A regime-stress example computes a probability-weighted downside scenario estimate, while a pivot-zone example clusters recent price levels and reports their strength.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uive2izt_harmonic_patterns_based_trend_follower.md`
+
+`strategy-card` · 129 lines · 5,083 B · description: **extracted**
+
+**Purpose.** Harmonic Patterns Based Trend Follower uses recognized harmonic structures to define breakout-like directional boundaries. Instead of treating a harmonic completion automatically as a reversal entry, it takes the pattern’s highest point as bullish threshold and lowest as bearish threshold. Reaching either changes the trend state, which otherwise persists. New patterns replace the boundaries.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ujgvguvt_volatility_risk_premium.md`
+
+`strategy-card` · 171 lines · 7,235 B · description: **extracted**
+
+**Purpose.** Volatility Risk Premium compares VIX-implied volatility with trailing realized volatility to describe the market’s apparent insurance premium. It aims to contextualize equity risk and option strategy selection, with regime labels, historical standardization and momentum. This is a backward-looking realized-versus-forward-looking implied comparison, not an ex-post matched-horizon variance premium.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ujvs2xfg_monte_carlo_range_forecast_dw.md`
+
+`strategy-card` · 133 lines · 5,237 B · description: **extracted**
+
+**Purpose.** Generate hypothetical price-range scenarios from pseudorandom return paths anchored to a selected historical starting point.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ukaod896_divergence_support_resistence.md`
+
+`strategy-card` · 115 lines · 4,955 B · description: **extracted**
+
+**Purpose.** Divergence-Support/Resistance filters a zigzag’s many pivots to retain only those associated with regular or hidden oscillator divergence. The author treats divergence as temporary momentum weakness that can define a reference area rather than a standalone reversal command.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ukgkppqm_dynamic_volume_profile_oscillator_alphaalgos.md`
+
+`strategy-card` · 120 lines · 4,869 B · description: **extracted**
+
+**Purpose.** Dynamic Volume Profile Oscillator measures price deviation from a recent volume-weighted reference and maps it into adaptive zones. A separate standard mode instead normalizes volume activity. The indicator offers both trend-following midline interpretation and mean-reversion extremes, so users must choose a coherent strategy context rather than assume those interpretations always agree.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ulnivzea_smu_stdev_candles.md`
+
+`strategy-card` · 106 lines · 4,273 B · description: **extracted**
+
+**Purpose.** SMU STDEV Candles changes the presentation of standard-deviation information from a line into candle-like objects, allowing comparison with ordinary price candles. The intent is to expose changes within the indicator’s candle representation rather than introduce a fully described volatility forecast.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ulz8mjlu_rs_majors_volume_sum.md`
+
+`strategy-card` · 100 lines · 3,899 B · description: **extracted**
+
+**Purpose.** Combine volume across major instruments into an oscillator and summarize volume over a selected period.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ulzjcb7h_volume_by_time_luxalgo.md`
+
+`strategy-card` · 128 lines · 4,942 B · description: **extracted**
+
+**Purpose.** Volume by Time compares each bar with historical volume observed at the same time of day. It aims to distinguish an unusually active interval from a routine seasonal volume peak, instead of comparing all intraday bars indiscriminately. The historical benchmark can use a mean or median and either the whole available chart history or a selected number of days.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_umlomtia_portfolio_performance.md`
+
+`strategy-card` · 115 lines · 4,591 B · description: **extracted**
+
+**Purpose.** Portfolio Performance reports the historical behavior of a user-composed multi-instrument allocation. It combines a statistics table, monthly performance chart and benchmark comparison so users can inspect both overall results and instrument contributions. The source is a concise feature announcement, not an accounting specification.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_unwex8n4_heatmap_volume_xdecow.md`
+
+`strategy-card` · 106 lines · 3,914 B · description: **extracted**
+
+**Purpose.** Make unusually high or low traded volume visible directly on volume bars and price candles.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_upboxsyo_higher_time_frame_chart_overlay.md`
+
+`strategy-card` · 117 lines · 4,975 B · description: **extracted**
+
+**Purpose.** Higher Time Frame Chart Overlay places a compact candle view for a chosen symbol and equal-or-higher timeframe in a fixed table on the chart. It helps compare a second market or broader timeframe while keeping the main chart visible. The output is a financial visualization of OHLC and recent extremes, not a generated trading signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uqelskn1_synthetic_price_action_generator.md`
+
+`strategy-card` · 108 lines · 4,441 B · description: **extracted**
+
+**Purpose.** Generate controllable synthetic candles for developing and stress-testing trading indicators without depending on a particular market history.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_utcrhzep_volume_profile_pivot_anchored_by_dgt.md`
+
+`strategy-card` · 117 lines · 4,757 B · description: **extracted**
+
+**Purpose.** Volume Profile Pivot Anchored selects its analysis window using detected pivot highs and lows. It displays trading activity horizontally by price, aiming to show where participation concentrated inside a swing-defined interval. The publication pairs the profile with pivot annotations and volume-weighted candle coloring.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uudeajsi_quadratic_regression.md`
+
+`strategy-card` · 119 lines · 4,779 B · description: **extracted**
+
+**Purpose.** Fit a local parabola to price and optionally extend it to explore curved trends that a straight regression cannot represent.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uvby6vlf_mad_gann_o_maticus.md`
+
+`strategy-card` · 176 lines · 5,889 B · description: **extracted**
+
+**Purpose.** Draw resetting Gann price-time boxes and curved geometric references using calendar periods or selected astronomical cycle boundaries.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uwufcff8_indicators_overlay.md`
+
+`strategy-card` · 113 lines · 4,490 B · description: **extracted**
+
+**Purpose.** Indicators Overlay places several conventional indicator windows within the main price pane. It is designed for convenient side-by-side context rather than a new combined signal. The miniature windows move above or below price based on recent close movement, and each retains its own colors and horizontal references.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_uyms0uuj_finitestatemachine.md`
+
+`strategy-card` · 123 lines · 5,543 B · description: **extracted**
+
+**Purpose.** Make trading logic explicit as prioritized state transitions and concurrent-condition rules. Although the library also demonstrates traffic lights, its source explicitly combines technical conditions, position management and re-entry in a trading-strategy example, making it relevant execution infrastructure.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_v7ck12j0_scatter_plot.md`
+
+`strategy-card` · 133 lines · 5,271 B · description: **extracted**
+
+**Purpose.** Price Volume Scatter Plot retains intrabar price/volume pairs instead of compressing all activity into a conventional profile. It accumulates observations sharing a close price and places volume against price, with a best-fit line for visual relationship context. It is financial distribution analysis even though the legacy tag calls it non-signal; it does not prescribe entries.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_v8sbugsw_redk_trader_pressure_index_tpx_v1_0.md`
+
+`strategy-card` · 116 lines · 4,673 B · description: **extracted**
+
+**Purpose.** Trader Pressure Index interprets changes in consecutive bar highs and lows as a proxy for bullish and bearish pressure. Its aim is to show which side appears to control the price range and when neither side shows sufficient activity to justify a trade. This is price-derived pressure, not a direct count of buyers and sellers.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vakdjwdk_head_shoulders_s_r_regular.md`
+
+`strategy-card` · 146 lines · 5,205 B · description: **extracted**
+
+**Purpose.** Head & Shoulders S/R Regular searches a particular pivot/line geometry and monitors price inside a projected right-shoulder trigger region. It aims to make potential regular head-and-shoulders structures visible while distinguishing upside, downside and unresolved trigger behavior. The method first waits for aligned baseline points, then finds the intervening head and left shoulder.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vb8jw3i2_trend_following_mas_3d.md`
+
+`strategy-card` · 121 lines · 4,698 B · description: **extracted**
+
+**Purpose.** Trend Following MAs 3D combines the direction and relative arrangement of a family of moving averages into a trend-strength visualization. It aims to make agreement across horizons visible, with a shrinking display indicating little trend. The three-dimensional appearance is a visual encoding, not another data dimension.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vdzfb2wa_quality_screen.md`
+
+`strategy-card` · 129 lines · 5,354 B · description: **extracted**
+
+**Purpose.** Screen company quality through a grouped view of solvency, liquidity and profitability statistics with author-proposed qualitative bands.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_viwa6cr8_ma_sabres_luxalgo.md`
+
+`strategy-card` · 128 lines · 5,468 B · description: **extracted**
+
+**Purpose.** MA Sabres identifies the first moving-average direction reversal after a sustained one-direction run and draws a curved projected shape from the preceding candle extreme. The author proposes that shape as a possible support/resistance, breakout or stop reference. It is an extrapolated geometry tied to MA length and recent volatility, not a forecast confidence envelope.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vnzbp63l_zigzag_trend_divergence_detector.md`
+
+`strategy-card` · 121 lines · 4,853 B · description: **extracted**
+
+**Purpose.** Combine trend direction and zigzag-based oscillator divergence into a compact sentiment view for managing pullbacks or extended moves.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vo99pov0_htf_candle_volume_thermometer_chartprime.md`
+
+`strategy-card` · 114 lines · 4,826 B · description: **extracted**
+
+**Purpose.** HTF Candle Volume Thermometer displays a segmented volume heatmap within each higher-timeframe candle. It seeks to show which parts of a candle’s price range contained the greatest volume and to mark that local maximum for subsequent price-reaction analysis.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vozihfu9_obv_traffic_lights.md`
+
+`strategy-card` · 102 lines · 4,189 B · description: **extracted**
+
+**Purpose.** Make volume-driven directional trends easier to read by combining a Heikin-Ashi-based OBV variation with several visual moving averages.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vr5p3drm_statistical_package_for_the_trading_sciences_ss.md`
+
+`strategy-card` · 135 lines · 5,715 B · description: **extracted**
+
+**Purpose.** Statistical Package for the Trading Sciences gathers reusable statistical tests and model tools for trading research. It aims to move analyses previously performed in spreadsheets or statistical software into Pine, including cross-asset comparisons and forecasting experiments. The scope is genuinely financial, with explicit ticker/economic-series examples.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vraarpaa_tasc_2021_11_madh_moving_average_difference_hann.md`
+
+`strategy-card` · 125 lines · 4,800 B · description: **extracted**
+
+**Purpose.** Produce a smooth band-limited momentum oscillator from the difference between differently smoothed price components.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vrtl3vwf_machine_learning_rsi_ai_classification_ranking_zeiierman.md`
+
+`strategy-card` · 171 lines · 6,220 B · description: **extracted**
+
+**Purpose.** Machine Learning RSI classifies the current momentum environment by matching a multidimensional RSI fingerprint to historical labeled analogs. It aims to replace a simple threshold interpretation with adaptive feature importance, distance-weighted votes and quality gates. The learned conviction also changes Supertrend width.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vspwh0vn_options_max_pain_calculator_backquant.md`
+
+`strategy-card` · 138 lines · 5,081 B · description: **extracted**
+
+**Purpose.** Options Max Pain Calculator models expiry payout concentration with synthetic open interest. It displays a hypothetical minimum-payout strike, pin zone, pain heatmap and gamma profile. The source explicitly lacks live options data, so these are scenario outputs rather than measured dealer positioning or actual market max pain.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vt3jbshj_cointegration_heatmap_spread_table_edgeterminal.md`
+
+`strategy-card` · 132 lines · 5,043 B · description: **extracted**
+
+**Purpose.** Compare pairwise regression residuals and standardized spreads across a watchlist as a proposed mean-reversion research screen.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vxui7vrm_market_structure_dashboard_flux_charts.md`
+
+`strategy-card` · 203 lines · 7,605 B · description: **extracted**
+
+**Purpose.** Market Structure Dashboard integrates trend, confirmed pivots, price zones, participation and session context across multiple timeframes. It exposes individual components and a weighted directional summary to distinguish agreement from conflict.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vy7sifia_candle_body_shapes.md`
+
+`strategy-card` · 100 lines · 3,990 B · description: **extracted**
+
+**Purpose.** Candle Body Shapes is an experimental frequency study of candle types. Its complete description identifies a statistical display about candles and links an external discussion, but does not reproduce any further definition or method. The financial analysis intent is clear enough to retain it, while details about what the frequencies mean must remain unresolved.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_vyu6a3gb_anchored_vwap_pinch_handoff_intervals_and_signals.md`
+
+`strategy-card` · 136 lines · 5,422 B · description: **extracted**
+
+**Purpose.** Anchored VWAP Pinch & Handoff is a toolbox for manual event anchors, periodic resets and automatically selected extrema/pivots. It aims to show dynamic participation-weighted references and consolidation between upper/lower anchored lines. A later handoff anchor can track a post-breakout reference.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_w0vyvqgb_statistics_chi_square_p_value_significance.md`
+
+`strategy-card` · 142 lines · 5,461 B · description: **extracted**
+
+**Purpose.** This chi-square research tool tests whether grouped prior market conditions and subsequent close direction are associated. It forms a contingency table rather than treating raw RSI or price values directly as categorical observations. The user defines mutually exclusive, exhaustive groups and can compare their outcome counts with unconditional behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_w1ypycoi_higher_timeframe_requests.md`
+
+`strategy-card` · 136 lines · 6,644 B · description: **extracted**
+
+**Purpose.** Higher-timeframe requests provides financial market-data timing infrastructure for indicators, stable alerts and strategy commands. It compares developing higher-timeframe prices with confirmed prior-bar prices and demonstrates why historical and live request timing can differ. Its substantive output is a confirmed higher-timeframe source series, with a deliberate confirmation delay.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_w5lbl0mv_john_ehlers_the_price_radio.md`
+
+`strategy-card` · 107 lines · 4,537 B · description: **extracted**
+
+**Purpose.** The Price Radio applies a signal-processing metaphor to financial prices: treat the price curve as a radio wave and use amplitude/frequency demodulation to separate useful behavior from noise. The description identifies the conceptual technique and its Ehlers article origin, but provides no filter equations, parameterization or signal definitions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_w5vmuuda_financial_growth.md`
+
+`strategy-card` · 130 lines · 5,850 B · description: **extracted**
+
+**Purpose.** Financial Growth compares selected corporate financial series across reporting periods and presents their growth as plots, labels or a table. It is designed to make fundamental trends visible without manually transferring reports into another tool. The publication lists multiple measures but does not define growth formulas, release timing or denominator conventions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wba7j6tu_mean_deviation_index.md`
+
+`strategy-card` · 114 lines · 4,503 B · description: **extracted**
+
+**Purpose.** Mean Deviation Index combines an adaptive mean with an ATR-distance gate to highlight sufficiently large price departures. It aims to distinguish meaningful directional displacement from movement close to the mean. Positive/negative background states can be used aggressively as trend entries or as context for pullback continuation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wc3dyn1w_trend_range_detector_zeiierman.md`
+
+`strategy-card` · 115 lines · 4,425 B · description: **extracted**
+
+**Purpose.** Detect sustained price compression around a movement-weighted center and color subsequent breaks from the resulting range.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wdotecyq_pivot_and_price_discovery.md`
+
+`strategy-card` · 113 lines · 4,749 B · description: **extracted**
+
+**Purpose.** Pivot and Price Discovery combines a sampled regression model with distribution moments and pivot-momentum annotations. It aims to estimate a short forward range and provide context for possible approaching pivots.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_we9amcve_tasc_2026_04_a_synthetic_oscillator.md`
+
+`strategy-card` · 121 lines · 4,956 B · description: **extracted**
+
+**Purpose.** Synthetic Oscillator estimates a changing cycle phase and outputs a sine wave synchronized to filtered price. It aims to avoid rapid direction flips by following broader cyclic structure rather than every price movement. A separate filter resets phase on sign crossings to reduce accumulated drift.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wfcbsk6s_market_cap_landscape_3d.md`
+
+`strategy-card` · 122 lines · 4,929 B · description: **extracted**
+
+**Purpose.** Market Cap Landscape 3D ranks user-selected crypto market capitalizations and places them on a decorative mountain scene. Its financial content is the capitalization leaderboard and rank hierarchy, so it remains in scope despite its artistic presentation. The mountain mesh itself is procedural scenery, not a literal market-cap surface or historical price path.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_whbzgfdu_machine_learning_lorentzian_classification.md`
+
+`strategy-card` · 251 lines · 8,327 B · description: **extracted**
+
+**Purpose.** Classify possible price direction by comparing multi-feature historical observations through a Lorentzian-distance approximate-neighbor model with optional regime/kernel filters.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_whfedbdv_chart_oscillator.md`
+
+`strategy-card` · 121 lines · 4,551 B · description: **extracted**
+
+**Purpose.** Chart Oscillator rescales a bounded momentum oscillator into the current price range so it can be viewed directly against candles. It aims to make price-versus-momentum relationships visible without a separate pane. The lower/upper price-channel extremes substitute for oscillator endpoints, while midpoint and overbought/oversold references move with that range.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wijmcwz7_financial_statement_indicator_by_zdmre.md`
+
+`strategy-card` · 126 lines · 4,940 B · description: **extracted**
+
+**Purpose.** Financial Statement Indicator summarizes a company through income-statement, balance-sheet and cash-flow/statistics tables. Its purpose is to support fundamental review directly on the chart rather than calculate a technical entry signal. The source enumerates reported and ratio fields, giving a useful inventory of what the dashboard exposes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wiwhv552_custom_pattern_detection.md`
+
+`strategy-card` · 113 lines · 4,655 B · description: **extracted**
+
+**Purpose.** Custom Pattern Detection lets the user define a multi-leg retracement structure, inspect a synthetic example and search historical swing points for matches. It is a pattern-building workbench rather than a fixed harmonic-pattern catalog.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wixmhdwt_seasonality_tfo.md`
+
+`strategy-card` · 123 lines · 4,826 B · description: **extracted**
+
+**Purpose.** Seasonality TFO estimates typical daily, monthly and quarterly performance by trading-day position within the year. It deliberately uses a fixed trading-day calendar rather than actual calendar month boundaries. This makes it an approximate seasonal alignment model particularly intended for US stocks and indices.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wlsrg7cx_best_sma_finder.md`
+
+`strategy-card` · 124 lines · 4,776 B · description: **extracted**
+
+**Purpose.** Select a historically favorable simple-moving-average length using a composite backtest ranking rather than manual trial and error.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wobqqsxf_black_scholes_option_pricing_model_w_greeks_loxx.md`
+
+`strategy-card` · 126 lines · 5,318 B · description: **extracted**
+
+**Purpose.** This options-model display estimates European-style option values and sensitivity measures from spot, strike, maturity, volatility, rates and dividends. Its purpose is theoretical valuation and exposure inspection, with selectable Greeks showing how model value changes when inputs move.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wp434cpg_btc_difficulty_adjustments.md`
+
+`strategy-card` · 113 lines · 4,647 B · description: **extracted**
+
+**Purpose.** BTC Difficulty Adjustments marks changes in Bitcoin mining difficulty alongside the daily price chart. It is an event-context overlay rather than a price-based momentum calculation, allowing users to inspect whether larger positive or negative network adjustments coincide with market behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wp7wwjll_supertrend_ai_clustering_luxalgo.md`
+
+`strategy-card` · 116 lines · 5,024 B · description: **extracted**
+
+**Purpose.** SuperTrend AI evaluates several SuperTrend factor settings with a smoothed directional-performance proxy, clusters their scores and uses the average factor from a selected performance group. It adapts a trailing reference according to recent fit rather than training a supervised forecast. The displayed score is not a win probability, and the author says it cannot predict every signal reliably.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wpbrh5sq_simple_decesion_matrix_classification_algorithm_ss.md`
+
+`strategy-card` · 120 lines · 4,693 B · description: **extracted**
+
+**Purpose.** Demonstrate a simplified binary classification ensemble that compares current technical features with historical cases and combines their votes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wrheq9cf_e2_drawing_library_horizontal_ray.md`
+
+`strategy-card` · 130 lines · 4,805 B · description: **extracted**
+
+**Purpose.** Provide reusable price-level rays that begin when a supplied condition occurs and monitor later retests.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wspypw8w_session_bar_candle_coloring.md`
+
+`strategy-card` · 121 lines · 4,573 B · description: **extracted**
+
+**Purpose.** Apply session-specific candle styling to emphasize selected market hours and distinguish bullish, bearish or neutral candles.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wtmg0nge_golden_pocket.md`
+
+`strategy-card` · 118 lines · 4,509 B · description: **extracted**
+
+**Purpose.** Maintain Fibonacci pullback zones from confirmed swing structure and optionally limit them to the direction of a moving-average trend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wvcqygsx_mtf_oscillator_framework_pinecoders.md`
+
+`strategy-card` · 173 lines · 6,846 B · description: **extracted**
+
+**Purpose.** MTF Oscillator Framework supplies an extensible chart/medium/high-timeframe presentation engine and includes a directional true-range oscillator as its financial example. Signed true range conveys directional volatility rather than volatility magnitude alone. The framework can aggregate horizons, identify nondirectional divergence levels and restrict bullish/bearish colors to selected conditions.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wyyxkhdn_correlation_cycle_correlationangle_market_state_john_ehlers.md`
+
+`strategy-card` · 121 lines · 4,934 B · description: **extracted**
+
+**Purpose.** This publication combines Ehlers Correlation Cycle, CorrelationAngle and Market State into one indicator. Its financial purpose is to present cycle and state information in a unified view, while also demonstrating an optimized Pine implementation. The author attributes the original concepts to a Traders Tips article and says the implementation is heavily modified.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wz8b1fiw_auto_chart_patterns_trendoscope.md`
+
+`strategy-card` · 246 lines · 10,573 B · description: **extracted**
+
+**Purpose.** Automatically identify multiscale chart patterns as pairs of nonintersecting trendlines, then label their geometry, direction and expansion behavior.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_wzvigqk7_vama_volume_adjusted_moving_average_function.md`
+
+`strategy-card` · 112 lines · 4,608 B · description: **extracted**
+
+**Purpose.** Make a moving average advance according to accumulated volume participation rather than a fixed number of elapsed bars.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_x2llrvbe_higher_order_pivots.md`
+
+`strategy-card` · 114 lines · 4,889 B · description: **extracted**
+
+**Purpose.** Higher Order Pivots recursively identifies turning points among already confirmed turning points. It is intended for retrospective market-structure analysis, where broader inflections can be distinguished from local candle noise.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_x2y6hyok_bitcoin_bullish_percent_index.md`
+
+`strategy-card` · 169 lines · 6,525 B · description: **extracted**
+
+**Purpose.** Bitcoin Bullish Percent Index measures breadth across a manually chosen crypto basket by counting point-and-figure buy states, then applies another point-and-figure representation to that breadth series. It asks whether strength is broad among assets the author regards as BTC-correlated, rather than measuring Bitcoin alone.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_x4xoo9ax_fibonacci_sequence_circles_bigbeluga.md`
+
+`strategy-card` · 128 lines · 4,672 B · description: **extracted**
+
+**Purpose.** Fibonacci Sequence Circles draws expanding geometric references around selected market anchors. The author proposes them as support/resistance and expansion context, with anchors chosen from pivots or calendar transitions. The sequence recurrence is explicitly shown, but a circle on a time-price chart also needs a price-versus-time scale.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_x8mujqgt_bjcandlepatterns.md`
+
+`strategy-card` · 215 lines · 7,260 B · description: **extracted**
+
+**Purpose.** BjCandlePatterns supplies reusable Japanese-candlestick predicates, helper measurements and optional labels for financial scripts. It spans single-bar shapes, engulfing and harami formations, gaps, stars, multi-bar continuation structures and soldiers/crows. The author intentionally omits trend and average-size filters in some patterns so callers can apply their own context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_x9qyvbyn_andean_oscillator.md`
+
+`strategy-card` · 113 lines · 4,796 B · description: **extracted**
+
+**Purpose.** Andean Oscillator separates directional price variation into bull and bear components using exponential envelopes of prices and squared prices. It aims to show both trend direction and variation amplitude, with an additional signal line to filter component crosses.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xascppnw_nick_rypock_trailing_reverse_nrtr_everget.md`
+
+`strategy-card` · 113 lines · 4,650 B · description: **extracted**
+
+**Purpose.** NRTR is a percentage-based trailing reversal reference that follows extremes reached within the current trend. The distinguishing feature is excluding extremes from the preceding trend, so a new trend’s reference starts from its own evolving range.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xdwgv3fx_ttrades_daily_bias_tfo.md`
+
+`strategy-card` · 115 lines · 5,078 B · description: **extracted**
+
+**Purpose.** TTrades Daily Bias assigns a next-period target toward a previous high or low from the latest completed period’s relationship to its own prior range. It then measures how often those target levels are reached and closed through. Daily and weekly modes share the same scenario logic, making the tool a directional-target heuristic plus historical reporting rather than a complete entry/stop strategy.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xfr7xhqz_cm_macd_custom_indicator_multiple_time_frame_v2.md`
+
+`strategy-card` · 113 lines · 4,784 B · description: **extracted**
+
+**Purpose.** CM MACD MTF V2 updates the presentation and alert handling of a multi-timeframe MACD study. It allows users to separate the MACD/signal lines, histogram and price-bar highlighting, while alert messages include the context needed to identify a cross.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xgnuhodo_open_interest_chart_luxalgo.md`
+
+`strategy-card` · 119 lines · 4,755 B · description: **extracted**
+
+**Purpose.** Open Interest Chart renders changes in selected futures COT open interest as circular spikes or rings. It is a compact multi-market activity display whose geometry is primarily a visualization technique. Rising OI is not literal net money flow or participant direction by itself, and the report’s weekly publication frequency remains distinct from the chart/request timeframe.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xh8tldte_realtime_delta_volume_action_lucf.md`
+
+`strategy-card` · 149 lines · 7,223 B · description: **extracted**
+
+**Purpose.** Realtime Delta Volume Action builds a custom live candle view from incoming price/volume updates. It supplements price action with signed update counts, signed volume, relative deltas and a volume-weighted update-price reference.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xkbwnq2h_intrabar_run_count_indicator_tbiktag.md`
+
+`strategy-card` · 116 lines · 5,003 B · description: **extracted**
+
+**Purpose.** Intrabar Run Count tests the sequence of positive and negative returns within each chart bar for departure from a random-sign model. It aims to identify unusual clustering or alternation, not forecast direction. A standardized observed-versus-expected run count is compared with confidence thresholds and highlighted on the chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xlv4mwjk_time_range_statistics.md`
+
+`strategy-card` · 119 lines · 5,201 B · description: **extracted**
+
+**Purpose.** Time Range Statistics summarizes a manually selected chart interval, combining familiar price statistics with volume, gaps and intermarket correlation. It lets the user study a specific episode instead of a fixed rolling window. The panel includes directional context based on higher-high versus lower-low counts, while chart lines expose the interval’s mean and extremes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xmke97vn_developing_market_profile_tpo_honestcowboy.md`
+
+`strategy-card` · 130 lines · 5,263 B · description: **extracted**
+
+**Purpose.** Developing Market Profile rebuilds a rolling time-at-price distribution on each bar rather than resetting by session. It aims to expose changing market environments and retain a historical visual record of profile development. Each price zone’s importance is measured against the largest zone count, not a conventional value area.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xp9odtfm_volume_profile_volume_delta_oi_delta_kioseff_trading.md`
+
+`strategy-card` · 128 lines · 6,083 B · description: **extracted**
+
+**Purpose.** This profile estimates per-level volume delta and, for supported Binance perpetuals, open-interest delta. It distributes minute-bar activity across crossed price levels and optionally imposes a two-sided split when only one component appears. The goal is footprint-like visualization under limited data, with assumptions made explicit rather than a claim of true trade-by-trade aggressor volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xux5vvn0_earnings_splits_dividends.md`
+
+`strategy-card` · 125 lines · 4,808 B · description: **extracted**
+
+**Purpose.** Demonstrate access to corporate-event series by explaining how event attributes are encoded in a TradingView internal representation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xyaiqwd8_auto_trendline_indicator_based_on_fractals.md`
+
+`strategy-card` · 122 lines · 4,735 B · description: **extracted**
+
+**Purpose.** Auto Trendline connects recently detected fractals to make trendline placement systematic. Its aim is to reduce discretionary drawing bias by using a consistent pivot-selection process. Crossing markers can highlight price interaction with the resulting lines, but the author explicitly treats the lines as references rather than evidence that slope predicts future direction.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_xzfb6isb_smart_trader_concentric_candles_aristotelian_cycloids.md`
+
+`strategy-card` · 138 lines · 6,095 B · description: **extracted**
+
+**Purpose.** Explore candle-derived cycloid geometry and price contacts using volatility-normalized coordinates. The author explicitly presents the market relevance as an unvalidated hypothesis, despite displaying probability-like contact scores.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_y3pnzg2q_correlation_heatmap.md`
+
+`strategy-card` · 142 lines · 5,673 B · description: **extracted**
+
+**Purpose.** Correlation Heatmap compares aligned weekly or monthly arithmetic returns across a selected asset list. It aims to support diversification and relationship research while avoiding misleading comparisons caused by different session closing times. The distinctive alignment method reconstructs each other symbol’s price from sum/difference spread series sampled in chart context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_y5ciz9cb_universal_signal_backtester_luxalgo.md`
+
+`strategy-card` · 109 lines · 4,753 B · description: **extracted**
+
+**Purpose.** Universal Signal Backtester simulates trades from selectable built-in or external signals and summarizes their historical outcomes on-chart. It aims to let users compare entry logic, exits and cost assumptions within a common display.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_y5n6dljm_spearman_rank_correlation_coefficient.md`
+
+`strategy-card` · 106 lines · 4,227 B · description: **extracted**
+
+**Purpose.** Measure whether two selected market series tend to move monotonically together by comparing their ranked observations.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_y6jyas39_market_sessions_and_tpo_forecast.md`
+
+`strategy-card` · 129 lines · 5,493 B · description: **extracted**
+
+**Purpose.** Market Sessions and TPO combines session boundaries, time-price-opportunity profiles and an unspecified remainder-of-session forecast. It adds participation and range statistics so the user can inspect session structure in one view. Profiles and naked PoC references provide descriptive context; the forecast’s method is not given and must not be inferred from the presence of ATR augmentation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_y6x4nem5_treasury_yields_heatmap_by_muqwishi.md`
+
+`strategy-card` · 120 lines · 6,382 B · description: **extracted**
+
+**Purpose.** Treasury Yields Heatmap displays yield observations by date and classifies the cross-maturity curve as normal, flat or inverted. It is a bond-market monitoring view, not a forecast that an inversion necessarily predicts a recession or trade outcome.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ya0kopdo_markov_chain_3d_fractalyst.md`
+
+`strategy-card` · 159 lines · 6,880 B · description: **extracted**
+
+**Purpose.** Markov Chain [3D] summarizes recent transitions among detected bullish, bearish and neutral regimes. Its animated state diagram is paired with a numeric bias output intended for connecting regime filters to separately specified systematic trading rules.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yclsgmij_random_synthetic_asset_generation.md`
+
+`strategy-card` · 113 lines · 4,576 B · description: **extracted**
+
+**Purpose.** Random Synthetic Asset Generation creates pseudo-random price and volume series for testing financial scripts under artificial scenarios. The source explicitly proposes embedding the generator into another script for random-data backtests, making this a financial research utility rather than decorative randomness.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yftex5f0_correlation_matrix_heatmap.md`
+
+`strategy-card` · 100 lines · 4,251 B · description: **extracted**
+
+**Purpose.** This publication presents a correlation matrix through tables. Its supported purpose is compact inspection of relationships among series, but the complete description does not identify the series, statistic or sampling method. It is retained as a financial-analysis candidate with the lack of content explicit rather than inventing a Pearson-return matrix from a familiar title.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yg0rpnzo_efficient_work_lucf.md`
+
+`strategy-card` · 129 lines · 5,811 B · description: **extracted**
+
+**Purpose.** Measure directional close-to-close displacement relative to an OHLC-based estimate of distance traveled. Efficient Work interprets efficient movement as sentiment strength independent of amplitude, then compares that oscillator across chart and higher timeframes.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ygno2g1v_tick_chart.md`
+
+`strategy-card` · 113 lines · 4,468 B · description: **extracted**
+
+**Purpose.** Build a live candle chart organized by count of price updates rather than fixed elapsed time.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yhpgau7a_carrier_volatility_pumori.md`
+
+`strategy-card` · 117 lines · 4,534 B · description: **extracted**
+
+**Purpose.** Explore an intentionally overreactive fractional-length recursive transform as a visual carrier of rapid changes in RSI or price.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yjxpjg0y_multi_asset_performance_spaghetti_by_leviathan.md`
+
+`strategy-card` · 150 lines · 8,158 B · description: **extracted**
+
+**Purpose.** Monitor relative performance across a caller-selected asset group using price, open interest or on-balance volume. The spaghetti display emphasizes leaders, laggards and changes around an anchor, with auxiliary relationship statistics for rotation or pair-research ideas.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ykinbu20_true_close_institutional_trading_sessions_zeiierman.md`
+
+`strategy-card` · 113 lines · 4,923 B · description: **extracted**
+
+**Purpose.** True Close maps trading sessions and uses the close of each session’s first hour as a static price anchor. It emphasizes the transition into Sydney, Tokyo, London and New York with session boxes, opening-hour highlights and a dashboard. The author frames this as institutional closing logic, but the tool observes time and prices rather than actual institutional settlement or order completion.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ykvjs2dw_htf_floating_candles_w_volume_footprint_theultimator5.md`
+
+`strategy-card` · 128 lines · 6,059 B · description: **extracted**
+
+**Purpose.** HTF Floating Candles places developing higher-timeframe candles beside the working chart and adds footprint volume rows across their range. It aims to preserve broader price/volume context without obscuring lower-timeframe action.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yln2bnaa_auto_fibonacci_and_gann_fan_retracements_combo.md`
+
+`strategy-card` · 130 lines · 5,268 B · description: **extracted**
+
+**Purpose.** Auto Fibonacci and Gann Combo automatically places retracements and fans from detected local extremes. It aims to supply potential support/resistance geometry without manually anchoring every set. A new opposite extreme is needed to confirm the preceding high/low, so automatic anchors inherently arrive late. The Gann component also tries to infer price/time scaling from successive peaks/troughs.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ypaxpury_interactive_motive_wave_checklist.md`
+
+`strategy-card` · 161 lines · 6,557 B · description: **extracted**
+
+**Purpose.** Interactive Motive Wave Checklist tests a manually selected price structure against disclosed Elliott-wave-style conditions. It is an educational validation aid: the user supplies the candidate rather than an automatic market scanner discovering it. The checklist distinguishes general motive requirements from impulse and expanding/contracting diagonal constraints.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ypz7tsjn_ichimoku_oscillator.md`
+
+`strategy-card` · 114 lines · 4,707 B · description: **extracted**
+
+**Purpose.** Ichimoku Oscillator translates several Ichimoku relationships into stacked oscillator layers so the user can inspect directional agreement. Its entry interpretation requires all layers to align with the main trend, rather than entering immediately when the trend changes. It also proposes partial-profit events and optional ATR protection, but the full adjusted equations are not provided.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yqkwbg4m_intrabar_analyzer_kioseff_trading.md`
+
+`strategy-card` · 136 lines · 5,424 B · description: **extracted**
+
+**Purpose.** Intrabar Analyzer displays lower-timeframe prices and technical calculations within a higher-timeframe chart context. It aims to make hidden intrabar structure inspectable through alternate candle constructions, overlays, volume/price graphics and technical ratings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yr3kt0ui_time_of_day_session_performance_stats_quantalgo.md`
+
+`strategy-card` · 169 lines · 7,353 B · description: **extracted**
+
+**Purpose.** Time-of-Day/Session Performance Stats ranks historical activity by hour and session to help traders focus on appropriate market windows. It separately measures range, volume, directional frequency and average open-to-close drift, avoiding the assumption that a high bullish bar count necessarily means positive average return. Session overlaps count in every involved session.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yrff3z4j_financials_comparing_companies.md`
+
+`strategy-card` · 142 lines · 6,008 B · description: **extracted**
+
+**Purpose.** Financials Comparing Companies places a small selected peer group in a sortable financial table. It is intended for same-sector comparison and supplements fundamentals with price, moving-average and volume context. The author uses objects as an implementation demonstration, but the financial purpose is peer analysis rather than a generic programming utility.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_ysff2otq_librarycot.md`
+
+`strategy-card` · 123 lines · 5,486 B · description: **extracted**
+
+**Purpose.** Construct platform ticker identifiers for Commitment of Traders futures reports. LibraryCOT hides the encoding and asset/report mapping behind helpers so programmers can request positioning series; it does not generate a trading signal or interpret positioning.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_yyrxrhi9_atr_rope.md`
+
+`strategy-card` · 133 lines · 5,503 B · description: **extracted**
+
+**Purpose.** Separate movement beyond an ATR-sized tolerance from smaller noise and preserve reference zones formed while the filtered center stays flat.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zdqq3mfb_minervini_qualifier.md`
+
+`strategy-card` · 154 lines · 5,922 B · description: **extracted**
+
+**Purpose.** Minervini Qualifier colors a moving-average envelope according to a stock trend-template qualification and exposes individual condition states. It aims to make progress toward the referenced stock-selection conditions visible over time. A separate relative-strength display compares the stock with a chosen index.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zewvhavq_divergence_screener_trendoscope.md`
+
+`strategy-card` · 136 lines · 5,186 B · description: **extracted**
+
+**Purpose.** Divergence Screener compares oscillator and price pivot directions and can expose its outputs to a watchlist screener. It supports regular reversal-style and hidden continuation-style divergences with selectable trend context. The source explains these relationships and the user workflow, but the zigzag construction and intermediate-line validation remain undisclosed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zhfjqywg_cvd_profiles_tradingiq.md`
+
+`strategy-card` · 129 lines · 4,939 B · description: **extracted**
+
+**Purpose.** Map estimated cumulative directional participation into session price profiles and contrast it with activity, notional and imbalance views.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zkbuifk7_delta_volume_channels_lucf.md`
+
+`strategy-card` · 150 lines · 7,145 B · description: **extracted**
+
+**Purpose.** Translate lower-timeframe directional-volume estimates into price-chart channels and configurable condition markers. The design emphasizes visual pressure and consolidation context rather than raw flow values or verified exchange aggressor volume.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zkf0qji2_signs_of_the_times_lucf.md`
+
+`strategy-card` · 146 lines · 5,068 B · description: **extracted**
+
+**Purpose.** Signs of the Times quantifies directional bar strength from simple current/prior-bar properties while deliberately ignoring price-move amplitude. It aims to complement momentum indicators: a small favorable gap can receive the same discrete weight as a large one, making the score less dominated by outsized candles. Bull and bear evidence are collected separately, normalized and smoothed.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zlyn2rht_zigzag_cloud.md`
+
+`strategy-card` · 122 lines · 4,571 B · description: **extracted**
+
+**Purpose.** Zigzag Cloud measures price location relative to smoothed zigzag pivots rather than ordinary bar-by-bar prices. It combines an overall pivot average, separate high/low pivot averages and dispersion envelopes. The resulting cloud is intended to contextualize whether current price is relatively elevated or depressed compared with prior swings.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zmdzlgaj_volume_speed_by_muqwishi.md`
+
+`strategy-card` · 121 lines · 4,956 B · description: **extracted**
+
+**Purpose.** Volume Speed displays directional volume dominance and an estimated rate of volume arrival over a chosen lower-timeframe window. It aims to provide a compact tape-like activity widget, with a visual flash when a volume event is unusually large relative to average. The description emphasizes flow speed and up/down totals but does not disclose their exact calculation.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zmxb93wd_volume_footprint_voids_bigbeluga.md`
+
+`strategy-card` · 115 lines · 5,137 B · description: **extracted**
+
+**Purpose.** Volume Footprint Voids builds a separate lower-timeframe profile within each chart candle, emphasizing concentrations and sparse areas. The author calls the largest block a time point of control and interprets black voids as potential imbalance-fill zones.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zn9dhlps_volume_delta_compare_ticks_ltf_data.md`
+
+`strategy-card` · 141 lines · 5,407 B · description: **extracted**
+
+**Purpose.** Volume Delta Compare contrasts live-update and lower-timeframe estimates of directional volume. Its purpose is to show why the same chart candle can yield different delta values depending on observation granularity. It preserves a neutral category instead of forcing unchanged-price volume into a directional side.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zoamxj65_moving_regression_prediction_bands.md`
+
+`strategy-card` · 119 lines · 4,769 B · description: **extracted**
+
+**Purpose.** Compare current price with a prior-bar polynomial forecast and an error-scaled envelope to identify movements outside the recently fitted trend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zr3wnj4k_trading_holidays_and_expiry_calendar.md`
+
+`strategy-card` · 110 lines · 4,456 B · description: **extracted**
+
+**Purpose.** Trading Holidays and Expiry Calendar shows a forward calendar of market activity classifications. It aims to help users and script developers distinguish trading sessions, closures, weekends and expiry events before those dates arrive. This is a financial planning tool even though it generates no price signal.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zr7ztqm1_renko_rsi.md`
+
+`strategy-card` · 114 lines · 4,327 B · description: **extracted**
+
+**Purpose.** Calculate RSI on a custom Renko engine while displaying the result on a time-based chart.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zrc6twt4_z_score_probability_indicator.md`
+
+`strategy-card` · 126 lines · 4,691 B · description: **extracted**
+
+**Purpose.** Relate a rolling price Z-score to corresponding price levels and an abbreviated normal-distribution cumulative table.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zsdlpebt_trend_type_indicator_by_bobrivera990.md`
+
+`strategy-card` · 149 lines · 6,019 B · description: **extracted**
+
+**Purpose.** Trend Type Indicator categorizes price behavior as sideways, upward or downward using volatility and directional-movement tools. It is intended for comparing trend context across chart timeframes before applying a separate trend-trading method. The publication distinguishes strength/range detection from direction, which avoids assuming that high volatility alone means an uptrend.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zsgx4esy_smart_trader_episode_06_isotropic_trend_lines.md`
+
+`strategy-card` · 156 lines · 5,839 B · description: **extracted**
+
+**Purpose.** Isotropic Trend Lines measures structural trend slope in log-price units normalized by realized volatility, aiming to make steepness less dependent on display scaling. It reduces non-overlapping blocks to range midpoints, finds a monotonic sequence, fits boundary lines through selected extremes and compares multiple scales. A state machine describes channel exits, returns and failures.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zsmaleyi_rsi_impact_heat_map_trendoscope.md`
+
+`strategy-card` · 125 lines · 5,338 B · description: **extracted**
+
+**Purpose.** Evaluate the subsequent upside and downside excursion associated with a selected RSI crossing event using a two-dimensional outcome heatmap.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zsnllxmm_dual_phase_trend_regime_oscillator_zeiierman.md`
+
+`strategy-card` · 113 lines · 4,715 B · description: **extracted**
+
+**Purpose.** Dual-Phase Trend Regime Oscillator selects a fast or slow price-time-correlation oscillator according to a volatility regime. It aims to preserve stability during calmer conditions and responsiveness when volatility rises. The active correlation-derived value is normalized for a shared midpoint interpretation, but switching between horizons can itself change the apparent trend state.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zus134uh_heat_map_seasons.md`
+
+`strategy-card` · 106 lines · 4,418 B · description: **extracted**
+
+**Purpose.** Heat Map Seasons uses distance from a regression baseline to label metaphorical warm and cold market phases. It is a deviation/regime display, not a study of calendar seasonality. Warm phases are described as active/upward and cold phases as quieter/sideways-or-bearish, with extreme gradients proposed as potential top/bottom context; those associations are not independently measured.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zvct18wt_mawreez_rsi_divergence_detector.md`
+
+`strategy-card` · 121 lines · 4,841 B · description: **extracted**
+
+**Purpose.** Mawreez RSI Divergence Detector represents divergence strength continuously instead of marking only a few selected pivot pairs. It sums valid divergences of regular and hidden types, using opposite slopes between price and RSI and requiring connecting lines not to cross their underlying series.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zwir7vno_datachart.md`
+
+`strategy-card` · 122 lines · 4,713 B · description: **extracted**
+
+**Purpose.** DataChart renders sample distributions as scatterplots or heatmaps and includes a price-event displacement interface. That explicit event-price component makes it a financial research library even though its chart machinery also accepts generic samples. It aims to help callers inspect the distribution and quadrant counts of outcomes after chosen events.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zx1z1z2r_liquidity_heatmap_ltf_luxalgo.md`
+
+`strategy-card` · 114 lines · 4,876 B · description: **extracted**
+
+**Purpose.** Liquidity Heatmap LTF highlights high-volume lower-timeframe candle bodies inside chart candles. Its aim is to locate compact intrabar activity regions that may be hidden by the parent candle. The highest-activity body receives a special color and interval lines, while optional range/direction lines preserve broader candle context.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zxcxrnij_redk_multi_modal_trailingstop_redk_mmtstop.md`
+
+`strategy-card` · 129 lines · 5,207 B · description: **extracted**
+
+**Purpose.** RedK Multi-Modal TrailingStop places several common stop-distance models behind one visual and alert interface. It aims to support management of an existing position, letting the trader change the stop method without changing how proximity and risk states are presented. A separate ATR-based distance gauge labels price as safe, watch or critical regardless of the selected stop model.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zxtnurdh_cup_handle.md`
+
+`strategy-card` · 122 lines · 4,701 B · description: **extracted**
+
+**Purpose.** Cup & Handle searches for paired pivot highs whose intervening closes remain below a temporary connecting line, then fits a cup-shaped envelope and a handle region. It aims to automate a particular geometric interpretation of this pattern rather than simply identify a rounded low by eye. The detector tolerates a configurable fraction of bars breaking its upper/lower cup boundaries.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
+
+#### `backtester/strategy_cards/incomplete/publication-profiles/tv_zxxjiyij_adaptive_volume_delta_map.md`
+
+`strategy-card` · 124 lines · 5,274 B · description: **extracted**
+
+**Purpose.** Adaptive Volume Delta Map chooses available data granularity and displays directional-volume imbalance plus an optional per-price distribution. It aims to adapt an order-flow-style view to feed/subscription capabilities, from fine updates to coarse candles.
+
+**Contents.** Frontmatter: `status`=documentation-only, `evaluation`=null, `registry_key`=null.
+
+**Use.** Specification only — read it; there is no runner. Status: documentation-only.
 
 ### `backtester/strategy_research/`
 
@@ -11021,16 +18025,6 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Read it.
 
-#### `backtester/strategy_research/tv_8os1nbr8_inwcoin_martingale_strategy_for_bitcoin.md`
-
-`doc` · 108 lines · 5,079 B · description: **extracted**
-
-**Purpose.** Specification of inwCoin Martingale Strategy ( for Bitcoin ); not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
 #### `backtester/strategy_research/tv_a3eudme3_raff_regression_channel_rrc.md`
 
 `doc` · 92 lines · 4,298 B · description: **extracted**
@@ -11831,16 +18825,6 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** Read it.
 
-#### `backtester/strategy_research/tv_ghocsiv7_gap_filling_strategy.md`
-
-`doc` · 96 lines · 4,979 B · description: **extracted**
-
-**Purpose.** Specification of Gap Filling Strategy ; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
-
-**Use.** Read it.
-
 #### `backtester/strategy_research/tv_glj0deuy_indicator_introduction_custom_volume_periodic_peaks_troughs.md`
 
 `doc` · 94 lines · 4,318 B · description: **extracted**
@@ -11908,16 +18892,6 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Purpose.** Specification of Multi-Ticker Anchored Candles; not a tested trading strategy.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_jjhuhcje_stepped_trailing_strategy_example.md`
-
-`doc` · 96 lines · 4,096 B · description: **extracted**
-
-**Purpose.** Specification of Stepped trailing strategy example; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
 **Use.** Read it.
 
@@ -12378,16 +19352,6 @@ The simulation engine and everything that supports it. Never gains live-trading 
 **Purpose.** Specification of Earnings Price Move Cheat Sheet [KT]; not a tested trading strategy.
 
 **Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=false, `registry_key`=null.
-
-**Use.** Read it.
-
-#### `backtester/strategy_research/tv_oxvr5vmy_grid_like_strategy.md`
-
-`doc` · 108 lines · 7,439 B · description: **extracted**
-
-**Purpose.** Specification of Grid Like Strategy; not a tested trading strategy.
-
-**Contents.** Frontmatter: `status`=spec-only, `family`=source-defined, `evaluation`=null, `success_likelihood`=low, `data_available`=true, `registry_key`=null.
 
 **Use.** Read it.
 
@@ -13147,7 +20111,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-161 files.
+178 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -13282,6 +20246,22 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 142 lines · 7,828 B · description: **extracted**
 
 **Purpose.** Machine-readable copy: `research/results/top_coins.csv`. Regenerate rather than edit by hand — every figure here came from that one API call and none is transcribed. market cap and that is what market cap says. They are marked because a trading universe that
+
+**Use.** Read it.
+
+#### `research/TRADINGVIEW-SCRIPT-CARDS.md`
+
+`doc` · 772 lines · 405,954 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0. Delta: expand the accepted strategy subset to all trading-related saved scripts. Source-review state: **accepted**. 742 of 742 publications accounted for; 691 trading-related cards and 51 source-grounded non-trading exclusions. Each card explains the idea, mechanism, intended use, settings, limitations and data needs.
+
+**Use.** Read it.
+
+#### `research/TRADINGVIEW-STRATEGY-CARDS.md`
+
+`doc` · 155 lines · 11,880 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0. Delta: distinguish source disclosure from standalone coin-test qualification. The21 native-strategy descriptions were read in full (92,770 characters). Their accepted card contents remain unchanged. Ten disclose a principal calculation; eleven have partial computational definitions. All21 remain coin-test-incomplete.
 
 **Use.** Read it.
 
@@ -13527,7 +20507,7 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tradingview-card-coverage.json`
 
-`config` · 225061 lines · 10,479,602 B · description: **derived**
+`config` · 225068 lines · 10,480,010 B · description: **derived**
 
 **Purpose.** Generated JSON object, 10 keys (schema_version, version, delta, source_root, source_publication_counts, existing_card_ids...).
 
@@ -13535,9 +20515,81 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 #### `research/tradingview-card-readiness.json`
 
-`config` · 16328 lines · 681,304 B · description: **derived**
+`config` · 16732 lines · 720,957 B · description: **derived**
 
 **Purpose.** Generated JSON object, 9 keys (schema_version, version, reviewed_on, delta, scope, criteria...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-script-context-bundle.json`
+
+`config` · 38 lines · 1,300 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema_version, generated_at, project_key, paths, indexes, links...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-script-profile-audit-prompts.md`
+
+`doc` · 41 lines · 6,545 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0. Delta: preserve exact source-semantic and completeness audit contract. The user requests an explanation and card for every trading script, including indicators. Incomplete cards belong beneath backtester/strategy_cards/incomplete.
+
+**Use.** Read it.
+
+#### `research/tradingview-script-profile-prompts.md`
+
+`doc` · 30 lines · 4,263 B · description: **extracted**
+
+**Purpose.** Version:1.1.0. Delta: add the user-requested completeness and incomplete-location decision. User request: For all of the strategies in the script directory, extract and understand the idea and what it's trying to accomplish, and create strategy cards for each one. User clarification: All trading scripts, including indicators.
+
+**Use.** Read it.
+
+#### `research/tradingview-script-profile-run.json`
+
+`config` · 148 lines · 3,758 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (pipeline, plan_b, cited_paths, sections, scripts, artifacts...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-script-profile-work.json`
+
+`config` · 778 lines · 15,883 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (version, delta, scope, source_count, protected_strategy_ids, native_type_counts...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-script-understanding.json`
+
+`config` · 72634 lines · 3,000,443 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (schema_version, version, delta, state, source_count, source_root...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-strategy-card-locations.json`
+
+`config` · 814 lines · 63,105 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (schema_version, version, delta, verdict, accepted_manifest_sha256, reviewer...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-strategy-understanding-audit.json`
+
+`config` · 53 lines · 3,175 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema_version, version, delta, agent, definition_version, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/tradingview-strategy-understanding.json`
+
+`config` · 6474 lines · 340,543 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, scope, source_root, read_description_characters...).
 
 **Use.** Configuration; nothing to run.
 
@@ -14575,17 +21627,69 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `json.load(open('research/results/triggers_sol_1h.json'))`
 
+### `research/tradingview-script-profile-audits/`
+
+#### `research/tradingview-script-profile-audits/shard-a.jsonl`
+
+`other` · 0 lines · 226,356 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/tradingview-script-profile-audits/shard-b.jsonl`
+
+`other` · 0 lines · 253,096 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/tradingview-script-profile-audits/shard-c.jsonl`
+
+`other` · 0 lines · 244,992 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `research/tradingview-script-profiles/`
+
+#### `research/tradingview-script-profiles/shard-a.jsonl`
+
+`other` · 0 lines · 643,954 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/tradingview-script-profiles/shard-b.jsonl`
+
+`other` · 0 lines · 613,007 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/tradingview-script-profiles/shard-c.jsonl`
+
+`other` · 0 lines · 658,537 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
 ---
 
 ## extension
 
 The Chrome extension, and the only component that can place a real order. Dry-run is the default, risk rails live in code and fail closed, and a fresh install must not be able to trade.
 
-92 files.
+96 files.
 
 #### `extension/README.md`
 
-`doc` · 613 lines · 40,560 B · description: **extracted**
+`doc` · 632 lines · 42,246 B · description: **extracted**
 
 **Purpose.** A Chrome MV3 extension for the owner's Base and Solana money: **holdings, profit and loss, pool discovery, backtests and strategy changes, swap quotes, and alerts** when a more profitable pool or strategy appears. It also keeps an **experimental grid trading strategy on Jupiter (Solana)** with
 
@@ -14593,7 +21697,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/manifest.json`
 
-`config` · 47 lines · 1,287 B · description: **curated**
+`config` · 47 lines · 1,318 B · description: **curated**
 
 **Purpose.** MV3 manifest: permissions, the service worker entry point, and the UI surfaces. The permission list is the extension's blast radius, so review any addition against `docs/SECURITY.md`.
 
@@ -14601,7 +21705,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/package.json`
 
-`config` · 22 lines · 604 B · description: **curated**
+`config` · 22 lines · 605 B · description: **curated**
 
 **Purpose.** Node scripts for the extension's test and tooling surfaces.
 
@@ -14639,9 +21743,19 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/e2e/lib/dashboard-workspace.mjs`
+
+`code-js` · 136 lines · 13,799 B · description: **extracted**
+
+**Purpose.** Real DOM regression checks. All mutations use an injected, memory-only transport.
+
+**Contents.** Defines `verifyDashboardWorkflows`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/e2e/lib/guard.mjs`
 
-`code-js` · 94 lines · 3,167 B · description: **extracted**
+`code-js` · 95 lines · 3,241 B · description: **extracted**
 
 **Purpose.** What the e2e harness may ask the extension to do. The harness drives the real service worker through `chrome.runtime.sendMessage`. It must never arm the extension, change its mode, create a key or cancel an order, so every message goes through this allowlist first.
 
@@ -14697,7 +21811,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/bg/service-worker.js`
 
-`code-js` · 370 lines · 15,758 B · description: **extracted**
+`code-js` · 371 lines · 15,876 B · description: **extracted**
 
 **Purpose.** MV3 service worker — the extension surface of the command registry. There is no long-lived process here. The worker is woken by an alarm, runs one tick, and is free to die. Nothing may be held in module scope that the next tick depends on: everything durable lives in IndexedDB or chrome.storage.local, and the tick rebuilds its world from those plus the venue's live state.
 
@@ -14707,11 +21821,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/bg/soltui-transport.js`
 
-`code-js` · 85 lines · 3,339 B · description: **extracted**
+`code-js` · 163 lines · 6,191 B · description: **extracted**
 
 **Purpose.** Service-worker transport to the soltui native messaging host. Chrome starts `com.mitchhudson.soltui` (soltui/native_host.py) on demand and speaks length-prefixed JSON with it. This file owns what is Chrome-specific about that: the port, the request id, the per-call timeout and the clean error when the host is not installed.
 
-**Contents.** Defines `INSTALL_HINT`, `createNativeTransport`.
+**Contents.** Defines `INSTALL_HINT`, `closeIfIdle`, `createNativeTransport`, `createOneShotTransport`, `finish`, `open`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -14739,7 +21853,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/commands.js`
 
-`code-js` · 906 lines · 41,150 B · description: **extracted**
+`code-js` · 917 lines · 41,653 B · description: **extracted**
 
 **Purpose.** The command registry — single source of truth for every action this project can perform. Three surfaces drive this one registry: extension src/bg/service-worker.js (chrome.runtime messages) CLI tools/cli.js (argv) HTTP API tools/api-server.js (POST /v1/<command>) Nothing may be reachable from one surface and not the others.
 
@@ -14947,7 +22061,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/dashboard.html`
 
-`code-web` · 520 lines · 27,650 B · description: **curated**
+`code-web` · 577 lines · 31,908 B · description: **curated**
 
 **Purpose.** Full-page dashboard shell for open state, ladder rungs and recent ticks. Markup only.
 
@@ -14955,7 +22069,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/dashboard.js`
 
-`code-js` · 193 lines · 7,643 B · description: **extracted**
+`code-js` · 194 lines · 7,717 B · description: **extracted**
 
 **Purpose.** Dashboard shell: hash routing between views, the top bar, the stored scan, and Settings. Views load on first visit and on their own Refresh buttons; Overview paints from the stored scan first so the page is useful before any network answers. Every action goes through a registry command (src/core/commands.js) — this page holds no trading or alert logic of its own.
 
@@ -14963,9 +22077,19 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/src/ui/live-score.js`
+
+`code-js` · 90 lines · 5,361 B · description: **extracted**
+
+**Purpose.** Display-only adapter for soltui/live_score.py; shared fixture tests bind the rules.
+
+**Contents.** Defines `DIRECTIONS`, `HORIZONS`, `aggregatePredictions`, `appendScoreTick`, `renderScoreChart`, `scoreText`, `scoreTickLayout`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/src/ui/popup.html`
 
-`code-web` · 85 lines · 3,601 B · description: **curated**
+`code-web` · 90 lines · 3,972 B · description: **curated**
 
 **Purpose.** Browser-action popup shell — status at a glance and the dry-run toggle. Markup only; behaviour lives in the JS modules.
 
@@ -14993,11 +22117,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/soltui-panel.js`
 
-`code-js` · 190 lines · 7,017 B · description: **extracted**
+`code-js` · 674 lines · 36,413 B · description: **extracted**
 
-**Purpose.** Dashboard panel for the soltui command bridge. The command list comes from the registry (`soltuiCommands`), the form is built from each command's declared params by type, and a Run sends only `soltuiCall` with a command name taken from that list. Nothing here knows a soltui command by name, so a new soltui command shows up with no change.
+**Purpose.** Dashboard workspace over the installed TUI registry. Results are always text nodes.
 
-**Contents.** Defines `buildParams`, `coerceField`, `fieldFor`, `loadList`, `mountSoltuiPanel`, `renderForm`.
+**Contents.** Defines `LIVE_PREDICTIONS_MS`, `POLLABLE`, `applyRoute`, `ask`, `buildParams`, `choose`, `clearConfirmation`, `coerceField`, `display`, `dispose` and 23 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -15013,7 +22137,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/ui/ui.css`
 
-`code-web` · 270 lines · 13,059 B · description: **curated**
+`code-web` · 298 lines · 14,968 B · description: **curated**
 
 **Purpose.** Shared styling for both surfaces, kept in one file so the popup and dashboard cannot drift visually.
 
@@ -15066,6 +22190,16 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 **Purpose.** "Use soltui Solana address": fill the Wallet pubkey field from the address saved in soltui. The address comes through the same bridge as every other soltui call: the page sends `soltuiCall` for the read-only `wallet.addresses` command, which returns the public Solana and EVM addresses and nothing else (never an extended public key, never key material).
 
 **Contents.** Defines `B58`, `fetchSolanaAddress`, `isSolanaPubkey`, `mountWalletPubkeyButton`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `extension/src/ui/workspace-model.js`
+
+`code-js` · 84 lines · 5,280 B · description: **extracted**
+
+**Purpose.** Registry-derived navigation and result adapters shared by the dashboard and tests.
+
+**Contents.** Defines `WORKSPACES`, `cellText`, `columnsFor`, `filterCommands`, `resultTables`, `rowsToCsv`, `seriesFromRows`, `valuesFromRow`, `workspaceFor`.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -15225,6 +22359,14 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
+#### `extension/test/live-score.test.js`
+
+`code-js` · 34 lines · 1,823 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `extension/test/market.test.js`
 
 `code-js` · 377 lines · 21,757 B · description: **none**
@@ -15253,7 +22395,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/service-worker.test.js`
 
-`code-js` · 242 lines · 10,359 B · description: **none**
+`code-js` · 256 lines · 11,061 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -15269,7 +22411,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/soltui-bridge.test.js`
 
-`code-js` · 281 lines · 14,607 B · description: **none**
+`code-js` · 347 lines · 17,813 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -15279,7 +22421,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/soltui-panel.test.js`
 
-`code-js` · 84 lines · 5,178 B · description: **none**
+`code-js` · 114 lines · 7,690 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -15347,7 +22489,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/wallet-pubkey.test.js`
 
-`code-js` · 134 lines · 6,692 B · description: **none**
+`code-js` · 134 lines · 6,680 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -15409,7 +22551,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/tools/e2e.mjs`
 
-`code-js` · 554 lines · 28,372 B · description: **extracted**
+`code-js` · 593 lines · 31,929 B · description: **extracted**
 
 **Purpose.** Real-browser end-to-end check. Loads the unpacked extension into Chrome for Testing, drives the real service worker, popup and dashboard over the DevTools pipe, and asserts what a human would otherwise have to click through at chrome://extensions.
 
@@ -15487,11 +22629,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-105 files.
+140 files.
 
 #### `soltui/README.md`
 
-`doc` · 558 lines · 44,753 B · description: **extracted**
+`doc` · 625 lines · 51,028 B · description: **extracted**
 
 **Purpose.** A Textual TUI plus a macOS menu-bar indicator over the backtester. Its panes are grouped into five destinations (Now, Signal, Research, Money, Library) plus Settings; see [Navigation](#navigation). Structured like `~/dev/net-dns-monitor`: pure, tested logic modules with a thin
 
@@ -15543,49 +22685,69 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 soltui/app.py --help`
 
+#### `soltui/backtest_log.py`
+
+`code-python` · 53 lines · 1,940 B · description: **extracted**
+
+**Purpose.** Bounded, nonblocking reads of the detached backtest worker's append-only log.
+
+**Contents.** Defines `class BacktestLog`.
+
+**Use.** `import soltui.backtest_log`
+
 #### `soltui/bgcontrol.py`
 
-`code-python` · 515 lines · 20,511 B · description: **extracted**
+`code-python` · 552 lines · 22,179 B · description: **extracted**
 
 **Purpose.** Start, stop and inspect the background sweep process. Separated from `bgqueue` (which is pure logic) and from `bgworker` (which is the work) because process lifecycle is the part with the OS-specific behaviour, and keeping it in one small module is what lets the other two stay testable.
 
-**Contents.** Defines `LOCK_PATH`, `LOCK_FD_ENV`, `CONTROL_FD_ENV`, `TASKPOLICY_PATHS`, `taskpolicy_path()`, `taskpolicy_available()`, `describe_priority()`, `read_pid()`, `acquire_lock()`, `inherited_lock()` and 10 more.
+**Contents.** Defines `LOCK_PATH`, `LOCK_FD_ENV`, `CONTROL_FD_ENV`, `TASKPOLICY_PATHS`, `taskpolicy_path()`, `taskpolicy_available()`, `describe_priority()`, `read_pid()`, `acquire_lock()`, `inherited_lock()` and 11 more.
 
 **Use.** `import soltui.bgcontrol`
 
 #### `soltui/bgqueue.py`
 
-`code-python` · 914 lines · 35,544 B · description: **extracted**
+`code-python` · 939 lines · 36,760 B · description: **extracted**
 
 **Purpose.** Job queue for the background backtest sweep. Pure logic; no UI, no processes. The TUI's own sweep (`runner.py`) evaluates the roster and blocks a thread until it finishes.
 
-**Contents.** Defines `BG_DIR`, `RESULTS_PATH`, `STATE_PATH`, `PID_PATH`, `ASSET_RE`, `MIN_TRADES`, `HORIZON_INTERVAL`, `LIKELIHOOD_ORDER`, `_UNKNOWN_LIKELIHOOD`, `class Job` and 30 more. Depends on `backtester`.
+**Contents.** Defines `BG_DIR`, `RESULTS_PATH`, `STATE_PATH`, `PID_PATH`, `active_results_path()`, `ASSET_RE`, `MIN_TRADES`, `HORIZON_INTERVAL`, `LIKELIHOOD_ORDER`, `_UNKNOWN_LIKELIHOOD` and 30 more. Depends on `backtester`.
 
 **Use.** `import soltui.bgqueue`
 
 #### `soltui/bgworker.py`
 
-`code-python` · 586 lines · 22,131 B · description: **extracted**
+`code-python` · 633 lines · 25,245 B · description: **extracted**
 
 **Purpose.** The background backtest worker: a separate, low-priority process. python3 -m soltui.bgworker --asset SOL python3 -m soltui.bgworker --asset SOL --horizons medium --max-tier 1 --limit 50 Run directly it is a normal foreground script; the TUI launches it through `bgcontrol.start()`, which is what applies the background scheduling policy.
 
-**Contents.** Defines `REPO`, `NICE_LEVEL`, `evaluation_code_fingerprint()`, `_file_hash()`, `evaluation_proof()`, `verify_evaluation_proof()`, `_validate_limit()`, `_limit_argument()`, `class EvaluationContextChanged`, `_check_price_input()` and 8 more. Depends on `backtester`.
+**Contents.** Defines `REPO`, `NICE_LEVEL`, `evaluation_code_fingerprint()`, `_file_hash()`, `evaluation_proof()`, `class EvaluationProofMismatch`, `verify_evaluation_proof()`, `_validate_limit()`, `_limit_argument()`, `class EvaluationContextChanged` and 10 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/bgworker.py --help`
 
+#### `soltui/bot_scheduler.py`
+
+`code-python` · 327 lines · 14,590 B · description: **extracted**
+
+**Purpose.** Detached, checkpointed recurring bot optimization; never submits orders. The worker survives console exit. A dedicated launchd watchdog resumes an enabled schedule after login or a crash. Stop disables watchdog recovery. The optimizer itself owns its existing per-bot experiment lock.
+
+**Contents.** Defines `DEFAULT_INTERVAL`, `LABEL`, `_root()`, `_db()`, `_get()`, `_set()`, `_lock()`, `_control()`, `status()`, `_plist_path()` and 10 more.
+
+**Use.** `python3 soltui/bot_scheduler.py --help`
+
 #### `soltui/bots.py`
 
-`code-python` · 1223 lines · 54,466 B · description: **extracted**
+`code-python` · 1319 lines · 60,366 B · description: **extracted**
 
 **Purpose.** The Bots tab: grid, triangular-arbitrage and DCA bots. Backtest, forward test, auto-optimize. Every bot here is a simulation. Nothing in this module places an order, holds a key or talks to a venue's trading API; the only network reads are public market data (the recorded Coinbase stream in `pricefeed`, and Coinbase candles for the triangle candle proxy).
 
-**Contents.** Defines `BOTS`, `LABELS`, `ABOUT`, `BACKTEST_INTERVAL`, `BAR_SECONDS`, `MAX_BRIDGE_BARS`, `MAX_BRIDGED_FRACTION`, `MIN_BACKTEST_BARS`, `MIN_HOUR_MINUTES`, `MAX_FORWARD_GAP_MIN` and 30 more. Depends on `backtester`.
+**Contents.** Defines `BOTS`, `PER_COIN_OPTIMIZE_ADOPTION_SAFE`, `LABELS`, `ABOUT`, `BACKTEST_INTERVAL`, `BAR_SECONDS`, `MAX_BRIDGE_BARS`, `MAX_BRIDGED_FRACTION`, `MIN_BACKTEST_BARS`, `MIN_HOUR_MINUTES` and 30 more. Depends on `backtester`.
 
 **Use.** `import soltui.bots`
 
 #### `soltui/bots_screens.py`
 
-`code-python` · 201 lines · 9,764 B · description: **extracted**
+`code-python` · 212 lines · 10,535 B · description: **extracted**
 
 **Purpose.** The Bots tab's two pop-up windows: the coin picker and the auto-optimize window. Presentation only, like `help_screen.py`. Neither window runs a command itself: the coin picker returns the chosen coins to the tab, and the auto-optimize window shows what the tab's worker reports (`bots.progress` while it runs, the `bots.optimize` result when it ends).
 
@@ -15613,9 +22775,29 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 soltui/coin_fit.py --help`
 
+#### `soltui/coinbase_account.py`
+
+`code-python` · 269 lines · 12,710 B · description: **extracted**
+
+**Purpose.** Coinbase market catalog and consumer-account reads; no signing or order execution. The Coinbase for Agents CLI owns its credentials. The app invokes it with argument arrays and never loads, stores, or logs keys. Market data uses the public Advanced Trade endpoint and publishes a complete snapshot only after every page succeeds.
+
+**Contents.** Defines `PUBLIC_PRODUCTS`, `CLI_PATH`, `MAX_PAGES`, `storage_dir()`, `markets_path()`, `spot_pairs_path()`, `_store()`, `_get()`, `_global_instruments()`, `download_spot_pairs()` and 6 more.
+
+**Use.** `import soltui.coinbase_account`
+
+#### `soltui/coinbase_manual.py`
+
+`code-python` · 326 lines · 18,331 B · description: **extracted**
+
+**Purpose.** Explicitly reviewed Coinbase spot orders. Never retries a submitted order.
+
+**Contents.** Defines `MAX_QUOTE`, `PREVIEW_SECONDS`, `TERMINAL`, `_decimal()`, `_dir()`, `_path()`, `_lock()`, `_read()`, `_save()`, `_has_unresolved()` and 8 more.
+
+**Use.** `import soltui.coinbase_manual`
+
 #### `soltui/commands.py`
 
-`code-python` · 2661 lines · 129,635 B · description: **extracted**
+`code-python` · 3090 lines · 152,912 B · description: **extracted**
 
 **Purpose.** The soltui command registry: one set of calls for the TUI, CLI, HTTP API and native host. Every action the console can take is a registered `Command`. Every surface goes through `dispatch(name, params, surface)`, which validates parameters, applies the confirm gate, runs the handler, wraps the outcome in the response envelope and appends one line to the call log.
 
@@ -15625,7 +22807,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/compound.py`
 
-`code-python` · 1973 lines · 96,950 B · description: **extracted**
+`code-python` · 2086 lines · 103,407 B · description: **extracted**
 
 **Purpose.** Compound five-minute tester: saved configuration, live reads, forward ledger, sweeps. python3 -m soltui.compound signal --asset SOL # score now, explain every metric python3 -m soltui.compound forward --asset SOL --loop # record a call per closed 5m bar python3 -m soltui.compound status --asset SOL # forward-test hit rates python3 -m soltui.compound backtest --asset SOL # compound + each component
 
@@ -15645,13 +22827,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/config.py`
 
-`code-python` · 233 lines · 10,270 B · description: **extracted**
+`code-python` · 262 lines · 11,576 B · description: **extracted**
 
 **Purpose.** Settings load/save for the TUI. Pure logic; no UI, no I/O beyond one file. Config lives at `~/.config/soltui/config.yaml`, following the same convention as `netdnsmonitor`. YAML is optional at runtime -- if PyYAML is missing the app falls back to JSON at the same path with a `.json` suffix, so a missing optional dependency degrades rather than crashes.
 
 **Contents.** Defines `CONFIG_DIR`, `CONFIG_PATH`, `CONFIG_PATH_JSON`, `INTERVALS`, `XPUB_FIELDS`, `MODES`, `class ConfigError`, `class Settings`, `default_settings()`, `validate()` and 4 more.
 
 **Use.** `import soltui.config`
+
+#### `soltui/csv_table.py`
+
+`code-python` · 73 lines · 2,563 B · description: **extracted**
+
+**Purpose.** CSV export for Textual tables.
+
+**Contents.** Defines `_plain()`, `export_table()`, `class ExportTable`, `class ExportPanel`.
+
+**Use.** `import soltui.csv_table`
 
 #### `soltui/cumulative.py`
 
@@ -15695,7 +22887,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/experiment_runner.py`
 
-`code-python` · 687 lines · 38,817 B · description: **extracted**
+`code-python` · 727 lines · 42,105 B · description: **extracted**
 
 **Purpose.** Durable native optimization over frozen local evidence. Exploration never evaluates the final windows. Final validation freezes one train winner and spends its temporal evidence before running either paired simulator. The ledger records exposure as well as final reservations: changing window sizes cannot turn dates already used for selection into an untouched final test.
 
@@ -15705,7 +22897,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/experiment_screens.py`
 
-`code-python` · 666 lines · 36,968 B · description: **extracted**
+`code-python` · 800 lines · 45,455 B · description: **extracted**
 
 **Purpose.** Presentation for the optimization workbench; every operation uses the registry.
 
@@ -15723,13 +22915,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `import soltui.experiments`
 
+#### `soltui/f5_batch.py`
+
+`code-python` · 703 lines · 37,488 B · description: **extracted**
+
+**Purpose.** Durable, isolated all-strategy backtest and prospective forward runner. The caller supplies the supported coin universe. The plan freezes it and the supported intervals before work starts. A worker is started only by explicit `start`, never import. All data stays under a run-specific directory and the existing queue is untouched.
+
+**Contents.** Defines `INTERVAL_MINUTES`, `PHASES`, `_root()`, `_directory()`, `_connect()`, `_dump()`, `_meta()`, `_set()`, `_code_id()`, `catalog_coins()` and 22 more. Depends on `backtester`.
+
+**Use.** `python3 soltui/f5_batch.py --help`
+
 #### `soltui/forwardtest.py`
 
-`code-python` · 399 lines · 18,659 B · description: **extracted**
+`code-python` · 587 lines · 29,686 B · description: **extracted**
 
 **Purpose.** Prospective, paper-only trials of registered strategies on closed Coinbase minutes.
 
-**Contents.** Defines `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_json()`, `_db()`, `defaults_path()`, `_default_key()`, `load_defaults()` and 11 more. Depends on `backtester`.
+**Contents.** Defines `HORIZONS`, `HISTORY`, `WARM_REPLAY`, `KNOBS`, `revision()`, `_json()`, `_db()`, `save_session()`, `load_session()`, `defaults_path()` and 14 more. Depends on `backtester`.
 
 **Use.** `import soltui.forwardtest`
 
@@ -15745,7 +22947,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/help.py`
 
-`code-python` · 638 lines · 96,301 B · description: **extracted**
+`code-python` · 727 lines · 103,865 B · description: **extracted**
 
 **Purpose.** Plain-language help shared by hover tooltips and the F1 reference.
 
@@ -15763,6 +22965,26 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `import soltui.help_screen`
 
+#### `soltui/jupiter_manual.py`
+
+`code-python` · 625 lines · 26,438 B · description: **extracted**
+
+**Purpose.** Explicitly reviewed Jupiter Swap API v2 spot orders with semantic verification and disk locking. Never retries an ambiguous submission. Enforces $100 MAX_QUOTE cap. Requires verified token metadata, positive price valuation, and semantic transaction verification.
+
+**Contents.** Defines `MAX_QUOTE`, `PREVIEW_SECONDS`, `DEFAULT_SLIPPAGE_BPS`, `MAX_PRIORITY_FEE_LAMPORTS`, `MIN_SOL_RESERVE_LAMPORTS`, `WSOL_MINT`, `USDC_MINT`, `USDT_MINT`, `STABLE_MINTS`, `DEFAULT_RPC` and 19 more.
+
+**Use.** `import soltui.jupiter_manual`
+
+#### `soltui/jupiter_tokens.py`
+
+`code-python` · 60 lines · 2,365 B · description: **extracted**
+
+**Purpose.** Jupiter token discovery. Symbols are never treated as unique mint identities.
+
+**Contents.** Defines `API`, `MINT`, `get()`, `search()`, `resolve()`.
+
+**Use.** `import soltui.jupiter_tokens`
+
 #### `soltui/liquidity.py`
 
 `code-python` · 601 lines · 20,353 B · description: **extracted**
@@ -15775,13 +22997,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/live_run.py`
 
-`code-python` · 123 lines · 4,680 B · description: **extracted**
+`code-python` · 117 lines · 5,510 B · description: **extracted**
 
-**Purpose.** Live Run dashboard for SolTUI. Loads the best configuration from TOP5-RECOMMENDATION (or untested sweep) and provides a UI to launch the Node.js extension in dry-run mode.
+**Purpose.** Historical, order-free strategy simulations for the Dry Run view.
 
-**Contents.** Defines `REPO`, `RECOMMENDATION_FILE`, `get_best_strategy()`, `run_dryrun()`, `_CAPITAL_RE`, `_TICK_NET_RE`, `dryrun_net_pct()`, `spawn_dryrun()`. Depends on `backtester`.
+**Contents.** Defines `RECOMMENDATION_FILE`, `get_best_strategy()`, `run_dryrun()`, `_CAPITAL_RE`, `_TICK_NET_RE`, `dryrun_net_pct()`, `spawn_dryrun()`. Depends on `backtester`.
 
 **Use.** `import soltui.live_run`
+
+#### `soltui/live_score.py`
+
+`code-python` · 129 lines · 6,947 B · description: **extracted**
+
+**Purpose.** Read-only forward-prediction agreement for live displays, never an order signal. Keep this out of forwardtest.py: that file's hash partitions trainer evidence. The browser adapter uses the same contract and tests against the same vectors.
+
+**Contents.** Defines `HORIZONS`, `DIRECTIONS`, `METHOD`, `_finite()`, `aggregate_predictions()`, `prediction_snapshot()`, `tick_window()`.
+
+**Use.** `import soltui.live_score`
 
 #### `soltui/make_icon.py`
 
@@ -15805,7 +23037,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/native_host.py`
 
-`code-python` · 154 lines · 5,915 B · description: **extracted**
+`code-python` · 187 lines · 7,347 B · description: **extracted**
 
 **Purpose.** Chrome native-messaging host `com.mitchhudson.soltui`: the extension's door into the registry. Speaks Chrome's framing on stdio: a 4-byte little-endian length, then that many bytes of UTF-8 JSON. It serves many requests per connection (`connectNative`) or one (`sendNativeMessage`).
 
@@ -15815,7 +23047,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/native_host_install.py`
 
-`code-python` · 149 lines · 6,099 B · description: **extracted**
+`code-python` · 149 lines · 6,110 B · description: **extracted**
 
 **Purpose.** Install, remove or inspect the native-messaging host registration. python -m soltui.native_host_install install [--python P] [--repo R] [--extra-id ID ...] [--dir D ...] python -m soltui.native_host_install uninstall python -m soltui.native_host_install status `install` writes an executable wrapper (absolute paths, no arguments, which is what Chrome requires of a manifest `path`) that runs the con
 
@@ -15842,6 +23074,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `MODE_LABEL`, `class IntendedFill`, `class PaperSession`, `start_session()`. Depends on `backtester`.
 
 **Use.** `import soltui.paper`
+
+#### `soltui/paper_experiments.py`
+
+`code-python` · 232 lines · 9,327 B · description: **extracted**
+
+**Purpose.** Prospective strategy experiments. Paper only: no keys, orders or venue execution. A detached worker records a strategy's forecasts with forwardtest's causal minute contract. Each directional forecast is a separate, non-overlapping 1x simulated trade entered at the next future minute open and closed at the horizon close.
+
+**Contents.** Defines `REPO`, `HORIZONS`, `root()`, `_path()`, `_write()`, `_read()`, `_locked()`, `_revision()`, `_launch()`, `start()` and 6 more. Depends on `backtester`.
+
+**Use.** `python3 soltui/paper_experiments.py --help`
 
 #### `soltui/pnl.py`
 
@@ -15885,7 +23127,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/pricefeed.py`
 
-`code-python` · 857 lines · 35,431 B · description: **extracted**
+`code-python` · 857 lines · 35,456 B · description: **extracted**
 
 **Purpose.** Streaming coin prices: the public Coinbase Exchange `ticker` channel, recorded to disk. python -m soltui.pricefeed record # the recorder loop (the console starts it detached) python -m soltui.pricefeed status # what is recorded, and the latest prices Before this module the console polled prices (Coinbase REST spot, closed 5m candles) and kept nothing between bars.
 
@@ -15905,7 +23147,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/requirements.txt`
 
-`data` · 35 lines · 1,862 B · description: **curated**
+`data` · 39 lines · 1,964 B · description: **curated**
 
 **Purpose.** Runtime dependencies for the menu-bar app (rumps/pyobjc and the py2app build tooling).
 
@@ -15923,7 +23165,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/runner.py`
 
-`code-python` · 288 lines · 9,745 B · description: **extracted**
+`code-python` · 277 lines · 9,262 B · description: **extracted**
 
 **Purpose.** Background sweep runner. Turns a roster into results while keeping the UI live. The menu-bar indicator and the Backtest tab both need "how much is left", which means the sweep has to report progress as it goes rather than blocking until done. This module owns that: a worker thread, a progress callback, and a cancellation flag.
 
@@ -15953,7 +23195,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/shell.py`
 
-`code-python` · 756 lines · 33,285 B · description: **extracted**
+`code-python` · 730 lines · 31,906 B · description: **extracted**
 
 **Purpose.** SolTUI v2 shell: five destinations, the health strip, the Now overview, the palette and Explain. Design: docs/design/soltui-v2/DESIGN.md. The classic console grouped eighteen peer tabs; this module groups the same panes by the question the owner brings (does anything need me, what is the call, what works, what is my money doing, what does this mean).
 
@@ -15970,6 +23212,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `class SignalError`, `class SignalDefaults`, `validate()`, `params_for()`, `merged_params()`, `field_names()`, `coerce()`, `from_dict()`, `mapped_strategies()`.
 
 **Use.** `import soltui.signals`
+
+#### `soltui/simulation.py`
+
+`code-python` · 225 lines · 10,717 B · description: **extracted**
+
+**Purpose.** Shared Jupiter Perps assumptions and causal paper-trading controls. The fee schedule is 6 bps on entry and exit, on notional. Borrow rates and slippage are editable scenarios, not historical quotes. Coinbase supplies bars. https://docs.jup.ag/user-docs/trade/perps/fees
+
+**Contents.** Defines `FIELDS`, `MIN_CONFIDENCE_SAMPLES`, `CONFIDENCE_WINDOW`, `class Execution`, `from_settings()`, `confidence_score()`, `class ConfidenceGate`, `class DirectionalComposite`, `prepare_strategy()`, `gate()` and 1 more. Depends on `backtester`.
+
+**Use.** `import soltui.simulation`
 
 #### `soltui/soltui-service`
 
@@ -15991,7 +23243,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/status.py`
 
-`code-python` · 207 lines · 7,938 B · description: **extracted**
+`code-python` · 206 lines · 7,898 B · description: **extracted**
 
 **Purpose.** Pure menu-bar title logic, kept out of the rumps shell so it is testable without a real macOS event loop. Mirrors `netdnsmonitor/status.py`: one pure `build_title()` the app calls every tick, plus the state it reads.
 
@@ -16011,11 +23263,11 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tui.py`
 
-`code-python` · 5339 lines · 276,902 B · description: **extracted**
+`code-python` · 7889 lines · 428,765 B · description: **extracted**
 
-**Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into five destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
+**Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
-**Contents.** Defines `_mtime()`, `sort_key()`, `_pct()`, `_num()`, `DOCS_TABLE_CAP`, `class GlossaryTable`, `class VimTextArea`, `class CompoundTable`, `class EditorBar`, `class CoinFitFinished` and 2 more. Depends on `backtester`.
+**Contents.** Defines `class _CaptureWithoutInvalidFd`, `_mtime()`, `sort_key()`, `_pct()`, `_num()`, `DOCS_TABLE_CAP`, `class GlossaryTable`, `class VimTextArea`, `class CompoundTable`, `class EditorBar` and 4 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/tui.py --help`
 
@@ -16063,13 +23315,53 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/bridge_support.py`
 
-`test` · 258 lines · 12,804 B · description: **extracted**
+`test` · 318 lines · 17,475 B · description: **extracted**
 
 **Purpose.** Shared fixtures for the command-bridge tests: an isolated world and the four surface runners.
 
 **Contents.** Defines `TOKEN`, `HEAVY`, `default_params()`, `class World`, `stub_heavy()`, `via_tui()`, `via_cli()`, `class ApiServer`, `via_api()`, `host_call()` and 1 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/bridge_support.py -q`
+
+#### `soltui/tests/test_advanced_order_ui.py`
+
+`test` · 350 lines · 19,716 B · description: **extracted**
+
+**Purpose.** Advanced order ticket: fail closed and dispatch only mocked Coinbase requests.
+
+**Contents.** Defines `env()`, `class AdvancedOrderUiTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_advanced_order_ui.py -q`
+
+#### `soltui/tests/test_backtest_log.py`
+
+`test` · 48 lines · 1,676 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class BacktestLogTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_backtest_log.py -q`
+
+#### `soltui/tests/test_batch_ui.py`
+
+`test` · 148 lines · 7,733 B · description: **extracted**
+
+**Purpose.** F5 UI orchestration uses mocked batches and never launches a real sweep.
+
+**Contents.** Defines `envelope()`, `class BatchUiTests`, `class BatchRegistryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_batch_ui.py -q`
+
+#### `soltui/tests/test_bg_fresh_results.py`
+
+`test` · 243 lines · 13,320 B · description: **extracted**
+
+**Purpose.** Fresh sweeps preserve evidence and never combine leaderboard histories.
+
+**Contents.** Defines `class FreshResultsTest`, `class AutomaticRecoveryTest`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_bg_fresh_results.py -q`
 
 #### `soltui/tests/test_bgcontrol.py`
 
@@ -16093,7 +23385,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bgqueue.py`
 
-`test` · 640 lines · 28,607 B · description: **extracted**
+`test` · 647 lines · 29,064 B · description: **extracted**
 
 **Purpose.** Tests for the background sweep's queue, file contract and leaderboard. The properties worth defending here are the ones a background process makes hard to notice going wrong: an ordering that stops putting the published preset first, a resume that re-runs finished work, a reader that dies on a torn line, and — most importantly — a leaderboard that quietly ranks a Sharpe computed from three trades.
 
@@ -16121,9 +23413,19 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_bgworker_audit.py -q`
 
+#### `soltui/tests/test_bot_scheduler.py`
+
+`test` · 147 lines · 7,675 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class BotSchedulerTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_bot_scheduler.py -q`
+
 #### `soltui/tests/test_bots.py`
 
-`test` · 568 lines · 29,594 B · description: **extracted**
+`test` · 707 lines · 38,343 B · description: **extracted**
 
 **Purpose.** The Bots tab's engine: configs, data, backtests, forward tests and the auto-optimize gate. No network and no real price data: bars come from `SyntheticLoader` written to a temporary data directory, and recorded snapshots are written to a temporary prices directory.
 
@@ -16131,19 +23433,29 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_bots.py -q`
 
+#### `soltui/tests/test_bots_manual_editor.py`
+
+`test` · 290 lines · 16,327 B · description: **extracted**
+
+**Purpose.** Manual bot settings remain scoped, editable and unsaved until Apply.
+
+**Contents.** Defines `envelope()`, `class BotManualEditorTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_bots_manual_editor.py -q`
+
 #### `soltui/tests/test_bridge_buttons.py`
 
-`test` · 54 lines · 2,164 B · description: **extracted**
+`test` · 57 lines · 2,285 B · description: **extracted**
 
 **Purpose.** Every TUI button is a registry command: a new button cannot skip the registry.
 
-**Contents.** Defines `SRC`, `pressed_selectors()`, `class ButtonRegistryTests`. Depends on `soltui`.
+**Contents.** Defines `SRC`, `UI_ONLY`, `pressed_selectors()`, `class ButtonRegistryTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_bridge_buttons.py -q`
 
 #### `soltui/tests/test_bridge_parity.py`
 
-`test` · 82 lines · 3,627 B · description: **extracted**
+`test` · 82 lines · 3,676 B · description: **extracted**
 
 **Purpose.** One registry, four surfaces: the same call returns the same envelope bytes everywhere. Driven by the registry itself, so a command added tomorrow is covered the day it is registered (the way extension/test/surfaces.test.js covers the extension's registry).
 
@@ -16153,7 +23465,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_bridge_surfaces.py`
 
-`test` · 361 lines · 18,998 B · description: **extracted**
+`test` · 397 lines · 20,661 B · description: **extracted**
 
 **Purpose.** Access, framing, logging and install behaviour of the command bridge.
 
@@ -16173,7 +23485,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_coin_fit_ui.py`
 
-`test` · 395 lines · 20,533 B · description: **extracted**
+`test` · 401 lines · 20,769 B · description: **extracted**
 
 **Purpose.** Suitability command parity and real Textual worker/cancellation behavior; no network.
 
@@ -16181,15 +23493,65 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_coin_fit_ui.py -q`
 
+#### `soltui/tests/test_coinbase_account.py`
+
+`test` · 124 lines · 6,776 B · description: **extracted**
+
+**Purpose.** Coinbase snapshots preserve existing data and expose incomplete catalog scopes.
+
+**Contents.** Defines `class CoinbaseAccountTests`, `class CoinbasePaneTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_coinbase_account.py -q`
+
+#### `soltui/tests/test_coinbase_manual.py`
+
+`test` · 228 lines · 12,889 B · description: **extracted**
+
+**Purpose.** Manual orders use exact reviewed contracts and fail closed on ambiguity.
+
+**Contents.** Defines `class Venue`, `class ManualOrderTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_coinbase_manual.py -q`
+
+#### `soltui/tests/test_coinbase_manual_ui.py`
+
+`test` · 371 lines · 19,807 B · description: **extracted**
+
+**Purpose.** Manual Coinbase order UI: review, explicit arm, one submit, and reconciliation.
+
+**Contents.** Defines `envelope()`, `preview()`, `class CoinbaseManualUiTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_coinbase_manual_ui.py -q`
+
 #### `soltui/tests/test_compound.py`
 
-`test` · 1229 lines · 67,034 B · description: **extracted**
+`test` · 1313 lines · 72,407 B · description: **extracted**
 
 **Purpose.** Compound five-minute tester: saved config, live reads, forward ledger, and the tab.
 
-**Contents.** Defines `T0`, `candles()`, `class Venue`, `autopiloted()`, `class TempConfig`, `class ConfigTests`, `class LiveReadTests`, `class ForwardLedgerTests`, `ADDR`, `USDC` and 16 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `T0`, `candles()`, `class Venue`, `autopiloted()`, `class TempConfig`, `class ConfigTests`, `class LiveReadTests`, `class ForwardLedgerTests`, `ADDR`, `USDC` and 17 more. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_compound.py -q`
+
+#### `soltui/tests/test_compound_pool_capture.py`
+
+`test` · 43 lines · 1,384 B · description: **extracted**
+
+**Purpose.** Exercise a real spawn under the console's active Textual output capture.
+
+**Contents.** Defines `class CompoundPoolCapture`.
+
+**Use.** `python3 -m pytest soltui/tests/test_compound_pool_capture.py -q`
+
+#### `soltui/tests/test_csv_table.py`
+
+`test` · 67 lines · 2,928 B · description: **extracted**
+
+**Purpose.** Exports preserve displayed order, formatting, and existing files.
+
+**Contents.** Defines `class ExportApp`, `class ExportTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_csv_table.py -q`
 
 #### `soltui/tests/test_docs_browser.py`
 
@@ -16211,6 +23573,26 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_docs_search.py -q`
 
+#### `soltui/tests/test_dryrun_strategy.py`
+
+`test` · 93 lines · 4,945 B · description: **extracted**
+
+**Purpose.** Dry Run executes the selected registered strategy, not the extension grid.
+
+**Contents.** Defines `class DryRunStrategyTests`, `class DryRunUiTests`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_dryrun_strategy.py -q`
+
+#### `soltui/tests/test_editor_backtest.py`
+
+`test` · 55 lines · 2,334 B · description: **extracted**
+
+**Purpose.** Editor ownership and progress routing for interactive backtests.
+
+**Contents.** Defines `class EditorBacktestTests`, `class ProgressRoutingTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_editor_backtest.py -q`
+
 #### `soltui/tests/test_eth_scan.py`
 
 `test` · 72 lines · 3,076 B · description: **extracted**
@@ -16223,7 +23605,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_experiment_interface.py`
 
-`test` · 275 lines · 14,573 B · description: **extracted**
+`test` · 348 lines · 19,077 B · description: **extracted**
 
 **Purpose.** The workbench's lifecycle and presentation, isolated from personal evidence.
 
@@ -16233,7 +23615,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_experiment_runner.py`
 
-`test` · 409 lines · 22,736 B · description: **extracted**
+`test` · 489 lines · 27,802 B · description: **extracted**
 
 **Purpose.** Native evidence boundaries, replay control and promotion recovery (no network).
 
@@ -16251,9 +23633,29 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_experiments.py -q`
 
+#### `soltui/tests/test_f5_batch.py`
+
+`test` · 281 lines · 16,237 B · description: **extracted**
+
+**Purpose.** Bounded F5 orchestration tests: no production jobs, network or shared data.
+
+**Contents.** Defines `class BatchTests`, `class SignalIntervalTests`, `class ProcessTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_f5_batch.py -q`
+
+#### `soltui/tests/test_forward_sort_refresh.py`
+
+`test` · 51 lines · 2,511 B · description: **extracted**
+
+**Purpose.** Forward results retain the user's sort and selected trial during redraws.
+
+**Contents.** Defines `result()`, `class ForwardSortRefreshTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_forward_sort_refresh.py -q`
+
 #### `soltui/tests/test_forwardtest.py`
 
-`test` · 293 lines · 15,014 B · description: **extracted**
+`test` · 359 lines · 19,154 B · description: **extracted**
 
 **Purpose.** Prospective evidence, horizon isolation, and the roster keyboard workflow.
 
@@ -16281,6 +23683,26 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_help.py -q`
 
+#### `soltui/tests/test_jupiter_manual.py`
+
+`test` · 294 lines · 12,656 B · description: **extracted**
+
+**Purpose.** Tests for explicit Jupiter manual orders: fail closed, semantic verification, disk locking.
+
+**Contents.** Defines `OWNER_KEYPAIR`, `OWNER`, `OTHER_MINT`, `make_test_tx()`, `valid_swap_ixs()`, `class MockHttpClient`, `class JupiterManualOrderTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_jupiter_manual.py -q`
+
+#### `soltui/tests/test_jupiter_tokens.py`
+
+`test` · 39 lines · 1,494 B · description: **extracted**
+
+**Purpose.** Token discovery must never guess a mint or token decimals.
+
+**Contents.** Defines `MINT`, `OTHER`, `item()`, `class JupiterTokenTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_jupiter_tokens.py -q`
+
 #### `soltui/tests/test_launcher.py`
 
 `test` · 73 lines · 2,449 B · description: **extracted**
@@ -16301,6 +23723,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_liquidity.py -q`
 
+#### `soltui/tests/test_live_score.py`
+
+`test` · 83 lines · 4,970 B · description: **extracted**
+
+**Purpose.** Live display votes are prospective, evidence-gated and independent of trainer revisions.
+
+**Contents.** Defines `class LiveScoreTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_live_score.py -q`
+
 #### `soltui/tests/test_panes.py`
 
 `test` · 263 lines · 11,679 B · description: **extracted**
@@ -16310,6 +23742,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `write_index()`, `class DocsBrowserTests`, `class CumulativeTests`, `class AnalyzeTests`, `class ServeTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_panes.py -q`
+
+#### `soltui/tests/test_paper_experiments.py`
+
+`test` · 127 lines · 7,053 B · description: **extracted**
+
+**Purpose.** Prospective paper experiments stay isolated, causal and fee-aware.
+
+**Contents.** Defines `class PaperExperimentTests`, `class ExperimentPaneTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_paper_experiments.py -q`
 
 #### `soltui/tests/test_pnl.py`
 
@@ -16371,6 +23813,26 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_service_plist_parity.py -q`
 
+#### `soltui/tests/test_shortcuts_everything.py`
+
+`test` · 78 lines · 4,274 B · description: **extracted**
+
+**Purpose.** Shortcut behavior without starting background jobs or paper experiments.
+
+**Contents.** Defines `class ShortcutTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_shortcuts_everything.py -q`
+
+#### `soltui/tests/test_signal_live.py`
+
+`test` · 375 lines · 20,998 B · description: **extracted**
+
+**Purpose.** Tests for Signal tab Live page: live graph, real-time streaming price, and forward test predictions.
+
+**Contents.** Defines `class SignalLiveLogicTests`, `class SignalLiveUITests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_signal_live.py -q`
+
 #### `soltui/tests/test_signals.py`
 
 `test` · 215 lines · 9,006 B · description: **extracted**
@@ -16380,6 +23842,26 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `class TestPrecedence`, `class TestMapping`, `class TestValidation`, `class TestCoercion`, `class TestPersistence`. Depends on `backtester`, `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_signals.py -q`
+
+#### `soltui/tests/test_simulation.py`
+
+`test` · 261 lines · 14,797 B · description: **extracted**
+
+**Purpose.** Jupiter notional costs, confidence gates, and immutable prospective economics.
+
+**Contents.** Defines `class Signal`, `history()`, `class JupiterSimulation`, `class SimulationControlLayout`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_simulation.py -q`
+
+#### `soltui/tests/test_status_console.py`
+
+`test` · 101 lines · 5,417 B · description: **extracted**
+
+**Purpose.** Status views reconnect to each job without taking over unrelated editor work.
+
+**Contents.** Defines `class StatusConsoleTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_status_console.py -q`
 
 #### `soltui/tests/test_status_roster.py`
 
@@ -16423,7 +23905,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tradingstrategyresults_coverage.py`
 
-`test` · 147 lines · 6,417 B · description: **extracted**
+`test` · 157 lines · 7,047 B · description: **extracted**
 
 **Purpose.** Every strategy and indicator in `tradingstrategyresults.json` is represented in soltui. That file is a catalogue of strategies and indicators from public trading guides.
 
@@ -16433,7 +23915,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1365 lines · 61,672 B · description: **extracted**
+`test` · 1380 lines · 62,385 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 
@@ -16463,7 +23945,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_v2_shell.py`
 
-`test` · 250 lines · 12,931 B · description: **extracted**
+`test` · 270 lines · 14,244 B · description: **extracted**
 
 **Purpose.** The v2 shell: every classic pane stays reachable, and the new chrome reads without writing. The redesign (docs/design/soltui-v2/DESIGN.md) regroups the classic tabs into destinations. Its one non-negotiable is that no function is lost, so the coverage test asserts every pane of `#main-tabs` against the live navigation, including a pane added after the map was written.
 
@@ -16493,13 +23975,23 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/tests/test_wallet_settings.py`
 
-`test` · 203 lines · 9,609 B · description: **extracted**
+`test` · 231 lines · 11,041 B · description: **extracted**
 
 **Purpose.** Wallet fields in Settings: validation, private-key refusal, redaction, file mode, and the read-only `wallet.addresses` command the extension's Wallet pubkey button uses.
 
 **Contents.** Defines `ETH`, `xprv()`, `class ValidationTests`, `class SaveAndRedactTests`, `class AddressesCommandTests`, `class KeySourceLabelTests`, `class TuiSettingsTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_wallet_settings.py -q`
+
+### `soltui/tests/fixtures/`
+
+#### `soltui/tests/fixtures/live-score.json`
+
+`test` · 669 lines · 13,138 B · description: **derived**
+
+**Purpose.** Generated JSON array, 19 entries.
+
+**Use.** `python3 -m pytest soltui/tests/fixtures/live-score.json -q`
 
 ### `soltui/tests/fixtures/wallet/`
 
@@ -16605,7 +24097,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 366 lines · 15,467 B · description: **curated**
+`ci` · 378 lines · 15,989 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -16715,7 +24207,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## executor
 
-38 files.
+42 files.
 
 #### `executor/.gitignore`
 
@@ -16735,7 +24227,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `executor/README.md`
 
-`doc` · 75 lines · 4,374 B · description: **extracted**
+`doc` · 103 lines · 6,559 B · description: **extracted**
 
 **Purpose.** The **executor** component of solmargintrader: best-price spot swaps on Solana through Jupiter, behind a semantic transaction verifier, hard rails, a research gate, a dry-run soak and an append-only journal. cd executor
 
@@ -16799,7 +24291,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `executor/src/executor/engine.py`
 
-`code-python` · 469 lines · 22,773 B · description: **extracted**
+`code-python` · 583 lines · 28,515 B · description: **extracted**
 
 **Purpose.** The swap pipeline. Dry-run and live share every step up to the signature, so dry-run simulates exactly what live would send (the same pattern as liquidity's Rebalancer/Runner). resolve -> quote + independent price -> rails -> /swap -> decode -> VERIFY (static) -> pre-state -> simulate -> VERIFY (economic) ........ dry-run stops here ........
 
@@ -16819,11 +24311,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `executor/src/executor/gates.py`
 
-`code-python` · 209 lines · 8,542 B · description: **extracted**
+`code-python` · 350 lines · 14,035 B · description: **extracted**
 
 **Purpose.** Pre-live gates, per strategy: a dry-run soak and a research gate. Same pattern as liquidity/src/aero_lp/gates.py. 1. Dry-run soak. A strategy must have run in dry-run for `[gates].soak_hours` (24 h) with at least `[gates].min_dry_runs` fully simulated dry-run swaps before it may go live. Every dry-run swap that passes the whole pipeline credits one tick (`record_dry_run`).
 
-**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `_atomic_write()`, `_iso()`, `_soak_path()`, `load_soak()`, `record_dry_run()`, `soak_status()`, `research_path()` and 6 more.
+**Contents.** Defines `SOAK_SCHEMA`, `RESEARCH_SCHEMA`, `MAX_TICK_GAP_S`, `_sync_directory()`, `_atomic_write()`, `_state_lock()`, `_nonnegative_number()`, `_nonblank()`, `_json_object()`, `_invalid_constant()` and 17 more.
 
 **Use.** `import executor.src.executor.gates`
 
@@ -16839,11 +24331,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `executor/src/executor/journal.py`
 
-`code-python` · 121 lines · 4,703 B · description: **extracted**
+`code-python` · 214 lines · 8,790 B · description: **extracted**
 
 **Purpose.** Append-only journal of intents and results: `$EXECUTOR_HOME/journal.jsonl`, mode 600. Every swap that will be sent is written BEFORE sending (`intent`, then `sending` with the signature) and its outcome AFTER (`result`). Lines are only ever appended, each under an exclusive lock and fsynced. State is derived by replaying the file; nothing is rewritten.
 
-**Contents.** Defines `TERMINAL`, `class Journal`, `require_clear()`.
+**Contents.** Defines `TERMINAL`, `KINDS`, `OUTCOMES`, `_unique_object()`, `_record_problem()`, `_apply_record()`, `class Journal`, `require_clear()`.
 
 **Use.** `import executor.src.executor.journal`
 
@@ -16859,11 +24351,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `executor/src/executor/ledger.py`
 
-`code-python` · 109 lines · 4,162 B · description: **extracted**
+`code-python` · 133 lines · 5,261 B · description: **extracted**
 
-**Purpose.** Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day. Only confirmed, on-chain outcomes count. The quote asset is always USDC, so cost and proceeds are exact USDC amounts taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
+**Purpose.** Pure accounting over the journal: per-strategy position (cost basis) and realized P&L per UTC day. Only confirmed trades create positions or trading profit. Confirmed and failed on-chain attempts both incur network fees. The quote asset is always USDC, so cost and proceeds are exact USDC amounts taken from the transaction itself; the base-asset quantity is the transaction's measured delta.
 
-**Contents.** Defines `class Position`, `_confirmed_trades()`, `positions()`, `utc_day()`, `realized_pnl_usd()`, `trades_notional_usd()`, `is_quote()`.
+**Contents.** Defines `class Position`, `_confirmed_trades()`, `positions()`, `utc_day()`, `_failed_fee_usd()`, `realized_pnl_usd()`, `trades_notional_usd()`, `is_quote()`.
 
 **Use.** `import executor.src.executor.ledger`
 
@@ -16968,6 +24460,46 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `AMOUNT_UI`, `AMOUNT`, `FEE`, `OUT`, `sell_setup()`, `live_cfg()`, `swap()`, `kinds()`, `test_dry_run_simulates_and_sends_nothing()`, `test_mode_live_without_the_live_flag_is_still_a_dry_run()` and 26 more.
 
 **Use.** `python3 -m pytest executor/tests/test_engine.py -q`
+
+#### `executor/tests/test_engine_integrity.py`
+
+`test` · 202 lines · 8,212 B · description: **extracted**
+
+**Purpose.** Crash and incomplete-evidence regressions over a synthetic chain and temporary homes.
+
+**Contents.** Defines `pending_engine()`, `test_present_nonterminal_status_never_clears_unknown()`, `test_processed_error_remains_unknown_until_confirmed()`, `test_confirmation_waits_for_confirmed_error()`, `test_kill_appearing_during_journal_flush_prevents_send()`, `test_reconcile_shares_swap_lock()`, `test_missing_or_malformed_token_balance_arrays_are_not_zero()`, `test_malformed_token_amount_is_unreadable()`, `test_explicit_empty_opening_array_supports_new_token_account()`, `test_confirmed_incomplete_metadata_preserves_hold_until_recovered()` and 5 more.
+
+**Use.** `python3 -m pytest executor/tests/test_engine_integrity.py -q`
+
+#### `executor/tests/test_failed_fees.py`
+
+`test` · 161 lines · 6,908 B · description: **extracted**
+
+**Purpose.** Failed on-chain attempts incur measured fees even though they create no position.
+
+**Contents.** Defines `NOW`, `DAY`, `MISSING`, `failed_attempt()`, `test_failed_fee_is_a_loss_without_any_trade_or_position()`, `test_failed_fees_reach_daily_stop_for_regular_live_buy()`, `test_failed_fees_are_scoped_to_the_requested_strategy_and_utc_day()`, `test_missing_or_invalid_failed_fee_refuses_without_exposing_values()`, `test_explicit_zero_failed_fee_is_not_missing_evidence()`, `test_missing_failed_fee_does_not_block_a_proven_reduce_only_exit()` and 4 more.
+
+**Use.** `python3 -m pytest executor/tests/test_failed_fees.py -q`
+
+#### `executor/tests/test_gate_integrity.py`
+
+`test` · 315 lines · 11,889 B · description: **extracted**
+
+**Purpose.** Persisted gate evidence must fail closed and survive concurrent writers.
+
+**Contents.** Defines `soak_record()`, `test_malformed_soak_blocks_and_restarts_without_credit()`, `test_backward_clock_restarts_soak_instead_of_reusing_elapsed_time()`, `test_explicit_zero_soak_still_needs_a_valid_successful_dry_run()`, `research_record()`, `test_malformed_newer_research_never_falls_back_to_an_old_pass()`, `test_research_schema_is_required_and_damage_is_preserved()`, `test_invalid_recording_clock_cannot_write_gate_evidence()`, `test_research_same_timestamp_uses_the_last_recorded_result()`, `test_research_clock_regression_retains_failure_and_blocks_prior_pass()` and 10 more.
+
+**Use.** `python3 -m pytest executor/tests/test_gate_integrity.py -q`
+
+#### `executor/tests/test_journal_integrity.py`
+
+`test` · 241 lines · 9,055 B · description: **extracted**
+
+**Purpose.** Crash and corruption counterexamples for the journal's write-before-send boundary.
+
+**Contents.** Defines `write_record()`, `test_invalid_record_envelopes_are_corruption()`, `test_invalid_transition_cannot_clear_or_replace_pending_send()`, `test_orphan_lifecycle_events_are_corruption()`, `test_nonmonotonic_or_malformed_sequence_is_corruption()`, `test_short_write_finishes_before_append_reports_success()`, `test_zero_progress_write_refuses()`, `test_append_syncs_content_then_directory_entry_before_success()`, `test_directory_sync_failure_never_reports_append_success()`, `test_write_error_after_partial_send_record_never_returns_success()` and 6 more.
+
+**Use.** `python3 -m pytest executor/tests/test_journal_integrity.py -q`
 
 #### `executor/tests/test_journal_ledger_signer.py`
 
@@ -17097,7 +24629,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `liquidity/CLAUDE.md`
 
-`doc` · 66 lines · 4,958 B · description: **extracted**
+`doc` · 68 lines · 5,260 B · description: **extracted**
 
 **Purpose.** The Aero Slipstream LP manager. See README.md. **It can move real money.** On 2026-11-06 the owner authorized autonomous live operation for the owner's own wallet The repo-wide standing authorization for live on-chain actions is in the root `CLAUDE.md`
 
@@ -17105,7 +24637,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `liquidity/README.md`
 
-`doc` · 198 lines · 13,094 B · description: **extracted**
+`doc` · 200 lines · 13,404 B · description: **extracted**
 
 **Purpose.** The **liquidity** component of solmargintrader. It manages concentrated-liquidity positions on **Aero** (aero.xyz) **Slipstream** on **Base**, in one daemon: soltui's **Liquidity** tab shows all of it. The tab reads the daemon's state files and nothing else (see
 
@@ -17833,7 +25365,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-9 files.
+14 files.
 
 #### `scripts/build_doc_index.py`
 
@@ -17844,6 +25376,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `REPO`, `OVERVIEW`, `INDEX`, `COMPONENTS`, `ROW`, `KIND_BY_SUFFIX`, `git_ok()`, `is_tracked()`, `is_ignored()`, `excluded()` and 4 more.
 
 **Use.** `python3 scripts/build_doc_index.py --help`
+
+#### `scripts/build_tradingview_script_profiles.py`
+
+`code-python` · 305 lines · 11,940 B · description: **extracted**
+
+**Purpose.** Prepare resumable semantic-authoring batches for every saved TradingView script. Raw author descriptions stay in the gitignored tradingview/.script-card-work cache. Authors write original interpretations to assigned JSONL files; this helper checks source coverage and exact quotations, never synthesizes trading rules from titles.
+
+**Contents.** Defines `ROOT`, `CACHE`, `WORK`, `CLASSES`, `FIELDS`, `dump()`, `prepare()`, `inputs()`, `validate_record()`, `records()` and 1 more.
+
+**Use.** `python3 scripts/build_tradingview_script_profiles.py --help`
 
 #### `scripts/check_docs.py`
 
@@ -17857,13 +25399,23 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/check_tradingview_cards.py`
 
-`code-python` · 278 lines · 15,659 B · description: **extracted**
+`code-python` · 278 lines · 15,686 B · description: **extracted**
 
 **Purpose.** Check card coverage; optionally re-bind evidence to the owner's local dumps. The default is offline and uses committed evidence. --source-root verifies physical capture hashes, decoded descriptions and excerpt offsets; it never fetches pages.
 
 **Contents.** Defines `REPO`, `load_catalog()`, `validate_readiness()`, `normalize_description()`, `source_description()`, `validate()`, `main()`. Depends on `backtester`.
 
 **Use.** `python3 scripts/check_tradingview_cards.py --help`
+
+#### `scripts/check_tradingview_strategy_profiles.py`
+
+`code-python` · 361 lines · 15,192 B · description: **extracted**
+
+**Purpose.** Verify strategy-publication cards and optionally bind them to saved HTML. Without --source-root, verify committed cards, inventory and quoted evidence. With --source-root, also verify every HTML hash and the complete strategy subset.
+
+**Contents.** Defines `REPO`, `class PublicationParser`, `publication()`, `sha256()`, `bounded()`, `card_location()`, `legacy_normalize()`, `validate()`, `main()`. Depends on `backtester`.
+
+**Use.** `python3 scripts/check_tradingview_strategy_profiles.py --help`
 
 #### `scripts/coin_strategy_fit.py`
 
@@ -17885,13 +25437,33 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 scripts/html_to_markdown.py --help`
 
+#### `scripts/render_tradingview_script_cards.py`
+
+`code-python` · 814 lines · 34,651 B · description: **extracted**
+
+**Purpose.** Render and verify source-reviewed documentation cards for saved trading scripts. The authored JSONL records are the semantic input. Rendering does no semantic classification. Final rendering requires an independent review of every record. The raw HTML stays local; the default check uses only committed artifacts.
+
+**Contents.** Defines `ROOT`, `MANIFEST`, `INDEX`, `CARD_DIR`, `INCOMPLETE_DIR`, `PROTECTED`, `LOCATIONS`, `FROZEN_MANIFEST`, `REVIEW_FIELDS`, `sha()` and 18 more.
+
+**Use.** `python3 scripts/render_tradingview_script_cards.py --help`
+
+#### `scripts/rotate-workflow-logs.mjs`
+
+`code-js` · 193 lines · 6,810 B · description: **extracted**
+
+**Purpose.** Rotate the workflow logs memory.md and prompts.md. If a log is larger than the size limit (default 200 KB), this script keeps the file header and the newest N `## v` sections in place. It moves every older `## v` section to docs/archive/<name>-<YYYY-MM-DD>.md. If that archive file exists, the script appends to it.
+
+**Contents.** Defines `LOGS`, `SELF_ROOT`, `SWAP_SUFFIXES`, `VERSION_RE`, `compareVersion`, `main`, `parseArgs`, `pickArchived`, `rotateLog`, `splitSections` and 2 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `scripts/soltui_ci.py`
 
-`code-python` · 119 lines · 5,029 B · description: **extracted**
+`code-python` · 138 lines · 5,959 B · description: **extracted**
 
 **Purpose.** Select and shard SolTUI tests without silently omitting shared-code coverage.
 
-**Contents.** Defines `selected_modules()`, `SMOKE`, `DEPENDENCIES`, `targeted_modules()`, `flatten()`, `class TimedResult`, `main()`.
+**Contents.** Defines `selected_modules()`, `SMOKE`, `DEPENDENCIES`, `targeted_modules()`, `flatten()`, `class TimedResult`, `_run()`, `main()`.
 
 **Use.** `python3 scripts/soltui_ci.py --help`
 
@@ -17924,6 +25496,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class SelectionTests`, `class TimingTests`, `class TargetedTests`.
 
 **Use.** `python3 -m pytest scripts/test_soltui_ci.py -q`
+
+#### `scripts/test_tradingview_script_profiles.py`
+
+`test` · 160 lines · 6,291 B · description: **extracted**
+
+**Purpose.** Failure checks for the independent source-review gate and literal evidence.
+
+**Contents.** Defines `class SourceReviewTests`.
+
+**Use.** `python3 -m pytest scripts/test_tradingview_script_profiles.py -q`
 
 ---
 
