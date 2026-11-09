@@ -10,7 +10,7 @@ from pathlib import Path
 from soltui import commands, tui
 
 SRC = Path(tui.__file__).read_text()
-UI_ONLY = {"#bot-settings-defaults", "#bot-settings-cancel"}
+UI_ONLY = {"#bot-settings-defaults", "#bot-settings-cancel", "#signal-live-forward-link"}
 
 
 def pressed_selectors() -> list[str]:
@@ -27,7 +27,7 @@ def pressed_selectors() -> list[str]:
 
 class ButtonRegistryTests(unittest.TestCase):
     def test_button_handler_count(self) -> None:
-        self.assertEqual(len(pressed_selectors()), 116)
+        self.assertEqual(len(pressed_selectors()), 122)
 
     def test_every_button_handler_maps_to_a_registered_command(self) -> None:
         for selector in pressed_selectors():

@@ -1,5 +1,6 @@
 /** Composed Signal Desk screens over the same reviewed native command registry. */
 import { el, clear, table, tableScrollHint } from './ui-kit.js';
+import { mountCouncil } from './council.js';
 import { DESK_PAGES, DESK_READS, commandBlock, finite, numberText, percentText,
   runFromEnvelope, comparisonStatus, handoffValues, forwardColumns } from './desk-model.js';
 
@@ -24,6 +25,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
   let renderedRead = '';
   let runs = [], selected = new Set(), draft = null, settings = null, data = {}, failures = {}, liveSnapshot = null;
   const activity = [], waiting = new Map();
+  const council = mountCouncil({ ask, supports: name => commands.some(c => c.name === name) });
   const asset = () => $('#soltuiLiveAsset').value.trim().toUpperCase();
   async function save() {
     const val = { runs, selected: [...selected], draft, asset: asset(), page, source: $('#soltuiPriceSource')?.value ?? 'coinbase',
@@ -201,7 +203,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
       kpi('Paper entry confidence', state?.execution ? numberText(state.execution.min_confidence) : 'Unavailable', 'Separate from live vote accuracy and sample floors')));
     target.append(buttons([['New paper setup', 'forwardtest.start', {}, true], ['Start prepared checks', 'forwardtest.run'], ['Review stop checks', 'forwardtest.stop'], ['Review saved session', 'forwardtest.state'], ['Resume saved session', 'forwardtest.restore']]));
     if (state?.execution) target.append(note(costText(state.execution)));
-    target.append(note('Paper checks. Stop applies to this session only.'));
+    target.append(note('Paper predictions share one producer across apps. Stop pauses automatic recovery until Start.'));
     const section = el('div', { class: 'card' }, el('h2', { text: `${asset()} prospective evidence` }));
     if (!rows.length) section.append(note(failures['forwardtest.status'] ?? 'No saved trial results for this asset. Prepare a paper setup explicitly; reading this view starts nothing.'));
     else section.append(tableScrollHint(), el('div', { class: 'table-wrap' }, table([
@@ -214,16 +216,17 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     target.append(section, buttons([['Current predictions', 'forwardtest.predictions', { asset: asset() }], ['Compound paper evidence', 'compound.forward_status', { asset: asset() }], ['Training history', 'compound.results', { asset: asset() }]]));
   }
   function bots(target) {
+    target.append(council.node);
     const prices = data['prices.status'], fwd = data['forwardtest.state'], sweep = data['backtest.status'];
     const trainer = data['compound.unattended_status'], schedule = data['bots.schedule_status'];
     target.append(el('div', { class: 'kpis' },
       kpi('Recorder', prices ? (prices.running ? 'Running' : 'Stopped') : 'Unavailable', prices ? `Snapshot age ${numberText(prices.snapshot_age_s, 1)}s · ${prices.live ? 'fresh' : 'stale / unavailable'}` : failures['prices.status']),
-      kpi('Session paper checks', fwd ? (fwd.running ? 'Running' : 'Stopped') : 'Unavailable', 'Session-owned; not a detached service'),
+      kpi('Prediction process', fwd ? (fwd.running ? 'Running' : 'Stopped') : 'Unavailable', 'Shared paper producer'),
       kpi('Backtest worker', sweep ? (sweep.running ? 'Running' : sweep.phase ?? 'Idle') : 'Unavailable', sweep?.title ?? 'Session-owned research'),
       kpi('Money permission', 'Paper research', 'Bot simulations do not place orders; execution controls are separate')));
     const rows = [
       { process: 'Price recorder', state: prices?.running, output: prices ? `${numberText(prices.snapshot_age_s, 1)}s snapshot age` : 'Unavailable', lifetime: 'Recorder service / detached process', tool: 'prices.status' },
-      { process: 'Forward checks', state: fwd?.running, output: fwd?.busy ? 'Checking' : 'Inspect last checks', lifetime: 'Native-session owned', tool: 'forwardtest.state' },
+      { process: 'Forward checks', state: fwd?.running, output: fwd?.busy ? 'Checking' : 'Inspect last checks', lifetime: 'Shared; detached recovery survives browser closure', tool: 'forwardtest.state' },
       { process: 'Historical sweep', state: sweep?.running, output: sweep?.title ?? 'Unavailable', lifetime: 'Native-session owned', tool: 'backtest.status' },
       { process: `${asset()} compound trainer`, state: trainer?.running, output: trainer?.last_line ?? trainer?.last_error ?? 'Inspect log and last output independently', lifetime: 'Detached; survives browser closure', tool: 'compound.unattended_status', params: { asset: asset() } },
       { process: 'Bot optimizer schedule', state: schedule?.running ?? schedule?.enabled, output: 'Inspect next run and last result', lifetime: 'Scheduler; lifetime supplied by backend', tool: 'bots.schedule_status' },
@@ -268,6 +271,7 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
     $('#deskReadRefresh').hidden = !DESK_READS[page];
     $('#deskLiveMetrics').hidden = page !== 'signal';
     render(); message(); save(); refresh();
+    if (page === 'bots') council.refresh();
   }
   function receive(env, shouldRender = true) {
     const run = runFromEnvelope(env); record(run);
@@ -322,8 +326,8 @@ export function mountSignalDesk(root, { ask, openTool, refreshLive, transport, p
   $('#deskDensity')?.addEventListener('change', () => { (root.querySelector('body') ?? document.body).dataset.density = $('#deskDensity').value; save(); });
   const keydown = (e) => { if (e.key === 'Escape') { const dialog = $('#deskSearchDialog').open ? $('#deskSearchDialog') : $('#deskDetail').open ? $('#deskDetail') : null; if (dialog) { e.preventDefault(); dialog.close(); return; } } if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k' && !$('#deskDetail').open && !$('#deskSearchDialog').open) { e.preventDefault(); findTools(); } };
   window.addEventListener('keydown', keydown);
-  const timer = setInterval(() => { if (!disposed && !document.hidden && !$('#view-soltui').hidden) refresh(); }, 10_000);
+  const timer = setInterval(() => { if (!disposed && !document.hidden && !$('#view-soltui').hidden) { refresh(); if (page === 'bots') council.refresh(); } }, 10_000);
   return { restore, route, live, receive, jobs, inspect, commands(list) { commands = list; },
     assetChanged() { epoch++; data = {}; failures = {}; liveSnapshot = null; live({ asset: asset(), quote: null, aggregate: null }); render(); save(); refresh(); },
-    dispose() { disposed = true; epoch++; clearInterval(timer); window.removeEventListener('keydown', keydown); } };
+    dispose() { disposed = true; epoch++; council.dispose(); clearInterval(timer); window.removeEventListener('keydown', keydown); } };
 }

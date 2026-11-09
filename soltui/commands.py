@@ -203,6 +203,7 @@ class Runtime:
         self.forward_thread: threading.Thread | None = None
         self.forward_last: dict[str, dict[str, Any]] = {}
         self.forward_started_at: float | None = None
+        self.forward_owner = None
         self._catalog: list[docs_browser.DocEntry] | None = None
         self._catalog_key: tuple | None = None
 
@@ -719,10 +720,37 @@ def forward_coins() -> list[str]:
 
 def _forward_check_all(rt: "Runtime", plan: dict[str, Any]) -> dict[str, Any]:
     """One check of every planned coin, each settled and forecast on its own."""
+    from . import prediction_recovery as recovery
     out: dict[str, Any] = {}
-    for asset in plan["assets"]:
+    remaining = list(plan["assets"])
+    while remaining or recovery.pending_assets():
+        if recovery.paused():
+            rt.forward_stop.set()
         if rt.forward_stop.is_set():
             break
+        # A visible coin can move ahead of the rest of a long all-coin cycle,
+        # after the current transaction finishes. There is still one writer.
+        requested = [a for a in recovery.pending_assets() if a not in out]
+        if requested:
+            asset = requested[0]
+            if asset in remaining:
+                remaining.remove(asset)
+        elif remaining:
+            asset = remaining.pop(0)
+        else:
+            break
+        recovery.consume(asset)
+        if rt.forward_owner is not None and rt.forward_plan is not None and asset not in rt.forward_plan["assets"]:
+            # Extend coverage only at a job boundary. Keep every existing coin,
+            # strategy and execution cost in the unpinned plan unchanged.
+            with rt.lock:
+                rt.forward_plan["assets"] = [*rt.forward_plan["assets"], asset]
+                expanded = dict(rt.forward_plan)
+            forwardtest.save_session(expanded)
+            recovery.remember(expanded)
+            rt.forward_owner.update(assets=expanded["assets"])
+        if rt.forward_owner is not None:
+            rt.forward_owner.update(current_asset=asset, busy=True)
         try:
             r = forwardtest.tick(asset, plan["trials"], plan["horizons"], plan["cost"], stop=rt.forward_stop,
                                  code=plan["code"], tune=plan["tune"], execution=plan.get("execution"))
@@ -731,11 +759,43 @@ def _forward_check_all(rt: "Runtime", plan: dict[str, Any]) -> dict[str, Any]:
             out[asset] = {"at": time.time(), "error": f"{type(exc).__name__}: {exc}"[:300]}
         with rt.lock:
             rt.forward_last[asset] = out[asset]
+            latest = dict(rt.forward_last)
+        if rt.forward_owner is not None:
+            rt.forward_owner.update(last=latest, current_asset=None, busy=False)
     return out
+
+
+def _forward_owned_runner(rt: "Runtime") -> None:
+    """Retain cross-process ownership until the last tick has stopped."""
+    from . import prediction_recovery as recovery
+    owner = rt.forward_owner
+    failure = None
+    try:
+        if recovery.paused():
+            rt.forward_stop.set()
+        owner.watch(rt.forward_stop)
+        owner.update(state="running")
+        _forward_runner(rt)
+    except Exception as exc:  # noqa: BLE001 - retain worker failure for another surface
+        failure = f"{type(exc).__name__}: {exc}"[:300]
+    finally:
+        try:
+            if recovery.paused():
+                forwardtest.save_session(None)
+        except Exception as exc:  # noqa: BLE001 - always release the lease after cleanup
+            failure = failure or f"{type(exc).__name__}: {exc}"[:300]
+        finally:
+            try:
+                owner.finish(error=failure)
+            finally:
+                with rt.lock:
+                    rt.forward_owner = None
+                    rt.forward_thread = None
 
 
 def _forward_runner(rt: "Runtime") -> None:
     """Check every planned coin once per closed minute until stopped. Runs on its own thread."""
+    from . import prediction_recovery as recovery
     checked_minute = -1
     try:
         while not rt.forward_stop.is_set():
@@ -745,15 +805,19 @@ def _forward_runner(rt: "Runtime") -> None:
                 break
             now = time.time()
             minute = int(now // 60)
-            if minute != checked_minute and now % 60 >= FORWARD_GRACE_S:
+            requested = recovery.pending_assets()
+            if (minute != checked_minute or requested) and now % 60 >= FORWARD_GRACE_S:
                 with rt.lock:
                     acquired = not rt.forward_busy
                     if acquired:
                         rt.forward_busy = True
                 if acquired:
+                    selected = plan if minute != checked_minute else {**plan, "assets": requested}
                     checked_minute = minute
                     try:
-                        _forward_check_all(rt, plan)
+                        # Recovery between normal cycles checks requested coins
+                        # only; a minute rollover still checks the complete plan.
+                        _forward_check_all(rt, selected)
                     finally:
                         with rt.lock:
                             rt.forward_busy = False
@@ -887,40 +951,84 @@ def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
          "once per closed minute, on its own thread, whatever tab the console shows, until stopped.",
          read_only=False)
 def forwardtest_run(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery as recovery
     rt = ctx.runtime
     with rt.lock:
         if rt.forward_plan is None:
             raise CommandError("failed", "Prepare a forward test first (forwardtest.start)")
         if rt.forward_thread is None:
-            forwardtest.save_session(rt.forward_plan)
-            rt.forward_started_at = time.time()
-            rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest",
-                                                 daemon=True)
-            rt.forward_thread.start()
+            owner = recovery.acquire(rt.forward_plan, "console", manual=True)
+            if owner is None:
+                raise CommandError("failed", "A shared forward test already owns the prediction producer")
+            try:
+                forwardtest.save_session(rt.forward_plan)
+                recovery.remember(rt.forward_plan)
+                rt.forward_owner = owner
+                rt.forward_started_at = time.time()
+                rt.forward_thread = threading.Thread(target=_forward_owned_runner, args=(rt,), name="forwardtest",
+                                                     daemon=True)
+                rt.forward_thread.start()
+            except BaseException:
+                rt.forward_owner = None
+                rt.forward_thread = None
+                owner.finish(error="Prediction runner could not start")
+                raise
         return {"running": True, "assets": rt.forward_plan["assets"], "since": rt.forward_started_at}
 
 
 @command("forwardtest.state", "Whether the background forward test runs, what it watches, and each coin's "
          "latest check.")
 def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery as recovery
     rt = ctx.runtime
+    shared = recovery.health(ctx.settings.asset)
     with rt.lock:
         plan = rt.forward_plan
-        return {"running": plan is not None and rt.forward_thread is not None, "prepared": plan is not None,
-                "busy": rt.forward_busy, "assets": list(plan["assets"]) if plan else [],
+        return {"running": shared["running"], "prepared": plan is not None,
+                "busy": rt.forward_busy or shared["busy"], "assets": shared["assets"] if shared["running"] else list(plan["assets"]) if plan else [],
                 "optimize": bool(plan["tune"]) if plan else None, "since": rt.forward_started_at,
-                "last": {k: dict(v) for k, v in rt.forward_last.items()},
+                "last": shared["last"] if shared["running"] else {k: dict(v) for k, v in rt.forward_last.items()},
                 "defaults_saved": len(forwardtest.load_defaults()),
                 "execution": plan.get("execution") if plan else None,
-                "source": plan.get("source") if plan else None}
+                "source": plan.get("source") if plan else None,
+                **{key: shared[key] for key in ("state", "paused", "can_start", "message", "owner", "current_asset")}}
+
+
+@command("forwardtest.health", "Read shared paper prediction producer health.",
+         (P("asset", "string", "Coin to inspect; defaults to the selected asset."),))
+def forwardtest_health(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery
+    return prediction_recovery.health(bgqueue.validate_asset(p.get("asset") or ctx.settings.asset))
+
+
+@command("forwardtest.ensure", "Recover paper predictions or prioritize a coin in the shared producer.",
+         (P("asset", "string", "Coin requiring current predictions."),
+          P("manual", "bool", "Explicit Start: resume after a deliberate Stop.")), read_only=False)
+def forwardtest_ensure(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery, simulation
+    asset = bgqueue.validate_asset(p.get("asset") or ctx.settings.asset)
+
+    def fallback() -> dict:
+        trials = [{"label": e.label, "mode": "all", "members": [forwardtest.member(e.name, e.params)]}
+                  for e in ctx.roster]
+        if not trials:
+            raise CommandError("failed", "Add a strategy to the roster before starting predictions")
+        profile = simulation.from_settings(ctx.settings)
+        return {"asset": asset, "assets": [asset], "trials": trials, "horizons": forwardtest.HORIZONS,
+                "cost": profile.round_trip_bps, "execution": profile.to_dict(), "tune": True}
+
+    return prediction_recovery.ensure(asset, fallback, manual=bool(p.get("manual", False)))
 
 
 @command("forwardtest.restore", "Resume the saved forward test after restarting the console.", read_only=False)
 def forwardtest_restore(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery as recovery
     rt = ctx.runtime
     with rt.lock:
         if rt.forward_plan is not None or rt.forward_thread is not None:
             return {"restored": False}
+        if recovery.paused():
+            return {"restored": False, "paused": True}
         plan = forwardtest.load_session()
         if plan is None:
             return {"restored": False}
@@ -931,33 +1039,57 @@ def forwardtest_restore(ctx: Context, p: dict[str, Any]) -> Any:
             profile = from_settings(ctx.settings)
             plan["execution"] = profile.to_dict()
             plan["cost"] = profile.round_trip_bps
-        rt.forward_stop.clear()
-        rt.forward_plan = plan
-        forwardtest.save_session(plan)
-        rt.forward_started_at = time.time()
-        rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest", daemon=True)
-        rt.forward_thread.start()
+        owner = recovery.acquire(plan, "console")
+        if owner is None:
+            return {"restored": False, "shared": recovery.health(ctx.settings.asset)}
+        try:
+            rt.forward_stop.clear()
+            rt.forward_plan = plan
+            forwardtest.save_session(plan)
+            recovery.remember(plan)
+            rt.forward_owner = owner
+            rt.forward_started_at = time.time()
+            rt.forward_thread = threading.Thread(target=_forward_owned_runner, args=(rt,), name="forwardtest", daemon=True)
+            rt.forward_thread.start()
+        except BaseException:
+            rt.forward_owner = None
+            rt.forward_thread = None
+            owner.finish(error="Prediction runner could not restore")
+            raise
         return {"restored": True, "assets": plan["assets"]}
 
 
-@command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
+@command("forwardtest.stop", "Pause the shared paper prediction producer until explicit Start.", read_only=False)
 def forwardtest_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery as recovery
     rt = ctx.runtime
     with rt.lock:
-        forwardtest.save_session(None)
+        recovery.pause(rt.forward_plan)
         rt.forward_stop.set()
         rt.forward_plan = None
-        return {"stopping": rt.forward_busy}
+        shared = recovery.health(ctx.settings.asset)
+        if not shared["running"] and shared["owner"] is None:
+            forwardtest.save_session(None)
+        return {"stopping": shared["running"], "paused": True, "message": shared["message"]}
 
 
 @command("forwardtest.tick", "Settle due predictions and record the next paper calls.",
          read_only=False, long_running=True)
 def forwardtest_tick(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import prediction_recovery as recovery
     rt = ctx.runtime
     with rt.lock:
         plan = rt.forward_plan
         if plan is None or rt.forward_busy:
             raise CommandError("failed", "Forwardtest is stopped or already checking prices")
+        temporary_owner = None
+        if rt.forward_owner is None:
+            temporary_owner = recovery.acquire(plan, "manual")
+            if temporary_owner is None:
+                raise CommandError("failed", "The shared prediction producer is paused or already running")
+            rt.forward_owner = temporary_owner
+            temporary_owner.watch(rt.forward_stop)
+            temporary_owner.update(state="running")
         rt.forward_busy = True
     try:
         checks = _forward_check_all(rt, plan)
@@ -969,6 +1101,11 @@ def forwardtest_tick(ctx: Context, p: dict[str, Any]) -> Any:
     finally:
         with rt.lock:
             rt.forward_busy = False
+            if temporary_owner is not None:
+                try:
+                    temporary_owner.finish()
+                finally:
+                    rt.forward_owner = None
 
 
 @command("forwardtest.status", "Read saved forward results, separately for each coin and forecast horizon.",
@@ -1005,6 +1142,34 @@ def roster_reset(ctx: Context, p: dict[str, Any]) -> Any:
     ctx.roster = Roster.default()
     ctx.persist_roster()
     return {"entries": [_entry(e) for e in ctx.roster], "count": len(ctx.roster)}
+
+
+# -- Council: paper-only consensus bot -------------------------------------------------------------
+
+
+@command("council.config", "Read or save the Council paper bot configuration while stopped.",
+         (P("config", "json", "Optional Council configuration changes; no live mode exists."),), read_only=False)
+def council_config(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import council
+    return council.config(p.get("config"))
+
+
+@command("council.status", "Read Council paper position, confidence, observations and fills.")
+def council_status(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import council
+    return council.status()
+
+
+@command("council.start", "Start or resume the detached Council paper bot; places no venue orders.", read_only=False)
+def council_start(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import council
+    return council.start()
+
+
+@command("council.stop", "Stop Council; retain its open paper position and cancel unfilled decisions.", read_only=False)
+def council_stop(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import council
+    return council.stop()
 
 
 # -- signals -------------------------------------------------------------------------------------

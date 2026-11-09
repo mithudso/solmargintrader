@@ -164,6 +164,7 @@ DOCS_TABLE_CAP = 1000
 # parses this file and fails when a button is missing here or names a command that does not exist, so a
 # new button cannot skip the registry (the extension, CLI and API would silently lack its action).
 BUTTON_COMMANDS: dict[str, str] = {
+    "#signal-live-predictions-start": "forwardtest.ensure",
     "#status-strategies": "queue.progress",
     "#status-forwardtest": "forwardtest.state",
     "#status-compound-backtest": "compound.results",
@@ -278,6 +279,10 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#bots-fit-cancel": "bots.fit_cancel",
     "#bots-workbench": "experiments.list",
     "#bots-coins": "bots.overview",
+    "#council-save": "council.config",
+    "#council-start": "council.start",
+    "#council-stop": "council.stop",
+    "#council-refresh": "council.status",
 }
 
 class GlossaryTable(ExportTable):
@@ -885,6 +890,9 @@ class SolTuiApp(App):
     #bots-fit-equity, #bots-fit-hold { height: 3; }
     #bots-fit-controls Button { width: auto; min-width: 12; }
     #bots-fit-status, #bots-fit-detail, #bots-fit-selection-summary { height: auto; padding: 0 1; }
+    #bots-sec-council Input { width: 14; }
+    #bots-sec-council Checkbox { width: 20; }
+    #council-status, #council-fills { height: auto; padding: 1; }
     #backtest-pick { width: 44; }
     #backtest-roster { color: $text-muted; padding: 0 1; }
     #backtest-bg-status { padding: 0 1; height: auto; }
@@ -951,7 +959,8 @@ class SolTuiApp(App):
 
     def __init__(self, settings: Settings | None = None, *, ui_state_path: Path | None = None,
                  ensure_autopilot: bool = False, refresh_wallet: bool = False,
-                 stream_prices: bool = False, start: str = "tab-backtest", classic: bool = False) -> None:
+                 stream_prices: bool = False, start: str = "tab-backtest", classic: bool = False,
+                 auto_recover: bool | None = None) -> None:
         super().__init__()
         # Textual's capture returns -1 from fileno(). Python's multiprocessing
         # resource tracker passes that number to spawn, which rejects it. A
@@ -962,6 +971,7 @@ class SolTuiApp(App):
         # default stays Backtest because embedding code and the test suite address its widgets without
         # switching to it first. `classic` restores the original tab bar and theme.
         self._v2 = not classic
+        self._auto_prediction_recovery = auto_recover
         self._start = start
         self._v2_dests: tuple[shell.Destination, ...] = shell.DESTINATIONS
         self._v2_dest, self._v2_index = "research", 0
@@ -987,6 +997,9 @@ class SolTuiApp(App):
         self._bots_bot = "grid"
         self._bots_coins: list[str] = []
         self._bots_ticks = 0
+        self._council_busy = False
+        self._council_initialized = False
+        self._prediction_console_handle = None
         self._bots_schedule_busy = False
         self._bots_schedule_pending: list[tuple[str, bool]] = []
         self._bots_forward_running = False
@@ -1048,6 +1061,11 @@ class SolTuiApp(App):
         self._signal_live_jupiter_state = "idle"
         self._signal_live_jupiter_drained = threading.Event()
         self._signal_live_jupiter_drained.set()
+        self._signal_recovery_busy = False
+        self._signal_recovery_at: dict[str, float] = {}
+        self._signal_recovery_state: dict[str, Any] = {}
+        self._signal_recovery_drained = threading.Event()
+        self._signal_recovery_drained.set()
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -1707,8 +1725,8 @@ class SolTuiApp(App):
         st = env["result"]
         was_busy = self._forward_busy
         self._forward_busy = bool(st["busy"]) or (not st["running"] and st["prepared"])
-        if self._forward_running and not st["prepared"]:
-            self._forward_running = False
+        self._forward_running = bool(st["running"])
+        self._forward_show_running(st.get("assets", []) if self._forward_running else [])
         if not self._forward_running and not st["busy"]:
             self._forward_busy = False
         self._forward_controls()
@@ -1784,6 +1802,11 @@ class SolTuiApp(App):
 
     async def on_unmount(self) -> None:
         self._signal_live_alive.clear()
+        if self._prediction_console_handle is not None:
+            self._prediction_console_handle.close()
+            self._prediction_console_handle = None
+        if self._signal_recovery_busy:
+            await asyncio.to_thread(self._signal_recovery_drained.wait, 5.0)
         self._signal_live_pred_generation += 1
         self._signal_live_refresh_requested = False
         self._signal_live_jupiter_generation += 1
@@ -1883,6 +1906,10 @@ class SolTuiApp(App):
                             yield Select([("Coinbase", "coinbase"), ("Jupiter / jup.ag", "jupiter")], value="coinbase", allow_blank=False, id="signal-live-price-source")
                         yield Static("", id="signal-live-vote-status", markup=False)
                         yield Static("Aggregate score — · Flat", id="signal-live-price-score", markup=False)
+                        yield Static("", id="signal-live-recovery-status", markup=False)
+                        with Horizontal(classes="controls"):
+                            yield Button("Forward testing →", id="signal-live-forward-link")
+                            yield Button("Start predictions", id="signal-live-predictions-start", variant="primary")
                         yield Static("price recorder: checking…", id="signal-live-stream", markup=True)
                         yield Static("Price graph: loading…", id="signal-live-chart-context", classes="table-title", markup=True)
                         with Horizontal(id="signal-live-chart-container"):
@@ -2021,6 +2048,33 @@ class SolTuiApp(App):
             yield Static("", id="bots-status")
             yield Static("price recorder: checking…", id="bots-stream")
             with TabbedContent(id="bots-sections", initial="bots-sec-backtest"):
+                with TabPane("Council", id="bots-sec-council"):
+                    with VerticalScroll():
+                        yield Static("Council · paper: Strong Buy opens long; Sell exits. Optional shorts mirror this. Neutral votes hold.", markup=False)
+                        with Horizontal(classes="form-row"):
+                            yield Label("Coin")
+                            yield Input("SOL", id="council-asset")
+                            yield Label("Paper capital $")
+                            yield Input("10000", id="council-capital", type="number")
+                            yield Label("Accuracy floor %")
+                            yield Input("60", id="council-accuracy", type="number")
+                            yield Label("Resolved floor")
+                            yield Input("20", id="council-samples", type="integer")
+                        with Horizontal(classes="form-row"):
+                            yield Checkbox("Allow shorts", id="council-shorts")
+                            yield Checkbox("Use leverage", id="council-leveraged")
+                            yield Label("Leverage ×")
+                            yield Input("2", id="council-leverage", type="number")
+                            yield Label("Entry confidence 0–1")
+                            yield Input("0.8", id="council-confidence", type="number")
+                        with Horizontal(classes="form-row"):
+                            yield Button("Save settings", id="council-save")
+                            yield Button("Start paper Council", id="council-start", variant="success")
+                            yield Button("Stop Council", id="council-stop", variant="error")
+                            yield Button("Refresh", id="council-refresh")
+                        yield Static("Read Council status to begin.", id="council-status", markup=False)
+                        yield Static("Jupiter fees; real Coinbase candles supply paper fills. Confidence needs 20 prospective outcomes. Stop retains an open paper position.", markup=False)
+                        yield Static("", id="council-fills", markup=False)
                 with TabPane("Coin suitability", id="bots-sec-fit"):
                     with VerticalScroll():
                         yield Static("Rank all cached coins, then select a row to inspect or audit it. "
@@ -2385,6 +2439,82 @@ class SolTuiApp(App):
     def _bots_forward_refresh(self) -> None:
         self._bots_job("bots.forward_status", {"bot": self._bots_bot}, "replaying the recorded stream")
 
+    @on(Button.Pressed, "#council-save")
+    @on(Button.Pressed, "#council-start")
+    @on(Button.Pressed, "#council-stop")
+    @on(Button.Pressed, "#council-refresh")
+    def _council_action(self, event: Button.Pressed) -> None:
+        name = {"council-save": "council.config", "council-start": "council.start",
+                "council-stop": "council.stop", "council-refresh": "council.status"}[event.button.id]
+        params = {}
+        try:
+            if name == "council.config":
+                params = {"config": {"asset": self.query_one("#council-asset", Input).value.strip().upper(),
+                    "capital": float(self.query_one("#council-capital", Input).value),
+                    "min_accuracy": float(self.query_one("#council-accuracy", Input).value),
+                    "min_resolved": int(self.query_one("#council-samples", Input).value),
+                    "execution": {"allow_short": self.query_one("#council-shorts", Checkbox).value,
+                        "use_leverage": self.query_one("#council-leveraged", Checkbox).value,
+                        "leverage": float(self.query_one("#council-leverage", Input).value),
+                        "min_confidence": float(self.query_one("#council-confidence", Input).value)}}}
+        except ValueError:
+            self.query_one("#council-status", Static).update("Enter valid Council settings before saving.")
+            return
+        self._council_request(name, params)
+
+    def _council_request(self, name: str = "council.status", params: dict | None = None) -> None:
+        if self._council_busy or not self._signal_live_alive.is_set():
+            return
+        self._council_busy = True
+        self._council_job(name, params or {})
+
+    @work(thread=True, exit_on_error=False, group="council-ui")
+    def _council_job(self, name: str, params: dict) -> None:
+        try:
+            env = self._call(name, params, quiet=True)
+            if env.get("ok") and name == "council.config":
+                env = self._call("council.status", quiet=True)
+            if self._signal_live_alive.is_set():
+                self.call_from_thread(self._council_done, env)
+        except RuntimeError:
+            pass
+        finally:
+            self._council_busy = False
+
+    def _council_done(self, env: dict) -> None:
+        if not self._signal_live_alive.is_set():
+            return
+        if not env.get("ok"):
+            self.query_one("#council-status", Static).update(self._msg(env))
+            return
+        s = env["result"]
+        p = s.get("position")
+        position = ("Long" if p["direction"] > 0 else "Short") + f" @ ${p['entry_price']:g}" if p else "Flat"
+        confidence = f"{s['confidence']:.1%}" if s.get("confidence") is not None else "Warming up"
+        self.query_one("#council-status", Static).update(
+            f"{'Running' if s.get('running') else 'Stopped'} · {s.get('message', '')}\n"
+            f"{s['config']['asset']} · {position} · Equity ${s.get('equity', 0):,.2f} · "
+            f"Confidence {confidence} ({s.get('confidence_samples', 0)} samples)"
+            + (" · Fill pending" if s.get("pending") else ""))
+        locked = bool(s.get("running") or p or s.get("pending"))
+        for widget in self.query("#bots-sec-council Input, #bots-sec-council Checkbox"):
+            widget.disabled = locked
+        self.query_one("#council-save", Button).disabled = locked
+        self.query_one("#council-start", Button).disabled = bool(s.get("running"))
+        self.query_one("#council-stop", Button).disabled = not s.get("running")
+        if not self._council_initialized:
+            cfg = s["config"]
+            for field, key in (("asset", "asset"), ("capital", "capital"), ("accuracy", "min_accuracy"), ("samples", "min_resolved")):
+                self.query_one(f"#council-{field}", Input).value = str(cfg[key])
+            for field, key in (("leverage", "leverage"), ("confidence", "min_confidence")):
+                self.query_one(f"#council-{field}", Input).value = str(cfg["execution"][key])
+            self.query_one("#council-shorts", Checkbox).value = cfg["execution"]["allow_short"]
+            self.query_one("#council-leveraged", Checkbox).value = cfg["execution"]["use_leverage"]
+            self._council_initialized = True
+        self.query_one("#council-fills", Static).update("\n".join(
+            f"{time.strftime('%H:%M:%S UTC', time.gmtime(f['at']))} · {f['side']} @ ${f['price']:g} · {f['reason']}"
+            for f in s.get("fills", [])[:20]) or "No paper fills yet.")
+
     def _bots_tick(self) -> None:
         """Every 5 s: once a minute keep the recorder on (any tab); while the Bots tab is open, the
         stream line, live prices, forward refresh and optimize progress."""
@@ -2398,6 +2528,7 @@ class SolTuiApp(App):
                 return
         except NoMatches:
             return
+        self._council_request()
         env = self._call("prices.status", quiet=True)
         if env["ok"]:
             self._bots_render_prices(env["result"])
@@ -3165,6 +3296,9 @@ class SolTuiApp(App):
 
     def on_mount(self) -> None:
         """Populate tables and start the indicator refresh."""
+        if not self.is_headless:
+            from . import prediction_recovery
+            self._prediction_console_handle = prediction_recovery.register_console()
         self._bots_fit_alive.set()
         avail = self.query_one("#available-table", DataTable)
         for label in ("strategy", "family", "status", "in roster", "tested", "times tested", "last tested", "card-preset result"):
@@ -3208,23 +3342,8 @@ class SolTuiApp(App):
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
         self.set_interval(1, self._signal_live_tick)
         self._signal_live_prediction_timer = self.set_interval(10, self._signal_live_poll_predictions)
-        if getattr(self.settings, "forwardtest_autostart", True):
-            restored = self._call("forwardtest.restore", quiet=True)
-            from .commands import forward_coins
-
-            all_coins = set(forward_coins())
-            restored_assets = (
-                set(restored.get("result", {}).get("assets", []))
-                if (restored["ok"] and restored["result"].get("restored"))
-                else set()
-            )
-            if restored_assets and all_coins.issubset(restored_assets):
-                self._forward_running = True
-                self._forward_show_running(restored["result"]["assets"])
-            else:
-                if restored_assets:
-                    self._call("forwardtest.stop", quiet=True)
-                self._autostart_forwardtest()
+        if self._signal_auto_recovery_allowed():
+            self._signal_live_request_recovery(startup=True)
         self._forward_controls()
         self.set_interval(5, self._forward_schedule)
         self.set_interval(5, self._advanced_context_tick)
@@ -4101,7 +4220,106 @@ class SolTuiApp(App):
         for selector in ("#signal-live-price-score", "#signal-live-predictions-score"):
             if self.query(selector):
                 self.query_one(selector, Static).update(text)
+        if self.query("#signal-live-forward-link"):
+            self.query_one("#signal-live-forward-link", Button).display = not aggregate["available"]
+            self._signal_live_render_recovery(aggregate["available"])
         return aggregate
+
+    def _signal_auto_recovery_allowed(self) -> bool:
+        # Tests opt in explicitly with mocked commands; a headless UI must not
+        # leave real detached producers behind after its virtual screen closes.
+        enabled = self._auto_prediction_recovery
+        return bool(getattr(self.settings, "forwardtest_autostart", True) and
+                    (enabled if enabled is not None else not self.is_headless))
+
+    @on(Button.Pressed, "#signal-live-forward-link")
+    def _signal_live_open_forward(self) -> None:
+        self.set_focus(None)
+        if self._v2:
+            destination = self._v2_destination("research")
+            index = next(i for i, view in enumerate(destination.views) if view.tab == "tab-forwardtest")
+            self._v2_show("research", index)
+        else:
+            self.query_one("#main-tabs", TabbedContent).active = "tab-forwardtest"
+
+    @on(Button.Pressed, "#signal-live-predictions-start")
+    def _signal_live_start_predictions(self) -> None:
+        self._signal_live_request_recovery(manual=True)
+
+    def _signal_live_render_recovery(self, available: bool = False) -> None:
+        if not self.query("#signal-live-recovery-status"):
+            return
+        state = self._signal_recovery_state
+        status = self.query_one("#signal-live-recovery-status", Static)
+        status.display = not available
+        status.update(Text(state.get("message", "Checking prediction process…")))
+        button = self.query_one("#signal-live-predictions-start", Button)
+        button.display = not available and bool(state.get("can_start")) and not state.get("running")
+        button.disabled = self._signal_recovery_busy
+
+    def _signal_live_request_recovery(self, *, manual: bool = False, startup: bool = False) -> None:
+        if not self._signal_live_alive.is_set() or self._signal_recovery_busy:
+            return
+        if not startup and not manual:
+            if (self.query_one("#main-tabs", TabbedContent).active != "tab-compound" or
+                    self.query_one("#compound-sections", TabbedContent).active != "cmp-live"):
+                return
+        coin = getattr(self, "_compound_coin", "SOL")
+        now = time.time()
+        rows = self._signal_live_prediction_rows
+        current = any(r.get(f"pred_{h}m") in ("UP", "DOWN", "FLAT") and
+                      isinstance(r.get(f"issued_{h}m"), (int, float)) and
+                      isinstance(r.get(f"expires_{h}m"), (int, float)) and
+                      r[f"issued_{h}m"] <= now < r[f"expires_{h}m"]
+                      for r in rows for h in (1, 5, 10, 30))
+        self._signal_recovery_busy = True
+        self._signal_recovery_drained = threading.Event()
+        self._signal_live_recovery_job(coin, manual, current, self._signal_auto_recovery_allowed(), self._signal_recovery_drained)
+
+    @work(thread=True, exit_on_error=False, group="signal-prediction-recovery")
+    def _signal_live_recovery_job(self, coin: str, manual: bool, current: bool, automatic_allowed: bool,
+                                  drained: threading.Event) -> None:
+        delivered = False
+        try:
+            try:
+                env = self._call("forwardtest.ensure" if manual else "forwardtest.health",
+                                 {"asset": coin, **({"manual": True} if manual else {})}, quiet=True)
+                if env.get("ok") and not manual:
+                    state = env["result"]
+                    due = time.time() - self._signal_recovery_at.get(coin, -float("inf")) >= 30
+                    automatic = (automatic_allowed and not state.get("paused") and not state.get("cooldown_seconds") and due and
+                                 (not state.get("running") or not current))
+                    allowed = state.get("can_start") or state.get("running")
+                    if allowed and (manual or automatic):
+                        self._signal_recovery_at[coin] = time.time()
+                        env = self._call("forwardtest.ensure", {"asset": coin, "manual": manual}, quiet=True)
+            except Exception as exc:
+                env = {"ok": False, "error": {"message": f"Prediction recovery failed ({type(exc).__name__})"}}
+            if self._signal_live_alive.is_set():
+                try:
+                    self.call_from_thread(self._signal_live_recovery_done, coin, env)
+                    delivered = True
+                except RuntimeError:
+                    pass
+        finally:
+            if not delivered:
+                self._signal_recovery_busy = False
+            drained.set()
+
+    def _signal_live_recovery_done(self, coin: str, env: dict[str, Any]) -> None:
+        self._signal_recovery_busy = False
+        if not self._signal_live_alive.is_set() or coin != getattr(self, "_compound_coin", "SOL"):
+            return
+        if env.get("ok"):
+            self._signal_recovery_state = env["result"]
+            self._forward_running = bool(env["result"].get("running"))
+            self._forward_controls()
+            self._forward_show_running(env["result"].get("assets", []) if self._forward_running else [])
+        else:
+            self._signal_recovery_at[coin] = time.time()
+            self._signal_recovery_state = {"state": "failed", "can_start": True,
+                                           "message": (env.get("error") or {}).get("message", "Prediction recovery failed")}
+        self._signal_live_update_score(time.time())
 
     def _signal_live_tick(self) -> None:
         if not self.query("#signal-live-stream"):
@@ -4423,6 +4641,9 @@ class SolTuiApp(App):
             self._signal_live_prediction_rows = []
             error = (env.get("error") or {}).get("message") or "Prediction read failed."
         self._signal_live_render_predictions(error=error)
+        aggregate = self._signal_live_update_score(time.time())
+        if not aggregate["available"]:
+            self._signal_live_request_recovery()
         if self._signal_live_refresh_requested:
             self._signal_live_refresh_predictions(force=True)
 

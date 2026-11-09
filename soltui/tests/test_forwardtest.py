@@ -322,27 +322,54 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                         break
                 self.assertFalse(app.query_one("#forward-start").disabled)
 
-    async def test_autostart_forwardtest_on_mount_runs_on_all_coins_and_strategies(self) -> None:
-        with TemporaryDirectory() as directory, patch.object(config, "CONFIG_DIR", Path(directory)), \
-                patch.object(commands, "_forward_check_all", return_value={}), \
-                patch.object(commands, "forward_coins", return_value=["BTC", "ETH", "SOL"]):
-            app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=True))
-            async with app.run_test(size=TEST_SIZE) as pilot:
-                await pilot.pause()
-                self.assertTrue(app._forward_running)
-                self.assertIn("forwardtest running", app.sub_title)
-                state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
-                self.assertTrue(state["running"])
-                from soltui.commands import forward_coins
+    async def test_autostart_uses_shared_producer_and_preserves_saved_scope(self) -> None:
+        with TemporaryDirectory() as directory, patch.object(config, "CONFIG_DIR", Path(directory)):
+            saved = {"asset": "BTC", "assets": ["BTC", "ETH", "SOL"], "horizons": [5, 30],
+                     "trials": [{"label": "custom", "mode": "all", "members": [
+                         ft.member("ma_crossover", {"fast": 9, "slow": 40})]}],
+                     "cost": 17.25, "code": ft.revision(), "tune": False}
+            ft.save_session(saved)
+            before = ft.load_session()
+            app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=True),
+                            auto_recover=True)
+            original = app._call
+            calls = []
+            shared = {"running": False, "paused": False, "can_start": True, "busy": False,
+                      "prepared": False, "assets": saved["assets"], "last": {}, "message": "Stopped"}
 
-                all_coins = forward_coins()
-                self.assertEqual(set(state["assets"]), set(all_coins))
-                app.query_one(TabbedContent).active = "tab-forwardtest"
-                await pilot.pause()
-                self.assertTrue(app.query_one("#forward-start", Button).disabled)
-                self.assertFalse(app.query_one("#forward-stop", Button).disabled)
-                await pilot.click("#forward-stop")
-                self.assertFalse(app._forward_running)
+            def call(name, params=None, **kw):
+                calls.append((name, params))
+                if name == "forwardtest.ensure":
+                    shared.update(running=True, can_start=False, message="Running")
+                elif name == "forwardtest.stop":
+                    shared.update(running=False, paused=True, can_start=True, message="Paused")
+                elif name not in ("forwardtest.health", "forwardtest.state"):
+                    return original(name, params, **kw)
+                return {"ok": True, "result": dict(shared)}
+
+            with patch.object(app, "_call", side_effect=call):
+                async with app.run_test(size=TEST_SIZE) as pilot:
+                    for _ in range(100):
+                        if not app._signal_recovery_busy:
+                            break
+                        await pilot.pause(.01)
+                    self.assertFalse(app._signal_recovery_busy)
+                    self.assertTrue(app._forward_running)
+                    self.assertIn("forwardtest running on 3 coin(s)", app.sub_title)
+                    self.assertEqual([p for n, p in calls if n == "forwardtest.ensure"],
+                                     [{"asset": "SOL", "manual": False}])
+                    self.assertFalse(any(n in ("forwardtest.start", "forwardtest.run", "forwardtest.restore")
+                                         for n, _ in calls))
+                    self.assertIsNone(app.ctx.runtime.forward_thread)
+                    self.assertEqual(ft.load_session(), before)
+                    app.query_one(TabbedContent).active = "tab-forwardtest"
+                    await pilot.pause()
+                    self.assertTrue(app.query_one("#forward-start", Button).disabled)
+                    self.assertFalse(app.query_one("#forward-stop", Button).disabled)
+                    await pilot.click("#forward-stop")
+                    self.assertFalse(app._forward_running)
+                    self.assertNotIn("forwardtest running", app.sub_title)
+                    self.assertTrue(shared["paused"])
 
     async def test_autostart_forwardtest_disabled_by_settings(self) -> None:
         app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))

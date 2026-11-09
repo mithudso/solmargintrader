@@ -1,6 +1,14 @@
 # Work continuation
 
-Version: 293
+Version: 301
+Delta: v300 to v301; align autostart coverage with the shared worker and refresh its header.
+Delta: v299 to v300; finalize native-host discovery and delivery checkpoint.
+Delta: v298 to v299; protect migration from an old native-host writer.
+Delta: v297 to v298; fix the release-version assertion found by CI.
+Delta: v296 to v297; finalize source checks and committed test discovery.
+Delta: v295 to v296; implement and verify shared recovery and Council paper controls.
+Delta: v294 to v295; extend work with the Council consensus bot.
+Delta: v293 to v294; start automatic prediction recovery and actionable unavailable alerts.
 Delta: v292 to v293; finalize shared-database regression discovery counts.
 Delta: v291 to v292; record actual Chrome activation and repair the shared prediction database lock.
 Delta: v290 to v291; finalize committed suite counts and delivery checkpoint.
@@ -12,6 +20,50 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v301 - 2026-11-09
+
+Final-head macOS CI ran134 targeted tests;133 passed and the old autostart test failed because it still expected a per-console all-coin worker in headless mode. Replaced that test with explicit mocked recovery opt-in. It now verifies one shared ensure request, no local producer thread, preservation of the saved coin/trial/horizon/cost scope, correct running controls/header, and explicit Stop pause. Updated the console header/controls immediately on shared recovery and periodic shared-state reads. All28 forward-test/mounted-control tests passed locally in29.454s after this change. This is a test-contract update plus a visible shared-state correction, not a relaxation of startup or evidence gates. Discovery counts stay1338 SolTUI/2722 total. A real Python Jupiter read returned a fresh SOL reference. Rebuild indexes, push and wait for final CI before merge/activation. Remaining runtime receipts followv300.
+
+## v300 - 2026-11-09
+
+Final source includes95bb4c5 andf09a17e, with release metadataaba6e5a and this count refresh. Discovery now includes1338 SolTUI tests,397 Node tests and2722 total. Final local Node397, native-host/recovery/bridge52 and real browser26/26 passed after the host migration guard. Other verification fromv297 remains valid; only native host lifecycle and a release assertion changed afterward. PR165 contains the full authorized work. Required final-head CI and merge/sync remain before activation. Complete actual runtime acceptance and store its final receipt at /Users/mitch/.local/state/solmargintrader-session-01a1beca/prediction-recovery-delivery.json, with private memory.md as the post-merge continuation authority. That receipt must record the merged SHA, active producer and Council identities, preserved plan/call history, loaded Chrome0.6.1 and actual console checks. Preserve unrelated files and all other workers. Do not treat this checkpoint as a completed runtime acceptance claim.
+
+## v299 - 2026-11-09
+
+The migration guard now also detects older native hosts. Updated native hosts hold a protocol registration for their entire serve lifetime and release it on EOF or failure. An old unregistered native host must drain before a new producer starts. This closes the real activation race observed with PID26379. All52 focused recovery/native/bridge tests passed; three tests were added. Final Node397 passed after replacing the stale fixed release assertion with semantic version validation plus manifest/package equality; CI separately enforces a version bump against the base. Update committed discovery after the new native-host test file reaches HEAD (final1338 SolTUI /2722 total). Browser source is unchanged from independent22/22 acceptance. Remaining delivery and actual activation steps are unchanged. Private backup/plan evidence is retained.
+
+## v298 - 2026-11-09
+
+PR165 is open at https://github.com/mithudso/solmargintrader/pull/165. Initial CI caught extension/test/wallet-pubkey.test.js still asserting0.6.0 after the release bump to0.6.1. Updated the explicit version assertion and reran the final Node suite. Browser e2e, docs, Mongo, executor and liquidity CI jobs already passed on the initial head. Rebuild the offline index and wait for all checks on the corrected final commit before merge. A fresh consistent private backup passed quick_check=ok with221263calls,19181trials and1saved session; receipt /Users/mitch/.local/state/solmargintrader-session-01a1beca/prediction-recovery-backup.json. The old Chrome native host may still own a foreground prediction thread, so actual extension reload must allow its cooperative exit before starting the new shared producer. No forced process shutdown or evidence reset is authorized or needed.
+
+## v297 - 2026-11-09
+
+Source commit95bb4c5 implements both requests. Final backend106 tests passed; mounted controls43 passed, bridge/accounting62 passed, existing Signal/Jupiter15 passed, Node397 passed, backtester941 passed, Mongo46 passed (11 optional skips). Browser end-to-end26/26 passed and independent frozen recovery14/14 plus Council8/8 passed. JavaScript syntax, offline dry-run, Jupiter endpoints and interim documentation checks passed. Final committed discovery is1335 SolTUI and2719 total. Offline indexes include all new staged files. The full SolTUI suite remains optional; targeted checks cover changed paths. Current production inventory found no running TUI; the old console closed naturally. Existing F5 worker65834 remains untouched. Saved plan remains14assets/34trials with revisionc80b006f046f1f6488a02ffac35775e6fab570cd2b8a20bcc373717c336a7cba and218829historical calls at13:30UTC. Remaining: final metadata gate, push/PR/CI/merge/sync, consistent private backup, actual Chrome0.6.1/console activation and paper Council startup/verification. Stele completion will use queued writes while transport is closed.
+
+## v296 - 2026-11-09
+
+Implemented unavailable-prediction recovery through separate forwardtest.health and forwardtest.ensure commands. A detached producer owns one kernel lease across consoles; explicit Stop pauses automatic recovery. Existing trials, costs, plan assets and forwardtest.revision remain intact. The alert links to Research / Forward Testing and conditionally offers Start predictions. Upgraded consoles register live protocol capability; old consoles remain conservatively excluded until relaunch.
+
+Implemented a detached Council paper bot with frozen causal votes, equal eligible-strategy weighting, entry/exit hysteresis, optional shorting/leverage, shared Jupiter fees/borrow/liquidation, future real Coinbase proxy fills, and separately trained prospective entry confidence. No live order path is added. Council status/settings/Start/Stop are exposed in Chrome Bot monitor and SolTUI Bots / Council. Polling preserves form drafts. Stop preserves open paper positions and cancels pending fills. Agent ownership: lifecycle specialist implemented backend and registry; root implemented interfaces, fixtures and integration.
+
+Verification so far: 397 JavaScript tests; 62 bridge/accounting tests; 15 existing Signal/Jupiter UI tests; three new mounted-control tests; 26 real-browser end-to-end checks; independent frozen-source recovery14/14 and Council8/8. Final106 backend tests passed, including Council23 and recovery17 with the expiry-training regression. Mongo46 passed with11 optional skips. Full941 backtester tests encountered only expected retrieval-index drift; rebuild and rerun before delivery. Endpoint and offline dry-run checks passed. Backend evidence: /tmp/prediction-recovery-backend-regression.log; UI receipts: /tmp/prediction-recovery-acceptance.json and /tmp/council-ui-acceptance.json.
+
+Remaining: finish shadow-outcome expiry regression, regenerate offline indexes, refresh committed discovery counts, complete checks, commit/push/PR/merge, safely synchronize main and activate actual Chrome0.6.1/TUI. Start Council in paper mode to collect prospective confidence; verify one shared producer, fresh predictions, retained evidence, and actual installed identity. Preserve the existing F5 worker and unrelated untracked files. Stele remains disconnected; exact lifecycle writes are queued as a8f2886e and911f08c0 with decisions4f91d7fb and6f893541. Private production evidence remains outside git.
+
+## v295 - 2026-11-09
+
+The user additionally requests a Council bot driven by successful eligible strategy votes: enter long on Strong Buy, hold until Sell, and reverse rules for shorts, with optional leverage. Continue the already-authorized prediction recovery and actionable alerts; do not replace that goal. Council must use current eligible horizon votes with recorded accuracy/sample/expiry floors, not retrospective winning strategies. Default to paper/dry-run,1x,long-only unless shorting/leverage are explicitly enabled. Reuse existing Jupiter simulation fees, borrow, liquidation, confidence and fill timing. Never enable unverified live execution or fabricate quotes. Preserve historical vote snapshots so any replay uses decisions available at the time, without lookahead. Root owns Council implementation and UI; lifecycle specialist owns prediction producer and commands, so coordinate command registrations.
+
+## v294 - 2026-11-09
+
+The user authorizes unavailable live agreement, including expired qualifying predictions with a fresh recorder, to start or recover the prediction producer automatically. Add a Forward Testing destination link and a Start predictions button when stopped. Work in /Users/mitch/dev/solmargintrader-wt-recovery-01a1beca on fix/prediction-recovery-01a1beca. Preserve the three unrelated main-checkout guides and existing workers. Stele is disconnected; task create/claim lifecycle is queued as a8f2886e.
+
+The prior feature and SQLite fixes are delivered through PR163/164, main cb4ca9b3e82cd196ce561a40418961b6777ad4e8. Final prior activation receipt is /Users/mitch/.local/state/solmargintrader-session-01a1beca/memory.md; it supersedes old checkpoint text below. Do not repeat completed migration or arbitrarily restart all workers. Source investigation shows popup refreshGlance reads prices.status, forwardtest.predictions and process-local forwardtest.state. A fresh recorder does not refresh saved forecasts. _forward_runner checks every planned coin sequentially once per minute; a14-asset cycle or optimization can outlast a1-minute forecast. Native-host process-local restoration cannot survive a short-lived popup by itself.
+
+Contract: keep read-only reads free of implicit mutations; expose a separate idempotent paper-only ensure/recovery command. Use one cross-process producer, reuse the exact saved plan/cost profile, prevent repeated starts, report Starting/Running/failure, and retain accuracy/sample/expiry evidence gates. Current assessments remain available independently. Honor a later explicit Stop and offer Start to resume. Foreground recovery should prioritize the requested asset without parallel writers. No change to live order routing or arming. Avoid editing forwardtest.py unless necessary because its hash partitions evidence.
+
+Steps: lifecycle/ownership design; backend and popup/dashboard/TUI recovery controls; focused concurrency and UI checks; final installed acceptance and full authorized PR delivery. Pending implementation. Preserve continuation here and in Stele outbox throughout.
 
 ## v292 - 2026-11-09
 

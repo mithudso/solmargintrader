@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T11:52:57+00:00",
+  "generatedAt": "2026-11-09T13:52:35+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1616,
+      "matchingFiles": 1618,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1359,
+      "matchingFiles": 1360,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1345,
+      "matchingFiles": 1348,
       "shown": 30,
       "files": [
         {
@@ -388,6 +388,10 @@
           "hits": 28
         },
         {
+          "path": "soltui/council.py",
+          "hits": 24
+        },
+        {
           "path": "executor/src/executor/quote.py",
           "hits": 23
         },
@@ -417,10 +421,6 @@
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
-          "hits": 21
-        },
-        {
-          "path": "soltui/pnl.py",
           "hits": 21
         }
       ],
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 540,
+      "matchingFiles": 543,
       "shown": 30,
       "files": [
         {
@@ -986,7 +986,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 442,
+      "matchingFiles": 443,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 431,
+      "matchingFiles": 436,
       "shown": 30,
       "files": [
         {
@@ -1138,7 +1138,7 @@
         },
         {
           "path": "soltui/tui.py",
-          "hits": 140
+          "hits": 141
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -1206,7 +1206,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 60
+          "hits": 65
         },
         {
           "path": "soltui/commands.py",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 280,
+      "matchingFiles": 281,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 230,
+      "matchingFiles": 231,
       "shown": 30,
       "files": [
         {

@@ -46,11 +46,17 @@ export async function installHost({ profile, extensionId, mode = process.env.SOL
   const dir = path.join(profile, 'NativeMessagingHosts');
   fs.mkdirSync(dir, { recursive: true });
   const wrapper = path.join(profile, 'soltui-host.sh');
+  // Popup recovery is now an explicit feature. The real-host smoke remains
+  // read-only and isolated from the owner's running prediction plan.
+  const configDir = path.join(profile, 'soltui-config');
+  fs.mkdirSync(path.join(configDir, 'forwardtest'), { recursive: true });
+  fs.writeFileSync(path.join(configDir, 'forwardtest', 'control.json'), JSON.stringify({ paused: true }), { mode: 0o600 });
+  const scopedEnv = { ...process.env, SOLTUI_CONFIG_DIR: configDir };
   const host = defaultHostCommand(process.env);
   const launch = real
     ? `cd ${shq(host.cwd)} && exec ${shq(host.command)} ${host.args.map(shq).join(' ')}`
     : `exec ${shq(process.execPath)} ${shq(FIXTURE)}`;
-  fs.writeFileSync(wrapper, `#!/bin/sh\n${launch}\n`, { mode: 0o700 });
+  fs.writeFileSync(wrapper, `#!/bin/sh\nexport SOLTUI_CONFIG_DIR=${shq(configDir)}\n${launch}\n`, { mode: 0o700 });
 
   const manifestPath = path.join(dir, `${HOST_NAME}.json`);
   const manifest = {
@@ -68,11 +74,11 @@ export async function installHost({ profile, extensionId, mode = process.env.SOL
     manifestPath,
     wrapper,
     // The same wrapper the browser runs, for the node CLI and API to use.
-    env: { ...process.env, SOLTUI_NATIVE_HOST: wrapper },
+    env: { ...scopedEnv, SOLTUI_NATIVE_HOST: wrapper },
     // `soltui list` / `soltui call`, the Python CLI. Only with the real host.
     cli: real
       ? (args) => new Promise((resolve) => {
-          execFile(soltuiPython(), ['-m', 'soltui.cli', ...args], { cwd: repoRoot(), timeout: 120_000, maxBuffer: 64 * 1024 * 1024 },
+          execFile(soltuiPython(), ['-m', 'soltui.cli', ...args], { cwd: repoRoot(), env: scopedEnv, timeout: 120_000, maxBuffer: 64 * 1024 * 1024 },
             (err, stdout, stderr) => resolve({ code: err?.code ?? 0, stdout, stderr }));
         })
       : null,

@@ -1,4 +1,5 @@
 import { renderTradingView } from './tradingview.js';
+import { predictionRecovery, renderPredictionRecovery } from './prediction-recovery.js';
 /** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
 import { mountSignalDesk } from './signal-desk.js';
 import { commandBlock, eligibilityReason } from './desk-model.js';
@@ -220,6 +221,9 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let batchChecking = false;
   let manualBusy = false;
   const desk = mountSignalDesk(root, { ask, openTool: activate, refreshLive, transport });
+  const recovery = predictionRecovery({ ask, supports: (name) => commands.some((c) => c.name === name),
+    changed: (state) => renderPredictionRecovery($('#soltuiPredictionRecovery'), state, { start: () => recovery.start() }),
+  });
   let deskPage = null;
 
   async function ask(command, params = {}) {
@@ -568,6 +572,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
           $('#soltuiLivePredictionStatus').textContent = `Prediction refresh failed: ${e.message} · retrying every 10s`;
         }
       }
+      recovery.update(asset, { rows: predictionRows, voting });
       if ($('#soltuiPriceSource').value === 'jupiter') {
         const env = await ask('prices.quote', { asset, source: 'jupiter' });
         if (disposed || contextGeneration !== liveGeneration) return;
@@ -800,6 +805,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if ($('#soltuiLiveStream').checked || !predictionAttempted) refreshLive();
   }, 5000);
   function dispose() {
+    recovery.dispose();
     disposed = true;
     desk.dispose();
     clearInterval(heartbeat);

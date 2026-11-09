@@ -75,11 +75,12 @@
               <label><input id="soltuiLiveStream" type="checkbox" /> Follow stream</label>
             </div></div>
             <div id="tradingViewChart" class="tradingview-chart"></div><details><summary>Recorder history &amp; saved votes</summary><div id="soltuiLiveChart"><p class="empty">Waiting for an existing recorder quote. This view starts no services.</p></div>
-            </details><div id="manualSignalResult" aria-live="polite"></div><p id="soltuiLiveStatus" class="note">Reads the existing recorder and saved predictions. Does not start a recorder or trainer.</p>
+            </details><div id="manualSignalResult" aria-live="polite"></div><p id="soltuiLiveStatus" class="note">Reads the selected price feed. Unavailable predictions request paper recovery.</p>
           </div>
           <aside class="card desk-interpretation">
             <p class="eyebrow">Current interpretation</p><h2 id="deskInterpretation" class="desk-score">Agreement unavailable</h2>
             <div id="soltuiLiveScore" class="signal-score signal-score-gray">Aggregate score unavailable</div>
+            <div id="soltuiPredictionRecovery" hidden aria-live="polite"></div>
             <p class="note">Directional agreement is separate from measured accuracy and paper-entry confidence.</p>
             <button id="deskWhyScore" type="button" class="link">Why this score?</button>
             <details><summary>Vote eligibility thresholds</summary><div class="filters">
@@ -110,7 +111,7 @@
             <form id="soltuiForm" class="form" autocomplete="off"></form>
             <p id="soltuiRunStatus" class="note" role="status"></p>
             <label class="poll-control"><input id="soltuiPoll" type="checkbox" disabled /> Refresh this status every 10 seconds</label>
-            <p class="note">Session jobs stop when every dashboard closes. Batches keep running.</p>
+            <p class="note">Prediction recovery and batches keep running after dashboards close. Replay remains session-owned.</p>
           </div>
         </div>
         <div class="card" id="soltuiResultCard">
