@@ -1,12 +1,18 @@
 # Prompt history
 
-Version: 131
-Delta: v130 to v131; retain session-reflection creation request.
+Version: 132
+Delta: v131 to v132; retain reflection request after concurrent prediction prompt.
+
+## v132 - 2026-11-08
+
+```text
+Run the deep prompt optimizer on this prompt and then execute it: Create a skill that is activated by a post tool use hook or whenever a stopping point is reached, looks at the whole context and memory of the session and asks how that could have been done better, what was the weakest link in the chain and is it possible to improve or correct something about that process? What was the strongest part of the session - is there something that could make those qualities even better? If there is genuinely nothing there then don't make anything up, but if you don't see anything obvious try becoming more creative. When you have one or two ideas, if is very obvious like cleaning up some trash files, or adding tagging to files then just do it and let the user know afterwards, if it is something that requires attention or a decision then prompt the user with a single question that explains the reason, what you want to do, and what you think will happen. Some common helpful cleanup actions that are often forgotten are cleaning up old branches, not committing completed code, leaving temporary files cluttering the area, but also look at the skills and agents that were used, is there something about them that needs to be resolved. Does a skill get stalled in a useless loop for too long with no benefit? Did an agent start in the wrong place or not listen to feedback? Find how the process could be improved and either do that or ask permission to do it.
+```
 
 ## v131 - 2026-11-08
 
 ```text
-Run the deep prompt optimizer on this prompt and then execute it: Create a skill that is activated by a post tool use hook or whenever a stopping point is reached, looks at the whole context and memory of the session and asks how that could have been done better, what was the weakest link in the chain and is it possible to improve or correct something about that process? What was the strongest part of the session - is there something that could make those qualities even better? If there is genuinely nothing there then don't make anything up, but if you don't see anything obvious try becoming more creative. When you have one or two ideas, if is very obvious like cleaning up some trash files, or adding tagging to files then just do it and let the user know afterwards, if it is something that requires attention or a decision then prompt the user with a single question that explains the reason, what you want to do, and what you think will happen. Some common helpful cleanup actions that are often forgotten are cleaning up old branches, not committing completed code, leaving temporary files cluttering the area, but also look at the skills and agents that were used, is there something about them that needs to be resolved. Does a skill get stalled in a useless loop for too long with no benefit? Did an agent start in the wrong place or not listen to feedback? Find how the process could be improved and either do that or ask permission to do it.
+In the Live signal with the graph, the forward test strategies -predictions never update. Make it so they update every 10s.
 ```
 
 ## v130 - 2026-11-08

@@ -1,6 +1,6 @@
 {
   "name": "solmargintrader",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "type": "module",
   "description": "SolTUI dashboard workspace: signals, backtests, bots, experiments, wallets, reviewed orders and document editing; experimental grid disarmed and dry-run by default.",

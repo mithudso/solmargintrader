@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T03:56:26+00:00",
+  "generatedAt": "2026-11-09T03:58:47+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1233,12 +1233,12 @@
           "hits": 37
         },
         {
-          "path": "soltui/help.py",
+          "path": "memory.md",
           "hits": 37
         },
         {
-          "path": "memory.md",
-          "hits": 36
+          "path": "soltui/help.py",
+          "hits": 37
         },
         {
           "path": "backtester/core/gridsim.py",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 262,
+      "matchingFiles": 263,
       "shown": 30,
       "files": [
         {
@@ -1640,6 +1640,10 @@
           "hits": 9
         },
         {
+          "path": "extension/e2e/lib/dashboard-workspace.mjs",
+          "hits": 9
+        },
+        {
           "path": "research/tradingview-card-readiness.json",
           "hits": 9
         },
@@ -1649,10 +1653,6 @@
         },
         {
           "path": "backtester/strategy_cards/buy_and_hold.md",
-          "hits": 8
-        },
-        {
-          "path": "docs/strategy-optimization-concept-family.md",
           "hits": 8
         }
       ],
@@ -1939,7 +1939,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 213,
+      "matchingFiles": 214,
       "shown": 30,
       "files": [
         {
@@ -2011,6 +2011,10 @@
           "hits": 9
         },
         {
+          "path": "extension/e2e/lib/dashboard-workspace.mjs",
+          "hits": 9
+        },
+        {
           "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
           "hits": 9
         },
@@ -2056,10 +2060,6 @@
         },
         {
           "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 6
-        },
-        {
-          "path": "research/results/cpcv_tables.md",
           "hits": 6
         }
       ],

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
+import tempfile
+import threading
 import unittest
 import time
 from pathlib import Path
@@ -47,6 +50,30 @@ class SignalLiveLogicTests(unittest.TestCase):
 
 
 class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        patch = mock.patch("soltui.config.CONFIG_DIR", Path(temporary.name))
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    async def wait_predictions(self, app: SolTuiApp, pilot) -> None:
+        for _ in range(100):
+            await pilot.pause(0.01)
+            if not app._signal_live_busy:
+                return
+        self.fail("Prediction read did not finish")
+
+    @staticmethod
+    def prediction_rows(direction: str = "UP", label: str = "fixture") -> list[dict]:
+        now = time.time()
+        return [{"label": label, "asset": "SOL", "hits": 32, "accuracy": 80, "resolved": 40, "settings": [],
+                 **{f"pred_{h}m": direction for h in (1, 5, 10, 30)},
+                 **{f"acc_{h}m": 80 for h in (1, 5, 10, 30)},
+                 **{f"resolved_{h}m": 40 for h in (1, 5, 10, 30)},
+                 **{f"issued_{h}m": now - 30 for h in (1, 5, 10, 30)},
+                 **{f"expires_{h}m": now + 300 for h in (1, 5, 10, 30)}}]
+
     async def test_live_pane_renders_chart_stream_and_predictions(self) -> None:
         settings = make_settings()
         app = SolTuiApp(settings=settings, start="tab-compound", classic=False)
@@ -101,41 +128,184 @@ class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
                 xaxis_text = text_of(app, "#signal-live-chart-xaxis")
                 self.assertIn("UTC", xaxis_text)
 
-    async def test_strategy_predictions_1m_scheduling(self) -> None:
-        settings = make_settings()
-        app = SolTuiApp(settings=settings, start="tab-compound", classic=False)
-        async with app.run_test(size=TEST_SIZE) as pilot:
-            app._signal_live_refresh_predictions(force=True)
-            await pilot.pause(0.1)
+    async def test_strategy_predictions_replace_rows_every_10s_including_empty_reads(self) -> None:
+        app = SolTuiApp(settings=make_settings(), start="tab-compound", classic=False)
+        snapshot = {"rows": self.prediction_rows()}
+        with mock.patch("soltui.live_score.prediction_snapshot", side_effect=lambda *a, **kw: snapshot) as read, \
+             mock.patch.object(app, "set_interval", wraps=app.set_interval) as scheduled:
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await self.wait_predictions(app, pilot)
+                interval, poll = next(c.args[:2] for c in scheduled.call_args_list
+                                      if len(c.args) > 1 and c.args[1] == app._signal_live_poll_predictions)
+                self.assertEqual(interval, 10, "prediction polling has its own exact ten-second timer")
+                app._signal_live_prediction_timer.pause()
+                table = app.query_one("#signal-live-predictions-table")
+                self.assertIn("UP", str(table.get_row_at(0)[4]))
+                initial_reads = read.call_count
+                with mock.patch("soltui.tui.time.time", return_value=app._signal_live_last_pred_update + 9.999):
+                    app._signal_live_tick()
+                self.assertEqual(read.call_count, initial_reads, "no read before ten seconds")
+                for rows in (self.prediction_rows("DOWN"), [], self.prediction_rows("FLAT")):
+                    snapshot = {"rows": rows}
+                    with mock.patch("soltui.tui.time.time", return_value=app._signal_live_last_pred_update + 10):
+                        app._signal_live_tick()
+                        self.assertEqual(read.call_count, initial_reads, "chart ticks never drive the periodic read")
+                        poll()
+                    await self.wait_predictions(app, pilot)
+                    initial_reads += 1
+                    self.assertEqual(read.call_count, initial_reads)
+                    self.assertEqual(table.row_count, len(rows))
+                    if rows:
+                        self.assertIn(rows[0]["pred_1m"], str(table.get_row_at(0)[4]))
+                self.assertGreater(app._signal_live_last_pred_update, 0)
+                self.assertIn("10s refresh", text_of(app, "#signal-live-predictions-title"))
 
-            old_update = app._signal_live_last_pred_update
-            self.assertGreater(old_update, 0.0)
+    async def test_failed_prediction_read_is_visible_and_retries_after_10s(self) -> None:
+        app = SolTuiApp(settings=make_settings(), start="tab-compound", classic=False)
+        with mock.patch("soltui.live_score.prediction_snapshot", return_value={"rows": self.prediction_rows()}) as read:
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await self.wait_predictions(app, pilot)
+                app._signal_live_prediction_timer.pause()
+                last_success = app._signal_live_last_pred_update
+                read.side_effect = RuntimeError("database is locked")
+                app._signal_live_poll_predictions()
+                await self.wait_predictions(app, pilot)
+                self.assertEqual(app._signal_live_last_pred_update, last_success)
+                self.assertEqual(app.query_one("#signal-live-predictions-table").row_count, 0)
+                self.assertIn("Refresh failed; retrying", text_of(app, "#signal-live-predictions-title"))
+                self.assertIn("database is locked", text_of(app, "#signal-live-detail"))
+                self.assertIn("No qualifying", text_of(app, "#signal-live-predictions-score"))
+                attempts = read.call_count
+                app._signal_live_tick()
+                self.assertEqual(read.call_count, attempts, "failed reads do not retry each chart tick")
+                read.side_effect = None
+                read.return_value = {"rows": self.prediction_rows("DOWN")}
+                app._signal_live_poll_predictions()
+                await self.wait_predictions(app, pilot)
+                self.assertGreater(app._signal_live_last_pred_update, last_success)
+                self.assertIn("DOWN", str(app.query_one("#signal-live-predictions-table").get_row_at(0)[4]))
+                self.assertNotIn("failed", text_of(app, "#signal-live-predictions-title"))
 
-            # Fast forward last update to 65 seconds ago
-            app._signal_live_last_pred_update = old_update - 65.0
-            app._signal_live_last_pred_minute = int(app._signal_live_last_pred_update) // 60
+    async def test_slow_read_keeps_chart_responsive_and_discards_old_coin_and_floor_results(self) -> None:
+        app = SolTuiApp(settings=make_settings(), start="tab-compound", classic=False)
+        started, release = threading.Event(), threading.Event()
+        reads = []
+        active = 0
+        peak_active = 0
+        hold = {"next": True, "error": False}
+        def read(asset, **policy):
+            nonlocal active, peak_active
+            reads.append((asset, policy["min_accuracy"]))
+            active += 1
+            peak_active = max(peak_active, active)
+            try:
+                if hold["next"]:
+                    hold["next"] = False
+                    started.set()
+                    if not release.wait(3):
+                        raise RuntimeError("test did not release prediction read")
+                    if hold["error"]:
+                        raise RuntimeError("obsolete prediction read failed")
+                    return {"rows": self.prediction_rows("UP", "obsolete-success")}
+                return {"rows": self.prediction_rows("DOWN", f"{asset}-{policy['min_accuracy']}")}
+            finally:
+                active -= 1
+        with mock.patch("soltui.live_score.prediction_snapshot", return_value={"rows": []}) as snapshot:
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await self.wait_predictions(app, pilot)
+                app._signal_live_prediction_timer.pause()
+                snapshot.side_effect = read
+                try:
+                    app._signal_live_refresh_predictions(force=True)
+                    self.assertTrue(await asyncio.to_thread(started.wait, 1))
+                    with mock.patch("soltui.pricefeed.read_latest", return_value={}), \
+                         mock.patch("soltui.pricefeed.status", return_value={"live": True, "prices": {
+                             "SOL-USD": {"mid": 100, "quote_age_s": 1, "quote_ts": time.time() - 1}}}):
+                        app._signal_live_tick()
+                        self.assertIn("$100", text_of(app, "#signal-live-stream"))
+                    timer_ran = []
+                    app.set_timer(0.01, lambda: timer_ran.append(True))
+                    for _ in range(3):
+                        app._signal_live_poll_predictions()
+                    self.assertFalse(app._signal_live_refresh_requested,
+                                     "busy periodic polls must not queue a catch-up read")
+                    for _ in range(3):
+                        app._signal_live_refresh_predictions(force=True)
+                    await pilot.pause(0.05)
+                    self.assertTrue(timer_ran, "the UI loop must run while SQLite is blocked")
+                    self.assertEqual(len(reads), 1, "only one snapshot read can be in flight")
+                    app._compound_coin = "ETH"
+                    app._signal_live_refresh_predictions(force=True)
+                    app.settings.live_vote_min_accuracy = 95
+                    app._signal_live_refresh_predictions(force=True)
+                    published = []
+                    original_render = app._signal_live_render_predictions
+                    def render(**kwargs):
+                        published.extend(row["label"] for row in app._signal_live_prediction_rows)
+                        original_render(**kwargs)
+                    with mock.patch.object(app, "_signal_live_render_predictions", side_effect=render):
+                        release.set()
+                        await self.wait_predictions(app, pilot)
+                    self.assertNotIn("obsolete-success", published)
+                    self.assertEqual(reads, [("SOL", 60.0), ("ETH", 95)])
+                    self.assertEqual(peak_active, 1)
+                    self.assertEqual(app._signal_live_prediction_rows[0]["label"], "ETH-95")
+                    self.assertIn("No qualifying", text_of(app, "#signal-live-predictions-score"))
+                    started.clear()
+                    release.clear()
+                    hold.update(next=True, error=True)
+                    app._signal_live_refresh_predictions(force=True)
+                    self.assertTrue(await asyncio.to_thread(started.wait, 1))
+                    app.settings.live_vote_min_accuracy = 70
+                    app._signal_live_refresh_predictions(force=True)
+                    with mock.patch.object(app, "_signal_live_render_predictions", wraps=original_render) as render_call:
+                        release.set()
+                        await self.wait_predictions(app, pilot)
+                        self.assertFalse(any(c.kwargs.get("error") for c in render_call.call_args_list),
+                                         "obsolete failures cannot replace the current view")
+                    self.assertEqual(reads[-2:], [("ETH", 95), ("ETH", 70)])
+                    self.assertEqual(peak_active, 1)
+                    self.assertEqual(app._signal_live_prediction_rows[0]["label"], "ETH-70")
+                    started.clear()
+                    release.clear()
+                    hold.update(next=True, error=False)
+                    previous_reads = len(reads)
+                    app._signal_live_poll_predictions()
+                    self.assertTrue(await asyncio.to_thread(started.wait, 1))
+                    for _ in range(3):
+                        app._signal_live_poll_predictions()
+                    self.assertFalse(app._signal_live_refresh_requested)
+                    release.set()
+                    await self.wait_predictions(app, pilot)
+                    self.assertEqual(len(reads), previous_reads + 1, "skipped periods do not produce a catch-up burst")
+                finally:
+                    release.set()
 
-            refreshed = False
-            orig_refresh = app._signal_live_refresh_predictions
-
-            def tracking_refresh(force: bool = False):
-                nonlocal refreshed
-                refreshed = True
-                return orig_refresh(force=force)
-
-            app._signal_live_refresh_predictions = tracking_refresh
-            app._signal_live_tick()
-            self.assertTrue(refreshed)
-            self.assertGreater(app._signal_live_last_pred_update, old_update - 65.0)
-
-            title_text = text_of(app, "#signal-live-predictions-title")
-            self.assertIn("1m schedule", title_text)
+    async def test_prediction_worker_drains_without_callback_after_unmount(self) -> None:
+        app = SolTuiApp(settings=make_settings(), start="tab-compound", classic=False)
+        started, release = threading.Event(), threading.Event()
+        def held_read(*a, **kw):
+            started.set()
+            release.wait(3)
+            return {"rows": self.prediction_rows()}
+        with mock.patch("soltui.live_score.prediction_snapshot", return_value={"rows": []}) as read:
+            async with app.run_test(size=TEST_SIZE) as pilot:
+                await self.wait_predictions(app, pilot)
+                read.side_effect = held_read
+                app._signal_live_refresh_predictions(force=True)
+                self.assertTrue(await asyncio.to_thread(started.wait, 1))
+                # Let teardown begin before the database operation returns.
+                asyncio.get_running_loop().call_later(0.05, release.set)
+            self.assertFalse(app._signal_live_alive.is_set())
+            self.assertTrue(app._signal_live_drained.is_set())
+            self.assertIsNone(app._signal_live_prediction_timer)
 
     async def test_aggregate_headers_and_observed_tick_scores(self) -> None:
         from textual.widgets import Static
 
         app = SolTuiApp(settings=make_settings(), start="tab-compound", classic=False)
         async with app.run_test(size=TEST_SIZE) as pilot:
+            app._signal_live_prediction_timer.pause()
             now = time.time()
             def rows(direction):
                 return [{"label": "qualified", "accuracy": 80, "resolved": 40,
@@ -143,7 +313,7 @@ class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
                          "issued_1m": now - 30, "expires_1m": now + 300}]
             app._signal_live_last_coin = "SOL"
             app._signal_live_last_pred_update = now
-            app._signal_live_last_pred_minute = int(now) // 60
+            app._signal_live_prediction_key = ("SOL", 60.0, 20)
             app._signal_live_prediction_rows = rows("UP")
             app._signal_live_price_history = {"SOL": []}
             app._signal_live_score_history = {}

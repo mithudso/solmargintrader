@@ -1,17 +1,37 @@
 # Work continuation
 
-Version: 237
-Delta: v236 to v237; record reflection source delivery and installed acceptance.
+Version: 240
+Delta: v239 to v240; preserve concurrent delivery and reflection acceptance.
 
-## v237 - 2026-11-08
+## v240 - 2026-11-08
 
 Global session-reflection sources are delivered: https://github.com/mithudso/claude-config/pull/36 at c5288f6da0dec1f3017206835c541c5cea16d78a and https://github.com/mithudso/skills/pull/98 at b0d4c0c5139c4dfd8cafa0155ee1b66b62434de8. PDO completed two iterations, independent blind review, contrastive prose smoke judgments and executed selfcheck 8/8. The scheduler and installer passed 109 tests. Installed bytes and exact registered-command behavior passed independent acceptance; actual managed daemon discovers the skill enabled and all three hooks enabled but untrusted. Owner approval through Codex /hooks remains, then automatic activation can be verified. Receipt: /Users/mitch/.claude/backups/session-reflection/install-20261108/acceptance.json. No trust change, inference, daemon restart, trading code or paused service change occurred. Stele writes remain queued as 9ab0d70c and c0e315a3.
 
 This workflow-record PR is https://github.com/mithudso/solmargintrader/pull/149. Initial docs and backtester CI failures both came from the stale hashes of prompts.md and memory.md. Refreshed the established offline metadata/text/concept indexes, without semantic embeddings. Final-head CI, merge and task-worktree cleanup remain delivery gates. Preserve other sessions and the original checkout.
 
-## v236 - 2026-11-08
+## v239 - 2026-11-08
 
 This request creates a global skill and hook; no trading code changes. Prompt-deep-optimizer completed two iterations and an independent blind audit with no remaining Medium+ findings. Canonical sources are the separate skills and claude-config repositories. Worktrees: /Users/mitch/dev/skills-wt-session-reflection and /Users/mitch/dev/claude-wt-session-reflection. This private trading worktree owns only workflow records. Preserve the active shared checkout and its untracked files. Stele task and decision writes queued as 9ab0d70c and c0e315a3. Remaining: behavioral tests, source delivery, installation and native discovery; record final receipts here.
+
+## v238 - 2026-11-08
+
+PR https://github.com/mithudso/solmargintrader/pull/148 is the canonical delivery receipt for this task. Real-clock acceptance exposed an extra second in the v237 cooldown approach. Both interfaces now use a dedicated ten-second periodic prediction timer, separate from chart timers and read duration. Periodic polls skip busy readers without queuing catch-up bursts. The dashboard takes an initial visible snapshot and retains its five-second Follow stream price timer. The TUI graph timer only requests initial or changed-context snapshots. Manual/coin/floor refreshes, error recovery, generation guards and shutdown safety remain intact.
+
+Reverified after the timer correction: 372 extension tests, 24 real-host Chrome checks, 23 fixture-host Chrome checks and 12 focused TUI tests passed. Independent real-clock TUI start gaps were 10.069 and 9.997 seconds with a 250ms read delay; changed rows, read-failure recovery, one-reader admission, responsive graph, context guards and shutdown drain passed. Independent steady-state browser start gaps were 10,000 and 10,000 milliseconds with Follow stream off and no Refresh clicks. Five automatic reads included changed rows and failure/recovery; maximum reader count was one, and hidden/disposed panels stopped polling. All 909 backtester tests passed after index regeneration. Remaining: final-head CI, merge, safe master sync and own branch/worktree cleanup. Earlier v237 eleven-second cadence and head 0c0d714 are historical checkpoints, not the final behavior. The PR's final pushed head, checks and merged status establish final delivery. No trainer, order, user-session or service state changed.
+
+## v237 - 2026-11-08
+
+Implemented automatic ten-second prediction-read cooldowns in both Live views. The dashboard polls with Follow stream off while visible, retries failed reads, shows successful refresh times, suppresses obsolete coin/floor responses and admits only one read. The TUI reads in one background Textual worker, preserves graph responsiveness, applies coin/floor generation guards, reports failed reads and retries, advances only successful refresh timestamps and drains safely at shutdown. Both preserve saved closed-minute forecast issuance, quality floors, immutable tick scores and all training/execution paths. Extension version is 0.4.2.
+
+Verified: 372/372 extension unit/parity tests; 12/12 focused TUI tests plus an expanded stale-success/failure regression; Chrome 24/24 real-host and 23/23 fixture-host checks; Mongo 34 tests with 17 server-dependent skips; positive offline grid round trip net $0.3492; public Jupiter endpoint checks; changed-source syntax checks. Independent real-clock Chrome and Textual acceptance observed automatic UP/DOWN/UP row changes and recovery after a failed fourth read. Ten-second cooldown plus one-second timer yielded approximately eleven-second start gaps. Each surface admitted only one reader. Hidden/disposed browser views stopped polling; held TUI reads kept the chart responsive and stale contexts were discarded. Existing user sessions and services were not restarted.
+
+Delivery branch fix/live-predictions-10s-20261108 in /Users/mitch/dev/solmargintrader-wt-refresh-10s is the current checkpoint. Remaining gates at this checkpoint: rebuild offline indexes, repeat the backtester after index regeneration, final-head CI, merge, safe master sync and own worktree cleanup. The first backtester run passed 908 cases and failed only the expected stale-index assertion while files were still being edited. Documentation discovery is 1214 SolTUI / 2529 total. The full optional SolTUI suite was not run. On resume, use the branch's PR merged status and final-commit checks as the delivery receipt. Stele task create 0a351c54 and diagnosis knowledge 470f5f70 remain queued because MCP is unavailable.
+
+## v236 - 2026-11-08
+
+Target: refresh the Live graph forward-predictions table every ten seconds in the TUI and dashboard. The SOL store contains recent calls. Both views currently gate table reads at sixty seconds; the dashboard also requires Follow stream for polling and switches it off after a transient read failure. A saved snapshot read took 1.17 seconds, so move the TUI read to a single background worker with stale-coin/result guards. Keep retries visible and continue them after failures.
+
+Preserve closed-minute forecast issuance and trainer evidence; do not edit forwardtest.py or historical results. Keep score floors, immutable tick history and all order paths unchanged. Worktree /Users/mitch/dev/solmargintrader-wt-refresh-10s; branch fix/live-predictions-10s-20261108; base 2ca3041. Shared checkout has three unrelated untracked guides and other active worktrees. Task create queued as Stele outbox 0a351c54 because MCP is unavailable. Remaining: implement, verify ten-second cadence and recovery in fresh UI instances, refresh docs/indexes, then commit, push, pass CI, merge and clean up.
 
 ## v235 - 2026-11-08
 
