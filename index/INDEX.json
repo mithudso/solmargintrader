@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-09T01:43:52+00:00",
+  "generatedAt": "2026-11-09T01:58:01+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "82096ea",
+  "commit": "2e16dd0",
   "counts": {
     "files": 2652,
-    "bytes": 43992424,
+    "bytes": 43992557,
     "byKind": {
       "strategy-card": 1478,
       "doc": 549,
@@ -82996,9 +82996,9 @@
       "title": "Rows the Docs table renders at once. The repo has ~470 tracked files; leave headroom.",
       "summary": "Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.",
       "summarySource": "docstring",
-      "bytes": 414440,
-      "lines": 7666,
-      "sha1": "17938551bdd37db23fdabb3363a9c4ff4d4ef33d",
+      "bytes": 414573,
+      "lines": 7668,
+      "sha1": "3932decc6b91054f56dc21d499671633d0662916",
       "symbols": [
         "class _CaptureWithoutInvalidFd",
         "_mtime()",

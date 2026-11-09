@@ -3862,6 +3862,8 @@ class SolTuiApp(App):
 
     @on(DataTable.RowHighlighted, "#compound-table")
     def _compound_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if not self._on_compound_tab() or not self.query("#compound-detail") or not self.query("#compound-edit"):
+            return
         cid = str(event.row_key.value) if event.row_key is not None else self._compound_selected()
         comp = sc.BY_ID.get(cid)
         if comp is None:
