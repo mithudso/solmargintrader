@@ -2619,7 +2619,7 @@
     "soltui/tests/test_wallet_integration.py": 1511,
     "soltui/tests/test_wallet_settings.py": 1212,
     "soltui/top5.py": 820,
-    "soltui/tui.py": 38973,
+    "soltui/tui.py": 38982,
     "soltui/utxo_scan.py": 1152,
     "soltui/wallet.py": 4968,
     "tools/gate.sh": 257,
@@ -2653,7 +2653,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-09T01:43:52+00:00",
+  "generatedAt": "2026-11-09T01:55:52+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -175332,7 +175332,7 @@
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_tui.py": 4,
       "soltui/tests/test_v2_shell.py": 6,
-      "soltui/tui.py": 526
+      "soltui/tui.py": 529
     },
     "compound_5m_universe": {
       "backtester/core/universe.py": 2,
@@ -242380,7 +242380,7 @@
       "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_v2_shell.py": 1,
-      "soltui/tui.py": 29,
+      "soltui/tui.py": 30,
       "soltui/wallet.py": 1
     },
     "detail_lines": {
@@ -284873,7 +284873,7 @@
       "soltui/tests/test_compound.py": 7,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_tui.py": 5,
-      "soltui/tui.py": 24
+      "soltui/tui.py": 25
     },
     "edit_buttons_in_legend": {
       "docs/TRADINGVIEW-REFERENCE.md": 2
@@ -568695,7 +568695,7 @@
       "soltui/tui.py": 3
     },
     "on_compound_tab": {
-      "soltui/tui.py": 5
+      "soltui/tui.py": 6
     },
     "on_data_table_row_highlighted": {
       "docs/design/soltui-v2/mockup.py": 1
@@ -649098,7 +649098,7 @@
       "soltui/tests/test_v2_shell.py": 19,
       "soltui/tests/test_wallet_integration.py": 13,
       "soltui/tests/test_wallet_settings.py": 5,
-      "soltui/tui.py": 600,
+      "soltui/tui.py": 602,
       "soltui/wallet.py": 3,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 1,
@@ -819632,7 +819632,7 @@
       "soltui/tests/test_wallet_integration.py": 9,
       "soltui/tests/test_wallet_settings.py": 1,
       "soltui/top5.py": 6,
-      "soltui/tui.py": 152,
+      "soltui/tui.py": 153,
       "soltui/wallet.py": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/COMPONENTS.md": 1,
@@ -954270,6 +954270,6 @@
     "documents": 2652,
     "terms": 69175,
     "termsBeforePrune": 69249,
-    "totalTokens": 3832027
+    "totalTokens": 3832036
   }
 }
