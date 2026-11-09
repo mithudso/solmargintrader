@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T15:52:18+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T16:04:33+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -29,7 +29,7 @@ Strongest files:
 
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
-- `docs/FILES.md` (156 hits)
+- `docs/FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 - `research/TRADINGVIEW-SCRIPT-CARDS.md` (113 hits)
@@ -106,7 +106,7 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (800 hits)
 - `research/tradingview-script-understanding.json` (256 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
-- `docs/FILES.md` (169 hits)
+- `docs/FILES.md` (170 hits)
 - `backtester/tests/test_gridsim.py` (167 hits)
 - `llms-full.txt` (129 hits)
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
@@ -127,7 +127,7 @@ Strongest files:
 - `research/tradingview-script-understanding.json` (144 hits)
 - `research/tradingview-card-readiness.json` (106 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
-- `docs/FILES.md` (70 hits)
+- `docs/FILES.md` (71 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (61 hits)
 - `research/strategy_experiment/results/auxiliary.json` (47 hits)
 
@@ -143,7 +143,7 @@ Strongest files:
 
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (196 hits)
+- `docs/FILES.md` (197 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `soltui/tui.py` (141 hits)
 - `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
@@ -166,7 +166,7 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (112 hits)
 - `research/strategy_experiment/results/auxiliary.json` (77 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (68 hits)
-- `docs/FILES.md` (56 hits)
+- `docs/FILES.md` (60 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (56 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 310`

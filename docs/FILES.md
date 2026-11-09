@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `ba8197c` (2026-11-09T15:52:18+00:00). 2786 tracked files, 61.8 MB.
+**Generated** from `index/INDEX.json` at commit `8996cbc` (2026-11-09T16:04:33+00:00). 2772 tracked files, 61.6 MB.
 
 Regenerate with:
 
@@ -14,8 +14,8 @@ python3 index/build.py --check      # fail if the index is stale
 
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
-- **curated** (46 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2479 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
+- **extracted** (2469 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (156 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -33,14 +33,14 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 31 files
-- [`docs`](#docs) — 89 files
+- [`(root)`](#root) — 23 files
+- [`docs`](#docs) — 85 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1916 files
 - [`research`](#research) — 206 files
 - [`extension`](#extension) — 117 files
 - [`soltui`](#soltui) — 166 files
-- [`.github`](#github) — 11 files
+- [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.claude`](#claude) — 1 files
@@ -61,7 +61,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-31 files.
+23 files.
 
 #### `.editorconfig`
 
@@ -119,22 +119,6 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 **Use.** Read before making changes with an agent.
 
-#### `CLAUDE.md`
-
-`doc` · 200 lines · 14,519 B · description: **curated**
-
-**Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
-
-**Use.** Read before making changes with an agent.
-
-#### `CLAUDE.md`
-
-`doc` · 200 lines · 14,519 B · description: **curated**
-
-**Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
-
-**Use.** Read before making changes with an agent.
-
 #### `CODE_OF_CONDUCT.md`
 
 `doc` · 10 lines · 469 B · description: **extracted**
@@ -148,22 +132,6 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 `doc` · 23 lines · 1,118 B · description: **extracted**
 
 **Purpose.** Read `CLAUDE.md`, then `docs/DEVELOPMENT.md` and the owning component's README before editing. The extension and liquidity manager can move money; the backtester remains simulation-only. Liquidity also has its own `liquidity/CLAUDE.md`.
-
-**Use.** Read it.
-
-#### `GEMINI.md`
-
-`doc` · 64 lines · 3,496 B · description: **extracted**
-
-**Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
-
-**Use.** Read it.
-
-#### `GEMINI.md`
-
-`doc` · 64 lines · 3,496 B · description: **extracted**
-
-**Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
 
 **Use.** Read it.
 
@@ -190,22 +158,6 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 **Purpose.** _No description available._
 
 **Use.** Read it.
-
-#### `README.md`
-
-`doc` · 140 lines · 8,959 B · description: **curated**
-
-**Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
-
-**Use.** Start here.
-
-#### `README.md`
-
-`doc` · 140 lines · 8,959 B · description: **curated**
-
-**Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
-
-**Use.** Start here.
 
 #### `README.md`
 
@@ -257,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 757 lines · 145,029 B · description: **extracted**
+`doc` · 762 lines · 145,995 B · description: **extracted**
 
-**Purpose.** Version: 312 Delta: v311 to v312; combine Trend with both concurrent completed workstreams. Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
+**Purpose.** Version: 313 Delta: v312 to v313; fix duplicate index rows found by final macOS CI. Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 
 **Use.** Read it.
 
@@ -270,22 +222,6 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 **Purpose.** A captured page source kept as a fixture for the scraping/parsing work. Reference data, not code.
 
 **Use.** Read it; nothing to run.
-
-#### `prompts.md`
-
-`doc` · 1210 lines · 58,609 B · description: **extracted**
-
-**Purpose.** Version: 152 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories. Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
-
-**Use.** Read it.
-
-#### `prompts.md`
-
-`doc` · 1210 lines · 58,609 B · description: **extracted**
-
-**Purpose.** Version: 152 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories. Delta: concurrent workflow records to v151; preserve all DSO and live-tool histories.
-
-**Use.** Read it.
 
 #### `prompts.md`
 
@@ -317,7 +253,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-89 files.
+85 files.
 
 #### `docs/API.md`
 
@@ -369,7 +305,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 321 lines · 20,334 B · description: **extracted**
+`doc` · 321 lines · 20,749 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -391,22 +327,6 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
-#### `docs/DEVELOPMENT.md`
-
-`doc` · 187 lines · 8,875 B · description: **extracted**
-
-**Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
-
-**Use.** Read it.
-
-#### `docs/DEVELOPMENT.md`
-
-`doc` · 187 lines · 8,875 B · description: **extracted**
-
-**Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
-
-**Use.** Read it.
-
 #### `docs/EXTENSION-TUI-PARITY.md`
 
 `doc` · 110 lines · 8,003 B · description: **extracted**
@@ -417,7 +337,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 26909 lines · 1,397,939 B · description: **extracted**
+`doc` · 27287 lines · 1,415,968 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -491,23 +411,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 `doc` · 233 lines · 19,140 B · description: **extracted**
 
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 960 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
-
-**Use.** Read it.
-
-#### `docs/TESTING.md`
-
-`doc` · 233 lines · 19,140 B · description: **extracted**
-
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 960 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
-
-**Use.** Read it.
-
-#### `docs/TESTING.md`
-
-`doc` · 233 lines · 19,140 B · description: **extracted**
-
-**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 960 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
+**Purpose.** python3 -m unittest discover -s backtester/tests -t . # 961 tests python3 -m unittest discover -s soltui/tests -t . # 1384 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 46 tests
 
 **Use.** Read it.
 
@@ -1067,7 +971,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/build.py`
 
-`code-python` · 889 lines · 37,930 B · description: **curated**
+`code-python` · 899 lines · 38,445 B · description: **curated**
 
 **Purpose.** Builds the four indexes over every tracked file: metadata, BM25 text, concepts, and the opt-in semantic embeddings. `--check` re-hashes the tree so a stale index fails loudly.
 
@@ -20073,7 +19977,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_index.py`
 
-`test` · 241 lines · 10,913 B · description: **extracted**
+`test` · 267 lines · 12,355 B · description: **extracted**
 
 **Purpose.** The repository index: isolation, correctness, and the staleness gate. No test here builds the real index or calls the network. `index/build.py`'s `semantic` subcommand is the only thing in this repo that opens a socket, and it talks to localhost ollama; a test that exercised it would be neither deterministic nor available in CI. The load-bearing test is the first one.
 
@@ -24915,7 +24819,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 CI. Runs the test suite and the figure verifier.
 
-11 files.
+9 files.
 
 #### `.github/CODEOWNERS`
 
@@ -24946,22 +24850,6 @@ CI. Runs the test suite and the figure verifier.
 `ci` · 37 lines · 2,148 B · description: **extracted**
 
 **Purpose.** This is personal tooling with local services and no users other than its author. There is no security mailbox and no disclosure SLA. Report anything you find by opening an issue, or directly to the repository owner. The extension **can place real orders and move real money**. That makes three things
-
-**Use.** Read it.
-
-#### `.github/copilot-instructions.md`
-
-`ci` · 93 lines · 5,126 B · description: **extracted**
-
-**Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
-
-**Use.** Read it.
-
-#### `.github/copilot-instructions.md`
-
-`ci` · 93 lines · 5,126 B · description: **extracted**
-
-**Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
 
 **Use.** Read it.
 

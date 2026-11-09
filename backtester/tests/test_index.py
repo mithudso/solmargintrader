@@ -222,6 +222,32 @@ class ConceptTests(unittest.TestCase):
 
 
 class StalenessGateTests(unittest.TestCase):
+    def test_merge_stages_cannot_create_a_duplicate_catalog(self):
+        import build
+        import io
+        import tempfile
+        from contextlib import redirect_stdout
+        from unittest import mock
+
+        # Git emits a path for each unmerged stage; Docs uses that path as a
+        # unique table key. Hash comparisons alone used to hide the duplicates.
+        git_result = subprocess.CompletedProcess([], 0, stdout="README.md\nREADME.md\nREADME.md\n")
+        with mock.patch.object(build.subprocess, "run", return_value=git_result):
+            self.assertEqual(build.tracked_files(), ["README.md"])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "README.md"
+            source.write_text("valid source")
+            entry = {"path": "README.md", "sha1": build.sha1_of(source)}
+            catalog = root / "INDEX.json"
+            catalog.write_text(json.dumps({"files": [entry, entry], "generatedAt": "test"}))
+            output = io.StringIO()
+            with mock.patch.object(build, "REPO", root), mock.patch.object(build, "INDEX_JSON", catalog), \
+                 mock.patch.object(build, "tracked_files", return_value=["README.md"]), redirect_stdout(output):
+                self.assertEqual(build.check(), 1)
+            self.assertIn("duplicate catalog paths", output.getvalue())
+            self.assertIn("README.md", output.getvalue())
+
     def test_the_committed_index_matches_the_tree(self):
         """The guard this repo learned to want. Two result files here could not be
         re-derived and one was wrong; an index is the same failure class with a

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T15:52:21+00:00",
+  "generatedAt": "2026-11-09T16:04:36+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 376
+          "hits": 373
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 133
+          "hits": 131
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",

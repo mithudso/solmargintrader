@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 312
+Version: 313
+Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
 Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
 Delta: v309 to v310; finish Trend verification and prepare delivery.
@@ -31,6 +32,10 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v313 - 2026-11-09
+
+Final-head CI on8996cbc passed seven jobs but the macOS job failed with24errors. Each error followed textual.widgets._data_table.DuplicateKey during SolTuiApp._refresh_docs. I had rebuilt the catalog while Git still held three conflict stages for seven source paths. index/build.py tracked_files returned each stage, and check() collapsed them into a dictionary before comparing hashes, so its success did not prove unique rows. Deduplicate tracked paths at the builder boundary and reject duplicate catalog rows before hash comparison. Add the exact merge-stage/catalog regression, regenerate from the resolved tree, and rerun mounted startup plus required checks. Trend logic remains unchanged. Combined discovery is961backtester/1384SolTUI/408Node/46mongo,2799total. Final receipt remains /Users/mitch/.local/state/solmargintrader-session-01a1c0e5/trend-delivery.json.
 
 ## v312 - 2026-11-09
 
