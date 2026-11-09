@@ -2,8 +2,48 @@
 
 Version: 316
 Delta: v315 to v316; checkpoint forward signal research preparation.
+Version: 335
+Delta: v334 to v335; record streaming and snapshot refresh recommendation.
+Delta: v333 to v334; document implementation, scripts, backups and future gates.
+Delta: v332 to v333; start backtester implementation and recovery handoff.
+Delta: concurrent histories to v332; preserve monitor qualification and merged Kraken research/backup records.
+Delta: concurrent histories to v330; preserve monitor full-suite records and all merged manager/backtester work.
+
+Delta: concurrent histories to v331; preserve Kraken and bot manager continuation records.
+Delta: v329 to v330; verify both private GitHub backup archives.
+Delta: v328 to v329; record Kraken archive research, JitoSOL identity and GitHub backup.
+Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
+Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
+Delta: v326 to v327; approve milestone1 source and prepare verified release.
+Delta: concurrent histories to v326; integrate PR174/176 and retain manager implementation.
+Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
+Delta: v318 to v319; integrate PR172 while preserving implementation and UI histories.
+Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts.
+Delta: v316 to v317; record supplemental UI requirements and current foundation review.
+Delta: v315 to v316; start approved implementation in a collision-free worktree.
+
+Delta: v327 to v328; complete source audits and indexed deep SOL and KMNO datasets.
+Delta: v326 to v327; checkpoint verified minute datasets and ongoing downloads.
+Delta: v325 to v326; begin detailed historical market data acquisition.
+Delta: v324 to v325; record merged storage foundation and remaining backtester work.
+Delta: v323 to v324; record pre-2021 gap audit and recovery checkpoint.
+Delta: v322 to v323; record validated 14-asset histories and real SOL/USDC run.
+Delta: v321 to v322; verify USDC fixture accounting and capture remaining work.
+Delta: v320 to v321; capture SOL/USDC choice and cut-off fixes.
+Delta: v319 to v320; checkpoint verified local daily snapshots and provider gap.
+Delta: v318 to v319; record implemented storage foundation and outstanding gaps.
+Delta: v317 to v318; record owner-confirmed fourteen-asset universe.
+Delta: v316 to v317; begin isolated historical backtester design and implementation.
+Delta: concurrent histories to v316; preserve CLI planning PR171 and reviewed browser UI design.
+Delta: v314 to v315; record reviewed bot UI design, browser acceptance and delivery preparation.
+Delta: v313 to v314; start isolated bot-control-room design and continuation.
+
 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery.
 Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
+Delta: v316 to v317; verify documentation and checkpoint the active research.
+Delta: v315 to v316; record scoped embedding Stele outbox receipt.
+Delta: v314 to v315; scope embedding permission to new monitor packs.
+Delta: v313 to v314; start the monitor full-suite with scope and continuation context.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
 Delta: v311 to v312; combine Trend with both concurrent completed workstreams.
 Delta: v310 to v311; integrate the native runtime fix before Trend delivery.
@@ -35,6 +75,51 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+
+## v335 - 2026-11-09: streaming and historical snapshots
+
+The owner asked whether an oracle should stream prices or the data package should refresh periodically. Recommend both: a durable source-labelled stream for new fine-grained data and forward testing, plus historical refresh, reconciliation and immutable versioned snapshots for offline backtesting. The existing `soltui/pricefeed.py` recorder is an integration candidate; verify its loaded health, symbols, coverage, source semantics and data quality, and do not start a competing recorder. Oracle reference prices do not establish executable prices or order-book depth. No streaming integration was implemented by the handoff.
+
+## v333 - 2026-11-09: Backtester handoff in progress
+
+TASK-1151 created `docs/backtester-history-handoff.md` covering historical backtester work, implementation status, data acquisition, scripts, architecture, backup and restore, safety limits, verification and future implementation. The handoff links from backtester/README.md. Reverified deep snapshot, first segment and archived artifacts; reran a 1,440-bar SOL/USDC CLI smoke; and confirmed the completed Kraken script skips 14 receipts. The active worktree is `/Users/mitch/dev/solmargintrader-wt-01a1c1b1` on branch `agent-01a1c1b1-backtest-handoff`. Read the live code, `/Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md`, private backup receipts, and the integrity plan before documenting. Distinguish working functionality from unfinished backtester work; preserve other sessions.
+
+## Monitor full-suite source and registration checkpoint - 2026-11-09
+
+Four accepted cohorts now contain 320 assertions across 15 monitoring concepts. Four source-qualified guides, private concept packs and a subject rollup are produced. Both intentional installed trading variants retain their old routes/settings and add four guides. Maintained and portable catalogue checks pass all 79 immutable pack files with zero High/Medium findings; Low and anchor N/A findings remain recorded. The independent full-reading bar passes 13 of 15; market reconnect/duplicate procedures and concrete evidence/incident correlation rules remain gaps. Default three-round exhaustion requires SATURATION-DISSENT if final QA leaves them open, not a coverage or frontier claim.
+
+New task-only indexes contain 492 eligible Facts vectors and 568 reference chunks. The user authorized embeddings only for these new bot-monitor packs. Other queues, paused services, stopped strategy research, wallets, signing and bots remain unchanged. Native source artifacts, old failed QA and original completion receipts remain immutable. Installed/tree/public acceptance, final reader report and merges are tracked separately in /Users/mitch/.global-ai-hub/research/crypto-autotrading-bot-monitor-task1087/delivery/memory.md. The repository summary is docs/crypto-bot-monitor-full-suite-20261109.md.
+
+This checkout integrated all six already-merged manager, UI and historical-data commits from origin/master. Preserve their implementation and prompt/memory records. Resolve only shared workflow/index conflicts, regenerate the three offline indexes from the integrated tree, run the actual docs/index checks and deliver this task through PR170. No application code is changed by the monitoring research task.
+
+## Monitor research checkpoint verification - 2026-11-09
+
+The shell Python could not import 92 test modules because dependencies were absent. Reusing /Users/mitch/.venvs/soltui/bin/python resolved this environment mismatch: scripts/check_docs.py exited 0 with 961 backtester, 408 extension, 46 mongo and 1384 SolTUI tests discovered. The offline repository index build and --check passed. These checks validate workflow records and retrieval hashes; they do not execute trading tests or qualify research claims.
+
+The CFE delegate inventoried 2923 concept nodes and is preparing 10 monitor-specific gaps across 28 candidates in two source-sharing cohorts. Research and compilation remain in progress. Root checkout remains unchanged with its original three untracked guides.
+
+## Monitor embedding permission - 2026-11-09
+
+The user authorized embeddings only for new bot-monitor packs. Scope every embedding command to TASK-1087 new accepted units. Keep existing queues, watchers and other paused services untouched. The prior pause is lifted only for this scope. Stele Transport closed on the permission decision; exact write queued as outbox 30f8fe6a.
+
+## Crypto autotrading bot monitor full-suite - 2026-11-09
+
+Task TASK-1087 researches operational monitoring for automated crypto bots. Scope: health, market-data freshness, orders and positions, reconciliation, net P&L, risk limits, alerts and recovery. This is research and reference-pack work. It does not activate a bot or place trades. TASK-982 remains a separate user-stopped strategy-family run; retain its accepted evidence without reopening its stopped loops. Preserve paused semantic embeddings.
+
+Completed: read repository instructions and relevant prior records; checked Stele and semantic inventory; created and claimed the monitor task; isolated this task from the three untracked root guides and other worktrees. The full-suite CFE delegate owns private research under /Users/mitch/.global-ai-hub/research/crypto-autotrading-bot-monitor-task1087/. Root owns packs, repository routing and delivery.
+
+Remaining: score the concept family, scout source domains, execute evidence-bound research and gates, compile eligible packs and rollup, account for indexing limits, validate and ship task-owned records and outputs. No saturation or full-suite completion is claimed at this checkpoint.
+
+## v329 - 2026-11-09: Kraken archive and JitoSOL research
+
+The owner selected GitHub for off-machine backup and requested Firecrawl research. Jito Foundation and OKX identify mainnet JitoSOL mint J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn; their public pages match the OKX JITOSOL spot listing. Exchange prices do not establish on-chain executions. Kraken's official OHLCVT full archive through 2026-09-30 contains one-minute files for all fourteen assets. Range-selective ZIP extraction verified member CRC32 and produced 8,266,148 observed candles with per-market SHA-256, gap ledgers, and verified indexes in `/Users/mitch/.local/share/solmargintrader/historical-data-1128/kraken-archive-20260930/inventory.json`. Kraken says missing minute bars indicate no trades; do not invent candles. The publisher's whole-archive SHA-256 was not verified because only selected members were downloaded. Source markets and quote currencies vary. Binance also offers checksummed monthly and daily files; spot timestamps change from milliseconds to microseconds on 2025-01-01.
+
+Private GitHub backup repository: https://github.com/mithudso/solmargintrader-history-backups . The original historical-data-1128 and backtester-task-1117 archive was uploaded as the historical-data-20261109 release, downloaded independently, SHA-256 checked, and tar-listed. The supplemental Kraken archive was uploaded and independently downloaded; both archives passed SHA-256 verification and tar listing. The deep SOL/USDC snapshot was read from the downloaded base archive and its bytes matched the local snapshot. The source archive includes the Kraken index, exact gap ledgers and extraction scripts. Restore details are in the private data catalog; retain the separate source and gap ledgers. Continue seeking complete multi-year coverage where market history permits.
+
+## v328 - 2026-11-09: historical data acquisition checkpoint
+
+TASK-1128 acquired and audited private data under `/Users/mitch/.local/share/solmargintrader/historical-data-1128/`; `CATALOG.md` is the entry point. All fourteen assets have recent contiguous one-minute snapshots, but quote currencies and available periods differ. SOL/USDC has 2,349,374 continuous one-minute bars from 2022-05-23 08:00 UTC to 2026-11-09 20:13 UTC; 480 requested leading minutes are unobserved. The verified backtest snapshot and same-machine backup are in `backtest-ready/deep-snapshots*.sqlite`. KMNO/USDT has 1,326,148 observed bars and six internal gap runs totaling 3,467 minutes; the indexed segments refuse gap-crossing reads. Exchange rechecks returned no candles for those missing intervals. An additional USDC/USDT snapshot has 43,200 continuous bars and does not substitute for USD. The 11 legacy minute caches remain provenance-limited with explicit gap ledgers; funding is quarantined. JitoSOL exchange symbol to mint mapping remains unverified. OHLCV does not reproduce order-book depth, chain-specific execution, fees, or absent history. Backups are not off-host. Archive raw responses and do not manufacture candles. The broader backtester task remains open for execution models and integrations. The data acquisition and integrity tools are tracked in PR 177; preserve other live sessions and use the isolated worktree.
 
 ## v313 - 2026-11-09
 
@@ -248,7 +333,6 @@ Extension optimizer is incomplete, status NEEDS_EVIDENCE. Source base a3c9e0b; p
 ## v272 - 2026-11-09
 
 The repository-wide ui-deep-optimizer request is being investigated in /Users/mitch/dev/solmargintrader-wt-01a1bee5 at base a3c9e0b. The existing SolTUI audit is a separate incomplete run recorded in v270; do not overwrite its ledger or concurrent work. Audit the extension with an isolated Chrome profile and fixture native host, keep dry-run and disarmed defaults, and preserve all live trading safeguards. Stele is unavailable; task creation and claim are queued as outbox 40359ad6. Extension ledger and receipts belong in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension. Remaining: freeze the coverage matrix and method selection, inspect, repair confirmed issues, verify, record limits and deliver owned changes.
-Version: 273
 Delta: v271 to v273; preserve UI audit and backtest gap histories.
 
 ## v273 - 2026-11-09
@@ -669,16 +753,11 @@ Recurring bot optimizer PR 128 merged as d7010e63ba04b20fe77bfcb77dc1a7282f8250e
 
 The user requested the advanced Money ticket and leveraged buys and sells. The user supplied /Users/mitch/dev/solmargintrader/jup.ag/coinbase_trading_reference.md. Its spot, regulated futures, and global derivatives describe distinct venues and eligibility. Use venue previews and verified account terms rather than static assumed fees or eligibility. The advanced ticket includes Coinbase market, limit, stop-limit and sell brackets, percentage sizing, a session price graph and forward-test forecasts. The venue preview estimates fees; final maker/taker fees depend on fills. The $100 per-order cap, balance reconciliation and single-submit journal apply. No live order was submitted in this work. Jupiter spot, leveraged longs/shorts and Coinbase derivatives remain unavailable until their venue-specific transaction verification, eligibility and reconciliation paths exist. Stele task creation is queued in outbox 5697c8bd.
 
-Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
 
-Version: 143
 Delta: v142 to v143; preserve concurrent delivery histories and source-card records.
-Version: 145
 Delta: v144 to v145; retain CI changes and editor work.
-Version: 147
 Delta: v146 to v147; correct test counts and record CI.
-Version: 144
 Delta: v143 to v144; preserve PR 100 records and resolve PR 104.
 
 ## v191 - 2026-11-08
@@ -764,6 +843,23 @@ Final registry run exit 0: 544 successful cells, zero failures, unchanged source
 PR https://github.com/mithudso/solmargintrader/pull/167 preserves all strategy experiment artifacts. Concurrent default branch PR166 was merged without discarding either prompt/memory history; no backtester core changed. Integrated local backtester suite960 passed; extension suite407 passed. Docs total2787 includes current1374 SolTUI tests. Index rebuilt over final owned paths. Full experiment file inventory is research/strategy_experiment/FILES.md, including expanded archive contents and durable-export absolute paths. Final CI, merge identity and standalone export acceptance remain delivery receipts reported after completion.
 
 
+## v314 - 2026-11-09 — bot control room design
+
+Task TASK-1096 with steps TASK-1097 (design), TASK-1098 (interactive mockup), TASK-1099 (verification and delivery). Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c198, branch agent-01a1c198. Deliver design artifacts only: browser control room, five-stage bot creation, skill applicability ledger and Superpowers plan. Platform is a designer assumption, not a user-approved product change. Active CLI design TASK-1092 and SolTUI work remain separate. Preserve all other work. Current baseline is 4d4c7a1. Paper/disarmed defaults, separate result modes, stale/unknown execution refusal, backend risk authority, no secrets, and archived liquidity remain constraints. Remaining: design, mockup render/review, plan, docs/index checks, PR/CI/merge. Stele knowledge transport closed; exact writes queued below.
+
+Stele outbox receipts: 54a6a0d6 | 03979d84
+
+
+## v315 - 2026-11-09 — bot control room reviewed
+
+TASK-1096 design artifacts are in docs/design/bot-control-room/; Superpowers plan is docs/superpowers/plans/2026-11-09-bot-control-room.md. Designer chose responsive browser fleet/inspector and five-stage draft creation; all five templates appear. No production module or service changed. Read DESIGN.md, SKILLS.md and REVIEW.md before resuming. TASK-1097 design and TASK-1098 mockup are done; TASK-1099 delivery is active.
+
+Independent browser review passed 49/49 assertions with final source identity, ten sampled contrast pairs, 1440/390/320px reflow and no external requests. Fixed narrow overflow, step focus, first-Escape dialog handling and chart value coordinates. Fresh builder review found a runtime identity gap: current forward sessions occupy strategy-scoped slots across markets. Design/plan v1.0.1 now use stable draft UUIDs, distinct runtime sessions and occupied-slot refusal. Duplicate instances require a future explicit backend capability; duplication cannot overwrite an active bot. Builder recheck: nothing important left.
+
+Durable self-contained preview: /Users/mitch/Downloads/sol-bot-control-room-2026-11-09.html. It inlines the reviewed CSS and JavaScript exactly; no backend or accounts. Documentation checker passed with current suite counts. Remaining delivery: exported-file acceptance, final documentation/index freshness and diff checks, commit/push/PR/final-head CI/merge, remote content verification and only this task's worktree cleanup. Preserve the shared original checkout; another live session owns it. Existing queued knowledge outbox IDs: 54a6a0d6 and 03979d84. These are queued writes, not confirmed knowledge nodes.
+
+Runtime-slot decision outbox receipt: cf778cd2
+
 ## 2026-11-09 — standalone bot manager planning start (TASK-1092)
 
 Target: optimize the owner prompt, then deliver a source-grounded architecture and phased implementation plan. Working branch docs/bot-manager-plan-1092 in /Users/mitch/dev/solmargintrader-wt-bot-plan-1092, baseline 4d4c7a1. No product code, service starts, training runs or live trades are part of this planning task. Preserve three original untracked files and other worktrees. Existing related scheduler TASK-1049 and research TASK-1087 remain separate work.
@@ -782,3 +878,119 @@ Verification: default python3 docs discovery failed on missing suite dependencie
 ## v316 - 2026-11-09
 
 TASK-1104: Research a streaming, restart-safe forward-testing signal daemon with selective subscriptions and MCP. Backtester implementation is deferred. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c1a0 on agent-01a1c1a0 starts at 7846848; shared checkout has another live session and three untracked files. Read prompt-deep-optimizer and llms-txt-tooling full-suite reference. Stele KNOW-655 warns parameter selection can overfit; TASK-1057 is active persistence work. Remaining: execute optimizer and full-suite, review current project and sources, produce evidence-backed design and validation, then deliver. No research saturation or optimizer convergence has been established.
+
+## EPIC-1106 — approved bot manager implementation
+
+Owner request: Yes, implement it. Design acceptance covers PR171 spec/plan. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c189, branch agent-01a1c189, baseline7846848. Other sessions hold the primary checkout; never switch/edit it. Milestone tasks1107–1114 cover the eight releases; task1107 active. Durable SDD ledger: .superpowers/sdd/2026-11-09-bot-manager/progress.md (scratch), authoritative continuation in Git and this file. Apply skill reviews per task and independent installed acceptance before claiming installed behavior. Existing services, recorder, optimizer, limits and private keys are untouched.
+
+Remaining: implement CLI/defaults/legacy controls, runtime, data/strategies, blind research, diagnostics, learning, browser integration and gated executor boundary; test/review/deliver each independent milestone. Real forward-soak elapsed time and unavailable venue/verifier evidence remain real gates, never fabricated completion.
+
+
+## Supplemental UI handoff during TASK-1107
+
+Owner supplied PR172 (f2d099e) UI design/plan/validation and asked to continue manager implementation with manager authority taking precedence. Read merged artifacts via origin/master because the private branch predates that merge; snapshot copies are in this plan's SDD workspace. Downloaded HTML is illustrative and was inspected; its prototype49 browser checks are not production manager evidence.
+
+Current milestone incorporates stable spec UUID distinct from runtime/owner/generation, config revision and strict saved provenance; versioned status --why with independent lifecycle/input/evidence/submission states and null unknown financial values; explicit capability and receipt schema; legacy family slot guards across markets. Later runtime/health/accounting/evidence/learning/browser milestones implement actual values and behavior. Manager registry remains Grid,DCA,Trend,Momentum,Arbitrage, with Council external-only; no prototype list/schema copying. Graphical work stays in planned integration phase.
+
+Foundation committed be12a00+2381777;20 tests pass on Python3.13, lint/format pass, installed wheel console probe passes outside checkout with isolated SOLBOT_HOME and source bytes matching. Independent reviewer found DB-row identity mismatch, invalid saved override/provenance validation and related exact scalar-type mismatch. Original worker owns fix round1; no adapter implementation starts before that review gate. Parent owns unstaged top docs/CI/workflow records. Merge origin/master after these owned edits are committed, preserving both histories and regenerating derived indexes.
+
+
+## TASK-1107 foundation and UI contracts checkpoint
+
+Foundation fixes4405ca7 approved by scoped independent re-review;25 tests passed. Supplemental state/receipt task1b eb31079 approved by fresh independent review;45 total manager tests passed on Python3.13, Ruff and diff checks passed. CLI status --why is registry-driven; state dimensions and runtime/spec/config identities remain distinct. Draft finances/observations are null with reasons and no capital reserved. Receipts represent acknowledged/pending/skipped/failed/unknown, never auto-retry; external config_revision is null with a fixed unavailability reason when owner does not version settings, with optional validated observed config_hash.
+
+Next: task2 safe owner adapters and actual atomic legacy control protocol. Client GET-then-POST is inadequate; extend owner registry/locks with expected-session/config checks and durable request-ID dedup. An old installed owner missing this capability remains read-only; never fall back to unsafe restart. Parent will merge UI PR172 after committing these owned integration records; regenerate derived indexes after conflict resolution. Initial package-risk review returned UNKNOWN because no Endor risk tools exist, not an unsafe verdict; local source code independently reviewed and zero runtime deps verified. Dedicated installed environment /Users/mitch/.venvs/solbot contains foundation0.1.0 at2381777 and must be refreshed before final installed acceptance. No live trading or production service mutation occurred. This is a recoverable implementation checkpoint, not completion of milestone1 or epic1106.
+
+
+## Bot UI integration and final acceptance
+
+Merged current origin/master from CLI planning PR171 while preserving both designs and all prompt/memory history. Export acceptance passed through file:// with no errors or external requests; inline assets match the reviewed sources. Design and browser work are complete; the proposed product implementation remains unstarted. Delivery receipts are authoritative in TASK-1096/TASK-1099 and the UI design PR. Remaining operational gates at commit time: final integrated docs/index checks and final-head CI/merge. After those pass, no design steps remain; preserve the occupied main checkout and remove only this task worktree. Queued knowledge IDs54a6a0d6,03979d84,cf778cd2 are not confirmed nodes.
+
+
+## PR172 integrated into active implementation
+
+Merged f2d099e from origin/master in private implementation worktree. Preserved both UI and manager histories and accepted UI artifacts unchanged; regenerated derived indexes. Task1107 remains in progress. Reviewed foundation/status/receipts are implemented; legacy adapter and safe owner control task2 is next. No graphical or live-trading implementation was substituted. Primary checkout remains untouched because other sessions hold it.
+
+## v320 — 2026-11-09 — milestone1 legacy control review
+
+Milestone1 source reaches995246f after guarded owner protocol3e2b9e1 and fix round1. The64 manager tests and121 affected owner tests pass. Focused lint/format and CI selector6 tests pass; the33 pre-existing owner Ruff diagnostics remain unchanged. Independent review reproduced and the worker fixed exact-config startup, acknowledgment session/revision binding and persisted receipt/request binding. Scoped re-review is pending. The manager controls journal is now schema2; migration preserves old request IDs but refuses unbound v1 replay. Never resubmit an ambiguous request. Current API port8788 is incompatible; no installed SolTUI control success is claimed.
+
+Supplemental UI contracts are implemented in status/receipt/spec fields. The full current-versus-later mapping is /Users/mitch/dev/solmargintrader/docs/bot-manager-milestone-1.md. Legacy slots remain family-wide; manager authority takes precedence over prototype integration. Parent added CI selector dependency tests so owner edits run the guarded-control regressions. Other sessions and production state remain unchanged.
+
+Draft PR175 at39140e7 passed9 active CI checks; latest995246f is not yet pushed. Origin/master advanced to e0c6934 with PR174/176 historical snapshot/archive work; integrate preserving both histories before final broad review. Final docs/index gates, current installed-console acceptance, final-head CI and merge remain. Continue milestones1108–1114 after delivering TASK1107.
+
+## v317 - 2026-11-09
+
+Task TASK-1117: optimize the user's backtester prompt, plan and implement reliable historic-data and simulation improvements. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1c1b1, based on origin/master f2d099e. Other sessions own signal generation, forward testing, UI and F5 orchestration (TASK-1046); preserve their work. Existing backtester is offline, uses next-bar fills and maintains simulation costs. Do not invent market, chain, fee or coverage data. Remaining: inspect code and data, complete prompt optimization and plan, implement and verify, then deliver.
+
+## v318 - 2026-11-09
+
+The owner identified BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, AVAX, JitoSOL, KMNO, USDC and XMR. Asset identity, venue, availability and length of each history must still be verified. Do not infer missing source or chain data.
+
+## v319 - 2026-11-09
+
+TASK-1117 in /Users/mitch/dev/solmargintrader-wt-01a1c1b1: optimized prompt and implementation plan are recorded. Implemented immutable SQLite OHLCV snapshots, strict contiguous bar validation, verified snapshot loader, transactional hash-verified run artifact archive and SQLite backup, plus fixture-level end-to-end tests. The initial full backtester run had 968 tests and one index staleness failure caused by workflow-file edits; rebuild the offline index after staging final owned files and rerun. A daily CSV coverage scan found contiguous local files for the first ten assets, 277-2138 rows, but none for JitoSOL, KMNO, USDC or XMR; XMR has a minute CSV not yet validated. Source provenance and other intervals remain unverified. Full production coverage, independent backups, chaos scenarios, chain-aware trade accounting, complete bot integration, benchmarks and fidelity verification remain outstanding. Do not claim the overall request is complete.
+
+## v320 - 2026-11-09
+
+Ten daily histories were imported and reverified at /Users/mitch/.local/share/solmargintrader/backtester-task-1117/daily-history.sqlite, with same-machine backup daily-history-backup.sqlite and snapshot inventory inventory.json. Their venue and quote are unknown; SnapshotLoader refuses them for simulation. They are not independent disaster-recovery copies. Four assets have no matching daily CSV. Coinbase Exchange lookups for JITOSOL-USD, KMNO-USD, USDC-USD and XMR-USD returned HTTP 403; this does not establish listing status. Ten daily snapshots imported in a temporary benchmark in 0.06 seconds, ~2.27 MB; this is not a minute-history benchmark. The optimizer audit was structurally reviewed including independent re-read, but formal full-protocol self-check/smoke/telemetry remain unverified. Detailed plan and prompt-review files are in docs/superpowers/plans/.
+
+## v321 - 2026-11-09
+
+The owner selected SOL/USDC as the primary pair. The snapshot-backed spot CLI now has explicit USD/USDC quote selection; its manifest, report and chart label retain the selected quote, and USDC has no implicit USD conversion. USDC for perp mode and non-snapshot inputs is refused. Fixture integration covers SOL/USDC, but no verified real SOL/USDC snapshot has been obtained. Independent review caught two lookahead errors around intraday cutoffs and explicit midnight; both were repaired with regression tests. It also caught USD chart labeling and imprecise manifest bar bounds; both were repaired. XMR's existing minute sidecar labels it KuCoin XMR-USDT, not USD or USDC; its coverage and contents remain unvalidated. Archive output does not include charts because the current report manifest excludes them; the README discloses that limitation. Remaining tasks and evidence are in the plan.
+
+## v322 - 2026-11-09
+
+Independent source review confirmed fixes for intraday bar-close and explicit-midnight cutoffs, quote-aware chart labels, and exact first/last bar timestamps in manifests. Its final bar-close boundary concern was fixed with a regression. The SOL/USDC spot fixture now independently reconciles 10,000 USDC initial capital, 8 bps entry/exit costs, entry at 10 and exit at 11 to final 10,982.414068745004 USDC. No real SOL/USDC data is yet confirmed. Snapshot and artifact archive tests cover corruption, idempotency, missing input, safe names, private mode, transaction rollback and same-machine backup/restore. The full 14-asset history, source attestation, independent backup, chain-aware ledger, all-bot simulation, stress scenarios and realistic performance remain incomplete; TASK-1117 remains open. Before delivery regenerate the offline index and rerun final checks.
+
+## v323 - 2026-11-09
+
+All fourteen requested assets now have at least one source-labelled, contiguous daily snapshot in /Users/mitch/.local/share/solmargintrader/backtester-task-1117/daily-history.sqlite. Coverage, venue, quote, timestamps and IDs are in validated-market-inventory.json. Eleven KuCoin USDC pairs include SOL/USDC 2022-05-23 through 2026-11-08; Kraken USDC/USD has 720 bars; KuCoin KMNO/USDT has 923; OKX JitoSOL/USDT has 549, with exchange mint identity still unverified. Retained source response pages are in the sibling per-venue directories. The latest same-machine verified backup is daily-history-14-assets-backup.sqlite. These are daily observations, not validated multi-year minute data; the requested full depth and an off-machine recovery copy remain open. BTC and ETH requests started 2021-01-01, so earlier available history was not checked.
+
+Four existing default spot strategies ran against all 1,631 SOL/USDC bars with 70/30 split and assumed 6 bps fee plus 2 bps slippage. Result bundle lives in sol-usdc-daily-results; run archive runs.sqlite and same-machine runs-backup.sqlite passed ten-artifact verification for run bc5ab419c0fa747759f6a4a332de6611c6a3beece0adc58885111be44f40d2af. Initial run exposed `ValueError: run manifest strategies do not match output strategies`; cli now uses actual strategy output names and an all-strategy integration test covers it. These costs are assumptions, not a historical fee series. No real chain execution or complete multi-bot validation is implied.
+
+Explicit USDT-denominated spot snapshot runs are now supported without converting USDT to USD or USDC. Unverified source/quote snapshots remain refused; stablecoin quotes are refused for perp and non-snapshot paths. TASK-1117 remains in progress: preserve current work, finish end-to-end data maintenance and source identity checks, funding/fees/chaos/chain accounting, non-spot bot coverage, minute-scale performance, off-machine recovery and comprehensive validation.
+
+## v324 - 2026-11-09
+
+The previously recorded 14-asset daily inventory remains valid. KuCoin returned BTC and ETH bars before 2021, but the combined pre-2021 series failed strict contiguous-bar validation near the start. The importer refused both revisions; no gap filling occurred. Retained responses, failed combined CSVs and inventory are under /Users/mitch/.local/share/solmargintrader/backtester-task-1117/kucoin-pre2021-daily-20261109. The latest verified same-machine copy is daily-history-extended-backup.sqlite. Other checked markets returned no pre-2021 bars in those requests. Coverage before each validated snapshot remains unproved, and local backups are not off-machine recovery. The public repository checkpoint is draft PR 174; source code and data under this worktree do not establish that the whole backtester request is complete.
+
+## v325 - 2026-11-09
+
+The storage foundation in https://github.com/mithudso/solmargintrader/pull/174 merged to remote master as 2a61908580266c49878963deea6312c2b8034ecc. All required final-head CI checks passed. The local backtester suite passed 983 tests and documentation/index checks passed. The original checkout remains in use by other sessions and was not changed. TASK-1117 remains open: the continuation requirements in v323 and v324, the implementation plan, source data and off-machine backup gaps still apply. The v324 description of PR 174 as a draft is historical and superseded by this entry.
+
+## v326 — integrated manager and historical storage histories
+
+Integrated e0c6934 without changing its verified historical snapshot/archive source. Both active task histories and exact requests remain. Manager task2 re-review accepted the exact-config and durable identity fixes but found a remaining crash-window provenance issue: pending receipts must not report the discovery hash as a responding owner revision. Original implementer owns focused fix round2; final review and delivery remain pending.
+
+## v327 — 2026-11-09 — milestone1 source approved
+
+Source032db6c passed all67 manager tests (23.397s),124 affected owner tests, scoped Ruff/format and diff checks. CI selector6 tests pass. Final broad review and its single scoped fix-wave re-review approve spec and quality. Strict manager-only forward loading now refuses malformed existing state without replacing its bytes. Observed owner configuration paths stay distinct from declared descriptor candidates. All original receipt/config findings and final review findings are resolved.
+
+Post-integration docs agree:983backtester/1402SolTUI/408extension/46mongo total2839; manager has a separate CI job. The incoming historical snapshot/archive source and accepted UI artifacts remain unchanged. The67-test manager suite is separate from those quoted legacy suite counts. Existing33owner Ruff findings are unchanged; no broad cleanup occurred.
+
+Noneditable manager0.1.0 is installed in /Users/mitch/.venvs/solbot, exposed as /Users/mitch/.local/bin/solbot. Independent installed verification at6ebd6d6 matched11modules and17fresh-process behavior checks; package was refreshed after032db6c. Independent follow-up matched all11 final module hashes, passed3 fresh-process reads with absent-home preservation and4 observed/declared path fixtures. Actual default owner discovery returns incompatible_owner/bots=null; no actual installed-owner control, heartbeat or live execution success is claimed. No production bots, services, keys or browser state changed.
+
+PR175 is the canonical delivery receipt: https://github.com/mithudso/solmargintrader/pull/175. At this record, final metadata, final pushed-head CI and merge remain. Do not infer completion from this entry; inspect the PR and remote tree. After verified delivery complete TASK1107 and claim TASK1108; continue prepared task3 multi-instance reference-paper runtime in milestone order. Keep primary checkout's unrelated untracked files unchanged.
+
+## v328 — 2026-11-09 — CI bridge integration repair
+
+Final4798a71 CI passed8of9 active jobs but macOS targeted tests correctly failed test_every_required_param_command_has_a_fixture: bots.manager_control was absent from bridge_support. Commit2a20cd9 adds only11 fixture lines in /Users/mitch/dev/solmargintrader/soltui/tests/bridge_support.py. The required-fixture regression now passes; all42 existing parity/button/surface tests pass (25.990s). Positive probes for manager_control and actual unstubbed manager_snapshot succeed byte-identically over TUI/CLI/API/native host without an owner control journal. No assertion, test selection or production guard changed. Existing4fixture Ruff warnings remain unchanged.
+
+Product code stays byte-identical to independently reviewed/installed032db6c, so no reinstall or repeated product acceptance is needed. The independent scoped fixture integration review approved specification and quality with no findings. Continue with metadata refresh and new final-head CI/merge on PR175. Do not count prior8passing jobs or historical39140e7 CI as final delivery. The delayed pull_request run42694684337 was canonical; redundant queued dispatch42694722008 was canceled after that run appeared. Preserve the fixture repair and continue; no new implementation approval is needed.
+
+## v326 - 2026-11-09
+
+TASK-1128: find, download, normalize and index history for the 14 owner-selected assets, emphasizing SOL/USDC and the finest supported timeframe. Work in /Users/mitch/dev/solmargintrader-wt-01a1c1b1 on branch agent-01a1c1b1-history. Preserve active sessions and existing source files. Never fabricate observations to hide gaps; retain and report unknown intervals. Existing daily snapshots and run artifacts live at /Users/mitch/.local/share/solmargintrader/backtester-task-1117. First audit existing minute caches and their provenance, then fetch or repair feasible gaps, publish verified contiguous segments and manifest coverage. Full availability, venue and quote must remain explicit.
+
+## v327 - 2026-11-09
+
+TASK-1128 continuation: /Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md describes the data. Fourteen source-labelled, verified, gap-free minute snapshots are stored in backtest-ready/recent-snapshots.sqlite and independently re-read from its same-machine backup. Eleven KuCoin USDC markets and OKX JitoSOL-USDT each cover 43,200 minutes; KMNO-USDT has 43,195 consecutive minutes then five unobserved tail minutes, which remained absent on a targeted KuCoin recheck; Kraken USDC-USD has 720 minutes. Quotes and venues are not substituted. The JitoSOL exchange-to-mint mapping remains unverified. The local primary and backup share one machine. A 43,200-bar SOL/USDC smoke backtest ran and its archive verified.
+
+Eleven legacy minute CSV files were copied to legacy-segments, indexed into gap-free checksum-verified chunks, and accompanied by exact gap ledgers. The 28,045,077 observations contain 2,436,585 unobserved minute slots; venue/quote identity is not cryptographically bound for most. Existing reconstructed samples are separate. Funding files with irregular cadence are quarantined rather than rounded or forward-filled.
+
+The first KuCoin collector version mistakenly requested hi-60 even though live tests proved endAt exclusive; affected stores are preserved with boundary-omission-v1 names. Schema-2 stores use endAt=hi. Concurrent collectors now coordinate using KUCOIN_HTTP_LOCK and atomically detect identical or conflicting simultaneous pages. Ongoing deeper jobs must be checked before restart: SOL-USDC [1653264000,1794255240), KMNO-USDT [1714435200,1794255480). Their separate SQLite stores retain every raw page, normalized rows and window-level checkpoints; they are not complete until final verification and exact gap ledgers. See TASK-1128 and KNOW-1131/1132/1138. Postman CLI was unavailable and Orbit returned HTTP 403; Context7 and live source evidence were used, with local HTTP simulation tests.
+
+## v329 — 2026-11-09 — integrate the concurrent minute-history release
+
+All9active CI checks passed release53853a2 in run42696562259. The gated merge then refused because concurrent PR177 advanced master to b6f9586 and conflicted only in shared count/history/index records. Integrate its minute-history source unchanged; retain both exact prompt histories and all continuation entries. Manager/owner production code remains identical to independently reviewed and installed032db6c. Combined discovery is999backtester/1402SolTUI/408extension/46mongo total2855. Fresh combined-head CI and actual merge remain; do not count the older green head as delivered. Primary checkout and the other session's ongoing datasets/downloads remain untouched.

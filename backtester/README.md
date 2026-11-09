@@ -85,6 +85,84 @@ every flag.
 Machine-readable files carry no caveat prose, so a downstream consumer never
 has to parse around it. The caveats live in stdout and `report.md`.
 
+## Verified local history and result archives (experimental)
+
+For the complete acquisition history, architectural decisions, operating procedures, backup recovery, and remaining work, see [the historical backtester handoff](../docs/backtester-history-handoff.md).
+
+The history store imports a contiguous CSV as an immutable content-addressed
+snapshot. It records the operator-supplied instrument, venue, source label,
+interval and bar-open timestamp convention. The source label is an assertion,
+not independent proof of provenance. A correction creates a new snapshot.
+Import does not alter the original CSV. The database is private (mode 0600),
+but its directory, filesystem encryption and off-machine backup remain the
+operator's responsibility. A full snapshot hash is verified on every read,
+so reading a large snapshot may be slow and use substantial memory.
+
+```bash
+python3 -m backtester.core.history_store /path/to/history.sqlite /path/to/SOL_1d.csv \
+  --instrument SOL-USD --venue coinbase --source 'operator-verified source' --interval-seconds 86400
+# Use the printed snapshot ID from the import.
+python3 -m backtester.cli --asset SOL --start 2021-06-17 --interval 1d \
+  --history-archive /path/to/history.sqlite --snapshot-id SNAPSHOT_ID \
+  --strategy buy_and_hold --out /path/to/results --archive /path/to/runs.sqlite --no-charts
+```
+
+For a verified SOL-USDC snapshot, pass `--quote USDC`; the spot engine records
+monetary values in USDC without a USD conversion. Verified USDT snapshots use
+`--quote USDT` and retain USDT accounting. Stablecoin quotes are currently
+refused for perp mode and non-snapshot inputs. Minute-level intraday end times include
+only fully completed bars. A missing venue or matching quote refuses the run.
+
+Result archives store the exact manifest and its listed artifacts in one SQLite
+transaction. Import and read verify the manifest and every listed artifact;
+charts created after the manifest are not included. `read_run()` returns the
+original bytes and rejects a missing or altered artifact. `backup_archive()`
+creates a new SQLite backup and checks stored run and history hashes; copy the
+backup to an independent location and periodically test restoration. Hashes
+detect changes but do not make an untrusted model or data source correct.
+
+This is a foundation, not a completed multi-asset backtesting system. It does
+not discover sources, fill missing histories, model chain-specific transactions
+or infer execution costs; the 14-asset coverage, comprehensive simulator
+validation, stress scenarios and representative performance benchmarks remain
+open in the implementation plan.
+
+## Minute-history collection and gap-safe queries
+
+`backtester.core.kucoin_history` collects a named spot market into a private
+SQLite database. Each fixed UTC window stores the exchange's exact response,
+a SHA-256 digest and the normalized OHLCV rows in the same transaction. A
+completed window is rechecked on resume. The documented KuCoin candle API
+may omit intervals without ticks and may be incomplete; an omitted minute is
+not silently replaced with a synthetic price. An `endAt` equal to the next
+window boundary is exclusive for the tested market; version-1 databases made
+with the older `endAt=boundary-60` request are refused. When multiple collectors
+run at once, set `KUCOIN_HTTP_LOCK` to the same private lock-file path. They
+then serialize HTTP calls and hold the lock through 429 backoff; processes that
+do not use the same lock are outside that coordination.
+
+`collect(database, symbol, start, end)` uses UTC epoch seconds and a half-open
+`[start,end)` range. Keep the same start and end when resuming an interrupted
+run, especially for the partial last window. `audit_store(...)` replays stored
+responses and writes a gap ledger distinguishing `UNFETCHED` windows from
+`UNOBSERVED` provider intervals. The distinction does not establish whether
+an unobserved interval had trades. `read_range(...)` verifies every touched
+source response and normalized row and refuses ranges with even one missing
+minute. The database is indexed by timestamp and window.
+
+`backtester.core.segmented_history` copies an existing ordered CSV into an
+immutable private data file and indexes gap-free segments with byte hashes.
+`read_range(directory,start,end)` uses **inclusive** UTC endpoints and refuses
+a range crossing a gap. Unlike the source-preserving KuCoin store, these
+legacy copies cannot prove the originating venue or quote unless an external
+source provides binding evidence. A matching pair on a different venue is a
+different market and must not silently replace missing candles.
+
+Source data and local backups are not a guarantee of historical completeness,
+point-in-time availability, trading liquidity, or independent disaster recovery.
+For example, a venue may omit trades from a candle or omit a minute entirely;
+the repository's candle-gap audit documents this failure.
+
 ## How look-ahead bias is prevented
 
 Structurally, not by convention. The per-bar ordering is:

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T18:51:47+00:00",
+  "generatedAt": "2026-11-09T21:57:49+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1641,
+      "matchingFiles": 1655,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1381,
+      "matchingFiles": 1387,
       "shown": 30,
       "files": [
         {
@@ -205,6 +205,10 @@
           "hits": 54
         },
         {
+          "path": "soltui/bots.py",
+          "hits": 54
+        },
+        {
           "path": "llms-full.txt",
           "hits": 46
         },
@@ -227,10 +231,6 @@
         {
           "path": "backtester/tests/test_engine_audit.py",
           "hits": 34
-        },
-        {
-          "path": "soltui/bots.py",
-          "hits": 33
         },
         {
           "path": "soltui/help.py",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1374,
+      "matchingFiles": 1377,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1341,
+      "matchingFiles": 1345,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 714,
+      "matchingFiles": 726,
       "shown": 30,
       "files": [
         {
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 373
+          "hits": 371
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 608,
+      "matchingFiles": 628,
       "shown": 30,
       "files": [
         {
@@ -789,6 +789,14 @@
           "hits": 57
         },
         {
+          "path": "botmanager/tests/test_legacy.py",
+          "hits": 55
+        },
+        {
+          "path": "docs/design/bot-control-room/mockup.css",
+          "hits": 55
+        },
+        {
           "path": "extension/test/core.test.js",
           "hits": 53
         },
@@ -827,14 +835,6 @@
         {
           "path": "soltui/bots.py",
           "hits": 49
-        },
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 48
-        },
-        {
-          "path": "research/tradingview-strategy-understanding.json",
-          "hits": 48
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 566,
+      "matchingFiles": 576,
       "shown": 30,
       "files": [
         {
@@ -876,11 +876,15 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 71
+          "hits": 73
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 61
+        },
+        {
+          "path": "docs/design/bot-control-room/mockup.css",
+          "hits": 60
         },
         {
           "path": "research/strategy_experiment/results/auxiliary.json",
@@ -901,6 +905,10 @@
         {
           "path": "backtester/strategy_cards/incomplete/tv_ghocsiv7_gap_filling_strategy.md",
           "hits": 40
+        },
+        {
+          "path": "backtester/core/data.py",
+          "hits": 39
         },
         {
           "path": "research/strategy_experiment/FILES.md",
@@ -939,10 +947,6 @@
           "hits": 34
         },
         {
-          "path": "backtester/core/data.py",
-          "hits": 33
-        },
-        {
           "path": "extension/src/ui/ui.css",
           "hits": 33
         },
@@ -969,10 +973,6 @@
         {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 26
-        },
-        {
-          "path": "research/strategy_experiment/audit_realism.json",
-          "hits": 26
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 466,
+      "matchingFiles": 482,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 197
+          "hits": 202
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1051,7 +1051,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 72
+          "hits": 75
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 343,
+      "matchingFiles": 351,
       "shown": 30,
       "files": [
         {
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 131
+          "hits": 130
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1385,6 +1385,141 @@
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "benchmark",
+      "label": "Buy-and-hold benchmark",
+      "why": "Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.",
+      "terms": [
+        "buy_and_hold",
+        "benchmark",
+        "baseline"
+      ],
+      "matchingFiles": 321,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/strategy_experiment/results/results.json",
+          "hits": 560
+        },
+        {
+          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
+          "hits": 424
+        },
+        {
+          "path": "research/strategy_experiment/audit_realism.json",
+          "hits": 178
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 112
+        },
+        {
+          "path": "research/strategy_experiment/results/auxiliary.json",
+          "hits": 77
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 68
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 61
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 56
+        },
+        {
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 47
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 41
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 29
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 25
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 23
+        },
+        {
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 23
+        },
+        {
+          "path": "backtester/core/deflated_sharpe.py",
+          "hits": 21
+        },
+        {
+          "path": "soltui/experiment_screens.py",
+          "hits": 21
+        },
+        {
+          "path": "memory.md",
+          "hits": 18
+        },
+        {
+          "path": "soltui/experiment_runner.py",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/core/dcasim.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/report.py",
+          "hits": 13
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 13
+        },
+        {
+          "path": "docs/code-optimizer-scope-2026-11-08.json",
+          "hits": 12
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 12
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mi5dl7bi_sharpe_and_sortino_ratios.md",
+          "hits": 12
+        },
+        {
+          "path": "soltui/tests/test_f5_batch.py",
+          "hits": 11
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 10
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_oogzrqim_riskmetrics.md",
+          "hits": 10
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "family:regime-filter",
@@ -1524,141 +1659,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "benchmark",
-      "label": "Buy-and-hold benchmark",
-      "why": "Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.",
-      "terms": [
-        "buy_and_hold",
-        "benchmark",
-        "baseline"
-      ],
-      "matchingFiles": 313,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 560
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 424
-        },
-        {
-          "path": "research/strategy_experiment/audit_realism.json",
-          "hits": 178
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 112
-        },
-        {
-          "path": "research/strategy_experiment/results/auxiliary.json",
-          "hits": 77
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 68
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 60
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 56
-        },
-        {
-          "path": "research/tradingview-script-understanding.json",
-          "hits": 47
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 41
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 29
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 25
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 23
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
-          "hits": 23
-        },
-        {
-          "path": "backtester/core/deflated_sharpe.py",
-          "hits": 21
-        },
-        {
-          "path": "soltui/experiment_screens.py",
-          "hits": 21
-        },
-        {
-          "path": "soltui/experiment_runner.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
-          "hits": 16
-        },
-        {
-          "path": "memory.md",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/report.py",
-          "hits": 13
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 13
-        },
-        {
-          "path": "docs/code-optimizer-scope-2026-11-08.json",
-          "hits": 12
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mi5dl7bi_sharpe_and_sortino_ratios.md",
-          "hits": 12
-        },
-        {
-          "path": "soltui/tests/test_f5_batch.py",
-          "hits": 11
-        },
-        {
-          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
-          "hits": 11
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 10
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_oogzrqim_riskmetrics.md",
-          "hits": 10
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "family:baseline",
       "label": "Strategy family: baseline",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 263,
+      "matchingFiles": 270,
       "shown": 30,
       "files": [
         {
@@ -1687,7 +1687,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 46
+          "hits": 47
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1734,11 +1734,11 @@
           "hits": 15
         },
         {
-          "path": "backtester/core/gridsim.py",
-          "hits": 14
+          "path": "memory.md",
+          "hits": 15
         },
         {
-          "path": "memory.md",
+          "path": "backtester/core/gridsim.py",
           "hits": 14
         },
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 246,
+      "matchingFiles": 247,
       "shown": 30,
       "files": [
         {

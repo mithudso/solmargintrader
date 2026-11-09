@@ -37,9 +37,12 @@ median improvement still gate adoption. Every path remains a simulation.
 from __future__ import annotations
 
 import fcntl
+import hashlib
 import itertools
 import json
 import math
+import os
+import re
 import threading
 import time
 import uuid
@@ -1067,13 +1070,263 @@ def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder
         if preserve_existing and bot != "triangle" and f"{a}-USD" not in _triangle_products():
             raise BotError(f"{a}-USD is not in the recorded stream; forward tests need a Coinbase USD market")
         recorder = pricefeed.ensure_recorder() if ensure_recorder else {"running": None}
-        raw[bot] = {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": a, "config": get_config(bot, a),
-                    "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
-                    "slippage_bps": _costs(settings).slippage_bps}
+        raw[bot] = _new_forward_record(bot, a, settings, now)
         _write_json(forward_path(), raw)
         runtime().sessions.pop(bot, None)
     return {"forward": raw[bot], "recorder": recorder}
 
+
+
+# The hash is captured when this module loads. It identifies the implementation
+# answering the protocol, rather than a later working-tree edit or a git claim.
+_MANAGER_SOURCE_HASH = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+
+
+def _new_forward_record(bot: str, asset: str, settings: Any, now: float,
+                        *, compared: dict[str, Any] | None = None) -> dict[str, Any]:
+    # Raw clients keep their existing UI/default resolution. A guarded control
+    # supplies exactly the validated configuration and costs it compared under
+    # the lock; resolving them again could silently select different defaults.
+    values = compared if compared is not None else {
+        "config": get_config(bot, asset), "fee_bps": _costs(settings).fee_bps,
+        "slippage_bps": _costs(settings).slippage_bps}
+    return {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": asset, "config": dict(values["config"]),
+            "started_at": now, "stopped_at": None, "fee_bps": values["fee_bps"],
+            "slippage_bps": values["slippage_bps"]}
+
+
+def _manager_hash(value: Any) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"),
+                                     allow_nan=False).encode()).hexdigest()
+
+
+def _manager_forward_all() -> dict[str, Any]:
+    """Read the actual legacy record schema without interpreting corruption as absence."""
+    try:
+        raw = _read_json(forward_path(), {})
+        if not isinstance(raw, dict):
+            raise TypeError
+        for bot in BOTS:
+            if bot not in raw:
+                continue
+            rec = raw[bot]
+            fields = {"id", "bot", "asset", "config", "started_at", "stopped_at",
+                      "fee_bps", "slippage_bps"}
+            if (not isinstance(rec, dict) or not fields <= rec.keys()
+                    or not isinstance(rec["id"], str)
+                    or re.fullmatch(r"[A-Za-z0-9_-]{1,64}", rec["id"]) is None
+                    or rec["bot"] != bot or not isinstance(rec["asset"], str)
+                    or re.fullmatch(r"[A-Z0-9]{1,20}", rec["asset"]) is None
+                    or (bot == "triangle" and rec["asset"] != "ALL")
+                    or not isinstance(rec["config"], dict)
+                    or set(rec["config"]) != set(DEFAULTS[bot])):
+                raise ValueError
+            for key in ("started_at", "stopped_at", "fee_bps", "slippage_bps"):
+                value = rec[key]
+                if key == "stopped_at" and value is None:
+                    continue
+                if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+                    raise ValueError
+            validate(bot, rec["config"])
+            _manager_hash(rec)
+        return raw
+    except (BotError, ValueError, TypeError, OverflowError):
+        # No document contents, path, or parser details escape this protocol.
+        raise BotError("saved forward state is incompatible") from None
+
+
+def _manager_context(bot: str) -> dict[str, Any]:
+    return {"venue": "coinbase", "mode": "paper", "armed": False,
+            "bar_seconds": None if bot == "triangle" else 60,
+            "execution_model": "recorded_bid_ask" if bot == "triangle" else "recorded_1m_ohlc_replay"}
+
+
+def _manager_saved_config(bot: str, rec: dict[str, Any]) -> dict[str, Any]:
+    return {**_manager_context(bot), **{k: rec.get(k) for k in ("bot", "asset", "config", "fee_bps", "slippage_bps")}}
+
+
+def _manager_config(bot: str, asset: str, settings: Any) -> dict[str, Any]:
+    raw = _read_json(config_path(), {})
+    if not isinstance(raw, dict):
+        raise BotError("saved configuration is incompatible")
+    saved = raw.get(bot, {})
+    if bot != "triangle":
+        per_coin = raw.get("per_coin", {})
+        if not isinstance(per_coin, dict) or not isinstance(per_coin.get(bot, {}), dict):
+            raise BotError("saved configuration is incompatible")
+        saved = per_coin.get(bot, {}).get(asset, saved)
+    if not isinstance(saved, dict):
+        raise BotError("saved configuration is incompatible")
+    # The tab's get_config falls back on defaults for stale saved values. Safe
+    # delegated controls must surface that problem instead of starting a default.
+    cfg = validate(bot, saved)
+    costs = _costs(settings)
+    return {**_manager_context(bot), "bot": bot, "asset": asset, "config": cfg,
+            "fee_bps": costs.fee_bps, "slippage_bps": costs.slippage_bps}
+
+
+def manager_snapshot(settings: Any = None) -> dict[str, Any]:
+    """Read saved observations without creating directories, locks or workers.
+
+    This is deliberately an observation, not a fencing claim. A subsequent
+    manager_control checks the same values under both mutation locks.
+    """
+    forward = _manager_forward_all()
+    rows = []
+    for bot in BOTS:
+        rec = forward.get(bot)
+        asset = "ALL" if bot == "triangle" else (rec or {}).get("asset", getattr(settings, "asset", "SOL"))
+        current = _manager_config(bot, asset, settings)
+        rows.append({**current, "config_hash": _manager_hash(current), "session_id": (rec or {}).get("id"),
+                     "session_config_hash": _manager_hash(_manager_saved_config(bot, rec)) if rec else None,
+                     "requested_state": "stopped" if not rec or rec.get("stopped_at") is not None else "running",
+                     "heartbeat_available": False, "config_path": str(config_path()),
+                     "source_hash": _MANAGER_SOURCE_HASH})
+    return {"protocol_version": 1, "source_hash": _MANAGER_SOURCE_HASH, "bots": rows}
+
+
+def _persist_manager(path: Path, body: Any) -> None:
+    # Atomic rename alone cannot make the pre-submit intent survive a host crash.
+    _write_json(path, body)
+    with path.open("rb") as handle:
+        os.fsync(handle.fileno())
+    fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+
+def _manager_request_valid(request_id: Any, entry: Any) -> bool:
+    """Reject corrupt receipts before replay can emit unvalidated disk content."""
+    fields = {"fingerprint", "bot", "operation", "asset", "expected_session", "config_hash", "result"}
+    response_fields = {"protocol_version", "request_id", "bot", "operation", "outcome", "reason",
+                       "session_id", "config_hash", "source_hash"}
+    def sha(value):
+        return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+    def session(value):
+        return value is None or (isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,64}", value) is not None)
+    try:
+        if (not isinstance(request_id, str) or str(uuid.UUID(request_id)) != request_id
+                or not isinstance(entry, dict) or set(entry) != fields or entry["bot"] not in BOTS
+                or entry["operation"] not in ("start", "stop") or not session(entry["expected_session"])
+                or not sha(entry["config_hash"]) or not sha(entry["fingerprint"])
+                or not isinstance(entry["asset"], str) or re.fullmatch(r"[A-Z0-9]{1,20}", entry["asset"]) is None):
+            return False
+        if _manager_hash({"bot": entry["bot"], "operation": entry["operation"], "asset": entry["asset"],
+                          "expected_session": entry["expected_session"], "config_hash": entry["config_hash"]}) != entry["fingerprint"]:
+            return False
+        response = entry["result"]
+        if response is None:
+            return True
+        if (not isinstance(response, dict) or set(response) != response_fields
+                or type(response["protocol_version"]) is not int or response["protocol_version"] != 1
+                or response["request_id"] != request_id or response["bot"] != entry["bot"]
+                or response["operation"] != entry["operation"] or response["config_hash"] != entry["config_hash"]
+                or not session(response["session_id"]) or not sha(response["source_hash"])):
+            return False
+        outcomes = {"already_running": ("skipped", "start"), "already_stopped": ("skipped", "stop"),
+                    "owner_session_changed": ("failed", entry["operation"]),
+                    "configuration_changed": ("failed", entry["operation"]),
+                    "family_slot_occupied": ("failed", "start"), "market_data_unavailable": ("failed", "start"),
+                    "outcome_unknown": ("unknown", entry["operation"]),
+                    "forward_requested_heartbeat_unknown": ("acknowledged", "start"),
+                    "stop_recorded_exposure_unknown": ("acknowledged", "stop")}
+        return isinstance(response["reason"], str) and outcomes.get(response["reason"]) == (response["outcome"], entry["operation"])
+    except (ValueError, TypeError, KeyError):
+        return False
+
+def manager_control(bot: str, operation: str, asset: str, request_id: str,
+                    expected_config_hash: str, expected_session: str | None = None,
+                    settings: Any = None) -> dict[str, Any]:
+    """Compare-and-record one legacy family operation; never launch a recorder.
+
+    Old clients retain restart semantics. Their later changes invalidate the
+    session guard; this protocol does not transfer ownership or fence them.
+    """
+    bot = _bot(bot)
+    try:
+        valid_request = isinstance(request_id, str) and str(uuid.UUID(request_id)) == request_id
+    except ValueError:
+        valid_request = False
+    if (operation not in ("start", "stop") or not isinstance(request_id, str)
+            or not valid_request
+            or not isinstance(expected_config_hash, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected_config_hash) is None
+            or (expected_session is not None and (not isinstance(expected_session, str)
+                or re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", expected_session) is None))):
+        raise BotError("invalid manager control parameters")
+    asset = "ALL" if bot == "triangle" else _config_coin(asset)
+    fingerprint = _manager_hash({"bot": bot, "operation": operation, "asset": asset,
+                                 "expected_session": expected_session, "config_hash": expected_config_hash})
+    # Match the existing forward mutators' lock order. Config writers acquire
+    # only config.lock; none can invert forward.lock -> config.lock.
+    with runtime().lock, _forward_lock(), _config_lock():
+        recs = _manager_forward_all()
+        path = home() / "manager-requests.json"
+        journal = _read_json(path, {"schema_version": 1, "requests": {}})
+        if (not isinstance(journal, dict) or journal.get("schema_version") != 1
+                or not isinstance(journal.get("requests"), dict)):
+            raise BotError("manager request journal is incompatible")
+        requests = journal["requests"]
+        if not all(_manager_request_valid(key, entry) for key, entry in requests.items()):
+            raise BotError("manager request journal is incompatible")
+        previous = requests.get(request_id)
+        def result(outcome, reason, session=expected_session):
+            return {"protocol_version": 1, "request_id": request_id, "bot": bot, "operation": operation,
+                    "outcome": outcome, "reason": reason, "session_id": session,
+                    "config_hash": expected_config_hash, "source_hash": _MANAGER_SOURCE_HASH}
+        if previous is not None:
+            if not _manager_request_valid(request_id, previous):
+                raise BotError("manager request journal is incompatible")
+            if previous.get("fingerprint") != fingerprint:
+                return result("failed", "request_id_conflict")
+            return previous.get("result") or result("unknown", "outcome_unknown")
+        if len(requests) >= 10000:
+            raise BotError("manager request journal capacity reached")
+        rec = recs.get(bot)
+        current_session = rec.get("id") if rec else None
+        current = _manager_config(bot, asset, settings)
+        response = None
+        if any(isinstance(entry, dict) and entry.get("bot") == bot and entry.get("result") is None
+               for entry in requests.values()):
+            response = result("unknown", "outcome_unknown", current_session)
+        elif current_session != expected_session:
+            response = result("failed", "owner_session_changed", current_session)
+        elif operation == "start" and rec and rec.get("stopped_at") is None and rec.get("asset") != asset:
+            response = result("failed", "family_slot_occupied", current_session)
+        elif _manager_hash(current) != expected_config_hash:
+            response = result("failed", "configuration_changed", current_session)
+        elif operation == "start" and rec and rec.get("stopped_at") is None:
+            # Family slots are global, including when per-coin settings exist.
+            same = _manager_hash(_manager_saved_config(bot, rec)) == expected_config_hash
+            response = result("skipped" if same else "failed",
+                              "already_running" if same else "family_slot_occupied", current_session)
+        elif operation == "stop" and (not rec or rec.get("stopped_at") is not None):
+            response = result("skipped", "already_stopped", current_session)
+        elif operation == "start" and bot != "triangle" and f"{asset}-USD" not in _triangle_products():
+            response = result("failed", "market_data_unavailable", current_session)
+        requests[request_id] = {"fingerprint": fingerprint, "bot": bot, "operation": operation, "asset": asset,
+                                "expected_session": expected_session, "config_hash": expected_config_hash,
+                                "result": response}
+        _persist_manager(path, journal)
+        if response is not None:
+            return response
+        # A crash or lost ack from here leaves a pending durable intent. Replay
+        # returns unknown and never restarts, stops, or invokes another engine.
+        if operation == "start":
+            rec = _new_forward_record(bot, asset, settings, time.time(), compared=current)
+            recs[bot] = rec
+            runtime().sessions.pop(bot, None)
+        else:
+            rec["stopped_at"] = time.time()
+        _persist_manager(forward_path(), recs)
+        response = result("acknowledged", "forward_requested_heartbeat_unknown" if operation == "start"
+                          else "stop_recorded_exposure_unknown", rec["id"])
+        requests[request_id]["result"] = response
+        _persist_manager(path, journal)
+        return response
 
 def forward_stop(bot: str, *, now: float | None = None) -> dict[str, Any]:
     bot = _bot(bot)

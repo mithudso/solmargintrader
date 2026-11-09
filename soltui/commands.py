@@ -3073,6 +3073,29 @@ def bots_results(ctx: Context, p: dict[str, Any]) -> Any:
     return _bots(bots_mod.latest_results, bot, limit)
 
 
+@command("bots.manager_snapshot", "Read protocol-1 saved forward identities and configuration hashes; heartbeat is unavailable.")
+def bots_manager_snapshot(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    try:
+        return bots_mod.manager_snapshot(ctx.settings)
+    except (ValueError, OSError, KeyError, TypeError):
+        raise CommandError("failed", "Saved manager observations are unavailable or incompatible.") from None
+
+
+@command("bots.manager_control", "Protocol-1 atomic expected-session/config control with durable request dedup. No recorder startup.",
+         (BOT_PARAM, P("operation", "string", "start or stop", required=True),
+          P("asset", "string", "Exact observed asset", required=True),
+          P("request_id", "string", "Canonical UUID", required=True),
+          P("expected_session", "string", "Observed session; absent for an empty family slot"),
+          P("expected_config_hash", "string", "Observed SHA-256 config and costs", required=True)), read_only=False)
+def bots_manager_control(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import bots as bots_mod
+    try:
+        return bots_mod.manager_control(settings=ctx.settings, **p)
+    except (ValueError, OSError, KeyError, TypeError):
+        raise CommandError("failed", "Guarded control failed; reconcile its request before another action.") from None
+
+
 @command("bots.forward_start", "Start (or restart) a bot's dry-run forward test now, on its current "
          "configuration, replaying the recorded price stream as it arrives. Starts the recorder if needed.",
          (BOT_PARAM, P("asset", "string", "Coin for Grid, DCA or Trend; default the configured asset.")),

@@ -19,10 +19,11 @@ from component package versions. Commit only the files owned by the current task
 
 ## What this is
 
-Seven components with different risk profiles. Know which one you are in:
+Eight components with different risk profiles. Know which one you are in:
 
 | Component | Risk |
 | --- | --- |
+| `botmanager/` (Python) | Standalone `solbot` lifecycle and evidence application. Default paper/disarmed. Legacy adapters preserve the existing owner; missing data, credentials or execution capability fail closed. Never silently seize a bot or create a duplicate recorder/optimizer. |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability here** — see its README's Scope section. The danger is a dishonest backtest, not a lost trade. |
 | `research/` (Python) | Analysis built on the backtester. The danger is overstating a result. |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software. |
@@ -114,8 +115,8 @@ The executor's own rails (`executor/CLAUDE.md`) are the live path for swaps: use
 ## Before you claim a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 961 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1384 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 999 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive

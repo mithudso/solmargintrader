@@ -1,8 +1,13 @@
 # Architecture
 
-Seven components with explicit execution boundaries. The backtester and research do not place orders.
+Eight components with explicit execution boundaries. The backtester and research do not place orders.
 The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads
 research and liquidity status; MongoDB is a derived copy, never an execution dependency.
+
+The standalone `botmanager/` application exposes the `solbot` command registry and owns
+its bot specifications. It delegates legacy operations to their existing owners. Its
+paper/disarmed default cannot sign or submit a live order. Research evidence and
+recordings retain their original owners rather than being duplicated into another runtime.
 
 ```
 backtester/            research/              extension/
@@ -121,7 +126,7 @@ backtest and the live strategy agree on what a round trip earns. Keeping them se
 folding the ladder into the exposure engine would imply the two are comparable on the same axis.
 
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 961 tests.
+strategy — are documented in `backtester/README.md` and enforced by 999 tests.
 
 
 ## Companion components
