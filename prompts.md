@@ -1,7 +1,19 @@
 # Prompt history
 
-Version: 121
-Delta: v120 to v121; record forward-test persistence request.
+Version: 123
+Delta: v122 to v123; record accepted 0.80 confidence and verification checkpoint.
+
+## v123 - 2026-11-08
+
+```text
+Use 0.80
+```
+
+## v122 - 2026-11-08
+
+```text
+Update the fee schedule to be Jupiter's fees rather than Coinbase's for the profit and testing estimation. Also have an option in the forward and backtests to 1) use leveraged positions, 2) short down positions. 3) minimum confidence score to make a trade, meaning if the strategies are at a .65 I'm not going to bet a leveraged trade on it.
+```
 
 ## v121 - 2026-11-08
 

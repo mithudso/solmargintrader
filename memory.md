@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 213
-Delta: v212 to v213; run repo-bootstrapper audit, generate canonical LICENSE, implement workflow-log rotation and archive older logs.
+Version: 215
+Delta: v214 to v215; record accepted 0.80 confidence and verification checkpoint.
+
+## v215 - 2026-11-08
+
+Implemented Jupiter Perps fee profiles, optional leverage/shorts, and owner-confirmed minimum confidence 0.80. Prior resolved-call confidence gates entries; no-lookahead tests cover fill delay. Each forward trial stores the cost/execution snapshot and each call stores confidence, eligibility and net return. Fees and borrow use full notional; intraminute liquidation forfeits collateral. P&L, CPCV, dry runs, F5 and new paper experiments share assumptions. Historical rows remain intact. Fresh Textual acceptance passed both forms at 180 and 100 columns, after fixing overflowing inputs. Initial keyword search auto-refreshed the already-dirty generated index in the shared checkout; no further writes there. Stele decision queued as f07325c1. Remaining: final tests and documentation/index checks, commit, PR checks and merge; existing installed console not reloaded because the shared checkout has another session and a pending merge.
+
+## v214 - 2026-11-08
+
+Scope: Jupiter simulation costs and forward/backtest controls for leverage, short DOWN calls, and minimum confidence. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1bded starts at origin/master 8195771. Other checkout has a live session and unfinished merge; preserve it. Preserve historical evidence and causal signals; no new live execution. Stele task/decision queued as outbox 470a5bc1 and 93dc9fb7 because no Stele MCP is available and the recall agent runtime failed. Remaining: inspect calculation paths, implement consistent controls and provenance, test accounting and no lookahead, verify UI, commit and deliver through PR.
 
 ## v213 - 2026-11-08
 

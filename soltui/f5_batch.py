@@ -170,7 +170,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
                                "assets": assets, "intervals": intervals, "strategies": names, "horizons": horizons,
                                "settings": frozen, "code_id": _code_id(code_sources), "code_sources": code_sources,
                                "current": "", "universe": universe,
-                               "notice": "Spot simulation. Each input is frozen when its series is first processed; selection uses CPCV results and is not independent validation. Leverage tiers require a perp-aware runner and are reported unsupported. Unresolved forward outcomes older than seven days remain pending until minute data can be recovered."}.items():
+                               "notice": "Jupiter Perps scenario simulation. Each input is frozen when its series is first processed; selection uses CPCV results and is not independent validation. Leverage tiers require a perp-aware runner and are reported unsupported. Unresolved forward outcomes older than seven days remain pending until minute data can be recovered."}.items():
                 _set(db, key, value)
             db.executemany("INSERT INTO cell(asset,interval,strategy,horizon) VALUES(?,?,?,?)",
                            ((a, i, n, h) for a in assets for i in intervals for n in names for h in horizons))
@@ -567,6 +567,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
         _set(db, "phase", "forward_partial_waiting" if problems else "forward_waiting")
         _set(db, "current", "")
         db.commit()
+        from .simulation import from_settings
         tick = tick or forwardtest.tick
         cycle = 0
         cached: dict[str, Any] = {}
@@ -624,7 +625,8 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
                     result = tick(asset, trials, (minutes,), 2 * (settings.fee_bps + settings.slippage_bps),
                                   tune=False, code=f"f5:{run_id}:{_meta(db, 'code_id')}",
                                   db_path=directory / "forward.sqlite3", history=history, fetch=fetch, stop=stop_event,
-                                  signal_interval=interval, signal_fetch=signal_fetch, expire_missing=False)
+                                  signal_interval=interval, signal_fetch=signal_fetch, expire_missing=False,
+                                  execution=from_settings(settings).to_dict())
                     recorded = int(result.get("recorded", 0))
                     wanted = {trial["label"] for trial in trials}
                     seen = {row["label"] for row in result.get("rows", [])

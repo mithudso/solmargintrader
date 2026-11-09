@@ -86,7 +86,7 @@ def _launch(eid: str) -> dict[str, Any]:
 
 
 def start(strategy: str, asset: str, minutes: int, capital: float, cost_bps: float,
-          params: dict[str, Any] | None = None) -> dict[str, Any]:
+          params: dict[str, Any] | None = None, *, execution: dict | None = None) -> dict[str, Any]:
     from .bgqueue import validate_asset
 
     asset = validate_asset(asset)
@@ -94,10 +94,13 @@ def start(strategy: str, asset: str, minutes: int, capital: float, cost_bps: flo
         raise ValueError('Choose a registered strategy and a 1, 5 or 30 minute horizon')
     if not math.isfinite(capital) or capital <= 0 or not math.isfinite(cost_bps) or cost_bps < 0:
         raise ValueError('Capital must be positive and costs must be nonnegative')
+    if execution:
+        from .simulation import Execution
+        Execution(**execution)
     spec = forwardtest.member(strategy, params or {})
     eid = secrets.token_hex(12)
     plan = {'id': eid, 'asset': asset, 'strategy': strategy, 'minutes': minutes,
-            'capital': capital, 'cost_bps': cost_bps, 'spec': spec,
+            'capital': capital, 'cost_bps': cost_bps, 'spec': spec, 'execution': execution,
             'code': _revision(), 'label': f'paper-experiment:{eid}',
             'created_at': time.time(), 'launch_requested_at': time.time(), 'phase': 'starting', 'message': 'Starting'}
     _write(_path(eid, 'json'), plan)
@@ -146,7 +149,7 @@ def run(eid: str) -> int:
                         plan.update(phase='error', message='Strategy code changed; start a new experiment')
                         break
                     result = forwardtest.tick(plan['asset'], [trial], (plan['minutes'],), plan['cost_bps'],
-                                              code=plan['code'], tune=False)
+                                              code=plan['code'], tune=False, execution=plan.get('execution'))
                     plan['message'] = result['message']
                     plan['checked_at'] = time.time()
                 except Exception as exc:  # retain the paper run across transient feed errors
@@ -178,14 +181,20 @@ def status(eid: str) -> dict[str, Any]:
     if rows:
         dbpath = config.CONFIG_DIR / 'forwardtest' / 'trials.sqlite3'
         with sqlite3.connect(dbpath.resolve().as_uri() + '?mode=ro', uri=True) as db:
-            calls = db.execute('SELECT issued,start,finish,prediction,outcome,bps,expired FROM call WHERE trial=? ORDER BY bar',
+            columns = {r[1] for r in db.execute('PRAGMA table_info(call)')}
+            extra = ',net_return,traded' if 'net_return' in columns else ',NULL,NULL'
+            calls = db.execute('SELECT issued,start,finish,prediction,outcome,bps,expired' + extra + ' FROM call WHERE trial=? ORDER BY bar',
                                (rows[0]['id'],)).fetchall()
         plan['calls_recorded'] = len(calls)
         equity = float(plan['capital'])
-        for issued, start_ts, finish, prediction, outcome, bps, expired in calls:
+        for issued, start_ts, finish, prediction, outcome, bps, expired, net_return, traded in calls:
             pnl = None
-            if outcome is not None and prediction and bps is not None:
-                net = prediction * math.expm1(float(bps) / 10000) - plan['cost_bps'] / 10000
+            eligible = bool(traded) if plan.get('execution') else bool(prediction)
+            if outcome is not None and eligible and bps is not None:
+                if plan.get('execution') and net_return is None:
+                    continue
+                net = (net_return if plan.get('execution') else
+                       prediction * math.expm1(float(bps) / 10000) - plan['cost_bps'] / 10000)
                 pnl = equity * net
                 equity = max(0.0, equity + pnl)
                 plan['trades'] += 1

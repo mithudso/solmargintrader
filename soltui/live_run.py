@@ -66,7 +66,8 @@ def run_dryrun(strategy_name: str, settings=None, progress=None) -> dict:
         arrays = {key: value[first:] for key, value in arrays.items()}
         progress(f"Price history has gaps; using the most recent contiguous segment and excluding {first} earlier bars")
     progress(f"Running {name} on {len(arrays['ts'])} historical bars; no orders are placed")
-    session = start_session(strategy, arrays, config)
+    from .simulation import gate
+    session = start_session(gate(strategy, settings, interval), arrays, config)
     session.seek_end()
     summary = session.summary()
     progress(f"Completed {name}: {summary['fills']} simulated fills")

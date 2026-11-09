@@ -506,6 +506,8 @@ _SETTING_CASTS = {
     "solana_address": str, "base_address": str, "eth_address": str, "hyperliquid_address": str,
     "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
     "forwardtest_autostart": bool,
+    "use_leverage": bool, "leverage": float, "allow_short": bool, "min_confidence": float,
+    "borrow_long_bps_hour": float, "borrow_short_bps_hour": float,
 }
 
 
@@ -722,7 +724,7 @@ def _forward_check_all(rt: "Runtime", plan: dict[str, Any]) -> dict[str, Any]:
             break
         try:
             r = forwardtest.tick(asset, plan["trials"], plan["horizons"], plan["cost"], stop=rt.forward_stop,
-                                 code=plan["code"], tune=plan["tune"])
+                                 code=plan["code"], tune=plan["tune"], execution=plan.get("execution"))
             out[asset] = {"at": time.time(), "bar": r["bar"], "recorded": r["recorded"], "message": r["message"]}
         except Exception as exc:  # noqa: BLE001 - one coin's failure must not stop the others
             out[asset] = {"at": time.time(), "error": f"{type(exc).__name__}: {exc}"[:300]}
@@ -758,6 +760,21 @@ def _forward_runner(rt: "Runtime") -> None:
             rt.forward_busy = False
 
 
+_SIMULATION_PARAMS = (
+    P("use_leverage", "bool", "Enable leveraged paper positions (default: saved setting)."),
+    P("leverage", "number", "Paper leverage, 1 to 250; applied only with use_leverage=true."),
+    P("allow_short", "bool", "Trade negative/DOWN signals as paper shorts."),
+    P("min_confidence", "number", "Required prior resolved-call confidence, 0 to 1; 0 disables the gate."),
+)
+
+
+def _simulation_settings(settings: Settings, params: dict[str, Any]) -> Settings:
+    from .config import validate
+    changes = {key: params[key] for key in ("use_leverage", "leverage", "allow_short", "min_confidence")
+               if key in params}
+    return validate(dataclasses.replace(settings, **changes))
+
+
 @command("forwardtest.start", "Prepare an adaptive paper forward test (forwardtest.run starts checking).",
          (P("scope", "string", "all, roster, or combinations."),
           P("horizons", "json", "Subset of 1, 5, 10 and 30 minutes. Default: all four."),
@@ -766,7 +783,7 @@ def _forward_runner(rt: "Runtime") -> None:
           P("coins", "json", "Coins to test: a list, or \"all\" for every Coinbase USD market; default the "
                              "Settings asset."),
           P("optimize", "bool", "Auto-optimize (default true): after a miss, move to a neighbouring setting "
-                                "that tested superior on paired calls and save it as that trial's default.")),
+                                "that tested superior on paired calls and save it as that trial's default.")) + _SIMULATION_PARAMS,
          read_only=False)
 def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core.strategies import COMBINE_MODES
@@ -823,7 +840,9 @@ def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
     if not assets:
         raise CommandError("bad_params", "no coin to test")
     tune = bool(p.get("optimize", True))
-    cost = 2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps)
+    from .simulation import from_settings
+    execution = from_settings(_simulation_settings(ctx.settings, p)).to_dict()
+    cost = 2 * (execution["fee_bps"] + execution["slippage_bps"])
     rt = ctx.runtime
     with rt.lock:
         if rt.forward_plan or rt.forward_busy or rt.forward_thread is not None:
@@ -832,9 +851,9 @@ def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
         rt.forward_last = {}
         rt.forward_plan = {"asset": assets[0], "assets": assets, "trials": trials,
                            "horizons": tuple(sorted(set(horizons))), "cost": cost, "code": forwardtest.revision(),
-                           "tune": tune}
+                           "tune": tune, "execution": execution}
     return {"asset": assets[0], "assets": assets, "trials": len(trials), "horizons": sorted(set(horizons)),
-            "cost_bps": cost, "optimize": tune}
+            "cost_bps": cost, "optimize": tune, "execution": execution}
 
 
 @command("forwardtest.run", "Start checking the prepared forward test in the background: every planned coin "
@@ -864,7 +883,8 @@ def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
                 "busy": rt.forward_busy, "assets": list(plan["assets"]) if plan else [],
                 "optimize": bool(plan["tune"]) if plan else None, "since": rt.forward_started_at,
                 "last": {k: dict(v) for k, v in rt.forward_last.items()},
-                "defaults_saved": len(forwardtest.load_defaults())}
+                "defaults_saved": len(forwardtest.load_defaults()),
+                "execution": plan.get("execution") if plan else None}
 
 
 @command("forwardtest.restore", "Resume the saved forward test after restarting the console.", read_only=False)
@@ -878,6 +898,11 @@ def forwardtest_restore(ctx: Context, p: dict[str, Any]) -> Any:
             return {"restored": False}
         # A new process must not attribute forecasts to an old code revision.
         plan["code"] = forwardtest.revision()
+        if not plan.get("execution"):
+            from .simulation import from_settings
+            profile = from_settings(ctx.settings)
+            plan["execution"] = profile.to_dict()
+            plan["cost"] = profile.round_trip_bps
         rt.forward_stop.clear()
         rt.forward_plan = plan
         forwardtest.save_session(plan)
@@ -1082,7 +1107,7 @@ def backtest_cancel(ctx: Context, p: dict[str, Any]) -> Any:
 
 @command("backtest.run", "CPCV sweep over the roster (or the listed roster labels), ranked by median "
          "Sharpe. Blocks until done.",
-         (P("labels", "json", "Roster labels to test; default the whole roster."),),
+         (P("labels", "json", "Roster labels to test; default the whole roster."),) + _SIMULATION_PARAMS,
          read_only=False, long_running=True)
 def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
     roster = ctx.roster
@@ -1095,7 +1120,8 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
             raise CommandError("bad_params", f"not in the roster: {', '.join(unknown)}")
         roster = Roster([e for e in roster if e.label in labels])
     try:
-        ctx.runner.start(roster, ctx.settings)
+        settings = _simulation_settings(ctx.settings, p)
+        ctx.runner.start(roster, settings)
     except (RuntimeError, ValueError) as exc:
         raise CommandError("failed", str(exc)) from exc
     ctx.runner.join()
@@ -1104,6 +1130,7 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         raise CommandError("failed", "the sweep produced no outcome")
     if outcome.error:
         raise CommandError("failed", outcome.error.splitlines()[0])
+    from .simulation import from_settings
     skipped = [r for r in outcome.rows if not r.evaluable]
     message = f"done — {len(outcome.evaluable)} evaluable, {len(outcome.positive)} positive"
     if outcome.cancelled:
@@ -1117,6 +1144,7 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         "evaluable": len(outcome.evaluable), "positive": len(outcome.positive),
         "skipped": [{"label": r.label, "reason": r.reason} for r in skipped],
         "cancelled": outcome.cancelled, "message": message,
+        "execution": from_settings(settings).to_dict(),
     }
 
 
@@ -1171,16 +1199,17 @@ def paper_start(ctx: Context, p: dict[str, Any]) -> Any:
     entry = None if rank is not None else next((e for e in ctx.roster if e.label == label), None)
     if rank is None and entry is None:
         raise CommandError("failed", "strategy left the roster")
+    from .simulation import gate
     try:
         if rank is not None:
             # A Top 5 preset replays on the series it was fitted on, not on the Settings asset.
             preset = presets_mod.find_preset(rank)
             arrays = presets_mod.load_preset_arrays(preset, ctx.settings.data_dir)
-            session = start_session(presets_mod.build_strategy(preset), arrays,
+            session = start_session(gate(presets_mod.build_strategy(preset), ctx.settings, preset["interval"]), arrays,
                                     engine_config(ctx.settings, interval=preset["interval"]))
         else:
             arrays = load_arrays(ctx.settings)
-            session = start_session(build(entry.name, **entry.params), arrays,
+            session = start_session(gate(build(entry.name, **entry.params), ctx.settings), arrays,
                                     engine_config(ctx.settings))
     except Exception as exc:  # noqa: BLE001 - the type is the most useful part of a load failure
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
@@ -2002,7 +2031,9 @@ def _backtest_curves(ctx: Context) -> tuple[list[pnl_mod.Curve], list[str]]:
     except OSError:
         stamp = None
     key = json.dumps([s.asset, s.interval, s.start, s.end, s.capital, s.fee_bps, s.slippage_bps,
-                      s.fill_delay, s.data_dir, ctx.roster.to_list(), stamp], sort_keys=True)
+                      s.fill_delay, s.data_dir, ctx.roster.to_list(), stamp,
+                      {k: getattr(s, k) for k in ("fee_schedule", "use_leverage", "leverage", "allow_short",
+                       "min_confidence", "borrow_long_bps_hour", "borrow_short_bps_hour")}], sort_keys=True)
     cached = ctx.runtime.pnl_cache.get("backtest")
     if cached and cached[0] == key:
         return cached[1], cached[2]
@@ -2020,7 +2051,8 @@ def _backtest_curves(ctx: Context) -> tuple[list[pnl_mod.Curve], list[str]]:
 
         for e in ctx.roster:
             try:
-                res = run_backtest(build(e.name, **e.params), arrays, cfg)
+                from .simulation import gate
+                res = run_backtest(gate(build(e.name, **e.params), s), arrays, cfg)
             except Exception as exc:  # noqa: BLE001
                 notes.append(f"{e.label}: {type(exc).__name__}: {exc}")
                 continue
@@ -3027,9 +3059,11 @@ def experiments_start(ctx: Context, p: dict[str, Any]) -> Any:
     minutes = p.get("minutes", 5)
     if minutes not in paper_experiments.HORIZONS:
         raise CommandError("bad_params", "Choose a 1, 5 or 30 minute horizon")
+    from .simulation import from_settings
     return paper_experiments.start(str(p.get("strategy", "")), str(p.get("asset") or ctx.settings.asset),
                                    int(minutes), float(p.get("capital", 1000)),
-                                   2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps), params)
+                                   2 * (ctx.settings.fee_bps + ctx.settings.slippage_bps), params,
+                                   execution=from_settings(ctx.settings).to_dict())
 
 
 @command("paperexperiment.resume", "Resume a stopped paper experiment without changing its evidence.",

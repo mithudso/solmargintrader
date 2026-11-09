@@ -20,7 +20,7 @@ from backtester.core import scorecard
 from backtester.core.strategies import REGISTRY, build, build_composite
 from backtester.core.types import BarWindow, INTERVAL_SECONDS, validate_bar_arrays
 
-from . import compound, config
+from . import compound, config, simulation
 
 HORIZONS = (1, 5, 10, 30)
 HISTORY = 600
@@ -70,6 +70,19 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
             samples INTEGER, PRIMARY KEY(trial, at)
         );
     """)
+    db.execute("BEGIN IMMEDIATE")
+    # Add columns without rewriting historical calls or their original economics.
+    for table, columns in {
+        "trial": {"execution": "TEXT DEFAULT ''"},
+        "call": {"confidence": "REAL", "traded": "INTEGER", "net_return": "REAL",
+                 "fees_bps": "REAL", "borrow_bps": "REAL", "slippage_bps": "REAL",
+                 "liquidated": "INTEGER"},
+    }.items():
+        existing = {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
+        for column, declaration in columns.items():
+            if column not in existing:
+                db.execute(f"ALTER TABLE {table} ADD COLUMN {column} {declaration}")
+    db.commit()
     return db
 
 
@@ -203,8 +216,8 @@ def neighbours(spec: Spec, mode: str) -> list[Spec]:
     return out
 
 
-def _predict(spec: Spec, mode: str, bars: dict[str, np.ndarray]) -> int | None:
-    strategy = _factory(spec, mode)
+def _predict(spec: Spec, mode: str, bars: dict[str, np.ndarray], *, allow_short: bool = False) -> int | None:
+    strategy = simulation.prepare_strategy(_factory(spec, mode), allow_short)
     n = len(bars["ts"])
     warm = int(strategy.warmup_bars())
     if n <= warm:
@@ -255,7 +268,7 @@ def _choose(history: list[tuple], corrected: list, current: Spec) -> tuple | Non
 def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, moved: int,
              cost: float, candles: dict[int, tuple[float, float]], bar: int, minutes: int, tune: bool,
              on_adopt: Callable[[Spec, Spec, float, int], None] | None = None,
-             expire_missing: bool = True) -> tuple[Spec, int]:
+             expire_missing: bool = True, execution: dict | None = None) -> tuple[Spec, int]:
     misses: list = []
     latest = None
     for origin, start, finish, gen, raw, prediction in db.execute(
@@ -270,6 +283,21 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
         bps = 10000 * math.log(candles[finish - 60][1] / candles[start][0])
         outcome = int(bps > cost) - int(bps < -cost)
         db.execute("UPDATE call SET outcome=?,bps=? WHERE trial=? AND bar=?", (outcome, bps, key, origin))
+        if execution:
+            profile = simulation.Execution(**execution)
+            trade = db.execute("SELECT traded FROM call WHERE trial=? AND bar=?", (key, origin)).fetchone()[0]
+            if trade:
+                prices = db.execute("""SELECT open,high,low,close FROM candle WHERE asset=
+                    (SELECT asset FROM trial WHERE id=?) AND ts>=? AND ts<? ORDER BY ts""",
+                    (key, start, finish)).fetchall()
+                if len(prices) != minutes:
+                    raise ValueError("Missing retained OHLC candles for paper settlement")
+                result = simulation.settle(profile, prediction, prices)
+            else:
+                result = dict(net_return=0.0, fees_bps=0.0, borrow_bps=0.0, slippage_bps=0.0, liquidated=0)
+            db.execute("""UPDATE call SET net_return=:net_return,fees_bps=:fees_bps,
+                borrow_bps=:borrow_bps,slippage_bps=:slippage_bps,liquidated=:liquidated
+                WHERE trial=:trial AND bar=:bar""", dict(result, trial=key, bar=origin))
         if gen == generation:
             latest = origin
             misses = [(s, p) for s, p in json.loads(raw) if p == outcome] if outcome != prediction else []
@@ -297,13 +325,14 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
          stop: Event | None = None, code: str | None = None, tune: bool = True,
          db_path: Path | None = None, history: int = HISTORY,
          signal_interval: str = "1m", signal_fetch: Callable | None = None,
-         expire_missing: bool = True) -> dict:
+         expire_missing: bool = True, execution: dict | None = None) -> dict:
     """Record only fresh calls, resolving past calls before computing the next forecast.
 
     With `tune` (auto-optimize) a trial whose newest call missed may move to a neighbouring
     setting that tested superior on paired calls, and that setting is saved as the trial's
     default (`save_default`). Without it settings stay fixed; calls are still recorded and scored.
     """
+    profile = simulation.Execution(**execution) if execution else None
     fetch = fetch or compound.fetch_closed_candles
     stop = stop if stop is not None else Event()
     def check_stop() -> None:
@@ -367,14 +396,19 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             seed, mode, label = trial["members"], trial["mode"], trial["label"]
             for h in horizons:
                 # The key stays the configured seed; a saved default only sets where a new trial starts.
-                key = hashlib.sha256(_json([code, asset, label, h, cost, mode, seed]).encode()).hexdigest()
+                trial_cost = (profile.round_trip_bps + max(profile.borrow_long_bps_hour,
+                              profile.borrow_short_bps_hour) * h / 60) if profile else cost
+                identity = [code, asset, label, h, trial_cost, mode, seed]
+                if execution:
+                    identity.append(execution)
+                key = hashlib.sha256(_json(identity).encode()).hexdigest()
                 active_keys[key] = h
                 start_spec = _usable_default(saved_default(asset, label, h, defaults), seed, mode)
-                db.execute("INSERT OR IGNORE INTO trial(id,asset,label,mode,minutes,cost,active) VALUES (?,?,?,?,?,?,?)",
-                           (key, asset, label, mode, h, cost, _json(start_spec)))
+                db.execute("INSERT OR IGNORE INTO trial(id,asset,label,mode,minutes,cost,active,execution) VALUES (?,?,?,?,?,?,?,?)",
+                           (key, asset, label, mode, h, trial_cost, _json(start_spec), _json(execution) if execution else ""))
         # Settle all existing trials for the asset, including a horizon no longer selected.
-        for key, raw_spec, mode, gen, moved, h, trial_cost, label in db.execute(
-            "SELECT id,active,mode,generation,moved,minutes,cost,label FROM trial WHERE asset=?", (asset,)
+        for key, raw_spec, mode, gen, moved, h, trial_cost, label, raw_execution in db.execute(
+            "SELECT id,active,mode,generation,moved,minutes,cost,label,execution FROM trial WHERE asset=?", (asset,)
         ).fetchall():
             check_stop()
 
@@ -383,7 +417,8 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
 
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
-                                   h, tune and key in active_keys, adopt, expire_missing=expire_missing)
+                                   h, tune and key in active_keys, adopt, expire_missing=expire_missing,
+                                   execution=json.loads(raw_execution) if raw_execution else None)
             if key not in active_keys or not bar + 60 <= observed < start:
                 continue
             previous = db.execute("SELECT finish FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1",
@@ -398,7 +433,8 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 ck = mode, _json(spec)
                 try:
                     if ck not in forecasts:
-                        forecasts[ck] = _predict(spec, mode, bars)
+                        forecasts[ck] = (_predict(spec, mode, bars, allow_short=True)
+                                         if profile and profile.allow_short else _predict(spec, mode, bars))
                     call = forecasts[ck]
                 except (ValueError, RuntimeError, TypeError, ArithmeticError) as exc:
                     if spec == active:
@@ -409,14 +445,20 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
             if prediction is None:
                 note = note or "Waiting for contiguous warm-up bars"
             else:
-                staged.append((key, bar, start, start + h * 60, gen, _json(guesses), prediction))
+                prior = db.execute("""SELECT prediction=outcome FROM call WHERE trial=? AND generation=?
+                    AND outcome IS NOT NULL AND prediction!=0 AND finish<=? ORDER BY bar DESC LIMIT ?""",
+                    (key, gen, start, simulation.CONFIDENCE_WINDOW)).fetchall()
+                confidence = simulation.confidence_score(sum(r[0] for r in prior), len(prior))
+                traded = int(profile.permits(prediction, confidence)) if profile else None
+                staged.append((key, bar, start, start + h * 60, gen, _json(guesses), prediction,
+                               confidence, traded))
             db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))
         check_stop()
         issued = clock()
         fresh = bar + 60 <= observed < start and issued < start - 1
         if fresh:
             db.executemany("""INSERT OR IGNORE INTO call
-                (trial,bar,start,finish,generation,guesses,prediction,issued) VALUES (?,?,?,?,?,?,?,?)""",
+                (trial,bar,start,finish,generation,guesses,prediction,confidence,traded,issued) VALUES (?,?,?,?,?,?,?,?,?,?)""",
                 ((*r, issued) for r in staged))
     return {"bar": bar if fresh else None, "recorded": len(staged) if fresh else 0,
             "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
@@ -431,8 +473,24 @@ def status(asset: str, *, db_path: Path | None = None) -> list[dict]:
         return []
     defaults = load_defaults()
     with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
+        columns = {r[1] for r in db.execute("PRAGMA table_info(call)")}
+        profiles = {}
+        if "traded" in columns:
+            for key, raw in db.execute("SELECT id,execution FROM trial WHERE asset=?", (asset,)):
+                calls = db.execute("SELECT net_return,traded,liquidated FROM call WHERE trial=? AND outcome IS NOT NULL ORDER BY bar", (key,)).fetchall()
+                equity = 1.0
+                for ret, _, _ in calls:
+                    if ret is not None:
+                        equity *= 1 + ret
+                last = db.execute("SELECT confidence,traded FROM call WHERE trial=? ORDER BY bar DESC LIMIT 1", (key,)).fetchone()
+                profiles[key] = {"execution": json.loads(raw) if raw else None,
+                    "net_pct": equity - 1 if raw else None,
+                    "paper_trades": sum(bool(r[1]) for r in calls),
+                    "liquidations": sum(bool(r[2]) for r in calls),
+                    "confidence": last[0] if last else None, "traded": bool(last[1]) if last else False}
+    with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         return [
-            {"id": key, "asset": asset, "label": label, "minutes": minutes, "settings": json.loads(active),
+            {"id": key, **profiles.get(key, {}), "asset": asset, "label": label, "minutes": minutes, "settings": json.loads(active),
              "saved_default": saved_default(asset, label, minutes, defaults) == json.loads(active),
              "changes": gen,
              "note": note, "resolved": resolved, "correct": hits or 0, "pending": pending or 0,

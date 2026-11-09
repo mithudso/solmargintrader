@@ -29,6 +29,10 @@ def selected_modules(paths: list[str]) -> list[str] | None:
 # These checks are a bounded PR gate, not a substitute for the opt-in full suite.
 SMOKE = {'soltui.tests.test_bridge_buttons', 'soltui.tests.test_bridge_parity'}
 DEPENDENCIES = {
+    'soltui/simulation.py': {'soltui.tests.test_simulation', 'soltui.tests.test_forwardtest',
+                              'soltui.tests.test_paper_experiments', 'soltui.tests.test_bgworker'},
+    'soltui/config.py': {'soltui.tests.test_simulation', 'soltui.tests.test_status_roster'},
+    'soltui/runner.py': {'soltui.tests.test_simulation', 'soltui.tests.test_bgworker'},
     'soltui/forwardtest.py': {'soltui.tests.test_forwardtest'},
     'soltui/coin_fit.py': {'soltui.tests.test_coin_fit', 'soltui.tests.test_coin_fit_ui'},
     'soltui/shell.py': {'soltui.tests.test_v2_shell'},

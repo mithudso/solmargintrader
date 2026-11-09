@@ -114,7 +114,9 @@ def evaluation_proof(settings: Settings, jobs: Sequence[Job]) -> dict[str, Any]:
             name: getattr(settings, name)
             for name in (
                 "start", "end", "capital", "fee_bps", "slippage_bps",
-                "fill_delay", "cpcv_groups", "cpcv_k",
+                "fill_delay", "cpcv_groups", "cpcv_k", "fee_schedule",
+                "use_leverage", "leverage", "allow_short", "min_confidence",
+                "borrow_long_bps_hour", "borrow_short_bps_hour",
             )
         },
         "data": data,
