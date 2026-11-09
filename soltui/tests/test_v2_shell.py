@@ -12,7 +12,7 @@ import unittest
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-from textual.widgets import Static, TabbedContent, TabPane
+from textual.widgets import OptionList, Static, TabbedContent, TabPane
 
 from soltui import shell
 from soltui.commands import COMMANDS
@@ -172,6 +172,32 @@ class ShellAppTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(app.query_one("#main-tabs", TabbedContent).active, "tab-now")
             self.assertFalse(app.query_one("#main-tabs > ContentTabs").display)
             self.assertIn("Now", str(app.query_one("#v2-topbar", Static).render()))
+            # An empty needs list is not proof that missing reads succeeded.
+            app._v2_reads = {}
+            app._v2_autopilot = None
+            app._v2_notice = None
+            app._v2_render_needs()
+            needs = app.query_one("#now-needs", OptionList)
+            self.assertIn("Status unavailable", str(needs.get_option_at_index(0).prompt))
+            app._v2_reads = {name: {"ok": True, "result": {}} for name in (*app._V2_TICK_READS, "queue.status", "compound.autopilot_status", "portfolio.notice")}
+            app._v2_reads["prices.status"] = {"ok": True, "result": {"running": True, "snapshot_age_s": 0}}
+            app._v2_reads["portfolio.notice"] = {"ok": True, "result": None}
+            app._v2_autopilot = {}
+            app._v2_notice = None
+            app._v2_render_needs()
+            self.assertIn("No flagged issues", str(needs.get_option_at_index(0).prompt))
+            app._v2_reads["portfolio.notice"] = {"ok": True, "result": []}
+            app._v2_render_needs()
+            self.assertIn("Status unavailable", str(needs.get_option_at_index(0).prompt))
+            app._v2_reads["portfolio.notice"] = {"ok": True, "result": None}
+            app._v2_reads["queue.progress"] = {"ok": False, "error": {"message": "fixture offline"}}
+            app._v2_render_needs()
+            self.assertIn("Status unavailable", str(needs.get_option_at_index(0).prompt))
+            self.assertTrue(needs.get_option_at_index(0).disabled)
+            app._v2_reads["prices.status"] = {"ok": True, "result": {"running": False}}
+            app._v2_render_needs()
+            self.assertIn("Price recorder is not running", str(needs.get_option_at_index(0).prompt))
+            self.assertIn("Status unavailable", str(needs.get_option_at_index(1).prompt))
             # The shared editor would take half of Now; it is hidden there, and back elsewhere.
             self.assertFalse(app.query_one("#editor-panel").display)
             await pilot.press("3")

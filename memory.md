@@ -1,11 +1,28 @@
 # Work continuation
 
-Version: 279
-Delta: v278 to v279; record narrow evidence-table repairs and remaining audit work.
+Version: 283
+Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v283 - 2026-11-09
+
+The extension optimizer found horizontal table actions hidden at 390px in strategy evidence, historical and forward results, archives, and paper bots. Shared scroll cues now identify the overflow only when rows exist. Historical run identity and cost context stay outside the scroller. Extension 0.5.4 passed 389 unit tests and 25 isolated real-browser checks with synthetic data. Captures, fingerprints and ledger v1.4.2 are in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension/table-cues. The UI optimizer remains NEEDS_EVIDENCE: repeat selected methods on the final revision, complete the no-edit sweep and independent review, and continue the separate SolTUI audit. Earlier cached terminal captures stay private. Chrome Beta currently points to the older shared checkout; installed acceptance remains unverified. Stele lesson queued c29ee35f.
+
+
+## v282 - 2026-11-09
+
+PR 159 macOS CI ran 155 tests and failed test_slow_read_keeps_chart_responsive_and_discards_old_coin_and_floor_results: the mocked held read timed out after three seconds before the slow runner reached its concurrency assertion, resulting in 2 != 1. Increased the test fixture guard to 30 seconds; its finally block still releases the thread and all concurrency and stale-result assertions remain. The focused isolated test passed. Repeat final-head CI and preserve the failure log at /tmp/solmargintrader-pr159-macos-4b24085.log. The full UI optimizer remains incomplete as recorded below.
+
+## v281 - 2026-11-09
+
+The Now dashboard previously displayed All clear when status read envelopes were missing or failed. It now reports Status unavailable for incomplete reads, retains known warnings, accepts a successful null wallet notice, and limits the clean message to no flagged issues in checked sources. Isolated headless tests covered missing, malformed, healthy and mixed warning states at 80x24 and 160x50. The status area uses compact labels so its heading remains visible on small terminals. The editor repair and simulated Money safety walkthrough also passed. Both optimizer audits remain incomplete; full selected methods and independent review remain. Earlier terminal captures included local cached status and stay private; final fixtures use an isolated SOLTUI_CONFIG_DIR. Stele risk queued 87a43045.
+
+## v280 - 2026-11-09
+
+PR 159 macOS CI failed `CompoundTabClicks.test_double_click_and_space_toggle_and_a_single_click_only_selects` with `AssertionError: 9 != 2`. A local hit test showed the intended row coordinate hit `Static(id=compound-detail)` rather than the table. The test now hides the editor to expose the table, waits for the table scroll position to settle, and asserts Pilot.click reaches the intended widget before checking selection and double-click behavior. The focused isolated test passed. Repeat final-head CI before merging. Stele lesson queued b7e7b4d4.
 
 ## v279 - 2026-11-09
 
-The extension optimizer found horizontal table actions hidden at 390px in strategy evidence, historical and forward results, archives, and paper bots. Shared scroll cues now identify the overflow only when rows exist. Historical run identity and cost context stay outside the scroller. Extension 0.5.4 passed 389 unit tests and 25 isolated real-browser checks with synthetic data. Captures, fingerprints and ledger v1.4.2 are in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension/table-cues. The UI optimizer remains NEEDS_EVIDENCE: repeat selected methods on the final revision, complete the no-edit sweep and independent review, and continue the separate SolTUI audit. Earlier cached terminal captures stay private. Chrome Beta currently points to the older shared checkout; installed acceptance remains unverified. Stele lesson queued c29ee35f.
+At 80x24, the default 16-row editor left the Research workspace two rows tall and the editor bar omitted its Ctrl+E hide shortcut. New unsaved short-terminal layouts use a smaller default, while explicit saved heights retain the existing clamp. The editor bar shows Ctrl+E and double-click resets to the size-appropriate default. A focused isolated regression passed for 80x24, 160x50, saved size, keyboard toggle and reset. At 80x24 the Research area grew from two rows to ten; Ctrl+E still expands it to eighteen. An isolated Money walkthrough rechecked disarmed, validation, preview and ambiguous-submit states using mocked order calls. Captures and logs: /Users/mitch/.local/state/soltui-ui-optimizer-20261109/resume-f58; ledger v1.2.0 records the repaired Medium finding. Both UI optimizer runs remain incomplete and require full method sweeps and final independent review. Stele lesson queued a2510669.
 
 ## v278 - 2026-11-09
 

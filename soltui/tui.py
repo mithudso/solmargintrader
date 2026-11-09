@@ -548,7 +548,7 @@ class EditorBar(Widget):
     def render(self) -> Text:
         width = max(self.size.width, 1)
         if self.panel_open:
-            label, right = " drag to resize the editor (double-click: default size) ", self.CLOSE
+            label, right = " ctrl+e hide | drag to resize | double-click resets ", self.CLOSE
         else:
             label, right = " editor hidden: click, drag up or ctrl+e to show it ", ""
         line = max(width - len(right), 0)
@@ -7125,9 +7125,14 @@ class SolTuiApp(App):
     def _editor_open(self) -> None:
         self._set_editor_open(True)
 
+    def _default_editor_height(self) -> int:
+        if self.size.height < 36:
+            return max(EditorBar.MIN_HEIGHT, self.size.height // 3)
+        return self.EDITOR_HEIGHT
+
     @on(EditorBar.Reset)
     def _editor_reset(self) -> None:
-        self._set_editor_height(self.EDITOR_HEIGHT)
+        self._set_editor_height(self._default_editor_height())
 
     def action_grow_editor(self) -> None:
         self._set_editor_open(True, persist=False)
@@ -7147,6 +7152,9 @@ class SolTuiApp(App):
         height = state.get("editor_height")
         if isinstance(height, int) and not isinstance(height, bool):
             self._set_editor_height(height, persist=False)
+        elif self.size.height < 36:
+            # Keep the primary workspace usable on first launch in a short terminal.
+            self._set_editor_height(self._default_editor_height(), persist=False)
         self._set_editor_open(state.get("editor_open", True) is not False, persist=False)
 
     def _save_ui_state(self) -> None:
@@ -7648,11 +7656,13 @@ class SolTuiApp(App):
         for name in self._V2_TICK_READS:
             self._v2_reads[name] = self._call(name, quiet=True)
         notice = self._call("portfolio.notice", {}, quiet=True)
-        self._v2_notice = notice["result"] if notice.get("ok") else None
+        self._v2_reads["portfolio.notice"] = notice
+        self._v2_notice = notice.get("result") if notice.get("ok") and isinstance(notice.get("result"), dict) else None
         if time.time() - self._v2_autopilot_at > 60:
             self._v2_autopilot_at = time.time()
             env = self._call("compound.autopilot_status", quiet=True)
-            self._v2_autopilot = env["result"] if env.get("ok") else None
+            self._v2_reads["compound.autopilot_status"] = env
+            self._v2_autopilot = env.get("result") if env.get("ok") and isinstance(env.get("result"), dict) else None
         items = shell.health_items(self._v2_reads, forward_running=self._forward_running,
                                    autopilot=self._v2_autopilot)
         self.query_one("#v2-health", Static).update(shell.health_text(items))
@@ -7664,20 +7674,38 @@ class SolTuiApp(App):
         listing = self.query("#now-needs")
         if not listing:
             return
-        self._v2_needs = shell.needs(self._v2_reads, autopilot=self._v2_autopilot, notice=self._v2_notice)
+        valid_reads = {name: env for name, env in self._v2_reads.items() if isinstance(env, dict)}
+        self._v2_needs = shell.needs(valid_reads, autopilot=self._v2_autopilot, notice=self._v2_notice)
         options = listing.first(OptionList)
         highlighted = options.highlighted
         options.clear_options()
+        required = (*self._V2_TICK_READS, "queue.status", "compound.autopilot_status", "portfolio.notice")
+        unavailable = []
+        for name in required:
+            env = self._v2_reads.get(name)
+            # A successful portfolio.notice may legitimately return None.
+            if (not isinstance(env, dict) or env.get("ok") is not True or "result" not in env
+                    or (not isinstance(env["result"], dict)
+                        and not (name == "portfolio.notice" and env["result"] is None))):
+                unavailable.append(name)
         if self._v2_needs:
             options.add_options([Option(shell.need_prompt(n), id=f"need-{i}") for i, n in enumerate(self._v2_needs)])
-        else:
-            options.add_option(Option(shell.status_text("ok", "All clear", "nothing stale, failed or unseen"),
+        if unavailable:
+            labels = {"backtest.status": "backtest", "queue.progress": "sweep", "queue.status": "sweep",
+                      "prices.status": "prices", "portfolio.last": "wallet", "portfolio.notice": "wallet notice",
+                      "compound.autopilot_status": "trainer"}
+            names = list(dict.fromkeys(labels[name] for name in unavailable))
+            options.add_option(Option(shell.status_text("warn", "Status unavailable",
+                                      "Loading or failed: " + ", ".join(names)),
+                                      id="status-unavailable", disabled=True))
+        elif not self._v2_needs:
+            options.add_option(Option(shell.status_text("ok", "No flagged issues", "checked status sources only"),
                                       id="need-none"))
         if highlighted is not None and highlighted < options.option_count:
             options.highlighted = highlighted
+        count = len(self._v2_needs) + bool(unavailable)
         self.query_one("#now-needs-title", Static).update(
-            f"[b]Needs you · {len(self._v2_needs)}[/b]: everything stale, failed or unseen, worst first. "
-            "Enter opens the view that fixes it.")
+            f"[b]Needs you · {count}[/b] · Enter opens issue")
 
     @on(OptionList.OptionSelected, "#now-needs")
     def _v2_need_selected(self, event: OptionList.OptionSelected) -> None:
@@ -7715,7 +7743,7 @@ class SolTuiApp(App):
         self.run_worker(self._v2_now_worker, thread=True, exclusive=True, group="v2-now", exit_on_error=False)
 
     def _v2_now_worker(self) -> None:
-        data: dict[str, Any] = {}
+        data: dict[str, Any] = {"queue.status": None, "compound.autopilot_status": None}
         try:
             data["compound.overview"] = self._call("compound.overview", quiet=True)
             data["compound.autopilot_status"] = self._call("compound.autopilot_status", quiet=True)
@@ -7733,11 +7761,14 @@ class SolTuiApp(App):
         self._v2_now_loading = False
         if not self.query("#now-coins"):
             return
-        if data.get("queue.status"):
-            self._v2_reads["queue.status"] = data["queue.status"]
-        auto = data.get("compound.autopilot_status") or {}
-        if auto.get("ok"):
+        self._v2_reads["queue.status"] = data.get("queue.status")
+        raw_auto = data.get("compound.autopilot_status")
+        self._v2_reads["compound.autopilot_status"] = raw_auto
+        auto = raw_auto if isinstance(raw_auto, dict) else {}
+        if auto.get("ok") and isinstance(auto.get("result"), dict):
             self._v2_autopilot, self._v2_autopilot_at = auto["result"], time.time()
+        else:
+            self._v2_autopilot = None
         fwd = data.get("compound.forward_status") or {}
         self._v2_forward = fwd["result"] if fwd.get("ok") else None
         cum = data.get("cumulative.summary") or {}
