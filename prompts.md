@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 134
-Delta: v133 to v134; preserve concurrent histories and approved reflection delivery.
+Version: 135
+Delta: v134 to v135; record approval to implement the Signal Desk UI.
+
+## v135 - 2026-11-08
+
+```text
+Yes, implement this as the UI for the chrome extension.
+```
 
 ## v134 - 2026-11-08
 

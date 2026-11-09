@@ -1,9 +1,10 @@
 /** Registry-derived navigation and result adapters shared by the dashboard and tests. */
 export const WORKSPACES = [
   { id: 'now', title: 'Now', detail: 'Processes, prices, current recommendations and saved results.', tools: ['prices.status', 'backtest.status', 'queue.progress', 'forwardtest.state', 'compound.autopilot_status', 'bots.schedule_status', 'portfolio.last'] },
-  { id: 'signal', title: 'Signal', detail: 'Compound metrics, live predictions, forward testing and unattended training.', prefixes: ['compound', 'forwardtest'] },
-  { id: 'research', title: 'Research', detail: 'Strategies, roster, CPCV backtests, sweep queue, cumulative results, analysis and replay.', prefixes: ['strategies', 'roster', 'backtest', 'queue', 'top5', 'analyze', 'cumulative', 'paper', 'live', 'signals', 'research', 'batch', 'paperexperiment'] },
-  { id: 'bots', title: 'Bots & prices', detail: 'Grid, DCA, triangle simulations, coin suitability, optimization and the price recorder.', prefixes: ['bots', 'prices'] },
+  { id: 'signal', title: 'Live signals', detail: 'Compound metrics, live predictions, forward testing and unattended training.', prefixes: ['compound'] },
+  { id: 'forward', title: 'Forward testing', detail: 'Prospective paper trials, frozen costs, resolved evidence and session controls.', prefixes: ['forwardtest'] },
+  { id: 'research', title: 'Backtesting', detail: 'Strategies, roster, CPCV backtests, sweep queue, cumulative results, analysis and replay.', prefixes: ['strategies', 'roster', 'backtest', 'queue', 'top5', 'analyze', 'cumulative', 'paper', 'live', 'signals', 'research', 'batch', 'paperexperiment'] },
+  { id: 'bots', title: 'Bot monitor', detail: 'Grid, DCA, triangle simulations, coin suitability, optimization and the price recorder.', prefixes: ['bots', 'prices'] },
   { id: 'experiments', title: 'Experiments', detail: 'Search specifications, preview, worker controls, candidates, heatmaps, CSV import and comparisons.', prefixes: ['experiments'] },
   { id: 'money', title: 'Money', detail: 'Wallets, P&L, Coinbase and Jupiter. Manual order commands can spend real funds.', prefixes: ['portfolio', 'wallet', 'pnl', 'coinbase', 'jupiter'] },
   { id: 'library', title: 'Library', detail: 'Search, read and edit catalogued documents. Research evidence stays protected.', prefixes: ['docs'] },

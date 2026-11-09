@@ -783,6 +783,8 @@ def _simulation_settings(settings: Settings, params: dict[str, Any]) -> Settings
           P("mode", "string", "Combination rule: all, any, vote or mean."),
           P("coins", "json", "Coins to test: a list, or \"all\" for every Coinbase USD market; default the "
                              "Settings asset."),
+          P("snapshot", "json", "Optional immutable Signal Desk backtest context; pins one strategy and costs."),
+          P("source_label", "string", "Exact backtest row label, required with snapshot."),
           P("optimize", "bool", "Auto-optimize (default true): after a miss, move to a neighbouring setting "
                                 "that tested superior on paired calls and save it as that trial's default.")) + _SIMULATION_PARAMS,
          read_only=False)
@@ -802,6 +804,27 @@ def forwardtest_start(ctx: Context, p: dict[str, Any]) -> Any:
             or any(not isinstance(c, list) or not 2 <= len(c) <= 8
                    or any(not isinstance(v, str) for v in c) or len(set(c)) != len(c) for c in combos)):
         raise CommandError("bad_params", "Enter up to 8 combinations of 2–8 distinct names or roster labels")
+
+    if p.get("snapshot") is not None:
+        from .desk import handoff_plan
+        if any(key in p for key in ("coins", "combinations", "mode", "use_leverage", "leverage", "allow_short", "min_confidence")):
+            raise CommandError("bad_params", "Snapshot pins the asset, strategy and costs; clear overrides or start a separate trial")
+        try:
+            plan = handoff_plan(p["snapshot"], str(p.get("source_label") or ""), horizons,
+                                bool(p.get("optimize", False)))
+        except (ValueError, TypeError, KeyError, OverflowError) as exc:
+            raise CommandError("bad_params", str(exc)) from exc
+        rt = ctx.runtime
+        with rt.lock:
+            if rt.forward_plan or rt.forward_busy or rt.forward_thread is not None:
+                raise CommandError("failed", "A forward test is running or stopping")
+            rt.forward_stop.clear()
+            rt.forward_last = {}
+            rt.forward_plan = plan
+        return {"asset": plan["asset"], "assets": plan["assets"], "trials": 1,
+                "horizons": list(plan["horizons"]), "cost_bps": plan["cost"],
+                "optimize": plan["tune"], "execution": plan["execution"], "source": plan["source"],
+                "message": "Prepared only. Review the pinned snapshot; forwardtest.run starts checking."}
 
     roster = {e.label: e for e in ctx.roster}
     entries = list(roster.values())
@@ -885,7 +908,8 @@ def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
                 "optimize": bool(plan["tune"]) if plan else None, "since": rt.forward_started_at,
                 "last": {k: dict(v) for k, v in rt.forward_last.items()},
                 "defaults_saved": len(forwardtest.load_defaults()),
-                "execution": plan.get("execution") if plan else None}
+                "execution": plan.get("execution") if plan else None,
+                "source": plan.get("source") if plan else None}
 
 
 @command("forwardtest.restore", "Resume the saved forward test after restarting the console.", read_only=False)
@@ -1133,6 +1157,10 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         raise CommandError("failed", "the sweep produced no outcome")
     if outcome.error:
         raise CommandError("failed", outcome.error.splitlines()[0])
+    return _backtest_result(outcome, settings)
+
+
+def _backtest_result(outcome, settings) -> dict[str, Any]:
     from .simulation import from_settings
     skipped = [r for r in outcome.rows if not r.evaluable]
     message = f"done — {len(outcome.evaluable)} evaluable, {len(outcome.positive)} positive"
@@ -1140,15 +1168,25 @@ def backtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         message = "cancelled — partial results shown"
     if skipped:
         message += f" · {len(skipped)} skipped (warm-up or trade floor)"
+    if outcome.error:
+        message = "failed — completed rows shown as partial evidence"
     return {
+        "error": outcome.error,
         "rows": [{**dataclasses.asdict(r), "net_pct": r.median_return,
                   "net_pct_text": labelled(r.median_return, "backtest", "median net")}
                  for r in outcome.ranked()],
         "evaluable": len(outcome.evaluable), "positive": len(outcome.positive),
         "skipped": [{"label": r.label, "reason": r.reason} for r in skipped],
         "cancelled": outcome.cancelled, "message": message,
-        "execution": from_settings(settings).to_dict(),
+        "execution": outcome.context.get("execution") or from_settings(settings).to_dict(),
+        "context": outcome.context or None,
     }
+
+
+@command("backtest.results", "Read the last completed or partial sweep in this native session, with its immutable data/strategy/cost context.")
+def backtest_results(ctx: Context, p: dict[str, Any]) -> Any:
+    outcome = ctx.runner.outcome
+    return _backtest_result(outcome, ctx.settings) if outcome is not None else {"rows": [], "context": None, "message": "No sweep completed in this native session."}
 
 
 @command("backtest.untested_sweep",

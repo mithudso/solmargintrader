@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T04:08:30+00:00",
+  "generatedAt": "2026-11-09T04:53:33+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1603,
+      "matchingFiles": 1606,
       "shown": 30,
       "files": [
         {
@@ -138,12 +138,12 @@
           "hits": 29
         },
         {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md",
+          "path": "extension/README.md",
           "hits": 26
         },
         {
-          "path": "extension/README.md",
-          "hits": 25
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_snufopt6_modified_mannarino_market_risk_indicator_mmmri_mmri.md",
+          "hits": 26
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1350,
+      "matchingFiles": 1354,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1335,
+      "matchingFiles": 1339,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 676,
+      "matchingFiles": 679,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 566,
+      "matchingFiles": 570,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 532,
+      "matchingFiles": 533,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 417,
+      "matchingFiles": 421,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 269,
+      "matchingFiles": 273,
       "shown": 30,
       "files": [
         {
@@ -1670,7 +1670,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 220,
+      "matchingFiles": 223,
       "shown": 30,
       "files": [
         {
@@ -1795,6 +1795,140 @@
         }
       ],
       "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "family:baseline",
+      "label": "Strategy family: baseline",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "buy_and_hold",
+        "baseline"
+      ],
+      "matchingFiles": 223,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 34
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 33
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 31
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 29
+        },
+        {
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 25
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 21
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 21
+        },
+        {
+          "path": "soltui/experiment_screens.py",
+          "hits": 21
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 20
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 19
+        },
+        {
+          "path": "soltui/experiment_runner.py",
+          "hits": 17
+        },
+        {
+          "path": "backtester/core/dcasim.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/report.py",
+          "hits": 13
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 10
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
+        },
+        {
+          "path": "extension/e2e/lib/dashboard-workspace.mjs",
+          "hits": 9
+        },
+        {
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 9
+        },
+        {
+          "path": "research/tradingview-card-readiness.json",
+          "hits": 9
+        },
+        {
+          "path": "backtester/strategy_cards/buy_and_hold.md",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tests/test_f5_batch.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tests/test_experiment_runner.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/tests/test_cpcv.py",
+          "hits": 7
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md",
+          "hits": 7
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ppjps450_neglected_volume_by_dgt.md",
+          "hits": 7
+        },
+        {
+          "path": "docs/optimization-workbench.md",
+          "hits": 7
+        },
+        {
+          "path": "backtester/core/strategies/__init__.py",
+          "hits": 6
+        },
+        {
+          "path": "backtester/tests/test_signal_redundancy.py",
+          "hits": 6
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "family:breakout",
@@ -1932,140 +2066,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "family:baseline",
-      "label": "Strategy family: baseline",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "buy_and_hold",
-        "baseline"
-      ],
-      "matchingFiles": 220,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 34
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 33
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 31
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 29
-        },
-        {
-          "path": "research/tradingview-script-understanding.json",
-          "hits": 25
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 21
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 21
-        },
-        {
-          "path": "soltui/experiment_screens.py",
-          "hits": 21
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 20
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 19
-        },
-        {
-          "path": "soltui/experiment_runner.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/report.py",
-          "hits": 13
-        },
-        {
-          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
-          "hits": 11
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 10
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 9
-        },
-        {
-          "path": "extension/e2e/lib/dashboard-workspace.mjs",
-          "hits": 9
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
-          "hits": 9
-        },
-        {
-          "path": "research/tradingview-card-readiness.json",
-          "hits": 9
-        },
-        {
-          "path": "backtester/strategy_cards/buy_and_hold.md",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_f5_batch.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_experiment_runner.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_cpcv.py",
-          "hits": 7
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md",
-          "hits": 7
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ppjps450_neglected_volume_by_dgt.md",
-          "hits": 7
-        },
-        {
-          "path": "docs/optimization-workbench.md",
-          "hits": 7
-        },
-        {
-          "path": "backtester/core/strategies/__init__.py",
-          "hits": 6
-        },
-        {
-          "path": "backtester/tests/test_signal_redundancy.py",
-          "hits": 6
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
-    },
-    {
       "id": "cpcv",
       "label": "Combinatorial purged cross-validation",
       "why": "The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced the single 70/30 split, whose in-sample window ended on the highest close in the series.",
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 143,
+      "matchingFiles": 152,
       "shown": 30,
       "files": [
         {

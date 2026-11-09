@@ -8,6 +8,7 @@
  * the stored scan (overview) so it opens instantly, without waiting on RPC.
  */
 
+import { aggregatePredictions, scoreText } from './live-score.js';
 import { attributionLine } from '../jupiter/attribution.js';
 
 const $ = (id) => document.getElementById(id);
@@ -124,14 +125,14 @@ $('clearKill').addEventListener('click', () => act({ type: 'clearKill' }));
 $('tickNow').addEventListener('click', () => act({ type: 'tickNow' }));
 $('openDashboard').addEventListener('click', () => chrome.runtime.openOptionsPage());
 const openView = (view) => chrome.tabs.create({ url: chrome.runtime.getURL(`src/ui/dashboard.html#${view}`) });
-for (const tile of document.querySelectorAll('.tiles [data-view]')) {
-  tile.addEventListener('click', () => openView(tile.dataset.view));
+for (const tile of document.querySelectorAll('[data-view], [data-extra-view]')) {
+  tile.addEventListener('click', () => openView(tile.dataset.view ?? tile.dataset.extraView));
 }
 $('openAlerts').addEventListener('click', () => openView('alerts'));
 $('openGrid').addEventListener('click', () => openView('grid'));
 // The SolTUI panel lives on the dashboard; the anchor scrolls straight to it.
 $('openSoltui').addEventListener('click', () =>
-  chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/dashboard.html#soltui') }));
+  chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/dashboard.html#soltui/signal') }));
 // The version is the only visible sign that a reload picked up new code.
 $('version').textContent = `v${chrome.runtime.getManifest().version}`;
 
@@ -217,3 +218,35 @@ $('scanNow').addEventListener('click', scan);
 
 refresh().catch((err) => showError(String(err.message ?? err)));
 refreshOverview().catch(() => {});
+
+
+// A transient popup reads status once; it owns no recorder, trainer or session lease.
+async function refreshGlance() {
+  const saved = await chrome.storage.local.get('signalDesk.v1');
+  const value = saved?.['signalDesk.v1']?.asset;
+  const asset = typeof value === 'string' && /^[A-Z0-9]{1,20}$/.test(value) ? value : 'SOL';
+  $('glanceAsset').textContent = `${asset} / USD`;
+  const listing = await send({ type: 'soltuiCommands' });
+  const commands = listing?.result?.result;
+  if (!listing?.ok || !listing.result?.ok || !Array.isArray(commands)) throw new Error('Native host unavailable. Open the workspace to reconnect.');
+  const read = async (command, params = {}) => {
+    if (!commands.some((c) => c.name === command && c.read_only && !c.requires_confirm && !c.long_running)) return null;
+    const res = await send({ type: 'soltuiCall', command, params });
+    return res?.ok && res.result?.ok ? res.result.result : null;
+  };
+  const [prices, predictions, forward, trainer] = await Promise.all([
+    read('prices.status'), read('forwardtest.predictions', { asset }),
+    read('forwardtest.state'), read('compound.unattended_status', { asset }),
+  ]);
+  const aggregate = aggregatePredictions(predictions?.rows ?? [], Date.now() / 1000, predictions?.voting);
+  $('glanceScore').textContent = aggregate.available ? `${scoreText(aggregate)} · ${aggregate.label}` : 'Agreement unavailable';
+  $('glanceScore').className = `glance-value signal-score-${aggregate.available ? aggregate.color : 'gray'}`;
+  const q = prices?.prices?.[`${asset}-USD`];
+  const price = q?.mid ?? q?.last;
+  const usable = typeof price === 'number' && Number.isFinite(price) && price > 0;
+  $('glancePrice').textContent = usable ? `$${price.toLocaleString()} · ${q.quote_age_s ?? 'unknown'}s old at capture · ${prices.live ? 'recorder fresh' : 'last known / stale'}` : 'No usable recorder quote. Opening this popup starts no recorder.';
+  $('glanceAge').textContent = `Read ${new Date().toISOString().slice(11, 19)} UTC · agreement is not success probability`;
+  const running = (v) => typeof v === 'boolean' ? (v ? 'running' : 'stopped') : 'unavailable';
+  $('glanceProcesses').textContent = `Recorder ${running(prices?.running)} · session checks ${running(forward?.running)} · ${asset} detached trainer ${running(trainer?.running)}`;
+}
+refreshGlance().catch((e) => { $('glancePrice').textContent = e.message; $('glanceAge').textContent = 'No current signal evidence. No service was started.'; });

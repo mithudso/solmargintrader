@@ -125,9 +125,9 @@ test('the dashboard has the button, loads the module, and the module uses textCo
   assert.ok(!/wallet\.private|solana\.private|xpub/i.test(code.replace(/the extension|never an extended/g, '')), 'no key material handling');
 });
 
-test('the manifest and package agree on the version (0.4.2, the dashboard workspace)', async () => {
+test('the manifest and package agree on the version (0.5.0, Signal Desk)', async () => {
   const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'));
   const pkg = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8'));
-  assert.equal(manifest.version, '0.4.2');
+  assert.equal(manifest.version, '0.5.0');
   assert.equal(pkg.version, manifest.version);
 });
