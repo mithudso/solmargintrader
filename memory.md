@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 258
-Delta: v257 to v258; repair misleading Money banner and preserve the incomplete UI audit.
+Version: 259
+Delta: v258 to v259; stabilize the CI navigation test and retain optimizer continuation.
+
+## v259 - 2026-11-09
+
+CI for PR 154 twice failed test_goto_signal_live_button: its fixed 0.2-second pause ended before the queued button event changed tabs on the loaded macOS runner. The test now waits for the expected navigation with a bounded 4-second timeout and still asserts both target tabs. The focused test passed locally. Rebuild the offline indexes and rerun final-head CI before merging; do not treat either failed CI attempt as a pass. UI optimizer remains incomplete as described in v258 and its ledger.
 
 ## v258 - 2026-11-09
 

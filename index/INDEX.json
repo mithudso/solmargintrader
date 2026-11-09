@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-09T05:29:49+00:00",
+  "generatedAt": "2026-11-09T05:44:45+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "9675c71",
+  "commit": "90cc83c",
   "counts": {
     "files": 2690,
-    "bytes": 45034332,
+    "bytes": 45035082,
     "byKind": {
       "strategy-card": 1478,
       "doc": 567,
@@ -71461,11 +71461,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 258 Delta: v257 to v258; repair misleading Money banner and preserve the incomplete UI audit. UI optimizer checkpoint: source f1e8efa plus the Money banner repair. The former banner falsely stated that Money views only read while Coinbase forms can submit real orders. The replacement says Coinbase orders can move real money and forms start disarmed.",
+      "summary": "Version: 259 Delta: v258 to v259; stabilize the CI navigation test and retain optimizer continuation. CI for PR 154 twice failed test_goto_signal_live_button: its fixed 0.2-second pause ended before the queued button event changed tabs on the loaded macOS runner. The test now waits for the expected navigation with a bounded 4-second timeout and still asserts both target tabs.",
       "summarySource": "opening-prose",
-      "bytes": 66629,
-      "lines": 394,
-      "sha1": "404d1aaabea2c7561caad1dce6ca9e07f29bbf46",
+      "bytes": 67147,
+      "lines": 398,
+      "sha1": "b150244f0aebdaf744cc28d2799129e9d5b8df43",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -83392,9 +83392,9 @@
       "title": "test_signal_live",
       "summary": "Tests for Signal tab Live page: live graph, real-time streaming price, and forward test predictions.",
       "summarySource": "docstring",
-      "bytes": 20998,
-      "lines": 375,
-      "sha1": "e7c9b289f56edf025d6162cd54f96393d1add8cd",
+      "bytes": 21230,
+      "lines": 379,
+      "sha1": "ecc899cf953a907db89d2e3a869c1565c51123d9",
       "symbols": [
         "class SignalLiveLogicTests",
         "class SignalLiveUITests"
