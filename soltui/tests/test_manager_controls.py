@@ -67,6 +67,38 @@ class ManagerControls(unittest.TestCase):
         self.assertIsNone(result["bots"][0]["session_id"])
         self.assertFalse(result["bots"][0]["heartbeat_available"])
 
+    def test_guarded_start_uses_exact_empty_coin_config_and_compared_costs(self):
+        bots.home().mkdir(parents=True)
+        bots.config_path().write_text(
+            json.dumps({"grid": {"range_pct": 12}, "per_coin": {"grid": {"SOL": {}}}})
+        )
+        before = next(row for row in self.snapshot()["bots"] if row["bot"] == "grid")
+        self.assertEqual(before["config"]["range_pct"], 15)
+        request = self.request()
+        # The compared values are the authority. No permissive UI getter or
+        # second settings/cost resolution may change what the owner starts.
+        original_record = bots._new_forward_record
+
+        def changed_settings(*args, **kwargs):
+            self.settings.fee_bps = 99
+            self.settings.slippage_bps = 77
+            return original_record(*args, **kwargs)
+
+        with (
+            patch.object(
+                bots, "get_config", side_effect=AssertionError("config reread")
+            ),
+            patch.object(bots, "_new_forward_record", side_effect=changed_settings),
+        ):
+            response = self.control(**request)
+        self.assertEqual(response["outcome"], "acknowledged")
+        record = bots._forward_all()["grid"]
+        self.assertEqual(record["config"], before["config"])
+        self.assertEqual(record["fee_bps"], before["fee_bps"])
+        self.assertEqual(record["slippage_bps"], before["slippage_bps"])
+        after = next(row for row in self.snapshot()["bots"] if row["bot"] == "grid")
+        self.assertEqual(after["session_config_hash"], before["config_hash"])
+
     def test_start_replay_and_fresh_same_session_skip_without_restart(self):
         p = self.request()
         first = self.control(**p)

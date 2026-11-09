@@ -320,6 +320,186 @@ class Legacy(unittest.TestCase):
             )
             self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
 
+    def test_ack_session_relationships_and_responding_revision_are_bound(self):
+        cases = (
+            (
+                "stop",
+                "acknowledged",
+                "stop_recorded_exposure_unknown",
+                "different_session",
+                "unknown",
+            ),
+            ("stop", "acknowledged", "stop_recorded_exposure_unknown", None, "unknown"),
+            (
+                "start",
+                "acknowledged",
+                "forward_requested_heartbeat_unknown",
+                None,
+                "unknown",
+            ),
+            ("start", "skipped", "already_running", "different_session", "unknown"),
+            ("stop", "skipped", "already_stopped", "different_session", "unknown"),
+            (
+                "stop",
+                "acknowledged",
+                "stop_recorded_exposure_unknown",
+                "session123",
+                "acknowledged",
+            ),
+            (
+                "start",
+                "acknowledged",
+                "forward_requested_heartbeat_unknown",
+                "new_session",
+                "acknowledged",
+            ),
+        )
+        for operation, outcome, reason, session, expected in cases:
+            with self.subTest(operation=operation, outcome=outcome, session=session):
+
+                def mutate(
+                    path,
+                    body,
+                    operation=operation,
+                    outcome=outcome,
+                    reason=reason,
+                    session=session,
+                ):
+                    if path == "/v1/bots.manager_control":
+                        body["result"].update(
+                            operation=operation,
+                            outcome=outcome,
+                            reason=reason,
+                            session_id=session,
+                            source_hash="f" * 64,
+                        )
+                    return body
+
+                with owner(mutate=mutate) as (url, calls):
+                    adapter = self.adapter(url)
+                    adapter.discover()
+                    request_id = str(uuid.uuid4())
+                    receipt = adapter.control("grid", operation, request_id, None)
+                    self.assertEqual(receipt.outcome, expected)
+                    self.assertEqual(receipt.metadata["owner_revision"], "f" * 64)
+                    replay = self.adapter(url).control(
+                        "grid", operation, request_id, None
+                    )
+                    self.assertEqual(replay.metadata["owner_revision"], "f" * 64)
+                    if expected == "unknown":
+                        self.assertTrue(receipt.reconciliation_required)
+                        self.assertEqual(replay.outcome, "unknown")
+                    else:
+                        self.assertEqual(replay.to_dict(), receipt.to_dict())
+                    self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
+
+    def test_corrupt_persisted_receipt_is_not_replayed_as_another_request_or_operation(
+        self,
+    ):
+        import sqlite3
+        from contextlib import closing
+
+        mutations = (
+            {"request_id": str(uuid.uuid4())},
+            {"operation": "start"},
+            {"bot_id": str(uuid.uuid4())},
+            {"owner_id": "other-owner"},
+            {"runtime_id": "other_session"},
+            {"outcome": "skipped"},
+            {"reason": "already_stopped"},
+            {"metadata": {"config_hash": "e" * 64}},
+        )
+        for changes in mutations:
+            with self.subTest(changes=changes), owner() as (url, calls):
+                adapter = self.adapter(url)
+                adapter.discover()
+                request_id = str(uuid.uuid4())
+                receipt = adapter.control("grid", "stop", request_id, None)
+                with (
+                    closing(
+                        sqlite3.connect(self.root / "manager" / "controls.sqlite3")
+                    ) as db,
+                    db,
+                ):
+                    forged = {**receipt.to_dict(), **changes}
+                    db.execute(
+                        "UPDATE requests SET body=? WHERE request_id=?",
+                        (json.dumps(forged), request_id),
+                    )
+                with self.assertRaises(ManagerError) as caught:
+                    self.adapter(url).control("grid", "stop", request_id, None)
+                self.assertEqual(caught.exception.code, "invalid_receipt")
+                self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
+
+    def test_self_consistent_checksum_cannot_change_the_bound_stop_session(self):
+        import hashlib
+        import sqlite3
+        from contextlib import closing
+
+        from botmanager.domain import canonical
+
+        with owner() as (url, calls):
+            adapter = self.adapter(url)
+            adapter.discover()
+            request_id = str(uuid.uuid4())
+            receipt = adapter.control("grid", "stop", request_id, None)
+            forged = {**receipt.to_dict(), "runtime_id": "different_session"}
+            with (
+                closing(
+                    sqlite3.connect(self.root / "manager" / "controls.sqlite3")
+                ) as db,
+                db,
+            ):
+                binding = json.loads(
+                    db.execute(
+                        "SELECT binding FROM requests WHERE request_id=?", (request_id,)
+                    ).fetchone()[0]
+                )
+                binding["receipt_hash"] = hashlib.sha256(
+                    canonical(forged).encode()
+                ).hexdigest()
+                db.execute(
+                    "UPDATE requests SET body=?,binding=? WHERE request_id=?",
+                    (canonical(forged), canonical(binding), request_id),
+                )
+            with self.assertRaises(ManagerError) as caught:
+                self.adapter(url).control("grid", "stop", request_id, None)
+            self.assertEqual(caught.exception.code, "invalid_receipt")
+            self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
+
+    def test_old_unbound_manager_receipts_are_preserved_but_never_replayed(self):
+        import sqlite3
+        from contextlib import closing
+
+        with owner() as (url, calls):
+            adapter = self.adapter(url)
+            adapter.discover()
+            request_id = str(uuid.uuid4())
+            receipt = adapter.control("grid", "stop", request_id, None)
+            path = self.root / "manager" / "controls.sqlite3"
+            with closing(sqlite3.connect(path)) as db, db:
+                db.execute("ALTER TABLE requests RENAME TO bound_requests")
+                db.execute(
+                    "CREATE TABLE requests (request_id TEXT PRIMARY KEY, identity_hash TEXT NOT NULL, fingerprint TEXT NOT NULL, body TEXT NOT NULL)"
+                )
+                db.execute(
+                    "INSERT INTO requests SELECT request_id,identity_hash,fingerprint,body FROM bound_requests"
+                )
+                db.execute("DROP TABLE bound_requests")
+                db.execute("PRAGMA user_version=1")
+            with self.assertRaises(ManagerError) as caught:
+                self.adapter(url).control("grid", "stop", request_id, None)
+            self.assertEqual(caught.exception.code, "invalid_receipt")
+            with closing(sqlite3.connect(path)) as db:
+                self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 2)
+                body, binding = db.execute(
+                    "SELECT body,binding FROM requests WHERE request_id=?",
+                    (request_id,),
+                ).fetchone()
+            self.assertEqual(json.loads(body), receipt.to_dict())
+            self.assertIsNone(binding)
+            self.assertEqual(sum(c[0] == "POST" for c in calls), 1)
+
     def test_lost_ack_replay_reconciles_reads_and_never_reposts(self):
         with owner(ambiguous=True) as (url, calls):
             adapter = self.adapter(url)

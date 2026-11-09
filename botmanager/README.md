@@ -256,7 +256,9 @@ Controls require the reviewed owner's `bots.manager_control` capability and exac
 advertised parameter contract. There is no fallback to the raw restart command.
 Under the existing forward/config locks, the owner compares the expected session
 and effective config, asset, venue, timeframe, execution model, mode and costs.
-The global family slot cannot be replaced by another market. An exact active
+The owner starts the exact configuration and costs it compared; it does not
+resolve defaults a second time after the guard. The global family slot cannot
+be replaced by another market. An exact active
 session/config returns `skipped/already_running`; it does not restart. A matching
 stop records its stop time and retains exposure/arming uncertainty. These
 simulation controls do not start the recorder or claim an autonomous worker.
@@ -264,9 +266,16 @@ Existing raw commands retain their original behavior; their later session
 changes invalidate the guarded observation. This provides delegated control,
 not ownership transfer or fencing of unaware clients.
 
-The manager writes a separate schema-1 `controls.sqlite3` journal under
+The manager writes a separate schema-2 `controls.sqlite3` journal under
 `SOLBOT_HOME` only for control requests. It commits a durable pending receipt
-before submitting. The owner writes a durable intent and outcome to its own
+before submitting. The journal binds each receipt to its original request,
+identities, expected session/config and a receipt checksum. Replay validates
+those bindings and the operation/outcome/session relationship. Schema-1 rows
+retain their IDs and bodies when migrated; their missing request binding makes
+replay refuse `invalid_receipt`, with no automatic submit. A valid owner response
+supplies the receipt's responding source revision; discovery cannot substitute
+for that evidence. Inconsistent acknowledgment sessions yield `outcome_unknown`.
+The owner writes a durable intent and outcome to its own
 `bots/manager-requests.json` under the owner lock; the adapter never writes
 SolTUI config/state files directly. The owner's journal binds the request
 fingerprint, family, session and config. An unresolved intent blocks fresh IDs

@@ -1082,10 +1082,17 @@ def forward_start(bot: str, asset: str, settings: Any = None, *, ensure_recorder
 _MANAGER_SOURCE_HASH = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
-def _new_forward_record(bot: str, asset: str, settings: Any, now: float) -> dict[str, Any]:
-    return {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": asset, "config": get_config(bot, asset),
-            "started_at": now, "stopped_at": None, "fee_bps": _costs(settings).fee_bps,
-            "slippage_bps": _costs(settings).slippage_bps}
+def _new_forward_record(bot: str, asset: str, settings: Any, now: float,
+                        *, compared: dict[str, Any] | None = None) -> dict[str, Any]:
+    # Raw clients keep their existing UI/default resolution. A guarded control
+    # supplies exactly the validated configuration and costs it compared under
+    # the lock; resolving them again could silently select different defaults.
+    values = compared if compared is not None else {
+        "config": get_config(bot, asset), "fee_bps": _costs(settings).fee_bps,
+        "slippage_bps": _costs(settings).slippage_bps}
+    return {"id": uuid.uuid4().hex[:12], "bot": bot, "asset": asset, "config": dict(values["config"]),
+            "started_at": now, "stopped_at": None, "fee_bps": values["fee_bps"],
+            "slippage_bps": values["slippage_bps"]}
 
 
 def _manager_hash(value: Any) -> str:
@@ -1118,8 +1125,9 @@ def _manager_config(bot: str, asset: str, settings: Any) -> dict[str, Any]:
     # The tab's get_config falls back on defaults for stale saved values. Safe
     # delegated controls must surface that problem instead of starting a default.
     cfg = validate(bot, saved)
+    costs = _costs(settings)
     return {**_manager_context(bot), "bot": bot, "asset": asset, "config": cfg,
-            "fee_bps": _costs(settings).fee_bps, "slippage_bps": _costs(settings).slippage_bps}
+            "fee_bps": costs.fee_bps, "slippage_bps": costs.slippage_bps}
 
 
 def manager_snapshot(settings: Any = None) -> dict[str, Any]:
@@ -1275,7 +1283,7 @@ def manager_control(bot: str, operation: str, asset: str, request_id: str,
         # A crash or lost ack from here leaves a pending durable intent. Replay
         # returns unknown and never restarts, stops, or invokes another engine.
         if operation == "start":
-            rec = _new_forward_record(bot, asset, settings, time.time())
+            rec = _new_forward_record(bot, asset, settings, time.time(), compared=current)
             recs[bot] = rec
             runtime().sessions.pop(bot, None)
         else:

@@ -66,6 +66,46 @@ def _session(value: Any) -> bool:
     )
 
 
+def _control_semantics(
+    operation, outcome, reason, session, expected_session, *, pending=False
+):
+    outcomes = {
+        "already_running": ("skipped", "start"),
+        "already_stopped": ("skipped", "stop"),
+        "owner_session_changed": ("failed", operation),
+        "configuration_changed": ("failed", operation),
+        "family_slot_occupied": ("failed", "start"),
+        "market_data_unavailable": ("failed", "start"),
+        "request_id_conflict": ("failed", operation),
+        "outcome_unknown": ("unknown", operation),
+        "forward_requested_heartbeat_unknown": ("acknowledged", "start"),
+        "stop_recorded_exposure_unknown": ("acknowledged", "stop"),
+    }
+    if pending:
+        outcomes["submission_pending"] = ("pending", operation)
+    if (
+        type(reason) is not str
+        or outcomes.get(reason) != (outcome, operation)
+        or not _session(session)
+    ):
+        return False
+    if outcome == "acknowledged" and operation == "start":
+        return session is not None and session != expected_session
+    if outcome == "acknowledged" and operation == "stop":
+        return expected_session is not None and session == expected_session
+    if reason == "already_running":
+        return expected_session is not None and session == expected_session
+    if reason not in ("owner_session_changed", "outcome_unknown"):
+        return session == expected_session
+    return True
+
+
+def _invalid_receipt():
+    return ManagerError(
+        "invalid_receipt", "The control receipt is invalid or incompatible.", 4
+    )
+
+
 @dataclass(frozen=True, kw_only=True)
 class Installation:
     installation_id: str
@@ -533,12 +573,14 @@ class LegacyAdapter:
         *,
         session=None,
         config_hash=None,
+        owner_revision=_MISSING,
     ):
         metadata = {}
         if config_hash is not None:
             metadata["config_hash"] = config_hash
-        if self._loaded_hash:
-            metadata["owner_revision"] = self._loaded_hash
+        revision = self._loaded_hash if owner_revision is _MISSING else owner_revision
+        if revision is not None:
+            metadata["owner_revision"] = revision
         return CommandReceipt(
             schema_version=1,
             bot_id=str(
@@ -572,10 +614,19 @@ class LegacyAdapter:
                 ).fetchone():
                     raise _fail("incompatible_store")
                 db.execute(
-                    "CREATE TABLE requests (request_id TEXT PRIMARY KEY, identity_hash TEXT NOT NULL, fingerprint TEXT NOT NULL, body TEXT NOT NULL)"
+                    "CREATE TABLE requests (request_id TEXT PRIMARY KEY, identity_hash TEXT NOT NULL, fingerprint TEXT NOT NULL, body TEXT NOT NULL, binding TEXT)"
                 )
-                db.execute("PRAGMA user_version=1")
-            elif version != 1:
+                db.execute("PRAGMA user_version=2")
+            elif version == 1:
+                # Keep old receipts and request IDs. Their missing original
+                # binding cannot be reconstructed safely from a result body;
+                # replay refuses them instead of guessing or resubmitting.
+                columns = [row[1] for row in db.execute("PRAGMA table_info(requests)")]
+                if columns != ["request_id", "identity_hash", "fingerprint", "body"]:
+                    raise _fail("incompatible_store")
+                db.execute("ALTER TABLE requests ADD COLUMN binding TEXT")
+                db.execute("PRAGMA user_version=2")
+            elif version != 2:
                 raise _fail("incompatible_store")
             db.commit()
             return db
@@ -585,6 +636,91 @@ class LegacyAdapter:
             if isinstance(exc, ManagerError):
                 raise
             raise _fail("store_unavailable") from None
+
+    def _binding(self, request, receipt):
+        return canonical(
+            {
+                "schema_version": 1,
+                "request": request,
+                "receipt_hash": _hash(receipt.to_dict()),
+            }
+        )
+
+    def _bound_receipt(self, request_id, row):
+        try:
+            identity_hash, fingerprint, body, raw_binding = row
+            binding = json.loads(raw_binding)
+            if (
+                not isinstance(binding, dict)
+                or set(binding) != {"schema_version", "request", "receipt_hash"}
+                or type(binding["schema_version"]) is not int
+                or binding["schema_version"] != 1
+            ):
+                raise ValueError
+            request = binding["request"]
+            fields = set(CONTROL_PARAMS) | {"installation_id"}
+            if (
+                not isinstance(request, dict)
+                or set(request) != fields
+                or request["request_id"] != request_id
+                or type(request["installation_id"]) is not str
+                or re.fullmatch(
+                    r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", request["installation_id"]
+                )
+                is None
+                or request["bot"] not in FAMILIES
+                or request["operation"] not in ("start", "stop")
+                or type(request["asset"]) is not str
+                or re.fullmatch(r"[A-Z0-9]{1,20}", request["asset"]) is None
+                or not _session(request["expected_session"])
+                or not _sha(request["expected_config_hash"])
+            ):
+                raise ValueError
+            original_identity = _hash(
+                [request["installation_id"], request["bot"], request["operation"]]
+            )
+            if identity_hash != original_identity or fingerprint != _hash(
+                [
+                    original_identity,
+                    request["expected_session"],
+                    request["expected_config_hash"],
+                ]
+            ):
+                raise ValueError
+            receipt = CommandReceipt.from_dict(json.loads(body))
+            if (
+                binding["receipt_hash"] != _hash(receipt.to_dict())
+                or receipt.request_id != request_id
+                or receipt.operation != request["operation"]
+                or receipt.owner_id != request["installation_id"]
+                or receipt.bot_id
+                != str(
+                    uuid5(
+                        NAMESPACE_URL, request["installation_id"] + ":" + request["bot"]
+                    )
+                )
+                or receipt.owner_generation is not None
+                or receipt.config_revision is not None
+                or set(receipt.metadata) - {"config_hash", "owner_revision"}
+                or receipt.metadata.get("config_hash")
+                != request["expected_config_hash"]
+                or (
+                    "owner_revision" in receipt.metadata
+                    and not _sha(receipt.metadata["owner_revision"])
+                )
+                or not _control_semantics(
+                    receipt.operation,
+                    receipt.outcome,
+                    receipt.reason,
+                    receipt.runtime_id,
+                    request["expected_session"],
+                    pending=True,
+                )
+            ):
+                raise ValueError
+            return receipt
+        except (ValueError, TypeError, KeyError, ManagerError):
+            raise _invalid_receipt() from None
 
     def control(
         self,
@@ -638,11 +774,11 @@ class LegacyAdapter:
         try:
             db.execute("BEGIN IMMEDIATE")
             previous = db.execute(
-                "SELECT identity_hash,fingerprint,body FROM requests WHERE request_id=?",
+                "SELECT identity_hash,fingerprint,body,binding FROM requests WHERE request_id=?",
                 (request_id,),
             ).fetchone()
             if previous:
-                receipt = CommandReceipt.from_dict(json.loads(previous[2]))
+                receipt = self._bound_receipt(request_id, previous)
                 if previous[0] != identity_hash or (
                     explicit
                     and previous[1]
@@ -667,6 +803,7 @@ class LegacyAdapter:
                         "outcome_unknown",
                         session=receipt.runtime_id,
                         config_hash=receipt.metadata.get("config_hash"),
+                        owner_revision=receipt.metadata.get("owner_revision"),
                     )
                 return receipt
             if not self._rows:
@@ -694,6 +831,10 @@ class LegacyAdapter:
                 "expected_session": session,
                 "expected_config_hash": config_hash,
             }
+            request_binding = {
+                **params,
+                "installation_id": self.installation.installation_id,
+            }
             fingerprint = _hash([identity_hash, session, config_hash])
             pending = self._receipt(
                 external_id,
@@ -705,12 +846,19 @@ class LegacyAdapter:
                 config_hash=config_hash,
             )
             db.execute(
-                "INSERT INTO requests VALUES (?,?,?,?)",
-                (request_id, identity_hash, fingerprint, canonical(pending.to_dict())),
+                "INSERT INTO requests VALUES (?,?,?,?,?)",
+                (
+                    request_id,
+                    identity_hash,
+                    fingerprint,
+                    canonical(pending.to_dict()),
+                    self._binding(request_binding, pending),
+                ),
             )
             db.commit()
             # Intent must be on durable storage before any POST. A stale owner
             # observation is checked atomically by the owner; no unsafe fallback.
+            response_revision = None
             try:
                 result = self._call("bots.manager_control", params=params)
                 if (
@@ -725,23 +873,13 @@ class LegacyAdapter:
                     or not _sha(result.get("source_hash"))
                 ):
                     raise _fail("incompatible_owner")
-                # Only the closed owner protocol vocabulary may reach a receipt.
-                outcomes = {
-                    "already_running": ("skipped", "start"),
-                    "already_stopped": ("skipped", "stop"),
-                    "owner_session_changed": ("failed", operation),
-                    "configuration_changed": ("failed", operation),
-                    "family_slot_occupied": ("failed", "start"),
-                    "market_data_unavailable": ("failed", "start"),
-                    "request_id_conflict": ("failed", operation),
-                    "outcome_unknown": ("unknown", operation),
-                    "forward_requested_heartbeat_unknown": ("acknowledged", "start"),
-                    "stop_recorded_exposure_unknown": ("acknowledged", "stop"),
-                }
-                reason = result.get("reason")
-                if type(reason) is not str or outcomes.get(reason) != (
-                    result.get("outcome"),
+                response_revision = result["source_hash"]
+                if not _control_semantics(
                     operation,
+                    result.get("outcome"),
+                    result.get("reason"),
+                    result.get("session_id"),
+                    session,
                 ):
                     raise _fail("incompatible_owner")
                 receipt = self._receipt(
@@ -752,6 +890,7 @@ class LegacyAdapter:
                     result["reason"],
                     session=result.get("session_id"),
                     config_hash=config_hash,
+                    owner_revision=response_revision,
                 )
             except (ManagerError, ValueError, TypeError, KeyError):
                 self.discover()
@@ -763,10 +902,15 @@ class LegacyAdapter:
                     "outcome_unknown",
                     session=session,
                     config_hash=config_hash,
+                    owner_revision=response_revision,
                 )
             db.execute(
-                "UPDATE requests SET body=? WHERE request_id=?",
-                (canonical(receipt.to_dict()), request_id),
+                "UPDATE requests SET body=?,binding=? WHERE request_id=?",
+                (
+                    canonical(receipt.to_dict()),
+                    self._binding(request_binding, receipt),
+                    request_id,
+                ),
             )
             return receipt
         except (sqlite3.Error, OSError, ValueError, TypeError):
