@@ -353,14 +353,30 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     ts = raw["ts"]
     if len(ts) == 0 or np.any(np.diff(ts) <= 0) or np.any(ts % 60):
         raise ValueError("No ordered closed one-minute candles")
-    # Save received closed candles before strategy calculation or a later fetch can fail.
-    with closing(_db(db_path)) as db, db:
-        db.executemany("INSERT OR IGNORE INTO candle VALUES (?,?,?,?,?,?,?)", (
-            (asset, int(t), float(o), float(h), float(l), float(c), float(v))
+    # Validate every received segment before persistence, including old rows
+    # outside the latest contiguous signal segment. Gaps remain real gaps.
+    breaks = np.flatnonzero(np.diff(ts) != 60)
+    boundaries = [0, *(int(i) + 1 for i in breaks), len(ts)]
+    for first, last in zip(boundaries[:-1], boundaries[1:], strict=True):
+        validate_bar_arrays({k: v[first:last] for k, v in raw.items()}, "1m")
+    rows = [(asset, int(t), float(o), float(h), float(l), float(c), float(v))
             for t, o, h, l, c, v in zip(*(raw[k] for k in
-                ("ts", "open", "high", "low", "close", "volume")), strict=True)
-            if all(math.isfinite(float(x)) for x in (o, h, l, c, v))
-        ))
+                ("ts", "open", "high", "low", "close", "volume")), strict=True)]
+    # Existing valid observations stay immutable. A malformed legacy row can
+    # be replaced only by a newly validated candle for that exact asset/time.
+    with closing(_db(db_path)) as db, db:
+        for row in rows:
+            old = db.execute("SELECT open,high,low,close,volume FROM candle WHERE asset=? AND ts=?",
+                             row[:2]).fetchone()
+            if old is not None:
+                o, h, low, c, v = old
+                valid = (all(isinstance(x, (int, float)) and math.isfinite(x) for x in old)
+                         and min(o, h, low, c) > 0 and v >= 0
+                         and h >= low and h >= max(o, c) - 1e-9 and low <= min(o, c) + 1e-9)
+                if valid:
+                    continue
+                db.execute("DELETE FROM candle WHERE asset=? AND ts=?", row[:2])
+            db.execute("INSERT INTO candle VALUES (?,?,?,?,?,?,?)", row)
     # Keep gaps visible for settlement. The signal itself sees only the latest contiguous segment.
     candles = {int(t): (float(o), float(c)) for t, o, c in zip(ts, raw["open"], raw["close"], strict=True)
                if math.isfinite(o) and math.isfinite(c) and o > 0 and c > 0}
@@ -514,12 +530,29 @@ def status(asset: str, *, db_path: Path | None = None) -> list[dict]:
 
 def top_forward_predictions(asset: str, *, min_resolved: int = 1, limit: int = 50,
                             db_path: Path | None = None) -> list[dict[str, Any]]:
-    """Rank top performing forward test strategies and extract 1, 5, 10, and 30 min price predictions."""
+    """Rank current trial evidence per label/horizon before applying the display limit."""
     path = db_path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
     if not path.exists():
         return []
     with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         rows = db.execute("""
+            WITH per_trial AS (
+                SELECT t.id, t.label, t.minutes, t.active,
+                       count(c.outcome) as resolved,
+                       coalesce(sum(c.outcome=c.prediction),0) as hits,
+                       (SELECT prediction FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_call,
+                       (SELECT issued FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_issued,
+                       max(c.bar) as last_bar
+                FROM trial t JOIN call c ON t.id=c.trial
+                WHERE t.asset=? AND t.minutes IN (1,5,10,30)
+                GROUP BY t.id
+            ), ranked AS (
+                SELECT *, row_number() OVER (
+                    PARTITION BY label,minutes ORDER BY last_issued DESC,last_bar DESC,id DESC
+                ) as revision_rank FROM per_trial
+            ), current AS (
+                SELECT * FROM ranked WHERE revision_rank=1
+            )
             SELECT label,
                    sum(resolved) as total_resolved,
                    sum(hits) as total_hits,
@@ -536,20 +569,12 @@ def top_forward_predictions(asset: str, *, min_resolved: int = 1, limit: int = 5
                    max(CASE WHEN minutes=10 THEN resolved ELSE 0 END) as n10,
                    max(CASE WHEN minutes=30 THEN resolved ELSE 0 END) as n30,
                    max(last_issued) as max_issued,
-                   max(active) as active_json
-            FROM (
-                SELECT t.label, t.minutes, t.active,
-                       count(c.outcome) as resolved,
-                       sum(c.outcome=c.prediction) as hits,
-                       (SELECT prediction FROM call WHERE trial=t.id ORDER BY bar DESC LIMIT 1) as last_call,
-                       max(c.issued) as last_issued
-                FROM trial t LEFT JOIN call c ON t.id=c.trial
-                WHERE t.asset=?
-                GROUP BY t.id
-            )
+                   (SELECT active FROM current selected WHERE selected.label=cur.label
+                    ORDER BY last_issued DESC,last_bar DESC,id DESC LIMIT 1) as active_json
+            FROM current cur
             GROUP BY label
             HAVING total_resolved >= ?
-            ORDER BY (CAST(total_hits AS REAL) / total_resolved) DESC, total_resolved DESC
+            ORDER BY (CAST(total_hits AS REAL) / total_resolved) DESC, total_resolved DESC,label
             LIMIT ?
         """, (asset, min_resolved, limit)).fetchall()
         dirs = {1: "UP", -1: "DOWN", 0: "FLAT"}

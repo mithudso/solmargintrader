@@ -31,7 +31,7 @@ def check_key_file_mode(path: Path) -> None:
 
 def _open(path: Path) -> int:
     try:
-        return os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+        return os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     except OSError as exc:
         raise WalletError(f"key file {path} is not readable: {exc.strerror}") from None
 

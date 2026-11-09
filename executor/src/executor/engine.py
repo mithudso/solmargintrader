@@ -21,7 +21,7 @@ import os
 import time
 import uuid
 from contextlib import suppress
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -221,12 +221,19 @@ class Engine:
         height = self.rpc.block_height()
         if built["lastValidBlockHeight"] - height < BLOCKHASH_MARGIN:
             raise Refused("the blockhash is about to expire; try again")
+        native_now = self.rpc.balance(cfg.owner)
         # Re-run the position rails against the journal as it is NOW (a concurrent writer cannot have raced past the lock).
         decision = rails.check_trade(
             cfg, self.root, self.journal, report, strategy=strategy, live=True, exit_only=exit_only,
-            kill_present=(self.root / "KILL").exists(), native_lamports=self.rpc.balance(cfg.owner), now=self.clock(),
+            kill_present=(self.root / "KILL").exists(), native_lamports=native_now, now=self.clock(),
         )  # fmt: skip
         base_evidence["decision"] = decision.to_dict()
+        # Every final RPC and gate read precedes the last pre-journal safety check.
+        age = self.clock() - report.fetched_at
+        if not 0 <= age <= cfg.rails.max_quote_age_s:
+            raise Refused(f"quote is {age:.1f} s old, over max_quote_age_s {cfg.rails.max_quote_age_s:g}")
+        if (self.root / "KILL").exists() and not exit_only:
+            raise Refused("KILL file appeared while the swap was being prepared")
 
         intent_id = f"swap-{int(self.clock())}-{uuid.uuid4().hex[:8]}"
         base_raw, quote_usd = self._base_and_quote(decision.side, report)
@@ -356,21 +363,24 @@ class Engine:
             self.sleep(1.5)
         return None
 
-    def _failed_fee_fields(self, signature: str, sol_price: Decimal) -> dict[str, Any] | None:
-        # Solana charges network fees even when execution fails; absent metadata cannot mean zero cost.
-        if not sol_price.is_finite() or sol_price <= 0:
+    def _failed_fee_fields(self, signature: str, sol_price: Decimal | None) -> dict[str, Any] | None:
+        if sol_price is None or not sol_price.is_finite() or sol_price <= 0:
             return None
         for _ in range(8):
             try:
                 tx = self.rpc.transaction(signature)
             except RpcError:
                 tx = None
-            if tx:
-                meta = tx.get("meta") if isinstance(tx, dict) else None
-                fee = meta.get("fee") if isinstance(meta, dict) else None
-                if type(fee) is int and 0 <= fee < 2**64:
-                    return {"fee_lamports": fee, "fee_usd": str(raw_to_ui(fee, 9) * sol_price)}
-                return None
+            if isinstance(tx, dict) and isinstance(tx.get("meta"), dict):
+                meta = tx["meta"]
+                transaction = tx.get("transaction")
+                message = transaction.get("message") if isinstance(transaction, dict) else None
+                keys = message.get("accountKeys") if isinstance(message, dict) else None
+                payer = keys[0] if isinstance(keys, list) and keys else None
+                payer = payer.get("pubkey") if isinstance(payer, dict) else payer
+                fee = meta.get("fee")
+                if meta.get("err") is not None and payer == self.cfg.owner and type(fee) is int and 0 <= fee < 2**64:
+                    return {"fee_lamports": fee, "fee_usd": str(raw_to_ui(fee, 9) * sol_price), "slot": tx.get("slot")}
             self.sleep(1.5)
         return None
 
@@ -414,7 +424,7 @@ class Engine:
                 and status.get("confirmationStatus") in ("confirmed", "finalized")
             )
             if terminal and status["err"] is not None:
-                fees = self._failed_fee_fields(signature, Decimal(intent.get("sol_price_usd") or "0"))
+                fees = self._failed_fee_fields(signature, _recorded_sol_price(intent))
                 if fees is None:
                     out.append(
                         {
@@ -448,8 +458,8 @@ class Engine:
                         }
                     )
                     continue
-                sol_price = Decimal(intent.get("sol_price_usd") or "0")
-                if sol_price <= 0:
+                sol_price = _recorded_sol_price(intent)
+                if sol_price is None:
                     out.append(
                         {
                             "id": iid,
@@ -493,6 +503,14 @@ class Engine:
                     out.append({"id": iid, "signature": signature, "outcome": "still_unknown",
                                 "why": "no confirmed outcome yet; a present pending status remains unresolved"})  # fmt: skip
         return {"checked": len(out), "results": out, "still_blocking": len(self.journal.unresolved())}
+
+
+def _recorded_sol_price(intent: dict[str, Any]) -> Decimal | None:
+    try:
+        price = Decimal(intent["sol_price_usd"])
+    except (KeyError, ValueError, TypeError, InvalidOperation):
+        return None
+    return price if price.is_finite() and price > 0 else None
 
 
 def _tokens(intent: dict[str, Any]) -> tuple[Token, Token]:
@@ -556,7 +574,7 @@ def realized_from_meta(
             return None
         native_delta = unsigned(after[idx]) - unsigned(before[idx])
         fee = unsigned(meta["fee"])
-        rent = unsigned(retained_rent)
+        unsigned(retained_rent)  # Reject malformed persisted simulation evidence; actual rent is measured below.
         # Explicit empty arrays can describe a newly created token account. Missing arrays cannot.
         deltas = {
             tok.mint: token_total(meta["postTokenBalances"], tok.mint) - token_total(meta["preTokenBalances"], tok.mint)
@@ -565,9 +583,33 @@ def realized_from_meta(
     except (KeyError, IndexError, TypeError, ValueError, AttributeError):
         return None
 
+    # Actual owner token-account balances establish retained/refunded rent. A
+    # simulated rent estimate cannot account for closing pre-existing WSOL.
+    def rent_total(entries: list[dict[str, Any]], balances: list[int]) -> int:
+        total = 0
+        for entry in entries:
+            if entry["owner"] != owner:
+                continue
+            index = entry["accountIndex"]
+            amount = int(entry["uiTokenAmount"]["amount"]) if entry["mint"] == WSOL_MINT else 0
+            account_rent = unsigned(balances[index]) - amount
+            if account_rent < 0:
+                raise ValueError("inconsistent wrapped-SOL balance")
+            total += account_rent
+        return total
+
+    try:
+        rent_delta = rent_total(meta["postTokenBalances"], after) - rent_total(meta["preTokenBalances"], before)
+        wsol_delta = token_total(meta["postTokenBalances"], WSOL_MINT) - token_total(
+            meta["preTokenBalances"], WSOL_MINT
+        )
+        sol_delta = native_delta + wsol_delta + fee + rent_delta
+    except (KeyError, IndexError, TypeError, ValueError):
+        return None
+
     def side_amount(tok: Token, is_input: bool) -> int:
         if tok.mint == WSOL_MINT:
-            return -(native_delta + fee) - rent if is_input else native_delta + fee + rent
+            return -sol_delta if is_input else sol_delta
         return -deltas[tok.mint] if is_input else deltas[tok.mint]
 
     return {

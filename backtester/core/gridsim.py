@@ -612,19 +612,11 @@ def _plan(
     for lot in lots:
         if lot.qty <= 0:
             continue
-        # A lot's rung is known exactly — it is the level the bid rested at — so
-        # look it up rather than re-deriving it from the fill price. Besides being
-        # O(1) instead of O(rungs), it cannot mis-snap a lot to a neighbouring rung
-        # when slippage is a large fraction of the rung width.
-        idx = level_index.get(lot.level) if level_index else None
-        if idx is None:
-            idx = nearest_level_index(levels, lot.level)
+        # The extension anchors occupancy and exits to the actual fill price.
+        # Keep lot.level only as the lot-matching and attribution identity.
+        idx = nearest_level_index(levels, lot.price)
         lot_level_indexes.add(idx)
-        exit_level = (
-            levels[idx + 1]
-            if idx < len(levels) - 1
-            else paired_exit_level(levels, lot.level)
-        )
+        exit_level = paired_exit_level(levels, lot.price)
         if not math.isfinite(exit_level) or exit_level <= lot.price:
             skipped["exit-not-above-entry"] += 1
             continue

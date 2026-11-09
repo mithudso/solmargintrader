@@ -1061,6 +1061,7 @@ class SolTuiApp(App):
         self._docs_highlighted_path: str | None = None
         # The text as it was on disk when _docs_current_path was loaded, to detect unsaved edits.
         self._docs_loaded_text = ""
+        self._docs_revision: str | None = None
         self._forward_running = False
         self._forward_busy = False
         self._forward_seen: dict[str, Any] = {}
@@ -7430,6 +7431,7 @@ class SolTuiApp(App):
         # line it would compare the new text against the *previous* file's
         # loaded text and misreport a freshly-opened file as dirty.
         self._docs_loaded_text = text
+        self._docs_revision = env["result"].get("revision")
         view.text = text
         view.read_only = not editable
         # Unknown languages must clear the previous one, or a .txt renders with
@@ -7476,11 +7478,13 @@ class SolTuiApp(App):
             return
         path = self._docs_current_path
         text = self.query_one("#docs-view", TextArea).text
-        env = self._call("docs.write", {"path": path, "text": text})
+        env = self._call("docs.write", {"path": path, "text": text,
+                                        "expected_revision": self._docs_revision})
         if not env["ok"]:
             status.update(f"[red]{self._msg(env)}[/]")
             return
         self._docs_loaded_text = text
+        self._docs_revision = env["result"].get("revision")
         status.update(f"{path} — saved")
 
     # -- v2 shell ----------------------------------------------------------

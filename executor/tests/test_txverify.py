@@ -335,7 +335,7 @@ def test_third_party_wallet_lamports_moving_refuses(owner):
     honest_sell_mods(chain, owner)
     bad_ix = list(swap_instructions(owner, WSOL_MINT, USDC_MINT, AMOUNT))
     bad_ix[-2] = ix(
-        tv.JUPITER_V6, bytes.fromhex("c1209b3341d69c81") + bytes(28),
+        tv.JUPITER_V6, jupiter_ix(owner, WSOL_MINT, USDC_MINT).data,
         meta(owner, True, False), meta(ATTACKER, False, True),
     )  # fmt: skip
     tx = make_tx(bad_ix, owner)
@@ -355,7 +355,7 @@ def test_touching_an_owner_token_account_outside_the_swap_refuses(owner):
     chain.state[victim] = token_account(OTHER_MINT, owner, 50_000_000)
     bad_ix = list(swap_instructions(owner, WSOL_MINT, USDC_MINT, AMOUNT))
     bad_ix[-2] = ix(
-        tv.JUPITER_V6, bytes.fromhex("c1209b3341d69c81") + bytes(28),
+        tv.JUPITER_V6, jupiter_ix(owner, WSOL_MINT, USDC_MINT).data,
         meta(owner, True, False), meta(victim, False, True),
     )  # fmt: skip
     facts = tv.inspect_tx(make_tx(bad_ix, owner), {})

@@ -198,10 +198,28 @@ class Daemon:
     def eth_usd(self) -> float:
         return self.known_prices().get(addresses.WETH.lower(), 0.0)
 
-    def runner(self, tokens: list[str], pool: str | None) -> Any:
+    def runner(
+        self,
+        tokens: list[str],
+        pool: str | None,
+        *,
+        slot: str | None = None,
+        wallet: bool = False,
+    ) -> Any:
         if self.live:
             self.assert_acting()
-            return LiveRunner(self.chain, self.signer, tokens, self.cfg.execution, pool, journal=self.journal)
+            accounting = (
+                {"scope": "slot", "slot": slot} if slot is not None else ({"scope": "wallet"} if wallet else None)
+            )
+            return LiveRunner(
+                self.chain,
+                self.signer,
+                tokens,
+                self.cfg.execution,
+                pool,
+                journal=self.journal,
+                accounting=accounting,
+            )
         return SimRunner(self.chain, self.cfg.owner, tokens, pool)
 
     def _receipt_hash(self, res: RebalanceResult, kinds: set[str]) -> str | None:
@@ -405,7 +423,7 @@ class Daemon:
                     raise RuntimeError(why)
                 res = self._send(
                     lambda: self.rb.unwrap_weth(
-                        amount, self.runner(runner_tokens(addresses.WETH, addresses.AERO_TOKEN), None)
+                        amount, self.runner(runner_tokens(addresses.WETH, addresses.AERO_TOKEN), None, wallet=True)
                     )
                 )
                 detail = f"unwrapped {amount / 1e18:.6f} WETH for gas"
@@ -459,7 +477,7 @@ class Daemon:
             )
             if why:
                 continue
-            runner = self.runner(tokens, pool.address)
+            runner = self.runner(tokens, pool.address, wallet=True)
             res = self._send(self.rb.swap_to_eth, pool, t["address"], amount_in, min_out, runner)
             sold = f"{amount_in / 10 ** t['decimals']:.6g} {t['symbol']}"
             return res, f"swapped {sold} for ~{expected / 1e18:.6f} ETH gas (smart account)"
@@ -533,10 +551,10 @@ class Daemon:
         pos = self.chain.position(tid, owner_hint=self.cfg.owner)
         self._require_owner(pos)
         p = self.prices()
+        u0, u1 = self._pool_prices(pos.pool, p)
         a0, a1 = pos.human_amounts()
-        usd = a0 * p.get(pos.pool.token0.address.lower(), 0) + a1 * p.get(pos.pool.token1.address.lower(), 0)
-        if not usd > 0:
-            raise RuntimeError("no USD value (a pool token has no price)")
+        usd = a0 * u0 + a1 * u1
+        finite_number(usd, "initial position USD value", positive=True)
         self.ledger.open_slot(
             str(tid),
             pos.pool.address,
@@ -753,7 +771,7 @@ class Daemon:
             if why:
                 self.log("skip", f"claim not sent: {why}", slot)
                 return
-            res = self._send(lambda: self.rb.claim(pos, self.runner(toks, pos.pool.address)))
+            res = self._send(lambda: self.rb.claim(pos, self.runner(toks, pos.pool.address, slot=slot)))
             claimed = res.aero_claimed
             self.log("claim", f"claimed {claimed / 1e18:.4f} AERO", slot, res, reward_usd=claimed / 1e18 * aero_usd)
             if claimed <= 0:
@@ -764,7 +782,7 @@ class Daemon:
             if why:
                 self.log("skip", f"collect not sent: {why}", slot)
                 return
-            res = self._send(lambda: self.rb.collect(pos, self.runner(toks, pos.pool.address)))
+            res = self._send(lambda: self.rb.collect(pos, self.runner(toks, pos.pool.address, slot=slot)))
             amt0, amt1 = (max(0, x) for x in res.amounts_in_position)
             # Booked from the amounts that actually arrived, not from the estimate that triggered the collect.
             got_usd = amt0 / 10**d0 * u0 + amt1 / 10**d1 * u1
@@ -806,7 +824,13 @@ class Daemon:
         try:
             res = self._send(
                 lambda: self.rb.topup(
-                    fresh, amt0, amt1, self.runner(toks, pos.pool.address), u0, u1, include_unstake_proceeds=False
+                    fresh,
+                    amt0,
+                    amt1,
+                    self.runner(toks, pos.pool.address, slot=slot),
+                    u0,
+                    u1,
+                    include_unstake_proceeds=False,
                 )
             )
         except RebalanceError as e:
@@ -883,7 +907,7 @@ class Daemon:
                 )
                 if problem:
                     continue
-            runner = self.runner(tokens, route.address)
+            runner = self.runner(tokens, route.address, slot=slot, wallet=slot is None)
             res = self._send(self.rb.swap_exact, route, Web3.to_checksum_address(token), amount, runner, min_out)
             got = res.amount_out
             self.log(
@@ -1080,7 +1104,15 @@ class Daemon:
         try:
             res = self._send(
                 lambda: self.rb.deploy(
-                    pool, rng, stake, amt0, amt1, self.runner(toks, pool.address), u0, u1, on_stage=on_stage
+                    pool,
+                    rng,
+                    stake,
+                    amt0,
+                    amt1,
+                    self.runner(toks, pool.address, wallet=True),
+                    u0,
+                    u1,
+                    on_stage=on_stage,
                 )
             )
         except RebalanceError as e:

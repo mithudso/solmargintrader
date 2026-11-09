@@ -6,6 +6,17 @@ speculative — each item is either stated in the code or was reproduced.
 Source markers are not an exhaustive issue list. The dated bootstrap and optimizer
 reports record reviewed findings and residuals; this page records ongoing limitations.
 
+### 2026-11-08 optimizer residuals
+
+The bounded optimizer repaired 98 findings. Integrated upstream executor work closed two
+more original residuals. It stopped at `BLIND-AUDIT-DISSENT` with 13 remaining findings
+(seven High, six Medium). These include executor reduce-only admission; raw upstream error propagation; paper
+fill ordering; historical triangle replay; research delay/selection/empty-table cases;
+and Aero soak, conversion status and concurrent evidence updates. Passing tests do not
+close these findings. See [the exact audit and scope](code-deep-optimizer-2026-11-08.md).
+The review covered 50 primary sources of 261 at its audited base; final gate coverage
+was partial on several files. Owner live-order acceptance remains unavailable.
+
 ---
 
 ## Extension — the money path
@@ -51,6 +62,13 @@ cannot load an extension from the command line, so the e2e needs Chrome for Test
 ---
 
 ## Backtester and research
+
+### Historical research artifacts need fresh producer evidence
+
+Sweep and redundancy selection requires current discovery-only provenance, source hashes and
+complete prerequisite artifacts. Legacy, tampered or full-history selection artifacts refuse.
+The optimizer did not regenerate historical sweeps or change published historical figures.
+
 
 ### The cached data is a snapshot with no freshness contract
 
@@ -100,6 +118,20 @@ looking hung. Not a bug — the price of engine parity.
 ---
 
 ## soltui
+
+### Manual Jupiter V2 is preview-only
+
+The manual path has structural transaction checks, but independent economic verification is
+incomplete. Submit and quick-submit refuse before key loading, signing or sending. Unsigned
+previews require a known input valuation; history and chain reconciliation remain available.
+Historical unknown submissions stay blocked until chain proof resolves them. No elapsed-time
+rule clears that uncertainty. This limitation does not change separately armed Coinbase orders.
+
+### Legacy recorder Stop metadata
+
+Recorder Stop uses a nonce bound to the active recorder lock and never sends a signal to a PID
+from a file. A recorder started by an older version without this metadata cannot be stopped through
+that fallback. The command reports the refusal instead of risking an unrelated process.
 
 ### The packaging paths have no tests
 

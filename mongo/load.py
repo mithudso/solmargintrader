@@ -5,14 +5,10 @@
     python3 mongo/load.py --only bars,strategies
     python3 mongo/load.py --dry-run        # count what would load, write nothing
 
-**This loader is destructive by design and idempotent by consequence.** It drops
-and recreates every collection it writes. That is not laziness: a time series
-collection accepts no unique index, so there is no upsert key and no database-level
-guard against loading the same series twice -- a second run would silently double
-every bar and every query would then be quietly wrong. Dropping is the only way to
-make "run it again" safe, and the store is derived from files in this repo, so
-nothing is lost. `mongo/tests/test_load.py` asserts that two consecutive loads leave
-identical counts.
+Derived artifact collections are dropped and rebuilt to prevent duplicate time
+series measurements. Test receipts are original observations with no backing file.
+They are retained across reloads and upserted by (git_sha, suite) only when suites
+are actually run. `mongo/tests/test_load.py` checks derived-load idempotence.
 
 Scope: only the collections named in `mongo/schema.py`, only in the
 `solmargintrader` database. The same server hosts unrelated databases and this
@@ -181,6 +177,33 @@ def bar_files() -> list[tuple[Path, str, str]]:
     return found
 
 
+def bar_source(path: Path, asset: str) -> dict[str, Any]:
+    """Alternate caches declare their venue/quote in the exact-series sidecar."""
+    sidecar = path.with_suffix(".source.json")
+    if not sidecar.exists():
+        # The original CsvLoader/fetch cache contract is Coinbase USD. Alternate
+        # fetchers publish an explicit source sidecar beside the same CSV name.
+        return {"source": "coinbase", "venue": "coinbase", "pair": f"{asset}-USD", "quote": "USD"}
+    raw, prov = source_snapshot(sidecar)
+    metadata = json.loads(raw.decode("utf-8"))
+    if not isinstance(metadata, dict) or metadata.get("asset") != asset:
+        raise ValueError(f"{sidecar}: source metadata asset does not match the bar cache")
+    for key in ("venue", "pair", "quote"):
+        if not isinstance(metadata.get(key), str) or not metadata[key].strip():
+            raise ValueError(f"{sidecar}: source metadata requires {key}")
+    from backtester.core.fetch_minutes_alt import VENUES
+    venue = metadata["venue"]
+    if venue == "coinbase":
+        expected_pair = f"{asset}-USD"
+    else:
+        expected_pair = VENUES[venue].pair(asset) if venue in VENUES else None
+    expected_quote = "USD" if venue == "coinbase" else "USDT"
+    if metadata["quote"] != expected_quote or metadata["pair"] != expected_pair:
+        raise ValueError(f"{sidecar}: unsupported or inconsistent venue/pair/quote identity")
+    return {"source": metadata["venue"], **{key: metadata[key] for key in ("venue", "pair", "quote")},
+            "source_metadata": metadata, "source_metadata_provenance": prov}
+
+
 def load_bars() -> list[dict[str, Any]]:
     """One measurement per bar, with the series identity in the metaField."""
     from backtester.core.data import checksum_frame
@@ -191,7 +214,7 @@ def load_bars() -> list[dict[str, Any]]:
         meta = {
             "asset": asset,
             "interval": interval,
-            "source": "coinbase",
+            **bar_source(path, asset),
             **prov,
             # The frame checksum, not the file checksum: this is the identity a
             # backtest or a readout reports, so a bar here can be tied to the run
@@ -251,7 +274,14 @@ def load_strategies() -> list[dict[str, Any]]:
     from backtester.core.strategies import FAMILY, REGISTRY, build
 
     docs = []
-    for card in cards_mod.load_all().values():
+    snapshots: dict[Path, dict[str, Any]] = {}
+
+    def read_card(path: Path) -> str:
+        raw, prov = source_snapshot(path)
+        snapshots[path] = prov
+        return raw.decode("utf-8")
+
+    for card in cards_mod.load_all(read_text=read_card).values():
         path = Path(card.path)
         registry: dict[str, Any] | None = None
         if card.registry_key and card.registry_key in REGISTRY:
@@ -284,7 +314,7 @@ def load_strategies() -> list[dict[str, Any]]:
                 "presets": clean(card.presets),
                 "body": card.body,
                 "registry": registry,
-                **provenance(path),
+                **snapshots[path],
             }
         )
     return docs
@@ -380,7 +410,10 @@ def run_context() -> tuple[dict[str, Any], dict[str, Any]] | None:
 
 
 def artifact_rows(path: Path, context: tuple[dict[str, Any], dict[str, Any]]):
-    table, prov = read_csv_snapshot(path)
+    try:
+        table, prov = read_csv_snapshot(path)
+    except OSError as exc:
+        raise ValueError(f"missing or unreadable declared run artifact {path.name}; regenerate the run") from exc
     inventory = context[0].get("artifact_sha256")
     if not isinstance(inventory, dict) or inventory.get(path.name) != prov["source_sha256"]:
         raise ValueError(f"run artifact {path.name} lacks matching manifest hash proof; regenerate the run")
@@ -394,9 +427,11 @@ def load_backtest_runs(*, run_snapshot=None) -> list[dict[str, Any]]:
         return []
     manifest, prov = context
     comparison = REPO / "results" / "comparison.csv"
-    results, comparison_prov = artifact_rows(comparison, context) if comparison.exists() else ([], None)
+    results, comparison_prov = artifact_rows(comparison, context)
     return [{"_id": run_identifier(manifest), "manifest": clean(manifest),
-             "comparison": clean(results), "comparison_provenance": comparison_prov, **prov}]
+             **{key:manifest.get(key) for key in ("asset", "interval", "mode")},
+             "results": clean(results), "comparison": clean(results),
+             "comparison_provenance": comparison_prov, **prov}]
 
 
 def run_identifier(manifest: dict[str, Any]) -> str:
@@ -413,10 +448,8 @@ def load_equity_points(*, run_snapshot=None) -> list[dict[str, Any]]:
     manifest, manifest_prov = context
     run_id = run_identifier(manifest)
     docs = []
-    for path in sorted((REPO / "results").glob("equity_*.csv")):
-        strategy = path.stem[len("equity_"):]
-        if strategy not in manifest["strategies"]:
-            continue
+    for strategy in sorted(manifest["strategies"]):
+        path = REPO / "results" / f"equity_{strategy}.csv"
         table, prov = artifact_rows(path, context)
         meta = {"run_id": run_id, "strategy": strategy, "manifest_provenance": manifest_prov, **prov}
         for row in table:
@@ -442,10 +475,8 @@ def load_trades(*, run_snapshot=None) -> list[dict[str, Any]]:
     manifest, manifest_prov = context
     run_id = run_identifier(manifest)
     docs = []
-    for path in sorted((REPO / "results").glob("trades_*.csv")):
-        strategy = path.stem[len("trades_"):]
-        if strategy not in manifest["strategies"]:
-            continue
+    for strategy in sorted(manifest["strategies"]):
+        path = REPO / "results" / f"trades_{strategy}.csv"
         table, prov = artifact_rows(path, context)
         for row in table:
             ts = row.get("ts") if row.get("ts") is not None else row.get("timestamp")
@@ -744,7 +775,7 @@ def build_all(
         if "experiment_rows" in wanted:
             batches["experiment_rows"] = rows
 
-    if "test_results" in wanted:
+    if "test_results" in wanted and run_suites:
         batches["test_results"] = load_test_results(
             run_suites=run_suites, skip=skip_suites
         )
@@ -804,10 +835,19 @@ def main(argv: list[str] | None = None) -> int:
 
     db = connect(args.uri)[DB_NAME]
     # Schema changes, indexes and drops all obey the same explicit selection.
-    create(db, drop=True, only=only)
+    rebuilt = set(batches) - {"test_results"}
+    if rebuilt:
+        create(db, drop=True, only=rebuilt)
+    if batches.get("test_results"):
+        # Test receipts are original observations, rather than derived source
+        # artifacts. Retain previous commits and suites omitted by --skip-suite.
+        create(db, drop=False, only={"test_results"})
 
     for name, docs in sorted(batches.items()):
-        if docs:
+        if name == "test_results":
+            for doc in docs:
+                db[name].replace_one({"git_sha": doc["git_sha"], "suite": doc["suite"]}, doc, upsert=True)
+        elif docs:
             db[name].insert_many(docs, ordered=False)
         print(f"{name:<18} {len(docs):>7,} documents")
 

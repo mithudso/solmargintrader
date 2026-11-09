@@ -282,11 +282,36 @@ async function ingestFillsUnlocked({ venue, store, config, log = () => {} }) {
  *
  * @returns a summary the popup and dashboard render directly.
  */
+const DIAGNOSTIC_KINDS = new Set(['Error', 'TypeError', 'RangeError', 'SyntaxError',
+  'HttpError', 'TimeoutError', 'AbortError', 'CommandError']);
+
+function diagnosticError(error, stage) {
+  // Error messages and response bodies can contain credentials. Persist the
+  // operation, a known error class and an HTTP status instead of those strings.
+  const detail = { stage, kind: DIAGNOSTIC_KINDS.has(error?.name) ? error.name : 'Error' };
+  if (Number.isInteger(error?.status) && error.status >= 100 && error.status <= 599) detail.status = error.status;
+  return detail;
+}
+
 export function tick(args) {
   return withStoreLock(args.store, async () => {
-    const venue = args.buildVenue ? await args.buildVenue() : args.venue;
-    const limits = args.readLimits ? await args.readLimits() : args.limits;
-    return tickUnlocked({ ...args, venue, limits });
+    let result, stage = 'prepare-venue';
+    try {
+      const venue = args.buildVenue ? await args.buildVenue() : args.venue;
+      stage = 'prepare-limits';
+      const limits = args.readLimits ? await args.readLimits() : args.limits;
+      stage = 'tick-state';
+      result = await tickUnlocked({ ...args, venue, limits });
+    } catch (error) {
+      await args.store.logEvent({ type: 'tick', summary: summarise({
+        tsMs: Date.now(), mode: null, price: null, placed: [], rejected: [], orphaned: [],
+        errors: [{}], errorDetails: [diagnosticError(error, stage)],
+      }) });
+      throw error;
+    }
+    // Early safety holds must leave the same durable history as completed ticks.
+    await args.store.logEvent({ type: 'tick', summary: summarise(result) });
+    return result;
   });
 }
 
@@ -322,12 +347,14 @@ async function tickUnlocked({
     // Intent keys held out of planning pending a human decision (resolveIntent).
     unknownIntents: [],
     errors: [],
+    errorDetails: [],
     pnl: null,
     // Stays 0 when a tick aborts early, so the field's absence never has to be
     // distinguished from "no unknown fees".
     feeUnknownFills: 0,
   };
 
+  let stage = 'price';
   try {
     const price = await venue.getPrice();
     // A NaN or non-positive price would flow into P&L, get persisted as the
@@ -341,14 +368,17 @@ async function tickUnlocked({
     // Dry-run venues fill resting rungs off the new mark before reconciling.
     if (typeof venue.markPrice === 'function') venue.markPrice(price);
 
+    stage = 'reconcile';
     const rec = await reconcileUnlocked({ venue, store, config, log });
     result.orphaned = rec.orphaned;
 
+    stage = 'fills';
     const ingested = await ingestFillsUnlocked({ venue, store, config, log });
     if (ingested.rejected.length) result.errors.push(...ingested.rejected.map((r) => ({ error: `fill ${r.id}: ${r.reason}` })));
     // Not an error — the fills are real — but the P&L below understates costs by
     // however much these fees were, so the count travels with the result.
 
+    stage = 'accounting';
     const fills = await store.allFills();
     result.feeUnknownFills = fills.filter((f) => f.feeUnknown === true).length;
     const carry = await store.allCarry();
@@ -429,6 +459,7 @@ async function tickUnlocked({
     // tick's reconcile already resolved it), so it is held for the same reason.
     // Read AFTER ingestFills: a fill that just arrived flips UNKNOWN to FILLED,
     // and that rung is legitimately free again.
+    stage = 'planning';
     const journal = await store.allIntents();
     const held = journal.filter(
       (i) => i.status === INTENT_STATUS.UNKNOWN || i.status === INTENT_STATUS.SUBMITTING,
@@ -498,6 +529,7 @@ async function tickUnlocked({
     // bad setLimits value gets fixed instead of silently running on defaults.
     result.limitProblems = limitProblems;
 
+    stage = 'submit';
     for (const intent of admitted) {
       const currentRuntime = await configStore.getRuntime();
       if (queueFor(store).stopped || !currentRuntime.armed || currentRuntime.killSwitch) {
@@ -543,6 +575,7 @@ async function tickUnlocked({
           error: String(err.message ?? err).slice(0, 300),
         });
         result.errors.push({ intentKey: intent.intentKey, error: String(err.message ?? err) });
+        result.errorDetails.push(diagnosticError(err, 'submit'));
         log({ level: 'error', msg: 'placeOrder failed', intentKey: intent.intentKey, error: String(err) });
       }
     }
@@ -550,10 +583,10 @@ async function tickUnlocked({
     await persistRuntime();
   } catch (err) {
     result.errors.push({ error: String(err.message ?? err) });
+    result.errorDetails.push(diagnosticError(err, stage));
     log({ level: 'error', msg: 'tick failed', error: String(err) });
   }
 
-  await store.logEvent({ type: 'tick', summary: summarise(result) });
   return result;
 }
 
@@ -566,6 +599,11 @@ export function summarise(r) {
     rejected: r.rejected.length,
     orphaned: r.orphaned.length,
     errors: r.errors.length,
+    ...(r.errorDetails?.length ? { errorDetails: r.errorDetails.slice(0, 20) } : {}),
+    ...(r.skipped?.length ? { holds: r.skipped.slice(0, 20).map((entry) =>
+      /^[a-z0-9-]{1,80}$/.test(entry.reason) ? entry.reason : 'execution-held') } : {}),
+    ...(r.unknownIntents?.length ? { unknownIntents: r.unknownIntents.slice(0, 20)
+      .map((key) => String(key).slice(0, 200)) } : {}),
     netUsd: r.pnl?.totalNetUsd ?? null,
     // A fee the venue never reported is booked as 0 so the arithmetic stays
     // finite, which means the fee total reads as complete when it is not. The

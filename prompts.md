@@ -1,12 +1,18 @@
 # Prompt history
 
-Version: 137
-Delta: v136 to v137; record recurring backtest cadence failure.
+Version: 138
+Delta: v137 to v138; record recurring backtest cadence failure.
 
-## v137 - 2026-11-09
+## v138 - 2026-11-09
 
 ```text
 When trying to run a backtest I get this error again: failed: ValueError: timestamp cadence must equal 1m; gapped or mismatched bars are unsupported
+```
+
+## v137 - 2026-11-08
+
+```text
+Run the deep code optimizer on this repo
 ```
 
 ## v136 - 2026-11-08

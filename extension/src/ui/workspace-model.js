@@ -1,3 +1,5 @@
+import { spreadsheetText } from '../core/csv.js';
+
 /** Registry-derived navigation and result adapters shared by the dashboard and tests. */
 export const WORKSPACES = [
   { id: 'now', title: 'Now', detail: 'Processes, prices, current recommendations and saved results.', tools: ['prices.status', 'backtest.status', 'queue.progress', 'forwardtest.state', 'compound.autopilot_status', 'bots.schedule_status', 'portfolio.last'] },
@@ -37,9 +39,7 @@ export function columnsFor(rows) {
 export function rowsToCsv(rows) {
   const columns = columnsFor(rows);
   const quote = (v) => {
-    let s = cellText(v);
-    // Spreadsheet formulas from external token/document names must remain text.
-    if (typeof v === 'string' && /^[\s]*[=+@-]/.test(s)) s = `'${s}`;
+    const s = spreadsheetText(typeof v === 'object' ? cellText(v) : v);
     return `"${s.replaceAll('"', '""')}"`;
   };
   return [columns.map(quote).join(','), ...rows.map((r) => columns.map((c) => quote(r[c])).join(','))].join('\r\n');

@@ -7,7 +7,7 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## Signal Desk workspace (0.5.1)
+## Signal Desk workspace (0.5.2)
 
 The full dashboard opens a focused **Live signals**, **Backtesting**, **Forward testing**, or
 **Bot monitor** workspace. The popup shows a one-time read-only signal/process glance and four
@@ -35,6 +35,11 @@ CSP, engine defaults, trading rails or forecast code hashes were changed.
 
 See [Signal Desk workflows](../docs/SIGNAL-DESK.md) and
 [bridge lifecycle and verification](../docs/EXTENSION-TUI-PARITY.md).
+
+Manual Jupiter previews remain unsigned, and submission refuses before key loading/signing
+until independent V2 economic verification exists. Coinbase previews retain their separate confirmed
+submission flow. Catalogued document saves require the original exact-byte revision and preserve
+drafts on conflict.
 
 ## Existing market views
 
@@ -117,7 +122,7 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.5.1`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.5.2`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
 is the primary dashboard workspace (popup → **Full workspace**).
@@ -312,7 +317,8 @@ Realized P&L closes the lots each sell was **paired** with (`closesLots`), then 
 for anything unlinked (legacy fills, unmatched sells). The planner, `recentreDecision` and the
 daily-loss rail all use this paired view. Strict FIFO — the IRS default for property, which tax tools
 expect — is `snapshot({ linkage: false })` / `matchFifo(fills, { linkage: false })`; nothing in the live
-path uses it, so use it for a tax-style reconciliation. The CSV export is the raw fill log and is
+path uses it, so use it for a tax-style reconciliation. The CSV export preserves numeric fills and quotes text safely. Formula-leading external text receives
+an apostrophe for spreadsheet safety; the JSON export retains original identity strings. It is
 unaffected.
 
 - Entry fees ride on the lot, so a partial close realizes only its proportional share

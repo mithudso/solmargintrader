@@ -23,7 +23,9 @@ MISSING = object()
 def failed_attempt(journal, *, strategy="regular", fee="1.25", ts=NOW, iid="failed"):
     journal.append("intent", iid, ts=ts, strategy=strategy, side="buy", base_mint=WSOL_MINT, in_usd="1")
     journal.append("sending", iid, ts=ts, signature=f"sig-{iid}")
-    fields = {} if fee is MISSING else {"fee_usd": fee}
+    fields = {"fee_lamports": FEE}
+    if fee is not MISSING:
+        fields["fee_usd"] = fee
     journal.append("result", iid, ts=ts, status="failed", signature=f"sig-{iid}", **fields)
     return journal.states()
 
@@ -111,6 +113,7 @@ def failed_status():
 def test_engine_measures_and_records_failed_on_chain_fee(cfg, chain, owner):
     engine = live_engine(cfg, chain, owner)
     chain.default_status = failed_status()
+    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
     with pytest.raises(ExecutorError, match="failed on chain"):
         swap(engine, live=True, reason="synthetic failed-chain fee")
     state = next(iter(engine.journal.states().values()))
@@ -127,6 +130,7 @@ def test_engine_measures_and_records_failed_on_chain_fee(cfg, chain, owner):
 def test_failed_fee_unreadable_holds_until_reconcile_measures_it(cfg, chain, owner, fee):
     engine = live_engine(cfg, chain, owner)
     chain.default_status = failed_status()
+    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
     complete = copy.deepcopy(chain.tx_meta)
     if fee == "missing":
         del chain.tx_meta["meta"]["fee"]
@@ -152,6 +156,7 @@ def test_reconcile_records_failed_fee_after_initial_confirmation_timeout(cfg, ch
     with pytest.raises(Ambiguous):
         swap(engine, live=True, reason="synthetic delayed failure")
     chain.default_status = failed_status()
+    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
     assert engine.reconcile()["results"][0]["outcome"] == "failed_on_chain"
     out = next(iter(engine.journal.states().values()))["outcome"]
     assert out["fee_lamports"] == FEE

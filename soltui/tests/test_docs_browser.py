@@ -67,7 +67,8 @@ class WriteDocumentTests(unittest.TestCase):
         target.write_text("old\n", encoding="utf-8")
         entries = [_entry("soltui/app.py")]
 
-        written = docs_browser.write_document("soltui/app.py", "new\n", entries)
+        written = docs_browser.write_document("soltui/app.py", "new\n", entries,
+                                             expected_revision=docs_browser.document_revision("old\n"))
 
         self.assertEqual(written, target.resolve())
         self.assertEqual(target.read_text(encoding="utf-8"), "new\n")

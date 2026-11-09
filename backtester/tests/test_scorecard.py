@@ -595,13 +595,13 @@ class ForecastStatsTests(unittest.TestCase):
         self.assertAlmostEqual(s["oracle_net_bps"], round(float(np.abs(r).mean()) - rt, 3), places=3)
         self.assertAlmostEqual(s["gross_bps_per_call"], round(float(np.abs(r).mean()), 3), places=3)
 
-    def test_the_time_split_partitions_bars(self) -> None:
+    def test_the_time_split_excludes_boundary_crossing_outcomes(self) -> None:
         b = synthetic(400)
         ev = sc.evaluate(b, only(ema_cross=1))
         split = float(b.ts[250])
         a, z = sc.forecast_stats([ev], None, split), sc.forecast_stats([ev], split, None)
-        self.assertEqual(a["bars"] + z["bars"], sc.forecast_stats([ev])["bars"])
-        self.assertEqual(a["bars"], 250)
+        self.assertEqual(a["bars"] + z["bars"] + 1, sc.forecast_stats([ev])["bars"])
+        self.assertEqual(a["bars"], 249)
 
     def test_contiguous_segments_split_at_gaps(self) -> None:
         ts = np.array([0, 300, 600, 1500, 1800, 2400])
@@ -626,11 +626,11 @@ class FrontierControlTests(unittest.TestCase):
         cfg["aggregate"]["hold"] = 24
         held = sc.target_path(sc.evaluate(self.bars, cfg))
         self.assertLess(self.trades(held), self.trades(base))
-        # Every entry is kept for at least min(hold, bars until a flip or the end).
+        # This ungated configuration keeps every entry until its hold or the end.
         starts = np.flatnonzero((held != 0) & (np.concatenate(([0.0], held[:-1])) != held))
         for i in starts:
             run = held[i:i + 24]
-            self.assertTrue(np.all(run == held[i]) or np.any(run == -held[i]), f"entry at {i} cut short")
+            self.assertTrue(np.all(run == held[i]), f"entry at {i} cut short")
 
     def test_entry_quantile_only_takes_the_strongest_readings(self) -> None:
         ev = sc.evaluate(self.bars, self.cfg)

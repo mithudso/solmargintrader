@@ -37,6 +37,7 @@ def test_processed_error_remains_unknown_until_confirmed(cfg, chain, owner):
     chain.default_status = {"confirmationStatus": "processed", "err": {"InstructionError": [0, "failure"]}}
     assert engine.reconcile()["still_blocking"] == 1
     chain.default_status["confirmationStatus"] = "confirmed"
+    chain.tx_meta["meta"]["err"] = chain.default_status["err"]
     assert engine.reconcile()["results"][0]["outcome"] == "failed_on_chain"
 
 
@@ -95,6 +96,12 @@ def test_malformed_token_amount_is_unreadable(owner, amount):
 def test_explicit_empty_opening_array_supports_new_token_account(owner):
     tx = tx_json(owner, -(AMOUNT + FEE), FEE, {USDC_MINT: (0, OUT)})
     tx["meta"]["preTokenBalances"] = []
+    # A new token account has no opening lamports; its rent leaves the payer.
+    from executor.txverify import TOKEN_ACCOUNT_RENT_LAMPORTS
+
+    tx["meta"]["preBalances"][1] = 0
+    tx["meta"]["postBalances"][1] = TOKEN_ACCOUNT_RENT_LAMPORTS
+    tx["meta"]["postBalances"][0] -= TOKEN_ACCOUNT_RENT_LAMPORTS
     result = realized_from_meta(tx, owner, resolve("SOL"), resolve("USDC"), 0)
     assert result["in_raw"] == AMOUNT and result["out_raw"] == OUT
 

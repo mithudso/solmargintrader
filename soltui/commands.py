@@ -746,19 +746,22 @@ def _forward_runner(rt: "Runtime") -> None:
             now = time.time()
             minute = int(now // 60)
             if minute != checked_minute and now % 60 >= FORWARD_GRACE_S:
-                checked_minute = minute
                 with rt.lock:
-                    rt.forward_busy = True
-                try:
-                    _forward_check_all(rt, plan)
-                finally:
-                    with rt.lock:
-                        rt.forward_busy = False
+                    acquired = not rt.forward_busy
+                    if acquired:
+                        rt.forward_busy = True
+                if acquired:
+                    checked_minute = minute
+                    try:
+                        _forward_check_all(rt, plan)
+                    finally:
+                        with rt.lock:
+                            rt.forward_busy = False
             rt.forward_stop.wait(1.0)
     finally:
         with rt.lock:
             rt.forward_thread = None
-            rt.forward_busy = False
+            # An overlapping manual tick may still own the busy slot.
 
 
 _SIMULATION_PARAMS = (
@@ -1823,10 +1826,11 @@ def compound_unattended_status(ctx: Context, p: dict[str, Any]) -> Any:
           P("current_only", "bool", "Only calls made under the current configuration.")))
 def compound_forward_status(ctx: Context, p: dict[str, Any]) -> Any:
     from backtester.core import scorecard as sc
+    asset = _compound_asset(ctx, p)
     h = None
     if p.get("current_only"):
-        h = sc.config_hash(_compound(compound_mod.load_state)["config"])
-    return _compound(compound_mod.forward_status, _compound_asset(ctx, p), h)
+        h = sc.config_hash(_compound(compound_mod.load_state, asset)["config"])
+    return _compound(compound_mod.forward_status, asset, h)
 
 
 # -- liquidity (read-only view of the aero-lp daemon, plus its KILL file) ------------------------
@@ -2046,18 +2050,22 @@ def docs_read(ctx: Context, p: dict[str, Any]) -> Any:
     text, language, real = docs_browser.read_document(p["path"], entries)
     entry = next((e for e in entries if e.path == p["path"]), None)
     return {"path": p["path"], "text": text, "language": language, "real_text": real,
-            "editable": bool(real and entry is not None and docs_browser.is_editable(entry))}
+            "editable": bool(real and entry is not None and docs_browser.is_editable(entry)),
+            "revision": docs_browser.document_revision(text) if real else None}
 
 
 @command("docs.write", "Save text to a catalogued, editable file (never research/results/).",
-         (P("path", "string", "Catalogue path.", True), P("text", "string", "New file contents.", True)),
+         (P("path", "string", "Catalogue path.", True), P("text", "string", "New file contents.", True),
+          P("expected_revision", "string", "Exact revision returned by docs.read.", True)),
          read_only=False)
 def docs_write(ctx: Context, p: dict[str, Any]) -> Any:
     try:
-        target = docs_browser.write_document(p["path"], p["text"], ctx.catalog())
-    except (PermissionError, FileNotFoundError, OSError) as exc:
+        target = docs_browser.write_document(p["path"], p["text"], ctx.catalog(),
+                                             expected_revision=p.get("expected_revision"))
+    except (OSError, ValueError) as exc:
         raise CommandError("failed", f"save failed: {exc}") from exc
-    return {"path": p["path"], "bytes": len(p["text"].encode("utf-8")), "file": str(target)}
+    return {"path": p["path"], "bytes": len(p["text"].encode("utf-8")), "file": str(target),
+            "revision": docs_browser.document_revision(p["text"])}
 
 
 # -- P&L -----------------------------------------------------------------------------------------
@@ -2283,7 +2291,7 @@ def jupiter_tokens_search(ctx: Context, p: dict[str, Any]) -> Any:
     return {"tokens": jupiter_tokens.search(p["query"])}
 
 
-@command("jupiter.order_preview", "Review an estimated Jupiter spot swap; places no order.",
+@command("jupiter.order_preview", "Review an unsigned Jupiter estimate with structural checks only; submission is unavailable.",
          (P("product_id", "string", "Spot pair or token, for example SOL-USDC or BONK-USDC.", required=True),
           P("side", "string", "BUY or SELL.", required=True),
           P("size", "string", "Exact decimal size.", required=True),
@@ -2295,7 +2303,7 @@ def jupiter_order_preview(ctx: Context, p: dict[str, Any]) -> Any:
     return jupiter_manual.order_preview(p, taker_pubkey=taker)
 
 
-@command("jupiter.order_submit", "Submit one explicitly confirmed, reviewed live Jupiter swap.",
+@command("jupiter.order_submit", "Unavailable until Jupiter V2 has independent economic verification; always refuses.",
          (P("preview_id", "string", "Unexpired reviewed preview ID.", required=True),),
          read_only=False, long_running=True, requires_confirm=True)
 def jupiter_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
@@ -2305,7 +2313,7 @@ def jupiter_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
     return jupiter_manual.order_submit(p["preview_id"], keypair_path=key_path, expected_pubkey=taker)
 
 
-@command("jupiter.order_quick", "Place a live Jupiter swap without second confirmation after opting in.",
+@command("jupiter.order_quick", "Unavailable until Jupiter V2 has independent economic verification; always refuses.",
          (P("product_id", "string", "Spot pair or token.", required=True),
           P("side", "string", "BUY or SELL.", required=True),
           P("size", "string", "Exact decimal size.", required=True),
@@ -2313,13 +2321,8 @@ def jupiter_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
           P("skip_confirm", "bool", "Explicitly opt in to placing this live order without review.", required=True)),
          read_only=False, long_running=True)
 def jupiter_order_quick(ctx: Context, p: dict[str, Any]) -> Any:
-    if p.get("skip_confirm") is not True:
-        raise ValueError("Quick orders require skip_confirm=true; this places a live order")
-    reviewed = jupiter_order_preview(ctx, p)
     from . import jupiter_manual
-    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
-    key_path = os.environ.get("SOLANA_KEYPAIR_PATH", "~/.ssh/solana.private")
-    return jupiter_manual.order_submit(reviewed["preview_id"], keypair_path=key_path, expected_pubkey=taker)
+    raise ValueError(jupiter_manual.SUBMISSION_UNAVAILABLE)
 
 
 @command("jupiter.order_state", "Show unresolved manual Jupiter submissions after a restart.",

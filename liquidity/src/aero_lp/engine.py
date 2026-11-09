@@ -143,9 +143,13 @@ class Engine:
         for slot in self.state.slots.values():
             if slot.current_token_id in old_ids or slot.current_token_id == token_id:
                 slot.current_token_id = token_id
-                slot.last_rebalance_ts = slot.last_rebalance_ts or time.time()
                 if not any(record["hash"] in h.get("tx", []) for h in slot.history):
-                    slot.history.append({"ts": time.time(), "new": token_id, "tx": [record["hash"]], "recovered": True})
+                    recovered_at = time.time()
+                    slot.last_rebalance_ts = recovered_at
+                    slot.edge_checks = 0
+                    slot.history.append(
+                        {"ts": recovered_at, "new": token_id, "tx": [record["hash"]], "recovered": True}
+                    )
         self.state.save()
 
     def reconcile_submissions(self) -> None:
@@ -178,8 +182,16 @@ class Engine:
             if recovery_ledger is not None:
                 recovery_ledger.db.close()
 
-    def _live_runner(self, signer: Any, tokens: list[str], pool: str) -> LiveRunner:
-        return LiveRunner(self.chain, signer, tokens, self.cfg.execution, pool, journal=self.submission_journal())
+    def _live_runner(self, signer: Any, tokens: list[str], pool: str, *, wallet: bool = False) -> LiveRunner:
+        return LiveRunner(
+            self.chain,
+            signer,
+            tokens,
+            self.cfg.execution,
+            pool,
+            journal=self.submission_journal(),
+            accounting={"scope": "wallet"} if wallet else None,
+        )
 
     def _gate(self) -> None:
         if self.gate is not None:

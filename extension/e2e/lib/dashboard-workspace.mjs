@@ -10,25 +10,28 @@ export async function verifyDashboardWorkflows(page, browser) {
   };
 await ev(`(async()=>{
  const r=document.createElement('div');r.id='independent-fixture';r.append(document.querySelector('#view-soltui').cloneNode(true));document.body.append(r);window.r=r;window.calls=[];window.preview=0;window.fixtureDoc='  original\\n';
+ window.interleaveDocWrite=false;window.fixtureDocs=null;window.holdDocRead=false;window.holdDocWrite=false;window.docHeldRead=null;window.docHeldWrite=null;window.previewAvailable=true;
  window.liveClock=Date.now()-2000;window.liveDirection='UP';window.liveAccuracy=80;window.liveSamples=40;window.liveVoting={min_accuracy:60,min_resolved:20};window.liveHeld=null;window.liveHoldAsset=null;window.liveFailNext=false;
+
  const spec=[
  {name:'prices.status',describe:'Prices',params:[],read_only:true},
  {name:'forwardtest.predictions',describe:'Predictions',params:[{name:'asset',type:'string'}],read_only:true},
  {name:'demo.rows',describe:'Rows',params:[],read_only:true},
  {name:'docs.read',describe:'Read',params:[{name:'path',type:'string',required:true}],read_only:true},
- {name:'docs.write',describe:'Write',params:[{name:'path',type:'string',required:true},{name:'text',type:'string',required:true}],read_only:false},
+ {name:'docs.write',describe:'Write',params:[{name:'path',type:'string',required:true},{name:'text',type:'string',required:true},{name:'expected_revision',type:'string',required:true}],read_only:false},
  {name:'jupiter.order_preview',describe:'Preview',params:[],read_only:false},
  {name:'jupiter.order_submit',describe:'Submit',params:[{name:'preview_id',type:'string',required:true}],read_only:false,requires_confirm:true},
  {name:'settings.save',describe:'Settings',params:[{name:'base_address',type:'string'},{name:'forwardtest_autostart',type:'bool'}],read_only:false}];
+ const revision=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))).map(x=>x.toString(16).padStart(2,'0')).join('');
  const en=(command,result)=>({ok:true,command,result,error:null});
  const tx=async m=>{calls.push(m);if(m.type==='soltuiSession')return {ok:true,result:{available:true,connected:true,generation:1}};if(m.type==='soltuiCommands')return {ok:true,result:en('list',spec)};
  if(m.command==='prices.status')return {ok:true,result:en(m.command,{live:true,prices:{'SOL-USD':{mid:100,bid:99,ask:101,spread_bps:20,quote_ts:liveClock/1000,quote_age_s:(Date.now()-liveClock)/1000}}})};
  if(m.command==='forwardtest.predictions'){if(liveFailNext){liveFailNext=false;throw new Error('temporary prediction read failure')};const response={ok:true,result:en(m.command,{asset:m.params.asset,voting:liveVoting,rows:[{label:'fixture strategy',accuracy:liveAccuracy,resolved:40,pred_1m:liveDirection,acc_1m:liveAccuracy,resolved_1m:liveSamples,issued_1m:Date.now()/1000-60,expires_1m:Date.now()/1000+300}]})};if(m.params.asset===liveHoldAsset)return new Promise((resolve,reject)=>{liveHeld={resolve:()=>resolve(response),reject:()=>reject(new Error('old coin failed'))}});return response;}
  if(m.command==='settings.save' && m.params.live_vote_min_accuracy!==undefined){liveVoting={min_accuracy:m.params.live_vote_min_accuracy,min_resolved:m.params.live_vote_min_resolved};return {ok:true,result:en(m.command,{settings:liveVoting})};}
- if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW'})};
+ if(m.command==='jupiter.order_preview')return {ok:true,result:en(m.command,{preview_id:'preview-'+(++preview),status:'REVIEW',submission_available:previewAvailable,notice:previewAvailable?'Review preview':'Jupiter submission is unavailable.'})};
  if(m.command==='jupiter.order_submit')return {ok:true,result:en(m.command,{preview_id:m.params.preview_id,status:'FILLED',rows:[{preview_id:'row-choice'}]})};
- if(m.command==='docs.read')return {ok:true,result:en(m.command,{path:m.params.path,text:fixtureDoc,editable:true})};
- if(m.command==='docs.write'){fixtureDoc=m.params.text;return {ok:true,result:en(m.command,{path:m.params.path,bytes:fixtureDoc.length})}};
+ if(m.command==='docs.read'){const answer={ok:true,result:en(m.command,{path:m.params.path,text:fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc,revision:await revision(fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc),editable:true})};if(holdDocRead){holdDocRead=false;return new Promise(resolve=>{docHeldRead=()=>resolve(answer)})}return answer;}
+ if(m.command==='docs.write'){if(interleaveDocWrite){interleaveDocWrite=false;fixtureDocs[m.params.path]='concurrent writer';}const current=fixtureDocs?fixtureDocs[m.params.path]:fixtureDoc;if(m.params.expected_revision!==await revision(current))return {ok:true,result:{ok:false,error:{message:'Document changed since it was read.'}}};if(fixtureDocs)fixtureDocs[m.params.path]=m.params.text;else fixtureDoc=m.params.text;const answer={ok:true,result:en(m.command,{path:m.params.path,bytes:m.params.text.length,revision:await revision(m.params.text)})};if(holdDocWrite){holdDocWrite=false;return new Promise(resolve=>{docHeldWrite=()=>resolve(answer)})}return answer;};
  return {ok:true,result:en(m.command,{rows:[{name:'apple',value:2},{name:'pear',value:1}]})};};
  const intervals=[],nativeSetInterval=window.setInterval;
  window.setInterval=(fn,delay,...args)=>{const id=nativeSetInterval(fn,delay,...args);intervals.push({fn,delay,id});return id};
@@ -69,6 +72,39 @@ await ev(`r.querySelector('#soltuiEditor').value='my draft';fixtureDoc='external
 await wait(`r.querySelector('#soltuiEditorStatus').textContent.startsWith('Save refused:')`);
 assert.equal(await ev(`calls.filter(x=>x.command==='docs.write').length`),1);
 console.log('PASS editor preserves whitespace and refuses external-edit overwrite');
+await ev(`fixtureDocs={'A.md':'base','B.md':'base'};r.querySelector('#soltuiEditor').value='  saved\\n\\n';pick('docs.read');r.querySelector('[name=path]').value='A.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('A.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft A';holdDocRead=true;r.querySelector('#soltuiSave').click()`);
+await wait(`docHeldRead!==null`);
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='B.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('B.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft B';r.querySelector('#soltuiEditorStatus').textContent='Editing B';docHeldRead();docHeldRead=null;new Promise(resolve=>setTimeout(resolve,0))`);
+assert.equal(await ev(`calls.filter(x=>x.command==='docs.write' && x.params.path==='B.md').length`),0,'a safety read for A must never authorize a write to B');
+assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'draft B');
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='A.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('A.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft A';holdDocWrite=true;r.querySelector('#soltuiSave').click()`);
+await wait(`docHeldWrite!==null`);
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='B.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('B.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='draft B';r.querySelector('#soltuiEditorStatus').textContent='Editing B';docHeldWrite();docHeldWrite=null;new Promise(resolve=>setTimeout(resolve,0))`);
+assert.equal(await ev(`r.querySelector('#soltuiEditorStatus').textContent`),'Editing B','a late acknowledgement cannot mark a new document saved');
+assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'draft B');
+console.log('PASS editor binds saves and acknowledgements to the original document');
+await ev(`r.querySelector('#soltuiEditor').value='base';r.querySelector('[name=path]').value='A.md';r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`r.querySelector('#soltuiEditorPath').textContent.startsWith('A.md')`);
+await ev(`r.querySelector('#soltuiEditor').value='CAS draft';interleaveDocWrite=true;r.querySelector('#soltuiSave').click()`);
+await wait(`r.querySelector('#soltuiEditorStatus').textContent.startsWith('Save refused:')`);
+assert.equal(await ev(`fixtureDocs['A.md']`),'concurrent writer');
+assert.equal(await ev(`r.querySelector('#soltuiEditor').value`),'CAS draft');
+assert.match(await ev(`calls.filter(x=>x.command==='docs.write').at(-1).params.expected_revision`),/^[a-f0-9]{64}$/);
+console.log('PASS atomic revision conflict preserves concurrent text and editor draft');
+
+await ev(`previewAvailable=false;pick('jupiter.order_preview');r.querySelector('#soltuiForm').requestSubmit()`);
+await wait(`preview===3`);
+assert.equal(await ev(`r.querySelector('#soltuiNext button')`),null);
+assert.ok(await ev(`r.querySelector('#soltuiNext').textContent.includes('unavailable')`));
+console.log('PASS unavailable unsigned Jupiter previews offer no submission handoff');
 await ev(`r.querySelector('#soltuiLiveRefresh').click()`);
 await wait(`r.querySelector('#soltuiLiveScore').textContent.includes('Strong Buy') && r.querySelectorAll('#soltuiLiveChart g[data-tick-time]').length===1`);
 assert.ok(await ev(`r.querySelector('#soltuiLiveScore').classList.contains('signal-score-green')`));

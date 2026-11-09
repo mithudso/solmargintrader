@@ -94,6 +94,7 @@ export function createNativeTransport({
   const pending = new Map();
   let port = null;
   let generation = 0;
+  let oneShotPending = 0;
 
   function closeIfIdle() {
     if (leases.size || pending.size || !port) return;
@@ -129,7 +130,7 @@ export function createNativeTransport({
     return opened;
   }
   return {
-    busy: () => leases.size > 0 || pending.size > 0,
+    busy: () => leases.size > 0 || pending.size > 0 || oneShotPending > 0,
     session(id, active) {
       clearTimeout(leases.get(id));
       leases.delete(id);
@@ -142,7 +143,10 @@ export function createNativeTransport({
       return { available: true, connected: port !== null, generation };
     },
     request(request, { timeoutMs }) {
-      if (!leases.size && !port) return oneShot.request(request, { timeoutMs });
+      if (!leases.size && !port) {
+        oneShotPending += 1;
+        return oneShot.request(request, { timeoutMs }).finally(() => { oneShotPending -= 1; });
+      }
       return new Promise((resolve, reject) => {
         const id = newId();
         let current;

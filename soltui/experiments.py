@@ -206,6 +206,32 @@ class ExperimentStore:
                 db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=?", (status, time.time(), run_id))
         return {**self.get_run(run_id), "transition_applied": applied}
 
+    def settle_run(self, run_id: str, *, status: str | None = None,
+                   expected: list[str] | tuple[str, ...] = (), error: Any = _UNSET) -> dict[str, Any]:
+        """Acknowledge control or conditionally settle an exit in one transaction.
+
+        Pause/cancel requests take precedence over an error or a dead-worker
+        observation. Terminal states remain unchanged unless explicitly expected.
+        """
+        if status is not None and (not isinstance(status, str) or not status):
+            raise ExperimentError("run status must be a nonempty string")
+        if error is not _UNSET and error is not None and not isinstance(error, str):
+            raise ExperimentError("run error must be a string or null")
+        with self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            run = self._run(db.execute("SELECT * FROM runs WHERE id=?", (run_id,)).fetchone())
+            next_state = {"pause_requested": "paused", "cancel_requested": "cancelled"}.get(run["status"])
+            if next_state is None and status is not None and run["status"] in expected:
+                next_state = status
+            if next_state is not None:
+                if error is _UNSET:
+                    db.execute("UPDATE runs SET status=?,updated_at=? WHERE id=?",
+                               (next_state, time.time(), run_id))
+                else:
+                    db.execute("UPDATE runs SET status=?,error=?,updated_at=? WHERE id=?",
+                               (next_state, error, time.time(), run_id))
+        return self.get_run(run_id)
+
     def finalize_run(self, run_id: str, summary: dict[str, Any], *,
                      apply: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> dict[str, Any]:
         """Seal a final verdict and optional config write against control requests.

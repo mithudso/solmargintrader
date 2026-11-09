@@ -26,6 +26,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { findChromeForTesting, launch } from '../e2e/lib/cdp.mjs';
 import { execFile } from 'node:child_process';
@@ -212,6 +213,21 @@ try {
     sw = { sessionId, ev: (expr) => browser.evaluate(sessionId, expr) };
   });
   if (!sw) throw new Error('cannot continue without the service worker');
+  await check('loaded worker version and source hashes match the reviewed checkout', async () => {
+    const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));
+    assert(await sw.ev('chrome.runtime.getManifest().version') === manifest.version, 'loaded extension version differs');
+    const files = ['src/bg/service-worker.js', 'src/bg/paper-venue.js', 'src/core/engine.js',
+      'src/core/commands.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/core/csv.js',
+      'src/ui/soltui-panel.js', 'src/ui/workspace-model.js', 'src/ui/signal-desk.js',
+      'src/ui/desk-model.js', 'src/ui/signal-desk.css'];
+    for (const file of files) {
+      const loaded = await sw.ev(`fetch(chrome.runtime.getURL(${JSON.stringify(file)})).then(r => {if(!r.ok)throw new Error('source unavailable');return r.text()})`);
+      const expected = createHash('sha256').update(fs.readFileSync(path.join(EXT, file))).digest('hex');
+      assert(createHash('sha256').update(loaded).digest('hex') === expected, `loaded source differs: ${file}`);
+    }
+    console.log(`         loaded version ${manifest.version}; ${files.length} source hashes verified`);
+  });
+
 
   // The popup page doubles as the place to import modules: dynamic import() is
   // not allowed inside a service worker, but it is inside an extension page.

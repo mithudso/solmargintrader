@@ -11,6 +11,11 @@ Every action lives in one registry: `extension/src/core/commands.js`. Three surf
 `test/surfaces.test.js` fails the build if any surface is missing a command, so the three cannot
 drift apart.
 
+SolTUI tools reached through `soltuiCall` retain their own safety gates. Manual Jupiter V2 preview
+results set `submission_available=false`; the dashboard offers no submit handoff for those results.
+Jupiter submit and quick-submit refuse before keys or network calls. History and chain reconciliation
+remain available, and uncertain historical submissions are never cleared solely by elapsed time.
+
 **The canonical, always-current listing is generated, not this file:**
 
 ```bash
@@ -82,7 +87,20 @@ key is used and nothing is signed.
 | `tick` | `count`:number | One full tick: reconcile → ingest fills → plan → admit → place. `count` is capped at 50 |
 | `cancelOrder` | `venueOrderId`:string\* | Cancels one resting order and marks its intent cancelled |
 
+Paper venue orders and fills are stored in `chrome.storage.local` under their venue, mint pair,
+public owner and grid context. Recreating a Chrome worker preserves that evidence. Unreadable
+stored paper evidence refuses the tick; an old unknown intent is never invented or replayed.
+
+Fill CSV exports prefix formula-leading external text with an apostrophe before CSV quoting.
+Numeric amounts remain numeric. JSON exports retain the original identity strings.
+
 ### SolTUI bridge — forwards to the soltui registry
+
+`docs.read` returns a SHA256 `revision` of the exact UTF-8 bytes. `docs.write` requires
+`path`, `text` and that `expected_revision`. Native/API/TUI writers hold the same per-document
+lock, compare the revision and replace atomically. A conflict leaves the editor draft intact.
+External editors do not honor this lock; reload before saving after an external edit.
+
 
 | Command | Arguments | Notes |
 | --- | --- | --- |

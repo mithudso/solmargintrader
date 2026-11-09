@@ -207,10 +207,12 @@ class LiveRunner:
         pool: str | None = None,
         *,
         journal: SubmissionJournal | None = None,
+        accounting: dict[str, str] | None = None,
     ):
         self.chain, self.acct, self.tokens, self.cfg, self.pool = chain, account, tokens, cfg, pool
         self.w3 = chain.w3
         self.journal = journal
+        self.accounting = accounting
         self.group = uuid.uuid4().hex
         self._uncertain = False
         self._lease = None
@@ -326,7 +328,15 @@ class LiveRunner:
             # Recorded before broadcasting: the RPC layer retries transport errors, so a send that raises may
             # still have reached the mempool, and the hash is then the only handle on that transaction.
             self._uncertain = True
-            self.journal.before_submit(_hex(h), req["nonce"], tx, self.group, self.pool, self.tokens)
+            self.journal.before_submit(
+                _hex(h),
+                req["nonce"],
+                tx,
+                self.group,
+                self.pool,
+                self.tokens,
+                accounting=self.accounting,
+            )
             self._next_nonce = req["nonce"] + 1
             self.sent_hashes.append(_hex(h))
             self._uncertain = True
@@ -637,6 +647,9 @@ class Rebalancer:
                 stage, res.staked = "stake", True
             elif label.startswith("swap"):
                 stage = "swap"
+                if label.startswith("swap "):
+                    params = self.router.decode_function_input(record.tx.data)[1]["params"]
+                    res.amount_out = token_delta(logs, params["tokenOut"], self.owner)
             elif label == "gauge.claimEmissions":
                 stage = "claim"
                 res.aero_claimed = token_delta(logs, addresses.AERO_TOKEN, self.owner)
@@ -798,7 +811,15 @@ class Rebalancer:
         res.staked = True
         on_stage("stake", res)
 
-    def _wrap(self, op: str, res: RebalanceResult, runner: Runner, fn: Callable[[], None]) -> RebalanceResult:
+    def _wrap(
+        self,
+        op: str,
+        res: RebalanceResult,
+        runner: Runner,
+        fn: Callable[[], None],
+        *,
+        recover: Callable[[], None] | None = None,
+    ) -> RebalanceResult:
         try:
             fn()
             self._finish(res, runner)
@@ -807,6 +828,11 @@ class Rebalancer:
             res.tx_hashes = list(getattr(runner, "sent_hashes", None) or res.tx_hashes)
             self._finish(res, runner)
             self._recover_mint(res, runner)
+            if recover is not None:
+                try:
+                    recover()
+                except Exception as recovery_error:
+                    res.notes.append(f"confirmed {op} amounts unavailable: {recovery_error}")
             where = res.stages[-1] if res.stages else "start"
             raise RebalanceError(f"{op} failed after stage '{where}': {e}", res) from e
         finally:
@@ -994,7 +1020,19 @@ class Rebalancer:
             res.tx_hashes += r.tx_hashes
             res.amounts_in_position = (token_delta(r.logs, t0, self.owner), token_delta(r.logs, t1, self.owner))
 
-        return self._wrap("collect", res, runner, go)
+        def recover() -> None:
+            logs = [
+                lg
+                for record in getattr(runner, "confirmed", ())
+                if record.tx.label == "collect"
+                and self.npm.decode_function_input(record.tx.data)[1]["params"]["tokenId"] == pos.token_id
+                for lg in record.logs
+            ]
+            res.amounts_in_position = tuple(
+                token_delta(logs, token.address, self.owner) for token in (pos.pool.token0, pos.pool.token1)
+            )
+
+        return self._wrap("collect", res, runner, go, recover=recover)
 
     def swap_exact(
         self, pool: PoolState, token_in: str, amount_in: int, runner: Runner, min_out: int
