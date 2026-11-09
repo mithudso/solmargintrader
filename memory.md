@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 278
-Delta: v277 to v278; record a verified narrow-screen repair and remaining audit.
+Version: 279
+Delta: v278 to v279; record narrow evidence-table repairs and remaining audit work.
+
+## v279 - 2026-11-09
+
+The extension optimizer found horizontal table actions hidden at 390px in strategy evidence, historical and forward results, archives, and paper bots. Shared scroll cues now identify the overflow only when rows exist. Historical run identity and cost context stay outside the scroller. Extension 0.5.4 passed 389 unit tests and 25 isolated real-browser checks with synthetic data. Captures, fingerprints and ledger v1.4.2 are in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension/table-cues. The UI optimizer remains NEEDS_EVIDENCE: repeat selected methods on the final revision, complete the no-edit sweep and independent review, and continue the separate SolTUI audit. Earlier cached terminal captures stay private. Chrome Beta currently points to the older shared checkout; installed acceptance remains unverified. Stele lesson queued c29ee35f.
 
 ## v278 - 2026-11-09
 
