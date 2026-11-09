@@ -54,6 +54,11 @@ export function el(tag, props = {}, ...children) {
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 
+/** Tell readers how to reach columns in a horizontally scrollable table. */
+export function tableScrollHint() {
+  return el('p', { class: 'note table-scroll-hint', text: 'Scroll horizontally to see all table columns and actions.' });
+}
+
 export function clear(node, ...children) {
   node.replaceChildren(...children.flat().filter((c) => c != null && c !== false));
   return node;
