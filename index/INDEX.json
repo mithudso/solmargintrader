@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-09T07:59:48+00:00",
+  "generatedAt": "2026-11-09T08:14:13+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "9307035",
+  "commit": "4b24085",
   "counts": {
     "files": 2707,
-    "bytes": 45496771,
+    "bytes": 45497389,
     "byKind": {
       "strategy-card": 1478,
       "doc": 569,
@@ -71857,11 +71857,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 281 Delta: v280 to v281; record the fail-closed Now status repair. The Now dashboard previously displayed All clear when status read envelopes were missing or failed. It now reports Status unavailable for incomplete reads, retains known warnings, accepts a successful null wallet notice, and limits the clean message to no flagged issues in checked sources.",
+      "summary": "Version: 282 Delta: v281 to v282; record the macOS fixture timeout correction. PR 159 macOS CI ran 155 tests and failed test_slow_read_keeps_chart_responsive_and_discards_old_coin_and_floor_results: the mocked held read timed out after three seconds before the slow runner reached its concurrency assertion, resulting in 2 != 1.",
       "summarySource": "opening-prose",
-      "bytes": 94371,
-      "lines": 534,
-      "sha1": "43103e1efe7128b2b2dd478c783e846644050dcf",
+      "bytes": 94988,
+      "lines": 538,
+      "sha1": "54e768c9713591c9301f73bf17ce30ef7198321c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -83992,9 +83992,9 @@
       "title": "test_signal_live",
       "summary": "Tests for Signal tab Live page: live graph, real-time streaming price, and forward test predictions.",
       "summarySource": "docstring",
-      "bytes": 21230,
+      "bytes": 21231,
       "lines": 379,
-      "sha1": "ecc899cf953a907db89d2e3a869c1565c51123d9",
+      "sha1": "a3853ec8b236d5ef05322073bfffb8e7a89fd78e",
       "symbols": [
         "class SignalLiveLogicTests",
         "class SignalLiveUITests"

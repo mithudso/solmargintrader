@@ -202,7 +202,7 @@ class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
                 if hold["next"]:
                     hold["next"] = False
                     started.set()
-                    if not release.wait(3):
+                    if not release.wait(30):
                         raise RuntimeError("test did not release prediction read")
                     if hold["error"]:
                         raise RuntimeError("obsolete prediction read failed")

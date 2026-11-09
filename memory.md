@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 281
-Delta: v280 to v281; record the fail-closed Now status repair.
+Version: 282
+Delta: v281 to v282; record the macOS fixture timeout correction.
+
+## v282 - 2026-11-09
+
+PR 159 macOS CI ran 155 tests and failed test_slow_read_keeps_chart_responsive_and_discards_old_coin_and_floor_results: the mocked held read timed out after three seconds before the slow runner reached its concurrency assertion, resulting in 2 != 1. Increased the test fixture guard to 30 seconds; its finally block still releases the thread and all concurrency and stale-result assertions remain. The focused isolated test passed. Repeat final-head CI and preserve the failure log at /tmp/solmargintrader-pr159-macos-4b24085.log. The full UI optimizer remains incomplete as recorded below.
 
 ## v281 - 2026-11-09
 
