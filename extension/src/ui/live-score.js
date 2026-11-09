@@ -34,6 +34,27 @@ export function aggregatePredictions(rows, now = Date.now() / 1000, { min_accura
     available: strategies.length > 0, strategies: strategies.length, votes, min_accuracy, min_resolved };
 }
 
+/** Explain unavailable agreement without turning stale or unqualified forecasts into votes. */
+export function agreementUnavailableReason(snapshot, now = Date.now() / 1000) {
+  if (!snapshot || !Array.isArray(snapshot.rows)) return 'Prediction data unavailable; open the workspace to check the native host.';
+  if (!snapshot.rows.length) return 'No prediction history for this coin.';
+  const policy = snapshot.voting ?? {};
+  const minAccuracy = policy.min_accuracy ?? 60, minResolved = policy.min_resolved ?? 20;
+  if (!finite(minAccuracy) || minAccuracy < 0 || minAccuracy > 100 || !Number.isInteger(minResolved) || minResolved < 1)
+    return 'The prediction evidence policy is unavailable or invalid.';
+  const eligible = snapshot.rows.some((row) => row && typeof row.label === 'string' && row.label &&
+    finite(row.accuracy) && row.accuracy >= minAccuracy && row.accuracy <= 100 &&
+    finite(row.resolved) && row.resolved >= minResolved && HORIZONS.some((h) => {
+      const issued = row[`issued_${h}m`], expires = row[`expires_${h}m`];
+      return Object.hasOwn(DIRECTIONS, row[`pred_${h}m`]) &&
+        finite(row[`acc_${h}m`]) && row[`acc_${h}m`] >= minAccuracy && row[`acc_${h}m`] <= 100 &&
+        Number.isInteger(row[`resolved_${h}m`]) && row[`resolved_${h}m`] >= minResolved &&
+        finite(issued) && finite(expires) && issued <= now && expires > issued && expires <= now;
+    }));
+  return eligible ? 'Some qualifying predictions have expired; no current vote is available. Check the forward-test session.'
+    : 'No current predictions meet the evidence and freshness requirements.';
+}
+
 export function scoreText(aggregate) {
   const score = aggregate?.score;
   return finite(score) ? `${score >= 0 ? '+' : ''}${score.toFixed(1)}` : '—';

@@ -8,7 +8,7 @@
  * the stored scan (overview) so it opens instantly, without waiting on RPC.
  */
 
-import { aggregatePredictions, scoreText } from './live-score.js';
+import { aggregatePredictions, agreementUnavailableReason, scoreText } from './live-score.js';
 import { attributionLine } from '../jupiter/attribution.js';
 
 const $ = (id) => document.getElementById(id);
@@ -245,7 +245,7 @@ async function refreshGlance() {
   const price = q?.mid ?? q?.last;
   const usable = typeof price === 'number' && Number.isFinite(price) && price > 0;
   $('glancePrice').textContent = usable ? `$${price.toLocaleString()} · ${q.quote_age_s ?? 'unknown'}s old at capture · ${prices.live ? 'recorder fresh' : 'last known / stale'}` : 'No usable recorder quote. Opening this popup starts no recorder.';
-  $('glanceAge').textContent = `Read ${new Date().toISOString().slice(11, 19)} UTC · agreement is not success probability`;
+  $('glanceAge').textContent = `Read ${new Date().toISOString().slice(11, 19)} UTC · ${aggregate.available ? 'agreement is not success probability' : agreementUnavailableReason(predictions)}`;
   const running = (v) => typeof v === 'boolean' ? (v ? 'running' : 'stopped') : 'unavailable';
   $('glanceProcesses').textContent = `Recorder ${running(prices?.running)} · session checks ${running(forward?.running)} · ${asset} detached trainer ${running(trainer?.running)}`;
 }
