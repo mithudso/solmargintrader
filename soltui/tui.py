@@ -189,6 +189,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#forward-start": "forwardtest.start",
     "#forward-stop": "forwardtest.stop",
     "#forward-refresh": "forwardtest.status",
+    "#btn-goto-signal-live": "forwardtest.predictions",
     "#btn-remove": "roster.remove",
     "#btn-reset-roster": "roster.reset",
     "#btn-save-signals": "signals.save",
