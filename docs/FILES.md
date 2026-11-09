@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `4d4c7a1` (2026-11-09T18:51:47+00:00). 2781 tracked files, 61.7 MB.
+**Generated** from `index/INDEX.json` at commit `58772bb` (2026-11-09T18:59:04+00:00). 2792 tracked files, 62.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2473 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 59/102 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2479 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 370/388 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 94 files
+- [`docs`](#docs) — 105 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1916 files
 - [`research`](#research) — 206 files
@@ -209,9 +209,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 780 lines · 149,172 B · description: **extracted**
+`doc` · 800 lines · 152,783 B · description: **extracted**
 
-**Purpose.** Version: 315 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery. Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
+**Purpose.** Version: 316 Delta: concurrent histories to v316; preserve CLI planning PR171 and reviewed browser UI design. Delta: v314 to v315; record reviewed bot UI design, browser acceptance and delivery preparation.
 
 **Use.** Read it.
 
@@ -225,9 +225,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1219 lines · 61,165 B · description: **extracted**
+`doc` · 1225 lines · 61,528 B · description: **extracted**
 
-**Purpose.** Version: 154 Delta: v153 to v154; save optimized prompt and its execution artifacts. Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
+**Purpose.** Version: 155 Delta: concurrent histories to v155; preserve CLI planning PR171 and reviewed browser UI design. Delta: v152 to v153; record ideal bot-management UI design request.
 
 **Use.** Read it.
 
@@ -253,7 +253,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-94 files.
+105 files.
 
 #### `docs/API.md`
 
@@ -337,7 +337,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27175 lines · 1,411,394 B · description: **extracted**
+`doc` · 27253 lines · 1,414,621 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -715,6 +715,92 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+### `docs/design/bot-control-room/`
+
+#### `docs/design/bot-control-room/DESIGN.md`
+
+`doc` · 221 lines · 24,221 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; resolve instance identity and existing singleton worker limits after builder review. Date: 2026-11-09
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/README.md`
+
+`doc` · 35 lines · 1,935 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; document the durable self-contained preview export. Open /Users/mitch/dev/solmargintrader/docs/design/bot-control-room/index.html in a browser. The HTML, CSS and JavaScript are local and require no build, package install, account or network service. This is a design prototype; all displayed results and actions are illustrative and reset on reload.
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/REVIEW.md`
+
+`doc` · 117 lines · 9,350 B · description: **extracted**
+
+**Purpose.** Version: 1.2.0 Delta: 1.1.0 to 1.2.0; verify the durable single-file export through file:// without repeating the full suite. Delta: 1.0.0 to 1.1.0; recheck four source repairs, verify final loaded identity, and refresh clean-state captures.
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/SKILLS.md`
+
+`doc` · 54 lines · 7,421 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: new applicability and application record for TASK-1096. “All” is interpreted as looking up the relevant skill families and applying their useful guidance to this design. It does not mean executing every overlapping audit loop, vendor tool or native-platform workflow. Migrated skills route through /Users/mitch/.codex/indexes/claude-skill-consolidation/SKILLS-INDEX.md.
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/index.html`
+
+`doc` · 76 lines · 21,018 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/mockup.css`
+
+`doc` · 16 lines · 25,711 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/mockup.js`
+
+`doc` · 279 lines · 21,665 B · description: **extracted**
+
+**Purpose.** This design has no runtime adapters, persistence, account access or execution path.
+
+**Contents.** Defines `addEvent`, `currentStrategy`, `focusStep`, `liveRequirements`, `openCommands`, `renderCommands`, `renderFleet`, `renderInspector`, `renderRules`, `renderStep` and 6 more.
+
+**Use.** Read it.
+
+### `docs/design/bot-control-room/screens/`
+
+#### `docs/design/bot-control-room/screens/fleet-desktop.png`
+
+`doc` · 0 lines · 243,220 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/screens/fleet-mobile.png`
+
+`doc` · 0 lines · 183,987 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `docs/design/bot-control-room/screens/studio-desktop.png`
+
+`doc` · 0 lines · 164,359 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
 ### `docs/design/chrome-workspace/`
 
 #### `docs/design/chrome-workspace/acceptance.md`
@@ -954,6 +1040,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 **Use.** Read it.
 
 ### `docs/superpowers/plans/`
+
+#### `docs/superpowers/plans/2026-11-09-bot-control-room.md`
+
+`doc` · 134 lines · 15,592 B · description: **extracted**
+
+**Purpose.** Status: proposed future product implementation. All checkboxes are intentionally open. This design task does not authorize a new live runner, arming, account migration or retired liquidity service activation. Re-read current component instructions and CLI design TASK-1092 before execution; sources may move after this plan's baseline `4d4c7a1`. Plan version: 1.0.1.
+
+**Use.** Read it.
 
 #### `docs/superpowers/plans/2026-11-09-bot-manager.md`
 

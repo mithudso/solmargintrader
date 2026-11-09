@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 315
+Version: 316
+Delta: concurrent histories to v316; preserve CLI planning PR171 and reviewed browser UI design.
+Delta: v314 to v315; record reviewed bot UI design, browser acceptance and delivery preparation.
+Delta: v313 to v314; start isolated bot-control-room design and continuation.
+
 Delta: v314 to v315; finish prompt/design reviews and prepare verified delivery.
 Delta: v313 to v314; start TASK-1092 standalone bot manager design and plan.
 Delta: v312 to v313; fix duplicate index rows found by final macOS CI.
@@ -247,7 +251,6 @@ Extension optimizer is incomplete, status NEEDS_EVIDENCE. Source base a3c9e0b; p
 ## v272 - 2026-11-09
 
 The repository-wide ui-deep-optimizer request is being investigated in /Users/mitch/dev/solmargintrader-wt-01a1bee5 at base a3c9e0b. The existing SolTUI audit is a separate incomplete run recorded in v270; do not overwrite its ledger or concurrent work. Audit the extension with an isolated Chrome profile and fixture native host, keep dry-run and disarmed defaults, and preserve all live trading safeguards. Stele is unavailable; task creation and claim are queued as outbox 40359ad6. Extension ledger and receipts belong in /Users/mitch/.local/state/solmargintrader-ui-optimizer-20261109-extension. Remaining: freeze the coverage matrix and method selection, inspect, repair confirmed issues, verify, record limits and deliver owned changes.
-Version: 273
 Delta: v271 to v273; preserve UI audit and backtest gap histories.
 
 ## v273 - 2026-11-09
@@ -668,16 +671,11 @@ Recurring bot optimizer PR 128 merged as d7010e63ba04b20fe77bfcb77dc1a7282f8250e
 
 The user requested the advanced Money ticket and leveraged buys and sells. The user supplied /Users/mitch/dev/solmargintrader/jup.ag/coinbase_trading_reference.md. Its spot, regulated futures, and global derivatives describe distinct venues and eligibility. Use venue previews and verified account terms rather than static assumed fees or eligibility. The advanced ticket includes Coinbase market, limit, stop-limit and sell brackets, percentage sizing, a session price graph and forward-test forecasts. The venue preview estimates fees; final maker/taker fees depend on fills. The $100 per-order cap, balance reconciliation and single-submit journal apply. No live order was submitted in this work. Jupiter spot, leveraged longs/shorts and Coinbase derivatives remain unavailable until their venue-specific transaction verification, eligibility and reconciliation paths exist. Stele task creation is queued in outbox 5697c8bd.
 
-Version: 146
 Delta: v145 to v146; reconcile PR 96 source evidence with the catalog relocation.
 
-Version: 143
 Delta: v142 to v143; preserve concurrent delivery histories and source-card records.
-Version: 145
 Delta: v144 to v145; retain CI changes and editor work.
-Version: 147
 Delta: v146 to v147; correct test counts and record CI.
-Version: 144
 Delta: v143 to v144; preserve PR 100 records and resolve PR 104.
 
 ## v191 - 2026-11-08
@@ -763,6 +761,23 @@ Final registry run exit 0: 544 successful cells, zero failures, unchanged source
 PR https://github.com/mithudso/solmargintrader/pull/167 preserves all strategy experiment artifacts. Concurrent default branch PR166 was merged without discarding either prompt/memory history; no backtester core changed. Integrated local backtester suite960 passed; extension suite407 passed. Docs total2787 includes current1374 SolTUI tests. Index rebuilt over final owned paths. Full experiment file inventory is research/strategy_experiment/FILES.md, including expanded archive contents and durable-export absolute paths. Final CI, merge identity and standalone export acceptance remain delivery receipts reported after completion.
 
 
+## v314 - 2026-11-09 — bot control room design
+
+Task TASK-1096 with steps TASK-1097 (design), TASK-1098 (interactive mockup), TASK-1099 (verification and delivery). Private worktree /Users/mitch/dev/solmargintrader-wt-01a1c198, branch agent-01a1c198. Deliver design artifacts only: browser control room, five-stage bot creation, skill applicability ledger and Superpowers plan. Platform is a designer assumption, not a user-approved product change. Active CLI design TASK-1092 and SolTUI work remain separate. Preserve all other work. Current baseline is 4d4c7a1. Paper/disarmed defaults, separate result modes, stale/unknown execution refusal, backend risk authority, no secrets, and archived liquidity remain constraints. Remaining: design, mockup render/review, plan, docs/index checks, PR/CI/merge. Stele knowledge transport closed; exact writes queued below.
+
+Stele outbox receipts: 54a6a0d6 | 03979d84
+
+
+## v315 - 2026-11-09 — bot control room reviewed
+
+TASK-1096 design artifacts are in docs/design/bot-control-room/; Superpowers plan is docs/superpowers/plans/2026-11-09-bot-control-room.md. Designer chose responsive browser fleet/inspector and five-stage draft creation; all five templates appear. No production module or service changed. Read DESIGN.md, SKILLS.md and REVIEW.md before resuming. TASK-1097 design and TASK-1098 mockup are done; TASK-1099 delivery is active.
+
+Independent browser review passed 49/49 assertions with final source identity, ten sampled contrast pairs, 1440/390/320px reflow and no external requests. Fixed narrow overflow, step focus, first-Escape dialog handling and chart value coordinates. Fresh builder review found a runtime identity gap: current forward sessions occupy strategy-scoped slots across markets. Design/plan v1.0.1 now use stable draft UUIDs, distinct runtime sessions and occupied-slot refusal. Duplicate instances require a future explicit backend capability; duplication cannot overwrite an active bot. Builder recheck: nothing important left.
+
+Durable self-contained preview: /Users/mitch/Downloads/sol-bot-control-room-2026-11-09.html. It inlines the reviewed CSS and JavaScript exactly; no backend or accounts. Documentation checker passed with current suite counts. Remaining delivery: exported-file acceptance, final documentation/index freshness and diff checks, commit/push/PR/final-head CI/merge, remote content verification and only this task's worktree cleanup. Preserve the shared original checkout; another live session owns it. Existing queued knowledge outbox IDs: 54a6a0d6 and 03979d84. These are queued writes, not confirmed knowledge nodes.
+
+Runtime-slot decision outbox receipt: cf778cd2
+
 ## 2026-11-09 — standalone bot manager planning start (TASK-1092)
 
 Target: optimize the owner prompt, then deliver a source-grounded architecture and phased implementation plan. Working branch docs/bot-manager-plan-1092 in /Users/mitch/dev/solmargintrader-wt-bot-plan-1092, baseline 4d4c7a1. No product code, service starts, training runs or live trades are part of this planning task. Preserve three original untracked files and other worktrees. Existing related scheduler TASK-1049 and research TASK-1087 remain separate work.
@@ -777,3 +792,8 @@ Completed: original prompt retained verbatim; final optimized prompt (1114 estim
 Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/specs/2026-11-09-bot-manager-design.md; docs/superpowers/plans/2026-11-09-bot-manager.md. Proposed architecture/defaults remain proposals; actual Solana certification, multi-instance engine, learning and browser bridge are not implemented. Existing live restrictions remain. No live/installed acceptance claim applies to documents.
 
 Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.
+
+
+## Bot UI integration and final acceptance
+
+Merged current origin/master from CLI planning PR171 while preserving both designs and all prompt/memory history. Export acceptance passed through file:// with no errors or external requests; inline assets match the reviewed sources. Design and browser work are complete; the proposed product implementation remains unstarted. Delivery receipts are authoritative in TASK-1096/TASK-1099 and the UI design PR. Remaining operational gates at commit time: final integrated docs/index checks and final-head CI/merge. After those pass, no design steps remain; preserve the occupied main checkout and remove only this task worktree. Queued knowledge IDs54a6a0d6,03979d84,cf778cd2 are not confirmed nodes.
