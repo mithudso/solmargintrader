@@ -105,17 +105,63 @@ def _config(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
     return _identity(params, context).to_dict()
 
 
+def _external(params: Mapping[str, Any], context: CommandContext):
+    from .adapters import default_installations
+    from .adapters.soltui import LegacyAdapter
+
+    identity = params.get("identity")
+    if not isinstance(identity, str) or ":" not in identity:
+        return None
+    installation_id, family = identity.split(":", 1)
+    installations = context.installations or default_installations()
+    for installation in installations:
+        if (
+            installation.installation_id == installation_id
+            and installation.source == "soltui"
+        ):
+            adapter = context.owner_adapters.get(installation_id) or LegacyAdapter(
+                installation, home=context.home
+            )
+            return adapter, family
+    raise ManagerError("bot_not_found", "The external installation is not registered.")
+
+
+def _discover(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
+    from .adapters import discover_installations
+
+    return discover_installations(
+        context.installations or None,
+        home=context.home,
+        owner_adapters=context.owner_adapters,
+    ).to_dict()
+
+
 def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
     why = params.get("why", False)
     if type(why) is not bool:
         raise ManagerError("invalid_input", "The explanation option must be a boolean.")
     if params.get("identity"):
+        external = _external(params, context)
+        if external is not None:
+            adapter, family = external
+            snapshot = adapter.discover().to_dict()
+            if snapshot["bots"] is None:
+                raise ManagerError(
+                    snapshot["state"],
+                    "The configured owner cannot provide inventory.",
+                    3,
+                )
+            for row in snapshot["bots"]:
+                if row["strategy_id"] == family:
+                    return row
+            raise ManagerError("bot_not_found", "External identity was not found.")
         return draft_snapshot(_identity(params, context), why=why)
     store = _store(context)
     return {
         "initialized": store.initialized,
         "bots": [draft_snapshot(spec, why=why) for spec in store.list_specs()],
         "runtime": "not_available",
+        "installations": _discover({}, context)["installations"],
     }
 
 
@@ -126,6 +172,43 @@ def _runtime(params: Mapping[str, Any], context: CommandContext) -> dict[str, An
         "Manager drafts have no runtime; start and stop are unavailable.",
         3,
     )
+
+
+def _delegated(
+    params: Mapping[str, Any], context: CommandContext, operation: str
+) -> dict[str, Any]:
+    external = _external(params, context)
+    if external is None:
+        return _runtime(params, context)
+    adapter, family = external
+    if any(
+        params.get(key) is None
+        for key in ("expected_session", "expected_config_hash", "request_id")
+    ):
+        raise ManagerError(
+            "expected_observation_required",
+            "Supply the inspected session (or none), config hash and a request UUID.",
+            3,
+        )
+    session = (
+        None if params["expected_session"] == "none" else params["expected_session"]
+    )
+    return adapter.control(
+        family,
+        operation,
+        params["request_id"],
+        None,
+        expected_session=session,
+        expected_config_hash=params["expected_config_hash"],
+    ).to_dict()
+
+
+def _start(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
+    return _delegated(params, context, "start")
+
+
+def _stop(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
+    return _delegated(params, context, "stop")
 
 
 def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
@@ -147,7 +230,23 @@ def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
 
 
 IDENTITY = ((("identity",), {"help": "Bot UUID or unique display name"}),)
+CONTROL_GUARDS = (
+    (
+        ("--expected-session",),
+        {"help": "Inspected session ID, or none for an empty slot"},
+    ),
+    (("--expected-config-hash",), {"help": "Inspected owner configuration hash"}),
+    (
+        ("--request-id",),
+        {"help": "Canonical UUID; repeat only to inspect its durable receipt"},
+    ),
+)
 COMMANDS = {
+    "discover": CommandSpec(
+        "discover",
+        "Read configured owner inventory without starting services.",
+        _discover,
+    ),
     "create": CommandSpec(
         "create",
         "Create a pinned paper/disarmed draft.",
@@ -180,19 +279,24 @@ COMMANDS = {
     "start": CommandSpec(
         "start",
         "Request owner start only when advertised; drafts have no runtime.",
-        _runtime,
-        IDENTITY,
+        _start,
+        IDENTITY + CONTROL_GUARDS,
     ),
     "stop": CommandSpec(
         "stop",
         "Request owner stop only when advertised; drafts have no runtime.",
-        _runtime,
-        IDENTITY,
+        _stop,
+        IDENTITY + CONTROL_GUARDS,
     ),
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
 ERROR_EXIT_CODES = {
     "runtime_not_available": 3,
+    "expected_observation_required": 3,
+    "owner_unreachable": 3,
+    "incompatible_owner": 3,
+    "credentials_unavailable": 3,
+    "capability_unavailable": 3,
     "solana_adapter_unavailable": 3,
     "external_only": 3,
     "store_unavailable": 4,

@@ -194,3 +194,90 @@ reloads, transactional rollback, unique identities, corrupt/future schemas,
 credential canaries and read-only filesystem behavior. Existing strategy engines
 remain offline and untouched. Multi-instance runtime, actual owner discovery,
 live execution, data certification and browser integration are separate work.
+
+## Legacy discovery and guarded controls
+
+`solbot discover` and `solbot status` query the configured existing SolTUI HTTP
+owner. Neither command starts a service, recorder, native host, optimizer or
+worker. Reads leave an absent `SOLBOT_HOME` absent. The default endpoint is
+`http://127.0.0.1:8788`; override it with `SOLBOT_SOLTUI_ENDPOINT`. Only numeric
+IPv4 loopback HTTP endpoints are accepted. Redirects and proxies are refused.
+Each call has a total deadline, a response-size limit and sanitized errors.
+
+Before reading or sending the API bearer token, the client verifies public
+`/v1/health` reports `service=soltui`. It reads an existing, regular, owner-owned
+mode-0600 `/Users/mitch/Library/Application Support/soltui/api-token`, or the
+corresponding file under `SOLTUI_SUPPORT_DIR`. It never creates, repairs or prints
+a token. A different service on the default port receives no credential.
+`owner_unreachable`, `incompatible_owner` and `credentials_unavailable` have
+`bots=null`; they never certify that an owner has zero bots.
+
+Version-1 installation descriptors include a distinct installation ID, source,
+absolute repository directory and Python interpreter, reviewed source revision,
+protocol version, transport and advertised commands. The default paths follow
+the existing SolTUI host installation: `/Users/mitch/dev/solmargintrader` and
+`/Users/mitch/.venvs/soltui/bin/python`. `SOLBOT_SOLTUI_REPO`, `SOLTUI_PYTHON` and
+`SOLTUI_CONFIG_DIR` can supply explicit alternatives. These descriptors never
+execute an interpreter or assume the repository root is pip-installable.
+The reviewed revision is a descriptor pin, not proof of the running revision.
+A supporting owner separately reports its module source hash captured at load.
+
+The adapter discovers the owner's actual registry and uses its
+`{ok, command, result, error}` envelopes. It reads `bots.manager_snapshot` when
+present, otherwise the existing `bots.overview`. Council discovery uses
+`council.status`; it never calls the mutating `council.config` command. Older
+owners remain inspectable but advertise unavailable delegated controls.
+
+Status distinguishes the saved effective `config_hash` used by the guard from
+the frozen session's `active_config_hash`; a later settings edit cannot relabel
+the active replay or its evidence identity. Missing active identity stays null.
+
+External identities have the form `soltui-local:grid`. Their stable UUIDs belong
+to the installation and family, not to a newly claimed manager runtime. A saved
+forward session with no stop timestamp says desired `running`; its observed
+state and worker heartbeat remain unknown. API health proves reachability only.
+Council's own worker-lock observation can establish running/not-running, while
+heartbeat age remains unavailable. Protocol-aware status preserves the exact
+one-minute replay versus event-driven bid/ask semantics. Council's known fill
+model remains a Coinbase next-minute-open proxy; a Jupiter reference quote does
+not change its execution venue. Older owners with no execution-context fields
+report null context with reasons. Status keeps financial values null with
+reasons and does not certify a Coinbase replay as Jupiter paper/live evidence.
+
+`start` and `stop` accept external identities only with the inspected
+`--expected-session` (use `none` for an empty family slot),
+`--expected-config-hash`, and a canonical UUID `--request-id`. The registry
+handles these parameters; the CLI has no separate control logic. Reusing an ID
+returns its durable receipt. A different operation or explicit expected context
+under the same ID conflicts. Draft controls continue to refuse
+`runtime_not_available`. Every receipt has `safe_to_retry=false`.
+
+Controls require the reviewed owner's `bots.manager_control` capability and exact
+advertised parameter contract. There is no fallback to the raw restart command.
+Under the existing forward/config locks, the owner compares the expected session
+and effective config, asset, venue, timeframe, execution model, mode and costs.
+The global family slot cannot be replaced by another market. An exact active
+session/config returns `skipped/already_running`; it does not restart. A matching
+stop records its stop time and retains exposure/arming uncertainty. These
+simulation controls do not start the recorder or claim an autonomous worker.
+Existing raw commands retain their original behavior; their later session
+changes invalidate the guarded observation. This provides delegated control,
+not ownership transfer or fencing of unaware clients.
+
+The manager writes a separate schema-1 `controls.sqlite3` journal under
+`SOLBOT_HOME` only for control requests. It commits a durable pending receipt
+before submitting. The owner writes a durable intent and outcome to its own
+`bots/manager-requests.json` under the owner lock; the adapter never writes
+SolTUI config/state files directly. The owner's journal binds the request
+fingerprint, family, session and config. An unresolved intent blocks fresh IDs
+for the same family. A lost acknowledgment or interrupted intent returns
+`unknown/outcome_unknown`, performs read-only reconciliation, and never
+resubmits automatically. Preserve both journals when backing up owner/manager
+state. The owner's bounded journal refuses new requests at capacity rather than
+forgetting an ID and risking a duplicate.
+
+Browser inventory reports `registration_required`. Node FileStore is a separate
+source and reports `discovery_unavailable` until an owner transport is registered;
+its config may contain secrets and is never treated as browser state. Ownership
+transfer, browser controls, autonomous new runners, live certification and all
+other milestones remain unavailable.
