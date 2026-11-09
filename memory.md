@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 278
-Delta: v277 to v278; record a verified narrow-screen repair and remaining audit.
+Version: 279
+Delta: v278 to v279; record the verified small-terminal editor repair.
+
+## v279 - 2026-11-09
+
+At 80x24, the default 16-row editor left the Research workspace two rows tall and the editor bar omitted its Ctrl+E hide shortcut. New unsaved short-terminal layouts use a smaller default, while explicit saved heights retain the existing clamp. The editor bar shows Ctrl+E and double-click resets to the size-appropriate default. A focused isolated regression passed for 80x24, 160x50, saved size, keyboard toggle and reset. At 80x24 the Research area grew from two rows to ten; Ctrl+E still expands it to eighteen. An isolated Money walkthrough rechecked disarmed, validation, preview and ambiguous-submit states using mocked order calls. Captures and logs: /Users/mitch/.local/state/soltui-ui-optimizer-20261109/resume-f58; ledger v1.2.0 records the repaired Medium finding. Both UI optimizer runs remain incomplete and require full method sweeps and final independent review. Stele lesson queued a2510669.
 
 ## v278 - 2026-11-09
 

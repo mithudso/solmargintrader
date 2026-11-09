@@ -548,7 +548,7 @@ class EditorBar(Widget):
     def render(self) -> Text:
         width = max(self.size.width, 1)
         if self.panel_open:
-            label, right = " drag to resize the editor (double-click: default size) ", self.CLOSE
+            label, right = " ctrl+e hide | drag to resize | double-click resets ", self.CLOSE
         else:
             label, right = " editor hidden: click, drag up or ctrl+e to show it ", ""
         line = max(width - len(right), 0)
@@ -7125,9 +7125,14 @@ class SolTuiApp(App):
     def _editor_open(self) -> None:
         self._set_editor_open(True)
 
+    def _default_editor_height(self) -> int:
+        if self.size.height < 36:
+            return max(EditorBar.MIN_HEIGHT, self.size.height // 3)
+        return self.EDITOR_HEIGHT
+
     @on(EditorBar.Reset)
     def _editor_reset(self) -> None:
-        self._set_editor_height(self.EDITOR_HEIGHT)
+        self._set_editor_height(self._default_editor_height())
 
     def action_grow_editor(self) -> None:
         self._set_editor_open(True, persist=False)
@@ -7147,6 +7152,9 @@ class SolTuiApp(App):
         height = state.get("editor_height")
         if isinstance(height, int) and not isinstance(height, bool):
             self._set_editor_height(height, persist=False)
+        elif self.size.height < 36:
+            # Keep the primary workspace usable on first launch in a short terminal.
+            self._set_editor_height(self._default_editor_height(), persist=False)
         self._set_editor_open(state.get("editor_open", True) is not False, persist=False)
 
     def _save_ui_state(self) -> None:

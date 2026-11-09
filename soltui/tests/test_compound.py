@@ -1236,6 +1236,33 @@ class EditorBarTests(unittest.IsolatedAsyncioTestCase):
             again.action_toggle_editor()
             await pilot.pause()
             self.assertEqual(again.query_one("#editor-panel").outer_size.height, 22)
+        # A first run in a short terminal leaves room for the primary workspace.
+        small = SolTuiApp(config_mod.Settings(data_dir=self.dir, poll_interval_seconds=3600,
+                                              forwardtest_autostart=False), ui_state_path=self.dir / "fresh.json")
+        async with small.run_test(size=(80, 24)) as pilot:
+            await pilot.press("3")
+            await pilot.pause()
+            panel = small.query_one("#editor-panel")
+            self.assertLessEqual(panel.outer_size.height, 8)
+            self.assertGreaterEqual(small.query_one("#main-tabs", TabbedContent).region.height, 10)
+            self.assertIn("ctrl+e", small.query_one("#editor-bar", EditorBar).render().plain)
+            await pilot.press("ctrl+e")
+            await pilot.pause()
+            self.assertFalse(panel.display)
+            await pilot.press("ctrl+e")
+            small._set_editor_height(11)
+            await pilot.pause()
+            await pilot.click("#editor-bar", offset=(5, 0), times=2)
+            await pilot.pause()
+            self.assertEqual(panel.outer_size.height, 8)
+        # An explicit saved height is still honored subject to the existing clamp.
+        saved = self.dir / "short-saved.json"
+        saved.write_text(json.dumps({"editor_height": 10, "editor_open": True}))
+        custom = SolTuiApp(config_mod.Settings(data_dir=self.dir, poll_interval_seconds=3600,
+                                               forwardtest_autostart=False), ui_state_path=saved)
+        async with custom.run_test(size=(80, 24)) as pilot:
+            await pilot.pause()
+            self.assertEqual(custom.query_one("#editor-panel").outer_size.height, 10)
 
     async def test_height_is_clamped_and_double_click_resets(self) -> None:
         app = SolTuiApp(make_settings())
