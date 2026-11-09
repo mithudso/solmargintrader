@@ -1,7 +1,13 @@
 # Work continuation
 
-Version: 240
-Delta: v239 to v240; preserve concurrent delivery and reflection acceptance.
+Version: 241
+Delta: v240 to v241; record approved reflection activation and final publication receipt.
+
+## v241 - 2026-11-08
+
+The owner replied I approved the three hooks. Persisted that explicit approval through version-checked Codex config/batchWrite for only the three reviewed hook hashes. Parsed read-back confirms all unrelated configuration values unchanged. Native discovery reports the skill enabled and all three hooks enabled and trusted. The independent managed-daemon receipt is /Users/mitch/.claude/backups/session-reflection/install-20261108/acceptance.json; the approval receipt is owner-approval.json in that directory. Global continuation record: /Users/mitch/.claude/docs/maintenance/session-reflection-2026-11-08/memory.md. No further owner decision remains.
+
+The implementation sources are merged in claude-config PR 36 and skills PR 98; their receipts and approved activation are preserved in those repositories. This repository changes only its request/continuation records and deterministic offline indexes. Final delivery is established by https://github.com/mithudso/solmargintrader/pull/149 and its final-head CI and merge state. Preserve the active default checkout and unrelated work. Remaining future evaluation is suggestion quality on real sessions; no measured quality gain or unobserved automatic event is claimed.
 
 ## v240 - 2026-11-08
 

@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 132
-Delta: v131 to v132; retain reflection request after concurrent prediction prompt.
+Version: 133
+Delta: v132 to v133; retain owner approval of automatic reflection hooks.
+
+## v133 - 2026-11-08
+
+```text
+I approved the three hooks
+```
 
 ## v132 - 2026-11-08
 
