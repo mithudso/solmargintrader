@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 296
+Version: 297
+Delta: v296 to v297; finalize source checks and committed test discovery.
 Delta: v295 to v296; implement and verify shared recovery and Council paper controls.
 Delta: v294 to v295; extend work with the Council consensus bot.
 Delta: v293 to v294; start automatic prediction recovery and actionable unavailable alerts.
@@ -15,6 +16,10 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v297 - 2026-11-09
+
+Source commit95bb4c5 implements both requests. Final backend106 tests passed; mounted controls43 passed, bridge/accounting62 passed, existing Signal/Jupiter15 passed, Node397 passed, backtester941 passed, Mongo46 passed (11 optional skips). Browser end-to-end26/26 passed and independent frozen recovery14/14 plus Council8/8 passed. JavaScript syntax, offline dry-run, Jupiter endpoints and interim documentation checks passed. Final committed discovery is1335 SolTUI and2719 total. Offline indexes include all new staged files. The full SolTUI suite remains optional; targeted checks cover changed paths. Current production inventory found no running TUI; the old console closed naturally. Existing F5 worker65834 remains untouched. Saved plan remains14assets/34trials with revisionc80b006f046f1f6488a02ffac35775e6fab570cd2b8a20bcc373717c336a7cba and218829historical calls at13:30UTC. Remaining: final metadata gate, push/PR/CI/merge/sync, consistent private backup, actual Chrome0.6.1/console activation and paper Council startup/verification. Stele completion will use queued writes while transport is closed.
 
 ## v296 - 2026-11-09
 
