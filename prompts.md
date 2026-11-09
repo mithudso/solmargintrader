@@ -1,11 +1,18 @@
 # Prompt history
 
-Version: 141
+Version: 142
+Delta: v141 to v142; record shared-checkout availability.
 Delta: v140 to v141; record backtest activation and unavailable agreement report.
 Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v142 - 2026-11-09
+
+```text
+There is no other session active right now, if there is any lock file now then it should be ignored
+```
 
 ## v141 - 2026-11-09
 
