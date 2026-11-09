@@ -1,5 +1,11 @@
 # Work continuation
 
+Version: 212
+Delta: v211 to v212; record Gemini handoff and merged incomplete work.
+
+## v212 - 2026-11-08
+
+Owner requested handoff to Gemini. PR 134 merged incomplete at 314fe989 while docs CI failed and SolTUI CI was pending; the previous agent did not merge it. TASK-1044 released for next agent. See /Users/mitch/dev/solmargintrader-wt-jupiter-handoff/JUPITER_GEMINI_HANDOFF.md for current state, verification, risks and remaining implementation. Jupiter order execution is not implemented.
 Version: 215
 Delta: v214 to v215; complete TASK-1064: added Y-axis price levels and X-axis timestamps to Signal Live chart, scheduled 1-minute and streaming-synced prediction updates.
 
