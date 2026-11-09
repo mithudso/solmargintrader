@@ -1,7 +1,19 @@
 # Prompt history
 
-Version: 121
-Delta: v120 to v121; record forward-test persistence request.
+Version: 123
+Delta: v122 to v123; record dashboard-first usage preference.
+
+## v123 - 2026-11-08
+
+```text
+Most of the extension's usage will likely be in the dashboard.
+```
+
+## v122 - 2026-11-08
+
+```text
+The chrome extension here: /Users/mitch/dev/solmargintrader/extension has been ignored for a long time, update it so it has all of the same tools and functionality as the TUI.
+```
 
 ## v121 - 2026-11-08
 

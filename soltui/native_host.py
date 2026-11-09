@@ -29,6 +29,8 @@ import json
 import os
 import struct
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, BinaryIO
 
@@ -129,16 +131,47 @@ def handle_request(raw: bytes) -> bytes:
 
 
 def serve(stdin: BinaryIO, stdout: BinaryIO) -> None:
-    """Handle frames until the stream ends."""
-    while True:
+    """Keep status and cancellation available during long calls on the same runtime.
+
+    Only declared long-running commands leave the reader thread. The bounded
+    admission gate refuses excess work rather than growing an unbounded queue.
+    Each response carries its request id; the write lock keeps frames intact.
+    """
+    output_lock = threading.Lock()
+    slots = threading.BoundedSemaphore(4)
+
+    def send(body: bytes) -> None:
+        with output_lock:
+            write_frame(stdout, body)
+
+    def run(raw: bytes) -> None:
         try:
-            raw = read_frame(stdin)
-        except FrameError as exc:
-            write_frame(stdout, _reply(None, commands.error_envelope("", "failed", str(exc))))
-            return
-        if raw is None:
-            return
-        write_frame(stdout, handle_request(raw))
+            send(handle_request(raw))
+        finally:
+            slots.release()
+
+    with ThreadPoolExecutor(max_workers=4, thread_name_prefix="soltui-native") as pool:
+        while True:
+            try:
+                raw = read_frame(stdin)
+            except FrameError as exc:
+                send(_reply(None, commands.error_envelope("", "failed", str(exc))))
+                return
+            if raw is None:
+                return
+            try:
+                request = json.loads(raw)
+                cmd = commands.COMMANDS.get(request.get("command")) if isinstance(request, dict) else None
+                is_long = isinstance(request, dict) and request.get("op") == "call" and cmd and cmd.long_running
+            except (ValueError, TypeError):
+                is_long = False
+            if not is_long:
+                send(handle_request(raw))
+            elif slots.acquire(blocking=False):
+                pool.submit(run, raw)
+            else:
+                send(_reply(request.get("id"), commands.error_envelope(
+                    cmd.name, "failed", "native host is busy with four long-running calls; request was not started")))
 
 
 def main() -> int:

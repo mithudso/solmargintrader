@@ -46,8 +46,9 @@ const onAck = (id) => ack(id).catch((err) => { $('#scanInfo').textContent = `Cou
 /* --------------------------------------------------------------- routing -- */
 
 // Old links (popup's "SolTUI console", bookmarks) land on the view holding them.
-const ALIASES = { soltui: 'settings' };
+const ALIASES = {};
 const VIEWS = {
+  soltui: { load: () => {} },
   overview: { load: () => renderOverview(state, { onAck }) },
   holdings: { load: () => refreshHoldings(state) },
   pnl: { load: refreshPnl },
@@ -60,7 +61,7 @@ const VIEWS = {
 };
 
 function current() {
-  const raw = location.hash.slice(1);
+  const raw = location.hash.slice(1).split('/')[0] || 'soltui';
   const name = ALIASES[raw] ?? raw;
   return Object.hasOwn(VIEWS, name) ? name : 'overview';
 }
@@ -69,10 +70,10 @@ function show() {
   const name = current();
   for (const section of document.querySelectorAll('[data-view]')) section.hidden = section.dataset.view !== name;
   for (const link of document.querySelectorAll('.nav-link')) {
-    if (link.getAttribute('href') === `#${name}`) link.setAttribute('aria-current', 'page');
+    if (link.getAttribute('href') === location.hash || (link.getAttribute('href') === '#soltui/now' && (!location.hash || location.hash === '#soltui'))) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
-  if (location.hash === '#soltui') $('#soltui').scrollIntoView();
+
   // Overview and Alerts repaint every visit (they are cheap); the rest load once.
   if (!state.loaded.has(name) || name === 'overview' || name === 'alerts') {
     state.loaded.add(name);

@@ -1,51 +1,39 @@
-/**
- * Dashboard panel for the soltui command bridge.
- *
- * The command list comes from the registry (`soltuiCommands`), the form is
- * built from each command's declared params by type, and a Run sends only
- * `soltuiCall` with a command name taken from that list. Nothing here knows a
- * soltui command by name, so a new soltui command shows up with no change.
- *
- * Results and errors are written with textContent only (KNOW-407): soltui
- * output is data, and it is never parsed as markup.
- */
+/** Dashboard workspace over the installed TUI registry. Results are always text nodes. */
+import { el, clear, table, lineChart } from './ui-kit.js';
+import { WORKSPACES, filterCommands, workspaceFor, cellText, columnsFor, rowsToCsv, resultTables, valuesFromRow, seriesFromRows } from './workspace-model.js';
 
 const send = (msg) => chrome.runtime.sendMessage(msg);
+const POLLABLE = new Set(['prices.status', 'forwardtest.predictions', 'forwardtest.state', 'forwardtest.status',
+  'backtest.status', 'queue.progress', 'compound.autopilot_status', 'compound.unattended_status',
+  'compound.forward_status', 'bots.progress', 'bots.fit_status', 'bots.schedule_status']);
 
-/**
- * Turn the raw text of one form field into the value the registry expects.
- * Returns { skip: true } for an empty optional field so it is left out of the
- * call, or { error } with a sentence for the person at the form.
- * Pure, so the coercion is unit-tested without a DOM.
- */
 export function coerceField(param, raw) {
-  if (param.type === 'bool') return raw === true ? { value: true } : { skip: true };
+  if (param.type === 'bool') {
+    if (raw === true || raw === 'true') return { value: true };
+    if (raw === false || raw === 'false') return { value: false };
+    return param.required ? { error: `${param.name} is required` } : { skip: true };
+  }
   const text = typeof raw === 'string' ? raw.trim() : '';
+  // Document bodies must preserve whitespace, and an explicit empty document is valid.
+  if (param.name === 'text' && param.type === 'string' && typeof raw === 'string') return { value: raw };
   if (text === '') return param.required ? { error: `${param.name} is required` } : { skip: true };
   if (param.type === 'number') {
     const n = Number(text);
     return Number.isFinite(n) ? { value: n } : { error: `${param.name} must be a number` };
   }
   if (param.type === 'json') {
-    try {
-      return { value: JSON.parse(text) };
-    } catch {
-      return { error: `${param.name} must be valid JSON` };
-    }
+    try { return { value: JSON.parse(text) }; }
+    catch { return { error: `${param.name} must be valid JSON` }; }
   }
   return { value: text };
 }
 
-/**
- * Build the params object for a command from the raw field values.
- * The confirm flag is an ordinary entry in params: soltui, not this page,
- * decides whether a command needs it.
- */
-export function buildParams(command, values, { confirmed = false } = {}) {
+export function buildParams(command, values, { confirmed = false, emptyFields = [] } = {}) {
   const params = {};
   const errors = [];
   for (const param of command.params ?? []) {
     if (param.name === 'confirm') continue;
+    if (param.type === 'string' && emptyFields.includes(param.name)) { params[param.name] = ''; continue; }
     const out = coerceField(param, values[param.name]);
     if (out.error) errors.push(out.error);
     else if (!out.skip) params[param.name] = out.value;
@@ -54,136 +42,482 @@ export function buildParams(command, values, { confirmed = false } = {}) {
   return { params, errors };
 }
 
-/** The command names the page may send: exactly those the registry listed. */
 export const commandNames = (commands) => new Set((commands ?? []).map((c) => c.name));
 
-/* ------------------------------------------------------------------ rendering -- */
-
-// Element kinds are set by assignment (input.type = ...), never as `type: '...'`:
-// test/surfaces.test.js scans the UI scripts for that literal to find the
-// messages they send, and an input kind is not a message.
-const el = (tag, props = {}, children = []) => {
-  const node = document.createElement(tag);
-  for (const [key, value] of Object.entries(props)) node[key] = value;
-  for (const child of children) node.append(child);
-  return node;
-};
-
 function fieldFor(param) {
-  const label = el('label');
-  label.append(`${param.name}${param.required ? ' *' : ''}${param.describe ? ` — ${param.describe}` : ''}`);
+  const label = el('label', { text: `${param.name}${param.required ? ' *' : ''}` });
   let input;
   if (param.type === 'bool') {
-    input = el('input');
-    input.type = 'checkbox';
-  } else if (param.type === 'json') {
-    input = el('textarea', { rows: 3, spellcheck: false });
+    input = el('select', {}, [el('option', { value: '', text: 'Use saved/default value' }),
+      el('option', { value: 'true', text: 'True / on' }), el('option', { value: 'false', text: 'False / off' })]);
+  } else if (param.type === 'json' || param.name === 'text') {
+    input = el('textarea', { rows: param.name === 'text' ? 12 : 4, spellcheck: false });
+    label.className = 'full';
   } else {
     input = el('input', { spellcheck: false });
     input.type = param.type === 'number' ? 'number' : 'text';
     if (param.type === 'number') input.step = 'any';
   }
   input.name = param.name;
-  label.append(input);
+  label.append(input, el('span', { class: 'note', text: param.describe }));
+  if (param.type === 'string' && !param.required) {
+    const clearBox = el('input');
+    clearBox.type = 'checkbox';
+    clearBox.setAttribute('aria-label', `Clear ${param.name}`);
+    const clearLabel = el('span', { class: 'row note' }, clearBox, 'Send an empty value / clear saved value');
+    input.clearBox = clearBox;
+    clearBox.addEventListener('change', () => { input.disabled = clearBox.checked; });
+    label.append(clearLabel);
+  }
   return { label, input };
 }
 
-export function mountSoltuiPanel(root = document) {
-  const select = root.querySelector('#soltuiCommand');
-  const describe = root.querySelector('#soltuiDescribe');
-  const form = root.querySelector('#soltuiForm');
-  const result = root.querySelector('#soltuiResult');
-  const status = root.querySelector('#soltuiStatus');
+function download(name, content, mime = 'text/csv;charset=utf-8') {
+  const url = URL.createObjectURL(new Blob([content], { type: mime }));
+  const a = el('a', { href: url, download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function renderResultTable(target, data, useRow, state = {}) {
+  const { rows, path } = data;
+  const columns = columnsFor(rows);
+  let sort = state.sort ?? null;
+  let direction = state.direction ?? 1;
+  let page = state.page ?? 0;
+  const filter = el('input', { placeholder: 'Filter rows', 'aria-label': `Filter ${path}` });
+  filter.type = 'search';
+  filter.value = state.query ?? '';
+  const output = el('div', { class: 'table-wrap' });
+  const count = el('span', { class: 'note' });
+  const prev = el('button', { text: 'Previous' });
+  const next = el('button', { text: 'Next' });
+  const csv = el('button', { text: 'Export CSV', class: 'small' });
+  let shown = rows;
+  function paint() {
+    const q = filter.value.toLowerCase();
+    shown = rows.filter((r) => columns.some((k) => cellText(r[k]).toLowerCase().includes(q)));
+    if (sort) shown = [...shown].sort((a, b) => {
+      const x = a[sort], y = b[sort];
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return direction * (typeof x === 'number' && typeof y === 'number' ? x - y : cellText(x).localeCompare(cellText(y), undefined, { numeric: true }));
+    });
+    const pages = Math.max(1, Math.ceil(shown.length / 100));
+    page = Math.min(page, pages - 1);
+    const cols = columns.map((k) => ({ label: k, value: (r) => cellText(r[k]) }));
+    cols.push({ label: 'Detail', value: (r) => el('button', { class: 'small', text: 'Inspect / use row', onclick: () => useRow(r) }) });
+    const t = table(cols, shown.slice(page * 100, (page + 1) * 100));
+    for (const [i, th] of [...t.querySelectorAll('th')].entries()) {
+      if (i >= columns.length) continue;
+      const key = columns[i];
+      th.setAttribute('aria-sort', sort === key ? (direction === 1 ? 'ascending' : 'descending') : 'none');
+      clear(th, el('button', { class: 'link', text: `${key}${sort === key ? (direction === 1 ? ' ↑' : ' ↓') : ''}`, onclick: () => {
+        direction = sort === key ? -direction : 1; sort = key; paint();
+      } }));
+    }
+    clear(output, t);
+    count.textContent = `${shown.length} of ${rows.length} rows · page ${page + 1}/${pages}`;
+    Object.assign(state, { sort, direction, page, query: filter.value });
+    prev.disabled = page === 0;
+    next.disabled = page + 1 >= pages;
+  }
+  filter.addEventListener('input', () => { page = 0; paint(); });
+  prev.addEventListener('click', () => { page -= 1; paint(); });
+  next.addEventListener('click', () => { page += 1; paint(); });
+  csv.addEventListener('click', () => download(`${path.replace(/[^a-z0-9_-]/gi, '-')}.csv`, rowsToCsv(shown)));
+  const node = el('div', { class: 'card result-table' },
+    el('div', { class: 'card-head' }, el('h3', { text: path }), csv),
+    el('div', { class: 'row' }, filter, count, prev, next), output);
+  const series = seriesFromRows(rows);
+  if (series.length > 1) node.append(lineChart(series, { label: path, format: cellText }));
+  target.append(node);
+  paint();
+}
+
+function renderHeatmap(target, result, useRow) {
+  for (const group of result?.groups ?? []) {
+    const points = new Map((group.points ?? []).map((p) => [JSON.stringify([p.x, p.y]), p]));
+    const values = (group.points ?? []).filter((p) => p.observations > 0 && Number.isFinite(p.value)).map((p) => Math.abs(p.value));
+    const maximum = Math.max(1e-12, ...values);
+    const head = el('tr', {}, el('th', { text: `${result.y} / ${result.x}` }), ...(group.x_values ?? []).map((x) => el('th', { text: cellText(x) })));
+    const body = (group.y_values ?? []).map((y) => el('tr', {}, el('th', { text: cellText(y) }), ...(group.x_values ?? []).map((x) => {
+      const p = points.get(JSON.stringify([x, y]));
+      const measured = p?.observations > 0 && typeof p.value === 'number' && Number.isFinite(p.value);
+      const cell = el('td', { class: measured ? (p.value >= 0 ? 'heat-positive' : 'heat-negative') : 'muted' });
+      if (measured) {
+        cell.style.backgroundColor = `color-mix(in srgb, var(${p.value >= 0 ? '--pos' : '--neg'}) ${15 + 35 * Math.abs(p.value) / maximum}%, transparent)`;
+        cell.append(el('button', { class: 'link', text: `${p.value.toPrecision(5)} (n=${p.observations})`, title: `stdev ${p.stdev ?? 'unknown'}; min ${p.min ?? 'unknown'}; max ${p.max ?? 'unknown'}`, onclick: () => useRow(p) }));
+      } else cell.textContent = 'Not measured';
+      return cell;
+    })));
+    target.append(el('div', { class: 'card' }, el('h3', { text: `${result.metric} · ${result.split} · observed cells only` }),
+      el('p', { class: 'note', text: `Fixed: ${JSON.stringify(group.fixed ?? {})} · ${group.observed_points}/${group.possible_points} observed · holdout excluded` }),
+      el('div', { class: 'table-wrap' }, el('table', {}, el('thead', {}, head), el('tbody', {}, body)))));
+  }
+}
+
+export function mountSoltuiPanel(root = document, transport = send) {
+  const $ = (s) => root.querySelector(s);
+  const select = $('#soltuiCommand');
+  const describe = $('#soltuiDescribe');
+  const form = $('#soltuiForm');
+  const result = $('#soltuiResult');
+  const status = $('#soltuiStatus');
+  const workspace = $('#soltuiWorkspace');
+  const search = $('#soltuiSearch');
+  const tools = $('#soltuiTools');
+  const rich = $('#soltuiTables');
+  const selected = $('#soltuiSelection');
+  const poll = $('#soltuiPoll');
+  const pending = new Map();
+  const drafts = new Map();
+  const results = new Map();
+  const tableStates = new Map();
+  const stateFor = (key) => { if (!tableStates.has(key)) tableStates.set(key, {}); return tableStates.get(key); };
   let commands = [];
   let inputs = new Map();
   let confirmBox = null;
   let runButton = null;
-
+  let editor = null;
+  let editorBase = null;
+  let documentPath = null;
+  let documentEpoch = 0;
+  let lastEnvelope = null;
+  let generation = null;
+  let disposed = false;
+  let heartbeat;
+  let pollTimer;
+  let liveTimer;
+  let liveBusy = false;
+  let liveAsset = '';
+  let livePoints = [];
+  let predictionsAt = 0;
+  const session = crypto.randomUUID();
+  $('#soltui').dataset.session = session;
   const current = () => commands.find((c) => c.name === select.value);
 
+  async function ask(command, params = {}) {
+    const res = await transport({ type: 'soltuiCall', command, params });
+    if (!res?.ok) throw new Error(res?.error ?? 'The extension did not answer.');
+    return res.result;
+  }
+  function remember() {
+    const vals = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));
+    if (form.dataset.command) drafts.set(form.dataset.command, { values: vals, emptyFields: [...inputs].filter(([, input]) => input.clearBox?.checked).map(([k]) => k) });
+  }
+  function clearConfirmation() {
+    if (confirmBox) {
+      confirmBox.checked = false;
+      if (runButton) runButton.disabled = true;
+    }
+  }
+  function setValues(values) {
+    clearConfirmation();
+    for (const [k, v] of Object.entries(values)) {
+      const input = inputs.get(k);
+      if (input) {
+        input.value = typeof v === 'boolean' ? String(v) : v ?? '';
+        if (input.clearBox) input.clearBox.checked = false;
+        input.disabled = false;
+      }
+    }
+  }
   function renderForm() {
     form.replaceChildren();
     inputs = new Map();
     confirmBox = null;
-    const command = current();
-    describe.textContent = command
-      ? `${command.describe}${command.read_only ? '' : ' — changes state.'}${command.long_running ? ' May take minutes.' : ''}`
-      : '';
-    if (!command) return;
-
-    for (const param of command.params ?? []) {
-      if (param.name === 'confirm') continue;
-      const { label, input } = fieldFor(param);
-      inputs.set(param.name, input);
+    const c = current();
+    form.dataset.command = c?.name ?? '';
+    if (!c) { describe.textContent = ''; return; }
+    const live = /^(coinbase|jupiter)\.order_/.test(c.name) && !/preview|status|state|reconcile/.test(c.name);
+    describe.textContent = `${c.describe}${c.read_only ? ' · Read only.' : ' · Changes state.'}${c.long_running ? ' May take minutes; other tools stay available.' : ''}`;
+    describe.className = live ? 'banner danger' : 'note';
+    for (const p of c.params ?? []) {
+      if (p.name === 'confirm') continue;
+      const { label, input } = fieldFor(p);
+      inputs.set(p.name, input);
       form.append(label);
     }
-    if (command.requires_confirm) {
-      const label = el('label');
+    const draft = drafts.get(c.name);
+    setValues(draft?.values ?? {});
+    for (const k of draft?.emptyFields ?? []) {
+      const input = inputs.get(k);
+      if (input?.clearBox) { input.clearBox.checked = true; input.disabled = true; }
+    }
+    if (c.requires_confirm) {
+      const label = el('label', { class: 'full check' });
       confirmBox = el('input');
       confirmBox.type = 'checkbox';
-      label.append(confirmBox, ' I confirm: this removes a safety stop on a real-money system.');
+      label.append(confirmBox, `I reviewed ${c.name} and its parameters. I authorize this action${live ? ' with real funds' : ''}.`);
       form.append(label);
     }
-    runButton = el('button', { className: 'primary', textContent: 'Run' });
+    runButton = el('button', { class: live ? 'danger' : 'primary', text: live ? 'Submit live order' : c.read_only ? 'Run / refresh' : 'Run action' });
     runButton.type = 'submit';
-    if (confirmBox) {
-      runButton.disabled = true;
-      confirmBox.addEventListener('change', () => { runButton.disabled = !confirmBox.checked; });
-    }
+    runButton.disabled = pending.has(c.name) || !!confirmBox;
+    if (confirmBox) confirmBox.addEventListener('change', () => { runButton.disabled = pending.has(c.name) || !confirmBox.checked; });
     form.append(runButton);
+    poll.disabled = !POLLABLE.has(c.name) || c.read_only !== true || c.requires_confirm;
+    poll.checked = false;
   }
-
-  async function loadList() {
-    status.textContent = 'Loading soltui commands…';
-    let res;
-    try {
-      res = await send({ type: 'soltuiCommands' });
-    } catch (err) {
-      status.textContent = `Could not reach the extension: ${err.message}`;
-      return;
-    }
-    const envelope = res?.result;
-    if (!res?.ok || !envelope?.ok || !Array.isArray(envelope.result)) {
-      commands = [];
-      select.replaceChildren();
-      renderForm();
-      status.textContent = envelope?.error?.message ?? res?.error ?? 'soltui is not available.';
-      return;
-    }
-    commands = envelope.result;
-    select.replaceChildren(...commands.map((c) => el('option', { value: c.name, textContent: c.name })));
-    status.textContent = `${commands.length} commands`;
+  function choose(name, values = {}) {
+    if (!commandNames(commands).has(name)) return;
+    remember();
+    select.value = name;
     renderForm();
+    if (results.has(name)) display(results.get(name));
+    setValues(values);
   }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const command = current();
-    // Only a name soltui itself listed is ever sent.
-    if (!command || !commandNames(commands).has(command.name)) return;
-
-    const values = {};
-    for (const [name, input] of inputs) values[name] = input.type === 'checkbox' ? input.checked : input.value;
-    const { params, errors } = buildParams(command, values, { confirmed: confirmBox?.checked === true });
-    if (errors.length) {
-      result.textContent = errors.join('\n');
+  function renderTools() {
+    const spec = WORKSPACES.find((w) => w.id === workspace.value) ?? WORKSPACES.at(-1);
+    $('#soltuiWorkspaceDetail').textContent = spec.detail;
+    $('#soltuiLive').hidden = !['signal', 'now'].includes(spec.id);
+    const filtered = filterCommands(commands, spec.id, search.value);
+    clear(tools, ...filtered.map((c) => el('button', { class: 'tool-card', title: c.describe, onclick: () => choose(c.name) },
+      el('strong', { text: c.name }), el('small', { text: `${c.read_only ? 'Read' : 'Action'}${c.requires_confirm ? ' · Confirm' : ''} — ${c.describe}` }))));
+    if (!filtered.length) tools.append(el('p', { class: 'empty', text: 'No matching tools in this workspace. Try All tools.' }));
+  }
+  function applyRoute() {
+    const parts = location.hash.slice(1).split('/');
+    if (parts[0] !== 'soltui' || !WORKSPACES.some((w) => w.id === parts[1])) return;
+    workspace.value = parts[1];
+    renderTools();
+    const c = filterCommands(commands, workspace.value)[0];
+    if (c && workspace.value !== workspaceFor(select.value)) choose(c.name);
+  }
+  async function openDocument(path) {
+    if (editor && editor.value !== editorBase) {
+      selected.textContent = 'Save your edited document before opening another document.';
       return;
     }
-    runButton.disabled = true;
-    result.textContent = 'Running…';
-    try {
-      const res = await send({ type: 'soltuiCall', command: command.name, params });
-      result.textContent = res?.ok
-        ? JSON.stringify(res.result, null, 2)
-        : `Refused: ${res?.error ?? 'unknown error'}`;
-    } catch (err) {
-      result.textContent = `Failed: ${err.message}`;
-    } finally {
-      runButton.disabled = confirmBox ? !confirmBox.checked : false;
+    const epoch = ++documentEpoch;
+    const env = await ask('docs.read', { path });
+    if (epoch !== documentEpoch || (editor && editor.value !== editorBase)) return;
+    if (!env.ok) { selected.textContent = env.error?.message ?? 'Could not open document.'; return; }
+    documentPath = path;
+    editorBase = env.result.text;
+    editor = $('#soltuiEditor');
+    editor.value = editorBase;
+    editor.readOnly = !env.result.editable;
+    $('#soltuiEditorCard').hidden = false;
+    $('#soltuiEditorPath').textContent = `${path} · ${env.result.editable ? 'Editable' : 'Read only'}`;
+    $('#soltuiSave').disabled = !env.result.editable;
+  }
+  function useRow(row) {
+    selected.textContent = JSON.stringify(row, null, 2);
+    if (row.path && commandNames(commands).has('docs.read')) {
+      openDocument(row.path).catch((e) => { selected.textContent = e.message; });
     }
-  });
+    if (current()) setValues(valuesFromRow(current(), row));
+    offerSubmit(row);
+  }
+  function offerSubmit(row) {
+    $('#soltuiNext').replaceChildren();
+    if (row.preview_id && /^(coinbase|jupiter)\.order_.*preview$/.test(lastEnvelope?.command ?? '')) {
+      const venue = lastEnvelope.command.split('.')[0];
+      $('#soltuiNext').append(el('button', { class: 'danger', text: `Review ${venue} submit form`, onclick: () => {
+        choose(`${venue}.order_submit`, { preview_id: row.preview_id });
+      } }));
+    }
+  }
+  function display(env) {
+    lastEnvelope = env;
+    result.textContent = JSON.stringify(env, null, 2);
+    rich.replaceChildren();
+    $('#soltuiNext').replaceChildren();
+    if (!env?.ok) {
+      rich.append(el('p', { class: 'err', text: `${env?.error?.code ?? 'failed'}: ${env?.error?.message ?? 'No response'}` }));
+      return;
+    }
+    const val = env.result;
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      const simple = Object.entries(val).filter(([, v]) => v === null || typeof v !== 'object');
+      if (simple.length) {
+        const dl = el('dl', { class: 'result-summary' });
+        for (const [k, v] of simple) dl.append(el('dt', { text: k }), el('dd', { text: cellText(v) || '—' }));
+        rich.append(dl);
+      }
+      if (val.preview_id) offerSubmit(val);
+    }
+    if (env.command === 'experiments.heatmap') renderHeatmap(rich, val, useRow);
+    for (const t of resultTables(val)) renderResultTable(rich, t, useRow, stateFor(`${env.command}:${t.path}`));
+    if (env.command === 'docs.read' && val?.path) openDocument(val.path).catch((e) => { selected.textContent = e.message; });
+    $('#soltuiResultLabel').textContent = `${env.command} · ${new Date().toLocaleTimeString()}`;
+  }
+  function paintJobs() {
+    clear($('#soltuiJobs'), ...[...pending.keys()].map((name) => el('span', { class: 'chip backtest', text: `${name} running` })));
+  }
+  async function run(c, params, polling = false) {
+    if (pending.has(c.name)) return;
+    pending.set(c.name, true);
+    paintJobs();
+    if (select.value === c.name && runButton) runButton.disabled = true;
+    if (!polling) result.textContent = 'Running…';
+    $('#soltuiRunStatus').textContent = `${c.name} running…`;
+    try {
+      const env = await ask(c.name, params);
+      if (disposed) return;
+      $('#soltuiRunStatus').textContent = env?.ok ? `${c.name} completed.` : `${c.name}: ${env?.error?.message ?? 'No response'}`;
+      results.set(c.name, env);
+      if (results.size > 30) results.delete(results.keys().next().value);
+      clear($('#soltuiHistory'), ...[...results].reverse().map(([name, saved]) => el('button', { class: 'small', text: `${name} ${saved?.ok ? '✓' : 'failed'}`, onclick: () => choose(name) })));
+      // A response for a previous tool never replaces the current tool's view.
+      if (select.value === c.name) display(env);
+      if (!env?.ok) poll.checked = false;
+    } catch (e) {
+      poll.checked = false;
+      $('#soltuiRunStatus').textContent = `${c.name} failed: ${e.message}. No automatic retry.`;
+      if (select.value === c.name) result.textContent = `Failed: ${e.message}. Requests are never automatically retried.`;
+    } finally {
+      pending.delete(c.name);
+      paintJobs();
+      if (select.value === c.name) {
+        if (confirmBox) confirmBox.checked = false;
+        if (runButton) runButton.disabled = !!confirmBox;
+      }
+    }
+  }
+  async function refreshLive(force = false) {
+    if (liveBusy || disposed) return;
+    const asset = $('#soltuiLiveAsset').value.trim().toUpperCase();
+    if (!/^[A-Z0-9]{1,20}$/.test(asset)) { $('#soltuiLiveStatus').textContent = 'Enter a coin symbol such as SOL.'; return; }
+    if (!['prices.status', 'forwardtest.predictions'].every((name) => commands.some((c) => c.name === name && c.read_only && !c.requires_confirm))) {
+      $('#soltuiLiveStatus').textContent = 'This host does not expose the read-only live view tools.'; return;
+    }
+    liveBusy = true;
+    try {
+      if (asset !== liveAsset) { liveAsset = asset; livePoints = []; predictionsAt = 0; }
+      const env = await ask('prices.status');
+      if (!env.ok) throw new Error(env.error?.message ?? 'Recorder status failed.');
+      if (asset !== $('#soltuiLiveAsset').value.trim().toUpperCase()) return;
+      const q = env.result.prices?.[`${asset}-USD`];
+      const age = q?.quote_age_s;
+      const price = q?.mid ?? q?.last;
+      if (typeof price === 'number' && Number.isFinite(price) && price > 0 && typeof age === 'number' && Number.isFinite(age) && age >= 0) {
+        const at = Math.round((Date.now() - age * 1000) / 1000) * 1000;
+        if (!livePoints.length || at > livePoints.at(-1).x) livePoints.push({ x: at, y: price });
+        livePoints = livePoints.slice(-600);
+        clear($('#soltuiLiveChart'), lineChart(livePoints, { label: `${asset}-USD recorder price`, format: (v) => `$${v.toLocaleString(undefined, { maximumFractionDigits: 8 })}` }),
+          el('p', { class: 'note', text: livePoints.length ? `${new Date(livePoints[0].x).toISOString()} → ${new Date(livePoints.at(-1).x).toISOString()}` : '' }));
+        $('#soltuiLiveStatus').textContent = `${asset}-USD $${price} · bid ${q.bid ?? '—'} · ask ${q.ask ?? '—'} · spread ${q.spread_bps ?? '—'} bps · ${age}s old · ${env.result.live && age < 15 ? 'LIVE' : 'STALE / recorder offline'}`;
+      } else {
+        clear($('#soltuiLiveChart'), el('p', { class: 'empty', text: 'No usable recorded quote for this coin.' }));
+        $('#soltuiLiveStatus').textContent = 'No usable quote. The recorder may be stopped; start it explicitly in Bots & prices if needed.';
+      }
+      if (force || Date.now() - predictionsAt >= 60_000) {
+        const predictions = await ask('forwardtest.predictions', { asset });
+        if (!predictions.ok) throw new Error(predictions.error?.message ?? 'Predictions failed.');
+        const target = $('#soltuiLivePredictions');
+        target.replaceChildren();
+        if (predictions.result.rows?.length) renderResultTable(target, { path: `${asset} saved forward predictions`, rows: predictions.result.rows }, (r) => { selected.textContent = JSON.stringify(r, null, 2); }, stateFor(`live:${asset}`));
+        else target.append(el('p', { class: 'empty', text: 'No saved forward predictions for this coin yet.' }));
+        predictionsAt = Date.now();
+      }
+    } catch (e) { $('#soltuiLiveStatus').textContent = `Live view unavailable: ${e.message}`; $('#soltuiLiveStream').checked = false; }
+    finally { liveBusy = false; }
+  }
+  async function renew() {
+    try {
+      const res = await transport({ type: 'soltuiSession', session, active: true });
+      const state = res?.result;
+      if (!res?.ok || !state?.available) { status.textContent = 'Dashboard session is unavailable. Reload the extension and native host.'; return; }
+      if (generation !== null && (state.generation !== generation || (generation > 0 && !state.connected))) {
+        poll.checked = false;
+        $('#soltuiLiveStream').checked = false;
+        status.textContent = 'The native session changed. Check saved status before resuming replay or jobs. No action was retried.';
+      }
+      generation = state.generation;
+    } catch (e) { status.textContent = `Session unavailable: ${e.message}`; }
+  }
+  async function loadList() {
+    status.textContent = 'Connecting to SolTUI…';
+    await renew();
+    try {
+      const res = await transport({ type: 'soltuiCommands' });
+      const env = res?.result;
+      if (!res?.ok || !env?.ok || !Array.isArray(env.result)) throw new Error(env?.error?.message ?? res?.error ?? 'SolTUI is not available.');
+      commands = env.result;
+      remember();
+      const old = select.value;
+      clear(select, ...commands.map((c) => el('option', { value: c.name, text: c.name })));
+      if (commands.some((c) => c.name === old)) select.value = old;
+      status.textContent = `${commands.length} TUI tools connected · session retained while a dashboard is open`;
+      renderForm();
+      renderTools();
+      applyRoute();
+      await renew();
+    } catch (e) { status.textContent = e.message; }
+  }
 
-  select.addEventListener('change', renderForm);
-  root.querySelector('#soltuiReload').addEventListener('click', loadList);
+  clear(workspace, ...WORKSPACES.map((w) => el('option', { value: w.id, text: w.title })));
+  workspace.value = 'now';
+  select.addEventListener('change', () => { remember(); renderForm(); });
+  search.addEventListener('input', renderTools);
+  workspace.addEventListener('change', () => { location.hash = `soltui/${workspace.value}`; renderTools(); });
+  $('#soltuiReload').addEventListener('click', loadList);
+  form.addEventListener('input', (e) => { if (e.target !== confirmBox) clearConfirmation(); });
+  form.addEventListener('change', (e) => { if (e.target !== confirmBox) clearConfirmation(); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const c = current();
+    if (!c || pending.has(c.name) || (c.requires_confirm && !confirmBox?.checked)) return;
+    remember();
+    const values = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));
+    const built = buildParams(c, values, { confirmed: confirmBox?.checked === true, emptyFields: [...inputs].filter(([, input]) => input.clearBox?.checked).map(([k]) => k) });
+    if (built.errors.length) { result.textContent = built.errors.join('\n'); $('#soltuiRunStatus').textContent = built.errors.join(' · '); return; }
+    run(c, built.params);
+  });
+  $('#soltuiExportJson').addEventListener('click', () => {
+    if (lastEnvelope) download(`${lastEnvelope.command}.json`, JSON.stringify(lastEnvelope, null, 2), 'application/json');
+  });
+  $('#soltuiSave').addEventListener('click', async () => {
+    if (!editor || editor.readOnly) return;
+    const save = $('#soltuiSave');
+    save.disabled = true;
+    try {
+      const latest = await ask('docs.read', { path: documentPath });
+      if (!latest.ok || !latest.result.editable || latest.result.text !== editorBase) throw new Error('The document changed or became read only. Export your draft, then reload it before saving.');
+      const text = editor.value;
+      const env = await ask('docs.write', { path: documentPath, text });
+      if (!env.ok) throw new Error(env.error.message);
+      editorBase = text;
+      $('#soltuiEditorStatus').textContent = 'Saved to disk.';
+    } catch (e) { $('#soltuiEditorStatus').textContent = `Save refused: ${e.message}`; }
+    finally { save.disabled = editor.readOnly; }
+  });
+  $('#soltuiEditorExport').addEventListener('click', () => {
+    if (editor) download('document-draft.txt', editor.value, 'text/plain;charset=utf-8');
+  });
+  $('#soltuiEditorReload').addEventListener('click', () => {
+    if (editor && editor.value !== editorBase) { $('#soltuiEditorStatus').textContent = 'Export your draft before reloading. Clear your changes to the saved text to reload.'; return; }
+    if (documentPath) openDocument(documentPath).catch((e) => { $('#soltuiEditorStatus').textContent = e.message; });
+  });
+  $('#soltuiLiveRefresh').addEventListener('click', () => refreshLive(true));
+  $('#soltuiLiveStream').addEventListener('change', () => { if ($('#soltuiLiveStream').checked) refreshLive(true); });
+  window.addEventListener('hashchange', applyRoute);
+  heartbeat = setInterval(renew, 25_000);
+  pollTimer = setInterval(() => {
+    const c = current();
+    if (disposed || document.hidden || $('#view-soltui').hidden || !poll.checked || !c || !POLLABLE.has(c.name) || c.read_only !== true) return;
+    const values = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));
+    const built = buildParams(c, values);
+    if (!built.errors.length) run(c, built.params, true);
+  }, 10_000);
+  liveTimer = setInterval(() => {
+    if (!document.hidden && !$('#view-soltui').hidden && !$('#soltuiLive').hidden && $('#soltuiLiveStream').checked) refreshLive();
+  }, 5000);
+  function dispose() {
+    disposed = true;
+    clearInterval(heartbeat);
+    clearInterval(pollTimer);
+    clearInterval(liveTimer);
+    transport({ type: 'soltuiSession', session, active: false }).catch(() => {});
+  }
+  window.addEventListener('pagehide', dispose, { once: true });
+  window.addEventListener('beforeunload', (e) => {
+    if (pending.size || (editor && editor.value !== editorBase)) { e.preventDefault(); e.returnValue = ''; }
+  });
   return loadList();
 }

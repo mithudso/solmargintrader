@@ -7,7 +7,18 @@ hard risk rails, on its own tab, **dry-run by default** — it will not place an
 change the mode and type a confirmation. The grid lost to buy-and-hold walk-forward on 9 of 9 coins,
 which is why 0.3.0 moved it off the front page.
 
-## What each tab reads (0.3.0)
+## Dashboard workspace (0.4.0)
+
+The dashboard now exposes the complete installed SolTUI registry in workspaces for Now, Signal,
+Research/replay, Bots/prices, Experiments, Money/orders, Library/editor, TUI settings and Archive.
+The popup's **Full workspace** link opens it. Forms include explicit true/false values; results
+include sortable/filterable tables, CSV/JSON exports, time-series charts, row detail and guarded
+catalogued-document editing. Manual order previews hand off to explicitly confirmed submit forms.
+Signal has a read-only recorder chart and saved forward predictions. Native sessions retain replay
+and running-job state while a dashboard is open; status and cancellation remain usable during long
+calls. See [dashboard workflows, lifecycle and verification](../docs/EXTENSION-TUI-PARITY.md).
+
+## Existing market views
 
 | Tab | Source | Label it carries |
 | --- | --- | --- |
@@ -74,7 +85,7 @@ Both venues sit behind one `VenueAdapter` interface, so Perps drops in when its 
 
 ```bash
 cd ~/dev/solmargintrader/extension
-npm test              # 110 tests, no dependencies to install
+npm test              # unit and parity tests; no dependencies to install
 node tools/dryrun.js  # end-to-end tick against the live SOL price
 ```
 
@@ -88,10 +99,10 @@ Chrome 137+ is recommended: full-auto signing uses WebCrypto Ed25519, which land
 Everything else works from Chrome 120.
 
 **Did a reload pick up the new code?** The popup header and the dashboard title show the
-manifest version (`v0.2.1`). Every change to `src/` or `manifest.json` bumps it, in
+manifest version (`v0.4.0`). Every change to `src/` or `manifest.json` bumps it, in
 `manifest.json` and `package.json` together; CI fails a pull request that changes either
 without a bump, and `test/version.test.js` keeps the two fields equal. The SolTUI console
-is on the dashboard (popup → **SolTUI console**), not in the popup itself.
+is the primary dashboard workspace (popup → **Full workspace**).
 
 ---
 
@@ -336,7 +347,7 @@ Full reference: [../docs/API.md](../docs/API.md).
 
 Everything the SolTUI app can do is also a SolTUI registry command (`soltui/commands.py`), and the
 extension reaches that registry through a Chrome **native messaging** host, `com.mitchhudson.soltui`
-(`soltui/native_host.py`). Two registry commands forward to it: `soltuiCommands` (list) and
+(`soltui/native_host.py`). Two registry commands forward calls to it: `soltuiCommands` (list) and
 `soltuiCall --command <name> --params '{...}'`. Both return **soltui's own envelope, unchanged**
 (`{ok, command, result, error}`): the extension message, `node tools/cli.js` and the API return
 exactly what `soltui call` prints. A missing, crashed or slow host is an ordinary `failed` or
@@ -355,15 +366,18 @@ curl -s -X POST -H "Authorization: Bearer $SMT_API_TOKEN" -H 'content-type: appl
   the host manifest's `allowed_origins` talk to the host. Install the host with
   `python -m soltui.native_host_install install`, then reload the extension once so the new permission
   takes effect.
-- **Transports.** The service worker opens one short-lived `connectNative` port per request
-  (`src/bg/soltui-transport.js`); the CLI and API spawn the same host and speak the same 4-byte
-  length-prefixed framing (`tools/soltui-transport.js`). Both feed `src/core/soltui.js`, which keeps the
-  envelope untouched. A call gets 30 s, a `long_running` command 15 min; a timeout ends the host process.
-  `SOLTUI_NATIVE_HOST` (a wrapper path) or `SOLTUI_PYTHON` choose the host for the node surfaces.
+- **Transports.** A dashboard renews a session through `soltuiSession`; the service worker retains one
+  multiplexed `connectNative` port while dashboard leases or requests need it. Native replay/job state
+  survives successive calls, and status/cancellation can answer during long commands. Without a dashboard,
+  probes use a short-lived port. The CLI/API spawn the same host and speak the same 4-byte framing.
+  Both feed `src/core/soltui.js`, which keeps envelopes unchanged. Quick calls get 30 s; long calls get
+  15 min. A timed-out dashboard call is not retried and does not close other calls. Check status before
+  continuing; a submit may have succeeded. `SOLTUI_NATIVE_HOST` or `SOLTUI_PYTHON` select node hosts.
 - **No engine lock.** `soltuiCall` does not take the engine's store lock, so a long backtest never stalls a tick.
 - **Dashboard.** The SolTUI panel (`src/ui/soltui-panel.js`) lists `soltuiCommands`, builds the form from
   each command's param types, gates `requires_confirm` behind a checkbox, sends only listed names, and
-  renders results with `textContent` only.
+  renders untrusted values as text. Parameter edits and every attempt reset confirmation. Workspaces,
+  tables, CSV, charts and the editor are described in [dashboard parity](../docs/EXTENSION-TUI-PARITY.md).
 - **Wallet pubkey button.** Next to the dashboard's Wallet pubkey field, **Use soltui Solana address**
   (`src/ui/wallet-pubkey.js`) sends `soltuiCall` for the read-only soltui command `wallet.addresses`, which returns the
   public Solana and EVM addresses saved in soltui Settings and never an xpub or key material. The page checks the
@@ -375,7 +389,7 @@ curl -s -X POST -H "Authorization: Bearer $SMT_API_TOKEN" -H 'content-type: appl
   (`src/core/autoreload.js`):
   the first observation only stores the hash; an unreachable host never reloads and is logged once until it
   recovers; a reload is **deferred, not forgotten,** while any tick, reconcile, submit or cancel is queued or
-  running (the engine's own store lock, `enginePending`); the final check and the reload happen inside that
+  running, or a dashboard session remains open (the engine lock and native session leases); the final check and the reload happen inside that
   lock, so a tick cannot start between "idle" and "reloaded". Each reload is one `auto-reload` event
   (hash prefixes, `armed`, `killSwitch`; no secret) in the existing event log.
   **A reload is an update, so it disarms**: `handleInstalled` forces `armed: false` on every update and keeps

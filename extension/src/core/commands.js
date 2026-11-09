@@ -524,6 +524,17 @@ export const COMMANDS = {
 
   /* ---- soltui bridge (src/core/soltui.js) ---- */
 
+  soltuiSession: {
+    describe: 'Keep dashboard replay and job state alive while this dashboard is open.',
+    unlocked: true,
+    params: [
+      { name: 'session', type: TYPE.STRING, required: true, describe: 'Dashboard session id.' },
+      { name: 'active', type: TYPE.BOOL, required: true, describe: 'Renew or release this dashboard session.' },
+    ],
+    handler: async ({ deps, args }) => deps.soltui?.session?.(args.session, args.active)
+      ?? { available: false, connected: false },
+  },
+
   soltuiCommands: {
     describe: 'List the soltui commands (name, params, read_only, long_running, requires_confirm) as soltui\'s own envelope.',
     params: [],

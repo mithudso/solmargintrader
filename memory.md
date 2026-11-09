@@ -1,7 +1,17 @@
 # Work continuation
 
-Version: 213
-Delta: v212 to v213; run repo-bootstrapper audit, generate canonical LICENSE, implement workflow-log rotation and archive older logs.
+Version: 215
+Delta: v214 to v215; implement dashboard parity and record verification.
+
+## v215 - 2026-11-08
+
+Extension parity implementation is complete in /Users/mitch/dev/solmargintrader-wt-01a1bdf1. Owner clarified dashboard-first usage. Added workflow navigation for all 147 installed commands, typed forms with false/explicit clear, structured sortable tables and CSV/JSON, live recorder chart/predictions, sparse experiment heatmaps and catalogued editor. Existing reviewed-order gates remain in Python. Native dashboard leases retain multiplexed runtime; bounded long-call dispatch permits status/cancel; auto-reload waits for dashboards. No call is retried after timeout/disconnect. Independent browser review caught and fixed stale confirmations and cached-preview replacement. Node suite passed 369 tests before the latest UI refinements; 42 focused Python bridge tests pass. Real-host browser gate passed 23 checks before the latest refinements. Backtester has one expected stale-index failure (909 total); rebuild offline generated indexes before final checks. Mongo: 34 tests, 17 skipped without mongod. Oscillating grid closes one positive round trip, net $0.3492. Stele task outbox dcbde101; knowledge outbox 17d6b326, 8a990cf6, 867c033e. Remaining: persist browser regressions, final verification, count/index documentation, push PR, passing CI, merge, remote content verification and cleanup. Do not switch or overwrite the shared active checkout.
+
+## v214 - 2026-11-08
+
+Target: full browser access to SolTUI tools through its shared registry, with usable workflow navigation, typed forms, tables/charts, CSV exports and document editing. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1bdf1; branch feat/extension-tui-parity-20261108 based on origin/master. Shared checkout has active concurrent edits and MERGE_HEAD; do not touch it. Stele task creation outbox dcbde101. Recall specialist failed before execution because its fixed model is unsupported; MCP tools are absent.
+
+Steps: inventory in progress; workspace and native-session implementation pending; browser/unit verification pending; documentation, CI and delivery pending. Native transport currently kills process-local replay/job state after each request. Persist the host only while dashboard leases exist, multiplex requests, and never retry ambiguous calls. Preserve install defaults, existing order gates and archived Aero status. No live transactions or worker starts are authorized as verification.
 
 ## v213 - 2026-11-08
 

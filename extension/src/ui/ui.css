@@ -267,3 +267,22 @@ body.popup header .brand { padding: 0; }
   .nav-sep, .nav-note { display: none; }
   main { padding: 16px; }
 }
+
+/* The dashboard is the primary TUI workspace, with a persistent result/editor area. */
+.workspace-grid { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(0, 3fr); gap: 16px; }
+.tool-list { max-height: 570px; overflow: auto; display: flex; flex-direction: column; gap: 6px; align-self: start; }
+.tool-card { display: grid; gap: 3px; text-align: left; width: 100%; flex-shrink: 0; }
+.tool-card strong { overflow-wrap: anywhere; }
+.tool-card small { color: var(--muted); font-weight: 400; line-height: 1.4; }
+#soltuiForm { margin-top: 14px; }
+#soltuiCommand { max-width: 100%; }
+#soltuiTables { display: grid; gap: 12px; margin: 12px 0; }
+#soltuiTables td { max-width: 360px; white-space: pre-wrap; overflow-wrap: anywhere; }
+#soltuiTables .table-wrap { max-height: 480px; overflow: auto; }
+#soltuiTables thead { position: sticky; top: 0; background: var(--surface); }
+.result-summary { display: grid; grid-template-columns: minmax(110px, auto) 1fr; gap: 5px 18px; }
+.result-summary dt { color: var(--muted); }
+.result-summary dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.poll-control { display: block; margin: 16px 0 6px; }
+#soltuiEditor { min-height: 320px; resize: vertical; tab-size: 4; }
+@media (max-width: 1000px) { .workspace-grid { grid-template-columns: 1fr; } .tool-list { max-height: 210px; } }
