@@ -189,6 +189,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#forward-start": "forwardtest.start",
     "#forward-stop": "forwardtest.stop",
     "#forward-refresh": "forwardtest.status",
+    "#btn-goto-signal-live": "forwardtest.predictions",
     "#btn-remove": "roster.remove",
     "#btn-reset-roster": "roster.reset",
     "#btn-save-signals": "signals.save",
@@ -237,6 +238,7 @@ BUTTON_COMMANDS: dict[str, str] = {
     "#advanced-quick": "coinbase.order_quick",
     "#advanced-percent-quick": "coinbase.order_percent_quick",
     "#advanced-conditional-quick": "coinbase.order_conditional_quick",
+    "#advanced-token-search": "jupiter.tokens_search",
     "#coinbase-pairs-filter": "coinbase.pairs",
     "#docs-search-run": "docs.search",
     "#docs-search-free": "docs.search_unload",
@@ -851,6 +853,13 @@ class SolTuiApp(App):
     #compound-call { padding: 0 1; border: round $accent; }
     #compound-detail { color: $text-muted; padding: 0 1; }
     #compound-autopilot-status { padding: 0 1; border: round $success; }
+    #signal-live-stream { padding: 0 1; border: round $accent; }
+    #signal-live-chart-container { height: 7; margin: 1 0 0 0; }
+    #signal-live-chart-yaxis { width: 14; height: 7; color: $text-muted; }
+    #signal-live-chart { width: 1fr; height: 7; margin: 0; }
+    #signal-live-chart-xaxis { height: 1; margin: 0 0 1 0; color: $text-muted; }
+    #signal-live-predictions-table { height: 15; }
+    #signal-live-detail { color: $text-muted; padding: 0 1; }
     #bots-top Label { width: auto; padding: 0 0 0 1; }
     #bots-bot { width: 24; }
     #bots-top Button { min-width: 8; width: auto; }
@@ -1010,6 +1019,12 @@ class SolTuiApp(App):
         self._advanced_context_busy = False
         self._advanced_price_history: dict[str, list[tuple[float, float]]] = {}
         self._advanced_context_product = ""
+        self._signal_live_price_history: dict[str, list[tuple[float, float]]] = {}
+        self._signal_live_prediction_rows: list[dict[str, Any]] = []
+        self._signal_live_last_coin: str | None = None
+        self._signal_live_busy = False
+        self._signal_live_last_pred_update = 0.0
+        self._signal_live_last_pred_minute = 0
         self._coinbase_pairs_generation = 0
         self._editor_height = self.EDITOR_HEIGHT
         # The text of the preview the editor shows (None when a file or nothing is shown), so a
@@ -1287,6 +1302,12 @@ class SolTuiApp(App):
                     value=self.settings.interval,
                     id="set-interval",
                     allow_blank=False,
+                )
+            with Horizontal(classes="form-row"):
+                yield Label("Forwardtest autostart:")
+                yield Checkbox(
+                    value=getattr(self.settings, "forwardtest_autostart", True),
+                    id="set-forwardtest_autostart",
                 )
             yield Static("[b]Signing key source[/b] (read-only; stat only, the files are never opened)",
                          classes="hint")
@@ -1576,11 +1597,34 @@ class SolTuiApp(App):
             self.query_one("#forward-status", Static).update(self._msg(env))
 
     def _forward_controls(self) -> None:
+        if not self.query("#forward-start"):
+            return
         self.query_one("#forward-start", Button).disabled = self._forward_running or self._forward_busy
         self.query_one("#forward-stop", Button).disabled = not self._forward_running
         self.query_one("#forward-refresh", Button).disabled = self._forward_busy
         for wid in ("#forward-coins", "#forward-optimize", "#forward-scope", "#forward-horizon"):
-            self.query_one(wid, Select).disabled = self._forward_running
+            if self.query(wid):
+                self.query_one(wid, Select).disabled = self._forward_running
+
+    def _autostart_forwardtest(self) -> None:
+        params = {
+            "scope": "all",
+            "mode": "all",
+            "coins": "all",
+            "optimize": True,
+            "horizons": [1, 5, 10, 30],
+        }
+        env = self._call("forwardtest.start", params, quiet=True)
+        if not env["ok"]:
+            return
+        result = env["result"]
+        run = self._call("forwardtest.run", quiet=True)
+        if not run["ok"]:
+            return
+        self._forward_running = True
+        self._forward_seen = {}
+        self._forward_controls()
+        self._forward_show_running(result.get("assets", []))
 
     def _forward_show_running(self, assets: list[str]) -> None:
         """The header says the forward test runs, so it is visible from every tab."""
@@ -1682,7 +1726,8 @@ class SolTuiApp(App):
             self._bots_fit_shutdown_drained = await asyncio.to_thread(self._bots_fit_drained.wait, 5.0)
         if self._forward_running or self._forward_busy:
             self._forward_running = False
-            self._call("forwardtest.stop", quiet=True)
+            # Stop this process without clearing the saved plan; the next launch resumes it.
+            self.ctx.runtime.forward_stop.set()
 
     def _signals_pane(self) -> ComposeResult:
         """Editable signal parameters, grouped by indicator.
@@ -1698,6 +1743,7 @@ class SolTuiApp(App):
                 classes="hint",
             )
             with Horizontal(classes="form-row"):
+                yield Button("Go to Signal Live", variant="success", id="btn-goto-signal-live")
                 yield Button("Save signals", variant="primary", id="btn-save-signals")
                 yield Button("Reset to defaults", id="btn-reset-signals")
                 yield Static("", id="signals-status")
@@ -1737,7 +1783,32 @@ class SolTuiApp(App):
                 yield Button("Autopilot: on", variant="success", id="compound-autopilot")
             yield Static("", id="compound-autopilot-status")
             yield Static("", id="compound-status")
-            with TabbedContent(id="compound-sections", initial="cmp-call"):
+            with TabbedContent(id="compound-sections", initial="cmp-live"):
+                with TabPane("Live", id="cmp-live"):
+                    with VerticalScroll():
+                        yield Static(
+                            "Real-time streaming prices from Coinbase WebSocket feeds and top forward test "
+                            "strategy direction predictions across 1m, 5m, 10m, and 30m horizons.",
+                            classes="hint",
+                        )
+                        yield Static("price recorder: checking…", id="signal-live-stream", markup=True)
+                        yield Static("Price graph: loading…", id="signal-live-chart-context", classes="table-title", markup=True)
+                        with Horizontal(id="signal-live-chart-container"):
+                            yield Static("", id="signal-live-chart-yaxis", markup=True)
+                            yield Sparkline([], id="signal-live-chart")
+                        yield Static("", id="signal-live-chart-xaxis", markup=True)
+                        yield Static("", id="signal-live-chart-stats", markup=True)
+                        yield Static("[b]Top performing forward test strategies — predictions[/b]",
+                                     id="signal-live-predictions-title",
+                                     classes="table-title", markup=True)
+                        live_table = GlossaryTable(id="signal-live-predictions-table")
+                        live_table.cursor_type = "row"
+                        live_table.add_columns("rank", "strategy", "win rate", "resolved",
+                                               "1m pred", "5m pred", "10m pred", "30m pred",
+                                               "horizon accuracy", "settings")
+                        yield ExportPanel(live_table)
+                        yield Static("Select a strategy above to inspect its parameters and horizon history.",
+                                     id="signal-live-detail", markup=False)
                 with TabPane("Call & metrics", id="cmp-call"):
                     with VerticalScroll():
                         yield Static(
@@ -3038,6 +3109,24 @@ class SolTuiApp(App):
         self._wallet_restore()
         self.set_interval(self.settings.poll_interval_seconds, self._tick)
         self.set_interval(liq.REFRESH_SECONDS, self._liq_tick)
+        self.set_interval(1, self._signal_live_tick)
+        if getattr(self.settings, "forwardtest_autostart", True):
+            restored = self._call("forwardtest.restore", quiet=True)
+            from .commands import forward_coins
+
+            all_coins = set(forward_coins())
+            restored_assets = (
+                set(restored.get("result", {}).get("assets", []))
+                if (restored["ok"] and restored["result"].get("restored"))
+                else set()
+            )
+            if restored_assets and all_coins.issubset(restored_assets):
+                self._forward_running = True
+                self._forward_show_running(restored["result"]["assets"])
+            else:
+                if restored_assets:
+                    self._call("forwardtest.stop", quiet=True)
+                self._autostart_forwardtest()
         self.set_interval(5, self._forward_schedule)
         self.set_interval(5, self._advanced_context_tick)
         self.set_interval(5, self._batch_poll)
@@ -3204,6 +3293,8 @@ class SolTuiApp(App):
             if raw or cast is str:
                 out[name] = cast(raw)
         out["interval"] = str(self.query_one("#set-interval", Select).value)
+        if self.query("#set-forwardtest_autostart"):
+            out["forwardtest_autostart"] = bool(self.query_one("#set-forwardtest_autostart", Checkbox).value)
         return out
 
     # -- roster ----------------------------------------------------------
@@ -3264,12 +3355,17 @@ class SolTuiApp(App):
         return str(row_key.value)
 
     def _update_strategy_actions(self, key: str | None = None) -> None:
+        if not self.query("#btn-add"):
+            return
         if key is None:
+            if not self.query("#available-table"):
+                return
             table = self.query_one("#available-table", DataTable)
             key = self._strategy_table_key(table) if table.row_count else ""
         card = getattr(self, "_strategy_cards", {}).get(key, {})
         self.query_one("#btn-add", Button).disabled = not card.get("registered", False)
-        self.query_one("#btn-bt-selected", Button).disabled = not card.get("testable", False)
+        if self.query("#btn-bt-selected"):
+            self.query_one("#btn-bt-selected", Button).disabled = not card.get("testable", False)
 
     def _registered_card_selected(self, key: str) -> bool:
         card = getattr(self, "_strategy_cards", {}).get(key, {})
@@ -3508,8 +3604,9 @@ class SolTuiApp(App):
         card = getattr(self, "_strategy_cards", {}).get(name)
         rel = card["path"] if card else self._strategy_source_path(name)
         if rel is None:
-            self.query_one("#docs-view-status", Static).update(
-                f"{name}: source file not in the Docs catalogue")
+            if self.query("#docs-view-status"):
+                self.query_one("#docs-view-status", Static).update(
+                    f"{name}: source file not in the Docs catalogue")
             return
         self._open_doc(rel)
 
@@ -3624,6 +3721,11 @@ class SolTuiApp(App):
         ov.cursor_type = "row"
         ov.add_columns("coin", "own settings", "data", "backtest verdict", "bt hit", "fwd calls", "fwd hit",
                        "paper $", "unattended")
+        if self.query("#signal-live-predictions-table"):
+            live_t = self.query_one("#signal-live-predictions-table", GlossaryTable)
+            live_t.cursor_type = "row"
+        self._signal_live_tick()
+        self._signal_live_refresh_predictions()
         env = self._call("compound.config", {"asset": self._compound_coin}, quiet=True)
         if env["ok"]:
             self._compound_cfg = env["result"]["config"]
@@ -3702,7 +3804,10 @@ class SolTuiApp(App):
             self._compound_own = env["result"]["own_settings"]
 
     def _compound_selected(self) -> str:
-        table = self.query_one("#compound-table", GlossaryTable)
+        tables = list(self.query("#compound-table"))
+        if not tables:
+            return self._COMPOUND_IDS[0]
+        table = tables[0]
         return self._strategy_table_key(table) if table.row_count else self._COMPOUND_IDS[0]
 
     def _compound_titles(self) -> None:
@@ -3822,10 +3927,256 @@ class SolTuiApp(App):
             f"{self._compound_coin} forward call decided at {when}", row,
             "A paper call: recorded and resolved against the next closed 5m bar. No order was placed."))
 
+    @on(Button.Pressed, "#btn-goto-signal-live")
+    def _goto_signal_live(self) -> None:
+        if getattr(self, "_v2", False):
+            self._v2_navigate("signal", 0)
+        else:
+            self.query_one("#main-tabs", TabbedContent).active = "tab-compound"
+            if self.query("#compound-sections"):
+                self.query_one("#compound-sections", TabbedContent).active = "cmp-live"
+
+    @on(DataTable.RowHighlighted, "#signal-live-predictions-table")
+    def _signal_live_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if 0 <= event.cursor_row < len(self._signal_live_prediction_rows):
+            self._signal_live_show_detail(event.cursor_row)
+
+    def _signal_live_show_detail(self, row_idx: int) -> None:
+        if not self.query("#signal-live-detail") or not (0 <= row_idx < len(self._signal_live_prediction_rows)):
+            return
+        r = self._signal_live_prediction_rows[row_idx]
+        issued = (time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(r['last_issued']))
+                  if r.get('last_issued') else '-')
+        detail_lines = [
+            f"[b]{r['label']}[/b] on {r['asset']} · Overall Accuracy: [bold green]{r['accuracy']:.1f}%[/] ({r['hits']}/{r['resolved']} correct calls)",
+            f"Predictions: 1m: [b]{r['pred_1m']}[/] ({r.get('acc_1m') or '-'}% on {r.get('resolved_1m', 0)} calls) · "
+            f"5m: [b]{r['pred_5m']}[/] ({r.get('acc_5m') or '-'}% on {r.get('resolved_5m', 0)} calls) · "
+            f"10m: [b]{r['pred_10m']}[/] ({r.get('acc_10m') or '-'}% on {r.get('resolved_10m', 0)} calls) · "
+            f"30m: [b]{r['pred_30m']}[/] ({r.get('acc_30m') or '-'}% on {r.get('resolved_30m', 0)} calls)",
+            f"Last prediction issued: {issued}",
+        ]
+        if r.get("settings"):
+            settings_str = "; ".join(
+                f"{m.get('name', '')} " + ", ".join(f"{k}={v}" for k, v in m.get("params", {}).items())
+                for m in r.get("settings", [])
+            )
+            detail_lines.append(f"Parameters: {settings_str}")
+        self.query_one("#signal-live-detail", Static).update("\n".join(detail_lines))
+
+    def _signal_live_tick(self) -> None:
+        if not self.query("#signal-live-stream"):
+            return
+        coin = getattr(self, "_compound_coin", "SOL")
+        product = f"{coin}-USD"
+        now = time.time()
+        try:
+            from . import pricefeed
+            latest = pricefeed.read_latest()
+            st = pricefeed.status()
+        except Exception:
+            latest = None
+            st = {}
+        prices = st.get("prices") or {}
+        quote = prices.get(product) or {}
+        if not quote and latest and "q" in latest:
+            q_row = latest["q"].get(product)
+            if q_row and len(q_row) >= 6:
+                bid, ask, last, bid_size, ask_size, q_time = q_row
+                mid = (bid + ask) / 2.0 if bid > 0 and ask > 0 else last
+                spread_bps = ((ask - bid) / mid * 10000.0) if mid > 0 else 0.0
+                quote = {
+                    "bid": bid, "ask": ask, "last": last, "mid": mid,
+                    "bid_size": bid_size, "ask_size": ask_size,
+                    "spread_bps": spread_bps, "quote_age_s": max(0.0, now - q_time),
+                }
+
+        mid = quote.get("mid") or quote.get("last")
+        bid = quote.get("bid")
+        ask = quote.get("ask")
+        bid_size = quote.get("bid_size")
+        ask_size = quote.get("ask_size")
+        spread_bps = quote.get("spread_bps")
+        age = quote.get("quote_age_s")
+        is_live = bool(st.get("live", False)) and (age is not None and age < 15.0)
+
+        status_widget = self.query_one("#signal-live-stream", Static)
+        if mid is not None and isinstance(mid, (int, float)) and math.isfinite(mid) and mid > 0:
+            badge = "[bold green]● LIVE STREAM[/]" if is_live else "[bold yellow]○ STREAMING (stale)[/]"
+            fmt = ",.6f" if mid < 0.01 else (",.4f" if mid < 1.0 else ",.2f")
+            bid_str = f"${bid:{fmt}}" if bid is not None else "-"
+            ask_str = f"${ask:{fmt}}" if ask is not None else "-"
+            bsize_str = f" ({bid_size:,.2f})" if bid_size is not None else ""
+            asize_str = f" ({ask_size:,.2f})" if ask_size is not None else ""
+            spr_str = f"{spread_bps:.2f} bps" if spread_bps is not None else "-"
+            age_str = f"{age:.1f}s" if age is not None else "-"
+            msgs = st.get("messages", 0)
+            reconnects = st.get("reconnects", 0)
+            status_widget.update(
+                f"{badge} · [b]{product}[/b] · Mid: [bold cyan]${mid:{fmt}}[/] · "
+                f"Bid: {bid_str}{bsize_str} · Ask: {ask_str}{asize_str} · "
+                f"Spread: {spr_str} · Quote age: {age_str} · msgs: {msgs:,} · reconns: {reconnects}"
+            )
+            history = self._signal_live_price_history.setdefault(coin, [])
+            if not history:
+                try:
+                    from . import compound as compound_mod
+                    candles = compound_mod._load_candle_cache(coin, seconds=60)
+                    for ts in sorted(candles)[-60:]:
+                        close_p = candles[ts][1]
+                        if close_p > 0 and math.isfinite(close_p):
+                            history.append((float(ts), float(close_p)))
+                except Exception:
+                    pass
+            if not history or now - history[-1][0] >= 0.5:
+                history.append((now, float(mid)))
+                del history[:-120]
+            pts = [p for _, p in history]
+            self.query_one("#signal-live-chart", Sparkline).data = pts
+            low = min(pts)
+            high = max(pts)
+            start_p = pts[0]
+            chg_pct = (mid - start_p) / start_p * 100.0 if start_p > 0 else 0.0
+            color = "green" if chg_pct >= 0 else "red"
+            self.query_one("#signal-live-chart-context", Static).update(
+                f"[b]{product} real-time price graph[/b] · [bold {color}]${mid:{fmt}} ({chg_pct:+.2f}%)[/] · "
+                f"Range: ${low:{fmt}} – ${high:{fmt}} · {len(pts)} points"
+            )
+            # Render vertical price numbers on Y-axis (7 lines matching sparkline height)
+            mid_level = (high + low) / 2.0
+            high_str = f"${high:{fmt}}"[:12]
+            mid_str = f"${mid_level:{fmt}}"[:12]
+            low_str = f"${low:{fmt}}"[:12]
+            yaxis_lines = [
+                f"[dim]{high_str:>12}[/] ┤",
+                f"{' ':>12} │",
+                f"{' ':>12} │",
+                f"[dim]{mid_str:>12}[/] ┤",
+                f"{' ':>12} │",
+                f"{' ':>12} │",
+                f"[dim]{low_str:>12}[/] ┤",
+            ]
+            if self.query("#signal-live-chart-yaxis"):
+                self.query_one("#signal-live-chart-yaxis", Static).update("\n".join(yaxis_lines))
+
+            # Render horizontal timestamps on X-axis matching the sparkline width
+            if self.query("#signal-live-chart-xaxis"):
+                prefix = " " * 14
+                t_start = history[0][0]
+                t_mid = history[len(history) // 2][0]
+                t_end = history[-1][0]
+                t0_str = time.strftime("%H:%M:%S", time.gmtime(t_start))
+                t1_str = time.strftime("%H:%M:%S", time.gmtime(t_mid))
+                t2_str = time.strftime("%H:%M:%S UTC", time.gmtime(t_end))
+                chart_widget = self.query_one("#signal-live-chart", Sparkline)
+                w = chart_widget.size.width if chart_widget.size.width > 0 else 70
+                if len(history) < 2 or int(t_start) == int(t_end):
+                    xaxis = f"{prefix}[dim]{t2_str} (now)[/]"
+                elif w >= 40:
+                    gap1 = max(1, (w // 2) - len(t0_str) - (len(t1_str) // 2))
+                    pos_after_t1 = len(t0_str) + gap1 + len(t1_str)
+                    gap2 = max(1, w - pos_after_t1 - len(t2_str))
+                    xaxis = f"{prefix}[dim]{t0_str}{' ' * gap1}{t1_str}{' ' * gap2}{t2_str}[/]"
+                else:
+                    gap = max(1, w - len(t0_str) - len(t2_str))
+                    xaxis = f"{prefix}[dim]{t0_str}{' ' * gap}{t2_str}[/]"
+                self.query_one("#signal-live-chart-xaxis", Static).update(xaxis)
+
+            self.query_one("#signal-live-chart-stats", Static).update(
+                f"Subscribed: wss://ws-feed.exchange.coinbase.com · Channel: level2_batch + ticker · "
+                f"Last update: {time.strftime('%H:%M:%S UTC', time.gmtime(now))}"
+            )
+        else:
+            status_widget.update(
+                f"[yellow]Waiting for {product} stream quotes from pricefeed recorder… (recorder pid: {st.get('pid', '-')})[/]"
+            )
+            if self.query("#signal-live-chart-yaxis"):
+                self.query_one("#signal-live-chart-yaxis", Static).update("")
+            if self.query("#signal-live-chart-xaxis"):
+                self.query_one("#signal-live-chart-xaxis", Static).update("")
+
+        # Schedule strategy prediction updates: every 1 minute (60s) or on candle minute rollover
+        pred_due = (now - getattr(self, "_signal_live_last_pred_update", 0.0) >= 60.0)
+        curr_min = int(now) // 60
+        new_min = (curr_min > getattr(self, "_signal_live_last_pred_minute", 0) and now % 60 >= 1.0)
+        if pred_due or new_min:
+            self._signal_live_refresh_predictions(force=True)
+
+    def _signal_live_refresh_predictions(self, force: bool = False) -> None:
+        if not self.query("#signal-live-predictions-table"):
+            return
+        coin = getattr(self, "_compound_coin", "SOL")
+        if not force and coin == self._signal_live_last_coin and self._signal_live_prediction_rows:
+            return
+        self._signal_live_last_coin = coin
+        self._signal_live_last_pred_update = time.time()
+        self._signal_live_last_pred_minute = int(self._signal_live_last_pred_update) // 60
+        try:
+            from . import forwardtest
+            rows = forwardtest.top_forward_predictions(coin, limit=50)
+        except Exception:
+            rows = []
+        self._signal_live_prediction_rows = rows
+        table = self.query_one("#signal-live-predictions-table", DataTable)
+        cursor = table.cursor_row
+        table.clear()
+        for idx, r in enumerate(rows, 1):
+            def badge(pred: str) -> str:
+                if pred == "UP":
+                    return "[bold green]▲ UP[/]"
+                elif pred == "DOWN":
+                    return "[bold red]▼ DOWN[/]"
+                elif pred == "FLAT":
+                    return "[yellow]— FLAT[/]"
+                return "-"
+            acc = f"[bold green]{r['accuracy']:.1f}%[/]" if r["accuracy"] >= 65 else f"{r['accuracy']:.1f}%"
+            hz_parts = []
+            for h in (1, 5, 10, 30):
+                hacc = r.get(f"acc_{h}m")
+                hn = r.get(f"resolved_{h}m", 0)
+                if hacc is not None and hn > 0:
+                    hz_parts.append(f"{h}m:{hacc:.0f}%")
+                else:
+                    hz_parts.append(f"{h}m:-")
+            hz_str = " · ".join(hz_parts)
+            settings_str = "; ".join(
+                f"{m.get('name', '')} " + ", ".join(f"{k}={v}" for k, v in m.get("params", {}).items())
+                for m in r.get("settings", [])
+            )
+            table.add_row(
+                f"#{idx}",
+                r["label"],
+                acc,
+                str(r["resolved"]),
+                badge(r["pred_1m"]),
+                badge(r["pred_5m"]),
+                badge(r["pred_10m"]),
+                badge(r["pred_30m"]),
+                hz_str,
+                settings_str or "-",
+                key=r["label"],
+            )
+        if rows:
+            table.move_cursor(row=min(cursor, len(rows) - 1))
+            self._signal_live_show_detail(min(cursor, len(rows) - 1))
+        else:
+            self.query_one("#signal-live-detail", Static).update(
+                f"No forward test prediction records found for coin {coin} yet."
+            )
+        if self.query("#signal-live-predictions-title"):
+            upd_time = time.strftime("%H:%M:%S UTC", time.gmtime(self._signal_live_last_pred_update))
+            self.query_one("#signal-live-predictions-title", Static).update(
+                f"[b]Top performing forward test strategies — predictions[/b] · [dim]Updated {upd_time} (1m schedule)[/]"
+            )
+
     @on(TabbedContent.TabActivated)
     def _tab_activated(self, event: TabbedContent.TabActivated) -> None:
-        if event.pane is not None and event.pane.id == "tab-compound" and hasattr(self, "_compound_cfg"):
-            self._compound_preview_metric(self._compound_selected())
+        if event.pane is not None:
+            if event.pane.id in ("tab-compound", "cmp-call") and hasattr(self, "_compound_cfg"):
+                if self.query("#compound-table"):
+                    self._compound_preview_metric(self._compound_selected())
+            if event.pane.id in ("tab-compound", "cmp-live"):
+                self._signal_live_tick()
+                self._signal_live_refresh_predictions()
 
     def _compound_save(self, patch: dict[str, Any], what: str, scope: str | None = None) -> None:
         env = self._call("compound.save", {"patch": patch, "asset": self._compound_coin,
@@ -4141,6 +4492,8 @@ class SolTuiApp(App):
         self._compound_render_table()
         self._compound_load_results()
         self._compound_show_unattended()
+        self._signal_live_tick()
+        self._signal_live_refresh_predictions(force=True)
         own = env["ok"] and env["result"]["own_settings"]
         self.query_one("#compound-status", Static).update(
             f"showing {self._compound_coin}" + (" (has its own settings)" if own else " (shared settings)"))
@@ -4391,6 +4744,7 @@ class SolTuiApp(App):
             self._call("portfolio.notice", {"mark_seen": True}, quiet=True)
         elif pane == "tab-advanced-order":
             self._coinbase_order_state_start()
+            self._jupiter_order_state_start()
         elif pane == "tab-liquidity":
             self._refresh_liquidity(force=True)
         elif pane == "tab-bots":
@@ -4728,9 +5082,9 @@ class SolTuiApp(App):
         with VerticalScroll():
             with Vertical(id="advanced-order-ticket") as ticket:
                 ticket.border_title = "Advanced order ticket"
-                yield Static("Coinbase market orders support amounts or balance percentages; conditional orders use coin units. $100 order cap. Jupiter is unavailable.", classes="hint")
+                yield Static("Coinbase spot orders ($100 cap); Jupiter Swap v2 spot market swaps ($100 cap).", classes="hint")
                 with Horizontal(classes="form-row"):
-                    yield Select([("Coinbase", "coinbase"), ("Jupiter — unavailable", "jupiter")], value="coinbase",
+                    yield Select([("Coinbase", "coinbase"), ("Jupiter", "jupiter")], value="coinbase",
                                  allow_blank=False, id="advanced-venue")
                     yield Select([("Market", "market"), ("Limit (GTC)", "limit"),
                                   ("Stop-limit (GTC)", "stop_limit"), ("Take-profit + stop bracket (SELL)", "bracket")],
@@ -4890,16 +5244,22 @@ class SolTuiApp(App):
 
     def _advanced_supported(self) -> bool:
         venue, kind, side, product, size, unit = self._advanced_values()
-        if (venue != "coinbase" or side not in ("BUY", "SELL") or not product or not size
+        if (side not in ("BUY", "SELL") or not product or not size
                 or self.query_one("#advanced-leverage", Select).value != "1x"
                 or self.query_one("#advanced-position", Select).value != "long"):
             return False
-        if kind == "market":
-            return unit in (("quote", "base", "percent") if side == "BUY" else ("base", "percent"))
-        if kind not in ("limit", "stop_limit", "bracket") or unit != "base" or (kind == "bracket" and side != "SELL"):
-            return False
-        return bool(self.query_one("#advanced-limit-price", Input).value.strip()
-                    and (kind == "limit" or self.query_one("#advanced-stop-price", Input).value.strip()))
+        if venue == "coinbase":
+            if kind == "market":
+                return unit in (("quote", "base", "percent") if side == "BUY" else ("base", "percent"))
+            if kind not in ("limit", "stop_limit", "bracket") or unit != "base" or (kind == "bracket" and side != "SELL"):
+                return False
+            return bool(self.query_one("#advanced-limit-price", Input).value.strip()
+                        and (kind == "limit" or self.query_one("#advanced-stop-price", Input).value.strip()))
+        elif venue == "jupiter":
+            if kind != "market":
+                return False
+            return unit in (("quote", "base") if side == "BUY" else ("base",))
+        return False
 
     def _advanced_controls(self) -> None:
         if not self.query("#advanced-preview"):
@@ -4909,10 +5269,10 @@ class SolTuiApp(App):
                          "#advanced-size", "#advanced-unit", "#advanced-armed", "#advanced-skip-review",
                          "#advanced-leverage", "#advanced-position"):
             self.query_one(selector).disabled = busy
-        kind = self._advanced_values()[1]
+        venue, kind, side, _, _, unit = self._advanced_values()
         conditional = kind != "market"
-        self.query_one("#advanced-limit-price", Input).disabled = busy or not conditional
-        self.query_one("#advanced-stop-price", Input).disabled = busy or kind not in ("stop_limit", "bracket")
+        self.query_one("#advanced-limit-price", Input).disabled = busy or not conditional or venue == "jupiter"
+        self.query_one("#advanced-stop-price", Input).disabled = busy or kind not in ("stop_limit", "bracket") or venue == "jupiter"
         supported = self._advanced_supported()
         locked = busy or self._coinbase_order_unknown or not supported
         quick = self.query_one("#advanced-skip-review", Checkbox).value
@@ -4932,13 +5292,13 @@ class SolTuiApp(App):
         submit.disabled = locked or not armed or not valid
         fast = self.query_one("#advanced-quick", Button)
         fast.display = quick and not percent and not conditional
-        fast.disabled = locked or not armed or not quick or percent or conditional
+        fast.disabled = locked or not armed or not quick or percent or conditional or (venue == "jupiter")
         percent_fast = self.query_one("#advanced-percent-quick", Button)
         percent_fast.display = quick and percent and not conditional
-        percent_fast.disabled = locked or not armed or not quick or not percent or conditional
+        percent_fast.disabled = locked or not armed or not quick or not percent or conditional or (venue == "jupiter")
         conditional_fast = self.query_one("#advanced-conditional-quick", Button)
         conditional_fast.display = quick and conditional
-        conditional_fast.disabled = locked or not armed or not quick or not conditional
+        conditional_fast.disabled = locked or not armed or not quick or not conditional or (venue == "jupiter")
 
     @on(Input.Changed, "#advanced-product")
     @on(Input.Changed, "#advanced-size")
@@ -4966,9 +5326,20 @@ class SolTuiApp(App):
                 "Loading timestamped session prices…" if venue == "coinbase" else "Jupiter price history unavailable.")
             self.query_one("#advanced-forecast-status", Static).update(
                 "Loading recorded forward forecasts…" if venue == "coinbase" else "Jupiter forecast unavailable.")
-        if (venue != "coinbase" or self.query_one("#advanced-leverage", Select).value != "1x"
+        if (self.query_one("#advanced-leverage", Select).value != "1x"
                 or self.query_one("#advanced-position", Select).value != "long"):
-            message = "Unavailable: this venue, leverage or short position is not implemented. No order can be placed."
+            message = "Unavailable: leverage and short execution require a supported venue. No order can be placed."
+        elif venue not in ("coinbase", "jupiter"):
+            message = "Unavailable: this venue is not implemented. No order can be placed."
+        elif venue == "jupiter":
+            if kind != "market":
+                message = "Jupiter supports market spot swaps only; conditional orders are unavailable."
+            elif unit not in (("quote", "base") if side == "BUY" else ("base",)):
+                message = "Jupiter market BUY accepts quote or coin units; SELL accepts coin units. Choose a supported unit."
+            elif self.query_one("#advanced-skip-review", Checkbox).value:
+                message = "Jupiter orders require explicit per-order review. Quick mode is disabled for Jupiter."
+            else:
+                message = "Jupiter market swap selected. Enter amount; review before placing LIVE order."
         elif kind in ("limit", "stop_limit", "bracket"):
             if unit != "base":
                 message = "Conditional orders require coin units; percentage and quote sizing are unavailable."
@@ -5069,19 +5440,24 @@ class SolTuiApp(App):
         if self._coinbase_order_busy or self._coinbase_order_unknown or not self._advanced_supported():
             return
         values = self._advanced_signature()
-        _, kind, side, product, size, unit, limit, stop, _, _ = values
+        venue, kind, side, product, size, unit, limit, stop, _, _ = values
         self._advanced_preview_data = None
         self._coinbase_order_busy = True
         self._coinbase_order_controls()
-        self.query_one("#advanced-message", Static).update("Reviewing with Coinbase. No order has been placed.")
-        if kind != "market":
-            operation = "coinbase.order_conditional_preview"
-            params = {"product_id": product, "side": side, "size": size, "order_type": kind,
-                      "limit_price": limit, "stop_price": stop}
-        elif unit == "percent":
-            operation, params = "coinbase.order_percent_preview", {"product_id": product, "side": side, "percent": size}
+        if venue == "jupiter":
+            self.query_one("#advanced-message", Static).update("Reviewing with Jupiter Swap v2. No order has been placed.")
+            operation = "jupiter.order_preview"
+            params = {"product_id": product, "side": side, "size": size, "size_currency": unit}
         else:
-            operation, params = "coinbase.order_preview", {"product_id": product, "side": side, "size": size, "size_currency": unit}
+            self.query_one("#advanced-message", Static).update("Reviewing with Coinbase. No order has been placed.")
+            if kind != "market":
+                operation = "coinbase.order_conditional_preview"
+                params = {"product_id": product, "side": side, "size": size, "order_type": kind,
+                          "limit_price": limit, "stop_price": stop}
+            elif unit == "percent":
+                operation, params = "coinbase.order_percent_preview", {"product_id": product, "side": side, "percent": size}
+            else:
+                operation, params = "coinbase.order_preview", {"product_id": product, "side": side, "size": size, "size_currency": unit}
         self._advanced_worker(operation, params, self._advanced_generation, values)
 
     @on(Button.Pressed, "#advanced-submit")
@@ -5090,19 +5466,24 @@ class SolTuiApp(App):
         preview = self._advanced_preview_data
         if self.query_one("#advanced-submit", Button).disabled or not preview:
             return
-        self._advanced_submit("coinbase.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
+        venue = (preview.get("values") or ("coinbase",))[0]
+        if venue == "jupiter":
+            self._advanced_submit("jupiter.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
+        else:
+            self._advanced_submit("coinbase.order_submit", {"preview_id": preview["preview_id"], "confirm": True})
 
     @on(Button.Pressed, "#advanced-quick")
     @on(Button.Pressed, "#advanced-percent-quick")
     @on(Button.Pressed, "#advanced-conditional-quick")
     def _advanced_quick_pressed(self) -> None:
         self._advanced_controls()
-        kind = self._advanced_values()[1]
-        percent = self._advanced_values()[5] == "percent"
+        venue, kind, side, product, size, unit = self._advanced_values()
+        if venue == "jupiter":
+            return  # Jupiter orders require explicit review
+        percent = unit == "percent"
         button = "#advanced-conditional-quick" if kind != "market" else "#advanced-percent-quick" if percent else "#advanced-quick"
         if self.query_one(button, Button).disabled:
             return
-        _, _, side, product, size, unit = self._advanced_values()
         if kind != "market":
             signature = self._advanced_signature()
             self._advanced_submit("coinbase.order_conditional_quick", {"product_id": product, "side": side,
@@ -5122,7 +5503,9 @@ class SolTuiApp(App):
         self._coinbase_order_busy = True
         self._coinbase_order_unknown = True
         self._coinbase_order_controls()
-        self.query_one("#advanced-message", Static).update("Submitting a LIVE order. If interrupted, reconcile at Coinbase; do not retry.")
+        venue_name = "Jupiter" if "jupiter" in operation else "Coinbase"
+        self.query_one("#advanced-message", Static).update(
+            f"Submitting a LIVE order. If interrupted, reconcile onchain/{venue_name}; do not retry.")
         self._advanced_worker(operation, params, self._advanced_generation, None)
 
     @work(thread=True, exit_on_error=False, group="advanced-coinbase-order")
@@ -5141,11 +5524,13 @@ class SolTuiApp(App):
                        values: tuple[str, ...] | None) -> None:
         self._coinbase_order_busy = False
         msg = self.query_one("#advanced-message", Static)
+        preview_ops = ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview", "jupiter.order_preview")
         if not env.get("ok"):
             reason = self._msg(env)
-            if operation not in ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview"):
+            if operation not in preview_ops:
                 self.query_one("#advanced-armed", Checkbox).value = False
-                msg.update("Order outcome may be unknown. Do not resubmit; reconcile at Coinbase. " + reason)
+                venue_label = "Jupiter" if "jupiter" in operation else "Coinbase"
+                msg.update(f"Order outcome may be unknown. Do not resubmit; reconcile onchain/{venue_label}. " + reason)
             else:
                 if "unresolved" in reason.lower():
                     self._coinbase_order_unknown = True
@@ -5153,7 +5538,7 @@ class SolTuiApp(App):
             self._coinbase_order_controls()
             return
         result = env.get("result") or {}
-        if operation in ("coinbase.order_preview", "coinbase.order_percent_preview", "coinbase.order_conditional_preview"):
+        if operation in preview_ops:
             expires = result.get("expires_at")
             try:
                 field = "balance_percentage" if operation == "coinbase.order_percent_preview" else "size"
@@ -5169,38 +5554,74 @@ class SolTuiApp(App):
                 except InvalidOperation:
                     same_conditional = False
             expected_unit = ("quote" if values and values[2] == "BUY" else "base") if values and values[5] == "percent" else (values[5] if values else "")
+            product_matches = bool(values and (result.get("product_id") == values[3] or operation == "jupiter.order_preview"))
             if (not values or generation != self._advanced_generation or values != self._advanced_signature()
                     or not result.get("preview_id") or not isinstance(expires, (int, float)) or expires <= time.time()
-                    or not same_size or not same_conditional or any(str(result.get(k, "")) != v for k, v in zip(
-                        ("product_id", "side", "size_currency"), (values[3], values[2], expected_unit)))):
+                    or not same_size or not same_conditional or not product_matches
+                    or any(str(result.get(k, "")) != v for k, v in zip(
+                        ("side", "size_currency"), (values[2], expected_unit) if values else (("", ""))))):
                 msg.update("Review expired or the order changed. Review it again.")
             else:
                 self._advanced_preview_data = {"preview_id": result["preview_id"], "expires_at": expires, "values": values}
                 estimate = result.get("estimate") if isinstance(result.get("estimate"), dict) else {}
-                self.query_one("#advanced-review", Static).update(
-                    f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
-                    f"Type: {values[1]} · limit: {values[6] or '-'} · stop: {values[7] or '-'}\n"
-                    f"Resolved size: {result.get('size', '')} {result.get('size_currency', '')}\n"
-                    f"{result.get('sizing_notice', '')}\n"
-                    f"Coinbase estimate: {json.dumps(result.get('estimate'), ensure_ascii=True, default=str)}\n"
-                    f"Estimated fee: {estimate.get('fee', 'unavailable')} (venue estimate). Maker/taker status "
-                    "and final fee depend on execution, especially for limit orders.\n"
-                    f"{result.get('notice', '')}")
+                if operation == "jupiter.order_preview":
+                    routes = " -> ".join(estimate.get("route_plan") or ["Jupiter AMM"])
+                    self.query_one("#advanced-review", Static).update(
+                        f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
+                        f"Venue: Jupiter Swap v2 (Solana)\n"
+                        f"Input: {estimate.get('in_amount', '-')}\n"
+                        f"Estimated output: {estimate.get('out_amount', '-')}\n"
+                        f"Price impact: {estimate.get('price_impact_pct', '-')}\n"
+                        f"Route: {routes}\n"
+                        f"Estimated fee: {estimate.get('fee_lamports', 5000)} lamports\n"
+                        f"{result.get('notice', '')}\n"
+                        "To place this order, arm live submission and press Place advanced LIVE order.")
+                else:
+                    self.query_one("#advanced-review", Static).update(
+                        f"LIVE {values[2]} {values[3]} · {values[4]} {values[5]}\n"
+                        f"Type: {values[1]} · limit: {values[6] or '-'} · stop: {values[7] or '-'}\n"
+                        f"Resolved size: {result.get('size', '')} {result.get('size_currency', '')}\n"
+                        f"{result.get('sizing_notice', '')}\n"
+                        f"Coinbase estimate: {json.dumps(result.get('estimate'), ensure_ascii=True, default=str)}\n"
+                        f"Estimated fee: {estimate.get('fee', 'unavailable')} (venue estimate). Maker/taker status "
+                        "and final fee depend on execution, especially for limit orders.\n"
+                        f"{result.get('notice', '')}")
                 msg.update("Review ready. Nothing has been submitted.")
         else:
-            order_id = result.get("order_id")
+            order_id = result.get("order_id") or result.get("signature")
             state = str(result.get("status") or "unknown")
             self.query_one("#advanced-receipt", Static).update(json.dumps(result, ensure_ascii=True, default=str))
-            if order_id:
+            if order_id and "coinbase" in operation:
                 self.query_one("#coinbase-order-id", Input).value = str(order_id)
             terminal = state.upper() in {"FILLED", "CANCELLED", "CANCELED", "FAILED", "REJECTED", "EXPIRED"}
             if terminal and order_id:
                 self._coinbase_order_unknown = False
-            if operation not in ("coinbase.order_quick", "coinbase.order_percent_quick", "coinbase.order_conditional_quick") or state.upper() != "FILLED" or not order_id:
-                self.query_one("#advanced-armed", Checkbox).value = False
-            msg.update("Order submitted. A resting order locks further orders; check its status at Coinbase." if order_id else
-                       "Order outcome unknown. Do not resubmit; reconcile at Coinbase.")
+            self.query_one("#advanced-armed", Checkbox).value = False
+            msg.update("Order submitted. " + ("Confirmed onchain." if state.upper() == "FILLED" else
+                       ("A resting order locks further orders; check its status at Coinbase." if "coinbase" in operation else "Check status on Solscan.")))
         self._coinbase_order_controls()
+
+    def _jupiter_order_state_start(self) -> None:
+        self._jupiter_order_worker("jupiter.order_state", {})
+
+    @work(thread=True, group="jupiter-order-state", exit_on_error=False)
+    def _jupiter_order_worker(self, operation: str, params: dict[str, Any]) -> None:
+        try:
+            env = self._call(operation, params, quiet=True)
+            self.call_from_thread(self._jupiter_order_state_done, env)
+        except (RuntimeError, NoMatches):
+            pass
+
+    def _jupiter_order_state_done(self, env: dict[str, Any]) -> None:
+        if not env.get("ok"):
+            return
+        res = env.get("result") or {}
+        if res.get("unresolved"):
+            self._coinbase_order_unknown = True
+            if self.query("#advanced-message"):
+                self.query_one("#advanced-message", Static).update(
+                    "A previous Jupiter order is unresolved. Reconcile onchain status before placing another order.")
+            self._coinbase_order_controls()
 
     def _coinbase_order_controls(self) -> None:
         busy = self._coinbase_order_busy
@@ -6714,6 +7135,8 @@ class SolTuiApp(App):
         status line says so and the edits stay. An identical preview is not reloaded, so the
         periodic table refresh does not jump the editor back to the top.
         """
+        if not self.query("#docs-view") or not self.query("#docs-view-status"):
+            return
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         if self._docs_current_path is not None and view.text != self._docs_loaded_text:
@@ -6755,6 +7178,8 @@ class SolTuiApp(App):
         to discard, since the alternative is a file browser that can never be
         told to move on from a file with unsaved edits.
         """
+        if not self.query("#docs-view") or not self.query("#docs-view-status"):
+            return
         view = self.query_one("#docs-view", TextArea)
         status = self.query_one("#docs-view-status", Static)
         dirty = self._docs_current_path is not None and view.text != self._docs_loaded_text

@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import unittest
+import sqlite3
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from threading import Event
 from unittest.mock import patch
 
 import numpy as np
-from textual.widgets import DataTable, Input, Static, TabbedContent
+from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 
 from soltui import commands, config
 from soltui import forwardtest as ft
@@ -54,6 +55,14 @@ class ForwardEvidence(unittest.TestCase):
         rows = {r["minutes"]: r for r in self.advance(31)["rows"]}
         self.assertEqual(rows[30]["resolved"], 1)
         self.assertEqual(rows[30]["correct"], 1)
+
+    def test_closed_candles_and_calls_survive_reopening_database(self) -> None:
+        self.advance(0)
+        db_path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
+        with sqlite3.connect(db_path) as db:
+            self.assertGreater(db.execute("SELECT count(*) FROM candle WHERE asset='SOL'").fetchone()[0], 0)
+            self.assertEqual(db.execute("SELECT count(*) FROM call").fetchone()[0], 4)
+        self.assertEqual(sum(row["pending"] for row in ft.status("SOL")), 4)
 
     def test_missing_target_candle_is_not_filled_by_a_later_close(self) -> None:
         self.advance(0)
@@ -164,6 +173,25 @@ class AutoOptimizeAndDefaults(ForwardEvidence):
 
 
 class ForwardPlan(unittest.TestCase):
+    def setUp(self) -> None:
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.enterContext(patch.object(config, "CONFIG_DIR", Path(tmp.name)))
+
+    def test_running_plan_restores_and_stop_clears_it(self) -> None:
+        ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
+        commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["ETH"]}, ctx=ctx, quiet=True)
+        with patch.object(commands, "_forward_runner", lambda rt: rt.forward_stop.wait(5)):
+            self.assertTrue(commands.dispatch("forwardtest.run", {}, ctx=ctx, quiet=True)["ok"])
+            ctx.runtime.forward_stop.set()
+            ctx.runtime.forward_thread.join(5)
+            restored = commands.Context.from_settings(config.Settings(), commands.Runtime())
+            result = commands.dispatch("forwardtest.restore", {}, ctx=restored, quiet=True)
+            self.assertEqual(result["result"]["assets"], ["ETH"])
+            commands.dispatch("forwardtest.stop", {}, ctx=restored, quiet=True)
+            restored.runtime.forward_thread.join(5)
+            self.assertIsNone(ft.load_session())
+
     def test_coins_and_optimize_reach_the_plan(self) -> None:
         ctx = commands.Context.from_settings(config.Settings(), commands.Runtime())
         env = commands.dispatch("forwardtest.start", {"scope": "roster", "coins": ["eth", "SOL"], "optimize": False},
@@ -254,7 +282,7 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(app.roster.entries[0].params["fast"], 9)
 
     async def test_start_runs_in_the_background_across_tabs_and_stop_drains_it(self) -> None:
-        app = SolTuiApp(config.Settings(poll_interval_seconds=60))
+        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))
         entered, released = Event(), Event()
 
         def check(asset, trials, horizons, cost, **kw):
@@ -290,3 +318,35 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                     if not app.query_one("#forward-start").disabled:
                         break
                 self.assertFalse(app.query_one("#forward-start").disabled)
+
+    async def test_autostart_forwardtest_on_mount_runs_on_all_coins_and_strategies(self) -> None:
+        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=True))
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertTrue(app._forward_running)
+            self.assertIn("forwardtest running", app.sub_title)
+            state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
+            self.assertTrue(state["running"])
+            from soltui.commands import forward_coins
+
+            all_coins = forward_coins()
+            self.assertEqual(set(state["assets"]), set(all_coins))
+            app.query_one(TabbedContent).active = "tab-forwardtest"
+            await pilot.pause()
+            self.assertTrue(app.query_one("#forward-start", Button).disabled)
+            self.assertFalse(app.query_one("#forward-stop", Button).disabled)
+            await pilot.click("#forward-stop")
+            self.assertFalse(app._forward_running)
+
+    async def test_autostart_forwardtest_disabled_by_settings(self) -> None:
+        app = SolTuiApp(config.Settings(poll_interval_seconds=60, forwardtest_autostart=False))
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertFalse(app._forward_running)
+            self.assertNotIn("forwardtest running", app.sub_title)
+            state = commands.dispatch("forwardtest.state", {}, ctx=app.ctx)["result"]
+            self.assertFalse(state["running"])
+            app.query_one(TabbedContent).active = "tab-forwardtest"
+            await pilot.pause()
+            self.assertFalse(app.query_one("#forward-start", Button).disabled)
+            self.assertTrue(app.query_one("#forward-stop", Button).disabled)

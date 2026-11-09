@@ -38,7 +38,7 @@ class PureBuilderTests(unittest.TestCase):
         self.assertEqual(shell.DEST_BY_KEY["archive"].hotkey, "6")
         # Each Compound section is its own Signal view, in the classic order.
         signal = shell.DEST_BY_KEY["signal"]
-        self.assertEqual([v.inner for v in signal.views], ["cmp-call", "cmp-backtest", "cmp-forward", "cmp-coins"])
+        self.assertEqual([v.inner for v in signal.views], ["cmp-live", "cmp-call", "cmp-backtest", "cmp-forward", "cmp-coins"])
 
     def test_a_pane_added_later_lands_in_research(self) -> None:
         dests = shell.with_extra_views([("tab-backtest", "Backtest"), ("tab-coins", "Coins")])
@@ -51,7 +51,7 @@ class PureBuilderTests(unittest.TestCase):
         dest, index = shell.locate("tab-compound", "cmp-forward")
         self.assertEqual((dest.key, dest.views[index].label), ("signal", "Forward test"))
         dest, index = shell.locate("tab-compound")
-        self.assertEqual(dest.views[index].inner, "cmp-call")
+        self.assertEqual(dest.views[index].inner, "cmp-live")
 
     def test_narrow_navigation_keeps_the_active_view_and_clickable_neighbors(self) -> None:
         from rich.text import Text
@@ -184,7 +184,7 @@ class ShellAppTests(unittest.IsolatedAsyncioTestCase):
             await pilot.press("2")
             self.assertEqual(tabs.active, "tab-compound")
             await pilot.press("right_square_bracket")
-            self.assertEqual(app.query_one("#compound-sections", TabbedContent).active, "cmp-backtest")
+            self.assertEqual(app.query_one("#compound-sections", TabbedContent).active, "cmp-call")
             await pilot.press("3")
             self.assertEqual(tabs.active, "tab-backtest")
             await pilot.press("4")

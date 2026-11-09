@@ -2,11 +2,20 @@
 
 Version: 121
 Delta: v120 to v121; record request for a Gemini handoff.
+Version: 122
+Delta: v121 to v122; record chart timestamps, price numbers and prediction streaming update request.
+
+## v122 - 2026-11-08
+
+```text
+Add timestamps and price numbers to the chart. And schedule the strategies to update their prediction with the streaming price coming in, or if that's not possible then every 1 minute.
+```
 
 ## v121 - 2026-11-08
 
 ```text
 Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
+In the soltui, the forward test's data doesn't seem to be saved through restarts. Make sure all of the data is recorded to disk as it arrives.
 ```
 
 ## v120 - 2026-11-08
@@ -978,4 +987,17 @@ In the /Users/mitch/dev/solmargintrader/jup.ag/jupiter_defi_reference.md file is
 
 ```text
 In the money add a clear border and title to the coinbase order form. Also add a new advanced order form in the money tab with limit, market, stop-loss, take-profit, percent ordering, market graphs, what the top rated strategies say the price is going to do, the option to buy in units of dollars or the coin, market routing through either coinbase or jupiter, and any other useful trading features you think would be helpful.
+```
+
+## v116 - 2026-11-08
+
+```text
+Run the repo-bootstrapper skill on this repo.
+```
+
+
+## v117 - 2026-11-08
+
+```text
+In the Soltui, under the Signal tab add a live page that shows a graph of the chosen coin, and shows real time subscribed streaming price information. And have a table of all of the top performing forward test strategies giving 1, 5, 10, and 30 min predictions  of what the price will do.
 ```

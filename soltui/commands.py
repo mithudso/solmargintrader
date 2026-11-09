@@ -505,6 +505,7 @@ _SETTING_CASTS = {
     "fee_bps": float, "slippage_bps": float, "fill_delay": int, "cpcv_groups": int, "cpcv_k": int,
     "solana_address": str, "base_address": str, "eth_address": str, "hyperliquid_address": str,
     "btc_xpub": str, "ltc_xpub": str, "doge_xpub": str,
+    "forwardtest_autostart": bool,
 }
 
 
@@ -518,7 +519,7 @@ def settings_get(ctx: Context, p: dict[str, Any]) -> Any:
     "settings.save",
     "Validate and save settings. Only the parameters you pass change. An empty string clears a wallet "
     "field. Private keys are refused: settings take public addresses and extended public keys only.",
-    tuple(P(n, "number" if c in (int, float) else "string", f"Setting {n}.")
+    tuple(P(n, "bool" if c is bool else ("number" if c in (int, float) else "string"), f"Setting {n}.")
           for n, c in _SETTING_CASTS.items()),
     read_only=False,
 )
@@ -534,6 +535,17 @@ def settings_save(ctx: Context, p: dict[str, Any]) -> Any:
             value = int(value)
         elif cast is float:
             value = float(value)
+        elif cast is bool:
+            if isinstance(value, str):
+                v_clean = value.strip().lower()
+                if v_clean in ("true", "1", "yes", "on"):
+                    value = True
+                elif v_clean in ("false", "0", "no", "off", ""):
+                    value = False
+                else:
+                    raise CommandError("bad_params", f'parameter "{name}" must be a boolean')
+            else:
+                value = bool(value)
         changes[name] = value
     new = Settings(**{**ctx.settings.to_dict(), **changes,
                       "enabled_strategies": [e.name for e in ctx.roster],
@@ -834,6 +846,7 @@ def forwardtest_run(ctx: Context, p: dict[str, Any]) -> Any:
         if rt.forward_plan is None:
             raise CommandError("failed", "Prepare a forward test first (forwardtest.start)")
         if rt.forward_thread is None:
+            forwardtest.save_session(rt.forward_plan)
             rt.forward_started_at = time.time()
             rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest",
                                                  daemon=True)
@@ -854,10 +867,31 @@ def forwardtest_state(ctx: Context, p: dict[str, Any]) -> Any:
                 "defaults_saved": len(forwardtest.load_defaults())}
 
 
+@command("forwardtest.restore", "Resume the saved forward test after restarting the console.", read_only=False)
+def forwardtest_restore(ctx: Context, p: dict[str, Any]) -> Any:
+    rt = ctx.runtime
+    with rt.lock:
+        if rt.forward_plan is not None or rt.forward_thread is not None:
+            return {"restored": False}
+        plan = forwardtest.load_session()
+        if plan is None:
+            return {"restored": False}
+        # A new process must not attribute forecasts to an old code revision.
+        plan["code"] = forwardtest.revision()
+        rt.forward_stop.clear()
+        rt.forward_plan = plan
+        forwardtest.save_session(plan)
+        rt.forward_started_at = time.time()
+        rt.forward_thread = threading.Thread(target=_forward_runner, args=(rt,), name="forwardtest", daemon=True)
+        rt.forward_thread.start()
+        return {"restored": True, "assets": plan["assets"]}
+
+
 @command("forwardtest.stop", "Stop issuing forward predictions in this session.", read_only=False)
 def forwardtest_stop(ctx: Context, p: dict[str, Any]) -> Any:
     rt = ctx.runtime
     with rt.lock:
+        forwardtest.save_session(None)
         rt.forward_stop.set()
         rt.forward_plan = None
         return {"stopping": rt.forward_busy}
@@ -900,6 +934,15 @@ def forwardtest_status(ctx: Context, p: dict[str, Any]) -> Any:
     else:
         assets = [bgqueue.validate_asset(ctx.settings.asset)]
     return {"asset": assets[0], "assets": assets, "rows": [r for a in assets for r in forwardtest.status(a)]}
+
+
+@command("forwardtest.predictions", "Top performing forward test strategies and their 1, 5, 10, and 30 min price predictions for an asset.",
+         (P("asset", "string", "The asset / coin symbol (e.g. SOL)."),
+          P("limit", "number", "Maximum number of strategies to return (default 50).", False)))
+def forwardtest_predictions(ctx: Context, p: dict[str, Any]) -> Any:
+    asset = bgqueue.validate_asset(p.get("asset") or ctx.settings.asset)
+    limit = int(p.get("limit") or 50)
+    return {"asset": asset, "rows": forwardtest.top_forward_predictions(asset, limit=limit)}
 
 
 @command("roster.reset", "Restore the backtester's default comparison set.", read_only=False)
@@ -2155,6 +2198,60 @@ def coinbase_pairs(ctx: Context, p: dict[str, Any]) -> Any:
 def jupiter_tokens_search(ctx: Context, p: dict[str, Any]) -> Any:
     from . import jupiter_tokens
     return {"tokens": jupiter_tokens.search(p["query"])}
+
+
+@command("jupiter.order_preview", "Review an estimated Jupiter spot swap; places no order.",
+         (P("product_id", "string", "Spot pair or token, for example SOL-USDC or BONK-USDC.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("size", "string", "Exact decimal size.", required=True),
+          P("size_currency", "string", "BUY: quote or base; SELL: base.", required=True)),
+         read_only=False, long_running=True)
+def jupiter_order_preview(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    return jupiter_manual.order_preview(p, taker_pubkey=taker)
+
+
+@command("jupiter.order_submit", "Submit one explicitly confirmed, reviewed live Jupiter swap.",
+         (P("preview_id", "string", "Unexpired reviewed preview ID.", required=True),),
+         read_only=False, long_running=True, requires_confirm=True)
+def jupiter_order_submit(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    key_path = os.environ.get("SOLANA_KEYPAIR_PATH", "~/.ssh/solana.private")
+    return jupiter_manual.order_submit(p["preview_id"], keypair_path=key_path, expected_pubkey=taker)
+
+
+@command("jupiter.order_quick", "Place a live Jupiter swap without second confirmation after opting in.",
+         (P("product_id", "string", "Spot pair or token.", required=True),
+          P("side", "string", "BUY or SELL.", required=True),
+          P("size", "string", "Exact decimal size.", required=True),
+          P("size_currency", "string", "BUY: quote or base; SELL: base.", required=True),
+          P("skip_confirm", "bool", "Explicitly opt in to placing this live order without review.", required=True)),
+         read_only=False, long_running=True)
+def jupiter_order_quick(ctx: Context, p: dict[str, Any]) -> Any:
+    if p.get("skip_confirm") is not True:
+        raise ValueError("Quick orders require skip_confirm=true; this places a live order")
+    reviewed = jupiter_order_preview(ctx, p)
+    from . import jupiter_manual
+    taker = ctx.settings.solana_address or "EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+    key_path = os.environ.get("SOLANA_KEYPAIR_PATH", "~/.ssh/solana.private")
+    return jupiter_manual.order_submit(reviewed["preview_id"], keypair_path=key_path, expected_pubkey=taker)
+
+
+@command("jupiter.order_state", "Show unresolved manual Jupiter submissions after a restart.",
+         read_only=False, long_running=True)
+def jupiter_order_state(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    return jupiter_manual.state()
+
+
+@command("jupiter.order_reconcile", "Check onchain status for a Jupiter swap and reconcile local state.",
+         (P("preview_id", "string", "Preview ID or transaction signature.", required=True),),
+         read_only=False, long_running=True)
+def jupiter_order_reconcile(ctx: Context, p: dict[str, Any]) -> Any:
+    from . import jupiter_manual
+    return jupiter_manual.order_reconcile(p["preview_id"])
 
 
 @command("coinbase.order_preview", "Review an estimated Coinbase spot market order; places no order.",
