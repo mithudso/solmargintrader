@@ -1,15 +1,27 @@
 # Work continuation
 
-Version: 270
-Delta: v268 to v270; preserve the optimizer and backtest gap histories.
+Version: 273
+Delta: v271 to v273; preserve UI audit and backtest gap histories.
 
-## v270 - 2026-11-09
+## v273 - 2026-11-09
 
 PR https://github.com/mithudso/solmargintrader/pull/155 initially failed the extension version gate after all 377 extension tests passed. Bumped extension manifest, package and version assertion to 0.5.1. Recheck the final pushed head and complete delivery. Installed app/browser acceptance is still required.
 
-## v269 - 2026-11-09
+## v272 - 2026-11-09
 
 The configured SOL 1m cache from 2024-01-01 contains 78 gaps and 1110 missing minutes. The engine must not invent bars; the prior synthetic authorization concerned a separate hourly proof of concept. Added explicit opt-in to select the longest contiguous window, default refusal with actionable dates, and result provenance and UI disclosure. The current longest window is 2024-12-18 20:20 UTC through 2025-08-11 19:59 UTC (339820 bars), not the full requested range. Source data and settings remain untouched. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1beca. Stele create queued 3f201901 and risk 45b70e62. Verified 909 backtester tests, 377 extension tests, 14 focused UI/provenance tests and an independent end-to-end fixture check with default refusal and opt-in execution. Installed UI remains unverified. Remaining: refresh offline indexes, commit, align committed test counts, PR, CI and merge, then verify installed state if safely possible.
+
+## v271 - 2026-11-09
+
+CI for PR 154 twice failed test_goto_signal_live_button: its fixed 0.2-second pause ended before the queued button event changed tabs on the loaded macOS runner. The test now waits for the expected navigation with a bounded 4-second timeout and still asserts both target tabs. The focused test passed locally. Rebuild the offline indexes and rerun final-head CI before merging; do not treat either failed CI attempt as a pass. UI optimizer remains incomplete as described in v270 and its ledger.
+
+## v270 - 2026-11-09
+
+UI optimizer checkpoint: source f1e8efa plus the Money banner repair. The former banner falsely stated that Money views only read while Coinbase forms can submit real orders. The replacement says Coinbase orders can move real money and forms start disarmed. Headless Textual rendering at 80x24 and 160x50 and the focused keyboard navigation regression passed; no order was submitted. The optimizer has NOT completed: P01 is partial, P02-P48 are uninspected, and P49-P70 are out of scope without authorized research. Ledger, frozen 18-cell matrix, source fingerprint, captures and test log are in /Users/mitch/.local/state/soltui-ui-optimizer-20261109/ledger.json. Ledger validation passed; it does not verify the truth of observations. Continue from P01 after comparing fingerprints and perform every remaining selected pass, repairs, fresh full sweep and final review. No clean or convergence claim is supported. Stele task and risk are queued as outbox f3cb2cc0 and 9a00cb3a.
+
+## v269 - 2026-11-09
+
+The owner requested ui-deep-optimizer on SolTUI. Worktree /Users/mitch/dev/solmargintrader-wt-01a1bec1 starts at f1e8efa. Preserve the other active checkout and worktrees, real-money safeguards, stopped services and personal data. Stele MCP is unavailable; task creation and claim are queued as outbox f3cb2cc0. The audit must freeze its matrix and method selection, save evidence and source fingerprints, complete each selected method sequentially, repair verified Medium+ issues immediately, and perform rendered verification and a complete fresh sweep after edits. Missing selected evidence precludes CLEAN. Next: establish safe runtime and scope, create the versioned ledger and conduct the first method.
 
 ## v268 - 2026-11-09
 

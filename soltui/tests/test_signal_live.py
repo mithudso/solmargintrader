@@ -362,11 +362,15 @@ class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
             btn = app.query_one("#btn-goto-signal-live")
             self.assertTrue(btn.is_mounted)
             btn.press()
-            await pilot.pause(0.2)
             from textual.widgets import TabbedContent
             tabs = app.query_one("#main-tabs", TabbedContent)
-            self.assertEqual(tabs.active, "tab-compound")
             sections = app.query_one("#compound-sections", TabbedContent)
+            # Button events are queued; busy CI runners may need more than one frame.
+            for _ in range(20):
+                await pilot.pause(0.2)
+                if tabs.active == "tab-compound" and sections.active == "cmp-live":
+                    break
+            self.assertEqual(tabs.active, "tab-compound")
             self.assertEqual(sections.active, "cmp-live")
 
 
