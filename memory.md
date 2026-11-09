@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 327
+Version: 328
+Delta: v327 to v328; complete source audits and indexed deep SOL and KMNO datasets.
 Delta: v326 to v327; checkpoint verified minute datasets and ongoing downloads.
 Delta: v325 to v326; begin detailed historical market data acquisition.
 Delta: v324 to v325; record merged storage foundation and remaining backtester work.
@@ -49,6 +50,10 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v328 - 2026-11-09: historical data acquisition checkpoint
+
+TASK-1128 acquired and audited private data under `/Users/mitch/.local/share/solmargintrader/historical-data-1128/`; `CATALOG.md` is the entry point. All fourteen assets have recent contiguous one-minute snapshots, but quote currencies and available periods differ. SOL/USDC has 2,349,374 continuous one-minute bars from 2022-05-23 08:00 UTC to 2026-11-09 20:13 UTC; 480 requested leading minutes are unobserved. The verified backtest snapshot and same-machine backup are in `backtest-ready/deep-snapshots*.sqlite`. KMNO/USDT has 1,326,148 observed bars and six internal gap runs totaling 3,467 minutes; the indexed segments refuse gap-crossing reads. Exchange rechecks returned no candles for those missing intervals. An additional USDC/USDT snapshot has 43,200 continuous bars and does not substitute for USD. The 11 legacy minute caches remain provenance-limited with explicit gap ledgers; funding is quarantined. JitoSOL exchange symbol to mint mapping remains unverified. OHLCV does not reproduce order-book depth, chain-specific execution, fees, or absent history. Backups are not off-host. Archive raw responses and do not manufacture candles. The broader backtester task remains open for execution models and integrations. The data acquisition and integrity tools are tracked in PR 177; preserve other live sessions and use the isolated worktree.
 
 ## v313 - 2026-11-09
 
