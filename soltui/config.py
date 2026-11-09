@@ -86,6 +86,8 @@ class Settings:
     btc_xpub: str = ""
     ltc_xpub: str = ""
     doge_xpub: str = ""
+    # Automatically start forward testing across all coins, strategies, and timeframes on TUI launch.
+    forwardtest_autostart: bool = True
 
     def to_dict(self) -> dict[str, Any]:
         """Plain dict for serialisation to the config file. Holds the full xpubs."""
@@ -167,6 +169,8 @@ def validate(settings: Settings) -> Settings:
             from_dict(settings.signal_defaults)
         except SignalError as exc:
             raise ConfigError(f"signal_defaults: {exc}") from exc
+    if not isinstance(settings.forwardtest_autostart, bool):
+        raise ConfigError("forwardtest_autostart must be a boolean")
     return settings
 
 

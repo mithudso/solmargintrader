@@ -181,7 +181,13 @@ class UITests(BackendFixture, unittest.IsolatedAsyncioTestCase):
                     await pilot.pause()
                     self.assertEqual(tabs.active, "tab-bots")
                     self.assertEqual(self.app.query_one("#main-tabs > ContentTabs").display, classic)
-                    self.assertTrue(await pilot.click("#bots-fit-rank"))
+                    clicked = False
+                    for _ in range(10):
+                        if await pilot.click("#bots-fit-rank"):
+                            clicked = True
+                            break
+                        await pilot.pause(0.1)
+                    self.assertTrue(clicked)
                     await self.wait_done(pilot)
                     self.assertEqual(self.app.query_one("#bots-sections", TabbedContent).active, "bots-sec-fit")
                     self.assertEqual(self.app.query_one("#bots-fit-table", DataTable).row_count, 1)

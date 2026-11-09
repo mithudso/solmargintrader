@@ -32,6 +32,12 @@ class ValidationTests(unittest.TestCase):
     def test_new_fields_default_to_blank(self) -> None:
         s = config.default_settings()
         self.assertEqual((s.btc_xpub, s.ltc_xpub, s.doge_xpub, s.eth_address), ("", "", "", ""))
+        self.assertTrue(s.forwardtest_autostart)
+
+    def test_forwardtest_autostart_validation(self) -> None:
+        config.validate(config.Settings(forwardtest_autostart=False))
+        with self.assertRaises(config.ConfigError):
+            config.validate(config.Settings(forwardtest_autostart="invalid"))
 
     def test_good_values_validate(self) -> None:
         config.validate(config.Settings(btc_xpub=V2_M, ltc_xpub=V2_M, doge_xpub=V2_M, eth_address=ETH))
@@ -110,6 +116,13 @@ class SaveAndRedactTests(unittest.TestCase):
             text = world.log.read_text()
             self.assertIn("btc_xpub", text)
             self.assertNotIn(V2_M[8:], text)
+
+    def test_forwardtest_autostart_saved_and_loaded(self) -> None:
+        with World():
+            commands.dispatch("settings.save", {"forwardtest_autostart": False}, surface="cli")
+            self.assertFalse(config.load_settings().forwardtest_autostart)
+            commands.dispatch("settings.save", {"forwardtest_autostart": True}, surface="cli")
+            self.assertTrue(config.load_settings().forwardtest_autostart)
 
 
 class AddressesCommandTests(unittest.TestCase):
@@ -196,6 +209,21 @@ class TuiSettingsTests(unittest.IsolatedAsyncioTestCase):
             rows = text_of(app, "#key-sources")
             self.assertIn("EVM (Ethereum/Base) key", rows)
             self.assertIn("Solana key", rows)
+
+    async def test_forwardtest_autostart_toggle_and_save(self) -> None:
+        """Forwardtest autostart can be toggled and saved in the settings form."""
+        from textual.widgets import Checkbox, TabbedContent
+
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            app.query_one(TabbedContent).active = "tab-settings"
+            await pilot.pause()
+            cb = app.query_one("#set-forwardtest_autostart", Checkbox)
+            self.assertTrue(cb.value)
+            cb.value = False
+            await pilot.click("#btn-save")
+            await pilot.pause()
+            self.assertFalse(app.settings.forwardtest_autostart)
 
 
 if __name__ == "__main__":
