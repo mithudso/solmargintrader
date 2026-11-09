@@ -1,5 +1,7 @@
 # Prompt history
 
+Version: 121
+Delta: v120 to v121; record request for a Gemini handoff.
 Version: 122
 Delta: v121 to v122; record chart timestamps, price numbers and prediction streaming update request.
 
@@ -12,6 +14,7 @@ Add timestamps and price numbers to the chart. And schedule the strategies to up
 ## v121 - 2026-11-08
 
 ```text
+Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
 In the soltui, the forward test's data doesn't seem to be saved through restarts. Make sure all of the data is recorded to disk as it arrives.
 ```
 
