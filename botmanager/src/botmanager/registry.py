@@ -11,7 +11,6 @@ from uuid import uuid4
 
 from .config import resolve_config
 from .domain import BotSpec, ManagerError
-from .status import draft_snapshot
 from .store import ManagerStore
 
 
@@ -155,23 +154,99 @@ def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
                 if row["strategy_id"] == family:
                     return row
             raise ManagerError("bot_not_found", "External identity was not found.")
-        return draft_snapshot(_identity(params, context), why=why)
+        return _manager_status(_identity(params, context), context, why=why)
     store = _store(context)
     return {
         "initialized": store.initialized,
-        "bots": [draft_snapshot(spec, why=why) for spec in store.list_specs()],
-        "runtime": "not_available",
+        "bots": [
+            _manager_status(spec, context, why=why) for spec in store.list_specs()
+        ],
+        "runtime": "reference_paper_available",
         "installations": _discover({}, context)["installations"],
     }
 
 
-def _runtime(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
-    _identity(params, context)
-    raise ManagerError(
-        "runtime_not_available",
-        "Manager drafts have no runtime; start and stop are unavailable.",
-        3,
+def _manager_status(spec, context, *, why=False):
+    import time
+
+    from .ledger import RuntimeLedger
+    from .status import runtime_snapshot
+    from .worker import lock_held
+
+    ledger = RuntimeLedger(context.home)
+    return runtime_snapshot(
+        spec,
+        ledger.get(spec.bot_id),
+        now=time.time(),
+        worker_alive=lock_held(ledger.home / "locks" / (spec.bot_id + ".lock")),
+        supervisor_alive=lock_held(ledger.home / "supervisor.lock"),
+        why=why,
     )
+
+
+def _runtime(params, context, operation):
+    from .ledger import RuntimeLedger
+
+    spec = _identity(params, context)
+    ledger = RuntimeLedger(context.home)
+    if spec.bot_id not in ledger.ids():
+        raise ManagerError(
+            "runtime_not_available",
+            "Register explicit reference input before runtime control.",
+            3,
+        )
+    if (
+        params.get("expected_session") is not None
+        or params.get("expected_config_hash") is not None
+    ):
+        raise ManagerError(
+            "invalid_input",
+            "External-owner guards cannot be applied to manager runtime controls.",
+        )
+    return ledger.control(spec, operation, params.get("request_id") or str(uuid4()))
+
+
+def _register_input(params, context):
+    from .data import load_recording
+    from .ledger import RuntimeLedger
+
+    spec = _identity(params, context)
+    try:
+        path = Path(params["descriptor"])
+        with path.open("rb") as stream:
+            raw = stream.read(65537)
+        if len(raw) > 65536:
+            raise ValueError
+        descriptor = json.loads(raw)
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        raise ManagerError(
+            "input_unavailable", "Input descriptor is missing or invalid.", 3
+        ) from exc
+    return RuntimeLedger(context.home).register(spec, load_recording(descriptor))
+
+
+def _events(params, context):
+    from .ledger import RuntimeLedger
+
+    spec = _identity(params, context)
+    return {
+        "bot_id": spec.bot_id,
+        "events": RuntimeLedger(context.home).events(
+            spec.bot_id, params.get("limit", 100)
+        ),
+    }
+
+
+def _daemon(params, context):
+    from .supervisor import Supervisor
+
+    return Supervisor(context.home).run()
+
+
+def _service(params, context):
+    from .service import service
+
+    return service(params["action"], context.home)
 
 
 def _delegated(
@@ -179,7 +254,7 @@ def _delegated(
 ) -> dict[str, Any]:
     external = _external(params, context)
     if external is None:
-        return _runtime(params, context)
+        return _runtime(params, context, operation)
     adapter, family = external
     if any(
         params.get(key) is None
@@ -217,9 +292,9 @@ def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
             {"name": spec.name, "description": spec.description}
             for spec in COMMANDS.values()
         ],
-        "scope": "paper, disarmed Solana SOL/USDC drafts; no autonomous runtime",
+        "scope": "paper/disarmed drafts and bounded Coinbase grid reference replay; no live execution",
         "strategies": {
-            "grid": "draft",
+            "grid": "reference_paper_with_explicit_input",
             "dca": "draft",
             "trend": "draft",
             "momentum": "draft",
@@ -242,6 +317,27 @@ CONTROL_GUARDS = (
     ),
 )
 COMMANDS = {
+    "register-input": CommandSpec(
+        "register-input",
+        "Pin explicit recorded input and simulation costs.",
+        _register_input,
+        IDENTITY + ((("--descriptor",), {"required": True}),),
+    ),
+    "events": CommandSpec(
+        "events",
+        "Read runtime events without starting workers.",
+        _events,
+        IDENTITY + ((("--limit",), {"type": int, "default": 100}),),
+    ),
+    "daemon": CommandSpec(
+        "daemon", "Explicitly run the local reference-paper supervisor.", _daemon
+    ),
+    "service": CommandSpec(
+        "service",
+        "Explicit launchd install/uninstall or inert status.",
+        _service,
+        ((("action",), {"choices": ("install", "uninstall", "status")}),),
+    ),
     "discover": CommandSpec(
         "discover",
         "Read configured owner inventory without starting services.",
@@ -278,19 +374,27 @@ COMMANDS = {
     ),
     "start": CommandSpec(
         "start",
-        "Request owner start only when advertised; drafts have no runtime.",
+        "Persist manager reference start or request guarded external start.",
         _start,
         IDENTITY + CONTROL_GUARDS,
     ),
     "stop": CommandSpec(
         "stop",
-        "Request owner stop only when advertised; drafts have no runtime.",
+        "Persist manager stop retaining positions or request guarded external stop.",
         _stop,
         IDENTITY + CONTROL_GUARDS,
     ),
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
 ERROR_EXIT_CODES = {
+    "input_unavailable": 3,
+    "resource_limit": 3,
+    "stable_install_required": 3,
+    "already_running": 3,
+    "supervisor_unreachable": 3,
+    "reconciliation_required": 3,
+    "corrupt_checkpoint": 4,
+    "service_unavailable": 4,
     "runtime_not_available": 3,
     "expected_observation_required": 3,
     "owner_unreachable": 3,
@@ -334,6 +438,13 @@ def dispatch(
         envelope["error"] = {
             "code": exc.code,
             "message": exc.message,
+            "retryable": False,
+            "detail_ref": None,
+        }
+    except OSError:
+        envelope["error"] = {
+            "code": "operational_failure",
+            "message": "The requested local operation could not be completed.",
             "retryable": False,
             "detail_ref": None,
         }

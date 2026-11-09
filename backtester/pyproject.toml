@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solmargintrader-backtester"
+version = "0.1.0"
+description = "Canonical offline simulation engines for Solmargintrader"
+requires-python = ">=3.13"
+dependencies = ["numpy>=2.5.4", "pandas>=3.1.0"]
+
+[project.optional-dependencies]
+charts = ["matplotlib>=3.11.2"]
+
+[tool.setuptools]
+packages = ["backtester", "backtester.core", "backtester.core.strategies"]
+package-dir = {backtester = ".", "backtester.core" = "core", "backtester.core.strategies" = "core/strategies"}
+
+[tool.setuptools.package-data]
+backtester = ["strategy_cards/*.md", "strategy_cards/incomplete/*.md", "strategy_cards/incomplete/publication-profiles/*.md"]
