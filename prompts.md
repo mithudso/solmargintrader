@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 159
+Version: 160
+Delta: v159 to v160; record GitHub backup choice and Firecrawl research request.
 Delta: v158 to v159; record high-resolution market data acquisition request.
 Delta: v157 to v158; record primary SOL/USDC pair.
 Delta: v156 to v157; refine optimized prompt and record confirmed universe.
@@ -26,6 +27,10 @@ Delta: v139 to v140; record the resumed UI optimizer request.
 Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
+
+## v160 - 2026-11-09
+
+The off machine backup will be with github. Use the firecrawl mcp server to search for more complete historical coverage, and for JitoSOL app site and coin.
 
 ## v152 - 2026-11-09
 
