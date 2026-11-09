@@ -41,11 +41,36 @@ def _json(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
 
 
+_MIGRATIONS = {
+    "trial": {"execution": "TEXT DEFAULT ''"},
+    "call": {"confidence": "REAL", "traded": "INTEGER", "net_return": "REAL",
+             "fees_bps": "REAL", "borrow_bps": "REAL", "slippage_bps": "REAL",
+             "liquidated": "INTEGER"},
+}
+
+
+def _schema_current(db: sqlite3.Connection) -> bool:
+    objects = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type IN ('table','index')")}
+    if not {"candle", "session", "trial", "call", "adoption", "call_pending", "call_training"} <= objects:
+        return False
+    return all(set(columns) <= {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
+               for table, columns in _MIGRATIONS.items())
+
+
 def _db(path: Path | None = None) -> sqlite3.Connection:
+    """Open a writer, initializing journal mode and schema only when needed."""
     path = path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     db = sqlite3.connect(path)
-    db.executescript("""
+    try:
+        # Writers establish WAL before opening a transaction. Readers never run
+        # this initializer or request a journal-mode change.
+        if db.execute("PRAGMA journal_mode").fetchone()[0].lower() != "wal":
+            db.execute("PRAGMA journal_mode=WAL").fetchone()
+        if _schema_current(db):
+            return db
+        db.execute("BEGIN IMMEDIATE")
+        for statement in """
         CREATE TABLE IF NOT EXISTS candle (
             asset TEXT, ts INTEGER, open REAL, high REAL, low REAL, close REAL, volume REAL,
             PRIMARY KEY(asset, ts)
@@ -69,20 +94,20 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
             trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
             samples INTEGER, PRIMARY KEY(trial, at)
         );
-    """)
-    db.execute("BEGIN IMMEDIATE")
-    # Add columns without rewriting historical calls or their original economics.
-    for table, columns in {
-        "trial": {"execution": "TEXT DEFAULT ''"},
-        "call": {"confidence": "REAL", "traded": "INTEGER", "net_return": "REAL",
-                 "fees_bps": "REAL", "borrow_bps": "REAL", "slippage_bps": "REAL",
-                 "liquidated": "INTEGER"},
-    }.items():
-        existing = {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
-        for column, declaration in columns.items():
-            if column not in existing:
-                db.execute(f"ALTER TABLE {table} ADD COLUMN {column} {declaration}")
-    db.commit()
+        """.split(";"):
+            if statement.strip():
+                db.execute(statement)
+        # Recheck under the migration lock: another writer may have migrated
+        # between the initial schema read and BEGIN IMMEDIATE.
+        for table, columns in _MIGRATIONS.items():
+            existing = {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
+            for column, declaration in columns.items():
+                if column not in existing:
+                    db.execute(f"ALTER TABLE {table} ADD COLUMN {column} {declaration}")
+        db.commit()
+    except BaseException:
+        db.close()
+        raise
     return db
 
 
@@ -99,7 +124,11 @@ def load_session() -> dict | None:
     path = config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"
     if not path.exists():
         return None
-    with closing(_db(path)) as db:
+    with closing(sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)) as db:
+        # A legacy evidence database can predate saved sessions. A status read
+        # must not migrate it or contend for the active forward writer.
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session'").fetchone() is None:
+            return None
         row = db.execute("SELECT plan FROM session WHERE id=1").fetchone()
     if not row:
         return None
@@ -494,7 +523,7 @@ def status(asset: str, *, db_path: Path | None = None) -> list[dict]:
         columns = {r[1] for r in db.execute("PRAGMA table_info(call)")}
         profiles = {}
         if "traded" in columns:
-            for key, raw in db.execute("SELECT id,execution FROM trial WHERE asset=?", (asset,)):
+            for key, raw in db.execute("SELECT id,execution FROM trial WHERE asset=?", (asset,)).fetchall():
                 calls = db.execute("SELECT net_return,traded,liquidated FROM call WHERE trial=? AND outcome IS NOT NULL ORDER BY bar", (key,)).fetchall()
                 equity = 1.0
                 for ret, _, _ in calls:

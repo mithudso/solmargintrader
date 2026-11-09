@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T11:15:18+00:00",
+  "generatedAt": "2026-11-09T11:51:56+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1205,12 +1205,12 @@
           "hits": 66
         },
         {
-          "path": "soltui/commands.py",
-          "hits": 59
+          "path": "memory.md",
+          "hits": 60
         },
         {
-          "path": "memory.md",
-          "hits": 58
+          "path": "soltui/commands.py",
+          "hits": 59
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 279,
+      "matchingFiles": 280,
       "shown": 30,
       "files": [
         {
@@ -1657,6 +1657,140 @@
         }
       ],
       "source": "curated-from-repo-vocabulary"
+    },
+    {
+      "id": "family:baseline",
+      "label": "Strategy family: baseline",
+      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
+      "terms": [
+        "buy_and_hold",
+        "baseline"
+      ],
+      "matchingFiles": 230,
+      "shown": 30,
+      "files": [
+        {
+          "path": "docs/FILES.md",
+          "hits": 43
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 34
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 31
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 29
+        },
+        {
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 25
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 21
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 21
+        },
+        {
+          "path": "soltui/experiment_screens.py",
+          "hits": 21
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 20
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 19
+        },
+        {
+          "path": "soltui/experiment_runner.py",
+          "hits": 17
+        },
+        {
+          "path": "backtester/core/dcasim.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/report.py",
+          "hits": 13
+        },
+        {
+          "path": "docs/code-optimizer-scope-2026-11-08.json",
+          "hits": 12
+        },
+        {
+          "path": "soltui/tests/test_f5_batch.py",
+          "hits": 11
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 10
+        },
+        {
+          "path": "memory.md",
+          "hits": 10
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 9
+        },
+        {
+          "path": "extension/e2e/lib/dashboard-workspace.mjs",
+          "hits": 9
+        },
+        {
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 9
+        },
+        {
+          "path": "research/tradingview-card-readiness.json",
+          "hits": 9
+        },
+        {
+          "path": "backtester/strategy_cards/buy_and_hold.md",
+          "hits": 8
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
+          "hits": 8
+        },
+        {
+          "path": "soltui/tests/test_experiment_runner.py",
+          "hits": 8
+        },
+        {
+          "path": "backtester/tests/test_cpcv.py",
+          "hits": 7
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md",
+          "hits": 7
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ppjps450_neglected_volume_by_dgt.md",
+          "hits": 7
+        },
+        {
+          "path": "docs/optimization-workbench.md",
+          "hits": 7
+        }
+      ],
+      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "evidence-floor",
@@ -1795,140 +1929,6 @@
         }
       ],
       "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "family:baseline",
-      "label": "Strategy family: baseline",
-      "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
-      "terms": [
-        "buy_and_hold",
-        "baseline"
-      ],
-      "matchingFiles": 229,
-      "shown": 30,
-      "files": [
-        {
-          "path": "docs/FILES.md",
-          "hits": 43
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 34
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 31
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 29
-        },
-        {
-          "path": "research/tradingview-script-understanding.json",
-          "hits": 25
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 21
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 21
-        },
-        {
-          "path": "soltui/experiment_screens.py",
-          "hits": 21
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 20
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 19
-        },
-        {
-          "path": "soltui/experiment_runner.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/report.py",
-          "hits": 13
-        },
-        {
-          "path": "docs/code-optimizer-scope-2026-11-08.json",
-          "hits": 12
-        },
-        {
-          "path": "soltui/tests/test_f5_batch.py",
-          "hits": 11
-        },
-        {
-          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
-          "hits": 11
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 10
-        },
-        {
-          "path": "memory.md",
-          "hits": 10
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 9
-        },
-        {
-          "path": "extension/e2e/lib/dashboard-workspace.mjs",
-          "hits": 9
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
-          "hits": 9
-        },
-        {
-          "path": "research/tradingview-card-readiness.json",
-          "hits": 9
-        },
-        {
-          "path": "backtester/strategy_cards/buy_and_hold.md",
-          "hits": 8
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_o52gurxf_redk_momentum_bars_redk_mo_bars.md",
-          "hits": 8
-        },
-        {
-          "path": "soltui/tests/test_experiment_runner.py",
-          "hits": 8
-        },
-        {
-          "path": "backtester/tests/test_cpcv.py",
-          "hits": 7
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_1cv4puad_redk_indicator_amplifier_redk_i_amp.md",
-          "hits": 7
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_ppjps450_neglected_volume_by_dgt.md",
-          "hits": 7
-        },
-        {
-          "path": "docs/optimization-workbench.md",
-          "hits": 7
-        }
-      ],
-      "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
       "id": "family:breakout",

@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-09T11:15:18+00:00",
+  "generatedAt": "2026-11-09T11:51:56+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "99d8a74",
+  "commit": "0c1fb81",
   "counts": {
-    "files": 2713,
-    "bytes": 45556075,
+    "files": 2714,
+    "bytes": 45567192,
     "byKind": {
       "strategy-card": 1478,
       "doc": 569,
       "code-python": 201,
-      "test": 172,
+      "test": 173,
       "code-js": 101,
       "result": 85,
       "config": 40,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1913,
       "research": 179,
-      "soltui": 149,
+      "soltui": 150,
       "extension": 106,
       "docs": 84,
       "skills": 67,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2601
+    "withSummary": 2602
   },
   "files": [
     {
@@ -71904,11 +71904,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 291 Delta: v290 to v291; finalize committed suite counts and delivery checkpoint. Delta: v289 to v290; record passing final checks before delivery.",
+      "summary": "Version: 292 Delta: v291 to v292; record actual Chrome activation and repair the shared prediction database lock. Delta: v290 to v291; finalize committed suite counts and delivery checkpoint.",
       "summarySource": "opening-prose",
-      "bytes": 103584,
-      "lines": 579,
-      "sha1": "e630d852e718f4238205109f7f32f4e91675235c",
+      "bytes": 105756,
+      "lines": 588,
+      "sha1": "8900732d9a92c11124f37d2b06cb4ed5836329e2",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -80650,9 +80650,9 @@
       "title": "-- saved defaults: a setting that tested superior becomes the trial's starting point -------------",
       "summary": "Prospective, paper-only trials of registered strategies on closed Coinbase minutes.",
       "summarySource": "docstring",
-      "bytes": 31320,
-      "lines": 612,
-      "sha1": "852852eefc7a9e7ef124adf59231b2ea8ce49b09",
+      "bytes": 32774,
+      "lines": 641,
+      "sha1": "3c34570807684bfbfacb1ce54de9904a648fa212",
       "symbols": [
         "HORIZONS",
         "HISTORY",
@@ -80660,6 +80660,8 @@
         "KNOBS",
         "revision()",
         "_json()",
+        "_MIGRATIONS",
+        "_schema_current()",
         "_db()",
         "save_session()",
         "load_session()",
@@ -83492,6 +83494,37 @@
         "sqlite3",
         "tempfile",
         "textual",
+        "threading",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_forwardtest_concurrency.py",
+      "path": "soltui/tests/test_forwardtest_concurrency.py",
+      "dir": "soltui/tests",
+      "name": "test_forwardtest_concurrency.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_forwardtest_concurrency",
+      "summary": "Forward-test display reads do not request the active writer's lock.",
+      "summarySource": "docstring",
+      "bytes": 7491,
+      "lines": 150,
+      "sha1": "a7571bd1a8b6472a33ad3387a87afe7809e19792",
+      "symbols": [
+        "class ForwardDatabaseConcurrency"
+      ],
+      "imports": [
+        "__future__",
+        "contextlib",
+        "pathlib",
+        "soltui",
+        "sqlite3",
+        "tempfile",
         "threading",
         "unittest"
       ],
