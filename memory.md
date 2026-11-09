@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 319
+Version: 320
+Delta: v319 to v320; verify guarded legacy controls and preserve review continuation.
 Delta: v318 to v319; integrate PR172 while preserving implementation and UI histories.
 Delta: v317 to v318; checkpoint reviewed foundation and supplemental state/receipt contracts.
 Delta: v316 to v317; record supplemental UI requirements and current foundation review.
@@ -829,3 +830,11 @@ Merged current origin/master from CLI planning PR171 while preserving both desig
 ## PR172 integrated into active implementation
 
 Merged f2d099e from origin/master in private implementation worktree. Preserved both UI and manager histories and accepted UI artifacts unchanged; regenerated derived indexes. Task1107 remains in progress. Reviewed foundation/status/receipts are implemented; legacy adapter and safe owner control task2 is next. No graphical or live-trading implementation was substituted. Primary checkout remains untouched because other sessions hold it.
+
+## v320 — 2026-11-09 — milestone1 legacy control review
+
+Milestone1 source reaches995246f after guarded owner protocol3e2b9e1 and fix round1. The64 manager tests and121 affected owner tests pass. Focused lint/format and CI selector6 tests pass; the33 pre-existing owner Ruff diagnostics remain unchanged. Independent review reproduced and the worker fixed exact-config startup, acknowledgment session/revision binding and persisted receipt/request binding. Scoped re-review is pending. The manager controls journal is now schema2; migration preserves old request IDs but refuses unbound v1 replay. Never resubmit an ambiguous request. Current API port8788 is incompatible; no installed SolTUI control success is claimed.
+
+Supplemental UI contracts are implemented in status/receipt/spec fields. The full current-versus-later mapping is /Users/mitch/dev/solmargintrader/docs/bot-manager-milestone-1.md. Legacy slots remain family-wide; manager authority takes precedence over prototype integration. Parent added CI selector dependency tests so owner edits run the guarded-control regressions. Other sessions and production state remain unchanged.
+
+Draft PR175 at39140e7 passed9 active CI checks; latest995246f is not yet pushed. Origin/master advanced to e0c6934 with PR174/176 historical snapshot/archive work; integrate preserving both histories before final broad review. Final docs/index gates, current installed-console acceptance, final-head CI and merge remain. Continue milestones1108–1114 after delivering TASK1107.
