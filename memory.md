@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 300
+Version: 301
+Delta: v300 to v301; align autostart coverage with the shared worker and refresh its header.
 Delta: v299 to v300; finalize native-host discovery and delivery checkpoint.
 Delta: v298 to v299; protect migration from an old native-host writer.
 Delta: v297 to v298; fix the release-version assertion found by CI.
@@ -19,6 +20,10 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v301 - 2026-11-09
+
+Final-head macOS CI ran134 targeted tests;133 passed and the old autostart test failed because it still expected a per-console all-coin worker in headless mode. Replaced that test with explicit mocked recovery opt-in. It now verifies one shared ensure request, no local producer thread, preservation of the saved coin/trial/horizon/cost scope, correct running controls/header, and explicit Stop pause. Updated the console header/controls immediately on shared recovery and periodic shared-state reads. All28 forward-test/mounted-control tests passed locally in29.454s after this change. This is a test-contract update plus a visible shared-state correction, not a relaxation of startup or evidence gates. Discovery counts stay1338 SolTUI/2722 total. A real Python Jupiter read returned a fresh SOL reference. Rebuild indexes, push and wait for final CI before merge/activation. Remaining runtime receipts followv300.
 
 ## v300 - 2026-11-09
 

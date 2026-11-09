@@ -1726,6 +1726,7 @@ class SolTuiApp(App):
         was_busy = self._forward_busy
         self._forward_busy = bool(st["busy"]) or (not st["running"] and st["prepared"])
         self._forward_running = bool(st["running"])
+        self._forward_show_running(st.get("assets", []) if self._forward_running else [])
         if not self._forward_running and not st["busy"]:
             self._forward_busy = False
         self._forward_controls()
@@ -4312,6 +4313,8 @@ class SolTuiApp(App):
         if env.get("ok"):
             self._signal_recovery_state = env["result"]
             self._forward_running = bool(env["result"].get("running"))
+            self._forward_controls()
+            self._forward_show_running(env["result"].get("assets", []) if self._forward_running else [])
         else:
             self._signal_recovery_at[coin] = time.time()
             self._signal_recovery_state = {"state": "failed", "can_start": True,
