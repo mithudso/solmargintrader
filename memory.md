@@ -1,7 +1,21 @@
 # Work continuation
 
-Version: 231
-Delta: v230 to v231; record verified Jupiter controls delivery and cleanup.
+Version: 233
+Delta: v232 to v233; preserve optimizer baselines and confirmed executor findings.
+
+## v233 - 2026-11-08
+
+Optimizer inventory and baseline complete; per-file review is in progress in /Users/mitch/dev/solmargintrader-wt-01a1be31. Eight of 50 primary files reviewed so far. Persisted review JSON, exact hashes, pass rows and remaining files live under /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo. Use state.json, scope.json and findings-iter1.json there. Do not mistake the 50 selected candidates for completed reviews. No product edits yet; collect all first-iteration reviews before remediation.
+
+Baseline: extension 369 pass; executor 202 pass (5 network deselected); liquidity 473 pass (6 network deselected); Mongo 34 run with 11 server-dependent skips; 198 targeted SolTUI pass; browser 24/24 dry-run-only checks; offline round trip net $0.3492; executor and liquidity Ruff pass; docs census 2515 agrees. Backtester ran 909 with one index-freshness failure caused by the required prompt/memory updates. Refresh offline indexes after final edits. Do not run the full optional SolTUI suite or reactivate archived liquidity.
+
+Confirmed initial findings include wrapped-SOL conservation and rent accounting; final-RPC kill/quote-age staleness; missing failed-transaction fees; unchecked short journal writes; unsafe generic-RPC rejection classification; quote threshold/slippage inconsistency; credential-bearing rpc_host status; URL prefix validation; custom-parent chmod; nonfinite persisted gates and concurrent gate record loss. Each has a per-file evidence artifact. Reproduce with committed failing tests, then correct and verify. The reserve precheck also falsely blocks replenishing native SOL. Stele CLI reads work, but no write MCP is available. Tracking writes remain queued: ca66e7c8, 3a873879, 24fcdf24, c2a1c757, 44c856e1, a6951157, cae12367, 13ac6d8c, c3531170. Claim is queued on task creation.
+
+## v232 - 2026-11-08
+
+Target: run code-deep-optimizer against risk-ranked repository sources. Worktree /Users/mitch/dev/solmargintrader-wt-01a1be31, branch agent-01a1be31, base dec4b5a. Preserve the active shared checkout and its three untracked guides. Keep live-order defaults disarmed/dry-run, preserve ambiguous-submit refusal, and keep archived liquidity disabled. No transaction or service restart is needed for verification. Prior audit ended BLIND-AUDIT-DISSENT; current scope must be explicit. Stele creation outbox ca66e7c8. The fixed-model recall specialist failed before execution; Stele MCP tools are absent.
+
+Progress: inventory in progress; per-file review and reproduction pending; remediation and verification pending; PR delivery pending. Detected checks: Python unittest for backtester/mongo and mapped SolTUI; extension npm test, offline dryrun, e2e; executor/liquidity Ruff and offline pytest; scripts/check_docs.py and offline index freshness. Full SolTUI suite is explicit opt-in and is not run. No independent held-out benchmark exists, so empirical champion promotion is inapplicable. Run receipts: /Users/mitch/.codex/skill-consolidation/backups/solmargintrader-20261108-cdo.
 
 ## v231 - 2026-11-08
 

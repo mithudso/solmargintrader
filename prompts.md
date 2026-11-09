@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 127
-Delta: v126 to v127; preserve both extension and Jupiter paper histories.
+Version: 128
+Delta: v127 to v128; record repository deep code optimizer request.
+
+## v128 - 2026-11-08
+
+```text
+Run the deep code optimizer on this repo
+```
 
 ## v127 - 2026-11-08
 
