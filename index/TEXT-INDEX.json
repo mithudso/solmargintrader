@@ -2603,6 +2603,7 @@
     "soltui/tests/test_service.py": 785,
     "soltui/tests/test_service_plist_parity.py": 330,
     "soltui/tests/test_shortcuts_everything.py": 492,
+    "soltui/tests/test_signal_live.py": 381,
     "soltui/tests/test_signals.py": 879,
     "soltui/tests/test_status_console.py": 608,
     "soltui/tests/test_status_roster.py": 1539,
@@ -2652,7 +2653,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-09T00:25:54+00:00",
+  "generatedAt": "2026-11-09T00:29:01+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -2858,6 +2859,7 @@
     },
     "10m": {
       "soltui/forwardtest.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 4
     },
     "10x": {
@@ -3539,6 +3541,7 @@
     },
     "30m": {
       "soltui/forwardtest.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 4
     },
     "312": {
@@ -19488,6 +19491,7 @@
       "soltui/README.md": 3,
       "soltui/forwardtest.py": 1,
       "soltui/help.py": 3,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 8
     },
     "accurate": {
@@ -21517,6 +21521,7 @@
       "soltui/tests/test_liquidity.py": 6,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 6,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_status_console.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 5,
       "soltui/tests/test_tui.py": 38,
@@ -43070,6 +43075,7 @@
       "soltui/tests/test_presets_netpct.py": 5,
       "soltui/tests/test_pricefeed.py": 12,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 8,
       "soltui/tests/test_strategies_tab_history.py": 2,
@@ -44140,6 +44146,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 1,
@@ -47254,6 +47261,7 @@
       "soltui/tests/test_service.py": 2,
       "soltui/tests/test_service_plist_parity.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 31,
+      "soltui/tests/test_signal_live.py": 15,
       "soltui/tests/test_status_console.py": 47,
       "soltui/tests/test_strategies_tab_history.py": 24,
       "soltui/tests/test_tui.py": 333,
@@ -54410,6 +54418,7 @@
       "soltui/tests/test_service.py": 6,
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 10,
+      "soltui/tests/test_signal_live.py": 6,
       "soltui/tests/test_signals.py": 13,
       "soltui/tests/test_status_console.py": 2,
       "soltui/tests/test_status_roster.py": 22,
@@ -54627,6 +54636,7 @@
       "soltui/tests/test_pricefeed.py": 5,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 12,
       "soltui/tests/test_signals.py": 4,
       "soltui/tests/test_status_console.py": 9,
       "soltui/tests/test_status_roster.py": 21,
@@ -54783,6 +54793,7 @@
       "soltui/tests/test_bots.py": 3,
       "soltui/tests/test_bots_manual_editor.py": 1,
       "soltui/tests/test_help.py": 1,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_utxo_scan.py": 1
     },
@@ -55218,6 +55229,7 @@
       "soltui/tests/test_presets_netpct.py": 8,
       "soltui/tests/test_pricefeed.py": 6,
       "soltui/tests/test_service.py": 1,
+      "soltui/tests/test_signal_live.py": 8,
       "soltui/tests/test_status_console.py": 2,
       "soltui/tests/test_status_roster.py": 5,
       "soltui/tests/test_strategy_history.py": 12,
@@ -56763,6 +56775,7 @@
       "soltui/tests/test_pnl.py": 8,
       "soltui/tests/test_presets_netpct.py": 6,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_roster.py": 3,
       "soltui/tests/test_strategy_history.py": 2,
       "soltui/tests/test_top5.py": 6,
@@ -59965,6 +59978,7 @@
       "soltui/tests/test_liquidity.py": 16,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 6,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 10,
       "soltui/tests/test_strategies_tab_history.py": 10,
       "soltui/tests/test_tui.py": 135,
@@ -67283,6 +67297,7 @@
       "soltui/tests/test_liquidity.py": 17,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 11,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 15,
       "soltui/tests/test_tui.py": 179,
@@ -104518,6 +104533,7 @@
       "soltui/help.py": 20,
       "soltui/tests/test_dryrun_strategy.py": 2,
       "soltui/tests/test_forwardtest.py": 1,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_strategies_tab_history.py": 4,
       "soltui/tests/test_tui.py": 11,
       "soltui/tests/test_tui_presets_pnl.py": 1,
@@ -107372,6 +107388,7 @@
       "soltui/tests/test_help.py": 2,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_paper_experiments.py": 2,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 11,
       "soltui/tests/test_strategy_history.py": 2,
       "soltui/tests/test_top5.py": 1,
@@ -140081,6 +140098,7 @@
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
       "soltui/help.py": 1,
       "soltui/tests/test_advanced_order_ui.py": 2,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 18,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
@@ -153243,6 +153261,7 @@
       "soltui/README.md": 4,
       "soltui/shell.py": 7,
       "soltui/tests/test_coin_fit_ui.py": 9,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_v2_shell.py": 15,
       "soltui/tui.py": 23
     },
@@ -159262,6 +159281,7 @@
       "research/tradingview-card-coverage.json": 1,
       "soltui/help.py": 4,
       "soltui/shell.py": 9,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_v2_shell.py": 8,
       "soltui/tui.py": 8
     },
@@ -160823,6 +160843,7 @@
       "soltui/tests/test_experiments.py": 31,
       "soltui/tests/test_forwardtest.py": 2,
       "soltui/tests/test_hdwallet.py": 4,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_tui_presets_pnl.py": 1,
       "soltui/tests/test_utxo_scan.py": 3,
       "soltui/tests/test_wallet.py": 2,
@@ -166683,6 +166704,7 @@
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_presets_netpct.py": 3,
       "soltui/tests/test_service.py": 2,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_strategy_history.py": 3,
       "soltui/tests/test_top5.py": 1,
@@ -166880,6 +166902,7 @@
       "soltui/tests/test_paper_experiments.py": 3,
       "soltui/tests/test_portfolio.py": 14,
       "soltui/tests/test_presets_netpct.py": 9,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_strategy_history.py": 3,
       "soltui/tests/test_tui.py": 17,
       "soltui/tests/test_tui_presets_pnl.py": 3,
@@ -175262,6 +175285,7 @@
       "soltui/tests/test_compound_pool_capture.py": 2,
       "soltui/tests/test_editor_backtest.py": 5,
       "soltui/tests/test_help.py": 1,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_tui.py": 4,
       "soltui/tests/test_v2_shell.py": 6,
@@ -180209,6 +180233,7 @@
       "soltui/tests/test_portfolio.py": 5,
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 3,
       "soltui/tests/test_status_roster.py": 10,
       "soltui/tests/test_tui.py": 8,
@@ -190914,6 +190939,7 @@
       "soltui/tests/test_forwardtest.py": 6,
       "soltui/tests/test_help.py": 2,
       "soltui/tests/test_paper_experiments.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_wallet.py": 3,
       "soltui/tests/test_wallet_integration.py": 1,
       "soltui/tui.py": 37,
@@ -206458,6 +206484,7 @@
       "soltui/tests/test_hdwallet.py": 2,
       "soltui/tests/test_panes.py": 4,
       "soltui/tests/test_paper_experiments.py": 3,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 6,
       "soltui/tests/test_status_roster.py": 4,
       "soltui/tests/test_top5.py": 4,
@@ -242297,6 +242324,7 @@
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_liquidity.py": 3,
       "soltui/tests/test_pnl.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_v2_shell.py": 1,
       "soltui/tui.py": 29,
@@ -256029,6 +256057,7 @@
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_portfolio.py": 8,
       "soltui/tests/test_presets_netpct.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_strategy_history.py": 16,
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_wallet_integration.py": 1,
@@ -298028,6 +298057,7 @@
       "soltui/tests/test_portfolio.py": 6,
       "soltui/tests/test_presets_netpct.py": 48,
       "soltui/tests/test_pricefeed.py": 3,
+      "soltui/tests/test_signal_live.py": 5,
       "soltui/tests/test_strategy_history.py": 27,
       "soltui/tests/test_tui.py": 3,
       "soltui/tests/test_tui_presets_pnl.py": 3,
@@ -364561,6 +364591,7 @@
       "soltui/tests/bridge_support.py": 2,
       "soltui/tests/test_bots.py": 2,
       "soltui/tests/test_compound.py": 6,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tui.py": 9
     },
     "flat_bottom": {
@@ -367876,6 +367907,7 @@
       "soltui/soltui-service": 1,
       "soltui/tests/test_coinbase_manual.py": 1,
       "soltui/tests/test_compound.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 18,
       "tools/land.sh": 2
     },
@@ -372175,6 +372207,7 @@
       "soltui/tests/test_forwardtest.py": 19,
       "soltui/tests/test_pnl.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 9,
+      "soltui/tests/test_signal_live.py": 6,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_tui.py": 2,
       "soltui/tests/test_v2_shell.py": 4,
@@ -372431,6 +372464,7 @@
       "soltui/tests/test_forwardtest.py": 24,
       "soltui/tests/test_paper_experiments.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 6,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_v2_shell.py": 1,
       "soltui/tui.py": 26
@@ -376475,6 +376509,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 2,
       "soltui/tests/test_service_plist_parity.py": 2,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 9,
       "soltui/tests/test_status_roster.py": 5,
       "soltui/tests/test_strategy_history.py": 2,
@@ -376600,6 +376635,7 @@
       "soltui/tests/test_experiment_interface.py": 1,
       "soltui/tests/test_forwardtest.py": 6,
       "soltui/tests/test_paper_experiments.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 2
     },
     "from_string": {
@@ -381917,6 +381953,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 3,
@@ -382232,6 +382269,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 1,
@@ -393096,6 +393134,7 @@
     },
     "goto": {
       "docs/design/soltui-v2/mockup.py": 9,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 11
     },
     "goto_signal_live": {
@@ -393926,6 +393965,7 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 2,
       "research/tradingview-script-understanding.json": 26,
       "research/tradingview-strategy-understanding.json": 4,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 3
     },
     "graph4concepts": {
@@ -409399,6 +409439,7 @@
       "soltui/tests/test_compound.py": 4,
       "soltui/tests/test_docs_search.py": 6,
       "soltui/tests/test_panes.py": 2,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 4,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 2
     },
@@ -451626,6 +451667,9 @@
       "research/ratio_rotation.py": 1,
       "research/results/rotation_5coin_1d.csv": 2
     },
+    "is_mounted": {
+      "soltui/tests/test_signal_live.py": 2
+    },
     "is_n": {
       "docs/FILES.md": 4,
       "research/results/triggers_sol_1d.csv": 2,
@@ -452536,6 +452580,7 @@
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
       "soltui/tests/test_tui.py": 15,
@@ -465991,6 +466036,7 @@
       "soltui/tests/test_presets_netpct.py": 8,
       "soltui/tests/test_pricefeed.py": 2,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 13,
@@ -475117,6 +475163,7 @@
       "soltui/tests/test_panes.py": 3,
       "soltui/tests/test_presets_netpct.py": 5,
       "soltui/tests/test_pricefeed.py": 6,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 11,
       "soltui/tests/test_strategies_tab_history.py": 2,
@@ -482409,6 +482456,7 @@
       "soltui/tests/test_compound.py": 1,
       "soltui/tests/test_docs_search.py": 3,
       "soltui/tests/test_liquidity.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_utxo_scan.py": 4,
       "soltui/tests/test_wallet.py": 5,
       "soltui/tui.py": 34,
@@ -487148,6 +487196,7 @@
       "soltui/tests/test_pricefeed.py": 7,
       "soltui/tests/test_service.py": 3,
       "soltui/tests/test_shortcuts_everything.py": 2,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 9,
@@ -488584,6 +488633,7 @@
       "soltui/tests/test_portfolio.py": 6,
       "soltui/tests/test_presets_netpct.py": 14,
       "soltui/tests/test_pricefeed.py": 2,
+      "soltui/tests/test_signal_live.py": 18,
       "soltui/tests/test_status_roster.py": 12,
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_tui_presets_pnl.py": 8,
@@ -503703,6 +503753,7 @@
       "soltui/tests/test_service.py": 3,
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_signals.py": 2,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 2,
@@ -503872,6 +503923,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 2,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
@@ -505440,6 +505492,7 @@
       "soltui/tests/test_panes.py": 7,
       "soltui/tests/test_paper_experiments.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 6,
       "soltui/tests/test_tui.py": 54,
@@ -505575,6 +505628,7 @@
       "soltui/tests/test_liquidity.py": 9,
       "soltui/tests/test_paper_experiments.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 6,
       "soltui/tests/test_tui.py": 54,
@@ -527635,6 +527689,7 @@
       "soltui/tests/test_service.py": 20,
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 8,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 5,
       "soltui/tests/test_strategy_history.py": 9,
@@ -532762,7 +532817,8 @@
     "mounted": {
       "docs/archive/memory-2026-11-08.md": 14,
       "soltui/bots_screens.py": 1,
-      "soltui/shell.py": 1
+      "soltui/shell.py": 1,
+      "soltui/tests/test_signal_live.py": 2
     },
     "mountgrid": {
       "docs/FILES.md": 1,
@@ -537722,6 +537778,7 @@
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_service.py": 2,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
@@ -553201,8 +553258,12 @@
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_service.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_tui_presets_pnl.py": 1
+    },
+    "nonexistent_coin_xyz": {
+      "soltui/tests/test_signal_live.py": 1
     },
     "nonextractable": {
       "docs/SECURITY.md": 1,
@@ -568913,6 +568974,7 @@
       "soltui/tests/test_presets_netpct.py": 2,
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 13,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_console.py": 12,
       "soltui/tests/test_strategies_tab_history.py": 7,
@@ -585003,6 +585065,7 @@
       "soltui/help.py": 2,
       "soltui/help_screen.py": 1,
       "soltui/tests/test_coinbase_account.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_tui.py": 5,
       "soltui/tests/test_wallet.py": 4,
       "soltui/tui.py": 3,
@@ -586302,6 +586365,7 @@
       "soltui/tests/test_bgqueue.py": 3,
       "soltui/tests/test_coin_fit_ui.py": 2,
       "soltui/tests/test_help.py": 4,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_tui.py": 5,
       "soltui/tests/test_v2_shell.py": 8,
       "soltui/tui.py": 101
@@ -596764,6 +596828,7 @@
       "soltui/tests/test_liquidity.py": 13,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 8,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 11,
       "soltui/tests/test_tui.py": 122,
@@ -604940,6 +605005,7 @@
       "soltui/tests/test_liquidity.py": 25,
       "soltui/tests/test_paper_experiments.py": 3,
       "soltui/tests/test_shortcuts_everything.py": 14,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 11,
       "soltui/tests/test_strategies_tab_history.py": 20,
       "soltui/tests/test_tui.py": 248,
@@ -620026,22 +620092,27 @@
       "research/tradingview-script-profiles/shard-c.jsonl": 2,
       "research/tradingview-script-understanding.json": 2,
       "soltui/forwardtest.py": 4,
+      "soltui/tests/test_signal_live.py": 8,
       "soltui/tui.py": 16
     },
     "pred_10m": {
       "soltui/forwardtest.py": 1,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 2
     },
     "pred_1m": {
       "soltui/forwardtest.py": 1,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 2
     },
     "pred_30m": {
       "soltui/forwardtest.py": 1,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 2
     },
     "pred_5m": {
       "soltui/forwardtest.py": 1,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 2
     },
     "predate": {
@@ -620641,6 +620712,7 @@
       "soltui/help.py": 9,
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_forwardtest.py": 1,
+      "soltui/tests/test_signal_live.py": 13,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tui.py": 21
     },
@@ -626223,6 +626295,7 @@
       "soltui/tests/test_help.py": 6,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_tui.py": 38,
       "soltui/tests/test_v2_shell.py": 9,
       "soltui/tui.py": 30
@@ -628569,6 +628642,7 @@
       "soltui/tests/test_portfolio.py": 3,
       "soltui/tests/test_presets_netpct.py": 4,
       "soltui/tests/test_pricefeed.py": 4,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_strategy_history.py": 1,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 2,
       "soltui/tests/test_tui.py": 3,
@@ -628907,6 +628981,7 @@
       "soltui/tests/test_bots.py": 9,
       "soltui/tests/test_experiment_runner.py": 2,
       "soltui/tests/test_pricefeed.py": 4,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 4
     },
     "pricefeederror": {
@@ -648881,6 +648956,7 @@
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_paper_experiments.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 13,
+      "soltui/tests/test_signal_live.py": 8,
       "soltui/tests/test_status_console.py": 12,
       "soltui/tests/test_strategies_tab_history.py": 7,
       "soltui/tests/test_tui.py": 120,
@@ -648928,6 +649004,7 @@
       "soltui/tests/test_liquidity.py": 8,
       "soltui/tests/test_paper_experiments.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 13,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 12,
       "soltui/tests/test_strategies_tab_history.py": 7,
       "soltui/tests/test_tui.py": 114,
@@ -655339,6 +655416,7 @@
       "soltui/tests/test_compound.py": 3,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 2,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_strategy_history.py": 4,
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 2,
@@ -662915,6 +662993,7 @@
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_presets_netpct.py": 4,
       "soltui/tests/test_service.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 26,
@@ -676249,6 +676328,7 @@
       "soltui/tests/test_liquidity.py": 2,
       "soltui/tests/test_pricefeed.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_tui.py": 5,
       "soltui/tui.py": 151,
@@ -683476,6 +683556,7 @@
       "soltui/tests/test_bots.py": 1,
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_service_plist_parity.py": 5,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_top5.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_tui_presets_pnl.py": 1,
@@ -692485,6 +692566,7 @@
       "soltui/tests/test_forwardtest.py": 8,
       "soltui/tests/test_jupiter_tokens.py": 1,
       "soltui/tests/test_service.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tui.py": 33,
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
@@ -699605,6 +699687,7 @@
       "soltui/tests/test_help.py": 1,
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_portfolio.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_wallet_settings.py": 1,
@@ -709621,6 +709704,7 @@
       "soltui/tests/test_portfolio.py": 6,
       "soltui/tests/test_presets_netpct.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 7,
       "soltui/tests/test_strategy_history.py": 16,
       "soltui/tests/test_top5.py": 5,
       "soltui/tests/test_tui.py": 7,
@@ -712847,6 +712931,7 @@
       "soltui/tests/test_service.py": 10,
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_status_console.py": 8,
       "soltui/tests/test_status_roster.py": 11,
@@ -713216,6 +713301,7 @@
       "soltui/tests/test_liquidity.py": 8,
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_status_console.py": 5,
       "soltui/tests/test_strategies_tab_history.py": 5,
       "soltui/tests/test_tui.py": 69,
@@ -715119,6 +715205,7 @@
       "soltui/tests/test_experiment_runner.py": 12,
       "soltui/tests/test_forwardtest.py": 15,
       "soltui/tests/test_service.py": 8,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 8,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/ARCHITECTURE.md": 3,
@@ -730396,6 +730483,7 @@
       "soltui/tests/test_pnl.py": 1,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_presets_netpct.py": 15,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_v2_shell.py": 1,
       "soltui/tests/test_wallet_integration.py": 7,
       "soltui/tui.py": 23,
@@ -743832,6 +743920,7 @@
       "soltui/tests/test_portfolio.py": 4,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 6,
+      "soltui/tests/test_signal_live.py": 12,
       "soltui/tests/test_signals.py": 8,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_status_roster.py": 20,
@@ -753163,6 +753252,7 @@
       "soltui/tests/test_compound.py": 16,
       "soltui/tests/test_f5_batch.py": 9,
       "soltui/tests/test_help.py": 5,
+      "soltui/tests/test_signal_live.py": 14,
       "soltui/tests/test_signals.py": 17,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 1,
       "soltui/tests/test_tui.py": 12,
@@ -753238,6 +753328,7 @@
       "soltui/tui.py": 2
     },
     "signal_live_refresh_predictions": {
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 4
     },
     "signal_live_row_highlighted": {
@@ -753247,6 +753338,7 @@
       "soltui/tui.py": 3
     },
     "signal_live_tick": {
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 5
     },
     "signal_mask": {
@@ -753409,6 +753501,12 @@
       "backtester/tests/test_engine.py": 2,
       "docs/FILES.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1
+    },
+    "signallivelogictests": {
+      "soltui/tests/test_signal_live.py": 2
+    },
+    "signalliveuitests": {
+      "soltui/tests/test_signal_live.py": 2
     },
     "signalprovider": {
       "research/tradingview-card-coverage.json": 1
@@ -754710,6 +754808,7 @@
       "soltui/tests/test_bgcontrol.py": 1,
       "soltui/tests/test_help.py": 1,
       "soltui/tests/test_paper_experiments.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 9,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 10,
       "soltui/tests/test_tui.py": 21,
@@ -760972,6 +761071,7 @@
       "soltui/tests/test_paper_experiments.py": 3,
       "soltui/tests/test_pricefeed.py": 4,
       "soltui/tests/test_shortcuts_everything.py": 7,
+      "soltui/tests/test_signal_live.py": 5,
       "soltui/tests/test_status_console.py": 11,
       "soltui/tests/test_strategies_tab_history.py": 11,
       "soltui/tests/test_tui.py": 109,
@@ -769714,6 +769814,7 @@
       "soltui/tests/test_portfolio.py": 6,
       "soltui/tests/test_presets_netpct.py": 9,
       "soltui/tests/test_pricefeed.py": 21,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 8,
       "soltui/tests/test_status_roster.py": 5,
       "soltui/tests/test_strategy_history.py": 19,
@@ -770799,6 +770900,7 @@
       "soltui/tests/test_service.py": 10,
       "soltui/tests/test_service_plist_parity.py": 15,
       "soltui/tests/test_shortcuts_everything.py": 6,
+      "soltui/tests/test_signal_live.py": 5,
       "soltui/tests/test_signals.py": 3,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_status_roster.py": 8,
@@ -770995,6 +771097,7 @@
       "soltui/tests/test_liquidity.py": 9,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 6,
       "soltui/tests/test_tui.py": 55,
@@ -787547,6 +787650,7 @@
       "soltui/tests/test_pricefeed.py": 8,
       "soltui/tests/test_service.py": 11,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_status_console.py": 4,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 9,
@@ -795596,6 +795700,7 @@
       "soltui/tests/test_panes.py": 1,
       "soltui/tests/test_presets_netpct.py": 3,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 8,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_status_roster.py": 7,
@@ -796142,6 +796247,7 @@
       "soltui/tests/test_csv_table.py": 1,
       "soltui/tests/test_experiment_runner.py": 3,
       "soltui/tests/test_pricefeed.py": 5,
+      "soltui/tests/test_signal_live.py": 5,
       "soltui/tui.py": 30
     },
     "stream_brief": {
@@ -796161,6 +796267,9 @@
       "soltui/commands.py": 1,
       "soltui/pricefeed.py": 4,
       "soltui/tests/test_pricefeed.py": 4
+    },
+    "stream_text": {
+      "soltui/tests/test_signal_live.py": 2
     },
     "streamable": {
       "docs/archive/memory-2026-11-08.md": 1
@@ -796206,6 +796315,7 @@
       "soltui/commands.py": 1,
       "soltui/pricefeed.py": 2,
       "soltui/tests/test_pricefeed.py": 2,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 2
     },
     "streamingstatistics": {
@@ -813154,6 +813264,7 @@
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_portfolio.py": 8,
       "soltui/tests/test_presets_netpct.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_tui.py": 2,
       "soltui/tests/test_wallet_integration.py": 1,
@@ -819324,6 +819435,7 @@
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 6,
+      "soltui/tests/test_signal_live.py": 5,
       "soltui/tests/test_signals.py": 6,
       "soltui/tests/test_status_console.py": 2,
       "soltui/tests/test_status_roster.py": 2,
@@ -819388,6 +819500,7 @@
       "soltui/tests/test_liquidity.py": 7,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_status_console.py": 3,
       "soltui/tests/test_strategies_tab_history.py": 6,
       "soltui/tests/test_tui.py": 69,
@@ -819722,6 +819835,7 @@
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_pnl.py": 3,
       "soltui/tests/test_shortcuts_everything.py": 9,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 9,
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_tradingstrategyresults_coverage.py": 5,
@@ -820592,6 +820706,7 @@
       "soltui/tests/test_panes.py": 2,
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 12,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_tui.py": 8,
       "soltui/tests/test_tui_presets_pnl.py": 3,
       "soltui/tests/test_v2_shell.py": 24,
@@ -823177,7 +823292,8 @@
       "research/tradingview-strategy-understanding.json": 2
     },
     "tbl": {
-      "research/candle_gap_audit.py": 5
+      "research/candle_gap_audit.py": 5,
+      "soltui/tests/test_signal_live.py": 2
     },
     "tbo": {
       "soltui/SolTUI.icns": 1
@@ -827386,6 +827502,9 @@
     "test_combining_two_curves_of_one_source_sums_equity": {
       "soltui/tests/test_pnl.py": 1
     },
+    "test_command_forwardtest_predictions": {
+      "soltui/tests/test_signal_live.py": 1
+    },
     "test_commands": {
       "docs/archive/memory-2026-11-08.md": 1
     },
@@ -829222,6 +829341,9 @@
     "test_good_values_validate": {
       "soltui/tests/test_wallet_settings.py": 1
     },
+    "test_goto_signal_live_button": {
+      "soltui/tests/test_signal_live.py": 1
+    },
     "test_graduation_closes_the_loser_books_the_withdrawal_and_the_final_claim": {
       "liquidity/tests/test_daemon.py": 1
     },
@@ -830093,6 +830215,9 @@
     },
     "test_live_only_components_score_only_the_last_bar": {
       "backtester/tests/test_scorecard.py": 1
+    },
+    "test_live_pane_renders_chart_stream_and_predictions": {
+      "soltui/tests/test_signal_live.py": 1
     },
     "test_live_price_impact_units_agree_with_the_independent_reference": {
       "docs/FILES.md": 1,
@@ -832536,6 +832661,9 @@
     "test_signal_is_invariant_to_a_common_scale_factor": {
       "backtester/tests/test_ratio_rotation.py": 1
     },
+    "test_signal_live": {
+      "soltui/tests/test_signal_live.py": 1
+    },
     "test_signal_redundancy": {
       "backtester/tests/test_signal_redundancy.py": 1,
       "docs/FILES.md": 2,
@@ -832624,6 +832752,7 @@
       "soltui/tests/test_liquidity.py": 9,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_status_console.py": 6,
       "soltui/tests/test_strategies_tab_history.py": 6,
       "soltui/tests/test_tui.py": 55,
@@ -833676,6 +833805,12 @@
     "test_top5_presets_without_evidence_reports_the_regeneration_command": {
       "soltui/tests/test_presets_netpct.py": 1
     },
+    "test_top_forward_predictions_missing_asset": {
+      "soltui/tests/test_signal_live.py": 1
+    },
+    "test_top_forward_predictions_returns_ranked_strategies": {
+      "soltui/tests/test_signal_live.py": 1
+    },
     "test_top_k_is_capped_so_the_legs_fit": {
       "backtester/tests/test_ratio_rotation.py": 1
     },
@@ -833797,6 +833932,7 @@
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_paper_experiments.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
       "soltui/tests/test_tui_presets_pnl.py": 1,
@@ -834650,6 +834786,7 @@
       "soltui/tests/test_pricefeed.py": 7,
       "soltui/tests/test_service.py": 1,
       "soltui/tests/test_service_plist_parity.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_signals.py": 5,
       "soltui/tests/test_status_roster.py": 5,
       "soltui/tests/test_strategy_history.py": 3,
@@ -837018,6 +837155,7 @@
       "soltui/tests/test_service.py": 4,
       "soltui/tests/test_service_plist_parity.py": 2,
       "soltui/tests/test_shortcuts_everything.py": 4,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_signals.py": 3,
       "soltui/tests/test_status_console.py": 2,
       "soltui/tests/test_status_roster.py": 3,
@@ -838243,6 +838381,7 @@
       "soltui/tests/test_presets_netpct.py": 15,
       "soltui/tests/test_pricefeed.py": 20,
       "soltui/tests/test_service.py": 6,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_status_console.py": 18,
       "soltui/tests/test_status_roster.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 3,
@@ -838302,6 +838441,7 @@
       "soltui/tests/test_compound.py": 9,
       "soltui/tests/test_docs_search.py": 6,
       "soltui/tests/test_liquidity.py": 10,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 3,
       "soltui/tests/test_tui.py": 29,
       "soltui/tests/test_tui_presets_pnl.py": 11,
@@ -838509,6 +838649,7 @@
       "soltui/tests/test_liquidity.py": 1,
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
       "soltui/tests/test_tui.py": 42,
@@ -844067,6 +844208,7 @@
       "soltui/tests/test_liquidity.py": 3,
       "soltui/tests/test_paper_experiments.py": 5,
       "soltui/tests/test_presets_netpct.py": 4,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tui.py": 37
     },
     "tick_backfill": {
@@ -846323,6 +846465,7 @@
       "soltui/tests/test_paper_experiments.py": 3,
       "soltui/tests/test_presets_netpct.py": 1,
       "soltui/tests/test_pricefeed.py": 2,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tests/test_signals.py": 1,
       "soltui/tests/test_strategy_history.py": 3,
       "soltui/tests/test_top5.py": 1,
@@ -854415,6 +854558,7 @@
       "soltui/tests/test_pnl.py": 1,
       "soltui/tests/test_presets_netpct.py": 4,
       "soltui/tests/test_pricefeed.py": 5,
+      "soltui/tests/test_signal_live.py": 4,
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_tui.py": 1,
       "soltui/tests/test_tui_presets_pnl.py": 2,
@@ -854605,6 +854749,7 @@
     "top_forward_predictions": {
       "soltui/commands.py": 1,
       "soltui/forwardtest.py": 2,
+      "soltui/tests/test_signal_live.py": 2,
       "soltui/tui.py": 1
     },
     "top_holdings_verified": {
@@ -868073,6 +868218,7 @@
       "soltui/tests/test_panes.py": 3,
       "soltui/tests/test_paper_experiments.py": 3,
       "soltui/tests/test_shortcuts_everything.py": 2,
+      "soltui/tests/test_signal_live.py": 3,
       "soltui/tests/test_status_console.py": 2,
       "soltui/tests/test_strategies_tab_history.py": 2,
       "soltui/tests/test_tui.py": 24,
@@ -894956,6 +895102,7 @@
       "soltui/tests/test_service.py": 7,
       "soltui/tests/test_service_plist_parity.py": 5,
       "soltui/tests/test_shortcuts_everything.py": 3,
+      "soltui/tests/test_signal_live.py": 5,
       "soltui/tests/test_signals.py": 7,
       "soltui/tests/test_status_console.py": 3,
       "soltui/tests/test_status_roster.py": 7,
@@ -936364,6 +936511,7 @@
       "soltui/tests/test_paper_experiments.py": 1,
       "soltui/tests/test_portfolio.py": 1,
       "soltui/tests/test_shortcuts_everything.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_status_console.py": 1,
       "soltui/tests/test_strategies_tab_history.py": 1,
       "soltui/tests/test_tui.py": 35,
@@ -947426,6 +947574,7 @@
       "soltui/README.md": 1,
       "soltui/compound.py": 1,
       "soltui/tests/test_help.py": 1,
+      "soltui/tests/test_signal_live.py": 1,
       "soltui/tests/test_wallet.py": 3,
       "soltui/wallet.py": 1
     },
@@ -953851,10 +954000,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1444.8,
-    "documents": 2651,
-    "terms": 69117,
-    "termsBeforePrune": 69191,
-    "totalTokens": 3830192
+    "avgDocLength": 1444.4,
+    "documents": 2652,
+    "terms": 69128,
+    "termsBeforePrune": 69202,
+    "totalTokens": 3830573
   }
 }

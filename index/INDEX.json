@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-09T00:25:54+00:00",
+  "generatedAt": "2026-11-09T00:29:01+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "c58d21f",
+  "commit": "8ef5f61",
   "counts": {
-    "files": 2651,
-    "bytes": 43973912,
+    "files": 2652,
+    "bytes": 43977527,
     "byKind": {
       "strategy-card": 1478,
       "doc": 549,
       "code-python": 194,
-      "test": 151,
+      "test": 152,
       "code-js": 88,
       "result": 85,
       "config": 40,
@@ -24,7 +24,7 @@
     "byTopDir": {
       "backtester": 1911,
       "research": 178,
-      "soltui": 134,
+      "soltui": 135,
       "extension": 92,
       "skills": 67,
       "docs": 65,
@@ -44,7 +44,7 @@
       ".remember": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2553
+    "withSummary": 2554
   },
   "files": [
     {
@@ -288,7 +288,7 @@
       "summarySource": "opening-prose",
       "bytes": 5126,
       "lines": 93,
-      "sha1": "de91345b3ae030faeb65c05192e401a3b196a9cb",
+      "sha1": "89b5fa625b84e1f3b8eed1ef807881705dcd3b41",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -468,7 +468,7 @@
       "summarySource": "opening-prose",
       "bytes": 14134,
       "lines": 195,
-      "sha1": "e0ff95e6ed4899b61adb6b03628847df97d1755f",
+      "sha1": "e77ad64f6a6a93e7eaa3f3103d071256732015ef",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -522,7 +522,7 @@
       "summarySource": "opening-prose",
       "bytes": 3496,
       "lines": 64,
-      "sha1": "3c828e2eed79ca641d826b03d284999b95005b2c",
+      "sha1": "0ebef5b0f226f3d58b74df43196d37b27eeaeb5c",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -558,7 +558,7 @@
       "summarySource": "opening-prose",
       "bytes": 8957,
       "lines": 139,
-      "sha1": "d799aa782ec0b10e3eefe7fe8872ca9242f72820",
+      "sha1": "08858426dd411e6388d909322e6bd94e5f03d5ba",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63349,7 +63349,7 @@
       "summarySource": "opening-prose",
       "bytes": 8875,
       "lines": 187,
-      "sha1": "18f31a247e6a23a791cf734d47bbf8977cd9bb9f",
+      "sha1": "1f6f85c8dea6b4893ad5095cb0626889f55dc94d",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -63489,11 +63489,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Testing",
-      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1176 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
+      "summary": "python3 -m unittest discover -s backtester/tests -t . # 909 tests python3 -m unittest discover -s soltui/tests -t . # 1181 tests (~840s, optional) python3 -m unittest discover -s mongo/tests -t . # 34 tests",
       "summarySource": "opening-prose",
       "bytes": 18058,
       "lines": 230,
-      "sha1": "def6bcd4b6fe6751d761bf8267be5705d80d1138",
+      "sha1": "abadaa47631bb9d43400da58b22ca49a98d0daf6",
       "symbols": [],
       "imports": [],
       "internalImports": [],
@@ -82397,6 +82397,34 @@
       ],
       "imports": [
         "json",
+        "soltui",
+        "textual",
+        "unittest"
+      ],
+      "internalImports": [
+        "soltui"
+      ],
+      "frontmatter": {}
+    },
+    {
+      "id": "soltui/tests/test_signal_live.py",
+      "path": "soltui/tests/test_signal_live.py",
+      "dir": "soltui/tests",
+      "name": "test_signal_live.py",
+      "ext": ".py",
+      "kind": "test",
+      "title": "test_signal_live",
+      "summary": "Tests for Signal tab Live page: live graph, real-time streaming price, and forward test predictions.",
+      "summarySource": "docstring",
+      "bytes": 3615,
+      "lines": 84,
+      "sha1": "9778c78b1afdf24cb9043a52d576b1f03b94b825",
+      "symbols": [
+        "class SignalLiveLogicTests",
+        "class SignalLiveUITests"
+      ],
+      "imports": [
+        "__future__",
         "soltui",
         "textual",
         "unittest"
