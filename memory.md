@@ -1,19 +1,77 @@
 # Work continuation
 
-Version: 223
-Delta: v222 to v223; add configurable voting eligibility gate.
+Version: 234
+Delta: v233 to v234; recover live-score work and preserve delivered paper controls.
 
-## v223 - 2026-11-08
+## v234 - 2026-11-08
+
+Resumed the aggregate live score and minimum-voting-score request after interruption. Retained the checkpoint 947f311 and merged delivered PRs 142/145 without changing their fee/leverage/short/confidence behavior. Voting accuracy/sample floors remain display-only and separate from the owner-confirmed paper min_confidence=0.80. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; shared checkout is active elsewhere and must not be touched.
+
+Verified before integration: 372 extension tests, 15 focused Python/UI tests and 24 real-host /23 fixture-host browser checks. Independent review verified the physical eight-column TUI shift and found coin-switch stale state; those view-reset fixes are implemented. Remaining: guard obsolete browser failures, bind eligibility counts/accuracy to the same latest trial as its direction, rerun independent acceptance after merge resolution, refresh counts/indexes, push PR, wait for final CI and merge. Stele task create outbox 2f9370e6; decision writes a83639ac, dbd594d9, 5d4bb1e8.
+
+## v233 - 2026-11-08
 
 Owner added: strategies need a minimum prediction score to vote. Use saved live_vote_min_accuracy=60.0 and live_vote_min_resolved=20 defaults. Require both the strategy-wide forward record and the voted horizon to meet these floors; keep excluded rows visible. Controls in dashboard and Signal Live save through settings.save. Ratings remain informational agreement. Completed: backend snapshot with latest-call expiry; shared Python/JS policy vectors; both headers and immutable score tapes; 372 Node tests and 15 focused Python/UI tests passed before final browser-regression expansion. Remaining: independent acceptance, full relevant checks, documentation/index updates and PR delivery.
 
-## v222 - 2026-11-08
+## v232 - 2026-11-08
 
 Target: add the same aggregate signed score and five-level colored label above live-price and prediction views in the dashboard and TUI. Preserve each tick score as observed; append on fresh source ticks and scroll left with the plotted window. Worktree /Users/mitch/dev/solmargintrader-wt-live-score; branch feat/live-aggregate-score-20261108; base origin/master 2fc1845. Preserve the shared checkout untracked guides and other sessions. Stele task creation queued as 2f9370e6.
 
 Plan: inspect the prediction and chart data contracts; implement one read-only backend aggregation plus matching score tapes; test Python logic, headless TUI and real Chrome; refresh docs/indexes and deliver through CI/PR/merge. No trading, training, worker starts or historical result rewrites.
 
 Decision: use equal strategy weights. Within each strategy average its current UP=+1, DOWN=-1, FLAT=0 horizon votes; average strategies and multiply by 100. Ratings: Strong Buy >=60, Buy >=20, Flat between -20 and 20, Sell <=-20, Strong Sell <=-60. This is directional agreement, not an accuracy or success probability. Missing/stale/future-dated evidence produces an unavailable gray Flat instead of a made-up zero. Read actual latest call/expiry per strategy and horizon in a separate display module: do not edit forwardtest.py, whose whole-file hash partitions training evidence. Annotate only new recorder timestamps, with the score known then; never backfill cached prices with a later score.
+
+## v231 - 2026-11-08
+
+COMPLETED: Jupiter paper fee and execution controls delivered in https://github.com/mithudso/solmargintrader/pull/142 at squash cd4002806241d1315abf31e2d9660f2adbf9d73a (2026-11-09 02:30:23 UTC). All eight required CI jobs passed on final reviewed head 9e6b3b840a0be6e316542528fa2ea8670a400707. The remote merged tree exactly matched that head. The full SolTUI suite was not run; required mapped macOS tests and targeted integration checks passed.
+
+Both Forwardtest and Backtest expose opt-in leverage and short DOWN positions, plus the owner-confirmed default minimum confidence 0.80. Jupiter Perps uses 6 bps per entry/exit on notional, with explicit borrow/slippage scenarios and isolated liquidation. Confidence uses prior resolved calls; unknown confidence blocks a trade. Short combinations require directional agreement, and confidence respects open/close fill timing. Forecasts continue even when paper trades are skipped. Histories and per-trial cost snapshots persist. No live trading path was added.
+
+Local master was fast-forwarded to the merge. The two pre-existing untracked guides retained their hashes. The feature branch, remote branch and private feature worktree were removed. The installed /Users/mitch/.local/bin/soltui launcher returned jupiter-perps, fee_bps=6, min_confidence=0.8, use_leverage=false, allow_short=false, mode=dry-run, armed=false under isolated config. Fourteen regressions passed again from /Users/mitch/dev/solmargintrader. Fresh Textual checks covered 100/180-column controls. The already-open console was left running; no owner state was restarted.
+
+No product work remains. This completion record ships through its documentation PR. Stele requests remain queued because this session has no Stele MCP: 470a5bc1, 93dc9fb7, f07325c1, cd0f7955, 58f42fcb. Treat earlier pending checkpoints below as historical and use PR 142 for the product delivery receipt.
+
+## v230 - 2026-11-08
+
+Integrated PR 144, which independently guarded the same compound row callback during tab switches. The combined handler preserves its active-tab condition and resolves both widgets before updating them. All fee, leverage, short and confidence behavior remains unchanged. Final CI must run against this integrated head before PR 142 merges. Other sessions are now back on master; only fast-forward a clean tracked checkout after delivery, preserving the two untracked guides.
+
+## v229 - 2026-11-08
+
+Confidence calibration now uses the prior decision close when fill_delay=0, and the delayed bar open when fill_delay>=1. A regression with rising open-to-close bars but unchanged consecutive closes proves that same-close entries cannot learn a false success rate from intrabar moves they did not own. Both paths settle only after the predicted bar closes. This preserves the minimum 0.80 gate and no-lookahead contract. Fourteen regression tests pass. PR 142 must pass final-head CI before merge.
+
+## v228 - 2026-11-08
+
+Short-enabled combinations now use directional agreement. The old Composite all=min rule could choose a short for contradictory +1/-1 members after enabling the MA bearish branch. The paper adapter now requires same-side unanimity for all, rejects conflicting any calls, nets signed vote counts, and preserves signed means. Each member runs once per visible bar. The regression covers mixed, bearish, flat and majority-short combinations. Long-only combination behavior remains unchanged. CI for PR 142 must validate this final correction before merge.
+
+## v227 - 2026-11-08
+
+Integrated extension dashboard PR 143 after final CI passed but before PR 142 could merge. Source changes do not overlap the paper engine. Retained all extension and Jupiter requests and continuation records, then recomputed documentation counts and offline indexes. PR 142 remains the delivery receipt; CI must pass on its new integrated head. The historical Gemini handoff is not current execution guidance.
+
+## v226 - 2026-11-08
+
+Retained the separate Jupiter order handoff from PR 135 while merging its records. That record states: Owner requested handoff to Gemini. PR 134 merged incomplete at 314fe989 while docs CI failed and SolTUI CI was pending; the previous agent did not merge it. TASK-1044 released for next agent. See /Users/mitch/dev/solmargintrader/JUPITER_GEMINI_HANDOFF.md for current state, verification, risks and remaining implementation. Jupiter order execution is not implemented. These order-execution gaps are separate from the paper-only Jupiter fee and confidence controls in PR 142.
+
+Historical note only: the PR 143 record below corrects this earlier handoff checkpoint; consult current manual-order source and PR 137 before acting.
+
+## v225 - 2026-11-08
+
+Jupiter paper testing is implemented in simulation.py and shared by forwardtest, runner/CPCV, P&L curves, replay, F5 and new paper experiments. The owner confirmed 0.80; 1x long-only remains the default and leverage/shorts are opt-in. Existing forward evidence retains its original assumptions. Liquidation stops further paper entries for a wiped-out trial while forecasts continue. Borrow/slippage remain explicit scenarios; network/keeper/collateral-swap costs are excluded. Other assets use synthetic Jupiter economics.
+
+Verified: 13 new accounting/no-lookahead/engine-parity/migration/layout tests; 25 forward tests; 70 F5/paper/P&L/dry-run tests; 85 helper/background tests; 164 mapped CI tests; 909 backtester tests; 361 extension tests; 34 Mongo tests (17 server cases skip without mongod); positive offline round trip; docs/index gates. Fresh Textual acceptance passed at widths 100 and 180. Integration fixed restored-plan controls before the first timer and a queued compound selection after widget removal. CI runner now isolates config so persistent/autostart tests cannot edit the owner's saved plan.
+
+Delivery receipt: https://github.com/mithudso/solmargintrader/pull/142. This record ships with that PR; the PR's merged status and final-commit checks establish delivery. No product implementation remains. The already-open console is not restarted; the shared checkout and other sessions are preserved. Stele writes are queued as 470a5bc1, 93dc9fb7 and f07325c1 because this session has no Stele MCP. The private delivery worktree is /Users/mitch/dev/solmargintrader-wt-01a1bded.
+
+## v224 - 2026-11-08
+
+Integrated chart PR 141 without changing its signal/live behavior. Preserved each request and both continuation histories. Jupiter source and UI checks pass; final checks and delivery follow after refreshing generated counts and indexes. No change to the other session worktree or installed console.
+
+## v223 - 2026-11-08
+
+Implemented Jupiter Perps fee profiles, optional leverage/shorts, and owner-confirmed minimum confidence 0.80. Prior resolved-call confidence gates entries; no-lookahead tests cover fill delay. Each forward trial stores the cost/execution snapshot and each call stores confidence, eligibility and net return. Fees and borrow use full notional; intraminute liquidation forfeits collateral. P&L, CPCV, dry runs, F5 and new paper experiments share assumptions. Historical rows remain intact. Fresh Textual acceptance passed both forms at 180 and 100 columns, after fixing overflowing inputs. Initial keyword search auto-refreshed the already-dirty generated index in the shared checkout; no further writes there. Stele decision queued as f07325c1. Remaining: final tests and documentation/index checks, commit, PR checks and merge; existing installed console not reloaded because the shared checkout has another session and a pending merge.
+
+## v222 - 2026-11-08
+
+Scope: Jupiter simulation costs and forward/backtest controls for leverage, short DOWN calls, and minimum confidence. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1bded starts at origin/master 8195771. Other checkout has a live session and unfinished merge; preserve it. Preserve historical evidence and causal signals; no new live execution. Stele task/decision queued as outbox 470a5bc1 and 93dc9fb7 because no Stele MCP is available and the recall agent runtime failed. Remaining: inspect calculation paths, implement consistent controls and provenance, test accounting and no lookahead, verify UI, commit and deliver through PR.
 
 ## v221 - 2026-11-08
 

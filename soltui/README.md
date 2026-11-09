@@ -178,9 +178,39 @@ on or off. Choose **All strategies**, **Roster only**, or **Combinations only**.
 a combination such as `rsi,macd; breakout,obv_trend` and select its rule. Each group separated
 by a semicolon is a separate trial. Use exact roster labels to distinguish custom versions.
 **All four** forecasts 1, 5, 10 and 30 minutes; choose a single duration to issue only that
-forecast. Start uses the asset and round-trip fee/slippage threshold from Settings. Edits take
-effect after stopping and starting again. Press Ctrl+E to make more room for the results
-when the shared editor is open.
+forecast. Both **Forwardtest** and **Backtest** offer **Use leverage**, a 1–250×
+multiplier, **Short DOWN signals**, and **Minimum confidence**. Defaults are 1× long-only
+and minimum confidence **0.80**. Leverage only applies when enabled. Shorts execute negative
+signals; they do not turn a FLAT signal into a short. The MA crossover's explicit bearish
+branch is enabled when shorting is selected. Short-enabled combinations apply agreement to
+both directions: **all** needs every member on the same side, **any** stays flat on conflicting
+sides, **vote** nets signed votes, and **mean** averages signed exposure. Forward changes apply
+after Stop and Start.
+Settings saves defaults for subsequent runs; per-run controls do not change saved settings.
+
+Estimates use the **Jupiter Perps** schedule: **6 bps (0.06%) on notional per entry and exit**.
+Settings keeps the fee editable for scenario testing and migrates a legacy fee setting to
+6 bps once. The default slippage/impact allowance is 2 bps per side. Hourly borrow scenarios
+are 0.8 bps long and 0.15 bps short, on full entry notional; these are editable assumptions,
+not fetched or historical rates. Fees, borrowing, adverse execution costs, and isolated
+liquidation stay in P&L. Network, keeper and collateral-swap costs are excluded. This is a
+cost estimate, not a Jupiter quote. Coinbase still supplies price candles. Assets beyond
+Jupiter's SOL/ETH/BTC JLP markets use synthetic Jupiter economics, not a claim of tradability.
+Fee reference: https://docs.jup.ag/user-docs/trade/perps/fees
+
+Confidence is separate from target exposure. It is the Beta(1,1) posterior mean of success
+from up to 100 prior resolved directional calls, with at least 20 samples. Forward tests
+use that trial's own horizon and parameter generation. Historical backtests use earlier
+resolved next-bar calls with the configured fill delay, reset independently for each CPCV
+segment. A score of 0.65 cannot trade at a 0.80 minimum. Missing confidence skips the trade;
+forecasts still accumulate evidence. A minimum of 0 explicitly disables this gate. The score
+is an empirical estimate, not a calibrated probability or proof of an edge.
+
+Forward rows show confidence, whether the last call trades, compounded paper net return,
+trade and liquidation counts, and the execution settings. Each call saves its decision-time
+confidence and trade eligibility. Each trial saves the entire cost and execution snapshot.
+Changing settings creates separate rows; old forecasts and original cost assumptions remain
+intact. Legacy rows have no newly inferred paper return.
 
 Each trial reads closed Coinbase one-minute candles and records UP, DOWN or FLAT before
 the next unopened minute. It scores that window from its first open to its last close,

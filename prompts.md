@@ -1,18 +1,36 @@
 # Prompt history
 
-Version: 127
-Delta: v126 to v127; record minimum score requirement.
+Version: 130
+Delta: v129 to v130; retain score requests, paper controls and explicit resume.
 
-## v127 - 2026-11-08
+## v130 - 2026-11-08
+
+```text
+resume
+```
+
+## v129 - 2026-11-08
 
 ```text
 Make the strategies have a minimum prediction score to be allowed to vote.
 ```
 
-## v126 - 2026-11-08
+## v128 - 2026-11-08
 
 ```text
 In both the chrome extension and the TUI at the top of the live price and forward predictions tables include a aggregate score and a green Strong Buy, Buy, grey Flat,  red Sell, Strong Sell. And for for every tick put the buy score at the bottom of the chart, and move it left as the tick progresses.
+```
+
+## v127 - 2026-11-08
+
+```text
+Use 0.80
+```
+
+## v126 - 2026-11-08
+
+```text
+Update the fee schedule to be Jupiter's fees rather than Coinbase's for the profit and testing estimation. Also have an option in the forward and backtests to 1) use leveraged positions, 2) short down positions. 3) minimum confidence score to make a trade, meaning if the strategies are at a .65 I'm not going to bet a leveraged trade on it.
 ```
 
 ## v125 - 2026-11-08 (historical request imported from PR 135)

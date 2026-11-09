@@ -49,6 +49,13 @@ class Settings:
     start: str = "2021-01-01"
     end: str = ""  # empty means "through the end of the data"
     capital: float = 10_000.0
+    fee_schedule: str = "jupiter-perps"
+    use_leverage: bool = False
+    leverage: float = 2.0
+    allow_short: bool = False
+    min_confidence: float = 0.80
+    borrow_long_bps_hour: float = 0.8
+    borrow_short_bps_hour: float = 0.15
     fee_bps: float = 6.0
     slippage_bps: float = 2.0
     fill_delay: int = 1
@@ -114,6 +121,12 @@ def default_settings() -> Settings:
 
 def validate(settings: Settings) -> Settings:
     """Return `settings` if usable, else raise ConfigError naming the problem."""
+    from .simulation import from_settings
+
+    try:
+        from_settings(settings)
+    except ValueError as exc:
+        raise ConfigError(str(exc)) from exc
     if settings.interval not in INTERVALS:
         raise ConfigError(
             f"interval {settings.interval!r} is not one of {INTERVALS}"
@@ -201,6 +214,9 @@ def load_settings(path: Path | None = None) -> Settings:
     if raw is None:
         return default_settings()
 
+    # Migrate the old venue-independent (often Coinbase) fee assumption once.
+    if "fee_schedule" not in raw:
+        raw["fee_bps"] = 6.0
     known = {f.name for f in fields(Settings)}
     filtered = {k: v for k, v in raw.items() if k in known}
     return validate(Settings(**filtered))

@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import os
+import tempfile
 import subprocess
 import sys
 import time
@@ -30,10 +32,14 @@ def selected_modules(paths: list[str]) -> list[str] | None:
 SMOKE = {'soltui.tests.test_bridge_buttons', 'soltui.tests.test_bridge_parity'}
 DEPENDENCIES = {
     'soltui/live_score.py': {'soltui.tests.test_live_score', 'soltui.tests.test_signal_live'},
+    'soltui/simulation.py': {'soltui.tests.test_simulation', 'soltui.tests.test_forwardtest',
+                              'soltui.tests.test_paper_experiments', 'soltui.tests.test_bgworker'},
+    'soltui/config.py': {'soltui.tests.test_simulation', 'soltui.tests.test_status_roster'},
+    'soltui/runner.py': {'soltui.tests.test_simulation', 'soltui.tests.test_bgworker'},
     'soltui/forwardtest.py': {'soltui.tests.test_forwardtest'},
     'soltui/coin_fit.py': {'soltui.tests.test_coin_fit', 'soltui.tests.test_coin_fit_ui'},
     'soltui/shell.py': {'soltui.tests.test_v2_shell'},
-    'soltui/tui.py': {'soltui.tests.test_forwardtest', 'soltui.tests.test_coin_fit_ui',
+    'soltui/tui.py': {'soltui.tests.test_forwardtest', 'soltui.tests.test_signal_live', 'soltui.tests.test_coin_fit_ui',
                       'soltui.tests.test_v2_shell', 'soltui.tests.test_bridge_buttons'},
     'soltui/commands.py': {'soltui.tests.test_bridge_buttons', 'soltui.tests.test_bridge_parity',
                            'soltui.tests.test_forwardtest', 'soltui.tests.test_experiment_interface'},
@@ -78,7 +84,7 @@ class TimedResult(unittest.TextTestResult):
         self.timings = []
 
 
-def main() -> int:
+def _run() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--shard', type=int, required=True)
     parser.add_argument('--shards', type=int, default=4)
@@ -113,6 +119,18 @@ def main() -> int:
     for seconds, test_id in sorted(result.timings, reverse=True)[:20]:
         print(f'{seconds:.2f}s {test_id}')
     return 0 if result.wasSuccessful() else 1
+
+
+def main() -> int:
+    # Autostart and session persistence tests must never edit the owner's saved plan.
+    if os.environ.get('SOLTUI_CONFIG_DIR'):
+        return _run()
+    with tempfile.TemporaryDirectory(prefix='soltui-ci-') as directory:
+        os.environ['SOLTUI_CONFIG_DIR'] = directory
+        try:
+            return _run()
+        finally:
+            del os.environ['SOLTUI_CONFIG_DIR']
 
 
 if __name__ == '__main__':

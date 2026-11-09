@@ -27,7 +27,6 @@ import numpy as np
 from backtester.core.cpcv import cpcv_evaluate
 from backtester.core.data import CsvLoader, frame_to_arrays
 from backtester.core.engine import EngineConfig, run_backtest
-from backtester.core.types import CostConfig, Mode
 
 from .config import Settings
 from .roster import Roster, RosterEntry
@@ -90,25 +89,11 @@ def load_arrays(settings: Settings) -> dict[str, np.ndarray]:
 
 
 def engine_config(settings: Settings, interval: str | None = None) -> EngineConfig:
-    """Build an EngineConfig from settings, optionally overriding the interval.
+    """Jupiter Perps paper accounting, including 1x positions and hourly borrow."""
+    from .simulation import from_settings
 
-    Mode is hard-wired to SPOT: this build has no live path and no leverage
-    surface in the UI, so there is nothing that should be selecting PERP here.
-    That invariant is the reason this function is shared rather than copied --
-    the background sweep (`bgworker`) needs the same config at a per-job
-    interval, and a second copy would mean a future PERP guard had two places to
-    be added and one place to be forgotten.
-    """
-    return EngineConfig(
-        mode=Mode.SPOT,
-        leverage=1.0,
-        initial_capital=settings.capital,
-        interval=interval or settings.interval,
-        fill_delay=settings.fill_delay,
-        costs=CostConfig(
-            fee_bps=settings.fee_bps, slippage_bps=settings.slippage_bps
-        ),
-    )
+    return from_settings(settings).engine(settings.capital, interval or settings.interval,
+                                           settings.fill_delay)
 
 
 def run_cpcv(
@@ -125,9 +110,11 @@ def run_cpcv(
     `cpcv_k`) is the part that must not drift: a divergence there produces two
     different Sharpes for the same strategy with nothing to indicate why.
     """
+    from .simulation import gate
+
     return cpcv_evaluate(
         label,
-        factory,
+        lambda: gate(factory(), settings, cfg.interval),
         arrays,
         cfg,
         n_groups=settings.cpcv_groups,
@@ -281,7 +268,9 @@ def quick_backtest(
     from backtester.core.strategies import build
 
     arrays = load_arrays(settings)
+    from .simulation import gate
+
     result = run_backtest(
-        build(entry.name, **entry.params), arrays, engine_config(settings)
+        gate(build(entry.name, **entry.params), settings), arrays, engine_config(settings)
     )
     return result, arrays
