@@ -1,7 +1,15 @@
 # Work continuation
 
-Version: 249
-Delta: v248 to v249; complete archive and unavailable-score acceptance before source commit.
+Version: 250
+Delta: v249 to v250; finalize committed test counts and Signal Desk delivery checkpoint.
+
+## v250 - 2026-11-08
+
+Implementation source committed as7395276 after every required local check completed successfully. Final manifest now includes all seven provenance/handoff tests: SolTUI1221, extension377, backtester909 and Mongo34 (2541 total). Static index receipts are regenerated without embeddings or any indexing service. No source behavior changed after independent final pre-delivery Chrome24/24 fixture and25/25 real-host acceptance.
+
+Delivery branch feat/signal-desk-20261108 in /Users/mitch/dev/solmargintrader-wt-signal-desk is recoverable. Its implementation PR is the canonical receipt: final pushed head, completed passing checks and actual merged status establish Git delivery. Product is version0.5.0 with four native-data workflows, exact array/strategy/cost snapshots and explicit paper preparation/start separation. Archived summaries are visibly separate; archived liquidity mutators are unavailable. Backtesting gaps remain clearly unavailable rather than synthesized.
+
+Remaining at this checkpoint: final metadata check/commit, push PR, wait all required final-head CI, merge, synchronize canonical source where safe, independent installed-state final gate, update PR delivery/outbox receipt, remove only this task branch/worktree. The final installed receipt is /tmp/signal-desk-installed-acceptance.json. Preserve user browser sessions, service states, secrets and unrelated three untracked paths. Stele task/context pending outbox fd628838/bde61205/dff84593; provenance architecture708457a1.
 
 ## v249 - 2026-11-08
 
