@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 124
-Delta: v123 to v124; retain concurrent chart prompt and dashboard parity requests.
+Version: 125
+Delta: v124 to v125; retain historical Gemini handoff request from PR 135.
+
+## v125 - 2026-11-08 (historical request imported from PR 135)
+
+```text
+Fine if you don't want to complete the task I'll get gemini to do it. Give me a handoff markdown file for what you've done
+```
 
 ## v124 - 2026-11-08
 

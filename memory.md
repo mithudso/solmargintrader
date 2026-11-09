@@ -1,7 +1,13 @@
 # Work continuation
 
-Version: 220
-Delta: v219 to v220; preserve final dashboard acceptance and canonical delivery receipt.
+Version: 221
+Delta: v220 to v221; preserve historical handoff without superseding current implementation.
+
+## v221 - 2026-11-08
+
+Merged the historical Gemini handoff PR 135 while preserving the current extension continuation. Its imported note below describes an earlier PR 134 checkpoint. Current source already contains the Jupiter manual-order handlers delivered in PR 137; do not treat the old handoff as the current implementation state. Live venue submission remains outside this task's verification.
+
+Imported historical note: Owner requested handoff to Gemini. PR 134 merged incomplete at 314fe989 while docs CI failed and SolTUI CI was pending; the previous agent did not merge it. TASK-1044 released for next agent. See JUPITER_GEMINI_HANDOFF.md for that earlier checkpoint.
 
 ## v220 - 2026-11-08
 
