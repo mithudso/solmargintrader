@@ -1,8 +1,12 @@
 # Prompt history
 
-Version: 156
+Version: 157
+Delta: v156 to v157; preserve both merged UI request and implementation handoff.
 Delta: v155 to v156; incorporate the supplemental UI handoff into implementation.
 Delta: v154 to v155; record approval to implement the bot manager.
+Delta: concurrent histories to v155; preserve CLI planning PR171 and reviewed browser UI design.
+Delta: v152 to v153; record ideal bot-management UI design request.
+
 Delta: v153 to v154; save optimized prompt and its execution artifacts.
 Delta: v152 to v153; record standalone Solana bot manager prompt optimization and planning.
 Delta: v151 to v152; add the fifth Trend momentum bot request after concurrent histories.
@@ -251,11 +255,8 @@ Here is coinbase's list of fees and costs like I did for Jupiter: /Users/mitch/d
 In the advanced order ticket add leveraged buys and sells.
 ```
 
-Version: 75
 Delta: v74 to v75; preserve concurrent delivery histories and source-card records.
-Version: 76
 Delta: v75 to v76; retain CI changes and editor request.
-Version: 76
 Delta: v75 to v76; preserve PR 100 records and resolve PR 104.
 
 ## v1 - 2026-11-06
@@ -1212,6 +1213,12 @@ $ui-deep-optimizer  ~/dev/solmargintrader/soltui
 
 I want to run the deep strategy optimizer on the strategies in this repo, but I also want a before and after with comparisons of accuracy. Make a copy of all of the strategies into a separate folder, run the deep strategy optimizer on all of them, and then run the both the old and the new side by side and see how they shake out.
 
+
+## v153 - 2026-11-09 — bot control room design
+
+```text
+Lookup and use all of the software architect, design, and UI skills as well as the planning superpower and design an ideal crypto trading bot management and creation UI.
+```
 
 ## 2026-11-09 — standalone Solana bot manager design (TASK-1092)
 
