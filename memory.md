@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 329
+Version: 331
+Delta: concurrent histories to v331; preserve Kraken and bot manager continuation records.
+Delta: v329 to v330; verify both private GitHub backup archives.
+Delta: v328 to v329; record Kraken archive research, JitoSOL identity and GitHub backup.
 Delta: v328 to v329; integrate concurrent PR177 minute-history source and preserve both task histories.
 Delta: v327 to v328; repair the required-command bridge fixture caught by final CI.
 Delta: v326 to v327; approve milestone1 source and prepare verified release.
@@ -60,6 +63,12 @@ Delta: v285 to v286; record backtest activation and remaining live checks.
 Delta: v284 to v285; diagnose stale predictions and verify backtest against cached bars.
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
+
+## v329 - 2026-11-09: Kraken archive and JitoSOL research
+
+The owner selected GitHub for off-machine backup and requested Firecrawl research. Jito Foundation and OKX identify mainnet JitoSOL mint J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn; their public pages match the OKX JITOSOL spot listing. Exchange prices do not establish on-chain executions. Kraken's official OHLCVT full archive through 2026-09-30 contains one-minute files for all fourteen assets. Range-selective ZIP extraction verified member CRC32 and produced 8,266,148 observed candles with per-market SHA-256, gap ledgers, and verified indexes in `/Users/mitch/.local/share/solmargintrader/historical-data-1128/kraken-archive-20260930/inventory.json`. Kraken says missing minute bars indicate no trades; do not invent candles. The publisher's whole-archive SHA-256 was not verified because only selected members were downloaded. Source markets and quote currencies vary. Binance also offers checksummed monthly and daily files; spot timestamps change from milliseconds to microseconds on 2025-01-01.
+
+Private GitHub backup repository: https://github.com/mithudso/solmargintrader-history-backups . The original historical-data-1128 and backtester-task-1117 archive was uploaded as the historical-data-20261109 release, downloaded independently, SHA-256 checked, and tar-listed. The supplemental Kraken archive was uploaded and independently downloaded; both archives passed SHA-256 verification and tar listing. The deep SOL/USDC snapshot was read from the downloaded base archive and its bytes matched the local snapshot. The source archive includes the Kraken index, exact gap ledgers and extraction scripts. Restore details are in the private data catalog; retain the separate source and gap ledgers. Continue seeking complete multi-year coverage where market history permits.
 
 ## v328 - 2026-11-09: historical data acquisition checkpoint
 
