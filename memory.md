@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 235
-Delta: v234 to v235; record final live-score acceptance and recoverable PR.
+Version: 236
+Delta: v235 to v236; record global session-reflection work and isolated sources.
+
+## v236 - 2026-11-08
+
+This request creates a global skill and hook; no trading code changes. Prompt-deep-optimizer completed two iterations and an independent blind audit with no remaining Medium+ findings. Canonical sources are the separate skills and claude-config repositories. Worktrees: /Users/mitch/dev/skills-wt-session-reflection and /Users/mitch/dev/claude-wt-session-reflection. This private trading worktree owns only workflow records. Preserve the active shared checkout and its untracked files. Stele task and decision writes queued as 9ab0d70c and c0e315a3. Remaining: behavioral tests, source delivery, installation and native discovery; record final receipts here.
 
 ## v235 - 2026-11-08
 
