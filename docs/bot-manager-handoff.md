@@ -1,7 +1,9 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.1.1
+- Version: 1.1.2
+- Delta: v1.1.1 to v1.1.2; integrate the M4 research checkpoint with the newer control room and forward package matrix.
 - Delta: v1.1.0 to v1.1.1; record actual PR188 delivery and full final-head manager checks.
+- Delta: v1.1.0 to v1.1.1; link the concrete remaining-work plan and distinguish the M4 source checkpoint from delivery.
 - Delta: v1.0.5 to v1.1.0; describe milestone 3 canonical strategies, shared prospective input and quote evidence.
 - Delta: v1.0.4 to v1.0.5; record integrated editing delivery and coordinated five-package maintenance.
 - Delta: Document registry-owned global options and multi-bot legacy telemetry continuity evidence.
@@ -13,7 +15,9 @@
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
-The standalone application is installed as `solbot`. It saves and edits immutable named bot specifications, discovers an existing SolTUI owner, delegates guarded legacy controls when that owner supports them, and supervises independent grid accounts against a bounded recorded Coinbase input. It defaults to paper and disarmed. Milestones 1 and 2 plus the editing extension are delivered. Prospective Jupiter trading, the other new strategy runtimes, blind selection, learning, graphical integration and live execution remain later work.
+The standalone application is installed as `solbot`. It saves and edits immutable named bot specifications, discovers an existing SolTUI owner, delegates supported legacy controls and supervises independent reference paper accounts. It defaults to paper and disarmed. Milestones 1–3 plus editing are delivered. Grid, DCA, Trend and Momentum use canonical reference execution; prospective shared-source input is supported. Current evidence does not certify Jupiter execution or profitability.
+
+The concrete remaining implementation and delivery plan is /Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-10-bot-manager-remaining.md. M4 research has a committed source checkpoint but still needs current-master integration, independent review, installed acceptance and delivery. M5 accounting/monitoring, M6 continuation/learning, M7 browser integration, M8 executor gates and the final Oracle handoff remain. The plan separates working code from actual elapsed shadow evidence and live readiness.
 
 For the shortest working instructions and the bot actually run on this machine,
 start with `/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md`.

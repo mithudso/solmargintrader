@@ -224,14 +224,30 @@ def handle(request):
     if operation == "receipt":
         proposal = store.manager_read_artifact(params["run_id"], "proposal")
         receipt = params["receipt"]
+        expected_receipt = (
+            {
+                "version": 2,
+                "request_id": proposal["request_id"],
+                "proposal_digest": fingerprint(proposal),
+                "authority": proposal["authority"],
+                "production_eligible": proposal["production_eligible"],
+                "evidence_digest": proposal["evidence_digest"],
+                "baseline_revision": proposal["baseline_revision"],
+                "baseline_hash": proposal["baseline_hash"],
+                "state": "pending_shadow",
+                "configuration_changed": False,
+            }
+            if proposal is not None
+            else None
+        )
         if (
             proposal is None
             or proposal["authority"]["roster_revision"] != fingerprint(registration)
             or proposal["authority"]["history_revision"]
             != store.manager_history_revision(exclude_run=params["run_id"])
-            or receipt.get("proposal_digest") != fingerprint(proposal)
-            or receipt.get("request_id") != proposal["request_id"]
-            or receipt.get("state") != "pending_shadow"
+            or type(receipt) is not dict
+            or set(receipt) != set(expected_receipt)
+            or fingerprint(receipt) != fingerprint(expected_receipt)
         ):
             raise ExperimentError("receipt does not bind accepted evidence proposal")
         store.manager_artifact(params["run_id"], "adoption_receipt", receipt)

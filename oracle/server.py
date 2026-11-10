@@ -8,6 +8,7 @@ import hashlib
 import json
 import logging
 import sys
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -20,9 +21,10 @@ from mcp.server.lowlevel.helper_types import ReadResourceContents
 from mcp.server.models import InitializationOptions
 from pydantic import AnyUrl
 
+from .feeds import validate_instrument
 from .guidance import guidance, readiness, veto
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 RESOURCE_NAMES = {
     f"oracle://{name}": name for name in ("market", "predictions", "status")
 }
@@ -143,16 +145,33 @@ def build_server(
     manager_home: Path | None = None,
     repo: Path | None = None,
     poll_seconds: float = 0.5,
+    prediction_view: Callable[[], dict] | None = None,
 ) -> tuple[Server, SubscriptionHub]:
     if not 0.1 <= poll_seconds <= 60:
         raise ValueError("invalid poll interval")
     hub = SubscriptionHub()
 
+    def predictions():
+        return (
+            prediction_view() if prediction_view is not None else engine.predictions()
+        )
+
+    class SelectedView:
+        def market(self, **kwargs):
+            return engine.market(**kwargs)
+
+        def predictions(self, **kwargs):
+            return predictions()
+
     def resource(uri: str) -> dict:
         if uri not in RESOURCE_NAMES:
             raise ValueError("unknown resource")
         try:
-            return envelope(getattr(engine, RESOURCE_NAMES[uri])())
+            return envelope(
+                predictions()
+                if uri == "oracle://predictions"
+                else getattr(engine, RESOURCE_NAMES[uri])()
+            )
         except Exception:  # noqa: BLE001 -- Public response boundary never serializes dependency exception text.
             return envelope(error="archive_unavailable")
 
@@ -215,7 +234,9 @@ def build_server(
                 elif name == "oracle_readiness":
                     data = readiness(engine, manager_home=manager_home)
                 elif name == "oracle_veto":
-                    data = veto(engine)
+                    data = veto(SelectedView())
+                elif name == "oracle_predictions":
+                    data = predictions()
                 else:
                     data = getattr(engine, name.removeprefix("oracle_"))(**arguments)
                 result = envelope(data)
@@ -260,6 +281,73 @@ def build_server(
     return server, hub
 
 
+def selection_home(
+    archive: Path, instrument: str, control_home: Path | None = None
+) -> Path | None:
+    """Infer only the controller's exact documented archive layout."""
+    archive = Path(archive).expanduser().absolute()
+    instrument = validate_instrument(instrument)
+    base = instrument.split("/")[0]
+    if control_home is not None:
+        home = Path(control_home).expanduser().absolute()
+        if archive != home / "oracle" / base / "history.sqlite3":
+            raise ValueError("control_home_archive_mismatch")
+        return home
+    if (
+        archive.name == "history.sqlite3"
+        and archive.parent.name == base
+        and archive.parent.parent.name == "oracle"
+    ):
+        return archive.parent.parent.parent
+    return None
+
+
+def selected_prediction_view(
+    engine: Any, home: Path | None, *, required: bool = False
+) -> Callable[[], dict] | None:
+    if home is None:
+        return None
+
+    def unavailable():
+        return {
+            "schema_version": 1,
+            "instrument": engine.instrument,
+            "status": "unavailable",
+            "signal": None,
+            "balance_percent": None,
+            "reason": "voter_selection_unavailable",
+            "tradable": False,
+            "percentage_semantics": "signed_weighted_vote_balance_not_probability",
+            "strategies": [],
+            "selection": {"status": "unavailable"},
+            "aggregate": {
+                "status": "unavailable",
+                "signal": None,
+                "balance_percent": None,
+                "included": [],
+                "excluded": [],
+                "reason": "voter_selection_unavailable",
+            },
+        }
+
+    def selected():
+        preference = home / "voters.sqlite3"
+        try:
+            from ecosystem.votes import report
+        except ImportError:
+            # A standalone Oracle need not depend on the ecosystem package.
+            # A saved/explicit selection must never fall back to all voters.
+            if required or preference.exists() or preference.is_symlink():
+                return unavailable()
+            return engine.predictions()
+        try:
+            return report(home, engine.instrument)
+        except Exception:  # noqa: BLE001 - selection failures never expose private dependency text
+            return unavailable()
+
+    return selected
+
+
 async def run(
     archive: Path,
     *,
@@ -267,12 +355,25 @@ async def run(
     manager_home: Path | None = None,
     repo: Path | None = None,
     poll_seconds: float = 0.5,
+    control_home: Path | None = None,
 ) -> None:
     from .engine import OracleEngine
 
-    engine = OracleEngine(archive, instrument=instrument)
+    home = selection_home(archive, instrument, control_home)
+    if home is not None:
+        from .reader import ReadOnlyOracle
+
+        engine = ReadOnlyOracle(archive, instrument=instrument, archived_versions=True)
+    else:
+        engine = OracleEngine(archive, instrument=instrument)
     server, _ = build_server(
-        engine, manager_home=manager_home, repo=repo, poll_seconds=poll_seconds
+        engine,
+        manager_home=manager_home,
+        repo=repo,
+        poll_seconds=poll_seconds,
+        prediction_view=selected_prediction_view(
+            engine, home, required=control_home is not None
+        ),
     )
     capabilities = server.get_capabilities(NotificationOptions(), {})
     assert capabilities.resources is not None
@@ -304,6 +405,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--instrument", default="SOL/USDC")
     parser.add_argument("--manager-home", type=Path)
+    parser.add_argument("--control-home", type=Path)
     parser.add_argument("--repo", type=Path)
     parser.add_argument("--poll-seconds", type=float, default=0.5)
     try:
@@ -315,6 +417,7 @@ def main(argv: list[str] | None = None) -> int:
                 manager_home=args.manager_home,
                 repo=args.repo,
                 poll_seconds=args.poll_seconds,
+                control_home=args.control_home,
             )
         )
     except (Exception, KeyboardInterrupt):  # noqa: BLE001 -- CLI failure boundary suppresses dependency details.

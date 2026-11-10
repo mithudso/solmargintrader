@@ -23,7 +23,7 @@ Ten components with different risk profiles. Know which one you are in:
 
 | Component | Risk |
 | --- | --- |
-| `ecosystem/` (Python) | Paper-only setup, durable F5 coordination, external bot registrations, sanitized manager telemetry and local read-only control room. Reuses existing workers and recorder. Never arms or submits orders. |
+| `ecosystem/` (Python) | Paper-only setup, durable F5 coordination, external bot registrations, sanitized manager telemetry and a local paper control room with authenticated, durable owner actions. Reuses existing workers and recorder. Never arms or submits orders. |
 | `oracle/` (Python) | Source-labelled shadow forecasts and a historical event archive with read-only MCP subscriptions. Never signs or submits orders. Reference agreement is not profit probability; unavailable inputs fail closed. |
 | `botmanager/` (Python) | Standalone `solbot` lifecycle and evidence application. Default paper/disarmed. Legacy adapters preserve the existing owner; missing data, credentials or execution capability fail closed. Never silently seize a bot or create a duplicate recorder/optimizer. |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability here** — see its README's Scope section. The danger is a dishonest backtest, not a lost trade. |
@@ -122,7 +122,7 @@ Ecosystem setup and control room use `python -m pip install ./backtester ./oracl
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1002 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1434 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1435 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive

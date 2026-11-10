@@ -119,6 +119,7 @@ def source_fingerprint(repo: Path) -> str:
                 ".html",
                 ".css",
                 ".js",
+                ".json",
             ):
                 if path.is_symlink():
                     raise ValueError("source_symlink_refused")

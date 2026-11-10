@@ -218,7 +218,7 @@ class SetupTests(unittest.TestCase):
     def test_source_fingerprint_binds_each_shipped_web_asset_type(self):
         web = self.repo / "ecosystem" / "web"
         web.mkdir()
-        for suffix in (".html", ".css", ".js"):
+        for suffix in (".html", ".css", ".js", ".json"):
             with self.subTest(suffix=suffix):
                 asset = web / f"dashboard{suffix}"
                 asset.write_text("original shipped content")

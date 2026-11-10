@@ -16,11 +16,11 @@ python3 /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py start
 
 No arguments also means `start`. The script installs five local projects:
 backtester, Oracle, Bot Manager, the headless SolTUI research runtime, and the
-ecosystem supervisor. It uses `/Users/mitch/.venvs/solecosystem-0.1.4` by default.
-Version 0.1.4 coordinates manager 0.5.0, canonical backtester 0.1.1, Oracle 0.2.1
+ecosystem supervisor. It uses `/Users/mitch/.venvs/solecosystem-0.2.2` by default.
+Version 0.2.2 coordinates manager 0.5.0, canonical backtester 0.1.1, Oracle 0.2.1
 and headless research-runtime 0.2.0. It preserves schema 4 telemetry. It does not
 upgrade or stop the existing /Users/mitch/.venvs/solecosystem-0.1.1 or
-/Users/mitch/.venvs/solecosystem-0.1.2 or /Users/mitch/.venvs/solecosystem-0.1.3
+/Users/mitch/.venvs/solecosystem-0.1.2 or /Users/mitch/.venvs/solecosystem-0.1.3 or /Users/mitch/.venvs/solecosystem-0.2.1
 environments or their immutable experiments. Continue an existing run with
 that environment's installed `solecosystem` entry point; select a fresh reviewed
 environment and home for changed source rather than rewriting its receipts.
@@ -145,7 +145,7 @@ authenticated live trading and executor-enforced veto remain separate gates.
 Use the installed MCP server with a coin's exact archive and instrument, for example:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.1.4/bin/soloracle-mcp \
+/Users/mitch/.venvs/solecosystem-0.2.2/bin/soloracle-mcp \
   --archive /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/BTC/history.sqlite3 \
   --instrument BTC/USD --repo /Users/mitch/dev/solmargintrader
 ```
@@ -162,7 +162,7 @@ Manager reads them as externally owned trials; it does not fabricate unsupported
 manager bot types or seize the F5 worker.
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.1.4/bin/solbot \
+/Users/mitch/.venvs/solecosystem-0.2.2/bin/solbot \
   --ecosystem-home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 status
 ```
 
@@ -196,7 +196,7 @@ Stopping the supervisor closes its embedded UI. A separately started viewer can
 observe retained evidence:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.1.4/bin/solecosystem-ui \
+/Users/mitch/.venvs/solecosystem-0.2.2/bin/solecosystem-ui \
   --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 --port 8768
 ```
 

@@ -21,6 +21,9 @@ SOL trading research and execution tooling, in ten parts:
 
 ## Automated paper ecosystem
 
+The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
+
+
 `python3 scripts/bootstrap_ecosystem.py start` installs the headless components,
 checks health, acquires the configured universe, runs the complete strategy matrix
 and hands usable results to registered forward trials with per-coin Oracle
@@ -56,7 +59,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1002 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1434 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1435 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 ```

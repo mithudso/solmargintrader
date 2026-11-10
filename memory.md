@@ -1,11 +1,34 @@
 # Work continuation
 
-Version: 367
-Delta: v366 to v367; preserve the committed M4 source checkpoint and remaining-plan delivery.
-Delta: v365 to v366; correct progress reporting and preserve remaining M4 implementation gaps.
-Delta: v364 to v365; preserve usable public research setup and scoped freshness requirements.
-Delta: v363 to v364; preserve M4 registry, sandbox and authority-coverage decisions.
-Delta: v362 to v363; record M3 remote delivery and start M4 from its accepted baseline.
+PR192 delivery state: `/Users/mitch/.local/state/solmargintrader/pr192-01a1c44a/delivery-memory.md`. A completed receipt there supersedes the pre-merge remaining steps below.
+
+Version: 370
+Delta: v369 to v370; accept independent M4 source review and both integrity repairs.
+Delta: v368 to v369; verify integrated M4 and repair V2 owner discovery.
+Delta: concurrent histories to v368; preserve M4 checkpoint and PR192 integration records.
+Delta: v346 to v347; record on-chain variant evidence, offline tests and network refusal.
+Delta: v345 to v346; record Jupiter documentation and fresh unsigned route evidence.
+Delta: v344 to v345; record proof-trade clarification and verifier refusals.
+Delta: v343 to v344; record clarified SOL/USDC buy direction and current funding blocker.
+Delta: v342 to v343; clarify read-only manager discovery before reporting begins.
+Delta: v341 to v342; record final prompt audit dissent and draft checkpoint.
+Delta: v340 to v341; record optimizer and initial SOL backtest evidence and unresolved integrations.
+Delta: v339 to v340; start strategy agent proof of concept and guarded Jupiter proof investigation.
+Consolidation delivery state: `/Users/mitch/dev/solmargintrader/.worktree-recovery/delivery-memory.md`. A completed receipt there supersedes the pre-merge publication steps below.
+
+Version: 372
+Delta: v371 to v372; finish content preservation, reconciliation and duplicate-folder removal.
+Delta: v370 to v371; record verified preservation and the concurrent Git-metadata overwrite.
+Delta: v369 to v370; inventory all owner-named folders and preserve unreviewed checkpoints.
+Delta: v368 to v369; record the remaining-work plan and exact unfinished M4 source checkpoint.
+Delta: v367 to v368; accept installed0.2.1 fee default and unchanged producer identities.
+Delta: v366 to v367; record completed delivery, verify existing prompt history and apply the approved fee decision.
+Delta: v365 to v366; accept independently verified installed behavior and track PR189 delivery.
+Delta: v364 to v365; verify installed control room and prepare final delivery.
+Delta: v363 to v364; preserve source verification and immutable installation handoff.
+Delta: concurrent histories to v363; merge milestone3 provenance and preserve operational-control continuation.
+Delta: v357 to v358; integrate explicit provider/cost policy and isolated manual referral swap.
+Delta: v356 to v357; begin operational control plane and user-confirmed forward accounting.
 Delta: v361 to v362; record accepted installed repair and final milestone3 delivery preparation.
 Delta: v360 to v361; preserve actual installed status blocker and second focused fix round.
 Delta: v359 to v360; record accepted milestone3 fixes, regular installation and final HTTP acceptance.
@@ -1161,6 +1184,31 @@ CI42712960866 for4bbabce6 completed with8activejobs passed,2expectedskips and on
 
 Test-only commita8db64b5 supplies an explicit source-checkout origin and verifies stable_install_required. Installed-import RED reproduced the exact failure; all17supervisor tests now pass in both source and installed modes. Ruff/format and independent scoped CI review passed. Product bytes remain39e0c262, so installed acceptance1.0.5 remains valid without repeating installation or OS changes. This repair does not reopen the completed final product fix wave. Refresh catalogs, push final records, obtain a new final-head CI success and mergePR180 before markingTASK1108done.
 
+## Strategy agent proof of concept - 2026-11-09
+
+Task TASK-1161. Worktree /Users/mitch/dev/solmargintrader-wt-strategy-poc based on origin/master 2810f4b2. Preserve existing concurrent Bot Manager, forward testing and Oracle work. User requests an optimized prompt, strategy backtests and prospective blind testing, manager reporting and a small Jupiter SOL/USDC purchase. The owner later clarified that a SOL/USDC buy spends USDC to buy SOL. Executor requires quote, semantic verification, simulation and its existing rails; never invent results or bypass gates. Implementation, testing, optimizer evidence, transaction details and delivery remain.
+
+## Strategy agent checkpoint — current findings
+
+The prompt candidate and partial optimizer record are in docs/strategy-agent/. Fresh independent review of the final revision, optimizer run manifest/self-check, and actual agent implementation remain. The existing momentum card's default 60-day strategy ran on SOL_1d.csv in the isolated worktree with a 70/30 split, 6 bps fee, 2 bps slippage and next-open fills. The CLI reported out-of-sample return -15.79%; this is historical USD proxy data, not a blind prospective or Jupiter execution result. Artifacts: /tmp/strategy-agent-sol-backtest/. Manager's installed list returned no drafts; manager events and financials currently cover its own bounded grid reference-paper runtime, not arbitrary strategy-agent events or P&L. Oracle implementation remains open in TASK-1154. No new P&L ledger or agent has been implemented. Executor status reported 0.084924546 SOL and 0.000047 USDC, mode dry-run, validation disabled, no unresolved journal sends. The owner clarified that the SOL/USDC buy means USDC to SOL; no quote, simulation, signature, or swap was made. The wallet has insufficient USDC; use the existing owner wallet and rails after funding. Remaining: build and verify actual manager-integrated strategy agent, all-coin data inventory, bounded development experiments and truly prospective blind handoff; finish optimizer gates; validate and perform the specifically defined proof swap only if executor gates pass; deliver and complete TASK-1161.
+
+Draft checkpoint PR: https://github.com/mithudso/solmargintrader/pull/182 . Final fresh-context prompt review found an ordering contradiction for read-only discovery versus manager event initialization, an incomplete authoring example, and insufficient sources for material capability claims. Repair and re-audit before claiming prompt convergence.
+
+Reflection corrected the prompt ordering conflict. Fresh blind review and the example and source-tracing findings remain open.
+
+The owner clarified the SOL/USDC buy direction: spend USDC to purchase SOL. Executor status on 2026-11-09 returned 0.000047 USDC and 0.084924546 SOL; funding is insufficient for a meaningful proof purchase. Do not reverse the trade. Other proof-of-concept work and optimizer review remain open.
+
+## Proof trade — 2026-11-09
+
+The owner clarified that either direction can prove a trade. A 0.005 SOL to USDC quote was acceptable at about $0.43 under the configured quote rails. A dry-run swap for that amount refused at static verification: `Jupiter route minimum output is below the approved minOut`. A 0.01 SOL dry run and a second 0.005 SOL dry run refused `unsupported Jupiter swap variant`. No simulation, key load, signature, send or configuration change occurred. The causes are unconfirmed. Keep the verifier fail-closed and investigate the current route layouts before changing money-moving code. The proof trade and strategy-agent implementation remain incomplete.
+
+## Jupiter documentation and route investigation — 2026-11-09
+
+The owner supplied /Users/mitch/dev/solmargintrader/llms/jupsol-llms-full.txt and the Jupiter developer docs MCP. The file identifies itself as user-facing docs and does not define the binary route enum. The MCP documents current Swap V2 flows; the executor is deliberately pinned to V1. A fresh read-only quote and unsigned build for 0.005 SOL to USDC returned a route labeled GoonFi V2 with first swap enum ordinal 151, outside the pinned decoder list. The current main-branch jup-ag/jupiter-amm-implementation aggregator IDL retrieved during this investigation defines only 90 variants; it does not establish ordinal 151. The earlier minimum-output refusal is separately unresolved. No keys, signature, send or config change. The static verifier must remain fail-closed.
+
+## Jupiter verifier investigation checkpoint
+
+On-chain Jupiter V6 Anchor IDL account C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa, owned by JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4, identified Swap ordinal 151 as GoonFiV3 { is_bid: bool }. Owner supplied an independently consistent enum. A local uncommitted sparse decoder change and tests add only ordinal 151 and continue to reject gaps. Offline tests: 437 passed, 5 deselected; Ruff check and format passed. Network tests: 4 passed, 1 failed because the selected route required an unknown variant and intermediate ATA; no live transaction sent. A later unsigned GoonFi route had out_raw 432480, quote minimum 430318 and the deliberate conservative floor 430317. The official April 2024 V6 audit documents checked_ceil_div; current runtime equivalence needs independent verification. Do not weaken the minimum bound to force a swap. The Bitquery GoonFi page concerns market/trade analytics, not the Jupiter instruction encoding. Source code and tests are uncommitted because required network checks failed.
 ## v340 — 2026-11-09 — comprehensive manager handoff
 
 The owner requests a full detailed handoff of this bot-manager work, including rationale, access, features, maintenance and continuation. Documentation-only work uses /Users/mitch/dev/solmargintrader-wt-01a1c189 on agent-01a1c189-handoff, based on current origin/master2810f4b2. Primary checkout and other worktrees remain untouched. EPIC1167 tracks source verificationTASK1168, drafting/validationTASK1169 and deliveryTASK1170; only the current step is claimed.
@@ -1278,6 +1326,27 @@ Scoped integration re-review approves both INT1 and INT2 at c48e2e7b; zero new b
 
 PR187 metadata-only65ad merge is resolved with both memory/prompt bodies intact (prompts176). Application source remains identical to reviewedc48. Parent finalofflinegeneration/hash/docs/whitespace gate, combinedmetadata mergecommit/push, source-currentCI and freshstablemanager/ecosystem0.1.2 installation/independentacceptance remain. Do not claim integratedinstalled state untilnewreceipt. ThenmergeLAST,verifyremotecontent,close1178andcontinue1109–1114.
 
+
+## v357 — operational control room implementation
+
+TASK-1194 owns this request in /Users/mitch/dev/solmargintrader-wt-control-01a1c228, branch agent-control-01a1c228 from13525f2a. The original checkout is held by another live session and contains unrelated untracked files. Preserve it. TASK-1109 owns manager milestone3; do not edit manager core or strategy adapters. Reuse the merged immutable editing/owner dispatch API and advertise current capabilities.
+
+The user requests server action buttons and observability; config-based bot launches and lifecycle progress; per-coin historical and current results; explicit forward-test profit measurement and recording controls; selected Oracle voters with prominent aggregate strength; and a complete source-linked wiki. The user confirmed P&L recording ON by default. Disable only new paper accounting entries, retain source evidence and prior entries, and report unknown profitability over gaps. Native forward net_return includes costs, trial calls do not overlap, and native net_pct is a fraction. Each trial is its own virtual account, not shared allocated capital. Require resolved economics before claiming break-even or profit.
+
+Root owns durable action backend/HTTP integration, research config orchestration, packaging, verification and delivery. Parallel workers own UI assets, wiki snapshots and performance/vote projections. The recall specialist failed because its configured model is unavailable; root used direct named-node reads instead. Existing decision KNOW-361 requires explicit paper/modelled labels on financial figures.
+
+Plan: identify and preserve owners; implement authenticated idempotent controls and evidence views; integrate configuration and wiki UI; verify source/security/accounting/restart and installed browser behavior; deliver through final-head CI/merge. No live order path, signing custody, competing recorder or paused indexing changes.
+
+
+## v358 — controls, economics and swap integration
+
+Implemented durable same-origin action receipts, scoped research launches and child-run lookup, shared-recorder recovery limits, Oracle pause/restart preferences, per-trial forward accounting policies, read-only selected-voter views, compiled wiki and UI controls. Unit checks exposed and repaired credential-field omissions, launch validation after mutation and non-atomic schema DDL. An independent verifier found limited run lookup and child-only recorder recovery policy; both are repaired. Child runs share family recorder recovery policy. External owners can still recover the global recorder, and the UI must say so.
+
+The user's added requirement separates quote source from swap provider. New experiments freeze swap_provider plus explicit modelled base/referral/slippage/borrow assumptions; the native F5 settings use base plus referral exactly once. Market quotes remain explicitly Coinbase USD reference data. This is a configured paper scenario, not verified Jupiter spot fees, market availability or live execution. Existing owner's F5 accounting model remains unchanged.
+
+The manual swap page uses a separate loopback origin so third-party Jupiter SDK code cannot access control-plane session nonces. It loads only on a manual click and uses wallet approval in the browser, never server signing. Public referral accounts come from KNOW-1062. Published Swap API fees require50–255bps, while the retained default is10bps. The user was asked whether to retain10 requiring an explicit fee change or choose50. Until answered, retain10 and refuse SDK loading at unsupported fees. No fee increase, wallet connection or transaction is authorized automatically.
+
+Wiki currently compiles1861 tracked documents with hashes and original source locations. JSON snapshot assets must be packaged, installer-fingerprinted and checked by their own generator; exclude those duplicate generated bodies from generic indexing. Remaining: final root log adapter, UI/backend integration checks, selected-voter MCP transport, docs and wiki rebuild, immutable0.2.0 installation, actual browser/action lifecycle acceptance, then final-head delivery.
 ## v357 — editing delivered; all remaining milestones continue
 
 PR186 merged13525f2a27bc96d68dcab2a90059c2b11e1791dc after finalheadf753e63 CI42754694369 completedexit0:11activepassed/2expectedskips. Mergedtreeequalsacceptedtip. Manager149CItests passed. Independent integrated installed acceptance passed50checks;167source/assets matched in both regular /Users/mitch/.venvs/solbot and /Users/mitch/.venvs/solecosystem-0.1.2; pipchecks0. Stable evidence /Users/mitch/.local/state/solbot/releases/0.3.0/editing-integrated-installed-acceptance.json. Defaultdemo and frozenecosystem0.1.1 unchanged; testdaemonsstopped/locksreleased. TASK1178done. Primarymaster synchronized preservingforeignuntrackedpaths; oldeditingbranchdeleted. KNOW1179/1184/1121/1115/1143 remaintrue.
@@ -1317,6 +1386,101 @@ Fixround2/5originalworkeractive, onlystatus.py/test_status.py; testactualcomplet
 I4fixbfc6d2f4 (status.py/test_status.py) passed31coveringtests/Ruff/format andscopedrereviewapproved;0sourceblockers. Sourceengine/Oracle/HTTPunchanged, previous1002/68/8checks retained. Freshofficialsolecosystem0.1.3sourceFPR4586e3451fef3616f73014b3b8558f8d81ead41ec7ead8e5d16c3d71f5da6b42 complete/MCPclosed; globalmanager-onlyregularrepairinstall0/pipcheck0. Rejectedknownbadcandidatepreservedat.local/state/solbot/rejected-environments/solecosystem-0.1.3-da2cae09, receiptsunchanged aftercheckingnoactiveprocesses.
 
 Independentfinal58/58effectivegates,3288currentfilehashesmatchbfc, actual2accounts cursor1→2postactivation+restart, completedprospective/historicalCLIcandidate/global/aliaspass,pinnedengineevidence,defaultandretainedstatesexactlyunchanged. Healthyownedstoppedclone daemonexit0/locksreleased. Earlierfirstdaemonexitunknownremainsdisclosed; secondprospectivedaemonexit0. No newproducerwait/HTTPrepeat. Stableprivate0.4.0evidencescopied0600. Docscheck1002/1405/408/46total2861exit0; parentRuff/format/YAML/Node/diffchecks0. Finalstage/offlinehash/commit/push/PR/finalheadCI/merge remains; no M3deliveryclaim yet. Thenimmediatelyclaim1110andcontinueallremaining1111–1114. Primaryheldbyothers; privateworktreeonly.
+
+
+## v364 — integrated control room acceptance preparation
+
+Merged PR188 at a610868d into control branch9f5ba8c, preserving both prompt/memory histories. Ecosystem0.2.0 pins Manager0.4.0, Oracle0.2.1 and research-runtime0.1.2. PR188 changes economic-code fingerprints and Oracle card versions. New code must use ecosystem-paper-v2/new archives. Preserve running ecosystem-paper-v1 and solecosystem-0.1.1 without restart or migration. The new UI registers only the exact sibling legacy-v1 as a source-read-only view. It permits accounting/voter projection controls but refuses legacy producer, F5 and recorder mutation. KNOW-1214 and KNOW-1215 record the recorded-policy reader boundary.
+
+Source verification:75 Oracle tests pass, including real SDK stdio selection/resource subscriptions and archived-policy integrity/isolation. Initial167 ecosystem checks had one obsolete expectation that /api/logs was404. The new allowlisted log route returns400 for arbitrary path parameters; its revised12-test web check passes. Eighteen durable control/HTTP checks pass, including legacy mutation refusal and owner-derived Manager input paths. The same earlier failure must not be repeated without a new repair. Full integrated ecosystem and Manager checks remain to finish. No installed0.2.0 or live-swap acceptance claimed yet.
+
+Native Manager controls prepare an immutable shared-sol-usd reference descriptor at a unique owned path, register that prepared descriptor, inspect data and start/stop through existing owners. Directed quote-cycle diagnostics remain unavailable until actual cycle evidence exists. No arbitrary descriptor/path or synthetic quote data enters control requests. Legacy source market is SOL/USD, target Jupiter pair is SOL/USDC; paper reference consent stays explicit. Remaining: final wiki/index generation, immutable new-environment install, independent browser/actions acceptance with isolated manager, actual small research forward handoff, source-current CI and final merge/cleanup.
+
+
+## v365 — installed operational control room
+
+Local checks pass:173 ecosystem,75 Oracle,171 Bot Manager,408 extension tests; Ruff/format and both JavaScript syntax checks; documentation count gate; offline paper round trip net0.3492; live keyless Jupiter PriceV3 and Trigger challenge reachability. Keyed Jupiter remains unchecked without a configured API key. An old /api/logs404 expectation was repaired to assert arbitrary-path400. Independent integration review found descriptor forwarding through manager.apply; caller-supplied descriptor now refuses before owner dispatch, with12 affected control checks passing. Five CLI checks verify defaultV2, inert observed status, and restart preservation of provider/cost/capital settings.
+
+Immutable installation /Users/mitch/.venvs/solecosystem-0.2.0 has source fingerprint67290ed3609c8d4aa3e80868a8ab48c35b8b9596f4f4cb687569a5bd77b64d31. Five installed package identities,34 Backtester strategies,14 Oracle cards and real stdio MCP tools/resources/subscription/no-data behavior pass. Final UI at http://127.0.0.1:61955 has instance3f2c5231-6c53-46c6-97c4-e8eee6c91e37 and home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2. Status discovers its actual current URL; do not treat this recorded port as permanent. Primaryrun d580fa647c664075b5ffa554cca37a04 startsSOL/RSI1dmedium with configured Jupiter cost scenario:6base+10referral=16bps per side,2bpsslippage, explicit carry assumptions and10k independent virtual capital. These are model assumptions, not observed Jupiter spot fees.
+
+Independent browser acceptance in isolated /Users/mitch/.local/share/solmargintrader/control-acceptance-01a1c228 created run5bcfc75ff9184f639fa541bdcefba8aa, completed real acquisition/backtesting and registered a genuine unresolved forward call. Native isolated trendbot885d1e49-cd3d-455e-9346-1a166d491ab8 prepared/registered existing sharedSOL/USD source, adopted a paper runtime and advanced its real prospective source cursor. P&L defaultON; disabling preserved priorrecordedcall and unknownprofit. Voter14→13 persistedrevision1; fresh insufficient evidence remains unavailable. Wiki snapshot has1863 source-linked pages. Separate-origin manualswap default10bps remains blocked; explicit50bps enables manual loading without wallet connection or server signing. No funded trade, calibrated probability, Jupiter execution readiness or profit has been established.
+
+Remaining at this checkpoint: finish independent final-install/mobile/disconnect/legacy-source acceptance, stop only isolated acceptance owners, refresh offline indexes, push records/code and obtain final-headCI, merge finaltip, verifyremote content, preserve the other active checkout and remove only this task's merged worktree/branch. TASK-1194 holds the final delivery receipt; consult its completed summary and merged PR before repeating accepted installation or producer work. Preserve the active V1 recorder/feed/archives and original solecosystem-0.1.1 environment. Actual directed quote-cycle inputs and funded/manual Jupiter acceptance remain external capabilities, not completed controls.
+
+
+## v366 — final installed acceptance and delivery boundary
+
+The independent live-acceptance-verifier accepted source6946c852 against twelve installed modules and served HTML/JS/CSS at fingerprint67290ed3609c8d4aa3e80868a8ab48c35b8b9596f4f4cb687569a5bd77b64d31 on2026-11-10T06:07:24Z. Its actual browser checks cover real research launch/acquisition/backtest/forward registration, native Manager preparation/registration/start/source ingestion/stop, P&L ON/OFF/ON revisions retaining the original recorded call, selected-voter persistence, Oracle pause/stale/restart, offline withheld controls/reconnect,390px mobile without overflow or JS errors, wiki search/provenance, and separate-origin manual official Jupiter SDK loading. It did not connect a wallet or submit a transaction. Real future-horizon outcomes remain pending, so profit remains unknown.
+
+Final installed legacy-v1 view returns476registrations and a recorded-policy Oracle aggregate (Flat0.00% weighted vote balance,10contributors/4excluded at inspection). All11 legacy producer buttons are disabled in API and DOM. Final installed manager.apply rejects arbitrary descriptors before ownerdispatch, and a repeated UUID returns the same failed receipt without replay. All isolated acceptance Manager/F5/pipeline/daemon/UI processes stopped; daemon exited0 and UI60902 closed. ProductionV2, shared recorder and legacy producers remain running. Production Manager mutations were excluded from acceptance.
+
+The final full Backtester1002-test check also passes. All source/installed checks are accepted; no product implementation work remains. PR https://github.com/mithudso/solmargintrader/pull/189 carries delivery. Final-headCI and squash merge establish publication; a local checkpoint or this pre-merge note is not a merge receipt. TASK-1194 records final CI, remote merge/content and cleanup. Before resuming, inspect that task and PR state so a completed delivery does not repeat producer work. The unresolved10bps default and actual funded/on-chain Jupiter acceptance remain documented limits; manual valid-fee choice does not silently change bot cost settings. No unrelated indexing/inference, signing custody or existing source journals changed.
+
+
+## v367 — delivered product, record verification and referral follow-up
+
+Product PR https://github.com/mithudso/solmargintrader/pull/189 merged at7de8748a21689d4c3cd8ab528a6b33a74ad75676 after final-headCI42766546089 passed all11applicablejobs. TASK-1194 is complete with the detailed source/installed/browser/CI/remote receipt. Source and localmaster were synchronized; ten then-untracked files had identical hashes immediately after pull. One owned acceptance browser console later appended during polling; its tab is now closed. The final production tab and UI service remain running. Task branch and temporary product worktree were removed, and no unpublished master commit remains. Unknown .opencode content was preserved outsideGit at /Users/mitch/.local/share/solmargintrader/control-room-preserved-01a1c228/.opencode.
+
+The clean merged tree retains source fingerprint67290ed3609c8d4aa3e80868a8ab48c35b8b9596f4f4cb687569a5bd77b64d31, and every tracked package file matches the synchronized primary checkout. Its unrelated untracked SolTUI guide adds a raw installer fingerprint input; preserve it rather than deleting another task's work. Running installed0.2.0 code and assets match the reviewed clean source. UI http://127.0.0.1:61955 and primarySOL/RSIrun remain forward_partial with a genuine pending call, so profit remains unknown. Existing legacy producers and shared recorder remain untouched.
+
+A truncated rg search incorrectly suggested that the full control request was missing. Independent review found it already present under v176 near line71. Remove the duplicate draft; retain the exact follow-up answers and adjacent code-fence repair. KNOW-1218 records the corrected trigger, not a claim that the prompt was lost.
+
+The user then selected Use the supported0.5% referral minimum. TASK-1217 and PR190 now apply that real product decision: default50bps in the manual page and new Jupiter paper scenarios, preserve every existing frozen run setting, retain manual SDK loading and browser wallet consent, release immutable ecosystem0.2.1 and update only the control UI generation. Existing V1/V2 research producers must stay running. Remaining: affected source tests/docs/wiki, new install and independent installed fee/no-order acceptance, final-headCI/merge/cleanup. Product PR189's source and installed acceptance remain accepted for unchanged modules; no broad rediscovery is needed.
+
+
+## v368 — approved referral default installed and accepted
+
+The user-approved0.5%=50bps default is implemented in manual swap configuration, HTML, JavaScript and new Jupiter paper forms. Existing explicit/frozen10bps remains intact. A new-paper preview now shows6base+50referral=56bps per side; those remain configured scenario costs, not observed Jupiter fills. Explicit10bps cannot load the manual SDK. The page does not automatically load the SDK, connect a wallet, sign or submit. Source173ecosystem checks and affected13swap/HTTP/UI checks pass, with additional targetedUI checks after preserving50bps across an old-run selection and retaining subsequent user edits. Ruff/format/JS and wiki integrity checks pass.
+
+Immutable /Users/mitch/.venvs/solecosystem-0.2.1 has fingerprint9a816a6c638641cd86952de6d7609d75e57f1dc94accbe2b01c791f96502ae06. Five-package and real MCP health passed. Only the previous independentUI641 was stopped after matching owner generation and idle durable actions. Rebinding61955 failed closed; native ensure selected http://127.0.0.1:57927, PID19142, instance1f1cfb66-15a6-4e01-b2b8-6a5c8c69254a. Status publishes the actual current URL. No research process was signalled.
+
+Independent affected installed acceptance passed at2026-11-10T06:29:02Z:50bps page/new-paper defaults and56bps total preview; manual officialSDKload with no wallet connection/sign/submit; invalid10bps refusal; installed module/asset equality; unchanged V1/V2 supervisor/F5PIDs, start times and config hashes. V1supervisor98998/F5child99637 retain configSHA b48110165920b43c163d3652607ed32b5f6520ea55e7bb45905d5ff3bdeb6559. V2supervisor646/F5child677 retain configSHA a1b8a1da5464d5d7954f2af7e2ba2207ba2df80d4256ac3f733f188224438637, priorcost6+10=16bps/slip2 andcapital10000. Owned test tab closed; production tab points to57927. Existing V1/V2 environments, producers and archives remain intact. Funded/on-chain referral application and future profit remain unverified.
+
+PR https://github.com/mithudso/solmargintrader/pull/190 now carries the approved-default update and corrected final records. The full original control request remains exactly once under v176; only its explicit follow-up confirmations were added under v179. TASK-1217 holds final-headCI, merge and cleanup receipts. Source/installed work is accepted. At this checkpoint only publication gates and owned-worktree cleanup remain; check the task/PR before repeating any service work.
+
+
+## v369 — remaining implementation plan and recoverable M4 checkpoint
+
+Owner requested a written implementation plan after challenging repeated wrap-up language. TASK-1220 tracks this focused documentation delivery. The plan is docs/superpowers/plans/2026-11-10-bot-manager-remaining.md, version1.0.0, linked from the main handoff. It preserves the approved architecture and orders M4 release, M5 accounting/health, M6 continuation/learning, M7 browser, M8 executor and final Oracle interface/acceptance. Engineering completion, real elapsed evidence and live readiness are separate gates. Do not provide another unsupported short ETA.
+
+M4 source is recoverable in /Users/mitch/dev/solmargintrader-wt-01a1c189-editing on agent-01a1c189-m4: implementation e24ad7ca343a07910d04f3c3471494fcba763c75 and report/proof65a5a40020a21849fadd3476c556a5d4cdedca3a. Original worker reports187 manager,150 owner/legacy,42 bridge tests passed plus actual OS sandbox denial. Public setup/default plan and immutable first-registration epoch are implemented. Independent source review, integrated installation, installed acceptance, CI and release remain pending. Parent-owned root docs/CI/bootstrap/records are still dirty in that worktree; unrelated .opencode/ is untouched. Do not mark TASK1110 complete or install this pre-integration candidate.
+
+Current remote baseline21331e37 includes PR189 ecosystem control-room/Oracle work and PR190 approved50bps referral default. Ecosystem is0.2.1. The M4 source checkpoint still has obsolete planned0.1.4 metadata. KNOW1221 binds integration/version risk to TASK1110: preserve newer behavior and bump forward before final review/install. Do not downgrade active immutable environments or primary checkout. This plan's isolated worktree is /Users/mitch/dev/solmargintrader-wt-01a1c189-remaining-plan; primary is held by other live sessions.
+
+The Stele search specialist could not start because its fixed gpt-5.4-mini model is unsupported on this account. Parent read its installed definition and used direct MCP searches/fetches instead. Verified KNOW1115 approval and KNOW1216 scoped freshness. No graph readiness or prior-venue claim was invented. No production bot, recorder, wallet, service or research authority was changed by the plan.
+
+Plan self-review and documentation/index checks, explicit commit, push/PR/final-head CI/merge and remote-content verification are the remaining TASK1220 delivery gates at this checkpoint. M4 implementation/parent records will remain recoverable in a pushed draft checkpoint rather than being folded into the plan-only release. Continue implementation from the new remaining-work plan when resuming the approved epic.
+
+PR191 initial head7ae0d593 passed docs/index checks, but ecosystem CI42772639288 failed after173 successful ecosystem tests at `python scripts/build_ecosystem_wiki.py --check`: {"ok": false, "status": "stale"}. PR189 introduced a compiled documentation bundle; changing the manager handoff/adding an allowlisted plan requires regenerating ecosystem/wiki_content/manifest.json and pages.json before offline indexes. The remaining plan now includes this gate. No app logic or runtime installation changed. Rebuild with the existing offline compiler, require its --check exit0, then regenerate/check indexes and push the fix before final-head CI/merge.
+
+
+## v370 — worktree consolidation inventory
+
+TASK-1223 covers the owner request. TASK-1225 inventories files and ownership; TASK-1226 integrates unique work; TASK-1227 verifies delivery and safe removal. Work happens in /Users/mitch/dev/solmargintrader-wt-01a1c44a on agent-01a1c44a. The shared primary checkout is held by another session and has untracked content. Do not reset or clean it.
+
+Initial inventories and PR receipts are private in /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a. Fourteen inputs are Git worktrees. The fifteenth is the immutable standalone strategy comparison. Preserve all unique committed, staged, unstaged, untracked and ignored content before removing any folder. Several old heads are ancestors of origin/master; squash-merged branches require PR/content verification. Draft PR182 and PR192 contain unfinished work and must remain distinguishable from accepted product code. PR191 merged while inventory was running; refresh before integration. No service, installation, indexing, signing or order action is part of this task. Remaining: full content disposition, preservation verification, reviewed integration, metadata checks, PR/CI/merge, primary synchronization where safe and duplicate removal.
+
+
+## v371 — external copy interrupted consolidation
+
+The first archive verified all73,143 source files and11,540 unique objects. A full standalone comparison restore and a staged/unstaged strategy-poc restore also passed. The archive was217,255,936bytes for2,289,641,432 source bytes. Forty-nine card/catalog tests passed with one external-catalog skip. Before deletion, an external copy replaced the primary .git directory with agent-01a1c44a's gitfile. It also copied this branch's working files and some unreviewed M4 files into the shared checkout. No source deletion occurred. The owner confirmed another copy is running and will stop it; wait for explicit confirmation that it has stopped before re-archiving or cleanup.
+
+Rebuilt common Git metadata from an independent remote mirror at /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a/rebuilt.git. Every inventoried source HEAD and the active nested SolTUI HEAD is present. Recreated all extant worktree registrations and indexes without overwriting working files. Master is4d773dcb. The original staging distinctions and uninventoried local Git metadata could not be recovered; preserve this limitation. The first archive disappeared with .git and is not a current safety receipt. Keep the next archive outside .git and retain an independent copy.
+
+Source dirs remain available, except the owner's completed plan worktree. Stele TASK-1227 remains in progress. Next: get copy-stopped confirmation; re-inventory primary and all source paths; preserve all content in a new independent snapshot; reconcile only proven copy-induced duplicates; repeat object/source and restoration gates; safely remove duplicates; update docs/wiki/offline indexes; local checks; commit/PR/CI/merge; sync primary with hash preconditions. Preserve draft PR182/192 and running services.
+
+
+## v372 — folder consolidation complete; publication remains
+
+The owner confirmed the other copy had stopped. Independent recovery-v2 preserved all73,153 input files,2,289,709,056bytes, in217,292,800databasebytes before late Finder metadata. All11,550uniqueobjects and every source path/hash/permission/link/status passed. Complete standalone comparison and strategy-poc Git restorations passed; reconstructed current stage/unstaged patches matched. All15requestedsourcefolders are absent:14removedbythis task,1completedplanremovedbyitsowner. Late Finder metadata was captured in an additional residual snapshot.
+
+Canonical private entry /Users/mitch/dev/solmargintrader/.worktree-recovery points to /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a/recovery-v2. Its recovery.sqlite3, recover.py, snapshot-summary.json, restoration-proof.json, inventory-receipts.zip and cleanup-receipt.json retain exact content and provenance. Keep the independent147MB rebuilt.git mirror; both repos pin original heads. No missing-source cleanup was attempted after the first Git overwrite. Original staging/reflog/uninventoried local metadata remains unrecoverable; do not claim otherwise.
+
+Hash-preconditioned canonical reconciliation removed12copy-induced M4Pythonfiles plusduplicatedOpenCode and restored6stale/tasktrackedfiles from acceptedmaster4d773dcb. Primarytrackedstateisclean; originaluntrackedcontentremains. DraftPR182and192/branches remain. Only active nestedSolTUIworktree and our delivery worktree remain registered. No production service/install/state changed. Product-runtimechanges are absent; the integratedcatalogtest expands allguide/researchcards and checksduplicateIDs/spec-onlyexclusion.49targetedtests passedwith1expectedskip. Remaining: finalreport/wiki/offlineindexchecks, task-ownedcommit/push/PR/finalheadCI/merge, primaryfastforward preservinguntrackedhashes, and removeonlyourmergedbranch/worktree. Fullreport docs/worktree-consolidation-2026-11-10.md.
+
+
+## Preserved M4 checkpoint history — PR192
+
 
 ## v363 — M3 delivered; execute M4–8
 
@@ -1360,3 +1524,22 @@ Remaining-plan task TASK1220 uses separate branch agent-01a1c189-remaining-plan 
 M4 release must first integrate PR189/190 and preserve newer ecosystem0.2.1 behavior/approved50bps referral default. Current0.1.4 pins/default path are obsolete checkpoint metadata, not the final installation. KNOW1221 records the exact integration risk. Parent draft CI/docs/records are checkpointed only for recovery. No installation or production service/authority/bot change. Documentation discovery on the committed M4 source found1434 SolTUI/1002 backtester/408 extension/46 mongo =2890; update all documented source counts together rather than lowering actual discovery.
 
 Resume from current-master integration and review, then fresh compatible installation and independent actual-command/sandbox acceptance. Push final head, require final-head CI and merge last. Continue M5–8 under the owner's existing authorization. Preserve other sessions' primary checkout and unrelated .opencode/.
+
+
+## PR192 integration — TASK-1232
+
+The owner explicitly requests resolution, commit and merge. Work is isolated at /Users/mitch/dev/solmargintrader-wt-01a1c44a on agent-01a1c44a-pr192. Current masterbd390a4 is integrated. Preserve accepted control-room behavior, manual50bps defaults and all active environments. Forward package matrix: manager0.5.0, research-runtime0.2.0, backtester0.1.1, Oracle0.2.1, ecosystem0.2.2. TASK-1230 and its moving strategy files in /Users/mitch/dev/solmargintrader-wt-01a1c447 remain separate. Existing source evidence is a checkpoint; required fresh integrated source checks, independent review, regular isolated installation and actual command/sandbox acceptance remain before final CI/merge. TASK-1233 resolves; TASK-1234 verifies; TASK-1235 delivers. No production owner or service changes are part of this integration.
+
+
+## PR192 integration verification checkpoint
+
+All nine conflict paths are resolved and staged. Ecosystem0.2.2 preserves accepted0.2.1 control-room implementation bytes and50bps defaults; only its init/manifest version and dependencies advance. Manager0.5.0/research-runtime0.2.0/backtester0.1.1/Oracle0.2.1 are pinned together. Integrated source checks passed187 manager,173 ecosystem,129 legacy/bridge and63 evidence/owner/runner tests. The UI environment lacked headless metadata; rerunning the owner checks under the task-owned regular installation resolved that setup failure. A headless-only docs run lacked Textual; use /Users/mitch/.venvs/solmargintrader-docs/bin/python for full discovery. Do not lower counts to conceal environment failures.
+
+Independent source review found known_clients omitted accepted ecosystem-paper-v2. The one-line discovery repair keeps all legacy defaults. A real held V2 F5 lock and unknown-history regression now proves admission stays blocked when callers omit explicit roots. Nineteen owner tests and ten manager research tests pass after that fix; lint/format pass. Current SolTUI count1435/legacy total2891 includes the new regression. KNOW-1237 records the trigger. The first task-owned environment /Users/mitch/.venvs/pr192-01a1c44a-ecosystem-0.2.2 passed package/MCP health before that source fix, but it is not the final accepted installation. Fresh candidate2 and independent actual-command/sandbox acceptance remain required after the review finishes. Production environments and TASK-1230 files remain untouched. Private gates/scripts are /Users/mitch/.local/state/solmargintrader/pr192-01a1c44a.
+
+
+## PR192 reviewed source ready for final installation
+
+Independent review approved the integrated source after two P2 repairs. Default V2 owner discovery now includes actual active locks/history. Owner adoption receipts now require the exact ten-field ManagerStore contract and canonical value/type bindings before immutable persistence. The real-ledger regression rejects malformed receipts without artifacts, then accepts/replays the genuine receipt. Nineteen owner tests and ten affected Manager research tests pass; Ruff/format pass. Reviewed runtime manifest SHA256f15a7fc87a77e53dbef32bfe890d7b88114448c1ed11cb0cfcf39f7a746ee4e7; private source-review.json records exact repaired file hashes. No remaining source-review blocker.
+
+The docs environment import failure was traced to four Finder .DS_Store files in ignored expanded experiment trees. All frozen source hashes matched. Those metadata files were preserved in private snapshot-finder-metadata.zip and removed only from this task-owned checkout. The immutable archive verifier was not weakened. Full docs discovery must pass at1435 SolTUI/1002 Backtester/408 extension/46 mongo=2891. Regenerate wiki and offline indexes after staging all repaired paths. Next: commit integrated source, fresh immutable integrated/standalone candidate environments, independent actual installed command/judge/sandbox/CAS acceptance, final records/checks/push, final-head PR192 CI and merge. Preserve existing production environments and all C447 work.
