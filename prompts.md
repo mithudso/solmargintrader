@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 174
+Version: 175
+Delta: v174 to v175; record the requested Basic Memory MCP installation.
 Delta: v173 to v174; preserve the embedding-model mismatch observation during final delivery.
 Delta: v172 to v173; add manager telemetry coordination and accepted UI wiring.
 Delta: v171 to v172; retain the accepted existing14-asset default.
@@ -1521,4 +1522,17 @@ Write full detailed handoff with everything you did and why, how to access it, w
 
 ```text
 I didn't ask for your reflection, I asked you for a writeup of what you did thisd session. I've tried running the /Users/mitch/.local/bin/solbot it does nothing. How does it work? you can't create antyhing or change anthing. How does a  bot run? Then where are the instructions? Can you do this literally once before you try and make me guess?
+```
+
+## 2026-11-09 — install Basic Memory MCP
+
+```text
+Install this mcp server {
+  "mcpServers": {
+    "basic-memory": {
+      "command": "uvx",
+      "args": ["basic-memory", "mcp"]
+    }
+  }
+}
 ```
