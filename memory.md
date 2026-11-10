@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 366
+Version: 367
+Delta: v366 to v367; record completed delivery and repair the exact prompt handoff.
 Delta: v365 to v366; accept independently verified installed behavior and track PR189 delivery.
 Delta: v364 to v365; verify installed control room and prepare final delivery.
 Delta: v363 to v364; preserve source verification and immutable installation handoff.
@@ -1368,3 +1369,12 @@ The independent live-acceptance-verifier accepted source6946c852 against twelve 
 Final installed legacy-v1 view returns476registrations and a recorded-policy Oracle aggregate (Flat0.00% weighted vote balance,10contributors/4excluded at inspection). All11 legacy producer buttons are disabled in API and DOM. Final installed manager.apply rejects arbitrary descriptors before ownerdispatch, and a repeated UUID returns the same failed receipt without replay. All isolated acceptance Manager/F5/pipeline/daemon/UI processes stopped; daemon exited0 and UI60902 closed. ProductionV2, shared recorder and legacy producers remain running. Production Manager mutations were excluded from acceptance.
 
 The final full Backtester1002-test check also passes. All source/installed checks are accepted; no product implementation work remains. PR https://github.com/mithudso/solmargintrader/pull/189 carries delivery. Final-headCI and squash merge establish publication; a local checkpoint or this pre-merge note is not a merge receipt. TASK-1194 records final CI, remote merge/content and cleanup. Before resuming, inspect that task and PR state so a completed delivery does not repeat producer work. The unresolved10bps default and actual funded/on-chain Jupiter acceptance remain documented limits; manual valid-fee choice does not silently change bot cost settings. No unrelated indexing/inference, signing custody or existing source journals changed.
+
+
+## v367 — delivered product and exact-request record repair
+
+Product PR https://github.com/mithudso/solmargintrader/pull/189 merged at7de8748a21689d4c3cd8ab528a6b33a74ad75676 after final-headCI42766546089 passed all11applicablejobs. TASK-1194 is complete with the detailed source/installed/browser/CI/remote receipt. Source and localmaster were synchronized; ten then-untracked files had identical hashes immediately after pull. One owned acceptance browser console later appended during polling; its tab is now closed. The final production tab and UI service remain running. Task branch and temporary product worktree were removed, and no unpublished master commit remains. Unknown .opencode content was preserved outsideGit at /Users/mitch/.local/share/solmargintrader/control-room-preserved-01a1c228/.opencode.
+
+The clean merged tree retains source fingerprint67290ed3609c8d4aa3e80868a8ab48c35b8b9596f4f4cb687569a5bd77b64d31, and every tracked package file matches the synchronized primary checkout. Its unrelated untracked SolTUI guide adds a raw installer fingerprint input; preserve it rather than deleting another task's work. Running installed0.2.0 code and assets match the reviewed clean source. UI http://127.0.0.1:61955 and primarySOL/RSIrun remain forward_partial with a genuine pending call, so profit remains unknown. Existing legacy producers and shared recorder remain untouched.
+
+A final literal-text audit found that prompts.md lacked the full operational-control request despite its version heading. TASK-1217 owns only the exact request/P&L confirmation restoration, adjacent code-fence repair, this delivery note and derived offline indexes. No product, runtime, archive, wiki bundle or economic setting changes. Source and installed acceptance gates remain valid. Complete this documentation-only follow-up through CI/merge and remove its own worktree/branch. Consult TASK-1217's final receipt before treating this pre-publication note as remaining work.
