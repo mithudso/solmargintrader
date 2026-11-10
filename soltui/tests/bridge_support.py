@@ -197,6 +197,7 @@ def default_params() -> dict[str, dict]:
         "bots.optimize_result": {"bot": "grid"},
         "bots.progress": {"bot": "grid"},
         "experiments.schema": {"bot": "grid"},
+        "research.protocol": {"request": {"version": 2}},
         "experiments.preview": {"bot": "grid"},
         "experiments.create": {"bot": "grid"},
         "experiments.get": {"run_id": "fixture"},

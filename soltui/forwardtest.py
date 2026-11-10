@@ -21,6 +21,7 @@ from backtester.core.strategies import REGISTRY, build, build_composite
 from backtester.core.types import BarWindow, INTERVAL_SECONDS, validate_bar_arrays
 
 from . import compound, config, simulation
+from .research_admission import admit_read, participating
 
 HORIZONS = (1, 5, 10, 30)
 HISTORY = 600
@@ -349,6 +350,7 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
     return next_spec, generation + 1
 
 
+@participating
 def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float, *,
          fetch: Callable | None = None, clock: Callable[[], float] = time.time,
          stop: Event | None = None, code: str | None = None, tune: bool = True,
@@ -375,6 +377,12 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     check_stop()
     code = code or revision()
     observed = clock()
+    admit_read(
+        asset,
+        source="forward:" + str(db_path or config.CONFIG_DIR / "forwardtest" / "trials.sqlite3"),
+        end=observed,
+        attempts=len(trials) if tune else 0,
+    )
     raw = fetch(asset, now=observed, bars=max(HISTORY, history), seconds=60, get=get, sleep=stop.wait)
     check_stop()
     mask = raw["ts"] + 60 <= observed

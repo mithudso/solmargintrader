@@ -3421,3 +3421,14 @@ def experiments_stop(ctx: Context, p: dict[str, Any]) -> Any:
 def experiments_status(ctx: Context, p: dict[str, Any]) -> Any:
     from . import paper_experiments
     return {"experiments": paper_experiments.list_experiments()}
+
+
+@command("research.protocol", "Versioned headless manager research through the shared temporal evidence owner.",
+         (P("request", "json", "Strict protocol2 request with reviewed installation and canonical authority.", True),),
+         read_only=False, long_running=True)
+def research_protocol(ctx: Context, p: dict[str, Any]) -> Any:
+    from .research_owner import handle
+    try:
+        return handle(p["request"])
+    except (ValueError, TypeError, KeyError, OSError):
+        raise CommandError("failed", "Owner refused invalid, incompatible or unavailable research evidence.") from None

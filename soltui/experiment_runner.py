@@ -27,6 +27,7 @@ import numpy as np
 from . import bots
 from .config import Settings
 from .experiments import ExperimentError, ExperimentStore, preview_space
+from .research_admission import native_authority, optimizer_lease, participating
 
 SCHEMA_VERSION = 1
 MAX_EVALUATIONS = 20_000
@@ -241,6 +242,7 @@ def _legacy_cutoff(store: ExperimentStore, bot: str) -> float | None:
         return cutoff
 
 
+@participating
 def preview_experiment(bot: str, settings: Any = None, *, space: dict | None = None,
                        coins: Sequence[str] | None = None, windows: int = bots.OPTIMIZE_WINDOWS,
                        window_days: int = bots.OPTIMIZE_WINDOW_DAYS, max_candidates: int = bots.MAX_CANDIDATES,
@@ -268,6 +270,7 @@ def preview_experiment(bot: str, settings: Any = None, *, space: dict | None = N
     selected = [] if bot == "triangle" else list(dict.fromkeys(str(c).strip().upper() for c in (coins or bots.available_coins(settings))))
     if any(not c or not c.replace("-", "").isalnum() for c in selected):
         raise ExperimentError("coin names must contain letters, digits or hyphens")
+    native_authority(store, coins=selected or ["SOL"])
     if bot == "triangle":
         descriptors, skipped, sources, products = _triangle_windows(windows)
     else:
@@ -573,6 +576,7 @@ def _publish(store: ExperimentStore, run_id: str, report: dict) -> dict:
     return report
 
 
+@participating
 def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, adopt: bool = False,
                    store: ExperimentStore | None = None,
                    progress: Callable[[float, str], None] | None = None) -> dict[str, Any]:
@@ -583,7 +587,8 @@ def run_experiment(run_id: str, settings: Any = None, *, final: bool = False, ad
     the OS lock and leaves exactly the committed cells available for resumption.
     """
     store = store or ExperimentStore()
-    with _lock(store, "run:" + run_id):
+    native_authority(store)
+    with optimizer_lease(store.root), _lock(store, "run:" + run_id):
         run = store.get_run(run_id)
         spec = run["spec"]
         if spec.get("source") != "native":

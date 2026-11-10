@@ -77,7 +77,10 @@ def _timestamp(value: Any) -> float:
     return result
 
 
-class ExperimentStore:
+from .manager_evidence import ManagerEvidence
+
+
+class ExperimentStore(ManagerEvidence):
     """Short-lived SQLite connections permit safe thread/process use of one store.
 
     Callers coordinate expensive execution with a process lock. Transactions here
@@ -110,6 +113,7 @@ class ExperimentStore:
                     PRIMARY KEY (bot, coin, start, end, run_id));
                 CREATE INDEX IF NOT EXISTS exposures_dates ON exposures(bot, coin, start, end);
             """)
+            self._manager_schema(db)
             # A durable seal survives the temporary lifecycle states used when
             # reviewing a completed run before adopting its frozen result.
             db.execute("BEGIN IMMEDIATE")
@@ -292,6 +296,7 @@ class ExperimentStore:
         with self._connect() as db:
             db.execute("BEGIN IMMEDIATE")
             run = self._run(db.execute("SELECT * FROM runs WHERE id=?", (run_id,)).fetchone())
+            self._manager_fence(db, normalized)
             if run["spec"]["source"] != "native":
                 raise ExperimentError("only native runs reserve exploration dates")
             for coin, start, end in normalized:
@@ -325,6 +330,8 @@ class ExperimentStore:
         if not isinstance(record, dict) or not isinstance(cell_key, str) or not cell_key:
             raise ExperimentError("cell requires a record and a stable cell key")
         run = self.get_run(run_id)
+        if run["spec"].get("protocol_version") == 2:
+            raise ExperimentError("protocol2 cells require the immutable manager trial API")
         if candidate_id not in _candidate_map(run["spec"]):
             raise ExperimentError("cell candidate is not in the frozen run spec")
         row = {**record, "candidate_id": candidate_id, "cell_key": cell_key}
@@ -403,6 +410,13 @@ class ExperimentStore:
         with self._connect() as db:
             db.execute("BEGIN IMMEDIATE")
             run = self._run(db.execute("SELECT * FROM runs WHERE id=?", (run_id,)).fetchone())
+            for coin, start, end in normalized:
+                if db.execute("SELECT 1 FROM manager_final_dates WHERE coin=? AND start<? AND end>? AND run_id<>?", (coin,end,start,run_id)).fetchone():
+                    raise ExperimentError("dates overlap spent manager final")
+                if db.execute("SELECT 1 FROM manager_exposures WHERE coin=? AND start<? AND end>?", (coin,end,start)).fetchone():
+                    raise ExperimentError("dates already exposed to shared research clients")
+            if run["spec"].get("protocol_version") == 2:
+                raise ExperimentError("protocol2 final requires manager_unseal")
             if run["spec"]["source"] != "native" or run["frozen_candidate"] != candidate_id:
                 raise ExperimentError("reserve holdout only for the native frozen candidate")
             reservations = db.execute(

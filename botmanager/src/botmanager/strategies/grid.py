@@ -106,7 +106,9 @@ def validate_checkpoint(
         ) from exc
 
 
-def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]:
+def evaluate(
+    spec: BotSpec, data: dict[str, Any], cursor: int, *, research=False
+) -> dict[str, Any]:
     import numpy as np
 
     from backtester.core.gridsim import run_grid_backtest
@@ -146,7 +148,7 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
     exposure = result.unmatched_inventory_qty * float(arrays["close"][-1])
     equity = float(result.equity[-1])
     identity = run_identity(spec, data)
-    return {
+    state = {
         "schema_version": 1,
         "cursor": cursor,
         "last_bar_ts": int(arrays["ts"][-1]),
@@ -169,3 +171,9 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
         "identity": identity,
         "run_hash": fingerprint(identity),
     }
+
+    if research:
+        from .base import research_metrics
+
+        state["research_metrics"] = research_metrics(result, d["capital_quote"])
+    return state

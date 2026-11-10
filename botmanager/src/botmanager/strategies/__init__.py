@@ -8,10 +8,10 @@ from . import grid
 from .base import compatible_engine, evaluate_family, identity, validate_input
 
 
-def evaluate(spec, data, cursor):
+def evaluate(spec, data, cursor, *, research=False):
     if spec.strategy_id == "grid":
-        return grid.evaluate(spec, data, cursor)
-    return evaluate_family(spec, data, cursor)
+        return grid.evaluate(spec, data, cursor, research=research)
+    return evaluate_family(spec, data, cursor, research=research)
 
 
 def validate_registration(spec, data):

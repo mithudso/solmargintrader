@@ -57,6 +57,27 @@ class NativeExperiments(unittest.TestCase):
     def reset(self, run):
         self.store.update_run(run["id"], status="queued")
 
+    def test_participating_native_refuses_another_authority_before_reads(self):
+        canonical = ExperimentStore(self.root / "canonical")
+        with mock.patch.dict(os.environ, {"SOLTUI_RESEARCH_AUTHORITY": str(canonical.root)}):
+            with mock.patch.object(runner, "_bar_windows") as loader:
+                with self.assertRaisesRegex(ExperimentError, "canonical"):
+                    self.prepare()
+                loader.assert_not_called()
+            with self.assertRaisesRegex(ExperimentError, "canonical"):
+                runner.run_experiment("missing", store=self.store)
+
+    def test_participating_preview_checks_protected_dates_before_capture(self):
+        with (
+            mock.patch.dict(os.environ, {"SOLTUI_RESEARCH_AUTHORITY": str(self.store.root)}),
+            mock.patch.object(self.store, "manager_pre_read", side_effect=ExperimentError("protected final")) as admission,
+            mock.patch.object(runner, "_bar_windows") as loader,
+        ):
+            with self.assertRaisesRegex(ExperimentError, "protected final"):
+                self.prepare()
+            admission.assert_called_once()
+            loader.assert_not_called()
+
     def test_preview_never_simulates_and_actual_workload_includes_only_frozen_pair_on_final(self):
         with mock.patch.object(bots, "run_bars") as simulator:
             preview = runner.preview_experiment("grid", self.settings, space=SPACE, coins=["SOL"],

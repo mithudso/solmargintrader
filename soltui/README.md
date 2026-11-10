@@ -647,3 +647,47 @@ macOS event loop.
 ### Backtests with missing candles
 
 The CPCV sweep refuses gaps by default. To run on real, uninterrupted data, select **Use longest continuous window if history has gaps** in Backtest (or enable `longest_contiguous` in the `backtest.run` form). This uses only the longest contiguous window inside the configured dates. The result and its provenance report the exact evaluated window and excluded gaps. It does not fill candles or represent the entire requested period. To evaluate another period, change the configured dates or repair the source data.
+
+## Headless manager research protocol 2 (runtime 0.2.0)
+
+The installable `solmargintrader-research-runtime` package exposes
+`python -I -m soltui.research_owner`, using the existing `research.protocol` command
+registry action. Transport decoding is separate from execution; it does not import
+Textual, start the TUI, start recorders or load default user settings. It requires an
+explicit reviewed `SOLTUI_CONFIG_DIR`, exact loaded source/package identity and a
+strict version-2 authority request. Unknown nested fields are rejected without
+logging their values. Each stream is bounded to 1 MiB.
+
+The existing `ExperimentStore` owns additive manager attempts, immutable consumed
+trials, anonymous artifacts, imported history, required clients and fresh-final
+reservations. Legacy protocol-1 partitions, receipts, retry semantics and native
+adoption remain unchanged. The manager-specific protocol supports Momentum without
+adding it to the legacy bot-family registry.
+
+Use the public `solbot research-register --owner <absolute-descriptor-path>
+--accept-registered-roots-only` flow documented in
+[the manager README](../botmanager/README.md#m4-research-owner-and-blind-selection-050).
+Use `solbot research-setup` to generate the reviewed installation descriptor without
+manual identity copying. An explicit `--initialize-first-authority` creates only the
+first canonical database and records an immutable initialization epoch. Unknown
+earlier history blocks historical finals; verified post-epoch scope can qualify
+without resetting attempt counters. Ordinary status/backtest never creates it.
+A stable per-user namespace binds the canonical root/UUID across manager homes and
+owner configuration roots. Registration imports pre-ledger bot history even when
+an experiments directory has never existed. F5 imports retain attempted/failed
+variants and verify recorded source hashes before recovering exposed intervals.
+Missing/partial history or an active unaware client prevents scoped fresh-final use.
+
+F5, background optimization and forward tuning may participate by explicitly
+setting `SOLTUI_RESEARCH_AUTHORITY` to the registered canonical experiments root.
+Their shared optimizer lease precedes local locks and pre-read admission. Native
+experiments use that same lease on their existing store. Existing callers with no
+binding retain legacy unmanaged behavior, which cannot certify current manager
+coverage. Snapshot import or a root-list declaration never upgrades an existing
+unaware process. No running installation is automatically rewritten or restarted.
+
+Manager finals spend dates before evaluation. Failures remain spent; proposals
+retain baseline/pin and evidence bindings and only stage future shadow adoption.
+The public `status`, `proposal`, `receipt`, `cancel` and `recover` operations preserve
+inspectable stale outcomes and exact cross-database crash reconciliation. Read the
+manager README for confidence/budget/isolation limits and the remaining M6 gates.
