@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 393
+Version: 397
+Delta: v396 to v397; rerun final repository checks and record the pre-delivery state.
+Delta: v395 to v396; finish the data-validated 22,913-configuration rerun and verify the result ledger.
+Delta: v394 to v395; fix review findings and reject the first sweep after auditing duplicate minute candles.
+Delta: v393 to v394; resume CI failure, repair the alert ordering race, and record review findings for final delivery.
 Delta: v392 to v393; complete and validate all cached strategy/coin configurations, update test-count documentation and record passing checks.
 Delta: v391 to v392; preserve the confidence-gated partial run and restart CPCV with a fold-compatible historical confidence policy.
 Delta: v390 to v391; implement the full cached-coin CPCV sweep, prove Council paper entry reachability, and add a sanitized local diagnostics bundle.
@@ -533,3 +537,27 @@ The corrected run completed all 22,913 configurations for 23 cached coins, 34 bu
 The initial 1003-test backtester run failed only because the tracked offline retrieval indexes were stale. `python3 index/build.py all` rebuilt the three committed indexes offline; it did not run semantic embedding generation. The backtester suite then passed all 1003 tests. All 362 botmanager tests, 28 combined sweep/Council tests, Ruff, `scripts/check_docs.py`, `index/build.py --check`, and `git diff --check` pass. Adding the Council reachability test changed the SolTUI count to 1467 and total count to 2950; the affected docs are updated.
 
 Remaining: refresh committed retrieval indexes after this record edit, rerun their integrity check, inspect/stage only task-owned files, commit and deliver through final-head CI and merge. Keep the local JSONL/manifest/summary results outside Git. Do not start forward tests; winners remain for the owner to select. Preserve the primary checkout's unrelated paths and the locked SolTUI worktree.
+
+## v394 — 2026-11-10 — resume CI race and close review findings
+
+The first CI run for PR 199 passed every required job except Bot Manager. `test_fast_ui_repair_preserves_failure_and_recovery_between_publishes` showed recovery before failure after concurrent health publications. The isolated worktree adds a process-local lock around `AlertJournal.observe`, rejects observations older than the latest persisted component timestamp, and adds a stale-observation regression. The focused `botmanager/tests/test_suite.py` module passes all 17 tests. The full Bot Manager suite is running; no final result is recorded yet.
+
+PR review also found three backtest durability/data-integrity gaps in `research/strategy_config_sweep.py`: derived minute/hour artifacts can be overwritten before the sweep lock and manifest checks; an unterminated final JSONL fragment can consume the next appended record; and minute aggregation can accept duplicate/missing timestamps when the row count is 60. These findings remain open and must be fixed with regression coverage before another push. The task worktree is `/Users/mitch/dev/solmargintrader-wt-strategy-diag-20261110` on `codex/strategy-sweep-council-diagnostics-20261110`; PR 199 is open at commit `d67451657de302b739ee3fb89e15284aea1e3a29`. Do not modify the primary checkout's unrelated dirty paths or the locked SolTUI worktree.
+
+The Bot Manager suite passed all 363 tests, including the reversed-event-order regression. The three sweep review findings were fixed with regressions: output lock and source/code/settings preflight now run before any derived cache write; `_record` truncates only an unterminated final JSONL fragment before appending; raw 1m bars are checked against the bar contract, aligned to UTC minutes, and aggregated only when each retained bucket has every unique minute.
+
+The full 22,913-row run from v393 is not accepted as final. A read-only scan found 5,106 duplicate rows in XLM's 1m cache; all are exact identical rows, and the earlier aggregation counted their volume twice. Other 1m caches have no duplicate timestamps; M and TRX are out of order, which the original aggregation sorted. The new aggregator sorts, removes exact duplicate rows only, rejects conflicting duplicates, and writes aggregation-version 4 markers with source-row and dedup counts. A fresh complete run started at `/Users/mitch/.local/share/solmargintrader/research/strategy-config-sweep-validated-20261110` with nine workers; it planned 22,913 configurations and had completed 1,100 at the last progress check. The former output remains preserved under `/Users/mitch/.local/share/solmargintrader/research/strategy-config-sweep` as a non-final checkpoint.
+
+Backtester 1003 tests pass after the offline indexes were regenerated; focused sweep/Council tests pass (32 combined, then 9 sweep tests after the final aggregation update); changed-file Ruff passes. `scripts/check_docs.py`, index freshness, and wiki checks pass at the last run, before the newest aggregation update. Rebuild indexes/wiki and repeat freshness/docs checks after the final run and memory update.
+
+Remaining: finish and independently audit the fresh run, update this handoff with final counts, rebuild/check generated indexes/wiki, run final relevant tests/static checks and `git diff --check`, push, wait for CI, merge after green checks, synchronize and clean only this task worktree. Keep output outside Git and do not start forward tests.
+
+## v396 — 2026-11-10 — validated full sweep and local test gates
+
+The corrected run completed all 22,913 planned configurations. Independent validation confirmed 23 cached assets, 782 strategy/asset pairs, at least 10 configurations per pair, 22,913 unique IDs, 15,271 evaluable/rankable results, 7,642 insufficient results retained with reasons, zero execution failures, and 1,753 shortlisted configurations across 590 pairs. The manifest source and code fingerprints match the current checkout. XLM's aggregation marker reports 5,106 exact duplicate rows removed. WBT still has no complete daily bars; its other available intervals remain recorded. No forward test started. The authoritative output is `/Users/mitch/.local/share/solmargintrader/research/strategy-config-sweep-validated-20261110`; the earlier output with double-counted XLM duplicate volume remains preserved at `/Users/mitch/.local/share/solmargintrader/research/strategy-config-sweep` and must not be ranked.
+
+The documented root-based Bot Manager command passed all 363 tests after the final alert ordering change. The backtester suite passed all 1,003 tests after its first freshness failure was fixed by rebuilding indexes. Nine focused sweep tests and 33 combined sweep/Council tests pass. Changed-file Ruff passes. After this record edit, offline index generation and ecosystem wiki generation succeeded; index freshness and wiki checks pass; `scripts/check_docs.py` confirms 2,950 tests and consistent docs; the backtester suite passes all 1,003 tests again; and `git diff --check` and Ruff pass.
+
+The three PR 199 review findings are implemented: preflight/lock before derived output writes, recovery of an unterminated JSONL tail, and validated complete unique minute buckets. Alert observation ordering also persists an in-process per-component high-water timestamp and ignores stale snapshots, including snapshots that follow an unchanged newer state. PR 199 remains open at `d67451657de302b739ee3fb89e15284aea1e3a29`; CI run 42911174189 had only the now-fixed Bot Manager event-order failure. The primary checkout still has unrelated dirty paths, and the separate SolTUI UI worktree remains locked.
+
+Remaining: refresh and verify the generated offline indexes and ecosystem wiki after this record edit, rerun freshness/docs gates, inspect the task-only diff, commit and push, wait for final-head CI, merge after all required checks pass, then sync and remove only this task worktree and branch. Keep the research output outside Git.

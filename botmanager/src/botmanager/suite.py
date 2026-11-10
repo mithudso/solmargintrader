@@ -29,6 +29,8 @@ from .worker import lifetime_lock, lock_held
 MAX_ALERTS = 256
 ALERT_COOLDOWN_SECONDS = 300
 STARTUP_SECONDS = 12
+_ALERT_JOURNAL_LOCK = threading.Lock()
+_ALERT_JOURNAL_LAST_OBSERVED: dict[tuple[str, str], float] = {}
 
 
 def _directory(home):
@@ -147,6 +149,26 @@ class AlertJournal:
         self.path = home / ".suite" / "alerts.json"
 
     def observe(self, snapshot):
+        # Concurrent health publishes must not overwrite each other's durable
+        # transitions. Suite ownership already excludes another process.
+        observed_at = snapshot.get("observed_at")
+        if (
+            type(observed_at) not in (int, float)
+            or not 0 <= observed_at < float("inf")
+        ):
+            raise ValueError("component_alert_snapshot_invalid")
+        with _ALERT_JOURNAL_LOCK:
+            stale_components = set()
+            for name in snapshot["components"]:
+                key = (str(self.path), name)
+                previous = _ALERT_JOURNAL_LAST_OBSERVED.get(key)
+                if previous is not None and observed_at <= previous:
+                    stale_components.add(name)
+                else:
+                    _ALERT_JOURNAL_LAST_OBSERVED[key] = observed_at
+            self._observe_locked(snapshot, stale_components)
+
+    def _observe_locked(self, snapshot, stale_components):
         try:
             body = machine_health.private_read(self.path)
         except FileNotFoundError:
@@ -167,10 +189,16 @@ class AlertJournal:
             if prior is not None and (
                 not isinstance(prior, dict)
                 or type(prior.get("at")) not in (int, float)
-                or not 0 <= prior["at"] <= snapshot["observed_at"] + 5
+                or not 0 <= prior["at"] < float("inf")
                 or prior.get("state") not in machine_health.STATES
             ):
                 raise ValueError("component_alert_journal_invalid")
+            if name in stale_components or (
+                prior is not None and snapshot["observed_at"] <= prior["at"]
+            ):
+                # A slower publisher can finish after a newer observation. Do
+                # not let its stale state reverse the component's alert history.
+                continue
             # An absent optional reference source is a readiness limitation,
             # not an invented recorder failure or a reason to start one.
             if (

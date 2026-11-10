@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 189
+Version: 190
+Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
 Delta: v188 to v189; record complete implementation status and the validated resumable sweep run.
 Delta: v187 to v188; capture all-strategy coin sweeps, Council entry verification, and a solbot troubleshooting bundle.
 Delta: v186 to v187; capture contextual Oracle voting, per-tick graph history, and strategy overlays.
@@ -16,6 +17,10 @@ For the voting, make the 60% limit to vote actually great than 50%, I have the f
 Write a script to backtest every strategy, on every coin, with at least 10 different configuration options each, and record the results. This is clearly a huge task, so if there is something we can do to speed up batch processing do that. When we have our winners then we will do forward testing. Also look at the council bot code, and make sure it would ever trigger a trade, right now it seems like it won't.
 
 ## 2026-11-10 — solbot troubleshooting bundle
+
+Also my friend is troubleshooting this and is having some errors, add a command to the solbot to download a set of troubleshooting and diagnostic data and to do some basic checks on the setup.
+
+## 2026-11-10 — friend-facing solbot diagnostics
 
 Also my friend is troubleshooting this and is having some errors, add a command to the solbot to download a set of troubleshooting and diagnostic data and to do some basic checks on the setup.
 

@@ -25,7 +25,12 @@ REPO = Path(__file__).resolve().parent.parent
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from backtester.core.data import CsvLoader, frame_to_arrays, resolve_data_dir
+from backtester.core.data import (
+    CsvLoader,
+    frame_to_arrays,
+    resolve_data_dir,
+    validate_bars,
+)
 from backtester.core.strategies import build
 from backtester.core.strategy_cards import load_all
 from soltui.bgqueue import Job, build_queue
@@ -83,7 +88,7 @@ def _derived_interval(source: Path, asset: str, interval: str, output_dir: Path)
     marker = target.with_suffix(target.suffix + ".source.json")
     try:
         saved = json.loads(marker.read_text(encoding="utf-8"))
-        if (saved.get("sha256") == source_hash and saved.get("aggregation_version") == 2
+        if (saved.get("sha256") == source_hash and saved.get("aggregation_version") == 4
                 and target.is_file()):
             return target
     except (OSError, ValueError, AttributeError):
@@ -92,16 +97,38 @@ def _derived_interval(source: Path, asset: str, interval: str, output_dir: Path)
     required = {"timestamp", "open", "high", "low", "close", "volume"}
     if not required.issubset(raw.columns) or raw.empty:
         raise ValueError(f"invalid one-minute cache for {asset}")
+    # The prior aggregator sorted the source before resampling. Preserve that
+    # behavior and discard only byte-equivalent duplicate bars. Conflicting
+    # rows at one timestamp remain invalid and fail the normal bar validator.
+    source_rows = len(raw)
+    raw = raw.drop_duplicates().reset_index(drop=True)
+    raw = validate_bars(
+        raw.sort_values("timestamp", kind="stable").reset_index(drop=True),
+        "1m",
+        strict_gaps=False,
+    )
+    if (raw["timestamp"] % 60 != 0).any():
+        raise ValueError(f"one-minute cache has unaligned timestamps for {asset}")
+    size = 60 if interval == "1h" else 1440
+    bucket_seconds = 3600 if interval == "1h" else 86400
+    raw["_bucket"] = raw["timestamp"] // bucket_seconds * bucket_seconds
+    raw["_minute"] = (raw["timestamp"] - raw["_bucket"]) // 60
+    counts = raw.groupby("_bucket")["_minute"].count()
+    minimums = raw.groupby("_bucket")["_minute"].min()
+    maximums = raw.groupby("_bucket")["_minute"].max()
+    complete_buckets = counts.index[
+        (counts == size) & (minimums == 0) & (maximums == size - 1)
+    ]
     raw["timestamp"] = pd.to_datetime(raw["timestamp"], unit="s", utc=True)
     raw = raw.set_index("timestamp").sort_index()
-    size = 60 if interval == "1h" else 1440
     # A fixed 24h frequency with epoch origin is explicitly UTC aligned; the
     # calendar-day alias ignores `origin` and emits a timezone warning.
     rule = "1h" if interval == "1h" else "24h"
     grouped = raw.resample(rule, origin="epoch", label="left", closed="left")
     bars = grouped.agg({"open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"})
-    counts = grouped["close"].count()
-    bars = bars.loc[counts == size].dropna()
+    bars = bars.loc[
+        [int(stamp.timestamp()) in complete_buckets for stamp in bars.index]
+    ].dropna()
     if bars.empty:
         raise ValueError(f"one-minute cache has no complete {interval} bars for {asset}")
     # pandas may store datetime64 at microsecond or nanosecond resolution.
@@ -112,8 +139,9 @@ def _derived_interval(source: Path, asset: str, interval: str, output_dir: Path)
     bars.to_csv(temp, index=False)
     os.replace(temp, target)
     _atomic_json(marker, {"source": source.name, "sha256": source_hash, "interval": interval,
-                          "aggregation_version": 2,
-                          "aggregation": "complete UTC buckets only", "source_rows": len(raw),
+                          "aggregation_version": 4,
+                          "aggregation": "complete UTC buckets only", "source_rows": source_rows,
+                          "exact_duplicate_rows_removed": source_rows - len(raw),
                           "derived_rows": len(bars)})
     return target
 
@@ -287,10 +315,59 @@ def _read_done(path: Path) -> set[str]:
 
 def _record(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    # An interrupted write may leave one incomplete final JSONL record. Keep
+    # every newline-terminated result and remove only that uncommitted tail.
+    if path.exists() and path.stat().st_size:
+        with path.open("r+b") as handle:
+            handle.seek(-1, os.SEEK_END)
+            if handle.read(1) != b"\n":
+                position = path.stat().st_size
+                while position:
+                    start = max(0, position - 8192)
+                    handle.seek(start)
+                    chunk = handle.read(position - start)
+                    newline = chunk.rfind(b"\n")
+                    if newline >= 0:
+                        handle.truncate(start + newline + 1)
+                        break
+                    position = start
+                else:
+                    handle.truncate(0)
+                handle.flush()
+                os.fsync(handle.fileno())
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n")
         handle.flush()
         os.fsync(handle.fileno())
+
+
+def _preflight_manifest(path: Path, *, data_dir: Path, sources: dict[str, str],
+                        code: dict[str, str], base_settings: dict[str, Any]) -> None:
+    """Reject incompatible output before deriving or replacing cached inputs."""
+    results_path = path.parent / "results.jsonl"
+    if not path.exists():
+        if results_path.exists() and results_path.stat().st_size:
+            raise ValueError("existing results have no manifest; choose a new --output-dir")
+        derived = path.parent / "derived"
+        if derived.is_dir() and any(derived.rglob("*")):
+            raise ValueError("existing derived artifacts have no manifest; choose a new --output-dir")
+        return
+    old = json.loads(path.read_text(encoding="utf-8"))
+    expected = {
+        "schema_version": 2,
+        "data_dir": str(data_dir.resolve()),
+        "sources": sources,
+        "code": code,
+        "base_settings": base_settings,
+        "historical_confidence_policy": (
+            "min_confidence=0 for CPCV: each historical fold starts with no resolved-outcome "
+            "history, so the prospective confidence gate cannot warm up; confidence gating "
+            "remains enabled for paper and forward testing"
+        ),
+        "forward_testing_started": False,
+    }
+    if any(old.get(key) != value for key, value in expected.items()):
+        raise ValueError(f"existing manifest at {path} does not match current code/data/settings; choose a new --output-dir")
 
 
 def _lock_output(path: Path) -> None:
@@ -378,13 +455,25 @@ def main(argv: list[str] | None = None) -> int:
     if not assets:
         print(f"No supported candle caches found in {args.data_dir}")
         return 2
+    if not args.plan:
+        _lock_output(args.output_dir / ".sweep.lock")
+    source_hashes = {str(path): _hash(path) for values in assets.values() for path in values.values()}
+    source_code = _source_fingerprint()
+    base_settings = _historical_base_settings(args.data_dir)
+    manifest_path = args.output_dir / "manifest.json"
+    if not args.plan:
+        try:
+            _preflight_manifest(manifest_path, data_dir=args.data_dir, sources=source_hashes,
+                                code=source_code, base_settings=base_settings)
+        except (OSError, ValueError, AttributeError, json.JSONDecodeError) as exc:
+            print(str(exc))
+            return 3
     # Planning does not write aggregate files. For minute-only coins it reports
     # potential intervals; execution validates complete-bucket availability.
     jobs, coverage = build_jobs(assets, args.output_dir, derive=not args.plan)
-    source_hashes = {str(path): _hash(path) for values in assets.values() for path in values.values()}
     manifest = {"schema_version": 2, "data_dir": str(args.data_dir.resolve()),
-                "sources": source_hashes, "code": _source_fingerprint(), "jobs": jobs, "coverage": coverage,
-                "base_settings": _historical_base_settings(args.data_dir),
+                "sources": source_hashes, "code": source_code, "jobs": jobs, "coverage": coverage,
+                "base_settings": base_settings,
                 "historical_confidence_policy": (
                     "min_confidence=0 for CPCV: each historical fold starts with no resolved-outcome "
                     "history, so the prospective confidence gate cannot warm up; confidence gating "
@@ -392,7 +481,6 @@ def main(argv: list[str] | None = None) -> int:
                 ),
                 "configuration_count": len(jobs), "minimum_per_strategy_coin": MIN_CONFIGURATIONS,
                 "forward_testing_started": False}
-    manifest_path = args.output_dir / "manifest.json"
     if args.plan:
         per_asset = sum(len(v.get("strategies", {})) for v in coverage.values())
         print(f"coins discovered: {len(assets)}; potential strategy/coin pairs: {per_asset}; "
@@ -404,8 +492,6 @@ def main(argv: list[str] | None = None) -> int:
         print("Minute-only derived intervals are checked for complete UTC buckets when execution starts; "
               "the final manifest records any skipped interval or coin.")
         return 0
-    if not args.plan:
-        _lock_output(args.output_dir / ".sweep.lock")
     if manifest_path.exists():
         old = json.loads(manifest_path.read_text(encoding="utf-8"))
         if old != manifest:
