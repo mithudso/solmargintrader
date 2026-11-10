@@ -149,7 +149,7 @@ def checkpoint(home, instance: str, url: str, pid: int | None = None, *, manager
 
 def _read(home: Path) -> dict:
     path = home / CHECKPOINT_NAME
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         _identity(path, fd)
         with os.fdopen(fd, "rb", closefd=False) as handle:
@@ -354,7 +354,7 @@ def ensure(home, manager_home=None, *, on_spawn=None) -> dict:
                 log_path = home / "control-room.log"
                 fd = os.open(
                     log_path,
-                    os.O_CREAT | os.O_WRONLY | os.O_APPEND | os.O_NOFOLLOW,
+                    os.O_CREAT | os.O_WRONLY | os.O_APPEND | os.O_NOFOLLOW | os.O_NONBLOCK,
                     0o600,
                 )
                 try:

@@ -7,6 +7,32 @@ guides. Source documents remain authoritative for their stated version and
 scope. The wiki preserves their text and authorship; it does not rewrite old
 plans as delivered capabilities.
 
+## Project navigation
+
+This existing wiki is the repository's maintained navigation; no second wiki
+service or duplicate command reference is needed. In an installed environment,
+`solbot ui status` discovers the current verified address without starting it.
+`solbot ui open` explicitly starts availability when needed and opens the control
+room; select **Wiki**. The source links below remain usable without a running UI.
+
+| Area | Start here | Authoritative detail |
+| --- | --- | --- |
+| Commands and setup | [Managed suite](bot-manager-managed-suite.md) | [Installation](INSTALLATION.md), [development](DEVELOPMENT.md), [Bot Manager](../botmanager/README.md) |
+| Reference and architecture | [Component map](COMPONENTS.md) | [Architecture](ARCHITECTURE.md), [source file map](codebase-overview.md), [requirements](requirements.md) |
+| Scripts and maintenance | [Script inventory](SCRIPTS.md) | [Testing](TESTING.md), [incident runbook](runbooks/incident.md), [rollback](runbooks/rollback.md) |
+| Strategy and evidence | [Canonical strategy cards](../backtester/strategy_cards/README.md) | [Research survey](../research/STRATEGIES.md), [strategy optimization](strategy-optimization-concept-family.md), [Oracle consumer interface](bot-manager-oracle-interface.md) |
+| Execution and security boundaries | [Security](SECURITY.md) | [Known issues](known-issues.md), [external calls](external-calls.md), [executor rules](../executor/CLAUDE.md) |
+
+For the manager's complete recommended command order, read `solbot --help` or
+`solbot help`. The structured help and parser share the same command registry.
+Use `solbot health-check`, `solbot metrics` and `solbot component-alerts` for
+collector measurements and bounded availability events; use rich account status
+for account evidence. These reads never supply a missing execution certification.
+
+Keep historical research tables, frozen plans and archived liquidity guidance in
+their original scope. The liquidity manager remains disabled and killed. A
+strategy reference is neither a recommendation nor authority to place an order.
+
 ## Find an answer
 
 Search uses every included document's title, source path and full text. The
@@ -91,9 +117,9 @@ inference. Stage a newly created public guide before rebuilding, so it becomes
 part of that reviewed inventory.
 
 ```sh
-python3 /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py
-python3 /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py --check
-python3 -m unittest ecosystem.tests.test_wiki
+INDEX_NO_AUTO=1 python3 /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py
+INDEX_NO_AUTO=1 python3 /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py --check
+INDEX_NO_AUTO=1 python3 -m unittest ecosystem.tests.test_wiki
 ```
 
 Unchanged pages retain their original build provenance, making rebuilds stable
@@ -101,3 +127,25 @@ after unrelated commits. `--refresh-provenance` explicitly refreshes source
 commit bindings for unchanged content. Content changes always update page and
 snapshot hashes. A source reference may be historical; a successful wiki check
 proves snapshot integrity and current source coverage, not trading readiness.
+
+
+## Maintenance ownership
+
+The author of a behavior or command change updates its authoritative guide in the
+same change. The repository reviewer is identified by `.github/CODEOWNERS`.
+Reviewers check this navigation when commands, scripts, component boundaries or
+strategy evidence change. Update the source guide first, then rebuild the
+packaged snapshot with the commands above; never hand-edit the generated bundle.
+
+Commit public source guides before the final provenance build when a committed
+source binding is required. Verify local Markdown links, the wiki check and the
+relevant command parser/help or focused tests. A newly created source page must
+be tracked and pass the explicit allowlist in `ecosystem/wiki.py`. Otherwise add
+a navigation link to the appropriate authoritative guide rather than widening
+public exposure indiscriminately.
+
+The packaged wiki is the maintained runtime documentation surface. No hosted
+GitHub Wiki is required by this architecture; if a future hosted mirror is added,
+record its accessibility and synchronization status separately. A failed hosted
+mirror must not make this repository-local navigation unusable. Do not include
+private memory, transcripts, credentials or machine state in public wiki sources.

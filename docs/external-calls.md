@@ -1,6 +1,7 @@
 # External calls
 
-Inventory reviewed against source on 2026-11-06. A call includes public HTTP/RPC,
+The original inventory was reviewed on 2026-11-06. The managed-suite, Oracle
+and ecosystem boundary supplement below was reviewed on 2026-11-10. A call includes public HTTP/RPC,
 MongoDB, browser/OS services, and child processes. The tables name the transport
 boundary and the logical callers that share it; they do not count each RPC inside a
 Multicall3 batch as a separate transport implementation.
@@ -88,6 +89,39 @@ an inbound boundary: bearer token, loopback default and browser-origin rejection
 optional soltui browser listener is likewise loopback. Neither is a hosted service or
 an MCP server. Maintenance tools may read Git or local files; they must not start
 inference, watchers or services simply because an entry point exists.
+
+## Managed suite, Oracle and ecosystem supplement — 2026-11-10
+
+This supplement inventories the verified new transport owners below. It is not a
+claim that every call site in the expanded repository has been exhaustively
+classified. Existing rows retain their dated source references. The five-standard
+assessment remains incomplete where central operation metadata is absent.
+
+| ID | Source / logical boundary | Target and effect | Bounds, diagnostics and verification |
+| --- | --- | --- | --- |
+| N1 | `oracle/feeds.py` `_get_json`, `JupiterPriceFeed.poll` | Explicit Jupiter Price V3 HTTP GET, reference prices only | Default 5s, capped at 15s; response bound; redirects refused; fixed credential-free failures; no helper retry; `oracle/tests/test_feeds.py`, `oracle/README.md` |
+| N2 | `oracle/server.py` `build_server`, `serve` | Local stdio MCP tools, resources and subscription notifications | Read-only tools; standalone startup may initialize archive schema; bounded history and subscriptions; fixed public failures; real SDK tests in `oracle/tests/test_server.py` and `oracle/tests/test_selected_server.py`; `docs/MCP.md` |
+| N3 | `botmanager/src/botmanager/transport.py` `request` | Same-user manager Unix socket commands | Bounded request/response sizes and deadlines, verified peer/owner; existing manager commands own mutation semantics; `botmanager/tests/test_supervisor.py`, `botmanager/README.md` |
+| N4 | `botmanager/src/botmanager/suite.py` `Suite`, `_start`, `_stop` | Suite control Unix socket and installed availability process | Private lease/generation checks; singleton launch; only owned Popen children may be terminated; durable component alerts; `botmanager/tests/test_suite.py`, `docs/bot-manager-managed-suite.md` |
+| N5 | `botmanager/src/botmanager/suite_service.py` `_invoke` | Fixed launchctl/systemctl user-service lifecycle | 5s invocation bound; command result/registration checks and separate Linux enablement verification; no generic retry; `botmanager/tests/test_suite_service.py`, `docs/bot-manager-managed-suite.md` |
+| N6 | `ecosystem/ui_service.py` `_health`, `ensure` | Loopback HTTP identity GET and installed UI process | 0.4s HTTP probe, bounded body, no redirect/proxy; lock/checkpoint/version/manager-home identity; bounded startup; adopted PIDs are not killed; `ecosystem/tests/test_ui_service.py`, `docs/ECOSYSTEM-WIKI.md` |
+| N7 | `ecosystem/installation.py` `_command`, `verify_environment` | Explicit venv/pip installation and installed-runtime/MCP verification subprocesses | Separate bounded creation/install/health deadlines, output cap and child reap; receipts validate package identity; bootstrap start is explicit; `ecosystem/tests/test_setup.py`, `docs/ECOSYSTEM-BOOTSTRAP.md` |
+| N8 | `botmanager/src/botmanager/research_owner.py` `OwnerClient.call` | Reviewed installed research-owner subprocess protocol | Fixed isolated module launch and narrow environment, 120s bound, identity checks and fixed refusal; no inferred retry of a final-evidence action; `botmanager/tests/test_research.py`, `botmanager/README.md` |
+| N9 | `soltui/native_host.py`, `soltui/native_host_install.py`; `extension/src/core/control-room.js` | Chrome native-messaging suite status/health/explicit start | Origin allowlist and fixed locally bound homes; no browser-supplied command/path/URL; missing helper stays unknown; `soltui/tests/test_native_suite.py`, `extension/test/control-room.test.js`, `docs/bot-manager-managed-suite.md` |
+| N10 | `ecosystem/telemetry.py`, `ecosystem/control.py` | Sanitized SQLite event mirror and durable local action receipts | Bounded cursors, explicit unavailable states and owner-scope checks; original evidence stays with owner; `ecosystem/tests/test_telemetry.py`, `ecosystem/tests/test_control.py`, `docs/ECOSYSTEM-CONTROL-ROOM.md` |
+
+N2 is the repository's actual MCP server. It does not make the extension HTTP API
+or manager socket into MCP services. N4 starts availability, not a recorder or
+research optimizer. N5 does not authorize changing a bot's desired intent. The
+suite can restart its own UI child; an incompatible or hung adopted owner remains
+a refusal rather than a target for guessed-PID termination.
+
+None of N1–N10 establishes a common five-standard operations registry. Component
+CLI registries, typed errors, durable action journals and summary health cards are
+useful implementations, but do not substitute for one generated per-call inventory,
+central JSONL failure schema, complete remediation map or generated call cards.
+Persistent data/evidence paths have their own verification tests; this review does
+not infer universal datastore verification from the presence of those tests.
 
 ## Five-standard audit
 

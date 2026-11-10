@@ -686,9 +686,18 @@ def _start_locked(home, ecosystem_home):
             save_config(home, ecosystem_home)
             path = directory / "suite.stderr.log"
             fd = os.open(
-                path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NOFOLLOW, 0o600
+                path,
+                os.O_WRONLY | os.O_APPEND | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
+                0o600,
             )
             try:
+                info = os.fstat(fd)
+                if (
+                    not stat.S_ISREG(info.st_mode)
+                    or info.st_uid != os.getuid()
+                    or stat.S_IMODE(info.st_mode) & 0o077
+                ):
+                    raise OSError("suite_log_unverified")
                 with os.fdopen(fd, "ab", closefd=False) as log:
                     subprocess.Popen(
                         [

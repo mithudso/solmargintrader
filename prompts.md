@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 185
+Version: 186
+Delta: v185 to v186; record authorized repo-bootstrapper execution.
 Delta: v184 to v185; record repo-bootstrapper wiki requirement.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
@@ -1731,4 +1732,11 @@ Resume steering after initial read-only inspection:
 
 ```text
 resume
+```
+
+
+## 2026-11-10 — repository bootstrap — TASK-1256
+
+```text
+Run the repo-bootstrapper skill on this repo
 ```

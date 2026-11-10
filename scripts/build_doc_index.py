@@ -30,7 +30,8 @@ REPO = Path(__file__).resolve().parents[1]
 OVERVIEW = REPO / "docs" / "codebase-overview.md"
 INDEX = REPO / "docs" / "high_signal_file_index.json"
 
-COMPONENTS = ("backtester", "research", "extension", "soltui", "mongo", "liquidity")
+COMPONENTS = ("backtester", "research", "extension", "soltui", "mongo", "liquidity",
+              "executor", "botmanager", "oracle", "ecosystem")
 
 # `| `some/path` | description |` -- the table shape used throughout the overview.
 ROW = re.compile(r"^\| `([\w./-]+)` \| (.+?) \|$", re.MULTILINE)
@@ -50,7 +51,7 @@ KIND_BY_SUFFIX = {
 def git_ok(*args: str) -> bool:
     """True when the git command exits 0."""
     return (
-        subprocess.run(["git", *args], cwd=REPO, capture_output=True).returncode == 0
+        subprocess.run(["git", *args], cwd=REPO, capture_output=True, check=False).returncode == 0
     )
 
 
@@ -91,7 +92,7 @@ def committed_line_count(rel: str) -> int | None:
     commit, which reads as drift in a diff and is not.
     """
     done = subprocess.run(
-        ["git", "show", f"HEAD:{rel}"], cwd=REPO, capture_output=True, text=True
+        ["git", "show", f"HEAD:{rel}"], cwd=REPO, capture_output=True, text=True, check=False
     )
     if done.returncode != 0:
         return None

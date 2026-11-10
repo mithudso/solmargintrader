@@ -168,7 +168,7 @@ def _supported(platform_name):
 
 def _read_definition(path):
     """Do not trust a filename alone as authority to replace or unload a job."""
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         info = os.fstat(fd)
         if (

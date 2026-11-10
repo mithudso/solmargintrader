@@ -31,8 +31,8 @@ coverage and lifecycle limits.
 
 ## Managed bot suite
 
-The current coordinated candidate is manager 0.7.0, research-runtime 0.4.0 and
-ecosystem 0.4.0, with backtester 0.2.0, Oracle 0.2.2, optional executor 0.2.0
+The current coordinated candidate is manager 0.7.1, research-runtime 0.4.0 and
+ecosystem 0.4.1, with backtester 0.2.0, Oracle 0.2.2, optional executor 0.2.0
 and extension source 0.6.5. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
@@ -110,16 +110,25 @@ useful: it identified the intended venue, yielded real token mints, and revealed
 
 **Jupiter Perps has no public REST write API.** Jupiter's docs state the Perps API is a work in
 progress and point at Anchor IDL parsing, so opening or closing a leveraged position is not
-shippable from a service worker today. The executable venue is **Trigger V2**, whose price orders
-are exactly the ladder a grid needs. Both sit behind one `VenueAdapter`; Perps drops in when its API
-ships.
+shippable from a service worker today. The retained live-capable adapter targets **Trigger V2** price orders. Its bundled
+signing path remains blocked until an independent transaction-intent verifier is
+available. Both sit behind one `VenueAdapter`; the read-only Perps adapter does
+not imply an implemented leveraged-order path.
+
+## Project wiki
+
+The existing [control-room wiki](docs/ECOSYSTEM-WIKI.md) is the maintained project
+navigation. It links verified commands, reference guides, scripts and strategy
+material to their authoritative sources. Open the control room with `solbot ui open`
+and select its Wiki view; `solbot ui status` only discovers a verified current URL.
+The wiki guide also works from a source checkout without starting any service.
 
 ## Docs
 
 **Start here**
 
-- [docs/onboarding.md](docs/onboarding.md) — a first hour that ends with every component run
-- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all seven components
+- [docs/onboarding.md](docs/onboarding.md) — an offline-first entry path and optional component setup
+- [docs/codebase-overview.md](docs/codebase-overview.md) — the file map, all ten components
 - [docs/COMPONENTS.md](docs/COMPONENTS.md) — what each module does and depends on
 
 **Working in it**

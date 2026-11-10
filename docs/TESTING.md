@@ -30,10 +30,10 @@ on macOS and independently verify its installed runtime/profile:
 python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
 ```
 
-## Current 0.6 candidate gates
+## Current managed-suite candidate gates
 
-The coordinated candidate uses manager 0.6.0, research-runtime 0.3.0 and ecosystem
-0.3.0. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
+The coordinated candidate uses manager 0.7.1, research-runtime 0.4.0 and ecosystem
+0.4.1. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
 and remaining evidence gates separate from the historical M4 0.5.0 release.
 
 Run the separate browser-owner paper gate from the repository root:
@@ -280,3 +280,24 @@ liquidity daemon, or venue envelope matches the tested source. Record those acce
 gaps separately. Installed-service tests must not be replaced by process-liveness alone.
 
 Normal PR and push CI runs a bounded SolTUI bridge smoke gate plus modules mapped to changed areas. Unknown paths retain the smoke gate. This is not full-suite coverage. The four-shard full suite requires manual dispatch with `run_soltui_suite=true`.
+
+
+## Managed availability and native Chrome recovery
+
+Run the manager lifecycle and machine-health tests with the source package on the
+import path. The ecosystem suite exercises actual loopback health routes, scoped
+UI ownership and wiki provenance. Use INDEX_NO_AUTO=1 for all these checks.
+
+```bash
+INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. python3 -m unittest discover -s botmanager/tests -t botmanager
+INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. python3 -m unittest discover -s ecosystem/tests -t .
+```
+
+The separate `extension/tools/control-room-e2e.mjs` gate requires a compatible
+regular installed runtime selected by SOLBOT_TEST_PYTHON and
+SOLBOT_TEST_INSTALLED=1. It uses short isolated private homes and a temporary
+Chrome profile to verify fixed native startup, actual UI opening, owned UI crash
+recovery, health reads, helper failure semantics and disarmed defaults. The
+ordinary `extension/tools/e2e.mjs` gate retains its stronger no-start restrictions.
+CI runs both. These checks do not prove physical reboot or everyday-profile
+installation; actual installed acceptance is a separate recorded gate.

@@ -3,37 +3,56 @@
 What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md`
 is the flat file map; this page is the shape of the thing.
 
-Dependency direction, strictly one-way:
+The ten components have explicit ownership boundaries. `backtester/` supplies the
+canonical simulation package to research and headless runtimes. Oracle supplies
+source-labelled observations and forecasts. Bot Manager owns specifications,
+account state and paper lifecycle; ecosystem coordinates existing research owners
+and serves the control room. These responsibilities do not require MongoDB.
 
-```
-extension/  (JavaScript)      soltui/  (Python)        mongo/  (Python)
-     |                             |                        |
-     | ports grid economics        | reads                  | reads all of it
-     v                             v                        v
-backtester/core/gridsim.py <-- backtester/ <-- research/ ---+
-```
-
-`backtester/` depends on nothing else in the repo. `research/` imports `backtester`.
-`soltui/` reads the research side. `mongo/` imports both in order to load them and is
-imported by neither, so dropping it changes nothing. `extension/` shares no code with any
-of them — only an obligation, described below. `liquidity/` is self-contained (own venv, own
-tests) and shares only files with soltui: it writes `~/.aero-lp/status.json` and `scout.json`,
-and soltui's Liquidity tab reads them. The tab can also create/remove the daemon's `KILL`
-flag. It never signs or imports the liquidity executor.
+The extension and SolTUI communicate through framed native messages rather than
+sharing runtime code. Their trading paths retain independent gates. The executor
+has its own guarded Solana execution boundary. Liquidity is retained for reference
+and remains disabled with its kill switch set.
 
 ---
 
 ## `botmanager/`
 
-The standalone `solbot` application separates durable bot specifications, typed default
-resolution, command dispatch and SQLite persistence. Its CLI delegates to one registry.
-An explicit supervisor runs independent grid reference-paper workers with lifetime
-locks, generation fences and atomic cursor/fill checkpoints. It reuses the packaged
-canonical simulator. Snapshot EOF remains a visible wait; prospective Jupiter data
-and other new strategy runtimes follow later milestones. Read commands do not
-initialize a data directory. Legacy discovery/control adapters
-preserve the existing owner and distinguish unreachable or incompatible installations
-from an empty inventory. See `botmanager/README.md` for delivered commands and limitations.
+The standalone manager 0.7 separates durable specifications, typed defaults,
+command dispatch and SQLite persistence. Grid, DCA, Trend and Momentum paper
+workers reuse the packaged canonical simulator and source-bound evidence. Reads
+do not initialize an absent data home. Research, reporting, learning, backup and
+legacy controls preserve their established owners and evidence gates.
+
+The availability suite runs the existing Supervisor in process. It starts or
+adopts the UI only after verifying its manager home, ecosystem home, generation,
+version, lock and HTTP identity. Compact health and Prometheus measurements remain
+separate from rich account status and trading readiness. See
+[managed-suite operations](bot-manager-managed-suite.md).
+
+## `ecosystem/`
+
+The 0.4 package coordinates F5, prospective paper trials, Oracle archives and Bot
+Manager through their existing owners. The independent loopback control room uses
+scoped durable actions; it stays separate from pipeline execution. The packaged
+wiki preserves authoritative source text and provenance. The manual Jupiter V2
+path provides unsigned previews; submit remains blocked pending independent
+semantic economic verification. See [control-room operations](ECOSYSTEM-CONTROL-ROOM.md).
+
+## `oracle/`
+
+Oracle 0.2.2 owns instrument-bound observations, shadow forecasts and historical
+evidence. Its MCP surface exposes read-only tools and subscriptions. Reference
+prices, vote agreement and receipt freshness remain distinct from executable
+quotes, source certification and profit. It never loads keys or submits orders.
+See [Oracle integration](bot-manager-oracle-interface.md).
+
+## `executor/`
+
+The optional executor owns guarded Solana spot execution through its separate
+virtual environment. Rails, semantic transaction verification and an append-only
+submission journal gate that path. Unknown submissions cannot be retried as if
+absent. Dry-run remains the default. Read `executor/CLAUDE.md` before changes.
 
 ---
 
@@ -218,7 +237,9 @@ said.
 
 ## `soltui/`
 
-macOS menu-bar app plus a TUI. Read-only over the research side; places no orders.
+macOS menu-bar app plus a TUI and headless research runtime. Research remains
+paper-only. Manual Coinbase spot orders use a separately armed path; manual Jupiter
+V2 submit remains blocked pending independent economic verification.
 
 - `app.py` is the menu-bar app; `tui.py` the terminal UI; `signals.py`, `status.py`,
   `roster.py`, `paper.py` the display model.
@@ -228,10 +249,11 @@ macOS menu-bar app plus a TUI. Read-only over the research side; places no order
 - `setup_app.py` is an **alias** build, so the bundle references this checkout and must be
   rebuilt if the repo moves. Never install a bundle built from a worktree — the worktree
   gets deleted and login startup breaks silently.
-- `commands.py` is the one registry of every console action (46 commands); `tui.py`, `cli.py`
+- `commands.py` is the one registry of every console action; `tui.py`, `cli.py`
   (`soltui call|list`), `api.py` (`soltui api`, loopback + bearer token) and `native_host.py` (Chrome
   native messaging, installed by `native_host_install.py`) all call `dispatch()` and return the same
-  envelope. `liquidity.resume` is `requires_confirm`; no command moves funds. `presets.py` turns the Top 5 into
+  envelope. `liquidity.resume` is `requires_confirm`; keep the archived liquidity service disabled.
+  Manual order commands retain their separate confirmation and arming gates. `presets.py` turns the Top 5 into
   one-click presets (`top5.presets`), `netpct.py` is the one net % definition and `pnl.py` the pure P&L maths
   behind `pnl.summary|series|breakdown`; `wallet.py` is the read-only wallet
   scan (`portfolio.scan`, `wallet.key_sources`): public endpoints only, no key, no signing; `hdwallet.py` (BIP32
@@ -245,7 +267,9 @@ macOS menu-bar app plus a TUI. Read-only over the research side; places no order
 
 ## `liquidity/`
 
-An Aero (aero.xyz) Slipstream liquidity manager on Base. Full detail in `liquidity/README.md`.
+Archived on 2026-11-08. The retained Aero Slipstream liquidity manager on Base
+contains live-capable code, but its service remains disabled and its kill switch
+set. Full detail in `liquidity/README.md`; do not reactivate it during onboarding.
 
 ```python
 metrics.evaluate_pool(chain, market, pool, deposit_usd) -> PoolMetrics   # income, LVR, edge, model + backtest APR

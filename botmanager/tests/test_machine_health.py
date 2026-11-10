@@ -3,6 +3,8 @@
 import json
 import os
 import sqlite3
+import subprocess
+import sys
 import tempfile
 import time
 import unittest
@@ -79,6 +81,86 @@ class MachineHealthTests(unittest.TestCase):
         path.write_text("[]")
         with self.assertRaises(TypeError):
             health.private_read(path)
+
+    def test_private_fifo_is_refused_without_waiting_for_a_writer(self):
+        fifo = self.root / "control-server.json"
+        os.mkfifo(fifo, 0o600)
+        readers = (
+            ("botmanager.machine_health", "private_read", fifo),
+            ("botmanager.suite_service", "_read_definition", fifo),
+            ("ecosystem.ui_service", "_read", self.root),
+        )
+        for module, name, path in readers:
+            with self.subTest(reader=module + "." + name):
+                code = (
+                    "import sys; from pathlib import Path; "
+                    "from botmanager.domain import ManagerError; "
+                    f"from {module} import {name} as read_record\n"
+                    "try: read_record(Path(sys.argv[1]))\n"
+                    "except (ValueError, ManagerError): raise SystemExit(0)\n"
+                    "raise SystemExit(1)\n"
+                )
+                result = subprocess.run(
+                    [sys.executable, "-c", code, str(path)],
+                    capture_output=True,
+                    timeout=2,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr.decode())
+
+    def test_fifo_startup_logs_are_refused_without_spawning_children(self):
+        programs = {
+            "ui": (
+                "from ecosystem.ui_service import ensure\n"
+                "value = ensure(home)\n"
+                "assert not value['running']\n"
+                "assert value['reason'] == 'control_server_start_failed'\n"
+            ),
+            "suite": (
+                "from botmanager.suite import _start\n"
+                "with patch('botmanager.service.installed_executable', return_value=Path(sys.executable)), "
+                "patch('botmanager.suite_service.operation', return_value={'installed': False}):\n"
+                " try: _start(home, home / 'ecosystem')\n"
+                " except ManagerError as exc:\n"
+                "  assert exc.code == 'suite_unavailable'\n"
+                "  raise SystemExit(0)\n"
+                " raise AssertionError('FIFO log was accepted')\n"
+            ),
+        }
+        for owner, program in programs.items():
+            for with_reader in (False, True):
+                with self.subTest(owner=owner, with_reader=with_reader):
+                    home = self.root / f"{owner}-{with_reader}"
+                    directory = home if owner == "ui" else home / ".suite"
+                    directory.mkdir(mode=0o700, parents=True)
+                    fifo = directory / (
+                        "control-room.log" if owner == "ui" else "suite.stderr.log"
+                    )
+                    os.mkfifo(fifo, 0o600)
+                    reader = (
+                        os.open(fifo, os.O_RDONLY | os.O_NONBLOCK)
+                        if with_reader
+                        else None
+                    )
+                    code = (
+                        "import sys; from pathlib import Path; from unittest.mock import patch; "
+                        "from botmanager.domain import ManagerError\n"
+                        "home=Path(sys.argv[1])\n"
+                        "with patch('subprocess.Popen', side_effect=AssertionError('unexpected child')):\n"
+                        + "\n".join(" " + line for line in program.splitlines())
+                        + "\n"
+                    )
+                    try:
+                        result = subprocess.run(
+                            [sys.executable, "-c", code, str(home)],
+                            capture_output=True,
+                            timeout=2,
+                            check=False,
+                        )
+                    finally:
+                        if reader is not None:
+                            os.close(reader)
+                    self.assertEqual(result.returncode, 0, result.stderr.decode())
 
     def archive(self, observed):
         path = self.ecosystem / "oracle/SOL/history.sqlite3"

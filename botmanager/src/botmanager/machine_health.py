@@ -30,7 +30,7 @@ STATES = ("up", "degraded", "down", "unknown")
 
 def private_read(path: Path, *, limit: int = MAX_BYTES):
     """Read one private bounded JSON object without following its final symlink."""
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         info = os.fstat(fd)
         if (

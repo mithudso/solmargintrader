@@ -1,7 +1,7 @@
 # Solbot managed availability, UI access and platform setup
 
-Version: 1.0.0
-Delta: Initial 0.7 managed-suite operations, complete CLI walkthrough, component telemetry and platform comparison.
+Version: 1.0.1
+Delta: Patch-candidate environment path refreshed; installed 0.4.0 remains immutable. Initial 0.7 managed-suite operations, complete CLI walkthrough, component telemetry and platform comparison.
 
 The manager 0.7 CLI contains the ordered command reference itself:
 
@@ -174,10 +174,10 @@ reviewed checkout under the following declared location:
 ```sh
 export SOLBOT_REPO="$HOME/dev/solmargintrader"
 git clone https://github.com/mithudso/solmargintrader.git "$SOLBOT_REPO"
-python3.13 -m venv "$HOME/.venvs/solecosystem-0.4.0"
-export SOLBOT_PYTHON="$HOME/.venvs/solecosystem-0.4.0/bin/python"
+python3.13 -m venv "$HOME/.venvs/solecosystem-0.4.1"
+export SOLBOT_PYTHON="$HOME/.venvs/solecosystem-0.4.1/bin/python"
 "$SOLBOT_PYTHON" -m pip install "$SOLBOT_REPO/backtester" "$SOLBOT_REPO/oracle" "$SOLBOT_REPO/botmanager" "$SOLBOT_REPO/soltui" "$SOLBOT_REPO/ecosystem"
-export PATH="$HOME/.venvs/solecosystem-0.4.0/bin:$PATH"
+export PATH="$HOME/.venvs/solecosystem-0.4.1/bin:$PATH"
 export SOLBOT_HOME="$HOME/.config/solbot"
 export SOLBOT_ECOSYSTEM_HOME="$HOME/.local/share/solmargintrader/ecosystem-paper-v2"
 solbot --help

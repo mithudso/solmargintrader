@@ -17,6 +17,11 @@ current with the target, completed work, verification, and remaining steps. Incr
 record version and its delta fields on each update. These workflow versions are separate
 from component package versions. Commit only the files owned by the current task.
 
+## Repository shape
+
+See `docs/COMPONENTS.md` for APIs and `docs/codebase-overview.md` for source paths.
+The existing maintained wiki is documented in `docs/ECOSYSTEM-WIKI.md`.
+
 ## What this is
 
 Ten components with different risk profiles. Know which one you are in:
@@ -179,16 +184,23 @@ alone never proves absence. Manual Coinbase orders remain a separately armed pat
 
 <!-- llms-routing:start -->
 ## llms routing
-> Cached from the llms files below on 2026-11-08; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
+> Cached from the llms files below on 2026-11-10; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
 
 | File | Path | Holds | Ask it for |
 |---|---|---|---|
-| llms.txt | ~/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family/llms.txt | Seven private reference packs compile accepted authored claims about executable short-horizon SOL signals. They retain scoped evidence and open limitations; this suite does not demonstrate a live trading edge. | Products, Navigation |
-| llms-sitemap.txt | ~/.global-ai-hub/llms-concepts/five-minute-sol-perps-task808-suite.family/llms-sitemap.txt | Kind: store · Entries: 7 · Internal private reading aids | Files, Resources |
+| llms.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Read in order, Dossier extras |
+| llms-facts.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-facts.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Facts |
+| llms-sitemap.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-sitemap.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Files, Resources |
+| llms-small.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-small.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Read first, Current references |
+| llms-full.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-full.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Facts, Historical research, Component and maintenance routing, Coverage |
+| llms-executable.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-executable.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Scope, Entrypoints, Quick answers |
+| llms-history.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-history.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | History |
+| llms-indexes.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-indexes.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Indexes |
+| llms-infra.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-infra.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Infrastructure |
 
 ### Quick answers
 
-_none found: no misbelief, default, file-role, formula or command lines in the facts files_
+- Misbelief: SolTUI is read-only and cannot move money. Actually: it retains a separately armed manual Coinbase path. [src: /Users/mitch/.local/state/solbot/bootstrap-1256/llms-before/llms-small.txt#solmargintrader-small; CLAUDE.md#what-this-is] — ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-facts.txt:7
 
 ### Indexes
 

@@ -1,25 +1,35 @@
 # Onboarding
 
-An offline verification path, followed by optional component setup. Identify the two
-components that can move money before running any live command.
+An offline verification path, followed by optional component setup. Read each execution boundary before running any live command.
 
 ## The one thing to know first
 
-Seven components with different failure modes:
+Ten components with different failure modes:
 
 | Component | Worst case if you break it |
 | --- | --- |
+| `ecosystem/` | Incorrect paper orchestration or UI owner control |
+| `oracle/` | Mislabelled observations or unverified forecasts |
+| `botmanager/` | Incorrect paper account state, evidence or lifecycle ownership |
 | `backtester/` | A dishonest number. Nobody loses money, but a decision built on it might |
 | `research/` | An overstated result |
-| `soltui/` | A wrong pixel |
+| `soltui/` | Incorrect research state or a separately armed manual Coinbase order |
 | `extension/` | **A real order for real money** |
 | `mongo/` | Wrong derived research records; selected collections are dropped on load |
-| `liquidity/` | **A real Base transaction or LP position change** |
+| `liquidity/` | **Retained live-capable code** — archived, disabled and killed |
 | `executor/` | **A real Solana swap for real money** |
 
 Read `CLAUDE.md` before touching anything. It carries the non-negotiables per component and
 they are not stylistic — each one is there because the failure it prevents already
 happened or was one review away from happening.
+
+## Find current operations first
+
+The [project wiki](ECOSYSTEM-WIKI.md) groups commands, reference, scripts and
+strategy guides. For the installed managed suite, begin with `solbot --help` and
+`solbot ui status`. Opening or starting the suite is an explicit operation; follow
+[managed-suite setup](bot-manager-managed-suite.md) for a fresh installation and
+macOS/Linux/Windows differences. Do not replace a running experiment's environment.
 
 ## Step 1 — get the Python side running (10 minutes)
 
@@ -28,7 +38,7 @@ pip install -r backtester/requirements.txt
 python3 -m unittest discover -s backtester/tests -t .
 ```
 
-If that passes, the backtester and research components are healthy. No data needed yet —
+If that passes, the offline backtester and research tests pass. No data needed yet —
 the suite uses a synthetic loader precisely so tests need no network.
 
 ## Step 2 — fetch data and run a backtest (10 minutes)
@@ -71,12 +81,12 @@ The dry run is the integration gate. It is the only check that closes a round tr
 is the only one that catches a zero-spread regression — the bug where an exit rests at the
 level it was bought at, capturing nothing and paying two fees.
 
-Then read three files, in this order:
+Then read three files from the repository root, in this order:
 
-1. `src/core/commands.js` — the single registry. Three surfaces are thin adapters over it.
-2. `src/core/risk.js` — the rails. Note `normaliseState`: rails **fail closed**, because a
+1. `extension/src/core/commands.js` — the single registry. Three surfaces are thin adapters over it.
+2. `extension/src/core/risk.js` — the rails. Note `normaliseState`: rails **fail closed**, because a
    missing or NaN field must not silently disable one.
-3. `src/core/engine.js` — reconcile, then plan. The venue is the source of truth; local
+3. `extension/src/core/engine.js` — reconcile, then plan. The venue is the source of truth; local
    state is a cache.
 
 You may load it unpacked (`chrome://extensions` → Developer mode → Load unpacked →
@@ -106,8 +116,9 @@ python3 -m unittest discover -s mongo/tests -t .
 ```
 
 The MongoDB integration tests skip when no server is available. Liquidity's default test
-selection excludes live network calls. Read `liquidity/README.md` and
-`liquidity/CLAUDE.md` before any daemon install: its service installer defaults to live mode.
+selection excludes live network calls. Read `liquidity/README.md` and `liquidity/CLAUDE.md` for historical context.
+The liquidity service remains disabled and killed; onboarding does not install or
+reactivate it. Its retained installer can select live mode, so do not run it here.
 
 ## Step 7 — confirm you can verify your own work (5 minutes)
 

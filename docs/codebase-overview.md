@@ -3,23 +3,73 @@
 A file map for orientation, grouped by directory. Every path here is checked by
 `scripts/check_docs.py`, so a rename that is not reflected below fails the build.
 
-Eight components with separate execution boundaries:
+Ten components with separate execution boundaries:
 
 | Component | Language | Can it move money? |
 | --- | --- | --- |
-| `botmanager/` | Python 3.13 | No — CLI and bounded grid reference-paper runtime; paper/disarmed, legacy capabilities explicit |
+| `ecosystem/` | Python 3.13 | No — paper orchestration, owner controls and local control room |
+| `oracle/` | Python 3.13 | No — source-labelled observations and shadow forecasts |
+| `botmanager/` | Python 3.13 | No — manager 0.7, fenced paper workers and availability suite |
 | `mongo/` | Python 3.13 + pymongo | No — a derived datastore, rebuildable |
 | `research/` | Python 3.13 | No — analysis over the backtester |
-| `soltui/` | Python 3.13 | No — read-only display |
+| `soltui/` | Python 3.13 | **Yes** — manual Coinbase path is separately armed; research runtime remains paper-only |
 | `backtester/` | Python 3.13 | No — simulation only, by design |
 | `extension/` | JavaScript (ESM, no deps) | **Yes** |
-| `liquidity/` | Python 3.13 + web3 (own venv) | **Yes** — live Aero LP daemon (owner-authorized) |
+| `liquidity/` | Python 3.13 + web3 (own venv) | **Yes in retained code** — archived; service disabled and kill switch set |
 | `executor/` | Python 3.13 + solders (own venv) | **Yes** — guarded Jupiter swaps (dry-run by default) |
 
 Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 component.
 
 ---
+
+## `ecosystem/` — paper orchestration and control room
+
+The 0.4 package coordinates existing owners and serves the independent local UI.
+It never starts a second recorder or changes a frozen research owner's version.
+
+| Path | What it is |
+| --- | --- |
+| `ecosystem/cli.py` | Installed solecosystem command parser and dispatch |
+| `ecosystem/runner.py` | Resumable paper pipeline coordination |
+| `ecosystem/recovery.py` | Existing-owner and interrupted-pipeline recovery |
+| `ecosystem/control.py` | Scoped paper actions and durable action receipts |
+| `ecosystem/web.py` | Loopback control room and collector routes |
+| `ecosystem/ui_service.py` | Verified UI checkpoint, manager binding and startup |
+| `ecosystem/wiki.py` | Validated packaged documentation catalog and page reads |
+| `scripts/build_ecosystem_wiki.py` | Offline public-document snapshot generator |
+| `docs/ECOSYSTEM-WIKI.md` | Project wiki navigation and maintenance ownership |
+
+## `oracle/` — observations and shadow evidence
+
+Oracle 0.2.2 exposes instrument-bound observations, forecasts and history without
+signing or submitting orders. Reference forecasts do not certify execution.
+
+| Path | What it is |
+| --- | --- |
+| `oracle/cli.py` | Explicit source/archive CLI |
+| `oracle/engine.py` | Observation and strategy evaluation owner |
+| `oracle/store.py` | Historical observation archive |
+| `oracle/reader.py` | Bounded read-only archive access |
+| `oracle/server.py` | Read-only MCP tools and subscriptions |
+| `oracle/guidance.py` | Source-linked consumer guidance |
+| `oracle/voting.py` | Versioned source-labelled voting policy |
+
+## `botmanager/` — persistent paper lifecycle and availability
+
+Manager 0.7 reuses canonical simulation and existing evidence owners. The suite
+runs the established Supervisor in process and starts or adopts a scoped UI.
+
+| Path | What it is |
+| --- | --- |
+| `botmanager/src/botmanager/registry.py` | Shared command definitions and dispatch |
+| `botmanager/src/botmanager/supervisor.py` | Fenced worker lifecycle and desired intent |
+| `botmanager/src/botmanager/ledger.py` | Durable runtime/account state |
+| `botmanager/src/botmanager/suite.py` | Availability supervision and bounded component alerts |
+| `botmanager/src/botmanager/suite_service.py` | Fixed installed launchd/systemd user-service definitions |
+| `botmanager/src/botmanager/machine_health.py` | Compact inert measurements and Prometheus rendering |
+| `botmanager/src/botmanager/walkthrough.py` | Recommended complete command-stage walkthrough |
+| `docs/bot-manager-managed-suite.md` | Installed operations and platform setup |
 
 ## `backtester/` — offline simulation
 
@@ -296,8 +346,9 @@ journal. Dry-run by default. Agent rules: `executor/CLAUDE.md`.
 
 ## `liquidity/` — Aero Slipstream LP manager
 
-Manages concentrated-liquidity positions on Aero (Base). It works alongside the trading strategies, not in
-place of them. In live mode it signs real transactions. Full detail: `liquidity/README.md`; agent rules:
+Archived on 2026-11-08. The retained implementation can manage concentrated-liquidity
+positions on Aero (Base) and sign transactions, but the service remains disabled with
+its kill switch set. Do not reactivate it during setup or documentation work. Full detail: `liquidity/README.md`; agent rules:
 `liquidity/CLAUDE.md`.
 
 | File | Role |

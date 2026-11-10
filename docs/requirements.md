@@ -7,9 +7,14 @@ These requirements describe existing code boundaries, not future product promise
 | Backtester | Run strategy/exposure and ladder-grid simulations from local bars, with costs and no lookahead | `backtester/tests/`; strategy-card and grid parity checks |
 | Research | Preserve source/checksum/evidence limits and distinguish in-sample rankings from held-out results | `research/verify_numbers.py`, CPCV and interpretation tests |
 | Extension | Reconcile before plan; enforce fail-closed risk rails; persist intents before submission | `extension/test/`, offline dry run |
-| Soltui | Display research/paper/liquidity state without signing; make explicit fetch/worker/KILL controls visible | `soltui/tests/`; installed app acceptance remains separate |
+| Soltui | Provide research and paper controls; isolate the separately armed manual Coinbase order path | `soltui/tests/`; installed app acceptance remains separate |
 | MongoDB | Rebuild selected derived collections with provenance; repeated loads must not duplicate bars | `mongo/tests/`; server-backed cases skip if MongoDB is unavailable |
-| Liquidity | Simulate every sequence, obey caps/allow-list/kill switch, preserve partial results and transaction hashes | Own pytest/Ruff suite; network simulation and live acceptance are separate |
+| Liquidity | Retain archived LP implementation; keep its daemon/scout disabled and kill switch set | Own pytest/Ruff suite; network simulation and live acceptance are separate |
+
+| Bot Manager | Preserve specifications and desired intent; use bounded owner-aware paper workers and evidence gates | `botmanager/tests/`; independent installed acceptance |
+| Oracle | Preserve source/instrument provenance and serve read-only forecast/history MCP; never sign or submit | `oracle/tests/`; installed MCP checks |
+| Ecosystem | Reuse existing research owners; maintain scoped paper control room and compact availability measurements | `ecosystem/tests/`; isolated native/Chrome gate |
+| Executor | Verify exact swap intent, hard rails, simulation and one-send reconciliation before signing | `executor/tests/`; real execution is a separate gate |
 
 ## Runtime and dependency requirements
 
