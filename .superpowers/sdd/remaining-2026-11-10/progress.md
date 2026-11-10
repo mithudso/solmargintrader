@@ -1,4 +1,6 @@
-Version:9
+Version:11
+Delta: v10 to v11; full303sourcegatecomplete after finalshutdownfix, installedSup receiptscomplete.
+Delta: v9 to v10; realshutdown-orderrepair680afa8acceptedsource, freshinstalledSupdelta+full303sourceactive.
 Delta: v8 to v9; independentinstalledacceptancePASS, finalCIrerun/alias/merge/cleanupremain.
 Delta: v7 to v8; fixLinuxfixture portability whilepreservingactualmacOSloadCI and currentassetbinding.
 Delta: v6 to v7; source/reviewaccepted, finalwheelcandidatesfrozen, installed/deliverypending.
@@ -23,3 +25,7 @@ Finalgates: manager301PASS; affectedSolTUI219PASS(1skip); canonical1003PASS(1ski
 CI6aadd54onlyLinuxloadfixturefailed(macOS-onlysandboxcorrectlyrefused); test-onlyfixtureselectionrepair andactualmacOSloadCIgate pendingnewheadchecks. Allruntimecodehashesunchanged. InstalledM4/secondenv/4familycontinuationpassed; operations/keylessexecutor/learning/cleanup active. Wikiassetv2clarifieshumanCSVstdout.
 
 Installedacceptance24checksPASS; regularmanager/eco1680exactsemanticfiles,executor22. Originaldemo7filesunchanged;fixtureprocessesgone. Portableload2testsPASS32.224s, strict15sunchanged. RemainingonlyfinalheadCI+stablealiasactualcheck+merge/remoteproof+safeownedcleanup+trackerclose.
+
+MacCIshutdown2.405sfailedunchanged2s:680afa8reapsallownedchildrenbeforeSQLite.21covering+3independentshutdowntestspass,Ruff0. Freshmanagerwheelbothcandidates/pipcheck0; installedSupdeltaawaited. Finalfull303source/CInewhead/alias/merge/cleanupremain.
+
+Full303manager104.139sexit0 after680afa8. Bothregularidentity+confirmedstoppedchildinstalledshutdownreceiptscomplete. FinalCI/alias/merge/cleanup/trackerclose remain.

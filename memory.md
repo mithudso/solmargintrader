@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 376
+Version: 378
+Delta: v377 to v378; final full303 source suite passed after shutdown fix.
+Delta: v376 to v377; retain CI shutdown-order repair and fresh manager candidate revalidation.
 Delta: v375 to v376; record independent installed acceptance and final CI-only delivery tail.
 Delta: v374 to v375; retain Linux fixture correction and rendered-report contract clarification.
 Delta: v373 to v374; record final source/review passes and frozen regular wheel candidates.
@@ -1626,3 +1628,17 @@ IndependentinstalledM4ninegroups/secondregularenvironmentidentity+ownercompatibi
 Live-acceptance-verifier finalreceipt /Users/mitch/.local/state/solbot/releases/0.6.0/acceptance/installed-acceptance.json iscomplete,24selectedcompletedchecksPASS. Eachregularmanager/ecosystemmatches1680semantic source/assetsfiles; executor22. Publicactualsharedarchiveprepare/register/start/daemon/status/report/health/stop/releasepassedcursor0 honestshort-runlimit; numericalfixturescoverrenderedreports/pause/archive/backuprestore/2307barfourfamilycontinuation/2learningrepairs/sharedwalletguards. ActualOSdenyprobesandunsandboxedcontrolsPASS. Defaultsevenfilesbytes/size/mtimesunchanged; noownedfixtureprocess. Everydaybrowsernotupdated andrealproductionevidence/time/livegatesremainpending. Oldfailedprivateharnessreceiptsretainedwithcorrectedreruns.
 
 NarrowportableloadactualmacOS+forcedLinuxnumericalfixtures2tests32.224sPASS, strict15sunchanged; source-onlytestcorrectionneverchangesproductionblindisolation. RootrequiresnewfinalheadCIonPR194beforemerge, stablealiaspromotion+independentaliasreceipt, remotecontentverification, safeprimarysync andonlyownedworktree/branchcleanup. Finalprivate delivery-receipt.json/delivery-memory.md supersedes thispremergecheckpoint afteractualdelivery. Preserveunrelated.opencode archiveandactualfolderoutsideownedworktreebeforecleanup.
+
+
+## macOS shutdown gate repair
+
+CI4f5ff7a passed10activejobsincludingLinux302manager; actualmacOSsandboxandoptimizer/watchdogtests passed, butnewshutdowncaseobserved2.405sversusunchanged2sbound. Source680afa8 fixesrealorder: reapallownedchildrenbeforeanySQLiteoroptionalhelperclose, thenoriginalgenerationconditionalfencesandpendingfailurehandling. Newdeterministic2.1sbusyguardfailedoldsource3.342s/pre-reapSQLattemptTrue; final21coveringSup/shutdowntestsPASS3.620sexit0,Ruff0. Independentnarrowreview3shutdown testsPASS0.250sexit0, no findings; finalreviewv1.3.0. Rootfull303sourcecheckisrunningbeforefinalrecordscommit/push.
+
+Onlymanagerwheelrebuilt /Users/mitch/.local/state/solbot/releases/0.6.0/wheels-shutdown-r2, SHA08cc950776322866b7c1a67031ccb8b2abab5580c88bb4dba88c097be848eb36. Bothunreleasedcandidateenvsreinstalled/pipcheck0. Priorv1candidateacceptedinstalledgatewasinvalidatedbyCIshutdownfailure; itwasneverreleasedorpromoted. Originalwheels/receiptsretained. FreshindependentinstalledSupdeltaandfullsource/assets/pipcheckbothenvsactive; allothercode/assetv2bytesunchanged. Stablealiasstilloriginal0.4; originalproduction/M4immutableenvironmentsremainintact. FinalCInewhead/aliasindependentcheck/merge/remoteproof/cleanupremain.
+
+Unrelateduntrackedworktree.opencode hadnoopenfiles(lsofexit1emptyoutput); fullarchiveSHAandmanifestretained, directorymovedintactto /Users/mitch/.local/state/solbot/releases/0.6.0/preserved-worktree-opencode. Primary139untrackedfileshashmanifestisinprimary-untracked-before-delivery.json; incomingcollisionsnone. Preserveallprimaryfilesatfastforward. Ownworktreecurrentlyreattachedagent-01a1c447-bot-remainingforfix; detachonlyafterfinalpushandcleantreebeforegatedmergefromprimary.
+
+
+## Full final manager gate complete
+
+Final303manager tests104.139sexit0 after680afa8shutdownrepair. Offlineindex/wiki checks0, CIselector6tests0. Installedidentitybothmanager/ecosystemandconfirmed-stopped-childshutdownv2receiptscomplete; verifier isfinalizingexplicitSupbindingsupersessionreceipt. Originalv1andinitialharnessattemptsremainhistorical. No newpublicdocs/assets/runtimechangesareplanned. Onlyfinalrecord/indexcommit/push, final-headCI, stablealiasindependentreceipt, gatedmerge/remotetreeproof, preservedprimaryfastforward/ownedcleanupandtrackercompletionremain.
