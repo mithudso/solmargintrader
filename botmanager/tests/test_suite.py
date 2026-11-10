@@ -197,6 +197,10 @@ class SuiteTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, "suite_owner_conflict")
         with (
             patch(
+                "botmanager.__file__",
+                str(Path(__file__).resolve().parents[1] / "src/botmanager/__init__.py"),
+            ),
+            patch(
                 "botmanager.suite_service.operation", return_value={"installed": False}
             ),
             self.assertRaises(ManagerError) as raised,
