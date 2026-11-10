@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5ef3df9e` (2026-11-10T03:55:53+00:00). 2906 tracked files, 63.7 MB.
+**Generated** from `index/INDEX.json` at commit `c48e2e7b` (2026-11-10T04:12:29+00:00). 2906 tracked files, 63.7 MB.
 
 Regenerate with:
 
@@ -212,9 +212,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1230 lines · 237,260 B · description: **extracted**
+`doc` · 1269 lines · 243,738 B · description: **extracted**
 
-**Purpose.** Version: 354 Delta: v353 to v354; record merge-aware docs gate success before combined integration commit. Delta: v352 to v353; preserve the committed-merge-parent documentation count failure and required helper fix.
+**Purpose.** Version: 356 Delta: v355 to v356; record accepted INT1/INT2 fixes before refreshed installation and final-head checks. Delta: concurrent histories to v355; preserve editing and PR187 Basic Memory records without changing application source.
 
 **Use.** Read it.
 
@@ -228,7 +228,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1545 lines · 90,295 B · description: **extracted**
+`doc` · 1559 lines · 90,562 B · description: **extracted**
 
 **Purpose.** Version: 175 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution. Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
 
@@ -348,7 +348,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 28454 lines · 1,458,010 B · description: **extracted**
+`doc` · 28454 lines · 1,457,981 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -484,7 +484,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-handoff.md`
 
-`doc` · 718 lines · 70,427 B · description: **extracted**
+`doc` · 726 lines · 70,957 B · description: **extracted**
 
 **Purpose.** Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes. The standalone application is installed as `solbot`.
 
@@ -508,9 +508,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-oracle-interface.md`
 
-`doc` · 208 lines · 14,253 B · description: **extracted**
+`doc` · 218 lines · 14,931 B · description: **extracted**
 
-**Purpose.** Version: 0.1.1 Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source. Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime.
+**Purpose.** Version: 0.1.2 Delta: Expose registry-derived global arguments and explicit legacy event-reuse continuity metadata. Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source.
 
 **Use.** Read it.
 
@@ -25418,7 +25418,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 573 lines · 35,887 B · description: **extracted**
+`doc` · 583 lines · 36,583 B · description: **extracted**
 
 **Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. The current runnable strategy is grid against recorded input. Saved settings support explicit editing and stopped-run adoption;
 
@@ -25452,7 +25452,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/cli.py`
 
-`code-python` · 75 lines · 2,802 B · description: **extracted**
+`code-python` · 78 lines · 2,786 B · description: **extracted**
 
 **Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
 
@@ -25522,11 +25522,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/registry.py`
 
-`code-python` · 638 lines · 21,202 B · description: **extracted**
+`code-python` · 656 lines · 21,511 B · description: **extracted**
 
 **Purpose.** One application registry, shared by CLI and future local transports.
 
-**Contents.** Defines `class CommandContext`, `class CommandSpec`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()`, `_edit()`, `_history()` and 21 more.
+**Contents.** Defines `class CommandContext`, `class CommandSpec`, `GLOBAL_ARGUMENTS`, `_argument_schema()`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()` and 23 more.
 
 **Use.** `import botmanager.src.botmanager.registry`
 
@@ -25684,11 +25684,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_ecosystem_adapter.py`
 
-`test` · 77 lines · 2,845 B · description: **none**
+`test` · 108 lines · 4,202 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `class EcosystemAdapterTests`, `class EcosystemEditingCliTests`.
+**Contents.** Defines `class EcosystemAdapterTests`, `class EcosystemEditingCliTests`, `class GlobalArgumentContractTests`.
 
 **Use.** `python3 -m pytest botmanager/tests/test_ecosystem_adapter.py -q`
 
@@ -25884,11 +25884,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/telemetry.py`
 
-`code-python` · 751 lines · 27,171 B · description: **extracted**
+`code-python` · 797 lines · 29,165 B · description: **extracted**
 
 **Purpose.** Bounded, sanitized observations of manager events; never manager control. The mirror is incremental and private. Original event journals and log files remain with their existing owner. Free-form log content is never mirrored.
 
-**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `SOURCE_PAGE`, `MAX_LOG_TAIL`, `SOURCES`, `KINDS`, `SECRET_KEY`, `STATES`, `PHASES`, `sanitize()` and 19 more.
+**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `SOURCE_PAGE`, `MAX_LOG_TAIL`, `SOURCES`, `KINDS`, `SECRET_KEY`, `STATES`, `PHASES`, `sanitize()` and 20 more.
 
 **Use.** `import ecosystem.telemetry`
 
@@ -25934,7 +25934,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_manager_editing.py`
 
-`test` · 319 lines · 13,494 B · description: **none**
+`test` · 413 lines · 17,956 B · description: **none**
 
 **Purpose.** _No description available._
 

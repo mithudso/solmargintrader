@@ -1,6 +1,7 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.1.1
+Version: 0.1.2
+Delta: Expose registry-derived global arguments and explicit legacy event-reuse continuity metadata.
 Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source.
 Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime.
 Owner request: complete all remaining milestones, add editing and report the result to Oracle for a visual interface.
@@ -48,6 +49,10 @@ Read `solbot schema` for actual field/default/type/constraint metadata and the
 registry's command arguments. Read `solbot help`, `list`, `discover`, and
 `status BOT --why` for the selected installation's capability and state. Do not
 infer browser state from Node FileStore or inspect Chrome databases externally.
+
+`schema.global_arguments` describes registry-owned connection options such as
+`--ecosystem-home`. The CLI parser and context extraction use that same metadata.
+Keep connection context separate from individual command parameters.
 
 The local supervisor socket is same-user, mode 0600 and bounded. It is not a
 public HTTP API. Long edit/application/capture operations remain outside its fast
@@ -155,6 +160,11 @@ read-only F5 registrations in list/fleet status. Those trials retain their owner
 Runtime schema 4 preserves an append-only attributable event stream across
 application, including legacy sequence provenance. Shared telemetry must not
 reset replaced/regressed cursors or reinterpret legacy null identity as proven.
+Source metadata exposes `legacy_reused_sequence_count` and
+`legacy_reuse_fingerprint`. A reused old event number changes the continuity
+marker even when another bot retains the first event. An existing ambiguous
+mirror keeps its old cursor and refuses ingestion; a fresh explicitly selected
+derived mirror can consume the newly attributed stream.
 Ecosystem 0.1.2 pins manager 0.3.0; existing 0.1.1 immutable environments stay intact.
 
 

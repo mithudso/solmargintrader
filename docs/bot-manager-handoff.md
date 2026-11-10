@@ -1,6 +1,7 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.0.3
+- Version: 1.0.4
+- Delta: Document registry-owned global options and multi-bot legacy telemetry continuity evidence.
 - Delta: Preserve coordinated ecosystem discovery and schema 4 append-only telemetry during PR185 integration; retain historical acceptance separately.
 - Delta: Document manager 0.3.0 immutable editing, safe application, schema/history and separate saved/active configuration identity.
 - Delta: Add the executed default-home demonstration and 0.2.1 usable-startup quickstart.
@@ -416,6 +417,13 @@ continue; an already replaced or regressed source remains an explicit refusal.
 The mirror never resets its cursor to hide uncertainty. Stop deliberately avoids
 historical archive import so corruption there cannot prevent stopped intent;
 a later writer still refuses the corrupt archive.
+
+Legacy source continuity also binds a fingerprint of reused original event
+numbers. It exposes `legacy_reused_sequence_count` and
+`legacy_reuse_fingerprint`; a stable first event from another bot cannot hide a
+later reuse. Existing ambiguous mirrors refuse without advancing their cursor.
+`schema.global_arguments` describes the same global connection options used by
+the CLI parser, including explicit ecosystem-home discovery.
 
 The coordinated ecosystem source is now 0.1.2 with manager 0.3.0 compatibility.
 Its explicit `--ecosystem-home` view is read-only externally owned F5 evidence.

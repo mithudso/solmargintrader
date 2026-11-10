@@ -3,6 +3,8 @@
 Version: 175
 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
+
+Delta: v174 to v175; record the requested Basic Memory MCP installation.
 Delta: v173 to v174; preserve the embedding-model mismatch observation during final delivery.
 Delta: v172 to v173; add manager telemetry coordination and accepted UI wiring.
 Delta: v171 to v172; retain the accepted existing14-asset default.
@@ -1541,4 +1543,16 @@ Scope clarification:
 
 ```text
 All remaining milestones
+
+## 2026-11-09 — install Basic Memory MCP
+
+```text
+Install this mcp server {
+  "mcpServers": {
+    "basic-memory": {
+      "command": "uvx",
+      "args": ["basic-memory", "mcp"]
+    }
+  }
+}
 ```

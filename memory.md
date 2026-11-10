@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 354
+Version: 356
+Delta: v355 to v356; record accepted INT1/INT2 fixes before refreshed installation and final-head checks.
+Delta: concurrent histories to v355; preserve editing and PR187 Basic Memory records without changing application source.
 Delta: v353 to v354; record merge-aware docs gate success before combined integration commit.
 Delta: v352 to v353; preserve the committed-merge-parent documentation count failure and required helper fix.
 Delta: v351 to v352; preserve tested schema4 integration and refreshed shared-source/evidence preflights.
@@ -8,6 +10,9 @@ Delta: concurrent histories to v351; preserve editing and merged ecosystem boots
 Delta: v347 to v348; record reviewed editing and independent installed acceptance before final-head delivery.
 Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
 Delta: v345 to v346; resume all remaining milestones with safe editing and Oracle coordination.
+Delta: v352 to v353; refresh offline index hashes required by record changes.
+Delta: v351 to v352; verify both direct Basic Memory launchers and prepare record delivery.
+Delta: v350 to v351; start the Basic Memory MCP launcher configuration and verification.
 Delta: v349 to v350; preserve embedding diagnosis and final PR delivery context.
 Delta: v348 to v349; verify genuine forward handoff and final installed UI acceptance.
 Delta: v347 to v348; verify installed control room and preserve the failed gated experiment before the explicit paper baseline.
@@ -1227,3 +1232,37 @@ After conflicts resolved, offline index regeneration/hashcheck passed2904sourcef
 ## v354 — merge-aware docs check verified
 
 The helper fix is staged, not committed yet. Actual docs RED exited1 at1402/2855; GREEN now exits0 at1405SolTUI/2858total. Temporary Gitrepo probes prove multiple committed MERGE_HEAD parents included once, genuinely staged-only files excluded and normal no-merge HEAD-only behavior unchanged. Ruff/format/staged-diff pass; only scripts/check_docs.py changed in this follow-up, including confined mechanical style/shebang-mode fixes. Integration report1.0.1 retains exactreceipts. Parent must regenerate offlinehashes after helper and workflowrecord changes, inspect success, commitcombinedmerge, then reviewintegration and refreshinstalledproof beforefinalheadCI/merge. Application source148manager/54ecosystem evidence remainsaccepted.
+
+## v351 — 2026-11-09 — Basic Memory MCP installation
+
+Target: configure the user-supplied uvx basic-memory mcp launcher for Codex. Existing /Users/mitch/.codex/config.toml registers the equivalent command through bash -c. uvx is available at /Users/mitch/.local/bin/uvx. Preserve other MCP settings, Basic Memory projects and notes, and all unrelated repository work. TASK-1187 tracks configuration, TASK-1188 verifies installed startup, and TASK-1189 delivers these records. KNOW-1190 retains the scope.
+
+Use /Users/mitch/dev/solmargintrader-wt-basic-memory-20261109 on codex/basic-memory-mcp-20261109 for records because the original checkout has unrelated untracked files and other active worktrees. Remaining: replace only command/args, independently verify the configured MCP process and read-only discovery, run documentation checks, commit/push/merge records, and verify remote delivery. No product code, trading services, credentials or memory-note writes are needed.
+
+## v352 — 2026-11-09 — Basic Memory MCP ready
+
+Configured /Users/mitch/.codex/config.toml and the ignored local /Users/mitch/dev/solmargintrader/.codex/config.toml with command uvx and args ["basic-memory", "mcp"]. The global entry previously used bash -c; the local override used basic-memory directly. Both files pass TOML parsing. Semantic comparison confirms all other settings are unchanged. codex mcp get basic-memory confirms the requested effective launcher from both /tmp and the project. These private local configuration files remain outside the repository commit.
+
+Independent live-acceptance-verifier launched a fresh /Users/mitch/.local/bin/uvx basic-memory mcp process. MCP initialization negotiated protocol 2025-06-18. The server advertised Basic Memory version 4.1.3, exposed 12 tools, and successfully served bm_project(command="list"). This advertised server version is not a separately measured Python package version. Closing stdin shut down the child with exit 0; the verifier also exited 0. No notes, projects, production services or trading settings were changed. TASK-1187 and TASK-1188 are complete.
+
+The first configuration replacement failed TOML validation before writing because args used a multiline array. A bounded multiline replacement fixed it. The first documentation check used /Users/mitch/.venvs/solbot/bin/python and failed to import 30 TUI test modules. Re-running the documented gate with the existing /Users/mitch/.venvs/solmargintrader-docs/bin/python passed with exit 0: backtester 999, extension 408, mongo 46 and soltui 1405; docs agree with the repository. No dependency installation was needed. git diff --check passed.
+
+Remaining delivery under TASK-1189: commit only prompts.md and memory.md, push the task branch, obtain final-head CI, merge its records PR, verify remote content, synchronize the original checkout without changing its five unrelated untracked paths, and remove only this task's clean merged worktree/branch. Basic Memory installation and runtime acceptance are complete; a stalled continuation should resume delivery without rerunning the accepted server check.
+
+## v353 — 2026-11-09 — installation records and index delivery
+
+The exact request is saved in prompts.md v175. The requested Basic Memory launcher is configured and independently verified; no further configuration or product implementation remains. PR https://github.com/mithudso/solmargintrader/pull/187 contains the recoverable records. TASK-1189 tracks its final CI, merge receipt, remote content verification and owned-worktree cleanup. Consult that task and PR before resuming delivery.
+
+Initial CI run 42751767281 caught stale hashes for memory.md and prompts.md in both the docs job and backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree. The standalone docs count gate had passed; it does not replace index/build.py --check. Refresh the three committed offline indexes with python3 index/build.py all after the final record edit. The all command uses no network or embeddings; leave semantic regeneration and Ollama untouched. KNOW-1191 records this concrete CI trigger. Keep the PR draft during repair and merge only after final-head checks pass.
+
+## Editing integration and metadata-only PR187 continuation
+
+Product fixc48e2e7b addresses INT1 (multi-bot reused legacy sequences nowbind a stable reuse fingerprint; old mirrorcursorrefuses withoutreset) and INT2 (GLOBAL_ARGUMENTS drives CLI/schema/context). Its105coveringtests/Ruff/format/diffchecks passed. Scoped integration re-review remains pending atthischeckpoint. Source148/54previousintegrationchecks remain validforunchangedpaths.
+
+Incoming65ad42ce PR187 changes only memory/prompts/threeindexes; preserveitsBasicMemoryrecordsverbatim. No application source changed by this merge, so it does not justify repeating application suites. AllGitconflictswillbe resolvedbeforeofflinegeneration. Oldinstalled29/70 proofstillpreintegration7af; no integratedsourceinstallclaimed. CompletecurrentfinalheadCI/review/installed/merge thencontinueall1109–1114.
+
+## v356 — integrated source review accepted
+
+Scoped integration re-review approves both INT1 and INT2 at c48e2e7b; zero new blockers. Runtime4 preserves immutable legacy sequence provenance and derives reused-ID fingerprint metadata; an unchanged first event cannot hide anotherbot's reused laterIDs. GLOBAL_ARGUMENTS nowdrivesparser/context/schema.105coveringtests passed; no source suite rerun byreviewer. PriorI1/I2 closed;M1 warningsdeferred.
+
+PR187 metadata-only65ad merge is resolved with both memory/prompt bodies intact (prompts176). Application source remains identical to reviewedc48. Parent finalofflinegeneration/hash/docs/whitespace gate, combinedmetadata mergecommit/push, source-currentCI and freshstablemanager/ecosystem0.1.2 installation/independentacceptance remain. Do not claim integratedinstalled state untilnewreceipt. ThenmergeLAST,verifyremotecontent,close1178andcontinue1109–1114.
