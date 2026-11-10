@@ -1,18 +1,20 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.0.1
+- Version: 1.0.2
+- Delta: Document manager0.3.0 immutable editing, safe application, schema/history and separate saved/active configuration identity.
 - Delta: Add the executed default-home demonstration and 0.2.1 usable-startup quickstart.
 - Reviewed: 2026-11-09, America/New_York. Runtime observations are a snapshot, not a monitoring feed.
 - Product baseline: remote master commit `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
-The standalone application is installed as `solbot`. It saves immutable named bot specifications, discovers an existing SolTUI owner, delegates guarded legacy controls when that owner supports them, and supervises independent grid accounts against a bounded recorded Coinbase input. It defaults to paper and disarmed. Milestones 1 and 2 are delivered. Prospective Jupiter trading, the other new strategy runtimes, blind selection, learning, graphical integration and live execution remain later work.
+The standalone application is installed as `solbot`. It saves and edits immutable named bot specifications, discovers an existing SolTUI owner, delegates guarded legacy controls when that owner supports them, and supervises independent grid accounts against a bounded recorded Coinbase input. It defaults to paper and disarmed. Milestones 1 and 2 plus the editing extension are delivered. Prospective Jupiter trading, the other new strategy runtimes, blind selection, learning, graphical integration and live execution remain later work.
 
 For the shortest working instructions and the bot actually run on this machine,
 start with `/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md`.
-Version 0.2.1 makes bare invocation show useful help. It adds no edit command or
-new trading capability; the runtime evidence below remains the M2 baseline.
+Version0.2.1 made bare invocation show useful help. Version0.3.0 adds `edit`,
+`history`, `apply` and `schema`; it does not certify new trading capability.
+The retained default-home demonstration below remains unchanged.
 
 This handoff is for the operator using the installed tool and the developer continuing it. It records what this session built, why it chose these boundaries, where the authoritative code and evidence live, and how to inspect, maintain and recover the application. Source references below use the canonical repository path; verify the actual checkout revision before editing or reinstalling.
 
@@ -25,12 +27,12 @@ This handoff is for the operator using the installed tool and the developer cont
 | Convenient command | `/Users/mitch/.local/bin/solbot` | Symlink to the stable console script |
 | Stable console script | `/Users/mitch/.venvs/solbot/bin/solbot` | Runs the regular, noneditable installation |
 | Stable Python | `/Users/mitch/.venvs/solbot/bin/python` | Interpreter and packages used by the console script and service |
-| Manager distribution | `solbot-manager==0.2.1` | Usable-startup patch over the M2 runtime |
+| Manager distribution | `solbot-manager==0.3.0` | Immutable editing extension over the M2 runtime |
 | Shared distribution | `solmargintrader-backtester==0.1.0` | Existing canonical offline simulation code |
 | Installed numeric dependencies | NumPy `2.5.4`, pandas `3.1.1` | Observed versions in the accepted environment |
 | Default data home | `/Users/mitch/.config/solbot` | Selected by the actual user's home; override with `SOLBOT_HOME` |
 | Canonical source | `/Users/mitch/dev/solmargintrader/botmanager` | Permanent repository layout |
-| Continuation checkout | `/Users/mitch/dev/solmargintrader-wt-01a1c189` | Private worktree used for this implementation and its recovery ledger |
+| Continuation checkout | `/Users/mitch/dev/solmargintrader-wt-01a1c189-editing` | Active implementation worktree and recovery ledger; preserve other sessions' work in the earlier checkout |
 
 The installed command works from outside the repository without `PYTHONPATH`. Run these read-only commands:
 
@@ -90,13 +92,16 @@ Concurrent historical-data, monitor and signal-research work was preserved durin
 | Use null with a reason for missing observations | Missing price, fee, heartbeat or P&L is not zero or a successful measurement | Consumers must preserve nullability and separate state dimensions |
 | Bind receipts to original acceptance context | Later worker generations must not rewrite the meaning of an earlier command | Schema-1 receipts without provable context retain their IDs/bodies but refuse replay; explicit reconciliation is needed |
 | Label Coinbase replay as a reference | A target Jupiter specification cannot certify historical route/fill economics | Reference results remain ineligible for live promotion |
-| Keep configuration immutable | Installing new defaults or editing a draft must not silently alter a running account | There is no config-update/adopt/delete/reset command yet; those are explicit future contracts |
+| Keep configuration immutable | Installing new defaults or editing a draft must not silently alter a running account | `edit` stages a saved revision; `apply` separately verifies a stopped zero-exposure boundary and archives prior evidence |
 
 ## 3. Complete current feature and capability map
 
 | Capability | Delivered behavior | Boundary |
 | --- | --- | --- |
 | Create named specifications | Stable UUID; case-insensitive unique ASCII name; typed defaults and overrides; immutable saved provenance | Saving starts no worker and reserves no capital |
+| Edit/version/history | Explicit changed fields, retained pins/provenance, append-only versions, optional revision CAS and durable request replay | Saved changes cannot alter an active run's pinned settings |
+| Apply saved revision | Explicit stopped/owner-released/zero-exposure adoption; full prior-run archive and new stopped identity | Refuses uncertain state/incompatible input; repeated application cannot reset an active run |
+| Editor schema | Versioned field/default/type/constraint and registry argument metadata | Describes current backend capability; graphical implementation remains later work |
 | Grid | Draft plus independent manager-owned reference-paper replay | One-minute recorded Coinbase inputs only; at most 100 runtime rungs |
 | DCA | Typed safety-order specification | New manager runtime unavailable |
 | Trend | Typed buffered SMA-crossover specification | New manager runtime unavailable |
@@ -128,6 +133,10 @@ Every application command dispatches through `/Users/mitch/dev/solmargintrader/b
 | `create STRATEGY --name NAME [--set KEY=VALUE ...]` | Save a draft; four supported draft strategies listed above |
 | `list` | Manager-owned saved drafts |
 | `config BOT [--effective]` | Saved settings, manual overrides, provenance and identity; no mutation |
+| `edit BOT --set KEY=VALUE [--expected-revision N] [--request-id UUID]` | Append saved revision using only supplied fields; keep active runtime pinned |
+| `history BOT [--revision N]` | Read immutable saved revisions and attributable current/archived runs |
+| `apply BOT [--expected-revision N] [--request-id UUID] [--descriptor PATH]` | Explicit safe stopped-boundary adoption; never starts a worker |
+| `schema [STRATEGY]` | Read actual editor fields, defaults, constraints and command argument contract |
 | `status [BOT] [--why]` | Bot or fleet read model; fleet also reports configured installations |
 | `discover` | External installation inventory with completeness/availability reasons |
 | `register-input BOT --descriptor ABSOLUTE_JSON_PATH` | Read and pin a compatible recording snapshot; starts no worker |
@@ -224,7 +233,7 @@ SOLBOT_HOME=/Users/mitch/.local/state/solbot-example /Users/mitch/.local/bin/sol
 SOLBOT_HOME=/Users/mitch/.local/state/solbot-example /Users/mitch/.local/bin/solbot status example-grid --why
 ```
 
-Expected: a pinned reference run with its own runtime ID, stopped intent, source/cost/engine identity and immutable input hash. The same snapshot registration is idempotent; a changed snapshot or configuration cannot replace it. To test another immutable interval today, create a separate spec. Registration does not start the recorder, supervisor or worker.
+Expected: a pinned reference run with its own runtime ID, stopped intent, source/cost/engine identity and immutable input hash. The same snapshot registration is idempotent; a changed snapshot or configuration cannot replace it through registration. Use a separate spec for independent evidence, or an explicit compatible `apply` at the verified stopped zero-exposure boundary. Registration does not start the recorder, supervisor or worker.
 
 The observed source range was 2026-11-08 08:21–08:23 UTC: 115 samples, two sampled-midpoint bars. Raw source SHA-256 was `9639c69cb07237faa324b85ddf1cceba927037a4189d0956e36fed3296dc8c5e`, byte watermark `14416352`. Accepted engine/input snapshot was `7ff131f8f67ac5e20bcabd9dbc35d98e32ff20fc12e861487f86c5fe66b41fe8`. Do not copy a previous snapshot hash into changed input; registration computes and verifies identity.
 
@@ -344,6 +353,7 @@ flowchart TD
 | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/config.py` | Typed defaults, exact compatibility, protected fields and override provenance |
 | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/domain.py` | Immutable specification/configuration types, identity, validation and hashes |
 | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/store.py` | Specification SQLite schema/migrations, read-only behavior and backup descriptor |
+| `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/mutations.py` | Serialized revision changes and attributable replay-only mutation receipts |
 | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/receipts.py` | Versioned per-bot control receipt schema and semantic validation |
 | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/status.py` | Separate status dimensions, capability explanations and null-safe financials |
 | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/adapters/__init__.py` | Installation descriptors and truthful incomplete inventories |
@@ -372,15 +382,27 @@ All manager paths below follow `SOLBOT_HOME`; the listed paths are the default h
 
 | Path | Schema/role | Preservation rule |
 | --- | --- | --- |
-| `/Users/mitch/.config/solbot/manager.sqlite3` | Schema 1; immutable specs and spec-created events | Preserve identity/provenance; reads never migrate |
-| `/Users/mitch/.config/solbot/runtime.sqlite3` | Schema 2; pinned runs/input, fills, checkpoints, generations, controls and runtime events | Preserve cursor, lots and all accepted request IDs |
+| `/Users/mitch/.config/solbot/manager.sqlite3` | Schema2 on an authorized writer; immutable specification versions, latest index, events and mutation receipts | Schema1 remains readable without migration; preserve every prior body and pin |
+| `/Users/mitch/.config/solbot/runtime.sqlite3` | Schema3 on an authorized writer; pinned runs/input, complete archived runs, adoption receipts, fills, checkpoints, generations and controls | Schemas1/2 remain readable without migration; preserve cursor, lots and all accepted request IDs |
 | `/Users/mitch/.config/solbot/controls.sqlite3` | Schema 2; external-owner pending/outcome receipts | Preserve uncertainty and request bindings across restarts |
+| `/Users/mitch/.config/solbot/mutation.lock` | Cross-process configuration edit/application lock | Stop does not require this lock or consume mutation quota |
 | `/Users/mitch/.config/solbot/supervisor.lock` | Lifetime home lock | File existence alone does not mean lock held |
 | `/Users/mitch/.config/solbot/supervisor.sock` | Local command socket | Same-user/mode checks; do not treat a stale path as a living supervisor |
 | `/Users/mitch/.config/solbot/locks` | Per-bot lifetime locks | Do not unlink to steal a live owner |
 | `/Users/mitch/.config/soltui/bots/manager-requests.json` | Existing owner's durable control intent/outcome journal | Back up with owner state; manager never writes its configs directly |
 
 Runtime control schema 2 adds independent acceptance context. Legacy schema-1 request IDs/bodies remain intact with null context. Replaying those rows refuses `invalid_receipt`; no historical owner/generation is fabricated and no new control is submitted. A fresh explicit stop can migrate and fence safely. The external-controls journal also has its own schema-2 request binding; these schema numbers are independent of specification schema and package versions.
+
+Editing appends immutable saved bodies rather than rebuilding historical defaults.
+`status` keeps saved/active revision and hash separate; runtime financials retain
+their pinned identity after an edit. `apply` archives the complete old run and
+replaces the current slot in one runtime transaction only after checking stopped
+intent, actual owner release, resolved zero exposure and compatible input. Old
+receipts stay historical and cannot act on the new runtime. Reapplication of the
+already active revision is a no-op. Mutation receipts bind the original request,
+expected/accepted revisions and configuration/run identities. Stop remains usable
+under a full mutation journal. No manual SQLite edits or receipt deletions are a
+supported way to clear a blocker.
 
 Read transactions hold one snapshot across the run row and fill decode. The supervisor confirms an integrity fault in a fresh write transaction before quarantining. A transient store-access error is not proof of corruption. Complete checkpoint identity binds bot ID, config/revision, source input, target context, virtual account, engine and run hash, including when two bots have identical parameters.
 
@@ -557,6 +579,7 @@ The controlling specification is `/Users/mitch/dev/solmargintrader/docs/superpow
 | --- | --- | --- |
 | 1 / TASK-1107 | Delivered | CLI/defaults/specifications/legacy controls; preserve contracts |
 | 2 / TASK-1108 | Delivered | Persistent independent grid reference runtime; preserve recovery and identity |
+| Editing / TASK-1178 | Delivered extension | Immutable revisions/history/schema and explicit stopped zero-exposure application; no active-run relabelling |
 | 3 / TASK-1109 | Next | DCA/trend/momentum adapters, exact batch/prefix/restart parity, shared prospective data and actual Solana evidence; Solana arbitrage capability only when observations support it |
 | 4 / TASK-1110 | Planned | Isolated blind judge/resolver, private parameter mapping, frozen objectives, shared exposure/holdout authority and repeated-testing controls |
 | 5 / TASK-1111 | Planned | Accounting, loss cohorts, health/performance diagnostics, reproducibility and load checks |

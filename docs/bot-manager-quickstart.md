@@ -1,15 +1,17 @@
 # Solbot: the working commands and what they actually do
 
-Version: 1.0.0
+Version: 1.0.1
+Delta: Add immutable editing, history, schema inspection and explicit safe application in manager0.3.0.
 Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine.
 
 `solbot` is a command-line program. It does not open a menu. Version 0.2.1 prints
-help when run without arguments. Ordinary commands print JSON; `ok: true` means
+help when run without arguments. Version0.3.0 adds editing. Ordinary commands print JSON; `ok: true` means
 the command succeeded, not that a trading worker is alive.
 
 **What works today:** saved bot drafts with defaults, guarded existing-owner
-controls when compatible, and manager-owned grid replay against recorded Coinbase
-data. **What is unfinished:** editing a saved bot, new DCA/trend/momentum/arbitrage
+controls when compatible, immutable revision editing/history, explicit safe application,
+and manager-owned grid replay against recorded Coinbase
+data. **What is unfinished:** new DCA/trend/momentum/arbitrage
 workers, real-time Jupiter paper trading, blind optimization, learning and live trading.
 The large handoff describes the architecture and roadmap; it is not evidence that
 those later features have been delivered.
@@ -82,8 +84,7 @@ Use a new name. This creates a draft and does not start it:
 
 Defaults include seven geometric rungs, 1,000 virtual capital, one-minute bars,
 paper mode and disarmed state. `config` shows the exact saved values and where
-each came from. `--set` is a creation option. There is no edit/update command yet;
-creating another named specification is the current way to try different settings.
+each came from. Use `--set` on creation or `edit` to supply only changed values.
 Never edit the SQLite body or configuration hashes by hand.
 
 To run the new grid against the already prepared demonstration input:
@@ -100,6 +101,57 @@ particular recording remains just two historical bars. New inputs require a new
 compatible explicit descriptor; the current manager cannot append a live feed to
 this run or reset it silently. A separately named bot has its own virtual account.
 
+## Edit settings and inspect the result
+
+After creating `my-grid`, change only the range:
+
+```sh
+/Users/mitch/.local/bin/solbot edit my-grid --set range_pct=20
+/Users/mitch/.local/bin/solbot config my-grid --effective
+/Users/mitch/.local/bin/solbot history my-grid
+/Users/mitch/.local/bin/solbot status my-grid --why
+/Users/mitch/.local/bin/solbot schema grid
+```
+
+The bot keeps its UUID. An accepted change appends a revision and preserves every
+other setting and manual pin. `history --revision 1` reads the original saved body.
+`schema` describes actual fields, defaults, constraints and command arguments for
+an editor. Saving an edit starts no worker and changes no active worker's settings.
+Status separates `saved_config_revision` from `active_config_revision` and reports
+`pending_changes` plus `adoption_blockers`.
+
+For a UI or concurrent writer, add `--expected-revision N` using the revision that
+was inspected. A stale revision refuses the change atomically. A canonical UUID
+`--request-id` identifies a durable edit/application receipt; repeat the same
+request only to inspect its original accepted result. Repeating it never reapplies
+the change to a newer revision.
+
+## Explicitly apply a staged revision
+
+A draft with no registered runtime already uses its saved settings. An existing
+runtime stays on its pinned revision until an explicit safe application:
+
+```sh
+/Users/mitch/.local/bin/solbot stop my-grid
+/Users/mitch/.local/bin/solbot status my-grid --why
+/Users/mitch/.local/bin/solbot apply my-grid
+/Users/mitch/.local/bin/solbot history my-grid
+```
+
+Application requires observed owner release, stopped intent, zero exposure,
+resolved state and compatible recorded input. It refuses while a worker holds
+the lock, while lots remain, or while data/accounting is uncertain. Stop does
+not close lots. Inspect the reported blocker; do not delete state to clear it.
+If the saved capital or input requirements changed, provide a compatible explicit
+`--descriptor` rather than relabelling the old input.
+
+Successful application archives the complete prior run and creates a separate
+stopped runtime on the saved revision. It starts no worker. The old cursor,
+fills, checkpoints, events and receipts remain attributable to the old run.
+Applying an already active revision is a no-op and cannot reset its cursor or
+capital. Start the new run explicitly when desired, using the established
+`start` plus foreground `daemon` workflow above.
+
 ## What this session actually built
 
 - Milestone 1: defaults and immutable saved specifications; CLI creation/inspection;
@@ -109,6 +161,8 @@ this run or reset it silently. A separately named bot has its own virtual accoun
   explicit macOS service lifecycle; bounded recorded input and reference P&L.
 - Startup repair: bare invocation now gives usable instructions; the one actual
   demonstration above leaves a bot and evidence you can inspect.
+- Editing: saved revisions, protected pins, exact history, machine-readable schema
+  and receipt-backed application at a verified stopped zero-exposure boundary.
 
 The complete original request is not finished. The next planned milestone adds
 other strategy runtimes and shared prospective/Solana data. The approved later

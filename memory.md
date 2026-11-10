@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 346
+Version: 347
+Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
 Delta: v345 to v346; resume all remaining milestones with safe editing and Oracle coordination.
 Delta: v344 to v345; preserve merged Oracle work and the proven solbot startup/demo repair.
 Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch.
@@ -1129,3 +1130,14 @@ The owner explicitly clarified 'All remaining milestones'. Implement safe editin
 Work now uses /Users/mitch/dev/solmargintrader-wt-01a1c189-editing branchagent-01a1c189-editing from99548515. The previous privateworktree gained an unrelated quickstart table-of-contents edit; preserve it and the shared primary's other work. The original plan's accepted ledger and delivery receipts were copied into this worktree's ignored SDDworkspace so completedM1/M2 are not redispatched. Defaultsession-demo-grid remainsstopped/disarmed; no service or keys are activated by this implementation work.
 
 Editing must append immutable spec revisions, preserve pins, use CAS/request dedup, distinguish active from saved configuration, and apply only explicitly at a verified safe stopped/no-exposure boundary. Archive prior run evidence/IDs atomically and preserve stop/reconciliation semantics. Prepare a machine-readable schema/history/receipt contract for Oracle's future UI. Continue all six remaining milestones after this release; don't stop merely because one milestone or its handoff exists.
+
+## v347 — editing implementation and remaining milestone contracts
+
+- Active worktree /Users/mitch/dev/solmargintrader-wt-01a1c189-editing, branch agent-01a1c189-editing. Parent checkpoint f580dafb saves full-scope request and additive safe-editing design. TASK1178 remains in progress; no milestone3–8 completion is claimed.
+- Fresh implementer /root/editing_implementation owns manager code/tests/version. Initial RED7/8 failures then focusedGREEN8/8. At this checkpoint adversarial migration/CAS/receipt/active-run checks and full regression remain. Do not install/claim completion based on those initial tests.
+- Oracle read-only investigation: installed0.1.0 source matches, default archive absent, existing recorder has SOL-USD but no SOL-USDC. Oracle query constructors write schema/policy. KNOW1180 requires an inert manager archive reader. No source/recording/service was started or mutated. Exact dated inventory and contracts in the active plan workspace oracle-feed-contract-report.md.
+- Canonical engine currently forces final liquidation; KNOW1181 requires backward-compatible close_at_end support and open-position accounting before Trend/Momentum prefix evaluation. Pure Trend should move to canonical package with compatibility wrapper.
+- Existing ExperimentStore remains sole temporal exposure/holdout authority. Protocol2 must preserve legacy splits/rows, opaque incumbent, spent-on-unseal, shared budgets/attempts and alpha policy. KNOW1182 requires actual OS judge isolation; harmless sandbox-exec filesystem denial verified here, final profile unverified. KNOW1183 requires idempotent CAS reconciliation across owner/manager databases, not a false atomic callback claim.
+- M3/M4 requirements briefs and read-only reports are prepared in the active .superpowers workspace but NOT dispatched or completed. Browser/executor contract investigations active. .opencode/ is unrelated tooling state and must remain unstaged. Primary checkout and the older worktree's unrelated quickstart TOC remain untouched.
+- Postman CLI1.87.0 signed out/uninitialized in this worktree; owner search/Context Graph skipped, no signup/init/workspace publication. Orbit returned third-party previews/unrelated APIs, no suitable direct contract. Current official Jupiter docs and existing owner-selected Swap v1 contract consulted. Do not mix v2 fields or silently migrate executor.
+- Continue all remaining milestones after editing review/installed acceptance/delivery; an absent source, incomplete route history, real7-day shadow requirement or unsupported verifier is a genuine gate to report, not a reason to skip independent implementation. Final persistent Oracle interface report belongs in docs and a comment on existing Oracle task TASK1154; do not claim another chat read it.
