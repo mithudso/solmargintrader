@@ -1,0 +1,7 @@
+simulation: botmanager-swap-v1
+routing: path
+mocks:
+  - name: Jupiter Swap v1 quote stand-in
+    routeKey: jupiter
+    origin: api.jup.ag
+    path: postman/mocks/botmanager-jupiter-swap-v1

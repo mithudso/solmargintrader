@@ -7,6 +7,11 @@ from typing import Any
 
 from ..data import engine_identity, validate_snapshot
 from ..domain import BotSpec, ManagerError, fingerprint
+from .base import compatible_engine
+
+MAX_REFERENCE_RUNGS = 100
+MAX_REFERENCE_RANGE_PCT = 95
+REFERENCE_BAR_SECONDS = 60
 
 
 def _configuration(spec: BotSpec, data: dict[str, Any]):
@@ -16,7 +21,7 @@ def _configuration(spec: BotSpec, data: dict[str, Any]):
         spec.strategy_id != "grid"
         or spec.mode != "paper"
         or spec.resolved_values["armed"]
-        or spec.bar_seconds != 60
+        or spec.bar_seconds != REFERENCE_BAR_SECONDS
     ):
         raise ManagerError(
             "capability_unavailable",
@@ -24,7 +29,7 @@ def _configuration(spec: BotSpec, data: dict[str, Any]):
             3,
         )
     values = spec.resolved_values
-    if values["rungs"] > 100:
+    if values["rungs"] > MAX_REFERENCE_RUNGS:
         raise ManagerError(
             "resource_limit", "Reference replay supports at most 100 rungs.", 3
         )
@@ -32,7 +37,7 @@ def _configuration(spec: BotSpec, data: dict[str, Any]):
     mid = data["bars"][0]["close"]
     span = values["range_pct"] / 100
     if (
-        values["range_pct"] >= 95
+        values["range_pct"] >= MAX_REFERENCE_RANGE_PCT
         or d["capital_quote"] != values["capital_usd"]
         or d["capital_quote"] / values["rungs"] < d["min_order_quote"]
     ):
@@ -59,7 +64,7 @@ def run_identity(spec: BotSpec, data: dict[str, Any]) -> dict[str, Any]:
         "config_hash": spec.config_hash,
         "config_revision": spec.config_revision,
         "strategy_version": spec.strategy_version,
-        "snapshot_hash": data["snapshot_hash"],
+        "snapshot_hash": data.get("origin_hash", data["snapshot_hash"]),
         "reference": data["identity"],
         "target": {
             "venue": spec.venue,
@@ -108,7 +113,7 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
     from backtester.core.types import CostConfig
 
     validate_snapshot(data)
-    if data["identity"]["engine_identity"] != engine_identity():
+    if not compatible_engine(data["identity"]["engine_identity"], engine_identity()):
         raise ManagerError(
             "engine_identity_changed",
             "Pinned simulation engine differs from the loaded engine.",

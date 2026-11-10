@@ -179,7 +179,18 @@ class BotSpec:
                 if value["source"] == "override":
                     override_fields.add(key)
                     if (
-                        value["source_revision"] != "creation-override-v1"
+                        not (
+                            value["source_revision"] == "creation-override-v1"
+                            or (
+                                re.fullmatch(
+                                    r"edit-override-v[1-9][0-9]*",
+                                    value["source_revision"],
+                                )
+                                and 2
+                                <= int(value["source_revision"].rsplit("v", 1)[1])
+                                <= self.config_revision
+                            )
+                        )
                         or value["reason"]
                         != "manual_pin;" + self.shared_compatibility["reason"]
                     ):
@@ -262,6 +273,44 @@ class BotSpec:
             **body,
             **metadata,
         )
+
+    def edited(self, changes: Mapping[str, Any]) -> BotSpec:
+        """Apply an explicit delta to the saved body, without resolving defaults."""
+        from .config import validate_values
+
+        if not isinstance(changes, Mapping) or not changes:
+            raise ManagerError("invalid_input", "Supply at least one explicit setting.")
+        values = {**self.resolved_values, **changes}
+        validate_values(self.strategy_id, values)
+        changed = {
+            key: value
+            for key, value in changes.items()
+            if key not in self.user_overrides
+            or canonical(value) != canonical(self.user_overrides[key])
+        }
+        if not changed:
+            return self
+        raw = self.to_dict()
+        raw["config_revision"] += 1
+        raw["resolved_values"].update(changed)
+        raw["user_overrides"].update(changed)
+        for key in changed:
+            raw["provenance"][key] = {
+                "source": "override",
+                "source_revision": "edit-override-v" + str(raw["config_revision"]),
+                "reason": "manual_pin;" + self.shared_compatibility["reason"],
+            }
+        for key in (
+            "mode",
+            "venue",
+            "base_mint",
+            "quote_mint",
+            "bar_seconds",
+            "execution_model",
+        ):
+            raw[key] = raw["resolved_values"][key]
+        raw["config_hash"] = fingerprint({key: raw[key] for key in self._config_body()})
+        return BotSpec.from_dict(raw)
 
     def to_dict(self) -> dict[str, Any]:
         return {key: plain(getattr(self, key)) for key in self.__dataclass_fields__}

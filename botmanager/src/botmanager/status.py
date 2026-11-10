@@ -37,6 +37,7 @@ def _evidence() -> dict[str, Any]:
                 "start_at",
                 "end_at",
                 "engine_version",
+                "engine_identity",
                 "cost_model_id",
                 "result_ref",
             )
@@ -340,6 +341,56 @@ def legacy_snapshot(
     }
 
 
+def _editing_status(snapshot, spec, row, worker_alive):
+    from .ledger import RuntimeLedger
+
+    active = BotSpec.from_dict(row["spec"]) if row else None
+    pending = active is not None and active.config_hash != spec.config_hash
+    blockers = RuntimeLedger.adoption_blockers(row, worker_alive) if pending else []
+    if pending:
+        from .domain import ManagerError
+        from .strategies import validate_registration
+
+        try:
+            validate_registration(spec, row["input"])
+        except ManagerError:
+            blockers.append("compatible_explicit_input_required")
+    snapshot.update(
+        saved_config_revision=spec.config_revision,
+        saved_config_hash=spec.config_hash,
+        active_config_revision=active.config_revision if active else None,
+        active_config_hash=active.config_hash if active else None,
+        active_config_reason=None if active else "no_runtime_registered",
+        pending_changes=pending,
+        adoption_blockers=blockers,
+    )
+    # Keep the established runtime capability list compatible; configuration
+    # actions are additive, explicitly advertised in action_capabilities.
+    snapshot["action_capabilities"].update(
+        edit={
+            "available": True,
+            "reason": "immutable_saved_revision",
+            "semantics": "Save settings without changing active runtime economics.",
+        },
+        apply={
+            "available": not blockers,
+            "reason": blockers[0]
+            if blockers
+            else "stopped_reference_boundary_required"
+            if pending
+            else "draft_uses_saved_revision"
+            if not row
+            else "revision_already_active",
+            "semantics": "Adopt at a verified stopped zero-exposure boundary; never start.",
+        },
+    )
+    snapshot["tuning"]["adoption"] = {
+        "available": not blockers,
+        "reason": snapshot["action_capabilities"]["apply"]["reason"],
+        "explicit_only": True,
+    }
+
+
 def runtime_snapshot(
     spec: BotSpec,
     row: dict | None,
@@ -351,8 +402,11 @@ def runtime_snapshot(
 ) -> dict[str, Any]:
     """Separate reference replay progress, process health and recorded data age."""
     snapshot = draft_snapshot(spec, why=why)
+    _editing_status(snapshot, spec, row, worker_alive)
     if row is None:
         return snapshot
+    active = BotSpec.from_dict(row["spec"])
+    snapshot["evidence_identity"] = draft_snapshot(active)["evidence_identity"]
     reason = row["reason"]
     observed = row["observed"]
     heartbeat_age = (
@@ -436,8 +490,56 @@ def runtime_snapshot(
             "cursor": row["cursor"],
         },
     )
+    if data.get("prospective") is not None:
+        source = data["prospective"]
+        age = (
+            None
+            if source["latest_observed"] is None
+            else max(0.0, now - source["latest_observed"])
+        )
+        health = source["health"]
+        if (
+            age is not None
+            and age > data["descriptor"]["max_source_age_s"]
+            and health in ("available", "waiting_for_completed_bin")
+        ):
+            health = "source_stale"
+        snapshot["input_quality"] = {
+            "state": health,
+            "reason": "prospective_source_observation_separate_from_process_heartbeat",
+            "volume": None,
+        }
+        snapshot["data_age_seconds"] = {
+            "value": age,
+            "reason": "accepted_observation_clock",
+        }
+        if cp:
+            snapshot["latest_decision"]["value"] = source["delivery"]
+        snapshot["source_progress"] = {
+            k: v for k, v in source.items() if k != "observations"
+        }
+        snapshot["reference_run"].update(
+            mode="prospective_reference",
+            activation_at=data["descriptor"]["activation_at"],
+            delivery=source["delivery"],
+        )
+        snapshot["next_trigger"] = {
+            "value": "new_completed_oracle_bin",
+            "reason": health,
+        }
+        if health not in (
+            "available",
+            "waiting_for_completed_bin",
+            "waiting_for_observations",
+        ):
+            snapshot["blockers"] = list(dict.fromkeys([*snapshot["blockers"], health]))
+    snapshot["latest_decision"]["reason"] = (
+        "canonical_" + active.strategy_id + "_replay"
+        if cp
+        else "no_completed_evaluation"
+    )
     for op, capability in snapshot["action_capabilities"].items():
-        if op == "inspect":
+        if op in ("inspect", "edit", "apply"):
             continue
         available = op == "stop" or (
             op == "start" and row["observed"] not in ("failed", "blocked")
@@ -453,7 +555,7 @@ def runtime_snapshot(
     snapshot["capabilities"] = [
         op
         for op, capability in snapshot["action_capabilities"].items()
-        if capability["available"]
+        if capability["available"] and op not in ("edit", "apply")
     ]
     snapshot["configured_reference_capital"] = {
         "value": reference["capital_quote"],
@@ -487,8 +589,17 @@ def runtime_snapshot(
             venue_compatibility_verified=False,
             dataset_hash={"value": data["snapshot_hash"], "reason": "immutable_input"},
             engine_version={
-                "value": reference["engine"],
+                # Schema 1 retains its original display label. Schema 2 pins
+                # the package inside its strategy-specific module identity.
+                # Never substitute the currently loaded simulator's identity.
+                "value": reference["engine"]
+                if reference["schema_version"] == 1
+                else reference["engine_identity"]["package"],
                 "reason": "canonical_simulator",
+            },
+            engine_identity={
+                "value": plain(reference["engine_identity"]),
+                "reason": "pinned_strategy_simulator",
             },
             result_ref={"value": cp["run_hash"], "reason": "reference_run_hash"},
         )

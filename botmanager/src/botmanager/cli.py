@@ -4,9 +4,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections.abc import Sequence
 
-from .registry import COMMANDS, ERROR_EXIT_CODES, dispatch
+from .registry import (
+    COMMANDS,
+    ERROR_EXIT_CODES,
+    GLOBAL_ARGUMENTS,
+    CommandContext,
+    dispatch,
+)
 
 
 class InputError(Exception):
@@ -21,8 +28,25 @@ class SafeParser(argparse.ArgumentParser):
 
 def parser() -> argparse.ArgumentParser:
     root = SafeParser(
-        prog="solbot", description="Persistent paper/disarmed Solana bot drafts."
+        prog="solbot",
+        description="Manage saved paper bot drafts and bounded reference paper.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Start here (creating a draft starts no worker):\n"
+            "  solbot create grid --name my-grid\n"
+            "  solbot config my-grid --effective\n"
+            "  solbot status my-grid --why\n\n"
+            "Running a bot requires explicit input, a start request,\n"
+            "and an explicitly running 'solbot daemon' or installed service.\n"
+            "Edit saved settings with solbot edit; solbot apply explicitly adopts them.\n"
+            "Current runtime: bounded historical/prospective reference families. Jupiter\n"
+            "execution and automatic learning remain unavailable.\n\n"
+            "Working example and exact steps:\n"
+            "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
+        ),
     )
+    for flags, options in GLOBAL_ARGUMENTS:
+        root.add_argument(*flags, **options)
     subcommands = root.add_subparsers(dest="command", required=True)
     for command in COMMANDS.values():
         child = subcommands.add_parser(
@@ -34,10 +58,19 @@ def parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    root = parser()
+    if not arguments:
+        root.print_help()
+        return 0
     try:
-        args = vars(parser().parse_args(argv))
+        args = vars(root.parse_args(arguments))
         command = args.pop("command")
-        envelope = dispatch(command, args)
+        context_args = {
+            options["dest"]: args.pop(options["dest"])
+            for _, options in GLOBAL_ARGUMENTS
+        }
+        envelope = dispatch(command, args, CommandContext(**context_args))
     except InputError:
         envelope = dispatch("__invalid_input__", {})
     print(json.dumps(envelope, sort_keys=True, allow_nan=False))

@@ -20,6 +20,7 @@ class CommandContext:
     shared_snapshot: Mapping[str, Any] | None = None
     installations: tuple[Any, ...] = ()
     owner_adapters: Mapping[str, Any] = field(default_factory=dict)
+    ecosystem_home: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,33 @@ class CommandSpec:
     description: str
     handler: Callable[[Mapping[str, Any], CommandContext], dict[str, Any]]
     arguments: tuple[tuple[tuple[str, ...], dict[str, Any]], ...] = ()
+    api_parameters: tuple[str, ...] = ()
+
+
+GLOBAL_ARGUMENTS = (
+    (
+        ("--ecosystem-home",),
+        {
+            "dest": "ecosystem_home",
+            "type": Path,
+            "default": None,
+            "help": "Read registered external paper trials from this explicit ecosystem home.",
+        },
+    ),
+)
+
+
+def _argument_schema(arguments):
+    return [
+        {
+            "flags": list(flags),
+            **{
+                key: value.__name__ if key == "type" else value
+                for key, value in options.items()
+            },
+        }
+        for flags, options in arguments
+    ]
 
 
 def _store(context: CommandContext) -> ManagerStore:
@@ -94,7 +122,10 @@ def _create(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
 
 def _list(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
     store = _store(context)
+    from .adapters.ecosystem import discover_ecosystem
+
     return {
+        "ecosystem": discover_ecosystem(context.ecosystem_home),
         "initialized": store.initialized,
         "bots": [spec.to_dict() for spec in store.list_specs()],
     }
@@ -102,6 +133,124 @@ def _list(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
 
 def _config(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
     return _identity(params, context).to_dict()
+
+
+def _edit(params, context):
+    identity = params.get("identity")
+    if not isinstance(identity, str) or not identity:
+        raise ManagerError("invalid_input", "A bot identity is required.")
+    return _store(context).edit(
+        identity,
+        _settings(params),
+        expected_revision=params.get("expected_revision"),
+        request_id=params.get("request_id"),
+    )
+
+
+def _history(params, context):
+    return _store(context).capture_view(
+        params.get("identity"), history=True, revision=params.get("revision")
+    )
+
+
+def _apply(params, context):
+    from .ledger import RuntimeLedger
+
+    identity = params.get("identity")
+    if not isinstance(identity, str) or not identity:
+        raise ManagerError("invalid_input", "A bot identity is required.")
+    return RuntimeLedger(context.home).apply(
+        identity,
+        descriptor=params.get("descriptor"),
+        expected_revision=params.get("expected_revision"),
+        request_id=params.get("request_id"),
+    )
+
+
+def _schema(params, context):
+    from .config import STRATEGY_VERSIONS, _strategy, field_metadata
+    from .strategies.grid import (
+        MAX_REFERENCE_RANGE_PCT,
+        MAX_REFERENCE_RUNGS,
+        REFERENCE_BAR_SECONDS,
+    )
+
+    strategy = params.get("strategy")
+    if strategy is not None:
+        _strategy(strategy)
+    strategies = {
+        key: {
+            "version": version,
+            "fields": field_metadata(key),
+            "runtime": "bounded_historical_and_prospective_reference",
+            "live_available": False,
+            "prospective_data_certified": False,
+            "cross_field_constraints": ["fast_period < slow_period"]
+            if key == "trend"
+            else [
+                "base_order_usd >= max(min_order_usd, 1e-9)",
+                "max_safety_orders > 0 requires safety_order_usd >= max(min_order_usd, 1e-9)",
+                "cumulative safety deviation < 100 percent; scaled sizes finite",
+            ]
+            if key == "dca"
+            else [],
+            "runtime_constraints": {
+                "bar_seconds": REFERENCE_BAR_SECONDS,
+                "maximum_rungs": MAX_REFERENCE_RUNGS,
+                "exclusive_maximum_range_pct": MAX_REFERENCE_RANGE_PCT,
+                "capital": "must_equal_explicit_descriptor_capital_quote",
+                "minimum_order": "capital_quote / rungs >= explicit_min_order_quote",
+                "venue": "coinbase_proxy",
+            }
+            if key == "grid"
+            else {
+                "bar_seconds": REFERENCE_BAR_SECONDS,
+                "maximum_bars": 2048,
+                "capital": "must_equal_explicit_descriptor_capital_quote",
+                "costs": "explicit_spot_assumptions_zero_carry",
+                "venue": "coinbase_proxy",
+                "volume": "unavailable_price_only",
+            },
+        }
+        for key, version in STRATEGY_VERSIONS.items()
+        if strategy in (None, key)
+    }
+    return {
+        "schema_version": 1,
+        "strategies": strategies,
+        "unavailable_strategies": {
+            "arbitrage": "conditional_quote_cycle_research_only",
+            "triangle": "solana_adapter_unavailable",
+            "council": "external_only",
+        },
+        "protected_identity_fields": [
+            "bot_id",
+            "source",
+            "owner",
+            "source_identity",
+            "strategy_id",
+            "strategy_version",
+            "created_at",
+            "display_name",
+        ],
+        "mutation_contract": {
+            "explicit_delta_only": True,
+            "expected_revision": "optional_compare_and_swap",
+            "omitted_revision": "latest_inside_serialized_mutation",
+            "request_id": "durable_replay_only",
+            "edit_starts_worker": False,
+            "apply_starts_worker": False,
+        },
+        "global_arguments": _argument_schema(GLOBAL_ARGUMENTS),
+        "commands": {
+            name: {
+                "description": command.description,
+                "api_parameters": list(command.api_parameters),
+                "arguments": _argument_schema(command.arguments),
+            }
+            for name, command in COMMANDS.items()
+        },
+    }
 
 
 def _external(params: Mapping[str, Any], context: CommandContext):
@@ -154,19 +303,25 @@ def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
                 if row["strategy_id"] == family:
                     return row
             raise ManagerError("bot_not_found", "External identity was not found.")
-        return _manager_status(_identity(params, context), context, why=why)
-    store = _store(context)
+        captured = _store(context).capture_view(params["identity"])
+        spec, row = captured["bots"][0]
+        return _manager_status(spec, row, context, why=why)
+    from .adapters.ecosystem import discover_ecosystem
+
+    captured = _store(context).capture_view()
     return {
-        "initialized": store.initialized,
+        "ecosystem": discover_ecosystem(context.ecosystem_home),
+        "initialized": captured["initialized"],
         "bots": [
-            _manager_status(spec, context, why=why) for spec in store.list_specs()
+            _manager_status(spec, row, context, why=why)
+            for spec, row in captured["bots"]
         ],
         "runtime": "reference_paper_available",
         "installations": _discover({}, context)["installations"],
     }
 
 
-def _manager_status(spec, context, *, why=False):
+def _manager_status(spec, row, context, *, why=False):
     import time
 
     from .ledger import RuntimeLedger
@@ -176,7 +331,7 @@ def _manager_status(spec, context, *, why=False):
     ledger = RuntimeLedger(context.home)
     return runtime_snapshot(
         spec,
-        ledger.get(spec.bot_id),
+        row,
         now=time.time(),
         worker_alive=lock_held(ledger.home / "locks" / (spec.bot_id + ".lock")),
         supervisor_alive=lock_held(ledger.home / "supervisor.lock"),
@@ -222,7 +377,45 @@ def _register_input(params, context):
         raise ManagerError(
             "input_unavailable", "Input descriptor is missing or invalid.", 3
         ) from exc
-    return RuntimeLedger(context.home).register(spec, load_recording(descriptor))
+    return RuntimeLedger(context.home).register(
+        spec, load_recording(descriptor, strategy_id=spec.strategy_id)
+    )
+
+
+def _prepare_input(params, context):
+    from .input_commands import prepare
+
+    return prepare(_identity(params, context), params, _settings(params))
+
+
+def _data_check(params, context):
+    from .input_commands import check
+    from .ledger import RuntimeLedger
+
+    spec = _identity(params, context)
+    return check(
+        spec,
+        descriptor_path=params.get("descriptor"),
+        runtime=RuntimeLedger(context.home).get(spec.bot_id),
+    )
+
+
+def _cycle_check(params, context):
+    import time
+
+    from .input_commands import read_document
+    from .strategies.arbitrage import diagnose_cycle
+
+    body = read_document(params["descriptor"], limit=1048576)
+    if body.get("schema_version") != 1:
+        raise ManagerError("invalid_input", "Cycle evidence schema is unsupported.")
+    return diagnose_cycle(
+        body["observations"],
+        body["assumptions"],
+        now=time.time(),
+        failed_leg=body["failed_leg"],
+        unwind=body.get("unwind"),
+    )
 
 
 def _events(params, context):
@@ -292,13 +485,13 @@ def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
             {"name": spec.name, "description": spec.description}
             for spec in COMMANDS.values()
         ],
-        "scope": "paper/disarmed drafts and bounded Coinbase grid reference replay; no live execution",
+        "scope": "paper/disarmed canonical reference families and conditional Solana quote research; no live execution",
         "strategies": {
             "grid": "reference_paper_with_explicit_input",
-            "dca": "draft",
-            "trend": "draft",
-            "momentum": "draft",
-            "arbitrage": "Solana adapter unavailable",
+            "dca": "reference_paper_with_explicit_input",
+            "trend": "reference_paper_with_explicit_input",
+            "momentum": "reference_paper_with_explicit_input",
+            "arbitrage": "conditional_quote_cycle_research_only",
             "council": "external-only",
         },
     }
@@ -316,7 +509,94 @@ CONTROL_GUARDS = (
         {"help": "Canonical UUID; repeat only to inspect its durable receipt"},
     ),
 )
+MUTATION_GUARDS = (
+    (
+        ("--expected-revision",),
+        {"type": int, "help": "Compare the saved revision atomically"},
+    ),
+    (
+        ("--request-id",),
+        {"help": "Canonical UUID; repeats return the original accepted mutation"},
+    ),
+)
 COMMANDS = {
+    "prepare-input": CommandSpec(
+        "prepare-input",
+        "Prepare explicit Oracle reference input with versioned cost assumptions; never start a producer.",
+        _prepare_input,
+        IDENTITY
+        + (
+            (
+                ("--archive",),
+                {
+                    "required": True,
+                    "help": "Existing absolute archive path or shared-sol-usd",
+                },
+            ),
+            (
+                ("--reference",),
+                {
+                    "action": "store_true",
+                    "help": "Consent to source USD reference versus target USDC",
+                },
+            ),
+            (("--output",), {"required": True}),
+            (
+                ("--mode",),
+                {"choices": ("prospective", "historical"), "default": "prospective"},
+            ),
+            (("--start-ts",), {"type": int}),
+            (("--end-ts",), {"type": int}),
+            (("--set",), {"action": "append", "default": [], "metavar": "KEY=VALUE"}),
+        ),
+        api_parameters=("overrides",),
+    ),
+    "data-check": CommandSpec(
+        "data-check",
+        "Inspect actual input coverage, required fields and reference compatibility.",
+        _data_check,
+        IDENTITY + ((("--descriptor",), {}),),
+    ),
+    "cycle-check": CommandSpec(
+        "cycle-check",
+        "Diagnose an actual directed quote cycle with explicit cost and failure assumptions.",
+        _cycle_check,
+        ((("--descriptor",), {"required": True}),),
+    ),
+    "edit": CommandSpec(
+        "edit",
+        "Save an immutable settings revision; active workers stay pinned.",
+        _edit,
+        IDENTITY
+        + ((("--set",), {"action": "append", "default": [], "metavar": "KEY=VALUE"}),)
+        + MUTATION_GUARDS,
+        api_parameters=("overrides",),
+    ),
+    "history": CommandSpec(
+        "history",
+        "Read exact saved revisions and attributable current/archived runtime evidence.",
+        _history,
+        IDENTITY + ((("--revision",), {"type": int}),),
+    ),
+    "apply": CommandSpec(
+        "apply",
+        "Adopt saved settings at a stopped zero-exposure boundary without starting.",
+        _apply,
+        IDENTITY
+        + MUTATION_GUARDS
+        + (
+            (
+                ("--descriptor",),
+                {"help": "Optional compatible recorded-input descriptor"},
+            ),
+        ),
+    ),
+    "schema": CommandSpec(
+        "schema",
+        "Read versioned editor fields, constraints and command arguments.",
+        _schema,
+        ((("strategy",), {"nargs": "?"}),),
+    ),
     "register-input": CommandSpec(
         "register-input",
         "Pin explicit recorded input and simulation costs.",
@@ -352,6 +632,7 @@ COMMANDS = {
             (("--name",), {"required": True}),
             (("--set",), {"action": "append", "default": [], "metavar": "KEY=VALUE"}),
         ),
+        api_parameters=("overrides", "config_context"),
     ),
     "list": CommandSpec("list", "List durable drafts without creating state.", _list),
     "config": CommandSpec(
@@ -387,6 +668,10 @@ COMMANDS = {
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
 ERROR_EXIT_CODES = {
+    "read_conflict": 4,
+    "adoption_blocked": 3,
+    "incompatible_input": 3,
+    "invalid_receipt": 4,
     "input_unavailable": 3,
     "resource_limit": 3,
     "stable_install_required": 3,
@@ -429,7 +714,7 @@ def dispatch(
         allowed = {
             options.get("dest", flags[0].lstrip("-").replace("-", "_"))
             for flags, options in command.arguments
-        } | {"overrides", "config_context"}
+        } | set(command.api_parameters)
         if not set(params) <= allowed:
             raise ManagerError("invalid_input", "Unknown command parameters.")
         envelope["data"] = command.handler(params, context or CommandContext())

@@ -1,10 +1,12 @@
 # solmargintrader
 
-SOL trading research and execution tooling, in eight parts:
+SOL trading research and execution tooling, in ten parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
-| [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance grid reference-paper supervisor. Paper/disarmed; bounded Coinbase replay does not certify Jupiter execution. | Python 3.13 |
+| [`ecosystem/`](ecosystem/README.md) | Paper bootstrap, shared Oracle/F5 coordination, external bot registrations and a local read-only control room. | Python 3.13 |
+| [`oracle/`](oracle/README.md) | Source-labelled market observations, prospective strategy votes, durable history and read-only MCP subscriptions. Never signs or submits orders. | Python 3.13 |
+| [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance reference-paper supervisor for Grid, DCA, Trend and Momentum. Reuses the shared Oracle archive; Jupiter quote evidence stays separate. | Python 3.13 |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
 | [`extension/`](extension/README.md) | Holdings, P&L, pool discovery, backtests and strategy changes, swap quotes and alerts for Base and Solana, plus an experimental grid on Jupiter (Solana) with hard risk rails — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **The grid is the part that can place real orders.** | JavaScript (ESM, no deps) |
@@ -16,6 +18,17 @@ SOL trading research and execution tooling, in eight parts:
 > Research and educational tooling, not financial advice. Simulated past performance does not
 > predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
 > Leveraged positions can be liquidated. Trade only capital you can lose entirely.
+
+## Automated paper ecosystem
+
+The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
+
+
+`python3 scripts/bootstrap_ecosystem.py start` installs the headless components,
+checks health, acquires the configured universe, runs the complete strategy matrix
+and hands usable results to registered forward trials with per-coin Oracle
+forecasts. See [setup and recovery](docs/ECOSYSTEM-BOOTSTRAP.md) for source,
+coverage and lifecycle limits.
 
 ## Quick start
 
@@ -45,8 +58,8 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 999 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 1002 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1405 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 ```

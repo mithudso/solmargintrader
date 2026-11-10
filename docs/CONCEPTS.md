@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-09T22:40:23+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-10T05:31:35+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1658 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1664 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,11 +36,11 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1658`
+Full list: `python3 index/search.py --concept risk-rails -n 1664`
 
 ### Cost model
 
-`costs` · **1394 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
+`costs` · **1411 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
 
 Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.
 
@@ -51,15 +51,15 @@ Strongest files:
 - `research/ratio_rotation.py` (89 hits)
 - `soltui/coin_fit.py` (73 hits)
 - `soltui/simulation.py` (68 hits)
+- `backtester/core/engine.py` (61 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (61 hits)
 - `backtester/tests/test_engine.py` (58 hits)
-- `backtester/core/engine.py` (55 hits)
 
-Full list: `python3 index/search.py --concept costs -n 1394`
+Full list: `python3 index/search.py --concept costs -n 1411`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1377 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1389 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -74,11 +74,11 @@ Strongest files:
 - `docs/TRADINGVIEW-REFERENCE.md` (31 hits)
 - `research/tradingview-script-understanding.json` (27 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1377`
+Full list: `python3 index/search.py --concept lookahead -n 1389`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1345 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1355 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
@@ -87,17 +87,17 @@ Strongest files:
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
-- `docs/FILES.md` (76 hits)
+- `docs/FILES.md` (78 hits)
 - `research/results/frontier-2026-11-07.json` (62 hits)
 - `research/CROSS-ASSET-TRANSFER.md` (60 hits)
 - `research/results/minute_sweep_x1_common.txt` (54 hits)
 - `docs/SCRIPTS.md` (50 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1345`
+Full list: `python3 index/search.py --concept transfer -n 1355`
 
 ### Grid trading
 
-`grid` · **637 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **652 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -112,11 +112,11 @@ Strongest files:
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (125 hits)
 
-Full list: `python3 index/search.py --concept grid -n 637`
+Full list: `python3 index/search.py --concept grid -n 652`
 
 ### Data integrity
 
-`data-integrity` · **579 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **592 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -127,15 +127,15 @@ Strongest files:
 - `research/tradingview-script-understanding.json` (144 hits)
 - `research/tradingview-card-readiness.json` (106 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
-- `docs/FILES.md` (73 hits)
+- `docs/FILES.md` (74 hits)
+- `ecosystem/web/styles.css` (63 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (61 hits)
-- `docs/design/bot-control-room/mockup.css` (60 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 579`
+Full list: `python3 index/search.py --concept data-integrity -n 592`
 
 ### On-chain execution reality
 
-`execution-onchain` · **487 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **550 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -143,18 +143,18 @@ Strongest files:
 
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (203 hits)
+- `docs/FILES.md` (264 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `soltui/tui.py` (141 hits)
+- `memory.md` (135 hits)
 - `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
-- `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (124 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 487`
+Full list: `python3 index/search.py --concept execution-onchain -n 550`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **321 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **329 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,11 +169,11 @@ Strongest files:
 - `docs/FILES.md` (61 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (56 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 321`
+Full list: `python3 index/search.py --concept benchmark -n 329`
 
 ### Evidence floor
 
-`evidence-floor` · **247 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **254 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,11 +188,11 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 247`
+Full list: `python3 index/search.py --concept evidence-floor -n 254`
 
 ### Combinatorial purged cross-validation
 
-`cpcv` · **169 files** · matched on `cpcv`, `purged`, `combinatorial`, `n_groups`, `k_test`, `path_sharpes`
+`cpcv` · **174 files** · matched on `cpcv`, `purged`, `combinatorial`, `n_groups`, `k_test`, `path_sharpes`
 
 The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced the single 70/30 split, whose in-sample window ended on the highest close in the series.
 
@@ -207,7 +207,7 @@ Strongest files:
 - `research/coin-intelligence/sol-solana.md` (35 hits)
 - `research/cross_asset_cpcv.py` (31 hits)
 
-Full list: `python3 index/search.py --concept cpcv -n 169`
+Full list: `python3 index/search.py --concept cpcv -n 174`
 
 ### Overfitting and PBO
 
@@ -257,14 +257,14 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 726 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 462 | `rsi`, `stochastic`, `oscillator` |
-| `momentum` | 351 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `regime-filter` | 319 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
-| `baseline` | 270 | `buy_and_hold`, `baseline` |
-| `breakout` | 237 | `breakout`, `bb_breakout`, `keltner` |
-| `volume-flow` | 132 | `obv`, `volume-flow` |
-| `mean-reversion` | 120 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
+| `trend` | 742 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `oscillator-reversion` | 469 | `rsi`, `stochastic`, `oscillator` |
+| `momentum` | 362 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `regime-filter` | 323 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
+| `baseline` | 278 | `buy_and_hold`, `baseline` |
+| `breakout` | 240 | `breakout`, `bb_breakout`, `keltner` |
+| `volume-flow` | 133 | `obv`, `volume-flow` |
+| `mean-reversion` | 122 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
 | `risk-overlay` | 57 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
 
 ---

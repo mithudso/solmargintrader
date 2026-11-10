@@ -9,9 +9,10 @@ Follow the workflow-record rule in `CLAUDE.md` before implementation and at deli
 
 | Agent | Scope | Model | When to use | Tools / access |
 | --- | --- | --- | --- | --- |
+| [oracle](.claude/agents/oracle.md) | Oracle inspection and guide routing | inherit | Market provenance, strategy votes, lifecycle and readiness | Bash and Read; no signing or orders |
 | [aero-pool-scout](.claude/agents/aero-pool-scout.md) | `liquidity/` research only | sonnet | Independently check the daemon's pool ranking | Bash, Read, Write, WebSearch, WebFetch; Base RPC and public market sources; no signing or config changes |
 
-The agent definition is the source of truth. No other repository-local agents are tracked.
+The agent definition is the source of truth. The agent definitions are the source of truth.
 
 Summary of the rules most often broken here:
 

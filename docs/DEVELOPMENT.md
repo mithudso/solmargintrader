@@ -17,11 +17,17 @@ The extension has no build step. The optional soltui app bundle is built with py
 ## Setup
 
 The standalone manager is packaged separately under `botmanager/`. Its `solbot`
-entry point does not import the SolTUI UI. Install its canonical simulation package
-and CLI together with `python -m pip install ./backtester ./botmanager` in a stable
+entry point does not import the SolTUI UI. Install its canonical simulation package, Oracle data contract, headless strategy owner
+and CLI together with `python -m pip install ./backtester ./oracle ./soltui ./botmanager` in a stable
 Python 3.13 environment; see `botmanager/README.md` for
 configuration, delivered commands and current capability limits. No service is
 installed by a read-only command.
+
+For the coordinated paper ecosystem, `scripts/bootstrap_ecosystem.py start`
+installs and verifies the five headless packages, then starts acquisition,
+backtesting, forward handoff, Oracle and the local control room. See
+`docs/ECOSYSTEM-BOOTSTRAP.md`. The `soltui/pyproject.toml` research-runtime package
+includes the headless F5 owner without installing the native macOS app.
 
 ```bash
 git clone https://github.com/mithudso/solmargintrader.git
@@ -129,8 +135,8 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 999 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 1002 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1405 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE

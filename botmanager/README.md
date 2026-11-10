@@ -1,21 +1,31 @@
-# Solbot manager 0.2.0
+# Solbot manager 0.4.0
+
+**Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
+Running bare `solbot` now prints help and concrete next steps. It is a command-line
+program, not an interactive menu. Grid, DCA, buffered SMA Trend and time-series Momentum run against
+explicit historical or prospective reference input. Saved settings support explicit editing and stopped-run adoption;
+prospective Jupiter trading and learning remain unavailable.
 
 The standalone `solbot` CLI creates persistent named bot drafts and inspects their
 pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC.
-An explicit supervisor runs independent grid reference-paper accounts from a
-pinned Coinbase recording. Creating a draft cannot start a process, fetch prices,
+An explicit supervisor runs independent reference-paper accounts from a
+pinned Coinbase recording or the selected existing Oracle archive. Creating a draft cannot start a process, fetch prices,
 initialize another component's database, load keys, or trade.
-Arbitrage reports `Solana adapter unavailable`. Council is external-only.
+Arbitrage offers conditional directed Solana quote-cycle diagnosis through `cycle-check`; autonomous arbitrage remains unavailable. Council is external-only.
+
+For the complete implementation history, operator workflows, source ownership,
+backup/recovery guidance, release evidence and remaining milestones, read
+[the bot-manager handoff](../docs/bot-manager-handoff.md).
 
 ## Install and use
 
 Python 3.13 or newer is required. The manager uses the standard library and the
-exact local `solmargintrader-backtester==0.1.0` package, which declares NumPy and
-Pandas. Building uses setuptools. Install both local projects in a stable environment:
+exact local `solmargintrader-backtester==0.1.1` package, which declares NumPy and
+Pandas. Building uses setuptools. Install the compatible local backtester, Oracle, headless research runtime and manager projects in a stable environment:
 
 ```sh
 python3 -m venv /Users/mitch/.venvs/solbot
-/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/botmanager
+/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/oracle /Users/mitch/dev/solmargintrader/soltui /Users/mitch/dev/solmargintrader/botmanager
 /Users/mitch/.venvs/solbot/bin/solbot help
 /Users/mitch/.venvs/solbot/bin/solbot create grid --name sol-grid --set range_pct=10
 /Users/mitch/.venvs/solbot/bin/solbot create grid --name sol-grid-wide --set range_pct=25
@@ -26,9 +36,9 @@ python3 -m venv /Users/mitch/.venvs/solbot
 ```
 
 The installed console script resolves the package from its environment; it does
-not require a repository working directory or `PYTHONPATH`. Each invocation emits
+not require a repository working directory or `PYTHONPATH`. Application subcommands emit
 a JSON envelope with `schema_version`, a new UUID `request_id`, `ok`, `data`, and
-`error`. `--help` provides conventional parser help. Exit codes are 0 for success,
+`error`. `--help` and bare invocation provide parser help and next steps. Exit codes are 0 for success,
 2 for invalid input or identity conflicts, 3 for an unavailable capability, and 4
 for operational/store errors. Input errors never repeat submitted values.
 
@@ -72,8 +82,8 @@ close position and emergency stop separately. Only inspect is available for
 drafts. Stopping a worker retains orders, positions, arming and journals;
 cancellation, closing and engine kill/disarm require their own supported actions.
 `manual_pins` preserves exact override values and provenance at the config
-revision/hash. Tuning proposals are unavailable and read-only; versioned adoption
-and automatic runtime edits are unavailable. Status never adopts new settings.
+revision/hash. Tuning proposals are unavailable and read-only; explicit versioned adoption is available only at a verified stopped reference
+boundary. Automatic runtime edits remain unavailable. Status never adopts settings.
 
 `botmanager.receipts.CommandReceipt` defines the version-1 per-bot control
 contract for later owner adapters. No draft command emits a pretend owner
@@ -104,8 +114,9 @@ manual-pin reason. Original user overrides remain separate from effective values
 Mappings are recursively immutable. Specs pin strategy/version, venue/mints,
 closed-bar duration, execution model, config revision, SHA-256 config hash and
 provenance. Reads reconstruct that snapshot without resolving new defaults.
-Changing settings or adopting new defaults is intentionally unavailable until an
-explicit versioned update/adoption command exists.
+`edit` changes only explicitly supplied settings against the latest saved body.
+It never resolves current defaults over existing fields. Shared defaults are not
+automatically re-adopted.
 
 A shared snapshot has this shape (all context fields are mandatory):
 
@@ -133,6 +144,92 @@ strategy parameters only; capital, order sizes, stop loss, venue minimum, mode,
 arming and operating settings cannot be learned. This slice accepts snapshots
 through its Python registry context only;
 it does not read or overwrite existing optimizers, named profiles or owner stores.
+
+## Editing, history and explicit adoption
+
+```sh
+/Users/mitch/.venvs/solbot/bin/solbot schema grid
+/Users/mitch/.venvs/solbot/bin/solbot edit sol-grid --set range_pct=20 --expected-revision 1
+/Users/mitch/.venvs/solbot/bin/solbot history sol-grid --revision 1
+/Users/mitch/.venvs/solbot/bin/solbot apply sol-grid --expected-revision 2
+```
+
+`edit BOT --set KEY=VALUE ...` preserves the UUID, creation time, every unedited
+resolved value and provenance field, and all other manual pins. Each effective
+change appends a new configuration revision and hash. Pinning a previously
+inherited value is a meaningful change even when the number stays the same.
+Repeating an identical existing pin is a no-op. Strategy replacement and rename
+are unavailable. Safety-fixed fields accept only their existing permitted values;
+`armed=true`, live mode, unknown keys, invalid types and nonfinite numbers refuse
+without reflecting submitted values.
+
+`--expected-revision N` compares the saved revision inside the mutation lock.
+Without it, the delta applies to the latest saved body inside that same lock.
+`--request-id UUID` provides durable, replay-only idempotency. Repeating the exact
+accepted request returns its original `{spec, receipt}` even after later edits or
+adoptions. A different operation or delta under the same UUID refuses. Dedicated
+version-1 mutation receipts identify the request, exact delta, expected/prior and
+accepted revision/hash, actor UID, acceptance time, active/prior runtime and
+generation where present. Receipt, immutable acceptance context, request row and
+saved history must agree; a recomputed checksum alone does not permit receipt
+transplants. Checksums detect corruption; they are not signatures against a user
+who controls the entire database.
+
+`history BOT [--revision N]` returns exact saved versions with save time and
+request attribution, plus current and archived reference runs. Each nested run
+includes its pinned spec/input, complete checkpoint and fills, events, and retained
+control receipts. Legacy receipts remain inspectable with `replay_proven=false`;
+they retain the existing `invalid_receipt` refusal policy. Reads never migrate or
+create an absent home and every journal decoder uses one SQLite snapshot.
+
+An active worker always uses its pinned specification. `status` retains the saved
+`config_revision`/`config_hash` and adds `saved_config_*`, `active_config_*`,
+`pending_changes`, `adoption_blockers`, and explicit edit/apply entries in
+`action_capabilities`. Its runtime evidence and financial results describe the
+active revision. The existing runtime `capabilities` list remains compatible.
+
+`apply BOT [--descriptor PATH]` explicitly adopts the saved revision. It never
+starts a worker. With no runtime and no descriptor, it records an honest
+`draft_uses_saved_revision` no-op. A new descriptor uses the existing strict
+recorded-input and cost validation. Existing recorded input can be reused only
+when compatible with the saved strategy, timeframe and virtual capital. Changed
+capital requires an explicit matching descriptor; units and costs are never
+rewritten or inferred.
+
+Replacement requires stopped intent, no held worker lock, no unresolved tick,
+no failed/blocked state, and a fully reconciled zero-exposure checkpoint with no
+open lots or accrued carry. The canonical replay independently confirms the
+checkpoint before adoption. Tiny floating-point unrealized-P&L residue up to
+1e-9 quote units is tolerated only after exact replay equality. Open exposure
+remains blocked; stop does not close it. The old runtime row, fills and per-run events
+are retained together in an immutable archive. The global event stream remains
+append-only and carries the runtime UUID on every new event. The replacement has a new runtime UUID,
+a strictly greater fencing generation, zero cursor and stopped intent. Old
+control receipts replay without acting on the new run. Applying the already
+active revision with unchanged input is a no-op, preserving progress and capital.
+
+A per-home guarded flock serializes edits, registration and adoption across
+processes. Runtime replacement, archival and its receipt share one journal
+transaction. The configuration-request quotas are independent of control stop
+capacity. Stop never waits for the mutation flock. Runtime schema 3 adds archives and adoption requests. Runtime schema 4 keeps
+global event sequences monotonic across adoption and adds runtime attribution.
+It preserves existing current event IDs, imports archived events above all known
+legacy IDs, and records their original sequence and import origin separately.
+Historical archive bodies and every schema-1/2/3 control ID, body and
+legacy-context policy remain unchanged. Reads never perform this migration.
+Stop can retain the prior event schema so archive import failures cannot prevent
+durable stopped intent; another authorized runtime writer performs the migration. Back up all three SQLite journals using their
+connection backup APIs. `history` has no retention or pagination policy yet;
+large histories are intended for direct CLI use. Mutations are explicit CLI
+operations outside the supervisor socket request loop.
+
+`schema [STRATEGY]` exposes version-1 machine-readable field types, exact defaults,
+units and limits from the validation definitions, cross-field constraints,
+protected identity fields, current runtime/certification limits and arguments
+from the actual command registry. Its `global_arguments` section also defines
+root context options such as the opt-in `--ecosystem-home`; the parser uses those
+same definitions. Arbitrage remains unavailable and Council is
+external-only. The schema is a form contract, not certification of live trading.
 
 ## Default sources and semantics
 
@@ -172,9 +269,10 @@ Existing reads open SQLite with `mode=ro` and `query_only`. Writes create the ho
 with mode 0700 and `/Users/mitch/.config/solbot/manager.sqlite3` with mode 0600.
 No credentials belong in a spec, event or installation descriptor.
 
-Store schema 1 uses SQLite `user_version=1`; migration 1 initializes the schema
-under a write transaction. Unknown schemas fail closed. One transaction inserts
-the immutable spec and its `spec.created` event. Database constraints enforce UUID,
+Store schema 2 uses SQLite `user_version=2`. Authorized writes migrate schema-1
+stores by copying their exact saved bodies into append-only `spec_versions`.
+Schema-1 reads remain inert. Unknown or malformed schemas fail closed. One
+transaction inserts the immutable spec, its version, and `spec.created` event. Database constraints enforce UUID,
 name and source-identity uniqueness. Events have a fixed reference-only schema
 and unique event IDs; arbitrary owner response bodies are refused. Config hashes
 detect accidentally altered snapshots; they are not signatures.
@@ -345,8 +443,7 @@ independent simulations, not reservations against one funded wallet.
 Every cost and minimum size is required. These are simulation assumptions, not
 observed venue fees or executable sizing. Optional typed limits default to
 `max_bars=2048`, `max_quote_age_s=5` and `max_sample_gap_s=5`; neither freshness
-ceiling can be loosened above five seconds. This slice accepts only one-minute
-grids, at most 100 rungs, at most four recording files of 64 MiB each, and at most
+ceiling can be loosened above five seconds. Reference families require one-minute bars; grids allow at most 100 rungs, at most four recording files of 64 MiB each, and at most
 256 MiB of decompressed scan. Larger inputs refuse explicitly. It never truncates
 a run's history, cursor, fills or lots. Each requested bar must have coverage near
 both boundaries; missing products, stale/future quote timestamps, out-of-order
@@ -398,9 +495,21 @@ running intent is not proof of a living process. `status` separates actual lock
 observations, heartbeat age, evaluation timestamp/cursor, and recording age. At
 the immutable input's end, the worker remains observable but reports
 `waiting/reference_input_exhausted`. It does not claim prospective evaluation or
-fresh Jupiter data. Additional recordings need the later prospective-data design.
+fresh Jupiter data. Prospective Oracle sources instead wait for newly accepted completed bins.
 
-`events BOT --limit 100` reads the reference journal. The local supervisor socket
+`events BOT --limit 100` reads the append-only reference event stream across
+current and archived runs. Each schema-4 event includes its runtime UUID;
+`origin_sequence` and `origin` distinguish imported legacy rows from new events.
+A schema-3 mirror whose cursor already became ambiguous through prior sequence
+reuse remains unavailable; the manager never resets or silently rebinds it.
+Telemetry checks persisted `origin_sequence` values across both legacy-current
+and legacy-archive rows. Reused IDs contribute a stable fingerprint to the source
+marker, even if another bot retains the first event. Source metadata exposes
+`legacy_reused_sequence_count` and `legacy_reuse_fingerprint` (null when no reuse
+exists). A fresh mirror can bind the migrated stream, while a prior ambiguous
+mirror retains its cursor and refuses ingestion. An unambiguous migration keeps
+the original marker. Native events do not change this migration evidence.
+The local supervisor socket
 is mode 0600 with same-user peer checks on macOS/Linux, a 64 KiB request ceiling,
 a bounded listen backlog and monotonic whole-request I/O deadlines (0.2 seconds
 for server receipt/response and one second for client connect/send/receive).
@@ -409,11 +518,12 @@ registry for local bot controls and reads. Registration and service administrati
 are explicit CLI operations outside the supervisor request loop. CLI controls
 write durable intent directly, so an unavailable socket cannot prevent a stop.
 
-`runtime.sqlite3` is independently schema version 2 and must be backed up using
+`runtime.sqlite3` is independently schema version 4 and must be backed up using
 SQLite's backup API together with `manager.sqlite3` and `controls.sqlite3` when
-present. Runtime specs and inputs are immutable; fills, checkpoints, generations,
-control receipts and reference-only events are durable. There is no reset/adopt
-command that silently discards a failed run or its inventory.
+present. Runtime specs and source selections are immutable. Prospective inputs append accepted observations and completed bars atomically with account transitions; fills, checkpoints, generations,
+control receipts and reference-only events are durable. Explicit `apply` archives
+all old run evidence in the same transaction that admits the new stopped run.
+Failed runs and retained inventory cannot be silently reset.
 
 Runtime reads hold one explicit SQLite snapshot across row and fill decoding.
 A concurrent valid commit cannot mix a previous checkpoint with newer fills.
@@ -462,3 +572,113 @@ concurrent commit fencing, actual crash-before/crash-after commit, supervisor
 SIGKILL/orphan shutdown, dead workers, hung ticks, failure holding, retained stop,
 corrupt checkpoints/fills, immutable input, and canonical economics/prefix parity.
 Installed package/service acceptance is a separate release gate.
+
+## External paper registrations
+
+`solbot --ecosystem-home /absolute/run/home status` reads registered F5 paper
+trials through the optional ecosystem adapter. These remain owned by F5; this
+command does not create manager drafts, claim runtime ownership or enable live
+controls. See `docs/ECOSYSTEM-BOOTSTRAP.md` for the resumable installer.
+
+
+## Prospective reference preparation
+
+Use the existing shared Oracle source explicitly. Preparation never starts its
+producer, recorder, a worker or a service. `shared-sol-usd` selects
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3`.
+The source is Coinbase SOL/USD and the saved target remains Jupiter SOL/USDC.
+
+```sh
+solbot create trend --name sol-trend
+solbot prepare-input sol-trend --archive shared-sol-usd --reference --output /Users/mitch/.config/solbot/trend-reference-v1.json
+solbot data-check sol-trend --descriptor /Users/mitch/.config/solbot/trend-reference-v1.json
+solbot register-input sol-trend --descriptor /Users/mitch/.config/solbot/trend-reference-v1.json
+solbot start sol-trend
+```
+
+The descriptor schema is 2. It freezes the archive's policy, exact source scope,
+activation clock and sequence watermark, currency, capital and cost assumptions.
+The `canonical-spot-reference-v1` profile derives fee/slippage from canonical
+`CostConfig`, assumes zero spot carry and a 10-unit minimum. The numbers are
+simulation assumptions, never observed Jupiter costs. `--set` accepts changed
+cost/coverage values. `--mode historical --start-ts EPOCH --end-ts EPOCH` captures
+an explicit closed interval. Existing descriptor files are never overwritten.
+`data-check BOT` returns schema 1 with actual coverage, source age, warmup,
+reference units, model compatibility and missing executable evidence.
+
+Only accepted Oracle observations after activation enter prospective evidence.
+The partial activation minute is excluded; each completed minute needs observed
+edges within five seconds and no intervening gap above five seconds. Prices use
+the observed clock, not wall-clock fabricated candles. Traded volume is unknown;
+price-only engine consumers cannot access a fabricated volume series. The source
+cursor, observation bodies/hashes, closed bars and account checkpoint commit in
+one fenced transaction. The input may append but cannot rewrite prior bars/lots.
+A crash replays the durable page exactly. A saved stop survives restart.
+
+A stale, absent, inaccessible or changed-policy producer holds new entries and
+reports that condition separately from the worker heartbeat. Backlogs carry
+`delayed_replay`, never real-time evidence. Capacity is finite: 2,048 bars and
+245,760 accepted samples per account. `resource_limit` holds the original run
+and inventory; it never truncates evidence or reallocates virtual capital.
+
+DCA calls the safety-order deal simulator, including deferred same-bar TP.
+Trend calls the packaged `soltui.trend.TrendFollowing`; Momentum calls
+`TsMomentum`. Both use canonical next-open execution. All prefixes retain
+cash, entry costs, open inventory and realized/unrealized P&L. Simulator hashes
+are strategy-specific; packaging-only version changes do not corrupt an old run.
+A changed economic implementation may refuse execution while inspection and
+stopping remain available. No forward result establishes a live trading edge.
+
+## Actual Solana quote evidence and cycles
+
+`oracle.quotes.collect_quote` is an explicit opt-in shared Oracle capability,
+with a required API key, exact input/output mints, integer raw input amount and
+Swap v1 slippage. It performs one HTTPS GET and never retries. Its fixed shared
+Oracle budget is `/Users/mitch/.local/share/solmargintrader/oracle/quote-budget.sqlite3`:
+all selected coin archives share at most 60 attempts per minute. Collection is
+disabled by default and no service automatically invokes it. Quote schema 1
+adds append-only `quote_observations` to an existing Oracle archive; inert reads
+never create or migrate it. `capture_quote`, `import_quote`, `read_quotes` and
+`validate_observation` preserve source/version, amount, mints, route, context
+slot, output/minimum, clocks, expiry and latency. Missing network/priority/rent
+fees and unobserved fills remain explicit certification blockers.
+
+`solbot cycle-check --descriptor /absolute/cycle.json` accepts schema 1 with
+`observations`, `assumptions`, an explicit `failed_leg` (null for all-leg success),
+and optional actual `unwind` observation. Each next leg's requested raw amount
+must exactly equal the preceding minimum output, with matching directed mints.
+All receipts must align within one second and be unexpired at evaluation.
+Each observation's ID keys explicit nonnegative integer assumptions:
+`network_fee_start_raw`, `priority_fee_start_raw`, `rent_start_raw`,
+`failed_transaction_start_raw`, `cost_currency_mint`,
+`route_platform_fees_in_output=true`, `fill_policy="minimum_output"`.
+Costs must be denominated in the cycle's start mint; no conversion is guessed.
+Failed legs require an exact-size, aligned unwind quote when inventory differs
+from the start token. Missing/partial/stale/future/size-mismatched evidence refuses.
+The result is conditional pessimistic paper P&L; `booked_profit_start_raw` is null.
+Live cycles remain unsupported without atomic construction and a verifier.
+No actual production route dataset or profitable cycle is claimed by this release.
+
+
+### Reviewed quote and prospective safeguards
+
+Prospective polls mark generation-fenced tick intent before archive access or
+canonical evaluation. The atomic progress commit clears that marker even when
+no completed bar is available. A fresh heartbeat cannot hide a hung prospective
+evaluation: the existing supervisor watchdog fences and terminates it.
+
+Quote evidence currently supports one direct route leg at 100% allocation, with
+positive raw input/output amounts and exact envelope mint/amount agreement.
+The collector requests `onlyDirectRoutes=true` and records
+`route_policy=direct_single_leg_100pct_v1`. Split and multihop plans refuse with
+`quote_route_topology_unsupported`; nonzero platform-fee topology refuses with
+`quote_platform_fee_topology_unsupported` until its flow can be reconciled.
+No unsupported route is silently treated as a direct equivalent.
+
+The Swap v1 field `priceImpactPct` is retained as its exact decimal string and
+labelled `unit=fraction`: `0.01` means 1% impact, not 0.01%. Missing impact is null
+with `price_impact_unavailable`; it never becomes zero. Invalid/nonfinite or
+out-of-range impact refuses capture/import. Missing impact can be archived as
+incomplete evidence but prevents conditional cycle diagnosis. These semantics
+follow the current official Metis guide:
+https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-metis.mdx

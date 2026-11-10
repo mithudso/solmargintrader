@@ -10,11 +10,13 @@
 
 **Spec:** /Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md
 
-Version: 1.0.3
+Version: 1.0.5
+Delta: v1.0.4 to v1.0.5; record delivered editing and verified M3 source/installed behavior with explicit remaining venue gates.
+Delta: v1.0.3 to v1.0.4; add owner-requested revision editing before milestone3, record delivered milestone2 and preserve the explicit all-remaining-milestones scope.
 Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
 Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
-Status: owner approved implementation in KNOW-1115; milestone1 delivered by PR175. Milestone2 source and installed acceptance passed; PR180 owns final CI and delivery.
+Status: owner approved implementation in KNOW-1115. Milestones1–2 and editing delivered through PR175, PR180 and PR186. M3 source and installed acceptance passed; final-head CI/remote delivery remains its final gate. All remaining milestones4–8 are authorized and continue in order.
 
 ## Global constraints
 
@@ -101,17 +103,31 @@ Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/{supervisor.py
 - [x] Implement desired/observed states, local socket commands, per-instance lifetime flock, durable idempotency, bounded worker pool/queues and transactional generation fencing. Delegate shared simulation helpers; do not fork strategy algorithms.
 - [x] Add explicit service install/uninstall/status using a stable installed package location, never a disposable worktree. macOS launchd first; other supervisors are later adapters. Read commands cannot install it. Verify a requested stop survives supervisor restart.
 - [x] Force-crash/restart tests reproduce identical lots/cursors/P&L to continuous replay, with no repeated fills. Test process liveness separately from data/tick progress. Stop retains positions, and independent virtual accounts are labelled.
-- [ ] Verify installed revision and behavior with live-acceptance-verifier before release. No live orders. Run manager suite plus changed shared simulation suites, documentation gates, then deliver.
+- [x] Verify installed revision and behavior with live-acceptance-verifier before release. No live orders. Run manager suite plus changed shared simulation suites, documentation gates, then deliver. Delivered through PR180, merge2810f4b23cbd7842dcf03924608e7cb758836ee8. The installed acceptance and final-head CI receipts are recorded in the handoff; this does not certify Jupiter paper or live execution.
+
+## Owner-requested editing extension — after milestone2, before milestone3
+
+The owner requested editing and then clarified the scope as **all remaining milestones**. This is an additive interface requirement, not a replacement for milestones3–8. Tracking: TASK-1178. Safe adoption decision: KNOW-1179.
+
+- [x] Add `edit BOT --set KEY=VALUE`, optional expected-revision CAS and durable request IDs. Append immutable saved revisions. Preserve every unspecified value, provenance and manual pin. Editing never changes a worker's pinned configuration.
+- [x] Add `history BOT [--revision N]` with immutable revision bodies and attributed archived/current runs. Read old stores without creating or migrating them.
+- [x] Add explicit `apply BOT` at a verified stopped, owner-released, zero-exposure and reconciled reference boundary. It never starts a worker. Archive the complete old run before admitting a new stopped runtime; retain fills, checkpoints, events and request receipts. Refuse unresolved state, incompatible inputs and stale expected revisions. Reapplication is a no-op.
+- [x] Expose `schema [STRATEGY]` from the real shared validation/registry definitions for the later graphical client. Separate saved and active configuration identities, pending changes and adoption blockers in status. No backend capability follows merely from a UI button.
+- [x] Test migrations, immutable history, cross-process edit/apply races, old-generation fencing, request replay/transplant refusal, active/exposed run preservation and fresh CLI behavior. Delivered through PR186, merge13525f2a27bc96d68dcab2a90059c2b11e1791dc after50installed checks and all11activeCIjobs passed. Milestone3 continues.
+
+Initial adoption intentionally requires zero exposure. A later learning transition must preserve outstanding inventory and pass its own evidence and owner boundary; it cannot bypass these checks. Saving a revision is still permitted while a worker runs or holds lots. A changed specification is not a change to an active run.
 
 ## Milestone 3 — shared strategy semantics and certified Solana evidence
 
 Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/strategies/{base.py,grid.py,dca.py,trend.py,momentum.py,arbitrage.py}, /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/data.py and /Users/mitch/dev/solmargintrader/botmanager/tests/{test_strategy_parity.py,test_data.py}. Add a shared package/export only after deciding ownership and packaging of pure backtester routines; preserve existing imports with compatibility wrappers.
 
-- [ ] Test batch/stream/prefix/restart parity, timeframe mismatches and grid ladder versus threshold-swap distinctions. Include intentionally leaky/future-quote fixtures.
-- [ ] Inventory actual data files with manifests. Read existing Coinbase owner data; implement Jupiter-specific quote collection as one shared data capability with explicit setup, rate budget and source metadata. Never generate synthetic historical routes as real evidence.
-- [ ] Add immutable snapshots/high-watermarks, complete/proxy/incomplete/unsupported states, size/fee/latency/fill models and no-engine-network tests. Store the actual costs or refuse certification.
-- [ ] Implement Solana cycle opportunity/paper replay only when required observations exist. Refuse live multi-leg execution without atomicity and a verifier. Proxy history remains exploratory.
+- [x] Test batch/stream/prefix/restart parity, timeframe mismatches and grid ladder versus threshold-swap distinctions. Include intentionally leaky/future-quote fixtures.
+- [x] Inventory actual data files with manifests. Read existing Coinbase owner data; implement Jupiter-specific quote collection as one shared data capability with explicit setup, rate budget and source metadata. Never generate synthetic historical routes as real evidence.
+- [x] Add immutable snapshots/high-watermarks, complete/proxy/incomplete/unsupported states, size/fee/latency/fill models and no-engine-network tests. Store the actual costs or refuse certification.
+- [x] Implement Solana cycle opportunity/paper replay only when required observations exist. Refuse live multi-leg execution without atomicity and a verifier. Proxy history remains exploratory.
 - [ ] Validate known profitable/losing hand-calculated paths after all costs and failed legs; make replay and forward results comparable for each execution model. Deliver capabilities and measured data gaps separately.
+
+M3 evidence: reviewed source bfc6d2f4,168 manager tests plus31 final covering tests,1002 canonical,68 Oracle,8 Trend and58 installed gates passed. Two actual post-activation accounts progressed across restart. Direct single-leg route evidence is supported conditionally; production Jupiter cost/fill history and execution certification remain unavailable. Final-head CI/remote delivery is not inferred from these checks.
 
 ## Milestone 4 — isolated blind parameter evaluation
 

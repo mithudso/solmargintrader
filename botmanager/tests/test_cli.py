@@ -41,6 +41,25 @@ class CliTests(unittest.TestCase):
         self.assertTrue(self.cli("help")["ok"])
         self.assertFalse(self.home.exists())
 
+    def test_no_arguments_shows_next_steps_without_creating_state(self):
+        run = subprocess.run(
+            [sys.executable, "-m", "botmanager"],
+            env=self.env,
+            text=True,
+            capture_output=True,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(run.returncode, 0, (run.stdout, run.stderr))
+        self.assertIn("usage: solbot", run.stdout)
+        self.assertIn("solbot create grid --name my-grid", run.stdout)
+        self.assertIn("recorded", run.stdout)
+        self.assertIn("solbot edit", run.stdout)
+        self.assertIn("bot-manager-quickstart.md", run.stdout)
+        self.assertEqual(run.stderr, "")
+        self.assertNotIn("credential-canary-98", run.stdout)
+        self.assertFalse(self.home.exists())
+
     def test_two_instances_survive_fresh_processes_and_runtime_refuses(self):
         first = self.cli("create", "grid", "--name", "low", "--set", "range_pct=8")[
             "data"

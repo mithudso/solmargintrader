@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T22:40:23+00:00",
+  "generatedAt": "2026-11-10T07:42:50+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1658,
+      "matchingFiles": 1670,
       "shown": 30,
       "files": [
         {
@@ -114,6 +114,10 @@
           "hits": 35
         },
         {
+          "path": "memory.md",
+          "hits": 35
+        },
+        {
           "path": "research/strategy_experiment/FILES.md",
           "hits": 34
         },
@@ -140,10 +144,6 @@
         {
           "path": "executor/src/executor/registry.py",
           "hits": 34
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_0s4usqeb_nasan_risk_score_postion_size_estimator.md",
-          "hits": 31
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1394,
+      "matchingFiles": 1424,
       "shown": 30,
       "files": [
         {
@@ -185,16 +185,16 @@
           "hits": 68
         },
         {
+          "path": "backtester/core/engine.py",
+          "hits": 61
+        },
+        {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
           "hits": 61
         },
         {
           "path": "backtester/tests/test_engine.py",
           "hits": 58
-        },
-        {
-          "path": "backtester/core/engine.py",
-          "hits": 55
         },
         {
           "path": "research/tradingview-card-coverage.json",
@@ -214,7 +214,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 41
+          "hits": 42
         },
         {
           "path": "soltui/tui.py",
@@ -269,6 +269,10 @@
           "hits": 23
         },
         {
+          "path": "ecosystem/web/app.js",
+          "hits": 22
+        },
+        {
           "path": "research/tradingview-script-understanding.json",
           "hits": 22
         },
@@ -279,10 +283,6 @@
         {
           "path": "backtester/core/perps.py",
           "hits": 22
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1377,
+      "matchingFiles": 1391,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1345,
+      "matchingFiles": 1359,
       "shown": 30,
       "files": [
         {
@@ -456,7 +456,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 76
+          "hits": 78
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 726,
+      "matchingFiles": 745,
       "shown": 30,
       "files": [
         {
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 371
+          "hits": 376
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 637,
+      "matchingFiles": 654,
       "shown": 30,
       "files": [
         {
@@ -730,7 +730,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 175
+          "hits": 176
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -743,6 +743,10 @@
         {
           "path": "skills/trading-and-investing/references/grid-trading-strategy.md",
           "hits": 128
+        },
+        {
+          "path": "ecosystem/web/styles.css",
+          "hits": 125
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -831,10 +835,6 @@
         {
           "path": "research/strategy_experiment/original.zip",
           "hits": 50
-        },
-        {
-          "path": "soltui/bots.py",
-          "hits": 49
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 579,
+      "matchingFiles": 594,
       "shown": 30,
       "files": [
         {
@@ -871,12 +871,16 @@
           "hits": 106
         },
         {
+          "path": "ecosystem/web/styles.css",
+          "hits": 101
+        },
+        {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
           "hits": 77
         },
         {
           "path": "docs/FILES.md",
-          "hits": 73
+          "hits": 74
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -969,10 +973,6 @@
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md",
           "hits": 27
-        },
-        {
-          "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
-          "hits": 26
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 487,
+      "matchingFiles": 576,
       "shown": 30,
       "files": [
         {
@@ -1003,11 +1003,15 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 203
+          "hits": 283
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
           "hits": 163
+        },
+        {
+          "path": "memory.md",
+          "hits": 160
         },
         {
           "path": "soltui/tui.py",
@@ -1048,10 +1052,6 @@
         {
           "path": "docs/trading-signals-concept-family.md",
           "hits": 79
-        },
-        {
-          "path": "memory.md",
-          "hits": 78
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -1098,20 +1098,20 @@
           "hits": 53
         },
         {
+          "path": "ecosystem/web/app.js",
+          "hits": 50
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 50
         },
         {
+          "path": "prompts.md",
+          "hits": 49
+        },
+        {
           "path": "soltui/wallet.py",
           "hits": 47
-        },
-        {
-          "path": "soltui/jupiter_manual.py",
-          "hits": 43
-        },
-        {
-          "path": "extension/src/market/holdings.js",
-          "hits": 37
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 462,
+      "matchingFiles": 477,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 351,
+      "matchingFiles": 364,
       "shown": 30,
       "files": [
         {
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 130
+          "hits": 135
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 321,
+      "matchingFiles": 331,
       "shown": 30,
       "files": [
         {
@@ -1455,16 +1455,16 @@
           "hits": 23
         },
         {
+          "path": "memory.md",
+          "hits": 22
+        },
+        {
           "path": "backtester/core/deflated_sharpe.py",
           "hits": 21
         },
         {
           "path": "soltui/experiment_screens.py",
           "hits": 21
-        },
-        {
-          "path": "memory.md",
-          "hits": 18
         },
         {
           "path": "soltui/experiment_runner.py",
@@ -1532,7 +1532,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 319,
+      "matchingFiles": 324,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 270,
+      "matchingFiles": 280,
       "shown": 30,
       "files": [
         {
@@ -1722,6 +1722,10 @@
           "hits": 20
         },
         {
+          "path": "memory.md",
+          "hits": 19
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 19
         },
@@ -1731,10 +1735,6 @@
         },
         {
           "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "memory.md",
           "hits": 15
         },
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 247,
+      "matchingFiles": 259,
       "shown": 30,
       "files": [
         {
@@ -1920,11 +1920,11 @@
           "hits": 8
         },
         {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "path": "prompts.md",
           "hits": 7
         },
         {
-          "path": "backtester/tests/test_interpret.py",
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 7
         }
       ],
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 237,
+      "matchingFiles": 241,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 169,
+      "matchingFiles": 177,
       "shown": 30,
       "files": [
         {
@@ -2486,7 +2486,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 132,
+      "matchingFiles": 133,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 120,
+      "matchingFiles": 123,
       "shown": 30,
       "files": [
         {

@@ -1,0 +1,2 @@
+# The MCP adapter is optional; the observation and strategy engine stay stdlib-first.
+mcp==1.30.0
