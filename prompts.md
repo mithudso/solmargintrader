@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 170
+Version: 171
+Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
 Delta: v169 to v170; preserve the owner usability request and merged Oracle request history.
 Delta: v167 to v168; record the failed-startup report and requested working demonstration.
 Delta: preserve concurrent Oracle and manager handoff records after PR183.
@@ -1499,4 +1500,22 @@ Write full detailed handoff with everything you did and why, how to access it, w
 
 ```text
 I didn't ask for your reflection, I asked you for a writeup of what you did thisd session. I've tried running the /Users/mitch/.local/bin/solbot it does nothing. How does it work? you can't create antyhing or change anthing. How does a  bot run? Then where are the instructions? Can you do this literally once before you try and make me guess?
+```
+
+## 2026-11-09 — finish editing and all remaining milestones; report to Oracle
+
+```text
+Complete the last tier, editing, and report everything to the oracle who I am going to make create me a visual interface.
+```
+
+Reference supplied:
+
+```text
+/Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md
+```
+
+Scope clarification:
+
+```text
+All remaining milestones
 ```

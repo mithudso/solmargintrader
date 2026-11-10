@@ -10,7 +10,8 @@
 
 **Spec:** /Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md
 
-Version: 1.0.3
+Version: 1.0.4
+Delta: v1.0.3 to v1.0.4; add owner-requested revision editing before milestone3, record delivered milestone2 and preserve the explicit all-remaining-milestones scope.
 Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
 Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
@@ -101,7 +102,19 @@ Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/{supervisor.py
 - [x] Implement desired/observed states, local socket commands, per-instance lifetime flock, durable idempotency, bounded worker pool/queues and transactional generation fencing. Delegate shared simulation helpers; do not fork strategy algorithms.
 - [x] Add explicit service install/uninstall/status using a stable installed package location, never a disposable worktree. macOS launchd first; other supervisors are later adapters. Read commands cannot install it. Verify a requested stop survives supervisor restart.
 - [x] Force-crash/restart tests reproduce identical lots/cursors/P&L to continuous replay, with no repeated fills. Test process liveness separately from data/tick progress. Stop retains positions, and independent virtual accounts are labelled.
-- [ ] Verify installed revision and behavior with live-acceptance-verifier before release. No live orders. Run manager suite plus changed shared simulation suites, documentation gates, then deliver.
+- [x] Verify installed revision and behavior with live-acceptance-verifier before release. No live orders. Run manager suite plus changed shared simulation suites, documentation gates, then deliver. Delivered through PR180, merge2810f4b23cbd7842dcf03924608e7cb758836ee8. The installed acceptance and final-head CI receipts are recorded in the handoff; this does not certify Jupiter paper or live execution.
+
+## Owner-requested editing extension — after milestone2, before milestone3
+
+The owner requested editing and then clarified the scope as **all remaining milestones**. This is an additive interface requirement, not a replacement for milestones3–8. Tracking: TASK-1178. Safe adoption decision: KNOW-1179.
+
+- [ ] Add `edit BOT --set KEY=VALUE`, optional expected-revision CAS and durable request IDs. Append immutable saved revisions. Preserve every unspecified value, provenance and manual pin. Editing never changes a worker's pinned configuration.
+- [ ] Add `history BOT [--revision N]` with immutable revision bodies and attributed archived/current runs. Read old stores without creating or migrating them.
+- [ ] Add explicit `apply BOT` at a verified stopped, owner-released, zero-exposure and reconciled reference boundary. It never starts a worker. Archive the complete old run before admitting a new stopped runtime; retain fills, checkpoints, events and request receipts. Refuse unresolved state, incompatible inputs and stale expected revisions. Reapplication is a no-op.
+- [ ] Expose `schema [STRATEGY]` from the real shared validation/registry definitions for the later graphical client. Separate saved and active configuration identities, pending changes and adoption blockers in status. No backend capability follows merely from a UI button.
+- [ ] Test migrations, immutable history, cross-process edit/apply races, old-generation fencing, request replay/transplant refusal, active/exposed run preservation and fresh CLI behavior. Complete review, installed acceptance and remote delivery before continuing milestone3.
+
+Initial adoption intentionally requires zero exposure. A later learning transition must preserve outstanding inventory and pass its own evidence and owner boundary; it cannot bypass these checks. Saving a revision is still permitted while a worker runs or holds lots. A changed specification is not a change to an active run.
 
 ## Milestone 3 — shared strategy semantics and certified Solana evidence
 

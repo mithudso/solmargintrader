@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 345
+Version: 346
+Delta: v345 to v346; resume all remaining milestones with safe editing and Oracle coordination.
 Delta: v344 to v345; preserve merged Oracle work and the proven solbot startup/demo repair.
 Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch.
 Delta: v341 to v342; reproduce bare-command failure and begin usable entry/demonstration repair.
@@ -1120,3 +1121,11 @@ Created session-demo-grid UUIDca28be71-3b24-4473-874a-8ac97614edb8 in default /U
 Bare CLI now shows usage, concrete creation/config/status examples, reference-input/supervisor requirements, quickstartURL and missing-capability boundaries; it exits0 without creatingstate. Explicitcommands retainJSONerrors andsecret sanitization. RegressionRED reproducedbareexit2; fiveCLI tests andfull110manager tests passed, Ruff/format passed. Manager0.2.1 regularno-depsreinstall completedexit0; otherdependenciesandruntime/simulatorcodeunchanged. Independentfocusedinstalledverificationactive. Created concise docs/bot-manager-quickstart.md andupdatedREADME/fullhandoff for actualdemo/currentdefaultstate. No edit/update command was invented; changedsettingsstillrequireanewnameddraft. User-facing answer must explain this directly andshowliteralcommands, notjustlinkhand-off.
 
 Remaining: installedacceptance, finaldocs/catalog checks, ownedcommit/push/PR/finalheadCI/merge/defaultcontentverification. Productmilestones3–8remaindue; thisrepairdoesnotcompletetheoriginalsystem. Preserveprimarycheckoutandactiveimplementationworkspace. User explicitly rejected unsolicited reflection; suppress user-facing reflection detours.
+
+## v346 — 2026-11-09 — resume every remaining milestone with editing and Oracle handoff
+
+The owner explicitly clarified 'All remaining milestones'. Implement safe editing first under TASK1178, then resume TASK1109–1114 in the approved order. Finish every achievable part; preserve actual data/time/economic-verifier gates without inventing certification or profitability. Report the tested state/command contracts and limits to Oracle for its later visual interface. The existing Oracle agent definition is a read-only operator/guide, not a new execution owner. Current Oracle implementation merged separately inPR181; its older task body is stale, so use source/release evidence and coordinate through its task without taking its claim.
+
+Work now uses /Users/mitch/dev/solmargintrader-wt-01a1c189-editing branchagent-01a1c189-editing from99548515. The previous privateworktree gained an unrelated quickstart table-of-contents edit; preserve it and the shared primary's other work. The original plan's accepted ledger and delivery receipts were copied into this worktree's ignored SDDworkspace so completedM1/M2 are not redispatched. Defaultsession-demo-grid remainsstopped/disarmed; no service or keys are activated by this implementation work.
+
+Editing must append immutable spec revisions, preserve pins, use CAS/request dedup, distinguish active from saved configuration, and apply only explicitly at a verified safe stopped/no-exposure boundary. Archive prior run evidence/IDs atomically and preserve stop/reconciliation semantics. Prepare a machine-readable schema/history/receipt contract for Oracle's future UI. Continue all six remaining milestones after this release; don't stop merely because one milestone or its handoff exists.
