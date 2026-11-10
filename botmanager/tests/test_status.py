@@ -237,8 +237,139 @@ class StatusTests(unittest.TestCase):
             },
         )
         self.assertEqual(strategies["council"], "external-only")
-        self.assertEqual(strategies["arbitrage"], "Solana adapter unavailable")
+        self.assertEqual(
+            strategies["arbitrage"], "conditional_quote_cycle_research_only"
+        )
         ManagerStore(self.home).create_spec(self.spec)
         for operation in ("start", "stop"):
             result = dispatch(operation, {"identity": self.spec.bot_id}, self.context)
             self.assertEqual(result["error"]["code"], "runtime_not_available")
+
+    def _assert_completed_status_and_cli(self, spec, ledger):
+        before = ledger.get(spec.bot_id)
+        reference = before["input"]["identity"]
+        expected_engine = (
+            reference["engine"]
+            if reference["schema_version"] == 1
+            else reference["engine_identity"]["package"]
+        )
+        # Exercise the complete public projection, not an isolated helper/key.
+        result = dispatch(
+            "status", {"identity": spec.bot_id, "why": True}, self.context
+        )
+        run = subprocess.run(
+            [sys.executable, "-m", "botmanager", "status", spec.bot_id, "--why"],
+            env={**os.environ, "SOLBOT_HOME": str(self.home)},
+            text=True,
+            capture_output=True,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+        self.assertTrue(result["ok"], result)
+        body = json.loads(run.stdout)
+        self.assertTrue(body["ok"], body)
+        self.assertIsNone(body["error"])
+        for status in (result["data"], body["data"]):
+            paper = status["evidence"]["paper"]
+            self.assertEqual(paper["state"], "reference_only")
+            self.assertEqual(paper["engine_version"]["value"], expected_engine)
+            self.assertEqual(
+                paper["engine_identity"]["value"], reference["engine_identity"]
+            )
+            self.assertFalse(paper["venue_compatibility_verified"])
+            self.assertEqual(status["progress"]["cursor"], 2)
+            self.assertEqual(status["runtime_id"], before["runtime_id"])
+            self.assertEqual(
+                status["reference_financials"]["cash_quote"],
+                before["checkpoint"]["cash_quote"],
+            )
+            self.assertEqual(
+                paper["result_ref"]["value"], before["checkpoint"]["run_hash"]
+            )
+            self.assertIsNone(status["evidence"]["live"]["engine_version"]["value"])
+            self.assertIn("explanation", status)
+        self.assertEqual(ledger.get(spec.bot_id), before)
+
+    def _completed_oracle_status(self, mode):
+        from uuid import uuid4
+
+        from botmanager.ledger import RuntimeLedger
+        from botmanager.oracle_data import capture, prepare_descriptor
+        from botmanager.strategies import evaluate
+        from botmanager.worker import prospective_tick
+
+        from tests.test_oracle_data import START, append, archive
+
+        path = Path(self.temp.name) / "oracle.sqlite3"
+        producer = archive(path, 120)
+        ledger = RuntimeLedger(self.home)
+        pending = []
+        for family in ("grid", "dca", "trend", "momentum"):
+            spec = BotSpec.create(
+                "oracle-" + mode + "-" + family,
+                family,
+                resolve_config(family, {}, {}, None),
+            )
+            ManagerStore(self.home).create_spec(spec)
+            descriptor = prepare_descriptor(
+                path,
+                capital_quote=1000,
+                strategy_id=family,
+                now=START + 120,
+                mode=mode,
+                start_ts=START if mode == "historical" else None,
+                end_ts=START + 120 if mode == "historical" else None,
+            )
+            data = capture(descriptor, strategy_id=family, now=START + 120)
+            self.assertEqual(data["identity"]["schema_version"], 2)
+            self.assertNotIn("engine", data["identity"])
+            ledger.register(spec, data)
+            ledger.control(spec, "start", str(uuid4()))
+            generation = ledger.claim(spec.bot_id, "status-fixture")
+            pending.append((spec, data, generation))
+        if mode == "prospective":
+            append(producer, 120, 241)
+        for spec, data, generation in pending:
+            with self.subTest(mode=mode, family=spec.strategy_id):
+                if mode == "prospective":
+                    prospective_tick(
+                        ledger, ledger.get(spec.bot_id), generation, now=START + 241
+                    )
+                else:
+                    ledger.commit_tick(
+                        spec.bot_id, generation, 0, evaluate(spec, data, 2)
+                    )
+                self._assert_completed_status_and_cli(spec, ledger)
+
+    def test_completed_schema2_historical_full_status_and_cli(self):
+        self._completed_oracle_status("historical")
+
+    def test_completed_schema2_prospective_full_status_and_cli(self):
+        self._completed_oracle_status("prospective")
+
+    def test_completed_schema1_status_retains_legacy_pinned_engine(self):
+        from uuid import uuid4
+
+        from botmanager.data import load_recording
+        from botmanager.domain import fingerprint
+        from botmanager.ledger import RuntimeLedger
+        from botmanager.strategies import evaluate
+
+        from tests.test_paper import recording
+
+        ManagerStore(self.home).create_spec(self.spec)
+        data = load_recording(recording(Path(self.temp.name)))
+        data["identity"]["engine"] = "solmargintrader-backtester/0.1.0"
+        data["identity"]["engine_identity"]["package"] = data["identity"]["engine"]
+        data["snapshot_hash"] = fingerprint(
+            {k: v for k, v in data.items() if k != "snapshot_hash"}
+        )
+        ledger = RuntimeLedger(self.home)
+        ledger.register(self.spec, data)
+        ledger.control(self.spec, "start", str(uuid4()))
+        generation = ledger.claim(self.spec.bot_id, "legacy-status-fixture")
+        ledger.commit_tick(
+            self.spec.bot_id, generation, 0, evaluate(self.spec, data, 2)
+        )
+        self._assert_completed_status_and_cli(self.spec, ledger)

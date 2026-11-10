@@ -1,6 +1,8 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.1.2
+Version: 0.2.0
+Delta: Add canonical four-family prospective reference operation and strict direct-route quote evidence.
+Delta: Integrated editing release delivered through PR186; 50 installed checks and 167 source files/assets verified.
 Delta: Expose registry-derived global arguments and explicit legacy event-reuse continuity metadata.
 Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source.
 Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime.
@@ -137,12 +139,12 @@ be proven remains unavailable; do not fabricate missing owner context.
 
 ## Current capability boundary and remaining implementation
 
-| Area | Editing-release capability | Remaining acceptance/work |
+| Area | Current implementation capability | Remaining acceptance/work |
 | --- | --- | --- |
 | Configuration | Four typed draft families; immutable editing/history/schema and safe application | Later learning provenance and gated automated promotion |
-| Runtime | Independent grid reference-paper accounts, recovery and explicit service controls | DCA/Trend/Momentum, prospective shared input and broader diagnostics |
-| Source data | Bounded immutable Coinbase sampled-midpoint captures, explicit costs | Shared Oracle read adapter and genuine Jupiter quote evidence/certification |
-| Arbitrage | Explicit Solana adapter unavailable | Conditional directed-quote paper replay; atomic construction/verifier before live |
+| Runtime | Independent Grid/DCA/Trend/Momentum reference-paper accounts, durable prospective source progression, recovery and service controls | Broader diagnostics and bounded continuing shadow state beyond the initial prefix limit |
+| Source data | Inert shared Oracle adapter, historical capture, post-activation prospective observations, explicit reference costs and opt-in typed Jupiter quotes | Actual quote coverage, observed execution costs and fills remain uncertified |
+| Arbitrage | Conditional size/time/cost-bound directed-quote cycle diagnosis | Direct-route subset only; no booked profit or autonomous live cycle worker; atomic construction/verifier before live |
 | Blind evaluation | Approved protocol only | Isolated judge, one existing exposure owner, frozen objective/budgets, fresh final |
 | Monitoring/learning | Existing operational status and reference financials | Accounting/report/load gates, all-outcome diagnosis, protected proposals/soak/adoption |
 | Browser | Explicit registration required | Actual installation identity, native registration/poll, durable delegated receipts |
@@ -165,7 +167,7 @@ Source metadata exposes `legacy_reused_sequence_count` and
 marker even when another bot retains the first event. An existing ambiguous
 mirror keeps its old cursor and refuses ingestion; a fresh explicitly selected
 derived mirror can consume the newly attributed stream.
-Ecosystem 0.1.2 pins manager 0.3.0; existing 0.1.1 immutable environments stay intact.
+Ecosystem 0.1.3 pins manager 0.4.0, Oracle 0.2.1 and research-runtime 0.1.2, with backtester 0.1.1. Existing 0.1.1 and 0.1.2 immutable environments stay intact.
 
 
 At the initial dated read-only inspection, installed Oracle 0.1.0 matched source, no
@@ -215,3 +217,31 @@ Post this report and each final capability update on the existing Oracle task,
 TASK-1154, without taking its claim. The manager implementation is EPIC-1106;
 editing is TASK-1178. A task comment is persistent coordination; it is not proof
 that another session has read the report.
+
+## Editing release delivery
+
+Editing is delivered through https://github.com/mithudso/solmargintrader/pull/186
+
+Merge 13525f2a27bc96d68dcab2a90059c2b11e1791dc equals accepted source tree f753e63aa3d92e5f6296b7db4d68adabd96dd588. All 11 active CI jobs passed, including 149 manager tests. Independent installed acceptance passed 50 checks and matched 167 shipped source files/assets in both /Users/mitch/.venvs/solbot and /Users/mitch/.venvs/solecosystem-0.1.2. The default demo and frozen ecosystem 0.1.1 remain unchanged. Stable receipt: /Users/mitch/.local/state/solbot/releases/0.3.0/editing-integrated-installed-acceptance.json. Milestones 3–8 remain active; later entries must distinguish implementation, source data, elapsed prospective evidence and venue certification.
+
+## Milestone 3 state and data contract
+
+The registry adds `prepare-input BOT`, `data-check BOT` and `cycle-check --descriptor PATH`. The first requires an explicitly selected archive and reference consent; it starts no producer or worker. A saved draft, prepared descriptor, registered runtime and started worker are separate stages. The UI must show which stage has a receipt.
+
+The known archive alias `shared-sol-usd` resolves to /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3. Its existing producer supplies sampled Coinbase SOL/USD reference prices. The saved target is Jupiter SOL/USDC. Keep the source, target, currency and model visible; a button cannot establish executable venue compatibility.
+
+Descriptor/input schema 2 fixes source policy, activation time and watermark. Prospective workers consume accepted later observations, exclude the partial activation minute, require complete observed bins and atomically save source/account progress. Current `input_quality.state`, nullable `data_age_seconds`, `source_progress`, `reference_run.activation_at`, `reference_run.delivery`, `latest_decision`, `blockers` and `next_trigger` are the inspector fields. `source_progress.evaluation_ranges` retains delayed-replay attribution after catch-up. Do not infer data health from process heartbeat or invent a volume series.
+
+The initial bound is 2,048 bars and 245,760 observations. `resource_limit` preserves the account. It is a real capacity limit, not a completed seven-day shadow result. Long continuation and promotion have their own later gates.
+
+Quote observation schema 1 preserves exact raw mints/amounts, request/receipt clocks, context slot, minimum output, route, exact decimal price-impact fraction, expiry/latency assumptions and explicit missing costs. The supported route policy is `direct_single_leg_100pct_v1`: one positive 100% leg, exact envelope direction and amounts. Split/multihop and unsupported platform-fee topologies refuse. Missing price impact stays unavailable and blocks cycle diagnosis. Actual fills and network/priority/rent costs remain missing, so capture does not certify execution.
+
+Quote collection is a programmatic opt-in capability of the existing Oracle owner in /Users/mitch/dev/solmargintrader/oracle/quotes.py. Its read-only MCP does not become a collector-control API. The GUI must not load a key or start another collector. All selected coin archives share the fixed 60-attempt/minute authority at /Users/mitch/.local/share/solmargintrader/oracle/quote-budget.sqlite3. Cycle diagnosis consumes an explicit evidence descriptor and reports conditional pessimistic P&L; `booked_profit_start_raw` stays null and live support stays false.
+
+Canonical owner maintenance: /Users/mitch/dev/solmargintrader/backtester/core/engine.py, /Users/mitch/dev/solmargintrader/backtester/core/dcasim.py, /Users/mitch/dev/solmargintrader/backtester/core/gridsim.py, /Users/mitch/dev/solmargintrader/backtester/core/strategies/signals.py and /Users/mitch/dev/solmargintrader/soltui/trend.py. The manager delegates; the later UI must not copy their equations.
+
+## Milestone 3 verification for UI consumers
+
+Source bfc6d2f479a5765937eed651430c13bd3eea3731 passed task review after two scoped repair rounds. Final installed acceptance passed 58 effective gates and matched 3,288 packaged source/asset hashes across both environments. Two accounts consumed genuine post-activation minutes through restart. Completed status works through candidate, global and stable alias with exact pinned engine evidence; old schema-1 labels remain unchanged. `evidence.paper.engine_identity` exposes the stored strategy-specific identity separately from the package display label. A UI must display the stored identity, never infer it from the currently loaded package.
+
+Receipt: /Users/mitch/.local/state/solbot/releases/0.4.0/task-m3-installed-acceptance.json. The historical partial 37/38 result and its status-mapper failure remain preserved. Current source and installed acceptance do not replace final-head CI/remote delivery or establish Jupiter profitability, elapsed shadow time, route fees, fills or live support. Milestones 4–8 remain in the approved implementation order.

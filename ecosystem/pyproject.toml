@@ -8,7 +8,7 @@ version = "0.2.0"
 description = "Resumable headless paper-research bootstrap"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["solmargintrader-oracle==0.2.1", "solbot-manager==0.3.0", "solmargintrader-research-runtime==0.1.1"]
+dependencies = ["solmargintrader-oracle==0.2.1", "solbot-manager==0.4.0", "solmargintrader-research-runtime==0.1.2"]
 
 [project.scripts]
 solecosystem = "ecosystem.cli:main"

@@ -182,7 +182,7 @@ def _schema(params, context):
         key: {
             "version": version,
             "fields": field_metadata(key),
-            "runtime": "recorded_reference_only" if key == "grid" else "draft_only",
+            "runtime": "bounded_historical_and_prospective_reference",
             "live_available": False,
             "prospective_data_certified": False,
             "cross_field_constraints": ["fast_period < slow_period"]
@@ -203,7 +203,14 @@ def _schema(params, context):
                 "venue": "coinbase_proxy",
             }
             if key == "grid"
-            else None,
+            else {
+                "bar_seconds": REFERENCE_BAR_SECONDS,
+                "maximum_bars": 2048,
+                "capital": "must_equal_explicit_descriptor_capital_quote",
+                "costs": "explicit_spot_assumptions_zero_carry",
+                "venue": "coinbase_proxy",
+                "volume": "unavailable_price_only",
+            },
         }
         for key, version in STRATEGY_VERSIONS.items()
         if strategy in (None, key)
@@ -212,7 +219,7 @@ def _schema(params, context):
         "schema_version": 1,
         "strategies": strategies,
         "unavailable_strategies": {
-            "arbitrage": "solana_adapter_unavailable",
+            "arbitrage": "conditional_quote_cycle_research_only",
             "triangle": "solana_adapter_unavailable",
             "council": "external_only",
         },
@@ -370,7 +377,45 @@ def _register_input(params, context):
         raise ManagerError(
             "input_unavailable", "Input descriptor is missing or invalid.", 3
         ) from exc
-    return RuntimeLedger(context.home).register(spec, load_recording(descriptor))
+    return RuntimeLedger(context.home).register(
+        spec, load_recording(descriptor, strategy_id=spec.strategy_id)
+    )
+
+
+def _prepare_input(params, context):
+    from .input_commands import prepare
+
+    return prepare(_identity(params, context), params, _settings(params))
+
+
+def _data_check(params, context):
+    from .input_commands import check
+    from .ledger import RuntimeLedger
+
+    spec = _identity(params, context)
+    return check(
+        spec,
+        descriptor_path=params.get("descriptor"),
+        runtime=RuntimeLedger(context.home).get(spec.bot_id),
+    )
+
+
+def _cycle_check(params, context):
+    import time
+
+    from .input_commands import read_document
+    from .strategies.arbitrage import diagnose_cycle
+
+    body = read_document(params["descriptor"], limit=1048576)
+    if body.get("schema_version") != 1:
+        raise ManagerError("invalid_input", "Cycle evidence schema is unsupported.")
+    return diagnose_cycle(
+        body["observations"],
+        body["assumptions"],
+        now=time.time(),
+        failed_leg=body["failed_leg"],
+        unwind=body.get("unwind"),
+    )
 
 
 def _events(params, context):
@@ -440,13 +485,13 @@ def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
             {"name": spec.name, "description": spec.description}
             for spec in COMMANDS.values()
         ],
-        "scope": "paper/disarmed drafts and bounded Coinbase grid reference replay; no live execution",
+        "scope": "paper/disarmed canonical reference families and conditional Solana quote research; no live execution",
         "strategies": {
             "grid": "reference_paper_with_explicit_input",
-            "dca": "draft",
-            "trend": "draft",
-            "momentum": "draft",
-            "arbitrage": "Solana adapter unavailable",
+            "dca": "reference_paper_with_explicit_input",
+            "trend": "reference_paper_with_explicit_input",
+            "momentum": "reference_paper_with_explicit_input",
+            "arbitrage": "conditional_quote_cycle_research_only",
             "council": "external-only",
         },
     }
@@ -475,6 +520,49 @@ MUTATION_GUARDS = (
     ),
 )
 COMMANDS = {
+    "prepare-input": CommandSpec(
+        "prepare-input",
+        "Prepare explicit Oracle reference input with versioned cost assumptions; never start a producer.",
+        _prepare_input,
+        IDENTITY
+        + (
+            (
+                ("--archive",),
+                {
+                    "required": True,
+                    "help": "Existing absolute archive path or shared-sol-usd",
+                },
+            ),
+            (
+                ("--reference",),
+                {
+                    "action": "store_true",
+                    "help": "Consent to source USD reference versus target USDC",
+                },
+            ),
+            (("--output",), {"required": True}),
+            (
+                ("--mode",),
+                {"choices": ("prospective", "historical"), "default": "prospective"},
+            ),
+            (("--start-ts",), {"type": int}),
+            (("--end-ts",), {"type": int}),
+            (("--set",), {"action": "append", "default": [], "metavar": "KEY=VALUE"}),
+        ),
+        api_parameters=("overrides",),
+    ),
+    "data-check": CommandSpec(
+        "data-check",
+        "Inspect actual input coverage, required fields and reference compatibility.",
+        _data_check,
+        IDENTITY + ((("--descriptor",), {}),),
+    ),
+    "cycle-check": CommandSpec(
+        "cycle-check",
+        "Diagnose an actual directed quote cycle with explicit cost and failure assumptions.",
+        _cycle_check,
+        ((("--descriptor",), {"required": True}),),
+    ),
     "edit": CommandSpec(
         "edit",
         "Save an immutable settings revision; active workers stay pinned.",

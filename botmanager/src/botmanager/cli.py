@@ -29,18 +29,18 @@ class SafeParser(argparse.ArgumentParser):
 def parser() -> argparse.ArgumentParser:
     root = SafeParser(
         prog="solbot",
-        description="Manage saved paper bot drafts and recorded grid replay.",
+        description="Manage saved paper bot drafts and bounded reference paper.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Start here (creating a draft starts no worker):\n"
             "  solbot create grid --name my-grid\n"
             "  solbot config my-grid --effective\n"
             "  solbot status my-grid --why\n\n"
-            "Running a grid requires registered recorded input, a start request,\n"
+            "Running a bot requires explicit input, a start request,\n"
             "and an explicitly running 'solbot daemon' or installed service.\n"
             "Edit saved settings with solbot edit; solbot apply explicitly adopts them.\n"
-            "Current runtime: recorded Coinbase grid replay only. Real-time Jupiter\n"
-            "trading, the other strategy runtimes and learning remain unfinished.\n\n"
+            "Current runtime: bounded historical/prospective reference families. Jupiter\n"
+            "execution and automatic learning remain unavailable.\n\n"
             "Working example and exact steps:\n"
             "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
         ),

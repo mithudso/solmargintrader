@@ -1,8 +1,10 @@
 # Prompt history
 
-Version: 177
+Version: 178
+Delta: concurrent histories to v178; preserve both concurrent request histories.
 Delta: v176 to v177; add independent Jupiter swap routing and referral page.
 Delta: v175 to v176; preserve operational controls, per-coin P&L, voter selection and wiki request.
+Delta: v175 to v176; preserve the status question during all-remaining-milestones execution.
 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
 
@@ -1569,3 +1571,10 @@ Install this mcp server {
 ## v177 - 2026-11-10
 
 Also I need to be able to set the swap provider as Jupiter even if that's not where the quotes come from , they're so much cheaper it changes the profitability of a lot of things. Also include a coin swap page that has the referral code in it like in the others.
+## v176 — 2026-11-09 — progress question while implementation continues
+
+```text
+What're you doing now? How much more do you have?
+```
+
+Answered directly: editing delivered; M3finalgates; fivefurthermilestones; severalhoursremain. This steering question did not cancel, pause or replace the all-remaining-milestones scope.

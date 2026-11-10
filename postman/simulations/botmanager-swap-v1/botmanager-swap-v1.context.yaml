@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: Jupiter Swap v1 ExactIn quote endpoint only. No swap construction, signing or submission.
+  unblocks: Real HTTP acceptance of the shared Oracle opt-in quote collector without provider calls or credentials.
+assumptions:
+  - id: quote-shape
+    status: supported
+    claim: The simulated200response follows the documented Swap v1 ExactIn example for0.1SOL toUSDC.
+    reason: The provider example defines field names and units; its sample values are synthetic in this stand-in.
+    verification: Contract compared on2026-11-09; source collector HTTP acceptance passed9cases on2026-11-10; see plan-private m3-quote-http-acceptance.json.
+    source: https://dev.jup.ag/docs/swap/get-quote; postman/collections/botmanager-swap-v1.postman_collection.json
+    updated_at: "2026-11-09"
+  - id: executable-current-quote
+    status: unknown
+    claim: A successful fixture response establishes current executable routing and complete costs on Jupiter.
+    reason: The stand-in has no chain, clock freshness, transaction fee, latency-to-fill or real liquidity evidence.
+    verification: No provider request, signing or submission was performed.
+    source: postman/mocks/botmanager-jupiter-swap-v1/default.js
+    updated_at: "2026-11-09"
+  - id: caller-failure-handling
+    status: supported
+    claim: In the simulated source run, the collector refused429, malformed responses, mint mismatch and excessive latency without storing certified evidence.
+    reason: The actual urllib caller ran against a local Postman server; quote count remained one after each failure. This establishes caller behavior for these configured responses.
+    verification: On2026-11-10 nine source checks passed: valid200 storedoneuncertifiedobservation;429,503HTML,invalidJSON,wrongmint,excesslatency and timeout eachrefused afteroneGET withnoextraobservation; disabledcollection madezeroGETs; anothercoinarchive couldnotbypass a fullsharedbudget. Postman requestevents and archive rowcount verified. The final9case run used the regular installed Oracle0.2.1 client outside the checkout with Python-I; it also verified onlyDirectRoutes=true and exact observed price-impact fraction0. SourceSHA256c014305f455ce4763a55e7608226390e09710569ab6737b0a268d123fa2dafdb matches reviewedda2cae09. Actual provider/chain behavior remains unverified.
+    source: oracle/quotes.py
+    updated_at: "2026-11-09"
+fingerprints:
+  - id: initial-contract
+    date: "2026-11-09"
+    commit: 13525f2a27bc96d68dcab2a90059c2b11e1791dc
+    cli: Postman1.87.0

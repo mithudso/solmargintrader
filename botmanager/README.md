@@ -1,17 +1,17 @@
-# Solbot manager 0.3.0
+# Solbot manager 0.4.0
 
 **Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
 Running bare `solbot` now prints help and concrete next steps. It is a command-line
-program, not an interactive menu. The current runnable strategy is grid against
-recorded input. Saved settings support explicit editing and stopped-run adoption;
+program, not an interactive menu. Grid, DCA, buffered SMA Trend and time-series Momentum run against
+explicit historical or prospective reference input. Saved settings support explicit editing and stopped-run adoption;
 prospective Jupiter trading and learning remain unavailable.
 
 The standalone `solbot` CLI creates persistent named bot drafts and inspects their
 pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC.
-An explicit supervisor runs independent grid reference-paper accounts from a
-pinned Coinbase recording. Creating a draft cannot start a process, fetch prices,
+An explicit supervisor runs independent reference-paper accounts from a
+pinned Coinbase recording or the selected existing Oracle archive. Creating a draft cannot start a process, fetch prices,
 initialize another component's database, load keys, or trade.
-Arbitrage reports `Solana adapter unavailable`. Council is external-only.
+Arbitrage offers conditional directed Solana quote-cycle diagnosis through `cycle-check`; autonomous arbitrage remains unavailable. Council is external-only.
 
 For the complete implementation history, operator workflows, source ownership,
 backup/recovery guidance, release evidence and remaining milestones, read
@@ -20,12 +20,12 @@ backup/recovery guidance, release evidence and remaining milestones, read
 ## Install and use
 
 Python 3.13 or newer is required. The manager uses the standard library and the
-exact local `solmargintrader-backtester==0.1.0` package, which declares NumPy and
-Pandas. Building uses setuptools. Install both local projects in a stable environment:
+exact local `solmargintrader-backtester==0.1.1` package, which declares NumPy and
+Pandas. Building uses setuptools. Install the compatible local backtester, Oracle, headless research runtime and manager projects in a stable environment:
 
 ```sh
 python3 -m venv /Users/mitch/.venvs/solbot
-/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/botmanager
+/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/oracle /Users/mitch/dev/solmargintrader/soltui /Users/mitch/dev/solmargintrader/botmanager
 /Users/mitch/.venvs/solbot/bin/solbot help
 /Users/mitch/.venvs/solbot/bin/solbot create grid --name sol-grid --set range_pct=10
 /Users/mitch/.venvs/solbot/bin/solbot create grid --name sol-grid-wide --set range_pct=25
@@ -443,8 +443,7 @@ independent simulations, not reservations against one funded wallet.
 Every cost and minimum size is required. These are simulation assumptions, not
 observed venue fees or executable sizing. Optional typed limits default to
 `max_bars=2048`, `max_quote_age_s=5` and `max_sample_gap_s=5`; neither freshness
-ceiling can be loosened above five seconds. This slice accepts only one-minute
-grids, at most 100 rungs, at most four recording files of 64 MiB each, and at most
+ceiling can be loosened above five seconds. Reference families require one-minute bars; grids allow at most 100 rungs, at most four recording files of 64 MiB each, and at most
 256 MiB of decompressed scan. Larger inputs refuse explicitly. It never truncates
 a run's history, cursor, fills or lots. Each requested bar must have coverage near
 both boundaries; missing products, stale/future quote timestamps, out-of-order
@@ -496,7 +495,7 @@ running intent is not proof of a living process. `status` separates actual lock
 observations, heartbeat age, evaluation timestamp/cursor, and recording age. At
 the immutable input's end, the worker remains observable but reports
 `waiting/reference_input_exhausted`. It does not claim prospective evaluation or
-fresh Jupiter data. Additional recordings need the later prospective-data design.
+fresh Jupiter data. Prospective Oracle sources instead wait for newly accepted completed bins.
 
 `events BOT --limit 100` reads the append-only reference event stream across
 current and archived runs. Each schema-4 event includes its runtime UUID;
@@ -521,7 +520,7 @@ write durable intent directly, so an unavailable socket cannot prevent a stop.
 
 `runtime.sqlite3` is independently schema version 4 and must be backed up using
 SQLite's backup API together with `manager.sqlite3` and `controls.sqlite3` when
-present. Runtime specs and inputs are immutable; fills, checkpoints, generations,
+present. Runtime specs and source selections are immutable. Prospective inputs append accepted observations and completed bars atomically with account transitions; fills, checkpoints, generations,
 control receipts and reference-only events are durable. Explicit `apply` archives
 all old run evidence in the same transaction that admits the new stopped run.
 Failed runs and retained inventory cannot be silently reset.
@@ -580,3 +579,106 @@ Installed package/service acceptance is a separate release gate.
 trials through the optional ecosystem adapter. These remain owned by F5; this
 command does not create manager drafts, claim runtime ownership or enable live
 controls. See `docs/ECOSYSTEM-BOOTSTRAP.md` for the resumable installer.
+
+
+## Prospective reference preparation
+
+Use the existing shared Oracle source explicitly. Preparation never starts its
+producer, recorder, a worker or a service. `shared-sol-usd` selects
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3`.
+The source is Coinbase SOL/USD and the saved target remains Jupiter SOL/USDC.
+
+```sh
+solbot create trend --name sol-trend
+solbot prepare-input sol-trend --archive shared-sol-usd --reference --output /Users/mitch/.config/solbot/trend-reference-v1.json
+solbot data-check sol-trend --descriptor /Users/mitch/.config/solbot/trend-reference-v1.json
+solbot register-input sol-trend --descriptor /Users/mitch/.config/solbot/trend-reference-v1.json
+solbot start sol-trend
+```
+
+The descriptor schema is 2. It freezes the archive's policy, exact source scope,
+activation clock and sequence watermark, currency, capital and cost assumptions.
+The `canonical-spot-reference-v1` profile derives fee/slippage from canonical
+`CostConfig`, assumes zero spot carry and a 10-unit minimum. The numbers are
+simulation assumptions, never observed Jupiter costs. `--set` accepts changed
+cost/coverage values. `--mode historical --start-ts EPOCH --end-ts EPOCH` captures
+an explicit closed interval. Existing descriptor files are never overwritten.
+`data-check BOT` returns schema 1 with actual coverage, source age, warmup,
+reference units, model compatibility and missing executable evidence.
+
+Only accepted Oracle observations after activation enter prospective evidence.
+The partial activation minute is excluded; each completed minute needs observed
+edges within five seconds and no intervening gap above five seconds. Prices use
+the observed clock, not wall-clock fabricated candles. Traded volume is unknown;
+price-only engine consumers cannot access a fabricated volume series. The source
+cursor, observation bodies/hashes, closed bars and account checkpoint commit in
+one fenced transaction. The input may append but cannot rewrite prior bars/lots.
+A crash replays the durable page exactly. A saved stop survives restart.
+
+A stale, absent, inaccessible or changed-policy producer holds new entries and
+reports that condition separately from the worker heartbeat. Backlogs carry
+`delayed_replay`, never real-time evidence. Capacity is finite: 2,048 bars and
+245,760 accepted samples per account. `resource_limit` holds the original run
+and inventory; it never truncates evidence or reallocates virtual capital.
+
+DCA calls the safety-order deal simulator, including deferred same-bar TP.
+Trend calls the packaged `soltui.trend.TrendFollowing`; Momentum calls
+`TsMomentum`. Both use canonical next-open execution. All prefixes retain
+cash, entry costs, open inventory and realized/unrealized P&L. Simulator hashes
+are strategy-specific; packaging-only version changes do not corrupt an old run.
+A changed economic implementation may refuse execution while inspection and
+stopping remain available. No forward result establishes a live trading edge.
+
+## Actual Solana quote evidence and cycles
+
+`oracle.quotes.collect_quote` is an explicit opt-in shared Oracle capability,
+with a required API key, exact input/output mints, integer raw input amount and
+Swap v1 slippage. It performs one HTTPS GET and never retries. Its fixed shared
+Oracle budget is `/Users/mitch/.local/share/solmargintrader/oracle/quote-budget.sqlite3`:
+all selected coin archives share at most 60 attempts per minute. Collection is
+disabled by default and no service automatically invokes it. Quote schema 1
+adds append-only `quote_observations` to an existing Oracle archive; inert reads
+never create or migrate it. `capture_quote`, `import_quote`, `read_quotes` and
+`validate_observation` preserve source/version, amount, mints, route, context
+slot, output/minimum, clocks, expiry and latency. Missing network/priority/rent
+fees and unobserved fills remain explicit certification blockers.
+
+`solbot cycle-check --descriptor /absolute/cycle.json` accepts schema 1 with
+`observations`, `assumptions`, an explicit `failed_leg` (null for all-leg success),
+and optional actual `unwind` observation. Each next leg's requested raw amount
+must exactly equal the preceding minimum output, with matching directed mints.
+All receipts must align within one second and be unexpired at evaluation.
+Each observation's ID keys explicit nonnegative integer assumptions:
+`network_fee_start_raw`, `priority_fee_start_raw`, `rent_start_raw`,
+`failed_transaction_start_raw`, `cost_currency_mint`,
+`route_platform_fees_in_output=true`, `fill_policy="minimum_output"`.
+Costs must be denominated in the cycle's start mint; no conversion is guessed.
+Failed legs require an exact-size, aligned unwind quote when inventory differs
+from the start token. Missing/partial/stale/future/size-mismatched evidence refuses.
+The result is conditional pessimistic paper P&L; `booked_profit_start_raw` is null.
+Live cycles remain unsupported without atomic construction and a verifier.
+No actual production route dataset or profitable cycle is claimed by this release.
+
+
+### Reviewed quote and prospective safeguards
+
+Prospective polls mark generation-fenced tick intent before archive access or
+canonical evaluation. The atomic progress commit clears that marker even when
+no completed bar is available. A fresh heartbeat cannot hide a hung prospective
+evaluation: the existing supervisor watchdog fences and terminates it.
+
+Quote evidence currently supports one direct route leg at 100% allocation, with
+positive raw input/output amounts and exact envelope mint/amount agreement.
+The collector requests `onlyDirectRoutes=true` and records
+`route_policy=direct_single_leg_100pct_v1`. Split and multihop plans refuse with
+`quote_route_topology_unsupported`; nonzero platform-fee topology refuses with
+`quote_platform_fee_topology_unsupported` until its flow can be reconciled.
+No unsupported route is silently treated as a direct equivalent.
+
+The Swap v1 field `priceImpactPct` is retained as its exact decimal string and
+labelled `unit=fraction`: `0.01` means 1% impact, not 0.01%. Missing impact is null
+with `price_impact_unavailable`; it never becomes zero. Invalid/nonfinite or
+out-of-range impact refuses capture/import. Missing impact can be archived as
+incomplete evidence but prevents conditional cycle diagnosis. These semantics
+follow the current official Metis guide:
+https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-metis.mdx

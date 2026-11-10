@@ -26,12 +26,36 @@ MAX_FILE_BYTES = 64 * 1024 * 1024
 MAX_SCAN_BYTES = 256 * 1024 * 1024
 
 
-@lru_cache(maxsize=1)
-def engine_identity() -> dict[str, Any]:
+@lru_cache(maxsize=8)
+def engine_identity(strategy_id: str = "grid") -> dict[str, Any]:
     import numpy
 
     import backtester
     from backtester.core import gridsim, metrics, types
+
+    modules = [metrics, types]
+    if strategy_id == "grid":
+        modules += [gridsim]
+    elif strategy_id == "dca":
+        from backtester.core import dcasim
+
+        modules += [dcasim]
+    else:
+        from backtester.core import engine, indicators, perps
+
+        modules += [engine, indicators, perps]
+        if strategy_id == "trend":
+            from soltui import trend
+
+            modules += [trend]
+        elif strategy_id == "momentum":
+            from backtester.core.strategies import signals
+
+            modules += [signals]
+        else:
+            raise ManagerError(
+                "capability_unavailable", "Unknown reference strategy.", 3
+            )
 
     return {
         "package": "solmargintrader-backtester/" + backtester.__version__,
@@ -40,7 +64,7 @@ def engine_identity() -> dict[str, Any]:
             module.__name__: hashlib.sha256(
                 Path(module.__file__).read_bytes()
             ).hexdigest()
-            for module in (gridsim, metrics, types)
+            for module in modules
         },
     }
 
@@ -56,12 +80,18 @@ def _number(value: Any, *, positive: bool = False) -> float:
     return float(value)
 
 
-def load_recording(descriptor: dict[str, Any]) -> dict[str, Any]:
+def load_recording(
+    descriptor: dict[str, Any], *, strategy_id: str = "grid"
+) -> dict[str, Any]:
     """Capture a fixed closed interval; refuse gaps, stale quotes and truncation.
 
     All costs and reference-account units are explicit. Source files are opened
     read-only. Neither this module nor its dependencies start a recorder.
     """
+    if isinstance(descriptor, dict) and descriptor.get("source") == "oracle_archive":
+        from .oracle_data import capture
+
+        return capture(descriptor, strategy_id=strategy_id)
     try:
         required = {
             "schema_version",
@@ -251,7 +281,14 @@ def load_recording(descriptor: dict[str, Any]) -> dict[str, Any]:
             "quote_currency": d["quote_currency"],
             "base_currency": "SOL",
             "bar_seconds": 60,
-            "execution_model": "sampled_mid_ohlc_resting_ladder",
+            "execution_model": {
+                "grid": "sampled_mid_ohlc_resting_ladder",
+                "dca": "sampled_mid_safety_orders",
+                "trend": "sampled_mid_next_open",
+                "momentum": "sampled_mid_next_open",
+            }[strategy_id],
+            "volume": None,
+            "volume_reason": "not_observed",
             "quote_provenance": "not_recorded_book_or_ticker_unknown",
             "quote_age_max_seconds": max_age,
             "samples": samples,
@@ -268,8 +305,8 @@ def load_recording(descriptor: dict[str, Any]) -> dict[str, Any]:
                 )
             },
             "capital_quote": d["capital_quote"],
-            "engine": "solmargintrader-backtester/0.1.0",
-            "engine_identity": engine_identity(),
+            "engine": engine_identity(strategy_id)["package"],
+            "engine_identity": engine_identity(strategy_id),
             "venue_compatibility_verified": False,
             "live_eligible": False,
             "arrival_policy": "recorded_arrivals_bounded_historical_replay",
@@ -306,7 +343,9 @@ def validate_snapshot(data: dict[str, Any]) -> None:
         body = {k: v for k, v in data.items() if k != "snapshot_hash"}
         if (
             data["snapshot_hash"] != fingerprint(body)
-            or not 1 <= len(data["bars"]) <= MAX_BARS
+            or not (0 if data.get("prospective") is not None else 1)
+            <= len(data["bars"])
+            <= MAX_BARS
         ):
             raise ValueError
     except (KeyError, ValueError, TypeError) as exc:

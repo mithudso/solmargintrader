@@ -1,8 +1,15 @@
 # Work continuation
 
-Version: 358
+Version: 363
+Delta: concurrent histories to v363; merge milestone3 provenance and preserve operational-control continuation.
 Delta: v357 to v358; integrate explicit provider/cost policy and isolated manual referral swap.
 Delta: v356 to v357; begin operational control plane and user-confirmed forward accounting.
+Delta: v361 to v362; record accepted installed repair and final milestone3 delivery preparation.
+Delta: v360 to v361; preserve actual installed status blocker and second focused fix round.
+Delta: v359 to v360; record accepted milestone3 fixes, regular installation and final HTTP acceptance.
+Delta: v358 to v359; record completed milestone3 source checks, review and explicit progress response.
+Delta: v357 to v358; preserve milestone3 source and HTTP acceptance before full regression.
+Delta: v356 to v357; record merged editing release and start milestone3 from verified remote baseline.
 Delta: v355 to v356; record accepted INT1/INT2 fixes before refreshed installation and final-head checks.
 Delta: concurrent histories to v355; preserve editing and PR187 Basic Memory records without changing application source.
 Delta: v353 to v354; record merge-aware docs gate success before combined integration commit.
@@ -1290,3 +1297,42 @@ The user's added requirement separates quote source from swap provider. New expe
 The manual swap page uses a separate loopback origin so third-party Jupiter SDK code cannot access control-plane session nonces. It loads only on a manual click and uses wallet approval in the browser, never server signing. Public referral accounts come from KNOW-1062. Published Swap API fees require50–255bps, while the retained default is10bps. The user was asked whether to retain10 requiring an explicit fee change or choose50. Until answered, retain10 and refuse SDK loading at unsupported fees. No fee increase, wallet connection or transaction is authorized automatically.
 
 Wiki currently compiles1861 tracked documents with hashes and original source locations. JSON snapshot assets must be packaged, installer-fingerprinted and checked by their own generator; exclude those duplicate generated bodies from generic indexing. Remaining: final root log adapter, UI/backend integration checks, selected-voter MCP transport, docs and wiki rebuild, immutable0.2.0 installation, actual browser/action lifecycle acceptance, then final-head delivery.
+## v357 — editing delivered; all remaining milestones continue
+
+PR186 merged13525f2a27bc96d68dcab2a90059c2b11e1791dc after finalheadf753e63 CI42754694369 completedexit0:11activepassed/2expectedskips. Mergedtreeequalsacceptedtip. Manager149CItests passed. Independent integrated installed acceptance passed50checks;167source/assets matched in both regular /Users/mitch/.venvs/solbot and /Users/mitch/.venvs/solecosystem-0.1.2; pipchecks0. Stable evidence /Users/mitch/.local/state/solbot/releases/0.3.0/editing-integrated-installed-acceptance.json. Defaultdemo and frozenecosystem0.1.1 unchanged; testdaemonsstopped/locksreleased. TASK1178done. Primarymaster synchronized preservingforeignuntrackedpaths; oldeditingbranchdeleted. KNOW1179/1184/1121/1115/1143 remaintrue.
+
+TASK1109 claimed. ContinueM3–8 under full owner scope; M3branchagent-01a1c189-m3 in same isolatedworktree from13525. Fresh implementer receives task-m3-brief.md1.1.0, current shared-source and research-owner reports. Parentownsrootdocs/CI/records; workerownsmanager/sharedsimulation/necessaryOraclecode. No newproducer/service/liveactions. ReuseexistinginertROOraclearchive and exact packagedTrend. Do not stopafterediting, documentation or partialM3. Remainingverification includes taskreview, installedbehavior, finalheadCI/delivery per completedpart and finalOraclehandoff.
+
+## v358 — milestone3 regression checkpoint
+
+Freshworker /root/m3_implementation has completed initial4family/source/quote/cycle code, format and Ruff; fullregression/report/review/install/delivery stillpending. Parent actualPostmanHTTP sourceacceptance9cases passed afterfixingcross-coin ratebudget: successstoresoneuncertifiedobservation,429/503HTML/malformed/mintmismatch/latency/timeoutrefuseonerequest/noextraquote,disabledzeroGET,crossarchivebudgetfullrefusesbeforeGET. Onlylocalstand-in andtempbudgetused; actualJupiterfees/routes/fillsremainunproven. Private m3-quote-http-acceptance-v1.1.jsonbindssource; finalinstalledidentityseparategate. Postmancollection/mock/simulation/contextareparent-ownedreusableartifacts. Currentownedserver53294localhost58505remainsforfinalinstalledprobe; closeitafteracceptance. Earlier74927closedSIGINTexit0.
+
+Packagesplannedmanager0.4/backtester0.1.1/Oracle0.2.1/research-runtime0.1.2/ecosystem0.1.3; parentCIanddocsinstallallneededlocalcandidates, bootstrapfreshenvironmentdefault0.1.3preservesold0.1.1/0.1.2. No stableupgradeorproductionwriteyet. ShellRuffpass; attempted /Users/mitch/.venvs/soltui/bin/python -mruff failedmissingmodule, fixedusinginstalledglobalruffwithoutinstall.
+
+M4narrowPythonOSsandboxpreflight returned-6/nooutputthreeprofiles (1.0/1.1/1.2); neverclaimfulljudgeisolationpassed. KNOW1182updated, futurebriefrequiresfinalruntimediagnosisandactualaccessdenial. M6brief1.1requiresboundedcontinuationbeyond2048bars fordefault7dayprospectiveeligibility. Thesepreflightsdonotcompletefuturemilestones.
+
+## v359 — milestone3 source verification and review
+
+Worker explicit34pathcommit18aa3c70b133243dd0af1b7b9fc4f1677ddc9331 complete. Final164manager/1002canonical/63Oracle/8Trendchecks exit0;Ruff/formatpass. Reporttask-m3-report.md1.0.1. Review/root/m3_review (astra high) active from201902bytecomplete13525..18aa package. Earlyconcretefinding: prospectiveworkerbypassesbegin_tick sohung-evaluationwatchdogmaynotfire; awaitfullreviewbeforeonefixwave. Do notinstallunreviewedcandidateorclaimmilestone3delivered. Parenthasupdatedexpectednewcommittedbacktestercount1002/legacytotal2861; requiredfinaldocsgatependingafterallrecordedits.
+
+Userstatusquestion savedverbatim prompts176. Answerededitingdelivered/currentM3/fivefurthermilestones/severalhours; actual7daygatecannotbesimulated. ScopecontinuesALLremainingmilestones; no pauseorstop. Primarycollisionbelongsotherowner; allourchangesremainisolated. Global0.3and0.1.2environmentsunchangedthusfar; Postmanownedserver53294awaitsfinalinstalledsourceprobe.
+
+## v360 — reviewed milestone3 installed; actual archive acceptance pending
+
+Fixcommitda2cae09c6a7890b098c4617d5dba9656db909e7 (8ownedpaths) passed168manager/68Oracle/Ruff/format; canonical1002/Trend8unchangedpreviouspassesretained. Scopedre-review approvesI1watchdog/I2routecoherence/I3priceimpact,0newblockers. KNOW1200/1201 preserveconcretetriggers; M1quotepaginationdeferredM5brief1.1, M2priorwarningsdisclosed. FullreportsintheactiveSDDworkspace.
+
+Newofficialsolecosystem0.1.3install/realMCPhealthcompletedexit0, sourceFPRce49b1536f642e4795337176122a892ac0d75a0aea8a9a1566099fe608cc8726. Globalregularall5install0/pipcheck0: manager0.4.0/backtester0.1.1/Oracle0.2.1/research-runtime0.1.2/ecosystem0.1.3. Oldfrozen0.1.1/0.1.2environmentsuntouched. Independent /root/m3_installed_acceptance isrunningactualprospectivetwo-account archive/restart/defaultpreservation/fullhashchecks; do notclaimpassuntilreceipt.
+
+FinalHTTP9casesfromregularinstalledcandidate-Ioutsidecheckoutpassedwithdirectrouteflagandobservedimpactfraction0; moduleSHA c014305f455ce4763a55e7608226390e09710569ab6737b0a268d123fa2dafdb. Onlylocalstand-in/tempbudget, actualJupiterunchanged. AllPostmanownedserversclosed0; statusCLI1.87signedout/uninitialized0, localsetupadequate. Parentupdatedquickstart1.1/fullhandoff1.1/Oraclecontract0.2andexpected1002/2861counts. Required finalmetadata/docs/CI/merge/delivery1109remain. Thencontinue1110–1114withoutendingatM3. Primarycheckoutremainsotherownerheld; no recentprimarywrites.
+
+## v361 — installed acceptance blocks delivery on completed schema2 status
+
+Independent37/38checks passed, but completedOracle-backedstatuspros-grid--whyreturnedexit2invalid_input. Narrowtrace KeyError:engine atstatus.py591: newidentityusesengine_identity, mapperexpectsreference[engine]onlyaftercp!=None. Actualnewbinsadvancedbothaccounts1→2acrossrestart, so runtimeprogressdidnotprovestatusworked. Retainedstopped/tmp/m3a-336fgone/h reprohome. Reports/task-m3-installed-acceptance-da2-partial.json/.md preservedbeforefix. Defaultbyte/size/mtime/schema/stateunchanged; bothenv3288filehashesmatch=171Python+3web+1470strategycardsineach—not1644codefiles. Alltestlocksreleased; seconddaemonexit0; firstgracefullockreleaseprovedbutexitcodeunavailableafterharnessassertion, donotclaim0.
+
+Fixround2/5originalworkeractive, onlystatus.py/test_status.py; testactualcompletedsource2 historical/prospective for4families+legacylabel. No implementationaccessretainedfixtureorinstalls. Parentmustscopedrereviewthenrefreshregularglobal/candidateandaskoriginalverifiercheckretainedcompletedrunswithoutanotherproducerwait. Candidate0.1.3sourcece49isimmutableknownbadtestcandidate; do notoverwriteitsinstallerreceipt. Oncealltestprocessesclosed, preserve/renameownedrejectedcandidateandbuildfresh0.1.3forthereviewedfix. Oldproduction0.1.1andaccepted0.1.2untouched. NoM3pass/CI/mergeclaimed. ContinueallM4–8afteractualM3delivery.
+
+## v362 — milestone3 installed acceptance complete; final CI next
+
+I4fixbfc6d2f4 (status.py/test_status.py) passed31coveringtests/Ruff/format andscopedrereviewapproved;0sourceblockers. Sourceengine/Oracle/HTTPunchanged, previous1002/68/8checks retained. Freshofficialsolecosystem0.1.3sourceFPR4586e3451fef3616f73014b3b8558f8d81ead41ec7ead8e5d16c3d71f5da6b42 complete/MCPclosed; globalmanager-onlyregularrepairinstall0/pipcheck0. Rejectedknownbadcandidatepreservedat.local/state/solbot/rejected-environments/solecosystem-0.1.3-da2cae09, receiptsunchanged aftercheckingnoactiveprocesses.
+
+Independentfinal58/58effectivegates,3288currentfilehashesmatchbfc, actual2accounts cursor1→2postactivation+restart, completedprospective/historicalCLIcandidate/global/aliaspass,pinnedengineevidence,defaultandretainedstatesexactlyunchanged. Healthyownedstoppedclone daemonexit0/locksreleased. Earlierfirstdaemonexitunknownremainsdisclosed; secondprospectivedaemonexit0. No newproducerwait/HTTPrepeat. Stableprivate0.4.0evidencescopied0600. Docscheck1002/1405/408/46total2861exit0; parentRuff/format/YAML/Node/diffchecks0. Finalstage/offlinehash/commit/push/PR/finalheadCI/merge remains; no M3deliveryclaim yet. Thenimmediatelyclaim1110andcontinueallremaining1111–1114. Primaryheldbyothers; privateworktreeonly.
