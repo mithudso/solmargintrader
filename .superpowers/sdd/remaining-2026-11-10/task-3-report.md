@@ -1,7 +1,7 @@
 # Task 3 — backup and health/load verification
 
-Version: 1.1.0
-Delta: 1.0.0 -> 1.1.0; repair independent-review pause ownership, aged browser restore and fast failure alerts.
+Version: 1.2.0
+Delta: 1.1.0 -> 1.2.0; bind watchdog load faults to an owned PID and retain bounded recovery when a frozen worker holds the runtime journal lock.
 
 Status: source backup implementation and owned tests ready. Controller owns health.py, supervisor/status/control/registry integration and release verification.
 
@@ -52,3 +52,16 @@ The final workload run passed in 16.114 seconds: four active paper workers and s
 Under that actual workload: status p95 0.011897s; durable stop acknowledgement 0.000736s; owner release 0.006999s; crash detection 0.006520s; watchdog detection 14.017040s from freeze and 14.021062s from heartbeat. Every specified latency assertion passed. Financial checkpoint/fills and the saturated retry reservation assertions remain intact. Numerical fixtures do not establish a production trading edge or certified market evidence.
 
 Final per-suite checks passed: 13 backup tests, nine health tests, four entry-control tests, 18 supervisor tests, nine learning tests and one actual-optimizer load test (54 total across these runs). The additional health test prevents a replacement claim's synthetic heartbeat from resolving a crash before an owned PID reports recovery. A nonempty current/archive/segment restore regression preserves exact segment bodies, archive bindings, accepted requests, entry-control receipts and pause rows. Ruff passed for all owned source/tests. Diagnostic rotation remains a bounded helper for the selected diagnostic filename; there is no new production log stream or claimed installed logging policy. Installed acceptance and remote delivery remain controller gates.
+
+
+## Integrated watchdog fault repair — version 1.2.0
+
+The integrated manager run failed 1 of296 tests at the load fixture's bot-slot disappearance predicate after SIGSTOP. The original failure log remains `/Users/mitch/.local/state/solbot/releases/0.6.0/manager-full-source.log`. A standalone before-change rerun passed in16.154s, so the original timeout is not claimed as deterministically reproduced. The fixture had accepted a synthetic claim heartbeat before an actual owner PID/lock was observed. It now waits for the owned PID, held worker lock and completed initial evaluation before freezing, measures retirement of the exact Process instance, and prints generation/reason/heartbeat/events if retirement times out. Strict15-second assertions remain unchanged.
+
+A separate deterministic real-process fault established a production watchdog gap: freezing an owner with `BEGIN EXCLUSIVE` held made Supervisor.step raise `store_unavailable` before watchdog checks; shutdown attempted its fence against the same locked database before releasing that owner. The before reproduction is `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-locked-watchdog-before.log`. Supervisor now caches monotonic deadlines bound to the exact owned Process and generation. If the journal remains write-locked after the13-second cached deadline, it reaps that owned process before attempting a conditional failure write. The13-second fallback leaves time for SQLite's one-second timeout and termination within the unchanged public15-second limit. Stable observed heartbeat/tick values retain their monotonic deadlines. The fallback never substitutes a newer ledger generation.
+
+The supervisor admits no replacement during uncertain journal reads or a pending failure write. It retries the original generation-checked failure write after lock release and records attributable health evidence before replacement. Normal failed owners also retire before a possibly blocked journal write. Shutdown retries its original conditional fence after owner retirement; if failure reconciliation is still unavailable, it releases its service lock and returns an explicit unavailable error rather than claiming reconciliation succeeded. No partial financial state is fabricated or discarded.
+
+New tests freeze real owners holding both RESERVED (`BEGIN IMMEDIATE`) and EXCLUSIVE locks after an uncommitted cursor write. They prove exact process retirement, released worker lock, rolled-back partial cursor, unchanged checkpoint/input/runtime identity, original-generation failure fencing and attributable alert evidence. They also test shutdown of a frozen exclusive writer and explicit reporting of an unreconciled failure write.
+
+Focused supervisor/health/entry-control/load checks passed34 tests in50.000s, exit0. Measured reserved-lock detection was13.009582s from the last owned heartbeat; exclusive-lock detection was14.071378s. Actual canonical optimizer load still measured four active/six queued, statusp95 0.014092s, stopack 0.000798s, ownerrelease 0.007381s, crashdetection 0.007884s and watchdog14.022125s from heartbeat, with2273 completed numerical cells and honest incumbent retention. The final shutdown changes then passed both shutdown regressions in1.209s, exit0. Ruff passed. Logs: `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-supervisor-lock-final.log` and `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-shutdown-final.log`. The full manager suite must be rerun by the controller on the final integrated revision; no production state changed.

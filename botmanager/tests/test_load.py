@@ -301,15 +301,43 @@ class LoadTests(unittest.TestCase):
                 spin(
                     lambda: (
                         other.bot_id in supervisor.children
-                        and ledger.get(other.bot_id)["heartbeat"] is not None
+                        and ledger.get(other.bot_id)["pid"]
+                        == supervisor.children[other.bot_id][0].pid
+                        and ledger.get(other.bot_id)["observed"] == "waiting"
+                        and lock_held(home / "locks" / (other.bot_id + ".lock"))
                     )
                 )
                 stalled_bot = other.bot_id
                 stalled = supervisor.children[stalled_bot][0]
-                os.kill(stalled.pid, signal.SIGSTOP)
                 heartbeat = ledger.get(stalled_bot)["heartbeat"]
+                stalled_pid = stalled.pid
+                os.kill(stalled_pid, signal.SIGSTOP)
                 started = time.monotonic()
-                spin(lambda: stalled_bot not in supervisor.children, timeout=17)
+                # Observe this exact process, not the reusable bot slot. A later
+                # replacement owner must not hide retirement of the frozen PID.
+                deadline = started + 17
+                while time.monotonic() < deadline:
+                    supervisor.step()
+                    current = supervisor.children.get(stalled_bot)
+                    if current is None or current[0] is not stalled:
+                        break
+                    time.sleep(0.02)
+                else:
+                    row = ledger.get(stalled_bot)
+                    self.fail(
+                        "frozen owner watchdog timeout: "
+                        + json.dumps(
+                            {
+                                "pid": stalled_pid,
+                                "generation": row["generation"],
+                                "observed": row["observed"],
+                                "reason": row["reason"],
+                                "heartbeat_age_s": time.time() - row["heartbeat"],
+                                "events": ledger.events(stalled_bot)[-5:],
+                            },
+                            sort_keys=True,
+                        )
+                    )
                 metrics["stale_detection_from_freeze_s"] = time.monotonic() - started
                 metrics["stale_detection_from_last_heartbeat_s"] = (
                     time.time() - heartbeat
@@ -400,3 +428,139 @@ class LoadTests(unittest.TestCase):
                     ),
                     flush=True,
                 )
+
+
+def journal_lock_worker(home, bot_id, generation, parent_pid):
+    """Expose an owned heartbeat, then freeze with an uncommitted journal write."""
+    from botmanager.worker import lifetime_lock
+
+    home = Path(home)
+    ledger = RuntimeLedger(home)
+    with lifetime_lock(home / "locks" / (bot_id + ".lock")):
+        ledger.heartbeat(bot_id, generation, os.getpid())
+        (home / "owner-ready").touch()
+        while not (home / "hold-journal").exists():
+            time.sleep(0.01)
+        with closing(sqlite3.connect(ledger.path)) as db:
+            db.execute("BEGIN " + (home / "hold-journal").read_text())
+            db.execute("UPDATE runs SET cursor=cursor+1000 WHERE bot_id=?", (bot_id,))
+            (home / "journal-held").touch()
+            while True:
+                time.sleep(0.01)
+
+
+class LockedJournalWatchdogTests(unittest.TestCase):
+    def frozen_owner(self, home, mode):
+        spec = grid("locked-journal")
+        store, ledger = ManagerStore(home), RuntimeLedger(home)
+        store.create_spec(spec)
+        ledger.register(spec, load_recording(recording(home)))
+        ledger.control(spec, "start", str(uuid4()))
+        supervisor = Supervisor(home, worker_target=journal_lock_worker).open()
+        self.addCleanup(supervisor.close)
+        deadline = time.monotonic() + 8
+        while not (home / "owner-ready").exists():
+            supervisor.step()
+            self.assertLess(time.monotonic(), deadline)
+            time.sleep(0.01)
+        # Cache a real owned heartbeat before freezing the database writer.
+        supervisor.step()
+        before = ledger.get(spec.bot_id)
+        process = supervisor.children[spec.bot_id][0]
+        self.assertEqual(before["pid"], process.pid)
+        (home / "hold-journal").write_text(mode)
+        while not (home / "journal-held").exists():
+            self.assertLess(time.monotonic(), deadline)
+            time.sleep(0.01)
+        os.kill(process.pid, signal.SIGSTOP)
+        return supervisor, ledger, spec, process, before
+
+    def test_frozen_reserved_and_exclusive_writers_meet_watchdog_without_lost_state(self):
+        from botmanager.health import HealthStore
+
+        for mode in ("IMMEDIATE", "EXCLUSIVE"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
+                home = Path(directory)
+                supervisor, ledger, spec, process, before = self.frozen_owner(home, mode)
+                try:
+                    started = time.monotonic()
+                    deadline = started + 17
+                    while time.monotonic() < deadline:
+                        supervisor.step()
+                        current = supervisor.children.get(spec.bot_id)
+                        if current is None or current[0] is not process:
+                            break
+                        time.sleep(0.02)
+                    elapsed = time.monotonic() - started
+                    heartbeat_age = time.time() - before["heartbeat"]
+                    self.assertLess(elapsed, 15)
+                    self.assertLess(heartbeat_age, 15)
+                    print(
+                        "LOCKED_WATCHDOG_METRICS "
+                        + json.dumps(
+                            {"mode": mode, "freeze_s": elapsed,
+                             "heartbeat_age_s": heartbeat_age}, sort_keys=True
+                        ), flush=True,
+                    )
+                    self.assertNotIn(spec.bot_id, supervisor.children)
+                    self.assertFalse(lock_held(home / "locks" / (spec.bot_id + ".lock")))
+                    after = ledger.get(spec.bot_id)
+                    self.assertEqual(after["cursor"], before["cursor"])
+                    self.assertEqual(after["checkpoint"], before["checkpoint"])
+                    self.assertEqual(after["input"], before["input"])
+                    self.assertEqual(after["runtime_id"], before["runtime_id"])
+                    self.assertEqual(after["observed"], "recovering")
+                    self.assertEqual(after["reason"], "heartbeat_stale")
+                    self.assertEqual(after["generation"], before["generation"] + 1)
+                    self.assertTrue(
+                        any(
+                            alert["code"] == "heartbeat_stale"
+                            for alert in HealthStore(home).page()["alerts"]
+                        )
+                    )
+                finally:
+                    supervisor.close()
+
+    def test_shutdown_reaps_frozen_writer_before_retrying_conditional_fence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            supervisor, ledger, spec, _, before = self.frozen_owner(
+                Path(directory), "EXCLUSIVE"
+            )
+            started = time.monotonic()
+            supervisor.close()
+            self.assertLess(time.monotonic() - started, 2)
+            self.assertEqual(supervisor.children, {})
+            after = ledger.get(spec.bot_id)
+            self.assertEqual(after["cursor"], before["cursor"])
+            self.assertEqual(after["checkpoint"], before["checkpoint"])
+            self.assertEqual(after["generation"], before["generation"] + 1)
+            self.assertEqual(after["observed"], "recovering")
+
+    def test_shutdown_reports_pending_failure_write_without_claiming_reconciliation(self):
+        from botmanager.domain import ManagerError
+
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            spec = grid("unavailable-failure-journal")
+            ManagerStore(home).create_spec(spec)
+            ledger = RuntimeLedger(home)
+            ledger.register(spec, load_recording(recording(home)))
+            ledger.control(spec, "start", str(uuid4()))
+            supervisor = Supervisor(home).open()
+            before = ledger.get(spec.bot_id)
+            supervisor._pending_failures[spec.bot_id] = (
+                before["generation"], "heartbeat_stale"
+            )
+            with (
+                patch.object(
+                    supervisor.ledger, "failed",
+                    side_effect=ManagerError("store_unavailable", "fixture", 4),
+                ),
+                self.assertRaises(ManagerError) as caught,
+            ):
+                supervisor.close()
+            self.assertEqual(caught.exception.code, "store_unavailable")
+            self.assertIsNone(supervisor.server)
+            self.assertFalse(lock_held(home / "supervisor.lock"))
+            self.assertIn(spec.bot_id, supervisor._pending_failures)
+            self.assertEqual(ledger.get(spec.bot_id), before)
