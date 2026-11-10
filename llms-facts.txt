@@ -1,55 +1,29 @@
-<!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative -->
-
-# solmargintrader: Sourced Facts
-
-One declarative fact per line, each tagged with the repo-relative file it came from.
+# solmargintrader — atomic current facts
+> Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty
+> Generated: 2026-11-10 by crawl-repo-to-llms v1.4.0
+> Census: 3066 enumerated / 9 deep-read / 3057 shallow · partial: nine small manifest/parser inputs; no inference or index probes
 
 ## Facts
-
-- The repository has four components: backtester/, research/, extension/ and soltui/ [src: README.md]
-- The backtester is an offline event-driven harness for spot and Jupiter-Perps-style leveraged strategies with a modelled borrow fee [src: README.md]
-- The backtester has no live-trading capability and none should be added [src: backtester/README.md]
-- The extension is the only component that can place real orders [src: README.md]
-- The extension installs disarmed and in dry-run, and DEFAULT_CONFIG.mode is dry-run [src: CLAUDE.md]
-- Every extension action lives in one command registry, extension/src/core/commands.js, and the Chrome handler, CLI and HTTP API are thin adapters over it [src: README.md]
-- A parity test fails the build if the extension surfaces drift from the registry [src: README.md]
-- Risk rails are gates in extension/src/core/risk.js and must fail closed [src: CLAUDE.md]
-- The executable venue is Jupiter Trigger V2 because Jupiter Perps had no public REST write API at the time of writing [src: README.md]
-- The bundled jup.ag HTML dump contains 16 rendered HTML files and no .js bundles [src: README.md]
-- The backtester defaults --fill-delay to 1, filling at the open of bar t+1 [src: backtester/README.md]
-- Backtester fees, slippage and the perp borrow fee must stay in the P&L path [src: CLAUDE.md]
-- The backtester engine does not touch the network; fetching is a separate explicit step [src: CLAUDE.md]
-- Every registered backtester strategy must have a card at backtester/strategy_cards/<id>.md [src: CLAUDE.md]
-- core/gridsim.py is a port of extension/src/core/grid.js and the two must change together [src: CLAUDE.md]
-- A grid exit sell must sit one rung above its entry; expectedRoundTripUsd and its test exist because this bug shipped once [src: CLAUDE.md]
-- soltui has no order path: no keys, no signing and no venue client [src: soltui/README.md]
-- soltui runs the roster through CPCV and shows median path Sharpe, IQR and percent of paths positive [src: soltui/README.md]
-- The documented suites are 499 backtester tests, 95 soltui tests and 131 extension tests, asserted by CI [src: README.md]
-- Signing seeds are AES-GCM encrypted under a PBKDF2-SHA256 key with 600,000 iterations [src: docs/SECURITY.md]
-- The kill command is latching: it disarms and blocks every rail until clearKill is run [src: docs/OPERATIONS.md]
-- Kill does not cancel resting venue orders; they are removed with cancelOrder [src: docs/OPERATIONS.md]
-- The README states grid trading is short volatility: it earns in a range and loses in a trend [src: README.md]
-
-## 2026-11-08 [gen: p/2.1.0]
-
-- The saved HTML script corpus contains742 publications:666studies,55libraries and21native strategies. [src: research/tradingview-script-profile-work.json]
-- The accepted21 native-strategy cards retain their exact semantic manifest and card bytes; a reviewed receipt records10 disclosed principal outputs and11 partial descriptions. All21 are incomplete as standalone coin tests. [src: research/tradingview-strategy-card-locations.json]
-- Incomplete expanded publication documentation lives beneath backtester/strategy_cards/incomplete/publication-profiles; companion native-strategy tools use incomplete/native-strategy-profiles. The flat executable-card loader excludes these nested documentation cards. [src: scripts/render_tradingview_script_cards.py] [src: backtester/core/strategy_cards.py]
-- Computation readiness is distinct from cached data, current API compatibility, full Pine parity and portfolio trade rules. A usable card states its reproducible principal-output scope; missing core inputs or equations remain blocking gaps. [src: research/tradingview-script-profile-audit-prompts.md]
-- The final script-card checker refuses draft coverage, stale profile/source/review/card hashes, unread source tails, misplaced incomplete cards and unresolved medium-or-higher findings. [src: scripts/render_tradingview_script_cards.py]
-
-- Native optimization freezes full baseline/candidate configurations, exact windows, code/data/cost fingerprints and numerical runtime; each evaluation commits rich metrics or an explicit failure. [src: soltui/experiment_runner.py]
-- ExperimentStore preserves immutable completed cells and transactional exploration/final temporal reservations; changing search context cannot refresh used dates. [src: soltui/experiments.py]
-- Explicit experiment workers use inherited process leases and durable cooperative pause/cancel controls; source/config changes refuse stale resume. [src: soltui/experiment_jobs.py]
-- The Bots experiment workbench exposes bounded typed spaces, candidate/window evidence, conditioned sparse heatmaps, read-only TradingView import/comparison and separate final validation. [src: soltui/experiment_screens.py]
-- Experiment drawdown summaries use nonnegative loss magnitude while raw simulator and external signed values remain in evidence; unknown units remain unknown. [src: soltui/experiments.py]
-- Imports never promote native settings; comparable runs require explicit matching assumptions and actual coin/date coverage for every contributing row. [src: soltui/experiments.py]
-- Final native adoption keeps the existing evidence/sign-test thresholds and uses baseline comparison plus durable recovery of an interrupted configuration write. [src: soltui/experiment_runner.py]
-
-## 2026-11-08 [gen: p/2.1.0]
-
-- Finalized holdout reservations carry a durable seal: later training may reuse their historical dates, while all other final tests still treat them as spent; own sealed evidence reuse cannot evaluate missing or failed cells again. [src: soltui/experiments.py]
-
-## Source-card coin-test clarification (2026-11-08)
-
-- All691 new source-profile cards are incomplete as standalone coin tests; source-component disclosure is not a qualified coin-test contract or runnable implementation. [src: research/TRADINGVIEW-SCRIPT-CARDS.md]
+- Misbelief: SolTUI is read-only and cannot move money. Actually: it retains a separately armed manual Coinbase path. [src: /Users/mitch/.local/state/solbot/bootstrap-1256/llms-before/llms-small.txt#solmargintrader-small; CLAUDE.md#what-this-is]
+- Ten components separate research, observations, paper ownership, UI and optional execution. [src: README.md#solmargintrader; docs/COMPONENTS.md]
+- Source candidate packages are manager 0.7.1, ecosystem 0.4.1, research runtime 0.4.0, Oracle 0.2.2 and canonical backtester 0.2.0. Source versions do not prove these candidates are installed. [src: botmanager/pyproject.toml; ecosystem/pyproject.toml; soltui/pyproject.toml; oracle/pyproject.toml; backtester/pyproject.toml]
+- Backtester and research stay offline during simulation; explicit fetching is a separate operation. [src: CLAUDE.md#non-negotiables--backtester]
+- Extension defaults stay dry-run and disarmed; its central risk rails fail closed. [src: CLAUDE.md#non-negotiables--extension]
+- SolTUI has a separately armed manual Coinbase path; it is not merely a read-only display. [src: CLAUDE.md#what-this-is]
+- The manual Jupiter V2 path supplies previews; submission is blocked pending independent economic verification. [src: CLAUDE.md#known-unverified-areas]
+- Liquidity is archived as of 2026-11-08; its service remains disabled with its kill switch set. [src: CLAUDE.md#live-on-chain-actions-owners-standing-authorization]
+- The manager suite reuses one Supervisor and does not create a second recorder, optimizer, signer or research authority. [src: docs/bot-manager-managed-suite.md#install-and-control-persistent-availability]
+- UI adoption binds manager home, ecosystem home, generation, version, lock and HTTP identity; an adopted PID does not grant termination authority. [src: docs/ARCHITECTURE.md#managed-availability-and-evidence-owners]
+- Server readiness requires suite, manager and UI availability; market freshness and execution certification remain separate. [src: docs/bot-manager-managed-suite.md#machine-health-and-alert-collection]
+- Compact collector commands are solbot health-check, solbot metrics and solbot component-alerts. [src: docs/bot-manager-managed-suite.md#machine-health-and-alert-collection]
+- UI status is inert; ui open explicitly starts availability if needed and opens only a verified local URL. [src: docs/bot-manager-managed-suite.md#find-and-open-the-interface]
+- The complete manager command order is in solbot --help and structured solbot help. [src: docs/bot-manager-managed-suite.md#solbot-managed-availability-ui-access-and-platform-setup]
+- The existing packaged ecosystem wiki is the maintained project navigation; source guides remain authoritative for their scope. [src: docs/ECOSYSTEM-WIKI.md#project-navigation]
+- Wiki source changes require a deterministic rebuild and integrity check; generated bundles are not hand-edited. [src: docs/ECOSYSTEM-WIKI.md#maintenance-ownership]
+- macOS availability starts at user login after reboot; KeepAlive crash recovery is distinct from a physical reboot test. [src: docs/bot-manager-managed-suite.md#install-and-control-persistent-availability]
+- Linux uses a systemd user service; linger is a separate host policy. Windows needs WSL2 and a separate Windows-Chrome native bridge. [src: docs/bot-manager-managed-suite.md#windows-through-wsl2]
+- Uncertain submissions stay blocking and cannot be auto-retried as absent. [src: CLAUDE.md#non-negotiables--extension]
+- Keep INDEX_NO_AUTO=1 for read-only retrieval and tests; semantic indexing is a separate explicit operation. [src: CLAUDE.md#retrieval-before-exploration]
+- Workflow record versions are separate from component package versions. [src: CLAUDE.md#workflow-records]
+- Python is 3.13 and CI Node is pinned by .nvmrc; extension has no npm runtime dependencies. [src: CLAUDE.md#house-style; .nvmrc]
+- A cached research ranking is not a new corrected-engine experiment; rerun before treating it as current performance. [src: README.md#quick-start]

@@ -1,9 +1,29 @@
-<!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative -->
+# solmargintrader — budgeted navigation digest
+> Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty
+> Generated: 2026-11-10 by crawl-repo-to-llms v1.4.0
+> Census: 3066 enumerated / 9 deep-read / 3057 shallow · partial: nine small manifest/parser inputs; no inference or index probes
 
-# solmargintrader (small)
+## Read first
+- Ten components separate research, observations, paper ownership, UI and optional execution. [src: README.md#solmargintrader; docs/COMPONENTS.md]
+- Source candidate packages are manager 0.7.1, ecosystem 0.4.1, research runtime 0.4.0, Oracle 0.2.2 and canonical backtester 0.2.0. Source versions do not prove these candidates are installed. [src: botmanager/pyproject.toml; ecosystem/pyproject.toml; soltui/pyproject.toml; oracle/pyproject.toml; backtester/pyproject.toml]
+- Backtester and research stay offline during simulation; explicit fetching is a separate operation. [src: CLAUDE.md#non-negotiables--backtester]
+- Extension defaults stay dry-run and disarmed; its central risk rails fail closed. [src: CLAUDE.md#non-negotiables--extension]
+- SolTUI has a separately armed manual Coinbase path; it is not merely a read-only display. [src: CLAUDE.md#what-this-is]
+- The manual Jupiter V2 path supplies previews; submission is blocked pending independent economic verification. [src: CLAUDE.md#known-unverified-areas]
+- Liquidity is archived as of 2026-11-08; its service remains disabled with its kill switch set. [src: CLAUDE.md#live-on-chain-actions-owners-standing-authorization]
+- The manager suite reuses one Supervisor and does not create a second recorder, optimizer, signer or research authority. [src: docs/bot-manager-managed-suite.md#install-and-control-persistent-availability]
+- Compact collector commands are solbot health-check, solbot metrics and solbot component-alerts. [src: docs/bot-manager-managed-suite.md#machine-health-and-alert-collection]
+- UI status is inert; ui open explicitly starts availability if needed and opens only a verified local URL. [src: docs/bot-manager-managed-suite.md#find-and-open-the-interface]
+- The complete manager command order is in solbot --help and structured solbot help. [src: docs/bot-manager-managed-suite.md#solbot-managed-availability-ui-access-and-platform-setup]
+- The existing packaged ecosystem wiki is the maintained project navigation; source guides remain authoritative for their scope. [src: docs/ECOSYSTEM-WIKI.md#project-navigation]
+- Wiki source changes require a deterministic rebuild and integrity check; generated bundles are not hand-edited. [src: docs/ECOSYSTEM-WIKI.md#maintenance-ownership]
+- macOS availability starts at user login after reboot; KeepAlive crash recovery is distinct from a physical reboot test. [src: docs/bot-manager-managed-suite.md#install-and-control-persistent-availability]
+- Linux uses a systemd user service; linger is a separate host policy. Windows needs WSL2 and a separate Windows-Chrome native bridge. [src: docs/bot-manager-managed-suite.md#windows-through-wsl2]
+- Keep INDEX_NO_AUTO=1 for read-only retrieval and tests; semantic indexing is a separate explicit operation. [src: CLAUDE.md#retrieval-before-exploration]
+- Workflow record versions are separate from component package versions. [src: CLAUDE.md#workflow-records]
+- Python is 3.13 and CI Node is pinned by .nvmrc; extension has no npm runtime dependencies. [src: CLAUDE.md#house-style; .nvmrc]
+- A cached research ranking is not a new corrected-engine experiment; rerun before treating it as current performance. [src: README.md#quick-start]
 
-solmargintrader is SOL trading research and execution tooling. It has four parts: `backtester/` (Python 3.13, offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies with a modelled borrow fee; no live-trading capability by design), `research/` (strategy survey, ranked lists and sweeps built on the backtester), `extension/` (Chrome MV3 grid trader on Jupiter, plus a CLI and local HTTP API over one command registry; the only part that can place real orders; installs disarmed and in dry-run) and `soltui/` (Textual TUI and macOS menu-bar indicator; read-only, no order path).
-
-Key rules: dry-run is the default; risk rails in `extension/src/core/risk.js` fail closed; never guess a price, quantity or fee that becomes an order; reconcile against the venue before planning; no secret material in logs or synced storage; the backtester has no lookahead and never drops costs. Each registered strategy has a card in `backtester/strategy_cards/`.
-
-Verify: `python3 -m unittest discover -s backtester/tests -t .`, `python3 -m unittest discover -s soltui/tests -t .`, `cd extension && npm test`, `python3 scripts/check_docs.py`. Not financial advice.
+## Current references
+- docs/ECOSYSTEM-WIKI.md routes commands, reference, scripts and strategy sources. [src: docs/ECOSYSTEM-WIKI.md#project-navigation]
+- docs/TESTING.md carries executable validation commands and actual CI coverage limits. [src: docs/TESTING.md]
