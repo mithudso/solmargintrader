@@ -7,14 +7,30 @@
     "extension",
     "soltui",
     "mongo",
-    "liquidity"
+    "liquidity",
+    "executor",
+    "botmanager",
+    "oracle",
+    "ecosystem"
   ],
   "files": [
     {
-      "path": "botmanager",
-      "component": "repo",
+      "path": "ecosystem",
+      "component": "ecosystem",
       "kind": "directory",
-      "summary": "Python 3.13 | No \u2014 CLI and bounded grid reference-paper runtime; paper/disarmed, legacy capabilities explicit"
+      "summary": "Python 3.13 | No \u2014 paper orchestration, owner controls and local control room"
+    },
+    {
+      "path": "oracle",
+      "component": "oracle",
+      "kind": "directory",
+      "summary": "Python 3.13 | No \u2014 source-labelled observations and shadow forecasts"
+    },
+    {
+      "path": "botmanager",
+      "component": "botmanager",
+      "kind": "directory",
+      "summary": "Python 3.13 | No \u2014 manager 0.7, fenced paper workers and availability suite"
     },
     {
       "path": "mongo",
@@ -32,7 +48,7 @@
       "path": "soltui",
       "component": "soltui",
       "kind": "directory",
-      "summary": "Python 3.13 | No \u2014 read-only display"
+      "summary": "Python 3.13 | Yes \u2014 manual Coinbase path is separately armed; research runtime remains paper-only"
     },
     {
       "path": "backtester",
@@ -50,13 +66,181 @@
       "path": "liquidity",
       "component": "liquidity",
       "kind": "directory",
-      "summary": "Python 3.13 + web3 (own venv) | Yes \u2014 live Aero LP daemon (owner-authorized)"
+      "summary": "Python 3.13 + web3 (own venv) | Yes in retained code \u2014 archived; service disabled and kill switch set"
     },
     {
       "path": "executor",
-      "component": "repo",
+      "component": "executor",
       "kind": "directory",
       "summary": "Python 3.13 + solders (own venv) | Yes \u2014 guarded Jupiter swaps (dry-run by default)"
+    },
+    {
+      "path": "ecosystem/cli.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Installed solecosystem command parser and dispatch",
+      "lines": 212
+    },
+    {
+      "path": "ecosystem/runner.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Resumable paper pipeline coordination",
+      "lines": 662
+    },
+    {
+      "path": "ecosystem/recovery.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Existing-owner and interrupted-pipeline recovery",
+      "lines": 231
+    },
+    {
+      "path": "ecosystem/control.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Scoped paper actions and durable action receipts",
+      "lines": 924
+    },
+    {
+      "path": "ecosystem/web.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Loopback control room and collector routes",
+      "lines": 549
+    },
+    {
+      "path": "ecosystem/ui_service.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Verified UI checkpoint, manager binding and startup",
+      "lines": 401
+    },
+    {
+      "path": "ecosystem/wiki.py",
+      "component": "ecosystem",
+      "kind": "python",
+      "summary": "Validated packaged documentation catalog and page reads",
+      "lines": 337
+    },
+    {
+      "path": "scripts/build_ecosystem_wiki.py",
+      "component": "repo",
+      "kind": "python",
+      "summary": "Offline public-document snapshot generator",
+      "lines": 209
+    },
+    {
+      "path": "docs/ECOSYSTEM-WIKI.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Project wiki navigation and maintenance ownership",
+      "lines": 151
+    },
+    {
+      "path": "oracle/cli.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Explicit source/archive CLI",
+      "lines": 215
+    },
+    {
+      "path": "oracle/engine.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Observation and strategy evaluation owner",
+      "lines": 451
+    },
+    {
+      "path": "oracle/store.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Historical observation archive",
+      "lines": 107
+    },
+    {
+      "path": "oracle/reader.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Bounded read-only archive access",
+      "lines": 300
+    },
+    {
+      "path": "oracle/server.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Read-only MCP tools and subscriptions",
+      "lines": 430
+    },
+    {
+      "path": "oracle/guidance.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Source-linked consumer guidance",
+      "lines": 186
+    },
+    {
+      "path": "oracle/voting.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Versioned source-labelled voting policy",
+      "lines": 114
+    },
+    {
+      "path": "botmanager/src/botmanager/registry.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Shared command definitions and dispatch",
+      "lines": 1040
+    },
+    {
+      "path": "botmanager/src/botmanager/supervisor.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Fenced worker lifecycle and desired intent",
+      "lines": 347
+    },
+    {
+      "path": "botmanager/src/botmanager/ledger.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Durable runtime/account state",
+      "lines": 1736
+    },
+    {
+      "path": "botmanager/src/botmanager/suite.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Availability supervision and bounded component alerts",
+      "lines": 887
+    },
+    {
+      "path": "botmanager/src/botmanager/suite_service.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Fixed installed launchd/systemd user-service definitions",
+      "lines": 364
+    },
+    {
+      "path": "botmanager/src/botmanager/machine_health.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Compact inert measurements and Prometheus rendering",
+      "lines": 315
+    },
+    {
+      "path": "botmanager/src/botmanager/walkthrough.py",
+      "component": "botmanager",
+      "kind": "python",
+      "summary": "Recommended complete command-stage walkthrough",
+      "lines": 360
+    },
+    {
+      "path": "docs/bot-manager-managed-suite.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Installed operations and platform setup",
+      "lines": 258
     },
     {
       "path": "backtester/cli.py",
@@ -124,7 +308,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 890
+      "lines": 958
     },
     {
       "path": "backtester/core/types.py",
@@ -159,14 +343,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
-      "lines": 873
+      "lines": 924
     },
     {
       "path": "backtester/core/dcasim.py",
       "component": "backtester",
       "kind": "python",
       "summary": "DCA safety-order bot simulator: base order, deeper safety orders, take-profit above the average entry; gridsim's bar order and pessimism",
-      "lines": 484
+      "lines": 537
     },
     {
       "path": "backtester/core/trianglesim.py",
@@ -299,7 +483,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Indicator-driven strategies, one screen each",
-      "lines": 435
+      "lines": 442
     },
     {
       "path": "backtester/core/strategies/advanced.py",
@@ -493,7 +677,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 931
+      "lines": 980
     },
     {
       "path": "extension/src/core/risk.js",
@@ -528,7 +712,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 380
+      "lines": 470
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -647,7 +831,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Signal Desk shell and hash router; four priority workflows and advanced views",
-      "lines": 197
+      "lines": 199
     },
     {
       "path": "extension/src/ui/view-overview.js",
@@ -682,7 +866,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup: signal/process glance, four workflow shortcuts and collapsed wallet/grid controls",
-      "lines": 288
+      "lines": 290
     },
     {
       "path": "extension/tools/cli.js",
@@ -843,14 +1027,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Long-only moving-average momentum paper bot; shared next-open engine with fees and slippage",
-      "lines": 104
+      "lines": 112
     },
     {
       "path": "soltui/experiments.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison",
-      "lines": 923
+      "lines": 906
     },
     {
       "path": "soltui/experiment_runner.py",
@@ -954,7 +1138,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Process leases/control races, registry refusals and live headless workbench interactions",
-      "lines": 347
+      "lines": 363
     },
     {
       "path": "mongo/README.md",
@@ -1052,7 +1236,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 206
+      "lines": 218
     },
     {
       "path": "AGENTS.md",
@@ -1073,14 +1257,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 92
+      "lines": 94
     },
     {
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 434
+      "lines": 459
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1101,14 +1285,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Existing functional/runtime/safety requirements",
-      "lines": 35
+      "lines": 40
     },
     {
       "path": "docs/MCP.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "No repo MCP server; global connectors and offline fallback",
-      "lines": 24
+      "lines": 81
     },
     {
       "path": "docs/caching-and-optimization.md",
@@ -1160,140 +1344,140 @@
     },
     {
       "path": "executor/README.md",
-      "component": "repo",
+      "component": "executor",
       "kind": "markdown",
       "summary": "What it does, install, CLI/API surface",
       "lines": 102
     },
     {
       "path": "executor/CLAUDE.md",
-      "component": "repo",
+      "component": "executor",
       "kind": "markdown",
       "summary": "Non-negotiables, authorization limits, gaps",
       "lines": 86
     },
     {
       "path": "executor/pyproject.toml",
-      "component": "repo",
+      "component": "executor",
       "kind": "other",
       "summary": "Dependencies, CLI entry point, pytest and Ruff configuration",
       "lines": 37
     },
     {
       "path": "executor/uv.lock",
-      "component": "repo",
+      "component": "executor",
       "kind": "other",
       "summary": "Locked dependencies",
       "lines": 219
     },
     {
       "path": "executor/src/executor/config.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "~/.executor/config.toml (mode 600), rails and defaults, fail-closed validation",
       "lines": 257
     },
     {
       "path": "executor/src/executor/tokens.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Token table, exact amount conversion; unknown tokens are refused",
       "lines": 70
     },
     {
       "path": "executor/src/executor/jupiter.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Jupiter Swap v1 quote, swap build and Price API client",
       "lines": 198
     },
     {
       "path": "executor/src/executor/quote.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Quote evaluation against the independent price reference",
       "lines": 150
     },
     {
       "path": "executor/src/executor/lifi.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Cross-chain quote, quote only",
       "lines": 108
     },
     {
       "path": "executor/src/executor/txverify.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Semantic transaction verifier: program allowlist, instruction decoding, balance deltas",
       "lines": 508
     },
     {
       "path": "executor/src/executor/rails.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Every order rail, as code",
       "lines": 180
     },
     {
       "path": "executor/src/executor/gates.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Dry-run soak and research gate, per strategy",
       "lines": 350
     },
     {
       "path": "executor/src/executor/ledger.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Pure positions and realized P&L from the journal",
       "lines": 132
     },
     {
       "path": "executor/src/executor/journal.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Append-only intent and result journal; unknown sends block",
       "lines": 238
     },
     {
       "path": "executor/src/executor/signer.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Mode-600 key loading; the key is never printed",
       "lines": 73
     },
     {
       "path": "executor/src/executor/rpc.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Solana JSON-RPC client; a send is never retried",
       "lines": 138
     },
     {
       "path": "executor/src/executor/engine.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "The swap pipeline shared by dry-run and live, and reconcile",
-      "lines": 624
+      "lines": 785
     },
     {
       "path": "executor/src/executor/registry.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Command registry, response envelope, call log",
-      "lines": 480
+      "lines": 536
     },
     {
       "path": "executor/src/executor/cli.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "executor command line",
       "lines": 116
     },
     {
       "path": "executor/src/executor/api.py",
-      "component": "repo",
+      "component": "executor",
       "kind": "python",
       "summary": "Loopback HTTP API (bearer token, Origin refusal)",
       "lines": 198
