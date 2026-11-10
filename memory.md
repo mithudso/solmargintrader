@@ -1,5 +1,14 @@
 # Work continuation
 
+Version: 347
+Delta: v346 to v347; record on-chain variant evidence, offline tests and network refusal.
+Delta: v345 to v346; record Jupiter documentation and fresh unsigned route evidence.
+Delta: v344 to v345; record proof-trade clarification and verifier refusals.
+Delta: v343 to v344; record clarified SOL/USDC buy direction and current funding blocker.
+Delta: v342 to v343; clarify read-only manager discovery before reporting begins.
+Delta: v341 to v342; record final prompt audit dissent and draft checkpoint.
+Delta: v340 to v341; record optimizer and initial SOL backtest evidence and unresolved integrations.
+Delta: v339 to v340; start strategy agent proof of concept and guarded Jupiter proof investigation.
 Consolidation delivery state: `/Users/mitch/dev/solmargintrader/.worktree-recovery/delivery-memory.md`. A completed receipt there supersedes the pre-merge publication steps below.
 
 Version: 372
@@ -1170,6 +1179,31 @@ CI42712960866 for4bbabce6 completed with8activejobs passed,2expectedskips and on
 
 Test-only commita8db64b5 supplies an explicit source-checkout origin and verifies stable_install_required. Installed-import RED reproduced the exact failure; all17supervisor tests now pass in both source and installed modes. Ruff/format and independent scoped CI review passed. Product bytes remain39e0c262, so installed acceptance1.0.5 remains valid without repeating installation or OS changes. This repair does not reopen the completed final product fix wave. Refresh catalogs, push final records, obtain a new final-head CI success and mergePR180 before markingTASK1108done.
 
+## Strategy agent proof of concept - 2026-11-09
+
+Task TASK-1161. Worktree /Users/mitch/dev/solmargintrader-wt-strategy-poc based on origin/master 2810f4b2. Preserve existing concurrent Bot Manager, forward testing and Oracle work. User requests an optimized prompt, strategy backtests and prospective blind testing, manager reporting and a small Jupiter SOL/USDC purchase. The owner later clarified that a SOL/USDC buy spends USDC to buy SOL. Executor requires quote, semantic verification, simulation and its existing rails; never invent results or bypass gates. Implementation, testing, optimizer evidence, transaction details and delivery remain.
+
+## Strategy agent checkpoint — current findings
+
+The prompt candidate and partial optimizer record are in docs/strategy-agent/. Fresh independent review of the final revision, optimizer run manifest/self-check, and actual agent implementation remain. The existing momentum card's default 60-day strategy ran on SOL_1d.csv in the isolated worktree with a 70/30 split, 6 bps fee, 2 bps slippage and next-open fills. The CLI reported out-of-sample return -15.79%; this is historical USD proxy data, not a blind prospective or Jupiter execution result. Artifacts: /tmp/strategy-agent-sol-backtest/. Manager's installed list returned no drafts; manager events and financials currently cover its own bounded grid reference-paper runtime, not arbitrary strategy-agent events or P&L. Oracle implementation remains open in TASK-1154. No new P&L ledger or agent has been implemented. Executor status reported 0.084924546 SOL and 0.000047 USDC, mode dry-run, validation disabled, no unresolved journal sends. The owner clarified that the SOL/USDC buy means USDC to SOL; no quote, simulation, signature, or swap was made. The wallet has insufficient USDC; use the existing owner wallet and rails after funding. Remaining: build and verify actual manager-integrated strategy agent, all-coin data inventory, bounded development experiments and truly prospective blind handoff; finish optimizer gates; validate and perform the specifically defined proof swap only if executor gates pass; deliver and complete TASK-1161.
+
+Draft checkpoint PR: https://github.com/mithudso/solmargintrader/pull/182 . Final fresh-context prompt review found an ordering contradiction for read-only discovery versus manager event initialization, an incomplete authoring example, and insufficient sources for material capability claims. Repair and re-audit before claiming prompt convergence.
+
+Reflection corrected the prompt ordering conflict. Fresh blind review and the example and source-tracing findings remain open.
+
+The owner clarified the SOL/USDC buy direction: spend USDC to purchase SOL. Executor status on 2026-11-09 returned 0.000047 USDC and 0.084924546 SOL; funding is insufficient for a meaningful proof purchase. Do not reverse the trade. Other proof-of-concept work and optimizer review remain open.
+
+## Proof trade — 2026-11-09
+
+The owner clarified that either direction can prove a trade. A 0.005 SOL to USDC quote was acceptable at about $0.43 under the configured quote rails. A dry-run swap for that amount refused at static verification: `Jupiter route minimum output is below the approved minOut`. A 0.01 SOL dry run and a second 0.005 SOL dry run refused `unsupported Jupiter swap variant`. No simulation, key load, signature, send or configuration change occurred. The causes are unconfirmed. Keep the verifier fail-closed and investigate the current route layouts before changing money-moving code. The proof trade and strategy-agent implementation remain incomplete.
+
+## Jupiter documentation and route investigation — 2026-11-09
+
+The owner supplied /Users/mitch/dev/solmargintrader/llms/jupsol-llms-full.txt and the Jupiter developer docs MCP. The file identifies itself as user-facing docs and does not define the binary route enum. The MCP documents current Swap V2 flows; the executor is deliberately pinned to V1. A fresh read-only quote and unsigned build for 0.005 SOL to USDC returned a route labeled GoonFi V2 with first swap enum ordinal 151, outside the pinned decoder list. The current main-branch jup-ag/jupiter-amm-implementation aggregator IDL retrieved during this investigation defines only 90 variants; it does not establish ordinal 151. The earlier minimum-output refusal is separately unresolved. No keys, signature, send or config change. The static verifier must remain fail-closed.
+
+## Jupiter verifier investigation checkpoint
+
+On-chain Jupiter V6 Anchor IDL account C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa, owned by JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4, identified Swap ordinal 151 as GoonFiV3 { is_bid: bool }. Owner supplied an independently consistent enum. A local uncommitted sparse decoder change and tests add only ordinal 151 and continue to reject gaps. Offline tests: 437 passed, 5 deselected; Ruff check and format passed. Network tests: 4 passed, 1 failed because the selected route required an unknown variant and intermediate ATA; no live transaction sent. A later unsigned GoonFi route had out_raw 432480, quote minimum 430318 and the deliberate conservative floor 430317. The official April 2024 V6 audit documents checked_ceil_div; current runtime equivalence needs independent verification. Do not weaken the minimum bound to force a swap. The Bitquery GoonFi page concerns market/trade analytics, not the Jupiter instruction encoding. Source code and tests are uncommitted because required network checks failed.
 ## v340 — 2026-11-09 — comprehensive manager handoff
 
 The owner requests a full detailed handoff of this bot-manager work, including rationale, access, features, maintenance and continuation. Documentation-only work uses /Users/mitch/dev/solmargintrader-wt-01a1c189 on agent-01a1c189-handoff, based on current origin/master2810f4b2. Primary checkout and other worktrees remain untouched. EPIC1167 tracks source verificationTASK1168, drafting/validationTASK1169 and deliveryTASK1170; only the current step is claimed.

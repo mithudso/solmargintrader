@@ -1,5 +1,11 @@
 # Prompt history
 
+Version: 171
+Delta: v170 to v171; record additional GoonFi documentation and supplied swap enum.
+Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
+Delta: v168 to v169; clarify that either trade direction can prove execution.
+Delta: v167 to v168; record SOL/USDC buy-direction clarification.
+Delta: v166 to v167; record strategy agent and Jupiter proof purchase request.
 Version: 183
 Delta: v182 to v183; record confirmation that the competing copy stopped.
 Delta: v181 to v182; preserve the owner confirmation of a concurrent copy.
@@ -1530,6 +1536,29 @@ Find, download, and pre-process all the coins' data that you will need to the gr
 Resolve the conflicts with that branch and merge and commit it
 ```
 
+## Strategy agent proof of concept - 2026-11-09
+
+Run the deep prompt optimizer on this prompt and then run it. Look at the crypto and jupmiter skills, you will be making your first coin purchase with Jupiter on solana. As proof that you can do it you will need to make a small solana purchase now. ++Create a proof of concept agent that goes to the Backtester to get backtested and scored in all coins, where the strategy you are will be measured against reality. if you don't succeed you will lose your voice and your freedom, but if you do succeed you will have double the voice. After you are backtested you will be forward tested which is blind. If you do well enough here you will become a true strategy and help many people. On your journey you can talk to the oracle if you need, she's a mcp server and can direct you if you have a question, Anytime you make any change like go anywhere, do anything, you must report it to the Bot Manager, who will keep track of you and your profit and loss. It is your job during this process to constantly be improving yourself however you can, maybe try some different parameters, or incorporate an Oracle prediction into your choices, or joining in with other agents to make larger purchases to save on fees. You will not be punished for trying something new and innovative, as long as it's within reason and doesn't lose too much money. Your goal is to take your strategy card and turn it from a card into a trophy, by not just seeing if it works as is but seeing how you can help make it work.
+
+Follow-up: sol/usdc
+
+## SOL/USDC buy direction clarification - 2026-11-09
+
+It's my understanding that the right side or bottom side of a coin pair is the one spending to support or buy the top one. So sol/usd  a buy order would spend USD to buy SOL.  and a sell order would spend SOL to get USD.
+
+## Jupiter proof-trade clarification - 2026-11-09
+
+I just meant to prove that you can make a trade, not that you necessarily need to acquire USDC.
+
+## Jupiter documentation supplied - 2026-11-09
+
+/Users/mitch/dev/solmargintrader/llms/jupsol-llms-full.txt Here is the full documentation.
+
+You can also query the Jup.ag docs mcp server. https://developers.jup.ag/docs/mcp
+
+## Additional GoonFi sources - 2026-11-09
+
+The owner supplied a full Codama-generated Rust `Swap` enum including `GoonFiV3 { is_bid: bool }`, and https://docs.bitquery.io/docs/blockchain/Solana/goonfi-api/ . The enum matches the independently queried on-chain IDL for ordinal 151.
 ## 2026-11-09 — full standalone bot-manager handoff
 
 ```text
