@@ -1,6 +1,14 @@
 # Work continuation
 
-Version: 341
+Version: 344
+Delta: preserve concurrent Oracle and manager handoff records after PR183.
+Delta: v342 to v343; verify installed service and all required local checks before final delivery.
+Delta: v341 to v342; complete service implementation and source checks; installed acceptance and delivery pending.
+Delta: v340 to v341; execute full Oracle implementation with parallel owned components.
+Delta: v338 to v339; implement and test an isolated Oracle voting foundation.
+Delta: v337 to v338; resume Oracle implementation at the user's request.
+Delta: v336 to v337; checkpoint the Oracle prompt and unresolved integrations.
+Delta: v335 to v336; begin Oracle optimization and implementation in an isolated checkout.
 Delta: v340 to v341; finish the detailed handoff and verify isolated CLI/backup examples.
 Delta: v339 to v340; begin the source-verified bot-manager handoff after milestone2 delivery.
 Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run.
@@ -83,6 +91,34 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v343 - 2026-11-09: Oracle final acceptance
+
+Final source Oracle53 tests, Ruff, pip check, backtester999, extension408, Bot Manager109 and mongo46 (11 infrastructure skips) pass. Offline grid round trip remains positive. Doc/index gates pass after rebuilding offline retrieval files. Independent installed acceptance from /tmp confirms package bytes match source, bounded exact-pair consumption, no-data abstention, immutable snapshots, restart, synthetic declining-feed Strong Sell, eight official-SDK tools, three resources, notifications, unsubscribe and clean EOF. Live read-only readiness confirms no JUPITER_API_KEY and no exact SOL-USDC entry in the existing recorder; no real Jupiter prices or authenticated trades were established. The source service is runnable and fails closed for these real dependencies. No money moved and no recorder/service was started persistently. Complete PR181 CI, merge and remote verification remain. Stele disconnected; architecture write queued as outbox8da31d20. Preserve the unrelated untracked .opencode/opencode.json.
+
+## v342 - 2026-11-09: runnable Oracle service
+
+Implemented a single-owner foreground daemon, strict recorder/Jupiter reference adapters, private immutable event archive, 14 card-bound strategies, prospective target resolution and historical voting, snapshots, eight MCP tools and three subscribable resources, guide provenance and read-only Bot Manager status, conservative readiness and expiring advisory veto. Registered the repository Oracle agent and separate package/CI job. The MA crossover uses its supported bearish parameter variant with explicit provenance; 13 other defaults remain unchanged. Bad strategies remain shadow-evaluated with review flags; no automatic parameter adoption or live promotion. Source Oracle53 tests and Ruff pass; extension408, Bot Manager109, mongo46 (11 infrastructure skips) and positive offline round-trip checks pass. The first backtester999 run failed only the expected stale repository index; rebuild indexes and rerun that suite before committing. Installed package is /Users/mitch/.venvs/soloracle; independent loaded acceptance is running with temp data. Endor package-risk review for mcp1.30.0 is UNKNOWN because its risk tooling is unavailable; no security endorsement claimed. Live Jupiter push source, authenticated live trading and executor veto enforcement remain explicitly unavailable. Default recorder may lack the exact SOL-USDC entry; do not substitute USD. The .opencode/opencode.json untracked file appeared during this run without established ownership: preserve it and do not stage it. Finish index/doc gates, install acceptance, final PR181 CI, merge and remote verification.
+
+## v341 - 2026-11-09: full Oracle implementation
+
+TASK-1154 is active. Integrated current origin/master at 56b34c9, preserving both workflow histories. Workers own core/store/strategy modules, feeds, and MCP/guidance. Root owns CLI, packaging, export, integration, docs, verification and delivery. No more prompt optimization is needed: the user directly supplied the implementation contract. Keep single-owner recorder boundaries, paper defaults and no-order scope. Initial live Jupiter integration is explicitly polled reference pricing, never a verified stream or executable quote. The separate exact-pair recorder reader never starts or relabels Coinbase. Each strategy version and source owns its prospective evidence. Remaining: implement, verify installed behavior, complete PR181 CI and merge.
+
+## v339 - 2026-11-09: Oracle voting foundation
+
+The isolated oracle/voting.py calculation accepts up to 14 prospective vote summaries and rejects invalid or duplicate inputs. It excludes stale, insufficient and sub-60% evidence, doubles accuracy weight only after 100 hits, and returns a signed balance with provisional five-level display thresholds. oracle/tests/test_voting.py passed seven tests. Counts and times are caller assertions, not verified evidence, so the module must not be wired to an executor. No stream, forecast generator, historical archive bridge, MCP server, authenticated readiness, lifecycle adapter or enforceable veto exists. These remain required by TASK-1154. See oracle/README.md. Preserve the other sessions' work and integrate current origin/master before delivery.
+
+## v338 - 2026-11-09: Oracle execution resumed
+
+The owner requested execution of docs/oracle-optimized-prompt.md. TASK-1154 is claimed. Continue on branch agent-01a1c228 in /Users/mitch/dev/solmargintrader-wt-01a1c228 and preserve other active sessions. Start with the checked-in candidate and inspect current evidence before implementation. All requested service functionality and final checks remain.
+
+## v337 - 2026-11-09: Oracle continuation
+
+The optimized candidate is docs/oracle-optimized-prompt.md. The PDO review found ambiguous vote doubling, freshness, signing custody, enforcement, provenance and absent success criteria. The candidate addresses these provisionally; its latest rewrite still needs a fresh blind audit and the remaining PDO checks before claiming optimizer completion. Three pass-group reviews and one non-blind independent re-audit ran; the last identified unbounded retries, now amended. No Oracle service has been implemented or deployed. Continue TASK-1154: finish optimizer evidence and execute the prompt, with independently verified tests and delivery. Jupiter Price V3 documentation describes USD token prices over authenticated HTTP, not an established SOL/USDC streaming feed. The existing soltui/pricefeed.py streams and records Coinbase products; do not label that Jupiter or start a competing recorder. backtester/core/history_store.py imports immutable contiguous OHLCV snapshots, not the existing stream: an explicit archive bridge is required. The active Bot Manager milestone work and Council work are owned elsewhere. The veto is not enforced until the actual execution path consumes it. Resolve the exact 14 strategy-card selection, bonus semantics, forward-test gates and source authenticity without fabricating evidence; retain the documented provisional interpretation. No keys, live orders, recorders or services were changed.
+
+## v336 - 2026-11-09: Oracle work in progress
+
+TASK-1154 owns the Oracle request in prompts.md v165. Worktree: /Users/mitch/dev/solmargintrader-wt-01a1c228, branch agent-01a1c228, based on origin/master f92b9291. Another session owns the original checkout and active Bot Manager work; preserve them. User requires prompt optimization followed by execution, a streaming SOL/USDC feed, 14 strategy votes, archive, MCP subscriptions, readiness and lifecycle routing. Do not sign or submit orders. Existing prediction and recorder infrastructure must be inspected and reused where appropriate; do not start a duplicate recorder. Accuracy is not a calibrated profit probability. Missing capabilities must fail closed. Research and implementation, independent checks and delivery remain.
 
 ## v335 - 2026-11-09: streaming and historical snapshots
 

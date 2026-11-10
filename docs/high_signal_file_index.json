@@ -11,6 +11,12 @@
   ],
   "files": [
     {
+      "path": "botmanager",
+      "component": "repo",
+      "kind": "directory",
+      "summary": "Python 3.13 | No \u2014 CLI and bounded grid reference-paper runtime; paper/disarmed, legacy capabilities explicit"
+    },
+    {
       "path": "mongo",
       "component": "mongo",
       "kind": "directory",
@@ -57,7 +63,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Entry point: python3 -m backtester.cli",
-      "lines": 324
+      "lines": 350
     },
     {
       "path": "backtester/gridcli.py",
@@ -92,7 +98,7 @@
       "component": "backtester",
       "kind": "markdown",
       "summary": "Scope, correctness priorities, usage",
-      "lines": 477
+      "lines": 555
     },
     {
       "path": "backtester/PROMPT.md",
@@ -118,14 +124,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 749
+      "lines": 769
     },
     {
       "path": "backtester/core/types.py",
       "component": "backtester",
       "kind": "python",
       "summary": "BarWindow (the structural lookahead guard), CostConfig, RunManifest",
-      "lines": 452
+      "lines": 455
     },
     {
       "path": "backtester/core/indicators.py",
@@ -153,7 +159,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
-      "lines": 881
+      "lines": 873
     },
     {
       "path": "backtester/core/dcasim.py",
@@ -167,14 +173,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Triangular-arbitrage L1 replay: detect on one snapshot, execute at the quotes latency_s later; reads recorded snapshot files",
-      "lines": 408
+      "lines": 415
     },
     {
       "path": "backtester/core/data.py",
       "component": "backtester",
       "kind": "python",
       "summary": "CsvLoader, SyntheticLoader, bar validation, checksums",
-      "lines": 315
+      "lines": 358
     },
     {
       "path": "backtester/core/fetch.py",
@@ -188,7 +194,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Resumable minute-bar cache fetch with rate limiting and coverage",
-      "lines": 745
+      "lines": 747
     },
     {
       "path": "backtester/core/fetch_minutes_alt.py",
@@ -251,14 +257,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Run reports, walk-forward splits and manifest-last artifact hashes",
-      "lines": 368
+      "lines": 369
     },
     {
       "path": "backtester/core/plotting.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Chart output",
-      "lines": 98
+      "lines": 99
     },
     {
       "path": "backtester/core/strategy_cards.py",
@@ -272,14 +278,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Compound five-minute scorecard: causal per-metric scores, family-deduped regime-weighted aggregate, veto gates, next-bar forecast statistics",
-      "lines": 2027
+      "lines": 2031
     },
     {
       "path": "backtester/core/compound.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 462
+      "lines": 485
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -349,21 +355,21 @@
       "component": "research",
       "kind": "python",
       "summary": "Per-bar readout: what every strategy, signal and indicator says about the last bar",
-      "lines": 1297
+      "lines": 1303
     },
     {
       "path": "research/sweep.py",
       "component": "research",
       "kind": "python",
       "summary": "Parameter sweeps",
-      "lines": 876
+      "lines": 882
     },
     {
       "path": "research/cpcv_sweep.py",
       "component": "research",
       "kind": "python",
       "summary": "CPCV sweep plus interpret(), which exists to kill the \"lots of strategies work\" misreading",
-      "lines": 476
+      "lines": 519
     },
     {
       "path": "research/cross_asset_cpcv.py",
@@ -480,14 +486,14 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 644
+      "lines": 666
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 916
+      "lines": 931
     },
     {
       "path": "extension/src/core/risk.js",
@@ -515,14 +521,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 575
+      "lines": 613
     },
     {
       "path": "extension/src/bg/service-worker.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 370
+      "lines": 380
     },
     {
       "path": "extension/src/jupiter/http.js",
@@ -641,7 +647,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Signal Desk shell and hash router; four priority workflows and advanced views",
-      "lines": 193
+      "lines": 197
     },
     {
       "path": "extension/src/ui/view-overview.js",
@@ -676,7 +682,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Popup: signal/process glance, four workflow shortcuts and collapsed wallet/grid controls",
-      "lines": 252
+      "lines": 288
     },
     {
       "path": "extension/tools/cli.js",
@@ -690,7 +696,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Local HTTP surface; reads SMT_API_PORT, SMT_API_TOKEN, SMT_PASSPHRASE",
-      "lines": 259
+      "lines": 281
     },
     {
       "path": "extension/tools/dryrun.js",
@@ -753,7 +759,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Terminal UI",
-      "lines": 7888
+      "lines": 8282
     },
     {
       "path": "soltui/shell.py",
@@ -795,7 +801,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "The loop that refreshes state",
-      "lines": 279
+      "lines": 315
     },
     {
       "path": "soltui/bgcontrol.py",
@@ -830,13 +836,13 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Five-bot list and Grid, Arbitrage, DCA and Trend settings, backtests, recorded-stream forward tests and gated optimization",
-      "lines": 1394
+      "lines": 1647
     },
     {
       "path": "soltui/trend.py",
       "component": "soltui",
       "kind": "python",
-      "summary": "Long-only moving-average momentum paper bot using the shared next-open engine, fees and slippage",
+      "summary": "Long-only moving-average momentum paper bot; shared next-open engine with fees and slippage",
       "lines": 83
     },
     {
@@ -844,21 +850,21 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison",
-      "lines": 881
+      "lines": 909
     },
     {
       "path": "soltui/experiment_runner.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards",
-      "lines": 726
+      "lines": 723
     },
     {
       "path": "soltui/experiment_jobs.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Explicit background experiment processes, inherited leases, pause/cancel requests and interrupted-worker recovery",
-      "lines": 227
+      "lines": 230
     },
     {
       "path": "soltui/experiment_screens.py",
@@ -872,7 +878,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
-      "lines": 856
+      "lines": 1021
     },
     {
       "path": "soltui/serve.py",
@@ -893,7 +899,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Configuration",
-      "lines": 261
+      "lines": 292
     },
     {
       "path": "soltui/setup_app.py",
@@ -921,7 +927,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 624
+      "lines": 649
     },
     {
       "path": "soltui/tests",
@@ -955,21 +961,21 @@
       "component": "mongo",
       "kind": "markdown",
       "summary": "Entry point: setup, collection map, question -> query index",
-      "lines": 181
+      "lines": 189
     },
     {
       "path": "mongo/schema.py",
       "component": "mongo",
       "kind": "python",
       "summary": "Collection specs, $jsonSchema validators, indexes. --describe needs no server",
-      "lines": 472
+      "lines": 480
     },
     {
       "path": "mongo/load.py",
       "component": "mongo",
       "kind": "python",
       "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
-      "lines": 819
+      "lines": 859
     },
     {
       "path": "mongo/requirements.txt",
@@ -1046,14 +1052,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 194
+      "lines": 203
     },
     {
       "path": "AGENTS.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Points at CLAUDE.md",
-      "lines": 27
+      "lines": 28
     },
     {
       "path": "GEMINI.md",
@@ -1074,7 +1080,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 377
+      "lines": 407
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1157,7 +1163,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "What it does, install, CLI/API surface",
-      "lines": 74
+      "lines": 102
     },
     {
       "path": "executor/CLAUDE.md",
@@ -1185,7 +1191,7 @@
       "component": "repo",
       "kind": "python",
       "summary": "~/.executor/config.toml (mode 600), rails and defaults, fail-closed validation",
-      "lines": 239
+      "lines": 257
     },
     {
       "path": "executor/src/executor/tokens.py",
@@ -1206,7 +1212,7 @@
       "component": "repo",
       "kind": "python",
       "summary": "Quote evaluation against the independent price reference",
-      "lines": 146
+      "lines": 150
     },
     {
       "path": "executor/src/executor/lifi.py",
@@ -1220,35 +1226,35 @@
       "component": "repo",
       "kind": "python",
       "summary": "Semantic transaction verifier: program allowlist, instruction decoding, balance deltas",
-      "lines": 479
+      "lines": 508
     },
     {
       "path": "executor/src/executor/rails.py",
       "component": "repo",
       "kind": "python",
       "summary": "Every order rail, as code",
-      "lines": 166
+      "lines": 180
     },
     {
       "path": "executor/src/executor/gates.py",
       "component": "repo",
       "kind": "python",
       "summary": "Dry-run soak and research gate, per strategy",
-      "lines": 208
+      "lines": 350
     },
     {
       "path": "executor/src/executor/ledger.py",
       "component": "repo",
       "kind": "python",
       "summary": "Pure positions and realized P&L from the journal",
-      "lines": 108
+      "lines": 132
     },
     {
       "path": "executor/src/executor/journal.py",
       "component": "repo",
       "kind": "python",
       "summary": "Append-only intent and result journal; unknown sends block",
-      "lines": 120
+      "lines": 238
     },
     {
       "path": "executor/src/executor/signer.py",
@@ -1262,14 +1268,14 @@
       "component": "repo",
       "kind": "python",
       "summary": "Solana JSON-RPC client; a send is never retried",
-      "lines": 126
+      "lines": 138
     },
     {
       "path": "executor/src/executor/engine.py",
       "component": "repo",
       "kind": "python",
       "summary": "The swap pipeline shared by dry-run and live, and reconcile",
-      "lines": 468
+      "lines": 624
     },
     {
       "path": "executor/src/executor/registry.py",
@@ -1409,28 +1415,28 @@
       "component": "liquidity",
       "kind": "python",
       "summary": "Durable owner-bound transaction journal; unresolved submissions block new writes",
-      "lines": 223
+      "lines": 247
     },
     {
       "path": "liquidity/src/aero_lp/recovery.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Receipt-based idempotent ledger recovery and historical slot attribution",
-      "lines": 159
+      "lines": 181
     },
     {
       "path": "liquidity/src/aero_lp/daemon.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "The loop: manage, compound, scout, allocate, status",
-      "lines": 1349
+      "lines": 1381
     },
     {
       "path": "liquidity/src/aero_lp/executor.py",
       "component": "liquidity",
       "kind": "python",
       "summary": "Transaction sequences; SimRunner (eth_simulateV1) and LiveRunner",
-      "lines": 1133
+      "lines": 1171
     },
     {
       "path": "liquidity/scripts/aero-lp-service",
@@ -1535,7 +1541,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Browser score adapter and aligned immutable price/score tick chart.",
-      "lines": 89
+      "lines": 110
     },
     {
       "path": "docs/LIVE-PREDICTION-SCORE.md",
@@ -1549,7 +1555,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Real-data workflow composition, local run comparisons, pinned paper drafts, evidence dialogs and read-only refresh lifecycle.",
-      "lines": 323
+      "lines": 333
     },
     {
       "path": "extension/src/ui/desk-model.js",
@@ -1563,7 +1569,7 @@
       "component": "extension",
       "kind": "css",
       "summary": "Accessible light/dark Signal Desk tokens, responsive layouts, dense mode and popup styling.",
-      "lines": 139
+      "lines": 193
     },
     {
       "path": "soltui/desk.py",
@@ -1577,7 +1583,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "UI workflows, persistence, provenance boundaries and use instructions.",
-      "lines": 106
+      "lines": 151
     }
   ]
 }

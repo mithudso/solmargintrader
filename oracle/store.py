@@ -1,0 +1,107 @@
+"""Private append-only SQLite Oracle event archive with transactional state."""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+from collections.abc import Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any
+
+
+def canonical(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+class Store:
+    def __init__(self, path: str | Path) -> None:
+        self.path = Path(path).expanduser().absolute()
+        self.path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        if self.path.is_symlink():
+            raise ValueError("archive_symlink_refused")
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            version = db.execute("PRAGMA user_version").fetchone()[0]
+            application = db.execute("PRAGMA application_id").fetchone()[0]
+            tables = {
+                r[0]
+                for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            }
+            if version not in (0, 1) or (tables and application != 0x4F52434C):
+                raise ValueError("archive_schema_not_supported")
+            if application not in (0, 0x4F52434C):
+                raise ValueError("archive_schema_not_supported")
+            schema = """
+                CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, body TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS events (
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                    kind TEXT NOT NULL, event_key TEXT NOT NULL UNIQUE, body TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS observations (
+                    event_id TEXT PRIMARY KEY, observed REAL NOT NULL, received REAL NOT NULL,
+                    price REAL NOT NULL, body TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS forecasts (
+                    id TEXT PRIMARY KEY, strategy TEXT NOT NULL, version TEXT NOT NULL,
+                    issued REAL NOT NULL, target REAL NOT NULL, direction INTEGER NOT NULL,
+                    reference REAL NOT NULL, body TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS resolutions (
+                    forecast TEXT PRIMARY KEY REFERENCES forecasts(id),
+                    outcome INTEGER, hit INTEGER, resolved_at REAL NOT NULL, body TEXT NOT NULL);
+                CREATE INDEX IF NOT EXISTS observation_time ON observations(observed);
+                CREATE INDEX IF NOT EXISTS forecast_target ON forecasts(target);
+            """
+            for statement in schema.split(";"):
+                if statement.strip():
+                    db.execute(statement)
+            for table in ("events", "observations", "forecasts", "resolutions"):
+                for operation in ("UPDATE", "DELETE"):
+                    db.execute(
+                        f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT,'immutable_archive'); END"
+                    )
+            db.execute("PRAGMA user_version=1")
+            db.execute("PRAGMA application_id=1330791244")
+        self.path.chmod(0o600)
+
+    @contextmanager
+    def connection(self) -> Iterator[sqlite3.Connection]:
+        db = sqlite3.connect(self.path, timeout=10)
+        db.row_factory = sqlite3.Row
+        db.execute("PRAGMA foreign_keys=ON")
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
+
+    @staticmethod
+    def event(db: sqlite3.Connection, kind: str, key: str, body: dict) -> None:
+        db.execute(
+            "INSERT INTO events(kind,event_key,body) VALUES(?,?,?)",
+            (kind, key, canonical(body)),
+        )
+
+    def history(self, limit: int = 100, after: int = 0) -> dict:
+        if (
+            type(limit) is not int
+            or not 1 <= limit <= 1000
+            or type(after) is not int
+            or after < 0
+        ):
+            raise ValueError("invalid_history_page")
+        with self.connection() as db:
+            rows = db.execute(
+                "SELECT * FROM events WHERE sequence>? ORDER BY sequence LIMIT ?",
+                (after, limit),
+            ).fetchall()
+        return {
+            "schema_version": 1,
+            "events": [
+                {
+                    "sequence": row["sequence"],
+                    "type": row["kind"],
+                    "data": json.loads(row["body"]),
+                }
+                for row in rows
+            ],
+            "next_after": rows[-1]["sequence"] if rows else after,
+        }

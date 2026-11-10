@@ -19,10 +19,11 @@ from component package versions. Commit only the files owned by the current task
 
 ## What this is
 
-Eight components with different risk profiles. Know which one you are in:
+Nine components with different risk profiles. Know which one you are in:
 
 | Component | Risk |
 | --- | --- |
+| `oracle/` (Python) | Source-labelled shadow forecasts and a historical event archive with read-only MCP subscriptions. Never signs or submits orders. Reference agreement is not profit probability; unavailable inputs fail closed. |
 | `botmanager/` (Python) | Standalone `solbot` lifecycle and evidence application. Default paper/disarmed. Legacy adapters preserve the existing owner; missing data, credentials or execution capability fail closed. Never silently seize a bot or create a duplicate recorder/optimizer. |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability here** — see its README's Scope section. The danger is a dishonest backtest, not a lost trade. |
 | `research/` (Python) | Analysis built on the backtester. The danger is overstating a result. |
@@ -113,6 +114,8 @@ The executor's own rails (`executor/CLAUDE.md`) are the live path for swaps: use
    ladder of resting orders.
 
 ## Before you claim a change works
+
+Oracle uses its own installed environment: `python -m pip install ./backtester ./oracle ./botmanager`, then `python -m unittest discover -s oracle/tests -t . -v` and `ruff check oracle`. Live feed availability and executor enforcement are separate gates; no unit test proves them.
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 999 tests
