@@ -32,6 +32,7 @@ import { quote } from '../market/quote.js';
 import { BASE_TOKENS, SOLANA_TOKENS, isSolanaAddress } from '../market/tokens.js';
 import { isAddress } from '../market/evm.js';
 import { MarketError } from '../market/net.js';
+import { managerSnapshot, managerPoll, paperConfigStore, MANAGER_KEY } from './bot-manager.js';
 
 /** Argument types the surfaces know how to coerce. */
 export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'json' };
@@ -688,6 +689,23 @@ export const COMMANDS = {
     },
   },
 
+  browserManagerSnapshot: {
+    describe: 'Read the registered browser-owned singleton paper grid identity.',
+    params: [], readOnly: true,
+    handler: async ({ deps }) => ({ snapshot: await managerSnapshot(deps) }),
+  },
+
+  browserManagerPoll: {
+    describe: 'Register the browser paper owner and reconcile durable delegated controls.',
+    params: [],
+    async handler({ deps, stopGeneration }) {
+      const result = await managerPoll(deps);
+      if (result.snapshot.running) resumeEngine(deps.store, stopGeneration);
+      else stopEngine(deps.store);
+      return result;
+    },
+  },
+
   /* ---- lifecycle ---- */
 
   arm: {
@@ -744,6 +762,9 @@ export const COMMANDS = {
       { name: 'count', type: TYPE.NUMBER, describe: 'Run this many ticks in sequence (default 1).' },
     ],
     async handler({ deps, args }) {
+      if ((await deps.configStore.get(MANAGER_KEY, null))?.running) {
+        await managerSnapshot(deps, { initialize: true });
+      }
       const count = Math.max(1, Math.min(50, args.count ?? 1));
       if (!Number.isSafeInteger(count)) throw new CommandError('count must be an integer', 400);
       const results = [];
@@ -752,7 +773,7 @@ export const COMMANDS = {
           buildVenue: () => deps.buildVenue(),
           readLimits: async () => ({ ...DEFAULT_LIMITS, ...(await deps.configStore.get('limits', {})) }),
           store: deps.store,
-          configStore: deps.configStore,
+          configStore: paperConfigStore(deps.configStore),
           clock: deps.clock,
           log: deps.log,
         });
@@ -907,6 +928,10 @@ export async function runCommand({ name, args = {}, deps }) {
     if (DISARM_FIELDS.some((key) => Object.hasOwn(patch, key) && patch[key] !== current[key])) stopEngine(deps.store);
   }
   if (name === 'kill' || name === 'disarm' || (name === 'reset' && args.confirm === true)) stopEngine(deps.store);
+  if (['kill', 'disarm', 'arm', 'setConfig', 'reset'].includes(name)) {
+    const manager = await deps.configStore.get(MANAGER_KEY, null);
+    if (manager?.running) await deps.configStore.set(MANAGER_KEY, { ...manager, running: false, generation: manager.generation + 1 });
+  }
   const stopGeneration = engineStopGeneration(deps.store);
   const operation = () => command.handler({ deps, args, stopGeneration });
   // Tick owns its per-iteration queue entry so lifecycle/limit changes can run

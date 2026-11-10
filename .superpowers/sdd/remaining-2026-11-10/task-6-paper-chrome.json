@@ -1,0 +1,236 @@
+{
+  "kind": "isolated_real_chrome_paper_browser_owner",
+  "browser": "Chrome/156.0.8078.47",
+  "profiles": [
+    {
+      "installation_id": "65a488e1-746f-4632-9b14-b36034eae4ad",
+      "extension_id": "nihnjckhkdkbnfedfpcocccbobbaikio",
+      "extension_version": "0.6.3",
+      "loaded_source_hash": "773cb29f1407e1c83b7007f53c345e14782c56139a875181e163df601cff28ad",
+      "loaded_source_files": [
+        {
+          "file": "src/bg/service-worker.js",
+          "sha256": "245946fd67ee10358b1d4e768962e5f8b031fc0f6b23576872aaa6130f5e5cfd"
+        },
+        {
+          "file": "src/core/commands.js",
+          "sha256": "f769e32b453331c6ccff8427b79a609ae91bf61346d300444e9645b5bd14f3ef"
+        },
+        {
+          "file": "src/core/bot-manager.js",
+          "sha256": "61ce55c5afc10b86d285a08c233f973daeb52671da5dd04c1ccd4b63940bb664"
+        }
+      ],
+      "actual_native_origin": "chrome-extension://nihnjckhkdkbnfedfpcocccbobbaikio/",
+      "start": {
+        "bot_id": "6275ef02-626c-5514-aa86-ee022bcac754",
+        "config_revision": 1,
+        "config_revision_unavailable_reason": null,
+        "metadata": {
+          "config_hash": "cbf7681ddfb16552eddbd756560d6776603b9f80002679b36544d46982ccbce0"
+        },
+        "operation": "start",
+        "outcome": "acknowledged",
+        "owner_generation": 1,
+        "owner_id": "65a488e1-746f-4632-9b14-b36034eae4ad",
+        "reason": "paper_started",
+        "reconciliation_required": false,
+        "request_id": "55237082-0915-430b-9445-2e25cfef64f7",
+        "runtime_id": "b673151e-e88c-4e91-b183-d741bd3d1a5f",
+        "safe_to_retry": false,
+        "schema_version": 1
+      },
+      "stop": {
+        "bot_id": "6275ef02-626c-5514-aa86-ee022bcac754",
+        "config_revision": 1,
+        "config_revision_unavailable_reason": null,
+        "metadata": {
+          "config_hash": "cbf7681ddfb16552eddbd756560d6776603b9f80002679b36544d46982ccbce0"
+        },
+        "operation": "stop",
+        "outcome": "acknowledged",
+        "owner_generation": 2,
+        "owner_id": "65a488e1-746f-4632-9b14-b36034eae4ad",
+        "reason": "paper_stopped",
+        "reconciliation_required": false,
+        "request_id": "85f3140c-0fe9-4dc6-a361-5581bc182e41",
+        "runtime_id": "b673151e-e88c-4e91-b183-d741bd3d1a5f",
+        "safe_to_retry": false,
+        "schema_version": 1
+      },
+      "actual_storage_disarmed": true,
+      "restart_identity_preserved": true,
+      "offline_native_failure_observed": true,
+      "canonical_paper_tick": {
+        "placed": 4,
+        "errors": []
+      },
+      "network": [
+        {
+          "method": "POST",
+          "url": "https://base-rpc.publicnode.com/"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/ultra/v1/holdings/EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+        },
+        {
+          "method": "POST",
+          "url": "https://mainnet.base.org/"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/ultra/v1/holdings/EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/price/v3"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/ultra/v1/holdings/EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+        },
+        {
+          "method": "POST",
+          "url": "https://api.mainnet-beta.solana.com/"
+        },
+        {
+          "method": "POST",
+          "url": "https://api.mainnet-beta.solana.com/"
+        },
+        {
+          "method": "POST",
+          "url": "https://api.mainnet-beta.solana.com/"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/price/v3"
+        },
+        {
+          "method": "GET",
+          "url": "https://yields.llama.fi/pools"
+        },
+        {
+          "method": "GET",
+          "url": "https://yields.llama.fi/pools"
+        }
+      ]
+    },
+    {
+      "installation_id": "8dd303c8-d964-425b-ae61-641db31473b6",
+      "extension_id": "nihnjckhkdkbnfedfpcocccbobbaikio",
+      "extension_version": "0.6.3",
+      "loaded_source_hash": "773cb29f1407e1c83b7007f53c345e14782c56139a875181e163df601cff28ad",
+      "loaded_source_files": [
+        {
+          "file": "src/bg/service-worker.js",
+          "sha256": "245946fd67ee10358b1d4e768962e5f8b031fc0f6b23576872aaa6130f5e5cfd"
+        },
+        {
+          "file": "src/core/commands.js",
+          "sha256": "f769e32b453331c6ccff8427b79a609ae91bf61346d300444e9645b5bd14f3ef"
+        },
+        {
+          "file": "src/core/bot-manager.js",
+          "sha256": "61ce55c5afc10b86d285a08c233f973daeb52671da5dd04c1ccd4b63940bb664"
+        }
+      ],
+      "actual_native_origin": "chrome-extension://nihnjckhkdkbnfedfpcocccbobbaikio/",
+      "start": {
+        "bot_id": "ed47dee0-6fb2-5841-8f5f-1b0ed50277c9",
+        "config_revision": 1,
+        "config_revision_unavailable_reason": null,
+        "metadata": {
+          "config_hash": "cbf7681ddfb16552eddbd756560d6776603b9f80002679b36544d46982ccbce0"
+        },
+        "operation": "start",
+        "outcome": "acknowledged",
+        "owner_generation": 1,
+        "owner_id": "8dd303c8-d964-425b-ae61-641db31473b6",
+        "reason": "paper_started",
+        "reconciliation_required": false,
+        "request_id": "5bbcd7fa-caec-4af8-806e-9391de14a304",
+        "runtime_id": "9a36a2e5-1670-4a50-9af3-7debdc0aa6aa",
+        "safe_to_retry": false,
+        "schema_version": 1
+      },
+      "stop": {
+        "bot_id": "ed47dee0-6fb2-5841-8f5f-1b0ed50277c9",
+        "config_revision": 1,
+        "config_revision_unavailable_reason": null,
+        "metadata": {
+          "config_hash": "cbf7681ddfb16552eddbd756560d6776603b9f80002679b36544d46982ccbce0"
+        },
+        "operation": "stop",
+        "outcome": "acknowledged",
+        "owner_generation": 2,
+        "owner_id": "8dd303c8-d964-425b-ae61-641db31473b6",
+        "reason": "paper_stopped",
+        "reconciliation_required": false,
+        "request_id": "b2e27d72-1ae6-4faa-a130-f1a1d8ee463c",
+        "runtime_id": "9a36a2e5-1670-4a50-9af3-7debdc0aa6aa",
+        "safe_to_retry": false,
+        "schema_version": 1
+      },
+      "actual_storage_disarmed": true,
+      "restart_identity_preserved": true,
+      "offline_native_failure_observed": true,
+      "canonical_paper_tick": {
+        "placed": 4,
+        "errors": []
+      },
+      "network": [
+        {
+          "method": "POST",
+          "url": "https://base-rpc.publicnode.com/"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/ultra/v1/holdings/EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+        },
+        {
+          "method": "POST",
+          "url": "https://mainnet.base.org/"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/ultra/v1/holdings/EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/ultra/v1/holdings/EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV"
+        },
+        {
+          "method": "POST",
+          "url": "https://api.mainnet-beta.solana.com/"
+        },
+        {
+          "method": "POST",
+          "url": "https://api.mainnet-beta.solana.com/"
+        },
+        {
+          "method": "POST",
+          "url": "https://api.mainnet-beta.solana.com/"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/price/v3"
+        },
+        {
+          "method": "GET",
+          "url": "https://lite-api.jup.ag/price/v3"
+        },
+        {
+          "method": "GET",
+          "url": "https://yields.llama.fi/pools"
+        },
+        {
+          "method": "GET",
+          "url": "https://yields.llama.fi/pools"
+        }
+      ]
+    }
+  ],
+  "everyday_browser_updated": false,
+  "live_execution_verified": false
+}
