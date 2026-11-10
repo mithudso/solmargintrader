@@ -79,7 +79,7 @@ document that quotes a number.
 
 ```bash
 cd extension
-npm test                                              # 425 tests
+npm test                                              # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # the integration gate
 node tools/cli.js                                     # lists every command in the registry
 node tools/api-server.js                              # local HTTP surface; requires SMT_API_TOKEN
@@ -136,9 +136,9 @@ Run all of these before claiming a change works:
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1457 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1466 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 425 tests
+cd extension && npm test                                # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE
 cd extension && npm run e2e                             # real-browser load + dry-run (needs Chrome for Testing)
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes

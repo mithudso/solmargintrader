@@ -29,13 +29,16 @@ and hands usable results to registered forward trials with per-coin Oracle
 forecasts. See [setup and recovery](docs/ECOSYSTEM-BOOTSTRAP.md) for source,
 coverage and lifecycle limits.
 
-## Standalone manager candidate
+## Managed bot suite
 
-The current coordinated candidate is manager 0.6.0, research-runtime 0.3.0 and
-ecosystem 0.3.0, with backtester 0.2.0, Oracle 0.2.2, optional executor 0.2.0
-and extension source 0.6.4. It retains paper/disarmed defaults and separates source
-checks from installed acceptance and final delivery. Current operations and evidence
-limits are in [the 0.6 guide](docs/bot-manager-0.6-operations.md); the
+The current coordinated candidate is manager 0.7.0, research-runtime 0.4.0 and
+ecosystem 0.4.0, with backtester 0.2.0, Oracle 0.2.2, optional executor 0.2.0
+and extension source 0.6.5. It retains paper/disarmed defaults and separates source
+checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
+walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
+for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
+covers persistent startup, component alerts, Chrome recovery and platform setup.
+Research operations and evidence limits are in [the 0.6 guide](docs/bot-manager-0.6-operations.md); the
 [handoff](docs/bot-manager-handoff.md) preserves the earlier M4 0.5.0 release history.
 
 ## Quick start
@@ -55,7 +58,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 425 tests
+npm test                                               # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -67,9 +70,9 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1457 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1466 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 425 tests
+cd extension && npm test                                # 434 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

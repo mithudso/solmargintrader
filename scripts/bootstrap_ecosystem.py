@@ -21,7 +21,7 @@ def main(argv=None) -> int:
         return cli_main(["--help"])
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument(
-        "--venv", type=Path, default=Path.home() / ".venvs/solecosystem-0.3.0"
+        "--venv", type=Path, default=Path.home() / ".venvs/solecosystem-0.4.0"
     )
     args, forwarded = parser.parse_known_args(arguments)
     from ecosystem.cli import build_parser

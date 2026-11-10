@@ -12,6 +12,7 @@ import { attributionLine, attributionDetail } from '../jupiter/attribution.js';
 import { mountSoltuiPanel } from './soltui-panel.js';
 import { mountWalletPubkeyButton } from './wallet-pubkey.js';
 import { mountLiveWorkspace } from './live-workspace.js';
+import { mountControlRoom } from './control-room.js';
 import { call, soltui, $, ago, observeSortableTables } from './ui-kit.js';
 import { renderOverview, renderAlerts, mountAlertPrefs } from './view-overview.js';
 import { renderHoldings, refreshHoldings, mountHoldings, refreshPnl, mountPnl, refreshScout, refreshPools, mountDiscover } from './view-markets.js';
@@ -20,6 +21,7 @@ import { refreshGrid, mountGrid } from './view-grid.js';
 
 observeSortableTables(document);
 mountLiveWorkspace();
+mountControlRoom();
 
 const send = (msg) => chrome.runtime.sendMessage(msg);
 

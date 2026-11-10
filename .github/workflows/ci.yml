@@ -167,6 +167,20 @@ jobs:
         # No user namespaces on hosted runners, so Chrome's sandbox cannot start.
         run: E2E_NO_SANDBOX=1 node tools/e2e.mjs
 
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.13'
+      - name: Install isolated managed-suite runtime
+        run: |
+          python -m venv "$RUNNER_TEMP/solbot-suite"
+          "$RUNNER_TEMP/solbot-suite/bin/python" -m pip install ../backtester ../oracle ../soltui ../botmanager ../ecosystem
+      - name: Chrome native helper and actual server recovery (paper only)
+        env:
+          INDEX_NO_AUTO: '1'
+          SOLBOT_TEST_INSTALLED: '1'
+          E2E_NO_SANDBOX: '1'
+        run: SOLBOT_TEST_PYTHON="$RUNNER_TEMP/solbot-suite/bin/python" node tools/control-room-e2e.mjs
+
   backtester:
     name: backtester (python)
     runs-on: ubuntu-latest

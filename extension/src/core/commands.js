@@ -33,6 +33,7 @@ import { BASE_TOKENS, SOLANA_TOKENS, isSolanaAddress } from '../market/tokens.js
 import { isAddress } from '../market/evm.js';
 import { MarketError } from '../market/net.js';
 import { managerSnapshot, managerPoll, paperConfigStore, MANAGER_KEY } from './bot-manager.js';
+import { controlRoomSnapshot, openControlRoom } from './control-room.js';
 
 /** Argument types the surfaces know how to coerce. */
 export const TYPE = { STRING: 'string', NUMBER: 'number', BOOL: 'bool', JSON: 'json' };
@@ -539,6 +540,24 @@ export const COMMANDS = {
   },
 
   /* ---- soltui bridge (src/core/soltui.js) ---- */
+
+  controlRoomStatus: {
+    describe: 'Read managed-suite availability and machine health without starting a server.',
+    params: [], readOnly: true, unlocked: true,
+    handler: ({ deps }) => controlRoomSnapshot(deps),
+  },
+
+  controlRoomStart: {
+    describe: 'Start the locally configured managed suite; preserves all trading and stage gates.',
+    params: [], unlocked: true,
+    handler: ({ deps }) => controlRoomSnapshot(deps, 'start'),
+  },
+
+  controlRoomOpen: {
+    describe: 'Open the verified local control room; start its configured servers when down.',
+    params: [], unlocked: true,
+    handler: ({ deps }) => openControlRoom(deps),
+  },
 
   soltuiSession: {
     describe: 'Keep dashboard replay and job state alive while this dashboard is open.',

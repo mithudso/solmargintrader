@@ -11,6 +11,7 @@
 export const ALLOWED_MESSAGES = Object.freeze([
   // read-only inspection
   'status',
+  'controlRoomStatus',
   'getConfig',
   'getLimits',
   'levels',
@@ -41,6 +42,9 @@ export const ALLOWED_MESSAGES = Object.freeze([
 ]);
 
 export const FORBIDDEN_MESSAGES = Object.freeze([
+  // Starting local servers and opening their tab use a separate isolated availability gate.
+  'controlRoomStart',
+  'controlRoomOpen',
   // Window creation needs a separate trusted-gesture/lifetime browser probe.
   'openLiveWindow',
   // Delegated controls require the separate isolated paper-manager gate.

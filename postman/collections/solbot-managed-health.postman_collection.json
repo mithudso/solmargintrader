@@ -1,0 +1,115 @@
+{
+  "info": {
+    "name": "Solbot managed-suite local health",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Read-only local collector contracts. Obtain baseUrl from solbot ui status; the example port is not a discovered live address. Unavailable source/evidence is not zero profit or certified readiness."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8768"
+    }
+  ],
+  "item": [
+    {
+      "name": "/healthz",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/healthz",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Local health contract responds\", () => pm.expect(pm.response.code).to.be.oneOf([200,503]));",
+              "pm.test(\"No state caching\", () => pm.expect(pm.response.headers.get(\"Cache-Control\")).to.eql(\"no-store\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "/api/health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Local health contract responds\", () => pm.expect(pm.response.code).to.be.oneOf([200,503]));",
+              "pm.test(\"No state caching\", () => pm.expect(pm.response.headers.get(\"Cache-Control\")).to.eql(\"no-store\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "/readyz",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/readyz",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Local health contract responds\", () => pm.expect(pm.response.code).to.be.oneOf([200,503]));",
+              "pm.test(\"No state caching\", () => pm.expect(pm.response.headers.get(\"Cache-Control\")).to.eql(\"no-store\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "/metrics",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/metrics",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "text/plain"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Local health contract responds\", () => pm.expect(pm.response.code).to.be.oneOf([200,503]));",
+              "pm.test(\"No state caching\", () => pm.expect(pm.response.headers.get(\"Cache-Control\")).to.eql(\"no-store\"));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

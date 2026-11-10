@@ -129,3 +129,11 @@ export async function soltuiCall(deps, { command, params = {}, timeoutMs } = {})
 export function soltuiBuildHash(deps) {
   return ask(deps, { op: 'buildHash' }, SOLTUI_TIMEOUT_MS.probe);
 }
+
+/** Fixed availability operations. Never accepts a path, command, URL or environment. */
+export function soltuiSuite(deps, action) {
+  if (!['status', 'health', 'start'].includes(action)) {
+    return Promise.resolve(failedEnvelope('suite', SOLTUI_ERROR.BAD_PARAMS, 'invalid suite action'));
+  }
+  return ask(deps, { op: 'suite', action }, action === 'start' ? SOLTUI_TIMEOUT_MS.quick : SOLTUI_TIMEOUT_MS.probe);
+}

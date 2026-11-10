@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T17:28:08+00:00",
+  "generatedAt": "2026-11-10T17:33:43+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1705,
+      "matchingFiles": 1712,
       "shown": 30,
       "files": [
         {
@@ -35,7 +35,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 157
+          "hits": 160
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -103,7 +103,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 42
+          "hits": 43
         },
         {
           "path": "skills/trading-and-investing/references/options-trading-and-strategies.md",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1402,
+      "matchingFiles": 1404,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1369,
+      "matchingFiles": 1370,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 769,
+      "matchingFiles": 770,
       "shown": 30,
       "files": [
         {
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 376
+          "hits": 374
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 697,
+      "matchingFiles": 701,
       "shown": 30,
       "files": [
         {
@@ -730,7 +730,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 176
+          "hits": 177
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -809,6 +809,10 @@
           "hits": 53
         },
         {
+          "path": "botmanager/src/botmanager/walkthrough.py",
+          "hits": 52
+        },
+        {
           "path": "research/strategy_experiment/results/initial-gapped-run/manifest.json",
           "hits": 52
         },
@@ -831,10 +835,6 @@
         {
           "path": "research/strategy_experiment/candidate.zip",
           "hits": 50
-        },
-        {
-          "path": "research/strategy_experiment/original.zip",
-          "hits": 50
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 613,
+      "matchingFiles": 619,
       "shown": 30,
       "files": [
         {
@@ -865,7 +865,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 283
+          "hits": 299
         },
         {
           "path": "memory.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 610,
+      "matchingFiles": 611,
       "shown": 30,
       "files": [
         {
@@ -1019,7 +1019,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 74
+          "hits": 75
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 388,
+      "matchingFiles": 389,
       "shown": 30,
       "files": [
         {
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 135
+          "hits": 133
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1443,6 +1443,10 @@
           "hits": 29
         },
         {
+          "path": "memory.md",
+          "hits": 26
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 25
         },
@@ -1452,10 +1456,6 @@
         },
         {
           "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 23
-        },
-        {
-          "path": "memory.md",
           "hits": 23
         },
         {
@@ -1710,6 +1710,10 @@
           "hits": 25
         },
         {
+          "path": "memory.md",
+          "hits": 23
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 21
         },
@@ -1723,10 +1727,6 @@
         },
         {
           "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 20
-        },
-        {
-          "path": "memory.md",
           "hits": 20
         },
         {

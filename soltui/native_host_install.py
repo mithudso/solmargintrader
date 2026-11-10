@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import stat
 import sys
@@ -33,10 +34,14 @@ BROWSERS = (
     "Google/Chrome", "Google/Chrome Beta", "Google/Chrome Canary", "Chromium",
     "Google/Chrome for Testing", "BraveSoftware/Brave-Browser", "Microsoft Edge",
 )
+LINUX_BROWSERS = ("google-chrome", "google-chrome-beta", "google-chrome-unstable", "chromium",
+                  "BraveSoftware/Brave-Browser", "microsoft-edge")
 
 
 def support_root() -> Path:
-    return Path(os.environ.get("SOLTUI_APP_SUPPORT_ROOT") or Path.home() / "Library" / "Application Support")
+    default = (Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") if sys.platform.startswith("linux")
+               else Path.home() / "Library" / "Application Support")
+    return Path(os.environ.get("SOLTUI_APP_SUPPORT_ROOT") or default)
 
 
 def wrapper_path() -> Path:
@@ -47,20 +52,32 @@ def wrapper_path() -> Path:
 def browser_host_dirs(root: Path | None = None) -> list[Path]:
     """NativeMessagingHosts dirs of the browsers whose profile directory exists."""
     root = root or support_root()
-    return [root / b / "NativeMessagingHosts" for b in BROWSERS if (root / b).is_dir()]
+    browsers = LINUX_BROWSERS if sys.platform.startswith("linux") else BROWSERS
+    return [root / b / "NativeMessagingHosts" for b in browsers if (root / b).is_dir()]
 
 
 def allowed_origins(extra: list[str] | None = None) -> list[str]:
     ids = [EXTENSION_ID]
     env = [i.strip() for i in os.environ.get("SOLTUI_EXTRA_EXTENSION_IDS", "").split(",")]
     for i in env + list(extra or []):
+        if i and not re.fullmatch(r"[a-p]{32}", i):
+            raise ValueError("extension ids must contain 32 lowercase letters a through p")
         if i and i not in ids:
             ids.append(i)
     return [f"chrome-extension://{i}/" for i in ids]
 
 
-def wrapper_text(repo: Path, python: Path) -> str:
-    return f'#!/bin/sh\ncd {shlex.quote(str(repo))} || exit 1\nexec {shlex.quote(str(python))} -m soltui.native_host "$@"\n'
+def wrapper_text(repo: Path, python: Path, *, manager_home: Path | None = None,
+                 ecosystem_home: Path | None = None, extra_ids: list[str] | None = None,
+                 isolated: bool = False) -> str:
+    fixed = "export INDEX_NO_AUTO=1\n"
+    fixed += f"export SOLTUI_EXTENSION_DIR={shlex.quote(str(repo.resolve() / 'extension'))}\n"
+    ids = ",".join(origin.split("//", 1)[1].rstrip("/") for origin in allowed_origins(extra_ids))
+    fixed += f"export SOLTUI_EXTRA_EXTENSION_IDS={shlex.quote(ids)}\n"
+    for key, value in (("SOLBOT_HOME", manager_home), ("SOLBOT_ECOSYSTEM_HOME", ecosystem_home)):
+        if value is not None:
+            fixed += f"export {key}={shlex.quote(str(value.resolve()))}\n"
+    return f'#!/bin/sh\n{fixed}cd {shlex.quote(str(repo))} || exit 1\nexec {shlex.quote(str(python))} {"-I " if isolated else ""}-m soltui.native_host "$@"\n'
 
 
 def manifest(wrapper: Path, extra: list[str] | None = None) -> dict[str, Any]:
@@ -74,10 +91,15 @@ def manifest(wrapper: Path, extra: list[str] | None = None) -> dict[str, Any]:
 
 
 def install(repo: Path = REPO, python: Path = DEFAULT_PYTHON, extra_ids: list[str] | None = None,
-            dirs: list[Path] | None = None, wrapper: Path | None = None) -> dict[str, Any]:
+            dirs: list[Path] | None = None, wrapper: Path | None = None, *, manager_home: Path | None = None,
+            ecosystem_home: Path | None = None, isolated: bool = False) -> dict[str, Any]:
+    if sys.platform != "darwin" and not sys.platform.startswith("linux"):
+        raise ValueError("native helper installation supports macOS and Linux; Windows requires an explicit native port")
     wrapper = wrapper or wrapper_path()
+    content = wrapper_text(repo.resolve(), python, manager_home=manager_home, ecosystem_home=ecosystem_home,
+                           extra_ids=extra_ids, isolated=isolated)
     wrapper.parent.mkdir(parents=True, exist_ok=True)
-    wrapper.write_text(wrapper_text(repo.resolve(), python))
+    wrapper.write_text(content)
     wrapper.chmod(wrapper.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     targets = list(dirs) if dirs else browser_host_dirs()
     written = []
@@ -131,12 +153,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repo", default=str(REPO))
     parser.add_argument("--extra-id", action="append", default=[])
     parser.add_argument("--dir", action="append", default=[], help="extra NativeMessagingHosts dir")
+    parser.add_argument("--manager-home", type=Path, help="fixed local manager home for this helper")
+    parser.add_argument("--ecosystem-home", type=Path, help="fixed local control-room home for this helper")
+    parser.add_argument("--isolated", action="store_true", help="load the installed runtime with Python -I")
     a = parser.parse_args(argv)
     dirs = None
     if a.dir:
         dirs = browser_host_dirs() + [Path(d) for d in a.dir]
     if a.verb == "install":
-        result = install(Path(a.repo), Path(a.python), a.extra_id, dirs)
+        try:
+            result = install(Path(a.repo), Path(a.python), a.extra_id, dirs,
+                             manager_home=a.manager_home, ecosystem_home=a.ecosystem_home, isolated=a.isolated)
+        except ValueError as exc:
+            parser.error(str(exc))
     elif a.verb == "uninstall":
         result = uninstall(dirs)
     else:

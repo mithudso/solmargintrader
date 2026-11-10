@@ -1,13 +1,16 @@
 # Work continuation
 
-Version: 379
-Delta: v378 to v379; track repo-bootstrapper wiki guidance.
+Version: 382
+Delta: v381 to v382; record repo-bootstrapper wiki guidance and concurrent history reconciliation.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
 
-Target: canonical skill in /Users/mitch/dev/skills/repo-bootstrapper and installed Codex copy. Add a discoverable maintained wiki for commands, reference, scripts and applicable strategy, grounded in existing documentation. Preserve concurrent work. Completed: updated canonical skill and audit checklist, verified both installed copies, passed 18 skill tests. Skills commit aa6244a5 pushed; remaining: verify and merge the skills PR and deliver these continuation records. Stele task: TASK-1254.
+The canonical skill and audit checklist require a discoverable wiki for commands, reference, scripts and applicable strategy. Both installed copies include the guidance; 18 skill tests passed. Skills commit aa6244a5 is pushed at https://github.com/mithudso/skills/pull/107. The skills PR has no CI checks; the check-gated merge command exits without merging. Project records are in https://github.com/mithudso/solmargintrader/pull/196. Stele task TASK-1254 remains open until delivery.
 
-Version: 378
+Version: 381
+Delta: v380 to v381; install actual managed availability and retain final acceptance/CI delivery tail.
+Delta: v379 to v380; record integrated source checks, review repairs and pending installed activation.
+Delta: v378 to v379; start authorized managed suite, complete help, machine health and Chrome helper delivery.
 Delta: v377 to v378; final full303 source suite passed after shutdown fix.
 Delta: v376 to v377; retain CI shutdown-order repair and fresh manager candidate revalidation.
 Delta: v375 to v376; record independent installed acceptance and final CI-only delivery tail.
@@ -1649,3 +1652,36 @@ Unrelateduntrackedworktree.opencode hadnoopenfiles(lsofexit1emptyoutput); fullar
 ## Full final manager gate complete
 
 Final303manager tests104.139sexit0 after680afa8shutdownrepair. Offlineindex/wiki checks0, CIselector6tests0. Installedidentitybothmanager/ecosystemandconfirmed-stopped-childshutdownv2receiptscomplete; verifier isfinalizingexplicitSupbindingsupersessionreceipt. Originalv1andinitialharnessattemptsremainhistorical. No newpublicdocs/assets/runtimechangesareplanned. Onlyfinalrecord/indexcommit/push, final-headCI, stablealiasindependentreceipt, gatedmerge/remotetreeproof, preservedprimaryfastforward/ownedcleanupandtrackercompletionremain.
+
+
+## Managed suite request — TASK-1247 active
+
+Previous PR194/manager0.6 delivery remains complete; do not repeat its source work or reactivate archived liquidity. User now requests full orderedhelp/UI discovery, persistent availabilitydaemon with health/alerts, extensionUI/helperbringup, actualserviceinstall+enable, andLinux/Windowscomparison. Worktree /Users/mitch/dev/solmargintrader-wt-1247-suite, branchagent-1247-suite, baseline d8381a80808c5d88ebeed4d53a295a31529960f2. Primary77untrackedstatuspaths/139files andunrelatedlockedUIworktree preserved.
+
+Recoveryactualstate: publicalias0.6, butdefaultSOLBOT_HOMEalreadyownedbyold0.4daemon42535 via /Users/mitch/.venvs/solecosystem-0.2.1/bin/solbot; LaunchAgent /Users/mitch/Library/LaunchAgents/com.solmargintrader.solbot.3bbfdc4f6989.plist. UI0.2.1PID19142serves http://127.0.0.1:57927 forV2home. Current /healthonlyserveridentity, notcomponenthealth. Installednativewrapper /Users/mitch/Library/Application Support/soltui/native-host/soltui-native-host isstaleanddoesnotforwardoriginargv. No recoverymutationsoccurred. Inspectprocesseswithredactingallowlist; ownershiptokensappearintheirargv.
+
+UseexistingSupervisor/ui_service status+ensure, ownerlocks/checkpoints, commandregistries/nativehelper. Explicitservicemigrationmustreleaseoldownerbeforestartingnewoneandpreservebotintent/oldenv/data/recorder/F5producers. Newautomationmanagesavailability, neverfabricatesevidence/readiness/armslive. PeruserlaunchdRunAtLoad/KeepAlive startsatloginfollowingreboot; nofalseprelogin/reboottestedclaim. Linuxneedsactualsystemdassessment; nativeWindowshasfcntl/Unixsocket/OSjudgegaps, documentWSLlimitations. Allsource/integrationtools INDEX_NO_AUTO=1; noimplicitsemanticindexing/inference. Worknotyetimplemented; nextfanoutcontractsandcode, scopedreviews/sourcechecks/freshregularinstall/liveverification/serviceenable/finalCI/merge/cleanup.
+
+
+## Managed suite continuation v380 — 2026-11-10
+
+Task TASK-1247 remains active in /Users/mitch/dev/solmargintrader-wt-1247-suite on agent-1247-suite. CLI walkthrough covers all 57 registered commands with 118 parser-validated examples. Chrome source 0.6.5 adds explicit fixed native suite startup, verified UI opening, component cards and transition notifications. Root health endpoints are /api/health, /healthz, /readyz and /metrics. UI identity now binds the manager home in its private checkpoint and HTTP response; a mismatched manager cannot adopt it.
+
+Completed source checks: manager 319 tests, ecosystem 180 tests after UI-binding fix, extension 433 tests, ordinary real Chrome 25 checks, native/legacy 84 tests plus 14 focused checks; relevant Ruff and CI YAML parse passed. Core's new focused suite tests are additional and pending final count. Independent review found and repaired Linux enablement truth, disappearing archive alerts and generation-bound stop receipts. Core is finishing durable fast-crash alert observations before final source freeze.
+
+Fresh regular environments /Users/mitch/.venvs/solbot-0.7.0 and /Users/mitch/.venvs/solecosystem-0.4.0 are created but not installed. Production remains unchanged. Snapshot /Users/mitch/.local/state/solbot/releases/0.7.0/before-migration preserves old launchd/native definitions, one stopped desired bot intent, nine research/recorder process identities and all 139 primary untracked-file hashes. Old default-home service still uses ecosystem 0.2.1; exact migration and UI release must follow installed-wheel checks. Do not start duplicate recorder/F5/optimizer owners. INDEX_NO_AUTO=1 remains mandatory. Stele knowledge write is queued as outbox a4306231 after MCP transport closed.
+
+Remaining: final core commit and independent repair verification; regular wheel installation; isolated installed Chrome availability gate; exact legacy launchd/UI migration and native helper deployment; independent live acceptance including durable crash/recovery alerts and preserved state; final-head CI/merge, primary safe sync and owned worktree cleanup. macOS launchd startup means user login after reboot, not pre-login boot. Native Windows remains unsupported; Linux/WSL2 boundaries are in docs/bot-manager-managed-suite.md.
+
+
+## Managed suite installed checkpoint v381 — 2026-11-10
+
+The actual default-home launch agent com.solmargintrader.suite.3bbfdc4f6989 is installed, enabled and registered. It runs /Users/mitch/.venvs/solbot-0.7.0/bin/solbot with fixed manager/ecosystem homes, INDEX_NO_AUTO=1, RunAtLoad and KeepAlive. The exact older launch agent and UI generation were verified and released; their environments and snapshots remain. A launchctl bootout first returned before registration disappeared; root re-probed error113 plus released supervisor lock before completing removal. The old UI used Homebrew's framework executable in ps; root verified that binary, module, home, nonce and listening PID before SIGTERM. A stale old pointer was removed only after confirmed owner/listener release.
+
+/Users/mitch/.local/bin/solbot now points to the regular 0.7.0 entry point; /Users/mitch/.local/bin/solecosystem is a new companion link to 0.4.0. The native helper loads the regular runtime with -I, fixed homes and all three existing browser manifests/allowed IDs. Its stable source-assets path is the primary checkout, which must be synchronized after merge. The installed CLI successfully opened the verified new control room. Four component measurements were up with fresh reference data. Desired intent remains one stopped bot; no new recorder, optimizer, research authority or order was started.
+
+Final local manager suite: 358 tests passed. Ecosystem180, extension434, native84 baseline plus final focused checks, ordinaryChrome25 and installedChrome12 checks passed. Both regular environments passed dependency consistency and installed five-package/MCP health. All1685 files in five wheels match reviewed source. A real first-open race was corrected with bounded inert readiness polling. The macOS Chrome fixture initially resolved to an111-byte Unix socket path; the final gate uses short private paths and preserves failed evidence. This did not affect default production homes. Independent review accepted all four earlier findings. Final combined Ruff passed after a native-only import-order cleanup; that final wheel needs installation before the verifier's final native hash gate.
+
+Current PR: https://github.com/mithudso/solmargintrader/pull/195 on agent-1247-suite. Initial CI failures were generated documentation/wiki/index drift and an installed-vs-source test fixture; functional ecosystem180 and Chrome Linux gates passed. Counts/wiki and the explicit source-package fixture are repaired. Offline retrieval indexes still need the final refresh after this memory write. Remaining: finish independent exact-owner UI/suite fault checks, native-only final wheel refresh/hash/Chrome gate, final-head CI, mark PR ready and merge, primary safe synchronization and own worktree cleanup. The private /Users/mitch/.local/state/solbot/releases/0.7.0/delivery-receipt.json, once complete, supersedes this pre-merge checkpoint. Source remains paper/disarmed. Per-user startup occurs at login after reboot; no physical reboot is claimed.
+
+Stele MCP remains disconnected. Exact lifecycle writes are queued as76fc9bea/a4c7203c/876e8d1e/1c4ffa88/0384ad03/f55045cc; knowledge outbox a4306231. The independent acceptance report is /Users/mitch/.local/state/solbot/releases/0.7.0/independent-live-acceptance.json. Endor package-risk tooling was unavailable for the unchanged mcp1.30.0 baseline; no new package safety claim was made.

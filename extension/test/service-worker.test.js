@@ -41,7 +41,7 @@ globalThis.chrome = {
   action: { async setBadgeText() {}, async setBadgeBackgroundColor() {} },
 };
 
-const { handleInstalled, handleMessage, runBuildCheck } = await import('../src/bg/service-worker.js');
+const { handleInstalled, handleMessage, runBuildCheck, runControlRoomMonitor } = await import('../src/bg/service-worker.js');
 
 const reset = () => {
   area.clear();
@@ -51,6 +51,33 @@ const reset = () => {
 
 const runtimeOf = () => area.get('runtime') ?? {};
 const configOf = () => area.get('config') ?? {};
+
+test('availability alarm only reads health, persists dedup, and ignores missing helper as a component failure', async () => {
+  const data = new Map(), requests = [], notifications = [];
+  let component = 'up', available = true, now = 1000;
+  const deps = { store: new MemoryStore(), clock: () => now,
+    configStore: { get: async (key, fallback) => data.get(key) ?? fallback, set: async (key, value) => data.set(key, value) },
+    soltui: { async request(request) {
+      requests.push(request);
+      return available ? { ok: true, command: 'suite', error: null, result: { schema_version: 1,
+        capability: 'control-room-v1', status: { state: 'running', ui_url: 'http://127.0.0.1:57927' },
+        health: { schema_version: 1, overall: component, ready: component === 'up', components: { manager: { state: component } } } } }
+        : { ok: false, command: 'suite', result: null, error: { code: 'failed' } };
+    } },
+  };
+  const poll = () => runControlRoomMonitor({ deps, notify: async alert => notifications.push(alert) });
+  await poll(); component = 'down'; now = 2000; await poll(); await poll();
+  assert.equal(notifications.length, 1);
+  available = false; await poll();
+  assert.equal(notifications.length, 1, 'unavailable helper cannot certify another server failure');
+  available = true; component = 'up'; now = 3000; await poll();
+  assert.equal(notifications.length, 2); assert.match(notifications[1].title, /recovered/);
+  assert.ok(requests.every(request => request.op === 'suite' && request.action === 'status'));
+  data.set('prefs', { alertsEnabled: false });
+  const count = requests.length;
+  assert.equal((await poll()).disabled, true);
+  assert.equal(requests.length, count);
+});
 
 // ------------------------------------------------------------ TASK-406 -----
 
