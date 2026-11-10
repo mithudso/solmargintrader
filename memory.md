@@ -1,6 +1,11 @@
 # Work continuation
 
-Version: 369
+Consolidation delivery state: `/Users/mitch/dev/solmargintrader/.worktree-recovery/delivery-memory.md`. A completed receipt there supersedes the pre-merge publication steps below.
+
+Version: 372
+Delta: v371 to v372; finish content preservation, reconciliation and duplicate-folder removal.
+Delta: v370 to v371; record verified preservation and the concurrent Git-metadata overwrite.
+Delta: v369 to v370; inventory all owner-named folders and preserve unreviewed checkpoints.
 Delta: v368 to v369; record the remaining-work plan and exact unfinished M4 source checkpoint.
 Delta: v367 to v368; accept installed0.2.1 fee default and unchanged producer identities.
 Delta: v366 to v367; record completed delivery, verify existing prompt history and apply the approved fee decision.
@@ -1408,3 +1413,28 @@ The Stele search specialist could not start because its fixed gpt-5.4-mini model
 Plan self-review and documentation/index checks, explicit commit, push/PR/final-head CI/merge and remote-content verification are the remaining TASK1220 delivery gates at this checkpoint. M4 implementation/parent records will remain recoverable in a pushed draft checkpoint rather than being folded into the plan-only release. Continue implementation from the new remaining-work plan when resuming the approved epic.
 
 PR191 initial head7ae0d593 passed docs/index checks, but ecosystem CI42772639288 failed after173 successful ecosystem tests at `python scripts/build_ecosystem_wiki.py --check`: {"ok": false, "status": "stale"}. PR189 introduced a compiled documentation bundle; changing the manager handoff/adding an allowlisted plan requires regenerating ecosystem/wiki_content/manifest.json and pages.json before offline indexes. The remaining plan now includes this gate. No app logic or runtime installation changed. Rebuild with the existing offline compiler, require its --check exit0, then regenerate/check indexes and push the fix before final-head CI/merge.
+
+
+## v370 — worktree consolidation inventory
+
+TASK-1223 covers the owner request. TASK-1225 inventories files and ownership; TASK-1226 integrates unique work; TASK-1227 verifies delivery and safe removal. Work happens in /Users/mitch/dev/solmargintrader-wt-01a1c44a on agent-01a1c44a. The shared primary checkout is held by another session and has untracked content. Do not reset or clean it.
+
+Initial inventories and PR receipts are private in /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a. Fourteen inputs are Git worktrees. The fifteenth is the immutable standalone strategy comparison. Preserve all unique committed, staged, unstaged, untracked and ignored content before removing any folder. Several old heads are ancestors of origin/master; squash-merged branches require PR/content verification. Draft PR182 and PR192 contain unfinished work and must remain distinguishable from accepted product code. PR191 merged while inventory was running; refresh before integration. No service, installation, indexing, signing or order action is part of this task. Remaining: full content disposition, preservation verification, reviewed integration, metadata checks, PR/CI/merge, primary synchronization where safe and duplicate removal.
+
+
+## v371 — external copy interrupted consolidation
+
+The first archive verified all73,143 source files and11,540 unique objects. A full standalone comparison restore and a staged/unstaged strategy-poc restore also passed. The archive was217,255,936bytes for2,289,641,432 source bytes. Forty-nine card/catalog tests passed with one external-catalog skip. Before deletion, an external copy replaced the primary .git directory with agent-01a1c44a's gitfile. It also copied this branch's working files and some unreviewed M4 files into the shared checkout. No source deletion occurred. The owner confirmed another copy is running and will stop it; wait for explicit confirmation that it has stopped before re-archiving or cleanup.
+
+Rebuilt common Git metadata from an independent remote mirror at /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a/rebuilt.git. Every inventoried source HEAD and the active nested SolTUI HEAD is present. Recreated all extant worktree registrations and indexes without overwriting working files. Master is4d773dcb. The original staging distinctions and uninventoried local Git metadata could not be recovered; preserve this limitation. The first archive disappeared with .git and is not a current safety receipt. Keep the next archive outside .git and retain an independent copy.
+
+Source dirs remain available, except the owner's completed plan worktree. Stele TASK-1227 remains in progress. Next: get copy-stopped confirmation; re-inventory primary and all source paths; preserve all content in a new independent snapshot; reconcile only proven copy-induced duplicates; repeat object/source and restoration gates; safely remove duplicates; update docs/wiki/offline indexes; local checks; commit/PR/CI/merge; sync primary with hash preconditions. Preserve draft PR182/192 and running services.
+
+
+## v372 — folder consolidation complete; publication remains
+
+The owner confirmed the other copy had stopped. Independent recovery-v2 preserved all73,153 input files,2,289,709,056bytes, in217,292,800databasebytes before late Finder metadata. All11,550uniqueobjects and every source path/hash/permission/link/status passed. Complete standalone comparison and strategy-poc Git restorations passed; reconstructed current stage/unstaged patches matched. All15requestedsourcefolders are absent:14removedbythis task,1completedplanremovedbyitsowner. Late Finder metadata was captured in an additional residual snapshot.
+
+Canonical private entry /Users/mitch/dev/solmargintrader/.worktree-recovery points to /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a/recovery-v2. Its recovery.sqlite3, recover.py, snapshot-summary.json, restoration-proof.json, inventory-receipts.zip and cleanup-receipt.json retain exact content and provenance. Keep the independent147MB rebuilt.git mirror; both repos pin original heads. No missing-source cleanup was attempted after the first Git overwrite. Original staging/reflog/uninventoried local metadata remains unrecoverable; do not claim otherwise.
+
+Hash-preconditioned canonical reconciliation removed12copy-induced M4Pythonfiles plusduplicatedOpenCode and restored6stale/tasktrackedfiles from acceptedmaster4d773dcb. Primarytrackedstateisclean; originaluntrackedcontentremains. DraftPR182and192/branches remain. Only active nestedSolTUIworktree and our delivery worktree remain registered. No production service/install/state changed. Product-runtimechanges are absent; the integratedcatalogtest expands allguide/researchcards and checksduplicateIDs/spec-onlyexclusion.49targetedtests passedwith1expectedskip. Remaining: finalreport/wiki/offlineindexchecks, task-ownedcommit/push/PR/finalheadCI/merge, primaryfastforward preservinguntrackedhashes, and removeonlyourmergedbranch/worktree. Fullreport docs/worktree-consolidation-2026-11-10.md.

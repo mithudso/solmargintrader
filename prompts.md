@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 180
+Version: 183
+Delta: v182 to v183; record confirmation that the competing copy stopped.
+Delta: v181 to v182; preserve the owner confirmation of a concurrent copy.
+Delta: v180 to v181; record the owner request to consolidate fifteen sibling folders.
 Delta: v179 to v180; preserve the progress correction and request for the remaining implementation plan.
 Delta: v178 to v179; retain exact confirmations and apply the approved50bps referral default.
 Delta: concurrent histories to v178; preserve both concurrent request histories.
@@ -1609,3 +1612,34 @@ Write an implementation plan for the rest of the work you have to do
 ```
 
 The owner requested a concrete plan after repeated inaccurate wrap-up reports. Save and deliver the actual M4 release gates, M5–8 work and final Oracle handoff. The original all-remaining-milestones implementation remains authorized. Do not represent this documentation delivery as completed implementation.
+
+
+## v181 — 2026-11-10 — worktree consolidation
+
+```text
+merge and dedupe all these folders: /Users/mitch/dev/solmargintrader-wt-ui-tables-01a1bee5 /Users/mitch/dev/solmargintrader-wt-ui-resume-01a1bee5 /Users/mitch/dev/solmargintrader-wt-strategy-poc /Users/mitch/dev/solmargintrader-wt-referral /Users/mitch/dev/solmargintrader-wt-guides /Users/mitch/dev/solmargintrader-wt-01a1c228 /Users/mitch/dev/solmargintrader-wt-01a1c189-remaining-plan /Users/mitch/dev/solmargintrader-wt-01a1c189-editing /Users/mitch/dev/solmargintrader-wt-01a1c189 /Users/mitch/dev/solmargintrader-wt-01a1c1b1 /Users/mitch/dev/solmargintrader-wt-01a1c1a0 /Users/mitch/dev/solmargintrader-wt-01a1bf0e /Users/mitch/dev/solmargintrader-wt-01a1bee5 /Users/mitch/dev/solmargintrader-wt-01a1bec1 /Users/mitch/dev/solmargintrader-strategy-comparison-20261109 into /Users/mitch/dev/solmargintrader-wt-ui-tables-01a1bee5 /Users/mitch/dev/solmargintrader-wt-ui-resume-01a1bee5 /Users/mitch/dev/solmargintrader-wt-strategy-poc /Users/mitch/dev/solmargintrader-wt-referral /Users/mitch/dev/solmargintrader-wt-guides /Users/mitch/dev/solmargintrader-wt-01a1c228 /Users/mitch/dev/solmargintrader-wt-01a1c189-remaining-plan /Users/mitch/dev/solmargintrader-wt-01a1c189-editing /Users/mitch/dev/solmargintrader-wt-01a1c189 /Users/mitch/dev/solmargintrader-wt-01a1c1b1 /Users/mitch/dev/solmargintrader-wt-01a1c1a0 /Users/mitch/dev/solmargintrader-wt-01a1bf0e /Users/mitch/dev/solmargintrader-wt-01a1bee5 /Users/mitch/dev/solmargintrader-wt-01a1bec1       into    /Users/mitch/dev/solmargintrader
+```
+
+
+## Recovered request — 2026-11-09 — README optimizer
+
+Preserved from /Users/mitch/dev/solmargintrader-wt-01a1bf0e; its unfinished continuation remains in the private recovery snapshot.
+
+```text
+$ddo README.md
+Get it up to speed and try again
+```
+
+
+## v182 — concurrent copy clarification
+
+```text
+Another copy is running; I’ll stop it
+```
+
+
+## v183 — competing copy stopped
+
+```text
+Yes, it has stopped
+```

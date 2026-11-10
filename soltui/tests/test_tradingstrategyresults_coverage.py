@@ -2,7 +2,7 @@
 
 That file is a catalogue of strategies and indicators from public trading guides. The
 question this test answers is the one the catalogue raises: for each name, is there a
-strategy card, and is it where soltui can use it?
+card, and are executable strategies separated from research?
 
 A name is covered when:
   * a strategy card exists for it, AND
@@ -24,7 +24,7 @@ import unittest
 from pathlib import Path
 
 from backtester.core.strategies import REGISTRY, build
-from backtester.core.strategy_cards import load_all, load_card
+from backtester.core.strategy_cards import load_all
 from soltui import bgqueue, reference, signals
 
 REPO = Path(__file__).resolve().parent.parent.parent
@@ -86,17 +86,13 @@ def _all_card_ids() -> list[str]:
 class TestCatalogueCoverage(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.cards = load_all()
-        # Non-executable research and bot guides were moved out of the strategy
-        # queue in PR 101. They still document catalogue entries, but must not
-        # be presented as buildable queue strategies.
-        for cid, folder in {
-            "day_trading": "strategy_research", "scalping": "strategy_research",
-            "dex_cex_dislocation": "strategy_research", "event_driven": "strategy_research",
-            "prediction_markets": "strategy_research",
-            "triangular_arbitrage": "guides",
-        }.items():
-            cls.cards[cid] = load_card(REPO / "backtester" / folder / f"{cid}.md")
+        cls.active_cards = load_all()
+        cls.cards = dict(cls.active_cards)
+        for directory in (REPO / "backtester/guides", REPO / "backtester/strategy_research"):
+            found = load_all(directory)
+            if cls.cards.keys() & found.keys():
+                raise AssertionError("card duplicated across active and research catalogs")
+            cls.cards.update(found)
         cls.queued = {j.strategy for j in bgqueue.build_queue("SOL", max_tier=0)}
 
     def test_every_catalogue_name_has_a_card(self) -> None:
@@ -127,6 +123,7 @@ class TestCatalogueCoverage(unittest.TestCase):
                 continue
             with self.subTest(card=cid):
                 self.assertNotIn(cid, self.queued)
+                self.assertNotIn(cid, self.active_cards)
                 self.assertTrue(card.data_required, "a spec-only card must say what it needs")
 
     def test_new_cards_reach_every_horizon_of_the_queue(self) -> None:
