@@ -1,7 +1,7 @@
 # Task 3 — backup and health/load verification
 
-Version: 1.2.0
-Delta: 1.1.0 -> 1.2.0; bind watchdog load faults to an owned PID and retain bounded recovery when a frozen worker holds the runtime journal lock.
+Version: 1.3.0
+Delta: 1.2.0 -> 1.3.0; make the numerical load test portable without changing production resolver isolation requirements.
 
 Status: source backup implementation and owned tests ready. Controller owns health.py, supervisor/status/control/registry integration and release verification.
 
@@ -65,3 +65,12 @@ The supervisor admits no replacement during uncertain journal reads or a pending
 New tests freeze real owners holding both RESERVED (`BEGIN IMMEDIATE`) and EXCLUSIVE locks after an uncommitted cursor write. They prove exact process retirement, released worker lock, rolled-back partial cursor, unchanged checkpoint/input/runtime identity, original-generation failure fencing and attributable alert evidence. They also test shutdown of a frozen exclusive writer and explicit reporting of an unreconciled failure write.
 
 Focused supervisor/health/entry-control/load checks passed34 tests in50.000s, exit0. Measured reserved-lock detection was13.009582s from the last owned heartbeat; exclusive-lock detection was14.071378s. Actual canonical optimizer load still measured four active/six queued, statusp95 0.014092s, stopack 0.000798s, ownerrelease 0.007381s, crashdetection 0.007884s and watchdog14.022125s from heartbeat, with2273 completed numerical cells and honest incumbent retention. The final shutdown changes then passed both shutdown regressions in1.209s, exit0. Ruff passed. Logs: `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-supervisor-lock-final.log` and `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-shutdown-final.log`. The full manager suite must be rerun by the controller on the final integrated revision; no production state changed.
+
+
+## Portable numerical load fixture — version 1.3.0
+
+Linux CI failed the load fixture because its optimizer child called production `run_judge`, which correctly refused unsupported operating-system isolation with `isolation_unavailable: deny-default macOS sandbox required`. The exact failing log is `/Users/mitch/.local/state/solbot/releases/0.6.0/ci-botmanager-failed.log`. Production blind/resolver behavior remains unchanged and fail closed.
+
+Only the test fixture now chooses its judge by platform, following the existing research-test convention. Darwin still runs the actual deny-default sandbox resolver. Other platforms use the pure `decide` function for explicitly numerical, uncertified fixture inputs. Metrics and durable fixture outcome records label this path `pure_numerical_fixture_no_os_isolation` with `os_isolation_claimed: false`; they never claim Linux operating-system isolation. A separate forced-Linux test executes the entire ten-bot/one-real-optimizer fixture through that branch on macOS. Both branches retain canonical training/admission, four active/six queued workers, exact financial crash/restart checks, nonoverlapping exposure checks, honest incumbent retention, clean cancellation and every strict latency assertion.
+
+Both targeted branches passed in32.224s, final exit0; Ruff passed. Native macOS sandbox branch completed2411 cells and measured heartbeat watchdog14.007026s, statusp95 0.012078s, stopack 0.000783s and ownerrelease 0.007192s. Forced-Linux pure numerical branch completed2468 cells and measured heartbeat watchdog14.023086s, statusp95 0.011756s, stopack 0.000783s and ownerrelease 0.007364s. Both reported four active/six queued, three uncertified-reference incumbent retentions and a cancelled final attempt with no final spend. Exact log: `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-load-portable-final.log`. This test-only change does not change installed product source or wheel bindings. Final reviewer inspected the narrow selection/label behavior and found no actionable issue. Controller owns the macOS CI gate and final delivery receipts.

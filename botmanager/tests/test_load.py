@@ -8,6 +8,7 @@ import multiprocessing
 import os
 import signal
 import sqlite3
+import sys
 import tempfile
 import time
 import unittest
@@ -71,7 +72,17 @@ def optimizer_recording(root, attempt, count=1024):
     }
 
 
-def optimizer_pressure(root, ready, stop):
+def optimizer_judge(platform):
+    from botmanager.blind import decide, run_judge
+
+    if platform == "darwin":
+        return run_judge, "macos_deny_default_sandbox"
+    # These are explicit numerical fixtures, not an alternative production
+    # resolver. Production run_judge must still refuse unsupported platforms.
+    return decide, "pure_numerical_fixture_no_os_isolation"
+
+
+def optimizer_pressure(root, ready, stop, fixture_platform=None):
     from botmanager.research import backtest, execute
 
     from soltui.experiments import ExperimentStore
@@ -84,6 +95,7 @@ def optimizer_pressure(root, ready, stop):
         "SOLTUI_RESEARCH_REGISTRY": str(root / "namespace.json"),
     }
     reports = []
+    judge, judge_mode = optimizer_judge(fixture_platform or sys.platform)
     owner = ExperimentStore(root)
     authority = {
         "id": str(uuid4()),
@@ -98,6 +110,8 @@ def optimizer_pressure(root, ready, stop):
             json.dumps(
                 {
                     "fixture": "isolated_numerical_source_not_production_certification",
+                    "judge_mode": judge_mode,
+                    "os_isolation_claimed": judge_mode == "macos_deny_default_sandbox",
                     "runs": reports,
                 }
             )
@@ -151,6 +165,7 @@ def optimizer_pressure(root, ready, stop):
                         data,
                         options,
                         evaluator=evaluator,
+                        judge=judge,
                         cancelled=stop.is_set,
                         authority_context=context,
                     )
@@ -178,6 +193,12 @@ def optimizer_pressure(root, ready, stop):
 
 class LoadTests(unittest.TestCase):
     def test_ten_paper_bots_four_workers_with_one_optimizer_fixture(self):
+        self.run_load_fixture()
+
+    def test_forced_linux_numerical_fixture_retains_full_load_and_watchdog(self):
+        self.run_load_fixture(fixture_platform="linux")
+
+    def run_load_fixture(self, *, fixture_platform=None):
         with tempfile.TemporaryDirectory(prefix="solbot-load-") as tmp:
             home = Path(tmp)
             data = load_recording(recording(home))
@@ -193,11 +214,16 @@ class LoadTests(unittest.TestCase):
             context = multiprocessing.get_context("spawn")
             ready, stop = context.Event(), context.Event()
             optimizer = context.Process(
-                target=optimizer_pressure, args=(str(authority), ready, stop)
+                target=optimizer_pressure,
+                args=(str(authority), ready, stop, fixture_platform),
             )
             optimizer.start()
             supervisor = None
-            metrics = {}
+            _, judge_mode = optimizer_judge(fixture_platform or sys.platform)
+            metrics = {
+                "optimizer_judge_mode": judge_mode,
+                "optimizer_os_isolation_claimed": judge_mode == "macos_deny_default_sandbox",
+            }
             try:
                 self.assertTrue(ready.wait(10))
                 self.assertTrue(optimizer.is_alive())
@@ -376,7 +402,7 @@ class LoadTests(unittest.TestCase):
                 self.assertGreater(metrics["optimizer_completed_cells"], 0)
                 self.assertIn("train", metrics["optimizer_stages"])
                 metrics["optimizer_kind"] = (
-                    "canonical_m4_training_and_isolated_resolver_numerical_fixture_uncertified_source"
+                    "canonical_m4_training_numerical_fixture_uncertified_source"
                 )
                 print("LOAD_METRICS " + json.dumps(metrics, sort_keys=True), flush=True)
             finally:
@@ -415,11 +441,19 @@ class LoadTests(unittest.TestCase):
                         db.execute("SELECT count(*) FROM exposures").fetchone()[0], 0
                     )
                     self.assertEqual(reused_dates, 0)
+                workload = json.loads((authority / "load-outcome.json").read_text())
+                self.assertEqual(workload["judge_mode"], judge_mode)
+                self.assertEqual(
+                    workload["os_isolation_claimed"],
+                    judge_mode == "macos_deny_default_sandbox",
+                )
                 print(
                     "OPTIMIZER_OUTCOME "
                     + json.dumps(
                         {
                             "source_certified": False,
+                            "judge_mode": workload["judge_mode"],
+                            "os_isolation_claimed": workload["os_isolation_claimed"],
                             "outcomes": final_outcomes,
                             "overlapping_reused_dates": reused_dates,
                             "clean_exit": exitcode == 0,
