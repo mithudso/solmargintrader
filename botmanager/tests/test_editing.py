@@ -575,6 +575,8 @@ class EditingTests(unittest.TestCase):
         with closing(sqlite3.connect(self.ledger.path)) as db, db:
             db.execute("DROP TABLE archives")
             db.execute("DROP TABLE adoption_requests")
+            for field in ("runtime_id", "origin_sequence", "origin"):
+                db.execute(f"ALTER TABLE events DROP COLUMN {field}")
             db.execute("PRAGMA user_version=2")
             original = db.execute("SELECT * FROM requests").fetchall()
         before = self.ledger.path.read_bytes()
@@ -583,7 +585,7 @@ class EditingTests(unittest.TestCase):
         self.edit(set=["range_pct=21"])
         self.call("apply", identity=self.bot)
         with closing(sqlite3.connect(self.ledger.path)) as db, db:
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 4)
             self.assertEqual(db.execute("SELECT * FROM requests").fetchall(), original)
         self.assertEqual(
             self.call("stop", identity=self.bot, request_id=request_id), stopped

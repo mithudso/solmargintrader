@@ -23,6 +23,12 @@ Python 3.13 environment; see `botmanager/README.md` for
 configuration, delivered commands and current capability limits. No service is
 installed by a read-only command.
 
+For the coordinated paper ecosystem, `scripts/bootstrap_ecosystem.py start`
+installs and verifies the five headless packages, then starts acquisition,
+backtesting, forward handoff, Oracle and the local control room. See
+`docs/ECOSYSTEM-BOOTSTRAP.md`. The `soltui/pyproject.toml` research-runtime package
+includes the headless F5 owner without installing the native macOS app.
+
 ```bash
 git clone https://github.com/mithudso/solmargintrader.git
 cd solmargintrader
@@ -130,7 +136,7 @@ Run all of these before claiming a change works:
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 999 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1405 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE

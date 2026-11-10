@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7af12d82` (2026-11-10T03:27:00+00:00). 2873 tracked files, 63.4 MB.
+**Generated** from `index/INDEX.json` at commit `5ef3df9e` (2026-11-10T03:55:53+00:00). 2906 tracked files, 63.7 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2525 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 404/450 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2541 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 418/476 Python modules and 60/104 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (162 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,25 +34,26 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 115 files
+- [`docs`](#docs) — 116 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1927 files
 - [`research`](#research) — 206 files
 - [`extension`](#extension) — 117 files
-- [`soltui`](#soltui) — 167 files
+- [`soltui`](#soltui) — 169 files
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
-- [`botmanager`](#botmanager) — 36 files
+- [`botmanager`](#botmanager) — 38 files
+- [`ecosystem`](#ecosystem) — 26 files
 - [`executor`](#executor) — 44 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 18 files
-- [`oracle`](#oracle) — 22 files
-- [`scripts`](#scripts) — 14 files
+- [`oracle`](#oracle) — 23 files
+- [`scripts`](#scripts) — 15 files
 - [`skills`](#skills) — 67 files
 - [`tools`](#tools) — 3 files
 - [`tradingview`](#tradingview) — 26 files
@@ -91,7 +92,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.gitignore`
 
-`other` · 140 lines · 4,255 B · description: **curated**
+`other` · 141 lines · 4,267 B · description: **curated**
 
 **Purpose.** Keeps derived and machine-specific artifacts out of the tree — `data/` price caches, the semantic embedding array, build output. Anything regenerable and large belongs here.
 
@@ -115,7 +116,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 204 lines · 15,319 B · description: **curated**
+`doc` · 207 lines · 15,897 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -163,7 +164,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 142 lines · 9,428 B · description: **curated**
+`doc` · 150 lines · 9,806 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -211,9 +212,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1154 lines · 220,565 B · description: **extracted**
+`doc` · 1230 lines · 237,260 B · description: **extracted**
 
-**Purpose.** Version: 348 Delta: v347 to v348; record reviewed editing and independent installed acceptance before final-head delivery. Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
+**Purpose.** Version: 354 Delta: v353 to v354; record merge-aware docs gate success before combined integration commit. Delta: v352 to v353; preserve the committed-merge-parent documentation count failure and required helper fix.
 
 **Use.** Read it.
 
@@ -227,9 +228,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1522 lines · 89,028 B · description: **extracted**
+`doc` · 1545 lines · 90,295 B · description: **extracted**
 
-**Purpose.** Version: 171 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope. Delta: v169 to v170; preserve the owner usability request and merged Oracle request history.
+**Purpose.** Version: 175 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution. Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
 
 **Use.** Read it.
 
@@ -255,7 +256,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-115 files.
+116 files.
 
 #### `docs/API.md`
 
@@ -307,7 +308,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 321 lines · 20,737 B · description: **extracted**
+`doc` · 321 lines · 20,654 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -323,9 +324,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/DEVELOPMENT.md`
 
-`doc` · 194 lines · 9,293 B · description: **extracted**
+`doc` · 200 lines · 9,670 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
+
+**Use.** Read it.
+
+#### `docs/ECOSYSTEM-BOOTSTRAP.md`
+
+`doc` · 277 lines · 16,076 B · description: **extracted**
+
+**Purpose.** One script installs the headless components into a dedicated environment, checks their installed interfaces, acquires history, backtests the frozen strategy/coin matrix and automatically hands usable results to prospective
 
 **Use.** Read it.
 
@@ -339,7 +348,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 28129 lines · 1,446,422 B · description: **extracted**
+`doc` · 28454 lines · 1,458,010 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -475,7 +484,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-handoff.md`
 
-`doc` · 690 lines · 68,269 B · description: **extracted**
+`doc` · 718 lines · 70,427 B · description: **extracted**
 
 **Purpose.** Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes. The standalone application is installed as `solbot`.
 
@@ -499,9 +508,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-oracle-interface.md`
 
-`doc` · 188 lines · 12,924 B · description: **extracted**
+`doc` · 208 lines · 14,253 B · description: **extracted**
 
-**Purpose.** Version: 0.1.0 Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime. Owner request: complete all remaining milestones, add editing and report the result to Oracle for a visual interface.
+**Purpose.** Version: 0.1.1 Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source. Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime.
 
 **Use.** Read it.
 
@@ -1265,7 +1274,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/ollama_ensure.py`
 
-`code-python` · 166 lines · 7,192 B · description: **extracted**
+`code-python` · 166 lines · 7,197 B · description: **extracted**
 
 **Purpose.** Make sure a LOCAL ollama server is reachable, starting it if it is not. python3 index/ollama_ensure.py # check, start if needed, report the model python3 index/ollama_ensure.py --pull # also pull the embedding model if absent Used by `search.py` (semantic and hybrid), `build.py semantic` and `idle.py`, so the three share one definition of "ollama is ready". Standard library only.
 
@@ -23523,7 +23532,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 The macOS menu-bar app that surfaces state locally. Packaged with py2app and supervised by launchd.
 
-167 files.
+169 files.
 
 #### `soltui/README.md`
 
@@ -23841,7 +23850,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/f5_batch.py`
 
-`code-python` · 717 lines · 38,428 B · description: **extracted**
+`code-python` · 721 lines · 38,661 B · description: **extracted**
 
 **Purpose.** Durable, isolated all-strategy backtest and prospective forward runner. The caller supplies the supported coin universe. The plan freezes it and the supported intervals before work starts. A worker is started only by explicit `start`, never import. All data stays under a run-specific directory and the existing queue is untouched.
 
@@ -24098,6 +24107,14 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 **Contents.** Defines `WS_URL`, `PRODUCTS_URL`, `WS_GUID`, `REPO`, `FALLBACK_PRODUCTS`, `SNAPSHOT_SECONDS`, `FLUSH_SECONDS`, `RECV_TIMEOUT_S`, `RECEIVE_IDLE_S`, `MAX_FRAME_BYTES` and 30 more. Depends on `backtester`.
 
 **Use.** `python3 soltui/pricefeed.py --help`
+
+#### `soltui/pyproject.toml`
+
+`config` · 15 lines · 383 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
 
 #### `soltui/reference.py`
 
@@ -24687,6 +24704,16 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 **Use.** `python3 -m pytest soltui/tests/test_f5_batch.py -q`
 
+#### `soltui/tests/test_f5_policy.py`
+
+`test` · 155 lines · 5,941 B · description: **extracted**
+
+**Purpose.** The frozen paper policy reaches the worker without changing safe defaults.
+
+**Contents.** Defines `class FrozenPolicyTests`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest soltui/tests/test_f5_policy.py -q`
+
 #### `soltui/tests/test_forward_sort_refresh.py`
 
 `test` · 51 lines · 2,511 B · description: **extracted**
@@ -25261,7 +25288,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 408 lines · 17,138 B · description: **curated**
+`ci` · 429 lines · 18,059 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -25379,7 +25406,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## botmanager
 
-36 files.
+38 files.
 
 #### `botmanager/.gitignore`
 
@@ -25391,7 +25418,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 556 lines · 34,621 B · description: **extracted**
+`doc` · 573 lines · 35,887 B · description: **extracted**
 
 **Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. The current runnable strategy is grid against recorded input. Saved settings support explicit editing and stopped-run adoption;
 
@@ -25425,7 +25452,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/cli.py`
 
-`code-python` · 66 lines · 2,469 B · description: **extracted**
+`code-python` · 75 lines · 2,802 B · description: **extracted**
 
 **Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
 
@@ -25465,7 +25492,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/ledger.py`
 
-`code-python` · 1224 lines · 50,673 B · description: **extracted**
+`code-python` · 1313 lines · 54,647 B · description: **extracted**
 
 **Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The specification database and this separate runtime journal has its own version and must be included in backups with the specifications.
 
@@ -25495,7 +25522,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/registry.py`
 
-`code-python` · 631 lines · 20,921 B · description: **extracted**
+`code-python` · 638 lines · 21,202 B · description: **extracted**
 
 **Purpose.** One application registry, shared by CLI and future local transports.
 
@@ -25575,6 +25602,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `import botmanager.src.botmanager.adapters.__init__`
 
+#### `botmanager/src/botmanager/adapters/ecosystem.py`
+
+`code-python` · 41 lines · 1,118 B · description: **extracted**
+
+**Purpose.** Explicit read-only discovery of externally owned ecosystem paper trials.
+
+**Contents.** Defines `discover_ecosystem()`.
+
+**Use.** `import botmanager.src.botmanager.adapters.ecosystem`
+
 #### `botmanager/src/botmanager/adapters/soltui.py`
 
 `code-python` · 942 lines · 36,345 B · description: **extracted**
@@ -25645,9 +25682,19 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest botmanager/tests/test_config.py -q`
 
+#### `botmanager/tests/test_ecosystem_adapter.py`
+
+`test` · 77 lines · 2,845 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class EcosystemAdapterTests`, `class EcosystemEditingCliTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_ecosystem_adapter.py -q`
+
 #### `botmanager/tests/test_editing.py`
 
-`test` · 621 lines · 25,935 B · description: **none**
+`test` · 623 lines · 26,075 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -25697,7 +25744,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_recovery.py`
 
-`test` · 566 lines · 25,593 B · description: **none**
+`test` · 568 lines · 25,733 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -25734,6 +25781,264 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `stalled_worker()`, `hard_crash()`, `class SupervisorTests`, `class LaunchctlFixture`.
 
 **Use.** `python3 -m pytest botmanager/tests/test_supervisor.py -q`
+
+---
+
+## ecosystem
+
+26 files.
+
+#### `ecosystem/README.md`
+
+`doc` · 19 lines · 1,099 B · description: **extracted**
+
+**Purpose.** research stack, downloads the configured 14-coin history, freezes all 34 strategy cells per coin, then uses the existing F5 owner for backtesting and prospective forward testing. Oracle evaluates genuine per-coin observations while the
+
+**Use.** Read it.
+
+#### `ecosystem/__init__.py`
+
+`code-python` · 4 lines · 96 B · description: **extracted**
+
+**Purpose.** Resumable installation and paper-research lifecycle orchestration.
+
+**Use.** `import ecosystem.__init__`
+
+#### `ecosystem/backtests.py`
+
+`code-python` · 224 lines · 8,299 B · description: **extracted**
+
+**Purpose.** Costed single-cell receipts and thin adapters to the established F5 owner. The F5 batch runner remains the durable orchestration and prospective-forward owner. These adapters do not create a second queue, worker or paper ledger.
+
+**Contents.** Defines `strategies()`, `_safe()`, `code_fingerprint()`, `backtest()`, `create_batch()`, `start_batch()`, `batch_status()`, `batch_cells()`. Depends on `backtester`, `soltui`.
+
+**Use.** `import ecosystem.backtests`
+
+#### `ecosystem/cli.py`
+
+`code-python` · 189 lines · 7,203 B · description: **extracted**
+
+**Purpose.** Installable control surface for the paper ecosystem supervisor.
+
+**Contents.** Defines `default_home()`, `emit()`, `class Parser`, `build_parser()`, `main()`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 ecosystem/cli.py --help`
+
+#### `ecosystem/data.py`
+
+`code-python` · 271 lines · 9,203 B · description: **extracted**
+
+**Purpose.** Source-bound OHLCV acquisition for the ecosystem bootstrap. Acquisition is explicit. Backtests never fetch implicitly, unknown legacy files are never relabelled, and every accepted input is frozen with a SHA-256 receipt. Requested ranges are UTC bar-open times in [start, end); all requested bars must be present and closed. The caller selects a fresh data directory for a new range.
+
+**Contents.** Defines `OWNER_UNIVERSE`, `ASSET_PATTERN`, `SOURCE`, `universe()`, `_symbol()`, `_epoch()`, `canonical()`, `file_sha256()`, `_closed_frame()`, `_publish()` and 2 more. Depends on `backtester`.
+
+**Use.** `import ecosystem.data`
+
+#### `ecosystem/installation.py`
+
+`code-python` · 436 lines · 16,324 B · description: **extracted**
+
+**Purpose.** Isolated local installation and bounded installed-runtime health checks. The bootstrap owns its dedicated virtual environment. No shell profile, global package environment, remote installer, recorder or wallet is modified here.
+
+**Contents.** Defines `PROJECTS`, `MODULES`, `RECEIPT_NAME`, `OWNER_NAME`, `MAX_HEALTH_BYTES`, `HEALTH_SCRIPT`, `_failure()`, `_manifests()`, `source_fingerprint()`, `_environment()` and 7 more.
+
+**Use.** `import ecosystem.installation`
+
+#### `ecosystem/pyproject.toml`
+
+`config` · 23 lines · 628 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `ecosystem/recovery.py`
+
+`code-python` · 232 lines · 8,109 B · description: **extracted**
+
+**Purpose.** Recover the owner's exact unstarted F5 plan after a bootstrap checkpoint gap. The caller supplies a batch root dedicated to one bootstrap. Existing evidence is read only. Ambiguous or partly used plans are preserved and refused.
+
+**Contents.** Defines `ERROR`, `RUN_ID`, `SCORING`, `_json()`, `_idle()`, `_expected()`, `_adopt()`, `ensure_batch()`. Depends on `soltui`.
+
+**Use.** `import ecosystem.recovery`
+
+#### `ecosystem/registration.py`
+
+`code-python` · 448 lines · 18,026 B · description: **extracted**
+
+**Purpose.** Durable external trial identities observed from the existing F5 owner. Registration does not create a manager draft or start a worker. The original batch and forward databases remain the only evidence for lifecycle observations.
+
+**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `MAX_CELLS`, `SAFE_NAME`, `INTERVALS`, `CELL_STATES`, `_json()`, `_path()`, `_read()`, `_ledger()` and 5 more.
+
+**Use.** `import ecosystem.registration`
+
+#### `ecosystem/runner.py`
+
+`code-python` · 555 lines · 20,625 B · description: **extracted**
+
+**Purpose.** Durable paper-only supervisor over the existing F5 worker and recorder.
+
+**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `running()`, `plan()`, `status()`, `start()`, `stop()` and 4 more. Depends on `backtester`, `soltui`.
+
+**Use.** `import ecosystem.runner`
+
+#### `ecosystem/telemetry.py`
+
+`code-python` · 751 lines · 27,171 B · description: **extracted**
+
+**Purpose.** Bounded, sanitized observations of manager events; never manager control. The mirror is incremental and private. Original event journals and log files remain with their existing owner. Free-form log content is never mirrored.
+
+**Contents.** Defines `SCHEMA_VERSION`, `APPLICATION_ID`, `SOURCE_PAGE`, `MAX_LOG_TAIL`, `SOURCES`, `KINDS`, `SECRET_KEY`, `STATES`, `PHASES`, `sanitize()` and 19 more.
+
+**Use.** `import ecosystem.telemetry`
+
+#### `ecosystem/web.py`
+
+`code-python` · 279 lines · 10,697 B · description: **extracted**
+
+**Purpose.** Read-only, loopback control room over the existing ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
+
+**Contents.** Defines `SCHEMA_VERSION`, `STATIC`, `SECRET_KEY`, `MAX_RESPONSE`, `_redact()`, `_telemetry()`, `class ControlRoomServer`, `make_server()`, `main()`.
+
+**Use.** `python3 ecosystem/web.py --help`
+
+### `ecosystem/tests/`
+
+#### `ecosystem/tests/__init__.py`
+
+`test` · 0 lines · 0 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `python3 -m pytest ecosystem/tests/__init__.py -q`
+
+#### `ecosystem/tests/test_backtests.py`
+
+`test` · 104 lines · 4,008 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class BacktestTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_backtests.py -q`
+
+#### `ecosystem/tests/test_data.py`
+
+`test` · 136 lines · 5,458 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class DataTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_data.py -q`
+
+#### `ecosystem/tests/test_manager_editing.py`
+
+`test` · 319 lines · 13,494 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `recording()`, `class ManagerEditingIntegrationTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_manager_editing.py -q`
+
+#### `ecosystem/tests/test_recovery.py`
+
+`test` · 185 lines · 6,932 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RecoveryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_recovery.py -q`
+
+#### `ecosystem/tests/test_registration.py`
+
+`test` · 180 lines · 7,395 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BATCH`, `class RegistrationTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_registration.py -q`
+
+#### `ecosystem/tests/test_runner.py`
+
+`test` · 182 lines · 7,379 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RunnerTests`, `class RecoveryTests`. Depends on `soltui`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_runner.py -q`
+
+#### `ecosystem/tests/test_setup.py`
+
+`test` · 259 lines · 10,714 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class SetupTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_setup.py -q`
+
+#### `ecosystem/tests/test_telemetry.py`
+
+`test` · 295 lines · 12,292 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class TelemetryTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_telemetry.py -q`
+
+#### `ecosystem/tests/test_web.py`
+
+`test` · 198 lines · 8,353 B · description: **extracted**
+
+**Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
+
+**Contents.** Defines `class WebTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_web.py -q`
+
+#### `ecosystem/tests/test_wrapper.py`
+
+`test` · 45 lines · 1,450 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class WrapperTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_wrapper.py -q`
+
+### `ecosystem/web/`
+
+#### `ecosystem/web/app.js`
+
+`code-js` · 299 lines · 21,814 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `aggregate`, `botPnl`, `fields`, `get`, `managerBot`, `metric`, `navigate`, `node`, `refresh`, `render` and 10 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `ecosystem/web/index.html`
+
+`code-web` · 63 lines · 11,619 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/styles.css`
+
+`code-web` · 20 lines · 27,377 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
 
 ---
 
@@ -26957,13 +27262,13 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle
 
-22 files.
+23 files.
 
 #### `oracle/README.md`
 
-`doc` · 183 lines · 10,311 B · description: **extracted**
+`doc` · 185 lines · 10,482 B · description: **extracted**
 
-**Purpose.** Oracle is a local shadow signal service for SOL/USDC. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive. It evaluates 14 existing strategy cards prospectively and serves snapshots,
+**Purpose.** Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit CLI and MCP process to that instrument. No quote conversion is implied. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive.
 
 **Use.** Read it.
 
@@ -26985,7 +27290,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/cli.py`
 
-`code-python` · 205 lines · 7,432 B · description: **extracted**
+`code-python` · 216 lines · 8,007 B · description: **extracted**
 
 **Purpose.** Foreground Oracle owner and inert queries. No signing or order entry points.
 
@@ -26995,7 +27300,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/engine.py`
 
-`code-python` · 441 lines · 18,770 B · description: **extracted**
+`code-python` · 452 lines · 19,271 B · description: **extracted**
 
 **Purpose.** Prospective, source-bound shadow forecasts; no execution capability.
 
@@ -27005,11 +27310,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/feeds.py`
 
-`code-python` · 258 lines · 10,014 B · description: **extracted**
+`code-python` · 298 lines · 11,777 B · description: **extracted**
 
 **Purpose.** Read-only market adapters with explicit source and clock semantics. No adapter starts the shared recorder, loads a signing key, or obtains a swap. Jupiter's Price V3 API supplies USD reference prices, not a SOL/USDC execution quote or a push stream. Its response has block IDs but no market-event timestamp.
 
-**Contents.** Defines `SOL_MINT`, `USDC_MINT`, `JUPITER_PRICE_URL`, `MAX_RESPONSE_BYTES`, `class FeedUnavailable`, `_number()`, `_identity()`, `class _NoRedirect`, `_get_json()`, `class RecorderFeed` and 1 more.
+**Contents.** Defines `SOL_MINT`, `USDC_MINT`, `JUPITER_PRICE_URL`, `MAX_RESPONSE_BYTES`, `INSTRUMENT`, `MINT`, `validate_instrument()`, `class FeedUnavailable`, `_number()`, `_identity()` and 4 more.
 
 **Use.** `import oracle.feeds`
 
@@ -27041,7 +27346,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/server.py`
 
-`code-python` · 325 lines · 11,616 B · description: **extracted**
+`code-python` · 328 lines · 11,777 B · description: **extracted**
 
 **Purpose.** Local stdio MCP views over the Oracle archive; never a submission surface.
 
@@ -27129,6 +27434,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest oracle/tests/test_guidance.py -q`
 
+#### `oracle/tests/test_multi_instrument.py`
+
+`test` · 266 lines · 10,575 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `HAS_MCP`, `REPO`, `tick()`, `class MultiInstrumentTests`, `class MultiInstrumentProtocolTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_multi_instrument.py -q`
+
 #### `oracle/tests/test_server.py`
 
 `test` · 175 lines · 6,864 B · description: **none**
@@ -27173,7 +27488,17 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-14 files.
+15 files.
+
+#### `scripts/bootstrap_ecosystem.py`
+
+`code-python` · 51 lines · 1,644 B · description: **extracted**
+
+**Purpose.** Install, verify and start the resumable paper ecosystem; status/stop are inert.
+
+**Contents.** Defines `REPO`, `main()`.
+
+**Use.** `python3 scripts/bootstrap_ecosystem.py --help`
 
 #### `scripts/build_doc_index.py`
 
@@ -27197,7 +27522,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/check_docs.py`
 
-`code-python` · 390 lines · 14,939 B · description: **extracted**
+`code-python` · 420 lines · 15,747 B · description: **extracted**
 
 **Purpose.** Fail the build when the docs drift from the repo. python3 scripts/check_docs.py python3 scripts/check_docs.py --prune # drop dead index entries Two kinds of rot, both of which happened here before this existed: * **Stale test counts.** The docs claimed 250 backtester tests for several commits while the suite had grown to 454.
 

@@ -1,10 +1,11 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.0.2
+- Version: 1.0.3
+- Delta: Preserve coordinated ecosystem discovery and schema 4 append-only telemetry during PR185 integration; retain historical acceptance separately.
 - Delta: Document manager 0.3.0 immutable editing, safe application, schema/history and separate saved/active configuration identity.
 - Delta: Add the executed default-home demonstration and 0.2.1 usable-startup quickstart.
 - Reviewed: 2026-11-09, America/New_York. Runtime observations are a snapshot, not a monitoring feed.
-- Product source baseline: `7af12d82f4e9b8eb04262e9636487f4751730d1d` for manager 0.3.0; prior M2 delivery is merge `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
+- Original editing source baseline: `7af12d82f4e9b8eb04262e9636487f4751730d1d`; manager 0.3.0 also incorporates PR185 compatibility below. Final loaded identity belongs to the integrated acceptance receipt. Prior M2 delivery is merge `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
@@ -139,6 +140,7 @@ Every application command dispatches through `/Users/mitch/dev/solmargintrader/b
 | `schema [STRATEGY]` | Read actual editor fields, defaults, constraints and command argument contract |
 | `status [BOT] [--why]` | Bot or fleet read model; fleet also reports configured installations |
 | `discover` | External installation inventory with completeness/availability reasons |
+| Global `--ecosystem-home ABSOLUTE_PATH` before a command | Add explicitly selected external F5 registrations to list/fleet status; does not transfer or control those trials |
 | `register-input BOT --descriptor ABSOLUTE_JSON_PATH` | Read and pin a compatible recording snapshot; starts no worker |
 | `start BOT [--request-id UUID]` | Persist manager running intent; no supervisor required for acceptance |
 | `stop BOT [--request-id UUID]` | Persist manager stopped intent and fence commits; retain exposure |
@@ -383,7 +385,7 @@ All manager paths below follow `SOLBOT_HOME`; the listed paths are the default h
 | Path | Schema/role | Preservation rule |
 | --- | --- | --- |
 | `/Users/mitch/.config/solbot/manager.sqlite3` | Schema 2 on an authorized writer; immutable specification versions, latest index, events and mutation receipts | Schema 1 remains readable without migration; preserve every prior body and pin |
-| `/Users/mitch/.config/solbot/runtime.sqlite3` | Schema 3 on an authorized writer; pinned runs/input, complete archived runs, adoption receipts, fills, checkpoints, generations and controls | Schemas 1/2 remain readable without migration; preserve cursor, lots and all accepted request IDs |
+| `/Users/mitch/.config/solbot/runtime.sqlite3` | Schema 4 on an authorized writer; pinned runs/input, complete archives/receipts and an append-only attributable event stream | Schemas 1–3 remain readable without migration; preserve cursor, lots, event provenance and every accepted request ID |
 | `/Users/mitch/.config/solbot/controls.sqlite3` | Schema 2; external-owner pending/outcome receipts | Preserve uncertainty and request bindings across restarts |
 | `/Users/mitch/.config/solbot/mutation.lock` | Cross-process configuration edit/application lock | Stop does not require this lock or consume mutation quota |
 | `/Users/mitch/.config/solbot/supervisor.lock` | Lifetime home lock | File existence alone does not mean lock held |
@@ -403,6 +405,24 @@ already active revision is a no-op. Mutation receipts bind the original request,
 expected/accepted revisions and configuration/run identities. Stop remains usable
 under a full mutation journal. No manual SQLite edits or receipt deletions are a
 supported way to clear a blocker.
+
+Schema 4 keeps event sequences monotonic across application. New events carry
+runtime ID and origin; migrated events retain their original sequence in
+`origin_sequence`. Archived imports receive new stream IDs without claiming a
+recovered original global order. Per-run history filters the full stream by
+runtime identity. Shared ecosystem telemetry accepts manager specification
+schemas 1/2 and these runtime contracts. Existing unambiguous mirror cursors can
+continue; an already replaced or regressed source remains an explicit refusal.
+The mirror never resets its cursor to hide uncertainty. Stop deliberately avoids
+historical archive import so corruption there cannot prevent stopped intent;
+a later writer still refuses the corrupt archive.
+
+The coordinated ecosystem source is now 0.1.2 with manager 0.3.0 compatibility.
+Its explicit `--ecosystem-home` view is read-only externally owned F5 evidence.
+It does not admit those registrations to manager worker slots. Existing installed
+ecosystem 0.1.1 environments and active immutable experiments remain untouched;
+see `/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-BOOTSTRAP.md` before selecting
+a fresh environment or experiment.
 
 Read transactions hold one snapshot across the run row and fill decode. The supervisor confirms an integrity fault in a fresh write transaction before quarantining. A transient store-access error is not proof of corruption. Complete checkpoint identity binds bot ID, config/revision, source input, target context, virtual account, engine and run hash, including when two bots have identical parameters.
 
@@ -529,6 +549,14 @@ and `/Users/mitch/.local/state/solbot/releases/0.3.0/editing-installed-acceptanc
 macOS refused a 107-byte Unix socket path in the first fixture; the shorter
 isolated home passed. Use a short local `SOLBOT_HOME` if a custom path exceeds
 the platform socket limit.
+
+PR185 integration then passed the full 148-test manager suite and 54 covering
+ecosystem telemetry/registration/web/setup/wrapper tests. It fixed schema
+compatibility and audit-stream continuity without taking external F5 ownership.
+The original 29-check/70-file receipt above is historical evidence for 7af12d82,
+not a proof that the integrated source is loaded. Consult the separate integrated
+acceptance receipt under the same release directory for current loaded-source
+and telemetry-after-adoption validation.
 
 ### M1 evidence
 

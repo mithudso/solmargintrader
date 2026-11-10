@@ -75,6 +75,7 @@ def is_ignored(rel: str) -> bool:
             ["git", "check-ignore", "-q", "--", candidate],
             cwd=REPO,
             capture_output=True,
+            check=False,
         )
         if done.returncode == 0:
             return True
@@ -88,6 +89,7 @@ def is_tracked(rel: str) -> bool:
             ["git", "ls-files", "--error-unmatch", "--", rel],
             cwd=REPO,
             capture_output=True,
+            check=False,
         ).returncode
         == 0
     )
@@ -111,24 +113,45 @@ def committed_test_files(rel_dir: str) -> list[str] | None:
     which includes the index. A test file that is staged but not yet committed
     would otherwise make this fail in someone else's checkout for work they have
     not landed -- the docs would be reported as stale against tests that do not
-    exist in any commit yet. Counting `HEAD` puts the failure on the commit that
-    adds the tests, which is where it belongs.
+    exist in any commit yet. Count `HEAD` and, during a merge, every committed
+    incoming parent in `MERGE_HEAD`. Incoming tests already belong to a commit;
+    genuinely staged-only files still do not.
 
     Returns None when git cannot answer, so the caller can fall back.
     """
-    done = subprocess.run(
-        ["git", "ls-tree", "-r", "HEAD", "--name-only", "--", rel_dir],
+    merge_path = subprocess.run(
+        ["git", "rev-parse", "--git-path", "MERGE_HEAD"],
         cwd=REPO,
         capture_output=True,
+        check=False,
         text=True,
     )
-    if done.returncode != 0:
+    if merge_path.returncode != 0:
         return None
-    return [
-        Path(line).name
-        for line in done.stdout.splitlines()
-        if Path(line).name.startswith("test") and line.endswith(".py")
-    ]
+    parents = ["HEAD"]
+    try:
+        parents.extend((REPO / merge_path.stdout.strip()).read_text().splitlines())
+    except FileNotFoundError:
+        pass
+    except OSError:
+        return None
+    files = set()
+    for parent in parents:
+        done = subprocess.run(
+            ["git", "ls-tree", "-r", parent, "--name-only", "--", rel_dir],
+            cwd=REPO,
+            capture_output=True,
+            check=False,
+            text=True,
+        )
+        if done.returncode != 0:
+            return None
+        files.update(
+            Path(line).name
+            for line in done.stdout.splitlines()
+            if Path(line).name.startswith("test") and line.endswith(".py")
+        )
+    return sorted(files)
 
 
 def count_tests(suite: unittest.TestSuite | unittest.TestCase) -> int:
@@ -196,6 +219,7 @@ def count_extension_tests() -> int:
         ["node", "--test", "--test-reporter=tap"],
         cwd=REPO / "extension",
         capture_output=True,
+        check=False,
         text=True,
     )
     # A failing suite still reports its pass/fail tally, and a test failure is
@@ -311,7 +335,15 @@ def check_components_covered() -> list[str]:
     text = path.read_text(encoding="utf-8").lower()
     return [
         f"{OVERVIEW_MD}: no section for component {name}/"
-        for name in ("backtester", "research", "extension", "soltui", "mongo", "liquidity", "executor")
+        for name in (
+            "backtester",
+            "research",
+            "extension",
+            "soltui",
+            "mongo",
+            "liquidity",
+            "executor",
+        )
         if f"{name}/" not in text
     ]
 
@@ -330,7 +362,7 @@ def main(argv: list[str] | None = None) -> int:
     # and the drift it reports points at the docs rather than at the missing
     # dependency. Refuse to grade the prose against a suite that did not load.
     unimportable = sorted(
-        set(name for d, _ in SUITES.values() for name in load_failures(discover(d)))
+        {name for d, _ in SUITES.values() for name in load_failures(discover(d))}
     )
     if unimportable:
         for name in unimportable:
@@ -355,9 +387,7 @@ def main(argv: list[str] | None = None) -> int:
     # repeat.
     for suite_name, (rel_dir, _) in SUITES.items():
         committed = set(committed_test_files(rel_dir) or [])
-        on_disk = {
-            p.name for p in REPO.joinpath(rel_dir).glob("test*.py")
-        }
+        on_disk = {p.name for p in REPO.joinpath(rel_dir).glob("test*.py")}
         pending = sorted(on_disk - committed)
         if pending:
             print(

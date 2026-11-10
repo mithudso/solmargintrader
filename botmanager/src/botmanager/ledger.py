@@ -47,7 +47,9 @@ class RuntimeLedger:
         self.path = self.home / "runtime.sqlite3"
 
     @contextmanager
-    def connection(self, write: bool = False) -> Iterator[sqlite3.Connection]:
+    def connection(
+        self, write: bool = False, *, migrate_events: bool = True
+    ) -> Iterator[sqlite3.Connection]:
         db = None
         try:
             if write:
@@ -95,14 +97,19 @@ class RuntimeLedger:
                 )
                 db.execute("PRAGMA user_version=3")
                 version = 3
-            if version not in (1, 2, 3):
+            if version == 3 and write and migrate_events:
+                self._migrate_event_stream(db)
+                db.execute("PRAGMA user_version=4")
+                version = 4
+            if version not in (1, 2, 3, 4):
                 raise ManagerError(
                     "incompatible_store", "Runtime journal schema is incompatible.", 4
                 )
             tables = {
                 "runs": "bot_id spec input runtime_id desired observed generation owner pid heartbeat tick_started evaluated cursor checkpoint checkpoint_hash failures retry_at reason",
                 "fills": "bot_id sequence body",
-                "events": "sequence bot_id generation kind cursor at",
+                "events": "sequence bot_id generation kind cursor at"
+                + (" runtime_id origin_sequence origin" if version >= 4 else ""),
                 "requests": "request_id binding receipt checksum"
                 + (" acceptance" if version >= 2 else ""),
             }
@@ -125,12 +132,107 @@ class RuntimeLedger:
                     db.rollback()
                 db.close()
 
+    def _migrate_event_stream(self, db):
+        """Retain current cursors; import archived events without reusing IDs.
+
+        Schema 3 removed events on adoption and could reuse their sequences.
+        Archive imports therefore get new stream IDs above every known old ID;
+        their exact original sequence and runtime remain separately attributable.
+        Old archive bodies and all control/request rows stay byte-for-byte intact.
+        """
+        current = [
+            dict(row) for row in db.execute("SELECT * FROM events ORDER BY sequence")
+        ]
+        archived = []
+        for raw in db.execute("SELECT * FROM archives ORDER BY rowid"):
+            archive = self._decode_archive(db, raw)
+            archived.extend(
+                (archive["runtime_id"], event) for event in archive["events"]
+            )
+        sequences = [event["sequence"] for event in current] + [
+            event["sequence"] for _, event in archived
+        ]
+        if any(type(sequence) is not int or sequence < 1 for sequence in sequences):
+            raise ManagerError(
+                "incompatible_store", "Historical event sequences are invalid.", 4
+            )
+        next_sequence = max(sequences, default=0) + 1
+        db.execute(
+            "CREATE TABLE events_v4 (sequence INTEGER PRIMARY KEY AUTOINCREMENT, bot_id TEXT NOT NULL, generation INTEGER NOT NULL, kind TEXT NOT NULL, cursor INTEGER NOT NULL, at REAL NOT NULL, runtime_id TEXT NOT NULL, origin_sequence INTEGER, origin TEXT NOT NULL)"
+        )
+        fields = ("sequence", "bot_id", "generation", "kind", "cursor", "at")
+        for event in current:
+            run = db.execute(
+                "SELECT runtime_id FROM runs WHERE bot_id=?", (event["bot_id"],)
+            ).fetchone()
+            if run is None or str(UUID(run["runtime_id"])) != run["runtime_id"]:
+                raise ManagerError(
+                    "incompatible_store",
+                    "Current event runtime attribution is unavailable.",
+                    4,
+                )
+            db.execute(
+                "INSERT INTO events_v4 VALUES (?,?,?,?,?,?,?,?,?)",
+                (
+                    *[event[key] for key in fields],
+                    run["runtime_id"],
+                    event["sequence"],
+                    "legacy_current",
+                ),
+            )
+        for runtime_id, event in archived:
+            db.execute(
+                "INSERT INTO events_v4 VALUES (?,?,?,?,?,?,?,?,?)",
+                (
+                    next_sequence,
+                    *[event[key] for key in fields[1:]],
+                    runtime_id,
+                    event["sequence"],
+                    "legacy_archive",
+                ),
+            )
+            next_sequence += 1
+        db.execute("DROP TABLE events")
+        db.execute("ALTER TABLE events_v4 RENAME TO events")
+
     @staticmethod
     def _event(db, row, kind):
+        if db.execute("PRAGMA user_version").fetchone()[0] < 4:
+            # A stop must not depend on validating or importing a historical
+            # archive. Keep its old journal format until another writer migrates.
+            db.execute(
+                "INSERT INTO events(bot_id,generation,kind,cursor,at) VALUES (?,?,?,?,?)",
+                (row["bot_id"], row["generation"], kind, row["cursor"], time.time()),
+            )
+            return
+
+        run = db.execute(
+            "SELECT runtime_id FROM runs WHERE bot_id=?", (row["bot_id"],)
+        ).fetchone()
         db.execute(
-            "INSERT INTO events(bot_id,generation,kind,cursor,at) VALUES (?,?,?,?,?)",
-            (row["bot_id"], row["generation"], kind, row["cursor"], time.time()),
+            "INSERT INTO events(bot_id,generation,kind,cursor,at,runtime_id,origin_sequence,origin) VALUES (?,?,?,?,?,?,NULL,'native')",
+            (
+                row["bot_id"],
+                row["generation"],
+                kind,
+                row["cursor"],
+                time.time(),
+                run["runtime_id"],
+            ),
         )
+
+    @staticmethod
+    def _run_events(db, bot_id, runtime_id):
+        if db.execute("PRAGMA user_version").fetchone()[0] >= 4:
+            rows = db.execute(
+                "SELECT * FROM events WHERE bot_id=? AND runtime_id=? ORDER BY sequence",
+                (bot_id, runtime_id),
+            )
+        else:
+            rows = db.execute(
+                "SELECT * FROM events WHERE bot_id=? ORDER BY sequence", (bot_id,)
+            )
+        return [dict(row) for row in rows]
 
     def _decode(self, db, row, *, archived_fills=None):
         from .strategies.grid import validate_checkpoint
@@ -475,7 +577,7 @@ class RuntimeLedger:
                 "invalid_input",
                 "A canonical request UUID and supported operation are required.",
             ) from exc
-        with self.connection(True) as db:
+        with self.connection(True, migrate_events=operation != "stop") as db:
             old = db.execute(
                 "SELECT * FROM requests WHERE request_id=?", (request_id,)
             ).fetchone()
@@ -869,13 +971,7 @@ class RuntimeLedger:
                         "source": "coinbase_proxy",
                         "mode": "reference_paper",
                         "state": row,
-                        "events": [
-                            dict(event)
-                            for event in db.execute(
-                                "SELECT * FROM events WHERE bot_id=? ORDER BY sequence",
-                                (bot_id,),
-                            )
-                        ],
+                        "events": self._run_events(db, bot_id, row["runtime_id"]),
                     }
                 )
             for run in runs:
@@ -1100,20 +1196,13 @@ class RuntimeLedger:
                         (spec.bot_id,),
                     )
                 ],
-                "events": [
-                    dict(event)
-                    for event in db.execute(
-                        "SELECT * FROM events WHERE bot_id=? ORDER BY sequence",
-                        (spec.bot_id,),
-                    )
-                ],
+                "events": self._run_events(db, spec.bot_id, prior_id),
             }
             db.execute(
                 "INSERT INTO archives VALUES (?,?,?,?)",
                 (prior_id, spec.bot_id, canonical(body), fingerprint(body)),
             )
             db.execute("DELETE FROM fills WHERE bot_id=?", (spec.bot_id,))
-            db.execute("DELETE FROM events WHERE bot_id=?", (spec.bot_id,))
             db.execute("DELETE FROM runs WHERE bot_id=?", (spec.bot_id,))
         elif db.execute("SELECT count(*) FROM runs").fetchone()[0] >= MAX_INSTANCES:
             raise ManagerError(

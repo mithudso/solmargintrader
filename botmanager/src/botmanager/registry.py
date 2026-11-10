@@ -20,6 +20,7 @@ class CommandContext:
     shared_snapshot: Mapping[str, Any] | None = None
     installations: tuple[Any, ...] = ()
     owner_adapters: Mapping[str, Any] = field(default_factory=dict)
+    ecosystem_home: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -95,7 +96,10 @@ def _create(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
 
 def _list(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
     store = _store(context)
+    from .adapters.ecosystem import discover_ecosystem
+
     return {
+        "ecosystem": discover_ecosystem(context.ecosystem_home),
         "initialized": store.initialized,
         "bots": [spec.to_dict() for spec in store.list_specs()],
     }
@@ -277,8 +281,11 @@ def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
         captured = _store(context).capture_view(params["identity"])
         spec, row = captured["bots"][0]
         return _manager_status(spec, row, context, why=why)
+    from .adapters.ecosystem import discover_ecosystem
+
     captured = _store(context).capture_view()
     return {
+        "ecosystem": discover_ecosystem(context.ecosystem_home),
         "initialized": captured["initialized"],
         "bots": [
             _manager_status(spec, row, context, why=why)

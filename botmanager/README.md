@@ -201,8 +201,9 @@ no failed/blocked state, and a fully reconciled zero-exposure checkpoint with no
 open lots or accrued carry. The canonical replay independently confirms the
 checkpoint before adoption. Tiny floating-point unrealized-P&L residue up to
 1e-9 quote units is tolerated only after exact replay equality. Open exposure
-remains blocked; stop does not close it. The old runtime row, fills and events
-move together to an immutable archive. The replacement has a new runtime UUID,
+remains blocked; stop does not close it. The old runtime row, fills and per-run events
+are retained together in an immutable archive. The global event stream remains
+append-only and carries the runtime UUID on every new event. The replacement has a new runtime UUID,
 a strictly greater fencing generation, zero cursor and stopped intent. Old
 control receipts replay without acting on the new run. Applying the already
 active revision with unchanged input is a no-op, preserving progress and capital.
@@ -210,9 +211,14 @@ active revision with unchanged input is a no-op, preserving progress and capital
 A per-home guarded flock serializes edits, registration and adoption across
 processes. Runtime replacement, archival and its receipt share one journal
 transaction. The configuration-request quotas are independent of control stop
-capacity. Stop never waits for the mutation flock. A runtime schema-3 migration
-adds archives and adoption requests while retaining every schema-1/2 control ID,
-body and legacy-context policy. Back up all three SQLite journals using their
+capacity. Stop never waits for the mutation flock. Runtime schema 3 adds archives and adoption requests. Runtime schema 4 keeps
+global event sequences monotonic across adoption and adds runtime attribution.
+It preserves existing current event IDs, imports archived events above all known
+legacy IDs, and records their original sequence and import origin separately.
+Historical archive bodies and every schema-1/2/3 control ID, body and
+legacy-context policy remain unchanged. Reads never perform this migration.
+Stop can retain the prior event schema so archive import failures cannot prevent
+durable stopped intent; another authorized runtime writer performs the migration. Back up all three SQLite journals using their
 connection backup APIs. `history` has no retention or pagination policy yet;
 large histories are intended for direct CLI use. Mutations are explicit CLI
 operations outside the supervisor socket request loop.
@@ -490,7 +496,11 @@ the immutable input's end, the worker remains observable but reports
 `waiting/reference_input_exhausted`. It does not claim prospective evaluation or
 fresh Jupiter data. Additional recordings need the later prospective-data design.
 
-`events BOT --limit 100` reads the reference journal. The local supervisor socket
+`events BOT --limit 100` reads the append-only reference event stream across
+current and archived runs. Each schema-4 event includes its runtime UUID;
+`origin_sequence` and `origin` distinguish imported legacy rows from new events.
+A schema-3 mirror whose cursor already became ambiguous through prior sequence
+reuse remains unavailable; the manager never resets or silently rebinds it. The local supervisor socket
 is mode 0600 with same-user peer checks on macOS/Linux, a 64 KiB request ceiling,
 a bounded listen backlog and monotonic whole-request I/O deadlines (0.2 seconds
 for server receipt/response and one second for client connect/send/receive).
@@ -499,7 +509,7 @@ registry for local bot controls and reads. Registration and service administrati
 are explicit CLI operations outside the supervisor request loop. CLI controls
 write durable intent directly, so an unavailable socket cannot prevent a stop.
 
-`runtime.sqlite3` is independently schema version 3 and must be backed up using
+`runtime.sqlite3` is independently schema version 4 and must be backed up using
 SQLite's backup API together with `manager.sqlite3` and `controls.sqlite3` when
 present. Runtime specs and inputs are immutable; fills, checkpoints, generations,
 control receipts and reference-only events are durable. Explicit `apply` archives
@@ -553,3 +563,10 @@ concurrent commit fencing, actual crash-before/crash-after commit, supervisor
 SIGKILL/orphan shutdown, dead workers, hung ticks, failure holding, retained stop,
 corrupt checkpoints/fills, immutable input, and canonical economics/prefix parity.
 Installed package/service acceptance is a separate release gate.
+
+## External paper registrations
+
+`solbot --ecosystem-home /absolute/run/home status` reads registered F5 paper
+trials through the optional ecosystem adapter. These remain owned by F5; this
+command does not create manager drafts, claim runtime ownership or enable live
+controls. See `docs/ECOSYSTEM-BOOTSTRAP.md` for the resumable installer.

@@ -418,6 +418,8 @@ class RecoveryTests(unittest.TestCase):
         with closing(sqlite3.connect(self.ledger.path)) as db, db:
             db.execute("DROP TABLE archives")
             db.execute("DROP TABLE adoption_requests")
+            for field in ("runtime_id", "origin_sequence", "origin"):
+                db.execute(f"ALTER TABLE events DROP COLUMN {field}")
             db.execute("ALTER TABLE requests DROP COLUMN acceptance")
             db.execute(
                 "UPDATE requests SET binding=?,checksum=? WHERE request_id=?",

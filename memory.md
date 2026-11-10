@@ -1,9 +1,18 @@
 # Work continuation
 
-Version: 348
+Version: 354
+Delta: v353 to v354; record merge-aware docs gate success before combined integration commit.
+Delta: v352 to v353; preserve the committed-merge-parent documentation count failure and required helper fix.
+Delta: v351 to v352; preserve tested schema4 integration and refreshed shared-source/evidence preflights.
+Delta: concurrent histories to v351; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 Delta: v347 to v348; record reviewed editing and independent installed acceptance before final-head delivery.
 Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
 Delta: v345 to v346; resume all remaining milestones with safe editing and Oracle coordination.
+Delta: v349 to v350; preserve embedding diagnosis and final PR delivery context.
+Delta: v348 to v349; verify genuine forward handoff and final installed UI acceptance.
+Delta: v347 to v348; verify installed control room and preserve the failed gated experiment before the explicit paper baseline.
+Delta: v346 to v347; implement bootstrap, extend telemetry and reuse the accepted control-room UI.
+Delta: v345 to v346; start resumable ecosystem bootstrap implementation.
 Delta: v344 to v345; preserve merged Oracle work and the proven solbot startup/demo repair.
 Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch.
 Delta: v341 to v342; reproduce bare-command failure and begin usable entry/demonstration repair.
@@ -97,6 +106,48 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v350 - 2026-11-09: final delivery and embedding clarification
+
+The paper service and actual backtest-to-forward handoff are verified as described below. Delivery is tracked by https://github.com/mithudso/solmargintrader/pull/185. All 11 non-optional CI jobs passed on implementation commit 08d7807f76a98e983154f4b0a787be3f7b821665. The final notes/comment push must pass the same checks before merge. The PR merged state and its squash commit are the canonical delivery receipt. No unverified runtime capability should be inferred from CI.
+
+The user's subsequent Ollama observation was investigated without inference, model loading, restarting services or reindexing. Two checked stores use different, internally matching models. /Users/mitch/dev/solmargintrader/index/semantic-local.json records 45995 Mxbai chunks with 1024 dimensions; index/search.py takes its query model from that manifest. The hub DB contains 286163 distinct Nomic embeddings, all 768 dimensions, linked to 1098241 file rows. /Users/mitch/.global-ai-hub/config.yaml selects nomic-embed-text for that corpus; scripts/semantic_ops/corpus.py uses that configuration. Local IPv4 and IPv6 Ollama metadata agree. Nomic and Qwen3-embedding:4b were loaded; Mxbai was installed but unloaded. Loaded inventory does not override a client's per-request model. No mismatch or configuration repair was indicated. Clarified the misleading all-indexes comment in index/ollama_ensure.py. LLMS-Explorer indexing remains paused.
+
+No further implementation work remains for the available paper integrations. The active service remains at /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1, currently http://127.0.0.1:60864, using the immutable /Users/mitch/.venvs/solecosystem-0.1.1 environment. Retain the previous gated experiment. Future outcomes, five unavailable historical markets, unsupported leverage-tier CPCV, a manager raw-log sink and live Jupiter integration remain explicit capability limits. The local acceptance receipt records these boundaries. Stele task/knowledge updates are queued as b4f573a9,0fb55e42,9ad6bc49 until transport returns.
+
+Delivery cleanup must preserve the original checkout's five unrelated untracked paths and other agents' worktrees. Final acceptance after sync checks the remote source fingerprint against the installed receipt and the running UI/forward state. If continuation is needed, inspect PR185 first; do not reinstall or duplicate the active supervisor, F5 worker or shared recorder.
+
+## v349 - 2026-11-09: verified installed paper service
+
+Implementation and acceptance are complete for available integrations. The installed 0.1.1 environment is /Users/mitch/.venvs/solecosystem-0.1.1. Its source receipt is 4380b1649a834ebc528b3caf362a9d62149bf41a82b92de55d7dbe728e964779. Independent acceptance compared 166 installed Python/web files with no mismatch. UI is currently http://127.0.0.1:60864. Read current state for its URL after a restart.
+
+The real run home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 contains run 6eb651de85bd4aaba6805cfd0511217c and F5 batch a119fc4eee48437fa0f8e9d1a73bf5a3. All 476 historical cells finished: 189 completed, 90 partial, 155 missing and 42 unsupported. Nine assets have 31 genuine prospective calls each (279 unresolved calls). The process entered forward_partial automatically. All registrations are paper/disarmed and not live-ready. The supervisor and its F5 worker remain running from installed code outside the worktree.
+
+At 2026-11-10 02:59 UTC, all nine accepted input hashes matched their receipts and all fourteen Oracle archives passed integrity checks. Oracle observations are accumulating; aggregates remain unavailable pending genuine warm-up and resolved evidence. HYPE/JITOSOL/KMNO/USDC/XMR have no accepted full Coinbase USD history for these bounds. Unsupported leverage-tier CPCV remains unsupported. These gaps are not successful trials and no live Jupiter capability is claimed. The manager bridge observed seven actual native events. Its freeform log sink is not configured.
+
+Final checks: ecosystem 78, Oracle 60, manager 112, backtester 999; F5/policy/simulation 32. Lint, JavaScript syntax, installed package health, official MCP discovery/subscription/no-data/clean EOF, UI pagination/inspection/origin isolation/mobile/disconnect/reconnect passed. Three UI findings were repaired and reverified. Documentation counts use 1405 SolTUI tests after the three new policy cases. The ordinary docs check counts HEAD file names, so final standard validation must run after committing the newly added test module. It must pass before push/delivery.
+
+The local acceptance receipt is /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/acceptance-receipt.json. The operating guide is docs/ECOSYSTEM-BOOTSTRAP.md. Stele remains disconnected: task creation b4f573a9 and lesson/decision writes 0fb55e42,9ad6bc49 are pending outbox replay. Repository delivery remains: refresh indexes for this note, commit owned files, run standard docs/index checks, push/PR/CI/merge, verify remote content, sync the original checkout without touching its unrelated untracked files, and remove only this clean task checkout. No further runtime work is required before delivery; future market outcomes and missing integrations remain operational limitations.
+
+## v348 - 2026-11-09: installed integration and paper policy repair
+
+The initial five-package installation and real MCP health check passed. The installed service bound http://127.0.0.1:52282 and registered all 476 cells. Real public Coinbase history passed full coverage for 9 assets, with 678 closed daily bars each. HYPE, JITOSOL, KMNO, USDC and XMR remained blocked. Native manager journals supplied 7 sanitized events. The manager has no configured freeform log sink; logs remain explicitly unavailable.
+
+Independent installed acceptance compared 166 package/asset files, verified all 476 UUIDs across 5 pages, inspected real evidence, and exercised read-only/origin isolation, offline/reconnect and a narrow viewport. Source checks passed: ecosystem 78, Oracle 60, manager 112, F5 15 and backtester 999. Lint and documentation/index checks passed before the policy repair. Browser review found and fixed decorative event-dot text, missing upstream-clock limitation text and favicon noise.
+
+The actual F5 run produced zero-trade, not-evaluable attempts under its inherited min_confidence=0.80 policy. Preserve that experiment at /Users/mitch/.local/share/solmargintrader/ecosystem and its completed /Users/mitch/.venvs/solecosystem environment. Root requested its cooperative stop. The service must not label those failures as successful forward tests.
+
+The explicit costed-shadow-v1 baseline now defaults to research_min_confidence=0 for raw-signal paper measurement with costs. Its default home is /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 and environment /Users/mitch/.venvs/solecosystem-0.1.1. Existing live/global defaults and Oracle vote policy are unchanged. F5 now freezes fee_schedule and all simulation execution fields; legacy plans retain their old defaults. Three causal policy tests plus 15 existing F5 tests passed. A synthetic raw-signal example loses money after costs; passing evaluation is not a profit claim. The installed environment must remain immutable during a run.
+
+Installer source receipts now bind HTML/CSS/JS. Crash recovery adopts only the sole exact complete unstarted F5 plan; 11 recovery tests include an injected post-owner-commit failure. Stele task creation remains queued as outbox b4f573a9 because the MCP is disconnected. Remaining: finish installing 0.1.1, launch the real default baseline, verify actual forward handoff or exact blocker, repeat installed/browser checks for the final source, refresh tracked indexes, run required checks, commit/push/CI/merge and clean only this task's checkout.
+
+## v347 - 2026-11-09: bootstrap and control room in progress
+
+The user accepted existing14assets and expanded scope to consume manager logs/events for coordination and wire the existing design. Reuse docs/design/bot-control-room. Source now includes a dedicated5packageinstaller, strict immutable acquisitionreceipts, F5batch orchestration and all34registry coverage, externaltrialregistrationledger, multi-instrumentOracle0.2, and optionalmanagerdiscovery. Root owns supervisor/CLI; workers own UIserver/staticassets and safeincremental managertelemetry. UIbinds loopbackport0 inside supervisor; nofakefixturemetrics or ordercontrols. Installer setup.py collision discovered inrealinstallation (setuptools expected .egg-info); renamed to ecosystem/installation.py. Failednewsolecosystemenv has no completedreceipt and mayberebuilt aftersourcefreeze. Tested40ecosystemtests,60Oracle,112manager initially; rerunafterUIintegration. Fixed rootconcurrentstartlease, stalegenerationfailureclobber, atomicacceptedpublication and earlywrapperargvalidation. Stele is offline, taskcreateoutboxb4f573a9. Remaining: telemetry/UIintegration, cleaninstallationhealth, actualbootstrap14assetlaunch, renderedUIacceptance, finaltests/index/CI/merge. Preserve otherworktrees and pausedservices; no live trades.
+
+## v346 - 2026-11-09: ecosystem bootstrap
+
+Worktree /Users/mitch/dev/solmargintrader-wt-bootstrap-01a1c228, branch agent-bootstrap-01a1c228 from origin/master99548515. User requests installation, health verification, coin acquisition, all strategy/coin backtests, then registered paper forward bots and Oracle predictions. Inspect existing owners and reuse data before downloads; no duplicate recorder or live trading. Oracle currently supports SOL/USDC only; Bot Manager currently supports four types with grid runtime. Multi-coin and strategy registration are actual integration work, not ready existing capabilities. Stele is disconnected; lifecycle task creation queued as outbox b4f573a9. Current work: inventory established universe/backtest/forward APIs and design strict resumable matrix coverage. Remaining: implement, verify installed dry-run and real applicable acquisition, deliver source and report external blockers honestly.
 
 ## v343 - 2026-11-09: Oracle final acceptance
 
@@ -1151,3 +1202,28 @@ Editing must append immutable spec revisions, preserve pins, use CAS/request ded
 - Offlinecatalog regeneration/hashcheck completed. Initial docscheck with shellpython failed95moduleimports; rerun with recorded /Users/mitch/.venvs/soltui/bin/python passed:999backtester/1402SolTUI/408extension/46mongo total2855. That was an environment mismatch, not a source fix.
 - Root handoff/quickstart and new docs/bot-manager-oracle-interface.md reflect actual editing contract, maintenance paths and still-open milestones3–8. All6remaining briefs and4read-only owner reports are preserved in active planworkspace. Do not redispatch completedM1/M2/editingimplementation.
 - Final release records/catalogcommit, push/PR/current-headCI/merge and remote/source proof remain at this checkpoint. TASK1178 staysactive until actualdelivery. Then claimTASK1109 and implementM3, continuing1110–1114; the explicit all-milestones request is NOT satisfied by this editing release. Primary/oldworktree unrelatedchanges and .opencode remainpreserved.
+
+## v351 — concurrent PR185 integration before editing delivery
+
+PR186 finalhead5ef3df9 was pushed but checks reported none because mergeState DIRTY. The earlier ledger line claiming a CI watch was active is corrected: that watch exited1 with no checks, and no merge occurred. origin/master advanced to1d3d9ba9 through PR185 while editing was being verified. Git merge --no-commit is active. Preserve all incoming ecosystem bootstrap/control-room/telemetry, Oracle0.2 multi-instrument, headless SolTUI package, docs and workflow histories alongside editing0.3.
+
+Original implementer resolves manager metadata/README conflicts and validates combined CLI/registry. It also checks the concrete schema3/event-sequence compatibility risk with incoming ecosystem telemetry. Parent resolves workflow headers and derived index conflicts only. No offline index build until every unmerged Git stage is resolved. Previous installed29check/70hash receipt remains valid only for preintegration7af source; combined source needs refreshed matching acceptance before delivery. Do not claim mergeddefault or complete TASK1178 yet.
+
+After integrated source/review/installed/CI/merge, continue all TASK1109–1114. Refresh M3/M4 contracts against incoming shared producer/multi-instrument/headless package and actual selected ecosystem state. Reuse those owners instead of duplicate collectors or evidence stores. Primary checkout, older worktree TOC, current .opencode and other sessions remain untouched.
+
+## v352 — integrated editing source ready for merge commit/review
+
+- All Git conflicts are resolved. Original implementer staged manager0.3.0 plus ecosystem0.1.2 compatibility, append-only runtime schema4 events with runtime_id/origin_sequence/origin and retained legacy provenance. It preserves all archived/request bodies, keeps old read schemas inert, filters per-run history, and prevents event-ID reset on apply. Stop can bypass corrupt historical import; later writers still refuse corruption. Ecosystem mirror preserves unambiguous old cursors and fails closed on ambiguous/regressed/replaced sources.
+- Full manager148 and final covering ecosystem54 tests exited0; Ruff/format59files and staged diff checks passed. Report task-editing-integration-report.md lists exact15ownedpaths and hashes. No worker commit during merge, no environment/process/experiment changes. Parent still must update metadata/rootdocs, commit combined merge, independently review integration and refresh installed acceptance; preintegration29checks/70hashes remain historical7af proof only.
+- Ecosystem package nowpinsmanager0.3.0 and wrapperdefaultsnewsolecosystem0.1.2. The actual installed0.1.1 runs/records remain untouched. Primary now independently advanced toorigin1d3d9ba9 by the other session; its5untrackedforeignpaths remain unchanged. This session has not pulled/edited that checkout.
+- Refreshed read-only preflight found actual shared SOL/USD Oracle0.2 archive under ecosystem-paper-v1,1220acceptedobservations/highwater1513/age1.70s at03:38:44UTC. Existing producer supplies genuine reference samples; no manager recorder is needed. Headless SolTUI0.1.1 package resolves importavailability; KNOW1181 now reuses its exact pure Trend with declareddependency instead of relocating solely for former packaginggap.
+- KNOW1184 records stable auditstream needed for telemetry; KNOW1185 records F5 per-home CPCV/forward evidence bypasses ExperimentStore; KNOW1186 records dated genuine selected source. M3/M4 briefs updated1.1 and reports refreshed; M4 must bridge registered owner roots and participating-client admission without disturbing active immutable/unaware experiments or treating CPCV selection as final validation.
+- PR186 is unmerged; oldfinalhead5ef hasnoCIbecausemergeconflicts blocked it, so no activewatch is claimed. Finishintegratedsource/review/install/metadata/finalheadCI/merge, then continueTASK1109–1114. Editingdeliveryisnotcompletionofallremainingmilestones.
+
+## v353 — actual merge-parent count gate failure
+
+After conflicts resolved, offline index regeneration/hashcheck passed2904sourcefiles. The required docs checker exited1: it reported claimed1405SolTUI tests versus1402 and labelled test_f5_policy.py uncommitted, although that file's3tests are committed in MERGE_HEAD1d3. Its committed_test_files helper queries HEAD5ef only. The correct incoming docs counts must not be lowered. Original implementer owns the smallest merge-aware committed-ref fix, preserving staged-only/untracked exclusion, with actual merge and temporary no-merge/staged-only verification. No check success or merge commit is claimed before this is resolved. Parent must regenerate metadata again after the helper change, inspect exact completed gate exit, then commit/review/install/push/CI. Source148manager/54ecosystem checks remain accepted for unchanged application code.
+
+## v354 — merge-aware docs check verified
+
+The helper fix is staged, not committed yet. Actual docs RED exited1 at1402/2855; GREEN now exits0 at1405SolTUI/2858total. Temporary Gitrepo probes prove multiple committed MERGE_HEAD parents included once, genuinely staged-only files excluded and normal no-merge HEAD-only behavior unchanged. Ruff/format/staged-diff pass; only scripts/check_docs.py changed in this follow-up, including confined mechanical style/shebang-mode fixes. Integration report1.0.1 retains exactreceipts. Parent must regenerate offlinehashes after helper and workflowrecord changes, inspect success, commitcombinedmerge, then reviewintegration and refreshinstalledproof beforefinalheadCI/merge. Application source148manager/54ecosystem evidence remainsaccepted.

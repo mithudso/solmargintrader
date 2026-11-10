@@ -1,6 +1,7 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.1.0
+Version: 0.1.1
+Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source.
 Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime.
 Owner request: complete all remaining milestones, add editing and report the result to Oracle for a visual interface.
 Architecture authority: `/Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md`.
@@ -123,7 +124,7 @@ input block adoption; never clear a blocker by deleting history or creating a
 new bot identity automatically. Configuration editing is permitted while running,
 but active execution remains pinned until a supported explicit transition.
 
-Manager specification schema 2 and runtime schema 3 are independent from the
+Manager specification schema 2 and runtime schema 4 are independent from the
 outer response schema 1 and external-control journal schema 2. Old saved/runtime
 schemas remain readable; only authorized writes migrate them. Retain every
 accepted request ID and original legacy body. Historical acceptance that cannot
@@ -149,7 +150,15 @@ replace them. Live/Trigger/arbitrage support must not follow from a button.
 
 ## Oracle source findings to carry into the next stages
 
-At the dated read-only inspection, installed Oracle 0.1.0 matched source, no
+The integrated manager also accepts an explicit global `--ecosystem-home` for
+read-only F5 registrations in list/fleet status. Those trials retain their owner.
+Runtime schema 4 preserves an append-only attributable event stream across
+application, including legacy sequence provenance. Shared telemetry must not
+reset replaced/regressed cursors or reinterpret legacy null identity as proven.
+Ecosystem 0.1.2 pins manager 0.3.0; existing 0.1.1 immutable environments stay intact.
+
+
+At the initial dated read-only inspection, installed Oracle 0.1.0 matched source, no
 default archive or daemon was observed, and the existing recorder had SOL-USD
 but no SOL-USDC. An explicitly configured archive elsewhere may differ.
 Oracle Price V3 records a source-labelled USD-reference ratio with unknown
@@ -162,6 +171,17 @@ already selected provider. Raw history observation events can include rejected
 out-of-order observations; only accepted observations belong in replay bars.
 Reuse the existing producer and preserve source/policy identity. Do not start a
 new recorder or silently create source state from a status page.
+
+
+The current PR185 preflight supersedes the initial availability gap for its
+selected source: Oracle 0.2.0 produces genuine SOL/USD observations under
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3`.
+At 2026-11-10 03:38:44 UTC, a bounded read found 1,220 accepted observations and
+event watermark 1,513, with 1.70-second receipt age. Read current readiness again;
+these are dated observations. Reuse that existing ecosystem producer and keep
+its Coinbase USD/reference/no-volume limitations explicit. The native evidence
+owner does not yet govern F5's separate per-home CPCV/prospective ledgers; blind
+selection must account for those exposed dates and participating-client admission.
 
 ## Visual direction and handoff delivery
 

@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from .feeds import validate_instrument
 from .store import Store, canonical
 from .strategies import StrategySet
 from .voting import Vote, aggregate
@@ -27,6 +28,7 @@ class OracleEngine:
         self,
         path: str | Path,
         *,
+        instrument: str = "SOL/USDC",
         horizon_seconds: int = 60,
         bar_seconds: int = 60,
         max_age: float = 15,
@@ -42,6 +44,7 @@ class OracleEngine:
             not number(x) or not 0 < x <= 3600 for x in (max_age, resolution_tolerance)
         ):
             raise ValueError("invalid_oracle_policy")
+        self.instrument = validate_instrument(instrument)
         self.horizon_seconds, self.bar_seconds = horizon_seconds, bar_seconds
         self.max_age, self.minimum_resolved = max_age, minimum_resolved
         self.resolution_tolerance = resolution_tolerance
@@ -52,6 +55,7 @@ class OracleEngine:
             implementation.update(Path(__file__).with_name(name).read_bytes())
         self.policy = {
             "schema_version": 1,
+            "instrument": self.instrument,
             "horizon_seconds": horizon_seconds,
             "implementation_sha256": implementation.hexdigest(),
             "bar_seconds": bar_seconds,
@@ -80,7 +84,10 @@ class OracleEngine:
             )
 
     def strategies(self) -> list[dict]:
-        return self.strategy_set.catalog()
+        return [
+            {**entry, "instrument": self.instrument}
+            for entry in self.strategy_set.catalog()
+        ]
 
     def _clock(self, now: float | None) -> float:
         now = time.time() if now is None else now
@@ -97,7 +104,7 @@ class OracleEngine:
             for k in keys
         ):
             raise ValueError("invalid_observation_identity")
-        if incoming["instrument"] != "SOL/USDC":
+        if incoming["instrument"] != self.instrument:
             raise ValueError("instrument_not_supported")
         if any(
             not number(incoming.get(k)) for k in ("observed_at", "received_at", "price")
@@ -320,6 +327,7 @@ class OracleEngine:
             return {
                 "schema_version": 1,
                 "status": "unavailable",
+                "instrument": self.instrument,
                 "reason": "no_market_data",
                 "tradable": False,
             }
@@ -332,6 +340,7 @@ class OracleEngine:
         return {
             "schema_version": 1,
             "status": "available" if current else "unavailable",
+            "instrument": self.instrument,
             "reason": None if current else "stale_market_data",
             "age_seconds": age,
             "tradable": False,
@@ -361,6 +370,7 @@ class OracleEngine:
                     if forecast
                     else {
                         "strategy_id": entry["strategy_id"],
+                        "instrument": self.instrument,
                         "direction": None,
                         "reason": "warmup_required",
                     }
@@ -405,7 +415,7 @@ class OracleEngine:
         return {
             "schema_version": 1,
             "as_of": now,
-            "instrument": "SOL/USDC",
+            "instrument": self.instrument,
             "status": result["status"],
             "signal": result["signal"],
             "horizon_seconds": self.horizon_seconds,
@@ -419,7 +429,7 @@ class OracleEngine:
         }
 
     def history(self, limit: int = 100, after: int = 0) -> dict:
-        return self.store.history(limit, after)
+        return {**self.store.history(limit, after), "instrument": self.instrument}
 
     def status(self) -> dict:
         with self.store.connection() as db:
@@ -429,6 +439,7 @@ class OracleEngine:
             }
         return {
             "schema_version": 1,
+            "instrument": self.instrument,
             "policy_hash": self.policy_hash,
             "policy": self.policy,
             "archive": str(self.store.path),
