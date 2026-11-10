@@ -42,7 +42,7 @@ It never starts a second recorder or changes a frozen research owner's version.
 
 ## `oracle/` — observations and shadow evidence
 
-Oracle 0.2.2 exposes instrument-bound observations, forecasts and history without
+Oracle 0.2.3 exposes instrument-bound observations, forecasts and history without
 signing or submitting orders. Reference forecasts do not certify execution.
 
 | Path | What it is |

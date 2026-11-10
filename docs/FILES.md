@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `593f1a9` (2026-11-10T18:22:40+00:00). 3065 tracked files, 66.1 MB.
+**Generated** from `index/INDEX.json` at commit `bc0e76c` (2026-11-10T20:32:03+00:00). 3071 tracked files, 66.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2649 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 484/569 Python modules and 65/112 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2650 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 485/571 Python modules and 65/113 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (170 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -49,12 +49,12 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.superpowers`](#superpowers) — 32 files
 - [`.vscode`](#vscode) — 3 files
 - [`botmanager`](#botmanager) — 89 files
-- [`ecosystem`](#ecosystem) — 49 files
+- [`ecosystem`](#ecosystem) — 53 files
 - [`executor`](#executor) — 47 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 18 files
-- [`oracle`](#oracle) — 28 files
+- [`oracle`](#oracle) — 30 files
 - [`postman`](#postman) — 7 files
 - [`scripts`](#scripts) — 16 files
 - [`skills`](#skills) — 67 files
@@ -167,7 +167,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 174 lines · 11,638 B · description: **curated**
+`doc` · 174 lines · 11,810 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -223,9 +223,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 482 lines · 82,531 B · description: **extracted**
+`doc` · 500 lines · 87,478 B · description: **extracted**
 
-**Purpose.** Version: 383 Delta: v382 to v383; verified metadata/FIFO repairs, bounded audit coverage and delivery tail. Delta: v381 to v382; start source-backed bootstrap and maintained-wiki audit.
+**Purpose.** Version: 390 Delta: v389 to v390; add Bot Manager schema-v2 archive compatibility and refresh the generated wiki snapshot after CI caught both stale artifacts. Delta: v385 to v386; bind graph-shape recording logic into the Oracle evaluator fingerprint and add the root README feature summary.
 
 **Use.** Read it.
 
@@ -239,9 +239,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1743 lines · 102,517 B · description: **extracted**
+`doc` · 1748 lines · 103,076 B · description: **extracted**
 
-**Purpose.** Version: 186 Delta: v185 to v186; record authorized repo-bootstrapper execution. Delta: v184 to v185; record repo-bootstrapper wiki requirement.
+**Purpose.** Version: 187 Delta: v186 to v187; capture contextual Oracle voting, per-tick graph history, and strategy overlays. Delta: v185 to v186; record authorized repo-bootstrapper execution.
 
 **Use.** Read it.
 
@@ -319,7 +319,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 321 lines · 20,608 B · description: **extracted**
+`doc` · 321 lines · 20,665 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -351,7 +351,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ECOSYSTEM-CONTROL-ROOM.md`
 
-`doc` · 285 lines · 16,861 B · description: **extracted**
+`doc` · 295 lines · 17,512 B · description: **extracted**
 
 **Purpose.** The control room observes the actual ecosystem owners and sends explicit, scoped requests to their existing control interfaces. It combines server state, configuration launches, research progress, per-coin results, forward accounting,
 
@@ -383,7 +383,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 29910 lines · 1,516,751 B · description: **extracted**
+`doc` · 30021 lines · 1,520,777 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -26269,7 +26269,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/oracle_data.py`
 
-`code-python` · 628 lines · 22,190 B · description: **extracted**
+`code-python` · 629 lines · 22,250 B · description: **extracted**
 
 **Purpose.** Inert Oracle accepted-observation snapshots and bounded prospective pages. No Oracle producer class is imported here. A descriptor freezes source consent, policy, activation and assumed costs. The existing archive owner alone appends.
 
@@ -26757,7 +26757,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_oracle_data.py`
 
-`test` · 370 lines · 14,672 B · description: **none**
+`test` · 381 lines · 15,106 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -26909,11 +26909,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## ecosystem
 
-49 files.
+53 files.
 
 #### `ecosystem/README.md`
 
-`doc` · 53 lines · 3,205 B · description: **extracted**
+`doc` · 53 lines · 3,215 B · description: **extracted**
 
 **Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
 
@@ -26999,7 +26999,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/pyproject.toml`
 
-`config` · 23 lines · 665 B · description: **none**
+`config` · 23 lines · 728 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27077,7 +27077,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/votes.py`
 
-`code-python` · 252 lines · 8,539 B · description: **extracted**
+`code-python` · 270 lines · 9,202 B · description: **extracted**
 
 **Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
 
@@ -27087,7 +27087,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web.py`
 
-`code-python` · 550 lines · 22,193 B · description: **extracted**
+`code-python` · 554 lines · 22,502 B · description: **extracted**
 
 **Purpose.** Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
 
@@ -27109,7 +27109,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/api/control.openapi.json`
 
-`config` · 829 lines · 24,412 B · description: **derived**
+`config` · 829 lines · 24,715 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
 
@@ -27307,7 +27307,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_votes.py`
 
-`test` · 191 lines · 8,469 B · description: **none**
+`test` · 198 lines · 8,824 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27317,7 +27317,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_web.py`
 
-`test` · 203 lines · 8,655 B · description: **extracted**
+`test` · 215 lines · 9,459 B · description: **extracted**
 
 **Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
 
@@ -27349,7 +27349,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/app.js`
 
-`code-js` · 1056 lines · 83,509 B · description: **none**
+`code-js` · 1059 lines · 83,676 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27359,15 +27359,25 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/index.html`
 
-`code-web` · 87 lines · 27,600 B · description: **none**
+`code-web` · 89 lines · 29,380 B · description: **none**
 
 **Purpose.** _No description available._
 
 **Use.** Read it.
 
+#### `ecosystem/web/oracle-chart.js`
+
+`code-js` · 239 lines · 10,688 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `createLegend`, `drawMarkers`, `ensureChart`, `loadLibrary`, `render`, `renderLatestRows`, `setStatus`, `updateShape`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
 #### `ecosystem/web/styles.css`
 
-`code-web` · 31 lines · 43,350 B · description: **none**
+`code-web` · 33 lines · 45,641 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27388,6 +27398,32 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** _No description available._
 
 **Contents.** Defines `SDK_SRC`, `loadManually`, `loadSdk`, `readConfig`, `selectedFee`, `state`, `updateFee`, `validFee`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `ecosystem/web/vendor/`
+
+#### `ecosystem/web/vendor/LICENSE`
+
+`other` · 202 lines · 11,347 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/vendor/NOTICE`
+
+`other` · 3 lines · 101 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `ecosystem/web/vendor/lightweight-charts-5.2.1.mjs`
+
+`code-js` · 8 lines · 197,827 B · description: **none**
+
+**Purpose.** _No description available._
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -28643,11 +28679,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle
 
-28 files.
+30 files.
 
 #### `oracle/README.md`
 
-`doc` · 194 lines · 11,022 B · description: **extracted**
+`doc` · 207 lines · 11,853 B · description: **extracted**
 
 **Purpose.** Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit CLI and MCP process to that instrument. No quote conversion is implied. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive.
 
@@ -28681,7 +28717,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/engine.py`
 
-`code-python` · 452 lines · 19,271 B · description: **extracted**
+`code-python` · 571 lines · 23,856 B · description: **extracted**
 
 **Purpose.** Prospective, source-bound shadow forecasts; no execution capability.
 
@@ -28698,6 +28734,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `SOL_MINT`, `USDC_MINT`, `JUPITER_PRICE_URL`, `MAX_RESPONSE_BYTES`, `INSTRUMENT`, `MINT`, `validate_instrument()`, `class FeedUnavailable`, `_number()`, `_identity()` and 4 more.
 
 **Use.** `import oracle.feeds`
+
+#### `oracle/graphdb.py`
+
+`code-python` · 206 lines · 7,577 B · description: **extracted**
+
+**Purpose.** Append-only per-evaluation graph snapshots in the Oracle archive.
+
+**Contents.** Defines `GRAPH_SCHEMA_VERSION`, `DEFAULT_LIMIT`, `MAX_LIMIT`, `market_shape()`, `record_tick()`, `history()`.
+
+**Use.** `import oracle.graphdb`
 
 #### `oracle/guidance.py`
 
@@ -28727,7 +28773,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/quotes.py`
 
-`code-python` · 499 lines · 18,023 B · description: **extracted**
+`code-python` · 499 lines · 18,032 B · description: **extracted**
 
 **Purpose.** Explicit opt-in Swap v1 evidence owned by the existing shared Oracle archive. This module never builds transactions, signs, retries, or starts a collector. Quoted outputs and cost assumptions remain distinct from observed execution.
 
@@ -28737,11 +28783,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/reader.py`
 
-`code-python` · 301 lines · 12,420 B · description: **extracted**
+`code-python` · 366 lines · 14,973 B · description: **extracted**
 
 **Purpose.** Inert archive inspection through the canonical Oracle query implementation.
 
-**Contents.** Defines `PARAMETER_TYPES`, `_recorded_catalog()`, `class RecordedStrategySet`, `class ReadOnlyStore`, `class ReadOnlyOracle`.
+**Contents.** Defines `LEGACY_EVALUATOR_SHA256`, `PARAMETER_TYPES`, `_recorded_catalog()`, `class RecordedStrategySet`, `class ReadOnlyStore`, `class ReadOnlyOracle`.
 
 **Use.** `import oracle.reader`
 
@@ -28757,7 +28803,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/store.py`
 
-`code-python` · 108 lines · 4,602 B · description: **extracted**
+`code-python` · 130 lines · 5,996 B · description: **extracted**
 
 **Purpose.** Private append-only SQLite Oracle event archive with transactional state.
 
@@ -28777,11 +28823,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/voting.py`
 
-`code-python` · 115 lines · 3,769 B · description: **extracted**
+`code-python` · 129 lines · 4,098 B · description: **extracted**
 
 **Purpose.** Pure prospective-vote aggregation; inputs are not proof of their provenance.
 
-**Contents.** Defines `class Vote`, `aggregate()`.
+**Contents.** Defines `MINIMUM_ACCURACY`, `class Vote`, `aggregate()`.
 
 **Use.** `import oracle.voting`
 
@@ -28834,6 +28880,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class RecorderFeedTests`, `class JupiterFeedTests`.
 
 **Use.** `python3 -m pytest oracle/tests/test_feeds.py -q`
+
+#### `oracle/tests/test_graphdb.py`
+
+`test` · 95 lines · 4,229 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `observation()`, `class GraphDBTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_graphdb.py -q`
 
 #### `oracle/tests/test_guidance.py`
 
@@ -28907,7 +28963,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `oracle/tests/test_voting.py`
 
-`test` · 71 lines · 2,631 B · description: **none**
+`test` · 76 lines · 2,823 B · description: **none**
 
 **Purpose.** _No description available._
 

@@ -235,6 +235,9 @@ function renderOracle() {
     row.append(node("td", observation.instrument || asset), marketCell, predictionCell, signalCell); fragment.append(row);
   });
   replaceWithFocus("oracle-rows", fragment); $("oracle-empty").hidden = entries.length > 0;
+  window.OracleChart?.render(state.oracle?.graph).catch(() => {
+    text("oracle-chart-status", "The local chart library could not render this graph history.");
+  });
 }
 function renderEvidence() {
   const acquisitions = Object.entries(state.status?.acquisitions || {});

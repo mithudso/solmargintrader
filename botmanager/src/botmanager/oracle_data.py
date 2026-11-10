@@ -52,9 +52,10 @@ def read_page(path, *, after=0, limit=PAGE_SIZE, now=None, start=None, end=None)
         db.row_factory = sqlite3.Row
         db.execute("PRAGMA query_only=ON")
         db.execute("BEGIN")
+        archive_version = db.execute("PRAGMA user_version").fetchone()[0]
         if (
             db.execute("PRAGMA application_id").fetchone()[0] != 0x4F52434C
-            or db.execute("PRAGMA user_version").fetchone()[0] != 1
+            or archive_version not in (1, 2)
         ):
             raise ManagerError(
                 "incompatible_source",
@@ -71,7 +72,7 @@ def read_page(path, *, after=0, limit=PAGE_SIZE, now=None, start=None, end=None)
         if (
             scope != SCOPE
             or type(policy["schema_version"]) is not int
-            or policy["schema_version"] != 1
+            or policy["schema_version"] not in (1, 2)
             or policy["instrument"] != scope["instrument"]
             or policy["bar_seconds"] != 60
             or not isinstance(policy["implementation_sha256"], str)

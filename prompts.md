@@ -1,8 +1,13 @@
 # Prompt history
 
-Version: 186
+Version: 187
+Delta: v186 to v187; capture contextual Oracle voting, per-tick graph history, and strategy overlays.
 Delta: v185 to v186; record authorized repo-bootstrapper execution.
 Delta: v184 to v185; record repo-bootstrapper wiki requirement.
+
+## 2026-11-10 — Oracle contextual votes and chart history
+
+For the voting, make the 60% limit to vote actually great than 50%, I have the feeling that the different strategies are contextually good if given the right graph shape for the current period. Add a graphdb and record what the predictions were for each strategy at each tick, including the aggregate. Also on the Oracle page show a tradingview graph with all of the strategies overlayed on it.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
 

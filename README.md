@@ -21,7 +21,7 @@ SOL trading research and execution tooling, in ten parts:
 
 ## Automated paper ecosystem
 
-The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
+The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. Oracle also records all strategy directions, the full-catalog aggregate and prior-bar shape for each evaluated tick, then overlays those calls on its observed-price chart. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
 
 `python3 scripts/bootstrap_ecosystem.py start` installs the headless components,
 checks health, acquires the configured universe, runs the complete strategy matrix
@@ -31,8 +31,8 @@ coverage and lifecycle limits.
 
 ## Managed bot suite
 
-The current coordinated candidate is manager 0.7.1, research-runtime 0.4.0 and
-ecosystem 0.4.1, with backtester 0.2.0, Oracle 0.2.2, optional executor 0.2.0
+The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
+ecosystem 0.4.2, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
 and extension source 0.6.5. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`

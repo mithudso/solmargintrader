@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T18:22:40+00:00",
+  "generatedAt": "2026-11-10T20:32:16+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1402,
+      "matchingFiles": 1403,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1372,
+      "matchingFiles": 1373,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 771,
+      "matchingFiles": 772,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 700,
+      "matchingFiles": 702,
       "shown": 30,
       "files": [
         {
@@ -737,12 +737,12 @@
           "hits": 167
         },
         {
-          "path": "skills/trading-and-investing/references/grid-trading-strategy.md",
+          "path": "ecosystem/web/styles.css",
           "hits": 128
         },
         {
-          "path": "ecosystem/web/styles.css",
-          "hits": 125
+          "path": "skills/trading-and-investing/references/grid-trading-strategy.md",
+          "hits": 128
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 626,
+      "matchingFiles": 630,
       "shown": 30,
       "files": [
         {
@@ -865,7 +865,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 299
+          "hits": 311
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -945,7 +945,11 @@
         },
         {
           "path": "prompts.md",
-          "hits": 60
+          "hits": 64
+        },
+        {
+          "path": "memory.md",
+          "hits": 61
         },
         {
           "path": "soltui/commands.py",
@@ -960,20 +964,16 @@
           "hits": 58
         },
         {
+          "path": "ecosystem/web/index.html",
+          "hits": 56
+        },
+        {
           "path": "docs/short-horizon-leverage-concept-family.md",
           "hits": 53
         },
         {
           "path": "ecosystem/web/app.js",
-          "hits": 50
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 50
-        },
-        {
-          "path": "soltui/wallet.py",
-          "hits": 47
+          "hits": 52
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "ecosystem/web/styles.css",
-          "hits": 101
+          "hits": 106
         },
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 478,
+      "matchingFiles": 479,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 391,
+      "matchingFiles": 392,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 359,
+      "matchingFiles": 360,
       "shown": 30,
       "files": [
         {
@@ -1424,7 +1424,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 61
+          "hits": 62
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1511,12 +1511,12 @@
           "hits": 11
         },
         {
-          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "path": "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs",
           "hits": 11
         },
         {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 10
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1532,7 +1532,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 324,
+      "matchingFiles": 325,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 306,
+      "matchingFiles": 307,
       "shown": 30,
       "files": [
         {
@@ -1687,7 +1687,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 47
+          "hits": 48
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -1758,6 +1758,10 @@
           "hits": 11
         },
         {
+          "path": "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs",
+          "hits": 11
+        },
+        {
           "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
           "hits": 11
         },
@@ -1784,10 +1788,6 @@
         {
           "path": "extension/e2e/lib/dashboard-workspace.mjs",
           "hits": 9
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
-          "hits": 9
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 267,
+      "matchingFiles": 266,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 242,
+      "matchingFiles": 243,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 123,
+      "matchingFiles": 124,
       "shown": 30,
       "files": [
         {

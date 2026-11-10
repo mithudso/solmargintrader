@@ -38,6 +38,17 @@ def append(owner, start, end):
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_graph_archive_schema_v2_keeps_observation_pages_readable(self):
+        from botmanager.oracle_data import read_page
+
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "history.sqlite3"
+            archive(p, 120)
+            page = read_page(p, now=START + 120)
+
+            self.assertEqual(page["policy"]["schema_version"], 2)
+            self.assertEqual(len(page["observations"]), 120)
+
     def test_absent_archive_read_creates_nothing(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "absent" / "history.sqlite3"

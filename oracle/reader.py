@@ -11,8 +11,12 @@ from pathlib import Path
 
 from .engine import OracleEngine, number
 from .feeds import validate_instrument
+from .graphdb import history as graph_history
 from .store import Store, canonical
 from .strategies import STRATEGY_IDS, StrategySet
+from .voting import MINIMUM_ACCURACY
+
+LEGACY_EVALUATOR_SHA256 = "2470d1d4c20043cb34ba48a4e9c1f1ff84682c512ce84ceac845099e5deaab9b"
 
 # This is the stored schema of the original fourteen cards, not constructors or
 # current defaults. Inspection must never execute an archived strategy.
@@ -119,10 +123,10 @@ class ReadOnlyStore(Store):
         if self.path.is_symlink() or not self.path.is_file():
             raise ValueError("oracle_archive_unavailable")
         with self.connection() as db:
-            if (
-                db.execute("PRAGMA user_version").fetchone()[0] != 1
-                or db.execute("PRAGMA application_id").fetchone()[0] != 0x4F52434C
-            ):
+            version = db.execute("PRAGMA user_version").fetchone()[0]
+            if version not in (1, 2) or db.execute(
+                "PRAGMA application_id"
+            ).fetchone()[0] != 0x4F52434C:
                 raise ValueError("oracle_archive_incompatible")
             expected_columns = {
                 "metadata": ("key", "body"),
@@ -140,6 +144,39 @@ class ReadOnlyStore(Store):
                 ),
                 "resolutions": ("forecast", "outcome", "hit", "resolved_at", "body"),
             }
+            if version == 2:
+                expected_columns.update(
+                    {
+                        "graphdb_ticks": (
+                            "tick_id",
+                            "instrument",
+                            "policy_hash",
+                            "bar_index",
+                            "chart_time",
+                            "observed_at",
+                            "received_at",
+                            "price",
+                            "observation_id",
+                            "market_shape",
+                            "aggregate",
+                        ),
+                        "graphdb_predictions": (
+                            "tick_id",
+                            "strategy_id",
+                            "strategy_version",
+                            "forecast_id",
+                            "direction",
+                            "issued_at",
+                            "expires_at",
+                            "hits",
+                            "resolved",
+                            "accuracy_percent",
+                            "vote_weight",
+                            "vote_eligible",
+                            "reason",
+                        ),
+                    }
+                )
             for table, columns in expected_columns.items():
                 kind = db.execute(
                     "SELECT type FROM sqlite_master WHERE name=?", (table,)
@@ -188,7 +225,7 @@ class ReadOnlyOracle(OracleEngine):
         policy = json.loads(row[0])
         if (
             not isinstance(policy, dict)
-            or policy.get("schema_version") != 1
+            or policy.get("schema_version") not in (1, 2)
             or policy.get("instrument") != self.instrument
             or policy.get("flat_band_bps") != 0
             or policy.get("window") != "all_resolved_in_this_policy"
@@ -205,16 +242,35 @@ class ReadOnlyOracle(OracleEngine):
                 raise ValueError("oracle_policy_incompatible")
             setattr(self, key, value)
         implementation = hashlib.sha256()
-        for name in ("engine.py", "store.py", "strategies.py", "voting.py"):
+        for name in (
+            "engine.py",
+            "store.py",
+            "strategies.py",
+            "voting.py",
+            "graphdb.py",
+        ):
             implementation.update(name.encode())
             implementation.update(Path(__file__).with_name(name).read_bytes())
-        if policy.get("implementation_sha256") != implementation.hexdigest():
+        evaluator = policy.get("implementation_sha256")
+        legacy_evaluator = (
+            archived_versions
+            and policy.get("schema_version") == 1
+            and evaluator == LEGACY_EVALUATOR_SHA256
+        )
+        if evaluator != implementation.hexdigest() and not legacy_evaluator:
             raise ValueError("oracle_policy_implementation_unavailable")
+        if policy.get("schema_version") == 2 and (
+            policy.get("minimum_vote_accuracy") != MINIMUM_ACCURACY
+            or policy.get("vote_threshold_semantics")
+            != "strictly_greater_than_minimum"
+        ):
+            raise ValueError("oracle_policy_incompatible")
+        self.minimum_vote_accuracy = MINIMUM_ACCURACY
         self.policy = policy
         self.policy_hash = hashlib.sha256(canonical(policy).encode()).hexdigest()
         self.archived_versions = archived_versions
         if archived_versions:
-            if set(policy) != {
+            expected_policy_keys = {
                 "schema_version",
                 "instrument",
                 "horizon_seconds",
@@ -226,7 +282,12 @@ class ReadOnlyOracle(OracleEngine):
                 "flat_band_bps",
                 "window",
                 "strategies",
-            }:
+            }
+            if policy.get("schema_version") == 2:
+                expected_policy_keys.update(
+                    {"minimum_vote_accuracy", "vote_threshold_semantics"}
+                )
+            if set(policy) != expected_policy_keys:
                 raise ValueError("oracle_recorded_policy_invalid")
             self.strategy_set = RecordedStrategySet(
                 _recorded_catalog(policy.get("strategies"))
@@ -295,6 +356,10 @@ class ReadOnlyOracle(OracleEngine):
 
     def predictions(self, now: float | None = None) -> dict:
         return {**super().predictions(now), **self._recorded_provenance()}
+
+    def graph_history(self, limit: int = 240) -> dict:
+        with self.store.connection() as db:
+            return graph_history(db, self.instrument, limit)
 
     def status(self) -> dict:
         return {**super().status(), **self._recorded_provenance()}

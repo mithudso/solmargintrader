@@ -209,8 +209,9 @@ timestamps, policy/selection identity and contributing/excluded votes. Freshness
 minimum resolved evidence and measured accuracy still gate every selected vote.
 The displayed percentage is agreement, not a calibrated probability of profit.
 
-The retained vote policy uses accuracy as weight, excludes accuracy below 60%,
-and doubles the accuracy weight only after more than 100 hits. Thus a perfect
+The retained vote policy uses accuracy as weight and excludes accuracy at or
+below 50%; a strategy must exceed 50% to vote.
+It doubles the accuracy weight only after more than 100 hits. Thus a perfect
 record at 101 hits has a 200% total vote; it is not a 200% addition. Flat votes
 contribute to the denominator. The current policy uses all resolved evidence in
 that strategy version and requires at least twenty resolutions.
@@ -220,6 +221,15 @@ above 20%, Strong Sell at or below -60%, Sell at or below -20%, and Flat between
 the inner thresholds. Missing, stale, expired, deselected or insufficient votes
 produce their explicit exclusion reasons. An empty eligible set is unavailable,
 not Flat. New selection settings never manufacture resolved evidence.
+
+The Oracle page also shows append-only graph history stored beside forecasts
+in the Oracle archive. One completed-bar evaluation records all fourteen
+strategy directions, their then-known accuracy and voting weights, the
+full-catalog aggregate, observed price and shape metrics from prior completed
+bars. The chart overlays directions at observed prices; it does not infer price
+targets. The latest 240 ticks are returned with `/api/oracle` for the vendored
+TradingView Lightweight Charts renderer. Existing v1 archives remain readable;
+they show no graph history until the v2 evaluator records new ticks.
 
 ## Wiki, security and manual swaps
 

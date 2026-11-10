@@ -103,6 +103,13 @@ class VoteSelectionTests(unittest.TestCase):
         self.assertEqual(result["aggregate"]["expires_at"], 1060)
         self.assertEqual(len(result["aggregate"]["included"]), 1)
         self.assertEqual(len(result["aggregate"]["excluded"]), 13)
+        self.assertEqual(result["graph"]["status"], "available")
+        self.assertEqual(len(result["graph"]["ticks"]), 1)
+        self.assertEqual(len(result["graph"]["ticks"][0]["strategies"]), 14)
+        self.assertEqual(
+            result["graph"]["aggregate_semantics"],
+            "signed_weighted_vote_balance_not_probability",
+        )
         self.assertIn("not_probability", result["percentage_semantics"])
         self.assertEqual(digest, hashlib.sha256(path.read_bytes()).hexdigest())
         self.assertEqual(
@@ -124,7 +131,7 @@ class VoteSelectionTests(unittest.TestCase):
         self.assertEqual(result["status"], "unavailable")
         self.assertTrue(
             any(
-                row["reason"] == "accuracy_below_threshold"
+                row["reason"] == "accuracy_at_or_below_threshold"
                 for row in result["aggregate"]["excluded"]
             )
         )

@@ -267,7 +267,7 @@ def _connection(path, *, write=False):
         db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
         if (
             db.execute("PRAGMA application_id").fetchone()[0] != 0x4F52434C
-            or db.execute("PRAGMA user_version").fetchone()[0] != 1
+            or db.execute("PRAGMA user_version").fetchone()[0] not in (1, 2)
         ):
             raise QuoteError("shared_archive_incompatible")
         if write:

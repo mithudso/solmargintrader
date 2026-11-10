@@ -1,4 +1,4 @@
-# Oracle 0.2.2
+# Oracle 0.2.3
 
 Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit
 `--instrument BTC/USD` (or another supported symbol/quote) binds each archive,
@@ -94,11 +94,24 @@ Shadow reference accuracy excludes fees, slippage, borrow, fills and P&L; use th
 Backtester and paper execution evidence for economic qualification.
 
 Evidence is cumulative within one source/instrument/policy/horizon/version.
-Twenty resolved calls are required by default. Below 60% accuracy a strategy is
-excluded from voting while shadow predictions continue. At exactly 60% it is
-eligible. Weight is hits/resolved. More than 100 hits doubles that weight, so a
-perfect 101/101 record carries 200% of one vote. Exactly 100 hits does not double.
-This is the documented provisional interpretation of the owner's bonus rule.
+Twenty resolved calls are required by default. A strategy votes only when its
+resolved directional accuracy is strictly greater than 50%; exactly 50% is
+excluded while shadow predictions continue. Weight is hits/resolved. More than
+100 hits doubles that weight, so a perfect 101/101 record carries 200% of one
+vote. Exactly 100 hits does not double. This is the documented provisional
+interpretation of the owner's bonus rule.
+
+Each completed-bar evaluation appends one `graphdb_ticks` row and fourteen
+`graphdb_predictions` rows to the same archive transaction as the forecasts.
+Rows retain the strategy direction (including warm-up/no-call), version, then
+known hit/resolution counts, voting eligibility and weight, full-catalog
+aggregate, observed price and compact shape metrics from preceding completed
+bars. The `/api/oracle` response exposes the latest 240 graph ticks. The
+control-room Oracle page uses the vendored TradingView Lightweight Charts
+library to show observed prices with toggleable strategy and aggregate
+direction markers. A marker is a direction at an observed price, not a price
+target. Existing v1 archives remain readable and report graph history as
+unavailable until a v2 evaluator records new ticks.
 
 Flat votes contribute to total weight. Signed balance is 100 times the weighted
 sum of directions divided by total weight. Balance >=60 is Strong Buy; >=20 is
