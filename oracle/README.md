@@ -1,6 +1,8 @@
-# Oracle 0.1.0
+# Oracle 0.2.0
 
-Oracle is a local shadow signal service for SOL/USDC. A single foreground daemon
+Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit
+`--instrument BTC/USD` (or another supported symbol/quote) binds each archive,
+CLI and MCP process to that instrument. No quote conversion is implied. A single foreground daemon
 consumes source-labelled observations into a durable historical SQLite archive.
 It evaluates 14 existing strategy cards prospectively and serves snapshots,
 history, guide routes, readiness and resource subscriptions through MCP.

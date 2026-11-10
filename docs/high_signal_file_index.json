@@ -1052,7 +1052,7 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 203
+      "lines": 206
     },
     {
       "path": "AGENTS.md",
@@ -1080,7 +1080,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 407
+      "lines": 428
     },
     {
       "path": "CONTRIBUTING.md",

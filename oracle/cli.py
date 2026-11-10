@@ -91,11 +91,19 @@ def run(args) -> int:
             old[sig] = signal.signal(sig, lambda *_: stop.set())
     try:
         with owner(args.archive):
-            engine = OracleEngine(args.archive)
+            engine = OracleEngine(args.archive, instrument=args.instrument)
             feed = (
-                JupiterPriceFeed()
+                JupiterPriceFeed(
+                    instrument=args.instrument,
+                    mints={
+                        args.instrument.upper().split("/")[0]: args.base_mint,
+                        args.instrument.upper().split("/")[1]: args.quote_mint,
+                    }
+                    if args.base_mint or args.quote_mint
+                    else None,
+                )
                 if args.source == "jupiter"
-                else RecorderFeed(root=args.recorder_root)
+                else RecorderFeed(root=args.recorder_root, instrument=args.instrument)
             )
             attempts, failures = 0, 0
             while not stop.is_set() and (
@@ -138,12 +146,15 @@ class Parser(argparse.ArgumentParser):
 def main(argv=None) -> int:
     parser = Parser(description=__doc__)
     parser.add_argument("--archive", type=Path, default=default_archive())
+    parser.add_argument("--instrument", default="SOL/USDC")
     commands = parser.add_subparsers(dest="command", required=True)
     p = commands.add_parser(
         "run", help="own the archive and consume the selected source"
     )
     p.add_argument("--source", choices=("recorder", "jupiter"), default="recorder")
     p.add_argument("--recorder-root", type=Path)
+    p.add_argument("--base-mint")
+    p.add_argument("--quote-mint")
     p.add_argument("--interval", type=float, default=2.0)
     p.add_argument("--max-ticks", type=int)
     for name in ("status", "market", "predictions", "strategies", "veto"):
@@ -175,7 +186,7 @@ def main(argv=None) -> int:
             return 0
         from .engine import OracleEngine
 
-        engine = OracleEngine(args.archive)
+        engine = OracleEngine(args.archive, instrument=args.instrument)
         if args.command in ("status", "market", "predictions", "strategies"):
             data = getattr(engine, args.command)()
         elif args.command == "history":

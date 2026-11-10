@@ -23,6 +23,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ecosystem:
+    name: ecosystem (installed paper integration)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: "3.13"
+      - name: Install all headless owners
+        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem ruff
+      - name: Bootstrap, telemetry, control room and owner contracts
+        run: python -m unittest discover -s ecosystem/tests -t . -v
+      - name: Installed headless imports and CLI
+        working-directory: /tmp
+        run: |
+          python -I -c "import ecosystem, soltui.f5_batch, soltui.forwardtest, oracle, botmanager"
+          solecosystem --help
+          solecosystem-ui --help
+      - name: Lint
+        run: ruff check ecosystem oracle scripts/bootstrap_ecosystem.py
+
   oracle:
     name: oracle (python)
     runs-on: ubuntu-latest
