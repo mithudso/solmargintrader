@@ -1,10 +1,17 @@
 # Work continuation
 
-Version: 339
+Version: 340
 Delta: v338 to v339; implement and test an isolated Oracle voting foundation.
 Delta: v337 to v338; resume Oracle implementation at the user's request.
 Delta: v336 to v337; checkpoint the Oracle prompt and unresolved integrations.
 Delta: v335 to v336; begin Oracle optimization and implementation in an isolated checkout.
+Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run.
+Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
+Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
+Delta: v335 to v336; resolve current branch conflicts and record the explicit merge request.
+Delta: v330 to v331; verify persistent runtime source and reserve safe stop capacity.
+Delta: v329 to v330; record verified milestone1 delivery and begin persistent runtime.
+Delta: v315 to v316; checkpoint forward signal research preparation.
 Delta: v334 to v335; record streaming and snapshot refresh recommendation.
 Delta: v333 to v334; document implementation, scripts, backups and future gates.
 Delta: v332 to v333; start backtester implementation and recovery handoff.
@@ -893,6 +900,9 @@ Artifacts: docs/superpowers/prompts/2026-11-09-bot-manager-*; docs/superpowers/s
 
 Verification: default python3 docs discovery failed on missing suite dependencies; reused /Users/mitch/.venvs/solmargintrader-docs/bin/python without installs, documentation gate passed (961 backtester,408 extension,46 mongo,1384 SolTUI; total2799). No source runtime suite needed for this documentation-only change; CI still runs repository gates. Stele knowledge transport briefly closed; queued writes9a953c43/335b5bff were replayed into KNOW-1100/1101 and marked done. Workflow tasks1093/1094 complete;1095 is delivery. Remaining at this checkpoint: source-reference/fence/diff checks, offline metadata regeneration, final documentation/index gate, owned commit/push/PR/CI/merge and remote content verification; final delivery receipt goes in TASK-1092/1095. Preserve unrelated original checkout files and other worktrees.
 
+## v316 - 2026-11-09
+
+TASK-1104: Research a streaming, restart-safe forward-testing signal daemon with selective subscriptions and MCP. Backtester implementation is deferred. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c1a0 on agent-01a1c1a0 starts at 7846848; shared checkout has another live session and three untracked files. Read prompt-deep-optimizer and llms-txt-tooling full-suite reference. Stele KNOW-655 warns parameter selection can overfit; TASK-1057 is active persistence work. Remaining: execute optimizer and full-suite, review current project and sources, produce evidence-backed design and validation, then deliver. No research saturation or optimizer convergence has been established.
 
 ## EPIC-1106 — approved bot manager implementation
 
@@ -1009,3 +1019,53 @@ The first KuCoin collector version mistakenly requested hi-60 even though live t
 ## v329 — 2026-11-09 — integrate the concurrent minute-history release
 
 All9active CI checks passed release53853a2 in run42696562259. The gated merge then refused because concurrent PR177 advanced master to b6f9586 and conflicted only in shared count/history/index records. Integrate its minute-history source unchanged; retain both exact prompt histories and all continuation entries. Manager/owner production code remains identical to independently reviewed and installed032db6c. Combined discovery is999backtester/1402SolTUI/408extension/46mongo total2855. Fresh combined-head CI and actual merge remain; do not count the older green head as delivered. Primary checkout and the other session's ongoing datasets/downloads remain untouched.
+
+## v330 — 2026-11-09 — milestone1 delivered, milestone2 active
+
+PR175 merged at4a65a06bf0d5968f56ab861deb2d588aefe42f2d after all9active checks passed final headfaba7c5 in run42698400902. Quiet full-tree comparison confirms the merge equals the reviewed branch, and the merge is on origin/master. Installed product modules still equal reviewed032db6c. TASK1107 is complete. The old task branch is removed; the private worktree continues on agent-01a1c189-m2 from4a65a06. The original primary checkout remains untouched.
+
+TASK1108 is claimed for persistent concurrent reference-paper runtime. Use the approved milestone2 and existing SDD task3 brief. Canonical backtester will be packaged as solmargintrader-backtester0.1.0, with manager's exact dependency and stable noneditable installation; no algorithm copying or disposable PYTHONPATH. Stele KNOW1143 records this architecture. Existing price recorder ownership and quote-age lessons are KNOW872/885/875. PR177 minute/history source and ongoing downloads remain owned by their existing process.
+
+The new runtime must separate spec/run/owner/generation, persist stopped intent, fence concurrent workers and stale writes, preserve checkpoint/cursor/lots, bound queues/workers, and report data progress separately from process heartbeat. Minimum grid replay uses explicit Coinbase reference-paper identity and costs; it cannot certify Jupiter SOL/USDC or assume a stablecoin peg. No production service, bot, recorder, key or browser change is authorized by the runtime tests. Installed acceptance will use isolated state after source review.
+
+Remaining: implement task3, meaningful crash/stop/parity tests, independent review/fixes, stable installation/behavior acceptance, docs/index/CI and PR delivery. Continue milestones3–8 afterward; no profitability or unsupported live capability may be invented. Recovery ledger and briefs remain /Users/mitch/dev/solmargintrader-wt-01a1c189/.superpowers/sdd/2026-11-09-bot-manager/.
+
+## v331 — 2026-11-09 — runtime source gate approved
+
+Task3 implementatione0bcd73 and fix4b22bb1 implement manager0.2.0 plus canonical solmargintrader-backtester0.1.0. The97manager tests,87unchanged simulator/card checks, scoped Ruff/format and initial wheel builds pass. Independent review found4Important gaps and scoped re-review approved all fixes:100reserved safety-stop receipts protect bounded idempotency, fragmented socket I/O has one monotonic deadline, service activation/removal is reconciled against exact launchd registration, and EOF restart restores waiting without fake evaluation. Canonical simulator source is unchanged. Current desired-running admission counts pending plus active and caps4;100instances can be registered. Prefix2048bars/100rungs, immutableinput EOF remains a reference-data limit.
+
+The task3 source checkpoint e0bcd73 is pushed on agent-01a1c189-m2; fix4b22bb1 and parent CI/docs integration are local until the next recoverable checkpoint. Root CI installs both regular local projects together. Root docs describe explicit service lifecycle and reference-only economics. Source still defaults paper/disarmed; no newstrategy live path, recorder, optimizer or browser owner was started. Stable /Users/mitch/.venvs/solbot now has regular manager0.2.0 and canonical backtester0.1.0 installations. Independent isolated runtime/service/recording acceptance is active; no production state/service was changed.
+
+Pip dry-run resolved direct localpackages plus NumPy2.5.4, Pandas3.1.1, python-dateutil4.0.0 andtzdata2026.6. Dependency-reviewer returned external riskUNKNOWN for each exactcoordinate because Endor tools are unavailable; no lookup or approval was fabricated. Installed qualification must record these actual versions. The final actual-recording descriptor is in the ignored task3report/workspace; source snapshot7ff131f8f67ac5e20bcabd9dbc35d98e32ff20fc12e861487f86c5fe66b41fe8 binds its engine/NumPy identity. Source validation is not installed acceptance.
+
+Remaining: final whole-milestone review (including deferred expected annualization/oldSQLite warning noise), current noneditable installation, independent isolated actual daemon/launchd/recording acceptance, docs/index gates, final-head CI and PRmerge. Runtime source task gate is complete but TASK1108 is not delivered. Follow the SDD ledger; do not repeat accepted reviews/tests without a changed surface or concrete failure. Continue milestones3–8 after this release.
+
+## v336 — 2026-11-09 — resolve current branch and deliver
+
+The owner asks: Resolve the conflicts with that branch and merge and commit it. Current target is PR180, agent-01a1c189-m2. Work remains in the private worktree; two other live sessions use the primary checkout. Integrate origin/master f92b9291, preserving the accepted history handoff and monitor research. Incoming changes are documentation and generated records only; no runtime/canonical engine overlap.
+
+Final source review found3Important defects beyond the approved task gate: readonly row/fill SELECTs can cross a commit and falsely quarantine a healthy run, receipt replay can transplant another request's UUID/generation, and same-config bots can accept each other's checkpoint identity. One combined final fix wave is active. Schema2 will bind immutable acceptance context; legacy v1 IDs/bodies remain, but unprovable replay refuses without resubmission. Historical valid v2 receipts must remain valid after later generations. Ruling cost: legacy receipt inspection requires explicit reconciliation instead of fabricated acceptance context.
+
+Installed0.2 acceptance matched69Python files, regular origins and inert reads. Actual read-only source capture115samples/2bars passed unchanged-source checks. An empty isolated launchd job ran the stable executable; first removal was conservatively unconfirmed and cleanup retry verified job/plist/lock absence. Concurrent installed recovery remains blocked by the read-snapshot defect; stable quiet-state journals reconcile, so durable corruption was not established. No production job, bot, key, browser or recorder was changed.
+
+The conflict-resolution commit is an intermediate local integration checkpoint. Generated catalogs will be rebuilt after the worker's tested source fix, rather than hashing in-flight edits. Do not push/merge as complete until final catalog/docs checks, scoped re-review, refreshed installed behavior and final-head CI pass. PR180 remains draft while fixing. Preserve all root/source edits and retain the SDD recovery ledger.
+
+## v337 — 2026-11-09 — final source approval and current-default integration
+
+Conflict resolution also preserves origin/master 8dc44c9f's forward-signal research request and continuation. The incoming record carried historical version headers above the newer records and an unclosed prompt fence; merge resolution retains the full request, closes its fence and keeps one current version header. No source or runtime behavior changed during this integration.
+
+Final combined source fix39e0c262 passed109manager tests,42covering tests and Ruff/format. The single independent scoped re-review approved all three corrections with no residual Important finding. A regular manager-only installation into /Users/mitch/.venvs/solbot completed with exit0; no dependency change occurred. Independent concurrent/recovery/stop/restart and actual-recording runtime acceptance is active. Earlier service/input gates remain retained with their stated limitations. Final metadata gates, final-head CI and actual PR180 merge are still required.
+
+## v338 — 2026-11-09 — runtime acceptance complete and final delivery gates
+
+The independent installed acceptance receipt1.0.5 is complete against reviewed39e0c262. All69loaded Python hashes match. Two independent virtual accounts reached1024bars with exact canonical batch fill/lot/equity parity after an identified worker crash. Duplicate start retained identity and progress. Stop retained3lots and399.135USD exposure. Restarting only the owned fixture supervisor kept that bot stopped while its peer recovered. EOF heartbeat advanced with fixed cursor/evaluation. Replaying the original start receipt left the bot stopped. New isolated runtime journals use schema2 with complete acceptance context.
+
+Installed actual recording replay consumed115samples/2bars with zero fills/lots and unchanged raw source. The Coinbase proxy remains separate from Jupiter SOL/USDC; illustrative costs and unknown book/ticker provenance remain explicit. Earlier real empty-home launchd install/status/cleanup evidence is retained because service.py is unchanged. First removal returned4/unconfirmed; explicit retry returned0 and verified absence. Both owned test supervisors exited0 and locks released. No production state or service changed.
+
+All source/review/installed gates passed. Existing short-fixture annualization and old SQLite test warnings are nonblocking hygiene, not suppressed. Final offline catalog/docs checks, current-head CI, PR180 merge and remote content verification remain. Do not re-run accepted source suites without a relevant change. TASK1108 remains active until delivery. Then continue the approved milestone order; milestone3 adds remaining strategy adapters and prospective/certified Solana data, not graphics or another recorder.
+
+## v339 — 2026-11-09 — installed-import CI fixture repair
+
+CI42712960866 for4bbabce6 completed with8activejobs passed,2expectedskips and one manager-test failure. test_local_socket_dispatch_and_inert_service_status expected installed_executable() to reject the current package. Its assumption held under local source PYTHONPATH but was wrong for the intended regular wheel CI installation. The production guard correctly accepted the wheel. Durable lesson KNOW1160 anchors the exact test and guard.
+
+Test-only commita8db64b5 supplies an explicit source-checkout origin and verifies stable_install_required. Installed-import RED reproduced the exact failure; all17supervisor tests now pass in both source and installed modes. Ruff/format and independent scoped CI review passed. Product bytes remain39e0c262, so installed acceptance1.0.5 remains valid without repeating installation or OS changes. This repair does not reopen the completed final product fix wave. Refresh catalogs, push final records, obtain a new final-head CI success and mergePR180 before markingTASK1108done.

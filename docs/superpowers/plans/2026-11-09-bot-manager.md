@@ -10,9 +10,11 @@
 
 **Spec:** /Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md
 
-Version: 1.0.1
+Version: 1.0.3
+Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
+Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
-Status: plan only; no steps below are implemented by this planning task.
+Status: owner approved implementation in KNOW-1115; milestone1 delivered by PR175. Milestone2 source and installed acceptance passed; PR180 owns final CI and delivery.
 
 ## Global constraints
 
@@ -23,7 +25,7 @@ Status: plan only; no steps below are implemented by this planning task.
 - Preserve exact strategy/timeframe/execution-model semantics. No Coinbase-to-Jupiter certification by relabelling.
 - One application command registry per owner. Browser actions belong in /Users/mitch/dev/solmargintrader/extension/src/core/commands.js.
 - No secret material in output, logs, artifacts or browser synchronization.
-- Each milestone ships through its own passing PR. Product code needs design acceptance before implementation; this task delivers the plan only.
+- Each milestone ships through its own passing PR. Product code needs design acceptance before implementation; owner approval KNOW-1115 follows planning PR171.
 
 ## Review focus
 
@@ -62,13 +64,13 @@ Contracts:
 - Registry `dispatch(name, params, context) -> envelope`. `cli.py` only parses, dispatches, renders and selects exit code. `list`/`status` cannot create a store; missing home returns an empty/not-initialized view.
 - Implement create/list/config/status and help first. Advertise start/stop only for advertised owner capabilities; own draft start says `runtime_not_available` until milestone 2. No command claims a bot is running from desired state alone.
 
-- [ ] Write tests in /Users/mitch/dev/solmargintrader/botmanager/tests/test_config.py, /Users/mitch/dev/solmargintrader/botmanager/tests/test_store.py and /Users/mitch/dev/solmargintrader/botmanager/tests/test_cli.py for pinned defaults, compatible learned settings, manual overrides, explicit zero/false, nonfinite/unknown refusal and second-process persistence. Add a canary credential and assert it never appears in envelopes/logs.
-- [ ] Run the focused suite and confirm it fails because the new package does not yet exist.
-- [ ] Implement the minimum modules; document grid/DCA/trend/momentum constructor defaults with source revision. Arbitrage initially reports `Solana adapter unavailable`, and Council is external-only.
-- [ ] Verify in fresh processes with an isolated temporary `SOLBOT_HOME`. Create two grid drafts with different ranges; list both, stop/inspect by identity, reload and confirm neither settings snapshot changes. Test reads leave a nonexistent data home nonexistent.
-- [ ] Run the suite, inspect the diff, then commit owned files with prompt/memory version updates. No production state or package installation is required to test this slice.
+- [x] Write tests in /Users/mitch/dev/solmargintrader/botmanager/tests/test_config.py, /Users/mitch/dev/solmargintrader/botmanager/tests/test_store.py and /Users/mitch/dev/solmargintrader/botmanager/tests/test_cli.py for pinned defaults, compatible learned settings, manual overrides, explicit zero/false, nonfinite/unknown refusal and second-process persistence. Add a canary credential and assert it never appears in envelopes/logs.
+- [x] Run the focused suite and confirm it fails because the new package does not yet exist.
+- [x] Implement the minimum modules; document grid/DCA/trend/momentum constructor defaults with source revision. Arbitrage initially reports `Solana adapter unavailable`, and Council is external-only.
+- [x] Verify in fresh processes with an isolated temporary `SOLBOT_HOME`. Create two grid drafts with different ranges; list both, stop/inspect by identity, reload and confirm neither settings snapshot changes. Test reads leave a nonexistent data home nonexistent.
+- [x] Run the suite, inspect the diff, then commit owned files with prompt/memory version updates. No production state or package installation is required to test this slice.
 
-Future verification command (after these files exist):
+Source verification command for the delivered first slice:
 
 ```bash
 PYTHONPATH=/Users/mitch/dev/solmargintrader/botmanager/src python3 -m unittest discover -s /Users/mitch/dev/solmargintrader/botmanager/tests -t /Users/mitch/dev/solmargintrader/botmanager
@@ -82,12 +84,12 @@ Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/adapters/{__in
 
 `LegacyAdapter.discover()->Snapshot`, `capabilities()->Capabilities`, `control(external_id,operation,request_id,expected_generation)->Receipt`. Descriptor contains no secret; credential resolution stays private at transport execution. Timeouts yield `owner_unreachable`; malformed/schema-new responses yield `incompatible_owner`. Inventory records config path/source hash, but direct writes to /Users/mitch/.config/soltui are forbidden.
 
-- [ ] Write fixture contract tests for available/unreachable/stale SolTUI, Council, Node FileStore and unregistered browser; test that unreachable is distinct from zero bots.
-- [ ] Confirm tests fail, then map actual /Users/mitch/dev/solmargintrader/soltui/commands.py descriptors: `bots.overview`, `bots.config`, `bots.forward_start`, `bots.forward_stop`, `bots.forward_status`; Council uses `council.*`. Validate params from owner discovery before a control call.
-- [ ] Add durable request dedup and expected configuration checks for manager-issued control. Where legacy APIs cannot guarantee idempotency after a lost acknowledgment, reconcile state and return `outcome_unknown`; never blindly retry. Family-keyed legacy start cannot create another same-family instance.
-- [ ] Add safe CLI discovery/status and delegated start/stop for supported reachable owners. Show browser `registration_required`; do not treat Node FileStore as the browser. Transfer remains unsupported pending milestone 7.
-- [ ] Verify fixtures and read-only actual discovery against the installed owner, recording loaded identity and envelopes. If unavailable, ship the tested adapter with its explicit limitation; do not start services to make a status command succeed.
-- [ ] Run focused tests, package/help acceptance and docs checks, then commit/push/PR/CI/merge this first useful release. Document that new autonomous runners and browser management remain future milestones.
+- [x] Write fixture contract tests for available/unreachable/stale SolTUI, Council, Node FileStore and unregistered browser; test that unreachable is distinct from zero bots.
+- [x] Confirm tests fail, then map actual /Users/mitch/dev/solmargintrader/soltui/commands.py descriptors: `bots.overview`, `bots.config`, `bots.forward_start`, `bots.forward_stop`, `bots.forward_status`; Council uses `council.*`. Validate params from owner discovery before a control call.
+- [x] Add durable request dedup and expected configuration checks for manager-issued control. Where legacy APIs cannot guarantee idempotency after a lost acknowledgment, reconcile state and return `outcome_unknown`; never blindly retry. Family-keyed legacy start cannot create another same-family instance.
+- [x] Add safe CLI discovery/status and delegated start/stop for supported reachable owners. Show browser `registration_required`; do not treat Node FileStore as the browser. Transfer remains unsupported pending milestone 7.
+- [x] Verify fixtures and read-only actual discovery against the installed owner, recording loaded identity and envelopes. If unavailable, ship the tested adapter with its explicit limitation; do not start services to make a status command succeed.
+- [x] Run focused tests, package/help acceptance and docs checks, then commit/push/PR/CI/merge this first useful release. Document that new autonomous runners and browser management remain future milestones.
 
 Milestone-1 acceptance: one installable CLI, durable named specs with complete default provenance, accurate inventory, safe supported delegated controls, explicit unavailable capabilities, zero unexpected process/network/database mutation during read-only status. No claim of five running new bot families.
 
@@ -95,10 +97,10 @@ Milestone-1 acceptance: one installable CLI, durable named specs with complete d
 
 Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/{supervisor.py,worker.py,transport.py,ledger.py}, /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/strategies/{__init__.py,base.py,grid.py}, a read-only recorded-input adapter in /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/data.py, and /Users/mitch/dev/solmargintrader/botmanager/tests/{test_supervisor.py,test_recovery.py,test_paper.py}. This milestone owns the minimum grid strategy/data vertical slice. Read current Coinbase recordings through an explicit installation descriptor and run existing pure gridsim in bounded replay. Label runs reference_paper with venue=coinbase_proxy. They prove unattended operation but cannot certify Jupiter execution or promote to live. Fixtures cover crashes; installed acceptance also uses actual read-only recording input. Milestone 3 expands the adapters and supplies Solana venue certification. No future milestone-3 module is needed to run milestone 2.
 
-- [ ] Write failing tests for duplicate start, crash before/after event commit, saved stopped intent, stale generation, two grid instances, a dead worker, hung tick, corrupted checkpoint and ledger reconciliation.
-- [ ] Implement desired/observed states, local socket commands, per-instance lifetime flock, durable idempotency, bounded worker pool/queues and transactional generation fencing. Delegate shared simulation helpers; do not fork strategy algorithms.
-- [ ] Add explicit service install/uninstall/status using a stable installed package location, never a disposable worktree. macOS launchd first; other supervisors are later adapters. Read commands cannot install it. Verify a requested stop survives supervisor restart.
-- [ ] Force-crash/restart tests reproduce identical lots/cursors/P&L to continuous replay, with no repeated fills. Test process liveness separately from data/tick progress. Stop retains positions, and independent virtual accounts are labelled.
+- [x] Write failing tests for duplicate start, crash before/after event commit, saved stopped intent, stale generation, two grid instances, a dead worker, hung tick, corrupted checkpoint and ledger reconciliation.
+- [x] Implement desired/observed states, local socket commands, per-instance lifetime flock, durable idempotency, bounded worker pool/queues and transactional generation fencing. Delegate shared simulation helpers; do not fork strategy algorithms.
+- [x] Add explicit service install/uninstall/status using a stable installed package location, never a disposable worktree. macOS launchd first; other supervisors are later adapters. Read commands cannot install it. Verify a requested stop survives supervisor restart.
+- [x] Force-crash/restart tests reproduce identical lots/cursors/P&L to continuous replay, with no repeated fills. Test process liveness separately from data/tick progress. Stop retains positions, and independent virtual accounts are labelled.
 - [ ] Verify installed revision and behavior with live-acceptance-verifier before release. No live orders. Run manager suite plus changed shared simulation suites, documentation gates, then deliver.
 
 ## Milestone 3 — shared strategy semantics and certified Solana evidence

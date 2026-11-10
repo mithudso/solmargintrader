@@ -1,8 +1,11 @@
 # Prompt history
 
-Version: 166
+Version: 167
 Delta: v165 to v166; execute the saved Oracle prompt.
 Delta: v164 to v165; record the Oracle creation request.
+Delta: v165 to v166; preserve the merged forward-signal research prompt.
+Delta: v164 to v165; record the current branch conflict-resolution and merge request.
+Delta: v154 to v155; record forward signal daemon research request.
 Delta: v163 to v164; record oracle streaming versus refresh question.
 Delta: v162 to v163; record the detailed backtester handoff request.
 Delta: concurrent histories to v162; preserve monitor qualification and merged Kraken research/backup records.
@@ -1273,6 +1276,17 @@ Run the deep prompt optimizer on this prompt and then run it: Lookup the softwar
 
 Optimized prompt, full audit and structural evidence: /Users/mitch/dev/solmargintrader/docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md and sibling audit/manifest files. Executed as design/planning; design and implementation plan are saved under /Users/mitch/dev/solmargintrader/docs/superpowers/specs and /Users/mitch/dev/solmargintrader/docs/superpowers/plans.
 
+## v155 - 2026-11-09
+
+```text
+RUn the deep prompt optimizer on this prompt and run it: Run the full-suite skill on backtesting trading strategies, self-optimizing stategy parameters, and best practices for signal generator that takes raw pricing data, applies one or many strategies to the data, and
+  outputs a conditional prediction. The goal of this is to create a daemon who will have a set of strategy equations, and the raw trading data for several years, the backtesting can be done as a batch across 14 coins. We will build the backtester in another session, this
+  is going to be entirely about the forward testing walk. So how are we going to store all of this streaming data? Ideally the daemon could receive streaming data and dynamically update the resulting predictions without a full discrete step. So the goal is to have a
+  daemon who receives raw pricing data, and uses established strategies to predict what the price will do next. We will need to test different combinations of how to aggregate the predictions, but on the outset only a stategy with a sufficiently high prediction ratio
+  gets a vote, and who has enough samples that it becomes data. Then The weight of their vote should shrink the lower their accuracy is, and if they are young. This daemon needs to be able to surive restarts, come up on its own, deal with missing data or lossy
+  connections. BUt this piece is just a signal generator. Why don't we do a pub-sub model where any agent or bot can subscribe to whichever strategies they want and only see those. Which means this daemon will need to keep a registry of users, definitely make it an mcp
+  server.  Lookup and use all of the software architect, design, and mcp and agent management  skills as well as the planning superpower and desig for this. n
+```
 
 ## 2026-11-09 — implement the approved bot-manager plan
 
@@ -1444,4 +1458,10 @@ The primary currency pair will be sol/usdc
 
 ```text
 Find, download, and pre-process all the coins' data that you will need to the greatest specificityu as you can. Make sure the data is normalized with no holes. You decide where you want to keep the data and how you want to query, store, index, and process it.
+```
+
+## v165 — 2026-11-09 — resolve and deliver the current branch
+
+```text
+Resolve the conflicts with that branch and merge and commit it
 ```

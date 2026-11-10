@@ -1,26 +1,28 @@
-# Solbot manager 0.1.0
+# Solbot manager 0.2.0
 
 The standalone `solbot` CLI creates persistent named bot drafts and inspects their
 pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC.
-There is no manager runtime in this release. Creating a draft cannot start a
-process, fetch prices, initialize another component's database, load keys, or trade.
+An explicit supervisor runs independent grid reference-paper accounts from a
+pinned Coinbase recording. Creating a draft cannot start a process, fetch prices,
+initialize another component's database, load keys, or trade.
 Arbitrage reports `Solana adapter unavailable`. Council is external-only.
 
 ## Install and use
 
-Python 3.13 or newer is required. Runtime dependencies are entirely standard
-library; building the package uses setuptools. Install in a dedicated environment:
+Python 3.13 or newer is required. The manager uses the standard library and the
+exact local `solmargintrader-backtester==0.1.0` package, which declares NumPy and
+Pandas. Building uses setuptools. Install both local projects in a stable environment:
 
 ```sh
-python3 -m venv /tmp/solbot-venv
-/tmp/solbot-venv/bin/python -m pip install /Users/mitch/dev/solmargintrader/botmanager
-/tmp/solbot-venv/bin/solbot help
-/tmp/solbot-venv/bin/solbot create grid --name sol-grid --set range_pct=10
-/tmp/solbot-venv/bin/solbot create grid --name sol-grid-wide --set range_pct=25
-/tmp/solbot-venv/bin/solbot list
-/tmp/solbot-venv/bin/solbot config sol-grid --effective
-/tmp/solbot-venv/bin/solbot status sol-grid
-/tmp/solbot-venv/bin/solbot status sol-grid --why
+python3 -m venv /Users/mitch/.venvs/solbot
+/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/botmanager
+/Users/mitch/.venvs/solbot/bin/solbot help
+/Users/mitch/.venvs/solbot/bin/solbot create grid --name sol-grid --set range_pct=10
+/Users/mitch/.venvs/solbot/bin/solbot create grid --name sol-grid-wide --set range_pct=25
+/Users/mitch/.venvs/solbot/bin/solbot list
+/Users/mitch/.venvs/solbot/bin/solbot config sol-grid --effective
+/Users/mitch/.venvs/solbot/bin/solbot status sol-grid
+/Users/mitch/.venvs/solbot/bin/solbot status sol-grid --why
 ```
 
 The installed console script resolves the package from its environment; it does
@@ -35,7 +37,7 @@ a boolean; `deadband_bps=0` is zero. Enum strings may be unquoted, for example
 `spacing=arith`. Integer fields reject strings, booleans, and fractional numbers.
 Unknown keys, NaN/infinities, duplicate settings, invalid ranges, `armed=true`,
 and non-paper modes refuse before a draft is saved. `start` and `stop` resolve
-identity, then return `runtime_not_available` for manager drafts. Their presence
+identity, then return `runtime_not_available` for manager drafts without registered input. Their presence
 in parser help does not advertise runnable manager bots; draft status advertises
 only `inspect`. A UUID always identifies one draft; display names are unique
 case-insensitively, ASCII, and cannot look like UUIDs.
@@ -192,12 +194,12 @@ Tests use temporary homes and fresh CLI processes. They cover strict typed
 defaults, source parity, compatible/incompatible learning, manual pins, immutable
 reloads, transactional rollback, unique identities, corrupt/future schemas,
 credential canaries and read-only filesystem behavior. Existing strategy engines
-remain offline and untouched. Legacy owner discovery and guarded delegation are
+remain offline; their algorithms are unchanged and packaged for direct reuse. Legacy owner discovery and guarded delegation are
 implemented and covered by isolated HTTP fixtures and owner source tests.
 Acceptance against the actual installed owner remains unavailable at the default
 endpoint; fixture/source evidence does not establish installed-owner control.
-Multi-instance runtime, live execution, data certification and browser integration
-remain separate work.
+Multi-instance grid reference replay is implemented below. Live execution,
+prospective data certification and browser integration remain separate work.
 
 ## Legacy discovery and guarded controls
 
@@ -259,7 +261,7 @@ reasons and does not certify a Coinbase replay as Jupiter paper/live evidence.
 `--expected-config-hash`, and a canonical UUID `--request-id`. The registry
 handles these parameters; the CLI has no separate control logic. Reusing an ID
 returns its durable receipt. A different operation or explicit expected context
-under the same ID conflicts. Draft controls continue to refuse
+under the same ID conflicts. Draft controls without registered input continue to refuse
 `runtime_not_available`. Every receipt has `safe_to_retry=false`.
 
 Controls require the reviewed owner's `bots.manager_control` capability and exact
@@ -298,5 +300,165 @@ forgetting an ID and risking a duplicate.
 Browser inventory reports `registration_required`. Node FileStore is a separate
 source and reports `discovery_unavailable` until an owner transport is registered;
 its config may contain secrets and is never treated as browser state. Ownership
-transfer, browser controls, autonomous new runners, live certification and all
-other milestones remain unavailable.
+transfer, browser controls and live certification remain unavailable. The manager
+reference runtime does not take ownership of these external instances.
+
+
+## Persistent reference-paper runtime
+
+Registering input explicitly captures a bounded immutable recording snapshot. The
+manager never starts or repairs a recorder. `register-input` reads the descriptor
+and recording, validates a closed contiguous interval, then stores the snapshot
+with its byte high-watermarks and SHA-256 hashes in the runtime journal. The run
+also pins the loaded simulator module hashes and NumPy version; changed engine
+identity refuses replay. Registering
+the same snapshot is idempotent. Different input or config cannot replace a run.
+
+A descriptor contains these exact fields (the historical window and cost values
+below are illustrative assumptions; they do not assert current fees or prices):
+
+```json
+{
+  "schema_version": 1,
+  "installation_id": "soltui-local-recorder",
+  "source": "coinbase_exchange_recorder",
+  "paths": ["/Users/mitch/.config/soltui/prices/2026-11-08.jsonl.gz"],
+  "product": "SOL-USD",
+  "quote_currency": "USD",
+  "bar_seconds": 60,
+  "start_ts": 1794126060,
+  "end_ts": 1794126180,
+  "fee_bps": 6.0,
+  "slippage_bps": 2.0,
+  "carry_bps_per_hour": 0.0,
+  "min_order_quote": 10.0,
+  "capital_quote": 1000.0
+}
+```
+
+The product must be SOL-USD/USD or SOL-USDC/USDC. The reference capital's numeric
+amount must equal the saved capital setting; its explicit currency is retained.
+No USD/USDC exchange or peg conversion takes place. USDC results stay in
+`reference_financials`; USD-named public amounts remain unknown. Accounts are
+independent simulations, not reservations against one funded wallet.
+
+Every cost and minimum size is required. These are simulation assumptions, not
+observed venue fees or executable sizing. Optional typed limits default to
+`max_bars=2048`, `max_quote_age_s=5` and `max_sample_gap_s=5`; neither freshness
+ceiling can be loosened above five seconds. This slice accepts only one-minute
+grids, at most 100 rungs, at most four recording files of 64 MiB each, and at most
+256 MiB of decompressed scan. Larger inputs refuse explicitly. It never truncates
+a run's history, cursor, fills or lots. Each requested bar must have coverage near
+both boundaries; missing products, stale/future quote timestamps, out-of-order
+arrivals, gaps and incomplete lines refuse registration.
+
+The existing recorder supplies bid, ask and quote time. Its version-1 format does
+not distinguish book from ticker provenance: the identity says
+`not_recorded_book_or_ticker_unknown`. The manager retains quote age and recorded
+arrival coverage and constructs **sampled midpoint** candles. These are neither
+exchange OHLC candles nor executable quotes. Runs are `reference_paper` on
+`coinbase_proxy`, with `sampled_mid_ohlc_resting_ladder` execution semantics. The
+saved target remains Jupiter SOL/USDC `trigger_ladder` in a separate identity.
+Neither the venue nor the execution model is certified for live promotion.
+
+Example commands after saving a descriptor at the stated path:
+
+```sh
+/Users/mitch/.venvs/solbot/bin/solbot register-input sol-grid --descriptor /Users/mitch/.config/solbot/reference-input.json
+/Users/mitch/.venvs/solbot/bin/solbot start sol-grid --request-id 00000000-0000-4000-8000-000000000001
+/Users/mitch/.venvs/solbot/bin/solbot daemon
+```
+
+`daemon` is an explicit foreground process. `start` persists desired intent and
+returns a pending receipt even when no supervisor is running. The optional UUID
+lets a caller inspect the exact durable receipt after a lost response; a different
+operation with the same UUID conflicts. Ordinary requests have a 100,000-receipt
+limit; 100 additional slots are reserved exclusively for running-to-stopped
+transitions, covering every supported registered instance, including queued
+intents. New starts and new-ID no-ops cannot consume that reserve. Accepted IDs
+are never forgotten. Without a supplied UUID, one is generated and returned in
+the receipt. Repeated starts never replace an active worker.
+`stop` persists stopped intent and fences in-flight commits before returning. It
+retains positions and simulated orders implied by the canonical replay. It never
+closes exposure or changes arming. Stopped intent survives daemon restarts.
+
+The daemon takes a lifetime home lock and spawns at most four workers, each with
+its own lifetime bot lock and one tick at a time. No unbounded tick queue exists.
+Each tick replays at most a 2,048-bar prefix through canonical
+`run_grid_backtest(close_at_end=False)`. The grid range is plus/minus `range_pct`,
+matching the existing constructor. Only newly observed fills append; the complete
+checkpoint, cursor and fills commit in one SQLite transaction. Restart recomputes
+the same economics; old-generation and duplicate-cursor commits refuse. A corrupt
+checkpoint or inconsistent fill ledger holds the run for investigation.
+
+Workers heartbeat every five seconds. Fifteen-second stale heartbeats and ticks
+are independent failure conditions. Restart delays are 1/5/30 seconds; three
+failures within ten minutes hold `failed` and require investigation. A saved
+running intent is not proof of a living process. `status` separates actual lock
+observations, heartbeat age, evaluation timestamp/cursor, and recording age. At
+the immutable input's end, the worker remains observable but reports
+`waiting/reference_input_exhausted`. It does not claim prospective evaluation or
+fresh Jupiter data. Additional recordings need the later prospective-data design.
+
+`events BOT --limit 100` reads the reference journal. The local supervisor socket
+is mode 0600 with same-user peer checks on macOS/Linux, a 64 KiB request ceiling,
+a bounded listen backlog and monotonic whole-request I/O deadlines (0.2 seconds
+for server receipt/response and one second for client connect/send/receive).
+Receiving fragments never resets the remaining budget. It dispatches the same
+registry for local bot controls and reads. Registration and service administration
+are explicit CLI operations outside the supervisor request loop. CLI controls
+write durable intent directly, so an unavailable socket cannot prevent a stop.
+
+`runtime.sqlite3` is independently schema version 2 and must be backed up using
+SQLite's backup API together with `manager.sqlite3` and `controls.sqlite3` when
+present. Runtime specs and inputs are immutable; fills, checkpoints, generations,
+control receipts and reference-only events are durable. There is no reset/adopt
+command that silently discards a failed run or its inventory.
+
+Runtime reads hold one explicit SQLite snapshot across row and fill decoding.
+A concurrent valid commit cannot mix a previous checkpoint with newer fills.
+The supervisor rechecks suspected integrity faults under a write lock before
+quarantine; transient journal-access errors do not become permanent corruption.
+Checkpoint writes and reads reconcile the complete bot/config/input/target/grid
+identity and run hash against the pinned run, even for identical-config bots.
+
+Schema-2 receipts bind the canonical request UUID and immutable acceptance context,
+including the then-accepted owner/generation and prior desired state. Replay checks
+the receipt against that context and the pinned bot/runtime identity; later worker
+or stop generations do not rewrite historical receipts. Schema-1 runtime state
+remains readable without migration. An authorized writer migrates the journal,
+preserving every legacy request ID and body with a null acceptance context.
+Those legacy receipts refuse replay with `invalid_receipt`: their historical
+acceptance cannot be proven. They are never deleted, resubmitted or given invented
+context. A fresh explicit stop still persists and fences the worker after migration.
+
+## Explicit launchd service
+
+```sh
+/Users/mitch/.venvs/solbot/bin/solbot service status
+/Users/mitch/.venvs/solbot/bin/solbot service install
+/Users/mitch/.venvs/solbot/bin/solbot service uninstall
+```
+
+Installation accepts only a non-editable package in a stable installed environment;
+it rejects source imports and temporary/worktree environments. Each SOLBOT_HOME
+has its own launchd label. A conflicting existing definition refuses replacement.
+`status` reads the persisted definition and supervisor lock and never installs,
+starts or repairs anything; launchd registration remains explicitly unqueried.
+Install checks the exact launchd service target, bootstraps an absent service from
+the matching definition, and confirms registration before reporting success.
+Retrying a failed bootstrap therefore reconciles the retained definition instead
+of treating file existence as activation. Uninstall bootouts only its own label,
+confirms absence before deleting the definition, and retains all desired intent
+and journals. An already absent service permits safe cleanup of its matching
+retained definition; other probe failures retain the definition and report
+unconfirmed state.
+Other operating systems can run the foreground daemon; supervisor adapters beyond
+launchd are not implemented. Tests use isolated homes, subprocesses and mocked
+launchctl operations. They do not alter production LaunchAgents.
+
+Runtime tests cover two independent accounts, lock exclusion, duplicate controls,
+concurrent commit fencing, actual crash-before/crash-after commit, supervisor
+SIGKILL/orphan shutdown, dead workers, hung ticks, failure holding, retained stop,
+corrupt checkpoints/fills, immutable input, and canonical economics/prefix parity.
+Installed package/service acceptance is a separate release gate.

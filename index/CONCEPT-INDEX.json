@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T21:57:49+00:00",
+  "generatedAt": "2026-11-09T22:40:23+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1655,
+      "matchingFiles": 1658,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1387,
+      "matchingFiles": 1394,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 628,
+      "matchingFiles": 637,
       "shown": 30,
       "files": [
         {
@@ -730,7 +730,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 170
+          "hits": 175
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 576,
+      "matchingFiles": 579,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 482,
+      "matchingFiles": 487,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 202
+          "hits": 203
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1051,7 +1051,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 75
+          "hits": 78
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",

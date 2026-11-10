@@ -4,7 +4,7 @@ SOL trading research and execution tooling, in eight parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
-| [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: persistent bot specifications, defaults and owner-aware discovery/control. Paper and disarmed by default; capability errors distinguish unavailable runners and venues. | Python 3.13 |
+| [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance grid reference-paper supervisor. Paper/disarmed; bounded Coinbase replay does not certify Jupiter execution. | Python 3.13 |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |
 | [`extension/`](extension/README.md) | Holdings, P&L, pool discovery, backtests and strategy changes, swap quotes and alerts for Base and Solana, plus an experimental grid on Jupiter (Solana) with hard risk rails — a Chrome MV3 extension plus a CLI and a local HTTP API over one shared command registry. **The grid is the part that can place real orders.** | JavaScript (ESM, no deps) |
