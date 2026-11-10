@@ -54,7 +54,7 @@ class CliTests(unittest.TestCase):
         self.assertIn("usage: solbot", run.stdout)
         self.assertIn("solbot create grid --name my-grid", run.stdout)
         self.assertIn("recorded", run.stdout)
-        self.assertIn("No edit command", run.stdout)
+        self.assertIn("solbot edit", run.stdout)
         self.assertIn("bot-manager-quickstart.md", run.stdout)
         self.assertEqual(run.stderr, "")
         self.assertNotIn("credential-canary-98", run.stdout)

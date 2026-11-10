@@ -31,6 +31,8 @@ SOURCES = ("manager_spec", "manager_runtime")
 KINDS = frozenset(
     {
         "spec.created",
+        "spec.edited",
+        "revision.applied",
         "input.registered",
         "start.requested",
         "stop.requested",
@@ -186,6 +188,31 @@ def _number(value: Any) -> bool:
     return type(value) in (int, float) and math.isfinite(value) and value >= 0
 
 
+def _runtime_attribution(row):
+    runtime_id = row.get("runtime_id")
+    if runtime_id is None:
+        return {
+            "runtime_id": None,
+            "runtime_reason": "legacy_event_runtime_not_recorded",
+        }
+    runtime_id = _uuid(runtime_id)
+    origin = row.get("origin")
+    if origin not in ("native", "legacy_current", "legacy_archive"):
+        raise ValueError
+    sequence = row.get("origin_sequence")
+    if origin == "native":
+        if sequence is not None:
+            raise ValueError
+    elif type(sequence) is not int or sequence < 1:
+        raise ValueError
+    return {
+        "runtime_id": runtime_id,
+        "runtime_reason": None,
+        "origin": origin,
+        "origin_sequence": sequence,
+    }
+
+
 def _event(source: str, row: dict) -> dict:
     sequence = row["sequence"]
     if type(sequence) is not int or sequence < 1:
@@ -217,6 +244,7 @@ def _event(source: str, row: dict) -> dict:
                 "generation": row["generation"],
                 "cursor": row["cursor"],
                 "filtered": False,
+                **_runtime_attribution(row),
             }
         body = json.loads(row["body"])
         if (
@@ -282,6 +310,8 @@ def _public_event(body: Any, source: str, sequence: int) -> dict:
             "occurred_at": body["occurred_at"],
             "filtered": False,
         }
+        if source == "manager_runtime":
+            result.update(_runtime_attribution(body))
         for field in ("generation", "cursor", "config_revision"):
             value = body.get(field)
             if type(value) is int and value >= 0:
@@ -324,12 +354,43 @@ def _public_sources(value: Any) -> dict:
             "reason": row.get("reason") if row.get("reason") in reasons else None,
             "has_more": row.get("has_more") is True,
         }
-        for key in ("cursor", "high_watermark"):
+        for key in ("cursor", "high_watermark", "legacy_reused_sequence_count"):
             amount = row.get(key)
             if type(amount) is int and amount >= 0:
                 public[key] = amount
+        digest = row.get("legacy_reuse_fingerprint")
+        if digest is None or (
+            type(digest) is str and re.fullmatch(r"[0-9a-f]{64}", digest)
+        ):
+            public["legacy_reuse_fingerprint"] = digest
         result[source] = public
     return result
+
+
+def _legacy_continuity(db: sqlite3.Connection) -> dict:
+    """Fingerprint sequence reuse from immutable schema-4 migration evidence.
+
+    Current IDs survive migration; archives keep original IDs in origin_sequence.
+    A repeated original ID proves that an old cursor cannot identify one history,
+    even when another bot keeps the first event and imports raise the watermark.
+    Native events never change this evidence, so a fresh mirror can bind once.
+    """
+    digest = hashlib.sha256()
+    count = 0
+    for row in db.execute(
+        "SELECT origin_sequence FROM events "
+        "WHERE origin IN ('legacy_current','legacy_archive') "
+        "GROUP BY origin_sequence HAVING count(*) > 1 ORDER BY origin_sequence"
+    ):
+        sequence = row[0]
+        if type(sequence) is not int or sequence < 1:
+            raise ValueError("invalid_legacy_sequence")
+        digest.update(f"{sequence}\n".encode())
+        count += 1
+    return {
+        "legacy_reused_sequence_count": count,
+        "legacy_reuse_fingerprint": digest.hexdigest() if count else None,
+    }
 
 
 def _source_page(manager_home: Path, source: str, after: int) -> dict:
@@ -351,18 +412,30 @@ def _source_page(manager_home: Path, source: str, after: int) -> dict:
         else:
             context = closing(_read(path))
         with context as db:
-            if (
-                source == "manager_spec"
-                and db.execute("PRAGMA user_version").fetchone()[0] != 1
-            ):
+            if not db.in_transaction:
+                db.execute("BEGIN")
+            if source == "manager_spec" and db.execute(
+                "PRAGMA user_version"
+            ).fetchone()[0] not in (1, 2):
                 raise ValueError
             fields = (
                 "sequence,bot_id,generation,substr(kind,1,129) AS kind,cursor,at"
                 if source == "manager_runtime"
                 else "sequence,bot_id,CASE WHEN length(body)<=16384 THEN body ELSE NULL END AS body"
             )
+            marker_fields = fields
+            continuity = {}
+            if (
+                source == "manager_runtime"
+                and db.execute("PRAGMA user_version").fetchone()[0] >= 4
+            ):
+                fields += ",runtime_id,origin_sequence,origin"
+                continuity = _legacy_continuity(db)
+            # Preserve old markers only when persisted migration evidence shows
+            # no sequence reuse, including reuse hidden behind another bot's
+            # unchanged first event. Never reset an ambiguous mirror's cursor.
             first = db.execute(
-                f"SELECT {fields} FROM events ORDER BY sequence LIMIT 1"
+                f"SELECT {marker_fields} FROM events ORDER BY sequence LIMIT 1"
             ).fetchone()
             high = db.execute("SELECT max(sequence) FROM events").fetchone()[0] or 0
             if high < after:
@@ -381,8 +454,13 @@ def _source_page(manager_home: Path, source: str, after: int) -> dict:
                 if first
                 else None
             )
+            if continuity.get("legacy_reuse_fingerprint") is not None:
+                marker = hashlib.sha256(
+                    _json({"first_event": marker, **continuity}).encode()
+                ).hexdigest()
             return {
                 "status": "available",
+                **continuity,
                 "reason": "no_events" if high == 0 else None,
                 "rows": [dict(row) for row in rows[:SOURCE_PAGE]],
                 "has_more": len(rows) > SOURCE_PAGE,
@@ -421,6 +499,14 @@ def sync(home: Path, manager_home: Path | None = None) -> dict:
                     page = {
                         "status": "unavailable",
                         "reason": "source_journal_replaced",
+                        **{
+                            key: page[key]
+                            for key in (
+                                "legacy_reused_sequence_count",
+                                "legacy_reuse_fingerprint",
+                            )
+                            if key in page
+                        },
                         "rows": [],
                         "has_more": False,
                     }

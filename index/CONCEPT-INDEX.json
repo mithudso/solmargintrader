@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T03:50:43+00:00",
+  "generatedAt": "2026-11-10T04:12:33+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1663,
+      "matchingFiles": 1664,
       "shown": 30,
       "files": [
         {
@@ -114,6 +114,10 @@
           "hits": 35
         },
         {
+          "path": "memory.md",
+          "hits": 34
+        },
+        {
           "path": "research/strategy_experiment/FILES.md",
           "hits": 34
         },
@@ -140,10 +144,6 @@
         {
           "path": "executor/src/executor/registry.py",
           "hits": 34
-        },
-        {
-          "path": "memory.md",
-          "hits": 32
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1401,
+      "matchingFiles": 1404,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1354,
+      "matchingFiles": 1355,
       "shown": 30,
       "files": [
         {
@@ -456,7 +456,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 76
+          "hits": 78
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 734,
+      "matchingFiles": 737,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 644,
+      "matchingFiles": 649,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 588,
+      "matchingFiles": 589,
       "shown": 30,
       "files": [
         {
@@ -876,7 +876,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 73
+          "hits": 74
         },
         {
           "path": "ecosystem/web/styles.css",
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 528,
+      "matchingFiles": 531,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 261
+          "hits": 264
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1012,6 +1012,10 @@
         {
           "path": "soltui/tui.py",
           "hits": 141
+        },
+        {
+          "path": "memory.md",
+          "hits": 132
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -1024,10 +1028,6 @@
         {
           "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
           "hits": 124
-        },
-        {
-          "path": "memory.md",
-          "hits": 119
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -1106,12 +1106,12 @@
           "hits": 47
         },
         {
-          "path": "soltui/jupiter_manual.py",
-          "hits": 43
+          "path": "prompts.md",
+          "hits": 46
         },
         {
-          "path": "prompts.md",
-          "hits": 42
+          "path": "soltui/jupiter_manual.py",
+          "hits": 43
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 356,
+      "matchingFiles": 357,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 253,
+      "matchingFiles": 254,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 173,
+      "matchingFiles": 174,
       "shown": 30,
       "files": [
         {

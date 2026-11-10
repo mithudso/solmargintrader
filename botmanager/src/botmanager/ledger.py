@@ -1,6 +1,6 @@
 """Transactional intent, generation fencing and reference-paper fill ledger.
 
-The immutable specification database remains version 1. This separate journal
+The specification database and this separate runtime journal
 has its own version and must be included in backups with the specifications.
 """
 
@@ -16,6 +16,16 @@ from uuid import UUID, uuid4
 
 from .data import validate_snapshot
 from .domain import BotSpec, ManagerError, canonical, fingerprint
+from .mutations import (
+    check_revision,
+    mutation_lock,
+    mutation_result,
+    replay_mutation,
+    request_body,
+    request_identity,
+    save_mutation,
+    validate_tables,
+)
 from .receipts import CommandReceipt
 from .store import data_home
 
@@ -37,7 +47,9 @@ class RuntimeLedger:
         self.path = self.home / "runtime.sqlite3"
 
     @contextmanager
-    def connection(self, write: bool = False) -> Iterator[sqlite3.Connection]:
+    def connection(
+        self, write: bool = False, *, migrate_events: bool = True
+    ) -> Iterator[sqlite3.Connection]:
         db = None
         try:
             if write:
@@ -76,10 +88,37 @@ class RuntimeLedger:
                 db.execute("ALTER TABLE requests ADD COLUMN acceptance TEXT")
                 db.execute("PRAGMA user_version=2")
                 version = 2
-            if version not in (1, 2):
+            if version == 2 and write:
+                db.execute(
+                    "CREATE TABLE archives (runtime_id TEXT PRIMARY KEY, bot_id TEXT NOT NULL, body TEXT NOT NULL, checksum TEXT NOT NULL)"
+                )
+                db.execute(
+                    "CREATE TABLE adoption_requests (request_id TEXT PRIMARY KEY, request TEXT NOT NULL, result TEXT NOT NULL, checksum TEXT NOT NULL, acceptance TEXT NOT NULL)"
+                )
+                db.execute("PRAGMA user_version=3")
+                version = 3
+            if version == 3 and write and migrate_events:
+                self._migrate_event_stream(db)
+                db.execute("PRAGMA user_version=4")
+                version = 4
+            if version not in (1, 2, 3, 4):
                 raise ManagerError(
                     "incompatible_store", "Runtime journal schema is incompatible.", 4
                 )
+            tables = {
+                "runs": "bot_id spec input runtime_id desired observed generation owner pid heartbeat tick_started evaluated cursor checkpoint checkpoint_hash failures retry_at reason",
+                "fills": "bot_id sequence body",
+                "events": "sequence bot_id generation kind cursor at"
+                + (" runtime_id origin_sequence origin" if version >= 4 else ""),
+                "requests": "request_id binding receipt checksum"
+                + (" acceptance" if version >= 2 else ""),
+            }
+            if version >= 3:
+                tables.update(
+                    archives="runtime_id bot_id body checksum",
+                    adoption_requests="request_id request result checksum acceptance",
+                )
+            validate_tables(db, tables)
             yield db
             if write:
                 db.commit()
@@ -93,14 +132,109 @@ class RuntimeLedger:
                     db.rollback()
                 db.close()
 
+    def _migrate_event_stream(self, db):
+        """Retain current cursors; import archived events without reusing IDs.
+
+        Schema 3 removed events on adoption and could reuse their sequences.
+        Archive imports therefore get new stream IDs above every known old ID;
+        their exact original sequence and runtime remain separately attributable.
+        Old archive bodies and all control/request rows stay byte-for-byte intact.
+        """
+        current = [
+            dict(row) for row in db.execute("SELECT * FROM events ORDER BY sequence")
+        ]
+        archived = []
+        for raw in db.execute("SELECT * FROM archives ORDER BY rowid"):
+            archive = self._decode_archive(db, raw)
+            archived.extend(
+                (archive["runtime_id"], event) for event in archive["events"]
+            )
+        sequences = [event["sequence"] for event in current] + [
+            event["sequence"] for _, event in archived
+        ]
+        if any(type(sequence) is not int or sequence < 1 for sequence in sequences):
+            raise ManagerError(
+                "incompatible_store", "Historical event sequences are invalid.", 4
+            )
+        next_sequence = max(sequences, default=0) + 1
+        db.execute(
+            "CREATE TABLE events_v4 (sequence INTEGER PRIMARY KEY AUTOINCREMENT, bot_id TEXT NOT NULL, generation INTEGER NOT NULL, kind TEXT NOT NULL, cursor INTEGER NOT NULL, at REAL NOT NULL, runtime_id TEXT NOT NULL, origin_sequence INTEGER, origin TEXT NOT NULL)"
+        )
+        fields = ("sequence", "bot_id", "generation", "kind", "cursor", "at")
+        for event in current:
+            run = db.execute(
+                "SELECT runtime_id FROM runs WHERE bot_id=?", (event["bot_id"],)
+            ).fetchone()
+            if run is None or str(UUID(run["runtime_id"])) != run["runtime_id"]:
+                raise ManagerError(
+                    "incompatible_store",
+                    "Current event runtime attribution is unavailable.",
+                    4,
+                )
+            db.execute(
+                "INSERT INTO events_v4 VALUES (?,?,?,?,?,?,?,?,?)",
+                (
+                    *[event[key] for key in fields],
+                    run["runtime_id"],
+                    event["sequence"],
+                    "legacy_current",
+                ),
+            )
+        for runtime_id, event in archived:
+            db.execute(
+                "INSERT INTO events_v4 VALUES (?,?,?,?,?,?,?,?,?)",
+                (
+                    next_sequence,
+                    *[event[key] for key in fields[1:]],
+                    runtime_id,
+                    event["sequence"],
+                    "legacy_archive",
+                ),
+            )
+            next_sequence += 1
+        db.execute("DROP TABLE events")
+        db.execute("ALTER TABLE events_v4 RENAME TO events")
+
     @staticmethod
     def _event(db, row, kind):
+        if db.execute("PRAGMA user_version").fetchone()[0] < 4:
+            # A stop must not depend on validating or importing a historical
+            # archive. Keep its old journal format until another writer migrates.
+            db.execute(
+                "INSERT INTO events(bot_id,generation,kind,cursor,at) VALUES (?,?,?,?,?)",
+                (row["bot_id"], row["generation"], kind, row["cursor"], time.time()),
+            )
+            return
+
+        run = db.execute(
+            "SELECT runtime_id FROM runs WHERE bot_id=?", (row["bot_id"],)
+        ).fetchone()
         db.execute(
-            "INSERT INTO events(bot_id,generation,kind,cursor,at) VALUES (?,?,?,?,?)",
-            (row["bot_id"], row["generation"], kind, row["cursor"], time.time()),
+            "INSERT INTO events(bot_id,generation,kind,cursor,at,runtime_id,origin_sequence,origin) VALUES (?,?,?,?,?,?,NULL,'native')",
+            (
+                row["bot_id"],
+                row["generation"],
+                kind,
+                row["cursor"],
+                time.time(),
+                run["runtime_id"],
+            ),
         )
 
-    def _decode(self, db, row):
+    @staticmethod
+    def _run_events(db, bot_id, runtime_id):
+        if db.execute("PRAGMA user_version").fetchone()[0] >= 4:
+            rows = db.execute(
+                "SELECT * FROM events WHERE bot_id=? AND runtime_id=? ORDER BY sequence",
+                (bot_id, runtime_id),
+            )
+        else:
+            rows = db.execute(
+                "SELECT * FROM events WHERE bot_id=? ORDER BY sequence", (bot_id,)
+            )
+        return [dict(row) for row in rows]
+
+    def _decode(self, db, row, *, archived_fills=None):
         from .strategies.grid import validate_checkpoint
 
         if row is None:
@@ -114,17 +248,42 @@ class RuntimeLedger:
             result["input"] = json.loads(row["input"])
             validate_snapshot(result["input"])
             result["failures"] = json.loads(row["failures"])
+            if (
+                str(UUID(row["runtime_id"])) != row["runtime_id"]
+                or type(row["generation"]) is not int
+                or row["generation"] < 0
+                or type(row["cursor"]) is not int
+                or row["cursor"] < 0
+                or row["desired"] not in ("running", "stopped")
+                or row["observed"]
+                not in (
+                    "stopped",
+                    "stopping",
+                    "pending",
+                    "running",
+                    "waiting",
+                    "failed",
+                    "blocked",
+                    "recovering",
+                )
+                or not isinstance(result["failures"], list)
+            ):
+                raise ValueError
             checkpoint = (
                 json.loads(row["checkpoint"]) if row["checkpoint"] is not None else None
             )
             result["checkpoint"] = checkpoint
-            fills = [
-                json.loads(f["body"])
-                for f in db.execute(
-                    "SELECT body FROM fills WHERE bot_id=? ORDER BY sequence",
-                    (row["bot_id"],),
-                )
-            ]
+            fills = (
+                archived_fills
+                if archived_fills is not None
+                else [
+                    json.loads(f["body"])
+                    for f in db.execute(
+                        "SELECT body FROM fills WHERE bot_id=? ORDER BY sequence",
+                        (row["bot_id"],),
+                    )
+                ]
+            )
             if checkpoint is None:
                 if row["cursor"] != 0 or fills or row["checkpoint_hash"] is not None:
                     raise ValueError
@@ -153,6 +312,21 @@ class RuntimeLedger:
                 db.execute("SELECT * FROM runs WHERE bot_id=?", (bot_id,)).fetchone(),
             )
 
+    def get_many(self, bot_ids):
+        """Capture all requested runtime rows and their fills in one snapshot."""
+        if not self.path.exists():
+            return {bot_id: None for bot_id in bot_ids}
+        with self.connection() as db:
+            return {
+                bot_id: self._decode(
+                    db,
+                    db.execute(
+                        "SELECT * FROM runs WHERE bot_id=?", (bot_id,)
+                    ).fetchone(),
+                )
+                for bot_id in bot_ids
+            }
+
     def ids(self):
         if not self.path.exists():
             return []
@@ -180,6 +354,20 @@ class RuntimeLedger:
             ]
 
     def register(self, spec: BotSpec, data: dict):
+        from .store import ManagerStore
+        from .strategies.grid import evaluate
+
+        evaluate(spec, data, 1)
+        with mutation_lock(self.home):
+            saved = ManagerStore(self.home).get_spec(spec.bot_id)
+            if saved is not None and saved.config_hash != spec.config_hash:
+                raise ManagerError(
+                    "stale_revision",
+                    "Saved specification changed before input registration.",
+                )
+            return self._register(spec, data)
+
+    def _register(self, spec: BotSpec, data: dict):
         from .strategies.grid import evaluate
 
         # Validate capability, sizing and economics before any durable registration.
@@ -301,34 +489,49 @@ class RuntimeLedger:
                 "Legacy runtime receipt lacks acceptance context; reconciliation is required.",
                 4,
             )
-        if old["binding"] != binding:
-            raise ManagerError(
-                "identity_conflict",
-                "Request UUID already belongs to a different control.",
-            )
         try:
             context = json.loads(old["acceptance"])
             receipt = json.loads(old["receipt"])
+            if (
+                context.get("bot_id") != spec.bot_id
+                or context.get("operation") != operation
+            ):
+                raise ManagerError(
+                    "identity_conflict",
+                    "Request UUID already belongs to a different control.",
+                )
             expected_receipt = self._accepted_receipt(context)
             run = db.execute(
                 "SELECT spec,runtime_id FROM runs WHERE bot_id=?", (spec.bot_id,)
             ).fetchone()
             if run is None:
                 raise ValueError
+            if run["runtime_id"] != context["runtime_id"]:
+                archive = db.execute(
+                    "SELECT * FROM archives WHERE runtime_id=? AND bot_id=?",
+                    (context["runtime_id"], spec.bot_id),
+                ).fetchone()
+                if archive is None:
+                    raise ValueError
+                archived = self._decode_archive(db, archive)
+                run = {
+                    "spec": canonical(archived["state"]["spec"]),
+                    "runtime_id": archived["runtime_id"],
+                }
             pinned = BotSpec.from_dict(json.loads(run["spec"]))
+            binding = self._control_binding(pinned, operation, request_id)
             immutable = {
                 "request_id": request_id,
                 "bot_id": spec.bot_id,
                 "operation": operation,
-                "config_hash": spec.config_hash,
-                "config_revision": spec.config_revision,
+                "config_hash": pinned.config_hash,
+                "config_revision": pinned.config_revision,
                 "runtime_id": run["runtime_id"],
             }
             if (
                 old["request_id"] != request_id
                 or pinned.bot_id != spec.bot_id
-                or pinned.config_hash != spec.config_hash
-                or pinned.config_revision != spec.config_revision
+                or old["binding"] != binding
                 or canonical({key: context[key] for key in immutable})
                 != canonical(immutable)
                 or canonical(receipt) != canonical(expected_receipt)
@@ -342,11 +545,25 @@ class RuntimeLedger:
             # not to the current worker after later stop/restart transitions.
             return expected_receipt
         except (KeyError, TypeError, ValueError, ManagerError) as exc:
+            if isinstance(exc, ManagerError) and exc.code == "identity_conflict":
+                raise
             raise ManagerError(
                 "invalid_receipt",
                 "Durable runtime receipt does not match its accepted request.",
                 4,
             ) from exc
+
+    @staticmethod
+    def _control_binding(spec, operation, request_id):
+        return fingerprint(
+            {
+                "request_id": request_id,
+                "bot_id": spec.bot_id,
+                "config_hash": spec.config_hash,
+                "config_revision": spec.config_revision,
+                "operation": operation,
+            }
+        )
 
     def control(self, spec: BotSpec, operation: str, request_id: str):
         try:
@@ -360,23 +577,12 @@ class RuntimeLedger:
                 "invalid_input",
                 "A canonical request UUID and supported operation are required.",
             ) from exc
-        binding = fingerprint(
-            {
-                "request_id": request_id,
-                "bot_id": spec.bot_id,
-                "config_hash": spec.config_hash,
-                "config_revision": spec.config_revision,
-                "operation": operation,
-            }
-        )
-        with self.connection(True) as db:
+        with self.connection(True, migrate_events=operation != "stop") as db:
             old = db.execute(
                 "SELECT * FROM requests WHERE request_id=?", (request_id,)
             ).fetchone()
             if old:
-                return self._replay_receipt(
-                    db, old, spec, operation, request_id, binding
-                )
+                return self._replay_receipt(db, old, spec, operation, request_id, None)
             raw = db.execute(
                 "SELECT * FROM runs WHERE bot_id=?", (spec.bot_id,)
             ).fetchone()
@@ -406,11 +612,9 @@ class RuntimeLedger:
                     "Register explicit reference input before runtime control.",
                     3,
                 )
-            if row["spec"]["config_hash"] != spec.config_hash:
-                raise ManagerError(
-                    "identity_conflict",
-                    "Saved runtime configuration does not match the specification.",
-                )
+            # Controls address the active run. A saved edit must not disable its stop.
+            spec = BotSpec.from_dict(row["spec"])
+            binding = self._control_binding(spec, operation, request_id)
             if operation == "start" and row["observed"] in ("failed", "blocked"):
                 raise ManagerError(
                     "reconciliation_required",
@@ -692,3 +896,417 @@ class RuntimeLedger:
                 "UPDATE runs SET observed='stopped',pid=NULL,tick_started=NULL,reason='stopped_positions_retained' WHERE bot_id=? AND desired='stopped'",
                 (bot_id,),
             )
+
+    def _decode_archive(self, db, archive):
+        try:
+            body = json.loads(archive["body"])
+            if (
+                set(body) != {"schema_version", "archived_at", "run", "fills", "events"}
+                or type(body["schema_version"]) is not int
+                or body["schema_version"] != 1
+                or fingerprint(body) != archive["checksum"]
+                or body["run"]["bot_id"] != archive["bot_id"]
+                or body["run"]["runtime_id"] != archive["runtime_id"]
+            ):
+                raise ValueError
+            fills = []
+            for index, fill in enumerate(body["fills"]):
+                if fill["bot_id"] != archive["bot_id"] or fill["sequence"] != index:
+                    raise ValueError
+                fills.append(json.loads(fill["body"]))
+            state = self._decode(db, body["run"], archived_fills=fills)
+            if any(event["bot_id"] != archive["bot_id"] for event in body["events"]):
+                raise ValueError
+            return {
+                "schema_version": 1,
+                "runtime_id": archive["runtime_id"],
+                "archived": True,
+                "archived_at": body["archived_at"],
+                "source": "coinbase_proxy",
+                "mode": "reference_paper",
+                "state": state,
+                "events": body["events"],
+            }
+        except (ValueError, KeyError, TypeError) as exc:
+            raise ManagerError(
+                "corrupt_checkpoint", "Archived runtime evidence does not reconcile.", 4
+            ) from exc
+
+    def has_adoption_request(self, request_id):
+        if not self.path.exists():
+            return False
+        with self.connection() as db:
+            return (
+                db.execute("PRAGMA user_version").fetchone()[0] >= 3
+                and db.execute(
+                    "SELECT 1 FROM adoption_requests WHERE request_id=?", (request_id,)
+                ).fetchone()
+                is not None
+            )
+
+    def history(self, bot_id, revision=None):
+        if not self.path.exists():
+            return []
+        with self.connection() as db:
+            runs = []
+            if db.execute("PRAGMA user_version").fetchone()[0] >= 3:
+                runs = [
+                    self._decode_archive(db, row)
+                    for row in db.execute(
+                        "SELECT * FROM archives WHERE bot_id=? ORDER BY rowid",
+                        (bot_id,),
+                    )
+                ]
+            row = self._decode(
+                db,
+                db.execute("SELECT * FROM runs WHERE bot_id=?", (bot_id,)).fetchone(),
+            )
+            if row:
+                runs.append(
+                    {
+                        "schema_version": 1,
+                        "runtime_id": row["runtime_id"],
+                        "archived": False,
+                        "archived_at": None,
+                        "source": "coinbase_proxy",
+                        "mode": "reference_paper",
+                        "state": row,
+                        "events": self._run_events(db, bot_id, row["runtime_id"]),
+                    }
+                )
+            for run in runs:
+                run["control_receipts"] = []
+            by_runtime = {run["runtime_id"]: run for run in runs}
+            for receipt_row in db.execute("SELECT * FROM requests"):
+                try:
+                    receipt = json.loads(receipt_row["receipt"])
+                    if (
+                        receipt.get("bot_id") == bot_id
+                        and receipt.get("runtime_id") in by_runtime
+                    ):
+                        # Preserve legacy rows for inspection without granting them replay authority.
+                        run = by_runtime[receipt["runtime_id"]]
+                        acceptance = (
+                            receipt_row["acceptance"]
+                            if db.execute("PRAGMA user_version").fetchone()[0] >= 2
+                            else None
+                        )
+                        if acceptance is not None:
+                            self._replay_receipt(
+                                db,
+                                receipt_row,
+                                BotSpec.from_dict(run["state"]["spec"]),
+                                receipt["operation"],
+                                receipt_row["request_id"],
+                                None,
+                            )
+                        run["control_receipts"].append(
+                            {
+                                "receipt": receipt,
+                                "replay_proven": acceptance is not None,
+                            }
+                        )
+                except (ValueError, KeyError, TypeError) as exc:
+                    raise ManagerError(
+                        "invalid_receipt", "Historical control receipt is invalid.", 4
+                    ) from exc
+            return [
+                run
+                for run in runs
+                if revision in (None, run["state"]["spec"]["config_revision"])
+            ]
+
+    @staticmethod
+    def adoption_blockers(row, worker_alive=False):
+        """Pure conservative UI projection; apply also verifies replay economics."""
+        if row is None:
+            return []
+        blockers = []
+        if row["desired"] != "stopped":
+            blockers.append("runtime_not_stopped")
+        if worker_alive:
+            blockers.append("worker_lock_held")
+        if row["observed"] in ("failed", "blocked"):
+            blockers.append("runtime_requires_reconciliation")
+        if row["tick_started"] is not None:
+            blockers.append("unresolved_tick_intent")
+        cp = row["checkpoint"]
+        if cp is not None:
+            if cp.get("lots") != [] or cp.get("exposure_quote") != 0:
+                blockers.append("open_reference_exposure")
+            required = (
+                "equity_quote",
+                "cash_quote",
+                "realized_net_pnl_quote",
+                "unrealized_net_pnl_quote",
+                "fees_quote",
+                "slippage_quote",
+                "carry_paid_quote",
+                "carry_accrued_quote",
+            )
+            import math
+
+            if (
+                any(
+                    type(cp.get(key)) not in (int, float) or not math.isfinite(cp[key])
+                    for key in required
+                )
+                or cp["carry_accrued_quote"] != 0
+                or abs(cp["unrealized_net_pnl_quote"]) > 1e-9
+            ):
+                blockers.append("unresolved_reference_economics")
+        return blockers
+
+    def apply(
+        self, identity, *, descriptor=None, expected_revision=None, request_id=None
+    ):
+        from .data import load_recording
+        from .store import ManagerStore
+        from .strategies.grid import evaluate
+        from .worker import lifetime_lock
+
+        request_id = request_identity(request_id, expected_revision)
+        store = ManagerStore(self.home)
+        initial = store.get_spec(identity)
+        if initial is None:
+            raise ManagerError("bot_not_found", "Bot identity was not found.")
+        if descriptor is not None and (
+            not isinstance(descriptor, str) or not descriptor
+        ):
+            raise ManagerError("invalid_input", "Descriptor must be a file path.")
+        changes = {
+            "descriptor_ref": fingerprint(descriptor)
+            if descriptor is not None
+            else None
+        }
+        request = request_body(
+            "apply", initial.bot_id, changes, expected_revision, request_id
+        )
+        with mutation_lock(self.home), self.connection(True) as db:
+            if store.has_edit_request(request_id):
+                raise ManagerError(
+                    "identity_conflict", "Request UUID already belongs to an edit."
+                )
+            old = db.execute(
+                "SELECT * FROM adoption_requests WHERE request_id=?", (request_id,)
+            ).fetchone()
+            replay = replay_mutation(old, request)
+            if replay is not None:
+                self._validate_adoption_receipt(db, replay, store)
+                return replay
+            spec = store.get_spec(initial.bot_id)
+            check_revision(spec, expected_revision)
+            raw = db.execute(
+                "SELECT * FROM runs WHERE bot_id=?", (spec.bot_id,)
+            ).fetchone()
+            row = self._decode(db, raw)
+            data = row["input"] if row else None
+            if descriptor is not None:
+                try:
+                    with Path(descriptor).open("rb") as stream:
+                        content = stream.read(65537)
+                    if len(content) > 65536:
+                        raise ValueError
+                    data = load_recording(json.loads(content))
+                except (OSError, ValueError, TypeError) as exc:
+                    raise ManagerError(
+                        "input_unavailable",
+                        "Input descriptor is missing or invalid.",
+                        3,
+                    ) from exc
+            if (
+                row
+                and spec.config_hash == row["spec"]["config_hash"]
+                and data["snapshot_hash"] == row["input"]["snapshot_hash"]
+            ):
+                result = mutation_result(
+                    request,
+                    spec,
+                    spec,
+                    active_runtime_id=row["runtime_id"],
+                    owner_generation=row["generation"],
+                    input_snapshot_hash=data["snapshot_hash"],
+                    reason="revision_already_active",
+                    changed=False,
+                )
+            elif data is None:
+                result = mutation_result(
+                    request,
+                    spec,
+                    spec,
+                    reason="draft_uses_saved_revision",
+                    changed=False,
+                )
+            else:
+                # Strict capture/cost/context checks precede archive or admission.
+                try:
+                    evaluate(spec, data, 1)
+                except ManagerError as exc:
+                    raise ManagerError(
+                        "incompatible_input",
+                        "Saved settings require compatible explicit input, capital, timeframe and reference costs.",
+                        3,
+                    ) from exc
+                if row and self.adoption_blockers(row):
+                    raise ManagerError(
+                        "adoption_blocked",
+                        "Adoption requires stopped intent, no worker, no exposure and fully reconciled reference economics.",
+                        3,
+                    )
+                # A self-consistent checksum is not proof of a zero-exposure boundary.
+                if (
+                    row
+                    and row["checkpoint"] is not None
+                    and canonical(
+                        evaluate(
+                            BotSpec.from_dict(row["spec"]), row["input"], row["cursor"]
+                        )
+                    )
+                    != canonical(row["checkpoint"])
+                ):
+                    raise ManagerError(
+                        "corrupt_checkpoint",
+                        "Reference economics do not match the pinned replay.",
+                        4,
+                    )
+                try:
+                    with lifetime_lock(self.home / "locks" / (spec.bot_id + ".lock")):
+                        result = self._admit_revision(db, raw, row, spec, data, request)
+                except BlockingIOError as exc:
+                    raise ManagerError(
+                        "adoption_blocked",
+                        "The reference worker still holds its lifetime lock.",
+                        3,
+                    ) from exc
+            save_mutation(db, "adoption_requests", request, result)
+            return result
+
+    def _admit_revision(self, db, raw, row, spec, data, request):
+        generation = row["generation"] + 1 if row else 0
+        prior_id = row["runtime_id"] if row else None
+        if row:
+            body = {
+                "schema_version": 1,
+                "archived_at": time.time(),
+                "run": dict(raw),
+                "fills": [
+                    dict(fill)
+                    for fill in db.execute(
+                        "SELECT * FROM fills WHERE bot_id=? ORDER BY sequence",
+                        (spec.bot_id,),
+                    )
+                ],
+                "events": self._run_events(db, spec.bot_id, prior_id),
+            }
+            db.execute(
+                "INSERT INTO archives VALUES (?,?,?,?)",
+                (prior_id, spec.bot_id, canonical(body), fingerprint(body)),
+            )
+            db.execute("DELETE FROM fills WHERE bot_id=?", (spec.bot_id,))
+            db.execute("DELETE FROM runs WHERE bot_id=?", (spec.bot_id,))
+        elif db.execute("SELECT count(*) FROM runs").fetchone()[0] >= MAX_INSTANCES:
+            raise ManagerError(
+                "resource_limit", "Reference instance capacity is exhausted.", 3
+            )
+        runtime_id = str(uuid4())
+        db.execute(
+            "INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (
+                spec.bot_id,
+                canonical(spec.to_dict()),
+                canonical(data),
+                runtime_id,
+                "stopped",
+                "stopped",
+                generation,
+                None,
+                None,
+                None,
+                None,
+                None,
+                0,
+                None,
+                None,
+                "[]",
+                0.0,
+                "saved_revision_applied",
+            ),
+        )
+        self._event(
+            db,
+            {"bot_id": spec.bot_id, "generation": generation, "cursor": 0},
+            "revision.applied",
+        )
+        return mutation_result(
+            request,
+            spec,
+            spec,
+            active_runtime_id=runtime_id,
+            prior_runtime_id=prior_id,
+            owner_generation=generation,
+            input_snapshot_hash=data["snapshot_hash"],
+            reason="saved_revision_applied",
+            changed=True,
+        )
+
+    def _validate_adoption_receipt(self, db, result, store):
+        receipt = result["receipt"]
+        versions = store.history(receipt["bot_id"], receipt["accepted_revision"])
+        if not versions or canonical(versions[0]["spec"]) != canonical(result["spec"]):
+            raise ManagerError(
+                "invalid_receipt",
+                "Adoption receipt references an invalid specification.",
+                4,
+            )
+        runtime_id = receipt["active_runtime_id"]
+        if runtime_id is None:
+            if (
+                receipt["reason"] != "draft_uses_saved_revision"
+                or receipt["outcome"] != "skipped"
+            ):
+                raise ManagerError(
+                    "invalid_receipt", "Draft adoption receipt is inconsistent.", 4
+                )
+            return
+        raw = db.execute(
+            "SELECT * FROM runs WHERE bot_id=? AND runtime_id=?",
+            (receipt["bot_id"], runtime_id),
+        ).fetchone()
+        if raw is not None:
+            spec = BotSpec.from_dict(json.loads(raw["spec"]))
+            input_hash = json.loads(raw["input"])["snapshot_hash"]
+        else:
+            archive = db.execute(
+                "SELECT * FROM archives WHERE bot_id=? AND runtime_id=?",
+                (receipt["bot_id"], runtime_id),
+            ).fetchone()
+            if archive is None:
+                raise ManagerError(
+                    "invalid_receipt", "Adoption runtime evidence is missing.", 4
+                )
+            archived = self._decode_archive(db, archive)["state"]
+            spec = BotSpec.from_dict(archived["spec"])
+            input_hash = archived["input"]["snapshot_hash"]
+        if (
+            spec.config_hash != receipt["accepted_hash"]
+            or spec.config_revision != receipt["accepted_revision"]
+            or input_hash != receipt["input_snapshot_hash"]
+        ):
+            raise ManagerError(
+                "invalid_receipt", "Adoption receipt disagrees with pinned runtime.", 4
+            )
+        if receipt["prior_runtime_id"] is not None:
+            archive = db.execute(
+                "SELECT * FROM archives WHERE bot_id=? AND runtime_id=?",
+                (receipt["bot_id"], receipt["prior_runtime_id"]),
+            ).fetchone()
+            if (
+                archive is None
+                or self._decode_archive(db, archive)["state"]["generation"] + 1
+                != receipt["owner_generation"]
+            ):
+                raise ManagerError(
+                    "invalid_receipt",
+                    "Adoption receipt disagrees with archived generation.",
+                    4,
+                )

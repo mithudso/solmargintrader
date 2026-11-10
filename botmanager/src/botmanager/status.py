@@ -340,6 +340,64 @@ def legacy_snapshot(
     }
 
 
+def _editing_status(snapshot, spec, row, worker_alive):
+    from .ledger import RuntimeLedger
+    from .strategies.grid import (
+        MAX_REFERENCE_RANGE_PCT,
+        MAX_REFERENCE_RUNGS,
+        REFERENCE_BAR_SECONDS,
+    )
+
+    active = BotSpec.from_dict(row["spec"]) if row else None
+    pending = active is not None and active.config_hash != spec.config_hash
+    blockers = RuntimeLedger.adoption_blockers(row, worker_alive) if pending else []
+    if pending and (
+        spec.strategy_id != "grid"
+        or spec.bar_seconds != REFERENCE_BAR_SECONDS
+        or spec.resolved_values["rungs"] > MAX_REFERENCE_RUNGS
+        or spec.resolved_values["range_pct"] >= MAX_REFERENCE_RANGE_PCT
+        or spec.resolved_values["capital_usd"] / spec.resolved_values["rungs"]
+        < row["input"]["descriptor"]["min_order_quote"]
+        or spec.resolved_values["capital_usd"]
+        != row["input"]["descriptor"]["capital_quote"]
+    ):
+        blockers.append("compatible_explicit_input_required")
+    snapshot.update(
+        saved_config_revision=spec.config_revision,
+        saved_config_hash=spec.config_hash,
+        active_config_revision=active.config_revision if active else None,
+        active_config_hash=active.config_hash if active else None,
+        active_config_reason=None if active else "no_runtime_registered",
+        pending_changes=pending,
+        adoption_blockers=blockers,
+    )
+    # Keep the established runtime capability list compatible; configuration
+    # actions are additive, explicitly advertised in action_capabilities.
+    snapshot["action_capabilities"].update(
+        edit={
+            "available": True,
+            "reason": "immutable_saved_revision",
+            "semantics": "Save settings without changing active runtime economics.",
+        },
+        apply={
+            "available": not blockers,
+            "reason": blockers[0]
+            if blockers
+            else "stopped_reference_boundary_required"
+            if pending
+            else "draft_uses_saved_revision"
+            if not row
+            else "revision_already_active",
+            "semantics": "Adopt at a verified stopped zero-exposure boundary; never start.",
+        },
+    )
+    snapshot["tuning"]["adoption"] = {
+        "available": not blockers,
+        "reason": snapshot["action_capabilities"]["apply"]["reason"],
+        "explicit_only": True,
+    }
+
+
 def runtime_snapshot(
     spec: BotSpec,
     row: dict | None,
@@ -351,8 +409,11 @@ def runtime_snapshot(
 ) -> dict[str, Any]:
     """Separate reference replay progress, process health and recorded data age."""
     snapshot = draft_snapshot(spec, why=why)
+    _editing_status(snapshot, spec, row, worker_alive)
     if row is None:
         return snapshot
+    active = BotSpec.from_dict(row["spec"])
+    snapshot["evidence_identity"] = draft_snapshot(active)["evidence_identity"]
     reason = row["reason"]
     observed = row["observed"]
     heartbeat_age = (
@@ -437,7 +498,7 @@ def runtime_snapshot(
         },
     )
     for op, capability in snapshot["action_capabilities"].items():
-        if op == "inspect":
+        if op in ("inspect", "edit", "apply"):
             continue
         available = op == "stop" or (
             op == "start" and row["observed"] not in ("failed", "blocked")
@@ -453,7 +514,7 @@ def runtime_snapshot(
     snapshot["capabilities"] = [
         op
         for op, capability in snapshot["action_capabilities"].items()
-        if capability["available"]
+        if capability["available"] and op not in ("edit", "apply")
     ]
     snapshot["configured_reference_capital"] = {
         "value": reference["capital_quote"],

@@ -1,6 +1,15 @@
 # Work continuation
 
-Version: 353
+Version: 356
+Delta: v355 to v356; record accepted INT1/INT2 fixes before refreshed installation and final-head checks.
+Delta: concurrent histories to v355; preserve editing and PR187 Basic Memory records without changing application source.
+Delta: v353 to v354; record merge-aware docs gate success before combined integration commit.
+Delta: v352 to v353; preserve the committed-merge-parent documentation count failure and required helper fix.
+Delta: v351 to v352; preserve tested schema4 integration and refreshed shared-source/evidence preflights.
+Delta: concurrent histories to v351; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
+Delta: v347 to v348; record reviewed editing and independent installed acceptance before final-head delivery.
+Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
+Delta: v345 to v346; resume all remaining milestones with safe editing and Oracle coordination.
 Delta: v352 to v353; refresh offline index hashes required by record changes.
 Delta: v351 to v352; verify both direct Basic Memory launchers and prepare record delivery.
 Delta: v350 to v351; start the Basic Memory MCP launcher configuration and verification.
@@ -1171,6 +1180,59 @@ Bare CLI now shows usage, concrete creation/config/status examples, reference-in
 
 Remaining: installedacceptance, finaldocs/catalog checks, ownedcommit/push/PR/finalheadCI/merge/defaultcontentverification. Productmilestones3–8remaindue; thisrepairdoesnotcompletetheoriginalsystem. Preserveprimarycheckoutandactiveimplementationworkspace. User explicitly rejected unsolicited reflection; suppress user-facing reflection detours.
 
+## v346 — 2026-11-09 — resume every remaining milestone with editing and Oracle handoff
+
+The owner explicitly clarified 'All remaining milestones'. Implement safe editing first under TASK1178, then resume TASK1109–1114 in the approved order. Finish every achievable part; preserve actual data/time/economic-verifier gates without inventing certification or profitability. Report the tested state/command contracts and limits to Oracle for its later visual interface. The existing Oracle agent definition is a read-only operator/guide, not a new execution owner. Current Oracle implementation merged separately inPR181; its older task body is stale, so use source/release evidence and coordinate through its task without taking its claim.
+
+Work now uses /Users/mitch/dev/solmargintrader-wt-01a1c189-editing branchagent-01a1c189-editing from99548515. The previous privateworktree gained an unrelated quickstart table-of-contents edit; preserve it and the shared primary's other work. The original plan's accepted ledger and delivery receipts were copied into this worktree's ignored SDDworkspace so completedM1/M2 are not redispatched. Defaultsession-demo-grid remainsstopped/disarmed; no service or keys are activated by this implementation work.
+
+Editing must append immutable spec revisions, preserve pins, use CAS/request dedup, distinguish active from saved configuration, and apply only explicitly at a verified safe stopped/no-exposure boundary. Archive prior run evidence/IDs atomically and preserve stop/reconciliation semantics. Prepare a machine-readable schema/history/receipt contract for Oracle's future UI. Continue all six remaining milestones after this release; don't stop merely because one milestone or its handoff exists.
+
+## v347 — editing implementation and remaining milestone contracts
+
+- Active worktree /Users/mitch/dev/solmargintrader-wt-01a1c189-editing, branch agent-01a1c189-editing. Parent checkpoint f580dafb saves full-scope request and additive safe-editing design. TASK1178 remains in progress; no milestone3–8 completion is claimed.
+- Fresh implementer /root/editing_implementation owns manager code/tests/version. Initial RED7/8 failures then focusedGREEN8/8. At this checkpoint adversarial migration/CAS/receipt/active-run checks and full regression remain. Do not install/claim completion based on those initial tests.
+- Oracle read-only investigation: installed0.1.0 source matches, default archive absent, existing recorder has SOL-USD but no SOL-USDC. Oracle query constructors write schema/policy. KNOW1180 requires an inert manager archive reader. No source/recording/service was started or mutated. Exact dated inventory and contracts in the active plan workspace oracle-feed-contract-report.md.
+- Canonical engine currently forces final liquidation; KNOW1181 requires backward-compatible close_at_end support and open-position accounting before Trend/Momentum prefix evaluation. Pure Trend should move to canonical package with compatibility wrapper.
+- Existing ExperimentStore remains sole temporal exposure/holdout authority. Protocol2 must preserve legacy splits/rows, opaque incumbent, spent-on-unseal, shared budgets/attempts and alpha policy. KNOW1182 requires actual OS judge isolation; harmless sandbox-exec filesystem denial verified here, final profile unverified. KNOW1183 requires idempotent CAS reconciliation across owner/manager databases, not a false atomic callback claim.
+- M3/M4 requirements briefs and read-only reports are prepared in the active .superpowers workspace but NOT dispatched or completed. Browser/executor contract investigations active. .opencode/ is unrelated tooling state and must remain unstaged. Primary checkout and the older worktree's unrelated quickstart TOC remain untouched.
+- Postman CLI1.87.0 signed out/uninitialized in this worktree; owner search/Context Graph skipped, no signup/init/workspace publication. Orbit returned third-party previews/unrelated APIs, no suitable direct contract. Current official Jupiter docs and existing owner-selected Swap v1 contract consulted. Do not mix v2 fields or silently migrate executor.
+- Continue all remaining milestones after editing review/installed acceptance/delivery; an absent source, incomplete route history, real7-day shadow requirement or unsupported verifier is a genuine gate to report, not a reason to skip independent implementation. Final persistent Oracle interface report belongs in docs and a comment on existing Oracle task TASK1154; do not claim another chat read it.
+
+## v348 — editing source and installed acceptance ready for delivery
+
+- Product7af12d82 (initial5133c1b7, parent recordsf580dafb/8d9b473) implements manager0.3.0 edit/history/apply/schema, manager schema2/runtime schema3, immutable revisions/archives/receipt/CAS and separate saved/active identity. Original full136tests passed; after independent review found I1 stale pre-lock validation and I2 mixed read snapshots, one fix round passed117covering tests including9new deterministic races. Scoped re-review approved both; Ruff/format/diff passed. Preexisting overflow/unclosed-fixture warnings remain disclosed, not suppressed.
+- Stable regular manager0.3.0 refreshed from7af, backtester0.1.0 unchanged. Independent live-acceptance-verifier passed29checks, all21manager+49canonical Python hashes matched, fresh installed CLI/CAS/replay/worker pinning/full archive/repeated apply/old-start fencing passed. Exposed fixture retained2lots272.7338753287547USD and refused adoption. Owned daemons exit0/locksreleased. Default demo DB hashes/schema/mtime/state unchanged, still schema1/2 stopped/disarmed cursor2 zero fills/exposure. Stable private receipts copied to /Users/mitch/.local/state/solbot/releases/0.3.0 (json+md, mode0600). Socket107-byte custom-home path failed onmacOS; short/tmp fixturepassed.
+- Initial --no-build-isolation install failed BackendUnavailable setuptools.build_meta; no install change. Normal isolated wheelbuild/install thenrefresh completedexit0; pipcheck0. Endor package-risk fallback UNKNOWN because role/MCP/endorctl unavailable; no package approval claimed and no runtime dependency changed.
+- Offlinecatalog regeneration/hashcheck completed. Initial docscheck with shellpython failed95moduleimports; rerun with recorded /Users/mitch/.venvs/soltui/bin/python passed:999backtester/1402SolTUI/408extension/46mongo total2855. That was an environment mismatch, not a source fix.
+- Root handoff/quickstart and new docs/bot-manager-oracle-interface.md reflect actual editing contract, maintenance paths and still-open milestones3–8. All6remaining briefs and4read-only owner reports are preserved in active planworkspace. Do not redispatch completedM1/M2/editingimplementation.
+- Final release records/catalogcommit, push/PR/current-headCI/merge and remote/source proof remain at this checkpoint. TASK1178 staysactive until actualdelivery. Then claimTASK1109 and implementM3, continuing1110–1114; the explicit all-milestones request is NOT satisfied by this editing release. Primary/oldworktree unrelatedchanges and .opencode remainpreserved.
+
+## v351 — concurrent PR185 integration before editing delivery
+
+PR186 finalhead5ef3df9 was pushed but checks reported none because mergeState DIRTY. The earlier ledger line claiming a CI watch was active is corrected: that watch exited1 with no checks, and no merge occurred. origin/master advanced to1d3d9ba9 through PR185 while editing was being verified. Git merge --no-commit is active. Preserve all incoming ecosystem bootstrap/control-room/telemetry, Oracle0.2 multi-instrument, headless SolTUI package, docs and workflow histories alongside editing0.3.
+
+Original implementer resolves manager metadata/README conflicts and validates combined CLI/registry. It also checks the concrete schema3/event-sequence compatibility risk with incoming ecosystem telemetry. Parent resolves workflow headers and derived index conflicts only. No offline index build until every unmerged Git stage is resolved. Previous installed29check/70hash receipt remains valid only for preintegration7af source; combined source needs refreshed matching acceptance before delivery. Do not claim mergeddefault or complete TASK1178 yet.
+
+After integrated source/review/installed/CI/merge, continue all TASK1109–1114. Refresh M3/M4 contracts against incoming shared producer/multi-instrument/headless package and actual selected ecosystem state. Reuse those owners instead of duplicate collectors or evidence stores. Primary checkout, older worktree TOC, current .opencode and other sessions remain untouched.
+
+## v352 — integrated editing source ready for merge commit/review
+
+- All Git conflicts are resolved. Original implementer staged manager0.3.0 plus ecosystem0.1.2 compatibility, append-only runtime schema4 events with runtime_id/origin_sequence/origin and retained legacy provenance. It preserves all archived/request bodies, keeps old read schemas inert, filters per-run history, and prevents event-ID reset on apply. Stop can bypass corrupt historical import; later writers still refuse corruption. Ecosystem mirror preserves unambiguous old cursors and fails closed on ambiguous/regressed/replaced sources.
+- Full manager148 and final covering ecosystem54 tests exited0; Ruff/format59files and staged diff checks passed. Report task-editing-integration-report.md lists exact15ownedpaths and hashes. No worker commit during merge, no environment/process/experiment changes. Parent still must update metadata/rootdocs, commit combined merge, independently review integration and refresh installed acceptance; preintegration29checks/70hashes remain historical7af proof only.
+- Ecosystem package nowpinsmanager0.3.0 and wrapperdefaultsnewsolecosystem0.1.2. The actual installed0.1.1 runs/records remain untouched. Primary now independently advanced toorigin1d3d9ba9 by the other session; its5untrackedforeignpaths remain unchanged. This session has not pulled/edited that checkout.
+- Refreshed read-only preflight found actual shared SOL/USD Oracle0.2 archive under ecosystem-paper-v1,1220acceptedobservations/highwater1513/age1.70s at03:38:44UTC. Existing producer supplies genuine reference samples; no manager recorder is needed. Headless SolTUI0.1.1 package resolves importavailability; KNOW1181 now reuses its exact pure Trend with declareddependency instead of relocating solely for former packaginggap.
+- KNOW1184 records stable auditstream needed for telemetry; KNOW1185 records F5 per-home CPCV/forward evidence bypasses ExperimentStore; KNOW1186 records dated genuine selected source. M3/M4 briefs updated1.1 and reports refreshed; M4 must bridge registered owner roots and participating-client admission without disturbing active immutable/unaware experiments or treating CPCV selection as final validation.
+- PR186 is unmerged; oldfinalhead5ef hasnoCIbecausemergeconflicts blocked it, so no activewatch is claimed. Finishintegratedsource/review/install/metadata/finalheadCI/merge, then continueTASK1109–1114. Editingdeliveryisnotcompletionofallremainingmilestones.
+
+## v353 — actual merge-parent count gate failure
+
+After conflicts resolved, offline index regeneration/hashcheck passed2904sourcefiles. The required docs checker exited1: it reported claimed1405SolTUI tests versus1402 and labelled test_f5_policy.py uncommitted, although that file's3tests are committed in MERGE_HEAD1d3. Its committed_test_files helper queries HEAD5ef only. The correct incoming docs counts must not be lowered. Original implementer owns the smallest merge-aware committed-ref fix, preserving staged-only/untracked exclusion, with actual merge and temporary no-merge/staged-only verification. No check success or merge commit is claimed before this is resolved. Parent must regenerate metadata again after the helper change, inspect exact completed gate exit, then commit/review/install/push/CI. Source148manager/54ecosystem checks remain accepted for unchanged application code.
+
+## v354 — merge-aware docs check verified
+
+The helper fix is staged, not committed yet. Actual docs RED exited1 at1402/2855; GREEN now exits0 at1405SolTUI/2858total. Temporary Gitrepo probes prove multiple committed MERGE_HEAD parents included once, genuinely staged-only files excluded and normal no-merge HEAD-only behavior unchanged. Ruff/format/staged-diff pass; only scripts/check_docs.py changed in this follow-up, including confined mechanical style/shebang-mode fixes. Integration report1.0.1 retains exactreceipts. Parent must regenerate offlinehashes after helper and workflowrecord changes, inspect success, commitcombinedmerge, then reviewintegration and refreshinstalledproof beforefinalheadCI/merge. Application source148manager/54ecosystem evidence remainsaccepted.
+
 ## v351 — 2026-11-09 — Basic Memory MCP installation
 
 Target: configure the user-supplied uvx basic-memory mcp launcher for Codex. Existing /Users/mitch/.codex/config.toml registers the equivalent command through bash -c. uvx is available at /Users/mitch/.local/bin/uvx. Preserve other MCP settings, Basic Memory projects and notes, and all unrelated repository work. TASK-1187 tracks configuration, TASK-1188 verifies installed startup, and TASK-1189 delivers these records. KNOW-1190 retains the scope.
@@ -1192,3 +1254,15 @@ Remaining delivery under TASK-1189: commit only prompts.md and memory.md, push t
 The exact request is saved in prompts.md v175. The requested Basic Memory launcher is configured and independently verified; no further configuration or product implementation remains. PR https://github.com/mithudso/solmargintrader/pull/187 contains the recoverable records. TASK-1189 tracks its final CI, merge receipt, remote content verification and owned-worktree cleanup. Consult that task and PR before resuming delivery.
 
 Initial CI run 42751767281 caught stale hashes for memory.md and prompts.md in both the docs job and backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree. The standalone docs count gate had passed; it does not replace index/build.py --check. Refresh the three committed offline indexes with python3 index/build.py all after the final record edit. The all command uses no network or embeddings; leave semantic regeneration and Ollama untouched. KNOW-1191 records this concrete CI trigger. Keep the PR draft during repair and merge only after final-head checks pass.
+
+## Editing integration and metadata-only PR187 continuation
+
+Product fixc48e2e7b addresses INT1 (multi-bot reused legacy sequences nowbind a stable reuse fingerprint; old mirrorcursorrefuses withoutreset) and INT2 (GLOBAL_ARGUMENTS drives CLI/schema/context). Its105coveringtests/Ruff/format/diffchecks passed. Scoped integration re-review remains pending atthischeckpoint. Source148/54previousintegrationchecks remain validforunchangedpaths.
+
+Incoming65ad42ce PR187 changes only memory/prompts/threeindexes; preserveitsBasicMemoryrecordsverbatim. No application source changed by this merge, so it does not justify repeating application suites. AllGitconflictswillbe resolvedbeforeofflinegeneration. Oldinstalled29/70 proofstillpreintegration7af; no integratedsourceinstallclaimed. CompletecurrentfinalheadCI/review/installed/merge thencontinueall1109–1114.
+
+## v356 — integrated source review accepted
+
+Scoped integration re-review approves both INT1 and INT2 at c48e2e7b; zero new blockers. Runtime4 preserves immutable legacy sequence provenance and derives reused-ID fingerprint metadata; an unchanged first event cannot hide anotherbot's reused laterIDs. GLOBAL_ARGUMENTS nowdrivesparser/context/schema.105coveringtests passed; no source suite rerun byreviewer. PriorI1/I2 closed;M1 warningsdeferred.
+
+PR187 metadata-only65ad merge is resolved with both memory/prompt bodies intact (prompts176). Application source remains identical to reviewedc48. Parent finalofflinegeneration/hash/docs/whitespace gate, combinedmetadata mergecommit/push, source-currentCI and freshstablemanager/ecosystem0.1.2 installation/independentacceptance remain. Do not claim integratedinstalled state untilnewreceipt. ThenmergeLAST,verifyremotecontent,close1178andcontinue1109–1114.

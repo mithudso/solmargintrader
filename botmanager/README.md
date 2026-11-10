@@ -1,9 +1,10 @@
-# Solbot manager 0.2.2
+# Solbot manager 0.3.0
 
 **Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
 Running bare `solbot` now prints help and concrete next steps. It is a command-line
 program, not an interactive menu. The current runnable strategy is grid against
-recorded input; no edit command, prospective Jupiter trading or learning is implemented yet.
+recorded input. Saved settings support explicit editing and stopped-run adoption;
+prospective Jupiter trading and learning remain unavailable.
 
 The standalone `solbot` CLI creates persistent named bot drafts and inspects their
 pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC.
@@ -81,8 +82,8 @@ close position and emergency stop separately. Only inspect is available for
 drafts. Stopping a worker retains orders, positions, arming and journals;
 cancellation, closing and engine kill/disarm require their own supported actions.
 `manual_pins` preserves exact override values and provenance at the config
-revision/hash. Tuning proposals are unavailable and read-only; versioned adoption
-and automatic runtime edits are unavailable. Status never adopts new settings.
+revision/hash. Tuning proposals are unavailable and read-only; explicit versioned adoption is available only at a verified stopped reference
+boundary. Automatic runtime edits remain unavailable. Status never adopts settings.
 
 `botmanager.receipts.CommandReceipt` defines the version-1 per-bot control
 contract for later owner adapters. No draft command emits a pretend owner
@@ -113,8 +114,9 @@ manual-pin reason. Original user overrides remain separate from effective values
 Mappings are recursively immutable. Specs pin strategy/version, venue/mints,
 closed-bar duration, execution model, config revision, SHA-256 config hash and
 provenance. Reads reconstruct that snapshot without resolving new defaults.
-Changing settings or adopting new defaults is intentionally unavailable until an
-explicit versioned update/adoption command exists.
+`edit` changes only explicitly supplied settings against the latest saved body.
+It never resolves current defaults over existing fields. Shared defaults are not
+automatically re-adopted.
 
 A shared snapshot has this shape (all context fields are mandatory):
 
@@ -142,6 +144,92 @@ strategy parameters only; capital, order sizes, stop loss, venue minimum, mode,
 arming and operating settings cannot be learned. This slice accepts snapshots
 through its Python registry context only;
 it does not read or overwrite existing optimizers, named profiles or owner stores.
+
+## Editing, history and explicit adoption
+
+```sh
+/Users/mitch/.venvs/solbot/bin/solbot schema grid
+/Users/mitch/.venvs/solbot/bin/solbot edit sol-grid --set range_pct=20 --expected-revision 1
+/Users/mitch/.venvs/solbot/bin/solbot history sol-grid --revision 1
+/Users/mitch/.venvs/solbot/bin/solbot apply sol-grid --expected-revision 2
+```
+
+`edit BOT --set KEY=VALUE ...` preserves the UUID, creation time, every unedited
+resolved value and provenance field, and all other manual pins. Each effective
+change appends a new configuration revision and hash. Pinning a previously
+inherited value is a meaningful change even when the number stays the same.
+Repeating an identical existing pin is a no-op. Strategy replacement and rename
+are unavailable. Safety-fixed fields accept only their existing permitted values;
+`armed=true`, live mode, unknown keys, invalid types and nonfinite numbers refuse
+without reflecting submitted values.
+
+`--expected-revision N` compares the saved revision inside the mutation lock.
+Without it, the delta applies to the latest saved body inside that same lock.
+`--request-id UUID` provides durable, replay-only idempotency. Repeating the exact
+accepted request returns its original `{spec, receipt}` even after later edits or
+adoptions. A different operation or delta under the same UUID refuses. Dedicated
+version-1 mutation receipts identify the request, exact delta, expected/prior and
+accepted revision/hash, actor UID, acceptance time, active/prior runtime and
+generation where present. Receipt, immutable acceptance context, request row and
+saved history must agree; a recomputed checksum alone does not permit receipt
+transplants. Checksums detect corruption; they are not signatures against a user
+who controls the entire database.
+
+`history BOT [--revision N]` returns exact saved versions with save time and
+request attribution, plus current and archived reference runs. Each nested run
+includes its pinned spec/input, complete checkpoint and fills, events, and retained
+control receipts. Legacy receipts remain inspectable with `replay_proven=false`;
+they retain the existing `invalid_receipt` refusal policy. Reads never migrate or
+create an absent home and every journal decoder uses one SQLite snapshot.
+
+An active worker always uses its pinned specification. `status` retains the saved
+`config_revision`/`config_hash` and adds `saved_config_*`, `active_config_*`,
+`pending_changes`, `adoption_blockers`, and explicit edit/apply entries in
+`action_capabilities`. Its runtime evidence and financial results describe the
+active revision. The existing runtime `capabilities` list remains compatible.
+
+`apply BOT [--descriptor PATH]` explicitly adopts the saved revision. It never
+starts a worker. With no runtime and no descriptor, it records an honest
+`draft_uses_saved_revision` no-op. A new descriptor uses the existing strict
+recorded-input and cost validation. Existing recorded input can be reused only
+when compatible with the saved strategy, timeframe and virtual capital. Changed
+capital requires an explicit matching descriptor; units and costs are never
+rewritten or inferred.
+
+Replacement requires stopped intent, no held worker lock, no unresolved tick,
+no failed/blocked state, and a fully reconciled zero-exposure checkpoint with no
+open lots or accrued carry. The canonical replay independently confirms the
+checkpoint before adoption. Tiny floating-point unrealized-P&L residue up to
+1e-9 quote units is tolerated only after exact replay equality. Open exposure
+remains blocked; stop does not close it. The old runtime row, fills and per-run events
+are retained together in an immutable archive. The global event stream remains
+append-only and carries the runtime UUID on every new event. The replacement has a new runtime UUID,
+a strictly greater fencing generation, zero cursor and stopped intent. Old
+control receipts replay without acting on the new run. Applying the already
+active revision with unchanged input is a no-op, preserving progress and capital.
+
+A per-home guarded flock serializes edits, registration and adoption across
+processes. Runtime replacement, archival and its receipt share one journal
+transaction. The configuration-request quotas are independent of control stop
+capacity. Stop never waits for the mutation flock. Runtime schema 3 adds archives and adoption requests. Runtime schema 4 keeps
+global event sequences monotonic across adoption and adds runtime attribution.
+It preserves existing current event IDs, imports archived events above all known
+legacy IDs, and records their original sequence and import origin separately.
+Historical archive bodies and every schema-1/2/3 control ID, body and
+legacy-context policy remain unchanged. Reads never perform this migration.
+Stop can retain the prior event schema so archive import failures cannot prevent
+durable stopped intent; another authorized runtime writer performs the migration. Back up all three SQLite journals using their
+connection backup APIs. `history` has no retention or pagination policy yet;
+large histories are intended for direct CLI use. Mutations are explicit CLI
+operations outside the supervisor socket request loop.
+
+`schema [STRATEGY]` exposes version-1 machine-readable field types, exact defaults,
+units and limits from the validation definitions, cross-field constraints,
+protected identity fields, current runtime/certification limits and arguments
+from the actual command registry. Its `global_arguments` section also defines
+root context options such as the opt-in `--ecosystem-home`; the parser uses those
+same definitions. Arbitrage remains unavailable and Council is
+external-only. The schema is a form contract, not certification of live trading.
 
 ## Default sources and semantics
 
@@ -181,9 +269,10 @@ Existing reads open SQLite with `mode=ro` and `query_only`. Writes create the ho
 with mode 0700 and `/Users/mitch/.config/solbot/manager.sqlite3` with mode 0600.
 No credentials belong in a spec, event or installation descriptor.
 
-Store schema 1 uses SQLite `user_version=1`; migration 1 initializes the schema
-under a write transaction. Unknown schemas fail closed. One transaction inserts
-the immutable spec and its `spec.created` event. Database constraints enforce UUID,
+Store schema 2 uses SQLite `user_version=2`. Authorized writes migrate schema-1
+stores by copying their exact saved bodies into append-only `spec_versions`.
+Schema-1 reads remain inert. Unknown or malformed schemas fail closed. One
+transaction inserts the immutable spec, its version, and `spec.created` event. Database constraints enforce UUID,
 name and source-identity uniqueness. Events have a fixed reference-only schema
 and unique event IDs; arbitrary owner response bodies are refused. Config hashes
 detect accidentally altered snapshots; they are not signatures.
@@ -409,7 +498,19 @@ the immutable input's end, the worker remains observable but reports
 `waiting/reference_input_exhausted`. It does not claim prospective evaluation or
 fresh Jupiter data. Additional recordings need the later prospective-data design.
 
-`events BOT --limit 100` reads the reference journal. The local supervisor socket
+`events BOT --limit 100` reads the append-only reference event stream across
+current and archived runs. Each schema-4 event includes its runtime UUID;
+`origin_sequence` and `origin` distinguish imported legacy rows from new events.
+A schema-3 mirror whose cursor already became ambiguous through prior sequence
+reuse remains unavailable; the manager never resets or silently rebinds it.
+Telemetry checks persisted `origin_sequence` values across both legacy-current
+and legacy-archive rows. Reused IDs contribute a stable fingerprint to the source
+marker, even if another bot retains the first event. Source metadata exposes
+`legacy_reused_sequence_count` and `legacy_reuse_fingerprint` (null when no reuse
+exists). A fresh mirror can bind the migrated stream, while a prior ambiguous
+mirror retains its cursor and refuses ingestion. An unambiguous migration keeps
+the original marker. Native events do not change this migration evidence.
+The local supervisor socket
 is mode 0600 with same-user peer checks on macOS/Linux, a 64 KiB request ceiling,
 a bounded listen backlog and monotonic whole-request I/O deadlines (0.2 seconds
 for server receipt/response and one second for client connect/send/receive).
@@ -418,11 +519,12 @@ registry for local bot controls and reads. Registration and service administrati
 are explicit CLI operations outside the supervisor request loop. CLI controls
 write durable intent directly, so an unavailable socket cannot prevent a stop.
 
-`runtime.sqlite3` is independently schema version 2 and must be backed up using
+`runtime.sqlite3` is independently schema version 4 and must be backed up using
 SQLite's backup API together with `manager.sqlite3` and `controls.sqlite3` when
 present. Runtime specs and inputs are immutable; fills, checkpoints, generations,
-control receipts and reference-only events are durable. There is no reset/adopt
-command that silently discards a failed run or its inventory.
+control receipts and reference-only events are durable. Explicit `apply` archives
+all old run evidence in the same transaction that admits the new stopped run.
+Failed runs and retained inventory cannot be silently reset.
 
 Runtime reads hold one explicit SQLite snapshot across row and fill decoding.
 A concurrent valid commit cannot mix a previous checkpoint with newer fills.

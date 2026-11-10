@@ -1,10 +1,21 @@
 # Standalone Solana bot manager design
 
-Version: 1.0.1
+Version: 1.0.2
+Delta: v1.0.1 to v1.0.2; record subsequent owner implementation approval and the immutable editing/adoption contract without relabelling historical design observations.
 Delta: v1.0.0 to v1.0.1; make the first paper runtime independently buildable after builder review.
-Status: proposed architecture; design and planning delivered, product not implemented.
+Status: approved architecture. Owner implementation approval is recorded in KNOW-1115 after planning PR171. Milestones1–2 shipped through PR175 and PR180; later capability remains subject to its own delivery and evidence gates.
 Owner: repository owner. Tracking: TASK-1092.
 Source baseline: 4d4c7a137b8f78a9e2655c059ca75dfcec0f2b36, inspected 2026-11-09.
+
+## Subsequent implementation and editing authorization
+
+The historical baseline observations below remain design evidence. They are not a current installed capability inventory. The owner subsequently approved implementation, requested editing and explicitly requested **all remaining milestones**. Follow the implementation plan and the current handoff for delivered capability. Earlier statements that this planning document alone authorizes no implementation do not revoke that later approval.
+
+`edit` appends a saved configuration revision and preserves the stable bot UUID, prior values, provenance and manual pins. It cannot change the specification pinned to an active runtime. Status exposes saved and active revision/hash separately. `history` retains exact saved bodies and attributed run evidence. `schema` describes actual validated fields and available backend capabilities for the future Oracle visual interface.
+
+`apply` is a separate, receipt-backed operation. The initial editing release accepts only a stopped, owner-released, reconciled reference run with zero exposure and compatible input. It archives the complete old run, fences the old generation and admits a new stopped runtime. It never starts trading, resets an existing run silently, deletes accepted request IDs, or replays an old control against a new runtime. Running or exposed bots may save edits, but cannot adopt them through this initial boundary. Expected revisions provide atomic compare-and-swap across editing and adoption. Later learning must add its own validated inventory-preserving boundary if required; a staged proposal cannot bypass this restriction.
+
+Oracle and a later visual interface consume the manager's versioned registry, status and command receipts. The manager retains lifecycle, evidence and P&L authority. Reuse the existing Oracle producer/archive where suitable; do not create another recorder, optimizer, supervisor or signer in the UI. Source-labelled reference observations do not establish executable Jupiter fills or profitable parameters.
 
 ## Purpose and first useful outcome
 

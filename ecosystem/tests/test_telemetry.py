@@ -29,18 +29,28 @@ class TelemetryTests(unittest.TestCase):
             )
             db.execute("PRAGMA user_version=1")
         self.runtime_db = self.manager / "runtime.sqlite3"
-        with closing(sqlite3.connect(self.runtime_db)) as db, db:
-            db.execute(
-                "CREATE TABLE events(sequence INTEGER PRIMARY KEY,bot_id TEXT,generation INTEGER,kind TEXT,cursor INTEGER,at REAL)"
-            )
-            db.execute("PRAGMA user_version=2")
+        from botmanager.ledger import RuntimeLedger
+
+        with RuntimeLedger(self.manager).connection(True):
+            pass
+        self.runtime_id = str(uuid4())
 
     def event(self, sequence, *, source="runtime", kind="tick.committed", extra=None):
         if source == "runtime":
             with closing(sqlite3.connect(self.runtime_db)) as db, db:
                 db.execute(
-                    "INSERT INTO events VALUES(?,?,?,?,?,?)",
-                    (sequence, self.bot, 1, kind, sequence * 10, 1000.0 + sequence),
+                    "INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?)",
+                    (
+                        sequence,
+                        self.bot,
+                        1,
+                        kind,
+                        sequence * 10,
+                        1000.0 + sequence,
+                        self.runtime_id,
+                        None,
+                        "native",
+                    ),
                 )
         else:
             body = {

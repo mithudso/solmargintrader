@@ -16,7 +16,13 @@ python3 /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py start
 
 No arguments also means `start`. The script installs five local projects:
 backtester, Oracle, Bot Manager, the headless SolTUI research runtime, and the
-ecosystem supervisor. It uses `/Users/mitch/.venvs/solecosystem-0.1.1` by default.
+ecosystem supervisor. It uses `/Users/mitch/.venvs/solecosystem-0.1.2` by default.
+Version 0.1.2 adds manager 0.3.0 and schema 4 telemetry compatibility. It does
+not upgrade or stop the existing `/Users/mitch/.venvs/solecosystem-0.1.1`
+environment or its active immutable experiments. Continue an existing run with
+that environment's installed `solecosystem` entry point; select a fresh reviewed
+environment and home for changed source rather than rewriting its receipts.
+
 It bundles the local web control room. It does not install the native macOS app,
 extension browser integration, wallet signing paths or the archived liquidity
 service. It does not alter shell profiles
@@ -137,7 +143,7 @@ authenticated live trading and executor-enforced veto remain separate gates.
 Use the installed MCP server with a coin's exact archive and instrument, for example:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.1.1/bin/soloracle-mcp \
+/Users/mitch/.venvs/solecosystem-0.1.2/bin/soloracle-mcp \
   --archive /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/BTC/history.sqlite3 \
   --instrument BTC/USD --repo /Users/mitch/dev/solmargintrader
 ```
@@ -154,7 +160,7 @@ Manager reads them as externally owned trials; it does not fabricate unsupported
 manager bot types or seize the F5 worker.
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.1.1/bin/solbot \
+/Users/mitch/.venvs/solecosystem-0.1.2/bin/solbot \
   --ecosystem-home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 status
 ```
 
@@ -188,7 +194,7 @@ Stopping the supervisor closes its embedded UI. A separately started viewer can
 observe retained evidence:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.1.1/bin/solecosystem-ui \
+/Users/mitch/.venvs/solecosystem-0.1.2/bin/solecosystem-ui \
   --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 --port 8768
 ```
 

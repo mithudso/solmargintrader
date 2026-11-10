@@ -1,4 +1,4 @@
-# Paper ecosystem bootstrap 0.1.1
+# Paper ecosystem bootstrap 0.1.2
 
 `python3 scripts/bootstrap_ecosystem.py start` installs and verifies the headless
 research stack, downloads the configured 14-coin history, freezes all 34 strategy
