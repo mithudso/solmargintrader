@@ -416,6 +416,8 @@ class RecoveryTests(unittest.TestCase):
         )
         old_checksum = fingerprint({"binding": old_binding, "receipt": receipt})
         with closing(sqlite3.connect(self.ledger.path)) as db, db:
+            db.execute("DROP TABLE archives")
+            db.execute("DROP TABLE adoption_requests")
             db.execute("ALTER TABLE requests DROP COLUMN acceptance")
             db.execute(
                 "UPDATE requests SET binding=?,checksum=? WHERE request_id=?",
@@ -452,7 +454,7 @@ class RecoveryTests(unittest.TestCase):
                 self.spec.bot_id, generation, 0, evaluate(self.spec, self.data, 2)
             )
         with self.ledger.connection() as db:
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
             migrated = db.execute(
                 "SELECT * FROM requests WHERE request_id=?", (legacy_id,)
             ).fetchone()

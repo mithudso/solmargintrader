@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solbot-manager"
-version = "0.2.1"
+version = "0.3.0"
 description = "Persistent paper bot specifications and owner-aware inventory"
 readme = "README.md"
 requires-python = ">=3.13"

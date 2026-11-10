@@ -28,6 +28,7 @@ class CommandSpec:
     description: str
     handler: Callable[[Mapping[str, Any], CommandContext], dict[str, Any]]
     arguments: tuple[tuple[tuple[str, ...], dict[str, Any]], ...] = ()
+    api_parameters: tuple[str, ...] = ()
 
 
 def _store(context: CommandContext) -> ManagerStore:
@@ -102,6 +103,137 @@ def _list(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
 
 def _config(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
     return _identity(params, context).to_dict()
+
+
+def _edit(params, context):
+    identity = params.get("identity")
+    if not isinstance(identity, str) or not identity:
+        raise ManagerError("invalid_input", "A bot identity is required.")
+    return _store(context).edit(
+        identity,
+        _settings(params),
+        expected_revision=params.get("expected_revision"),
+        request_id=params.get("request_id"),
+    )
+
+
+def _history(params, context):
+    from .ledger import RuntimeLedger
+
+    spec = _identity(params, context)
+    revision = params.get("revision")
+    versions = _store(context).history(spec.bot_id, revision)
+    if not versions:
+        raise ManagerError(
+            "revision_not_found", "Saved configuration revision was not found."
+        )
+    return {
+        "schema_version": 1,
+        "bot_id": spec.bot_id,
+        "versions": versions,
+        "runs": RuntimeLedger(context.home).history(spec.bot_id, revision),
+    }
+
+
+def _apply(params, context):
+    from .ledger import RuntimeLedger
+
+    identity = params.get("identity")
+    if not isinstance(identity, str) or not identity:
+        raise ManagerError("invalid_input", "A bot identity is required.")
+    return RuntimeLedger(context.home).apply(
+        identity,
+        descriptor=params.get("descriptor"),
+        expected_revision=params.get("expected_revision"),
+        request_id=params.get("request_id"),
+    )
+
+
+def _schema(params, context):
+    from .config import STRATEGY_VERSIONS, _strategy, field_metadata
+    from .strategies.grid import (
+        MAX_REFERENCE_RANGE_PCT,
+        MAX_REFERENCE_RUNGS,
+        REFERENCE_BAR_SECONDS,
+    )
+
+    strategy = params.get("strategy")
+    if strategy is not None:
+        _strategy(strategy)
+    strategies = {
+        key: {
+            "version": version,
+            "fields": field_metadata(key),
+            "runtime": "recorded_reference_only" if key == "grid" else "draft_only",
+            "live_available": False,
+            "prospective_data_certified": False,
+            "cross_field_constraints": ["fast_period < slow_period"]
+            if key == "trend"
+            else [
+                "base_order_usd >= max(min_order_usd, 1e-9)",
+                "max_safety_orders > 0 requires safety_order_usd >= max(min_order_usd, 1e-9)",
+                "cumulative safety deviation < 100 percent; scaled sizes finite",
+            ]
+            if key == "dca"
+            else [],
+            "runtime_constraints": {
+                "bar_seconds": REFERENCE_BAR_SECONDS,
+                "maximum_rungs": MAX_REFERENCE_RUNGS,
+                "exclusive_maximum_range_pct": MAX_REFERENCE_RANGE_PCT,
+                "capital": "must_equal_explicit_descriptor_capital_quote",
+                "minimum_order": "capital_quote / rungs >= explicit_min_order_quote",
+                "venue": "coinbase_proxy",
+            }
+            if key == "grid"
+            else None,
+        }
+        for key, version in STRATEGY_VERSIONS.items()
+        if strategy in (None, key)
+    }
+    return {
+        "schema_version": 1,
+        "strategies": strategies,
+        "unavailable_strategies": {
+            "arbitrage": "solana_adapter_unavailable",
+            "triangle": "solana_adapter_unavailable",
+            "council": "external_only",
+        },
+        "protected_identity_fields": [
+            "bot_id",
+            "source",
+            "owner",
+            "source_identity",
+            "strategy_id",
+            "strategy_version",
+            "created_at",
+            "display_name",
+        ],
+        "mutation_contract": {
+            "explicit_delta_only": True,
+            "expected_revision": "optional_compare_and_swap",
+            "omitted_revision": "latest_inside_serialized_mutation",
+            "request_id": "durable_replay_only",
+            "edit_starts_worker": False,
+            "apply_starts_worker": False,
+        },
+        "commands": {
+            name: {
+                "description": command.description,
+                "api_parameters": list(command.api_parameters),
+                "arguments": [
+                    {
+                        "flags": list(flags),
+                        **{
+                            key: value.__name__ if key == "type" else value
+                            for key, value in options.items()
+                        },
+                    }
+                    for flags, options in command.arguments
+                ],
+            }
+            for name, command in COMMANDS.items()
+        },
+    }
 
 
 def _external(params: Mapping[str, Any], context: CommandContext):
@@ -316,7 +448,51 @@ CONTROL_GUARDS = (
         {"help": "Canonical UUID; repeat only to inspect its durable receipt"},
     ),
 )
+MUTATION_GUARDS = (
+    (
+        ("--expected-revision",),
+        {"type": int, "help": "Compare the saved revision atomically"},
+    ),
+    (
+        ("--request-id",),
+        {"help": "Canonical UUID; repeats return the original accepted mutation"},
+    ),
+)
 COMMANDS = {
+    "edit": CommandSpec(
+        "edit",
+        "Save an immutable settings revision; active workers stay pinned.",
+        _edit,
+        IDENTITY
+        + ((("--set",), {"action": "append", "default": [], "metavar": "KEY=VALUE"}),)
+        + MUTATION_GUARDS,
+        api_parameters=("overrides",),
+    ),
+    "history": CommandSpec(
+        "history",
+        "Read exact saved revisions and attributable current/archived runtime evidence.",
+        _history,
+        IDENTITY + ((("--revision",), {"type": int}),),
+    ),
+    "apply": CommandSpec(
+        "apply",
+        "Adopt saved settings at a stopped zero-exposure boundary without starting.",
+        _apply,
+        IDENTITY
+        + MUTATION_GUARDS
+        + (
+            (
+                ("--descriptor",),
+                {"help": "Optional compatible recorded-input descriptor"},
+            ),
+        ),
+    ),
+    "schema": CommandSpec(
+        "schema",
+        "Read versioned editor fields, constraints and command arguments.",
+        _schema,
+        ((("strategy",), {"nargs": "?"}),),
+    ),
     "register-input": CommandSpec(
         "register-input",
         "Pin explicit recorded input and simulation costs.",
@@ -352,6 +528,7 @@ COMMANDS = {
             (("--name",), {"required": True}),
             (("--set",), {"action": "append", "default": [], "metavar": "KEY=VALUE"}),
         ),
+        api_parameters=("overrides", "config_context"),
     ),
     "list": CommandSpec("list", "List durable drafts without creating state.", _list),
     "config": CommandSpec(
@@ -387,6 +564,9 @@ COMMANDS = {
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
 ERROR_EXIT_CODES = {
+    "adoption_blocked": 3,
+    "incompatible_input": 3,
+    "invalid_receipt": 4,
     "input_unavailable": 3,
     "resource_limit": 3,
     "stable_install_required": 3,
@@ -429,7 +609,7 @@ def dispatch(
         allowed = {
             options.get("dest", flags[0].lstrip("-").replace("-", "_"))
             for flags, options in command.arguments
-        } | {"overrides", "config_context"}
+        } | set(command.api_parameters)
         if not set(params) <= allowed:
             raise ManagerError("invalid_input", "Unknown command parameters.")
         envelope["data"] = command.handler(params, context or CommandContext())

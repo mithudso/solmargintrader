@@ -32,7 +32,7 @@ def parser() -> argparse.ArgumentParser:
             "  solbot status my-grid --why\n\n"
             "Running a grid requires registered recorded input, a start request,\n"
             "and an explicitly running 'solbot daemon' or installed service.\n"
-            "No edit command yet: changed settings require a new named draft.\n"
+            "Edit saved settings with solbot edit; solbot apply explicitly adopts them.\n"
             "Current runtime: recorded Coinbase grid replay only. Real-time Jupiter\n"
             "trading, the other strategy runtimes and learning remain unfinished.\n\n"
             "Working example and exact steps:\n"

@@ -37,7 +37,7 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(self.store.get_spec("RANGE-ONE").config_hash, spec.config_hash)
         with sqlite3.connect(self.store.path) as db:
             self.assertEqual(db.execute("SELECT count(*) FROM events").fetchone()[0], 1)
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 1)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 2)
         self.assertEqual(self.store.backup_descriptor()["schema_version"], 1)
 
     def test_identity_and_name_uniqueness_leave_no_orphan_events(self):

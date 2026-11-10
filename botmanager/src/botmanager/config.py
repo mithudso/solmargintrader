@@ -88,6 +88,79 @@ SHARED_PROTECTED_FIELDS = frozenset(
 )
 
 
+FIXED_FIELDS = frozenset(
+    {
+        "mode",
+        "armed",
+        "venue",
+        "base_mint",
+        "quote_mint",
+        "timezone",
+        "lot_method",
+        "execution_model",
+    }
+)
+# Shared by the validator and the public editor schema. Cross-field rules remain
+# explicit below; a form must submit to the validator before accepting a value.
+FIELD_LIMITS = {
+    "bar_seconds": {"minimum": 1, "unit": "seconds"},
+    "capital_usd": {"exclusive_minimum": 0, "unit": "USD_configured_virtual"},
+    "range_pct": {
+        "exclusive_minimum": 0,
+        "exclusive_maximum": 100,
+        "unit": "percent_each_side",
+    },
+    "rungs": {"minimum": 2, "maximum": 500, "unit": "rungs"},
+    "spacing": {"enum": ["geom", "arith"]},
+    "deadband_bps": {"minimum": 0, "exclusive_maximum": 10000, "unit": "basis_points"},
+    "entry_buffer_bps": {
+        "minimum": 0,
+        "exclusive_maximum": 10000,
+        "unit": "basis_points",
+    },
+    "fast_period": {"minimum": 1, "unit": "bars"},
+    "slow_period": {"minimum": 2, "unit": "bars"},
+    "window": {"minimum": 1, "unit": "bars"},
+    "threshold": {"unit": "fractional_return"},
+    "max_safety_orders": {"minimum": 0, "maximum": 50, "unit": "orders"},
+    "cooldown_bars": {"minimum": 0, "unit": "bars"},
+    "min_order_usd": {"minimum": 0, "unit": "USD_constructor_assumption"},
+    "base_order_usd": {"minimum": 1e-9, "unit": "USD_constructor_assumption"},
+    "safety_order_usd": {"minimum": 0, "unit": "USD_constructor_assumption"},
+    "price_deviation_pct": {"exclusive_minimum": 0, "unit": "percent"},
+    "step_scale": {"exclusive_minimum": 0, "unit": "multiplier"},
+    "volume_scale": {"exclusive_minimum": 0, "unit": "multiplier"},
+    "take_profit_pct": {"exclusive_minimum": 0, "unit": "percent"},
+    "stop_loss_pct": {"minimum": 0, "exclusive_maximum": 100, "unit": "percent"},
+}
+
+
+def field_metadata(strategy_id):
+    _strategy(strategy_id)
+    defaults = {
+        **COMMON,
+        **DEFAULTS[strategy_id],
+        "execution_model": MODELS[strategy_id],
+    }
+    types = {bool: "boolean", int: "integer", float: "number", str: "string"}
+    return {
+        key: {
+            "type": types[type(default)],
+            "default": default,
+            "editable": True,
+            "protected": key in FIXED_FIELDS,
+            "shared_learning_allowed": key in DEFAULTS[strategy_id]
+            and key not in SHARED_PROTECTED_FIELDS,
+            "constraints": {
+                **FIELD_LIMITS.get(key, {}),
+                **({"const": default} if key in FIXED_FIELDS else {}),
+            },
+            "finite": type(default) in (int, float),
+        }
+        for key, default in defaults.items()
+    }
+
+
 def _invalid() -> ManagerError:
     # Do not interpolate user values or unknown keys: they may contain credentials.
     return ManagerError(
@@ -132,53 +205,31 @@ def validate_values(strategy_id: str, values: Mapping[str, Any]) -> None:
                 raise _invalid()
         elif type(value) is not type(default):
             raise _invalid()
-    for key in (
-        "mode",
-        "armed",
-        "venue",
-        "base_mint",
-        "quote_mint",
-        "timezone",
-        "lot_method",
-        "execution_model",
-    ):
-        if values[key] != defaults[key]:
+    for key, metadata in field_metadata(strategy_id).items():
+        value = values[key]
+        limits = metadata["constraints"]
+        if (
+            "const" in limits
+            and value != limits["const"]
+            or "enum" in limits
+            and value not in limits["enum"]
+            or "minimum" in limits
+            and value < limits["minimum"]
+            or "maximum" in limits
+            and value > limits["maximum"]
+            or "exclusive_minimum" in limits
+            and value <= limits["exclusive_minimum"]
+            or "exclusive_maximum" in limits
+            and value >= limits["exclusive_maximum"]
+        ):
             raise _invalid()
-    if values["bar_seconds"] < 1 or values["capital_usd"] <= 0:
+    if strategy_id == "trend" and values["fast_period"] >= values["slow_period"]:
         raise _invalid()
-    if strategy_id == "grid":
-        if not (
-            0 < values["range_pct"] < 100
-            and 2 <= values["rungs"] <= 500
-            and values["spacing"] in ("geom", "arith")
-            and 0 <= values["deadband_bps"] < 10000
-        ):
-            raise _invalid()
-    elif strategy_id == "trend":
-        if not (
-            1 <= values["fast_period"] < values["slow_period"]
-            and 0 <= values["entry_buffer_bps"] < 10000
-        ):
-            raise _invalid()
-    elif strategy_id == "momentum":
-        if values["window"] < 1:
-            raise _invalid()
-    elif strategy_id == "dca":
-        if not (
-            0 <= values["max_safety_orders"] <= 50
-            and values["cooldown_bars"] >= 0
-            and values["min_order_usd"] >= 0
-            and values["base_order_usd"] >= max(values["min_order_usd"], 1e-9)
-            and values["safety_order_usd"] >= 0
-            and (
-                not values["max_safety_orders"]
-                or values["safety_order_usd"] >= max(values["min_order_usd"], 1e-9)
-            )
-            and values["price_deviation_pct"] > 0
-            and values["step_scale"] > 0
-            and values["volume_scale"] > 0
-            and values["take_profit_pct"] > 0
-            and 0 <= values["stop_loss_pct"] < 100
+    if strategy_id == "dca":
+        if (
+            values["base_order_usd"] < max(values["min_order_usd"], 1e-9)
+            or values["max_safety_orders"]
+            and values["safety_order_usd"] < max(values["min_order_usd"], 1e-9)
         ):
             raise _invalid()
         depth = 0.0
