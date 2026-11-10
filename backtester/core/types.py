@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import enum
 import math
-from numbers import Real
 from collections.abc import Mapping
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
+from numbers import Real
 from typing import Any
 
 import numpy as np
@@ -39,7 +39,10 @@ def hours_per_bar(interval: str) -> float:
 
 
 def validate_bar_arrays(
-    arrays: Mapping[str, Any], interval: str, *, require_open_volume: bool = True,
+    arrays: Mapping[str, Any],
+    interval: str,
+    *,
+    require_open_volume: bool = True,
 ) -> dict[str, np.ndarray]:
     """Normalize finite 1-D bars and refuse cadence this simulator cannot model.
 
@@ -48,14 +51,20 @@ def validate_bar_arrays(
     boundary never invents OHLC or treats missing time as one observed bar.
     """
     if not isinstance(arrays, Mapping):
-        raise ValueError("market arrays must be a mapping")
+        raise ValueError("market arrays must be a mapping")  # noqa: TRY004 -- retain public validation contract
     if not isinstance(interval, str) or interval not in INTERVAL_SECONDS:
         raise ValueError("unsupported bar interval")
-    required = ("ts", "high", "low", "close") + (("open", "volume") if require_open_volume else ())
+    required = ("ts", "high", "low", "close") + (
+        ("open", "volume") if require_open_volume else ()
+    )
     missing = [name for name in required if name not in arrays]
     if missing:
         raise ValueError(f"market arrays missing required series: {', '.join(missing)}")
-    names = tuple(dict.fromkeys((*required, *(name for name in ("open", "volume") if name in arrays))))
+    names = tuple(
+        dict.fromkeys(
+            (*required, *(name for name in ("open", "volume") if name in arrays))
+        )
+    )
     checked: dict[str, np.ndarray] = {}
     for name in names:
         raw = np.asarray(arrays[name])
@@ -71,22 +80,32 @@ def validate_bar_arrays(
     if any(values.size != n for values in checked.values()):
         raise ValueError("market series lengths disagree")
     timestamp = checked["ts"]
-    if np.any(np.abs(timestamp) > 10_000_000_000) or np.any(timestamp != np.floor(timestamp)):
-        raise ValueError("timestamps must be integral UTC epoch seconds, not milliseconds")
+    if np.any(np.abs(timestamp) > 10_000_000_000) or np.any(
+        timestamp != np.floor(timestamp)
+    ):
+        raise ValueError(
+            "timestamps must be integral UTC epoch seconds, not milliseconds"
+        )
     ts = timestamp.astype("int64")
     if n > 1:
         deltas = np.diff(ts)
         if np.any(deltas <= 0):
             raise ValueError("timestamps must be strictly ascending UTC epoch seconds")
         if np.any(deltas != INTERVAL_SECONDS[interval]):
-            raise ValueError(f"timestamp cadence must equal {interval}; gapped or mismatched bars are unsupported")
+            raise ValueError(
+                f"timestamp cadence must equal {interval}; gapped or mismatched bars are unsupported"
+            )
     checked["ts"] = ts
     for name in ("open", "high", "low", "close"):
         if name in checked and np.any(checked[name] <= 0):
             raise ValueError(f"{name} must contain positive prices")
     high, low, close = checked["high"], checked["low"], checked["close"]
     open_ = checked.get("open", close)
-    if np.any(high < low) or np.any(high < np.maximum(open_, close) - 1e-9) or np.any(low > np.minimum(open_, close) + 1e-9):
+    if (
+        np.any(high < low)
+        or np.any(high < np.maximum(open_, close) - 1e-9)
+        or np.any(low > np.minimum(open_, close) + 1e-9)
+    ):
         raise ValueError("OHLC high/low do not contain the open and close")
     if "volume" in checked and np.any(checked["volume"] < 0):
         raise ValueError("volume must be nonnegative")
@@ -125,7 +144,7 @@ class Bar:
     high: float
     low: float
     close: float
-    volume: float
+    volume: float | None
 
 
 class BarWindow:
@@ -141,7 +160,7 @@ class BarWindow:
     attributes are implementation details, not a hostile-Python sandbox.
     """
 
-    __slots__ = ("_ts", "_open", "_high", "_low", "_close", "_volume", "_i", "_visible")
+    __slots__ = ("_close", "_high", "_i", "_low", "_open", "_ts", "_visible", "_volume")
 
     def __init__(
         self,
@@ -210,6 +229,8 @@ class BarWindow:
     @property
     def volumes(self) -> np.ndarray:
         """Volumes up to and including the current bar."""
+        if self._volume is None:
+            raise ValueError("volume_unavailable")
         return self._series("volumes", self._volume)
 
     def bar(self, offset: int = 0) -> Bar:
@@ -231,7 +252,7 @@ class BarWindow:
             high=float(self._high[j]),
             low=float(self._low[j]),
             close=float(self._close[j]),
-            volume=float(self._volume[j]),
+            volume=None if self._volume is None else float(self._volume[j]),
         )
 
     def at(self, index: int) -> Bar:
@@ -337,26 +358,47 @@ class CostConfig:
 
     def validate(self) -> None:
         """Refuse unusable costs before they can subsidize or poison a run."""
-        for name in ("fee_bps", "slippage_bps", "perp_base_fee_bps",
-                     "max_hourly_rate_bps_long", "max_hourly_rate_bps_short",
-                     "min_hourly_rate_bps", "kink_slope_multiplier",
-                     "liquidation_penalty_bps"):
+        for name in (
+            "fee_bps",
+            "slippage_bps",
+            "perp_base_fee_bps",
+            "max_hourly_rate_bps_long",
+            "max_hourly_rate_bps_short",
+            "min_hourly_rate_bps",
+            "kink_slope_multiplier",
+            "liquidation_penalty_bps",
+        ):
             value = getattr(self, name)
-            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or value < 0:
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, Real)
+                or not math.isfinite(value)
+                or value < 0
+            ):
                 raise ValueError(f"{name} must be finite and nonnegative")
         if self.slippage_bps >= 10_000:
             raise ValueError("slippage_bps must be below 10000")
         if self.liquidation_penalty_bps >= 10_000:
             raise ValueError("liquidation_penalty_bps must be below 10000")
         if not isinstance(self.liquidation_forfeits_collateral, bool):
-            raise ValueError("liquidation_forfeits_collateral must be boolean")
-        if not isinstance(self.max_lev_constant, Real) or isinstance(self.max_lev_constant, bool) or not math.isfinite(self.max_lev_constant) or self.max_lev_constant <= 0:
+            raise ValueError("liquidation_forfeits_collateral must be boolean")  # noqa: TRY004 -- retain public validation contract
+        if (
+            not isinstance(self.max_lev_constant, Real)
+            or isinstance(self.max_lev_constant, bool)
+            or not math.isfinite(self.max_lev_constant)
+            or self.max_lev_constant <= 0
+        ):
             raise ValueError("max_lev_constant must be finite and positive")
         for name in ("utilization", "kink_utilization"):
             value = getattr(self, name)
             if name == "kink_utilization" and value is None:
                 continue
-            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or not 0 <= value <= 1:
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, Real)
+                or not math.isfinite(value)
+                or not 0 <= value <= 1
+            ):
                 raise ValueError(f"{name} must be finite and in [0, 1]")
 
     @property
@@ -376,7 +418,7 @@ class IntrabarLayer:
     other bar falls back to the coarse range, which is never less severe.
     """
 
-    __slots__ = ("interval", "ts", "open", "high", "low", "close")
+    __slots__ = ("close", "high", "interval", "low", "open", "ts")
 
     def __init__(self, interval: str, arrays: Mapping[str, Any]) -> None:
         if interval not in INTERVAL_SECONDS:
@@ -387,7 +429,9 @@ class IntrabarLayer:
                 raise ValueError(f"intrabar arrays missing {name}")
             raw = np.asarray(arrays[name])
             if raw.ndim != 1 or raw.dtype.kind not in "iuf":
-                raise ValueError(f"intrabar {name} must be a one-dimensional numeric series")
+                raise ValueError(
+                    f"intrabar {name} must be a one-dimensional numeric series"
+                )
             values = raw.astype("float64", copy=False)
             if not np.all(np.isfinite(values)):
                 raise ValueError(f"intrabar {name} contains non-finite values")
@@ -403,9 +447,11 @@ class IntrabarLayer:
         for name in ("open", "high", "low", "close"):
             if np.any(cols[name] <= 0):
                 raise ValueError(f"intrabar {name} must be positive")
-        if np.any(cols["high"] < cols["low"]) or np.any(
-            cols["high"] < np.maximum(cols["open"], cols["close"]) - 1e-9
-        ) or np.any(cols["low"] > np.minimum(cols["open"], cols["close"]) + 1e-9):
+        if (
+            np.any(cols["high"] < cols["low"])
+            or np.any(cols["high"] < np.maximum(cols["open"], cols["close"]) - 1e-9)
+            or np.any(cols["low"] > np.minimum(cols["open"], cols["close"]) + 1e-9)
+        ):
             raise ValueError("intrabar high/low do not contain the open and close")
         self.interval = interval
         self.ts = ts.astype("int64")

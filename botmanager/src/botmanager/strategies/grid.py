@@ -7,6 +7,7 @@ from typing import Any
 
 from ..data import engine_identity, validate_snapshot
 from ..domain import BotSpec, ManagerError, fingerprint
+from .base import compatible_engine
 
 MAX_REFERENCE_RUNGS = 100
 MAX_REFERENCE_RANGE_PCT = 95
@@ -63,7 +64,7 @@ def run_identity(spec: BotSpec, data: dict[str, Any]) -> dict[str, Any]:
         "config_hash": spec.config_hash,
         "config_revision": spec.config_revision,
         "strategy_version": spec.strategy_version,
-        "snapshot_hash": data["snapshot_hash"],
+        "snapshot_hash": data.get("origin_hash", data["snapshot_hash"]),
         "reference": data["identity"],
         "target": {
             "venue": spec.venue,
@@ -112,7 +113,7 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
     from backtester.core.types import CostConfig
 
     validate_snapshot(data)
-    if data["identity"]["engine_identity"] != engine_identity():
+    if not compatible_engine(data["identity"]["engine_identity"], engine_identity()):
         raise ManagerError(
             "engine_identity_changed",
             "Pinned simulation engine differs from the loaded engine.",

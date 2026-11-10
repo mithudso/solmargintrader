@@ -237,7 +237,9 @@ class StatusTests(unittest.TestCase):
             },
         )
         self.assertEqual(strategies["council"], "external-only")
-        self.assertEqual(strategies["arbitrage"], "Solana adapter unavailable")
+        self.assertEqual(
+            strategies["arbitrage"], "conditional_quote_cycle_research_only"
+        )
         ManagerStore(self.home).create_spec(self.spec)
         for operation in ("start", "stop"):
             result = dispatch(operation, {"identity": self.spec.bot_id}, self.context)
