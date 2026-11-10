@@ -12,7 +12,7 @@ from pathlib import Path
 
 from oracle.feeds import validate_instrument
 from oracle.reader import ReadOnlyOracle
-from oracle.strategies import StrategySet
+from oracle.strategies import STRATEGY_IDS, StrategySet
 from oracle.voting import Vote, aggregate
 
 APP_ID = 0x56544531
@@ -23,7 +23,7 @@ def catalog() -> list[dict]:
 
 
 def _ids(ids) -> list[str]:
-    allowed = {entry["strategy_id"] for entry in catalog()}
+    allowed = set(STRATEGY_IDS)
     if (
         type(ids) is not list
         or len(ids) > 14
@@ -60,7 +60,7 @@ def _row(row, instrument):
         return {
             "instrument": instrument,
             "revision": 0,
-            "selected_ids": sorted(item["strategy_id"] for item in catalog()),
+            "selected_ids": sorted(STRATEGY_IDS),
             "updated_at": None,
         }
     return {
@@ -144,7 +144,7 @@ def report(
         raise ValueError("invalid_oracle_clock")
     selection = settings(home, instrument)
     chosen = selection["selected_ids"] if selected_ids is None else _ids(selected_ids)
-    cards = [{**item, "selected": item["strategy_id"] in chosen} for item in catalog()]
+    cards = [{"strategy_id": key, "selected": key in chosen} for key in STRATEGY_IDS]
     base = {
         "schema_version": 1,
         "instrument": instrument,
@@ -164,8 +164,16 @@ def report(
     try:
         if path.parent.is_symlink() or path.parent.parent.is_symlink():
             raise ValueError("oracle_archive_unavailable")
-        engine = ReadOnlyOracle(path, instrument=instrument)
+        engine = ReadOnlyOracle(path, instrument=instrument, archived_versions=True)
         prediction = engine.predictions(now)
+        base["catalog"] = [
+            {
+                **item,
+                "selected": item["strategy_id"] in chosen,
+                "metadata_source": "recorded_policy",
+            }
+            for item in engine.strategies()
+        ]
     except (OSError, ValueError, TypeError, sqlite3.Error):
         return {
             **base,

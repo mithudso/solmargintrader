@@ -19,7 +19,18 @@ from uuid import UUID
 from . import runner
 
 APP_ID = 0x53435432
-MANAGER_ACTIONS = {"create", "edit", "apply", "start", "stop", "service"}
+MANAGER_ACTIONS = {
+    "create",
+    "edit",
+    "apply",
+    "start",
+    "stop",
+    "service",
+    "prepare-input",
+    "register-input",
+    "data-check",
+    "cycle-check",
+}
 ACTIONS = {
     "pipeline.start",
     "pipeline.stop",
@@ -126,9 +137,9 @@ def _safe_input(value, depth=0):
         ):
             raise ValueError("credential_parameters_forbidden")
         for key, item in value.items():
-            if (key == "mode" and item != "paper") or (
-                key == "armed" and item is not False
-            ):
+            if (
+                key == "mode" and item not in {"paper", "prospective", "historical"}
+            ) or (key == "armed" and item is not False):
                 raise ValueError("paper_only")
             _safe_input(item, depth + 1)
     elif isinstance(value, list):
@@ -208,6 +219,22 @@ class ControlPlane:
             target=self._work, daemon=True, name="paper-controls"
         )
         self._worker.start()
+
+    def register_legacy(self) -> bool:
+        """Register only the known sibling producer; never start or mutate it."""
+        path = self.home.parent / "ecosystem-paper-v1"
+        if (
+            self.home.name != "ecosystem-paper-v2"
+            or not (path / "state.json").is_file()
+            or path.is_symlink()
+        ):
+            return False
+        with database(self.home) as db:
+            db.execute(
+                "INSERT OR IGNORE INTO experiment VALUES(?,?,?,?)",
+                ("legacy-v1", "Legacy V1 recorded evidence", str(path), 0),
+            )
+        return True
 
     def close(self):
         self._closed.set()
@@ -335,6 +362,58 @@ class ControlPlane:
             raise ValueError(result["error"]["code"])
         return result["data"]
 
+    def _manager_input(self, command: str, params: dict, request_id: str) -> dict:
+        identity = params.get("identity")
+        if not isinstance(identity, str) or not identity or len(identity) > 100:
+            raise ValueError("invalid_bot_identity")
+        allowed = {"identity", "mode"} if command == "prepare-input" else {"identity"}
+        if set(params) - allowed:
+            raise ValueError("invalid_action_parameters")
+        if command == "cycle-check":
+            return {
+                "status": "unavailable",
+                "reason": "actual_cycle_evidence_unavailable",
+                "live_eligible": False,
+            }
+        if command == "data-check":
+            return self._manager(command, {"identity": identity})
+        if command == "prepare-input":
+            mode = params.get("mode", "prospective")
+            if mode not in {"prospective", "historical"}:
+                raise ValueError("invalid_input_mode")
+            directory = self.home / "manager-inputs"
+            directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+            if directory.is_symlink():
+                raise ValueError("invalid_input_home")
+            output = directory / (UUID(request_id).hex + ".json")
+            return self._manager(
+                command,
+                {
+                    "identity": identity,
+                    "archive": "shared-sol-usd",
+                    "reference": True,
+                    "mode": mode,
+                    "output": str(output),
+                },
+            )
+        with database(self.home) as db:
+            rows = db.execute(
+                "SELECT params,result FROM action WHERE action='manager.prepare-input' AND state='succeeded' ORDER BY finished DESC"
+            ).fetchall()
+        for row in rows:
+            if json.loads(row["params"]).get("identity") == identity:
+                descriptor = Path(json.loads(row["result"])["descriptor_path"])
+                if (
+                    descriptor.parent != self.home / "manager-inputs"
+                    or descriptor.is_symlink()
+                ):
+                    raise ValueError("invalid_input_home")
+                return self._manager(
+                    "register-input",
+                    {"identity": identity, "descriptor": str(descriptor)},
+                )
+        raise ValueError("prepared_input_unavailable")
+
     def _runtime(self, home=None, **changes) -> dict:
         home = home or self.home
         current = runtime_settings(home)
@@ -360,6 +439,15 @@ class ControlPlane:
 
         if action.startswith("manager."):
             command = action.split(".", 1)[1]
+            if "descriptor" in params:
+                raise ValueError("arbitrary_descriptor_forbidden")
+            if command in {
+                "prepare-input",
+                "register-input",
+                "data-check",
+                "cycle-check",
+            }:
+                return self._manager_input(command, params, request_id)
             if command != "service":
                 params = (
                     {**params, "request_id": request_id}
@@ -381,6 +469,8 @@ class ControlPlane:
             if set(params) != {"instrument", "ids", "expected_revision"}:
                 raise ValueError("invalid_action_parameters")
             return set_voters(home, **params)
+        if home != self.home and home == self.home.parent / "ecosystem-paper-v1":
+            raise ValueError("legacy_source_read_only")
         if action.startswith("recorder."):
             if action == "recorder.stop":
                 if params != {"acknowledge_shared": True}:
@@ -411,7 +501,10 @@ class ControlPlane:
                 return {"status": "already_running"}
             return runner.start(home)
         if action.startswith("oracle."):
-            if runner.running(home) and runner.load(home).get("control_contract_version") != 1:
+            if (
+                runner.running(home)
+                and runner.load(home).get("control_contract_version") != 1
+            ):
                 raise ValueError("current_pipeline_controls_unavailable")
             changes = {"oracle_enabled": action != "oracle.stop"}
             if action == "oracle.restart":
@@ -528,7 +621,14 @@ class ControlPlane:
                 ).fetchone()
             if row:
                 path = Path(row["home"])
-                if path.parent != self.home / "research" or path.is_symlink():
+                legacy = (
+                    identity == "legacy-v1"
+                    and self.home.name == "ecosystem-paper-v2"
+                    and path == self.home.parent / "ecosystem-paper-v1"
+                )
+                if (
+                    path.parent != self.home / "research" and not legacy
+                ) or path.is_symlink():
                     raise ValueError("invalid_experiment_home")
                 return path
         raise ValueError("unknown_experiment")
@@ -541,6 +641,7 @@ class ControlPlane:
         from .performance import recording
 
         active_home = self.experiment_home(run_id)
+        read_only_source = run_id == "legacy-v1"
         state = runner.status(active_home)
         prefs = runtime_settings(active_home)
         active = state["supervisor_running"]
@@ -552,8 +653,12 @@ class ControlPlane:
             return {
                 "action": name,
                 "label": label,
-                "enabled": enabled,
-                "reason": reason if not enabled else None,
+                "enabled": enabled and not read_only_source,
+                "reason": "legacy_source_read_only"
+                if read_only_source
+                else reason
+                if not enabled
+                else None,
                 "params": {**params, **({"run_id": run_id} if run_id else {})},
             }
 
@@ -608,13 +713,24 @@ class ControlPlane:
                 "id": "oracle",
                 "label": "Oracle forecasts",
                 "owner": "ecosystem.runner / oracle",
-                "state": "running" if active and observed.get("oracle_enabled") else "paused" if active and controls_ready else "unverified" if active else "stopped",
+                "state": "running"
+                if active and observed.get("oracle_enabled")
+                else "paused"
+                if active and controls_ready
+                else "unverified"
+                if active
+                else "stopped",
                 "running": active and observed.get("oracle_enabled", False),
                 "desired_enabled": prefs["oracle_enabled"],
                 "version": state.get("ecosystem_version"),
                 "heartbeat_at": state.get("heartbeat_at"),
                 "actions": [
-                    action("oracle." + name, label, active and controls_ready, "restart_with_current_pipeline_first")
+                    action(
+                        "oracle." + name,
+                        label,
+                        active and controls_ready,
+                        "restart_with_current_pipeline_first",
+                    )
                     for name, label in (
                         ("start", "Start Oracle"),
                         ("stop", "Pause Oracle"),
@@ -783,6 +899,8 @@ class ControlPlane:
             "revision": prefs["revision"],
             "scope": "paper_controls",
             "active_run_id": run_id or "current",
+            "read_only_source": read_only_source,
+            "mutation_allowed": not read_only_source,
             "servers": servers,
             "configs": configs,
             "statuses": manager,

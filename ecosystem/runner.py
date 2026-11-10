@@ -435,7 +435,9 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
         manager_home = Path(cfg["manager_home"]) if cfg.get("manager_home") else None
         from .ui_service import status as ui_status
 
-        state["ui_url"] = ui_status(home).get("url") if cfg.get("embedded_ui", True) else None
+        state["ui_url"] = (
+            ui_status(home).get("url") if cfg.get("embedded_ui", True) else None
+        )
         save(home / "state.json", state)
         update_telemetry(state, home, manager_home)
         if not state.get("batch_id"):
@@ -626,7 +628,9 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
                 try:
                     with recovery_guard(home) as allowed:
                         if allowed and runtime_settings(home)["batch_enabled"]:
-                            state["batch_restart_attempts"] = state.get("batch_restart_attempts", 0) + 1
+                            state["batch_restart_attempts"] = (
+                                state.get("batch_restart_attempts", 0) + 1
+                            )
                             f5_batch.start(batch_id, root=home / "batches")
                             state["batch_restart_requested"] = True
                 except (OSError, RuntimeError, ValueError):

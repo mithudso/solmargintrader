@@ -363,7 +363,7 @@ async def run(
     if home is not None:
         from .reader import ReadOnlyOracle
 
-        engine = ReadOnlyOracle(archive, instrument=instrument)
+        engine = ReadOnlyOracle(archive, instrument=instrument, archived_versions=True)
     else:
         engine = OracleEngine(archive, instrument=instrument)
     server, _ = build_server(

@@ -6,7 +6,7 @@ const state = { status: null, registrations: null, telemetry: null, selected: nu
   cursors: [""], page: 0, next: null, polling: false, eventCursor: 0,
   events: [], droppedEvents: 0, receivedAt: null, control: null, analytics: null,
   oracle: null, oracleInstrument: "SOL/USD", selectedRecord: null, session: null,
-  busy: new Set(), localActions: new Map(), voterDrafts: new Map(), managerDrafts: new Map(), pendingPrefs: new Map(),
+  busy: new Set(), localActions: new Map(), voterDrafts: new Map(), managerDrafts: new Map(), managerInputModes: new Map(), pendingPrefs: new Map(),
   wikiCatalog: null, wikiPage: null, wikiKnownPages: new Map(), wikiRequest: 0, wikiPageRequest: 0,
   launchCatalogKey: null, managerCatalogKey: null, instrumentCatalogKey: null,
   formInitialized: false, recordingDirty: false, feedbackTimer: null, swap: null, swapLoaded: false, activeRun: "" };
@@ -338,14 +338,33 @@ function announce(message) {
   $("action-feedback").hidden = false;
   state.feedbackTimer = setTimeout(() => { $("action-feedback").hidden = true; }, 14000);
 }
-function actionKey(action, params) { return `${params.run_id || state.activeRun || "primary"}:${action}:${params.identity || params.instrument || "owner"}`; }
+function actionRun(action, params = {}) {
+  if (action === "research.launch" || action.startsWith("manager.")) return "";
+  return typeof params.run_id === "string" ? params.run_id : state.activeRun;
+}
+function sourceReadOnly(run = state.activeRun) {
+  if (run === "legacy-v1") return true;
+  if (run === state.activeRun) return state.control?.read_only_source === true || state.control?.mutation_allowed === false;
+  const observed = array(state.control?.runs).find((item) => item.id === run);
+  return observed?.read_only_source === true || observed?.mutation_allowed === false;
+}
+function actionBlocked(action, params = {}) {
+  return action !== "oracle.voters.set" && /^(pipeline|backtest|oracle|recorder)\./.test(action) && sourceReadOnly(actionRun(action, params));
+}
+function actionKey(action, params) { return `${actionRun(action, params) || "primary"}:${action}:${params.identity || params.instrument || "owner"}`; }
 function voterKey(instrument = state.oracleInstrument, run = state.activeRun) { return `${run || "primary"}:${instrument}`; }
 function preferencePending(kind, instrument = null) { return Array.from(state.pendingPrefs.values()).some((item) => item.kind === kind && item.run === state.activeRun && (!instrument || item.instrument === instrument)); }
 function array(value) { return Array.isArray(value) ? value : []; }
 function currentCapabilities() { return array(state.control?.servers).flatMap((server) => array(server.actions)); }
 async function submitAction(action, params = {}, button = null) {
+  if (actionBlocked(action, params)) {
+    announce("Legacy source is read-only. Its pipeline, Backtester, Oracle and shared recorder settings remain under the recorded owner policy. No action was sent.");
+    return null;
+  }
   const key = actionKey(action, params);
-  const requestedRun = action === "research.launch" ? "" : typeof params.run_id === "string" ? params.run_id : state.activeRun;
+  const requestedRun = actionRun(action, params);
+  const requestedParams = { ...params };
+  if (action === "research.launch" || action.startsWith("manager.")) delete requestedParams.run_id;
   if (state.busy.has(key)) return null;
   state.busy.add(key);
   const requestId = crypto.randomUUID();
@@ -363,7 +382,7 @@ async function submitAction(action, params = {}, button = null) {
       response = await fetch("/api/actions", {
         method: "POST", credentials: "same-origin", cache: "no-store",
         headers: { "Content-Type": "application/json", "X-Sol-CSRF": state.session.csrf_nonce },
-        body: JSON.stringify({ action, request_id: requestId, params: requestedRun && action !== "research.launch" ? { ...params, run_id: requestedRun } : params }), signal: controller.signal,
+        body: JSON.stringify({ action, request_id: requestId, params: requestedRun ? { ...requestedParams, run_id: requestedRun } : requestedParams }), signal: controller.signal,
       });
     } finally { clearTimeout(timeout); }
     const envelope = await response.json();
@@ -376,7 +395,7 @@ async function submitAction(action, params = {}, button = null) {
     const record = envelope.data;
     if (!record || typeof record.id !== "string") throw new Error("invalid_action_receipt");
     state.localActions.set(record.id, record);
-    announce(`${human(action)}: ${human(record.state)} for ${requestedRun || "the primary pipeline"}. Action ${record.id}.`);
+    announce(`${human(action)}: ${human(record.state)} for ${action.startsWith("manager.") ? "Bot Manager" : requestedRun || "the primary pipeline"}. Action ${record.id}.`);
     renderActionLedger();
     return record;
   } catch {
@@ -388,7 +407,7 @@ async function submitAction(action, params = {}, button = null) {
     return null;
   } finally {
     state.busy.delete(key);
-    if (button?.isConnected) { button.removeAttribute("aria-busy"); button.disabled = false; }
+    if (button?.isConnected) { button.removeAttribute("aria-busy"); button.disabled = actionBlocked(action, params); }
     refresh();
   }
 }
@@ -408,11 +427,12 @@ function actionButton(action, caption, params = {}, enabled = true, reason = nul
   const button = node("button", caption, "button secondary");
   button.type = "button"; button.dataset.controlKey = JSON.stringify([params.run_id || state.activeRun, action, params]);
   const busy = state.busy.has(actionKey(action, params));
-  button.disabled = !enabled || busy;
+  const blocked = actionBlocked(action, params);
+  button.disabled = !enabled || busy || blocked;
   if (busy) button.setAttribute("aria-busy", "true");
   button.addEventListener("click", () => submitAction(action, params, button));
   wrap.append(button);
-  if (reason) wrap.append(node("p", human(reason)));
+  if (blocked || reason) wrap.append(node("p", blocked ? "Legacy source is read-only; its recorded worker policy remains unchanged." : human(reason)));
   return wrap;
 }
 function renderStages(target, stages) {
@@ -522,6 +542,7 @@ function renderRuns() {
     inspect.addEventListener("click", () => { setActiveRun(run.id); location.hash = "fleet"; });
     const stateBox = node("div", undefined, "config-actions"); stateBox.append(node("span", human(run.phase), "tag neutral"), inspect);
     heading.append(identity, stateBox); card.append(heading);
+    if (sourceReadOnly(run.id)) card.append(node("p", "Legacy V1 recorded policy · source read-only. Inspect its retained history and projection preferences; launch a new paper run for new experiments.", "legacy-run-note"));
     const progress = run.progress;
     if (finite(progress?.total) && progress.total > 0 && finite(progress.done)) {
       const wrapper = node("div", undefined, "run-progress"); const bar = node("progress");
@@ -606,6 +627,28 @@ function renderManagerConfigs() {
       });
       wrapper.append(button, node("p", human(reason))); actions.append(wrapper);
     });
+    const input = node("section", undefined, "manager-input");
+    input.append(node("h4", "Reference input & coverage"), node("p", "Prepare → register → check → start. The shared SOL/USD archive is a Coinbase reference; it does not establish Jupiter SOL/USDC quote or fill compatibility.", "subtle"));
+    const modeId = `manager-input-mode-${config.bot_id}`;
+    const modeLabel = node("label", "Input mode"); modeLabel.htmlFor = modeId;
+    const mode = node("select"); mode.id = modeId; mode.dataset.controlKey = `manager:input-mode:${config.bot_id}`;
+    [["prospective", "Prospective · new observations only"], ["historical", "Historical · recorded reference replay"]].forEach(([value, caption]) => {
+      const option = node("option", caption); option.value = value; mode.append(option);
+    });
+    mode.value = state.managerInputModes.get(config.bot_id) || "prospective";
+    mode.addEventListener("change", () => state.managerInputModes.set(config.bot_id, mode.value));
+    modeLabel.append(mode); input.append(modeLabel);
+    const inputActions = node("div", undefined, "config-actions");
+    const nativeReference = config.source === "manager" && Boolean(state.control?.catalog?.manager_schema?.strategies?.[config.strategy_id]);
+    const prepare = actionButton("manager.prepare-input", "Prepare reference input", { identity: config.bot_id, mode: mode.value }, nativeReference, nativeReference ? "Freezes the selected input mode and configured reference cost assumptions. No producer is started." : "This configuration has no supported native reference runtime.");
+    mode.addEventListener("change", () => {
+      prepare.replaceChildren(...actionButton("manager.prepare-input", "Prepare reference input", { identity: config.bot_id, mode: mode.value }, nativeReference, "Freezes the selected input mode and configured reference cost assumptions. No producer is started.").childNodes);
+    });
+    inputActions.append(prepare,
+      actionButton("manager.register-input", "Register prepared input", { identity: config.bot_id }, nativeReference, "Uses the last successful preparation for this configuration. The owner refuses absent or incompatible input."),
+      actionButton("manager.data-check", "Check registered data", { identity: config.bot_id }, Boolean(observed), "Inspect actual registered input coverage, freshness and missing fields."),
+      actionButton("manager.cycle-check", "Check cycle evidence", { identity: config.bot_id }, Boolean(observed), "Diagnostic only: actual cycle evidence is unavailable until an existing producer supplies it."));
+    input.append(inputActions); card.append(input);
     card.append(actions, node("p", `Configuration ${label(config.config_hash)} · owner ${label(config.owner)}. Saving and adopting settings are separate actions.`, "config-status"));
     fragment.append(card);
   });
@@ -613,7 +656,11 @@ function renderManagerConfigs() {
   replaceWithFocus("manager-configs", fragment);
 }
 function renderControl() {
-  text("control-status", state.control ? "Owner interfaces observed" : "Unavailable");
+  const readOnly = sourceReadOnly();
+  $("source-policy").hidden = !readOnly;
+  const threshold = state.status?.config?.research_min_confidence;
+  text("source-policy-detail", `Recorded source workers and configuration are read-only.${finite(threshold) ? ` Recorded research confidence threshold: ${(100 * threshold).toFixed(1)}% (source policy, not profit probability).` : ""} P&L and voter projection preferences remain available. Manager actions and new paper research launches use their independent owners.`);
+  text("control-status", readOnly ? "Legacy source · read-only" : state.control ? "Owner interfaces observed" : "Unavailable");
   const servers = document.createDocumentFragment(); const actions = document.createDocumentFragment();
   array(state.control?.servers).forEach((server) => {
     const card = node("article", undefined, "server-card");
@@ -643,7 +690,7 @@ function renderControl() {
   const runOptions = [{ id: "", label: "Primary pipeline" }, ...array(state.control?.runs).map((run) => ({ id: run.id, label: run.name || run.id }))];
   fillSelect("active-run", runOptions, state.activeRun); $("active-run").value = state.activeRun;
   const selectedRun = array(state.control?.runs).find((run) => run.id === state.activeRun);
-  text("active-run-note", `${selectedRun?.name || (state.activeRun ? state.activeRun : "Primary pipeline")} · server and recording controls act on this run`);
+  text("active-run-note", `${selectedRun?.name || (state.activeRun ? state.activeRun : "Primary pipeline")} · ${readOnly ? "legacy recorded policy; source read-only" : "server and recording controls act on this run"}`);
   renderLaunchCatalog(); renderRuns(); renderManagerConfigs(); renderActionLedger();
 }
 function renderActionLedger() {

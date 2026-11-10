@@ -7,10 +7,17 @@ buttons, configuration launches, stage progress, per-coin costed paper results,
 versioned P&L recording and voter policies, source-linked documentation and an
 isolated manual Jupiter swap page.
 
-Run `python3 scripts/bootstrap_ecosystem.py start` from a clean source checkout,
-or use the installed `solecosystem` and `solecosystem-ui` commands. Setup verifies
+Run `python3 /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py start`
+from a clean source checkout, or use the installed `solecosystem` and
+`solecosystem-ui` commands. Setup verifies
 five installed packages, both strategy catalogs and actual MCP transport. Existing
 completed environments stay immutable; new releases use a new versioned environment.
+
+Release 0.2.0 uses `/Users/mitch/.venvs/solecosystem-0.2.0` and the primary home
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`. It pins Bot Manager
+0.4.0, Oracle 0.2.1 and the headless research runtime 0.1.2 over Backtester 0.1.1.
+The `legacy-v1` view preserves the still-running V1 owner and its native evidence;
+the new runtime must not resume that frozen F5 plan or relabel its Oracle policy.
 
 All automated research and manager controls remain paper/disarmed. Oracle has no
 order path. Forward P&L uses source-resolved, non-overlapping virtual trials with
@@ -23,7 +30,9 @@ cost scenario is not a verified executable quote or certified historical spot
 execution model. Manual wallet swaps use Jupiter's separate browser interface;
 no server key, signing or submission method is exposed.
 
-See `docs/ECOSYSTEM-CONTROL-ROOM.md`, `docs/ECOSYSTEM-BOOTSTRAP.md`,
-`docs/ECOSYSTEM-WIKI.md` and `docs/ECOSYSTEM-SWAPS.md` for operating contracts,
+See `/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-CONTROL-ROOM.md`,
+`/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-BOOTSTRAP.md`,
+`/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-WIKI.md` and
+`/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-SWAPS.md` for operating contracts,
 limits, exact commands and evidence. The packaged wiki provides all component
 documentation with original file locations and content hashes.

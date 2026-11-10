@@ -8,7 +8,7 @@ import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from ecosystem import control, runner
 
@@ -39,6 +39,72 @@ class ControlTests(unittest.TestCase):
                 return row
             time.sleep(0.02)
         self.fail(f"action did not reach {states}")
+
+    def test_legacy_registered_source_has_no_producer_mutations(self):
+        self.home = Path(self.temp.name) / "ecosystem-paper-v2"
+        legacy = self.home.parent / "ecosystem-paper-v1"
+        legacy.mkdir()
+        (legacy / "state.json").write_text("{}")
+        plane = self.plane()
+        self.assertTrue(plane.register_legacy())
+        self.assertEqual(plane.experiment_home("legacy-v1"), legacy)
+        for action in (
+            "pipeline.start",
+            "pipeline.stop",
+            "oracle.restart",
+            "backtest.stop",
+            "recorder.stop",
+        ):
+            with self.assertRaisesRegex(ValueError, "legacy_source_read_only"):
+                plane._execute(action, {"run_id": "legacy-v1"}, str(uuid4()))
+        self.assertEqual((legacy / "state.json").read_text(), "{}")
+        self.assertFalse((legacy / "runtime-settings.json").exists())
+
+    def test_manager_preparation_owns_paths_and_registration(self):
+        plane = self.plane()
+        identity = str(uuid4())
+        request = str(uuid4())
+        with patch.object(
+            plane,
+            "_manager",
+            return_value={
+                "descriptor_path": str(
+                    self.home / "manager-inputs" / (UUID(request).hex + ".json")
+                )
+            },
+        ) as owner:
+            plane._execute(
+                "manager.prepare-input",
+                {"identity": identity, "mode": "prospective"},
+                request,
+            )
+            args = owner.call_args.args
+            self.assertEqual(args[0], "prepare-input")
+            self.assertEqual(args[1]["archive"], "shared-sol-usd")
+            self.assertTrue(args[1]["reference"])
+            self.assertTrue(Path(args[1]["output"]).is_relative_to(self.home))
+        with self.assertRaisesRegex(ValueError, "invalid_action_parameters"):
+            plane._execute(
+                "manager.prepare-input",
+                {"identity": identity, "output": "/tmp/arbitrary"},
+                request,
+            )
+        with patch.object(plane, "_manager") as owner:
+            with self.assertRaisesRegex(ValueError, "arbitrary_descriptor_forbidden"):
+                plane._execute(
+                    "manager.apply",
+                    {"identity": identity, "descriptor": "/tmp/arbitrary.json"},
+                    request,
+                )
+            owner.assert_not_called()
+        with self.assertRaisesRegex(ValueError, "prepared_input_unavailable"):
+            plane._execute("manager.register-input", {"identity": identity}, request)
+        self.assertEqual(
+            plane._execute("manager.cycle-check", {"identity": identity}, request)[
+                "status"
+            ],
+            "unavailable",
+        )
 
     def test_durable_uuid_idempotency_and_conflict(self):
         plane = self.plane()

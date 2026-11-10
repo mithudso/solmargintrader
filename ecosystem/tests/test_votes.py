@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from contextlib import closing
 from pathlib import Path
+from unittest.mock import patch
 
 from ecosystem import votes
 from oracle.engine import OracleEngine
@@ -43,6 +44,8 @@ class VoteSelectionTests(unittest.TestCase):
                     "id": key,
                     "strategy_id": entry["strategy_id"],
                     "version": entry["version"],
+                    "parameters": entry["parameters"],
+                    "policy_hash": engine.policy_hash,
                     "instrument": "SOL/USD",
                     "issued_at": issued,
                     "expires_at": expiry,
@@ -167,4 +170,21 @@ class VoteSelectionTests(unittest.TestCase):
         result = votes.report(self.home, "SOL/USD", now=1001)
         self.assertEqual(result["status"], "unavailable")
         self.assertNotIn("do not expose", json.dumps(result))
+        self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
+
+    def test_recorded_catalog_and_evidence_survive_current_version_drift(self):
+        path, card = self.archive()
+        recorded = ReadOnlyOracle(path, instrument="SOL/USD").strategies()
+        before = hashlib.sha256(path.read_bytes()).hexdigest()
+        with patch(
+            "oracle.reader.StrategySet",
+            side_effect=AssertionError("no current strategy construction"),
+        ):
+            result = votes.report(self.home, "SOL/USD", [card], now=1001)
+        self.assertEqual(result["signal"], "Strong Buy")
+        self.assertTrue(result["legacy_policy"])
+        self.assertEqual(result["catalog"][0]["version"], recorded[0]["version"])
+        self.assertEqual(result["catalog"][0]["parameters"], recorded[0]["parameters"])
+        self.assertEqual(result["catalog"][0]["metadata_source"], "recorded_policy")
+        self.assertEqual(result["strategies"][0]["resolved"], 1)
         self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())

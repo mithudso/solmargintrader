@@ -13,7 +13,7 @@ from . import runner
 
 
 def default_home() -> Path:
-    return Path.home() / ".local/share/solmargintrader/ecosystem-paper-v1"
+    return Path.home() / ".local/share/solmargintrader/ecosystem-paper-v2"
 
 
 def emit(value: dict) -> None:
@@ -64,7 +64,18 @@ def main(argv=None) -> int:
     home = args.home.expanduser().absolute()
     try:
         if args.command == "status":
-            emit({"ok": True, "data": runner.status(home)})
+            from .ui_service import status as ui_status
+
+            data = runner.status(home)
+            if data.get("ui_url"):
+                data["recorded_ui_url"] = data["ui_url"]
+            interface = ui_status(home)
+            data.update(
+                home=str(home),
+                control_server=interface,
+                ui_url=interface.get("url") if interface.get("running") else None,
+            )
+            emit({"ok": True, "data": data})
         elif args.command == "stop":
             emit({"ok": True, "data": runner.stop(home)})
         elif args.command == "registrations":
@@ -163,6 +174,10 @@ def main(argv=None) -> int:
                 "research_min_confidence": args.research_min_confidence
                 if args.research_min_confidence is not None
                 else existing.get("research_min_confidence", 0.0),
+                "research_capital": existing.get("research_capital", 10000.0),
+                "swap_provider": existing.get("swap_provider", "reference"),
+                "cost_model": existing.get("cost_model"),
+                "embedded_ui": existing.get("embedded_ui", True),
             }
             runner.plan(home, **config)
             interface = ensure_ui(home, Path(config["manager_home"]))

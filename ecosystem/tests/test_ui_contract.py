@@ -46,7 +46,8 @@ async function fixture() {
     replaceChildren(...items) { this.children = []; this.append(...items); }
     setAttribute(name, value) { this.attributes[name] = String(value); }
     removeAttribute(name) { delete this.attributes[name]; }
-    addEventListener() {}
+    addEventListener(name, callback) { (this.events ||= {})[name] ||= []; this.events[name].push(callback); }
+    dispatch(name) { for (const callback of this.events?.[name] || []) callback({target:this}); }
     querySelectorAll(selector) { const all = []; const visit = (item) => { for (const child of item.children || []) { all.push(child); visit(child); } }; visit(this); return selector.includes('input') ? all.filter(item => item.tagName === 'INPUT' && (!selector.includes(':checked') || item.checked)) : selector === '[data-control-key]' ? all.filter(item => item.dataset?.controlKey) : []; }
     closest(selector) { return this.id === 'aggregate-meter' && selector === '.aggregate-reading' ? element('aggregate-reading') : null; }
     matches() { return false; }
@@ -92,6 +93,36 @@ const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
     assert.notEqual(before,after); assert.equal(context.document.activeElement,after);
   }
   {
+    const {context,element} = await fixture(); let posts=0; let posted;
+    context.fetch=async(url,options)=>{if(options?.method==='POST'){posts+=1;posted=JSON.parse(options.body);return {ok:true,status:202,json:async()=>({schema_version:1,ok:true,data:{id:posted.request_id,action:posted.action,state:'queued'}})}}throw new Error('offline');};
+    read(context,"state.activeRun='legacy-v1';state.session={csrf_nonce:'fixture'};state.control={read_only_source:true,mutation_allowed:false,servers:[{id:'pipeline',actions:[{action:'pipeline.stop',enabled:true}]}],recording:{enabled:true,revision:1},catalog:{strategies:[{id:'rsi'}],manager_schema:{strategies:{trend:{}}}}};renderControl()");
+    assert.equal(element('source-policy').hidden,false);
+    assert.match(element('source-policy-detail').textContent,/read-only/);
+    assert.equal(element('server-actions').querySelectorAll('[data-control-key]')[0].disabled,true);
+    assert.equal(element('recording-save').disabled,false);
+    assert.equal(element('launch-submit').disabled,false);
+    assert.equal(read(context,"actionBlocked('oracle.voters.set',{})"),false);
+    for(const action of ['pipeline.start','backtest.stop','oracle.restart','recorder.start']) await read(context,`submitAction('${action}',{})`);
+    assert.equal(posts,0);
+    assert.equal(read(context,"actionBlocked('pipeline.start',{run_id:'separate-run'})"),false);
+    await read(context,"submitAction('manager.prepare-input',{identity:'native',mode:'prospective'})");
+    assert.equal(posts,1);assert.equal(posted.params.run_id,undefined);assert.equal(posted.params.mode,'prospective');
+  }
+  {
+    const {context,element} = await fixture(); let posted;
+    context.fetch=async(url,options)=>{if(options?.method==='POST'){posted=JSON.parse(options.body);return {ok:true,status:202,json:async()=>({schema_version:1,ok:true,data:{id:posted.request_id,action:posted.action,state:'queued'}})}}throw new Error('offline');};
+    read(context,"state.session={csrf_nonce:'fixture'};state.control={configs:[{bot_id:'native',display_name:'Native',strategy_id:'trend',source:'manager',config_revision:1}],statuses:{bots:[{bot_id:'native',action_capabilities:{}}]},catalog:{manager_schema:{strategies:{trend:{}}}}};renderManagerConfigs()");
+    const mode=tree(element('manager-configs')).find(item=>item.id==='manager-input-mode-native');
+    assert.equal(mode.value,'prospective');mode.value='historical';mode.dispatch('change');
+    const controls=tree(element('manager-configs'));
+    assert(controls.some(item=>item.textContent==='Register prepared input'));
+    assert(controls.some(item=>item.textContent==='Check registered data'));
+    assert(controls.some(item=>item.textContent==='Check cycle evidence'));
+    controls.find(item=>item.tagName==='BUTTON'&&item.textContent==='Prepare reference input').dispatch('click');
+    await new Promise(setImmediate);
+    assert.equal(posted.action,'manager.prepare-input');assert.equal(posted.params.identity,'native');assert.equal(posted.params.mode,'historical');assert.equal(posted.params.source,undefined);
+  }
+  {
     const {context} = await fixture();
     const rendered=read(context,"renderMarkdown('# <img src=x onerror=bad()>\\n\\n[bad](javascript:alert(1))\\n\\n<script>bad()</script>')");
     const nodes=tree(rendered);
@@ -121,7 +152,7 @@ const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
     assert.equal(posts,1);
     assert.equal(read(context,"Array.from(state.localActions.values()).at(-1).state"),'unknown');
   }
-  console.log('UI behavior: stale/pair gates, voter isolation, hostile Markdown, run capture and no automatic mutation retry passed');
+  console.log('UI behavior: stale/pair gates, voter isolation, legacy guards, native input routing, hostile Markdown, run capture and no automatic mutation retry passed');
 })().catch(error=>{console.error(error);process.exitCode=1;});
 """
 

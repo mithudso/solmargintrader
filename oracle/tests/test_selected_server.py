@@ -102,6 +102,8 @@ class SelectedProtocolTests(unittest.IsolatedAsyncioTestCase):
                         "id": identity,
                         "strategy_id": card["strategy_id"],
                         "version": card["version"],
+                        "parameters": card["parameters"],
+                        "policy_hash": engine.policy_hash,
                         "instrument": "SOL/USD",
                         "issued_at": issued,
                         "expires_at": expiry,

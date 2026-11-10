@@ -1,211 +1,270 @@
-# Operate the paper ecosystem
+# Operational paper control room
 
-The control room delegates work to the existing owners. It does not sign or
-submit orders. The manual swap page uses an isolated Jupiter browser widget and
-requires the user's wallet approval. Automated live readiness remains a separate
-owner decision backed by actual evidence.
+The control room observes the actual ecosystem owners and sends explicit,
+scoped requests to their existing control interfaces. It combines server state,
+configuration launches, research progress, per-coin results, forward accounting,
+Oracle voter selection and the documentation wiki. Automated operation remains
+paper/disarmed. Oracle has no order, signing or submission authority.
 
-## Installation and ownership
+## Release and installation
 
-Python 3.13 or newer is required. The bootstrap installs the five canonical local
-packages into `/Users/mitch/.venvs/solecosystem-0.2.0`. It verifies installed module
-locations, versions, strategy catalogs and actual Oracle MCP transport before use.
+Release 0.2.0 installs these compatible local packages:
+
+| Package | Version |
+| --- | --- |
+| Ecosystem | 0.2.0 |
+| Bot Manager | 0.4.0 |
+| Oracle | 0.2.1 |
+| Headless research runtime | 0.1.2 |
+| Canonical Backtester | 0.1.1 |
+
+Python 3.13 or newer is required. The dedicated environment is
+`/Users/mitch/.venvs/solecosystem-0.2.0`. The primary experiment home is
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`.
+
+From a clean source checkout, installation and start use:
 
 ```sh
-python3 /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py start
+python3 /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py start \
+  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
 ```
 
-The primary experiment remains at
-`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1`. The UI runs as a
-separate process and publishes its actual URL in that home's
-`control-server.json`. Closing a terminal or stopping a pipeline does not remove
-the UI's Start button. `control-server.lock` proves control-service ownership;
-PIDs are diagnostic. The start helper verifies the bound HTTP instance against
-the private checkpoint and never treats an old PID or file as liveness.
+The installer checks package identities, strategy catalogs and actual local MCP
+transport. It binds a completed environment to its exact package inputs,
+including packaged web, API and wiki files. It refuses an incompatible existing
+environment. It does not upgrade an active environment in place. A health check
+does not establish that market history, future outcomes or live execution exist.
 
-For an existing installed environment:
+The installed lifecycle commands are:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem start
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem status
+/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem start \
+  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
+/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem status \
+  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
+/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem stop \
+  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
+```
+
+Use the current `ui_url` from status. The control server publishes its bound
+address, instance, version and diagnostic PID in
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2/control-server.json`.
+Its owner lock and matching HTTP response establish readiness; a PID alone does
+not. Ports can change after a restart.
+
+## Independent control service
+
+The HTTP control service has a different lifetime and owner lock from the paper
+pipeline. Stopping a pipeline or its F5 worker retains the control room so its
+Start button remains usable. The pipeline can ensure that its control service
+exists without taking ownership of the shared recorder.
+
+A foreground control service can also run independently:
+
+```sh
 /Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem-ui \
-  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 --port 8768
+  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2 --port 8768
 ```
 
-The last command runs a foreground viewer/controller if that home has no control
-server owner. The bootstrap chooses an available port automatically. Use its
-reported URL rather than assuming a port after restart. Completed environments
-are immutable; do not upgrade a running environment in place.
+Its address is then `http://127.0.0.1:8768`. A second server for the same home
+refuses while the first owner holds its lock. Do not start another server merely
+because a pipeline is stopped; inspect the published control-server identity.
+No OS login auto-start is implied by these commands.
 
-## Server controls and action receipts
+## Preserve the existing V1 experiment
 
-The Server page shows the control process, pipeline, F5 backtest/forward worker,
-Oracle, existing shared recorder and Bot Manager. State, heartbeat, PID and source
-availability are separate fields. Buttons reflect the actual supported commands:
+The running V1 producer, F5 worker and data remain associated with:
 
-| Component | Actions | Owner |
+- `/Users/mitch/.venvs/solecosystem-0.1.1`
+- `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1`
+
+The new interface registers that experiment as `legacy-v1`. It reads its native
+evidence without restarting its producer, changing its frozen configuration or
+replaying its native ledgers. Recording and voter preferences are separate
+projections; their controls do not grant authority to restart the legacy owner.
+
+The new Backtester changes F5's economic-code fingerprint and Oracle's strategy
+versions. A new runtime must not reopen a legacy Oracle archive through its own
+policy constructor or resume a legacy F5 batch under a different fingerprint.
+New experiments use new homes and archives. Raw legacy observations remain
+usable through the explicit read-only source adapter, with their recorded policy
+identity intact. No policy metadata is renamed to make incompatible code pass.
+
+## Server actions and observations
+
+Each supported action has its own button. Disabled actions show the owner's
+capability reason. The interface separates requested state, observed state,
+process liveness, input freshness and completed evidence.
+
+| Owner | Controls | Evidence to inspect |
 | --- | --- | --- |
-| Pipeline | Start, cooperative stop, restart | `ecosystem.runner` |
-| Backtest / forward worker | Start, stop, restart this run | `soltui.f5_batch` |
-| Oracle | Enable, pause, restart its evaluation cache | Pipeline's Oracle instances |
-| Shared recorder | Start existing singleton, stop current instance | `soltui.pricefeed` |
-| Bot Manager | Explicit service install/start and uninstall/stop where supported | `botmanager.service` |
-| Manager configuration | Create, save revision, adopt, start, stop | Manager command registry |
+| Paper pipeline | Start, stop, restart | Owner lock, phase, heartbeat and current work |
+| F5 Backtester / forward worker | Start, stop, restart the selected experiment | Frozen matrix, terminal cell counts, forward checks and backlog |
+| Oracle evaluator | Start, pause, restart on a compatible active pipeline | Observed runtime settings, per-instrument freshness and issued forecasts |
+| Shared recorder | Start and acknowledged shared stop | Singleton owner, snapshot age, received messages, reconnects and recording location |
+| Bot Manager | Explicit macOS service install/start and uninstall/stop | Matching service definition and observed supervisor lock |
 
-A shared-recorder stop requires an explicit acknowledgment. It disables recovery
-for this control family, including its child runs. Other independently operated
-owners may recover the global recorder. The UI reports this limit; it cannot
-promise a permanent global stop. Pipeline stops retain archives and do not stop
-that shared recorder.
+Stop requests are cooperative and preserve evidence. A completed request receipt
+does not substitute for a fresh observed state. Some actions wait for the owner
+to reach a safe checkpoint. A timed-out or interrupted acknowledgment is not a
+reason to submit a new conflicting request automatically.
 
-Every mutation uses a canonical UUID and a durable receipt. Repeating the same
-UUID and payload reads the original receipt; a different payload conflicts.
-Queued, running, succeeded, failed and interrupted states remain distinct.
-Succeeded means the owner command returned, not that a requested worker is
-already healthy. Inspect observed state and progress after the request.
+The recorder serves other consumers. Its stop action requires explicit shared
+impact acknowledgment. Recovery preferences affect this control family; another
+independent owner can still restart its recorder. The UI reports that boundary.
 
-If the controller dies after an owner acted but before it saved the result, the
-receipt becomes interrupted. It is never automatically replayed. Reconcile the
-owner before issuing a new request. UI network failures also do not retry launches.
-Automatic recovery and explicit actions share the control-family mutation lock.
+Manager stop retains positions and journals. It is not a cancel-orders,
+close-position or live emergency-liquidation command. Those capabilities remain
+unavailable unless their actual execution owner supports them.
 
-Log buttons read only fixed owner sinks, with bounded tails, source timestamps
-and redaction. Unknown paths, symlinks and nonregular files are refused. Truncated
-tails are not complete history. Manager events remain in their native journals;
-an absent configured freeform log sink is explicitly unavailable.
+## Choose a configuration and launch
 
-## Launch and inspect a bot
+Research launches select a name, coins, registered strategy cards, bar intervals,
+card presets, historical dates, virtual capital, paper cost assumptions and P&L
+recording preference. The configuration is frozen in a new experiment under
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2/research`.
+Repeating the same action identity reuses its receipt instead of silently
+creating another experiment.
 
-Choose a strategy card, assets, interval, horizon preset, date bounds, independent
-paper capital and cost scenario. The launch review separates Coinbase USD
-reference data from the intended swap provider. A launch creates a new immutable
-experiment under the primary home's `research/` directory. It never changes the
-inputs or parameters of a running experiment.
+The stages are acquisition, historical backtesting and prospective forward
+testing. Progress bars use real attempted inputs and cell counts. A completed
+historical matrix can contain missing, unsupported, failed or partial cells.
+Those states stay visible. Only configurations with usable owner evidence enter
+the forward stage. Forward testing remains an ongoing observation stage; a
+recorded call is not a resolved outcome or approval for live operation.
 
-Acquisition, backtest, forward and live-readiness stages use actual owner
-evidence. Progress bars report counts against a known target; unavailable or
-unbounded stages do not acquire invented percentages. Missing history and
-unsupported runners stay visible. A live-readiness stage is unavailable until
-the responsible execution component provides its required evidence.
+Select a bot or research trial to inspect its strategy version, configuration,
+coin, source, historical selection evidence, forward calls and economics. The
+per-coin view separates successful and losing resolved trials from unavailable
+or incomplete evidence. CPCV selection scores and historical returns retain
+their stated scope; selected performance is not independent validation.
 
-Select a run, then a bot to compare that strategy, interval and horizon across
-all attributable coins. Historical rows show selected CPCV Sharpe, selected
-median return and parameters. Those are selection evidence, not independent
-validation. Forward rows show recorded, pending and resolved calls, cost coverage,
-paper capital, realized paper P&L and the profitability assessment.
+Manager configuration controls use its typed schema and immutable revisions.
+Create saves a draft. Edit saves a revision without replacing active settings.
+Apply requires the owner's stopped, reconciled zero-exposure boundary. Start
+and stop control the selected owner rather than constructing another worker.
+Input preparation, registration and data checks use owned descriptors; HTTP
+callers cannot supply arbitrary filesystem paths.
 
-Manager configurations use the owner's schema and immutable revision APIs.
-Saving a revision does not change a running worker. Adopt settings only through
-the owner's stopped, reconciled zero-exposure boundary. Unsupported strategy
-runtimes remain disabled with owner reasons. Research `grid` and Manager's grid
-execution model are different components and are not joined by name alone.
+The current canonical manager families support bounded historical and
+prospective reference paper runs. Its accepted prospective Oracle source is
+specifically SOL/USD reference observations, with explicit consent for the
+Jupiter SOL/USDC target difference. The broader per-coin research matrix belongs
+to F5. A matching strategy name does not imply that the manager and F5 use the
+same execution model. Conditional quote-cycle research requires actual evidence;
+the interface does not invent a cycle to enable a button.
 
-## Forward-test profit and recording
+## Forward P&L recording and profit assessment
 
-The user selected recording **on by default**. Its versioned policy resides in
-`paper-accounting.sqlite3`, separately from native source journals. Initial
-projection can backfill existing native paper evidence and says so. Later policy
-changes apply by the native call's issuance time. Disabling recording stops new
-accounting entries, retains prior records and never erases source evidence.
+Recording defaults to on. The recording switch applies to the selected
+experiment's accounting projection, using each native call's issuance time.
+Changes create a new policy revision. Prior entries and the owner's native
+forward journal remain intact. Re-enabling recording does not fill an excluded
+period retrospectively.
 
-Each native trial is a non-overlapping virtual account. Compound its resolved
-`net_return` values in order. That return already includes modelled fees,
-slippage, borrowing and liquidation. Do not subtract these costs twice. Frozen
-F5 capital supplies an explicitly labelled paper-account basis. It is not
-reserved or shared capital, and the UI does not sum trials into an invented
-portfolio.
+The projection binds source call identity, policy revision and later settlement.
+Existing native calls are included under the initial default-on policy. Disabling
+recording excludes newly issued calls from this projection; it does not prevent
+the forward owner from recording its own calls or economics. An experiment with
+an unrecorded period cannot claim complete whole-period profit.
 
-No resolved economic outcomes means profit is unknown, including when a native
-summary initializes its equity to one. Unrecorded periods, missing economics,
-expired outcomes, changed inputs or incomplete projection suppress a whole-trial
-profit claim. Open outcomes have no invented unrealized P&L. Reference currencies
-are retained; USD values require an explicitly USD source, without assuming a
-stablecoin peg. Paper profitability under stated assumptions is not live profit
-or a calibrated probability of future profit.
+Forward P&L compounds resolved, non-overlapping calls within each independent
+virtual trial. `net_return` already includes the model's fees, slippage and
+borrowing costs. The UI does not subtract those costs a second time. Each trial's
+frozen virtual capital is an explicit display basis, not a shared funded cash
+allocation. Adding independent trial balances does not establish portfolio P&L.
 
-## Swap provider and costs
+Profit, loss and break-even labels refer to resolved recorded paper economics.
+No resolved economics means unknown, not zero profit. Missing economics,
+expired outcomes, unavailable source data or unrecorded periods also remain
+unknown. Pending calls remain visible. Unresolved positions do not receive an
+invented unrealized valuation. Reference currency is retained; USDC is not
+silently valued as USD.
 
-`swap_provider` is independent of the data source. `jupiter` can accompany
-Coinbase reference observations. New experiments freeze explicit configured
-base-fee, referral, slippage and borrowing assumptions. Base fee plus referral
-becomes the paper engine's per-side fee exactly once.
+The provider selector is separate from the market-data source. Configured
+Jupiter fees and borrow/slippage rates are modelling assumptions. They do not
+establish executable quotes, actual route charges, network fees or realized
+profit after every real execution cost.
 
-These settings change the paper economics but do not certify historical Jupiter
-spot routing. The reused F5 engine retains its documented execution model.
-Network fees, priority fees, account rent and changing routes are not invented.
-Actual Jupiter fees require a current quote for the exact token mints and size.
-See `docs/ECOSYSTEM-SWAPS.md` for the separate manual wallet interface and the
-published paid-referral minimum versus the retained 0.1% setting.
+## Oracle voters and aggregate strength
 
-## Oracle voter selection and consumers
+Choose voters per instrument from the fourteen identified cards. Save creates a
+selection revision; it does not alter strategy parameters, recorded predictions,
+resolution history or the producer's policy. Deselected cards remain observable
+and continue their existing shadow evaluation.
 
-The Oracle page selects the instrument and its enabled strategy cards. Saved
-selection is versioned per run and instrument. It changes aggregation only;
-all cards continue their prospective shadow evaluation. Empty selection, stale
-data, insufficient evidence and accuracy below policy thresholds abstain.
+The aggregate displays its direction, signed weighted vote balance, horizon,
+timestamps, policy/selection identity and contributing/excluded votes. Freshness,
+minimum resolved evidence and measured accuracy still gate every selected vote.
+The displayed percentage is agreement, not a calibrated probability of profit.
 
-The prominent percentage is the signed weighted vote balance, not profit
-probability. The existing 60% accuracy threshold and bonus after more than
-100 hits remain unchanged. Issuance, expiry, horizon, contributing/excluded
-cards and provenance remain available.
+The retained vote policy uses accuracy as weight, excludes accuracy below 60%,
+and doubles the accuracy weight only after more than 100 hits. Thus a perfect
+record at 101 hits has a 200% total vote; it is not a 200% addition. Flat votes
+contribute to the denominator. The current policy uses all resolved evidence in
+that strategy version and requires at least twenty resolutions.
 
-HTTP and current MCP consumers use the selected view. For an exact controller
-archive layout the MCP server detects its home; explicit configuration is:
+Aggregate thresholds use signed balance: Strong Buy at or above 60%, Buy at or
+above 20%, Strong Sell at or below -60%, Sell at or below -20%, and Flat between
+the inner thresholds. Missing, stale, expired, deselected or insufficient votes
+produce their explicit exclusion reasons. An empty eligible set is unavailable,
+not Flat. New selection settings never manufacture resolved evidence.
 
-```sh
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/soloracle-mcp \
-  --archive /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3 \
-  --instrument SOL/USD \
-  --control-home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1 \
-  --repo /Users/mitch/dev/solmargintrader
-```
+## Wiki, security and manual swaps
 
-Tools, resources, subscriptions and advisory veto read the same selection.
-Selection changes invalidate the resource without rewriting forecasts. Current
-standalone archives without a control binding keep their original behavior.
-An explicitly required selector fails unavailable if its adapter cannot load.
-Clients pinned to older installed server versions need the current executable.
-Veto remains advisory unless an executor demonstrably consumes it.
+The Wiki tab searches the packaged source-linked documentation snapshot. It
+includes component guides, strategy cards, architecture, lifecycle, design and
+historical plans. Each page retains its original file location, content hash and
+commit provenance when available. Historical plans are not marked delivered by
+appearing in the wiki. See
+`/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-WIKI.md`.
 
-## Wiki and locations
+The control origin binds loopback only. It validates Host and Origin, accepts no
+CORS access, bounds requests and requires a per-instance session nonce for
+mutations. Actions use UUIDs and durable receipts; reusing an ID with different
+content is rejected. Stored guides, external data and manager events are text,
+not instructions or executable HTML. No secrets or arbitrary log bodies are
+returned to the browser. Full server observability remains bounded by what the
+actual owner persists; absent manager log sinks remain unavailable.
 
-The Wiki tab compiles Oracle, ecosystem, Manager, Backtester, strategy-card and
-relevant architecture/operating guides into an installed snapshot. It searches
-full text and displays original file locations, content hashes and provenance.
-It treats source Markdown as content, never instructions to execute. Imported
-or incomplete cards are labelled and are not execution evidence.
+The manual Jupiter page uses a separate public loopback origin and a browser
+wallet. It has no privileged control session or server signing/submission API.
+The configured 10 bps referral assumption can be used in paper modelling, but
+the current Jupiter Plugin requires an explicit fee choice from 50 through 255
+bps. Under the 10 bps setting the live Plugin path remains unavailable. The UI
+does not silently increase the fee. Connecting a wallet, executable quotes and
+funded swaps remain separate live verification gates. See
+`/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-SWAPS.md`.
 
-Runtime evidence remains with its owners:
-
-- `state.json`, `runtime-settings.json`: experiment state and requested controls.
-- `control.sqlite3`: action receipts and durable child-run identities.
-- `registrations.sqlite3`: external trial identities and observations.
-- `paper-accounting.sqlite3`: recording policy and economic projection.
-- `voters.sqlite3`: immutable selection revisions.
-- `batches/<id>/batch.sqlite3`, `forward.sqlite3`: authoritative F5 results.
-- `oracle/<asset>/history.sqlite3`: observations, calls and resolutions.
-- Bot Manager's configured home: specifications, revisions and runtime journals.
-
-The API contract is packaged at `ecosystem/api/control.openapi.json` and served
-at `/api/openapi`. GET routes expose observations. `/api/actions` requires JSON,
-the exact local Origin and the in-memory `X-Sol-CSRF` nonce from `/api/session`.
-Reads and writes stay loopback-only; this is not a remotely authenticated service.
-
-## Verification
+## Verification and source locations
 
 ```sh
-python -m unittest discover -s ecosystem/tests -t .
-python -m unittest discover -s oracle/tests -t .
-ruff check ecosystem oracle scripts/bootstrap_ecosystem.py scripts/build_ecosystem_wiki.py
-node --check ecosystem/web/app.js
-node --check ecosystem/web/swap.js
-python scripts/build_ecosystem_wiki.py --check
+cd /Users/mitch/dev/solmargintrader
+/Users/mitch/.venvs/solecosystem-0.2.0/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/ecosystem/tests -t /Users/mitch/dev/solmargintrader -v
+/Users/mitch/.venvs/solecosystem-0.2.0/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/oracle/tests -t /Users/mitch/dev/solmargintrader -v
+PYTHONPATH=/Users/mitch/dev/solmargintrader/botmanager/src /Users/mitch/.venvs/solecosystem-0.2.0/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/botmanager/tests -t /Users/mitch/dev/solmargintrader/botmanager
+ruff check /Users/mitch/dev/solmargintrader/ecosystem /Users/mitch/dev/solmargintrader/oracle /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py
+node --check /Users/mitch/dev/solmargintrader/ecosystem/web/app.js
+node --check /Users/mitch/dev/solmargintrader/ecosystem/web/swap.js
+python3 /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py --check
 ```
 
-Unit and controlled-HTTP tests include restart, duplicates, origin isolation,
-credential redaction, recording gaps, cost conversion, source mutation, selected
-MCP resource notifications and no-order behavior. Real installed acceptance must
-separately check package identity, browser controls and an actual paper lifecycle.
-A synthetic profitable or losing example does not establish profitability of
-the still-open real forward trials. Manual wallet signing and funded Jupiter
-swaps require separate evidence and are not exercised by these checks.
+Tests use isolated stores, controlled source data and local HTTP servers.
+Separate installed acceptance must verify the loaded package/asset identity,
+actual action receipts and state transitions, browser behavior and retained
+evidence after restart. A simulated profit case is not evidence that a live
+market or a current real forward trial is profitable. A wiki integrity check
+does not establish owner health.
+
+| Responsibility | Source location |
+| --- | --- |
+| Durable controls and owner dispatch | `/Users/mitch/dev/solmargintrader/ecosystem/control.py` |
+| HTTP contracts and origin isolation | `/Users/mitch/dev/solmargintrader/ecosystem/web.py` and `/Users/mitch/dev/solmargintrader/ecosystem/api/control.openapi.json` |
+| Independent UI ownership and readiness | `/Users/mitch/dev/solmargintrader/ecosystem/ui_service.py` |
+| Forward accounting and recording policy | `/Users/mitch/dev/solmargintrader/ecosystem/performance.py` |
+| Voter selection and aggregate projection | `/Users/mitch/dev/solmargintrader/ecosystem/votes.py` |
+| Native owner event projection | `/Users/mitch/dev/solmargintrader/ecosystem/telemetry.py` |
+| F5 historical/forward lifecycle | `/Users/mitch/dev/solmargintrader/soltui/f5_batch.py` and `/Users/mitch/dev/solmargintrader/soltui/forwardtest.py` |
+| Manager commands and canonical strategies | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/registry.py` and `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/strategies/__init__.py` |
+| Manager Oracle input preparation | `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/input_commands.py` and `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/oracle_data.py` |
+| Wiki selection, serving and compilation | `/Users/mitch/dev/solmargintrader/ecosystem/wiki.py` and `/Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py` |

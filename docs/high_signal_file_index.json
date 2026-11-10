@@ -124,14 +124,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 769
+      "lines": 890
     },
     {
       "path": "backtester/core/types.py",
       "component": "backtester",
       "kind": "python",
       "summary": "BarWindow (the structural lookahead guard), CostConfig, RunManifest",
-      "lines": 455
+      "lines": 501
     },
     {
       "path": "backtester/core/indicators.py",
@@ -843,7 +843,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Long-only moving-average momentum paper bot; shared next-open engine with fees and slippage",
-      "lines": 83
+      "lines": 104
     },
     {
       "path": "soltui/experiments.py",

@@ -91,11 +91,13 @@ class WebTests(unittest.TestCase):
             "/../state.json",
             "/%2e%2e/state.json",
             "/web/../runner.py",
-            "/api/logs",
             "/api/order",
         ):
             with self.subTest(target=target):
                 self.assertEqual(self.body(target)[0], 404)
+
+    def test_log_reader_rejects_arbitrary_paths(self):
+        self.assertEqual(self.body("/api/logs?path=/tmp/private")[0], 400)
 
     def test_rejects_rebinding_cross_origin_and_cross_site(self):
         for headers in (

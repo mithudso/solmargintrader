@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
@@ -11,7 +12,105 @@ from pathlib import Path
 from .engine import OracleEngine, number
 from .feeds import validate_instrument
 from .store import Store, canonical
-from .strategies import StrategySet
+from .strategies import STRATEGY_IDS, StrategySet
+
+# This is the stored schema of the original fourteen cards, not constructors or
+# current defaults. Inspection must never execute an archived strategy.
+PARAMETER_TYPES = {
+    "ma_crossover": {"fast": int, "slow": int, "short_when_below": bool},
+    "rsi": {"period": int, "oversold": float, "exit_level": float},
+    "breakout": {"entry_lookback": int, "exit_lookback": int},
+    "macd": {"fast": int, "slow": int, "signal": int},
+    "bb_reversion": {"window": int, "num_std": float},
+    "bb_breakout": {
+        "window": int,
+        "num_std": float,
+        "squeeze_lookback": int,
+        "squeeze_quantile": float,
+    },
+    "keltner": {"ema_span": int, "atr_period": int, "mult": float},
+    "ts_momentum": {"window": int, "threshold": float},
+    "stochastic": {
+        "k_period": int,
+        "d_period": int,
+        "oversold": float,
+        "exit_level": float,
+    },
+    "zscore": {"window": int, "entry_z": float, "exit_z": float},
+    "sma_regime": {"window": int},
+    "ema_crossover": {"fast": int, "slow": int},
+    "ppo": {"fast": int, "slow": int, "signal": int},
+    "ma_ribbon": {"windows": int, "base": int},
+}
+
+
+def _recorded_catalog(value) -> list[dict]:
+    if type(value) is not list or len(value) != len(STRATEGY_IDS):
+        raise ValueError("oracle_recorded_catalog_invalid")
+    seen = set()
+    for row in value:
+        if type(row) is not dict or set(row) != {
+            "strategy_id",
+            "version",
+            "parameters",
+        }:
+            raise ValueError("oracle_recorded_catalog_invalid")
+        key, version, parameters = row["strategy_id"], row["version"], row["parameters"]
+        if (
+            type(key) is not str
+            or key not in STRATEGY_IDS
+            or key in seen
+            or type(version) is not str
+            or not re.fullmatch(r"[0-9a-f]{64}", version)
+            or type(parameters) is not dict
+            or set(parameters) != set(PARAMETER_TYPES[key])
+        ):
+            raise ValueError("oracle_recorded_catalog_invalid")
+        seen.add(key)
+        for name, expected in PARAMETER_TYPES[key].items():
+            parameter = parameters[name]
+            if expected is float:
+                valid = number(parameter) and abs(parameter) <= 1_000_000
+            elif expected is int:
+                valid = (
+                    type(parameter) is int
+                    and (0 if name == "squeeze_lookback" else 1)
+                    <= parameter
+                    <= 1_000_000
+                )
+            else:
+                valid = type(parameter) is bool
+            if not valid:
+                raise ValueError("oracle_recorded_parameters_invalid")
+        if (
+            ("fast" in parameters and parameters["fast"] >= parameters["slow"])
+            or ("num_std" in parameters and parameters["num_std"] <= 0)
+            or ("mult" in parameters and parameters["mult"] <= 0)
+            or (
+                "squeeze_quantile" in parameters
+                and not 0 <= parameters["squeeze_quantile"] <= 1
+            )
+            or (
+                "oversold" in parameters
+                and not 0 <= parameters["oversold"] < parameters["exit_level"] <= 100
+            )
+            or (
+                "entry_z" in parameters
+                and parameters["entry_z"] >= parameters["exit_z"]
+            )
+        ):
+            raise ValueError("oracle_recorded_parameters_invalid")
+    return json.loads(canonical(value))
+
+
+class RecordedStrategySet:
+    """Metadata only: deliberately has no predict or strategy constructors."""
+
+    def __init__(self, catalog: list[dict]) -> None:
+        self._catalog = catalog
+
+    def catalog(self) -> list[dict]:
+        return json.loads(canonical(self._catalog))
 
 
 class ReadOnlyStore(Store):
@@ -25,6 +124,35 @@ class ReadOnlyStore(Store):
                 or db.execute("PRAGMA application_id").fetchone()[0] != 0x4F52434C
             ):
                 raise ValueError("oracle_archive_incompatible")
+            expected_columns = {
+                "metadata": ("key", "body"),
+                "events": ("sequence", "kind", "event_key", "body"),
+                "observations": ("event_id", "observed", "received", "price", "body"),
+                "forecasts": (
+                    "id",
+                    "strategy",
+                    "version",
+                    "issued",
+                    "target",
+                    "direction",
+                    "reference",
+                    "body",
+                ),
+                "resolutions": ("forecast", "outcome", "hit", "resolved_at", "body"),
+            }
+            for table, columns in expected_columns.items():
+                kind = db.execute(
+                    "SELECT type FROM sqlite_master WHERE name=?", (table,)
+                ).fetchone()
+                if (
+                    kind is None
+                    or kind[0] != "table"
+                    or tuple(
+                        row[1] for row in db.execute(f"PRAGMA table_info({table})")
+                    )
+                    != columns
+                ):
+                    raise ValueError("oracle_archive_incompatible")
 
     @contextmanager
     def connection(self):
@@ -46,7 +174,11 @@ class ReadOnlyOracle(OracleEngine):
     card identity refuses rather than grading old evidence under new code.
     """
 
-    def __init__(self, path: str | Path, *, instrument: str) -> None:
+    def __init__(
+        self, path: str | Path, *, instrument: str, archived_versions: bool = False
+    ) -> None:
+        if type(archived_versions) is not bool:
+            raise ValueError("invalid_archived_version_mode")
         self.store = ReadOnlyStore(path)
         self.instrument = validate_instrument(instrument)
         with self.store.connection() as db:
@@ -76,15 +208,93 @@ class ReadOnlyOracle(OracleEngine):
         for name in ("engine.py", "store.py", "strategies.py", "voting.py"):
             implementation.update(name.encode())
             implementation.update(Path(__file__).with_name(name).read_bytes())
-        self.strategy_set = StrategySet()
-        expected = [
-            {key: item[key] for key in ("strategy_id", "version", "parameters")}
-            for item in self.strategies()
-        ]
-        if (
-            policy.get("implementation_sha256") != implementation.hexdigest()
-            or policy.get("strategies") != expected
-        ):
+        if policy.get("implementation_sha256") != implementation.hexdigest():
             raise ValueError("oracle_policy_implementation_unavailable")
         self.policy = policy
         self.policy_hash = hashlib.sha256(canonical(policy).encode()).hexdigest()
+        self.archived_versions = archived_versions
+        if archived_versions:
+            if set(policy) != {
+                "schema_version",
+                "instrument",
+                "horizon_seconds",
+                "implementation_sha256",
+                "bar_seconds",
+                "max_age",
+                "minimum_resolved",
+                "resolution_tolerance",
+                "flat_band_bps",
+                "window",
+                "strategies",
+            }:
+                raise ValueError("oracle_recorded_policy_invalid")
+            self.strategy_set = RecordedStrategySet(
+                _recorded_catalog(policy.get("strategies"))
+            )
+            if row[0] != canonical(policy):
+                raise ValueError("oracle_recorded_policy_invalid")
+            self._verify_recorded_policy()
+        else:
+            self.strategy_set = StrategySet()
+            expected = [
+                {key: item[key] for key in ("strategy_id", "version", "parameters")}
+                for item in self.strategies()
+            ]
+            if policy.get("strategies") != expected:
+                raise ValueError("oracle_policy_implementation_unavailable")
+
+    def _verify_recorded_policy(self) -> None:
+        """Bind stored forecasts to their policy SHA and relational identities."""
+        with self.store.connection() as db:
+            if db.execute(
+                "SELECT 1 FROM forecasts WHERE length(body)>128000 OR NOT json_valid(body) LIMIT 1"
+            ).fetchone():
+                raise ValueError("oracle_recorded_forecast_invalid")
+            recorded = self.strategy_set.catalog()
+            parameters = [
+                value
+                for row in recorded
+                for value in (
+                    row["strategy_id"],
+                    row["version"],
+                    canonical(row["parameters"]),
+                )
+            ]
+            # A single relational pass validates all cards. No history is loaded
+            # into Python and every mismatch aborts before any vote is exposed.
+            placeholders = ",".join("(?,?,?)" for _ in recorded)
+            if db.execute(
+                f"""WITH recorded(strategy,version,parameters) AS (VALUES {placeholders})
+                SELECT 1 FROM forecasts f LEFT JOIN recorded r ON f.strategy=r.strategy WHERE
+                r.strategy IS NULL OR f.version IS NOT r.version
+                OR json_extract(f.body,'$.policy_hash') IS NOT ?
+                OR json_extract(f.body,'$.instrument') IS NOT ?
+                OR json_extract(f.body,'$.strategy_id') IS NOT f.strategy
+                OR json_extract(f.body,'$.version') IS NOT f.version
+                OR json_extract(f.body,'$.parameters') IS NOT r.parameters
+                OR json_extract(f.body,'$.issued_at') IS NOT f.issued
+                OR json_extract(f.body,'$.expires_at') IS NOT f.target
+                OR json_extract(f.body,'$.direction') IS NOT f.direction LIMIT 1""",
+                [*parameters, self.policy_hash, self.instrument],
+            ).fetchone():
+                raise ValueError("oracle_recorded_policy_binding_invalid")
+
+    def _recorded_provenance(self) -> dict:
+        return {
+            "legacy_policy": self.archived_versions,
+            "policy_origin": "recorded_archive"
+            if self.archived_versions
+            else "current_verified",
+            "recorded_versions": {
+                row["strategy_id"]: row["version"] for row in self.strategies()
+            },
+            "strategy_code_compatibility": "not_asserted"
+            if self.archived_versions
+            else "current_verified",
+        }
+
+    def predictions(self, now: float | None = None) -> dict:
+        return {**super().predictions(now), **self._recorded_provenance()}
+
+    def status(self) -> dict:
+        return {**super().status(), **self._recorded_provenance()}

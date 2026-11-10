@@ -103,6 +103,7 @@ def make_server(
     from .control import ControlPlane
 
     controls = ControlPlane(home, manager_home)
+    controls.register_legacy()
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.0"
