@@ -1,7 +1,7 @@
 # M4 source recovery report
 
-Version: 1.0.0
-Delta: recovered checkpoint e24ad7ca343a07910d04f3c3471494fcba763c75 onto current master integration; tightened receipt participation and sandbox execution.
+Version: 1.0.1
+Delta: 1.0.0 -> 1.0.1; normalized closed-pipe deadline failures after independent P2 review. Initial recovery: recovered checkpoint e24ad7ca343a07910d04f3c3471494fcba763c75 onto current master integration; tightened receipt participation and sandbox execution.
 
 ## Scope and changes
 
@@ -32,3 +32,9 @@ Real current macOS proof: available=true; absolute resolver/repository reads den
 ## Remaining delivery gates
 
 Controller must complete fresh independent review, final integrated manager test run, regular candidate installation from reviewed source, outside-checkout public setup/register/backtest/research/owner and OS-denial acceptance, asset/source parity, final-head CI and delivery. This report establishes source readiness only. No production home or actual research history was changed; no environment was installed or mutated by this worker.
+
+## Independent review P2 correction
+
+The independent review reproduced subprocess.TimeoutExpired when a child closed both output pipes but remained alive past bounded_process's final wait. The helper now normalizes this exception to ValueError("process deadline exceeded") inside the existing cleanup boundary. OwnerClient.call therefore retains its structured research_unavailable refusal path. Process-group termination, reaping and pipe closure remain unchanged.
+
+The real subprocess regression closes file descriptors 1 and 2, sleeps past a 0.1-second deadline, asserts the normalized ValueError, checks closed pipes and proves the child was reaped with os.waitpid raising ChildProcessError. Focused tests.test_blind plus tests.test_research completed: 18 tests, exit 0. Changed-file Ruff and whitespace checks passed. No broader suites, installations or production state changes were performed for this narrow correction.

@@ -107,6 +107,10 @@ def bounded_process(argv, payload, *, cwd, env, timeout=15, limit=MAX_PACKET):
                 bytes(streams[process.stdout]),
                 bytes(streams[process.stderr]),
             )
+        except subprocess.TimeoutExpired:
+            # EOF on both pipes does not establish child exit. Preserve the
+            # same deadline refusal boundary when its final wait times out.
+            raise ValueError("process deadline exceeded") from None
         finally:
             if process.poll() is None:
                 import signal
