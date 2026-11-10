@@ -1,0 +1,15 @@
+version: 1
+name: botmanager-jupiter-swap-v1
+slug: botmanager-jupiter-swap-v1
+protocol: http
+origin: api.jup.ag
+interceptRequests: true
+port: 4500
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true
+generatedFrom:
+  type: collection
+  mode: static
+  path: ../../collections/botmanager-swap-v1.postman_collection.json

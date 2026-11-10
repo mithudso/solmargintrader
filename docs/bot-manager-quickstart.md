@@ -1,175 +1,112 @@
-# Solbot: the working commands and what they actually do
+# Solbot: create, edit, run and inspect a paper bot
 
-Version: 1.0.1
-Delta: Add immutable editing, history, schema inspection and explicit safe application in manager 0.3.0.
-Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine.
+Version: 1.1.0
+Delta: Add the milestone 3 shared-archive workflow and four canonical reference strategies; retain the original demonstration as historical evidence.
 
-`solbot` is a command-line program. It does not open a menu. Version 0.2.1 prints
-help when run without arguments. Version 0.3.0 adds editing. Ordinary commands print JSON; `ok: true` means
-the command succeeded, not that a trading worker is alive.
+`/Users/mitch/.local/bin/solbot` is a command-line program. Bare invocation prints help. Ordinary commands return JSON. `ok: true` confirms that command; a start receipt alone does not establish a running worker.
 
-**What works today:** saved bot drafts with defaults, guarded existing-owner
-controls when compatible, immutable revision editing/history, explicit safe application,
-and manager-owned grid replay against recorded Coinbase
-data. **What is unfinished:** new DCA/trend/momentum/arbitrage
-workers, real-time Jupiter paper trading, blind optimization, learning and live trading.
-The large handoff describes the architecture and roadmap; it is not evidence that
-those later features have been delivered.
+The manager supports saved defaults, immutable editing, independent Grid, DCA, Trend and Momentum reference-paper accounts, historical replay and prospective observations from the existing shared Oracle archive. It also diagnoses conditional Solana quote cycles. Jupiter execution certification, blind selection, learning, broader diagnostics and browser/executor integration have separate implementation and acceptance gates in the maintained handoff.
 
-## The bot already created and run for you
+## Start a new paper bot watching the existing stream
 
-The bot is named `session-demo-grid`, UUID `ca28be71-3b24-4473-874a-8ac97614edb8`.
-It lives in the default `/Users/mitch/.config/solbot` home. The demonstration:
+This explicit source is /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3. Its observations come from Coinbase SOL/USD. The bot specification still targets Jupiter SOL/USDC; this reference test cannot establish executable Jupiter prices or costs. `--reference` records your consent to that distinction.
 
-1. Created the grid with `range_pct=10`; all other settings used defaults.
-2. Registered the actual recorded input described by
-   `/Users/mitch/.config/solbot/session-demo-input.json`.
-3. Requested start, then launched an owned foreground `solbot daemon`.
-4. Observed its worker complete both bars and reach `waiting/reference_input_exhausted`.
-5. Requested stop, observed `stopped` and a released worker lock, then closed that owned daemon.
-
-The result was 2/2 bars, zero fills, zero exposure and zero net P&L on 1,000 USD of
-virtual capital. Both process locks are released. This proves the workflow ran;
-it does not establish a profitable strategy or a real-time trading bot. The input
-is a historical Coinbase SOL-USD range from 2026-11-08 08:21–08:23 UTC, with explicit
-illustrative costs. No Jupiter order, key, new recorder or persistent service was used.
-
-Inspect the retained bot and results now:
+Create a draft and prepare its input. Use a new unique name:
 
 ```sh
-/Users/mitch/.local/bin/solbot list
+/Users/mitch/.local/bin/solbot create grid --name paper-grid
+/Users/mitch/.local/bin/solbot prepare-input paper-grid --archive shared-sol-usd --reference --output /Users/mitch/.config/solbot/paper-grid-input.json
+/Users/mitch/.local/bin/solbot data-check paper-grid --descriptor /Users/mitch/.config/solbot/paper-grid-input.json
+/Users/mitch/.local/bin/solbot register-input paper-grid --descriptor /Users/mitch/.config/solbot/paper-grid-input.json
+```
+
+Creation uses defaults. Preparation fixes the source policy, activation time, watermark, capital, currency and versioned cost assumptions. It starts no producer, worker or service. Existing descriptors are never overwritten. Inspect the `data-check` output: a healthy process cannot compensate for absent or stale input.
+
+In terminal 1, request start and run the supervisor:
+
+```sh
+/Users/mitch/.local/bin/solbot start paper-grid
+/Users/mitch/.local/bin/solbot daemon
+```
+
+The foreground daemon owns the workers and stays open. One supervisor manages the running requests in this home. If a compatible manager service already owns the home, use its status instead of launching another supervisor. `start` alone saves intent; it does not keep a short-lived CLI process running.
+
+In terminal 2, inspect progress, then stop:
+
+```sh
+/Users/mitch/.local/bin/solbot status paper-grid --why
+/Users/mitch/.local/bin/solbot events paper-grid --limit 100
+/Users/mitch/.local/bin/solbot stop paper-grid
+/Users/mitch/.local/bin/solbot status paper-grid --why
+```
+
+Expect stopped intent followed by observed stopped state and released worker ownership. Stop retains simulated positions and evidence; it does not sell them. After stopping the bots you started, press Ctrl-C in terminal 1 to close that foreground daemon. A daemon shutdown does not erase saved requests or journals.
+
+## What the new run waits for
+
+Prospective evidence starts after the frozen activation boundary. It excludes the partial activation minute. Each completed minute requires observed edges and sufficiently frequent samples. Warmup and a no-trade decision can be valid results.
+
+Status separates process heartbeat, source age, evaluation progress and decision. Missing, stale, gapped or changed-policy input holds entries. Catch-up is labelled delayed replay. The existing producer owns acquisition; the manager does not start another recorder to clear a blocker.
+
+This first prospective release has an explicit limit of 2,048 bars and 245,760 accepted samples per account. At the limit it holds with `resource_limit`, preserving inventory and cursor. Longer continuing observation belongs to the later learning milestone. Passing a fixture does not establish profitable or indefinite autonomous operation.
+
+## Change only the values you want
+
+All fields have defaults or an explicit resolver. Creation and editing accept only supplied changes:
+
+```sh
+/Users/mitch/.local/bin/solbot edit paper-grid --set range_pct=20
+/Users/mitch/.local/bin/solbot config paper-grid --effective
+/Users/mitch/.local/bin/solbot history paper-grid
+/Users/mitch/.local/bin/solbot schema grid
+/Users/mitch/.local/bin/solbot status paper-grid --why
+```
+
+Editing keeps the UUID, appends a saved revision and preserves unspecified values and manual pins. It never changes an active worker. Status shows saved versus active revision, pending changes and adoption blockers. A UI or concurrent writer should supply `--expected-revision N` from the version it inspected. An optional canonical UUID `--request-id` identifies a durable mutation receipt.
+
+To adopt a staged revision explicitly:
+
+```sh
+/Users/mitch/.local/bin/solbot stop paper-grid
+/Users/mitch/.local/bin/solbot status paper-grid --why
+/Users/mitch/.local/bin/solbot apply paper-grid
+/Users/mitch/.local/bin/solbot history paper-grid
+```
+
+Application requires a verified stopped, owner-released, zero-exposure, reconciled boundary and compatible input. It starts no worker. Exposed or uncertain runs refuse without deleting lots. The complete old run remains archived under its original configuration and evidence. A new prospective account needs a freshly prepared descriptor and explicit activation; pass that new path with `apply --descriptor` when required. Do not edit hashes, reset cursors or delete state to clear a refusal.
+
+## Run another strategy or another independent bot
+
+Use `dca`, `trend` or `momentum` instead of `grid`, then prepare and register a separate descriptor for the new name. Each specification has its own UUID, virtual account and runtime. Bots can share one producer without sharing positions.
+
+```sh
+/Users/mitch/.local/bin/solbot create trend --name paper-trend
+/Users/mitch/.local/bin/solbot prepare-input paper-trend --archive shared-sol-usd --reference --output /Users/mitch/.config/solbot/paper-trend-input.json
+/Users/mitch/.local/bin/solbot register-input paper-trend --descriptor /Users/mitch/.config/solbot/paper-trend-input.json
+/Users/mitch/.local/bin/solbot start paper-trend
+/Users/mitch/.local/bin/solbot status paper-trend --why
+```
+
+The existing supervisor observes the new request. The current release admits at most four desired-running bots; an extra start reports a capacity blocker. Later load/queue work must prove any broader capacity. Independent virtual capital is not reserved wallet money and must not be summed as a funded portfolio.
+
+Arbitrage currently supports explicit directed-quote cycle diagnosis, with exact amounts, timing and cost assumptions. It has no autonomous live cycle worker. Council remains externally owned. Use `help` and `schema` for actual capabilities rather than assuming a strategy label enables execution.
+
+## The original bot already created and run for you
+
+`session-demo-grid`, UUID ca28be71-3b24-4473-874a-8ac97614edb8, remains in /Users/mitch/.config/solbot. Its actual historical demonstration consumed two recorded bars, reached the end of its input, then stopped and released both process locks. It produced zero fills, exposure and net P&L on 1,000 virtual USD.
+
+Its unchanged recording covers 2026-11-08 08:21–08:23 UTC. The descriptor is /Users/mitch/.config/solbot/session-demo-input.json and command receipt is /Users/mitch/.config/solbot/session-demo-receipt.json. It is retained historical evidence; upgrading a simulator does not relabel it as a new live feed or restart it on changed economics.
+
+```sh
 /Users/mitch/.local/bin/solbot config session-demo-grid --effective
 /Users/mitch/.local/bin/solbot status session-demo-grid --why
-/Users/mitch/.local/bin/solbot events session-demo-grid --limit 100
+/Users/mitch/.local/bin/solbot history session-demo-grid
 ```
 
-The full executed-command receipt is
-`/Users/mitch/.config/solbot/session-demo-receipt.json`.
+A read leaves its old schema, identity and evidence unchanged. Follow the new-bot workflow above for a current-engine observation account.
 
-## Run that bot again
+## Instructions and maintenance
 
-In terminal 1:
+The complete operating, architecture, source ownership, recovery and release guide is /Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md. The Oracle UI contract is /Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md. The approved remaining milestone order is /Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-09-bot-manager.md.
 
-```sh
-/Users/mitch/.local/bin/solbot start session-demo-grid
-/Users/mitch/.local/bin/solbot daemon
-```
-
-`start` saves the request. `daemon` is the supervisor that actually owns the worker;
-it stays in the foreground. A start request alone is not a running bot. This saved
-run has already consumed its immutable input, so it will remain observable at EOF;
-restarting does not reset its cursor or repeat trades.
-
-In terminal 2, inspect it and stop it:
-
-```sh
-/Users/mitch/.local/bin/solbot status session-demo-grid --why
-/Users/mitch/.local/bin/solbot stop session-demo-grid
-/Users/mitch/.local/bin/solbot status session-demo-grid --why
-```
-
-Expected: saved stopped intent, then observed stopped state and worker lock false.
-After stopping, press Ctrl-C in terminal 1 to close the foreground supervisor.
-Stopping retains simulated lots/exposure; it does not sell positions. No automatic
-service was installed. `service install` is an explicit optional later operation.
-
-## Create a different grid with only the values you change
-
-Use a new name. This creates a draft and does not start it:
-
-```sh
-/Users/mitch/.local/bin/solbot create grid --name my-grid --set range_pct=25
-/Users/mitch/.local/bin/solbot config my-grid --effective
-```
-
-Defaults include seven geometric rungs, 1,000 virtual capital, one-minute bars,
-paper mode and disarmed state. `config` shows the exact saved values and where
-each came from. Use `--set` on creation or `edit` to supply only changed values.
-Never edit the SQLite body or configuration hashes by hand.
-
-To run the new grid against the already prepared demonstration input:
-
-```sh
-/Users/mitch/.local/bin/solbot register-input my-grid --descriptor /Users/mitch/.config/solbot/session-demo-input.json
-/Users/mitch/.local/bin/solbot start my-grid
-/Users/mitch/.local/bin/solbot daemon
-```
-
-Inspect and stop `my-grid` from another terminal using the same status/stop commands.
-The descriptor's virtual capital must match the draft's saved capital. This
-particular recording remains just two historical bars. New inputs require a new
-compatible explicit descriptor; the current manager cannot append a live feed to
-this run or reset it silently. A separately named bot has its own virtual account.
-
-## Edit settings and inspect the result
-
-After creating `my-grid`, change only the range:
-
-```sh
-/Users/mitch/.local/bin/solbot edit my-grid --set range_pct=20
-/Users/mitch/.local/bin/solbot config my-grid --effective
-/Users/mitch/.local/bin/solbot history my-grid
-/Users/mitch/.local/bin/solbot status my-grid --why
-/Users/mitch/.local/bin/solbot schema grid
-```
-
-The bot keeps its UUID. An accepted change appends a revision and preserves every
-other setting and manual pin. `history --revision 1` reads the original saved body.
-`schema` describes actual fields, defaults, constraints and command arguments for
-an editor. Saving an edit starts no worker and changes no active worker's settings.
-Status separates `saved_config_revision` from `active_config_revision` and reports
-`pending_changes` plus `adoption_blockers`.
-
-For a UI or concurrent writer, add `--expected-revision N` using the revision that
-was inspected. A stale revision refuses the change atomically. A canonical UUID
-`--request-id` identifies a durable edit/application receipt; repeat the same
-request only to inspect its original accepted result. Repeating it never reapplies
-the change to a newer revision.
-
-## Explicitly apply a staged revision
-
-A draft with no registered runtime already uses its saved settings. An existing
-runtime stays on its pinned revision until an explicit safe application:
-
-```sh
-/Users/mitch/.local/bin/solbot stop my-grid
-/Users/mitch/.local/bin/solbot status my-grid --why
-/Users/mitch/.local/bin/solbot apply my-grid
-/Users/mitch/.local/bin/solbot history my-grid
-```
-
-Application requires observed owner release, stopped intent, zero exposure,
-resolved state and compatible recorded input. It refuses while a worker holds
-the lock, while lots remain, or while data/accounting is uncertain. Stop does
-not close lots. Inspect the reported blocker; do not delete state to clear it.
-If the saved capital or input requirements changed, provide a compatible explicit
-`--descriptor` rather than relabelling the old input.
-
-Successful application archives the complete prior run and creates a separate
-stopped runtime on the saved revision. It starts no worker. The old cursor,
-fills, checkpoints, events and receipts remain attributable to the old run.
-Applying an already active revision is a no-op and cannot reset its cursor or
-capital. Start the new run explicitly when desired, using the established
-`start` plus foreground `daemon` workflow above.
-
-## What this session actually built
-
-- Milestone 1: defaults and immutable saved specifications; CLI creation/inspection;
-  truthful status; owner discovery and guarded legacy start/stop protocols.
-- Milestone 2: installed shared simulator package; independent grid workers;
-  persistent supervisor, cursor/fills/checkpoints and receipts; crash recovery;
-  explicit macOS service lifecycle; bounded recorded input and reference P&L.
-- Startup repair: bare invocation now gives usable instructions; the one actual
-  demonstration above leaves a bot and evidence you can inspect.
-- Editing: saved revisions, protected pins, exact history, machine-readable schema
-  and receipt-backed application at a verified stopped zero-exposure boundary.
-
-The complete original request is not finished. The next planned milestone adds
-other strategy runtimes and shared prospective/Solana data. The approved later
-milestones cover blind research, diagnostics, learning, browser integration and
-guarded execution. The separately delivered Oracle component is preserved; its
-prospective feeds are not connected to the manager's grid worker yet.
-See the full operations/source-maintenance handoff at
-`/Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md`, or its remote copy:
-
-https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-handoff.md
+The stable regular installation lives in /Users/mitch/.venvs/solbot. Source lives in /Users/mitch/dev/solmargintrader/botmanager. Installing source does not start a service. Upgrade compatible first-party packages together and verify the loaded code before restarting an affected owner. Preserve frozen experiment environments and take a consistent backup before a state migration.

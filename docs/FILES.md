@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `c48e2e7b` (2026-11-10T04:12:29+00:00). 2906 tracked files, 63.7 MB.
+**Generated** from `index/INDEX.json` at commit `bfc6d2f4` (2026-11-10T05:31:35+00:00). 2924 tracked files, 63.9 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2541 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 418/476 Python modules and 60/104 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (162 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2552 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 427/488 Python modules and 61/105 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (163 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -36,7 +36,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`(root)`](#root) — 23 files
 - [`docs`](#docs) — 116 files
 - [`index`](#index) — 7 files
-- [`backtester`](#backtester) — 1927 files
+- [`backtester`](#backtester) — 1928 files
 - [`research`](#research) — 206 files
 - [`extension`](#extension) — 117 files
 - [`soltui`](#soltui) — 169 files
@@ -46,13 +46,14 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
-- [`botmanager`](#botmanager) — 38 files
+- [`botmanager`](#botmanager) — 47 files
 - [`ecosystem`](#ecosystem) — 26 files
 - [`executor`](#executor) — 44 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 18 files
-- [`oracle`](#oracle) — 23 files
+- [`oracle`](#oracle) — 25 files
+- [`postman`](#postman) — 6 files
 - [`scripts`](#scripts) — 15 files
 - [`skills`](#skills) — 67 files
 - [`tools`](#tools) — 3 files
@@ -116,7 +117,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 207 lines · 15,897 B · description: **curated**
+`doc` · 207 lines · 15,907 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -140,7 +141,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `GEMINI.md`
 
-`doc` · 64 lines · 3,496 B · description: **extracted**
+`doc` · 64 lines · 3,497 B · description: **extracted**
 
 **Purpose.** Agent instructions for this repository live in [CLAUDE.md](CLAUDE.md). Read that file first — it is the single source of truth, and this file only points at it. Save requests in `prompts.md` and versioned continuation records in `memory.md`, as
 
@@ -164,7 +165,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 150 lines · 9,806 B · description: **curated**
+`doc` · 151 lines · 9,999 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -212,9 +213,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1269 lines · 243,738 B · description: **extracted**
+`doc` · 1315 lines · 252,470 B · description: **extracted**
 
-**Purpose.** Version: 356 Delta: v355 to v356; record accepted INT1/INT2 fixes before refreshed installation and final-head checks. Delta: concurrent histories to v355; preserve editing and PR187 Basic Memory records without changing application source.
+**Purpose.** Version: 362 Delta: v361 to v362; record accepted installed repair and final milestone3 delivery preparation. Delta: v360 to v361; preserve actual installed status blocker and second focused fix round.
 
 **Use.** Read it.
 
@@ -228,9 +229,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1559 lines · 90,562 B · description: **extracted**
+`doc` · 1568 lines · 90,983 B · description: **extracted**
 
-**Purpose.** Version: 175 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution. Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
+**Purpose.** Version: 176 Delta: v175 to v176; preserve the status question during all-remaining-milestones execution. Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 
 **Use.** Read it.
 
@@ -268,7 +269,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 189 lines · 12,375 B · description: **extracted**
+`doc` · 189 lines · 12,376 B · description: **extracted**
 
 **Purpose.** Eight components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
 
@@ -324,7 +325,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/DEVELOPMENT.md`
 
-`doc` · 200 lines · 9,670 B · description: **extracted**
+`doc` · 200 lines · 9,736 B · description: **extracted**
 
 **Purpose.** Setup, the commands you will actually use, and the environment each component needs. Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual and optional macOS packaging dependencies. Liquidity has a separate web3/httpx stack.
 
@@ -332,7 +333,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ECOSYSTEM-BOOTSTRAP.md`
 
-`doc` · 277 lines · 16,076 B · description: **extracted**
+`doc` · 278 lines · 16,193 B · description: **extracted**
 
 **Purpose.** One script installs the headless components into a dedicated environment, checks their installed interfaces, acquires history, backtests the frozen strategy/coin matrix and automatically hands usable results to prospective
 
@@ -348,7 +349,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 28454 lines · 1,457,981 B · description: **extracted**
+`doc` · 28454 lines · 1,458,072 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -420,9 +421,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 256 lines · 20,194 B · description: **extracted**
+`doc` · 256 lines · 20,218 B · description: **extracted**
 
-**Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install both regular local projects into an isolated Python 3.13 environment, then run from the repository root:
+**Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install the four regular local projects into an isolated Python 3.13 environment, then run from the repository root:
 
 **Use.** Read it.
 
@@ -484,7 +485,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-handoff.md`
 
-`doc` · 726 lines · 70,957 B · description: **extracted**
+`doc` · 774 lines · 81,622 B · description: **extracted**
 
 **Purpose.** Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes. The standalone application is installed as `solbot`.
 
@@ -508,17 +509,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-oracle-interface.md`
 
-`doc` · 218 lines · 14,931 B · description: **extracted**
+`doc` · 248 lines · 20,466 B · description: **extracted**
 
-**Purpose.** Version: 0.1.2 Delta: Expose registry-derived global arguments and explicit legacy event-reuse continuity metadata. Delta: Integrate PR185 external registrations, append-only runtime schema 4 and current selected Oracle source.
+**Purpose.** Version: 0.2.0 Delta: Add canonical four-family prospective reference operation and strict direct-route quote evidence. Delta: Integrated editing release delivered through PR186; 50 installed checks and 167 source files/assets verified.
 
 **Use.** Read it.
 
 #### `docs/bot-manager-quickstart.md`
 
-`doc` · 176 lines · 8,563 B · description: **extracted**
+`doc` · 113 lines · 8,833 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: Add immutable editing, history, schema inspection and explicit safe application in manager 0.3.0. Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine.
+**Purpose.** Version: 1.1.0 Delta: Add the milestone 3 shared-archive workflow and four canonical reference strategies; retain the original demonstration as historical evidence. The manager supports saved defaults, immutable editing, independent Grid, DCA, Trend and Momentum reference-paper accounts, historical replay and prospective observations from the existing shared Oracle archive.
 
 **Use.** Read it.
 
@@ -1142,9 +1143,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/superpowers/plans/2026-11-09-bot-manager.md`
 
-`doc` · 180 lines · 24,655 B · description: **extracted**
+`doc` · 183 lines · 25,384 B · description: **extracted**
 
-**Purpose.** Version: 1.0.4 Delta: v1.0.3 to v1.0.4; add owner-requested revision editing before milestone3, record delivered milestone2 and preserve the explicit all-remaining-milestones scope. Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
+**Purpose.** Version: 1.0.5 Delta: v1.0.4 to v1.0.5; record delivered editing and verified M3 source/installed behavior with explicit remaining venue gates. Delta: v1.0.3 to v1.0.4; add owner-requested revision editing before milestone3, record delivered milestone2 and preserve the explicit all-remaining-milestones scope.
 
 **Use.** Read it.
 
@@ -1298,7 +1299,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 The simulation engine and everything that supports it. Never gains live-trading capability, never touches the network, and costs are never optional. `core/` is the engine; `strategy_cards/` are the specs; `tests/` is the acceptance suite.
 
-1927 files.
+1928 files.
 
 #### `backtester/.gitignore`
 
@@ -1480,11 +1481,11 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/engine.py`
 
-`code-python` · 770 lines · 30,728 B · description: **curated**
+`code-python` · 891 lines · 33,261 B · description: **curated**
 
 **Purpose.** The event loop: maps a strategy's target exposure to fills, applies costs exactly once, and marks the book every bar. `fill_delay=1` is what keeps a signal at bar t from being filled at bar t.
 
-**Contents.** Defines `class Strategy`, `class EngineConfig`, `class BacktestResult`, `class _Book`, `_resolve_target()`, `run_backtest()`, `_liquidate()`, `_walk_fine_bar()`, `_apply_target()`.
+**Contents.** Defines `class Strategy`, `class EngineConfig`, `class AccountState`, `class BacktestResult`, `class _Book`, `_resolve_target()`, `run_backtest()`, `_liquidate()`, `_walk_fine_bar()`, `_apply_target()`.
 
 **Use.** `from backtester.core.engine import run_backtest, EngineConfig`. Every reported figure in this repo comes through here.
 
@@ -1700,7 +1701,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/core/types.py`
 
-`code-python` · 456 lines · 17,424 B · description: **extracted**
+`code-python` · 502 lines · 18,143 B · description: **extracted**
 
 **Purpose.** Core value types for the backtester, including the look-ahead guard.
 
@@ -20374,6 +20375,16 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Use.** `python3 -m pytest backtester/tests/test_kucoin_history.py -q`
 
+#### `backtester/tests/test_open_prefix.py`
+
+`test` · 81 lines · 2,688 B · description: **extracted**
+
+**Purpose.** Streaming prefixes retain economics instead of undoing a terminal trade.
+
+**Contents.** Defines `bars()`, `class OpenPrefixTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest backtester/tests/test_open_prefix.py -q`
+
 #### `backtester/tests/test_pairs.py`
 
 `test` · 204 lines · 9,082 B · description: **extracted**
@@ -24244,7 +24255,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 #### `soltui/trend.py`
 
-`code-python` · 84 lines · 3,463 B · description: **extracted**
+`code-python` · 105 lines · 3,646 B · description: **extracted**
 
 **Purpose.** Long-only moving-average momentum for the paper Bots workbench. Decisions use completed closes. The shared engine fills at the next open, charges fees and slippage, and liquidates at the sample's final close for comparison.
 
@@ -25252,7 +25263,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/copilot-instructions.md`
 
-`ci` · 93 lines · 5,126 B · description: **extracted**
+`ci` · 93 lines · 5,127 B · description: **extracted**
 
 **Purpose.** Read [CLAUDE.md](../CLAUDE.md) before proposing a change. It is the source of truth for this repository; this file is a pointer plus the rules that get broken most often. 1. Read relevant source before editing; never invent a command or path.
 
@@ -25288,7 +25299,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 429 lines · 18,059 B · description: **curated**
+`ci` · 429 lines · 18,114 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -25406,7 +25417,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## botmanager
 
-38 files.
+47 files.
 
 #### `botmanager/.gitignore`
 
@@ -25418,15 +25429,15 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 583 lines · 36,583 B · description: **extracted**
+`doc` · 685 lines · 43,512 B · description: **extracted**
 
-**Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. The current runnable strategy is grid against recorded input. Saved settings support explicit editing and stopped-run adoption;
+**Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. Grid, DCA, buffered SMA Trend and time-series Momentum run against explicit historical or prospective reference input. Saved settings support explicit editing and stopped-run adoption;
 
 **Use.** Read it.
 
 #### `botmanager/pyproject.toml`
 
-`config` · 18 lines · 416 B · description: **none**
+`config` · 18 lines · 492 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -25452,7 +25463,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/cli.py`
 
-`code-python` · 78 lines · 2,786 B · description: **extracted**
+`code-python` · 78 lines · 2,766 B · description: **extracted**
 
 **Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
 
@@ -25472,11 +25483,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/data.py`
 
-`code-python` · 318 lines · 10,934 B · description: **extracted**
+`code-python` · 357 lines · 12,221 B · description: **extracted**
 
 **Purpose.** Read-only, bounded snapshots of an explicitly registered Coinbase recorder. A sampled midpoint candle is a reference input, never an observed venue candle or an executable Jupiter quote. Recorder format v1 does not record book/ticker provenance. Preserve that uncertainty instead of inferring it from quote age.
 
-**Contents.** Defines `MAX_BARS`, `MAX_FILE_BYTES`, `MAX_SCAN_BYTES`, `engine_identity()`, `_number()`, `load_recording()`, `validate_snapshot()`. Depends on `backtester`.
+**Contents.** Defines `MAX_BARS`, `MAX_FILE_BYTES`, `MAX_SCAN_BYTES`, `engine_identity()`, `_number()`, `load_recording()`, `validate_snapshot()`. Depends on `backtester`, `soltui`.
 
 **Use.** `import botmanager.src.botmanager.data`
 
@@ -25490,9 +25501,19 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `import botmanager.src.botmanager.domain`
 
+#### `botmanager/src/botmanager/input_commands.py`
+
+`code-python` · 179 lines · 5,942 B · description: **extracted**
+
+**Purpose.** Versioned reference preparation and data diagnosis behind the command registry.
+
+**Contents.** Defines `read_document()`, `prepare()`, `check()`.
+
+**Use.** `import botmanager.src.botmanager.input_commands`
+
 #### `botmanager/src/botmanager/ledger.py`
 
-`code-python` · 1313 lines · 54,647 B · description: **extracted**
+`code-python` · 1405 lines · 59,153 B · description: **extracted**
 
 **Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The specification database and this separate runtime journal has its own version and must be included in backups with the specifications.
 
@@ -25510,6 +25531,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `import botmanager.src.botmanager.mutations`
 
+#### `botmanager/src/botmanager/oracle_data.py`
+
+`code-python` · 586 lines · 20,558 B · description: **extracted**
+
+**Purpose.** Inert Oracle accepted-observation snapshots and bounded prospective pages. No Oracle producer class is imported here. A descriptor freezes source consent, policy, activation and assumed costs. The existing archive owner alone appends.
+
+**Contents.** Defines `MAX_OBSERVATIONS`, `PAGE_SIZE`, `KNOWN_ARCHIVE`, `SCOPE`, `read_page()`, `cost_profile()`, `prepare_descriptor()`, `_validate()`, `_bars()`, `_seal()` and 2 more. Depends on `backtester`.
+
+**Use.** `import botmanager.src.botmanager.oracle_data`
+
 #### `botmanager/src/botmanager/receipts.py`
 
 `code-python` · 171 lines · 6,272 B · description: **extracted**
@@ -25522,11 +25553,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/registry.py`
 
-`code-python` · 656 lines · 21,511 B · description: **extracted**
+`code-python` · 744 lines · 24,530 B · description: **extracted**
 
 **Purpose.** One application registry, shared by CLI and future local transports.
 
-**Contents.** Defines `class CommandContext`, `class CommandSpec`, `GLOBAL_ARGUMENTS`, `_argument_schema()`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()` and 23 more.
+**Contents.** Defines `class CommandContext`, `class CommandSpec`, `GLOBAL_ARGUMENTS`, `_argument_schema()`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()` and 26 more.
 
 **Use.** `import botmanager.src.botmanager.registry`
 
@@ -25542,7 +25573,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/status.py`
 
-`code-python` · 563 lines · 22,826 B · description: **extracted**
+`code-python` · 613 lines · 24,680 B · description: **extracted**
 
 **Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
 
@@ -25582,11 +25613,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/worker.py`
 
-`code-python` · 99 lines · 3,229 B · description: **extracted**
+`code-python` · 125 lines · 4,233 B · description: **extracted**
 
 **Purpose.** One isolated reference-paper worker, holding its lock for its lifetime.
 
-**Contents.** Defines `HEARTBEAT_SECONDS`, `STALE_SECONDS`, `BARS_PER_TICK`, `lifetime_lock()`, `lock_held()`, `run_worker()`.
+**Contents.** Defines `HEARTBEAT_SECONDS`, `STALE_SECONDS`, `BARS_PER_TICK`, `lifetime_lock()`, `lock_held()`, `prospective_tick()`, `run_worker()`.
 
 **Use.** `import botmanager.src.botmanager.worker`
 
@@ -25626,31 +25657,67 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/strategies/__init__.py`
 
-`code-python` · 2 lines · 80 B · description: **extracted**
+`code-python` · 53 lines · 1,895 B · description: **extracted**
 
-**Purpose.** Pure strategy adapters; the canonical offline package owns all economics.
+**Purpose.** One canonical strategy dispatcher for workers, ledger and command surfaces.
+
+**Contents.** Defines `evaluate()`, `validate_registration()`, `validate_checkpoint()`.
 
 **Use.** `import botmanager.src.botmanager.strategies.__init__`
 
+#### `botmanager/src/botmanager/strategies/arbitrage.py`
+
+`code-python` · 172 lines · 6,404 B · description: **extracted**
+
+**Purpose.** Conditional directed Solana quote-cycle diagnosis, never an order executor.
+
+**Contents.** Defines `diagnose_cycle()`.
+
+**Use.** `import botmanager.src.botmanager.strategies.arbitrage`
+
 #### `botmanager/src/botmanager/strategies/base.py`
 
-`code-python` · 12 lines · 247 B · description: **none**
+`code-python` · 209 lines · 7,328 B · description: **extracted**
 
-**Purpose.** _No description available._
+**Purpose.** Shared account normalization; strategy decisions belong to canonical engines.
 
-**Contents.** Defines `class ReferenceEvaluator`.
+**Contents.** Defines `compatible_engine()`, `validate_input()`, `identity()`, `evaluate_family()`. Depends on `backtester`, `soltui`.
 
 **Use.** `import botmanager.src.botmanager.strategies.base`
 
+#### `botmanager/src/botmanager/strategies/dca.py`
+
+`code-python` · 6 lines · 110 B · description: **extracted**
+
+**Purpose.** Canonical dca reference adapter.
+
+**Use.** `import botmanager.src.botmanager.strategies.dca`
+
 #### `botmanager/src/botmanager/strategies/grid.py`
 
-`code-python` · 171 lines · 5,948 B · description: **extracted**
+`code-python` · 172 lines · 6,030 B · description: **extracted**
 
 **Purpose.** Bounded prefix replay of the canonical ladder; no copied trading algorithm.
 
 **Contents.** Defines `MAX_REFERENCE_RUNGS`, `MAX_REFERENCE_RANGE_PCT`, `REFERENCE_BAR_SECONDS`, `_configuration()`, `run_identity()`, `validate_checkpoint()`, `evaluate()`. Depends on `backtester`.
 
 **Use.** `import botmanager.src.botmanager.strategies.grid`
+
+#### `botmanager/src/botmanager/strategies/momentum.py`
+
+`code-python` · 6 lines · 115 B · description: **extracted**
+
+**Purpose.** Canonical momentum reference adapter.
+
+**Use.** `import botmanager.src.botmanager.strategies.momentum`
+
+#### `botmanager/src/botmanager/strategies/trend.py`
+
+`code-python` · 6 lines · 112 B · description: **extracted**
+
+**Purpose.** Canonical trend reference adapter.
+
+**Use.** `import botmanager.src.botmanager.strategies.trend`
 
 ### `botmanager/tests/`
 
@@ -25712,6 +25779,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest botmanager/tests/test_legacy.py -q`
 
+#### `botmanager/tests/test_oracle_data.py`
+
+`test` · 370 lines · 14,672 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `START`, `archive()`, `append()`, `class ArchiveTests`, `class ProspectiveWorkerTests`, `class ArchiveAdversarialTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_oracle_data.py -q`
+
 #### `botmanager/tests/test_paper.py`
 
 `test` · 229 lines · 8,903 B · description: **none**
@@ -25752,9 +25829,19 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest botmanager/tests/test_recovery.py -q`
 
+#### `botmanager/tests/test_solana_cycles.py`
+
+`test` · 111 lines · 4,112 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `quote()`, `costs()`, `class CycleTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_solana_cycles.py -q`
+
 #### `botmanager/tests/test_status.py`
 
-`test` · 245 lines · 10,213 B · description: **none**
+`test` · 376 lines · 15,924 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -25772,13 +25859,23 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest botmanager/tests/test_store.py -q`
 
-#### `botmanager/tests/test_supervisor.py`
+#### `botmanager/tests/test_strategy_parity.py`
 
-`test` · 628 lines · 25,104 B · description: **none**
+`test` · 172 lines · 7,193 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `stalled_worker()`, `hard_crash()`, `class SupervisorTests`, `class LaunchctlFixture`.
+**Contents.** Defines `class FamilyParityTests`. Depends on `backtester`, `soltui`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_strategy_parity.py -q`
+
+#### `botmanager/tests/test_supervisor.py`
+
+`test` · 699 lines · 27,997 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `stalled_worker()`, `stalled_prospective_worker()`, `hard_crash()`, `class SupervisorTests`, `class LaunchctlFixture`.
 
 **Use.** `python3 -m pytest botmanager/tests/test_supervisor.py -q`
 
@@ -27262,7 +27359,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## oracle
 
-23 files.
+25 files.
 
 #### `oracle/README.md`
 
@@ -27343,6 +27440,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** _No description available._
 
 **Use.** Configuration; nothing to run.
+
+#### `oracle/quotes.py`
+
+`code-python` · 477 lines · 17,305 B · description: **extracted**
+
+**Purpose.** Explicit opt-in Swap v1 evidence owned by the existing shared Oracle archive. This module never builds transactions, signs, retries, or starts a collector. Quoted outputs and cost assumptions remain distinct from observed execution.
+
+**Contents.** Defines `ENDPOINT`, `MINT`, `MAX_RESPONSE`, `ROUTE_POLICY`, `QUOTE_BUDGET_PATH`, `class QuoteError`, `_hash()`, `_raw()`, `validate_request()`, `capture_quote()` and 6 more.
+
+**Use.** `import oracle.quotes`
 
 #### `oracle/server.py`
 
@@ -27444,6 +27551,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest oracle/tests/test_multi_instrument.py -q`
 
+#### `oracle/tests/test_quotes.py`
+
+`test` · 255 lines · 8,722 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `SOL`, `USDC`, `fixture()`, `class QuoteTests`, `class QuoteEvidenceReviewTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_quotes.py -q`
+
 #### `oracle/tests/test_server.py`
 
 `test` · 175 lines · 6,864 B · description: **none**
@@ -27483,6 +27600,68 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class VotingTests`.
 
 **Use.** `python3 -m pytest oracle/tests/test_voting.py -q`
+
+---
+
+## postman
+
+6 files.
+
+### `postman/collections/`
+
+#### `postman/collections/botmanager-swap-v1.postman_collection.json`
+
+`config` · 113 lines · 4,298 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (info, variable, item).
+
+**Use.** Configuration; nothing to run.
+
+### `postman/mocks/botmanager-jupiter-swap-v1/`
+
+#### `postman/mocks/botmanager-jupiter-swap-v1/README.md`
+
+`doc` · 20 lines · 2,437 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 This local stand-in exercises the real shared Oracle HTTP collector. It serves the provider documentation example for an ExactIn quote of 100000000 raw SOL to USDC, with 50 bps slippage and the manager's explicit `onlyDirectRoutes=true` policy. All prices, sizes, routes and slots are fixture values.
+
+**Use.** Read it.
+
+#### `postman/mocks/botmanager-jupiter-swap-v1/config.yaml`
+
+`config` · 16 lines · 334 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `postman/mocks/botmanager-jupiter-swap-v1/default.js`
+
+`code-js` · 72 lines · 3,017 B · description: **extracted**
+
+**Purpose.** Local provider-contract stand-in. All quote values are documentation fixtures.
+
+**Contents.** Defines `reply`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `postman/simulations/botmanager-swap-v1/`
+
+#### `postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml`
+
+`config` · 31 lines · 2,530 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `postman/simulations/botmanager-swap-v1/botmanager-swap-v1.sim.yaml`
+
+`config` · 8 lines · 189 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
 
 ---
 

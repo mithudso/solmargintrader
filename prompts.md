@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 175
+Version: 176
+Delta: v175 to v176; preserve the status question during all-remaining-milestones execution.
 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
 
@@ -1556,3 +1557,11 @@ Install this mcp server {
   }
 }
 ```
+
+## v176 — 2026-11-09 — progress question while implementation continues
+
+```text
+What're you doing now? How much more do you have?
+```
+
+Answered directly: editing delivered; M3finalgates; fivefurthermilestones; severalhoursremain. This steering question did not cancel, pause or replace the all-remaining-milestones scope.
