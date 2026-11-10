@@ -14,7 +14,7 @@ five installed packages, both strategy catalogs and actual MCP transport. Existi
 completed environments stay immutable; new releases use a new versioned environment.
 
 The current patch candidate uses `/Users/mitch/.venvs/solecosystem-0.4.2` with
-Bot Manager 0.7.1, Oracle 0.2.3, research runtime 0.4.0 and Backtester 0.2.0.
+Bot Manager 0.7.2, Oracle 0.2.3, research runtime 0.4.0 and Backtester 0.2.0.
 The previously installed 0.4.0 and 0.4.1 environments remain immutable until a separate
 authorized upgrade. The managed suite can maintain manager/UI availability independently of research;
 see [managed operations](../docs/bot-manager-managed-suite.md).

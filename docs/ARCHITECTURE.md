@@ -32,7 +32,7 @@ with the same manager home, ecosystem home and package identity. It retains only
 actual child-process handles as termination authority; an adopted PID is diagnostic.
 
 Ecosystem 0.4 coordinates F5 and prospective trials without replacing their queue,
-recording or evidence ownership. Oracle 0.2.2 owns source-labelled shadow forecasts
+recording or evidence ownership. Oracle 0.2.3 owns source-labelled shadow forecasts
 and archives. Availability does not create a recorder, research authority, optimizer,
 signer or P&L ledger. Existing frozen environments remain attached to their owners.
 

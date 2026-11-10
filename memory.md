@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 388
-Delta: v387 to v388; fix the packaged zero-lookback chart failure and verify the final wheel in Chrome.
+Version: 389
+Delta: v388 to v389; synchronize Bot Manager's Oracle pin and refresh deterministic indexes after CI caught stale matrix metadata.
 Delta: v385 to v386; bind graph-shape recording logic into the Oracle evaluator fingerprint and add the root README feature summary.
 Delta: v384 to v385; implement contextual Oracle voting, immutable graph history, chart overlays, compatibility, tests, and installed UI verification; delivery pending.
 Delta: v383 to v384; begin contextual Oracle vote history and chart overlays in an isolated worktree.
@@ -21,7 +21,7 @@ The primary checkout has many unrelated pre-existing untracked files. Implementa
 
 Validation completed: Oracle unittest suite 80 passed; ecosystem unittest suite 180 passed; Ruff clean; OpenAPI JSON, `node --check` for both UI scripts, and `git diff --check` clean. Built Oracle 0.2.3 and Ecosystem 0.4.2 wheels and installed them only under `/tmp/solmargintrader-install-final-1262`. In Chrome, the installed server displayed 86 recorded fixture ticks, all fifteen toggles started enabled, an overlay toggle changed the count to fourteen and restored it, and the console had no chart/CSP errors. Fixture data and the temporary server stayed outside the repository and were stopped after verification. No persistent user service was installed or changed.
 
-Final rerun: Oracle 80 tests, Ecosystem 180 tests, Ruff, JS syntax, OpenAPI JSON, wheel builds, and `git diff --check` pass. `scripts/check_docs.py` passes with `PYTHONPATH=botmanager/src:.` in the existing docs environment (2,949 tests counted, docs agree). Fresh Oracle 0.2.3/Ecosystem 0.4.2 wheels installed in an isolated target and passed Chrome acceptance with four ticks, including zero lookback, 14 strategy rows, 15 initial overlays, toggle off/on, and no console errors; server and tab were closed. The Postman CLI status check already ran earlier; do not rerun it because it created a task-external `.opencode/` artifact in the primary checkout. Next: commit only task-owned files, push and open a PR, wait for CI, merge the final verified tip, sync `master`, clean up this worktree, then complete Stele TASK-1262. Preserve all unrelated untracked files in the primary checkout and the separate UI redesign worktree.
+Final rerun: Oracle 80 tests, Ecosystem 180 tests, Ruff, JS syntax, OpenAPI JSON, wheel builds, docs count check (2,949, docs agree), and `git diff --check` pass. Fresh Oracle 0.2.3/Ecosystem 0.4.2 wheels installed in an isolated target and passed Chrome acceptance with four ticks, including zero lookback, 14 strategy rows, 15 initial overlays, toggle off/on, and no console errors; server and tab were closed. PR 198 CI exposed a dependency mismatch: Bot Manager 0.7.1 pinned Oracle 0.2.2. Bump Bot Manager to 0.7.2, align its Oracle pin to 0.2.3, update the Ecosystem manager pin and package matrix docs, then rebuild deterministic keyword indexes; no semantic embeddings were generated. The same CI run also failed the tracked index freshness gate because this task adds files. The Postman CLI status check already ran earlier; do not rerun it because it created a task-external `.opencode/` artifact in the primary checkout. Next: verify the new package matrix, commit/push the correction, wait for final-head CI, merge, sync `master`, clean up this worktree, then complete Stele TASK-1262. Preserve unrelated primary files and the separate UI redesign worktree.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
 

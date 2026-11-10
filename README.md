@@ -31,7 +31,7 @@ coverage and lifecycle limits.
 
 ## Managed bot suite
 
-The current coordinated candidate is manager 0.7.1, research-runtime 0.4.0 and
+The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
 ecosystem 0.4.2, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
 and extension source 0.6.5. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
