@@ -1,6 +1,7 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.2.0
+Version: 0.3.0
+Delta: Add remaining backend commands, bounded reports, runtime schema 5, health/learning and external owner receipts.
 Delta: Add canonical four-family prospective reference operation and strict direct-route quote evidence.
 Delta: Integrated editing release delivered through PR186; 50 installed checks and 167 source files/assets verified.
 Delta: Expose registry-derived global arguments and explicit legacy event-reuse continuity metadata.
@@ -16,6 +17,67 @@ the later Oracle visual-interface work. Update its version and capability table
 at every manager release. A future command or an illustrative UI control is not
 evidence that its backend is available. The implementation epic remains open
 until its required work and applicable acceptance gates actually pass.
+
+## Current 0.5 contract
+
+The release matrix and operating semantics are maintained in
+/Users/mitch/dev/solmargintrader/docs/bot-manager-0.5-operations.md.
+The existing graphical control room retains its registry-backed edit/apply/start/stop
+actions and durable action ledger. New research, learning, report navigation and
+external-owner screens remain future Oracle client work. This handoff supplies
+the backend contract without adding a supervisor or another state model.
+
+The registry now also exposes research setup/registration/plans/backtests, reports,
+health/alerts, explicit backup/restore, entry pause/resume, protected learning,
+browser control/receipt inspection and optional executor setup/admission/intent
+reconciliation. Query the installed `schema` rather than inferring availability
+from these command names. Real evidence and owner capability gates remain active.
+
+Runtime schema 5 adds bounded canonical segments and fences old writers. State
+reads support older schemas without migrating them. `status` adds independent
+`health`, attributed `accounting`, and an inert local `learning` projection.
+`status --why` includes the last completed evaluation, decision, blockers and next
+trigger. A normal realized loss remains a valid result, separate from missing
+measurements or a process fault. `learning.schedule` reports the selected daemon's
+last daily attempt; reading it never starts a helper or initializes an authority.
+
+Use `report BOT --format json|human|csv` for a selected current run and
+`report BOT --run-id UUID` for an archive. Preserve the reported arithmetic,
+currency and unknown-value reasons. Current-bot learning pointers in an archived
+report are explicitly labelled separate from that run's historical accounting.
+`events`, report events, `history-page` and `run-history` return stable sequence
+cursors with `next_after` and `has_more`. Row count is not a cursor. Existing full
+`history` remains a compatibility read; prefer bounded pages for a visual client.
+Unsupported archive sizes return a concrete bounded-read refusal.
+
+Grid/DCA `pause` and `resume` require a durable request UUID and revoke the previous
+worker generation. Existing exits continue; stop, cancel, close and kill/disarm
+remain distinct. Trend/Momentum entry pause stays unavailable. Learning promotion
+uses an explicit paused, stopped and reconciled flat boundary, preserving cash,
+losses, fees, cursor and runtime identity. It does not use independent-run reset.
+
+A browser slot has identity `browser:INSTALLATION_UUID:grid` and a separately
+stable UUID, native origin, source hash, config revision/hash, owner generation
+and optional runtime ID. Offline state is unknown. Armed/non-dry-run owners are
+unsupported by the manager's paper controls. Start/stop use the inspected
+`--expected-generation`, `--expected-config-hash` and durable `--request-id`;
+`browser-receipt` reconciles the outcome. A queued request remains pending until
+its actual owner reports it. No ownership transfer or multi-instance slot is implied.
+
+Actual Oracle forecast provenance remains visible but ineligible for manager
+training without verified parameter/version/horizon/source attribution. No catalog
+name alias or directional hit rate supplies comparable training or profit evidence.
+
+Executor descriptors come from public `executor-setup`; the optional executor
+retains signing, aggregate wallet rails and reservation authority. Current reference
+research/shadow data cannot produce certified admission. Unknown sends retain
+reservations and are never retried automatically. Trigger/V2, Grid/DCA entry
+construction and non-atomic arbitrage remain unavailable. A graphical button must
+preserve those reasons and cannot convert a fixture into live readiness.
+
+The older source/delivery sections below retain the 0.4 interface history. Their
+past package pins and remaining-work snapshots are historical. Current release
+acceptance and machine-specific installation state belong to the handoff receipt.
 
 ## Authority and source maintenance
 

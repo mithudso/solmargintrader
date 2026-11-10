@@ -39,8 +39,8 @@ def parser() -> argparse.ArgumentParser:
             "Running a bot requires explicit input, a start request,\n"
             "and an explicitly running 'solbot daemon' or installed service.\n"
             "Edit saved settings with solbot edit; solbot apply explicitly adopts them.\n"
-            "Current runtime: bounded historical/prospective reference families. Jupiter\n"
-            "execution and automatic learning remain unavailable.\n\n"
+            "Current runtime: bounded historical/prospective reference families. Learning\n"
+            "and executor entries retain source, sample, clock and authority gates.\n\n"
             "Working example and exact steps:\n"
             "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
         ),

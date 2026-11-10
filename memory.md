@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 350
+Version: 351
+Delta: v350 to v351; retain independent review repairs, candidate environments and remaining executor gates.
 Delta: v349 to v350; retain bounded continuation, strict load results and current fanout ownership.
 Delta: v348 to v349; preserve recovered M4 and accounting source, operational health integration and next fanout.
 Delta: v347 to v348; start all-remaining bot-manager integration with parallel owners.
@@ -1494,3 +1495,16 @@ Task1230 remains in progress, draft PR194 branchagent-01a1c447-bot-remaining. Ta
 Current rootowned package matrix unstaged: manager0.5.0,backtester0.2.0,research-runtime0.2.0,Oracle0.2.2,ecosystem0.2.2. Keepoldimmutableenvironmentsand50bpsmanualreferralbehavior. Beforeinstalledacceptance snapshotat/Users/mitch/.local/state/solbot/releases/0.5.0/preserved-installations-before.json preserves defaultdemo hashes/mtimesandstablealias.
 
 Agents: m4_recovery now executorTask7(469offline+7adapterpass,finalcommit/reportpending);accounting_reports now learningTask5(ownerprotocol,realpairedshadowworkers,atomiclocalmanager/runtimeadoption,actualownerclockandcertificationgates);continuation now browserTask6(nativeorigin/stableprofileUUID/durabledelegatedpapercontrols). Rootownsregistry/status/CLI/backupintegration,versions/docs,indexes,delivery. Rootpending: finalAPIintegration;per-taskreviews;fullsourcechecks;freshregularinstall+independentloadedacceptance;wiki/index/docs;finalCI/merge;onlyownedcleanup. Realelapsed7days/30completedshadowtradesandcertifiedJupiterexecutionremainexplicitgates. Untracked.opencodeappearedinthisnewworktree;preserveandassessprovenancebeforecleanup;donotstageit.
+
+
+## Remaining implementation — review checkpoint
+
+Work continues in /Users/mitch/dev/solmargintrader-wt-01a1c447 on agent-01a1c447-bot-remaining, draft PR194. All source milestones have implementation commits. Independent Task1,2,3,4,5,6 reviews now PASS after concrete repairs; Task7 executor review still requires its fixes and re-review. Reviews and exact implementer reports live in .superpowers/sdd/remaining-2026-11-10. Do not treat a source review as installed acceptance or delivery.
+
+Important repaired cases: source judge same-Python exec and closed-pipe timeout; bounded financial/learning reads and missing ledger/marks; pause generation handoff and continuing exits; aged browser restore uses capture cutoff; prompt crash alerts; real M4 optimizer under ten-bot load; empty Grid rollover and 2048/2050 runtime lookback/tail caps; canonical owner pointer/provenance/overflow/clock validation; browser no-op poll leaves legacy owner alone, refused stops have no effect, valid later stops fence older starts, actual semantic source changes require reload. Accepted commits include f06fdfd,170797f,13e229f,6d7af98,a2ffd70 and bb437c1. The 425-test browser source gate passed on0.6.4; everyday browser/native installation is not verified.
+
+Executor worker m4_recovery is fixing Task7 P1 imported-send journal anchoring, tighter caps across client homes, manager paper/disarmed live refusal, and P2 dry-run shared portfolio checks. Its risk nodes KNOW-1242/1243 expire on TASK-1230. No key, production authority or real-money action was requested or performed. New regular environments are created but uninstalled: /Users/mitch/.venvs/solbot-0.5.0, /Users/mitch/.venvs/solecosystem-0.2.2 and /Users/mitch/.venvs/executor-0.2.0. Declared third-party dependencies installed successfully; Endor package-risk tooling unavailable, recorded as UNKNOWN in private dependency-risk.json (no approval claim). Existing environments and stable CLI alias remain preserved.
+
+Root owns versions/docs/registry/status/CLI and delivery. Current source matrix: manager0.5.0,core0.2.0,research-runtime0.2.0,Oracle0.2.2,ecosystem0.2.2,executor0.2.0,extension0.6.4. Existing control room already delegates edit/apply/start/stop to the manager; broader new0.5 graphical workflows are explicitly future Oracle work, not a new UI implementation obligation. Current operations guide and Oracle interface state that boundary.
+
+Remaining: finish Task7fix/re-review; final whole-branch review; correctly rooted full manager/canonical/Oracle/ecosystem/affected-owner/JS/executor checks; source docs/count/wiki/offline indexes; fresh regular candidate installs; live-acceptance-verifier outside checkout with exact packaged source/asset parity and public first-use/report/recovery/research/browser/executor guards; update stable CLI alias only after acceptance; final-head CI/merge/remote-content receipt; safe primary fast-forward preserving77untracked paths; remove only owned merged worktree/branch. Preserve untracked .opencode and private evidence. Canonical research histories, existing producers and stopped default demo remain unchanged. Real certified source/cost/fill evidence,7actualshadowdays and30comparablecompletedshadowtrades remain separate production gates.

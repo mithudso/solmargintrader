@@ -1,6 +1,7 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.1.1
+- Version: 1.2.0
+- Delta: v1.1.1 to v1.2.0; integrate the remaining backend contracts and retain original release history separately.
 - Delta: v1.1.0 to v1.1.1; link the concrete remaining-work plan and distinguish the M4 source checkpoint from delivery.
 - Delta: v1.0.5 to v1.1.0; describe milestone 3 canonical strategies, shared prospective input and quote evidence.
 - Delta: v1.0.4 to v1.0.5; record integrated editing delivery and coordinated five-package maintenance.
@@ -12,6 +13,43 @@
 - Original editing source baseline: `7af12d82f4e9b8eb04262e9636487f4751730d1d`; manager 0.3.0 also incorporates PR185 compatibility below. Final loaded identity belongs to the integrated acceptance receipt. Prior M2 delivery is merge `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
+
+## Current 0.5 backend handoff
+
+The 0.5 candidate implements M4 research, M5 accounting/health/recovery, canonical
+bounded continuation, protected learning and the default daemon daily job, browser
+native delegation and guarded executor admission. Source implementation is separate
+from independent review, installed acceptance and final remote delivery. The current
+release receipt below will record those gates after they pass.
+
+Use /Users/mitch/dev/solmargintrader/docs/bot-manager-0.5-operations.md for the
+current feature map, exact version matrix, defaults, state ownership, reports,
+backup/restore and remaining data/time/venue gates. Use
+/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md for the executed
+first-use workflow and
+/Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md for the
+current client contract. The older sections below are historical through 0.4.0;
+their old worktree paths, package versions and unfinished-milestone descriptions
+do not describe the 0.5 candidate.
+
+Default manager state remains /Users/mitch/.config/solbot. Candidate installation
+uses a fresh regular environment; old immutable environments, existing producers,
+canonical research histories and the stopped default demo remain preserved.
+
+Current first-party versions: manager 0.5.0, backtester 0.2.0, research-runtime
+0.2.0, Oracle 0.2.2 and ecosystem 0.2.2. Executor 0.2.0 is optional and retains
+its own environment. Runtime schema 5 fences older writers while preserving
+inert old-schema reads. Public commands and report schemas come from the manager
+registry; no UI supplies its own financial or execution authority.
+
+Current real reference input remains uncertified. No release test creates seven
+calendar days of genuine prospective shadow operation, thirty completed comparable
+shadow trades, complete Jupiter costs or a certified live strategy. Missing evidence
+retains the incumbent and prevents new live entry admission. The source contains
+no certified executor evidence issuer. The everyday browser installation remains
+separate from isolated Chrome acceptance.
+
+## Historical handoff through 0.4.0
 
 The standalone application is installed as `solbot`. It saves and edits immutable named bot specifications, discovers an existing SolTUI owner, delegates supported legacy controls and supervises independent reference paper accounts. It defaults to paper and disarmed. Milestones 1–3 plus editing are delivered. Grid, DCA, Trend and Momentum use canonical reference execution; prospective shared-source input is supported. Current evidence does not certify Jupiter execution or profitability.
 
@@ -26,7 +64,7 @@ The retained default-home demonstration below remains unchanged.
 
 This handoff is for the operator using the installed tool and the developer continuing it. It records what this session built, why it chose these boundaries, where the authoritative code and evidence live, and how to inspect, maintain and recover the application. Source references below use the canonical repository path; verify the actual checkout revision before editing or reinstalling.
 
-## 1. Access and current state
+## Historical 1. Access and current state
 
 ### Installed entry points
 
@@ -66,7 +104,7 @@ The configured legacy SolTUI endpoint reported `incompatible_owner`, with unknow
 
 The primary checkout was held by other active sessions and behind the verified release when this handoff began. Do not reinstall from an old checkout merely because its path is canonical. Check `git rev-parse HEAD` and use a clean checkout containing the intended release. Preserve the other sessions' dirty files and services.
 
-## 2. What was delivered and why
+## Historical 2. What was delivered and why
 
 ### Request and architecture
 
@@ -104,7 +142,7 @@ Concurrent historical-data, monitor and signal-research work was preserved durin
 | Label Coinbase replay as a reference | A target Jupiter specification cannot certify historical route/fill economics | Reference results remain ineligible for live promotion |
 | Keep configuration immutable | Installing new defaults or editing a draft must not silently alter a running account | `edit` stages a saved revision; `apply` separately verifies a stopped zero-exposure boundary and archives prior evidence |
 
-## 3. Complete current feature and capability map
+## Historical 3. Complete current feature and capability map
 
 | Capability | Delivered behavior | Boundary |
 | --- | --- | --- |
@@ -132,7 +170,7 @@ Concurrent historical-data, monitor and signal-research work was preserved durin
 | Blind optimization/learning | Designed with protected evidence and manual pins | Not delivered or running |
 | Live Jupiter execution | Preserved existing executor restrictions | No autonomous live bot is certified by this release |
 
-## 4. CLI and configuration reference
+## Historical 4. CLI and configuration reference
 
 Every application command dispatches through `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/registry.py`. The parser in `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/cli.py` only parses, dispatches and renders. Add future commands to the registry, not a second parser-only execution path.
 
@@ -203,7 +241,7 @@ Shared values must match strategy ID/version, venue, both mints, bar duration an
 
 The normal existing token path is `/Users/mitch/Library/Application Support/soltui/api-token`. The manager verifies public health says `service=soltui` before resolving or sending a token. The token must already be a regular owner-owned mode-0600 file. It never creates, repairs or prints credentials. Redirects, proxies and unrelated services receive no bearer token.
 
-## 5. Operator workflows
+## Historical 5. Operator workflows
 
 ### Create and inspect without starting work
 
@@ -307,7 +345,7 @@ Legacy forward sessions in `/Users/mitch/dev/solmargintrader/soltui/bots.py` are
 
 The owner starts the exact configuration and costs it compared. A raw legacy command can still change its own state; the next guarded operation must observe that change. This is delegation, not ownership transfer or fencing of every old client. No fallback to an unguarded restart exists. Source and fixture coverage do not prove that the current default installed owner supports these controls.
 
-## 6. Data, accounting and operational limits
+## Historical 6. Data, accounting and operational limits
 
 Inputs must be `coinbase_exchange_recorder` recordings for SOL-USD/USD or SOL-USDC/USDC. Target and reference identities remain separate. USD and USDC are not assumed equal. USDC results stay in `reference_financials`; USD-named fields remain null where conversion has not been measured.
 
@@ -337,7 +375,7 @@ The grid adapter invokes canonical `run_grid_backtest(close_at_end=False)`. It p
 
 `financials` provides measured USD reference exposure, realized/unrealized net P&L and costs only when supported by the checkpoint currency. Other values remain null with reasons. `configured_virtual_capital` and `configured_reference_capital` are not reserved allocation. Do not subtract displayed costs again from values already labeled net, or add independent virtual accounts as one funded portfolio. Full deposits/withdrawals, live marks, integer-token reconciliation and training/profit reports belong to milestone 5 and later.
 
-## 7. Architecture, authoritative files and change ownership
+## Historical 7. Architecture, authoritative files and change ownership
 
 ```mermaid
 flowchart TD
@@ -463,7 +501,7 @@ Jupiter quote evidence is a separate explicit opt-in capability in /Users/mitch/
 
 The local HTTP stand-in and its scope are documented in /Users/mitch/dev/solmargintrader/postman/mocks/botmanager-jupiter-swap-v1/README.md. Simulated HTTP success is separate from actual provider data, regular installed source identity and chain acceptance.
 
-## 8. Maintenance, upgrades, backup and recovery
+## Historical 8. Maintenance, upgrades, backup and recovery
 
 ### Upgrade from verified source
 
@@ -556,7 +594,7 @@ The snippet is a copy primitive, not an automatic quiesce/restore/migration syst
 | `stable_install_required` | Service command loaded source/editable/temporary code | Install reviewed regular packages into the stable environment |
 | `service_unavailable` with retained definition | Registration/removal could not be confirmed | Inspect the exact service identity and reconcile; do not claim all workers stopped |
 
-## 9. Verification and bugs caught before delivery
+## Historical 9. Verification and bugs caught before delivery
 
 ### Editing extension evidence
 
@@ -688,7 +726,7 @@ The root documentation gate discovers 1,002 backtester, 1,405 SolTUI, 408 extens
 
 Regenerate tracked metadata only after staging new/resolved paths. Run the existing offline generators `/Users/mitch/dev/solmargintrader/index/build.py all`, `/Users/mitch/dev/solmargintrader/index/make_files_doc.py`, `/Users/mitch/dev/solmargintrader/index/make_concepts_doc.py`, then the index `--check` and docs gate. Semantic embeddings are separately opt-in. Use `INDEX_NO_AUTO=1` for local index searches; an earlier search fallback started an idle builder, which this session identified and stopped without touching shared model services.
 
-## 10. Resume the approved implementation
+## Historical 10. Resume the approved implementation
 
 The controlling specification is `/Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md`. The milestone order is `/Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-09-bot-manager.md`. Owner approval is recorded in the implementation-approval decision, KNOW-1115; older design-first wording does not prohibit the approved later implementation.
 
@@ -720,7 +758,7 @@ Future blind selection must hide parameters/incumbent identity through an enforc
 
 The future UI direction remains a fleet roster plus selected-bot inspector, persistent blockers and an attributable activity ledger. Creation proceeds Strategy → Market/budget → Rules/tuning → Risk boundaries → Review. A saved draft must continue to start no worker, reserve no capital and place no order. Supplemental graphics do not establish production execution, accessibility or profitability.
 
-## 11. Documents, evidence and continuation locations
+## Historical 11. Documents, evidence and continuation locations
 
 ### Tracked, durable references
 
@@ -769,7 +807,7 @@ Important local files are:
 
 These artifacts can contain machine-local paths and operational evidence. Do not publish arbitrary private raw evidence or credentials. Keep cumulative memory files intact. In particular, `/Users/mitch/dev/solmargintrader/.remember/remember.md` is tracked and cumulative; this handoff does not replace it.
 
-## 12. Acceptance boundary to retain
+## Historical 12. Acceptance boundary to retain
 
 The application is a usable standalone CLI with persistent drafts, truthful capability/status data, guarded legacy delegation and crash-tested independent grid reference accounts. It shares the existing simulator and preserves existing owners. The default installation is disarmed and its production service is not automatically enabled.
 

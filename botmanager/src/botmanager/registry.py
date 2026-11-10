@@ -169,6 +169,7 @@ def _apply(params, context):
 
 def _schema(params, context):
     from .config import STRATEGY_VERSIONS, _strategy, field_metadata
+    from .strategies import MAX_RUNTIME_LOOKBACK_BARS, MAX_RUNTIME_RETAINED_BARS
     from .strategies.grid import (
         MAX_REFERENCE_RANGE_PCT,
         MAX_REFERENCE_RUNGS,
@@ -191,6 +192,8 @@ def _schema(params, context):
                 "runtime_schema_version": 5,
                 "account_preserved": True,
                 "engine_and_source_identity_required": True,
+                "maximum_lookback_bars": MAX_RUNTIME_LOOKBACK_BARS,
+                "maximum_retained_signal_bars": MAX_RUNTIME_RETAINED_BARS,
             },
             "cross_field_constraints": ["fast_period < slow_period"]
             if key == "trend"
@@ -296,6 +299,12 @@ def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
     if type(why) is not bool:
         raise ManagerError("invalid_input", "The explanation option must be a boolean.")
     if params.get("identity"):
+        from .adapters.extension import resolve_browser
+        from .status import browser_snapshot
+
+        browser = resolve_browser(params["identity"], home=context.home)
+        if browser is not None:
+            return browser_snapshot(browser.discover(), why=why)
         external = _external(params, context)
         if external is not None:
             adapter, family = external
@@ -316,12 +325,19 @@ def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
     from .adapters.ecosystem import discover_ecosystem
 
     captured = _store(context).capture_view()
+    from .adapters.extension import discover_browser
+    from .status import browser_snapshot
+
     return {
         "ecosystem": discover_ecosystem(context.ecosystem_home),
         "initialized": captured["initialized"],
         "bots": [
             _manager_status(spec, row, context, why=why)
             for spec, row in captured["bots"]
+        ]
+        + [
+            browser_snapshot(record, why=why)
+            for record in discover_browser(context.home)
         ],
         "runtime": "reference_paper_available",
         "installations": _discover({}, context)["installations"],
@@ -364,6 +380,7 @@ def _runtime(params, context, operation):
     if (
         params.get("expected_session") is not None
         or params.get("expected_config_hash") is not None
+        or params.get("expected_generation") is not None
     ):
         raise ManagerError(
             "invalid_input",
@@ -377,6 +394,9 @@ def _register_input(params, context):
     from .ledger import RuntimeLedger
 
     spec = _identity(params, context)
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     try:
         path = Path(params["descriptor"])
         with path.open("rb") as stream:
@@ -487,6 +507,9 @@ def _research_command(params, context, operation):
 
         return reconcile_proposal(_store(context), owner, params["run_id"])
     spec = _identity(params, context)
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     payload = {
         "spec": spec.to_dict(),
         "descriptor": read_document(params["descriptor"]),
@@ -530,10 +553,37 @@ def _service(params, context):
 def _delegated(
     params: Mapping[str, Any], context: CommandContext, operation: str
 ) -> dict[str, Any]:
+    from .adapters.extension import resolve_browser
+
+    browser = resolve_browser(params.get("identity"), home=context.home)
+    if browser is not None:
+        if params.get("expected_session") is not None:
+            raise ManagerError(
+                "invalid_input", "Browser controls use the inspected generation."
+            )
+        if any(
+            params.get(key) is None
+            for key in ("expected_generation", "expected_config_hash", "request_id")
+        ):
+            raise ManagerError(
+                "expected_observation_required",
+                "Supply the inspected browser generation, config hash and request UUID.",
+                3,
+            )
+        return browser.control(
+            operation,
+            params["request_id"],
+            expected_generation=params["expected_generation"],
+            expected_config_hash=params["expected_config_hash"],
+        )
     external = _external(params, context)
     if external is None:
         return _runtime(params, context, operation)
     adapter, family = external
+    if params.get("expected_generation") is not None:
+        raise ManagerError(
+            "invalid_input", "The legacy owner does not provide generation fencing."
+        )
     if any(
         params.get(key) is None
         for key in ("expected_session", "expected_config_hash", "request_id")
@@ -584,6 +634,10 @@ def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
 
 IDENTITY = ((("identity",), {"help": "Bot UUID or unique display name"}),)
 CONTROL_GUARDS = (
+    (
+        ("--expected-generation",),
+        {"type": int, "help": "Inspected browser owner generation"},
+    ),
     (
         ("--expected-session",),
         {"help": "Inspected session ID, or none for an empty slot"},
@@ -839,6 +893,7 @@ COMMANDS = {
     ),
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
+from .browser_commands import command_specs as browser_command_specs
 from .executor_commands import command_specs as executor_command_specs
 from .health_commands import command_specs as health_command_specs
 from .learning_commands import command_specs as learning_command_specs
@@ -852,11 +907,16 @@ COMMANDS.update(
             *report_command_specs(CommandSpec),
             *learning_command_specs(CommandSpec),
             *executor_command_specs(CommandSpec),
+            *browser_command_specs(CommandSpec),
         )
     }
 )
 
 ERROR_EXIT_CODES = {
+    "browser_identity_changed": 3,
+    "browser_owner_absent": 3,
+    "report_budget_exceeded": 4,
+    "request_not_found": 3,
     "continuation_unavailable": 3,
     "executor_command_unsupported": 3,
     "executor_descriptor_invalid": 3,

@@ -1,10 +1,10 @@
-# Solbot manager 0.4.0
+# Solbot manager 0.5.0
 
 **Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
 Running bare `solbot` now prints help and concrete next steps. It is a command-line
 program, not an interactive menu. Grid, DCA, buffered SMA Trend and time-series Momentum run against
 explicit historical or prospective reference input. Saved settings support explicit editing and stopped-run adoption;
-prospective Jupiter trading and learning remain unavailable.
+research, attributed reports, health, continuing accounts and protected learning use explicit owner/evidence gates. Autonomous Jupiter trading remains uncertified.
 
 The standalone `solbot` CLI creates persistent named bot drafts and inspects their
 pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC.
@@ -13,6 +13,9 @@ pinned Coinbase recording or the selected existing Oracle archive. Creating a dr
 initialize another component's database, load keys, or trade.
 Arbitrage offers conditional directed Solana quote-cycle diagnosis through `cycle-check`; autonomous arbitrage remains unavailable. Council is external-only.
 
+For the current operations and remaining evidence gates, read
+[the 0.5 operations guide](../docs/bot-manager-0.5-operations.md).
+
 For the complete implementation history, operator workflows, source ownership,
 backup/recovery guidance, release evidence and remaining milestones, read
 [the bot-manager handoff](../docs/bot-manager-handoff.md).
@@ -20,7 +23,7 @@ backup/recovery guidance, release evidence and remaining milestones, read
 ## Install and use
 
 Python 3.13 or newer is required. The manager uses the standard library and the
-exact local `solmargintrader-backtester==0.1.1` package, which declares NumPy and
+exact local `solmargintrader-backtester==0.2.0` package, which declares NumPy and
 Pandas. Building uses setuptools. Install the compatible local backtester, Oracle, headless research runtime and manager projects in a stable environment:
 
 ```sh

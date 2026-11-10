@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solbot-manager"
-version = "0.4.0"
+version = "0.5.0"
 description = "Persistent paper bot specifications and owner-aware inventory"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["solmargintrader-backtester==0.1.1", "solmargintrader-research-runtime==0.1.2", "solmargintrader-oracle==0.2.1"]
+dependencies = ["solmargintrader-backtester==0.2.0", "solmargintrader-research-runtime==0.2.0", "solmargintrader-oracle==0.2.2"]
 
 [project.scripts]
 solbot = "botmanager.cli:main"
