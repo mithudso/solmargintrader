@@ -60,6 +60,32 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("credential-canary-98", run.stdout)
         self.assertFalse(self.home.exists())
 
+    def test_explicit_help_contains_complete_workflow_and_ui_access(self):
+        run = subprocess.run(
+            [sys.executable, "-m", "botmanager", "--help"],
+            env=self.env,
+            text=True,
+            capture_output=True,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(run.returncode, 0, (run.stdout, run.stderr))
+        for command in (
+            "solbot stack install",
+            "solbot ui open",
+            "solbot health-check",
+            "solbot metrics",
+            "solbot research-setup",
+            "solbot learning-shadow",
+            "solbot browser-control",
+            "solbot executor-capabilities",
+            "solbot restore",
+        ):
+            self.assertIn(command, run.stdout)
+        self.assertNotIn("credential-canary-98", run.stdout + run.stderr)
+        self.assertEqual(run.stderr, "")
+        self.assertFalse(self.home.exists())
+
     def test_two_instances_survive_fresh_processes_and_runtime_refuses(self):
         first = self.cli("create", "grid", "--name", "low", "--set", "range_pct=8")[
             "data"
