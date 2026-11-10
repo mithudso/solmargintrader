@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 341
+Version: 343
+Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch.
+Delta: v341 to v342; reproduce bare-command failure and begin usable entry/demonstration repair.
 Delta: v340 to v341; finish the detailed handoff and verify isolated CLI/backup examples.
 Delta: v339 to v340; begin the source-verified bot-manager handoff after milestone2 delivery.
 Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run.
@@ -1067,3 +1069,17 @@ The full handoff at /Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md
 A source-path check caught and corrected a draft reference to nonexistent soltui/registry.py; the actual owner registry is soltui/commands.py. Handoff validation then passed38installed CLI invocations in an isolated temporary home,52canonical source/document paths and the exact backup recipe with redirected isolated paths. Five specifications across4draftstrategies survived backup/restore; manager schema1/runtime schema2 passedquick_check, retained runtimeID and stopped intent. Actual recording sourcehash9639c69c... and snapshot7ff131f8... were unchanged. No worker/service/install/productionwrite occurred. Current69installed hashes still match accepted39e/M2merge, manager0.2.0/sharedcore0.1.0/NumPy2.5.4/Pandas3.1.1. Default home remainsabsent; configuredowner remainsincompatible, browserunregistered andNodeunavailable. Local verification artifact is /Users/mitch/dev/solmargintrader-wt-01a1c189/.superpowers/sdd/2026-11-09-bot-manager/handoff-verification.json.
 
 Source inventoryTASK1168 is done; drafting/validationTASK1169 is finishing. Remaining: final diff/docs/index gates, owned commit/push/PR/currentheadCI/merge and content verification under deliveryTASK1170. Runtime source and production state remain unchanged; do not repeat accepted runtime/OS tests merely for this documentation change. Retain active implementation-plan recovery workspace; preserve primary checkout and other sessions' files.
+
+## v342 — 2026-11-09 — owner reports unusable entry; execute the actual workflow
+
+The owner reports that bare /Users/mitch/.local/bin/solbot does nothing useful and requests direct instructions plus one actual bot demonstration. Bare invocation reproduced exit2 generic invalid_input JSON. Default manager inventory is empty/uninitialized. TASK1176 owns a focused startup-help repair, concise quickstart, one accessible default-home reference-paper demo and exact inline explanation. Use private /Users/mitch/dev/solmargintrader-wt-01a1c189 branchagent-01a1c189-usable; preserve primary checkout and production services.
+
+Create only an explicitly named session-demo-grid with actual bounded Coinbase recording input and declared illustrative costs. Start an owned foreground supervisor only after confirming no other manager running intents/services; verify cursor/state and stop, then terminate only that owned process. Retain the bot/descriptor/evidence so the owner can inspect them. No live trades, signing, new recorder or service installation. Current gaps remain explicit: no edit command, no new DCA/trend/momentum/arbitrage runtime, no prospective Jupiter data/learning/live system. Deliver the no-argument repair and instructions through tested installed code and passing final-head CI/merge. The owner asked for a usable writeup; do not replace it with another reflection or link-only response.
+
+## v343 — 2026-11-09 — actual accessible bot demo and startup0.2.1
+
+Created session-demo-grid UUIDca28be71-3b24-4473-874a-8ac97614edb8 in default /Users/mitch/.config/solbot only after verifying empty/uninitialized inventory and no service/supervisor. Saved actual descriptor /Users/mitch/.config/solbot/session-demo-input.json with declared illustrative6bpsfee/2bpsslippage/zero carry/1000USDvirtualcapital. Registered snapshot7ff131f8... from unchanged actualNov8CoinbaseSOL-USD recording; requestedstart, launched one ownedforegrounddaemon, observed2/2bars waiting/reference_input_exhausted, stopped and observedworkerrelease, then terminatedonlythatowneddaemonexit0. Finaldesired/observedstopped; bothlocksfalse;0fills/0exposure/0netPnL. Fullaccessible receipt /Users/mitch/.config/solbot/session-demo-receipt.json retained. No liveorders,keys,recorder orserviceinstall. This is actualhistoricalreferenceexecution, not a deliveredprospectiveJupiterbot.
+
+Bare CLI now shows usage, concrete creation/config/status examples, reference-input/supervisor requirements, quickstartURL and missing-capability boundaries; it exits0 without creatingstate. Explicitcommands retainJSONerrors andsecret sanitization. RegressionRED reproducedbareexit2; fiveCLI tests andfull110manager tests passed, Ruff/format passed. Manager0.2.1 regularno-depsreinstall completedexit0; otherdependenciesandruntime/simulatorcodeunchanged. Independentfocusedinstalledverificationactive. Created concise docs/bot-manager-quickstart.md andupdatedREADME/fullhandoff for actualdemo/currentdefaultstate. No edit/update command was invented; changedsettingsstillrequireanewnameddraft. User-facing answer must explain this directly andshowliteralcommands, notjustlinkhand-off.
+
+Remaining: installedacceptance, finaldocs/catalog checks, ownedcommit/push/PR/finalheadCI/merge/defaultcontentverification. Productmilestones3–8remaindue; thisrepairdoesnotcompletetheoriginalsystem. Preserveprimarycheckoutandactiveimplementationworkspace. User explicitly rejected unsolicited reflection; suppress user-facing reflection detours.

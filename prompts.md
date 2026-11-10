@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 167
+Version: 168
+Delta: v167 to v168; record the failed-startup report and requested working demonstration.
 Delta: v166 to v167; record the comprehensive bot-manager handoff request.
 Delta: v165 to v166; preserve the merged forward-signal research prompt.
 Delta: v164 to v165; record the current branch conflict-resolution and merge request.
@@ -1459,4 +1460,10 @@ Resolve the conflicts with that branch and merge and commit it
 
 ```text
 Write full detailed handoff with everything you did and why, how to access it, where to maintain it, all the features, etc.
+```
+
+## 2026-11-09 — make solbot usable and demonstrate the workflow
+
+```text
+I didn't ask for your reflection, I asked you for a writeup of what you did thisd session. I've tried running the /Users/mitch/.local/bin/solbot it does nothing. How does it work? you can't create antyhing or change anthing. How does a  bot run? Then where are the instructions? Can you do this literally once before you try and make me guess?
 ```

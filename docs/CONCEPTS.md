@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-10T01:42:49+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-10T02:05:49+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept transfer -n 1346`
 
 ### Grid trading
 
-`grid` · **638 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **640 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -112,7 +112,7 @@ Strongest files:
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (125 hits)
 
-Full list: `python3 index/search.py --concept grid -n 638`
+Full list: `python3 index/search.py --concept grid -n 640`
 
 ### Data integrity
 
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 580`
 
 ### On-chain execution reality
 
-`execution-onchain` · **488 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **489 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -150,7 +150,7 @@ Strongest files:
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (124 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 488`
+Full list: `python3 index/search.py --concept execution-onchain -n 489`
 
 ### Buy-and-hold benchmark
 
@@ -257,9 +257,9 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 727 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `trend` | 728 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 462 | `rsi`, `stochastic`, `oscillator` |
-| `momentum` | 352 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `momentum` | 353 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 319 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `baseline` | 271 | `buy_and_hold`, `baseline` |
 | `breakout` | 237 | `breakout`, `bb_breakout`, `keltner` |

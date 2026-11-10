@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `2810f4b2` (2026-11-10T01:42:49+00:00). 2844 tracked files, 63.1 MB.
+**Generated** from `index/INDEX.json` at commit `49de66bb` (2026-11-10T02:05:49+00:00). 2845 tracked files, 63.1 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2510 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2511 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 112 files
+- [`docs`](#docs) — 113 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1927 files
 - [`research`](#research) — 206 files
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1070 lines · 201,697 B · description: **extracted**
+`doc` · 1086 lines · 205,399 B · description: **extracted**
 
-**Purpose.** Version: 341 Delta: v340 to v341; finish the detailed handoff and verify isolated CLI/backup examples. Delta: v339 to v340; begin the source-verified bot-manager handoff after milestone2 delivery.
+**Purpose.** Version: 343 Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch. Delta: v341 to v342; reproduce bare-command failure and begin usable entry/demonstration repair.
 
 **Use.** Read it.
 
@@ -226,9 +226,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1463 lines · 79,660 B · description: **extracted**
+`doc` · 1470 lines · 80,175 B · description: **extracted**
 
-**Purpose.** Version: 167 Delta: v166 to v167; record the comprehensive bot-manager handoff request. Delta: v165 to v166; preserve the merged forward-signal research prompt.
+**Purpose.** Version: 168 Delta: v167 to v168; record the failed-startup report and requested working demonstration. Delta: v166 to v167; record the comprehensive bot-manager handoff request.
 
 **Use.** Read it.
 
@@ -254,7 +254,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-112 files.
+113 files.
 
 #### `docs/API.md`
 
@@ -474,7 +474,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-handoff.md`
 
-`doc` · 626 lines · 62,808 B · description: **extracted**
+`doc` · 637 lines · 63,315 B · description: **extracted**
 
 **Purpose.** Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes. The standalone application is installed as `solbot`.
 
@@ -493,6 +493,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 100 lines · 5,996 B · description: **extracted**
 
 **Purpose.** Version:1.0.3 Delta:1.0.2 to1.0.3; verify service-origin fixtures in source and installed import modes. Delta:1.0.1 to1.0.2; record final source and installed acceptance with immutable runtime identity.
+
+**Use.** Read it.
+
+#### `docs/bot-manager-quickstart.md`
+
+`doc` · 120 lines · 5,727 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine. help when run without arguments. Ordinary commands print JSON; `ok: true` means
 
 **Use.** Read it.
 
@@ -25358,9 +25366,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 469 lines · 28,918 B · description: **extracted**
+`doc` · 474 lines · 29,286 B · description: **extracted**
 
-**Purpose.** The standalone `solbot` CLI creates persistent named bot drafts and inspects their pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC. An explicit supervisor runs independent grid reference-paper accounts from a
+**Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. The current runnable strategy is grid against recorded input; no edit command, prospective Jupiter trading or learning is implemented yet.
 
 **Use.** Read it.
 
@@ -25392,7 +25400,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/cli.py`
 
-`code-python` · 45 lines · 1,406 B · description: **extracted**
+`code-python` · 66 lines · 2,459 B · description: **extracted**
 
 **Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
 
@@ -25584,7 +25592,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_cli.py`
 
-`test` · 86 lines · 3,310 B · description: **none**
+`test` · 105 lines · 4,106 B · description: **none**
 
 **Purpose.** _No description available._
 

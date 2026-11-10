@@ -1,4 +1,9 @@
-# Solbot manager 0.2.0
+# Solbot manager 0.2.1
+
+**Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
+Running bare `solbot` now prints help and concrete next steps. It is a command-line
+program, not an interactive menu. The current runnable strategy is grid against
+recorded input; no edit command, prospective Jupiter trading or learning is implemented yet.
 
 The standalone `solbot` CLI creates persistent named bot drafts and inspects their
 pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC.
@@ -30,9 +35,9 @@ python3 -m venv /Users/mitch/.venvs/solbot
 ```
 
 The installed console script resolves the package from its environment; it does
-not require a repository working directory or `PYTHONPATH`. Each invocation emits
+not require a repository working directory or `PYTHONPATH`. Application subcommands emit
 a JSON envelope with `schema_version`, a new UUID `request_id`, `ok`, `data`, and
-`error`. `--help` provides conventional parser help. Exit codes are 0 for success,
+`error`. `--help` and bare invocation provide parser help and next steps. Exit codes are 0 for success,
 2 for invalid input or identity conflicts, 3 for an unavailable capability, and 4
 for operational/store errors. Input errors never repeat submitted values.
 

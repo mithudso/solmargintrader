@@ -1,13 +1,18 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.0.0
-- Delta: Initial complete handoff of the approved design and delivered milestones 1 and 2.
+- Version: 1.0.1
+- Delta: Add the executed default-home demonstration and 0.2.1 usable-startup quickstart.
 - Reviewed: 2026-11-09, America/New_York. Runtime observations are a snapshot, not a monitoring feed.
 - Product baseline: remote master commit `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
 The standalone application is installed as `solbot`. It saves immutable named bot specifications, discovers an existing SolTUI owner, delegates guarded legacy controls when that owner supports them, and supervises independent grid accounts against a bounded recorded Coinbase input. It defaults to paper and disarmed. Milestones 1 and 2 are delivered. Prospective Jupiter trading, the other new strategy runtimes, blind selection, learning, graphical integration and live execution remain later work.
+
+For the shortest working instructions and the bot actually run on this machine,
+start with `/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md`.
+Version 0.2.1 makes bare invocation show useful help. It adds no edit command or
+new trading capability; the runtime evidence below remains the M2 baseline.
 
 This handoff is for the operator using the installed tool and the developer continuing it. It records what this session built, why it chose these boundaries, where the authoritative code and evidence live, and how to inspect, maintain and recover the application. Source references below use the canonical repository path; verify the actual checkout revision before editing or reinstalling.
 
@@ -20,7 +25,7 @@ This handoff is for the operator using the installed tool and the developer cont
 | Convenient command | `/Users/mitch/.local/bin/solbot` | Symlink to the stable console script |
 | Stable console script | `/Users/mitch/.venvs/solbot/bin/solbot` | Runs the regular, noneditable installation |
 | Stable Python | `/Users/mitch/.venvs/solbot/bin/python` | Interpreter and packages used by the console script and service |
-| Manager distribution | `solbot-manager==0.2.0` | CLI, specifications, owner adapter and reference runtime |
+| Manager distribution | `solbot-manager==0.2.1` | Usable-startup patch over the M2 runtime |
 | Shared distribution | `solmargintrader-backtester==0.1.0` | Existing canonical offline simulation code |
 | Installed numeric dependencies | NumPy `2.5.4`, pandas `3.1.1` | Observed versions in the accepted environment |
 | Default data home | `/Users/mitch/.config/solbot` | Selected by the actual user's home; override with `SOLBOT_HOME` |
@@ -39,7 +44,13 @@ The installed command works from outside the repository without `PYTHONPATH`. Ru
 
 `--help` prints argparse usage. `help` returns the machine-readable command list and strategy capabilities. `list` shows manager-owned specifications; `discover` reports external installations. They are different inventories.
 
-At handoff verification, the default manager home was absent. `service status` returned `installed=false`, `definition_present=false`, `supervisor_lock_held=false` and `automatic_install=false`. No production manager service or bot was started by this session. An absent home is a valid fresh state; read commands leave it absent.
+At the initial M2 handoff, the default manager home was absent. The subsequent
+owner-requested demonstration created and ran `session-demo-grid` there, then
+stopped it and closed its owned foreground supervisor. Its two recorded bars
+completed with zero fills, zero exposure and zero P&L. The retained descriptor and
+receipt are `/Users/mitch/.config/solbot/session-demo-input.json` and
+`/Users/mitch/.config/solbot/session-demo-receipt.json`. No persistent service was
+installed. Read commands still leave a genuinely absent home absent.
 
 The configured legacy SolTUI endpoint reported `incompatible_owner`, with unknown inventory. Browser inventory reported `registration_required`; Node FileStore reported `discovery_unavailable`. These observations do not mean those sources have zero bots. The tool deliberately refuses to turn unavailable inventory into an empty successful result.
 
