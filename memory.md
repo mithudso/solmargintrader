@@ -2,7 +2,8 @@
 
 PR192 delivery state: `/Users/mitch/.local/state/solmargintrader/pr192-01a1c44a/delivery-memory.md`. A completed receipt there supersedes the pre-merge remaining steps below.
 
-Version: 370
+Version: 371
+Delta: v370 to v371; repair CI import-order and Linux fixture failures after installed behavior acceptance.
 Delta: v369 to v370; accept independent M4 source review and both integrity repairs.
 Delta: v368 to v369; verify integrated M4 and repair V2 owner discovery.
 Delta: concurrent histories to v368; preserve M4 checkpoint and PR192 integration records.
@@ -1543,3 +1544,10 @@ Independent source review found known_clients omitted accepted ecosystem-paper-v
 Independent review approved the integrated source after two P2 repairs. Default V2 owner discovery now includes actual active locks/history. Owner adoption receipts now require the exact ten-field ManagerStore contract and canonical value/type bindings before immutable persistence. The real-ledger regression rejects malformed receipts without artifacts, then accepts/replays the genuine receipt. Nineteen owner tests and ten affected Manager research tests pass; Ruff/format pass. Reviewed runtime manifest SHA256f15a7fc87a77e53dbef32bfe890d7b88114448c1ed11cb0cfcf39f7a746ee4e7; private source-review.json records exact repaired file hashes. No remaining source-review blocker.
 
 The docs environment import failure was traced to four Finder .DS_Store files in ignored expanded experiment trees. All frozen source hashes matched. Those metadata files were preserved in private snapshot-finder-metadata.zip and removed only from this task-owned checkout. The immutable archive verifier was not weakened. Full docs discovery must pass at1435 SolTUI/1002 Backtester/408 extension/46 mongo=2891. Regenerate wiki and offline indexes after staging all repaired paths. Next: commit integrated source, fresh immutable integrated/standalone candidate environments, independent actual installed command/judge/sandbox/CAS acceptance, final records/checks/push, final-head PR192 CI and merge. Preserve existing production environments and all C447 work.
+
+
+## PR192 final CI repairs
+
+First integrated commit e50d5444 passed independent installed behavior: nine effective groups across public owner setup/refusals, four reference families/loss reporting, anonymous deterministic judging, actual OS denial with successful unsandboxed controls, shared authority, proposals/CAS, cancellation/history/legacy fences and preservation. Both regular environments matched1665 first-party files each with pipcheck0. Default demo seven-file hashes/size/mtime and decoded stopped/paper/disarmed cursor2 state, five frozen-environment metadata files and eight production process identities remained unchanged. A bounded actual shared-archive preparation refused invalid descriptor identity/costs/bounds; no absence, working actual venue evidence or new producer was inferred. Prior fixture-only acceptance failure used an invalid legacy bot name; corrected to supported grid and reran only that group successfully.
+
+CI42784289157 exposed two concrete missed paths. Linux research test's second call omitted its platform-selected judge, so it reached the intended macOS isolation_unavailable refusal before the expected date fence. Added judge=judge to that call; actual macOS sandbox coverage remains. Fresh standalone manager_evidence import failed: ImportError cannot import name ManagerEvidence from partially initialized module. Extracted unchanged error/finite canonical JSON/fingerprint helpers into dependency-free evidence_identity.py, preserving experiments re-exports and adding helper hashing to owner source identity. Fresh-process import-order/typed finite-JSON regression covers both orders. Sixty-two affected evidence/owner/native tests and the Linux-selected one-test path pass; Ruff passes changed modules. Scoped source re-review and fresh immutable regular candidates must bind this final import repair before merge. Existing installed sandbox/engine evidence remains bound to unchanged exact modules, not silently relabelled. New SolTUI count1436/total2892 includes the import regression.

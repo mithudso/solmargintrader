@@ -22,6 +22,7 @@ def source_identity():
         Path(__file__),
         Path(__file__).with_name("experiments.py"),
         Path(__file__).with_name("manager_evidence.py"),
+        Path(__file__).with_name("evidence_identity.py"),
     ]
     return {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 

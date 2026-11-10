@@ -12,7 +12,7 @@ import time
 import uuid
 from pathlib import Path
 
-from .experiments import ExperimentError, canonical, fingerprint
+from .evidence_identity import ExperimentError, canonical, fingerprint
 
 SOL = "So11111111111111111111111111111111111111112"
 USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import subprocess
+import sys
 import tempfile
 import unittest
 from concurrent.futures import ThreadPoolExecutor
@@ -8,6 +10,42 @@ from pathlib import Path
 from botmanager.blind import decide
 
 from soltui.experiments import ExperimentError, ExperimentStore
+
+
+class FreshEvidenceImportTests(unittest.TestCase):
+    def test_evidence_modules_import_in_both_orders_with_shared_identities(self):
+        for modules in (
+            ("soltui.manager_evidence", "soltui.experiments"),
+            ("soltui.experiments", "soltui.manager_evidence"),
+        ):
+            with self.subTest(import_order=modules):
+                script = f"""
+import importlib
+for name in {modules!r}:
+    importlib.import_module(name)
+from soltui import experiments, manager_evidence, evidence_identity
+assert experiments.ExperimentError is manager_evidence.ExperimentError is evidence_identity.ExperimentError
+assert experiments.canonical is manager_evidence.canonical is evidence_identity.canonical
+assert experiments.fingerprint is manager_evidence.fingerprint is evidence_identity.fingerprint
+assert experiments.canonical({{'b': False, 'a': 2}}) == '{{"a":2,"b":false}}'
+assert experiments.fingerprint(False) != experiments.fingerprint(0)
+try:
+    experiments.canonical(float('nan'))
+except experiments.ExperimentError:
+    pass
+else:
+    raise AssertionError('non-finite evidence accepted')
+from soltui.research_admission import source_identity
+assert 'evidence_identity.py' in source_identity()
+"""
+                result = subprocess.run(
+                    [sys.executable, "-c", script],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    cwd=Path(__file__).resolve().parents[2],
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
 
 
 def evidence():
