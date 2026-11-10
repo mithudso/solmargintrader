@@ -1,7 +1,8 @@
-Version: 2
-Delta: v1 to v2; implementation and source integration mostly verified, installed activation pending.
+Version: 3
+Delta: v2 to v3; actual launchd/native/CLI installation enabled, final independent acceptance and CI delivery active.
 Task: TASK-1247
-Baseline: d8381a80808c5d88ebeed4d53a295a31529960f2
-Completed: CLI workflow/UI commands/platform guide; Chrome/native source and ordinary browser gates; root health API and manager-home binding; manager319/ecosystem180/extension433/native84 checks.
-Active: final durable core failure-alert fixes and independent review repair verification.
-Pending: regular wheels; installed Chrome gate; exact old service/UI migration; actual suite/native helper activation; independent loaded acceptance; final CI/merge/remote proof/cleanup.
+PR: https://github.com/mithudso/solmargintrader/pull/195
+Completed: source/review fixes; manager358/ecosystem180/extension434 and Chrome25/installedChrome12 gates; regular wheels and installed MCP health; exact legacy service/UI migration; actual suite/native helper installation and public UI open.
+Active: independent UI/suite fault acceptance and native import-only final hash refresh.
+Pending: offline index refresh, final-head CI/merge/remote proof, primary safe sync and owned worktree cleanup.
+Delivery evidence: /Users/mitch/.local/state/solbot/releases/0.7.0/delivery-receipt.json supersedes this pre-merge checkpoint when complete.
