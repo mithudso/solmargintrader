@@ -101,3 +101,34 @@ git diff --cached | grep -iE 'BS58_PRIVATE_KEY|x-api-key|SMT_API_TOKEN|passphras
 
 This is personal tooling with no support commitment. If you find a defect that could lose funds, stop
 trading with it first (`node tools/cli.js kill`), then fix it.
+
+
+## Manager, Oracle and managed control room
+
+The manager and ecosystem default to paper/disarmed. Oracle observes and records
+source-labelled evidence; it has no signer. A ready availability response does not
+certify market data, research outcomes or permission to submit orders.
+
+The manager uses same-user Unix IPC, private records, generation-bound ownership
+and durable request receipts. The control-room identity binds both ecosystem and
+manager homes, its generation, lock and HTTP response. A reused UI for another
+manager home refuses adoption. The suite can terminate only actual child handles
+it created; an adopted process ID conveys no termination authority.
+
+The ecosystem HTTP service binds loopback and verifies Host, Origin and fetch
+metadata. State-changing controls require the session nonce from the local
+session endpoint. This differs from the extension HTTP adapter's bearer token.
+The native helper authenticates Chrome's origin against the local allowlist. Its
+fixed availability protocol accepts no browser-selected command, path, environment
+or arbitrary URL. Browser reads never start a component.
+
+Collector liveness, readiness and rich status are separate contracts. Unknown
+measurements remain unknown; public errors are fixed and sanitized. Sensitive
+records, tokens and keys must never appear in responses or logs. The archived
+liquidity service remains disabled; bootstrap and documentation checks do not
+activate it.
+
+Authoritative implementation: `botmanager/src/botmanager/transport.py`,
+`botmanager/src/botmanager/machine_health.py`, `botmanager/src/botmanager/suite.py`,
+`ecosystem/ui_service.py`, `ecosystem/web.py`, `ecosystem/control.py`,
+`soltui/native_host.py` and `soltui/native_host_install.py`.

@@ -1,4 +1,4 @@
-# Oracle 0.2.1
+# Oracle 0.2.2
 
 Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit
 `--instrument BTC/USD` (or another supported symbol/quote) binds each archive,
