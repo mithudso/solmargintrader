@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solmargintrader-backtester"
-version = "0.1.0"
+version = "0.1.1"
 description = "Canonical offline simulation engines for Solmargintrader"
 requires-python = ">=3.13"
 dependencies = ["numpy>=2.5.4", "pandas>=3.1.0"]

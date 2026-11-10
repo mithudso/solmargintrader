@@ -16,17 +16,18 @@ code path by which a decision uses a price it could not have observed.
 
 from __future__ import annotations
 
-import warnings
 import math
-from numbers import Integral, Real
+import warnings
 from dataclasses import dataclass, field
-from typing import Any, Protocol, Sequence, runtime_checkable
+from numbers import Integral, Real
+from typing import Any, Protocol, runtime_checkable
 
 import numpy as np
 
 from . import perps
 from .metrics import Metrics, compute_metrics
 from .types import (
+    INTERVAL_SECONDS,
     BarWindow,
     CostConfig,
     IntrabarLayer,
@@ -36,7 +37,6 @@ from .types import (
     Trade,
     hours_per_bar,
     periods_per_year,
-    INTERVAL_SECONDS,
     validate_bar_arrays,
 )
 
@@ -95,31 +95,64 @@ class EngineConfig:
             self.mode = Mode(self.mode)
         except (TypeError, ValueError) as exc:
             raise ValueError("mode must be spot or perp") from exc
-        for name in ("initial_capital", "leverage", "rebalance_threshold", "risk_free_rate"):
+        for name in (
+            "initial_capital",
+            "leverage",
+            "rebalance_threshold",
+            "risk_free_rate",
+        ):
             value = getattr(self, name)
-            if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, Real)
+                or not math.isfinite(value)
+            ):
                 raise ValueError(f"{name} must be finite")
         if self.initial_capital <= 0 or self.leverage <= 0:
             raise ValueError("initial_capital and leverage must be positive")
         if self.rebalance_threshold < 0:
             raise ValueError("rebalance_threshold cannot be negative")
-        if isinstance(self.fill_delay, bool) or not isinstance(self.fill_delay, Integral) or self.fill_delay < 0:
+        if (
+            isinstance(self.fill_delay, bool)
+            or not isinstance(self.fill_delay, Integral)
+            or self.fill_delay < 0
+        ):
             raise ValueError("fill_delay must be a nonnegative integer")
         if not isinstance(self.interval, str) or self.interval not in INTERVAL_SECONDS:
             raise ValueError("unsupported bar interval")
         if not isinstance(self.allow_short, bool):
-            raise ValueError("allow_short must be boolean")
+            raise ValueError("allow_short must be boolean")  # noqa: TRY004 -- retain public validation contract
         if self.mode is Mode.SPOT and self.leverage != 1.0:
-            raise ValueError("spot mode does not borrow; use --mode perp for leverage > 1")
+            raise ValueError(
+                "spot mode does not borrow; use --mode perp for leverage > 1"
+            )
         if not isinstance(self.costs, CostConfig):
-            raise ValueError("costs must be a CostConfig")
+            raise ValueError("costs must be a CostConfig")  # noqa: TRY004 -- retain public validation contract
         self.costs.validate()
         self.intrabar = tuple(self.intrabar or ())
         for layer in self.intrabar:
             if not isinstance(layer, IntrabarLayer):
-                raise ValueError("intrabar must hold IntrabarLayer objects")
-            if layer.seconds >= INTERVAL_SECONDS[self.interval] or INTERVAL_SECONDS[self.interval] % layer.seconds:
-                raise ValueError("intrabar layers must be finer than, and divide, the bar interval")
+                raise ValueError("intrabar must hold IntrabarLayer objects")  # noqa: TRY004 -- retain public validation contract
+            if (
+                layer.seconds >= INTERVAL_SECONDS[self.interval]
+                or INTERVAL_SECONDS[self.interval] % layer.seconds
+            ):
+                raise ValueError(
+                    "intrabar layers must be finer than, and divide, the bar interval"
+                )
+
+
+@dataclass(frozen=True)
+class AccountState:
+    """End-of-prefix book; pending indices refer to the original input origin."""
+
+    cash: float
+    position: Position
+    pending_targets: dict[int, float]
+    fees_paid: float
+    slippage_paid: float
+    borrow_paid: float
+    realized_pnl: float
 
 
 @dataclass
@@ -140,6 +173,7 @@ class BacktestResult:
     leverage: float
     # Held perp bars that a finer layer covered completely / that fell back to
     # the coarse range / whose coarse range exceeded the fine range.
+    account: AccountState | None = None
     bars_refined: int = 0
     bars_unrefined: int = 0
     bars_range_mismatch: int = 0
@@ -204,7 +238,11 @@ class _Book:
         )
 
     def close(
-        self, price: float, ts: int, index: int, reason: str,
+        self,
+        price: float,
+        ts: int,
+        index: int,
+        reason: str,
         forfeit: bool = False,
     ) -> None:
         """Close the whole position at `price`, settling fees and borrow."""
@@ -227,8 +265,11 @@ class _Book:
                 payout = 0.0  # venue keeps the remaining collateral
             self.cash += payout
 
-        realized = (price_pnl - borrow - fee - slip if self.cfg.mode is Mode.SPOT
-                    else payout - collateral) - entry_costs
+        realized = (
+            price_pnl - borrow - fee - slip
+            if self.cfg.mode is Mode.SPOT
+            else payout - collateral
+        ) - entry_costs
         units_closed = self.pos.units
         self.pos = Position()
 
@@ -255,9 +296,7 @@ class _Book:
             )
         )
 
-    def resize(
-        self, target_notional: float, price: float, ts: int, index: int
-    ) -> None:
+    def resize(self, target_notional: float, price: float, ts: int, index: int) -> None:
         """Adjust an open position toward `target_notional` on the same side.
 
         Costs are charged on the SIZE CHANGE, not on a synthetic round trip.
@@ -282,9 +321,13 @@ class _Book:
         if delta_notional > 0:
             # The target uses pre-fill equity. Reserve costs before spending the
             # remaining cash, just as open() does for a full allocation.
-            collateral_rate = 1.0 if self.cfg.mode is Mode.SPOT else 1.0 / self.cfg.leverage
+            collateral_rate = (
+                1.0 if self.cfg.mode is Mode.SPOT else 1.0 / self.cfg.leverage
+            )
             cost_rate = (fee + slip) / delta_notional
-            delta_notional = min(delta_notional, max(0.0, self.cash) / (collateral_rate + cost_rate))
+            delta_notional = min(
+                delta_notional, max(0.0, self.cash) / (collateral_rate + cost_rate)
+            )
             if delta_notional <= 1e-12:
                 return
             fee, slip = self._costs_on(delta_notional)
@@ -322,8 +365,11 @@ class _Book:
                 self.cash += payout
             new_units = cur_units - delta_units
             self.pos.units = new_units * direction
-            realized = (price_pnl - borrow_settled - fee - slip if self.cfg.mode is Mode.SPOT
-                        else payout - released) - entry_cost_share
+            realized = (
+                price_pnl - borrow_settled - fee - slip
+                if self.cfg.mode is Mode.SPOT
+                else payout - released
+            ) - entry_cost_share
             self.gross_cash += delta_units * direction * price
             if self.cfg.mode is Mode.PERP:
                 self.gross_cash += max(0.0, -released - price_pnl)
@@ -430,9 +476,7 @@ class _Book:
         )
 
 
-def _resolve_target(
-    raw: float, mode: Mode, allow_short: bool
-) -> float:
+def _resolve_target(raw: float, mode: Mode, allow_short: bool) -> float:
     """Clamp a strategy's raw target exposure to what the mode permits."""
     if not np.isfinite(raw):
         raise ValueError(f"strategy returned a non-finite exposure: {raw!r}")
@@ -444,20 +488,29 @@ def run_backtest(
     strategy: Strategy,
     arrays: dict[str, np.ndarray],
     config: EngineConfig,
+    *,
+    close_at_end: bool = True,
+    price_only: bool = False,
 ) -> BacktestResult:
     """Run one strategy over one price series.
 
     See the module docstring for the per-bar ordering that prevents look-ahead.
     """
     config.validate()
-    arrays = validate_bar_arrays(arrays, config.interval)
+    if type(close_at_end) is not bool or type(price_only) is not bool:
+        raise ValueError("prefix options must be boolean")
+    arrays = validate_bar_arrays(
+        arrays, config.interval, require_open_volume=not price_only
+    )
+    if "open" not in arrays:
+        raise ValueError("next-open execution requires observed open prices")
     ts = arrays["ts"]
     op, hi, lo, cl, vol = (
         arrays["open"],
         arrays["high"],
         arrays["low"],
         arrays["close"],
-        arrays["volume"],
+        arrays.get("volume"),
     )
     n = len(cl)
     if n == 0:
@@ -466,7 +519,7 @@ def run_backtest(
     warmup = strategy.warmup_bars()
     if isinstance(warmup, bool) or not isinstance(warmup, Integral) or warmup < 0:
         raise ValueError("strategy warmup_bars must be a nonnegative integer")
-    if warmup >= n:
+    if warmup >= n and close_at_end:
         raise ValueError(
             f"strategy '{strategy.name}' needs {warmup} warmup bars but the "
             f"series has only {n}; widen the date range or shorten the lookback"
@@ -505,7 +558,9 @@ def run_backtest(
             # shifted last candle that closes after this coarse decision.
             for i in np.flatnonzero(full):
                 grid = ts[i] + np.arange(expected, dtype="int64") * lay.seconds
-                full[i] = span % lay.seconds == 0 and np.array_equal(lay.ts[a_ix[i]:b_ix[i]], grid)
+                full[i] = span % lay.seconds == 0 and np.array_equal(
+                    lay.ts[a_ix[i] : b_ix[i]], grid
+                )
             layer_of = np.where((layer_of < 0) & full, k, layer_of)
 
     for i in range(n):
@@ -513,8 +568,12 @@ def run_backtest(
         # releases collateral. Only fees through the prior boundary are due here.
         if is_perp and book.pos.is_open:
             liq = perps.liquidation_price(
-                book.pos.entry_price, book.pos.side, book.pos.collateral,
-                book.pos.entry_notional, book.pos.accrued_borrow_fee, config.costs,
+                book.pos.entry_price,
+                book.pos.side,
+                book.pos.collateral,
+                book.pos.entry_notional,
+                book.pos.accrued_borrow_fee,
+                config.costs,
             )
             if perps.is_liquidated(book.pos.side, liq, op[i], op[i]):
                 _liquidate(book, config, liq, op[i], op[i], int(ts[i]), i)
@@ -531,8 +590,17 @@ def run_backtest(
             if layer_k >= 0:
                 lay = layers[layer_k]
                 a, b = int(lo_idx[layer_k][i]), int(hi_idx[layer_k][i])
-                liquidated, mismatch = _walk_fine_bar(
-                    book, config, lay, a, b, lo[i], hi[i], op[i], cl[i], i,
+                _liquidated, mismatch = _walk_fine_bar(
+                    book,
+                    config,
+                    lay,
+                    a,
+                    b,
+                    lo[i],
+                    hi[i],
+                    op[i],
+                    cl[i],
+                    i,
                 )
                 refined += 1
                 mismatched += int(mismatch)
@@ -540,7 +608,10 @@ def run_backtest(
                 if layers:
                     unrefined += 1
                 book.pos.accrued_borrow_fee += perps.accrue_borrow_fee(
-                    config.costs, book.pos.side, book.pos.entry_notional, hpb,
+                    config.costs,
+                    book.pos.side,
+                    book.pos.entry_notional,
+                    hpb,
                 )
                 liq = perps.liquidation_price(
                     book.pos.entry_price,
@@ -573,7 +644,7 @@ def run_backtest(
         if target is not None:
             if config.fill_delay == 0:
                 _apply_target(book, target, cl[i], int(ts[i]), i, config)
-            elif i + config.fill_delay < n:
+            elif not close_at_end or i + config.fill_delay < n:
                 pending[i + config.fill_delay] = target
 
         # -- 6. mark to market -------------------------------------------
@@ -583,12 +654,10 @@ def run_backtest(
         equity_curve[i] = max(0.0, book.equity(cl[i]))
         gross_curve[i] = book.gross_equity(cl[i])
         eq = equity_curve[i]
-        exposure_curve[i] = (
-            book.signed_notional(cl[i]) / eq if eq > 1e-12 else 0.0
-        )
+        exposure_curve[i] = book.signed_notional(cl[i]) / eq if eq > 1e-12 else 0.0
 
     # Close any open position at the final close so metrics see realised PnL.
-    if book.pos.is_open:
+    if close_at_end and book.pos.is_open:
         book.close(cl[-1], int(ts[-1]), n - 1, reason="final")
         equity_curve[-1] = max(0.0, book.equity(cl[-1]))
         gross_curve[-1] = book.gross_equity(cl[-1])
@@ -604,7 +673,13 @@ def run_backtest(
         initial_equity=config.initial_capital,
     )
     gross = compute_metrics(
-        gross_curve, ts, [], exposure_curve, ppy, config.risk_free_rate, 0,
+        gross_curve,
+        ts,
+        [],
+        exposure_curve,
+        ppy,
+        config.risk_free_rate,
+        0,
         initial_equity=config.initial_capital,
     )
 
@@ -621,13 +696,26 @@ def run_backtest(
         first_tradeable_index=first_tradeable,
         mode=str(config.mode),
         leverage=config.leverage,
+        account=AccountState(
+            cash=book.cash,
+            position=book.pos,
+            pending_targets={k: v for k, v in pending.items() if k >= n}
+            if not close_at_end
+            else {},
+            fees_paid=sum(t.fee for t in book.trades),
+            slippage_paid=sum(t.slippage for t in book.trades),
+            borrow_paid=sum(t.borrow_fee_settled for t in book.trades),
+            realized_pnl=sum(t.realized_pnl for t in book.trades),
+        ),
         bars_refined=refined,
         bars_unrefined=unrefined,
         bars_range_mismatch=mismatched,
     )
 
 
-def _liquidate(book, config, liq, open_px, close_px, ts, index, *, fine_open=None, fine_close=None):
+def _liquidate(
+    book, config, liq, open_px, close_px, ts, index, *, fine_open=None, fine_close=None
+):
     """Close the book at the liquidation fill, penalty applied adversely.
 
     If the bar GAPPED through the level the fill is roughly the open, not a
@@ -647,7 +735,10 @@ def _liquidate(book, config, liq, open_px, close_px, ts, index, *, fine_open=Non
     pen = config.costs.liquidation_penalty_bps / 10_000.0
     fill = fill * (1.0 - pen) if side is Side.LONG else fill * (1.0 + pen)
     book.close(
-        fill, ts, index, reason="liquidation",
+        fill,
+        ts,
+        index,
+        reason="liquidation",
         forfeit=config.costs.liquidation_forfeits_collateral,
     )
     book.liquidations += 1
@@ -669,15 +760,27 @@ def _walk_fine_bar(book, config, lay, a, b, c_low, c_high, c_open, c_close, inde
     fine_low = float(lay.low[a:b].min())
     fine_high = float(lay.high[a:b].max())
     tol = 5e-4  # 5 bps: coarse and fine feeds round differently
-    mismatch = (c_low < fine_low * (1 - tol)) if side is Side.LONG else (c_high > fine_high * (1 + tol))
+    mismatch = (
+        (c_low < fine_low * (1 - tol))
+        if side is Side.LONG
+        else (c_high > fine_high * (1 + tol))
+    )
     wide_low, wide_high = min(c_low, fine_low), max(c_high, fine_high)
 
     n_fine = b - a
     end_fee = pos.accrued_borrow_fee + perps.accrue_borrow_fee(
-        costs, side, pos.entry_notional, hours * n_fine,
+        costs,
+        side,
+        pos.entry_notional,
+        hours * n_fine,
     )
     liq_end = perps.liquidation_price(
-        pos.entry_price, side, pos.collateral, pos.entry_notional, end_fee, costs,
+        pos.entry_price,
+        side,
+        pos.collateral,
+        pos.entry_notional,
+        end_fee,
+        costs,
     )
     if not perps.is_liquidated(side, liq_end, wide_low, wide_high):
         pos.accrued_borrow_fee = end_fee
@@ -685,16 +788,30 @@ def _walk_fine_bar(book, config, lay, a, b, c_low, c_high, c_open, c_close, inde
 
     for j in range(a, b):
         pos.accrued_borrow_fee += perps.accrue_borrow_fee(
-            costs, side, pos.entry_notional, hours,
+            costs,
+            side,
+            pos.entry_notional,
+            hours,
         )
         liq = perps.liquidation_price(
-            pos.entry_price, side, pos.collateral, pos.entry_notional,
-            pos.accrued_borrow_fee, costs,
+            pos.entry_price,
+            side,
+            pos.collateral,
+            pos.entry_notional,
+            pos.accrued_borrow_fee,
+            costs,
         )
         if perps.is_liquidated(side, liq, float(lay.low[j]), float(lay.high[j])):
             _liquidate(
-                book, config, liq, c_open, c_close, int(lay.ts[j]), index,
-                fine_open=float(lay.open[j]), fine_close=float(lay.close[j]),
+                book,
+                config,
+                liq,
+                c_open,
+                c_close,
+                int(lay.ts[j]),
+                index,
+                fine_open=float(lay.open[j]),
+                fine_close=float(lay.close[j]),
             )
             return True, mismatch
     # Fine path found nothing. If the coarse range reaches past the fine range,
@@ -702,8 +819,12 @@ def _walk_fine_bar(book, config, lay, a, b, c_low, c_high, c_open, c_close, inde
     # disagreement, and ignoring it would let the cleaner feed rescue the position.
     # Diagnostic rounding tolerance must never suppress a known coarse touch.
     liq = perps.liquidation_price(
-        pos.entry_price, side, pos.collateral, pos.entry_notional,
-        pos.accrued_borrow_fee, costs,
+        pos.entry_price,
+        side,
+        pos.collateral,
+        pos.entry_notional,
+        pos.accrued_borrow_fee,
+        costs,
     )
     if perps.is_liquidated(side, liq, c_low, c_high):
         _liquidate(book, config, liq, c_open, c_close, int(lay.ts[b - 1]), index)

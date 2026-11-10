@@ -42,6 +42,28 @@ def lock_held(path: Path) -> bool:
         os.close(fd)
 
 
+def prospective_tick(ledger, row, generation, *, now=None, before_commit=None):
+    from .oracle_data import advance
+    from .strategies import evaluate
+
+    # The independent heartbeat cannot attest that archive reads or economics
+    # are progressing. Fence intent before either can block; atomic progress
+    # clears it, including a completed no-data/held-source poll.
+    ledger.begin_tick(row["bot_id"], generation)
+    data = advance(row["input"], now=now)
+    checkpoint = row["checkpoint"]
+    if len(data["bars"]) > row["cursor"]:
+        checkpoint = evaluate(BotSpec.from_dict(row["spec"]), data, len(data["bars"]))
+    ledger.commit_progress(
+        row["bot_id"],
+        generation,
+        row["input"]["snapshot_hash"],
+        data,
+        checkpoint,
+        before_commit=before_commit,
+    )
+
+
 def run_worker(home: str, bot_id: str, generation: int, parent_pid: int):
     ledger = RuntimeLedger(Path(home))
     done = threading.Event()
@@ -62,12 +84,16 @@ def run_worker(home: str, bot_id: str, generation: int, parent_pid: int):
             ledger.heartbeat(bot_id, generation, os.getpid())
             thread = threading.Thread(target=pulse, daemon=True)
             thread.start()
-            from .strategies.grid import evaluate
+            from .strategies import evaluate
 
             while os.getppid() == parent_pid:
                 row = ledger.get(bot_id)
                 if row["generation"] != generation or row["desired"] != "running":
                     break
+                if row["input"].get("prospective") is not None:
+                    prospective_tick(ledger, row, generation)
+                    done.wait(1.0)
+                    continue
                 if row["cursor"] == len(row["input"]["bars"]):
                     if (
                         row["observed"] != "waiting"

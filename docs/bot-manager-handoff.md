@@ -1,11 +1,13 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.0.4
+- Version: 1.1.0
+- Delta: v1.0.5 to v1.1.0; describe milestone 3 canonical strategies, shared prospective input and quote evidence.
+- Delta: v1.0.4 to v1.0.5; record integrated editing delivery and coordinated five-package maintenance.
 - Delta: Document registry-owned global options and multi-bot legacy telemetry continuity evidence.
 - Delta: Preserve coordinated ecosystem discovery and schema 4 append-only telemetry during PR185 integration; retain historical acceptance separately.
 - Delta: Document manager 0.3.0 immutable editing, safe application, schema/history and separate saved/active configuration identity.
 - Delta: Add the executed default-home demonstration and 0.2.1 usable-startup quickstart.
-- Reviewed: 2026-11-09, America/New_York. Runtime observations are a snapshot, not a monitoring feed.
+- Reviewed: 2026-11-10, America/New_York. Runtime observations are a snapshot, not a monitoring feed.
 - Original editing source baseline: `7af12d82f4e9b8eb04262e9636487f4751730d1d`; manager 0.3.0 also incorporates PR185 compatibility below. Final loaded identity belongs to the integrated acceptance receipt. Prior M2 delivery is merge `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
@@ -14,8 +16,9 @@ The standalone application is installed as `solbot`. It saves and edits immutabl
 
 For the shortest working instructions and the bot actually run on this machine,
 start with `/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md`.
-Version 0.2.1 made bare invocation show useful help. Version 0.3.0 adds `edit`,
-`history`, `apply` and `schema`; it does not certify new trading capability.
+Version 0.2.1 made bare invocation show useful help. Version 0.3.0 added `edit`, `history`, `apply` and `schema`. Version 0.4.0 adds
+four canonical reference strategies, shared prospective input and quote-cycle diagnosis;
+it does not certify autonomous Jupiter execution.
 The retained default-home demonstration below remains unchanged.
 
 This handoff is for the operator using the installed tool and the developer continuing it. It records what this session built, why it chose these boundaries, where the authoritative code and evidence live, and how to inspect, maintain and recover the application. Source references below use the canonical repository path; verify the actual checkout revision before editing or reinstalling.
@@ -29,8 +32,8 @@ This handoff is for the operator using the installed tool and the developer cont
 | Convenient command | `/Users/mitch/.local/bin/solbot` | Symlink to the stable console script |
 | Stable console script | `/Users/mitch/.venvs/solbot/bin/solbot` | Runs the regular, noneditable installation |
 | Stable Python | `/Users/mitch/.venvs/solbot/bin/python` | Interpreter and packages used by the console script and service |
-| Manager distribution | `solbot-manager==0.3.0` | Immutable editing extension over the M2 runtime |
-| Shared distribution | `solmargintrader-backtester==0.1.0` | Existing canonical offline simulation code |
+| Manager distribution | `solbot-manager==0.4.0` | Four canonical reference families and shared prospective input over immutable editing |
+| Shared distribution | `solmargintrader-backtester==0.1.1` | Canonical offline simulation with explicit retained open-account state |
 | Installed numeric dependencies | NumPy `2.5.4`, pandas `3.1.1` | Observed versions in the accepted environment |
 | Default data home | `/Users/mitch/.config/solbot` | Selected by the actual user's home; override with `SOLBOT_HOME` |
 | Canonical source | `/Users/mitch/dev/solmargintrader/botmanager` | Permanent repository layout |
@@ -78,6 +81,8 @@ The UI control-room findings were incorporated as backend contracts. A future UI
 | PR172, separate UI work | Supplemental control-room design incorporated into manager identity, state and receipt contracts | https://github.com/mithudso/solmargintrader/pull/172 |
 | PR175 | Milestone 1: CLI/defaults/immutable drafts, truthful status, owner discovery and guarded legacy controls | https://github.com/mithudso/solmargintrader/pull/175 |
 | PR180 | Milestone 2: persistent concurrent grid reference-paper runtime, stable packaging and explicit launchd lifecycle | https://github.com/mithudso/solmargintrader/pull/180 |
+| PR184 | Useful bare-command help and the actual retained demonstration | https://github.com/mithudso/solmargintrader/pull/184 |
+| PR186 | Immutable editing, explicit safe adoption and schema 4 shared telemetry | https://github.com/mithudso/solmargintrader/pull/186 |
 
 M1 merge: `4a65a06bf0d5968f56ab861deb2d588aefe42f2d`. M2 merge: `2810f4b23cbd7842dcf03924608e7cb758836ee8`. The M2 reviewed product source was `39e0c262d715fe6d9ec2e877a3a9cabdf3eceb9f`; subsequent changes repaired one test fixture and updated release records, without changing accepted runtime modules.
 
@@ -104,15 +109,15 @@ Concurrent historical-data, monitor and signal-research work was preserved durin
 | Edit/version/history | Explicit changed fields, retained pins/provenance, append-only versions, optional revision CAS and durable request replay | Saved changes cannot alter an active run's pinned settings |
 | Apply saved revision | Explicit stopped/owner-released/zero-exposure adoption; full prior-run archive and new stopped identity | Refuses uncertain state/incompatible input; repeated application cannot reset an active run |
 | Editor schema | Versioned field/default/type/constraint and registry argument metadata | Describes current backend capability; graphical implementation remains later work |
-| Grid | Draft plus independent manager-owned reference-paper replay | One-minute recorded Coinbase inputs only; at most 100 runtime rungs |
-| DCA | Typed safety-order specification | New manager runtime unavailable |
-| Trend | Typed buffered SMA-crossover specification | New manager runtime unavailable |
-| Momentum | Typed trailing-return specification | New manager runtime unavailable |
-| Arbitrage | Honest `solana_adapter_unavailable` refusal | No Solana arbitrage adapter or live multi-leg execution |
+| Grid | Independent canonical resting-ladder reference-paper accounts | Historical Coinbase capture or prospective shared Oracle SOL/USD reference bins; at most 100 runtime rungs |
+| DCA | Canonical safety-order deal simulator in independent reference-paper workers | Open deals survive prefixes and restarts; same-bar safety/TP semantics remain canonical |
+| Trend | Packaged pure buffered SMA strategy with canonical next-open fills | Warmup and pending targets survive prefix reconstruction; no fabricated volume |
+| Momentum | Canonical time-series Momentum with next-open execution | Distinct from buffered SMA Trend; source/model compatibility stays explicit |
+| Arbitrage | Conditional pessimistic diagnosis of size-matched, aligned directed Solana quote cycles | Explicit complete cost assumptions; positive opportunity is never booked profit; no autonomous live cycle execution |
 | Council | External-only identity and available owner status | Not a new manager strategy and not a Jupiter-certified fill model |
 | Defaults/provenance | Packaged values, exact-compatible shared values, explicit manual overrides in that order | Shared snapshot injection is currently a Python `CommandContext` interface, not an automatic CLI optimizer importer |
-| Multi-instance runtime | Independent grid UUIDs, owners, generations, cursors, lots and virtual accounts | Four desired-running slots; accounts do not share one funded wallet |
-| Input registration | Immutable bounded snapshots with source hashes/high-watermarks, costs and engine identity | Does not record new prices or append prospective input |
+| Multi-instance runtime | Independent Grid/DCA/Trend/Momentum UUIDs, owners, generations, cursors, lots and virtual accounts | Four desired-running slots; accounts do not share one funded wallet |
+| Input preparation/registration | Explicit historical snapshots or post-activation prospective archive descriptors, source policy/watermark, cost profile and strategy engine identity | Read-only consumer of one existing producer; reference source remains SOL/USD |
 | Start/stop | Durable idempotent control receipts and generation fencing | Start acceptance is separate from observed running; stop retains exposure |
 | State/diagnostics | Separate lifecycle, reachability, heartbeat, data age, evaluation, reason, blockers and next trigger | Full performance-health/alerting/learning reports are later work |
 | P&L | Costed reference financials, realized/unrealized values, exposure, checkpointed lots/fills and quote units | No live accounting, deposits/withdrawals reporting or portfolio reconciliation claim |
@@ -139,6 +144,9 @@ Every application command dispatches through `/Users/mitch/dev/solmargintrader/b
 | `history BOT [--revision N]` | Read immutable saved revisions and attributable current/archived runs |
 | `apply BOT [--expected-revision N] [--request-id UUID] [--descriptor PATH]` | Explicit safe stopped-boundary adoption; never starts a worker |
 | `schema [STRATEGY]` | Read actual editor fields, defaults, constraints and command argument contract |
+| `prepare-input BOT --archive PATH_OR_shared-sol-usd --reference --output PATH` | Freeze explicit source identity/activation/cost assumptions without starting its producer |
+| `data-check BOT [--descriptor PATH]` | Explain coverage, source age, model compatibility, warmup and missing executable evidence |
+| `cycle-check --descriptor PATH` | Diagnose a strictly validated conditional directed-quote cycle with explicit costs |
 | `status [BOT] [--why]` | Bot or fleet read model; fleet also reports configured installations |
 | `discover` | External installation inventory with completeness/availability reasons |
 | Global `--ecosystem-home ABSOLUTE_PATH` before a command | Add explicitly selected external F5 registrations to list/fleet status; does not transfer or control those trials |
@@ -206,7 +214,7 @@ SOLBOT_HOME=/Users/mitch/.local/state/solbot-example /Users/mitch/.local/bin/sol
 SOLBOT_HOME=/Users/mitch/.local/state/solbot-example /Users/mitch/.local/bin/solbot status example-grid --why
 ```
 
-Expected: two different UUIDs and manual-pin provenance. A newly created draft has no runtime ID/owner/generation and reports runtime unavailable. No prices are fetched and no capital is reserved. Reusing an existing name refuses rather than updating it. There is no clone/update CLI yet; creating a second name establishes another specification.
+Expected: two different UUIDs and manual-pin provenance. A newly created draft has no runtime ID/owner/generation and reports runtime unavailable. No prices are fetched and no capital is reserved. Reusing an existing name refuses rather than updating it. Use `edit` to append changes to an existing specification; creating a second name establishes another independent specification. There is no clone CLI.
 
 ### Register a recorded reference input
 
@@ -434,21 +442,40 @@ a fresh environment or experiment.
 
 Read transactions hold one snapshot across the run row and fill decode. The supervisor confirms an integrity fault in a fresh write transaction before quarantining. A transient store-access error is not proof of corruption. Complete checkpoint identity binds bot ID, config/revision, source input, target context, virtual account, engine and run hash, including when two bots have identical parameters.
 
+## Shared prospective strategy workflow
+
+The short complete workflow is maintained in /Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md. Create a unique named Grid, DCA, Trend or Momentum draft, prepare a separate descriptor from `shared-sol-usd` with explicit `--reference`, inspect `data-check`, register the descriptor, then request start and run one foreground daemon or an already installed compatible service. A command receipt and a healthy process do not establish a completed evaluation.
+
+The shared source is /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1/oracle/SOL/history.sqlite3. The existing ecosystem producer owns it. The manager opens an existing regular archive with read-only SQLite and validates application/schema/source/policy identity in one transaction. Accepted observations are distinct from raw rejected events. It never initializes an absent archive, starts Oracle, or creates a recorder. A source descriptor is a selected input, not permission to take its owner.
+
+A prospective descriptor binds source scope, policy, activation clock and sequence watermark. Only later accepted observations enter prospective evidence. The partial activation minute is excluded. Completed one-minute bins need observed edges within five seconds and no sample gap over five seconds; no interpolation invents a missing bar or volume. The source cursor, input append and account checkpoint commit together. Each bot retains its own book. Backlogs keep delayed-replay provenance even after catch-up.
+
+The `canonical-spot-reference-v1` cost profile derives canonical fee/slippage defaults, explicit spot carry and minimum notional. These are declared reference assumptions. `--set` changes only allowlisted assumptions. The source uses USD and the target remains Jupiter SOL/USDC; neither the profile nor a successful run proves USDC parity, historical routes or observed transaction costs.
+
+The initial bounded account holds at 2,048 bars or 245,760 accepted observations. It keeps its lots, capital, cursor and evidence. A healthy heartbeat may coexist with stale data, warmup, no decision or a resource hold. Longer incremental/segmented continuity is required in milestone 6 before claiming default one-minute runs can gather a full seven-day shadow period.
+
+Maintain archive reading and preparation in /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/oracle_data.py, command handling in /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/input_commands.py, and dispatch/checkpoint validation in /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/strategies/__init__.py. The DCA, Trend and Momentum adapters delegate to the existing canonical owners. The canonical engine's default still closes at the end for old batch callers; reference prefix callers explicitly retain the open account and pending next-open target.
+
+Jupiter quote evidence is a separate explicit opt-in capability in /Users/mitch/dev/solmargintrader/oracle/quotes.py. All coin archives share /Users/mitch/.local/share/solmargintrader/oracle/quote-budget.sqlite3, at most 60 attempts per minute. The collector makes one authenticated Swap v1 GET, never retries, refuses redirects and preserves bounded public evidence. It requests direct routes that its model can validate. Unknown fees, fills or price impact remain explicit; a quote is not execution. Unsupported topology refuses. The manager's cycle diagnosis requires exact directed sizes, aligned unexpired clocks, explicit cost currency and failure/unwind assumptions. It never books the quoted opportunity as profit or enables live arbitrage.
+
+The local HTTP stand-in and its scope are documented in /Users/mitch/dev/solmargintrader/postman/mocks/botmanager-jupiter-swap-v1/README.md. Simulated HTTP success is separate from actual provider data, regular installed source identity and chain acceptance.
+
 ## 8. Maintenance, upgrades, backup and recovery
 
 ### Upgrade from verified source
 
 Do not perform an install as an incidental status fix. A runtime upgrade may change engine identity or schema compatibility. First retain the running release, inspect affected source and migrations, quiesce the relevant service/control writers, and take a consistent backup. A stopped process can still have saved running intent.
 
-For a reviewed checkout in the retained private worktree, the installation command is:
+After verifying the canonical checkout contains the reviewed release and the runtime is safely quiescent, the coordinated installation command is:
 
 ```sh
-/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader-wt-01a1c189/backtester /Users/mitch/dev/solmargintrader-wt-01a1c189/botmanager
+/Users/mitch/.venvs/solbot/bin/python -m pip install /Users/mitch/dev/solmargintrader/backtester /Users/mitch/dev/solmargintrader/oracle /Users/mitch/dev/solmargintrader/botmanager /Users/mitch/dev/solmargintrader/soltui /Users/mitch/dev/solmargintrader/ecosystem
+/Users/mitch/.venvs/solbot/bin/python -m pip check
 /Users/mitch/.local/bin/solbot help
 /Users/mitch/.local/bin/solbot service status
 ```
 
-Use the equivalent two absolute source paths in another verified checkout when this continuation worktree is eventually removed. Installing manager alone into a fresh environment may fail to resolve the first-party backtester distribution from a public index. A regular installation copies code into the stable environment; its direct-url metadata naming a checkout does not make it editable.
+Supply all five local first-party projects in one installation transaction because their declared compatibility pins must resolve together. The same five paths apply to another verified source checkout. Keep frozen experiment environments on their original reviewed release; installing a new package does not authorize changing an active experiment. Installing manager alone into a fresh environment may fail to resolve its first-party dependencies from a public index. A regular installation copies code into the stable environment; its direct-url metadata naming a checkout does not make it editable.
 
 For a manager-only repair with an unchanged, already installed shared core, the accepted release used `--no-deps --force-reinstall` on the reviewed manager directory. Do not reuse old wheel artifacts after source changes. Compare loaded module hashes with reviewed source, then exercise changed behavior from outside the checkout with `PYTHONPATH` unset. Restart a service only as an explicit operational action after compatibility checks.
 
@@ -512,7 +539,7 @@ The snippet is a copy primitive, not an automatic quiesce/restore/migration syst
 | --- | --- | --- |
 | `runtime_not_available` | Draft lacks registered reference input, or the new strategy runtime is unavailable | Inspect strategy capability and descriptor; do not assume start created a worker |
 | Pending start with no supervisor lock | Durable intent was accepted but no runtime owner is observed | Inspect service status; explicitly run the correct home's daemon/service when intended |
-| `waiting/reference_input_exhausted` | Immutable replay reached EOF | Keep result identity; new prospective inputs are a later capability |
+| `waiting/reference_input_exhausted` | Immutable historical replay reached EOF | Retain that result; prepare a separate prospective descriptor/account for new observations |
 | `heartbeat_stale`, `worker_not_observed`, `tick_stalled` | Separate process/progress observations failed | Read status/events, retained generation and source identity; let bounded recovery act and inspect repeated failures |
 | `failed` after repeated failures | Retry budget exhausted | Investigate evidence; no blind reset or automated new-ID replacement |
 | `corrupt_checkpoint` / `invalid_spec` | Integrity validation failed | Preserve databases, request IDs and raw evidence; use read-only inspection/isolated backup; fresh stop remains available |
@@ -565,6 +592,27 @@ The original 29-check/70-file receipt above is historical evidence for 7af12d82,
 not a proof that the integrated source is loaded. Consult the separate integrated
 acceptance receipt under the same release directory for current loaded-source
 and telemetry-after-adoption validation.
+
+Integrated acceptance passed 50 checks and matched all 167 shipped source files and assets in both /Users/mitch/.venvs/solbot and /Users/mitch/.venvs/solecosystem-0.1.2. Both dependency checks passed. It verified global CLI discovery against populated external registrations, paged telemetry across adoption, explicit refusal of ambiguous legacy cursor reuse, and unchanged default demo bytes, schemas and state. All test-owned daemons exited 0 and released their locks. The final artifacts are /Users/mitch/.local/state/solbot/releases/0.3.0/editing-integrated-installed-acceptance.json and /Users/mitch/.local/state/solbot/releases/0.3.0/editing-integrated-installed-acceptance.md.
+
+PR186 merged as 13525f2a27bc96d68dcab2a90059c2b11e1791dc after final head f753e63aa3d92e5f6296b7db4d68adabd96dd588 passed all 11 active CI jobs (two optional jobs skipped), including 149 manager tests. The entire merged tree matched the reviewed branch tip. These establish editing delivery; milestones 3–8 remain active.
+https://github.com/mithudso/solmargintrader/pull/186
+
+### Milestone 3 source and installed evidence
+
+Reviewed source is bfc6d2f479a5765937eed651430c13bd3eea3731, including initial 18aa3c70 and first fix da2cae09. Completed checks passed: 168 manager tests before the final status repair, 1,002 canonical tests, 68 Oracle tests and 8 Trend tests. The narrow final repair passed 31 covering tests; final-head repository CI independently runs the complete current manager suite. Ruff and formatting passed.
+
+Review caught a missing prospective tick-intent marker, inconsistent inner routes that could produce a false conditional cycle, and lost price-impact data. Fixes added actual hung-worker recovery coverage, explicit direct-route reconciliation and exact impact retention. Real installed acceptance then found completed source-schema-2 status reading the old engine key. Eight family/mode cases reproduced the CLI failure; the versioned mapper now reads the pinned identity and preserves old schema-1 labels. The initial failed report remains preserved instead of being relabelled as passing.
+
+Final independent acceptance passed 58 effective gates. Both regular environments matched all 3,288 packaged hashes: each has 171 Python source files, 3 web assets and 1,470 strategy-card documents. Those asset counts are not test counts or additional trading capabilities. Both dependency checks passed. The official new environment also completed a temporary MCP health handshake and closed its child.
+
+Two accounts fixed activation at 2026-11-10 05:12:06 UTC, consumed a genuinely later completed minute and advanced from cursor 1 to 2 across a supervisor restart, using the existing producer without starting another. Retained completed results then returned valid status through candidate, global and stable alias after the repair. Historical source-schema-2 status passed too. The real stopped home and original default demo retained their bytes, mtimes, schema versions, identities and economic state across reads.
+
+The second prospective daemon and final stopped-clone daemon exited 0 and released their locks. The initial harness lost the first daemon's exit code when the mapper assertion failed; graceful ownership release was observed, but that historical exit code remains unknown. Current acceptance does not invent an earlier successful exit.
+
+Nine actual HTTP scenarios ran through the regular installed quote client against a local Postman stand-in. A valid direct quote retained exact zero impact and remained uncertified. Rate limit, HTML failure, invalid JSON, wrong mint, excess latency and timeout refused without retry or an extra observation. Disabled collection made no request; a second coin archive could not bypass a filled shared budget. The current client hash is c014305f455ce4763a55e7608226390e09710569ab6737b0a268d123fa2dafdb. These establish simulated HTTP behavior, not provider liquidity or chain execution.
+
+Stable private receipts are /Users/mitch/.local/state/solbot/releases/0.4.0/task-m3-installed-acceptance.json, /Users/mitch/.local/state/solbot/releases/0.4.0/task-m3-installed-acceptance.md, /Users/mitch/.local/state/solbot/releases/0.4.0/m3-quote-http-installed-acceptance.json and /Users/mitch/.local/state/solbot/releases/0.4.0/m3-integrated-install.json. The rejected test candidate and original partial reports remain explicitly identified there. Old frozen 0.1.1/0.1.2 environments and their experiments were unchanged. No source, fixture or installed check certifies a profitable edge, complete Jupiter costs, actual seven-day shadow evidence or live execution.
 
 ### M1 evidence
 
@@ -633,7 +681,7 @@ INDEX_NO_AUTO=1 /Users/mitch/.venvs/solmargintrader-docs/bin/python /Users/mitch
 
 Also test regular installed imports from outside the checkout; source `PYTHONPATH` is development/test support, not a deployment dependency. If canonical economics change, run affected backtester suites and Python/extension grid parity. If owner registry commands change, maintain `/Users/mitch/dev/solmargintrader/soltui/tests/bridge_support.py` and bridge parity checks. If service/worker behavior changes, independent installed fixture acceptance remains required; unit mocks cannot replace it.
 
-The root documentation gate discovers the legacy 999 backtester, 1,402 SolTUI, 408 extension and 46 mongo tests, total 2,855. The separate manager suite is not included in that legacy total. The full SolTUI suite is optional in normal CI; two skips in M2 CI were the full SolTUI suite and informational Jupiter endpoints, not failed required jobs.
+The root documentation gate discovers 1,002 backtester, 1,405 SolTUI, 408 extension and 46 mongo tests, total 2,861. The separate manager suite is not included in that legacy total. The full SolTUI suite is optional in normal CI; two skips in M2 CI were the full SolTUI suite and informational Jupiter endpoints, not failed required jobs.
 
 Regenerate tracked metadata only after staging new/resolved paths. Run the existing offline generators `/Users/mitch/dev/solmargintrader/index/build.py all`, `/Users/mitch/dev/solmargintrader/index/make_files_doc.py`, `/Users/mitch/dev/solmargintrader/index/make_concepts_doc.py`, then the index `--check` and docs gate. Semantic embeddings are separately opt-in. Use `INDEX_NO_AUTO=1` for local index searches; an earlier search fallback started an idle builder, which this session identified and stopped without touching shared model services.
 
@@ -646,7 +694,7 @@ The controlling specification is `/Users/mitch/dev/solmargintrader/docs/superpow
 | 1 / TASK-1107 | Delivered | CLI/defaults/specifications/legacy controls; preserve contracts |
 | 2 / TASK-1108 | Delivered | Persistent independent grid reference runtime; preserve recovery and identity |
 | Editing / TASK-1178 | Delivered extension | Immutable revisions/history/schema and explicit stopped zero-exposure application; no active-run relabelling |
-| 3 / TASK-1109 | Next | DCA/trend/momentum adapters, exact batch/prefix/restart parity, shared prospective data and actual Solana evidence; Solana arbitrage capability only when observations support it |
+| 3 / TASK-1109 | Source and installed acceptance verified | Four canonical reference adapters, shared prospective input, strict direct-route quote evidence and conditional cycles; final-head CI/remote delivery remains separately recorded |
 | 4 / TASK-1110 | Planned | Isolated blind judge/resolver, private parameter mapping, frozen objectives, shared exposure/holdout authority and repeated-testing controls |
 | 5 / TASK-1111 | Planned | Accounting, loss cohorts, health/performance diagnostics, reproducibility and load checks |
 | 6 / TASK-1112 | Planned | Gated training proposals and adoption; protected manual pins; fresh compatible evidence and shadow comparison |
@@ -698,7 +746,7 @@ The interactive UI reference was delivered separately at `/Users/mitch/Downloads
 
 ### Local session evidence: preserve until the implementation plan finishes
 
-The ignored working ledger is `/Users/mitch/dev/solmargintrader-wt-01a1c189/.superpowers/sdd/2026-11-09-bot-manager/progress.md`. This directory is local recovery evidence, not the only durable description of the application. The tracked documents, GitHub commits/CI and Stele tasks remain the portable handoff if that directory is unavailable.
+The active ignored working ledger is `/Users/mitch/dev/solmargintrader-wt-01a1c189-editing/.superpowers/sdd/2026-11-09-bot-manager/progress.md`. This directory is local recovery evidence, not the only durable description of the application. The tracked documents, GitHub commits/CI and Stele tasks remain the portable handoff if that directory is unavailable.
 
 Important local files are:
 

@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Bot manager Jupiter Swap v1 quote contract",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Provider documentation example only. Synthetic fixture; never execution, current quote, profitability or complete transaction-cost evidence. Owner-selected Swap v1; no swap/sign/send routes. Source https://dev.jup.ag/docs/swap/get-quote, checked2026-11-09."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.jup.ag"
+    }
+  ],
+  "item": [
+    {
+      "name": "ExactIn quote",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/swap/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=100000000&slippageBps=50&swapMode=ExactIn&onlyDirectRoutes=true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "swap",
+            "v1",
+            "quote"
+          ],
+          "query": [
+            {
+              "key": "inputMint",
+              "value": "So11111111111111111111111111111111111111112"
+            },
+            {
+              "key": "outputMint",
+              "value": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            },
+            {
+              "key": "amount",
+              "value": "100000000"
+            },
+            {
+              "key": "slippageBps",
+              "value": "50"
+            },
+            {
+              "key": "swapMode",
+              "value": "ExactIn"
+            },
+            {
+              "key": "onlyDirectRoutes",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Documented quote example",
+          "originalRequest": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/swap/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=100000000&slippageBps=50&swapMode=ExactIn&onlyDirectRoutes=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "swap",
+                "v1",
+                "quote"
+              ],
+              "query": [
+                {
+                  "key": "inputMint",
+                  "value": "So11111111111111111111111111111111111111112"
+                },
+                {
+                  "key": "outputMint",
+                  "value": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+                },
+                {
+                  "key": "amount",
+                  "value": "100000000"
+                },
+                {
+                  "key": "slippageBps",
+                  "value": "50"
+                },
+                {
+                  "key": "swapMode",
+                  "value": "ExactIn"
+                },
+                {
+                  "key": "onlyDirectRoutes",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"inputMint\": \"So11111111111111111111111111111111111111112\",\n  \"inAmount\": \"100000000\",\n  \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n  \"outAmount\": \"16198753\",\n  \"otherAmountThreshold\": \"16117760\",\n  \"swapMode\": \"ExactIn\",\n  \"slippageBps\": 50,\n  \"platformFee\": null,\n  \"priceImpactPct\": \"0\",\n  \"routePlan\": [\n    {\n      \"swapInfo\": {\n        \"ammKey\": \"5BKxfWMbmYBAEWvyPZS9esPducUba9GqyMjtLCfbaqyF\",\n        \"label\": \"Meteora DLMM\",\n        \"inputMint\": \"So11111111111111111111111111111111111111112\",\n        \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n        \"inAmount\": \"100000000\",\n        \"outAmount\": \"16198753\",\n        \"feeAmount\": \"24825\",\n        \"feeMint\": \"So11111111111111111111111111111111111111112\"\n      },\n      \"percent\": 100\n    }\n  ],\n  \"contextSlot\": 299283763,\n  \"timeTaken\": 0.015257836\n}"
+        }
+      ]
+    }
+  ]
+}

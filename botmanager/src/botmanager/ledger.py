@@ -235,7 +235,7 @@ class RuntimeLedger:
         return [dict(row) for row in rows]
 
     def _decode(self, db, row, *, archived_fills=None):
-        from .strategies.grid import validate_checkpoint
+        from .strategies import validate_checkpoint
 
         if row is None:
             return None
@@ -355,9 +355,9 @@ class RuntimeLedger:
 
     def register(self, spec: BotSpec, data: dict):
         from .store import ManagerStore
-        from .strategies.grid import evaluate
+        from .strategies import validate_registration
 
-        evaluate(spec, data, 1)
+        validate_registration(spec, data)
         with mutation_lock(self.home):
             saved = ManagerStore(self.home).get_spec(spec.bot_id)
             if saved is not None and saved.config_hash != spec.config_hash:
@@ -368,10 +368,10 @@ class RuntimeLedger:
             return self._register(spec, data)
 
     def _register(self, spec: BotSpec, data: dict):
-        from .strategies.grid import evaluate
+        from .strategies import validate_registration
 
         # Validate capability, sizing and economics before any durable registration.
-        evaluate(spec, data, 1)
+        validate_registration(spec, data)
         with self.connection(True) as db:
             row = self._decode(
                 db,
@@ -381,7 +381,8 @@ class RuntimeLedger:
             )
             if row:
                 if (
-                    row["input"]["snapshot_hash"] != data["snapshot_hash"]
+                    row["input"].get("origin_hash", row["input"]["snapshot_hash"])
+                    != data.get("origin_hash", data["snapshot_hash"])
                     or row["spec"]["config_hash"] != spec.config_hash
                 ):
                     raise ManagerError(
@@ -815,7 +816,7 @@ class RuntimeLedger:
     def commit_tick(
         self, bot_id, generation, expected_cursor, checkpoint, *, before_commit=None
     ):
-        from .strategies.grid import validate_checkpoint
+        from .strategies import validate_checkpoint
 
         with self.connection(True) as db:
             row = self._decode(db, self._fence(db, bot_id, generation))
@@ -861,6 +862,82 @@ class RuntimeLedger:
             )
             row.update(cursor=checkpoint["cursor"])
             self._event(db, row, "tick.committed")
+            if before_commit:
+                before_commit()
+
+    def commit_progress(
+        self, bot_id, generation, expected_hash, data, checkpoint, *, before_commit=None
+    ):
+        """Commit a prospective source cursor and the account in one transaction."""
+        from .strategies import validate_checkpoint
+
+        validate_snapshot(data)
+        with self.connection(True) as db:
+            row = self._decode(db, self._fence(db, bot_id, generation))
+            previous = row["input"]
+            if previous["snapshot_hash"] != expected_hash:
+                raise ManagerError(
+                    "stale_cursor", "Prospective source cursor changed.", 3
+                )
+            old_state, new_state = previous["prospective"], data["prospective"]
+            if (
+                data["identity"] != previous["identity"]
+                or data["descriptor"] != previous["descriptor"]
+                or data["origin_hash"] != previous["origin_hash"]
+                or data["bars"][: len(previous["bars"])] != previous["bars"]
+                or new_state["observations"][: len(old_state["observations"])]
+                != old_state["observations"]
+                or new_state["evaluation_ranges"][: len(old_state["evaluation_ranges"])]
+                != old_state["evaluation_ranges"]
+                or new_state["cursor"] < old_state["cursor"]
+            ):
+                raise ManagerError(
+                    "reconciliation_required",
+                    "Prospective evidence cannot rewrite a pinned prefix.",
+                    4,
+                )
+            cursor = checkpoint["cursor"] if checkpoint is not None else 0
+            if cursor != len(data["bars"]) or cursor < row["cursor"]:
+                raise ManagerError(
+                    "stale_cursor", "Prospective account and source bars disagree.", 3
+                )
+            old_fills = row["checkpoint"]["fills"] if row["checkpoint"] else []
+            if checkpoint is not None:
+                validate_checkpoint(BotSpec.from_dict(row["spec"]), data, checkpoint)
+                if checkpoint["fills"][: len(old_fills)] != old_fills:
+                    raise ManagerError(
+                        "reconciliation_required",
+                        "Prospective fills changed across restart.",
+                        4,
+                    )
+                for index, fill in enumerate(
+                    checkpoint["fills"][len(old_fills) :], len(old_fills)
+                ):
+                    db.execute(
+                        "INSERT INTO fills VALUES (?,?,?)",
+                        (bot_id, index, canonical(fill)),
+                    )
+            changed = cursor > row["cursor"]
+            reason = new_state["health"]
+            db.execute(
+                "UPDATE runs SET input=?,cursor=?,checkpoint=?,checkpoint_hash=?,tick_started=NULL,evaluated=?,observed='waiting',reason=? WHERE bot_id=?",
+                (
+                    canonical(data),
+                    cursor,
+                    canonical(checkpoint) if checkpoint is not None else None,
+                    fingerprint(checkpoint) if checkpoint is not None else None,
+                    time.time() if changed else row["evaluated"],
+                    reason,
+                    bot_id,
+                ),
+            )
+            row.update(cursor=cursor)
+            if (
+                changed
+                or old_state["cursor"] != new_state["cursor"]
+                or old_state["health"] != reason
+            ):
+                self._event(db, row, "prospective.committed")
             if before_commit:
                 before_commit()
 
@@ -1062,7 +1139,7 @@ class RuntimeLedger:
     ):
         from .data import load_recording
         from .store import ManagerStore
-        from .strategies.grid import evaluate
+        from .strategies import evaluate, validate_registration
         from .worker import lifetime_lock
 
         request_id = request_identity(request_id, expected_revision)
@@ -1107,7 +1184,9 @@ class RuntimeLedger:
                         content = stream.read(65537)
                     if len(content) > 65536:
                         raise ValueError
-                    data = load_recording(json.loads(content))
+                    data = load_recording(
+                        json.loads(content), strategy_id=spec.strategy_id
+                    )
                 except (OSError, ValueError, TypeError) as exc:
                     raise ManagerError(
                         "input_unavailable",
@@ -1125,7 +1204,7 @@ class RuntimeLedger:
                     spec,
                     active_runtime_id=row["runtime_id"],
                     owner_generation=row["generation"],
-                    input_snapshot_hash=data["snapshot_hash"],
+                    input_snapshot_hash=data.get("origin_hash", data["snapshot_hash"]),
                     reason="revision_already_active",
                     changed=False,
                 )
@@ -1138,9 +1217,19 @@ class RuntimeLedger:
                     changed=False,
                 )
             else:
+                # A new prospective account needs a new explicit activation,
+                # never the prior account's already observed bars.
+                if data.get("prospective") is not None and (
+                    descriptor is None or data["bars"]
+                ):
+                    raise ManagerError(
+                        "incompatible_input",
+                        "Prospective adoption requires a fresh explicit source activation.",
+                        3,
+                    )
                 # Strict capture/cost/context checks precede archive or admission.
                 try:
-                    evaluate(spec, data, 1)
+                    validate_registration(spec, data)
                 except ManagerError as exc:
                     raise ManagerError(
                         "incompatible_input",
@@ -1244,7 +1333,7 @@ class RuntimeLedger:
             active_runtime_id=runtime_id,
             prior_runtime_id=prior_id,
             owner_generation=generation,
-            input_snapshot_hash=data["snapshot_hash"],
+            input_snapshot_hash=data.get("origin_hash", data["snapshot_hash"]),
             reason="saved_revision_applied",
             changed=True,
         )
@@ -1274,7 +1363,8 @@ class RuntimeLedger:
         ).fetchone()
         if raw is not None:
             spec = BotSpec.from_dict(json.loads(raw["spec"]))
-            input_hash = json.loads(raw["input"])["snapshot_hash"]
+            input_data = json.loads(raw["input"])
+            input_hash = input_data.get("origin_hash", input_data["snapshot_hash"])
         else:
             archive = db.execute(
                 "SELECT * FROM archives WHERE bot_id=? AND runtime_id=?",
@@ -1286,7 +1376,9 @@ class RuntimeLedger:
                 )
             archived = self._decode_archive(db, archive)["state"]
             spec = BotSpec.from_dict(archived["spec"])
-            input_hash = archived["input"]["snapshot_hash"]
+            input_hash = archived["input"].get(
+                "origin_hash", archived["input"]["snapshot_hash"]
+            )
         if (
             spec.config_hash != receipt["accepted_hash"]
             or spec.config_revision != receipt["accepted_revision"]
