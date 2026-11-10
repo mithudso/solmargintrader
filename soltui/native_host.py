@@ -31,8 +31,8 @@ import re
 import struct
 import sys
 import threading
-from concurrent.futures import ThreadPoolExecutor
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, BinaryIO
 
@@ -155,6 +155,7 @@ def suite_control(action: str) -> dict[str, Any]:
 def _suite_request(request: dict[str, Any], raw: bytes) -> dict[str, Any]:
     """Authenticate before importing controllers; bound duplicate admission on this port."""
     from uuid import UUID
+
     from .native_host_install import allowed_origins
 
     identity, action = request.get("id"), request.get("action")

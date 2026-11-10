@@ -10,7 +10,8 @@ from pathlib import Path
 from unittest.mock import patch
 from uuid import uuid4
 
-from soltui import native_host as host, native_host_install as installer
+from soltui import native_host as host
+from soltui import native_host_install as installer
 
 ORIGIN = "chrome-extension://" + "a" * 32 + "/"
 
