@@ -1,0 +1,544 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sol paper control room",
+    "version": "0.2.0",
+    "description": "Local paper controls and observability. No server order, wallet-key, signing or submission endpoints. Manual Jupiter swaps run on a distinct loopback origin and require browser-wallet approval."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:{port}",
+      "variables": {
+        "port": {
+          "default": "8768",
+          "description": "Use the actual bound port from control-server.json"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "HTTP and controller identity; owner health remains separate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/session": {
+      "get": {
+        "summary": "Obtain same-origin ephemeral CSRF nonce",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "summary": "Observe one registered experiment",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/control": {
+      "get": {
+        "summary": "Owner capabilities, configs, scoped servers and stage progress",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/registrations": {
+      "get": {
+        "summary": "Page actual external trial identities",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/telemetry": {
+      "get": {
+        "summary": "Page sanitized native manager events",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/analytics": {
+      "get": {
+        "summary": "Per-coin historical and costed prospective paper evidence",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bot_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/oracle": {
+      "get": {
+        "summary": "Selected-voter predictions; abstain on missing evidence",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instrument",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/actions": {
+      "get": {
+        "summary": "Observe durable action receipts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      },
+      "post": {
+        "summary": "Queue a paper-only owner action exactly once per request UUID",
+        "description": "Requires exact same-origin Origin plus X-Sol-CSRF nonce. A succeeded command receipt does not establish worker liveness. Interrupted actions are never replayed automatically. Unknown live/order/signing actions and credential-bearing payloads are refused. Runtime files are resolved from registered run IDs, never request paths.",
+        "security": [
+          {
+            "ControlNonce": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "action",
+                  "request_id",
+                  "params"
+                ],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "backtest.restart",
+                      "backtest.start",
+                      "backtest.stop",
+                      "manager.apply",
+                      "manager.create",
+                      "manager.cycle-check",
+                      "manager.data-check",
+                      "manager.edit",
+                      "manager.prepare-input",
+                      "manager.register-input",
+                      "manager.service",
+                      "manager.start",
+                      "manager.stop",
+                      "oracle.restart",
+                      "oracle.start",
+                      "oracle.stop",
+                      "oracle.voters.set",
+                      "pipeline.restart",
+                      "pipeline.start",
+                      "pipeline.stop",
+                      "pnl.recording.set",
+                      "recorder.start",
+                      "recorder.stop",
+                      "research.launch"
+                    ]
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "params": {
+                    "type": "object",
+                    "description": "Owner-validated action parameters. run_id optionally targets a registered child. Research launches accept name, coin/strategy lists, interval/horizon presets, date bounds, independent paper capital, recording policy, swap provider and explicit configured costs. Recording/voter changes require expected_revision. Manager controls delegate their versioned owner schema."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          },
+          "202": {
+            "description": "Durably queued; poll /api/actions?id=<request_id>"
+          }
+        }
+      }
+    },
+    "/api/logs": {
+      "get": {
+        "summary": "Read a bounded redacted tail from an allowlisted owner sink",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "server",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/wiki": {
+      "get": {
+        "summary": "Search full source-linked documentation",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/wiki/page": {
+      "get": {
+        "summary": "Read one verified packaged Markdown page",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    },
+    "/api/swap": {
+      "get": {
+        "summary": "Separate-origin manual Jupiter interface and public referral settings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Versioned JSON observation or existing action receipt"
+          },
+          "400": {
+            "description": "Invalid input or conflicting request"
+          },
+          "403": {
+            "description": "Local origin or control session required"
+          },
+          "503": {
+            "description": "Owner or durable evidence unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ControlNonce": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Sol-CSRF",
+        "description": "In-memory CSRF nonce from /api/session; resets on controller restart. Loopback and Origin checks also apply."
+      }
+    }
+  }
+}

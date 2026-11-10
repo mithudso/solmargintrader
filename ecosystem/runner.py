@@ -8,13 +8,13 @@ import json
 import math
 import os
 import re
+import sqlite3
 import subprocess
 import sys
 import tempfile
-import threading
 import time
 import uuid
-from contextlib import ExitStack, contextmanager
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
@@ -117,6 +117,22 @@ def validate_config(config: dict) -> None:
             or not 0 <= minimum <= 1
         ):
             raise ValueError("invalid_research_policy")
+    capital = config.get("research_capital", 10000.0)
+    if (
+        type(capital) not in (float, int)
+        or not math.isfinite(capital)
+        or not 0 < capital <= 100_000_000
+    ):
+        raise ValueError("invalid_research_capital")
+    if type(config.get("embedded_ui", True)) is not bool:
+        raise ValueError("invalid_ui_policy")
+    if config.get("swap_provider", "reference") not in {"jupiter", "reference"}:
+        raise ValueError("invalid_swap_provider")
+    if config.get("cost_model") is not None:
+        from .swaps import validate_cost_model
+
+        if validate_cost_model(config["cost_model"]) != config["cost_model"]:
+            raise ValueError("invalid_cost_model")
 
 
 def load(home: Path) -> dict:
@@ -182,6 +198,10 @@ def plan(
     recorder: bool = True,
     manager_home: str | None = None,
     research_min_confidence: float = 0.0,
+    research_capital: float = 10000.0,
+    swap_provider: str = "reference",
+    cost_model: dict | None = None,
+    embedded_ui: bool = True,
 ) -> dict:
     from backtester.core.strategies import REGISTRY
     from backtester.core.strategy_cards import HORIZONS
@@ -224,12 +244,40 @@ def plan(
         "manager_home": manager_home,
         "research_policy": "costed-shadow-v1",
         "research_min_confidence": research_min_confidence,
+        "research_capital": research_capital,
+        "swap_provider": swap_provider,
+        "cost_model": None,
+        "embedded_ui": embedded_ui,
     }
+    if cost_model is not None or swap_provider == "jupiter":
+        from soltui.config import Settings
+
+        from .swaps import validate_cost_model
+
+        assumptions = Settings()
+        config["cost_model"] = validate_cost_model(
+            cost_model
+            if cost_model is not None
+            else {
+                "source": "configured_scenario",
+                "fee_bps": assumptions.fee_bps,
+                "slippage_bps": assumptions.slippage_bps,
+                "borrow_long_bps_hour": assumptions.borrow_long_bps_hour,
+                "borrow_short_bps_hour": assumptions.borrow_short_bps_hour,
+            }
+        )
     validate_config(config)
     with lock(home):
         old = load(home)
         if old["phase"] != "not_initialized":
-            if old["config"] != config:
+            previous = {
+                "research_capital": 10000.0,
+                "swap_provider": "reference",
+                "cost_model": None,
+                "embedded_ui": True,
+                **old["config"],
+            }
+            if previous != config:
                 raise ValueError("existing_plan_differs_use_new_home")
             return old
         state = {
@@ -369,18 +417,27 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
     from oracle.feeds import FeedUnavailable, RecorderFeed
     from soltui import config, f5_batch, pricefeed
 
+    from . import __version__
+    from .control import recorder_recovery_enabled, recovery_guard, runtime_settings
     from .data import acquire
+    from .performance import sync as sync_performance
     from .recovery import ensure_batch
     from .registration import sync_registrations
 
-    with lock(home, wait_seconds=10), ExitStack() as resources:
+    with lock(home, wait_seconds=10):
         state = load(home)
         if token != state.get("supervisor_token"):
             raise ValueError("supervisor_generation_changed")
         stop_file = home / ("stop-" + token)
         cfg = state["config"]
+        state["ecosystem_version"] = __version__
+        state["control_contract_version"] = 1
         manager_home = Path(cfg["manager_home"]) if cfg.get("manager_home") else None
-        state["ui_url"] = resources.enter_context(control_room(home, manager_home))
+        from .ui_service import status as ui_status
+
+        state["ui_url"] = (
+            ui_status(home).get("url") if cfg.get("embedded_ui", True) else None
+        )
         save(home / "state.json", state)
         update_telemetry(state, home, manager_home)
         if not state.get("batch_id"):
@@ -411,6 +468,21 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
             settings = config.Settings(
                 data_dir=str(home / "accepted"),
                 min_confidence=cfg.get("research_min_confidence", 0.80),
+                capital=cfg.get("research_capital", 10000.0),
+                **(
+                    {
+                        "fee_bps": cfg["cost_model"]["total_fee_bps"],
+                        "slippage_bps": cfg["cost_model"]["slippage_bps"],
+                        "borrow_long_bps_hour": cfg["cost_model"][
+                            "borrow_long_bps_hour"
+                        ],
+                        "borrow_short_bps_hour": cfg["cost_model"][
+                            "borrow_short_bps_hour"
+                        ],
+                    }
+                    if cfg.get("cost_model")
+                    else {}
+                ),
             )
             batch = ensure_batch(settings, cfg, home / "batches")
             state["batch_id"] = batch["run_id"]
@@ -424,8 +496,14 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
             return 0
         sync_registrations(home, batch_id, home / "batches")
         batch = f5_batch.status(batch_id, root=home / "batches")
-        if not batch["running"] and batch["phase"] != "failed":
-            f5_batch.start(batch_id, root=home / "batches")
+        with recovery_guard(home) as allowed:
+            if (
+                allowed
+                and runtime_settings(home)["batch_enabled"]
+                and not batch["running"]
+                and batch["phase"] != "failed"
+            ):
+                f5_batch.start(batch_id, root=home / "batches")
         feeds = {
             asset: RecorderFeed(instrument=f"{asset}/USD") for asset in cfg["coins"]
         }
@@ -437,13 +515,37 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
         }
         cycle = 0
         next_recorder_check = 0.0
+        oracle_generation = runtime_settings(home)["oracle_generation"]
         while not stop_file.exists():
             now = time.time()
-            if cfg["recorder"] and not cfg["offline"] and now >= next_recorder_check:
+            runtime = runtime_settings(home)
+            if runtime["oracle_generation"] != oracle_generation:
+                feeds = {
+                    asset: RecorderFeed(instrument=f"{asset}/USD")
+                    for asset in cfg["coins"]
+                }
+                engines = {
+                    asset: OracleEngine(
+                        home / "oracle" / asset / "history.sqlite3",
+                        instrument=f"{asset}/USD",
+                    )
+                    for asset in cfg["coins"]
+                }
+                oracle_generation = runtime["oracle_generation"]
+            if (
+                recorder_recovery_enabled(home)
+                and cfg["recorder"]
+                and not cfg["offline"]
+                and now >= next_recorder_check
+            ):
                 # Reuse the existing singleton; never rewrite shared LaunchAgent settings.
                 try:
-                    outcome = pricefeed.ensure_recorder(install=False)
-                    state["recorder"] = {"running": bool(outcome.get("running"))}
+                    with recovery_guard(home) as allowed:
+                        if allowed and recorder_recovery_enabled(home):
+                            outcome = pricefeed.ensure_recorder(install=False)
+                            state["recorder"] = {
+                                "running": bool(outcome.get("running"))
+                            }
                 except (OSError, RuntimeError, ValueError):
                     state["recorder"] = {
                         "running": False,
@@ -451,6 +553,15 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
                     }
                 next_recorder_check = now + 60
             for asset, feed in feeds.items():
+                if not runtime["oracle_enabled"]:
+                    state["oracle"][asset] = {
+                        "instrument": f"{asset}/USD",
+                        "market": "unavailable",
+                        "prediction": "unavailable",
+                        "signal": None,
+                        "reason": "oracle_paused",
+                    }
+                    continue
                 try:
                     observation = feed.poll()
                     if observation is not None:
@@ -497,19 +608,31 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
             state["phase"] = batch["phase"]
             state["registration"] = sync_registrations(home, batch_id, home / "batches")
             update_telemetry(state, home, manager_home)
+            try:
+                state["forward_accounting"] = sync_performance(home)
+            except (OSError, ValueError, sqlite3.Error):
+                state["forward_accounting"] = {
+                    "status": "unavailable",
+                    "reason": "accounting_unavailable",
+                }
             state["heartbeat_at"] = now
+            state["runtime_controls_observed"] = runtime
             save(home / "state.json", state)
             cycle += 1
             if (
-                batch["phase"] == "interrupted"
+                batch["phase"] in {"interrupted", "planned", "stopped"}
+                and not batch["running"]
+                and runtime["batch_enabled"]
                 and state.get("batch_restart_attempts", 0) < 3
             ):
-                state["batch_restart_attempts"] = (
-                    state.get("batch_restart_attempts", 0) + 1
-                )
                 try:
-                    f5_batch.start(batch_id, root=home / "batches")
-                    state["batch_restart_requested"] = True
+                    with recovery_guard(home) as allowed:
+                        if allowed and runtime_settings(home)["batch_enabled"]:
+                            state["batch_restart_attempts"] = (
+                                state.get("batch_restart_attempts", 0) + 1
+                            )
+                            f5_batch.start(batch_id, root=home / "batches")
+                            state["batch_restart_requested"] = True
                 except (OSError, RuntimeError, ValueError):
                     state["batch_restart_error"] = "batch_owner_unavailable"
                 save(home / "state.json", state)
@@ -525,21 +648,6 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
         state["phase"] = "stopped"
         save(home / "state.json", state)
         return 0
-
-
-@contextmanager
-def control_room(home: Path, manager_home: Path | None):
-    from .web import make_server
-
-    server = make_server(home, manager_home=manager_home, port=0)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    try:
-        yield f"http://127.0.0.1:{server.server_port}"
-    finally:
-        server.shutdown()
-        server.server_close()
-        thread.join(timeout=3)
 
 
 def update_telemetry(state: dict, home: Path, manager_home: Path | None) -> None:

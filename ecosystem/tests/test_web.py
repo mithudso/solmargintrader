@@ -50,7 +50,9 @@ class WebTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(body["data"]["status"], "listening")
         self.assertEqual(body["data"]["port"], self.server.server_port)
-        self.assertTrue(body["data"]["read_only"])
+        self.assertFalse(body["data"]["read_only"])
+        self.assertFalse(body["data"]["orders_available"])
+        self.assertEqual(body["data"]["scope"], "paper_controls")
         self.assertNotIn("Access-Control-Allow-Origin", headers)
         self.assertIn("frame-ancestors 'none'", headers["Content-Security-Policy"])
         self.assertFalse(self.home.exists())
@@ -89,11 +91,13 @@ class WebTests(unittest.TestCase):
             "/../state.json",
             "/%2e%2e/state.json",
             "/web/../runner.py",
-            "/api/logs",
             "/api/order",
         ):
             with self.subTest(target=target):
                 self.assertEqual(self.body(target)[0], 404)
+
+    def test_log_reader_rejects_arbitrary_paths(self):
+        self.assertEqual(self.body("/api/logs?path=/tmp/private")[0], 400)
 
     def test_rejects_rebinding_cross_origin_and_cross_site(self):
         for headers in (
@@ -123,8 +127,9 @@ class WebTests(unittest.TestCase):
 
     def test_mutating_methods_never_call_owners(self):
         with patch("ecosystem.web.runner.status") as owner:
-            for method in ("POST", "PUT", "PATCH", "DELETE", "OPTIONS"):
+            for method in ("PUT", "PATCH", "DELETE", "OPTIONS"):
                 self.assertEqual(self.body("/api/status", method=method)[0], 405)
+            self.assertEqual(self.body("/api/status", method="POST")[0], 404)
             owner.assert_not_called()
 
     def test_query_validation_is_bounded_and_strict(self):

@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 176
+Version: 178
+Delta: concurrent histories to v178; preserve both concurrent request histories.
+Delta: v176 to v177; add independent Jupiter swap routing and referral page.
+Delta: v175 to v176; preserve operational controls, per-coin P&L, voter selection and wiki request.
 Delta: v175 to v176; preserve the status question during all-remaining-milestones execution.
 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
@@ -61,6 +64,12 @@ Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
+
+## v176 - 2026-11-09
+
+Give me full server observability and control, a button per action, with visibility into its state, what's running, and control over whether profit and loss is not recorded for the forward tests specifically and explicitly to determine if there's a profit. For the bots, I need the ability to choose a config and launch a bot and wtch it go through every stage of its cycle with progress bars and status updates. I should be able to click on a bot and see how well it did with each coin, how well it's doing so far, and which coins its performing and not performing in. I need the choice of choosing which strategies get to vote for an aggregate that should show up very visibly and easily and be clear how strongly it was predicted. Compile a wiki and put all of your documentation and the bot manager's documentation and the backtester's documentation in it along with file locations, architectural choices, etc.
+
+Clarification: Record P&L by default. Disabling recording affects new paper accounting entries, preserves prior records and shows profit as unknown for unrecorded periods.
 
 ## v174 - 2026-11-09
 
@@ -1558,6 +1567,10 @@ Install this mcp server {
 }
 ```
 
+
+## v177 - 2026-11-10
+
+Also I need to be able to set the swap provider as Jupiter even if that's not where the quotes come from , they're so much cheaper it changes the profitability of a lot of things. Also include a coin swap page that has the referral code in it like in the others.
 ## v176 — 2026-11-09 — progress question while implementation continues
 
 ```text

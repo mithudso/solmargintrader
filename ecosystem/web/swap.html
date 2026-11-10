@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual swap · Powered by Jupiter</title>
+  <script src="/swap.js" defer></script>
+  <style>
+    :root{font:15px/1.5 system-ui,sans-serif;color:#17302b;background:#f5f7f5;color-scheme:light}body{margin:0;padding:24px}main{max-width:1000px;margin:auto}h1{font-size:30px;letter-spacing:-.04em;margin:6px 0}h2{font-size:18px}p{max-width:76ch}a{color:#176052}section{background:white;border:1px solid #d6e1db;border-radius:14px;padding:20px;margin:18px 0}.kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#527267}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.7fr);gap:18px}.grid section{margin:0}label{display:block;font-weight:650;margin:12px 0}input,select,button{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid #adbdaf}input,select{display:block;margin-top:6px;max-width:100%;box-sizing:border-box}button{background:#155e4c;color:white;cursor:pointer;font-weight:650}button:disabled{opacity:.55;cursor:not-allowed}dt{color:#526a60;margin-top:12px}dd{margin:2px 0;overflow-wrap:anywhere}#swap-state{padding:12px;border-radius:8px;background:#edf3ee}#jupiter-plugin{min-height:580px}small{display:block;color:#526a60}.warning{border-left:4px solid #aa6d23;padding-left:12px}footer{margin:20px 0;color:#526a60}@media(max-width:720px){body{padding:14px}.grid{grid-template-columns:1fr}section{padding:16px}h1{font-size:25px}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="kicker">Separate manual wallet interface</p>
+  <h1>Swap with Jupiter.</h1>
+  <p>This page loads Jupiter only when you click its button. Connect your browser wallet inside Jupiter, inspect its actual quote and every fee, then approve each wallet action yourself.</p>
+  <p class="warning">The server cannot sign or submit an order. This origin has no control-room session, bot data or credentials. Paper price sources and cost assumptions do not establish a live swap quote.</p>
+  <div class="grid">
+    <section aria-labelledby="configuration-title">
+      <h2 id="configuration-title">Choose the manual interface</h2>
+      <p id="asset-note">Reading public configuration…</p>
+      <label>Verified initial input token<select id="swap-asset"><option value="SOL">SOL → USDC</option><option value="USDC">USDC → SOL</option></select></label>
+      <label>Referral fee, in basis points<input id="referral-fee" type="number" min="10" max="255" step="1" value="10" inputmode="numeric"></label>
+      <small>10 bps = 0.1%. Current published referral range is 50–255 bps. The configured 10 bps is preserved and loading stays unavailable until you explicitly choose a supported fee. Nothing raises it automatically.</small>
+      <p id="selected-fee">Configured referral: 0.1% (10 bps).</p>
+      <button id="load-jupiter" type="button" disabled>Load Jupiter manually</button>
+      <p id="swap-state" role="status" aria-live="polite">Unavailable until public settings are checked.</p>
+      <dl><dt>Selected public referral account</dt><dd id="referral-account">Unavailable</dd><dt>Referral-account eligibility</dt><dd>Unverified until the provider supplies actual quote evidence.</dd></dl>
+    </section>
+    <section aria-labelledby="fees-title">
+      <h2 id="fees-title">See all costs before approval</h2>
+      <dl><dt>Configured referral</dt><dd id="fee-summary">0.1% (10 bps); currently outside published range</dd><dt>Provider or route fee</dt><dd>Unknown until Jupiter returns a quote</dd><dt>Network and priority fees</dt><dd>Unknown until quote and wallet preview</dd><dt>Output token-account rent</dt><dd>Unknown until quote and wallet preview</dd><dt>Slippage and price impact</dt><dd>Inspect Jupiter's current quote</dd><dt>Actual total</dt><dd>Unavailable here. Review the provider and wallet breakdown; do not count the same included fee twice.</dd></dl>
+      <p>A configured account or referral percentage is not proof that a route applied it. If Jupiter rejects the account or fee, the integration remains unavailable.</p>
+      <p><a href="https://developers.jup.ag/docs/tool-kits/plugin" target="_blank" rel="noopener noreferrer">Jupiter Plugin documentation</a><br><a href="https://developers.jup.ag/docs/swap/order-and-execute#referral-fees" target="_blank" rel="noopener noreferrer">Current referral and fee rules</a></p>
+    </section>
+  </div>
+  <section aria-label="Jupiter manual wallet widget"><div id="jupiter-plugin"><p>No third-party SDK or wallet request has been started.</p></div></section>
+  <footer>Powered by <a href="https://jup.ag" target="_blank" rel="noopener noreferrer">Jupiter</a>. The browser wallet retains signing custody. CDN availability and funded trading remain unverified until you interact with the provider.</footer>
+</main>
+</body>
+</html>

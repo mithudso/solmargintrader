@@ -89,6 +89,10 @@ SELF_EXCLUDED = {
     "index/TEXT-INDEX.json",
     "index/CONCEPT-INDEX.json",
     "index/SEMANTIC-MANIFEST.json",
+    # Packaged copies of already indexed documentation. The wiki verifies its
+    # manifest and content hashes and provides its own full-text search.
+    "ecosystem/wiki_content/manifest.json",
+    "ecosystem/wiki_content/pages.json",
 }
 
 # Tracked and searchable, but generated FROM the index, so they cannot be inputs
@@ -100,7 +104,7 @@ DERIVED_TRACKED = {
     "docs/CONCEPTS.md",
 }
 
-EMBED_MODEL = ollama_ensure.EMBED_MODEL   # mxbai-embed-large:latest, like every other semantic index here
+EMBED_MODEL = ollama_ensure.EMBED_MODEL   # This repository's manifest-bound embedding model.
 EMBED_URL = f"{ollama_ensure.OLLAMA_BASE}/api/embed"
 CHUNK_CHARS = 1200
 CHUNK_OVERLAP = 200
