@@ -699,9 +699,14 @@ export const COMMANDS = {
     describe: 'Register the browser paper owner and reconcile durable delegated controls.',
     params: [],
     async handler({ deps, stopGeneration }) {
+      const before = await deps.configStore.get(MANAGER_KEY, null);
       const result = await managerPoll(deps);
-      if (result.snapshot.running) resumeEngine(deps.store, stopGeneration);
-      else stopEngine(deps.store);
+      // Registration and replay do not own the legacy engine queue. Only a
+      // committed paper lifecycle transition may change its execution gate.
+      if (result.snapshot.generation !== before?.generation) {
+        if (result.snapshot.running) resumeEngine(deps.store, stopGeneration);
+        else if (before?.running && result.snapshot.mode === 'dry-run' && !result.snapshot.armed) stopEngine(deps.store);
+      }
       return result;
     },
   },
@@ -773,7 +778,7 @@ export const COMMANDS = {
           buildVenue: () => deps.buildVenue(),
           readLimits: async () => ({ ...DEFAULT_LIMITS, ...(await deps.configStore.get('limits', {})) }),
           store: deps.store,
-          configStore: paperConfigStore(deps.configStore),
+          configStore: paperConfigStore(deps.configStore, typeof deps.loadedSourceHash === 'function' ? deps.loadedSourceHash : undefined),
           clock: deps.clock,
           log: deps.log,
         });

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { runCommand } from '../src/core/commands.js';
+import { runCommand, COMMANDS } from '../src/core/commands.js';
 import { ConfigStore } from '../src/storage/store.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { MANAGER_KEY, managerSnapshot, managerPoll, applyManagerControl, paperConfigStore } from '../src/core/bot-manager.js';
@@ -64,7 +64,9 @@ test('prepared control crash remains unknown and is never applied on restart', a
   };
   await assert.rejects(applyManagerControl(d, start), /injected crash/);
   d.configStore.set = original;
-  await managerPoll(d);
+  const before = await execution(d);
+  await runCommand({ name: 'browserManagerPoll', args: {}, deps: d });
+  assert.deepEqual(await execution(d), before);
   assert.equal((await managerSnapshot(d)).running, false);
   assert.equal((await applyManagerControl(d, start)).outcome, 'unknown');
 });
@@ -116,4 +118,103 @@ test('changed loaded economic source revokes the old paper grant before another 
   assert.equal(after.generation, before.generation + 1);
   assert.equal(after.installation_id, before.installation_id);
   assert.equal((await d.configStore.getRuntime()).armed, false);
+});
+
+// These exercise the real registry lock and engine queue, rather than mocking
+// lifecycle helpers: a paper registration has no authority over a legacy owner.
+import { engineStopGeneration, stopEngine } from '../src/core/engine.js';
+import { OWNER_SOURCE_FILES, OWNER_SOURCE_SCHEMA } from '../src/core/owner-source.js';
+import fs from 'node:fs';
+
+function reply(controls = [], acknowledged = []) {
+  return { ok: true, result: { schema_version: 1, controls, acknowledged,
+    origin: `chrome-extension://${'a'.repeat(32)}`, transfer: { available: false } } };
+}
+const poll = d => runCommand({ name: 'browserManagerPoll', args: {}, deps: d });
+const execution = async d => {
+  const s = await d.configStore.get(MANAGER_KEY);
+  return { running: s.running, generation: s.generation, runtime_id: s.runtime_id,
+    last_sequence: s.last_sequence, stopGeneration: engineStopGeneration(d.store), runtime: await d.configStore.getRuntime() };
+};
+
+test('registry registration and refused controls preserve armed legacy execution gate', async () => {
+  for (const mode of ['dry-run', 'semi-auto']) {
+    const d = deps(); await d.configStore.setConfig({ mode });
+    await d.configStore.setRuntime({ armed: true });
+    await poll(d);
+    const before = await execution(d);
+    assert.equal(before.stopGeneration, 0);
+    await poll(d);
+    assert.deepEqual(await execution(d), before);
+    const stop = await command(d, 'stop');
+    d.soltui.request = async () => reply([stop]);
+    await poll(d);
+    assert.equal((await d.configStore.get(MANAGER_KEY)).requests[stop.request_id].receipt.outcome, 'failed');
+    assert.deepEqual(await execution(d), before);
+  }
+});
+
+test('registry pending, lost acknowledgment, replay and expired/stale stops preserve exact execution state', async () => {
+  const d = deps(); await poll(d);
+  stopEngine(d.store);
+  const stopped = await execution(d);
+  await poll(d); // No delivered control cannot resume a previously stopped queue.
+  assert.deepEqual(await execution(d), stopped);
+  const start = await command(d);
+  d.soltui.request = async () => reply([start]);
+  await poll(d);
+  const running = await execution(d);
+  assert.equal(running.running, true);
+  await poll(d); // Lost native acknowledgment resends the identical start.
+  assert.deepEqual(await execution(d), running);
+  for (const kind of ['expired', 'stale']) {
+    const stop = await command(d, 'stop', 2);
+    if (kind === 'expired') stop.expires_at = Date.now() / 1000 - 1;
+    else stop.expected_generation += 10;
+    d.soltui.request = async () => reply([stop]);
+    await poll(d);
+    assert.equal((await d.configStore.get(MANAGER_KEY)).requests[stop.request_id].receipt.outcome, 'failed');
+    assert.deepEqual(await execution(d), running);
+  }
+  const stop = await command(d, 'stop', 3);
+  d.soltui.request = async () => reply([stop]);
+  await poll(d);
+  const final = await execution(d);
+  assert.equal(final.running, false);
+  assert.equal(final.stopGeneration, running.stopGeneration + 1);
+  await poll(d);
+  assert.deepEqual(await execution(d), final);
+});
+
+test('source identity covers canonical economics and every shipped JavaScript module', () => {
+  assert.equal(OWNER_SOURCE_SCHEMA, 2);
+  const extension = new URL('../', import.meta.url);
+  const actual = fs.readdirSync(new URL('src/', extension), { recursive: true }).filter(p => p.endsWith('.js')).map(p => `src/${p}`);
+  assert.deepEqual([...OWNER_SOURCE_FILES].sort(), ['manifest.json', ...actual].sort());
+  for (const file of ['src/core/engine.js', 'src/core/grid.js', 'src/core/risk.js', 'src/core/pnl.js', 'src/storage/store.js']) {
+    assert.ok(OWNER_SOURCE_FILES.includes(file), file);
+  }
+});
+
+test('source validation failure refuses effective paper permission before a tick', async () => {
+  const d = deps(); await applyManagerControl(d, await command(d));
+  const guarded = paperConfigStore(d.configStore, async () => { throw new Error('extension reload required'); });
+  await assert.rejects(guarded.getRuntime(), /reload required/);
+  assert.equal((await d.configStore.getRuntime()).armed, false);
+});
+
+
+test('registry owner snapshot stays read-only and never initializes or revokes durable state', async () => {
+  const d = deps();
+  assert.equal(COMMANDS.browserManagerSnapshot.readOnly, true);
+  assert.equal((await runCommand({ name: 'browserManagerSnapshot', deps: d })).snapshot, null);
+  assert.equal(await d.configStore.get(MANAGER_KEY, null), null);
+  await applyManagerControl(d, await command(d));
+  const before = structuredClone(await d.configStore.get(MANAGER_KEY));
+  d.loadedSourceHash = async options => {
+    assert.equal(options.revoke, false);
+    throw new Error('extension reload required');
+  };
+  await assert.rejects(runCommand({ name: 'browserManagerSnapshot', deps: d }), /reload required/);
+  assert.deepEqual(await d.configStore.get(MANAGER_KEY), before);
 });

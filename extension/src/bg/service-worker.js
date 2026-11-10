@@ -28,17 +28,32 @@ import { makeSigner } from '../wallet/signer.js';
 import { restorePaperVenue } from './paper-venue.js';
 import { createLiveWindows } from './live-windows.js';
 import { digest } from '../core/bot-manager.js';
+import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../core/owner-source.js';
 
 const ALARM = 'solmargintrader-tick';
 const MANAGER_ALARM = 'solmargintrader-manager';
-let loadedHash;
-async function loadedSourceHash() {
-  loadedHash ??= Promise.all(['src/bg/service-worker.js', 'src/core/commands.js', 'src/core/bot-manager.js'].map(async path => {
-    const response = await platformFetch(chrome.runtime.getURL(path));
+// Capture the resource baseline at worker startup, never lazily after a start.
+// Fetch attests packaged resources, not the browser's internal ESM cache. Any
+// subsequent resource change requires an actual extension reload before grants.
+async function resourceSourceHash() {
+  const parts = await Promise.all(OWNER_SOURCE_FILES.map(async path => {
+    const response = await platformFetch(chrome.runtime.getURL(path), { cache: 'no-store' });
     if (!response.ok) throw new Error('loaded browser source unavailable');
     return `${path}\0${await response.text()}`;
-  })).then(parts => digest(parts.join('\0')));
-  return loadedHash;
+  }));
+  return digest(`${OWNER_SOURCE_SCHEMA}\0${parts.join('\0')}`);
+}
+let startupSource;
+let sourceChanged = false;
+async function loadedSourceHash({ revoke = true } = {}) {
+  const baseline = await startupSource;
+  if (sourceChanged || await resourceSourceHash() !== baseline) {
+    sourceChanged = true;
+    const state = revoke ? await configStore.get('browserManager', null) : null;
+    if (state?.running) await configStore.set('browserManager', { ...state, running: false, generation: state.generation + 1 });
+    throw new Error('browser source changed; extension reload required');
+  }
+  return baseline;
 }
 
 // Asks the soltui host once a minute whether the code on disk changed.
@@ -60,6 +75,9 @@ const configStore = new ConfigStore();
 // throws "Illegal invocation", and a fresh closure per message would defeat the
 // pool cache, which keys on this function (src/market/pools.js).
 const platformFetch = (...a) => fetch(...a);
+startupSource = resourceSourceHash();
+// Avoid unhandled rejection on environments without packaged-resource fetch.
+startupSource.catch(() => {});
 const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
 const nativeTransport = createNativeTransport();
 const liveWindows = chrome.runtime.onConnect && chrome.windows && chrome.runtime.getURL

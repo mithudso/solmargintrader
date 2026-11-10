@@ -21,7 +21,7 @@ export async function managerSnapshot(deps, { initialize = false } = {}) {
   const runtime = await deps.configStore.getRuntime();
   let state = await deps.configStore.get(MANAGER_KEY, null);
   if (!state && !initialize) return null;
-  const source = typeof deps.loadedSourceHash === 'function' ? await deps.loadedSourceHash() : deps.loadedSourceHash;
+  const source = typeof deps.loadedSourceHash === 'function' ? await deps.loadedSourceHash({ revoke: initialize }) : deps.loadedSourceHash;
   if (!SHA.test(source ?? '')) throw new Error('loaded browser source identity unavailable');
   if (!state) {
     state = { schema_version: 1, installation_id: crypto.randomUUID(), generation: 0, config_revision: 1,
@@ -39,7 +39,7 @@ export async function managerSnapshot(deps, { initialize = false } = {}) {
   }
   return { installation_id: state.installation_id, native_id: 'grid', generation: state.generation,
     config_revision: state.config_revision, config_hash: hash, runtime_id: state.runtime_id,
-    running: state.running && state.config_hash === hash && config.mode === 'dry-run' && runtime.armed === false && runtime.killSwitch !== true,
+    running: state.running && state.source_hash === source && state.extension_version === deps.extensionVersion && state.config_hash === hash && config.mode === 'dry-run' && runtime.armed === false && runtime.killSwitch !== true,
     mode: config.mode, armed: runtime.armed === true, kill_switch: runtime.killSwitch === true,
     extension_version: deps.extensionVersion, source_hash: source };
 }
@@ -90,13 +90,12 @@ export async function applyManagerControl(deps, control) {
   // prepared action: it reports unknown and requires explicit reconciliation.
   const prepared = { binding, request: control, receipt: receipt(control, state, 'unknown', 'outcome_unknown'), prepared: true, delivered: false };
   state = { ...state, requests: { ...state.requests, [control.request_id]: prepared } };
-  if (control.operation === 'stop') state.running = false;
   await deps.configStore.set(MANAGER_KEY, state);
   if (outcome === 'acknowledged') {
     state = { ...state, running: control.operation === 'start', generation: state.generation + 1,
       runtime_id: control.operation === 'start' ? crypto.randomUUID() : state.runtime_id };
   }
-  state.last_sequence = Math.max(state.last_sequence, control.sequence);
+  if (outcome === 'acknowledged') state.last_sequence = Math.max(state.last_sequence, control.sequence);
   const result = receipt(control, state, outcome, reason);
   state.requests[control.request_id] = { ...prepared, receipt: result, prepared: false };
   await deps.configStore.set(MANAGER_KEY, state);
@@ -130,12 +129,13 @@ export async function managerPoll(deps) {
 }
 
 /** Explicit paper grant cannot authorize any live venue or persist an armed flag. */
-export function paperConfigStore(configStore) {
+export function paperConfigStore(configStore, verifySource = async () => {}) {
   return {
     get: (...args) => configStore.get(...args),
     set: (...args) => configStore.set(...args),
     getConfig: () => configStore.getConfig(),
     async getRuntime() {
+      await verifySource();
       const runtime = await configStore.getRuntime();
       const config = await configStore.getConfig();
       const state = await configStore.get(MANAGER_KEY, null);
