@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 352
+Version: 353
+Delta: v352 to v353; refresh offline index hashes required by record changes.
 Delta: v351 to v352; verify both direct Basic Memory launchers and prepare record delivery.
 Delta: v350 to v351; start the Basic Memory MCP launcher configuration and verification.
 Delta: v349 to v350; preserve embedding diagnosis and final PR delivery context.
@@ -1185,3 +1186,9 @@ Independent live-acceptance-verifier launched a fresh /Users/mitch/.local/bin/uv
 The first configuration replacement failed TOML validation before writing because args used a multiline array. A bounded multiline replacement fixed it. The first documentation check used /Users/mitch/.venvs/solbot/bin/python and failed to import 30 TUI test modules. Re-running the documented gate with the existing /Users/mitch/.venvs/solmargintrader-docs/bin/python passed with exit 0: backtester 999, extension 408, mongo 46 and soltui 1405; docs agree with the repository. No dependency installation was needed. git diff --check passed.
 
 Remaining delivery under TASK-1189: commit only prompts.md and memory.md, push the task branch, obtain final-head CI, merge its records PR, verify remote content, synchronize the original checkout without changing its five unrelated untracked paths, and remove only this task's clean merged worktree/branch. Basic Memory installation and runtime acceptance are complete; a stalled continuation should resume delivery without rerunning the accepted server check.
+
+## v353 — 2026-11-09 — installation records and index delivery
+
+The exact request is saved in prompts.md v175. The requested Basic Memory launcher is configured and independently verified; no further configuration or product implementation remains. PR https://github.com/mithudso/solmargintrader/pull/187 contains the recoverable records. TASK-1189 tracks its final CI, merge receipt, remote content verification and owned-worktree cleanup. Consult that task and PR before resuming delivery.
+
+Initial CI run 42751767281 caught stale hashes for memory.md and prompts.md in both the docs job and backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree. The standalone docs count gate had passed; it does not replace index/build.py --check. Refresh the three committed offline indexes with python3 index/build.py all after the final record edit. The all command uses no network or embeddings; leave semantic regeneration and Ollama untouched. KNOW-1191 records this concrete CI trigger. Keep the PR draft during repair and merge only after final-head checks pass.
