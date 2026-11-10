@@ -67,10 +67,24 @@ def history_page(store, bot_id, *, after=0, limit=100):
     if spec is None:
         raise ManagerError("bot_not_found", "Bot identity was not found.")
     with store._connection() as db:
+        if db.execute("PRAGMA user_version").fetchone()[0] == 1:
+            items = (
+                [
+                    {
+                        "sequence": spec.config_revision,
+                        "spec": spec.to_dict(),
+                        "saved_at": spec.created_at,
+                        "request_id": None,
+                    }
+                ]
+                if after < spec.config_revision
+                else []
+            )
+            return {"bot_id": spec.bot_id, **_page(items, after, limit)}
         rows = [
             {
                 "sequence": row["revision"],
-                "spec": json.loads(row["body"]),
+                "spec": store._decode(row["body"]).to_dict(),
                 "saved_at": row["saved_at"],
                 "request_id": row["request_id"],
             }
@@ -79,6 +93,14 @@ def history_page(store, bot_id, *, after=0, limit=100):
                 (spec.bot_id, after, limit + 1),
             )
         ]
+        if any(
+            row["spec"]["bot_id"] != spec.bot_id
+            or row["spec"]["config_revision"] != row["sequence"]
+            for row in rows
+        ):
+            raise ManagerError(
+                "invalid_spec", "Historical specification attribution is invalid.", 4
+            )
     return {"bot_id": spec.bot_id, **_page(rows, after, limit)}
 
 
@@ -200,6 +222,15 @@ def report_page(
                 "runtime_not_available", "Requested runtime was not found."
             )
         report = _projection(run, archived)
+        from .learning import learning_snapshot
+
+        report["learning"] = {
+            "scope": "current_bot_not_archived_run",
+            **learning_snapshot(store.home, spec.bot_id),
+        }
+        report["learning_status"] = (
+            "historical_run" if archived else report["learning"]["state"]
+        )
         version = db.execute("PRAGMA user_version").fetchone()[0]
         if version < 4:
             return {

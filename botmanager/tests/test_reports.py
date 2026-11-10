@@ -95,6 +95,12 @@ class ReportTests(unittest.TestCase):
             run_history_page(self.store, self.bot)["current_runtime_id"],
             self.ledger.get(self.bot)["runtime_id"],
         )
+        for name in ("history-page", "run-history", "events"):
+            result = dispatch(
+                name, {"identity": self.bot, "after": 0, "limit": 1}, self.context
+            )
+            self.assertTrue(result["ok"], result)
+            self.assertIn("next_after", result["data"])
 
     def test_missing_home_read_does_not_initialize(self):
         missing = self.root / "absent"

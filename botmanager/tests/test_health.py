@@ -69,12 +69,16 @@ class HealthTests(unittest.TestCase):
             self.assertEqual(len(alerts), 1)
             self.assertEqual(alerts[0]["occurrences"], 2)
             self.assertEqual(alerts[0]["notified_at"], 100)
+            cursor = store.page()["next_after"]
             self.assertEqual(alerts[0]["evidence"]["source"], row["input"]["identity"])
             row["heartbeat"] = 101
             store.observe(row, now=102)
             resolved = store.page()["alerts"][0]
             self.assertEqual(resolved["state"], "resolved")
             self.assertEqual(resolved["resolved_at"], 102)
+            updates = store.page(after=cursor)
+            self.assertEqual(updates["alerts"][0]["key"], resolved["key"])
+            self.assertGreater(updates["next_after"], cursor)
             self.assertEqual(
                 resolved["evidence"]["health"]["process"]["state"], "healthy"
             )

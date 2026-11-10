@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 349
+Version: 350
+Delta: v349 to v350; retain bounded continuation, strict load results and current fanout ownership.
 Delta: v348 to v349; preserve recovered M4 and accounting source, operational health integration and next fanout.
 Delta: v347 to v348; start all-remaining bot-manager integration with parallel owners.
 Delta: v346 to v347; record on-chain variant evidence, offline tests and network refusal.
@@ -1484,3 +1485,12 @@ User requested full remaining-plan implementation as agent fanout. Worktree /Use
 ## Remaining implementation checkpoint — source only
 
 M4 recovery a3c638a fixed required-participant freshness and same-Python exec sandbox escape. Scoped17research/blind,70owner(1skip),137legacy tests pass; source installed/independent review/CI remain. Accounting64309e1 passed21focused tests. Health root adds separate process/input/evaluation/result states, derived durable alerts, pause/resume generation fencing and new registry command definitions. Root checks:2entry-control,13status,18supervisor tests pass, Ruff clean. No delivery claim: backup/load, continuation, protected learning, browser, executor, review/install/CI/merge remain. Continuation agent owns canonical/worker/ledger/source changes; accounting agent owns backup/tests then learning; M4 agent now owns executor. Preserve production homes and all prior immutable environments.
+
+
+## Remaining implementation — bounded state and release matrix
+
+Task1230 remains in progress, draft PR194 branchagent-01a1c447-bot-remaining. Task4cb6b08a implements512barsegments, fixedcanonicalstate, schema5(old1–4inertreads), pauseentryhooks and flatrebindhelper. Task3d097f44 repairs retry starvation at4workers/6queued and measures14.022469secondwatchdog;18supervisor tests passed. Frozenresearchsources unchanged; only.gitignoredFinder.DS_Storemetadata excluded by snapshotvalidator,9coveringtestspass.
+
+Current rootowned package matrix unstaged: manager0.5.0,backtester0.2.0,research-runtime0.2.0,Oracle0.2.2,ecosystem0.2.2. Keepoldimmutableenvironmentsand50bpsmanualreferralbehavior. Beforeinstalledacceptance snapshotat/Users/mitch/.local/state/solbot/releases/0.5.0/preserved-installations-before.json preserves defaultdemo hashes/mtimesandstablealias.
+
+Agents: m4_recovery now executorTask7(469offline+7adapterpass,finalcommit/reportpending);accounting_reports now learningTask5(ownerprotocol,realpairedshadowworkers,atomiclocalmanager/runtimeadoption,actualownerclockandcertificationgates);continuation now browserTask6(nativeorigin/stableprofileUUID/durabledelegatedpapercontrols). Rootownsregistry/status/CLI/backupintegration,versions/docs,indexes,delivery. Rootpending: finalAPIintegration;per-taskreviews;fullsourcechecks;freshregularinstall+independentloadedacceptance;wiki/index/docs;finalCI/merge;onlyownedcleanup. Realelapsed7days/30completedshadowtradesandcertifiedJupiterexecutionremainexplicitgates. Untracked.opencodeappearedinthisnewworktree;preserveandassessprovenancebeforecleanup;donotstageit.

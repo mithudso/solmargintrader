@@ -100,6 +100,12 @@ def _exact(run):
     deposits = withdrawals = fees = expenses = rent = realized = realized_gross = zero
     lots = {}
     try:
+        if run.get("fills") is None or run.get("cashflows") is None:
+            raise ValueError("fill_or_cashflow_ledger_unavailable")
+        if not isinstance(run.get("fills"), (list, tuple)) or not isinstance(
+            run.get("cashflows"), (list, tuple)
+        ):
+            raise TypeError("invalid_ledger_type")
         for event in run.get("cashflows", []):
             amount = _decimal(event.get("amount"))
             if amount < 0:

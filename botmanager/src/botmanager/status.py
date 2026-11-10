@@ -615,9 +615,11 @@ def runtime_snapshot(
             blockers=snapshot["blockers"],
             next_trigger=snapshot["next_trigger"],
         )
+    from .accounting import accounting_snapshot
     from .health import health_snapshot
 
     snapshot["health"] = health_snapshot(row, now=now)
+    snapshot["accounting"] = accounting_snapshot(row)
     for operation in ("pause_entries", "resume_entries"):
         supported = active.strategy_id in ("grid", "dca")
         snapshot["action_capabilities"][operation] = {

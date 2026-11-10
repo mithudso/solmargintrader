@@ -165,6 +165,11 @@ class HealthStore:
                         "UPDATE alerts SET state='active',last_at=?,notified_at=?,occurrences=occurrences+1,resolved_at=NULL,evidence=? WHERE key=?",
                         (now, notified, evidence, key),
                     )
+                    if old["state"] == "resolved" or notified != old["notified_at"]:
+                        db.execute(
+                            "UPDATE alerts SET sequence=(SELECT coalesce(max(sequence),0)+1 FROM alerts) WHERE key=?",
+                            (key,),
+                        )
             for old in db.execute(
                 "SELECT key,code,runtime_id FROM alerts WHERE bot_id=? AND state='active'",
                 (bot_id,),
@@ -173,6 +178,10 @@ class HealthStore:
                     db.execute(
                         "UPDATE alerts SET state='resolved',resolved_at=?,last_at=?,evidence=? WHERE key=?",
                         (now, now, evidence, old["key"]),
+                    )
+                    db.execute(
+                        "UPDATE alerts SET sequence=(SELECT coalesce(max(sequence),0)+1 FROM alerts) WHERE key=?",
+                        (old["key"],),
                     )
         return snapshot
 

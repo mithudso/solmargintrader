@@ -176,8 +176,18 @@ def _dependencies(home):
     runtime = home / "runtime.sqlite3"
     if runtime.is_file():
         with closing(_read_db(runtime)) as db:
-            for (body,) in db.execute("SELECT input FROM runs"):
-                d = json.loads(body).get("descriptor", {})
+            inputs = [
+                json.loads(row[0]) for row in db.execute("SELECT input FROM runs")
+            ]
+            if db.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='archives'"
+            ).fetchone():
+                inputs.extend(
+                    json.loads(json.loads(row[0])["run"]["input"])
+                    for row in db.execute("SELECT body FROM archives")
+                )
+            for body in inputs:
+                d = body.get("descriptor", {})
                 paths = d.get("paths", []) + (
                     [d["archive_path"]] if "archive_path" in d else []
                 )

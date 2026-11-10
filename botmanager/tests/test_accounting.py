@@ -67,6 +67,7 @@ class AccountingTests(unittest.TestCase):
         run = {
             "starting_equity": "100",
             "currency": "USDC",
+            "fills": [],
             "cashflows": [{"kind": "rent_lock", "amount": "2"}],
         }
         result = accounting_snapshot(run)
@@ -102,3 +103,11 @@ class AccountingTests(unittest.TestCase):
         result = accounting_snapshot(run)
         self.assertEqual(self.value(result, "realized_gross_pnl"), Decimal(20))
         self.assertIsNone(result["realized_net_pnl"]["value"])
+
+    def test_absent_ledgers_are_unknown_instead_of_empty(self):
+        for field in ("fills", "cashflows"):
+            run = fixture()
+            del run[field]
+            result = accounting_snapshot(run)
+            self.assertIsNone(result["net_pnl"]["value"])
+            self.assertIn("ledger_unavailable", result["net_pnl"]["reason"])

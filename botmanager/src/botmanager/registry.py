@@ -185,6 +185,13 @@ def _schema(params, context):
             "runtime": "bounded_historical_and_prospective_reference",
             "live_available": False,
             "prospective_data_certified": False,
+            "continuation": {
+                "available": True,
+                "segment_bars": 512,
+                "runtime_schema_version": 5,
+                "account_preserved": True,
+                "engine_and_source_identity_required": True,
+            },
             "cross_field_constraints": ["fast_period < slow_period"]
             if key == "trend"
             else [
@@ -329,7 +336,7 @@ def _manager_status(spec, row, context, *, why=False):
     from .worker import lock_held
 
     ledger = RuntimeLedger(context.home)
-    return runtime_snapshot(
+    snapshot = runtime_snapshot(
         spec,
         row,
         now=time.time(),
@@ -337,6 +344,10 @@ def _manager_status(spec, row, context, *, why=False):
         supervisor_alive=lock_held(ledger.home / "supervisor.lock"),
         why=why,
     )
+    from .learning import learning_snapshot
+
+    snapshot["learning"] = learning_snapshot(ledger.home, spec.bot_id)
+    return snapshot
 
 
 def _runtime(params, context, operation):
@@ -491,14 +502,17 @@ def _research_command(params, context, operation):
 
 def _events(params, context):
     from .ledger import RuntimeLedger
+    from .reports import event_page
 
     spec = _identity(params, context)
-    return {
-        "bot_id": spec.bot_id,
-        "events": RuntimeLedger(context.home).events(
-            spec.bot_id, params.get("limit", 100)
-        ),
-    }
+    page = event_page(
+        RuntimeLedger(context.home),
+        spec.bot_id,
+        run_id=params.get("run_id"),
+        after=params.get("after", 0),
+        limit=params.get("limit", 100),
+    )
+    return {"bot_id": spec.bot_id, "events": page.pop("items"), **page}
 
 
 def _daemon(params, context):
@@ -760,7 +774,12 @@ COMMANDS = {
         "events",
         "Read runtime events without starting workers.",
         _events,
-        IDENTITY + ((("--limit",), {"type": int, "default": 100}),),
+        IDENTITY
+        + (
+            (("--limit",), {"type": int, "default": 100}),
+            (("--after",), {"type": int, "default": 0}),
+            (("--run-id",), {}),
+        ),
     ),
     "daemon": CommandSpec(
         "daemon", "Explicitly run the local reference-paper supervisor.", _daemon
@@ -820,7 +839,9 @@ COMMANDS = {
     ),
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
+from .executor_commands import command_specs as executor_command_specs
 from .health_commands import command_specs as health_command_specs
+from .learning_commands import command_specs as learning_command_specs
 from .report_commands import command_specs as report_command_specs
 
 COMMANDS.update(
@@ -829,11 +850,46 @@ COMMANDS.update(
         for spec in (
             *health_command_specs(CommandSpec),
             *report_command_specs(CommandSpec),
+            *learning_command_specs(CommandSpec),
+            *executor_command_specs(CommandSpec),
         )
     }
 )
 
 ERROR_EXIT_CODES = {
+    "continuation_unavailable": 3,
+    "executor_command_unsupported": 3,
+    "executor_descriptor_invalid": 3,
+    "executor_identity_changed": 3,
+    "executor_runtime_unavailable": 3,
+    "executor_scope_changed": 3,
+    "executor_unavailable": 3,
+    "incompatible_source": 3,
+    "incomplete_route_evidence": 3,
+    "invalid_observation": 3,
+    "learning_blocked": 3,
+    "manual_pin_conflict": 3,
+    "quote_size_mismatch": 3,
+    "quote_time_mismatch": 3,
+    "reference_consent_required": 3,
+    "research_scope_changed": 3,
+    "revision_conflict": 3,
+    "source_absent": 3,
+    "source_gap": 3,
+    "source_mismatch": 3,
+    "source_stale": 3,
+    "source_unreachable": 3,
+    "stale_cursor": 3,
+    "tick_in_progress": 3,
+    "unsafe_transport": 3,
+    "unwind_evidence_missing": 3,
+    "waiting_for_observations": 3,
+    "backup_unavailable": 4,
+    "research_unavailable": 3,
+    "isolation_unavailable": 3,
+    "engine_identity_changed": 3,
+    "evidence_unavailable": 3,
+    "stale_generation": 3,
     "read_conflict": 4,
     "adoption_blocked": 3,
     "incompatible_input": 3,
