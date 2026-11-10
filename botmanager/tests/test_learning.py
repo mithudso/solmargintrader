@@ -70,6 +70,7 @@ class LearningTests(unittest.TestCase):
             "evidence_digest": "e" * 64,
             "authority": {"root": "/controlled-fixture", "namespace_id": "fixture"},
             "authorized_at": 100,
+            "manager_home": str(self.store.home.resolve()),
             "state": "authorized_pending_manager",
             "safe_to_retry": False,
         }
@@ -260,6 +261,37 @@ class LearningTests(unittest.TestCase):
         for key in ("cash_quote", "realized_net_pnl_quote", "fees_quote", "fills"):
             self.assertEqual(after[key], closed[key])
 
+    def test_unbound_and_copied_home_authorizations_refuse_before_mutation_even_replay(
+        self,
+    ):
+        import shutil
+
+        with tempfile.TemporaryDirectory() as directory:
+            clone = Path(directory).resolve() / "clone"
+            receipt = self.receipt()
+            self.ledger.learning_adopt(self.store, receipt)
+            shutil.copytree(self.home, clone)
+            original = {p.name: p.read_bytes() for p in self.home.glob("*.sqlite3")}
+            copied = {p.name: p.read_bytes() for p in clone.glob("*.sqlite3")}
+            with self.assertRaises(ManagerError) as wrong:
+                RuntimeLedger(clone).learning_adopt(ManagerStore(clone), receipt)
+            self.assertEqual(wrong.exception.code, "identity_conflict")
+            self.assertEqual(
+                original, {p.name: p.read_bytes() for p in self.home.glob("*.sqlite3")}
+            )
+            self.assertEqual(
+                copied, {p.name: p.read_bytes() for p in clone.glob("*.sqlite3")}
+            )
+            legacy = dict(receipt)
+            legacy.pop("manager_home")
+            legacy.pop("digest")
+            legacy["digest"] = fingerprint(legacy)
+            absent = Path(directory) / "absent"
+            with self.assertRaises(ManagerError) as unbound:
+                RuntimeLedger(absent).learning_adopt(ManagerStore(absent), legacy)
+            self.assertEqual(unbound.exception.code, "invalid_receipt")
+            self.assertFalse(absent.exists())
+
 
 def controlled_shadow_worker(home, bot_id, generation, parent_pid):
     from botmanager.worker import prospective_tick, run_worker
@@ -423,6 +455,7 @@ class RealShadowWorkerTests(unittest.TestCase):
                         "namespace_id": "fixture",
                     },
                     "authorized_at": START + 601,
+                    "manager_home": str(store.home.resolve()),
                     "state": "authorized_pending_manager",
                     "safe_to_retry": False,
                 }
@@ -447,3 +480,119 @@ class LearningLocalReadTests(unittest.TestCase):
             result = learning_snapshot(home, "unused")
             self.assertEqual(result["owner_eligibility"], "unknown")
             self.assertFalse(home.exists())
+
+
+class ShadowActivationRecoveryTests(unittest.TestCase):
+    def test_owner_retry_recovers_first_member_activation_after_peer_crash(self):
+        from botmanager.learning import comparable_identity
+        from botmanager.oracle_data import capture, prepare_descriptor
+
+        from soltui.experiments import ExperimentStore
+        from soltui.learning_owner import LearningOwner
+        from tests.test_oracle_data import START, append, archive
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            source_path = root / "history.sqlite3"
+            source = archive(source_path, 120)
+            home = root / "manager"
+            store, ledger = ManagerStore(home), RuntimeLedger(home)
+            baseline = grid("crash-retry-source")
+            store.create_spec(baseline)
+            data = capture(
+                prepare_descriptor(
+                    source_path, capital_quote=1000, strategy_id="grid", now=START + 120
+                ),
+                now=START + 120,
+            )
+            ledger.register(baseline, data)
+            authority = ExperimentStore(root / "authority")
+            owner = LearningOwner(
+                authority.root, {"namespace_id": "fixture"}, authority
+            )
+            proposal = {
+                "version": 1,
+                "id": str(uuid4()),
+                "scope": canonical_scope(baseline, data["identity"]),
+                "day": "fixture",
+                "home": str(home),
+                "bot_id": baseline.bot_id,
+                "runtime_id": ledger.get(baseline.bot_id)["runtime_id"],
+                "baseline": baseline.to_dict(),
+                "changes": {"rungs": 8},
+                "pins": {},
+                "evidence": {"evidence_digest": "e" * 64},
+                "comparability": comparable_identity(ledger.get(baseline.bot_id)),
+                "counts": {"resolved_comparable_labels": 300, "completed_trades": 30},
+                "shadow": None,
+                "state": "pending_shadow",
+            }
+            with owner.connection(True) as db:
+                db.execute(
+                    "INSERT INTO learning_proposals VALUES (?,?,?,?)",
+                    (
+                        proposal["id"],
+                        proposal["scope"],
+                        "fixture",
+                        json.dumps(proposal),
+                    ),
+                )
+            register = RuntimeLedger.register
+
+            def crash_on_challenger(target, spec, snapshot):
+                if spec.resolved_values["rungs"] == 8:
+                    raise RuntimeError("fixture crash after incumbent activation")
+                return register(target, spec, snapshot)
+
+            with (
+                patch("soltui.learning_owner.time.time", return_value=START + 120),
+                patch.object(
+                    RuntimeLedger,
+                    "register",
+                    autospec=True,
+                    side_effect=crash_on_challenger,
+                ),
+                self.assertRaisesRegex(RuntimeError, "after incumbent"),
+            ):
+                owner.start_shadow(proposal["id"])
+            with owner.connection() as db:
+                reserved = owner._read_proposal(db, proposal["id"])
+            pair_ids = reserved["shadow"]["pair_ids"]
+            self.assertIsNone(reserved["shadow"]["runs"])
+            incumbent = ledger.get(pair_ids["incumbent"])
+            self.assertEqual(incumbent["desired"], "running")
+            self.assertIsNone(ledger.get(pair_ids["challenger"]))
+            # New source observations and a later owner clock cannot select a
+            # different activation contract for the missing peer.
+            append(source, 120, 123)
+            with (
+                patch("soltui.learning_owner.time.time", return_value=START + 123),
+                patch(
+                    "botmanager.oracle_data.prepare_descriptor",
+                    side_effect=AssertionError("retry recaptured source"),
+                ),
+            ):
+                recovered = owner.start_shadow(proposal["id"])
+            self.assertEqual(recovered["id"], proposal["id"])
+            self.assertEqual(recovered["shadow"]["pair_ids"], pair_ids)
+            bindings = recovered["shadow"]["runs"]
+            self.assertEqual(
+                len({binding["immutable_input"] for binding in bindings}), 1
+            )
+            self.assertEqual(len({binding["input_hash"] for binding in bindings}), 1)
+            for identity in pair_ids.values():
+                member = ledger.get(identity)
+                self.assertEqual(
+                    member["input"]["descriptor"], incumbent["input"]["descriptor"]
+                )
+                self.assertEqual(
+                    member["input"]["descriptor"]["activation_at"], START + 120
+                )
+                self.assertEqual(member["desired"], "running")
+            self.assertEqual(
+                ledger.get(pair_ids["incumbent"])["runtime_id"], incumbent["runtime_id"]
+            )
+            with patch("soltui.learning_owner.time.time", return_value=START + 124):
+                self.assertEqual(owner.start_shadow(proposal["id"]), recovered)
+            self.assertEqual(len(store.list_specs()), 3)
+            self.assertEqual(len(ledger.ids()), 3)

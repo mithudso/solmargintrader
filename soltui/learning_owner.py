@@ -905,7 +905,13 @@ class LearningOwner:
             if old:
                 if old["proposal_id"] != proposal_id or old["operation"] != operation:
                     raise ValueError("learning request identity conflict")
-                return json.loads(old["body"])
+                retained = json.loads(old["body"])
+                proposal = self._read_proposal(db, proposal_id)
+                if retained.get("manager_home") != proposal["home"]:
+                    raise ValueError(
+                        "legacy authorization manager-home binding unavailable"
+                    )
+                return retained
             proposal = self._read_proposal(db, proposal_id)
             cooldown = db.execute(
                 "SELECT reserved FROM learning_cooldowns WHERE scope=?",
@@ -958,6 +964,7 @@ class LearningOwner:
                 "request_id": request_id,
                 "proposal_id": proposal_id,
                 "operation": operation,
+                "manager_home": proposal["home"],
                 "scope": proposal["scope"],
                 "bot_id": proposal["bot_id"],
                 "runtime_id": proposal["runtime_id"],

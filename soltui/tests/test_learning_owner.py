@@ -267,10 +267,35 @@ class LearningOwnerTests(unittest.TestCase):
         client = Client()
         request = str(uuid4())
         store = ManagerStore(self.home)
+        from botmanager.backup import create_backup, restore_backup
+        from botmanager.domain import ManagerError
+
+        backup, restored = self.root / "backup", self.root / "restored-manager"
+        create_backup(self.home, backup)
+        restore_backup(backup, restored)
+        original_before = {
+            path.name: path.read_bytes() for path in self.home.glob("*.sqlite3")
+        }
+        restored_before = {
+            path.name: path.read_bytes() for path in restored.glob("*.sqlite3")
+        }
         with (
             patch.object(owner, "_shadow_progress", return_value=progress),
             patch("soltui.learning_owner.time.time", return_value=self.now + 7 * DAY),
         ):
+            with self.assertRaises(ManagerError) as wrong_home:
+                reconcile_transition(
+                    ManagerStore(restored), client, proposal["id"], request_id=request
+                )
+            self.assertEqual(wrong_home.exception.code, "identity_conflict")
+            self.assertEqual(
+                original_before,
+                {path.name: path.read_bytes() for path in self.home.glob("*.sqlite3")},
+            )
+            self.assertEqual(
+                restored_before,
+                {path.name: path.read_bytes() for path in restored.glob("*.sqlite3")},
+            )
             with self.assertRaises(OSError):
                 reconcile_transition(store, client, proposal["id"], request_id=request)
             adopted = reconcile_transition(

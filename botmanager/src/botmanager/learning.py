@@ -293,12 +293,8 @@ def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
     from .oracle_data import prepare_descriptor
 
     original = active["input"]["descriptor"]
-    descriptor = prepare_descriptor(
-        original["archive_path"],
-        capital_quote=original["capital_quote"],
-        strategy_id=baseline.strategy_id,
-    )
-    results = []
+    plans = []
+    prior = []
     for role, spec in (("incumbent", baseline), ("challenger", proposed)):
         identifier = pair_ids[role]
         raw = spec.to_dict()
@@ -308,15 +304,62 @@ def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
             display_name="shadow-" + identifier,
         )
         shadow = BotSpec.from_dict(raw)
-        existing = store.get_spec(identifier)
-        if existing is not None and existing.config_hash != shadow.config_hash:
+        saved, row = store.get_spec(identifier), ledger.get(identifier)
+        if (saved is not None and saved.config_hash != shadow.config_hash) or (
+            row is not None and row["spec"]["config_hash"] != shadow.config_hash
+        ):
             raise ManagerError(
                 "identity_conflict",
                 "Shadow identity is bound to another configuration.",
             )
-        if existing is None:
+        if row is not None:
+            if saved is None or row["input"].get("prospective") is None:
+                raise ManagerError(
+                    "learning_blocked",
+                    "Existing shadow activation is not attributable.",
+                    3,
+                )
+            prior.append(row)
+        plans.append((role, shadow, saved, row))
+    if prior:
+        # A committed first member is the durable activation reservation. A
+        # retry must not choose a later watermark/clock for its missing peer.
+        descriptor = prior[0]["input"]["descriptor"]
+        existing_binding = shadow_input_binding(prior[0])
+        if any(shadow_input_binding(row) != existing_binding for row in prior):
+            raise ManagerError(
+                "learning_blocked", "Existing shadow activation contracts differ.", 3
+            )
+        activation_fields = {
+            "activation_at",
+            "activation_watermark",
+            "start_ts",
+            "end_ts",
+        }
+        if {
+            key: value
+            for key, value in descriptor.items()
+            if key not in activation_fields
+        } != {
+            key: value
+            for key, value in original.items()
+            if key not in activation_fields
+        }:
+            raise ManagerError(
+                "learning_blocked", "Existing shadow source contract changed.", 3
+            )
+    else:
+        descriptor = prepare_descriptor(
+            original["archive_path"],
+            capital_quote=original["capital_quote"],
+            strategy_id=baseline.strategy_id,
+        )
+        existing_binding = None
+    results = []
+    for role, shadow, saved, row in plans:
+        identifier = shadow.bot_id
+        if saved is None:
             store.create_spec(shadow)
-        row = ledger.get(identifier)
         if row is None:
             data = load_recording(descriptor, strategy_id=shadow.strategy_id)
             if data.get("prospective") is None or data["bars"]:
@@ -325,7 +368,14 @@ def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
                     "A shadow activation cannot replay historical bars.",
                     3,
                 )
-            row = ledger.register(shadow, data)
+            if (
+                existing_binding is not None
+                and shadow_input_binding({"input": data}) != existing_binding
+            ):
+                raise ManagerError(
+                    "learning_blocked", "Recovered shadow source identity changed.", 3
+                )
+            ledger.register(shadow, data)
             row = ledger.get(identifier)
         ledger.control(shadow, "start", str(uuid4()))
         results.append(

@@ -1,7 +1,7 @@
 # Task 5 — protected learning, labels and real shadow evaluation
 
-Version: 1.1.1
-Delta: 1.1.0 -> 1.1.1; bound JSON clock integers before float conversion in local and helper scheduler metadata.
+Version: 1.1.2
+Delta: 1.1.1 -> 1.1.2; recover one shadow activation across partial creation and bind authorization receipts to their canonical manager home.
 
 Status: implementation and owned source checks complete. Controller owns final registry/status/report integration, full manager release checks, installation and remote delivery. Real production shadow qualification remains pending.
 
@@ -79,3 +79,16 @@ The shared scheduler clock validator now compares numeric values against the sup
 Actual JSON-file regressions cover positive/negative401-digit integers and smaller out-of-range21-digit integers, construct and open a real Supervisor, run its lifecycle step and public status read, and prove the malformed file remains untouched. Nested attempted_at values are tested both from local status files and actual helper subprocess JSON output; invalid helper clocks fail and reap cleanly.
 
 Completed command: PYTHONPATH=botmanager/src:botmanager:.:soltui/src /Users/mitch/.venvs/solbot/bin/python -m unittest tests.test_learning_job tests.test_learning_reads -q. Result:15 tests passed in0.637s, exit0. Ruff passed. No other learning, forecast, pointer-budget or shadow-binding files changed in this repair.
+
+
+### Final integration repair — version 1.1.2
+
+shadow_pair now preflights every existing paired specification/runtime before further creation. If either runtime member already exists, its exact descriptor and immutable activation binding are the durable reservation for the missing peer. A retry never calls prepare_descriptor to select a new clock/watermark for that peer. Existing member configurations, shared activation and current source contracts are checked before registration/start. Original account/cursor/history remains intact; no new bot identities are allocated. If neither member has registered, source capture remains a fresh explicit activation. Actual prospective/delayed-delivery and seven-day worker-clock gates remain unchanged.
+
+A full LearningOwner.start_shadow regression crashes after incumbent registration/start but before challenger registration. It then appends accepted Oracle observations and advances the owner clock before retry. The retry recovers the original activation timestamp/watermark, preserves the incumbent runtime, creates only the missing peer, saves the same proposal/pair IDs and replays exactly without duplicate accounts.
+
+Canonical owner authorization now includes manager_home inside its receipt digest. RuntimeLedger.learning_adopt checks both the runtime and saved-store target homes against that canonical audience before mutation locks, database initialization/migration or receipt replay lookup. Copied/restored identities cannot steal their source home's authorization. Legacy unbound authorizations fail closed; owner replay also refuses an unbound legacy receipt.
+
+The public transition regression creates/restores a valid backup with identical bot/runtime/configuration IDs, attempts the source proposal on that restored home, and verifies both original and restored manager/runtime database bytes remain unchanged on refusal. The same request then succeeds on the original home, including the existing crash/reconciliation and rollback tests. A copied already-published receipt also refuses before replay, and an unbound legacy receipt cannot initialize an absent home.
+
+Completed command: PYTHONPATH=botmanager/src:botmanager:.:soltui/src /Users/mitch/.venvs/solbot/bin/python -m unittest tests.test_learning soltui.tests.test_learning_owner -q. Result:28 tests passed in14.583s, exit0. Ruff passed for all five owned source/test paths. Source/tests are frozen for root's final full-source, wheel, installed and remote acceptance gates. No production source, authority or service changed.

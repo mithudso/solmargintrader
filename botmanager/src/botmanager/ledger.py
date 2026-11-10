@@ -1537,7 +1537,28 @@ class RuntimeLedger:
             raise ManagerError(
                 "invalid_receipt", "Learning owner receipt integrity failed.", 4
             )
+        manager_home = receipt.get("manager_home")
+        if (
+            not isinstance(manager_home, str)
+            or not Path(manager_home).is_absolute()
+            or manager_home != str(Path(manager_home).resolve())
+        ):
+            raise ManagerError(
+                "invalid_receipt",
+                "Learning authorization lacks a canonical manager-home binding.",
+                4,
+            )
+        if manager_home != str(self.home.resolve()) or manager_home != str(
+            store.home.resolve()
+        ):
+            raise ManagerError(
+                "identity_conflict",
+                "Learning authorization belongs to another manager home.",
+                3,
+            )
         request_id = receipt["request_id"]
+        # Audience checks precede locks, migrations and even replay lookup: a
+        # copied journal must never steal an authorization for its source home.
         with mutation_lock(self.home), self.connection(True) as db:
             db.execute("ATTACH DATABASE ? AS saved", (str(store.path),))
             if any(
