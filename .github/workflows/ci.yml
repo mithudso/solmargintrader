@@ -38,7 +38,7 @@ jobs:
       - name: Installed headless imports and CLI
         working-directory: /tmp
         run: |
-          python -I -c "import ecosystem, soltui.f5_batch, soltui.forwardtest, oracle, botmanager"
+          python -I -c "import ecosystem, soltui.f5_batch, soltui.forwardtest, soltui.research_owner, soltui.manager_evidence, oracle, botmanager, botmanager.blind"
           solecosystem --help
           solecosystem-ui --help
       - name: Lint
@@ -211,6 +211,7 @@ jobs:
           pip install -e executor
           grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
           pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
+          pip install ./backtester ./oracle ./soltui ./botmanager
 
       - name: Verify test selector
         run: python3 -m unittest scripts.test_soltui_ci
@@ -250,6 +251,10 @@ jobs:
           pip install -r "$RUNNER_TEMP/soltui-req.txt"
       - name: Verify selector
         run: python3 -m unittest scripts.test_soltui_ci
+      - name: Install headless research owners for actual macOS judge checks
+        run: python -m pip install ./backtester ./oracle ./soltui ./botmanager
+      - name: Actual operating-system judge isolation
+        run: python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
       - name: Changed-area tests and bridge smoke
         env:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -345,6 +350,7 @@ jobs:
           pip install -e executor
           grep -v '^macos-launchd-supervisor' soltui/requirements.txt > "$RUNNER_TEMP/soltui-req.txt"
           pip install -r "$RUNNER_TEMP/soltui-req.txt"  # private git dep: CI cannot clone it; its tests skip
+          pip install ./backtester ./oracle ./soltui ./botmanager
           pip install -r mongo/requirements.txt
 
       - name: Test counts and retrieval indexes agree with the repo

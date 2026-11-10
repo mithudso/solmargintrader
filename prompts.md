@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 176
+Version: 178
+Delta: v177 to v178; preserve the remaining-work plan request and its status follow-up.
+Delta: v176 to v177; preserve the owner's correction about repeated wrap-up claims.
 Delta: v175 to v176; preserve the status question during all-remaining-milestones execution.
 Delta: concurrent histories to v175; preserve editing and merged ecosystem bootstrap records during PR186 conflict resolution.
 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope.
@@ -1565,3 +1567,24 @@ What're you doing now? How much more do you have?
 ```
 
 Answered directly: editing delivered; M3finalgates; fivefurthermilestones; severalhoursremain. This steering question did not cancel, pause or replace the all-remaining-milestones scope.
+
+## v177 — 2026-11-10 — correct the milestone completion report
+
+```text
+Havne't you been wrapping up for an hour and a half?
+```
+
+The owner is correcting inaccurate progress language. The all-remaining-milestones scope remains active. Report source freeze, review, installed acceptance and delivery as separate observed gates. Do not claim wrap-up while implementation is still changing.
+
+
+## v178 — 2026-11-10 — remaining implementation plan and status
+
+```text
+Write an implementation plan for the rest of the work you have to do
+```
+
+```text
+Are you not done?
+```
+
+The plan is written in a separate worktree for independent documentation delivery. M4 source is checkpointed; integration/review/installed acceptance/release and M5–8 remain open.

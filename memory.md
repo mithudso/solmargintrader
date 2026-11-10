@@ -1,6 +1,11 @@
 # Work continuation
 
-Version: 362
+Version: 367
+Delta: v366 to v367; preserve the committed M4 source checkpoint and remaining-plan delivery.
+Delta: v365 to v366; correct progress reporting and preserve remaining M4 implementation gaps.
+Delta: v364 to v365; preserve usable public research setup and scoped freshness requirements.
+Delta: v363 to v364; preserve M4 registry, sandbox and authority-coverage decisions.
+Delta: v362 to v363; record M3 remote delivery and start M4 from its accepted baseline.
 Delta: v361 to v362; record accepted installed repair and final milestone3 delivery preparation.
 Delta: v360 to v361; preserve actual installed status blocker and second focused fix round.
 Delta: v359 to v360; record accepted milestone3 fixes, regular installation and final HTTP acceptance.
@@ -1312,3 +1317,46 @@ Fixround2/5originalworkeractive, onlystatus.py/test_status.py; testactualcomplet
 I4fixbfc6d2f4 (status.py/test_status.py) passed31coveringtests/Ruff/format andscopedrereviewapproved;0sourceblockers. Sourceengine/Oracle/HTTPunchanged, previous1002/68/8checks retained. Freshofficialsolecosystem0.1.3sourceFPR4586e3451fef3616f73014b3b8558f8d81ead41ec7ead8e5d16c3d71f5da6b42 complete/MCPclosed; globalmanager-onlyregularrepairinstall0/pipcheck0. Rejectedknownbadcandidatepreservedat.local/state/solbot/rejected-environments/solecosystem-0.1.3-da2cae09, receiptsunchanged aftercheckingnoactiveprocesses.
 
 Independentfinal58/58effectivegates,3288currentfilehashesmatchbfc, actual2accounts cursor1→2postactivation+restart, completedprospective/historicalCLIcandidate/global/aliaspass,pinnedengineevidence,defaultandretainedstatesexactlyunchanged. Healthyownedstoppedclone daemonexit0/locksreleased. Earlierfirstdaemonexitunknownremainsdisclosed; secondprospectivedaemonexit0. No newproducerwait/HTTPrepeat. Stableprivate0.4.0evidencescopied0600. Docscheck1002/1405/408/46total2861exit0; parentRuff/format/YAML/Node/diffchecks0. Finalstage/offlinehash/commit/push/PR/finalheadCI/merge remains; no M3deliveryclaim yet. Thenimmediatelyclaim1110andcontinueallremaining1111–1114. Primaryheldbyothers; privateworktreeonly.
+
+## v363 — M3 delivered; execute M4–8
+
+PR188 mergeda610868dbac61b46dba2a0047aa22d79b23cab34 at2026-11-10T05:38:34Z. Finalce6c6ba4CI42762920865watchandgatedmergeexit0,all11activejobspass/2expectedskips. Fetchedremoteentiretreeequalsacceptedtip. Installedsourcebfc,58/58gates/3288hashesaccepted; stable0.4.0deliveryreceiptcopied0600. TASK1109done; implementationepic1106stillopen. Primaryotherownercheckoutnotmodified. OwnM3branchdeletedafterexacttreeproof, sameworktreereusedforactiveplan.
+
+TASK1110claimed, newbranchagent-01a1c189-m4 froma610. Requirements task-m4-brief.md1.2bindcurrentM3schema2engine_identity/canonicalopenaccountAPI andstrictno-proxy-certificationpolicy. Existingresearch-ownerreportv2 exposesF5perhomeauthoritygap; reuseoneExperimentStore, registerknownroots andpre-readadmission; preserveactiveunawarefrozen0.1.1clients andrefuseaffectedfinalscopes. KNOW1182requiresrealOSjudgeisolation,3parentnarrowPythonstartupsmokesfailed-6—notacceptedruntimeprofiles. KNOW1183requirescrossDBidempotentCAS, notfalseatomiccallback. FreshM4implementerwillownresearch/blind/protocol/owner/tests; parentrootdocs/CI/records/install/review/delivery. ContinueallM4–8; no newproductionoptimizer/recorder/service/keys/orders.
+
+## v364 — M4 implementation and coverage boundary
+
+Fresh /root/m4_implementation active on branchagent-01a1c189-m4, BASEa610868d. Shared ExperimentStore protocol2, native/F5admission and one existingregistry research.protocol action; stdio remains boundeddecode/dispatch andheadless. Worker initial5judge+5ownerAPItests and72legacy/ownerchecks passed; sourceunfinished, no M4installation/deliveryclaim. Newpaths declaredinworkercontext; parentwillstage/refreshindexafterfinalfreeze beforeindexdependentchecks.
+
+Canonical authority spans participating managedhomes; coverage remains registered_roots_only. A root descriptor cannot prove unknown alternate processes absent. Missing configured history, unknown source/participation or active unawareclient block affectedfreshfinal/automaticpromotion; do not add a boolean declaring fleetwidecoverage. Conditionalresearchbacktests mayreturnusefulresultswithoutgloballyfreshadoptablereceipts. Preserveoldactiveenvironments; no standaloneinventorysubsystem addedhere. Carrygate toM7/finalOraclehandoff.
+
+OSstartup signal6 diagnosedliteralrootdirectoryread plusframeworkPython.app reexec; worker actualfinalprofiledenialprobes reportedpassed butindependentreview/installedproofstillpending. KNOW1182updatedv3,1183v2;1181updatedv3foralreadydeliveredM3openaccountAPI (avoidredoing). M3closed171fullCItests confirmed41.009s. No personalmemory, producer, key, service ordefaultstate mutation.
+
+## v365 — M4 public setup and scoped receipt semantics
+
+Worker is implementing public research-register, including explicit --initialize-first-authority only when the canonical per-user namespace is unbound. It uses existing ExperimentStore, records unknown prior history, and never replaces a lost registered DB. A registration record outside both manager and owner config roots binds root/UUID and enrolled roots. Temporary namespace overrides remain isolated/non-production. New roots cannot silently reset attempts. Status/backtest never initialize.
+
+Coverage ruling clarified in KNOW1216v2 and task-m4-brief1.3: valid fresh-final receipts are scoped to the canonical managed authority with verified required known/configured/detected owners and no relevant gaps; no claim of machine-wide process absence. Do not permanently disable scoped automation merely because arbitrary undisclosed actors cannot be disproven. Known active unaware roots still block affected finals. Receipt binds roster/relevant history and frozen attempt/alpha. Later unrelated/future reads preserve it; conflicting prior exposure or changed required participation invalidates mutation. Stale proposal bodies remain inspectable. M4 stages only; M6 owns seven-day/trade/pin/CAS promotion.
+
+Owner transport uses existing SolTUI research.protocol registry action. Bounded known-path discovery includes native roots, documented ecosystem roots, explicit ecosystem-home and recognizable Oracle owner context. Unknown context becomes a gap, not zero history. Legacy F5/bg/forward stays unmanaged unless explicitly enrolled, so existing bootstrap behavior remains; new participants use shared admission. No active old environments or real authority data changed. Parent requested public-flow registration tests, portable owner test fixtures (not generic tests.test_paper/test_blind imports), hostile-field log canary, and ecosystem regression checks.
+
+Planned package matrix: manager0.5/backtester0.1.1/Oracle0.2.1/research0.2.0/ecosystem0.1.4. Parent bootstrap defaults/docs now0.1.4; CI adds actual macOS judge suite and headless owner imports/dependencies for docs/full selectors. No M4install yet. M3 CI171 verified; source/installed proof remains accepted0.4.0. Current M4source/tests still under hardening; final freeze/index/commit/review/installed/CI/delivery pending. ContinueM5–8 afterward.
+
+## v366 — M4 remains implementation, not wrap-up
+
+Owner challenged repeated wrap-up claims in prompts.md v177. Acknowledged directly: M4 is still changing and M5–8 have not started. Do not substitute more optimistic time estimates. Report completed gates only. The user's status questions do not cancel or pause the full implementation request.
+
+Worker is fixing strict known-client validation, disappearing prior-history stores, and native participating-root mismatch. It is also adding public research-setup and research-plan commands so first use needs no hand-written identity or plan JSON. Default research uses the same bounded preregistered policy. Authority initialization stays explicit; setup does not initialize or mutate evidence history.
+
+Parent raised a scope precision before final freeze: first-authority unknown prior history must protect affected historical windows without permanently forbidding genuinely post-registration scoped evidence after required owner participation is verified. Unknown active clients remain blockers. Do not erase prior exposures or equate owner consent with data completeness. Await the worker's actual implementation/report and independent review before claiming this resolved. M4 regular installation, independent acceptance and remote delivery have not started. Existing installed M3 remains accepted.
+
+
+## v367 — M4 source checkpoint; planning is the immediate deliverable
+
+Source e24ad7ca343a07910d04f3c3471494fcba763c75 and report/proof65a5a40020a21849fadd3476c556a5d4cdedca3a are committed. Worker reports187 manager,150 owner/legacy/native/F5/bg and42 bridge checks pass, with source OS denial proof. Public setup/default plan and immutable initialization epoch are implemented. No independent source approval, integrated installed acceptance or M4 delivery is claimed. Worker stopped at this recoverable checkpoint when the owner requested the remaining-work plan.
+
+Remaining-plan task TASK1220 uses separate branch agent-01a1c189-remaining-plan from remote21331e37. Plan /Users/mitch/dev/solmargintrader-wt-01a1c189-remaining-plan/docs/superpowers/plans/2026-11-10-bot-manager-remaining.md covers actual M4 release gates, M5–8 and final Oracle handoff. User then asked 'Are you not done?'; answered that plan is written and linked the actual file, with publication still underway. Do not defer that requested plan behind further product implementation.
+
+M4 release must first integrate PR189/190 and preserve newer ecosystem0.2.1 behavior/approved50bps referral default. Current0.1.4 pins/default path are obsolete checkpoint metadata, not the final installation. KNOW1221 records the exact integration risk. Parent draft CI/docs/records are checkpointed only for recovery. No installation or production service/authority/bot change. Documentation discovery on the committed M4 source found1434 SolTUI/1002 backtester/408 extension/46 mongo =2890; update all documented source counts together rather than lowering actual discovery.
+
+Resume from current-master integration and review, then fresh compatible installation and independent actual-command/sandbox acceptance. Push final head, require final-head CI and merge last. Continue M5–8 under the owner's existing authorization. Preserve other sessions' primary checkout and unrelated .opencode/.

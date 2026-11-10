@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T05:31:35+00:00",
+  "generatedAt": "2026-11-10T07:03:18+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1664,
+      "matchingFiles": 1665,
       "shown": 30,
       "files": [
         {
@@ -115,7 +115,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 34
+          "hits": 35
         },
         {
           "path": "research/strategy_experiment/FILES.md",
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1411,
+      "matchingFiles": 1415,
       "shown": 30,
       "files": [
         {
@@ -214,7 +214,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 41
+          "hits": 42
         },
         {
           "path": "soltui/tui.py",
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1389,
+      "matchingFiles": 1393,
       "shown": 30,
       "files": [
         {
@@ -392,6 +392,10 @@
           "hits": 15
         },
         {
+          "path": "botmanager/src/botmanager/research.py",
+          "hits": 15
+        },
+        {
           "path": "skills/trading-and-investing/references/signal-pairing-volume-and-pattern-signal-sets.md",
           "hits": 14
         },
@@ -417,10 +421,6 @@
         },
         {
           "path": "backtester/strategy_cards/README.md",
-          "hits": 12
-        },
-        {
-          "path": "backtester/tests/test_advanced_strategies.py",
           "hits": 12
         }
       ],
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 742,
+      "matchingFiles": 744,
       "shown": 30,
       "files": [
         {
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 371
+          "hits": 376
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 652,
+      "matchingFiles": 658,
       "shown": 30,
       "files": [
         {
@@ -730,7 +730,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 175
+          "hits": 176
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 592,
+      "matchingFiles": 597,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 550,
+      "matchingFiles": 557,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 264
+          "hits": 283
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1015,7 +1015,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 135
+          "hits": 137
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 362,
+      "matchingFiles": 366,
       "shown": 30,
       "files": [
         {
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 130
+          "hits": 135
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 329,
+      "matchingFiles": 334,
       "shown": 30,
       "files": [
         {
@@ -1451,12 +1451,12 @@
           "hits": 23
         },
         {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "path": "memory.md",
           "hits": 23
         },
         {
-          "path": "memory.md",
-          "hits": 22
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 23
         },
         {
           "path": "backtester/core/deflated_sharpe.py",
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 278,
+      "matchingFiles": 283,
       "shown": 30,
       "files": [
         {
@@ -1723,7 +1723,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 19
+          "hits": 20
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 254,
+      "matchingFiles": 258,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 174,
+      "matchingFiles": 175,
       "shown": 30,
       "files": [
         {
