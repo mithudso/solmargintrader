@@ -1,11 +1,13 @@
 # Architecture
 
-Eight components with explicit execution boundaries. The backtester and research do not place orders.
-The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads
-research and liquidity status; MongoDB is a derived copy, never an execution dependency.
+Ten components have explicit execution boundaries. Backtester, research, Oracle,
+Bot Manager and ecosystem automation do not place orders. The extension and optional
+executor retain separately gated live-capable paths. SolTUI has a separately armed
+manual Coinbase path. Liquidity contains live-capable code but is archived, disabled
+and killed. MongoDB is derived research storage, never an execution dependency.
 
 The standalone `botmanager/` application exposes the `solbot` command registry and owns
-its bot specifications and a fenced reference-paper runtime. Each grid instance
+its bot specifications and a fenced paper runtime. Each account
 keeps separate virtual capital, lots, cursor and generation. A versioned local
 backtester package supplies canonical offline economics. The supervisor and service
 lifecycle are explicit; reads start nothing. Legacy operations, research evidence
@@ -20,6 +22,25 @@ backtester/            research/              extension/
   ▼                    ▼                ▼
   results/             research/results/  core/engine.js ──▶ venues/ ──▶ Jupiter API
 ```
+
+## Managed availability and evidence owners
+
+The manager 0.7 suite holds one per-home lease and runs the existing Supervisor
+in process. Lifecycle generations, desired bot intent and account evidence remain
+with that Supervisor. The suite starts a verified control room or adopts an owner
+with the same manager home, ecosystem home and package identity. It retains only
+actual child-process handles as termination authority; an adopted PID is diagnostic.
+
+Ecosystem 0.4 coordinates F5 and prospective trials without replacing their queue,
+recording or evidence ownership. Oracle 0.2.2 owns source-labelled shadow forecasts
+and archives. Availability does not create a recorder, research authority, optimizer,
+signer or P&L ledger. Existing frozen environments remain attached to their owners.
+
+Collector measurements distinguish suite, manager, control room and market-data
+freshness. Server readiness requires the first three; market certification and order
+permission stay separate. The wiki is a validated public-document snapshot, not a
+runtime probe. See [managed-suite operations](bot-manager-managed-suite.md) and
+[wiki ownership](ECOSYSTEM-WIKI.md).
 
 ## Extension
 
@@ -136,14 +157,16 @@ strategy — are documented in `backtester/README.md` and enforced by 1003 tests
 
 - **Research** imports the backtester and operates on cached data. Explicit data-preparation
   commands can delegate to fetch modules; simulation and strategy readout remain offline.
-- **Soltui** displays research results and paper positions. Its background controls can explicitly
-  start a data fetch or a sweep subprocess. The Liquidity tab reads `status.json` and `scout.json`;
+- **Soltui** displays research results and paper positions and exposes separately
+  armed manual Coinbase controls. Manual Jupiter V2 submission remains blocked.
+  Its background controls can explicitly start a data fetch or a sweep subprocess. The Liquidity tab reads `status.json` and `scout.json`;
   it never imports the executor or signs. Its kill/resume control writes/removes only the
-  liquidity KILL flag; resuming can allow an already-live daemon to act inside configured caps. The optional browser console binds loopback.
+  liquidity KILL flag. The archived service must remain disabled and killed.
+  The optional browser console binds loopback.
 - **MongoDB** imports research/backtester definitions and rebuilds selected derived collections.
   It is not imported by an execution component. Loading is destructive to the selected derived
   collections; tests prove repeat-load idempotency.
-- **Liquidity** has its own virtualenv and one `Rebalancer`/`Runner` execution seam. `SimRunner`
+- **Liquidity**, archived and disabled, has its own virtualenv and one `Rebalancer`/`Runner` execution seam. `SimRunner`
   performs `eth_simulateV1`; `LiveRunner` signs and sends. Pure strategy and allocator decisions
   remain separate from RPC/market I/O. The daemon writes a SQLite ledger and state files for soltui.
 
