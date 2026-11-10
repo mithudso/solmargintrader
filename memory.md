@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 379
+Delta: v378 to v379; track repo-bootstrapper wiki guidance.
+
+## 2026-11-10 — Repo-bootstrapper wiki
+
+Target: canonical skill in /Users/mitch/dev/skills/repo-bootstrapper and installed Codex copy. Add a discoverable maintained wiki for commands, reference, scripts and applicable strategy, grounded in existing documentation. Preserve concurrent work. Completed: updated canonical skill and audit checklist, verified both installed copies, passed 18 skill tests. Skills commit aa6244a5 pushed; remaining: verify and merge the skills PR and deliver these continuation records. Stele task: TASK-1254.
+
 Version: 378
 Delta: v377 to v378; final full303 source suite passed after shutdown fix.
 Delta: v376 to v377; retain CI shutdown-order repair and fresh manager candidate revalidation.
