@@ -57,6 +57,7 @@ class UiServiceTests(unittest.TestCase):
             "data": {
                 "control_instance": self.instance,
                 "control_home": str(self.home),
+                    "manager_home": str(ui_service._manager_home()),
                 "ecosystem_version": __version__,
             },
         }
@@ -73,9 +74,12 @@ class UiServiceTests(unittest.TestCase):
 
         self.addCleanup(close)
 
-    def publish(self):
+    def publish(self, manager_home=None):
         self.http()
-        return ui_service.checkpoint(self.home, self.instance, self.server.url, pid=321)
+        self.server.body["data"]["manager_home"] = str(ui_service._manager_home(manager_home))
+        return ui_service.checkpoint(
+            self.home, self.instance, self.server.url, pid=321, manager_home=manager_home
+        )
 
     def test_status_without_data_is_inert(self):
         self.assertFalse(ui_service.status(self.home)["running"])
@@ -93,6 +97,20 @@ class UiServiceTests(unittest.TestCase):
             self.assertTrue((self.home / ui_service.LOCK_NAME).is_file())
             mode = stat.S_IMODE((self.home / ui_service.CHECKPOINT_NAME).stat().st_mode)
             self.assertEqual(mode, 0o600)
+
+    def test_manager_home_is_bound_to_checkpoint_and_http_identity(self):
+        selected = self.home / "manager-a"
+        other = self.home / "manager-b"
+        with ui_service.lock(self.home):
+            self.publish(selected)
+            self.assertTrue(ui_service.status(self.home, selected)["running"])
+            with patch("ecosystem.ui_service.subprocess.Popen") as spawn:
+                refused = ui_service.ensure(self.home, other)
+            self.assertFalse(refused["running"])
+            self.assertEqual(refused["reason"], "control_manager_home_mismatch")
+            spawn.assert_not_called()
+            self.server.body["data"]["manager_home"] = str(other)
+            self.assertFalse(ui_service.status(self.home, selected)["running"])
 
     def test_checkpoint_requires_owner_and_cleanup_is_generation_scoped(self):
         with self.assertRaises(RuntimeError):
@@ -183,7 +201,7 @@ class UiServiceTests(unittest.TestCase):
 
             def spawned(*args, **kwargs):
                 child.enter_context(ui_service.lock(self.home))
-                self.publish()
+                self.publish(self.home / "manager")
                 process = Mock(poll=Mock(return_value=None))
                 created.append(process)
                 return process
@@ -251,7 +269,7 @@ class UiServiceTests(unittest.TestCase):
         with (
             patch(
                 "ecosystem.ui_service.status",
-                side_effect=lambda home: healthy if ready.is_set() else absent,
+                side_effect=lambda home, manager_home=None: healthy if ready.is_set() else absent,
             ),
             patch(
                 "ecosystem.ui_service.subprocess.Popen", side_effect=spawned

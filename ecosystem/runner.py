@@ -436,7 +436,7 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
         from .ui_service import status as ui_status
 
         state["ui_url"] = (
-            ui_status(home).get("url") if cfg.get("embedded_ui", True) else None
+            ui_status(home, manager_home).get("url") if cfg.get("embedded_ui", True) else None
         )
         save(home / "state.json", state)
         update_telemetry(state, home, manager_home)

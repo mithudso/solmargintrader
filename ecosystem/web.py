@@ -235,6 +235,7 @@ def make_server(
                             "orders_available": False,
                             "control_instance": self.server.control_instance,
                             "control_home": str(home),
+                            "manager_home": str(controls.manager_home),
                             "ecosystem_version": __version__,
                             "bind": "127.0.0.1",
                             "port": self.server.server_address[1],
@@ -520,7 +521,7 @@ def main(argv=None) -> int:
             make_server(home, args.manager_home, port=args.port) as server,
         ):
             url = f"http://127.0.0.1:{server.server_port}"
-            ui_service.checkpoint(home, server.control_instance, url)
+            ui_service.checkpoint(home, server.control_instance, url, manager_home=args.manager_home)
             print(
                 json.dumps(
                     {

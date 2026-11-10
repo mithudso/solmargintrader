@@ -64,7 +64,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(data["control_server"], interface)
         self.assertEqual(data["ui_url"], interface["url"])
         pipeline.assert_called_once_with(home)
-        observed.assert_called_once_with(home)
+        observed.assert_called_once_with(home, None)
         ensure.assert_not_called()
         start.assert_not_called()
 

@@ -34,7 +34,7 @@ def ui_command(params, context):
         from .suite import operation
 
         operation("start", home=context.home, ecosystem_home=context.ecosystem_home)
-    observed = status(_ecosystem_home(context))
+    observed = status(_ecosystem_home(context), context.home)
     result = {**observed, "action": action}
     if action == "open":
         import webbrowser

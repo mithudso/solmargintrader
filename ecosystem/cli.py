@@ -69,7 +69,7 @@ def main(argv=None) -> int:
             data = runner.status(home)
             if data.get("ui_url"):
                 data["recorded_ui_url"] = data["ui_url"]
-            interface = ui_status(home)
+            interface = ui_status(home, args.manager_home)
             data.update(
                 home=str(home),
                 control_server=interface,
