@@ -37,6 +37,7 @@ def _evidence() -> dict[str, Any]:
                 "start_at",
                 "end_at",
                 "engine_version",
+                "engine_identity",
                 "cost_model_id",
                 "result_ref",
             )
@@ -588,8 +589,17 @@ def runtime_snapshot(
             venue_compatibility_verified=False,
             dataset_hash={"value": data["snapshot_hash"], "reason": "immutable_input"},
             engine_version={
-                "value": reference["engine"],
+                # Schema 1 retains its original display label. Schema 2 pins
+                # the package inside its strategy-specific module identity.
+                # Never substitute the currently loaded simulator's identity.
+                "value": reference["engine"]
+                if reference["schema_version"] == 1
+                else reference["engine_identity"]["package"],
                 "reason": "canonical_simulator",
+            },
+            engine_identity={
+                "value": plain(reference["engine_identity"]),
+                "reason": "pinned_strategy_simulator",
             },
             result_ref={"value": cp["run_hash"], "reason": "reference_run_hash"},
         )
