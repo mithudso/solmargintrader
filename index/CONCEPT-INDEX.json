@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T02:07:12+00:00",
+  "generatedAt": "2026-11-10T03:02:22+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1662,
+      "matchingFiles": 1663,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1396,
+      "matchingFiles": 1401,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1380,
+      "matchingFiles": 1384,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1346,
+      "matchingFiles": 1354,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 732,
+      "matchingFiles": 734,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 640,
+      "matchingFiles": 644,
       "shown": 30,
       "files": [
         {
@@ -781,6 +781,10 @@
           "hits": 59
         },
         {
+          "path": "ecosystem/web/styles.css",
+          "hits": 58
+        },
+        {
           "path": "extension/README.md",
           "hits": 58
         },
@@ -831,10 +835,6 @@
         {
           "path": "research/strategy_experiment/original.zip",
           "hits": 50
-        },
-        {
-          "path": "soltui/bots.py",
-          "hits": 49
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 583,
+      "matchingFiles": 588,
       "shown": 30,
       "files": [
         {
@@ -877,6 +877,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 73
+        },
+        {
+          "path": "ecosystem/web/styles.css",
+          "hits": 63
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -969,10 +973,6 @@
         {
           "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md",
           "hits": 27
-        },
-        {
-          "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
-          "hits": 26
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 514,
+      "matchingFiles": 528,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 203
+          "hits": 261
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1027,7 +1027,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 110
+          "hits": 118
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 464,
+      "matchingFiles": 469,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 355,
+      "matchingFiles": 356,
       "shown": 30,
       "files": [
         {
@@ -1385,6 +1385,141 @@
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
+    },
+    {
+      "id": "benchmark",
+      "label": "Buy-and-hold benchmark",
+      "why": "Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.",
+      "terms": [
+        "buy_and_hold",
+        "benchmark",
+        "baseline"
+      ],
+      "matchingFiles": 327,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/strategy_experiment/results/results.json",
+          "hits": 560
+        },
+        {
+          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
+          "hits": 424
+        },
+        {
+          "path": "research/strategy_experiment/audit_realism.json",
+          "hits": 178
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 112
+        },
+        {
+          "path": "research/strategy_experiment/results/auxiliary.json",
+          "hits": 77
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 68
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 61
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 56
+        },
+        {
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 47
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 41
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 29
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 25
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 23
+        },
+        {
+          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
+          "hits": 23
+        },
+        {
+          "path": "memory.md",
+          "hits": 22
+        },
+        {
+          "path": "backtester/core/deflated_sharpe.py",
+          "hits": 21
+        },
+        {
+          "path": "soltui/experiment_screens.py",
+          "hits": 21
+        },
+        {
+          "path": "soltui/experiment_runner.py",
+          "hits": 17
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
+          "hits": 16
+        },
+        {
+          "path": "backtester/core/dcasim.py",
+          "hits": 15
+        },
+        {
+          "path": "backtester/core/gridsim.py",
+          "hits": 14
+        },
+        {
+          "path": "backtester/core/report.py",
+          "hits": 13
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 13
+        },
+        {
+          "path": "docs/code-optimizer-scope-2026-11-08.json",
+          "hits": 12
+        },
+        {
+          "path": "research/coin-intelligence/eth-ethereum.md",
+          "hits": 12
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mi5dl7bi_sharpe_and_sortino_ratios.md",
+          "hits": 12
+        },
+        {
+          "path": "soltui/tests/test_f5_batch.py",
+          "hits": 11
+        },
+        {
+          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
+          "hits": 11
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 10
+        },
+        {
+          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_oogzrqim_riskmetrics.md",
+          "hits": 10
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
     },
     {
       "id": "family:regime-filter",
@@ -1524,141 +1659,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "benchmark",
-      "label": "Buy-and-hold benchmark",
-      "why": "Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.",
-      "terms": [
-        "buy_and_hold",
-        "benchmark",
-        "baseline"
-      ],
-      "matchingFiles": 322,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 560
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 424
-        },
-        {
-          "path": "research/strategy_experiment/audit_realism.json",
-          "hits": 178
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 112
-        },
-        {
-          "path": "research/strategy_experiment/results/auxiliary.json",
-          "hits": 77
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 68
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 61
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 56
-        },
-        {
-          "path": "research/tradingview-script-understanding.json",
-          "hits": 47
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 41
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 29
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 25
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 23
-        },
-        {
-          "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
-          "hits": 23
-        },
-        {
-          "path": "backtester/core/deflated_sharpe.py",
-          "hits": 21
-        },
-        {
-          "path": "soltui/experiment_screens.py",
-          "hits": 21
-        },
-        {
-          "path": "memory.md",
-          "hits": 18
-        },
-        {
-          "path": "soltui/experiment_runner.py",
-          "hits": 17
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_2s4bqqzq_tasc_2026_10_a_low_risk_etf_trading_strategy.md",
-          "hits": 16
-        },
-        {
-          "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "backtester/core/gridsim.py",
-          "hits": 14
-        },
-        {
-          "path": "backtester/core/report.py",
-          "hits": 13
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 13
-        },
-        {
-          "path": "docs/code-optimizer-scope-2026-11-08.json",
-          "hits": 12
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
-          "hits": 12
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_mi5dl7bi_sharpe_and_sortino_ratios.md",
-          "hits": 12
-        },
-        {
-          "path": "soltui/tests/test_f5_batch.py",
-          "hits": 11
-        },
-        {
-          "path": "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
-          "hits": 11
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 10
-        },
-        {
-          "path": "backtester/strategy_cards/incomplete/publication-profiles/tv_oogzrqim_riskmetrics.md",
-          "hits": 10
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "family:baseline",
       "label": "Strategy family: baseline",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 271,
+      "matchingFiles": 276,
       "shown": 30,
       "files": [
         {
@@ -1722,6 +1722,10 @@
           "hits": 20
         },
         {
+          "path": "memory.md",
+          "hits": 19
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 19
         },
@@ -1731,10 +1735,6 @@
         },
         {
           "path": "backtester/core/dcasim.py",
-          "hits": 15
-        },
-        {
-          "path": "memory.md",
           "hits": 15
         },
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 250,
+      "matchingFiles": 253,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 169,
+      "matchingFiles": 173,
       "shown": 30,
       "files": [
         {

@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import time
 from collections.abc import Callable, Mapping
 from pathlib import Path
@@ -22,6 +23,18 @@ SOL_MINT = "So11111111111111111111111111111111111111112"
 USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 JUPITER_PRICE_URL = f"https://api.jup.ag/price/v3?ids={SOL_MINT},{USDC_MINT}"
 MAX_RESPONSE_BYTES = 1_048_576
+INSTRUMENT = re.compile(r"[A-Za-z][A-Za-z0-9]{0,15}/[A-Za-z][A-Za-z0-9]{0,15}\Z")
+MINT = re.compile(r"[1-9A-HJ-NP-Za-km-z]{32,44}\Z")
+
+
+def validate_instrument(value: str) -> str:
+    """Canonicalize an explicit pair without inferring quote equivalence."""
+    if not isinstance(value, str) or not INSTRUMENT.fullmatch(value):
+        raise ValueError("invalid_instrument")
+    base, quote = value.upper().split("/")
+    if base == quote:
+        raise ValueError("invalid_instrument")
+    return f"{base}/{quote}"
 
 
 class FeedUnavailable(RuntimeError):
@@ -92,10 +105,10 @@ def _get_json(
 
 
 class RecorderFeed:
-    """Read only the existing recorder's exact SOL-USDC market snapshot.
+    """Read only the shared recorder's explicitly selected exact pair.
 
-    The shared recorder currently tends to contain SOL-USD. That market is not
-    substituted: a missing SOL-USDC entry produces instrument_unavailable.
+    No source starts or quote substitutions occur. A missing requested pair
+    produces instrument_unavailable even when another quote currency exists.
     """
 
     def __init__(
@@ -104,7 +117,10 @@ class RecorderFeed:
         *,
         clock: Callable[[], float] = time.time,
         max_age: float = 15,
+        instrument: str = "SOL/USDC",
     ) -> None:
+        self.instrument = validate_instrument(instrument)
+        self.product = self.instrument.replace("/", "-")
         configured = Path(
             os.environ.get("SOLTUI_CONFIG_DIR") or Path.home() / ".config" / "soltui"
         )
@@ -130,7 +146,7 @@ class RecorderFeed:
         stamp = _number(latest.get("t"), positive=False)
         if not 0 <= now - stamp <= self.max_age:
             raise FeedUnavailable("recorder_stale")
-        quote = latest["q"].get("SOL-USDC")
+        quote = latest["q"].get(self.product)
         if not isinstance(quote, list) or len(quote) < 6:
             raise FeedUnavailable("instrument_unavailable")
         bid, ask = _number(quote[0]), _number(quote[1])
@@ -139,13 +155,13 @@ class RecorderFeed:
             raise FeedUnavailable("invalid_market_data")
         if not 0 <= now - quoted_at <= self.max_age:
             raise FeedUnavailable("quote_stale")
-        event_id = _identity(["coinbase_recorder", "SOL-USDC", quoted_at, bid, ask])
+        event_id = _identity(["coinbase_recorder", self.product, quoted_at, bid, ask])
         if event_id == self._last_id:
             return None
         self._last_id = event_id
         return {
             "source": "coinbase_recorder",
-            "instrument": "SOL/USDC",
+            "instrument": self.instrument,
             "venue": "coinbase_exchange",
             "kind": "stream_snapshot_mid",
             "event_id": event_id,
@@ -174,7 +190,31 @@ class JupiterPriceFeed:
         transport: Callable[[str, Mapping[str, str], float, int], dict] | None = None,
         timeout: float = 5,
         max_block_idle: float = 15,
+        instrument: str = "SOL/USDC",
+        mints: Mapping[str, str] | None = None,
     ) -> None:
+        self.instrument = validate_instrument(instrument)
+        base, quote = self.instrument.split("/")
+        if "USD" in (base, quote):
+            raise FeedUnavailable("instrument_not_onchain")
+        mapping = (
+            {"SOL": SOL_MINT, "USDC": USDC_MINT}
+            if mints is None and self.instrument == "SOL/USDC"
+            else mints
+        )
+        if not isinstance(mapping, Mapping):
+            raise FeedUnavailable("instrument_mapping_required")
+        selected = [mapping.get(base), mapping.get(quote)]
+        if (
+            any(
+                not isinstance(mint, str) or not MINT.fullmatch(mint)
+                for mint in selected
+            )
+            or selected[0] == selected[1]
+        ):
+            raise FeedUnavailable("instrument_mapping_invalid")
+        self.base_mint, self.quote_mint = selected
+        self.url = f"https://api.jup.ag/price/v3?ids={self.base_mint},{self.quote_mint}"
         self.clock = clock
         self.transport = transport or _get_json
         self.timeout = min(_number(timeout), 15)
@@ -193,7 +233,7 @@ class JupiterPriceFeed:
         now = _number(self.clock(), positive=False)
         try:
             payload = self.transport(
-                JUPITER_PRICE_URL,
+                self.url,
                 {"x-api-key": key, "Accept": "application/json"},
                 self.timeout,
                 MAX_RESPONSE_BYTES,
@@ -207,7 +247,7 @@ class JupiterPriceFeed:
         prices: dict[str, float] = {}
         blocks: dict[str, int] = {}
         updates = {}
-        for mint in (SOL_MINT, USDC_MINT):
+        for mint in (self.base_mint, self.quote_mint):
             entry = payload.get(mint)
             if not isinstance(entry, dict):
                 raise FeedUnavailable("instrument_unavailable")
@@ -228,9 +268,9 @@ class JupiterPriceFeed:
                 block,
                 now if previous is None or block > previous[0] else previous[1],
             )
-        price = prices[SOL_MINT] / prices[USDC_MINT]
+        price = prices[self.base_mint] / prices[self.quote_mint]
         _number(price)
-        provider_id = _identity(["jupiter_price_v3", blocks, prices])
+        provider_id = _identity(["jupiter_price_v3", self.instrument, blocks, prices])
         self._blocks = updates
         if provider_id == self._last_id:
             return None
@@ -241,7 +281,7 @@ class JupiterPriceFeed:
         event_id = _identity([provider_id, now])
         return {
             "source": "jupiter_price_v3",
-            "instrument": "SOL/USDC",
+            "instrument": self.instrument,
             "venue": "jupiter",
             "kind": "polled_reference_ratio",
             "event_id": event_id,
@@ -252,6 +292,6 @@ class JupiterPriceFeed:
             "upstream_recency_verified": False,
             "provider_block_ids": blocks,
             "provider": "https://api.jup.ag/price/v3",
-            "base_usd_price": prices[SOL_MINT],
-            "quote_usd_price": prices[USDC_MINT],
+            "base_usd_price": prices[self.base_mint],
+            "quote_usd_price": prices[self.quote_mint],
         }

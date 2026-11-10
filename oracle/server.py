@@ -22,7 +22,7 @@ from pydantic import AnyUrl
 
 from .guidance import guidance, readiness, veto
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 RESOURCE_NAMES = {
     f"oracle://{name}": name for name in ("market", "predictions", "status")
 }
@@ -263,13 +263,14 @@ def build_server(
 async def run(
     archive: Path,
     *,
+    instrument: str = "SOL/USDC",
     manager_home: Path | None = None,
     repo: Path | None = None,
     poll_seconds: float = 0.5,
 ) -> None:
     from .engine import OracleEngine
 
-    engine = OracleEngine(archive)
+    engine = OracleEngine(archive, instrument=instrument)
     server, _ = build_server(
         engine, manager_home=manager_home, repo=repo, poll_seconds=poll_seconds
     )
@@ -301,6 +302,7 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         default=Path.home() / ".local/share/solmargintrader/oracle/history.sqlite3",
     )
+    parser.add_argument("--instrument", default="SOL/USDC")
     parser.add_argument("--manager-home", type=Path)
     parser.add_argument("--repo", type=Path)
     parser.add_argument("--poll-seconds", type=float, default=0.5)
@@ -309,6 +311,7 @@ def main(argv: list[str] | None = None) -> int:
         asyncio.run(
             run(
                 args.archive,
+                instrument=args.instrument,
                 manager_home=args.manager_home,
                 repo=args.repo,
                 poll_seconds=args.poll_seconds,

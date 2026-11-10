@@ -1,4 +1,4 @@
-# Solbot manager 0.2.1
+# Solbot manager 0.2.2
 
 **Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
 Running bare `solbot` now prints help and concrete next steps. It is a command-line
@@ -471,3 +471,10 @@ concurrent commit fencing, actual crash-before/crash-after commit, supervisor
 SIGKILL/orphan shutdown, dead workers, hung ticks, failure holding, retained stop,
 corrupt checkpoints/fills, immutable input, and canonical economics/prefix parity.
 Installed package/service acceptance is a separate release gate.
+
+## External paper registrations
+
+`solbot --ecosystem-home /absolute/run/home status` reads registered F5 paper
+trials through the optional ecosystem adapter. These remain owned by F5; this
+command does not create manager drafts, claim runtime ownership or enable live
+controls. See `docs/ECOSYSTEM-BOOTSTRAP.md` for the resumable installer.

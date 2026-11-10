@@ -18,6 +18,14 @@ SOL trading research and execution tooling, in nine parts:
 > predict future results. Grid trading is short volatility: it earns in a range and loses in a trend.
 > Leveraged positions can be liquidated. Trade only capital you can lose entirely.
 
+## Automated paper ecosystem
+
+`python3 scripts/bootstrap_ecosystem.py start` installs the headless components,
+checks health, acquires the configured universe, runs the complete strategy matrix
+and hands usable results to registered forward trials with per-coin Oracle
+forecasts. See [setup and recovery](docs/ECOSYSTEM-BOOTSTRAP.md) for source,
+coverage and lifecycle limits.
+
 ## Quick start
 
 The dated research tables preserve earlier experiments. The 2026-11-06 audit changes
@@ -47,7 +55,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 999 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1402 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1405 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 408 tests
 ```

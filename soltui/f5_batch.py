@@ -146,7 +146,11 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
     run_id = uuid.uuid4().hex
     directory = _directory(run_id, root)
     directory.mkdir(mode=0o700, parents=True, exist_ok=False)
-    whitelist = ("capital", "fee_bps", "slippage_bps", "fill_delay", "cpcv_groups", "cpcv_k")
+    from .simulation import FIELDS
+    # Preserve the explicitly selected paper policy across the worker handoff.
+    # Legacy plans omit these fields and retain Settings' original defaults.
+    whitelist = ("capital", "fee_bps", "slippage_bps", "fill_delay", "cpcv_groups", "cpcv_k",
+                 "fee_schedule", *FIELDS)
     frozen = {name: getattr(settings, name) for name in whitelist}
     frozen.update(start="", end="", data_dir=str(Path(settings.data_dir).expanduser().resolve()))
     code_sources = bgworker.evaluation_code_fingerprint()
