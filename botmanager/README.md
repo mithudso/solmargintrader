@@ -658,3 +658,27 @@ from the start token. Missing/partial/stale/future/size-mismatched evidence refu
 The result is conditional pessimistic paper P&L; `booked_profit_start_raw` is null.
 Live cycles remain unsupported without atomic construction and a verifier.
 No actual production route dataset or profitable cycle is claimed by this release.
+
+
+### Reviewed quote and prospective safeguards
+
+Prospective polls mark generation-fenced tick intent before archive access or
+canonical evaluation. The atomic progress commit clears that marker even when
+no completed bar is available. A fresh heartbeat cannot hide a hung prospective
+evaluation: the existing supervisor watchdog fences and terminates it.
+
+Quote evidence currently supports one direct route leg at 100% allocation, with
+positive raw input/output amounts and exact envelope mint/amount agreement.
+The collector requests `onlyDirectRoutes=true` and records
+`route_policy=direct_single_leg_100pct_v1`. Split and multihop plans refuse with
+`quote_route_topology_unsupported`; nonzero platform-fee topology refuses with
+`quote_platform_fee_topology_unsupported` until its flow can be reconciled.
+No unsupported route is silently treated as a direct equivalent.
+
+The Swap v1 field `priceImpactPct` is retained as its exact decimal string and
+labelled `unit=fraction`: `0.01` means 1% impact, not 0.01%. Missing impact is null
+with `price_impact_unavailable`; it never becomes zero. Invalid/nonfinite or
+out-of-range impact refuses capture/import. Missing impact can be archived as
+incomplete evidence but prevents conditional cycle diagnosis. These semantics
+follow the current official Metis guide:
+https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-metis.mdx

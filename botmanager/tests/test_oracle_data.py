@@ -147,6 +147,10 @@ class ProspectiveWorkerTests(unittest.TestCase):
                     before_commit=crash,
                 )
             self.assertEqual(ledger.get(a.bot_id)["input"], data)
+            self.assertIsNotNone(ledger.get(a.bot_id)["tick_started"])
+            ledger.recover("crash-restart")
+            for spec in (a, b):
+                generations[spec.bot_id] = ledger.claim(spec.bot_id, "crash-restart")
             for spec in (a, b):
                 prospective_tick(
                     ledger,
@@ -155,15 +159,65 @@ class ProspectiveWorkerTests(unittest.TestCase):
                     now=START + 241,
                 )
             self.assertEqual(ledger.fills(a.bot_id), ledger.fills(b.bot_id))
+            self.assertIsNone(ledger.get(a.bot_id)["tick_started"])
+            self.assertIsNone(ledger.get(b.bot_id)["tick_started"])
             before = ledger.fills(a.bot_id)
             ledger.recover("restart")
             gen = ledger.claim(a.bot_id, "restart")
             prospective_tick(ledger, ledger.get(a.bot_id), gen, now=START + 241)
             self.assertEqual(ledger.fills(a.bot_id), before)
+            self.assertIsNone(ledger.get(a.bot_id)["tick_started"])
             ledger.control(a, "stop", str(uuid4()))
             with self.assertRaises(ManagerError):
                 prospective_tick(ledger, ledger.get(a.bot_id), gen, now=START + 241)
             self.assertEqual(ledger.get(a.bot_id)["desired"], "stopped")
+
+    def test_prospective_no_data_poll_marks_intent_and_clears_atomically(self):
+        from unittest.mock import patch
+        from uuid import uuid4
+
+        from botmanager.ledger import RuntimeLedger
+        from botmanager.worker import prospective_tick
+
+        from tests.test_paper import grid
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "oracle.sqlite3"
+            archive(path, 120)
+            data = capture(
+                prepare_descriptor(
+                    path, capital_quote=1000, strategy_id="grid", now=START + 120
+                ),
+                now=START + 120,
+            )
+            ledger = RuntimeLedger(root / "manager")
+            spec = grid()
+            ledger.register(spec, data)
+            ledger.control(spec, "start", str(uuid4()))
+            generation = ledger.claim(spec.bot_id, "owner")
+
+            def observe_marker(current, **kwargs):
+                self.assertIsNotNone(ledger.get(spec.bot_id)["tick_started"])
+                return advance(current, **kwargs)
+
+            with patch(
+                "botmanager.oracle_data.advance", side_effect=observe_marker
+            ) as reader:
+                prospective_tick(
+                    ledger, ledger.get(spec.bot_id), generation, now=START + 120
+                )
+                reader.assert_called_once()
+            row = ledger.get(spec.bot_id)
+            self.assertIsNone(row["tick_started"])
+            self.assertIsNone(row["checkpoint"])
+            self.assertEqual(row["cursor"], 0)
+            self.assertEqual(row["reason"], "waiting_for_completed_bin")
+            ledger.control(spec, "stop", str(uuid4()))
+            with patch("botmanager.oracle_data.advance") as reader:
+                with self.assertRaises(ManagerError):
+                    prospective_tick(ledger, row, generation, now=START + 120)
+                reader.assert_not_called()
 
 
 class ArchiveAdversarialTests(unittest.TestCase):

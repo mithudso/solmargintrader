@@ -70,3 +70,41 @@ class CycleTests(unittest.TestCase):
             diagnose_cycle(good, {}, now=101, failed_leg=None)
         with self.assertRaises(ManagerError):
             diagnose_cycle(good, costs(good), now=101, failed_leg=1)
+
+    def test_inconsistent_rehashed_routes_refuse_before_positive_arithmetic(self):
+        import hashlib
+        import json
+
+        q = [quote(SOL, USDC, 100, 120), quote(USDC, SOL, 120, 110)]
+        for observation in q:
+            leg = observation["response"]["routePlan"][0]["swapInfo"]
+            leg.update(
+                inputMint=observation["request"]["outputMint"],
+                outputMint=observation["request"]["inputMint"],
+                inAmount="0",
+                outAmount="0",
+            )
+            body = {k: v for k, v in observation.items() if k != "observation_id"}
+            observation["observation_id"] = hashlib.sha256(
+                json.dumps(
+                    body, sort_keys=True, separators=(",", ":"), allow_nan=False
+                ).encode()
+            ).hexdigest()
+        with self.assertRaises(ManagerError):
+            diagnose_cycle(q, costs(q), now=101, failed_leg=None)
+
+    def test_missing_price_impact_blocks_cycle_evidence(self):
+        raw = fixture(100, 120)
+        raw["otherAmountThreshold"] = "120"
+        del raw["priceImpactPct"]
+        missing = capture_quote(
+            {"inputMint": SOL, "outputMint": USDC, "amount": 100, "slippageBps": 50},
+            raw,
+            requested_at=100,
+            received_at=100.1,
+            expires_at=105,
+            max_latency_s=2,
+        )
+        q = [missing, quote(USDC, SOL, 120, 110)]
+        with self.assertRaises(ManagerError):
+            diagnose_cycle(q, costs(q), now=101, failed_leg=None)

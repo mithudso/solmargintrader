@@ -32,6 +32,29 @@ def stalled_worker(home, bot_id, generation, parent_pid):
         time.sleep(60)
 
 
+def stalled_prospective_worker(home, bot_id, generation, parent_pid):
+    """Run the real prospective branch and heartbeat, blocking only economics."""
+    from botmanager.oracle_data import advance
+    from botmanager.worker import run_worker
+
+    from tests.test_oracle_data import START
+
+    def hang(*args):
+        (Path(home) / "prospective-evaluation-entered").write_text("entered")
+        while True:
+            time.sleep(0.01)
+
+    with (
+        patch("botmanager.worker.HEARTBEAT_SECONDS", 0.05),
+        patch(
+            "botmanager.oracle_data.advance",
+            side_effect=lambda data, **kw: advance(data, now=START + 241),
+        ),
+        patch("botmanager.strategies.evaluate", side_effect=hang),
+    ):
+        run_worker(home, bot_id, generation, parent_pid)
+
+
 def hard_crash(home, bot_id, generation, state, after):
     ledger = RuntimeLedger(Path(home))
     ledger.commit_tick(
@@ -162,6 +185,54 @@ class SupervisorTests(unittest.TestCase):
         self.supervisor.step()
         self.assertEqual(self.ledger.get(self.spec.bot_id)["reason"], "tick_stalled")
         self.assertEqual(self.ledger.get(self.spec.bot_id)["cursor"], 0)
+
+    def test_prospective_hung_evaluation_fences_fresh_heartbeat(self):
+        from botmanager.oracle_data import capture, prepare_descriptor
+
+        from tests.test_oracle_data import START, append, archive
+
+        path = self.home / "oracle.sqlite3"
+        owner = archive(path, 120)
+        data = capture(
+            prepare_descriptor(
+                path, capital_quote=1000, strategy_id="grid", now=START + 120
+            ),
+            now=START + 120,
+        )
+        spec = grid("prospective-hung")
+        ManagerStore(self.home).create_spec(spec)
+        self.ledger.register(spec, data)
+        append(owner, 120, 241)
+        self.start(spec)
+        self.supervisor = Supervisor(
+            self.home, worker_target=stalled_prospective_worker
+        ).open()
+        self.spin(lambda: (self.home / "prospective-evaluation-entered").exists())
+        row = self.ledger.get(spec.bot_id)
+        self.assertIsNotNone(row["tick_started"])
+        heartbeat = row["heartbeat"]
+        self.spin(lambda: self.ledger.get(spec.bot_id)["heartbeat"] > heartbeat)
+        row = self.ledger.get(spec.bot_id)
+        self.assertLess(time.time() - row["heartbeat"], 1)
+        self.assertIsNone(row["checkpoint"])
+        with self.ledger.connection(True) as db:
+            db.execute(
+                "UPDATE runs SET tick_started=? WHERE bot_id=?",
+                (time.time() - 16, spec.bot_id),
+            )
+        self.supervisor.step()
+        held = self.ledger.get(spec.bot_id)
+        self.assertEqual(held["reason"], "tick_stalled")
+        self.assertEqual(held["observed"], "recovering")
+        self.assertGreater(held["generation"], row["generation"])
+        self.assertNotIn(spec.bot_id, self.supervisor.children)
+        self.assertFalse(lock_held(self.home / "locks" / (spec.bot_id + ".lock")))
+        self.assertEqual(held["input"], data)
+        self.assertEqual(held["cursor"], 0)
+        with self.assertRaises(ManagerError):
+            self.ledger.commit_progress(
+                spec.bot_id, row["generation"], data["snapshot_hash"], data, None
+            )
 
     def test_three_failures_hold_and_resource_admission(self):
         self.start()

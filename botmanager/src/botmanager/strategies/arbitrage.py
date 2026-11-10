@@ -53,6 +53,12 @@ def diagnose_cycle(
         all_quotes = (
             quotes + [validate_observation(unwind)] if unwind is not None else quotes
         )
+        if any(q["price_impact"]["state"] != "observed" for q in all_quotes):
+            raise ManagerError(
+                "incomplete_route_evidence",
+                "Cycle diagnosis requires observed price-impact evidence for each quote.",
+                3,
+            )
         clocks = [q["received_at"] for q in all_quotes]
         if max(clocks) - min(clocks) > max_skew_s or any(
             not q["received_at"] <= now < q["expires_at"] for q in all_quotes

@@ -46,6 +46,10 @@ def prospective_tick(ledger, row, generation, *, now=None, before_commit=None):
     from .oracle_data import advance
     from .strategies import evaluate
 
+    # The independent heartbeat cannot attest that archive reads or economics
+    # are progressing. Fence intent before either can block; atomic progress
+    # clears it, including a completed no-data/held-source poll.
+    ledger.begin_tick(row["bot_id"], generation)
     data = advance(row["input"], now=now)
     checkpoint = row["checkpoint"]
     if len(data["bars"]) > row["cursor"]:

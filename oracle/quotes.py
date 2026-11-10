@@ -15,6 +15,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from decimal import Decimal
 from pathlib import Path
 
 from .store import canonical
@@ -22,6 +23,7 @@ from .store import canonical
 ENDPOINT = "https://api.jup.ag/swap/v1/quote"
 MINT = re.compile(r"[1-9A-HJ-NP-Za-km-z]{32,44}")
 MAX_RESPONSE = 262144
+ROUTE_POLICY = "direct_single_leg_100pct_v1"
 QUOTE_BUDGET_PATH = (
     Path.home() / ".local/share/solmargintrader/oracle/quote-budget.sqlite3"
 )
@@ -108,6 +110,11 @@ def capture_quote(
         plan = response["routePlan"]
         if not isinstance(plan, list) or not 1 <= len(plan) <= 32:
             raise QuoteError("quote_route_missing")
+        # The current capture contract can independently reconcile one direct
+        # leg. Split/multihop flow and nonzero platform fees need separate
+        # amount accounting; syntactic validity must never imply support.
+        if len(plan) != 1:
+            raise QuoteError("quote_route_topology_unsupported")
         routes = []
         for leg in plan:
             info = leg["swapInfo"]
@@ -118,6 +125,22 @@ def capture_quote(
                 raise QuoteError("quote_route_identity_invalid")
             if type(leg["percent"]) is not int or not 0 < leg["percent"] <= 100:
                 raise QuoteError("quote_route_allocation_invalid")
+            if leg["percent"] != 100 or (
+                "bps" in leg and (type(leg["bps"]) is not int or leg["bps"] != 10000)
+            ):
+                raise QuoteError("quote_route_allocation_invalid")
+            route_in, route_out = _raw(info["inAmount"]), _raw(info["outAmount"])
+            if (
+                info["inputMint"] != request["inputMint"]
+                or info["outputMint"] != request["outputMint"]
+                or route_in <= 0
+                or route_out <= 0
+                or route_in != request["amount"]
+                or route_out != out
+            ):
+                raise QuoteError("quote_route_envelope_mismatch")
+            if info["feeMint"] not in (info["inputMint"], info["outputMint"]):
+                raise QuoteError("quote_route_fee_currency_unsupported")
             routes.append(
                 {
                     "percent": leg["percent"],
@@ -145,6 +168,19 @@ def capture_quote(
                 "amount": str(_raw(platform["amount"])),
                 "feeBps": platform["feeBps"],
             }
+            if _raw(platform["amount"]) != 0 or platform["feeBps"] != 0:
+                raise QuoteError("quote_platform_fee_topology_unsupported")
+        # Swap v1's misleading Pct suffix denotes a decimal fraction, not
+        # percentage points. Keep the exact decimal string, avoiding binary
+        # rounding, and distinguish missing evidence from an observed zero.
+        impact = response.get("priceImpactPct")
+        if impact is not None and (
+            not isinstance(impact, str)
+            or len(impact) > 128
+            or re.fullmatch(r"(?:0|[1-9][0-9]*)(?:\.[0-9]+)?", impact) is None
+            or not Decimal(0) <= Decimal(impact) <= Decimal(1)
+        ):
+            raise QuoteError("quote_price_impact_invalid")
         sanitized = {
             **{
                 k: response[k]
@@ -161,13 +197,21 @@ def capture_quote(
             "otherAmountThreshold": str(minimum),
             "routePlan": routes,
             "platformFee": platform,
+            "priceImpactPct": impact,
         }
         result = {
             "schema_version": 1,
             "source": "jupiter_swap_v1",
             "api_version": "swap/v1/quote",
             "request": request,
+            "route_policy": ROUTE_POLICY,
             "response": sanitized,
+            "price_impact": {
+                "value": impact,
+                "unit": "fraction",
+                "state": "observed" if impact is not None else "unavailable",
+                "reason": None if impact is not None else "price_impact_unavailable",
+            },
             "requested_at": requested_at,
             "received_at": received_at,
             "expires_at": expires_at,
@@ -183,6 +227,8 @@ def capture_quote(
             ],
             "fill_assumption": "minimum_output_only_no_fill_guarantee",
         }
+        if impact is None:
+            result["certification_reasons"].append("price_impact_unavailable")
         result["observation_id"] = _hash(result)
         return result
     except QuoteError:
@@ -391,7 +437,7 @@ def collect_quote(
     finally:
         if db is not None:
             db.close()
-    query = {**request, "swapMode": "ExactIn"}
+    query = {**request, "swapMode": "ExactIn", "onlyDirectRoutes": "true"}
     req = urllib.request.Request(
         endpoint + "?" + urllib.parse.urlencode(query),
         headers={"x-api-key": api_key, "Accept": "application/json"},
