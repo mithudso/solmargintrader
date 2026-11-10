@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 397
+Version: 398
+Delta: v397 to v398; record the merged delivery receipt and final task state.
 Delta: v396 to v397; rerun final repository checks and record the pre-delivery state.
 Delta: v395 to v396; finish the data-validated 22,913-configuration rerun and verify the result ledger.
 Delta: v394 to v395; fix review findings and reject the first sweep after auditing duplicate minute candles.
@@ -561,3 +562,13 @@ The documented root-based Bot Manager command passed all 363 tests after the fin
 The three PR 199 review findings are implemented: preflight/lock before derived output writes, recovery of an unterminated JSONL tail, and validated complete unique minute buckets. Alert observation ordering also persists an in-process per-component high-water timestamp and ignores stale snapshots, including snapshots that follow an unchanged newer state. PR 199 remains open at `d67451657de302b739ee3fb89e15284aea1e3a29`; CI run 42911174189 had only the now-fixed Bot Manager event-order failure. The primary checkout still has unrelated dirty paths, and the separate SolTUI UI worktree remains locked.
 
 Remaining: refresh and verify the generated offline indexes and ecosystem wiki after this record edit, rerun freshness/docs gates, inspect the task-only diff, commit and push, wait for final-head CI, merge after all required checks pass, then sync and remove only this task worktree and branch. Keep the research output outside Git.
+
+## v398 — 2026-11-10 — delivery complete
+
+PR 199 merged to `master` as `ad0898e37e8e888f77fd906166366e70171d5e0f`. Its final pushed head was `b0ce1b57b985b332e28609843e9530997ff0c989`. All required CI jobs passed, including Bot Manager, backtester, docs, ecosystem paper integration, browser extension, and targeted macOS SolTUI. The standard SolTUI shard and informational Jupiter job were skipped by workflow configuration. Local final gates passed: Bot Manager 363, backtester 1003, sweep/Council 33 focused tests, nine sweep tests, changed-file Ruff, docs count 2950, offline index freshness, wiki snapshot, and `git diff --check`.
+
+The corrected sweep output remains at `/Users/mitch/.local/share/solmargintrader/research/strategy-config-sweep-validated-20261110`: 22,913 configurations, 23 assets, 782 strategy/asset pairs with at least ten configurations each, 15,271 evaluable/rankable, 7,642 insufficient, zero execution failures, and 1,753 shortlisted configurations across 590 pairs. No forward testing started. The owner selects winners before any forward test. The old double-counted XLM output remains preserved but must not be ranked.
+
+The task worktree and branch are being cleaned after confirming the squash merge. The primary checkout remains behind by one commit and has unrelated untracked files; do not fast-forward it during this cleanup. The merged tree is verified at `origin/master`.
+
+No implementation or verification work remains for this request. Keep the local sweep artifacts outside Git; forward testing waits for the owner's winner selection.
