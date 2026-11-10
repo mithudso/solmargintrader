@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T17:24:54+00:00",
+  "generatedAt": "2026-11-10T17:33:43+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -35,7 +35,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 157
+          "hits": 160
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -592,7 +592,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 376
+          "hits": 374
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -730,7 +730,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 176
+          "hits": 177
         },
         {
           "path": "backtester/tests/test_gridsim.py",
@@ -865,7 +865,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 283
+          "hits": 299
         },
         {
           "path": "memory.md",
@@ -1019,7 +1019,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 74
+          "hits": 75
         },
         {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
@@ -1277,7 +1277,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 135
+          "hits": 133
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",

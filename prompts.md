@@ -1,5 +1,12 @@
 # Prompt history
 
+Version: 185
+Delta: v184 to v185; record repo-bootstrapper wiki requirement.
+
+## 2026-11-10 — Repo-bootstrapper wiki
+
+Add to the repo-bootstrapper skill that the repo should have a wiki for commands, reference, scripts, strategy, etc.
+
 Version: 184
 Delta: v183 to v184; preserve seven-part turnkey CLI, UI, service, health and Chrome request plus resume.
 Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.

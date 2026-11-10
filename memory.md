@@ -1,5 +1,12 @@
 # Work continuation
 
+Version: 382
+Delta: v381 to v382; record repo-bootstrapper wiki guidance and concurrent history reconciliation.
+
+## 2026-11-10 — Repo-bootstrapper wiki
+
+The canonical skill and audit checklist require a discoverable wiki for commands, reference, scripts and applicable strategy. Both installed copies include the guidance; 18 skill tests passed. Skills commit aa6244a5 is pushed at https://github.com/mithudso/skills/pull/107. The skills PR has no CI checks; the check-gated merge command exits without merging. Project records are in https://github.com/mithudso/solmargintrader/pull/196. Stele task TASK-1254 remains open until delivery.
+
 Version: 381
 Delta: v380 to v381; install actual managed availability and retain final acceptance/CI delivery tail.
 Delta: v379 to v380; record integrated source checks, review repairs and pending installed activation.
