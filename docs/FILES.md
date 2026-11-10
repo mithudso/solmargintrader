@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `2736054` (2026-11-10T20:23:47+00:00). 3071 tracked files, 66.4 MB.
+**Generated** from `index/INDEX.json` at commit `bc0e76c` (2026-11-10T20:32:03+00:00). 3071 tracked files, 66.4 MB.
 
 Regenerate with:
 
@@ -223,9 +223,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 500 lines · 87,357 B · description: **extracted**
+`doc` · 500 lines · 87,478 B · description: **extracted**
 
-**Purpose.** Version: 389 Delta: v388 to v389; synchronize Bot Manager's Oracle pin and refresh deterministic indexes after CI caught stale matrix metadata. Delta: v385 to v386; bind graph-shape recording logic into the Oracle evaluator fingerprint and add the root README feature summary.
+**Purpose.** Version: 390 Delta: v389 to v390; add Bot Manager schema-v2 archive compatibility and refresh the generated wiki snapshot after CI caught both stale artifacts. Delta: v385 to v386; bind graph-shape recording logic into the Oracle evaluator fingerprint and add the root README feature summary.
 
 **Use.** Read it.
 
