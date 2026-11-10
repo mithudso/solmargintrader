@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 343
+Version: 344
+Delta: preserve concurrent Oracle and manager handoff records after PR183.
 Delta: v342 to v343; verify installed service and all required local checks before final delivery.
 Delta: v341 to v342; complete service implementation and source checks; installed acceptance and delivery pending.
 Delta: v340 to v341; execute full Oracle implementation with parallel owned components.
@@ -8,6 +9,8 @@ Delta: v338 to v339; implement and test an isolated Oracle voting foundation.
 Delta: v337 to v338; resume Oracle implementation at the user's request.
 Delta: v336 to v337; checkpoint the Oracle prompt and unresolved integrations.
 Delta: v335 to v336; begin Oracle optimization and implementation in an isolated checkout.
+Delta: v340 to v341; finish the detailed handoff and verify isolated CLI/backup examples.
+Delta: v339 to v340; begin the source-verified bot-manager handoff after milestone2 delivery.
 Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run.
 Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
 Delta: v336 to v337; preserve the forward-signal research checkpoint and approve the final runtime fixes.
@@ -1084,3 +1087,19 @@ All source/review/installed gates passed. Existing short-fixture annualization a
 CI42712960866 for4bbabce6 completed with8activejobs passed,2expectedskips and one manager-test failure. test_local_socket_dispatch_and_inert_service_status expected installed_executable() to reject the current package. Its assumption held under local source PYTHONPATH but was wrong for the intended regular wheel CI installation. The production guard correctly accepted the wheel. Durable lesson KNOW1160 anchors the exact test and guard.
 
 Test-only commita8db64b5 supplies an explicit source-checkout origin and verifies stable_install_required. Installed-import RED reproduced the exact failure; all17supervisor tests now pass in both source and installed modes. Ruff/format and independent scoped CI review passed. Product bytes remain39e0c262, so installed acceptance1.0.5 remains valid without repeating installation or OS changes. This repair does not reopen the completed final product fix wave. Refresh catalogs, push final records, obtain a new final-head CI success and mergePR180 before markingTASK1108done.
+
+## v340 — 2026-11-09 — comprehensive manager handoff
+
+The owner requests a full detailed handoff of this bot-manager work, including rationale, access, features, maintenance and continuation. Documentation-only work uses /Users/mitch/dev/solmargintrader-wt-01a1c189 on agent-01a1c189-handoff, based on current origin/master2810f4b2. Primary checkout and other worktrees remain untouched. EPIC1167 tracks source verificationTASK1168, drafting/validationTASK1169 and deliveryTASK1170; only the current step is claimed.
+
+Milestone1 delivered throughPR175 merge4a65a06b; milestone2 throughPR180 merge2810f4b23cbd7842dcf03924608e7cb758836ee8. FinalM2headc6417a57 CI42714046640 passed9activejobs with2expectedskips. Installed receipt1.0.5 and the final69modulehash check bind stable manager0.2.0 to merged source. TASK1108 is done. Product epic1106 remains open for milestones3–8. Earlier v339 remaining-CI text is historical and was satisfied by the recorded delivery.
+
+The handoff will live at /Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md with component README navigation. It must separate implemented capabilities from the roadmap, Coinbase reference replay from prospective/Jupiter/live evidence, and source/fixture checks from actual installed behavior. Preserve cumulative workflow histories; do not overwrite .remember/remember.md or private data. No production bots, services, recorder, keys or browser changes are authorized by this documentation task. Remaining: verify source/commands/paths, write full handoff, run docs/index and scoped command checks, commit/push/PR/finalCI/merge and remote verification.
+
+## v341 — 2026-11-09 — handoff written and behavior checked
+
+The full handoff at /Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md documents access/current state, design and delivered history, capability matrix, every CLI command, typed defaults, environment/owner contracts, concrete operator workflows, data/economic limits, architecture and authoritative source map, schemas/receipt migration, upgrades/backup/recovery, troubleshooting, source/installed/CI evidence, fixed defects, milestones3–8 and continuation artifacts. Component README links to it. It separates this session's work from preserved concurrent data/research work and explicitly reports unavailable prospective/live/learning/browser features.
+
+A source-path check caught and corrected a draft reference to nonexistent soltui/registry.py; the actual owner registry is soltui/commands.py. Handoff validation then passed38installed CLI invocations in an isolated temporary home,52canonical source/document paths and the exact backup recipe with redirected isolated paths. Five specifications across4draftstrategies survived backup/restore; manager schema1/runtime schema2 passedquick_check, retained runtimeID and stopped intent. Actual recording sourcehash9639c69c... and snapshot7ff131f8... were unchanged. No worker/service/install/productionwrite occurred. Current69installed hashes still match accepted39e/M2merge, manager0.2.0/sharedcore0.1.0/NumPy2.5.4/Pandas3.1.1. Default home remainsabsent; configuredowner remainsincompatible, browserunregistered andNodeunavailable. Local verification artifact is /Users/mitch/dev/solmargintrader-wt-01a1c189/.superpowers/sdd/2026-11-09-bot-manager/handoff-verification.json.
+
+Source inventoryTASK1168 is done; drafting/validationTASK1169 is finishing. Remaining: final diff/docs/index gates, owned commit/push/PR/currentheadCI/merge and content verification under deliveryTASK1170. Runtime source and production state remain unchanged; do not repeat accepted runtime/OS tests merely for this documentation change. Retain active implementation-plan recovery workspace; preserve primary checkout and other sessions' files.

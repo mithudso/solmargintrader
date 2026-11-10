@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `a8db64b5` (2026-11-09T22:40:23+00:00). 2843 tracked files, 63.0 MB.
+**Generated** from `index/INDEX.json` at commit `2810f4b2` (2026-11-10T01:42:49+00:00). 2844 tracked files, 63.1 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2509 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2510 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 111 files
+- [`docs`](#docs) — 112 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1927 files
 - [`research`](#research) — 206 files
@@ -210,9 +210,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1052 lines · 197,724 B · description: **extracted**
+`doc` · 1070 lines · 201,697 B · description: **extracted**
 
-**Purpose.** Version: 339 Delta: v338 to v339; repair the installed-import CI fixture and prepare a fresh final-head run. Delta: v337 to v338; complete installed runtime acceptance and prepare final delivery gates.
+**Purpose.** Version: 341 Delta: v340 to v341; finish the detailed handoff and verify isolated CLI/backup examples. Delta: v339 to v340; begin the source-verified bot-manager handoff after milestone2 delivery.
 
 **Use.** Read it.
 
@@ -226,9 +226,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1456 lines · 79,393 B · description: **extracted**
+`doc` · 1463 lines · 79,660 B · description: **extracted**
 
-**Purpose.** Version: 166 Delta: v165 to v166; preserve the merged forward-signal research prompt. Delta: v164 to v165; record the current branch conflict-resolution and merge request.
+**Purpose.** Version: 167 Delta: v166 to v167; record the comprehensive bot-manager handoff request. Delta: v165 to v166; preserve the merged forward-signal research prompt.
 
 **Use.** Read it.
 
@@ -254,7 +254,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-111 files.
+112 files.
 
 #### `docs/API.md`
 
@@ -338,7 +338,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27842 lines · 1,436,584 B · description: **extracted**
+`doc` · 27850 lines · 1,437,002 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -469,6 +469,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 200 lines · 33,137 B · description: **extracted**
 
 **Purpose.** Start with the local [market-data catalog](/Users/mitch/.local/share/solmargintrader/historical-data-1128/CATALOG.md) and its per-dataset receipts for current paths and exact coverage. Those files and the datasets are not in the public source repository. The snapshot inventories are as-of records, not a live freshness service.
+
+**Use.** Read it.
+
+#### `docs/bot-manager-handoff.md`
+
+`doc` · 626 lines · 62,808 B · description: **extracted**
+
+**Purpose.** Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes. The standalone application is installed as `solbot`.
 
 **Use.** Read it.
 
@@ -25350,7 +25358,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 465 lines · 28,705 B · description: **extracted**
+`doc` · 469 lines · 28,918 B · description: **extracted**
 
 **Purpose.** The standalone `solbot` CLI creates persistent named bot drafts and inspects their pinned settings. It defaults to paper, disarmed, Solana spot, long-or-flat SOL/USDC. An explicit supervisor runs independent grid reference-paper accounts from a
 

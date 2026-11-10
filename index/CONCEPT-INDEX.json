@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T01:53:50+00:00",
+  "generatedAt": "2026-11-10T01:55:34+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1661,
+      "matchingFiles": 1662,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1395,
+      "matchingFiles": 1396,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1345,
+      "matchingFiles": 1346,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 730,
+      "matchingFiles": 731,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 637,
+      "matchingFiles": 638,
       "shown": 30,
       "files": [
         {
@@ -851,7 +851,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 582,
+      "matchingFiles": 583,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 512,
+      "matchingFiles": 513,
       "shown": 30,
       "files": [
         {
@@ -1031,7 +1031,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 105
+          "hits": 108
         },
         {
           "path": "llms-full.txt",
@@ -1111,7 +1111,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 41
+          "hits": 42
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 353,
+      "matchingFiles": 354,
       "shown": 30,
       "files": [
         {
@@ -1532,7 +1532,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 321,
+      "matchingFiles": 322,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 270,
+      "matchingFiles": 271,
       "shown": 30,
       "files": [
         {
