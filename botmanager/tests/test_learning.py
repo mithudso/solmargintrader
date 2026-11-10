@@ -340,6 +340,12 @@ class RealShadowWorkerTests(unittest.TestCase):
             self.assertEqual(started, replay)
             self.assertEqual(len(store.list_specs()), 3)
             self.assertEqual(len(started["shadow"]["runs"]), 2)
+            # Keep accounts flat so the test can exercise a legal same-runtime
+            # configuration adoption after actual prospective worker progress.
+            for binding in started["shadow"]["runs"]:
+                HealthStore(home).pause(
+                    ledger.get(binding["bot_id"]), "pause", str(uuid4())
+                )
             append(source, 120, 601)
             supervisor = Supervisor(home, worker_target=controlled_shadow_worker).open()
             try:
@@ -371,11 +377,63 @@ class RealShadowWorkerTests(unittest.TestCase):
                     ledger.get(identifiers[0])["runtime_id"],
                     ledger.get(identifiers[1])["runtime_id"],
                 )
+                progress = owner._shadow_progress(started)
+                self.assertTrue(progress["complete"])
                 self.assertFalse(
-                    owner._shadow_progress(started)["states"][0]["run"]["input"][
-                        "identity"
-                    ]["venue_compatibility_verified"]
+                    progress["states"][0]["run"]["input"]["identity"][
+                        "venue_compatibility_verified"
+                    ]
                 )
+                for binding in started["shadow"]["runs"]:
+                    self.assertNotEqual(
+                        binding["input_hash"],
+                        ledger.get(binding["bot_id"])["input"]["snapshot_hash"],
+                    )
+                # A legal safe-boundary adoption keeps runtime identity but must
+                # invalidate the parent proposal's exact paired configuration.
+                from botmanager.domain import BotSpec
+
+                challenger_id = next(
+                    binding["bot_id"]
+                    for binding in started["shadow"]["runs"]
+                    if binding["role"] == "challenger"
+                )
+                active = ledger.get(challenger_id)
+                shadow_spec = BotSpec.from_dict(active["spec"])
+                ledger.control(shadow_spec, "stop", str(uuid4()))
+                supervisor.step()
+                active = ledger.get(challenger_id)
+                updated = learned_spec(shadow_spec, {"range_pct": 10}, "e" * 64)
+                receipt = {
+                    "version": 1,
+                    "request_id": str(uuid4()),
+                    "proposal_id": proposal["id"],
+                    "operation": "promote",
+                    "scope": proposal["scope"],
+                    "bot_id": challenger_id,
+                    "runtime_id": active["runtime_id"],
+                    "expected_revision": shadow_spec.config_revision,
+                    "expected_hash": shadow_spec.config_hash,
+                    "pins": dict(shadow_spec.user_overrides),
+                    "changes": {"range_pct": 10},
+                    "accepted_spec": updated.to_dict(),
+                    "evidence_digest": "e" * 64,
+                    "authority": {
+                        "root": str(authority.root),
+                        "namespace_id": "fixture",
+                    },
+                    "authorized_at": START + 601,
+                    "state": "authorized_pending_manager",
+                    "safe_to_retry": False,
+                }
+                receipt["digest"] = fingerprint(receipt)
+                ledger.learning_adopt(store, receipt)
+                self.assertEqual(
+                    active["runtime_id"], ledger.get(challenger_id)["runtime_id"]
+                )
+                invalid = owner._shadow_progress(started)
+                self.assertFalse(invalid["complete"])
+                self.assertEqual(invalid["reason"], "shadow_binding_changed")
             finally:
                 supervisor.close()
 

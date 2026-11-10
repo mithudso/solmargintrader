@@ -99,6 +99,17 @@ def outcome_summary(outcomes):
         "resolved_comparable_labels": sum(row["eligible"] for row in labels),
         "completed_trades": sum(row["completed_trade"] for row in labels),
         "cohorts": dict(Counter(row["cohort"] for row in labels)),
+        "ineligible_forecasts": sum(
+            row.get("kind") == "forecast" and not row["eligible"] for row in labels
+        ),
+        "forecast_exclusion_reasons": dict(
+            Counter(
+                reason
+                for row in labels
+                if row.get("kind") == "forecast" and not row["eligible"]
+                for reason in row.get("exclusion_reasons", [])
+            )
+        ),
     }
 
 
@@ -193,6 +204,72 @@ def runtime_outcomes(run):
     return labels
 
 
+def shadow_input_binding(run):
+    """Bind immutable activation and source contract, not progress watermarks."""
+    data = run["input"]
+    descriptor = data["descriptor"]
+    identity = data["identity"]
+    return fingerprint(
+        {
+            "origin_hash": data.get("origin_hash", data["snapshot_hash"]),
+            "descriptor": descriptor,
+            "source_identity": {
+                key: identity.get(key)
+                for key in (
+                    "source",
+                    "venue",
+                    "instrument",
+                    "product",
+                    "quote_currency",
+                    "base_currency",
+                    "bar_seconds",
+                    "execution_model",
+                    "source_scope",
+                    "policy",
+                    "policy_hash",
+                    "engine_identity",
+                    "costs",
+                    "installation_id",
+                    "quote_provenance",
+                    "venue_compatibility_verified",
+                )
+            },
+        }
+    )
+
+
+def pointer_counts(summary):
+    """One bounded producer/reader contract for local learning metadata."""
+    if not isinstance(summary, Mapping):
+        raise TypeError("invalid_pointer_counts")
+    counters = {
+        key: summary[key]
+        for key in (
+            "outcomes",
+            "resolved_comparable_labels",
+            "completed_trades",
+            "ineligible_forecasts",
+        )
+        if key in summary
+    }
+    if any(type(value) is not int or value < 0 for value in counters.values()):
+        raise ValueError("invalid_pointer_count")
+    cohorts = summary.get("cohorts", {})
+    if (
+        not isinstance(cohorts, dict)
+        or len(cohorts) > 32
+        or any(
+            not isinstance(key, str)
+            or not 1 <= len(key) <= 64
+            or type(value) is not int
+            or value < 0
+            for key, value in cohorts.items()
+        )
+    ):
+        raise ValueError("invalid_pointer_cohorts")
+    return counters, dict(cohorts)
+
+
 def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
     """Start explicit paired prospective runs through existing worker ownership."""
     from .data import load_recording
@@ -256,7 +333,11 @@ def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
                 "role": role,
                 "bot_id": identifier,
                 "runtime_id": row["runtime_id"],
-                "input_hash": row["input"]["snapshot_hash"],
+                "input_hash": row["input"].get(
+                    "origin_hash", row["input"]["snapshot_hash"]
+                ),
+                "config_hash": shadow.config_hash,
+                "immutable_input": shadow_input_binding(row),
                 "comparability": comparable_identity(row),
                 "initial_cursor": row["cursor"],
             }
@@ -305,6 +386,8 @@ def record_owner_view(store, response):
     from .domain import canonical
     from .mutations import mutation_lock
 
+    if not isinstance(response, Mapping):
+        raise ManagerError("invalid_receipt", "Owner proposal must be an object.", 4)
     proposal = response.get("proposal", response)
     if (
         not isinstance(proposal, Mapping)
@@ -320,13 +403,15 @@ def record_owner_view(store, response):
         db.execute(
             "CREATE TABLE IF NOT EXISTS learning_links (proposal_id TEXT PRIMARY KEY, bot_id TEXT NOT NULL, body TEXT NOT NULL)"
         )
+        counts, cohorts = pointer_counts(proposal["counts"])
         pointer = {
             "proposal_id": proposal["id"],
             "bot_id": proposal["bot_id"],
             "state": proposal["state"],
             "baseline_hash": proposal["baseline"]["config_hash"],
             "owner_scope": proposal["scope"],
-            "counts": proposal["counts"],
+            "counts": counts,
+            "cohorts": cohorts,
             "shadow_started_at": proposal["shadow"]["started_at"]
             if proposal.get("shadow")
             else None,
@@ -373,6 +458,7 @@ def learning_snapshot(home, bot_id):
         "baseline_hash",
         "owner_scope",
         "counts",
+        "cohorts",
         "shadow_started_at",
         "owner_eligibility",
         "version",
@@ -402,8 +488,19 @@ def learning_snapshot(home, bot_id):
             raise ValueError("invalid_pointer_identity_or_state")
         # Keep the small documented pointer, never arbitrary proposal payloads.
         projected = {key: value for key, value in body.items() if key in fields}
+        # Old acknowledged pointers embedded the complete canonical summary.
+        # Read that known shape through the same bounded projection, without a
+        # migration or leaking source/evidence payloads into local status.
+        if (
+            isinstance(projected.get("counts"), dict)
+            and "cohorts" in projected["counts"]
+        ):
+            counters, cohorts = pointer_counts(projected["counts"])
+            if "cohorts" in projected and projected["cohorts"] != cohorts:
+                raise ValueError("conflicting_pointer_cohorts")
+            projected.update(counts=counters, cohorts=cohorts)
         for key, value in projected.items():
-            if key == "counts":
+            if key in ("counts", "cohorts"):
                 if (
                     not isinstance(value, dict)
                     or len(value) > 32
@@ -415,7 +512,7 @@ def learning_snapshot(home, bot_id):
                         for name, count in value.items()
                     )
                 ):
-                    raise ValueError("invalid_pointer_counts")
+                    raise TypeError("invalid_pointer_counts")
             elif value is not None and (
                 not isinstance(value, (str, int, float, bool))
                 or isinstance(value, str)

@@ -462,3 +462,178 @@ class LearningOwnerTests(unittest.TestCase):
                 db.execute("SELECT count(*) FROM learning_schedule").fetchone()[0], 2
             )
         self.assertEqual(result["scopes"][0]["state"], "retained_incumbent")
+
+    def test_real_owner_proposal_pointer_roundtrip_has_bounded_counter_schema(self):
+        from botmanager.learning import learning_snapshot, record_owner_view
+
+        proposal = self.propose()
+        self.assertIsInstance(proposal["counts"]["scope"], str)
+        self.assertIsInstance(proposal["counts"]["cohorts"], dict)
+        record_owner_view(ManagerStore(self.home), {"proposal": proposal})
+        snapshot = learning_snapshot(self.home, self.spec.bot_id)
+        self.assertEqual(snapshot["state"], "pending_shadow")
+        self.assertEqual(snapshot["local_metadata"]["proposals"]["state"], "available")
+        pointer = snapshot["proposals"][0]
+        self.assertEqual(pointer["counts"]["resolved_comparable_labels"], 300)
+        self.assertEqual(pointer["counts"]["completed_trades"], 30)
+        self.assertEqual(pointer["cohorts"], proposal["counts"]["cohorts"])
+        self.assertTrue(all(type(value) is int for value in pointer["counts"].values()))
+        legacy = dict(pointer, counts=proposal["counts"])
+        legacy.pop("cohorts")
+        with ManagerStore(self.home)._connection(write=True) as db:
+            db.execute(
+                "UPDATE learning_links SET body=? WHERE proposal_id=?",
+                (json.dumps(legacy), proposal["id"]),
+            )
+        before = ManagerStore(self.home).path.read_bytes()
+        again = learning_snapshot(self.home, self.spec.bot_id)
+        self.assertEqual(again["state"], "pending_shadow")
+        self.assertEqual(
+            again["proposals"][0]["cohorts"], proposal["counts"]["cohorts"]
+        )
+        self.assertEqual(before, ManagerStore(self.home).path.read_bytes())
+
+
+class OracleForecastIngestionTests(unittest.TestCase):
+    def setUp(self):
+        import math
+
+        from botmanager.oracle_data import capture, prepare_descriptor
+
+        from oracle.engine import OracleEngine
+
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name).resolve()
+        self.archive = self.root / "oracle.sqlite3"
+        self.engine = OracleEngine(self.archive, instrument="SOL/USD")
+        self.start = 1700000040
+        for index in range(90):
+            self.ingest(index, 100 + 10 * math.sin(index / 3))
+        self.home = self.root / "manager"
+        self.spec = grid("oracle-exclusion")
+        ManagerStore(self.home).create_spec(self.spec)
+        now = self.start + 89 * 60 + 1
+        descriptor = prepare_descriptor(
+            self.archive, capital_quote=1000, strategy_id="grid", now=now
+        )
+        RuntimeLedger(self.home).register(self.spec, capture(descriptor, now=now))
+        store = ExperimentStore(self.root / "authority")
+        self.owner = LearningOwner(store.root, {"namespace_id": "fixture"}, store)
+
+    def ingest(self, index, price):
+        now = self.start + index * 60
+        self.engine.ingest(
+            {
+                "event_id": "actual-" + str(index),
+                "source": "coinbase_recorder",
+                "venue": "coinbase_exchange",
+                "instrument": "SOL/USD",
+                "kind": "stream_snapshot_mid",
+                "observed_at": now,
+                "received_at": now,
+                "price": price,
+                "timestamp_semantics": "recorder_quote_clock",
+            },
+            now=now,
+        )
+
+    def test_actual_oracle_correct_wrong_resolutions_retained_ineligible_with_provenance(
+        self,
+    ):
+        import sqlite3
+        from contextlib import closing
+
+        result = self.owner.collect(self.home, self.spec.bot_id)
+        self.assertTrue(result["counts_complete"])
+        self.assertEqual(result["forecast_ingestion"]["state"], "ineligible")
+        self.assertGreater(result["cohorts"]["forecast_correct"], 0)
+        self.assertGreater(result["cohorts"]["forecast_wrong"], 0)
+        self.assertEqual(result["resolved_comparable_labels"], 0)
+        with closing(sqlite3.connect(self.archive)) as db:
+            expected = db.execute("SELECT count(*) FROM resolutions").fetchone()[0]
+        self.assertEqual(result["ineligible_forecasts"], expected)
+        with self.owner.connection() as db:
+            rows = list(db.execute("SELECT comparable,body FROM learning_labels"))
+        self.assertEqual(len(rows), expected)
+        for key, raw in rows:
+            label = json.loads(raw)
+            self.assertTrue(key.startswith("oracle_excluded:"))
+            self.assertFalse(label["eligible"])
+            self.assertEqual(label["eligibility"], "ineligible")
+            self.assertIn(
+                "manager_oracle_model_parameter_contract_unverified",
+                label["exclusion_reasons"],
+            )
+            self.assertIn(
+                "manager_trade_horizon_not_oracle_fixed_horizon",
+                label["exclusion_reasons"],
+            )
+            original = label["oracle_provenance"]
+            self.assertIn("parameters", original)
+            self.assertIn("version", original)
+            self.assertEqual(original["horizon_seconds"], 60)
+            self.assertEqual(original["policy_hash"], self.engine.policy_hash)
+            self.assertNotIn(
+                original["strategy_id"], ("grid", "dca", "trend", "momentum")
+            )
+
+    def test_forecast_budget_refuses_incomplete_totals_and_later_wrong_rows_are_seen(
+        self,
+    ):
+        import sqlite3
+        from contextlib import closing
+
+        first = self.owner.collect(self.home, self.spec.bot_id)
+        with patch("soltui.learning_owner.FORECAST_MAX_ROWS", 2):
+            rejected = self.owner.collect(self.home, self.spec.bot_id)
+        self.assertFalse(rejected["counts_complete"])
+        self.assertEqual(rejected["reason"], "forecast_resolution_scan_budget_exceeded")
+        self.assertIsNone(rejected["resolved_comparable_labels"])
+        with (
+            patch("soltui.learning_owner.FORECAST_MAX_ROWS", 2),
+            self.assertRaisesRegex(
+                ValueError, "forecast_resolution_scan_budget_exceeded"
+            ),
+        ):
+            self.owner.propose(self.home, self.spec.bot_id, "unused")
+        with closing(sqlite3.connect(self.archive)) as db:
+            pending = db.execute(
+                "SELECT f.direction,f.reference FROM forecasts f LEFT JOIN resolutions r ON r.forecast=f.id WHERE r.forecast IS NULL ORDER BY f.issued DESC LIMIT 1"
+            ).fetchone()
+        self.assertIsNotNone(pending)
+        self.ingest(90, pending[1] - 20 if pending[0] > 0 else pending[1] + 20)
+        second = self.owner.collect(self.home, self.spec.bot_id)
+        self.assertTrue(second["counts_complete"])
+        self.assertGreater(
+            second["ineligible_forecasts"], first["ineligible_forecasts"]
+        )
+        self.assertGreater(
+            second["cohorts"]["forecast_wrong"], first["cohorts"]["forecast_wrong"]
+        )
+        self.assertEqual(second["resolved_comparable_labels"], 0)
+
+    def test_invalid_original_forecast_provenance_has_explicit_exclusion_reason(self):
+        from soltui.learning_owner import excluded_oracle_forecast
+
+        key, label = excluded_oracle_forecast(
+            "scope",
+            (
+                1,
+                "original",
+                0,
+                100,
+                '{"forecast_id":"original","hit":0,"resolved_at":100}',
+                "ma_crossover",
+                "v1",
+                40,
+                100,
+                "[]",
+            ),
+        )
+        self.assertTrue(key.startswith("oracle_excluded:"))
+        self.assertFalse(label["comparable"])
+        self.assertIn("oracle_forecast_provenance_invalid", label["exclusion_reasons"])
+        self.assertIn(
+            "oracle_forecast_source_policy_unbound", label["exclusion_reasons"]
+        )

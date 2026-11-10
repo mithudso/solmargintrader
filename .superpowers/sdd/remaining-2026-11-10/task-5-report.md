@@ -1,5 +1,8 @@
 # Task 5 — protected learning, labels and real shadow evaluation
 
+Version: 1.1.0
+Delta: 1.0.0 -> 1.1.0; repair pointer counts, actual Oracle attribution, forecast completeness, malformed scheduler shapes and exact shadow bindings.
+
 Status: implementation and owned source checks complete. Controller owns final registry/status/report integration, full manager release checks, installation and remote delivery. Real production shadow qualification remains pending.
 
 ## Interfaces and ownership
@@ -46,3 +49,24 @@ Added botmanager.learning_job.DailyLearningJob and schedule_snapshot, with sched
 Owner learning-daily stores canonical learning_schedule(scope,UTCday) attempts before collection and accepted-proposal lookup. It skips owned shadow identities, tries compatible active incumbent configurations, and stages at most one accepted M4 result. A duplicate attempt after a restart/new UUID/new manager home returns the existing canonical attempt. No accepted compatible result produces retained_incumbent rather than fabricated optimization evidence. The helper does not launch additional research, recorder or worker processes.
 
 Verification: 27 combined daily-job/manager-learning/canonical-owner tests passed (exit0); 18 supervisor regressions passed (exit0). Five actual helper lifecycle tests cover absent descriptors/read noninitialization, UTC due clocks, restart dedup, a sleeping nonblocking helper, timeout/output bounds, process reaping, and responsive status/stop acknowledgment. Owner tests cover canonical daily dedup across a new UUID/home and fresh LearningOwner instance, missing evidence, minimum counts and next-UTC-day attempts. Ruff passed. The daemon's optional scheduler cannot prevent worker closure if its local status receipt fails.
+
+
+## Independent review repair — version 1.1.0
+
+All four numbered findings in task-5-review.md and its exact shadow-pair binding gap are repaired.
+
+The acknowledged-pointer producer now projects intended nonnegative integer totals and a separately bounded integer cohort map. The bounded local reader understands that schema and the previous canonical-summary shape without migrating or mutating the database. The existing 256-row, 16KiB/body, 256KiB/source, SQLite row/value and SQL-VM budgets remain unchanged. A real canonical owner proposal round trip checks pending state, counts, cohorts, legacy readback and byte-for-byte read nonmutation.
+
+Current Oracle catalog models are not asserted to be aliases of manager strategies. The collector now reads actual archived forecast version/body plus resolution provenance. It retains original model parameters, horizon, policy, source, instrument and resolution, under a source/model-specific excluded key. Correct and wrong resolved Oracle forecasts remain visible as explicitly ineligible cohorts with named model/horizon/outcome-contract reasons. They never receive the active account's comparability fingerprint and never count toward the 300 comparable-label gate. There is no verified manager/Oracle forecasting attribution contract in the current product. A future comparable contract must prove semantic, model, parameter, horizon and source equivalence; a name substitution is insufficient. This narrows the original ingestion claim and preserves the original observations rather than manufacturing a match.
+
+Forecast collection detects row100001 rather than silently rereading the first100000 forever. It also caps aggregate forecast bodies at16MiB and individual SQLite values at64KiB. An exceeded budget returns an explicit named unavailable reason, counts_complete=false and unavailable numeric totals; proposal creation refuses that incomplete collection. The daily job retains the incumbent with that reason. Actual OracleEngine archive tests cover correct/wrong outcomes, original provenance, invalid-provenance exclusion, the exact finite-row boundary using a reduced internal test limit, a blocked proposal, and newly appended wrong resolutions being included on the next complete collection. This implementation chooses explicit fail-closed overflow rather than claiming incremental coverage after the configured budget.
+
+Scheduler status, nested scope results and helper envelopes now validate object/field shapes and finite clocks before use. Arrays, scalars, null, invalid dates/states/results and malformed-but-valid helper JSON produce bounded unavailable/failed state. Actual Supervisor-boundary tests prove those shapes neither terminate unrelated lifecycle work nor leave a helper orphaned. Producer status is validated against the same64KiB reader budget. No read starts a helper, owner or schema migration.
+
+Each paired shadow now binds its expected incumbent/challenger configuration hash, original activation hash and an immutable descriptor/source/policy/engine/activation fingerprint. The pair must share an activation contract. Every progress read rechecks those exact bindings against both the frozen proposal and current runtime. Progress watermarks, observations and snapshot_hash may advance normally; they are not confused with immutable activation identity. The real paired-worker regression advances actual prospective data, confirms ordinary snapshot changes remain valid, then performs a legal paused/flat same-runtime learning_adopt on the challenger and proves the parent proposal becomes unavailable with shadow_binding_changed.
+
+Final covering command:
+
+PYTHONPATH=botmanager/src:botmanager:.:soltui/src /Users/mitch/.venvs/solbot/bin/python -m unittest tests.test_learning tests.test_learning_job tests.test_learning_reads tests.test_reports tests.test_read_consistency tests.test_supervisor soltui.tests.test_learning_owner soltui.tests.test_research_owner -q
+
+Result:98 tests passed in17.336s, exit0. Ruff passed for all owned changed source/tests. Earlier isolated runs also passed39 learning/owner/scheduler/read-bound tests,12 learning/Oracle integration tests and7 scheduler lifecycle tests while the repairs were developed. Existing short-fixture annualized metric overflow and the existing research-owner test resource warning remain visible; no failed check is represented as passed. Real production source certification/seven-day/trade-count gates and installed/remote delivery remain controller acceptance gates.

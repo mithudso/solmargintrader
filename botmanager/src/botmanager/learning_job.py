@@ -7,6 +7,7 @@ itself, so cancellation owns one process group and cannot orphan an adapter.
 from __future__ import annotations
 
 import json
+import math
 import os
 import signal
 import subprocess
@@ -23,6 +24,107 @@ OUTPUT_LIMIT = 256 * 1024
 TIMEOUT_SECONDS = 120
 
 
+def _bounded_value(value, depth=0):
+    if depth > 8:
+        raise ValueError("metadata_depth_limit")
+    if isinstance(value, dict):
+        if len(value) > 32 or any(
+            not isinstance(key, str) or len(key) > 128 for key in value
+        ):
+            raise ValueError("metadata_object_limit")
+        for item in value.values():
+            _bounded_value(item, depth + 1)
+    elif isinstance(value, list):
+        if len(value) > 100:
+            raise ValueError("metadata_list_limit")
+        for item in value:
+            _bounded_value(item, depth + 1)
+    elif isinstance(value, str):
+        if len(value) > 512:
+            raise ValueError("metadata_string_limit")
+    elif value is not None and (
+        not isinstance(value, (int, float, bool))
+        or isinstance(value, float)
+        and not math.isfinite(value)
+    ):
+        raise ValueError("metadata_scalar_invalid")
+
+
+def _schedule_result(body):
+    if (
+        not isinstance(body, dict)
+        or not isinstance(body.get("scopes"), list)
+        or len(body["scopes"]) > 100
+    ):
+        raise ValueError("schedule_result_invalid")
+    for row in body["scopes"]:
+        if (
+            not isinstance(row, dict)
+            or not isinstance(row.get("scope"), str)
+            or not 1 <= len(row["scope"]) <= 128
+            or row.get("state")
+            not in ("running", "retained_incumbent", "proposal_pending_shadow")
+            or not isinstance(row.get("reason"), str)
+            or not 1 <= len(row["reason"]) <= 128
+        ):
+            raise ValueError("schedule_scope_result_invalid")
+    for key in ("starts_workers", "new_optimizer"):
+        if key in body and body[key] is not False:
+            raise ValueError("schedule_worker_policy_invalid")
+    _bounded_value(body)
+
+
+def _status(body):
+    if not isinstance(body, dict) or set(body) - {
+        "schema_version",
+        "state",
+        "reason",
+        "day",
+        "last_attempt",
+        "completed_at",
+        "result",
+        "stderr_bytes",
+    }:
+        raise ValueError("schedule_object_invalid")
+    if (
+        body.get("state")
+        not in ("unavailable", "running", "completed", "failed", "cancelled")
+        or not isinstance(body.get("reason"), str)
+        or not 1 <= len(body["reason"]) <= 128
+    ):
+        raise ValueError("schedule_state_invalid")
+    if "schema_version" in body and (
+        type(body["schema_version"]) is not int or body["schema_version"] != 1
+    ):
+        raise ValueError("schedule_version_invalid")
+    if "day" in body:
+        day = body["day"]
+        if (
+            not isinstance(day, str)
+            or len(day) != 10
+            or datetime.fromisoformat(day).date().isoformat() != day
+        ):
+            raise ValueError("schedule_day_invalid")
+    for key in ("last_attempt", "completed_at"):
+        if body.get(key) is not None and (
+            type(body[key]) not in (int, float)
+            or not math.isfinite(body[key])
+            or body[key] < 0
+        ):
+            raise ValueError("schedule_clock_invalid")
+    if body.get("result") is not None:
+        _schedule_result(body["result"])
+    if "stderr_bytes" in body and (
+        type(body["stderr_bytes"]) is not int
+        or not 0 <= body["stderr_bytes"] <= OUTPUT_LIMIT
+    ):
+        raise ValueError("schedule_stderr_invalid")
+    _bounded_value(body)
+    if len(canonical(body).encode()) > 65536:
+        raise ValueError("schedule_byte_limit")
+    return body
+
+
 def _read(path, limit=65536):
     if path.is_symlink() or not path.is_file() or path.stat().st_size > limit:
         raise ValueError("document_unavailable")
@@ -35,8 +137,8 @@ def schedule_snapshot(home):
     path = home / STATUS_FILE
     if path.is_file():
         try:
-            return _read(path)
-        except (ValueError, OSError):
+            return _status(_read(path))
+        except (ValueError, TypeError, OSError, RecursionError):
             return {"state": "unavailable", "reason": "schedule_status_unreadable"}
     return {
         "state": "unavailable",
@@ -58,7 +160,14 @@ class DailyLearningJob:
         self._checked_at = 0.0
 
     def _save(self, state, reason, **values):
-        self.receipt = {**self.receipt, "state": state, "reason": reason, **values}
+        updated = {
+            **self.receipt,
+            "schema_version": 1,
+            "state": state,
+            "reason": reason,
+            **values,
+        }
+        self.receipt = _status(updated)
         # The selected daemon is the only writer under its existing owner lock.
         path = self.home / STATUS_FILE
         temporary = None
@@ -119,6 +228,8 @@ class DailyLearningJob:
             stderr_bytes = len(self.streams[process.stderr])
             self._stop()
             response = json.loads(raw)
+            if not isinstance(response, dict):
+                raise TypeError("helper_envelope_invalid")
             result = response.get("result")
             if (
                 code != 0
@@ -126,6 +237,7 @@ class DailyLearningJob:
                 or response.get("command") != "research.protocol"
                 or not isinstance(result, dict)
                 or result.get("identity") != self.expected_identity
+                or not isinstance(result.get("schedule"), dict)
             ):
                 raise ValueError("owner_daily_failed")
             self._save(
@@ -135,7 +247,14 @@ class DailyLearningJob:
                 result=result.get("schedule"),
                 stderr_bytes=stderr_bytes,
             )
-        except (ValueError, OSError, subprocess.SubprocessError):
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            RecursionError,
+            OSError,
+            subprocess.SubprocessError,
+        ):
             self._stop()
             self._save(
                 "failed",
@@ -162,6 +281,10 @@ class DailyLearningJob:
         try:
             descriptor = _read(descriptor_path)
             OwnerClient(descriptor)  # Validate installation, without a subprocess.
+            if not isinstance(descriptor["expected_identity"], dict) or not isinstance(
+                descriptor["authority"], dict
+            ):
+                raise TypeError("owner_identity_shape_invalid")
             self.expected_identity = descriptor["expected_identity"]
             request = {
                 "version": 2,
@@ -179,6 +302,8 @@ class DailyLearningJob:
                 day=day,
                 last_attempt=now,
                 completed_at=None,
+                result=None,
+                stderr_bytes=0,
             )
             environment = {
                 "PATH": "/usr/bin:/bin",

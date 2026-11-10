@@ -23,14 +23,114 @@ from botmanager.learning import (
     learned_spec,
     outcome_summary,
     runtime_outcomes,
+    shadow_input_binding,
     shadow_pair,
 )
 
 DAY = 86400
 COOLDOWN = 48 * 3600
+FORECAST_MAX_ROWS = 100000
+FORECAST_MAX_BYTES = 16 * 1024 * 1024
 
 
 from .experiments import ExperimentStore
+
+
+class ForecastCoverageError(ValueError):
+    pass
+
+
+def excluded_oracle_forecast(scope, row):
+    """Current Oracle contracts predict direction, not manager trade outcomes.
+
+    No catalog ID is an accepted alias. Preserve the original model, parameters,
+    horizon and source policy so a later verified attribution contract can be
+    added without pretending that past rows used today's manager configuration.
+    """
+    (
+        sequence,
+        forecast_id,
+        hit,
+        resolved_at,
+        resolution_raw,
+        strategy,
+        version,
+        issued,
+        target,
+        forecast_raw,
+    ) = row
+    try:
+        forecast, resolution = json.loads(forecast_raw), json.loads(resolution_raw)
+    except (ValueError, TypeError, RecursionError):
+        forecast = resolution = None
+    valid = (
+        isinstance(forecast, dict)
+        and isinstance(resolution, dict)
+        and forecast.get("forecast_id") == forecast_id
+        and resolution.get("forecast_id") == forecast_id
+        and forecast.get("strategy_id") == strategy
+        and forecast.get("version") == version
+        and forecast.get("issued_at") == issued
+        and forecast.get("expires_at") == target
+        and resolution.get("hit") == hit
+        and resolution.get("resolved_at") == resolved_at
+        and isinstance(forecast.get("parameters"), dict)
+        and type(forecast.get("horizon_seconds")) is int
+        and forecast["horizon_seconds"] > 0
+        and forecast["horizon_seconds"] == target - issued
+    )
+    reasons = [
+        "oracle_directional_forecast_not_manager_trade_outcome",
+        "manager_oracle_model_parameter_contract_unverified",
+        "manager_trade_horizon_not_oracle_fixed_horizon",
+    ]
+    if not valid:
+        reasons.append("oracle_forecast_provenance_invalid")
+    if (
+        not isinstance(forecast, dict)
+        or not isinstance(forecast.get("policy_hash"), str)
+        or any(
+            not isinstance(forecast.get(key), str)
+            for key in ("source", "venue", "instrument", "kind")
+        )
+    ):
+        reasons.append("oracle_forecast_source_policy_unbound")
+    resolved = (
+        valid
+        and hit in (0, 1)
+        and type(resolved_at) in (int, float)
+        and math.isfinite(resolved_at)
+    )
+    provenance = (
+        forecast
+        if isinstance(forecast, dict)
+        else {"state": "unavailable", "reason": "oracle_forecast_provenance_invalid"}
+    )
+    source_key = "oracle_excluded:" + fingerprint(
+        {
+            "strategy": strategy,
+            "version": version,
+            "parameters": provenance.get("parameters"),
+            "horizon_seconds": provenance.get("horizon_seconds"),
+            "source": {
+                key: provenance.get(key)
+                for key in ("source", "venue", "instrument", "kind", "policy_hash")
+            },
+        }
+    )
+    return source_key, {
+        "id": fingerprint([scope, forecast_id, forecast_raw, resolution_raw]),
+        "kind": "forecast",
+        "resolved": bool(resolved),
+        "correct": bool(hit) if resolved else None,
+        "comparable": False,
+        "eligibility": "ineligible",
+        "exclusion_reasons": reasons,
+        "forecast_id": forecast_id,
+        "oracle_sequence": sequence,
+        "oracle_provenance": provenance,
+        "resolution": resolution if isinstance(resolution, dict) else None,
+    }
 
 
 class ReadOnlyResearch(ExperimentStore):
@@ -161,6 +261,9 @@ class LearningOwner:
                 # UUID cannot create another daily reservation or optimizer.
                 for spec in specs:
                     counts = self.collect(home, spec.bot_id)
+                    if counts.get("counts_complete") is False:
+                        result["reason"] = counts["reason"]
+                        continue
                     result["counts"] = {
                         key: counts[key]
                         for key in (
@@ -194,6 +297,7 @@ class LearningOwner:
                                 continue
                             proposal = self.propose(home, spec.bot_id, run_id)
                             from botmanager.learning import record_owner_view
+
                             record_owner_view(store, proposal)
                             result.update(
                                 state="proposal_pending_shadow",
@@ -324,38 +428,55 @@ class LearningOwner:
             )
             outcomes.extend((run_key, label) for label in labels)
         archive = current["input"]["descriptor"].get("archive_path")
+        forecast_labels = []
         if archive:
             db = sqlite3.connect(
                 Path(archive).as_uri() + "?mode=ro", uri=True, timeout=1
             )
             try:
+                db.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 65536)
                 db.execute("PRAGMA query_only=ON")
                 db.execute("BEGIN")
                 if db.execute("PRAGMA application_id").fetchone()[0] != 0x4F52434C:
                     raise ValueError("forecast archive identity mismatch")
-                for forecast, hit, resolved_at, body, strategy in db.execute(
-                    "SELECT r.forecast,r.hit,r.resolved_at,r.body,f.strategy FROM resolutions r JOIN forecasts f ON f.id=r.forecast WHERE f.strategy=? ORDER BY r.rowid LIMIT 100000",
-                    (spec.strategy_id,),
-                ):
-                    outcome = json.loads(body)
-                    outcomes.append(
-                        (
-                            comparable,
-                            {
-                                "id": fingerprint([forecast, body]),
-                                "kind": "forecast",
-                                "resolved": hit in (0, 1)
-                                and math.isfinite(resolved_at),
-                                "correct": bool(hit) if hit in (0, 1) else None,
-                                "comparable": True,
-                                "source": current["input"]["identity"],
-                                "forecast_id": forecast,
-                                "resolution": outcome,
-                            },
-                        )
+                total_bytes = 0
+                for index, row in enumerate(
+                    db.execute(
+                        "SELECT r.rowid,r.forecast,r.hit,r.resolved_at,r.body,f.strategy,f.version,f.issued,f.target,f.body FROM resolutions r JOIN forecasts f ON f.id=r.forecast ORDER BY r.rowid LIMIT ?",
+                        (FORECAST_MAX_ROWS + 1,),
                     )
+                ):
+                    if index >= FORECAST_MAX_ROWS:
+                        raise ForecastCoverageError(
+                            "forecast_resolution_scan_budget_exceeded"
+                        )
+                    total_bytes += len(row[4].encode()) + len(row[9].encode())
+                    if total_bytes > FORECAST_MAX_BYTES:
+                        raise ForecastCoverageError(
+                            "forecast_resolution_byte_budget_exceeded"
+                        )
+                    forecast_labels.append(excluded_oracle_forecast(scope, row))
+            except (ForecastCoverageError, sqlite3.DataError) as exc:
+                reason = (
+                    str(exc)
+                    if isinstance(exc, ForecastCoverageError)
+                    else "forecast_resolution_body_budget_exceeded"
+                )
+                return {
+                    "scope": scope,
+                    "comparability": comparable,
+                    "state": "unavailable",
+                    "reason": reason,
+                    "counts_complete": False,
+                    "outcomes": None,
+                    "resolved_comparable_labels": None,
+                    "completed_trades": None,
+                    "cohorts": {},
+                    "forecast_ingestion": {"state": "unavailable", "reason": reason},
+                }
             finally:
                 db.close()
+        outcomes.extend(forecast_labels)
         from botmanager.health import HealthStore
 
         for alert in HealthStore(Path(home)).page(bot_id=bot_id, limit=1000)["alerts"]:
@@ -387,7 +508,24 @@ class LearningOwner:
                     (scope, comparable),
                 )
             ]
-        return {"scope": scope, "comparability": comparable, **outcome_summary(labels)}
+        # Excluded Oracle labels keep their own provenance key and never borrow
+        # the active account's comparable identity or its eligibility counts.
+        labels.extend(classify_outcome(label) for _, label in forecast_labels)
+        return {
+            "scope": scope,
+            "comparability": comparable,
+            "state": "available",
+            "reason": None,
+            "counts_complete": True,
+            "forecast_ingestion": {
+                "state": "ineligible" if forecast_labels else "not_observed",
+                "reason": "oracle_manager_forecast_contract_unverified"
+                if forecast_labels
+                else "no_resolved_forecasts",
+                "resolved_rows": len(forecast_labels),
+            },
+            **outcome_summary(labels),
+        }
 
     def _evidence(self, run_id):
         if self.research_store is None:
@@ -430,6 +568,8 @@ class LearningOwner:
 
     def propose(self, home, bot_id, run_id):
         summary = self.collect(home, bot_id)
+        if summary.get("counts_complete") is False:
+            raise ValueError(summary["reason"])
         if (
             summary["resolved_comparable_labels"] < 300
             or summary["completed_trades"] < 30
@@ -553,8 +693,11 @@ class LearningOwner:
             proposal["evidence"]["evidence_digest"],
             proposal["shadow"]["pair_ids"],
         )
-        if len({run["comparability"] for run in runs}) != 1:
-            raise ValueError("shadow sources are incompatible")
+        if (
+            len({run["comparability"] for run in runs}) != 1
+            or len({run["immutable_input"] for run in runs}) != 1
+        ):
+            raise ValueError("shadow sources or activation contracts are incompatible")
         with self.connection(True) as db:
             current = self._read_proposal(db, proposal_id)
             current["shadow"]["started_at"] = time.time()
@@ -570,6 +713,20 @@ class LearningOwner:
         shadow = proposal["shadow"]
         if not shadow or not shadow["runs"]:
             return {"complete": False, "reason": "shadow_not_started", "trades": 0}
+        if (
+            len(shadow["runs"]) != 2
+            or {run.get("role") for run in shadow["runs"]}
+            != {"incumbent", "challenger"}
+            or len({run.get("immutable_input") for run in shadow["runs"]}) != 1
+        ):
+            return {"complete": False, "reason": "shadow_binding_changed", "trades": 0}
+        baseline = BotSpec.from_dict(proposal["baseline"])
+        expected_configs = {
+            "incumbent": baseline.config_hash,
+            "challenger": learned_spec(
+                baseline, proposal["changes"], proposal["evidence"]["evidence_digest"]
+            ).config_hash,
+        }
         ledger = RuntimeLedger(Path(proposal["home"]))
         states = []
         for binding in shadow["runs"]:
@@ -578,6 +735,11 @@ class LearningOwner:
                 not run
                 or run["runtime_id"] != binding["runtime_id"]
                 or comparable_identity(run) != binding["comparability"]
+                or binding.get("config_hash") != expected_configs[binding["role"]]
+                or run["spec"]["config_hash"] != binding.get("config_hash")
+                or run["input"].get("origin_hash", run["input"]["snapshot_hash"])
+                != binding.get("input_hash")
+                or shadow_input_binding(run) != binding.get("immutable_input")
                 or run["input"].get("prospective") is None
             ):
                 return {

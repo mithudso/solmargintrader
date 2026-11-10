@@ -175,3 +175,72 @@ class DailyLearningJobTests(unittest.TestCase):
                 supervisor.close()
             self.assertIsNotNone(process.poll())
             self.assertIsNone(supervisor.learning_job.process)
+
+    def test_malformed_json_shapes_cannot_break_actual_supervisor_boundary(self):
+        invalid = [
+            [],
+            None,
+            1,
+            "text",
+            {"state": []},
+            {"state": "running", "reason": "x", "day": []},
+            {"state": "running", "reason": "x", "last_attempt": float("nan")},
+            {"state": "completed", "reason": "x", "result": []},
+            {"state": "completed", "reason": "x", "result": {"scopes": [{}]}},
+        ]
+        for index, body in enumerate(invalid):
+            with self.subTest(body=body):
+                home = self.home / ("invalid-shape-" + str(index))
+                home.mkdir()
+                path = home / "learning-job.json"
+                path.write_text(json.dumps(body))
+                before = path.read_bytes()
+                self.assertEqual(schedule_snapshot(home)["state"], "unavailable")
+                supervisor = Supervisor(home).open()
+                try:
+                    supervisor.step()
+                    self.assertIsNone(supervisor.learning_job.process)
+                    result = dispatch("status", {}, CommandContext(home=home))
+                    self.assertTrue(result["ok"], result)
+                    self.assertEqual(before, path.read_bytes())
+                finally:
+                    supervisor.close()
+
+    def test_malformed_helper_envelope_and_fields_fail_without_orphan(self):
+        self.descriptor_file()
+        outputs = [
+            "[]",
+            "null",
+            "1",
+            '"text"',
+            '{"ok":true,"command":"research.protocol","result":[]}',
+            '{"ok":true,"command":"research.protocol","result":{"identity":{"version":"fixture"},"schedule":[],"reason":"bad"}}',
+            '{"ok":true,"command":"research.protocol","result":{"identity":{"version":"fixture"},"schedule":{},"reason":[]}}',
+        ]
+        outputs.append(
+            '{"ok":true,"command":"research.protocol","result":{"identity":{"version":"fixture"},"schedule":{"scopes":[{}]},"reason":"bad-scope"}}'
+        )
+        for output in outputs:
+            with self.subTest(output=output):
+                status = self.home / "learning-job.json"
+                if status.exists():
+                    status.unlink()
+                with patch(
+                    "botmanager.learning_job.subprocess.Popen",
+                    side_effect=self.spawn(output=output),
+                ):
+                    supervisor = Supervisor(self.home).open()
+                    try:
+                        supervisor.step()
+                        process = supervisor.learning_job.process
+                        self.finish(supervisor.learning_job)
+                        supervisor.step()
+                        self.assertEqual(
+                            supervisor.learning_job.receipt["state"], "failed"
+                        )
+                        self.assertIsNotNone(process.poll())
+                        self.assertTrue(
+                            dispatch("status", {}, CommandContext(home=self.home))["ok"]
+                        )
+                    finally:
+                        supervisor.close()
