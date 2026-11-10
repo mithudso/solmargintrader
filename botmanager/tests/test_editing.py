@@ -585,7 +585,7 @@ class EditingTests(unittest.TestCase):
         self.edit(set=["range_pct=21"])
         self.call("apply", identity=self.bot)
         with closing(sqlite3.connect(self.ledger.path)) as db, db:
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 4)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 5)
             self.assertEqual(db.execute("SELECT * FROM requests").fetchall(), original)
         self.assertEqual(
             self.call("stop", identity=self.bot, request_id=request_id), stopped
