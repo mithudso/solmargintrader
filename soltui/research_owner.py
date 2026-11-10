@@ -120,6 +120,7 @@ def handle(request):
         "recover": ("run_id",),
         "cancel": ("run_id",),
         "register": ("accept_registered_roots_only", "initialize_first"),
+        "learning-daily": ("manager_home",),
         "learning-labels": ("manager_home", "bot_id"),
         "learning-propose": ("manager_home", "bot_id", "run_id"),
         "learning-inspect": ("proposal_id",),
@@ -196,7 +197,13 @@ def handle(request):
         learner = LearningOwner(root, registration, store)
         if participation_changed:
             raise ExperimentError("research authority participation changed")
-        if operation == "learning-labels":
+        if operation == "learning-daily":
+            with optimizer_lease(root):
+                result = {
+                    "schedule": learner.daily(params["manager_home"]),
+                    "reason": "canonical_daily_attempt_completed",
+                }
+        elif operation == "learning-labels":
             result = learner.collect(params["manager_home"], params["bot_id"])
         elif operation == "learning-propose":
             with optimizer_lease(root):

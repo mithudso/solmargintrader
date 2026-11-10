@@ -340,7 +340,10 @@ def learning_snapshot(home, bot_id):
     from .store import data_home
 
     home = Path(home) if home is not None else data_home()
+    from .learning_job import schedule_snapshot
+
     result = {
+        "schedule": schedule_snapshot(home),
         "state": "not_observed",
         "reason": "owner_refresh_required",
         "owner_eligibility": "unknown",

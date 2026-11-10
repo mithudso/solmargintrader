@@ -397,3 +397,68 @@ class LearningOwnerTests(unittest.TestCase):
         self.assertIsNone(result["proposal"])
         self.assertEqual(before, untouched.path.read_bytes())
         self.assertEqual(modified, untouched.path.stat().st_mtime_ns)
+
+    def test_daily_job_stages_once_across_restart_and_new_home(self):
+        with patch("soltui.learning_owner.time.time", return_value=self.now):
+            first = self.owner.daily(self.home)
+            self.assertEqual(first["scopes"][0]["state"], "proposal_pending_shadow")
+            self.assertFalse(first["new_optimizer"])
+            restarted = LearningOwner(self.store.root, self.registration, self.store)
+            repeated = restarted.daily(self.home)
+            self.assertEqual(
+                repeated["scopes"][0]["reason"],
+                "canonical_daily_attempt_already_recorded",
+            )
+            second_home = self.root / "other-manager"
+            other_spec = grid("new-uuid-same-scope")
+            ManagerStore(second_home).create_spec(other_spec)
+            RuntimeLedger(second_home).register(other_spec, self.data)
+            other = restarted.daily(second_home)
+            self.assertEqual(
+                other["scopes"][0]["reason"], "canonical_daily_attempt_already_recorded"
+            )
+        with self.owner.connection() as db:
+            self.assertEqual(
+                db.execute("SELECT count(*) FROM learning_schedule").fetchone()[0], 1
+            )
+            self.assertEqual(
+                db.execute("SELECT count(*) FROM learning_proposals").fetchone()[0], 1
+            )
+        from botmanager.learning import learning_snapshot
+
+        self.assertEqual(
+            learning_snapshot(self.home, self.spec.bot_id)["state"], "pending_shadow"
+        )
+
+    def test_daily_job_retains_incumbent_without_accepted_evidence(self):
+        before = ManagerStore(self.home).get_spec(self.spec.bot_id)
+        with (
+            patch("soltui.learning_owner.time.time", return_value=self.now),
+            patch.object(
+                self.owner, "_evidence", side_effect=ValueError("unavailable")
+            ),
+        ):
+            result = self.owner.daily(self.home)
+        self.assertEqual(result["scopes"][0]["state"], "retained_incumbent")
+        self.assertEqual(
+            result["scopes"][0]["reason"],
+            "accepted_compatible_research_proposal_unavailable",
+        )
+        self.assertEqual(before, ManagerStore(self.home).get_spec(self.spec.bot_id))
+
+    def test_daily_job_minimum_counts_and_next_utc_day(self):
+        with self.owner.connection(True) as db:
+            db.execute("DELETE FROM learning_labels WHERE id='299'")
+        with patch("soltui.learning_owner.time.time", return_value=self.now):
+            result = self.owner.daily(self.home)
+        self.assertEqual(
+            result["scopes"][0]["reason"],
+            "minimum_300_labels_and_30_completed_trades_pending",
+        )
+        with patch("soltui.learning_owner.time.time", return_value=self.now + DAY):
+            result = self.owner.daily(self.home)
+        with self.owner.connection() as db:
+            self.assertEqual(
+                db.execute("SELECT count(*) FROM learning_schedule").fetchone()[0], 2
+            )
+        self.assertEqual(result["scopes"][0]["state"], "retained_incumbent")

@@ -87,6 +87,9 @@ class LearningOwner:
                     "CREATE TABLE IF NOT EXISTS learning_cooldowns (scope TEXT PRIMARY KEY, reserved REAL NOT NULL)"
                 )
                 db.execute(
+                    "CREATE TABLE IF NOT EXISTS learning_schedule (scope TEXT NOT NULL, day TEXT NOT NULL, home TEXT NOT NULL, state TEXT NOT NULL, attempted REAL NOT NULL, body TEXT NOT NULL, PRIMARY KEY(scope,day))"
+                )
+                db.execute(
                     "CREATE TABLE IF NOT EXISTS learned_defaults (scope TEXT PRIMARY KEY, body TEXT NOT NULL, receipt TEXT NOT NULL)"
                 )
             yield db
@@ -94,6 +97,136 @@ class LearningOwner:
                 db.commit()
         finally:
             db.close()
+
+    def daily(self, home):
+        """One canonical daily attempt per scope; reuses M4's accepted results."""
+        from botmanager.store import ManagerStore
+
+        home = Path(home).resolve()
+        store = ManagerStore(home)
+        now = time.time()
+        day = datetime.fromtimestamp(now, UTC).date().isoformat()
+        with self.connection(True) as db:
+            shadow_ids = set()
+            for (raw,) in db.execute("SELECT body FROM learning_proposals"):
+                shadow = json.loads(raw).get("shadow")
+                if shadow:
+                    shadow_ids.update(shadow["pair_ids"].values())
+        groups = {}
+        for spec in store.list_specs():
+            if spec.bot_id in shadow_ids:
+                continue
+            try:
+                _, row = self._runtime(home, spec.bot_id)
+            except (ValueError, ManagerError):
+                continue
+            scope = canonical_scope(spec, row["input"]["identity"])
+            groups.setdefault(scope, []).append(spec)
+        results = []
+        for scope, specs in groups.items():
+            with self.connection(True) as db:
+                previous = db.execute(
+                    "SELECT state,body FROM learning_schedule WHERE scope=? AND day=?",
+                    (scope, day),
+                ).fetchone()
+                if previous:
+                    results.append(
+                        {
+                            "scope": scope,
+                            "state": previous["state"],
+                            "reason": "canonical_daily_attempt_already_recorded",
+                            "prior": json.loads(previous["body"]),
+                        }
+                    )
+                    continue
+                db.execute(
+                    "INSERT INTO learning_schedule VALUES (?,?,?,?,?,?)",
+                    (
+                        scope,
+                        day,
+                        str(home),
+                        "running",
+                        now,
+                        canonical({"reason": "canonical_attempt_reserved"}),
+                    ),
+                )
+            result = {
+                "scope": scope,
+                "state": "retained_incumbent",
+                "reason": "accepted_compatible_research_proposal_unavailable",
+                "proposal_id": None,
+            }
+            try:
+                # Try all active configurations in the same scope; creating another
+                # UUID cannot create another daily reservation or optimizer.
+                for spec in specs:
+                    counts = self.collect(home, spec.bot_id)
+                    result["counts"] = {
+                        key: counts[key]
+                        for key in (
+                            "resolved_comparable_labels",
+                            "completed_trades",
+                            "cohorts",
+                        )
+                    }
+                    if (
+                        counts["resolved_comparable_labels"] < 300
+                        or counts["completed_trades"] < 30
+                    ):
+                        result["reason"] = (
+                            "minimum_300_labels_and_30_completed_trades_pending"
+                        )
+                        continue
+                    with self.research_store._connect() as research_db:
+                        candidates = [
+                            row[0]
+                            for row in research_db.execute(
+                                "SELECT run_id FROM manager_attempts WHERE state='finished' ORDER BY rowid DESC LIMIT 1000"
+                            )
+                        ]
+                    for run_id in candidates:
+                        try:
+                            evidence, _ = self._evidence(run_id)
+                            if (
+                                evidence["bot_id"] != spec.bot_id
+                                or evidence["baseline_hash"] != spec.config_hash
+                            ):
+                                continue
+                            proposal = self.propose(home, spec.bot_id, run_id)
+                            from botmanager.learning import record_owner_view
+                            record_owner_view(store, proposal)
+                            result.update(
+                                state="proposal_pending_shadow",
+                                reason="accepted_m4_proposal_staged",
+                                proposal_id=proposal["id"],
+                                bot_id=spec.bot_id,
+                            )
+                            break
+                        except (ValueError, ManagerError):
+                            continue
+                    if result["proposal_id"] is not None:
+                        break
+                    result["reason"] = (
+                        "accepted_compatible_research_proposal_unavailable"
+                    )
+            except (ValueError, ManagerError, sqlite3.Error):
+                result["reason"] = "owner_measurement_or_evidence_unavailable"
+            with self.connection(True) as db:
+                db.execute(
+                    "UPDATE learning_schedule SET state=?,body=? WHERE scope=? AND day=?",
+                    (result["state"], canonical(result), scope, day),
+                )
+            results.append(result)
+        return {
+            "day": day,
+            "attempted_at": now,
+            "scopes": results,
+            "starts_workers": False,
+            "new_optimizer": False,
+            "reason": "no_registered_active_scope"
+            if not groups
+            else "daily_canonical_scope_attempts_recorded",
+        }
 
     def _read_proposal(self, db, proposal_id):
         row = db.execute(

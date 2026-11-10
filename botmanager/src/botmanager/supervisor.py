@@ -26,6 +26,9 @@ class Supervisor:
         self.server = None
         self._lock = None
         self._health_at = 0.0
+        from .learning_job import DailyLearningJob
+
+        self.learning_job = DailyLearningJob(self.home)
 
     def open(self):
         if self._lock is not None:
@@ -63,6 +66,11 @@ class Supervisor:
         if self.server is None:
             raise RuntimeError("Supervisor is not open")
         self.server.poll()
+        # Owner learning runs in one separately bounded process; controls keep polling.
+        try:
+            self.learning_job.step()
+        except (OSError, ManagerError):
+            pass
         recovering = set()
         if self.ledger.path.exists():
             with self.ledger.connection() as db:
@@ -161,6 +169,11 @@ class Supervisor:
             self.children[bot_id] = (process, generation)
 
     def close(self):
+        try:
+            self.learning_job.close()
+        except (OSError, ManagerError):
+            # An optional scheduler receipt failure cannot hold worker ownership.
+            pass
         for bot_id, (process, generation) in list(self.children.items()):
             # Shutdown fences commits but preserves running intent for recovery.
             with self.ledger.connection(True) as db:
