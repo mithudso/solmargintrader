@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections.abc import Sequence
 
 from .registry import COMMANDS, ERROR_EXIT_CODES, dispatch
@@ -21,7 +22,22 @@ class SafeParser(argparse.ArgumentParser):
 
 def parser() -> argparse.ArgumentParser:
     root = SafeParser(
-        prog="solbot", description="Persistent paper/disarmed Solana bot drafts."
+        prog="solbot",
+        description="Manage saved paper bot drafts and recorded grid replay.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Start here (creating a draft starts no worker):\n"
+            "  solbot create grid --name my-grid\n"
+            "  solbot config my-grid --effective\n"
+            "  solbot status my-grid --why\n\n"
+            "Running a grid requires registered recorded input, a start request,\n"
+            "and an explicitly running 'solbot daemon' or installed service.\n"
+            "No edit command yet: changed settings require a new named draft.\n"
+            "Current runtime: recorded Coinbase grid replay only. Real-time Jupiter\n"
+            "trading, the other strategy runtimes and learning remain unfinished.\n\n"
+            "Working example and exact steps:\n"
+            "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
+        ),
     )
     subcommands = root.add_subparsers(dest="command", required=True)
     for command in COMMANDS.values():
@@ -34,8 +50,13 @@ def parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    root = parser()
+    if not arguments:
+        root.print_help()
+        return 0
     try:
-        args = vars(parser().parse_args(argv))
+        args = vars(root.parse_args(arguments))
         command = args.pop("command")
         envelope = dispatch(command, args)
     except InputError:

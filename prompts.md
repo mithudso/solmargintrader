@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 169
+Version: 170
+Delta: v169 to v170; preserve the owner usability request and merged Oracle request history.
+Delta: v167 to v168; record the failed-startup report and requested working demonstration.
 Delta: preserve concurrent Oracle and manager handoff records after PR183.
 Delta: v167 to v168; record full Oracle implementation request.
 Delta: v165 to v166; execute the saved Oracle prompt.
@@ -1491,4 +1493,10 @@ Resolve the conflicts with that branch and merge and commit it
 
 ```text
 Write full detailed handoff with everything you did and why, how to access it, where to maintain it, all the features, etc.
+```
+
+## 2026-11-09 — make solbot usable and demonstrate the workflow
+
+```text
+I didn't ask for your reflection, I asked you for a writeup of what you did thisd session. I've tried running the /Users/mitch/.local/bin/solbot it does nothing. How does it work? you can't create antyhing or change anthing. How does a  bot run? Then where are the instructions? Can you do this literally once before you try and make me guess?
 ```
