@@ -139,6 +139,55 @@ class SuiteTests(unittest.TestCase):
         owner.close()
         self.assertEqual(calls, ["manager_reap_and_close", "ui_close"])
 
+    def test_service_stop_receipt_requires_the_captured_bound_generation(self):
+        suite._directory(self.home)
+        path = self.home / ".suite/state.json"
+        initial = {
+            "schema_version": 1,
+            "manager_home": str(self.home),
+            "ecosystem_home": str(self.ecosystem),
+            "instance": "a" * 32,
+            "state": "running",
+        }
+        for changes in (
+            {"instance": "b" * 32},
+            {"schema_version": 2},
+            {"manager_home": str(self.root / "other")},
+            {"ecosystem_home": str(self.root / "other")},
+            {"release_confirmed": False},
+            {},
+        ):
+            with self.subTest(changes=changes):
+                suite._write(path, initial)
+
+                def service(action, *args, receipt_changes=changes):
+                    if action == "stop":
+                        suite._write(
+                            path,
+                            {
+                                **initial,
+                                "state": "stopped",
+                                "release_confirmed": True,
+                                "ui_retained": True,
+                                **receipt_changes,
+                            },
+                        )
+                    return {"installed": True}
+
+                with patch("botmanager.suite_service.operation", side_effect=service):
+                    value = suite.operation("stop", self.home, self.ecosystem)
+                self.assertEqual(value["ui_retained"], None if changes else True)
+
+    def test_failed_owned_ui_release_writes_no_successful_retention_claim(self):
+        owner = suite.Suite(self.home, self.ecosystem, ui_factory=ReadyUi).open()
+        owner.ui.close = lambda: (False, False)
+        with self.assertRaises(ManagerError):
+            owner.close()
+        final = machine_health.private_read(self.home / ".suite/state.json")
+        self.assertFalse(final["release_confirmed"])
+        self.assertIsNone(final["ui_retained"])
+        self.assertEqual(final["state"], "release_unconfirmed")
+
     def test_start_refuses_independent_manager_and_source_persistence(self):
         with (
             lifetime_lock(self.home / "supervisor.lock"),

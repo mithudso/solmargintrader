@@ -582,9 +582,12 @@ class Suite:
                         "manager_home": str(self.home),
                         "ecosystem_home": str(self.ecosystem_home),
                         "heartbeat": time.time(),
-                        "state": "stopped",
+                        "state": "stopped"
+                        if failure is None
+                        else "release_unconfirmed",
                         "monitor_ready": False,
-                        "ui_retained": self.ui_retained,
+                        "ui_retained": self.ui_retained if failure is None else None,
+                        "release_confirmed": failure is None,
                     },
                 )
             except (OSError, ManagerError):
@@ -739,33 +742,57 @@ def _start(home, ecosystem_home):
         ) from exc
 
 
+def _checkpoint(home, ecosystem_home):
+    try:
+        value = machine_health.private_read(home / ".suite/state.json", limit=16_384)
+        instance = value.get("instance")
+        if (
+            value.get("schema_version") == 1
+            and value.get("manager_home") == str(home)
+            and value.get("ecosystem_home") == str(ecosystem_home)
+            and isinstance(instance, str)
+            and len(instance) == 32
+            and all(character in "0123456789abcdef" for character in instance)
+        ):
+            return value
+    except (OSError, ValueError, TypeError):
+        pass
+    return None
+
+
+def _stop_receipt(home, ecosystem_home, instance):
+    final = _checkpoint(home, ecosystem_home)
+    if (
+        instance is not None
+        and final is not None
+        and final["instance"] == instance
+        and final.get("state") == "stopped"
+        and final.get("release_confirmed") is True
+        and type(final.get("ui_retained")) is bool
+    ):
+        return final["ui_retained"]
+    return None
+
+
 def _stop(home, ecosystem_home):
     from . import suite_service
 
+    saved = _checkpoint(home, ecosystem_home)
+    instance = saved["instance"] if saved is not None else None
     service = suite_service.operation("status", home, ecosystem_home)
     service_managed = service.get("installed")
     if service_managed:
         suite_service.operation("stop", home, ecosystem_home)
     directory = home / ".suite"
     if not lock_held(directory / "owner.lock"):
-        retained = None
-        try:
-            final = machine_health.private_read(directory / "state.json", limit=16_384)
-            if (
-                final.get("state") == "stopped"
-                and type(final.get("ui_retained")) is bool
-            ):
-                retained = final["ui_retained"]
-        except (OSError, ValueError, TypeError):
-            pass
         return {
             "state": "stopped",
             "desired_bot_intent_retained": True,
-            "ui_retained": retained,
+            "ui_retained": _stop_receipt(home, ecosystem_home, instance),
         }
-    saved = None
     try:
-        saved = machine_health.private_read(directory / "state.json", limit=16_384)
+        if saved is None:
+            raise ValueError("suite_owner_unverified")
         path = directory / "control.sock"
         _owner_path(path)
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
@@ -796,16 +823,10 @@ def _stop(home, ecosystem_home):
             time.sleep(0.05)
         if lock_held(directory / "owner.lock"):
             raise ValueError("suite_owner_release_pending")
-        final = machine_health.private_read(directory / "state.json", limit=16_384)
-        retained = (
-            final.get("ui_retained")
-            if final.get("instance") == (saved or {}).get("instance")
-            else None
-        )
         return {
             "state": "stopped",
             "desired_bot_intent_retained": True,
-            "ui_retained": retained,
+            "ui_retained": _stop_receipt(home, ecosystem_home, instance),
         }
     except (OSError, ValueError, TypeError, KeyError) as exc:
         raise ManagerError(

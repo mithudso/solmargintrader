@@ -1,7 +1,8 @@
 # Availability core implementation receipt
 
-Version: 1.0.0
-Delta: Initial TASK-1247 core implementation and focused verification.
+Version: 1.0.1
+Delta: Bind all stop receipts to the prior verified generation and report null
+retention when owned component release was unconfirmed.
 
 The request is recorded in the repository's prompts.md and continuation state is
 owned by the root agent in memory.md. This child owns only the three new core
@@ -59,7 +60,7 @@ PYTHONPATH:
 /Users/mitch/.venvs/solbot-0.6.0/bin/python -m unittest tests.test_suite tests.test_suite_service tests.test_machine_health -v
 ```
 
-Final result: 32 tests passed, exit 0. These include actual manager IPC; concurrent
+Final result: 34 tests passed, exit 0. These include actual manager IPC; concurrent
 start spawning only one real suite; actual manager-process SIGKILL and restart;
 actual owned subprocess failure/restart/reap; adopted-PID noninterference; fast UI
 failure/recovery persistence; unclean suite-generation alerting; alert cooldown,
