@@ -6,6 +6,7 @@ const $ = (id) => document.getElementById(id);
 let settings = null;
 let busy = false;
 let loaded = false;
+let feeEdited = false;
 
 function state(message) { $("swap-state").textContent = message; }
 function selectedFee() { return Number($("referral-fee").value); }
@@ -20,7 +21,7 @@ function updateFee(announce = true) {
   $("fee-summary").textContent = `${display}; actual application requires provider quote evidence`;
   $("load-jupiter").disabled = busy || loaded || !validFee() || settings?.asset_mapping_status !== "available";
   if (announce && !busy && !loaded) {
-    state(validFee() ? "Ready to load the external interface on your click. Wallet connection and transactions still need your approval." : "Unavailable: choose a referral fee within the published range explicitly. The configured 10 bps has not been increased.");
+    state(validFee() ? "Ready to load the external interface on your click. Wallet connection and transactions still need your approval." : "Unavailable: choose a referral fee within the published range explicitly. Your selected fee has not been changed.");
   }
 }
 async function readConfig(asset) {
@@ -33,6 +34,7 @@ async function readConfig(asset) {
     const envelope = await response.json();
     if (!response.ok || !envelope.ok || envelope.schema_version !== 1 || envelope.data?.provider !== "jupiter" || envelope.data.plugin_src !== SDK_SRC) throw new Error("public_config_unavailable");
     settings = envelope.data;
+    if (!feeEdited) $("referral-fee").value = String(settings.default_referral_fee_bps);
     $("referral-account").textContent = settings.selected_referral_account;
     $("swap-asset").value = settings.asset_mapping_status === "available" ? settings.asset : "";
     $("asset-note").textContent = settings.asset_mapping_status === "available" ? `Verified initial pair: ${settings.asset === "USDC" ? "USDC / SOL" : "SOL / USDC"}. You can inspect other tokens inside Jupiter after loading.` : `The requested symbol ${settings.asset} has no verified mint mapping here. Choose a verified initial pair explicitly; this page will not invent a wrapped-token address.`;
@@ -94,7 +96,7 @@ async function loadManually() {
     updateFee(false);
   }
 }
-$("referral-fee").addEventListener("input", updateFee);
+$("referral-fee").addEventListener("input", () => { feeEdited = true; updateFee(); });
 $("swap-asset").addEventListener("change", () => readConfig($("swap-asset").value));
 $("load-jupiter").addEventListener("click", loadManually);
 readConfig(new URLSearchParams(location.search).get("asset") || "SOL");

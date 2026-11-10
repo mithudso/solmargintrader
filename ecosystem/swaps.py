@@ -13,7 +13,7 @@ from oracle.feeds import SOL_MINT, USDC_MINT
 
 ULTRA_REFERRAL_ACCOUNT = "9chjbn8wvLUbGCrWF3nYRF4xnhixnGHh5xrhvpQwrrQ9"
 SWAP_TRIGGER_REFERRAL_ACCOUNT = "85vN9xt5wwXk3M4ikQ9amWs38QfFLu6kjqaz22wX9NsD"
-DEFAULT_REFERRAL_FEE_BPS = 10
+DEFAULT_REFERRAL_FEE_BPS = 50
 MINIMUM_REFERRAL_FEE_BPS = 50
 MAXIMUM_REFERRAL_FEE_BPS = 255
 PLUGIN_SRC = "https://plugin.jup.ag/plugin-v1.js"
@@ -47,9 +47,9 @@ def config(asset: str = "SOL") -> dict:
         "default_referral_fee_bps": DEFAULT_REFERRAL_FEE_BPS,
         "minimum_referral_fee_bps": MINIMUM_REFERRAL_FEE_BPS,
         "maximum_referral_fee_bps": MAXIMUM_REFERRAL_FEE_BPS,
-        "default_fee_supported": False,
-        "integration_status": "unavailable",
-        "integration_reason": "configured_10bps_below_published_50bps_minimum",
+        "default_fee_supported": True,
+        "integration_status": "available",
+        "integration_reason": None,
         "fee_change_requires_user_action": True,
         "plugin_src": PLUGIN_SRC,
         "auto_connect": False,
@@ -73,7 +73,7 @@ def config(asset: str = "SOL") -> dict:
         ],
         "limitations": [
             "Reference-price provider selection does not verify a Jupiter swap quote.",
-            "The configured 0.1% referral fee remains unchanged. No automatic increase is permitted.",
+            "The user-approved default referral fee is 0.5%. Existing frozen paper scenarios keep their recorded assumptions.",
             "Actual referral eligibility and charged fee require provider quote evidence.",
             "Review every displayed fee and wallet transaction before explicit approval.",
             "CDN, wallet connection and funded trade readiness are not established by this configuration.",

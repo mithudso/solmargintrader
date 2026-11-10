@@ -518,7 +518,7 @@ function renderLaunchCatalog() {
     $("launch-end").value = new Date().toISOString().slice(0, 10);
     const costs = state.status.config.cost_model;
     if (costs) {
-      [["launch-fee-bps", "fee_bps"], ["launch-referral-bps", "referral_fee_bps"], ["launch-slippage-bps", "slippage_bps"], ["launch-borrow-long", "borrow_long_bps_hour"], ["launch-borrow-short", "borrow_short_bps_hour"]].forEach(([id, key]) => { if (finite(costs[key])) $(id).value = costs[key]; });
+      [["launch-fee-bps", "fee_bps"], ["launch-slippage-bps", "slippage_bps"], ["launch-borrow-long", "borrow_long_bps_hour"], ["launch-borrow-short", "borrow_short_bps_hour"]].forEach(([id, key]) => { if (finite(costs[key])) $(id).value = costs[key]; });
     }
     if (["jupiter", "reference"].includes(state.status.config.swap_provider)) $("launch-swap-provider").value = state.status.config.swap_provider;
     state.formInitialized = true;
@@ -1009,7 +1009,7 @@ function renderSwapState() {
   text("swap-status", data?.reason ? `Swap configuration: ${human(data.reason)}. Inspect the dedicated interface before wallet approval.` : state.swapLoaded ? "Dedicated swap page loaded. Inspect its current quote and approve explicitly with your wallet." : "Wallet interface is unloaded. The provider runs on its own local origin after your explicit load action.");
   fields("swap-facts", [
     ["Provider", config.provider || "Jupiter"], ["Scope", data?.scope], ["Configuration state", human(data?.status || data?.readiness?.status || "quote_not_yet_requested")],
-    ["Referral fee", finite(config.referral_fee_bps) ? `${config.referral_fee_bps} bps configured` : "Unavailable until verified"],
+    ["Referral fee", finite(config.default_referral_fee_bps) ? `${(config.default_referral_fee_bps / 100).toFixed(2)}% (${config.default_referral_fee_bps} bps) configured default` : "Unavailable until verified"],
     ["Referral accounts", config.referral_accounts ? JSON.stringify(config.referral_accounts) : "Unavailable"],
     ["Actual venue fee", "Available only from the current route quote"],
     ["Tip / priority cost", config.tip ? JSON.stringify(config.tip) : "Available only from the current quote or explicit widget setting"],

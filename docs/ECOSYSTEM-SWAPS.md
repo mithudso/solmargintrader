@@ -36,14 +36,22 @@ The owner's public accounts are recorded in the referral decision, `KNOW-1062`:
 - Swap/Trigger: `85vN9xt5wwXk3M4ikQ9amWs38QfFLu6kjqaz22wX9NsD`.
 
 The current Plugin FAQ directs referral setup through the Ultra guide, so this
-Plugin configuration uses the recorded Ultra account. The configured tip stays
-at **0.1% = 10 bps**. The current published `/order` referral range is **50–255
-bps**. This mismatch is explicit: SDK initialization remains unavailable until
-the user chooses a supported fee. The interface never converts 10 bps to 50 bps
-automatically. A user can make that choice in the manual page before loading.
+Plugin configuration uses the recorded Ultra account. The owner explicitly
+approved **0.5% = 50 bps** as the default referral fee. Release 0.2.1 applies that
+choice to the manual page and the referral assumption for new Jupiter paper
+scenarios. The current published `/order` referral range is **50–255 bps**; the
+new default is within that range. A manual choice outside the supported range
+keeps Plugin initialization unavailable.
 
-A configured public account is not on-chain eligibility evidence. Quote fields
-must establish which fees actually applied. Jupiter documents that an
+This is an explicit user-approved default change, not an automatic fee increase.
+Existing experiments retain their frozen cost profiles, including earlier
+explicit 10 bps assumptions. The release does not rewrite earlier calls,
+settlements, backtests or P&L. The manual page still requires a click to load the
+SDK, then a browser-wallet connection and approval for each action.
+
+Matching the published fee range only passes the local configuration gate. It
+does not establish on-chain referral eligibility or funded-swap readiness. Quote
+fields must establish which fees actually applied. Jupiter documents that an
 uninitialized referral token account can fall back to the default platform fee.
 The user must inspect the provider and wallet preview. Network/priority charges,
 token-account rent, route/platform costs, slippage and price impact remain
@@ -60,8 +68,9 @@ Official documentation checked on 2026-11-10:
 
 `validate_cost_model()` accepts an explicit `source: configured_scenario` with
 base `fee_bps`, `referral_fee_bps`, `slippage_bps`, `borrow_long_bps_hour` and
-`borrow_short_bps_hour`. The referral assumption defaults to the configured 10
-bps. It computes `total_fee_bps = fee_bps + referral_fee_bps`. The existing paper
+`borrow_short_bps_hour`. For a new Jupiter scenario that omits an explicit
+referral assumption, it defaults to the approved 50 bps. It computes
+`total_fee_bps = fee_bps + referral_fee_bps`. The existing paper
 engine consumes that total once, so validation of a persisted normalized model
 does not add the referral a second time.
 
@@ -73,6 +82,32 @@ semantics; the provider selector does not establish spot execution support.
 Network/priority fees, rent and changing route charges remain unmodelled here.
 Modelled net P&L therefore does not establish realized profit after every actual
 execution cost.
+
+## Existing installations and generation handoff
+
+The new UI environment is `/Users/mitch/.venvs/solecosystem-0.2.1`. Keep completed
+older environments immutable. Updating this release replaces only the separately
+owned control UI generation after its lock, checkpoint and HTTP identity have
+been reconciled. The existing V1 and V2 pipeline processes, Oracle archives,
+shared recorder and frozen accounting settings remain running under their own
+owners. Their version labels need not equal the new UI's version.
+
+In particular, retain `/Users/mitch/.venvs/solecosystem-0.1.1` for the legacy V1
+owner and `/Users/mitch/.venvs/solecosystem-0.2.0` for the existing V2 pipeline.
+The UI generation update does not upgrade either environment in place.
+
+The primary control home remains
+`/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`. The replacement
+foreground UI command, after the prior UI generation has stopped, is:
+
+```sh
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/solecosystem-ui \
+  --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2 --port 8768
+```
+
+Do not restart a pipeline merely to update its control UI. Do not use a blanket
+process kill or reinterpret a PID as owner identity. A new page's 50 bps default
+does not alter an existing pipeline's explicit 10 bps scenario.
 
 ## Source locations and checks
 
