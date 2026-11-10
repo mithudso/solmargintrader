@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 349
+Version: 350
+Delta: v349 to v350; preserve embedding diagnosis and final PR delivery context.
 Delta: v348 to v349; verify genuine forward handoff and final installed UI acceptance.
 Delta: v347 to v348; verify installed control room and preserve the failed gated experiment before the explicit paper baseline.
 Delta: v346 to v347; implement bootstrap, extend telemetry and reuse the accepted control-room UI.
@@ -98,6 +99,16 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v350 - 2026-11-09: final delivery and embedding clarification
+
+The paper service and actual backtest-to-forward handoff are verified as described below. Delivery is tracked by https://github.com/mithudso/solmargintrader/pull/185. All 11 non-optional CI jobs passed on implementation commit 08d7807f76a98e983154f4b0a787be3f7b821665. The final notes/comment push must pass the same checks before merge. The PR merged state and its squash commit are the canonical delivery receipt. No unverified runtime capability should be inferred from CI.
+
+The user's subsequent Ollama observation was investigated without inference, model loading, restarting services or reindexing. Two checked stores use different, internally matching models. /Users/mitch/dev/solmargintrader/index/semantic-local.json records 45995 Mxbai chunks with 1024 dimensions; index/search.py takes its query model from that manifest. The hub DB contains 286163 distinct Nomic embeddings, all 768 dimensions, linked to 1098241 file rows. /Users/mitch/.global-ai-hub/config.yaml selects nomic-embed-text for that corpus; scripts/semantic_ops/corpus.py uses that configuration. Local IPv4 and IPv6 Ollama metadata agree. Nomic and Qwen3-embedding:4b were loaded; Mxbai was installed but unloaded. Loaded inventory does not override a client's per-request model. No mismatch or configuration repair was indicated. Clarified the misleading all-indexes comment in index/ollama_ensure.py. LLMS-Explorer indexing remains paused.
+
+No further implementation work remains for the available paper integrations. The active service remains at /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1, currently http://127.0.0.1:60864, using the immutable /Users/mitch/.venvs/solecosystem-0.1.1 environment. Retain the previous gated experiment. Future outcomes, five unavailable historical markets, unsupported leverage-tier CPCV, a manager raw-log sink and live Jupiter integration remain explicit capability limits. The local acceptance receipt records these boundaries. Stele task/knowledge updates are queued as b4f573a9,0fb55e42,9ad6bc49 until transport returns.
+
+Delivery cleanup must preserve the original checkout's five unrelated untracked paths and other agents' worktrees. Final acceptance after sync checks the remote source fingerprint against the installed receipt and the running UI/forward state. If continuation is needed, inspect PR185 first; do not reinstall or duplicate the active supervisor, F5 worker or shared recorder.
 
 ## v349 - 2026-11-09: verified installed paper service
 

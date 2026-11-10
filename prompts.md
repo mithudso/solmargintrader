@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 173
+Version: 174
+Delta: v173 to v174; preserve the embedding-model mismatch observation during final delivery.
 Delta: v172 to v173; add manager telemetry coordination and accepted UI wiring.
 Delta: v171 to v172; retain the accepted existing14-asset default.
 Delta: v170 to v171; record complete ecosystem bootstrap request.
@@ -55,6 +56,10 @@ Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
+
+## v174 - 2026-11-09
+
+For some reason the ollama server is nomic but everything is embdeded in mxbai-large.
 
 ## v173 - 2026-11-09
 

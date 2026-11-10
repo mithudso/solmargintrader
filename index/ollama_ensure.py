@@ -35,9 +35,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-# The one embedding model every semantic index in this setup uses (the hub's default,
-# HUB_EMBED_MODEL). ollama treats `mxbai-embed-large` and `mxbai-embed-large:latest`
-# as the same model; the explicit tag keeps the manifest unambiguous.
+# This repository's semantic index defaults to Mxbai; other stores choose their
+# own model (the hub file corpus uses Nomic). Ollama treats `mxbai-embed-large`
+# and `mxbai-embed-large:latest` as the same model; the tag makes the manifest clear.
 EMBED_MODEL = "mxbai-embed-large:latest"
 OLLAMA_BASE = "http://localhost:11434"
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1", "[::1]"}

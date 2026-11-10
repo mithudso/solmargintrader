@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T03:02:22+00:00",
+  "generatedAt": "2026-11-10T03:07:59+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -1027,7 +1027,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 118
+          "hits": 119
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -1455,11 +1455,11 @@
           "hits": 23
         },
         {
-          "path": "memory.md",
-          "hits": 22
+          "path": "backtester/core/deflated_sharpe.py",
+          "hits": 21
         },
         {
-          "path": "backtester/core/deflated_sharpe.py",
+          "path": "memory.md",
           "hits": 21
         },
         {
@@ -1722,12 +1722,12 @@
           "hits": 20
         },
         {
-          "path": "memory.md",
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 19
         },
         {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 19
+          "path": "memory.md",
+          "hits": 18
         },
         {
           "path": "soltui/experiment_runner.py",
