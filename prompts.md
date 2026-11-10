@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 180
+Version: 184
+Delta: v183 to v184; preserve seven-part turnkey CLI, UI, service, health and Chrome request plus resume.
 Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.
 Delta: v171 to v172; implement remaining bot-manager work with agent fanout.
 Delta: concurrent histories to v179; preserve M4 checkpoint and PR192 integration records.
@@ -1710,4 +1711,17 @@ The plan is written in a separate worktree for independent documentation deliver
 
 ```text
 Resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/192 and merge and commit it
+```
+
+
+## 2026-11-10 — turnkey managed CLI/UI stack — TASK-1247
+
+```text
+For the /Users/mitch/.local/bin/solbot do a few things, 1) in the /Users/mitch/.local/bin/solbot --help include a complete list of complete commands that would be necessary to bring up and validate every feature and stage in the recommended order. 2) make it apparent how do I find and get to UI interface you created. 3) create a daemon that takes the process created in steps 1 and 2, automates it, and stands it back up after a reboot, and monitors and alerts the components when they are failing. 4) add health checks, different from the status command, which just returns the information necessary for a graphing/alerting process to run;  5) the chrome extension that lives in this folder, update it to match the UI you just made and enable it to bring up the servers if they are down, which means it needs a helper script which I believe it already does. 6) When you have the daemon ready install it and turn it on so there is some system process which makes sure this keeps running. 7) Do a setup comparison for linux/windows and would someone on those systems be able to run this? If so how is the setup process different?
+```
+
+Resume steering after initial read-only inspection:
+
+```text
+resume
 ```

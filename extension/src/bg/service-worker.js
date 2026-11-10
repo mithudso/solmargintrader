@@ -29,9 +29,11 @@ import { restorePaperVenue } from './paper-venue.js';
 import { createLiveWindows } from './live-windows.js';
 import { digest } from '../core/bot-manager.js';
 import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../core/owner-source.js';
+import { controlRoomTransitions } from '../core/control-room.js';
 
 const ALARM = 'solmargintrader-tick';
 const MANAGER_ALARM = 'solmargintrader-manager';
+const CONTROL_ROOM_ALARM = 'solmargintrader-control-room';
 // Capture the resource baseline at worker startup, never lazily after a start.
 // Fetch attests packaged resources, not the browser's internal ESM cache. Any
 // subsequent resource change requires an actual extension reload before grants.
@@ -98,6 +100,7 @@ export async function chromeDeps({ passphrase, openStore = () => Store.open(), s
     configStore,
     budget,
     soltui,
+    openControlRoom: (url) => chrome.tabs.create({ url }),
     extensionVersion: chrome.runtime.getManifest?.().version,
     loadedSourceHash,
     fetch: platformFetch,
@@ -216,9 +219,9 @@ async function showNotification(alert) {
   await chrome.notifications.create(`smt-alert:${alert.id}`.slice(0, 500), {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
-    title: alert.severity === 'action' ? 'Better pool found' : alert.kind === 'strategy' ? 'Strategy alert' : 'Pool lead',
+    title: alert.kind === 'availability' ? 'Sol · Component health' : alert.severity === 'action' ? 'Better pool found' : alert.kind === 'strategy' ? 'Strategy alert' : 'Pool lead',
     message: String(alert.title).slice(0, 250),
-    contextMessage: alert.source === 'modelled' ? 'Modelled by the Aero scout' : alert.source === 'backtest' ? 'Backtest evidence' : 'Quoted by DefiLlama',
+    contextMessage: alert.kind === 'availability' ? 'Local managed-suite monitor' : alert.source === 'modelled' ? 'Modelled by the Aero scout' : alert.source === 'backtest' ? 'Backtest evidence' : 'Quoted by DefiLlama',
     priority: alert.severity === 'action' ? 2 : 0,
   });
 }
@@ -264,6 +267,25 @@ async function scheduleManagerAlarm() {
   }
 }
 
+async function scheduleControlRoomAlarm() {
+  if (!(await chrome.alarms.get?.(CONTROL_ROOM_ALARM))) {
+    await chrome.alarms.create(CONTROL_ROOM_ALARM, { periodInMinutes: 1, delayInMinutes: 1 });
+  }
+}
+
+/** Read health only. The durable suite owns recovery; a browser alarm never starts it. */
+export async function runControlRoomMonitor({ deps, notify = showNotification } = {}) {
+  deps ??= await chromeDeps();
+  if ((await deps.configStore.get('prefs', {})).alertsEnabled === false) return { disabled: true, alerts: [] };
+  const snapshot = await runCommand({ name: 'controlRoomStatus', args: {}, deps });
+  const transition = controlRoomTransitions(snapshot, await deps.configStore.get('controlRoomMonitor', null), (deps.clock ?? Date.now)());
+  await deps.configStore.set('controlRoomMonitor', transition.state);
+  for (const alert of transition.alerts) {
+    try { await notify(alert); } catch { /* The daemon's durable alerts remain available in the control room. */ }
+  }
+  return { snapshot, alerts: transition.alerts };
+}
+
 export async function runManagerPoll() {
   return runCommand({ name: 'browserManagerPoll', args: {}, deps: await chromeDeps() });
 }
@@ -271,6 +293,7 @@ export async function runManagerPoll() {
 // Listener registration stays synchronous. Re-create missing alarms after every
 // worker activation, because Chrome does not guarantee alarm persistence.
 scheduleManagerAlarm().catch(() => {});
+scheduleControlRoomAlarm().catch(() => {});
 
 /* ----------------------------------------------------------------- lifecycle -- */
 
@@ -308,6 +331,7 @@ export async function handleInstalled(details = {}, { store } = {}) {
   await rescheduleAlarm();
   await scheduleBuildAlarm();
   await scheduleManagerAlarm();
+  await scheduleControlRoomAlarm();
   await scheduleAlertAlarm({ soon: true });
 
   const runtime = await configStore.getRuntime();
@@ -337,6 +361,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onStartup.addListener(() => {
   scheduleManagerAlarm().catch(() => {});
+  scheduleControlRoomAlarm().catch(() => {});
   runManagerPoll().catch(() => {});
   rescheduleAlarm().catch((err) => console.error('[smt] reschedule threw', err));
   scheduleBuildAlarm().catch((err) => console.error('[smt] build alarm threw', err));
@@ -346,11 +371,13 @@ chrome.runtime.onStartup.addListener(() => {
 // A notification opens the dashboard on the Alerts tab.
 chrome.notifications?.onClicked?.addListener((id) => {
   if (!String(id).startsWith('smt-alert:')) return;
-  chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/dashboard.html#alerts') }).catch(() => {});
+  chrome.tabs.create({ url: chrome.runtime.getURL(String(id).startsWith('smt-alert:control-room:')
+    ? 'src/ui/dashboard.html#soltui/bots' : 'src/ui/dashboard.html#alerts') }).catch(() => {});
   chrome.notifications.clear(id).catch?.(() => {});
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === CONTROL_ROOM_ALARM) { runControlRoomMonitor().catch(() => {}); return; }
   if (alarm.name === MANAGER_ALARM) { runManagerPoll().catch(() => {}); return; }
   if (alarm.name === BUILD_ALARM) {
     runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));
@@ -375,10 +402,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 const ALIASES = { tickNow: 'tick' };
 
 chrome.runtime.onMessage.addListener((msg, sender, respond) => {
-  if (['browserManagerPoll', 'browserManagerSnapshot'].includes(msg?.type)) {
+  if (['browserManagerPoll', 'browserManagerSnapshot', 'controlRoomStatus', 'controlRoomStart', 'controlRoomOpen'].includes(msg?.type)) {
     const origin = chrome.runtime.getURL('').replace(/\/$/, '');
     if (sender?.origin !== origin && !String(sender?.url ?? '').startsWith(`${origin}/`)) {
-      respond({ ok: false, error: 'browser owner messages require an extension origin' });
+      respond({ ok: false, error: 'local helper messages require an extension origin' });
       return false;
     }
   }

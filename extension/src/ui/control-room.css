@@ -1,0 +1,22 @@
+/* Shared control-room language and palette, with the extension's dark-mode tokens. */
+.control-room { border-top: 3px solid var(--accent); margin-bottom: 18px; }
+.control-room-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+.control-room-heading h2 { font-size: 16px; color: var(--fg); }
+.control-room-state { padding: 3px 9px; border-radius: 5px; background: var(--surface-2); color: var(--muted); font-size: 11px; font-weight: 600; }
+.control-room[data-state="up"] .control-room-state { color: var(--pos); }
+.control-room[data-state="down"] .control-room-state { color: var(--neg); }
+.control-room[data-state="degraded"] .control-room-state, .control-room[data-state="starting"] .control-room-state { color: var(--warn); }
+.control-room-address { display: inline-block; margin-top: 10px; overflow-wrap: anywhere; }
+.control-room-components { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 14px 0 8px; }
+.control-room-component { display: grid; gap: 3px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; font-size: 11px; }
+.control-room-component strong { font-weight: 500; }
+.control-room-component > span { color: var(--muted); }
+.control-room-component[data-state="up"] > span { color: var(--pos); }
+.control-room-component[data-state="down"] > span { color: var(--neg); }
+.control-room-component[data-state="degraded"] > span { color: var(--warn); }
+.control-room-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.control-room-actions button { min-height: 38px; }
+.control-room-workflow { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 11px; font-weight: 600; color: var(--accent); }
+.popup .control-room-components { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.popup .control-room-heading h2 { font-size: 15px; }
+@media (max-width: 720px) { .control-room-components { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -14,6 +14,7 @@ from .registry import (
     CommandContext,
     dispatch,
 )
+from .walkthrough import render as render_walkthrough
 
 
 class InputError(Exception):
@@ -31,19 +32,7 @@ def parser() -> argparse.ArgumentParser:
         prog="solbot",
         description="Manage saved paper bot drafts and bounded reference paper.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=(
-            "Start here (creating a draft starts no worker):\n"
-            "  solbot create grid --name my-grid\n"
-            "  solbot config my-grid --effective\n"
-            "  solbot status my-grid --why\n\n"
-            "Running a bot requires explicit input, a start request,\n"
-            "and an explicitly running 'solbot daemon' or installed service.\n"
-            "Edit saved settings with solbot edit; solbot apply explicitly adopts them.\n"
-            "Current runtime: bounded historical/prospective reference families. Learning\n"
-            "and executor entries retain source, sample, clock and authority gates.\n\n"
-            "Working example and exact steps:\n"
-            "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
-        ),
+        epilog=render_walkthrough(),
     )
     for flags, options in GLOBAL_ARGUMENTS:
         root.add_argument(*flags, **options)
@@ -75,8 +64,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         envelope = dispatch("__invalid_input__", {})
     if (
         envelope["ok"]
-        and command == "report"
-        and args.get("format") in ("human", "csv")
+        and (
+            command == "metrics"
+            or (command == "report" and args.get("format") in ("human", "csv"))
+        )
     ):
         print(envelope["data"]["rendered"])
     else:

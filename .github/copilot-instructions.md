@@ -58,15 +58,17 @@ repository; this file is a pointer plus the rules that get broken most often.
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1457 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1466 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 425 tests
+cd extension && npm test                                # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
 
-The unpacked Chrome load cannot be automated, so never report it as verified. The headless
-dry run is the integration gate.
+`cd extension && npm run e2e` verifies an unpacked extension in a temporary Chrome
+for Testing profile. The separate `tools/control-room-e2e.mjs` gate verifies the
+installed native helper and nontrading server recovery. Neither proves a personal
+Chrome profile was updated or that live orders work.
 
 ## Key Conventions
 

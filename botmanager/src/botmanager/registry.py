@@ -615,12 +615,15 @@ def _stop(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
 
 
 def _help(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any]:
+    from .walkthrough import workflow
+
     return {
         "commands": [
             {"name": spec.name, "description": spec.description}
             for spec in COMMANDS.values()
         ],
         "scope": "paper/disarmed canonical reference families and conditional Solana quote research; no live execution",
+        "workflow": workflow(),
         "strategies": {
             "grid": "reference_paper_with_explicit_input",
             "dca": "reference_paper_with_explicit_input",
@@ -897,6 +900,7 @@ from .browser_commands import command_specs as browser_command_specs
 from .executor_commands import command_specs as executor_command_specs
 from .health_commands import command_specs as health_command_specs
 from .learning_commands import command_specs as learning_command_specs
+from .operations_commands import command_specs as operations_command_specs
 from .report_commands import command_specs as report_command_specs
 
 COMMANDS.update(
@@ -908,11 +912,19 @@ COMMANDS.update(
             *learning_command_specs(CommandSpec),
             *executor_command_specs(CommandSpec),
             *browser_command_specs(CommandSpec),
+            *operations_command_specs(CommandSpec),
         )
     }
 )
 
 ERROR_EXIT_CODES = {
+    "suite_config_unavailable": 3,
+    "suite_owner_conflict": 3,
+    "suite_unavailable": 4,
+    "suite_start_pending": 4,
+    "suite_service_unavailable": 4,
+    "suite_service_identity_conflict": 3,
+    "suite_stop_unconfirmed": 4,
     "browser_identity_changed": 3,
     "browser_owner_absent": 3,
     "report_budget_exceeded": 4,

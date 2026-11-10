@@ -1,4 +1,9 @@
-# Solbot manager 0.6.0
+# Solbot manager 0.7.0
+
+Run `solbot --help` for the complete ordered command walkthrough. `solbot ui open`
+starts the managed suite and opens its verified local control room. The
+[managed suite guide](../docs/bot-manager-managed-suite.md) covers installation,
+component health and alerts, Chrome recovery, and macOS/Linux/Windows support.
 
 **Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
 Running bare `solbot` now prints help and concrete next steps. It is a command-line
@@ -690,8 +695,8 @@ https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-
 
 `backtest` and `research` use the existing headless SolTUI `ExperimentStore` through
 its registered `research.protocol` action. The manager never opens the owner's
-SQLite database. The current reviewed installation must contain manager 0.6.0,
-research-runtime 0.3.0, backtester 0.2.0 and Oracle 0.2.2. Textual is unnecessary.
+SQLite database. The current reviewed installation must contain manager 0.7.0,
+research-runtime 0.4.0, backtester 0.2.0 and Oracle 0.2.2. Textual is unnecessary.
 The CLI launches the explicitly selected interpreter with `-I`, a clean environment,
 a 120-second deadline and 1 MiB limits on each transport stream.
 

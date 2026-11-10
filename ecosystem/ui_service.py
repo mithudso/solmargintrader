@@ -117,7 +117,13 @@ def _url(value: str) -> str:
     return f"http://127.0.0.1:{parts.port}"
 
 
-def checkpoint(home, instance: str, url: str, pid: int | None = None) -> dict:
+def _manager_home(home=None) -> Path:
+    from botmanager.store import data_home
+
+    return _home(home) if home is not None else data_home()
+
+
+def checkpoint(home, instance: str, url: str, pid: int | None = None, *, manager_home=None) -> dict:
     """Publish bound identity while this context holds the canonical lock."""
     home = _home(home)
     identity = _owned(home)
@@ -130,6 +136,7 @@ def checkpoint(home, instance: str, url: str, pid: int | None = None) -> dict:
         "schema_version": 1,
         "instance": instance,
         "home": str(home),
+        "manager_home": str(_manager_home(manager_home)),
         "url": _url(url),
         "pid": pid,
         "version": __version__,
@@ -156,6 +163,8 @@ def _read(home: Path) -> dict:
         not isinstance(value, dict)
         or value.get("schema_version") != 1
         or value.get("home") != str(home)
+        or not isinstance(value.get("manager_home"), str)
+        or not Path(value["manager_home"]).is_absolute()
         or not isinstance(value.get("instance"), str)
         or not INSTANCE.fullmatch(value["instance"])
         or not isinstance(value.get("version"), str)
@@ -227,6 +236,7 @@ def _health(record: dict) -> bool:
             and isinstance(data, dict)
             and data.get("control_instance") == record["instance"]
             and data.get("control_home") == record["home"]
+            and data.get("manager_home") == record["manager_home"]
             and data.get("ecosystem_version") == record["version"]
         )
     except (OSError, ValueError, UnicodeError, HTTPException):
@@ -245,7 +255,7 @@ def _unavailable(reason, *, occupied=False, held=False):
     }
 
 
-def status(home) -> dict:
+def status(home, manager_home=None) -> dict:
     """Read lock plus HTTP identity; never create a directory or trust a PID."""
     try:
         home = _home(home)
@@ -263,6 +273,10 @@ def status(home) -> dict:
                 "control_checkpoint_unverified", occupied=True, held=held
             )
         if held:
+            if record["manager_home"] != str(_manager_home(manager_home)):
+                return _unavailable(
+                    "control_manager_home_mismatch", occupied=True, held=True
+                )
             if (identity.st_dev, identity.st_ino) != (
                 record["lock_device"],
                 record["lock_inode"],
@@ -307,14 +321,14 @@ def _environment():
     }
 
 
-def ensure(home, manager_home=None) -> dict:
+def ensure(home, manager_home=None, *, on_spawn=None) -> dict:
     """Start at most one installed server and observe real readiness for 10s."""
     process = None
     deadline = time.monotonic() + STARTUP_SECONDS
     try:
         home = _home(home)
         with _exclusive(home, LAUNCH_LOCK_NAME, wait_seconds=STARTUP_SECONDS):
-            current = status(home)
+            current = status(home, manager_home)
             if current["running"]:
                 return current
             if time.monotonic() >= deadline:
@@ -356,12 +370,16 @@ def ensure(home, manager_home=None) -> dict:
                             close_fds=True,
                             start_new_session=True,
                         )
+                        # Availability supervisors receive only the process
+                        # they actually created, never an adopted owner's PID.
+                        if on_spawn is not None:
+                            on_spawn(process)
                 finally:
                     os.close(fd)
             elif current["reason"] != "control_checkpoint_pending":
                 return current
             while time.monotonic() < deadline:
-                current = status(home)
+                current = status(home, manager_home)
                 if current["running"]:
                     return current
                 if process is not None and process.poll() is not None:
@@ -373,7 +391,7 @@ def ensure(home, manager_home=None) -> dict:
                 held=current["owner_lock_held"],
             )
     except BlockingIOError:
-        current = status(home)
+        current = status(home, manager_home)
         return (
             current
             if current["running"]

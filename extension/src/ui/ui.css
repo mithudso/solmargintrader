@@ -4,15 +4,15 @@
 
 :root {
   color-scheme: light dark;
-  --bg: #f6f7f9;
+  --bg: #f2f5f9;
   --surface: #ffffff;
   --surface-2: #f1f3f6;
-  --fg: #0f172a;
-  --muted: #64748b;
+  --fg: #172942;
+  --muted: #53657b;
   --faint: #94a3b8;
-  --line: #e2e8f0;
-  --accent: #0d9488;
-  --accent-soft: #ccfbf1;
+  --line: #d9e2ed;
+  --accent: #2757c4;
+  --accent-soft: #eaf0ff;
   --pos: #15803d;
   --neg: #b91c1c;
   --warn: #b45309;
@@ -34,8 +34,8 @@
     --muted: #94a3b8;
     --faint: #64748b;
     --line: #253046;
-    --accent: #2dd4bf;
-    --accent-soft: #134e4a;
+    --accent: #afc9fb;
+    --accent-soft: #294b79;
     --pos: #4ade80;
     --neg: #f87171;
     --warn: #fbbf24;

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Sol paper control room",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Local paper controls and observability. No server order, wallet-key, signing or submission endpoints. Manual Jupiter swaps run on a distinct loopback origin and require browser-wallet approval."
   },
   "servers": [
@@ -529,6 +529,172 @@
           }
         }
       }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Bounded inert component measurements for local collectors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Measurement completed; component states may be degraded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Queries are not accepted."
+          },
+          "403": {
+            "description": "Loopback Host/Origin policy refused."
+          },
+          "503": {
+            "description": "Critical owner readiness unavailable or measurement failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          }
+        }
+      },
+      "head": {
+        "summary": "Bounded inert component measurements for local collectors (headers only)",
+        "responses": {
+          "200": {
+            "description": "Measurement completed; component states may be degraded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Queries are not accepted."
+          },
+          "403": {
+            "description": "Loopback Host/Origin policy refused."
+          },
+          "503": {
+            "description": "Critical owner readiness unavailable or measurement failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/readyz": {
+      "get": {
+        "summary": "Critical suite/manager/UI availability; source quality remains separate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Suite, manager and control-room availability are ready; market quality remains separate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Queries are not accepted."
+          },
+          "403": {
+            "description": "Loopback Host/Origin policy refused."
+          },
+          "503": {
+            "description": "Critical owner readiness unavailable or measurement failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          }
+        }
+      },
+      "head": {
+        "summary": "Critical suite/manager/UI availability; source quality remains separate (headers only)",
+        "responses": {
+          "200": {
+            "description": "Suite, manager and control-room availability are ready; market quality remains separate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Queries are not accepted."
+          },
+          "403": {
+            "description": "Loopback Host/Origin policy refused."
+          },
+          "503": {
+            "description": "Critical owner readiness unavailable or measurement failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineHealthEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "summary": "Only this control-room process is alive; does not assert dependent owner readiness",
+        "responses": {
+          "200": {
+            "description": "scope=control_room_process, alive=true"
+          },
+          "403": {
+            "description": "Loopback origin policy refused"
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Bounded Prometheus measurements from the same inert component check; unknown numeric measurements are omitted",
+        "responses": {
+          "200": {
+            "description": "Prometheus text, seconds for age/duration measurements",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Loopback origin policy refused"
+          },
+          "503": {
+            "description": "Measurement unavailable"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -538,6 +704,124 @@
         "in": "header",
         "name": "X-Sol-CSRF",
         "description": "In-memory CSRF nonce from /api/session; resets on controller restart. Loopback and Origin checks also apply."
+      }
+    },
+    "schemas": {
+      "MachineHealthEnvelope": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "ok",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": 1
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "data": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "schema_version",
+                  "observed_at",
+                  "overall",
+                  "components",
+                  "ready",
+                  "ui_url",
+                  "orders_available"
+                ],
+                "properties": {
+                  "schema_version": {
+                    "const": 1
+                  },
+                  "observed_at": {
+                    "type": "number",
+                    "description": "Unix epoch seconds; measurement time, not a trading clock."
+                  },
+                  "overall": {
+                    "enum": [
+                      "up",
+                      "degraded",
+                      "down",
+                      "unknown"
+                    ]
+                  },
+                  "ui_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Verified loopback UI origin when available."
+                  },
+                  "availability_ready": {
+                    "type": "boolean"
+                  },
+                  "components": {
+                    "type": "object",
+                    "required": [
+                      "suite",
+                      "manager",
+                      "control_room",
+                      "market_data"
+                    ],
+                    "additionalProperties": {
+                      "type": "object",
+                      "required": [
+                        "state",
+                        "ready",
+                        "reason"
+                      ],
+                      "properties": {
+                        "state": {
+                          "enum": [
+                            "up",
+                            "degraded",
+                            "down",
+                            "unknown"
+                          ]
+                        },
+                        "ready": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "reason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "ready": {
+                    "type": "boolean",
+                    "description": "Only suite, manager and control-room availability; excludes market certification and order permission."
+                  },
+                  "orders_available": {
+                    "const": false
+                  }
+                }
+              },
+              {
+                "type": "null",
+                "description": "Measurement failed; ok=false and error carries a fixed public reason."
+              }
+            ]
+          }
+        }
       }
     }
   }
