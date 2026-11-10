@@ -1,0 +1,2764 @@
+{
+ "review": [
+  {
+   "path": "soltui/tui.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/help.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/compound.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/scorecard.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/web/app.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/bots.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_compound.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/ledger.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/daemon.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/providers.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/ratio_rotation.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_tui.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/core.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_cross_asset_cpcv.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_daemon.py",
+   "reason": "new"
+  },
+  {
+   "path": "docs/design/soltui-v2/mockup.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/experiments.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/executor.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/wallet.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/decide.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/verify_numbers.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/coin_fit.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_providers.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/soltui-panel.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/experiment_screens.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/learning_owner.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/commands.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/pricefeed.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/experiment_runner.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_decide.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bots.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/cross_asset_cpcv.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/f5_batch.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/gridsim.py",
+   "reason": "new"
+  },
+  {
+   "path": "index/build.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_wallet.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_executor.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/sweep.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_legacy.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/bgqueue.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/adapters/soltui.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/control.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/manager_evidence.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/registry.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_continuation.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/render_tradingview_script_cards.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/fetch_minutes.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/e2e.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_scorecard.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/lib/signal-desk.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/forwardtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_cdo_tui_regressions.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/load.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_authority.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/shell.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/pnl.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/status.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/triggers.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_experiments.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/telemetry.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bgqueue.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_experiment_runner.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_research_owner.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/store.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_optimizer_regressions.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/council.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_learning_owner.py",
+   "reason": "new"
+  },
+  {
+   "path": "index/make_files_doc.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/signal-desk.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_strategy_cards.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_supervisor.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategy_cards.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_load.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/signal_redundancy.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_liquidity.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/performance.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_editing.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/engine.js",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/adapters/extension.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_learning.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/bgworker.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/runner.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/dcasim.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_gridsim.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/cpcv_sweep.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_geometry.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/authority.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/learning.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/research_admission.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/compound.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/txverify.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/minute_sweep.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/walkthrough.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/lib/dashboard-workspace.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/web.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/oracle_data.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/bgcontrol.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/jupiter_manual.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/market.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "docs/design/bot-control-room/mockup.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/bg/service-worker.js",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/chain.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/live_tools.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_signal_live.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/venues/triggerVenue.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_forwardtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_coin_fit_ui.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bridge_surfaces.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_manager_controls.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_pnl.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/schema.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/liquidity.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_prediction_recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/bridge_support.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_coinbase_manual_ui.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_experiment_interface.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_advanced_order_ui.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/funding.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/registry.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_index_search_tooling.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/strategy_compare.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/coinbase_manual.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/indicators.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/research.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_f5_batch.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/perturb.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/advanced.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_suite.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/surfaces.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/alerts.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/research_owner.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/trianglesim.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/types.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/registration.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/quotes.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_pricefeed.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_manager_editing.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/metrics.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_safe_exit.py",
+   "reason": "new"
+  },
+  {
+   "path": "index/search.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/soltui-bridge.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/backup.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_fetch_minutes.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_council.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_submission_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_sweep_pair_gate.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_status_roster.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/signals.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_analysis_regressions.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/strategy_aux_compare.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_txverify.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/ledger.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/installation.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bots_manual_editor.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_v2_shell.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/safe_exit.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/health.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/dso_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_backup.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/paper_workflow.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_status.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/prediction_recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_lifecycle_regressions.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/check_docs.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/check_tradingview_cards.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/service-worker.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/signals.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/server.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/check_tradingview_strategy_profiles.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_presets_netpct.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/control-room-e2e.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/conftest.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/tests/test_load.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_wallet_integration.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/tick_backfill.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/grid.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_simulation.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/hdwallet.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/strategy.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/bot-manager.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/fetch_minutes_alt.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_oracle_data.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/bot_scheduler.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/native_host.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_portfolio.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_signal_redundancy.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/kucoin_history.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_indicators.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/data.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/engine-command-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_control.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_rails.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/gates.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/supervisor.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/reports.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_ratio_rotation.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_surfaces.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_research.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/report.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_ui_contract.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/short_horizon_economics.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_paper_workflow.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/view-grid.js",
+   "reason": "new"
+  },
+  {
+   "path": "research/full_suite.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/universe.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_advanced_strategies.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bg_fresh_results.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/portfolio.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_learning_job.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/popup.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/alerts.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_engine_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/ticks.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/config.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/cpcv.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_allocator_ledger.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_operations.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_coinbase_manual.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/geometry.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/view-markets.js",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/learning_job.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/gates.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_research_regressions.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/coinbase_account.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_ui_service.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/docs_browser.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/config.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/view-trade.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/wallet_activity.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/jupiter/trigger.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/reader.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/wiki.py",
+   "reason": "new"
+  },
+  {
+   "path": "index/idle.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_cpcv.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_index.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/live-panel.js",
+   "reason": "new"
+  },
+  {
+   "path": "research/frontier_tune.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/market/holdings.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/gridcli.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_telemetry.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_jupiter_manual.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/data.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_strategy_history.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/html_to_markdown.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/tests/test_analysis_regressions.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/wallet/signer.js",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/build_tradingview_script_profiles.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_universe.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_gate_integrity.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_reports.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/vote_explanation.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/risk.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/app.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/domain.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/feeds.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/candle_gap_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/runner.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_read_consistency.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_panes.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/providers_report.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/bot-manager-e2e.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_textbook_strategies.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_coin_fit.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_performance.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_engine.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/analyze.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_compound_backtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/base.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_wallet_settings.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/experiment_jobs.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_config.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/submissions.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_live_tools.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/manager.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/coinfit.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/utxo_scan.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/config.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/config.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_utxo_scan.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/ui-kit.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_setup.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/simulation.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bgworker_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_health.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/market/quote.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_multi_instrument.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/bots_screens.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/bot-manager.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/cdo-regressions.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_tui_presets_pnl.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/api-server.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/make_icon.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_dcasim.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/wallet-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_quotes.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_cdo_recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/textbook.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/deflated_sharpe.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_manager_evidence.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bgworker.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_wiki.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/metrics.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_executor_adapter.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/journal.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_kucoin_history.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/accounting.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/mutations.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/abi.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/paircli.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bgcontrol.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_trianglesim.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/paper_experiments.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/data.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/wallet.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_deflated_sharpe.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/charts.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/venues/index.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/pnl.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_pairs.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_journal_integrity.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/cumulative.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_selected_server.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_signals.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_entry_controls.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_paper.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_metrics.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/market.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/clmath.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_web.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/top5.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_engine_integrity.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_gates.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/blind.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/votes.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/rails.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_hdwallet.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/storage/store.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_votes.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_suite_service.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/native_host_install.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/turnover_table.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/autoreload.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_wallet_activity.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/api.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/backtests.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_triggers.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_daemon_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bgcontrol_identity.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/grid.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/history_store.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/control-room.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/jupiter.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/leverage_economics.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/run_archive.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/service.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/dashboard.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/api.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_ticks.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/allocator.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/tests/test_load_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/leverage_tiers.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/status.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_native_suite.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/wallet/solana.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/fetch.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_trend.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/soltui-panel.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_batch_ui.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bot_scheduler.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_receipts.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_strategy_compare.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_feeds.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_swaps.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_accounting.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/jupiter_route.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/view-overview.js",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_gridcli.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_forwardtest_concurrency.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_journal_ledger_signer.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/botcli.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_registration.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/live-tools.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_runner.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_store.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/vote-tools.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_service.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_control_http.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_jupiter_live_ui.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/input_commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/lib/cdp.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/cointegration.py",
+   "reason": "new"
+  },
+  {
+   "path": "index/ollama_ensure.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_strategy_parity.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/build_ecosystem_wiki.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_executor_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_failed_fees.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/segmented_history.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/pairs.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_paper_experiments.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/cli.js",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/adapters/executor.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/live_score.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/live-score.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_recovery.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/blind-core-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_server.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_market_state.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_docs_search.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/rotate-workflow-logs.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_coinbase_account.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_core.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_quote.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/paper.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_vote_explanation.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_blind.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/wallet-pubkey.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "research/candle_crosscheck.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_extension_adapter.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_strategy_duplication.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_archived_reader.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/scout.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/soltui-parity.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/perps.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/executor_commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_intrabar_liquidation.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_help.py",
+   "reason": "new"
+  },
+  {
+   "path": "index/make_concepts_doc.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/arbitrage.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_simulation_blind_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/measure-recentre.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/control-room.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/bg/soltui-transport.js",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/build_doc_index.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/guidance.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/swap_web.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/test_tradingview_script_profiles.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/receipts.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/jupiter/http.js",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/soltui_ci.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/test_html_to_markdown.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_tick_backfill.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_history_store.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_docs_browser.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/research_owner.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/transport.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/dryrun.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/roster.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/rpc.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_f5_policy.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/archive_price.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/soltui.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/web/swap.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/compound_agent.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_interpret.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/trigger_backtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/quote.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_top5.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_swap_web.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_prediction_controls.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/trigger_conditions.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/trigger-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/soltui-transport.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/charts.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/test_card_readiness.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_coinfit.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/live_run.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/reference.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_data.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/market/tokens.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/swaps.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/workspace-model.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_status_console.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/presets.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/ledger.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_abi_config_wallet.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_desk.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/council.js",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_strategy.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/market/evm.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/eth_scan.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/worker.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_fetch_minutes_alt.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/prediction-recovery.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_live_score.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_dryrun_strategy.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_strategies_tab_history.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/06-experiments-and-pbo.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/serve.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/backtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/portfolio_agent.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_run_archive.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/blind_judge.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_learning_reads.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/tests/test_snapshot_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/control-room.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/store.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/autoreload.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/market/net.js",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_cdo_gates.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/strategies.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/desk-model.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_machine_health_http.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_chain_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/venues.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/storage/fileStore.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/lifi.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/market/pools.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_candle_gap_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/desk.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/04-decisions.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/lib/soltui-host.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/08-provenance-and-health.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_shortcuts_everything.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_decide_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_ecosystem_adapter.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_walkthrough.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/prediction-recovery.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/observability.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/setup_app.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/learning_commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_solana_cycles.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/trigger.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/run_backfill.sh",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_backtests.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/trend.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/test_browser_surfaces.py",
+   "reason": "new"
+  },
+  {
+   "path": "tools/land.sh",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/floating-owner.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/signal-desk.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/05-backtests.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_tokens_config.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/voting.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/sweep_untested.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bridge_parity.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_engine_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_full_suite.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_clmath.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/lib/guard.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_archive_integration.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/01-coins-and-bars.js",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/02-strategies-and-cards.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/leverage.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/deps.js",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/health_commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/adapters/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/jupiter/attribution.js",
+   "reason": "new"
+  },
+  {
+   "path": "research/grid_holdout.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_current_assessment.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/e2e-harness.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/tools/verify-endpoints.js",
+   "reason": "new"
+  },
+  {
+   "path": "research/evidence.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_eth_scan.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_chain_vol.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/help_screen.py",
+   "reason": "new"
+  },
+  {
+   "path": "postman/mocks/botmanager-jupiter-swap-v1/default.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/bg/live-windows.js",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/addresses.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/wallet-pubkey.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/plotting.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_csv_table.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/composite.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/wallet.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/jupiter/price.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_browser_native_host.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_strategies.py",
+   "reason": "new"
+  },
+  {
+   "path": "research/strategy_snapshots.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_candidate_auxiliary.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/state.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_open_prefix.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/rsi.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/live-workspace.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/signer.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_service_plist_parity.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/07-documents-and-search.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_voting.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_strategy_candidate.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/live-score.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/jupiter_tokens.py",
+   "reason": "new"
+  },
+  {
+   "path": "tools/gate.sh",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_network.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_providers_network.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/csv_table.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_forward_sort_refresh.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/final-gate-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_launcher.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/queries/03-signals-and-indicators.js",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/test_soltui_ci.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/research_fixtures.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/tiers.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/tokens.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/live_price.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_observability.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_cdo_execution.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_editor_backtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_botcli.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/http-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_guidance.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_bridge_buttons.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/cli.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/report_commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_segmented_history.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/tests/test_network.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/fixtures/fake-soltui-registry.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_native_host_registration.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/session-key-form.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/current_signal.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/errors.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/risk-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/breakout.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_backtest.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/backtest_log.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/browser_commands.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/menubar_launcher.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/bg/paper-venue.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/accounting-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/http.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/api-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/test_store.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/tests/test_config_audit.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/owner-source.js",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/ma_crossover.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/session-key-form.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/storage/memoryStore.js",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/netpct.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_backtest_log.py",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/bootstrap_ecosystem.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_backtest_contiguous.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/spot_prices.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_jupiter_tokens.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/test_wrapper.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/test_compound_pool_capture.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/tradingview.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/version.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/ui/live-window.js",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/validation.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/e2e/fixtures/fake-soltui-host.mjs",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/test_snapshot_metadata.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/adapters/ecosystem.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/node-deps-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "tools/install-hooks.sh",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/strategies/buy_and_hold.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/tests/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/evidence_identity.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/tradingview.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "extension/test/grid-audit.test.js",
+   "reason": "new"
+  },
+  {
+   "path": "skills/coin-strategy-fit/scripts/coin_strategy_fit.py",
+   "reason": "new"
+  },
+  {
+   "path": "extension/src/core/csv.js",
+   "reason": "new"
+  },
+  {
+   "path": "scripts/coin_strategy_fit.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "executor/src/executor/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/momentum.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/trend.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/strategies/dca.py",
+   "reason": "new"
+  },
+  {
+   "path": "liquidity/src/aero_lp/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/src/botmanager/__main__.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/__main__.py",
+   "reason": "new"
+  },
+  {
+   "path": "botmanager/tests/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/core/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "backtester/tests/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "ecosystem/tests/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "mongo/tests/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "oracle/tests/__init__.py",
+   "reason": "new"
+  },
+  {
+   "path": "soltui/__init__.py",
+   "reason": "new"
+  }
+ ],
+ "deferred": [],
+ "unchanged_skipped": 6,
+ "removed_from_disk": [],
+ "full": false
+}
