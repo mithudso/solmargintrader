@@ -24,10 +24,10 @@ establish a profitable trading edge.
 ## Existing component suites
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1002 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1405 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1455 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 408 tests
+cd extension && npm test                                # 425 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -37,14 +37,14 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. This delivery skips the full suite at the owner's explicit request;
 focused UI, accounting and installed acceptance checks are recorded separately.
 
-2861 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2929 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 408 tests cover
+## Extension — what the 425 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -67,7 +67,7 @@ nothing caught it.
 | **Alerts** | Only fresh, backtest-positive, medium/high-confidence, unflagged, gauged scout pools above break-even may say "act"; a stale or undated scout cannot; an active strategy with no Top 5 record has no baseline; today's all-negative scout raises nothing; idle capital counts Base stablecoins only; quoted leads are info and do not notify by default; first scan records leads silently, and an empty read still counts as the baseline; acks survive re-scans; scans and acks run one at a time |
 | **Auto-reload gate** | First observation only stores the hash; no reload while a tick is queued or running (the change is retried, not forgotten); the reload runs inside the engine lock and holds it; an unreachable host never reloads and is logged once; a failed `reload()` restores the old hash |
 
-The parity suite probes all 35 commands with a deliberately invalid argument, which proves the route
+The parity suite probes all 38 commands with a deliberately invalid argument, which proves the route
 resolved **without executing the handler** — no side effects, no network calls.
 
 ## What is NOT covered
@@ -131,7 +131,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1002 tests
+## Backtester — 1003 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -183,7 +183,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1405 tests
+## soltui — 1455 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with

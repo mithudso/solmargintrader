@@ -121,10 +121,10 @@ Oracle uses its own installed environment: `python -m pip install ./backtester .
 Ecosystem setup and control room use `python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem`, then `python -m unittest discover -s ecosystem/tests -t . -v` and `ruff check ecosystem oracle scripts/bootstrap_ecosystem.py`. Verify the installed environment and actual loopback UI separately. See `docs/ECOSYSTEM-BOOTSTRAP.md`.
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1002 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1405 tests (~840s, optional)
+python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1455 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 408 tests
+cd extension && npm test                                # 425 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
