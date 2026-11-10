@@ -1512,3 +1512,200 @@ class RuntimeLedger:
                     "Adoption receipt disagrees with archived generation.",
                     4,
                 )
+
+    def learning_adopt(self, store, owner_receipt):
+        """Publish one owner-authorized revision and retained account together.
+
+        The external owner receipt is committed before this local transaction.
+        DELETE journals permit SQLite's attached-database atomic commit. WAL is
+        refused rather than claiming atomicity it cannot provide across files.
+        """
+        from .domain import utc_now
+        from .learning import learned_spec
+        from .strategies import rebind_checkpoint
+
+        receipt = dict(owner_receipt)
+        digest = receipt.pop("digest", None)
+        if (
+            fingerprint(receipt) != digest
+            or receipt.get("state") != "authorized_pending_manager"
+        ):
+            raise ManagerError(
+                "invalid_receipt", "Learning owner receipt integrity failed.", 4
+            )
+        request_id = receipt["request_id"]
+        with mutation_lock(self.home), self.connection(True) as db:
+            db.execute("ATTACH DATABASE ? AS saved", (str(store.path),))
+            if any(
+                db.execute(f"PRAGMA {schema}.journal_mode").fetchone()[0].lower()
+                != "delete"
+                for schema in ("main", "saved")
+            ):
+                raise ManagerError(
+                    "learning_blocked",
+                    "Atomic account adoption requires DELETE SQLite journals.",
+                    3,
+                )
+            if db.execute("PRAGMA saved.user_version").fetchone()[0] != 2:
+                raise ManagerError(
+                    "incompatible_store", "Saved revision schema is incompatible.", 4
+                )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS learning_adoptions (request_id TEXT PRIMARY KEY, owner_digest TEXT NOT NULL, body TEXT NOT NULL)"
+            )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS learning_boundaries (request_id TEXT PRIMARY KEY, runtime_id TEXT NOT NULL, predecessor TEXT NOT NULL, body TEXT NOT NULL)"
+            )
+            old = db.execute(
+                "SELECT * FROM learning_adoptions WHERE request_id=?", (request_id,)
+            ).fetchone()
+            if old is not None:
+                if old["owner_digest"] != digest:
+                    raise ManagerError(
+                        "identity_conflict", "Learning request binding changed."
+                    )
+                return json.loads(old["body"])
+            raw_spec = db.execute(
+                "SELECT body FROM saved.specs WHERE bot_id=?", (receipt["bot_id"],)
+            ).fetchone()
+            if raw_spec is None:
+                raise ManagerError("bot_not_found", "Learning bot was not found.")
+            spec = BotSpec.from_dict(json.loads(raw_spec[0]))
+            if (
+                spec.config_revision != receipt["expected_revision"]
+                or spec.config_hash != receipt["expected_hash"]
+                or dict(spec.user_overrides) != receipt["pins"]
+            ):
+                raise ManagerError(
+                    "stale_revision",
+                    "Learning originating revision or pins changed.",
+                    3,
+                )
+            proposed = learned_spec(
+                spec, receipt["changes"], receipt["evidence_digest"]
+            )
+            if proposed.to_dict() != receipt["accepted_spec"]:
+                raise ManagerError(
+                    "invalid_receipt",
+                    "Owner specification differs from the protected learning delta.",
+                    4,
+                )
+            raw = db.execute(
+                "SELECT * FROM runs WHERE bot_id=?", (spec.bot_id,)
+            ).fetchone()
+            run = self._decode(db, raw)
+            if (
+                not run
+                or run["runtime_id"] != receipt["runtime_id"]
+                or run["spec"]["config_hash"] != spec.config_hash
+                or run["desired"] != "stopped"
+                or run["observed"] != "stopped"
+                or run["pid"] is not None
+                or run["tick_started"] is not None
+            ):
+                raise ManagerError(
+                    "learning_blocked",
+                    "Stop the owner at a reconciled safe account boundary before adoption.",
+                    3,
+                )
+            pause_exists = db.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='entry_pauses'"
+            ).fetchone()
+            pause = (
+                db.execute(
+                    "SELECT * FROM entry_pauses WHERE bot_id=?", (spec.bot_id,)
+                ).fetchone()
+                if pause_exists
+                else None
+            )
+            paused = bool(
+                pause and pause["runtime_id"] == run["runtime_id"] and pause["paused"]
+            )
+            if not paused or run["checkpoint"] is None:
+                raise ManagerError(
+                    "learning_blocked",
+                    "A retained checkpoint and explicit entry pause are required.",
+                    3,
+                )
+            checkpoint = rebind_checkpoint(
+                proposed, run["input"], run["checkpoint"], entries_paused=paused
+            )
+            boundary = {
+                "spec": run["spec"],
+                "input_hash": run["input"]["snapshot_hash"],
+                "checkpoint": run["checkpoint"],
+                "owner_receipt_digest": digest,
+            }
+            predecessor = fingerprint(boundary)
+            checkpoint["configuration_predecessor"] = predecessor
+            result = {
+                "version": 1,
+                "request_id": request_id,
+                "proposal_id": receipt["proposal_id"],
+                "operation": receipt["operation"],
+                "bot_id": spec.bot_id,
+                "runtime_id": run["runtime_id"],
+                "accepted_revision": proposed.config_revision,
+                "accepted_hash": proposed.config_hash,
+                "prior_hash": spec.config_hash,
+                "owner_receipt_digest": digest,
+                "predecessor": predecessor,
+                "account_preserved": True,
+                "state": "published",
+                "starts_workers": False,
+            }
+            now = utc_now()
+            db.execute(
+                "UPDATE saved.specs SET body=? WHERE bot_id=?",
+                (canonical(proposed.to_dict()), spec.bot_id),
+            )
+            db.execute(
+                "INSERT INTO saved.spec_versions VALUES (?,?,?,?,?)",
+                (
+                    spec.bot_id,
+                    proposed.config_revision,
+                    canonical(proposed.to_dict()),
+                    now,
+                    request_id,
+                ),
+            )
+            db.execute(
+                "INSERT INTO saved.events(event_id,bot_id,body) VALUES (?,?,?)",
+                (
+                    str(uuid4()),
+                    spec.bot_id,
+                    canonical(
+                        {
+                            "schema_version": 1,
+                            "event_type": "learning." + receipt["operation"],
+                            "occurred_at": now,
+                            "config_revision": proposed.config_revision,
+                            "config_hash": proposed.config_hash,
+                            "receipt": result,
+                        }
+                    ),
+                ),
+            )
+            db.execute(
+                "UPDATE runs SET spec=?,checkpoint=?,checkpoint_hash=?,generation=generation+1,reason='learning_account_preserved' WHERE bot_id=?",
+                (
+                    canonical(proposed.to_dict()),
+                    canonical(checkpoint),
+                    fingerprint(checkpoint),
+                    spec.bot_id,
+                ),
+            )
+            self._event(
+                db,
+                {**dict(raw), "generation": run["generation"] + 1},
+                "learning." + receipt["operation"],
+            )
+            db.execute(
+                "INSERT INTO learning_boundaries VALUES (?,?,?,?)",
+                (request_id, run["runtime_id"], predecessor, canonical(boundary)),
+            )
+            db.execute(
+                "INSERT INTO learning_adoptions VALUES (?,?,?)",
+                (request_id, digest, canonical(result)),
+            )
+            return result

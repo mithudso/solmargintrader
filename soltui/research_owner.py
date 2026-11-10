@@ -21,7 +21,16 @@ def identity():
     modules["research_owner.py"] = hashlib.sha256(
         Path(__file__).read_bytes()
     ).hexdigest()
-    from botmanager import research
+    from botmanager import learning, research
+
+    from . import learning_owner
+
+    modules["soltui.learning_owner"] = hashlib.sha256(
+        Path(learning_owner.__file__).read_bytes()
+    ).hexdigest()
+    modules["botmanager.learning"] = hashlib.sha256(
+        Path(learning.__file__).read_bytes()
+    ).hexdigest()
 
     modules["botmanager.research"] = hashlib.sha256(
         Path(research.__file__).read_bytes()
@@ -111,6 +120,13 @@ def handle(request):
         "recover": ("run_id",),
         "cancel": ("run_id",),
         "register": ("accept_registered_roots_only", "initialize_first"),
+        "learning-labels": ("manager_home", "bot_id"),
+        "learning-propose": ("manager_home", "bot_id", "run_id"),
+        "learning-inspect": ("proposal_id",),
+        "learning-shadow": ("proposal_id",),
+        "learning-promote": ("proposal_id", "request_id"),
+        "learning-rollback": ("proposal_id", "request_id"),
+        "learning-reconcile": ("proposal_id", "request_id", "manager_receipt"),
     }
     if operation not in allowed:
         raise ExperimentError("unknown owner research action")
@@ -160,7 +176,12 @@ def handle(request):
         != {**client, "root": str(Path(client["root"]).resolve())}
         for client in authority["known_clients"]
     )
-    store = ExperimentStore(root)
+    if operation == "learning-inspect":
+        from .learning_owner import ReadOnlyResearch
+
+        store = ReadOnlyResearch(root)
+    else:
+        store = ExperimentStore(root)
     # Authority ID is bound once to this existing ledger, never manager home.
     if not binding.is_file():
         raise ExperimentError(
@@ -169,6 +190,39 @@ def handle(request):
     bound = json.loads(binding.read_text())
     if bound != {"version": 2, "id": authority["id"], "root": str(root.resolve())}:
         raise ExperimentError("canonical authority identity mismatch")
+    if operation.startswith("learning-"):
+        from .learning_owner import LearningOwner
+
+        learner = LearningOwner(root, registration, store)
+        if participation_changed:
+            raise ExperimentError("research authority participation changed")
+        if operation == "learning-labels":
+            result = learner.collect(params["manager_home"], params["bot_id"])
+        elif operation == "learning-propose":
+            with optimizer_lease(root):
+                result = learner.propose(
+                    params["manager_home"], params["bot_id"], params["run_id"]
+                )
+        elif operation == "learning-inspect":
+            result = learner.inspect(params["proposal_id"])
+        elif operation == "learning-shadow":
+            result = learner.start_shadow(params["proposal_id"])
+        elif operation in ("learning-promote", "learning-rollback"):
+            result = {
+                "receipt": learner.authorize(
+                    params["proposal_id"],
+                    operation.removeprefix("learning-"),
+                    params["request_id"],
+                )
+            }
+        else:
+            result = learner.reconcile(
+                params["proposal_id"], params["request_id"], params["manager_receipt"]
+            )
+        return {
+            "identity": loaded,
+            **(result if isinstance(result, dict) else {"result": result}),
+        }
     if operation == "status":
         return {
             "identity": loaded,
