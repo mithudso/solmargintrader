@@ -1,7 +1,7 @@
 # Task 5 — protected learning, labels and real shadow evaluation
 
-Version: 1.1.0
-Delta: 1.0.0 -> 1.1.0; repair pointer counts, actual Oracle attribution, forecast completeness, malformed scheduler shapes and exact shadow bindings.
+Version: 1.1.1
+Delta: 1.1.0 -> 1.1.1; bound JSON clock integers before float conversion in local and helper scheduler metadata.
 
 Status: implementation and owned source checks complete. Controller owns final registry/status/report integration, full manager release checks, installation and remote delivery. Real production shadow qualification remains pending.
 
@@ -70,3 +70,12 @@ Final covering command:
 PYTHONPATH=botmanager/src:botmanager:.:soltui/src /Users/mitch/.venvs/solbot/bin/python -m unittest tests.test_learning tests.test_learning_job tests.test_learning_reads tests.test_reports tests.test_read_consistency tests.test_supervisor soltui.tests.test_learning_owner soltui.tests.test_research_owner -q
 
 Result:98 tests passed in17.336s, exit0. Ruff passed for all owned changed source/tests. Earlier isolated runs also passed39 learning/owner/scheduler/read-bound tests,12 learning/Oracle integration tests and7 scheduler lifecycle tests while the repairs were developed. Existing short-fixture annualized metric overflow and the existing research-owner test resource warning remain visible; no failed check is represented as passed. Real production source certification/seven-day/trade-count gates and installed/remote delivery remain controller acceptance gates.
+
+
+### Final malformed-clock repair — version 1.1.1
+
+The shared scheduler clock validator now compares numeric values against the supported nonnegative UTC epoch range before any float conversion. A valid JSON integer such as10**400 cannot reach math.isfinite and raise OverflowError. last_attempt, completed_at and nested timestamp fields ending in_at use this same validator. Local status and helper poll boundaries also explicitly sanitize OverflowError as unavailable/failed metadata.
+
+Actual JSON-file regressions cover positive/negative401-digit integers and smaller out-of-range21-digit integers, construct and open a real Supervisor, run its lifecycle step and public status read, and prove the malformed file remains untouched. Nested attempted_at values are tested both from local status files and actual helper subprocess JSON output; invalid helper clocks fail and reap cleanly.
+
+Completed command: PYTHONPATH=botmanager/src:botmanager:.:soltui/src /Users/mitch/.venvs/solbot/bin/python -m unittest tests.test_learning_job tests.test_learning_reads -q. Result:15 tests passed in0.637s, exit0. Ruff passed. No other learning, forecast, pointer-budget or shadow-binding files changed in this repair.

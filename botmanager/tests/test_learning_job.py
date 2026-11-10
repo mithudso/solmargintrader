@@ -244,3 +244,68 @@ class DailyLearningJobTests(unittest.TestCase):
                         )
                     finally:
                         supervisor.close()
+
+    def test_huge_json_clock_integers_cannot_break_supervisor_construction(self):
+        values = (10**400, -(10**400), 10**20, -(10**20))
+        for index, value in enumerate(values):
+            for key in ("last_attempt", "completed_at"):
+                with self.subTest(key=key, digits=len(str(abs(value)))):
+                    home = self.home / ("c" + str(index) + str(key == "completed_at"))
+                    home.mkdir()
+                    path = home / "learning-job.json"
+                    path.write_text(
+                        json.dumps({"state": "running", "reason": "x", key: value})
+                    )
+                    before = path.read_bytes()
+                    self.assertLess(len(before), 65536)
+                    self.assertEqual(schedule_snapshot(home)["state"], "unavailable")
+                    supervisor = Supervisor(home).open()
+                    try:
+                        supervisor.step()
+                        self.assertIsNone(supervisor.learning_job.process)
+                        self.assertTrue(
+                            dispatch("status", {}, CommandContext(home=home))["ok"]
+                        )
+                        self.assertEqual(before, path.read_bytes())
+                    finally:
+                        supervisor.close()
+
+    def test_huge_nested_and_helper_clocks_use_same_bounded_validator(self):
+        self.descriptor_file()
+        for value in (10**400, -(10**400)):
+            body = {
+                "state": "completed",
+                "reason": "x",
+                "result": {"scopes": [], "attempted_at": value},
+            }
+            status = self.home / "learning-job.json"
+            status.write_text(json.dumps(body))
+            self.assertEqual(schedule_snapshot(self.home)["state"], "unavailable")
+            status.unlink()
+            envelope = {
+                "ok": True,
+                "command": "research.protocol",
+                "result": {
+                    "identity": self.descriptor["expected_identity"],
+                    "reason": "bad-clock",
+                    "schedule": {"scopes": [], "attempted_at": value},
+                },
+            }
+            with patch(
+                "botmanager.learning_job.subprocess.Popen",
+                side_effect=self.spawn(output=json.dumps(envelope)),
+            ):
+                supervisor = Supervisor(self.home).open()
+                try:
+                    supervisor.step()
+                    process = supervisor.learning_job.process
+                    self.finish(supervisor.learning_job)
+                    supervisor.step()
+                    self.assertEqual(supervisor.learning_job.receipt["state"], "failed")
+                    self.assertIsNotNone(process.poll())
+                    self.assertTrue(
+                        dispatch("status", {}, CommandContext(home=self.home))["ok"]
+                    )
+                finally:
+                    supervisor.close()
+            status.unlink()

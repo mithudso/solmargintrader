@@ -22,6 +22,16 @@ from .research_owner import OwnerClient
 STATUS_FILE = "learning-job.json"
 OUTPUT_LIMIT = 256 * 1024
 TIMEOUT_SECONDS = 120
+MAX_CLOCK = 253402300799  # Last whole UTC second representable by datetime.
+
+
+def _clock(value):
+    # Compare integers before any float conversion: JSON may legally contain
+    # a hundreds-of-digits integer that overflows math.isfinite's conversion.
+    if value is not None and (
+        type(value) not in (int, float) or not 0 <= value <= MAX_CLOCK
+    ):
+        raise ValueError("schedule_clock_invalid")
 
 
 def _bounded_value(value, depth=0):
@@ -32,7 +42,9 @@ def _bounded_value(value, depth=0):
             not isinstance(key, str) or len(key) > 128 for key in value
         ):
             raise ValueError("metadata_object_limit")
-        for item in value.values():
+        for key, item in value.items():
+            if key == "last_attempt" or key.endswith("_at"):
+                _clock(item)
             _bounded_value(item, depth + 1)
     elif isinstance(value, list):
         if len(value) > 100:
@@ -106,12 +118,7 @@ def _status(body):
         ):
             raise ValueError("schedule_day_invalid")
     for key in ("last_attempt", "completed_at"):
-        if body.get(key) is not None and (
-            type(body[key]) not in (int, float)
-            or not math.isfinite(body[key])
-            or body[key] < 0
-        ):
-            raise ValueError("schedule_clock_invalid")
+        _clock(body.get(key))
     if body.get("result") is not None:
         _schedule_result(body["result"])
     if "stderr_bytes" in body and (
@@ -138,7 +145,7 @@ def schedule_snapshot(home):
     if path.is_file():
         try:
             return _status(_read(path))
-        except (ValueError, TypeError, OSError, RecursionError):
+        except (ValueError, TypeError, OverflowError, OSError, RecursionError):
             return {"state": "unavailable", "reason": "schedule_status_unreadable"}
     return {
         "state": "unavailable",
@@ -252,6 +259,7 @@ class DailyLearningJob:
             TypeError,
             KeyError,
             RecursionError,
+            OverflowError,
             OSError,
             subprocess.SubprocessError,
         ):
