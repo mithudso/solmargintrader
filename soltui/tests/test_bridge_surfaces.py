@@ -347,8 +347,8 @@ class InstallerTests(unittest.TestCase):
         with World() as world:
             dirs = [world.root / "A" / "NativeMessagingHosts", world.root / "B" / "NativeMessagingHosts"]
             wrapper = world.root / "native-host" / "soltui-native-host"
-            with mock.patch.dict(os.environ, {"SOLTUI_EXTRA_EXTENSION_IDS": "extraidone, extraidtwo"}):
-                result = inst.install(Path("/repo/x"), Path("/venv/bin/python"), ["cli-id"], dirs, wrapper)
+            with mock.patch.dict(os.environ, {"SOLTUI_EXTRA_EXTENSION_IDS": "a" * 32 + ", " + "b" * 32}):
+                result = inst.install(Path("/repo/x"), Path("/venv/bin/python"), ["c" * 32], dirs, wrapper)
             self.assertEqual(len(result["manifests"]), 2)
             self.assertTrue(os.access(wrapper, os.X_OK))
             text = wrapper.read_text()
@@ -361,8 +361,8 @@ class InstallerTests(unittest.TestCase):
             self.assertTrue(Path(manifest["path"]).is_absolute())
             self.assertEqual(manifest["allowed_origins"], [
                 "chrome-extension://pnokcppamfghgaimmmghoegjllhonhbh/",
-                "chrome-extension://extraidone/", "chrome-extension://extraidtwo/",
-                "chrome-extension://cli-id/"])
+                "chrome-extension://" + "a" * 32 + "/", "chrome-extension://" + "b" * 32 + "/",
+                "chrome-extension://" + "c" * 32 + "/"])
             state = inst.status(dirs, wrapper)
             self.assertTrue(all(m["exists"] and m["points_at_wrapper"] for m in state["manifests"]))
             removed = inst.uninstall(dirs, wrapper)
@@ -371,7 +371,7 @@ class InstallerTests(unittest.TestCase):
             self.assertFalse(any(m["exists"] for m in inst.status(dirs, wrapper)["manifests"]))
 
     def test_only_installed_browsers_get_a_manifest(self) -> None:
-        with World() as world:
+        with World() as world, mock.patch.object(inst.sys, "platform", "darwin"):
             (world.root / "Google" / "Chrome").mkdir(parents=True)
             (world.root / "BraveSoftware" / "Brave-Browser").mkdir(parents=True)
             found = inst.browser_host_dirs(world.root)

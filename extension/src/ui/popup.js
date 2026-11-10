@@ -11,9 +11,11 @@
 import { aggregatePredictions, agreementUnavailableReason, scoreText } from './live-score.js';
 import { attributionLine } from '../jupiter/attribution.js';
 import { predictionRecovery, renderPredictionRecovery } from './prediction-recovery.js';
+import { mountControlRoom } from './control-room.js';
 
 const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
+mountControlRoom();
 let glanceAsset = 'SOL';
 // Send immediately in the trusted click. A native/store await here would lose
 // the gesture before the persistent owner's Picture-in-Picture request.
