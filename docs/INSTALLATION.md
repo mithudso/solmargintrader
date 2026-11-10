@@ -1,6 +1,11 @@
 # Installation
 
-Seven components with separate dependencies. The optional soltui app and liquidity daemon
+The managed paper suite installs the headless manager, research runtime, Oracle and
+control room together. See [managed suite setup](bot-manager-managed-suite.md) for
+`solbot stack install`, UI discovery, machine health, the Chrome helper, and the
+macOS/Linux/Windows comparison.
+
+Other components have separate dependencies. The optional soltui app and liquidity daemon
 can each install a persistent macOS launchd service. Test commands below do not install them.
 
 | Component | Install | Persistent? |
@@ -20,7 +25,9 @@ can each install a persistent macOS launchd service. Test commands below do not 
 - **Node 22.** Verify with `node -v`. Pinned in `.nvmrc`. Ed25519 in WebCrypto and
   `node:test`'s output format both need a recent runtime.
 - **Chrome or a Chromium browser**, for the extension.
-- **macOS**, for `soltui/` only.
+- **macOS or Linux**, for the headless managed suite. The full SolTUI app and its
+  production blind judge retain macOS requirements. Native Windows does not run
+  the complete stack unchanged; see the managed suite guide for WSL2 boundaries.
 
 ## Backtester and research
 

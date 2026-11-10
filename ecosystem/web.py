@@ -63,6 +63,25 @@ def _telemetry(home: Path, manager_home: Path | None, *, after=0, limit=100) -> 
     return report(home, manager_home, after=after, limit=limit)
 
 
+def _component_health(home: Path, manager_home: Path | None) -> dict:
+    """Read the compact collector contract without starting component owners."""
+    from botmanager.machine_health import check
+
+    return check(home=manager_home, ecosystem_home=home)
+
+
+def _availability_ready(snapshot: dict) -> bool:
+    # Source freshness and research certification are separate from server
+    # availability. Unknown critical owners never produce a ready response.
+    components = snapshot.get("components", {})
+    return isinstance(components, dict) and all(
+        isinstance(components.get(name), dict)
+        and components[name].get("state") == "up"
+        and components[name].get("ready") is True
+        for name in ("suite", "manager", "control_room")
+    )
+
+
 class ControlRoomServer(ThreadingHTTPServer):
     daemon_threads = True
     block_on_close = False
@@ -223,6 +242,27 @@ def make_server(
                             "owner_health": "see_status_and_telemetry",
                         },
                     )
+                elif target.path == "/healthz":
+                    self._json(200, {"alive": True, "scope": "control_room_process"})
+                elif target.path in ("/api/health", "/readyz", "/metrics"):
+                    measurement = _component_health(home, manager_home)
+                    if target.path == "/metrics":
+                        from botmanager.machine_health import prometheus
+
+                        self._send(
+                            200,
+                            prometheus(measurement).encode("utf-8"),
+                            "text/plain; version=0.0.4; charset=utf-8",
+                        )
+                    elif target.path == "/readyz":
+                        ready = _availability_ready(measurement)
+                        self._json(
+                            200 if ready else 503,
+                            {**measurement, "availability_ready": ready},
+                            error=None if ready else "components_not_ready",
+                        )
+                    else:
+                        self._json(200, measurement)
                 elif target.path == "/api/status":
                     values = self._query(query, {"run_id"})
                     self._json(

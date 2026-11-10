@@ -177,12 +177,16 @@ class UiServiceTests(unittest.TestCase):
 
     def test_launch_uses_installed_python_and_observes_actual_health(self):
         self.http()
+        created = []
+        observer = Mock()
         with ExitStack() as child:
 
             def spawned(*args, **kwargs):
                 child.enter_context(ui_service.lock(self.home))
                 self.publish()
-                return Mock(poll=Mock(return_value=None))
+                process = Mock(poll=Mock(return_value=None))
+                created.append(process)
+                return process
 
             with (
                 patch(
@@ -197,8 +201,11 @@ class UiServiceTests(unittest.TestCase):
                     },
                 ),
             ):
-                result = ui_service.ensure(self.home, self.home / "manager")
+                result = ui_service.ensure(
+                    self.home, self.home / "manager", on_spawn=observer
+                )
             self.assertTrue(result["running"])
+            observer.assert_called_once_with(created[0])
             command = spawn.call_args.args[0]
             self.assertEqual(command[1:4], ["-I", "-m", "ecosystem.web"])
             self.assertIn("--persistent", command)
@@ -213,6 +220,16 @@ class UiServiceTests(unittest.TestCase):
             self.assertEqual(
                 stat.S_IMODE((self.home / "control-room.log").stat().st_mode), 0o600
             )
+
+    def test_existing_owner_is_not_transferred_to_spawn_observer(self):
+        observer = Mock()
+        with ui_service.lock(self.home):
+            self.publish()
+            with patch("ecosystem.ui_service.subprocess.Popen") as spawn:
+                result = ui_service.ensure(self.home, on_spawn=observer)
+            self.assertTrue(result["running"])
+            spawn.assert_not_called()
+            observer.assert_not_called()
 
     def test_concurrent_launches_spawn_only_once(self):
         ready = threading.Event()

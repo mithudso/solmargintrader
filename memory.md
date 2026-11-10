@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 378
+Version: 379
+Delta: v378 to v379; start authorized managed suite, complete help, machine health and Chrome helper delivery.
 Delta: v377 to v378; final full303 source suite passed after shutdown fix.
 Delta: v376 to v377; retain CI shutdown-order repair and fresh manager candidate revalidation.
 Delta: v375 to v376; record independent installed acceptance and final CI-only delivery tail.
@@ -1642,3 +1643,12 @@ Unrelateduntrackedworktree.opencode hadnoopenfiles(lsofexit1emptyoutput); fullar
 ## Full final manager gate complete
 
 Final303manager tests104.139sexit0 after680afa8shutdownrepair. Offlineindex/wiki checks0, CIselector6tests0. Installedidentitybothmanager/ecosystemandconfirmed-stopped-childshutdownv2receiptscomplete; verifier isfinalizingexplicitSupbindingsupersessionreceipt. Originalv1andinitialharnessattemptsremainhistorical. No newpublicdocs/assets/runtimechangesareplanned. Onlyfinalrecord/indexcommit/push, final-headCI, stablealiasindependentreceipt, gatedmerge/remotetreeproof, preservedprimaryfastforward/ownedcleanupandtrackercompletionremain.
+
+
+## Managed suite request — TASK-1247 active
+
+Previous PR194/manager0.6 delivery remains complete; do not repeat its source work or reactivate archived liquidity. User now requests full orderedhelp/UI discovery, persistent availabilitydaemon with health/alerts, extensionUI/helperbringup, actualserviceinstall+enable, andLinux/Windowscomparison. Worktree /Users/mitch/dev/solmargintrader-wt-1247-suite, branchagent-1247-suite, baseline d8381a80808c5d88ebeed4d53a295a31529960f2. Primary77untrackedstatuspaths/139files andunrelatedlockedUIworktree preserved.
+
+Recoveryactualstate: publicalias0.6, butdefaultSOLBOT_HOMEalreadyownedbyold0.4daemon42535 via /Users/mitch/.venvs/solecosystem-0.2.1/bin/solbot; LaunchAgent /Users/mitch/Library/LaunchAgents/com.solmargintrader.solbot.3bbfdc4f6989.plist. UI0.2.1PID19142serves http://127.0.0.1:57927 forV2home. Current /healthonlyserveridentity, notcomponenthealth. Installednativewrapper /Users/mitch/Library/Application Support/soltui/native-host/soltui-native-host isstaleanddoesnotforwardoriginargv. No recoverymutationsoccurred. Inspectprocesseswithredactingallowlist; ownershiptokensappearintheirargv.
+
+UseexistingSupervisor/ui_service status+ensure, ownerlocks/checkpoints, commandregistries/nativehelper. Explicitservicemigrationmustreleaseoldownerbeforestartingnewoneandpreservebotintent/oldenv/data/recorder/F5producers. Newautomationmanagesavailability, neverfabricatesevidence/readiness/armslive. PeruserlaunchdRunAtLoad/KeepAlive startsatloginfollowingreboot; nofalseprelogin/reboottestedclaim. Linuxneedsactualsystemdassessment; nativeWindowshasfcntl/Unixsocket/OSjudgegaps, documentWSLlimitations. Allsource/integrationtools INDEX_NO_AUTO=1; noimplicitsemanticindexing/inference. Worknotyetimplemented; nextfanoutcontractsandcode, scopedreviews/sourcechecks/freshregularinstall/liveverification/serviceenable/finalCI/merge/cleanup.

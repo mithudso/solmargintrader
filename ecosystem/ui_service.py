@@ -307,7 +307,7 @@ def _environment():
     }
 
 
-def ensure(home, manager_home=None) -> dict:
+def ensure(home, manager_home=None, *, on_spawn=None) -> dict:
     """Start at most one installed server and observe real readiness for 10s."""
     process = None
     deadline = time.monotonic() + STARTUP_SECONDS
@@ -356,6 +356,10 @@ def ensure(home, manager_home=None) -> dict:
                             close_fds=True,
                             start_new_session=True,
                         )
+                        # Availability supervisors receive only the process
+                        # they actually created, never an adopted owner's PID.
+                        if on_spawn is not None:
+                            on_spawn(process)
                 finally:
                     os.close(fd)
             elif current["reason"] != "control_checkpoint_pending":
