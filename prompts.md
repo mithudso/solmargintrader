@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 165
+Version: 166
+Delta: v165 to v166; execute the saved Oracle prompt.
 Delta: v164 to v165; record the Oracle creation request.
 Delta: v163 to v164; record oracle streaming versus refresh question.
 Delta: v162 to v163; record the detailed backtester handoff request.
@@ -43,6 +44,10 @@ Delta: v138 to v139; record the documentation dependency request.
 Delta: v137 to v138; record the repository UI optimizer request.
 Delta: v137 to v138; record recurring backtest cadence failure.
 
+
+## v166 - 2026-11-09
+
+Execute the optimized prompt
 
 ## v165 - 2026-11-09
 

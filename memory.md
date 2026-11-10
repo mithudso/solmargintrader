@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 337
+Version: 339
+Delta: v338 to v339; implement and test an isolated Oracle voting foundation.
+Delta: v337 to v338; resume Oracle implementation at the user's request.
 Delta: v336 to v337; checkpoint the Oracle prompt and unresolved integrations.
 Delta: v335 to v336; begin Oracle optimization and implementation in an isolated checkout.
 Delta: v334 to v335; record streaming and snapshot refresh recommendation.
@@ -76,6 +78,14 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v339 - 2026-11-09: Oracle voting foundation
+
+The isolated oracle/voting.py calculation accepts up to 14 prospective vote summaries and rejects invalid or duplicate inputs. It excludes stale, insufficient and sub-60% evidence, doubles accuracy weight only after 100 hits, and returns a signed balance with provisional five-level display thresholds. oracle/tests/test_voting.py passed seven tests. Counts and times are caller assertions, not verified evidence, so the module must not be wired to an executor. No stream, forecast generator, historical archive bridge, MCP server, authenticated readiness, lifecycle adapter or enforceable veto exists. These remain required by TASK-1154. See oracle/README.md. Preserve the other sessions' work and integrate current origin/master before delivery.
+
+## v338 - 2026-11-09: Oracle execution resumed
+
+The owner requested execution of docs/oracle-optimized-prompt.md. TASK-1154 is claimed. Continue on branch agent-01a1c228 in /Users/mitch/dev/solmargintrader-wt-01a1c228 and preserve other active sessions. Start with the checked-in candidate and inspect current evidence before implementation. All requested service functionality and final checks remain.
 
 ## v337 - 2026-11-09: Oracle continuation
 
