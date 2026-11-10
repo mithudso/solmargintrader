@@ -815,7 +815,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Detached offline sweep worker and per-process array cache",
-      "lines": 632
+      "lines": 635
     },
     {
       "path": "soltui/compound.py",
@@ -850,14 +850,14 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Immutable experiment/cell SQLite evidence, typed search spaces, sparse observed heatmaps, TradingView import and comparison",
-      "lines": 909
+      "lines": 923
     },
     {
       "path": "soltui/experiment_runner.py",
       "component": "soltui",
       "kind": "python",
       "summary": "Frozen native bar/recorded-triangle evaluation, per-cell checkpoints, exploration exposure and fresh final holdout guards",
-      "lines": 723
+      "lines": 728
     },
     {
       "path": "soltui/experiment_jobs.py",
@@ -927,7 +927,7 @@
       "component": "soltui",
       "kind": "markdown",
       "summary": "Packaging traps already paid for \u2014 read before rebuilding",
-      "lines": 649
+      "lines": 693
     },
     {
       "path": "soltui/tests",
@@ -947,7 +947,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Frozen native evidence, holdout freshness, pause/cancel/resume and promotion recovery tests",
-      "lines": 488
+      "lines": 509
     },
     {
       "path": "soltui/tests/test_experiment_interface.py",
@@ -1080,7 +1080,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 437
+      "lines": 434
     },
     {
       "path": "CONTRIBUTING.md",

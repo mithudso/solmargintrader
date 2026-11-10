@@ -418,6 +418,77 @@ def _cycle_check(params, context):
     )
 
 
+def _research_setup(params, context):
+    from .research_owner import prepare_descriptor
+    from .store import data_home
+
+    return prepare_descriptor(params, context.home or data_home())
+
+
+def _research_plan(params, context):
+    from .research import default_plan
+    from .research_owner import write_document
+    from .store import data_home
+
+    spec = _identity(params, context)
+    plan = default_plan(spec)
+    path = params.get("output") or (context.home or data_home()) / (
+        "research-plan-" + spec.bot_id + ".json"
+    )
+    return {
+        "plan_path": write_document(path, plan),
+        "plan": plan,
+        "strict_final_eligible": False,
+        "reason": "reference evidence and unbounded position horizons remain uncertified",
+        "evaluated_cells_budget": 1000,
+        "configuration_budget": 32,
+    }
+
+
+def _research_command(params, context, operation):
+    from .input_commands import read_document
+    from .research_owner import OwnerClient
+
+    descriptor = read_document(params["owner"])
+    if context.ecosystem_home is not None:
+        descriptor["authority"]["known_clients"].append(
+            {
+                "root": str(Path(context.ecosystem_home).resolve() / "batches"),
+                "kind": "f5",
+                "active": False,
+            }
+        )
+    owner = OwnerClient(descriptor)
+    if operation == "register":
+        return owner.call(
+            operation,
+            {
+                "accept_registered_roots_only": params.get(
+                    "accept_registered_roots_only", False
+                ),
+                "initialize_first": params.get("initialize_first", False),
+            },
+        )
+    if operation in ("status", "recover", "cancel"):
+        return owner.call(operation, {"run_id": params.get("run_id")})
+    if operation == "proposal":
+        from .research import reconcile_proposal
+
+        return reconcile_proposal(_store(context), owner, params["run_id"])
+    spec = _identity(params, context)
+    payload = {
+        "spec": spec.to_dict(),
+        "descriptor": read_document(params["descriptor"]),
+    }
+    if operation == "research":
+        from .research import default_plan
+
+        payload["options"] = (
+            read_document(params["plan"]) if params.get("plan") else default_plan(spec)
+        )
+    return owner.call(operation, payload)
+
+
 def _events(params, context):
     from .ledger import RuntimeLedger
 
@@ -520,6 +591,88 @@ MUTATION_GUARDS = (
     ),
 )
 COMMANDS = {
+    "research-setup": CommandSpec(
+        "research-setup",
+        "Prepare a reviewed installed owner descriptor; never initialize research authority.",
+        _research_setup,
+        tuple(
+            (("--" + name.replace("_", "-"),), {})
+            for name in (
+                "interpreter",
+                "repository",
+                "config_root",
+                "authority_root",
+                "authority_id",
+                "output",
+            )
+        ),
+    ),
+    "research-plan": CommandSpec(
+        "research-plan",
+        "Freeze a small default search over unpinned validated strategy tunables.",
+        _research_plan,
+        IDENTITY + ((("--output",), {}),),
+    ),
+    "research-register": CommandSpec(
+        "research-register",
+        "Enroll a reviewed owner into one existing authority and import known history; never create a new evidence ledger.",
+        lambda p, c: _research_command(p, c, "register"),
+        (
+            (("--owner",), {"required": True}),
+            (("--accept-registered-roots-only",), {"action": "store_true"}),
+            (
+                ("--initialize-first-authority",),
+                {"dest": "initialize_first", "action": "store_true"},
+            ),
+        ),
+    ),
+    "research-cancel": CommandSpec(
+        "research-cancel",
+        "Request durable research cancellation; exposed finals stay spent.",
+        lambda p, c: _research_command(p, c, "cancel"),
+        ((("--owner",), {"required": True}), (("--run-id",), {"required": True})),
+    ),
+    "research-recover": CommandSpec(
+        "research-recover",
+        "Seal an interrupted owner attempt as retained incumbent after proving no optimizer holds its lease.",
+        lambda p, c: _research_command(p, c, "recover"),
+        ((("--owner",), {"required": True}), (("--run-id",), {"required": True})),
+    ),
+    "backtest": CommandSpec(
+        "backtest",
+        "Run explicit costed reference replay through the existing research owner.",
+        lambda p, c: _research_command(p, c, "backtest"),
+        IDENTITY
+        + ((("--owner",), {"required": True}), (("--descriptor",), {"required": True})),
+    ),
+    "research": CommandSpec(
+        "research",
+        "Run protocol2 frozen search and isolated blind evaluation.",
+        lambda p, c: _research_command(p, c, "research"),
+        IDENTITY
+        + (
+            (("--owner",), {"required": True}),
+            (("--descriptor",), {"required": True}),
+            (
+                ("--plan",),
+                {
+                    "help": "Optional explicit frozen plan; default is a conservative unpinned search."
+                },
+            ),
+        ),
+    ),
+    "research-status": CommandSpec(
+        "research-status",
+        "Read retained owner evidence without initializing absent stores.",
+        lambda p, c: _research_command(p, c, "status"),
+        ((("--owner",), {"required": True}), (("--run-id",), {})),
+    ),
+    "research-proposal": CommandSpec(
+        "research-proposal",
+        "Reconcile an accepted evidence proposal receipt; automatic promotion remains gated by prospective paper.",
+        lambda p, c: _research_command(p, c, "proposal"),
+        ((("--owner",), {"required": True}), (("--run-id",), {"required": True})),
+    ),
     "prepare-input": CommandSpec(
         "prepare-input",
         "Prepare explicit Oracle reference input with versioned cost assumptions; never start a producer.",

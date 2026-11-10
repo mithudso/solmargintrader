@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 171
+Version: 179
+Delta: concurrent histories to v179; preserve M4 checkpoint and PR192 integration records.
 Delta: v170 to v171; record additional GoonFi documentation and supplied swap enum.
 Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
 Delta: v168 to v169; clarify that either trade direction can prove execution.
@@ -1671,4 +1672,36 @@ Another copy is running; I’ll stop it
 
 ```text
 Yes, it has stopped
+```
+
+
+## Preserved M4 checkpoint history — PR192
+
+
+## v177 — 2026-11-10 — correct the milestone completion report
+
+```text
+Havne't you been wrapping up for an hour and a half?
+```
+
+The owner is correcting inaccurate progress language. The all-remaining-milestones scope remains active. Report source freeze, review, installed acceptance and delivery as separate observed gates. Do not claim wrap-up while implementation is still changing.
+
+
+## v178 — 2026-11-10 — remaining implementation plan and status
+
+```text
+Write an implementation plan for the rest of the work you have to do
+```
+
+```text
+Are you not done?
+```
+
+The plan is written in a separate worktree for independent documentation delivery. M4 source is checkpointed; integration/review/installed acceptance/release and M5–8 remain open.
+
+
+## PR192 conflict resolution — 2026-11-10
+
+```text
+Resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/192 and merge and commit it
 ```

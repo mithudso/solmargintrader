@@ -1,6 +1,12 @@
 # Work continuation
 
-Version: 347
+PR192 delivery state: `/Users/mitch/.local/state/solmargintrader/pr192-01a1c44a/delivery-memory.md`. A completed receipt there supersedes the pre-merge remaining steps below.
+
+Version: 371
+Delta: v370 to v371; repair CI import-order and Linux fixture failures after installed behavior acceptance.
+Delta: v369 to v370; accept independent M4 source review and both integrity repairs.
+Delta: v368 to v369; verify integrated M4 and repair V2 owner discovery.
+Delta: concurrent histories to v368; preserve M4 checkpoint and PR192 integration records.
 Delta: v346 to v347; record on-chain variant evidence, offline tests and network refusal.
 Delta: v345 to v346; record Jupiter documentation and fresh unsigned route evidence.
 Delta: v344 to v345; record proof-trade clarification and verifier refusals.
@@ -1472,3 +1478,76 @@ The owner confirmed the other copy had stopped. Independent recovery-v2 preserve
 Canonical private entry /Users/mitch/dev/solmargintrader/.worktree-recovery points to /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a/recovery-v2. Its recovery.sqlite3, recover.py, snapshot-summary.json, restoration-proof.json, inventory-receipts.zip and cleanup-receipt.json retain exact content and provenance. Keep the independent147MB rebuilt.git mirror; both repos pin original heads. No missing-source cleanup was attempted after the first Git overwrite. Original staging/reflog/uninventoried local metadata remains unrecoverable; do not claim otherwise.
 
 Hash-preconditioned canonical reconciliation removed12copy-induced M4Pythonfiles plusduplicatedOpenCode and restored6stale/tasktrackedfiles from acceptedmaster4d773dcb. Primarytrackedstateisclean; originaluntrackedcontentremains. DraftPR182and192/branches remain. Only active nestedSolTUIworktree and our delivery worktree remain registered. No production service/install/state changed. Product-runtimechanges are absent; the integratedcatalogtest expands allguide/researchcards and checksduplicateIDs/spec-onlyexclusion.49targetedtests passedwith1expectedskip. Remaining: finalreport/wiki/offlineindexchecks, task-ownedcommit/push/PR/finalheadCI/merge, primaryfastforward preservinguntrackedhashes, and removeonlyourmergedbranch/worktree. Fullreport docs/worktree-consolidation-2026-11-10.md.
+
+
+## Preserved M4 checkpoint history — PR192
+
+
+## v363 — M3 delivered; execute M4–8
+
+PR188 mergeda610868dbac61b46dba2a0047aa22d79b23cab34 at2026-11-10T05:38:34Z. Finalce6c6ba4CI42762920865watchandgatedmergeexit0,all11activejobspass/2expectedskips. Fetchedremoteentiretreeequalsacceptedtip. Installedsourcebfc,58/58gates/3288hashesaccepted; stable0.4.0deliveryreceiptcopied0600. TASK1109done; implementationepic1106stillopen. Primaryotherownercheckoutnotmodified. OwnM3branchdeletedafterexacttreeproof, sameworktreereusedforactiveplan.
+
+TASK1110claimed, newbranchagent-01a1c189-m4 froma610. Requirements task-m4-brief.md1.2bindcurrentM3schema2engine_identity/canonicalopenaccountAPI andstrictno-proxy-certificationpolicy. Existingresearch-ownerreportv2 exposesF5perhomeauthoritygap; reuseoneExperimentStore, registerknownroots andpre-readadmission; preserveactiveunawarefrozen0.1.1clients andrefuseaffectedfinalscopes. KNOW1182requiresrealOSjudgeisolation,3parentnarrowPythonstartupsmokesfailed-6—notacceptedruntimeprofiles. KNOW1183requirescrossDBidempotentCAS, notfalseatomiccallback. FreshM4implementerwillownresearch/blind/protocol/owner/tests; parentrootdocs/CI/records/install/review/delivery. ContinueallM4–8; no newproductionoptimizer/recorder/service/keys/orders.
+
+## v364 — M4 implementation and coverage boundary
+
+Fresh /root/m4_implementation active on branchagent-01a1c189-m4, BASEa610868d. Shared ExperimentStore protocol2, native/F5admission and one existingregistry research.protocol action; stdio remains boundeddecode/dispatch andheadless. Worker initial5judge+5ownerAPItests and72legacy/ownerchecks passed; sourceunfinished, no M4installation/deliveryclaim. Newpaths declaredinworkercontext; parentwillstage/refreshindexafterfinalfreeze beforeindexdependentchecks.
+
+Canonical authority spans participating managedhomes; coverage remains registered_roots_only. A root descriptor cannot prove unknown alternate processes absent. Missing configured history, unknown source/participation or active unawareclient block affectedfreshfinal/automaticpromotion; do not add a boolean declaring fleetwidecoverage. Conditionalresearchbacktests mayreturnusefulresultswithoutgloballyfreshadoptablereceipts. Preserveoldactiveenvironments; no standaloneinventorysubsystem addedhere. Carrygate toM7/finalOraclehandoff.
+
+OSstartup signal6 diagnosedliteralrootdirectoryread plusframeworkPython.app reexec; worker actualfinalprofiledenialprobes reportedpassed butindependentreview/installedproofstillpending. KNOW1182updatedv3,1183v2;1181updatedv3foralreadydeliveredM3openaccountAPI (avoidredoing). M3closed171fullCItests confirmed41.009s. No personalmemory, producer, key, service ordefaultstate mutation.
+
+## v365 — M4 public setup and scoped receipt semantics
+
+Worker is implementing public research-register, including explicit --initialize-first-authority only when the canonical per-user namespace is unbound. It uses existing ExperimentStore, records unknown prior history, and never replaces a lost registered DB. A registration record outside both manager and owner config roots binds root/UUID and enrolled roots. Temporary namespace overrides remain isolated/non-production. New roots cannot silently reset attempts. Status/backtest never initialize.
+
+Coverage ruling clarified in KNOW1216v2 and task-m4-brief1.3: valid fresh-final receipts are scoped to the canonical managed authority with verified required known/configured/detected owners and no relevant gaps; no claim of machine-wide process absence. Do not permanently disable scoped automation merely because arbitrary undisclosed actors cannot be disproven. Known active unaware roots still block affected finals. Receipt binds roster/relevant history and frozen attempt/alpha. Later unrelated/future reads preserve it; conflicting prior exposure or changed required participation invalidates mutation. Stale proposal bodies remain inspectable. M4 stages only; M6 owns seven-day/trade/pin/CAS promotion.
+
+Owner transport uses existing SolTUI research.protocol registry action. Bounded known-path discovery includes native roots, documented ecosystem roots, explicit ecosystem-home and recognizable Oracle owner context. Unknown context becomes a gap, not zero history. Legacy F5/bg/forward stays unmanaged unless explicitly enrolled, so existing bootstrap behavior remains; new participants use shared admission. No active old environments or real authority data changed. Parent requested public-flow registration tests, portable owner test fixtures (not generic tests.test_paper/test_blind imports), hostile-field log canary, and ecosystem regression checks.
+
+Planned package matrix: manager0.5/backtester0.1.1/Oracle0.2.1/research0.2.0/ecosystem0.1.4. Parent bootstrap defaults/docs now0.1.4; CI adds actual macOS judge suite and headless owner imports/dependencies for docs/full selectors. No M4install yet. M3 CI171 verified; source/installed proof remains accepted0.4.0. Current M4source/tests still under hardening; final freeze/index/commit/review/installed/CI/delivery pending. ContinueM5–8 afterward.
+
+## v366 — M4 remains implementation, not wrap-up
+
+Owner challenged repeated wrap-up claims in prompts.md v177. Acknowledged directly: M4 is still changing and M5–8 have not started. Do not substitute more optimistic time estimates. Report completed gates only. The user's status questions do not cancel or pause the full implementation request.
+
+Worker is fixing strict known-client validation, disappearing prior-history stores, and native participating-root mismatch. It is also adding public research-setup and research-plan commands so first use needs no hand-written identity or plan JSON. Default research uses the same bounded preregistered policy. Authority initialization stays explicit; setup does not initialize or mutate evidence history.
+
+Parent raised a scope precision before final freeze: first-authority unknown prior history must protect affected historical windows without permanently forbidding genuinely post-registration scoped evidence after required owner participation is verified. Unknown active clients remain blockers. Do not erase prior exposures or equate owner consent with data completeness. Await the worker's actual implementation/report and independent review before claiming this resolved. M4 regular installation, independent acceptance and remote delivery have not started. Existing installed M3 remains accepted.
+
+
+## v367 — M4 source checkpoint; planning is the immediate deliverable
+
+Source e24ad7ca343a07910d04f3c3471494fcba763c75 and report/proof65a5a40020a21849fadd3476c556a5d4cdedca3a are committed. Worker reports187 manager,150 owner/legacy/native/F5/bg and42 bridge checks pass, with source OS denial proof. Public setup/default plan and immutable initialization epoch are implemented. No independent source approval, integrated installed acceptance or M4 delivery is claimed. Worker stopped at this recoverable checkpoint when the owner requested the remaining-work plan.
+
+Remaining-plan task TASK1220 uses separate branch agent-01a1c189-remaining-plan from remote21331e37. Plan /Users/mitch/dev/solmargintrader-wt-01a1c189-remaining-plan/docs/superpowers/plans/2026-11-10-bot-manager-remaining.md covers actual M4 release gates, M5–8 and final Oracle handoff. User then asked 'Are you not done?'; answered that plan is written and linked the actual file, with publication still underway. Do not defer that requested plan behind further product implementation.
+
+M4 release must first integrate PR189/190 and preserve newer ecosystem0.2.1 behavior/approved50bps referral default. Current0.1.4 pins/default path are obsolete checkpoint metadata, not the final installation. KNOW1221 records the exact integration risk. Parent draft CI/docs/records are checkpointed only for recovery. No installation or production service/authority/bot change. Documentation discovery on the committed M4 source found1434 SolTUI/1002 backtester/408 extension/46 mongo =2890; update all documented source counts together rather than lowering actual discovery.
+
+Resume from current-master integration and review, then fresh compatible installation and independent actual-command/sandbox acceptance. Push final head, require final-head CI and merge last. Continue M5–8 under the owner's existing authorization. Preserve other sessions' primary checkout and unrelated .opencode/.
+
+
+## PR192 integration — TASK-1232
+
+The owner explicitly requests resolution, commit and merge. Work is isolated at /Users/mitch/dev/solmargintrader-wt-01a1c44a on agent-01a1c44a-pr192. Current masterbd390a4 is integrated. Preserve accepted control-room behavior, manual50bps defaults and all active environments. Forward package matrix: manager0.5.0, research-runtime0.2.0, backtester0.1.1, Oracle0.2.1, ecosystem0.2.2. TASK-1230 and its moving strategy files in /Users/mitch/dev/solmargintrader-wt-01a1c447 remain separate. Existing source evidence is a checkpoint; required fresh integrated source checks, independent review, regular isolated installation and actual command/sandbox acceptance remain before final CI/merge. TASK-1233 resolves; TASK-1234 verifies; TASK-1235 delivers. No production owner or service changes are part of this integration.
+
+
+## PR192 integration verification checkpoint
+
+All nine conflict paths are resolved and staged. Ecosystem0.2.2 preserves accepted0.2.1 control-room implementation bytes and50bps defaults; only its init/manifest version and dependencies advance. Manager0.5.0/research-runtime0.2.0/backtester0.1.1/Oracle0.2.1 are pinned together. Integrated source checks passed187 manager,173 ecosystem,129 legacy/bridge and63 evidence/owner/runner tests. The UI environment lacked headless metadata; rerunning the owner checks under the task-owned regular installation resolved that setup failure. A headless-only docs run lacked Textual; use /Users/mitch/.venvs/solmargintrader-docs/bin/python for full discovery. Do not lower counts to conceal environment failures.
+
+Independent source review found known_clients omitted accepted ecosystem-paper-v2. The one-line discovery repair keeps all legacy defaults. A real held V2 F5 lock and unknown-history regression now proves admission stays blocked when callers omit explicit roots. Nineteen owner tests and ten manager research tests pass after that fix; lint/format pass. Current SolTUI count1435/legacy total2891 includes the new regression. KNOW-1237 records the trigger. The first task-owned environment /Users/mitch/.venvs/pr192-01a1c44a-ecosystem-0.2.2 passed package/MCP health before that source fix, but it is not the final accepted installation. Fresh candidate2 and independent actual-command/sandbox acceptance remain required after the review finishes. Production environments and TASK-1230 files remain untouched. Private gates/scripts are /Users/mitch/.local/state/solmargintrader/pr192-01a1c44a.
+
+
+## PR192 reviewed source ready for final installation
+
+Independent review approved the integrated source after two P2 repairs. Default V2 owner discovery now includes actual active locks/history. Owner adoption receipts now require the exact ten-field ManagerStore contract and canonical value/type bindings before immutable persistence. The real-ledger regression rejects malformed receipts without artifacts, then accepts/replays the genuine receipt. Nineteen owner tests and ten affected Manager research tests pass; Ruff/format pass. Reviewed runtime manifest SHA256f15a7fc87a77e53dbef32bfe890d7b88114448c1ed11cb0cfcf39f7a746ee4e7; private source-review.json records exact repaired file hashes. No remaining source-review blocker.
+
+The docs environment import failure was traced to four Finder .DS_Store files in ignored expanded experiment trees. All frozen source hashes matched. Those metadata files were preserved in private snapshot-finder-metadata.zip and removed only from this task-owned checkout. The immutable archive verifier was not weakened. Full docs discovery must pass at1435 SolTUI/1002 Backtester/408 extension/46 mongo=2891. Regenerate wiki and offline indexes after staging all repaired paths. Next: commit integrated source, fresh immutable integrated/standalone candidate environments, independent actual installed command/judge/sandbox/CAS acceptance, final records/checks/push, final-head PR192 CI and merge. Preserve existing production environments and all C447 work.
+
+
+## PR192 final CI repairs
+
+First integrated commit e50d5444 passed independent installed behavior: nine effective groups across public owner setup/refusals, four reference families/loss reporting, anonymous deterministic judging, actual OS denial with successful unsandboxed controls, shared authority, proposals/CAS, cancellation/history/legacy fences and preservation. Both regular environments matched1665 first-party files each with pipcheck0. Default demo seven-file hashes/size/mtime and decoded stopped/paper/disarmed cursor2 state, five frozen-environment metadata files and eight production process identities remained unchanged. A bounded actual shared-archive preparation refused invalid descriptor identity/costs/bounds; no absence, working actual venue evidence or new producer was inferred. Prior fixture-only acceptance failure used an invalid legacy bot name; corrected to supported grid and reran only that group successfully.
+
+CI42784289157 exposed two concrete missed paths. Linux research test's second call omitted its platform-selected judge, so it reached the intended macOS isolation_unavailable refusal before the expected date fence. Added judge=judge to that call; actual macOS sandbox coverage remains. Fresh standalone manager_evidence import failed: ImportError cannot import name ManagerEvidence from partially initialized module. Extracted unchanged error/finite canonical JSON/fingerprint helpers into dependency-free evidence_identity.py, preserving experiments re-exports and adding helper hashing to owner source identity. Fresh-process import-order/typed finite-JSON regression covers both orders. Sixty-two affected evidence/owner/native tests and the Linux-selected one-test path pass; Ruff passes changed modules. Scoped source re-review and fresh immutable regular candidates must bind this final import repair before merge. Existing installed sandbox/engine evidence remains bound to unchanged exact modules, not silently relabelled. New SolTUI count1436/total2892 includes the import regression.

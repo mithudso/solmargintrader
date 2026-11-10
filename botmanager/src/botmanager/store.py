@@ -498,6 +498,123 @@ class ManagerStore:
             save_mutation(db, "spec_requests", request, result)
             return result
 
+    def record_research_proposal(self, proposal):
+        """CAS a pending-shadow receipt; this never adopts settings or drops lots.
+
+        The evidence owner and manager are separate databases. The owner stores
+        its proposal first, this transaction stores a matching receipt, then the
+        caller mirrors that receipt. A crash retries exactly this same proposal.
+        """
+        from uuid import UUID
+
+        from .config import validate_delta
+        from .domain import fingerprint
+
+        required = {
+            "version",
+            "request_id",
+            "run_id",
+            "bot_id",
+            "baseline_revision",
+            "baseline_hash",
+            "pins",
+            "changes",
+            "evidence_digest",
+            "state",
+            "automatic_promotion",
+            "authority",
+            "production_eligible",
+            "reason",
+        }
+        if (
+            not isinstance(proposal, dict)
+            or set(proposal) != required
+            or proposal["version"] != 2
+            or proposal["state"] != "pending_shadow"
+            or proposal["automatic_promotion"] is not False
+            or type(proposal["production_eligible"]) is not bool
+            or (
+                proposal["production_eligible"]
+                and proposal["authority"].get("isolation_mode") != "registered_clients"
+            )
+        ):
+            raise ManagerError("invalid_receipt", "Unsupported research proposal.", 4)
+        try:
+            if str(UUID(proposal["request_id"])) != proposal["request_id"]:
+                raise ValueError
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ManagerError(
+                "invalid_receipt", "Invalid proposal request UUID.", 4
+            ) from exc
+        encoded = canonical(proposal)
+        with mutation_lock(self.home), self._connection(write=True) as db:
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS research_proposals (request_id TEXT PRIMARY KEY, proposal TEXT NOT NULL, receipt TEXT NOT NULL, checksum TEXT NOT NULL)"
+            )
+            old = db.execute(
+                "SELECT * FROM research_proposals WHERE request_id=?",
+                (proposal["request_id"],),
+            ).fetchone()
+            if old:
+                receipt = json.loads(old["receipt"])
+                if old["proposal"] != encoded or old["checksum"] != fingerprint(
+                    {"proposal": proposal, "receipt": receipt}
+                ):
+                    raise ManagerError(
+                        "invalid_receipt",
+                        "Research proposal receipt conflicts or is corrupt.",
+                        4,
+                    )
+                return receipt
+            row = db.execute(
+                "SELECT bot_id,display_name,source,owner,source_identity,body FROM specs WHERE bot_id=?",
+                (proposal["bot_id"],),
+            ).fetchone()
+            if row is None:
+                raise ManagerError(
+                    "bot_not_found", "Research proposal bot was not found."
+                )
+            before = self._checked_latest(db, row)
+            if (
+                before.config_revision != proposal["baseline_revision"]
+                or before.config_hash != proposal["baseline_hash"]
+                or dict(before.user_overrides) != proposal["pins"]
+            ):
+                raise ManagerError(
+                    "revision_conflict",
+                    "Research proposal baseline or manual pins changed.",
+                    3,
+                )
+            validate_delta(before.strategy_id, proposal["changes"])
+            if set(proposal["changes"]) & set(before.user_overrides):
+                raise ManagerError(
+                    "manual_pin_conflict",
+                    "Research proposal cannot replace manual pins.",
+                    3,
+                )
+            receipt = {
+                "version": 2,
+                "request_id": proposal["request_id"],
+                "proposal_digest": fingerprint(proposal),
+                "authority": proposal["authority"],
+                "production_eligible": proposal["production_eligible"],
+                "evidence_digest": proposal["evidence_digest"],
+                "baseline_revision": before.config_revision,
+                "baseline_hash": before.config_hash,
+                "state": "pending_shadow",
+                "configuration_changed": False,
+            }
+            db.execute(
+                "INSERT INTO research_proposals VALUES (?,?,?,?)",
+                (
+                    proposal["request_id"],
+                    encoded,
+                    canonical(receipt),
+                    fingerprint({"proposal": proposal, "receipt": receipt}),
+                ),
+            )
+        return receipt
+
     def _version(self, db, bot_id, revision):
         row = db.execute(
             "SELECT body FROM spec_versions WHERE bot_id=? AND revision=?",

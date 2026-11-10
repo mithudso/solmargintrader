@@ -29,6 +29,7 @@ from backtester.core.strategy_cards import HORIZONS, load_all
 from backtester.core.strategies import REGISTRY
 from . import bgqueue, bgworker, config, forwardtest
 from .runner import engine_config
+from .research_admission import admit_read, participating
 
 INTERVAL_MINUTES = {"1m": 1, "5m": 5, "15m": 15, "1h": 60, "6h": 360, "1d": 1440}
 PHASES = {"planned", "backtesting", "stopped", "failed", "forward", "forward_partial"}
@@ -455,6 +456,11 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
         _finish_cell(db, cell_id, "unsupported", "No preset or required parameters are unavailable")
         return
     try:
+        admit_read(
+            asset,
+            source="f5:" + str(Path(db.execute("PRAGMA database_list").fetchone()[2]).resolve()),
+            attempts=len(jobs),
+        )
         digest = _series_hash(db, settings, asset, interval)
         if digest is None:
             _finish_cell(db, cell_id, "missing", "No cached price series; fetching remains a separate action")
@@ -524,6 +530,7 @@ class _StopEvent(Event):
         return self.is_set()
 
 
+@participating
 def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
         forward_cycles: int | None = None, tick: Callable[..., dict[str, Any]] | None = None,
         wait: Callable[[float], None] = time.sleep, token: str = "test") -> None:

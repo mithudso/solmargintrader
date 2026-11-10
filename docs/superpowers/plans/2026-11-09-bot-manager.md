@@ -10,13 +10,14 @@
 
 **Spec:** /Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md
 
-Version: 1.0.5
+Version: 1.0.6
+Delta: v1.0.5 to v1.0.6; record actual M3 delivery and continue M4.
 Delta: v1.0.4 to v1.0.5; record delivered editing and verified M3 source/installed behavior with explicit remaining venue gates.
 Delta: v1.0.3 to v1.0.4; add owner-requested revision editing before milestone3, record delivered milestone2 and preserve the explicit all-remaining-milestones scope.
 Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
 Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
 Delta: v1.0.0 to v1.0.1; resolve the reviewed milestone-2 dependency on future adapters and data.
-Status: owner approved implementation in KNOW-1115. Milestones1–2 and editing delivered through PR175, PR180 and PR186. M3 source and installed acceptance passed; final-head CI/remote delivery remains its final gate. All remaining milestones4–8 are authorized and continue in order.
+Status: owner approved implementation in KNOW-1115. Milestones1–2 and editing delivered through PR175, PR180 and PR186. M3 delivered through PR188, mergea610868d after source, installed and all11activeCIgates passed. All remaining milestones4–8 are authorized and continue in order.
 
 ## Global constraints
 
@@ -125,7 +126,7 @@ Create /Users/mitch/dev/solmargintrader/botmanager/src/botmanager/strategies/{ba
 - [x] Inventory actual data files with manifests. Read existing Coinbase owner data; implement Jupiter-specific quote collection as one shared data capability with explicit setup, rate budget and source metadata. Never generate synthetic historical routes as real evidence.
 - [x] Add immutable snapshots/high-watermarks, complete/proxy/incomplete/unsupported states, size/fee/latency/fill models and no-engine-network tests. Store the actual costs or refuse certification.
 - [x] Implement Solana cycle opportunity/paper replay only when required observations exist. Refuse live multi-leg execution without atomicity and a verifier. Proxy history remains exploratory.
-- [ ] Validate known profitable/losing hand-calculated paths after all costs and failed legs; make replay and forward results comparable for each execution model. Deliver capabilities and measured data gaps separately.
+- [x] Validate known profitable/losing hand-calculated paths after all costs and failed legs; make replay and forward results comparable for each execution model. Deliveredcapabilities andmeasureddata gaps throughPR188; no actualJupiterexecutioncertificationclaimed.
 
 M3 evidence: reviewed source bfc6d2f4,168 manager tests plus31 final covering tests,1002 canonical,68 Oracle,8 Trend and58 installed gates passed. Two actual post-activation accounts progressed across restart. Direct single-leg route evidence is supported conditionally; production Jupiter cost/fill history and execution certification remain unavailable. Final-head CI/remote delivery is not inferred from these checks.
 

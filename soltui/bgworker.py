@@ -76,6 +76,7 @@ from .bgqueue import (  # noqa: E402
     write_state,
 )
 from .config import Settings, load_settings  # noqa: E402
+from .research_admission import admit_read, participating
 from .runner import engine_config, run_cpcv  # noqa: E402
 
 # The nicest a process can ask to be. Set unconditionally at startup rather than
@@ -360,6 +361,7 @@ def failed_result(job: Job, exc: BaseException) -> JobResult:
     )
 
 
+@participating
 def run(
     asset: str,
     *,
@@ -388,6 +390,7 @@ def run(
     asset = validate_asset(asset)
     jobs = build_queue(asset, horizons=horizons, max_tier=max_tier, strategies=strategies)
     results = read_results(results_path)
+    admit_read(asset, source="bg:" + str(results_path.resolve()), attempts=len(jobs))
     proof = verify_evaluation_proof(asset, settings, jobs, results, results_path)
     already = completed_ids(results)
     todo = pending(jobs, already)

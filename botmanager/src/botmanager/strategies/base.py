@@ -81,7 +81,7 @@ def identity(spec, data):
     }
 
 
-def evaluate_family(spec, data, cursor):
+def evaluate_family(spec, data, cursor, *, research=False):
     import numpy as np
 
     from backtester.core.types import CostConfig
@@ -205,4 +205,41 @@ def evaluate_family(spec, data, cursor):
             return [native(v) for v in value]
         return value
 
+    if research:
+        state["research_metrics"] = research_metrics(result, d["capital_quote"])
     return native(state)
+
+
+def research_metrics(result, capital):
+    """Metrics use the canonical costed equity curve, including open inventory."""
+    peak = float(capital)
+    drawdown = 0.0
+    for value in result.equity:
+        value = float(value)
+        peak = max(peak, value)
+        drawdown = max(drawdown, (peak - value) / peak if peak > 0 else 1.0)
+    import statistics
+
+    returns = [
+        float(b) / float(a) - 1
+        for a, b in zip(result.equity[:-1], result.equity[1:])
+        if a > 0
+    ]
+    uncertainty = (
+        statistics.stdev(returns) / len(returns) ** 0.5 if len(returns) > 1 else 0.0
+    )
+    if hasattr(result, "round_trips"):
+        completed = result.round_trips
+    elif hasattr(result, "deals_completed"):
+        completed = result.deals_completed + result.deals_stopped
+    else:
+        completed = sum(
+            t.side == "close" and t.reason != "final" for t in result.trades
+        )
+    return {
+        "uncertainty": uncertainty,
+        "net_return": float(result.equity[-1]) / capital - 1,
+        "drawdown": drawdown,
+        "turnover": sum(abs(t.notional) for t in result.trades) / capital,
+        "trades": completed,
+    }

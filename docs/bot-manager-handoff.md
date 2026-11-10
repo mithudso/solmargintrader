@@ -1,6 +1,8 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.1.1
+- Version: 1.1.2
+- Delta: v1.1.1 to v1.1.2; integrate the M4 research checkpoint with the newer control room and forward package matrix.
+- Delta: v1.1.0 to v1.1.1; record actual PR188 delivery and full final-head manager checks.
 - Delta: v1.1.0 to v1.1.1; link the concrete remaining-work plan and distinguish the M4 source checkpoint from delivery.
 - Delta: v1.0.5 to v1.1.0; describe milestone 3 canonical strategies, shared prospective input and quote evidence.
 - Delta: v1.0.4 to v1.0.5; record integrated editing delivery and coordinated five-package maintenance.
@@ -86,6 +88,7 @@ The UI control-room findings were incorporated as backend contracts. A future UI
 | PR180 | Milestone 2: persistent concurrent grid reference-paper runtime, stable packaging and explicit launchd lifecycle | https://github.com/mithudso/solmargintrader/pull/180 |
 | PR184 | Useful bare-command help and the actual retained demonstration | https://github.com/mithudso/solmargintrader/pull/184 |
 | PR186 | Immutable editing, explicit safe adoption and schema 4 shared telemetry | https://github.com/mithudso/solmargintrader/pull/186 |
+| PR188 | Canonical four-family reference workers, shared prospective input and strict directed quote evidence | https://github.com/mithudso/solmargintrader/pull/188 |
 
 M1 merge: `4a65a06bf0d5968f56ab861deb2d588aefe42f2d`. M2 merge: `2810f4b23cbd7842dcf03924608e7cb758836ee8`. The M2 reviewed product source was `39e0c262d715fe6d9ec2e877a3a9cabdf3eceb9f`; subsequent changes repaired one test fixture and updated release records, without changing accepted runtime modules.
 
@@ -603,7 +606,7 @@ https://github.com/mithudso/solmargintrader/pull/186
 
 ### Milestone 3 source and installed evidence
 
-Reviewed source is bfc6d2f479a5765937eed651430c13bd3eea3731, including initial 18aa3c70 and first fix da2cae09. Completed checks passed: 168 manager tests before the final status repair, 1,002 canonical tests, 68 Oracle tests and 8 Trend tests. The narrow final repair passed 31 covering tests; final-head repository CI independently runs the complete current manager suite. Ruff and formatting passed.
+Reviewed source is bfc6d2f479a5765937eed651430c13bd3eea3731, including initial 18aa3c70 and first fix da2cae09. Completed checks passed: 168 manager tests before the final status repair, 1,002 canonical tests, 68 Oracle tests and 8 Trend tests. The narrow final repair passed 31 covering tests; final-head repository CI passed the complete 171-test manager suite. Ruff and formatting passed.
 
 Review caught a missing prospective tick-intent marker, inconsistent inner routes that could produce a false conditional cycle, and lost price-impact data. Fixes added actual hung-worker recovery coverage, explicit direct-route reconciliation and exact impact retention. Real installed acceptance then found completed source-schema-2 status reading the old engine key. Eight family/mode cases reproduced the CLI failure; the versioned mapper now reads the pinned identity and preserves old schema-1 labels. The initial failed report remains preserved instead of being relabelled as passing.
 
@@ -684,7 +687,7 @@ INDEX_NO_AUTO=1 /Users/mitch/.venvs/solmargintrader-docs/bin/python /Users/mitch
 
 Also test regular installed imports from outside the checkout; source `PYTHONPATH` is development/test support, not a deployment dependency. If canonical economics change, run affected backtester suites and Python/extension grid parity. If owner registry commands change, maintain `/Users/mitch/dev/solmargintrader/soltui/tests/bridge_support.py` and bridge parity checks. If service/worker behavior changes, independent installed fixture acceptance remains required; unit mocks cannot replace it.
 
-The root documentation gate discovers 1,002 backtester, 1,405 SolTUI, 408 extension and 46 mongo tests, total 2,861. The separate manager suite is not included in that legacy total. The full SolTUI suite is optional in normal CI; two skips in M2 CI were the full SolTUI suite and informational Jupiter endpoints, not failed required jobs.
+The root documentation gate discovers 1,002 backtester, 1,434 SolTUI, 408 extension and 46 mongo tests, total 2,890. The separate manager suite is not included in that legacy total. The full SolTUI suite is optional in normal CI; two skips in M2 CI were the full SolTUI suite and informational Jupiter endpoints, not failed required jobs.
 
 Regenerate tracked metadata only after staging new/resolved paths. Run the existing offline generators `/Users/mitch/dev/solmargintrader/index/build.py all`, `/Users/mitch/dev/solmargintrader/index/make_files_doc.py`, `/Users/mitch/dev/solmargintrader/index/make_concepts_doc.py`, then the index `--check` and docs gate. Semantic embeddings are separately opt-in. Use `INDEX_NO_AUTO=1` for local index searches; an earlier search fallback started an idle builder, which this session identified and stopped without touching shared model services.
 
@@ -697,7 +700,7 @@ The controlling specification is `/Users/mitch/dev/solmargintrader/docs/superpow
 | 1 / TASK-1107 | Delivered | CLI/defaults/specifications/legacy controls; preserve contracts |
 | 2 / TASK-1108 | Delivered | Persistent independent grid reference runtime; preserve recovery and identity |
 | Editing / TASK-1178 | Delivered extension | Immutable revisions/history/schema and explicit stopped zero-exposure application; no active-run relabelling |
-| 3 / TASK-1109 | Source and installed acceptance verified | Four canonical reference adapters, shared prospective input, strict direct-route quote evidence and conditional cycles; final-head CI/remote delivery remains separately recorded |
+| 3 / TASK-1109 | Delivered through PR188 | Merge a610868dbac61b46dba2a0047aa22d79b23cab34; source, installed and all 11 active CI gates passed; Jupiter execution certification remains unavailable |
 | 4 / TASK-1110 | Planned | Isolated blind judge/resolver, private parameter mapping, frozen objectives, shared exposure/holdout authority and repeated-testing controls |
 | 5 / TASK-1111 | Planned | Accounting, loss cohorts, health/performance diagnostics, reproducibility and load checks |
 | 6 / TASK-1112 | Planned | Gated training proposals and adoption; protected manual pins; fresh compatible evidence and shadow comparison |
