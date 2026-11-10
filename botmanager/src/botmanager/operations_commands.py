@@ -2,7 +2,20 @@
 
 from __future__ import annotations
 
+import time
+
 from .domain import ManagerError
+
+_UI_READY_SECONDS = 10.0
+_UI_POLL_SECONDS = 0.05
+_UI_PENDING_REASONS = frozenset(
+    {
+        "control_server_not_running",
+        "control_checkpoint_pending",
+        "control_start_in_progress",
+        "control_server_health_unverified",
+    }
+)
 
 
 def _ecosystem_home(context):
@@ -30,11 +43,27 @@ def ui_command(params, context):
         ) from exc
 
     action = params.get("action", "status")
-    if action in ("start", "open"):
+    wait_for_ui = action in ("start", "open")
+    if wait_for_ui:
         from .suite import operation
 
         operation("start", home=context.home, ecosystem_home=context.ecosystem_home)
-    observed = status(_ecosystem_home(context), context.home)
+    selected_home = _ecosystem_home(context)
+    deadline = time.monotonic() + _UI_READY_SECONDS if wait_for_ui else None
+    observed = status(selected_home, context.home)
+    # The suite owns startup. Its owner socket can become ready just before the
+    # UI publishes its checkpoint. Poll only verified reads for transient states;
+    # a wrong home/version or conflicting owner returns immediately.
+    while (
+        wait_for_ui
+        and not observed.get("running")
+        and observed.get("reason") in _UI_PENDING_REASONS
+    ):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        time.sleep(min(_UI_POLL_SECONDS, remaining))
+        observed = status(selected_home, context.home)
     result = {**observed, "action": action}
     if action == "open":
         import webbrowser

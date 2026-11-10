@@ -84,6 +84,9 @@ class OperationsTests(unittest.TestCase):
                     "reason": "control_checkpoint_pending",
                 },
             ),
+            patch(
+                "botmanager.operations_commands.time.monotonic", side_effect=[0.0, 10.0]
+            ),
             patch("webbrowser.open") as open_browser,
         ):
             result = ui_command({"action": "open"}, self.context)
@@ -92,6 +95,152 @@ class OperationsTests(unittest.TestCase):
         )
         open_browser.assert_not_called()
         self.assertFalse(result["opened"])
+
+    def test_ui_open_waits_for_checkpoint_and_health_before_opening_verified_url(self):
+        with (
+            patch(
+                "botmanager.suite.operation",
+                return_value={"state": "running", "ready": False},
+            ) as operation,
+            patch(
+                "ecosystem.ui_service.status",
+                side_effect=[
+                    {
+                        "running": False,
+                        "url": None,
+                        "reason": "control_server_not_running",
+                    },
+                    {
+                        "running": False,
+                        "url": None,
+                        "reason": "control_checkpoint_pending",
+                        "occupied": True,
+                    },
+                    {
+                        "running": False,
+                        "url": None,
+                        "reason": "control_server_health_unverified",
+                        "occupied": True,
+                    },
+                    {"running": True, "url": "http://127.0.0.1:57928", "reason": None},
+                ],
+            ) as status,
+            patch(
+                "botmanager.operations_commands.time.monotonic",
+                side_effect=[1.0, 1.01, 1.06, 1.11],
+            ),
+            patch("botmanager.operations_commands.time.sleep") as sleep,
+            patch("webbrowser.open", return_value=True) as open_browser,
+        ):
+            result = ui_command({"action": "open"}, self.context)
+        operation.assert_called_once_with(
+            "start", home=self.home, ecosystem_home=self.ecosystem
+        )
+        self.assertEqual(status.call_count, 4)
+        self.assertEqual(sleep.call_count, 3)
+        self.assertTrue(all(call.args == (0.05,) for call in sleep.call_args_list))
+        open_browser.assert_called_once_with("http://127.0.0.1:57928", new=2)
+        self.assertTrue(result["opened"])
+        self.assertTrue(result["running"])
+
+    def test_ui_start_waits_for_readiness_without_opening_a_browser(self):
+        with (
+            patch("botmanager.suite.operation"),
+            patch(
+                "ecosystem.ui_service.status",
+                side_effect=[
+                    {
+                        "running": False,
+                        "url": None,
+                        "reason": "control_checkpoint_pending",
+                    },
+                    {"running": True, "url": "http://127.0.0.1:57928", "reason": None},
+                ],
+            ),
+            patch(
+                "botmanager.operations_commands.time.monotonic", side_effect=[0.0, 0.01]
+            ),
+            patch("botmanager.operations_commands.time.sleep") as sleep,
+            patch("webbrowser.open") as open_browser,
+        ):
+            result = ui_command({"action": "start"}, self.context)
+        self.assertTrue(result["running"])
+        sleep.assert_called_once_with(0.05)
+        open_browser.assert_not_called()
+
+    def test_ui_readiness_wait_has_a_fixed_deadline_and_preserves_pending_reason(self):
+        with (
+            patch("botmanager.suite.operation"),
+            patch(
+                "ecosystem.ui_service.status",
+                return_value={
+                    "running": False,
+                    "url": None,
+                    "reason": "control_checkpoint_pending",
+                },
+            ) as status,
+            patch(
+                "botmanager.operations_commands.time.monotonic",
+                side_effect=[0.0, 9.99, 10.0],
+            ),
+            patch("botmanager.operations_commands.time.sleep") as sleep,
+            patch("webbrowser.open") as open_browser,
+        ):
+            result = ui_command({"action": "open"}, self.context)
+        self.assertEqual(status.call_count, 2)
+        self.assertAlmostEqual(sleep.call_args.args[0], 0.01)
+        self.assertFalse(result["opened"])
+        self.assertEqual(result["reason"], "control_checkpoint_pending")
+        open_browser.assert_not_called()
+
+    def test_ui_conflicts_return_immediately_without_polling_or_opening(self):
+        for reason in (
+            "control_manager_home_mismatch",
+            "control_server_version_mismatch",
+            "control_server_owner_unverified",
+            "control_checkpoint_unverified",
+        ):
+            with (
+                self.subTest(reason=reason),
+                patch("botmanager.suite.operation"),
+                patch(
+                    "ecosystem.ui_service.status",
+                    return_value={
+                        "running": False,
+                        "url": None,
+                        "reason": reason,
+                        "occupied": True,
+                    },
+                ) as status,
+                patch("botmanager.operations_commands.time.sleep") as sleep,
+                patch("webbrowser.open") as open_browser,
+            ):
+                result = ui_command({"action": "open"}, self.context)
+            self.assertEqual(result["reason"], reason)
+            status.assert_called_once_with(self.ecosystem, self.home)
+            sleep.assert_not_called()
+            open_browser.assert_not_called()
+
+    def test_ui_status_never_polls_or_starts_even_when_checkpoint_is_pending(self):
+        with (
+            patch("botmanager.suite.operation") as operation,
+            patch(
+                "ecosystem.ui_service.status",
+                return_value={
+                    "running": False,
+                    "url": None,
+                    "reason": "control_checkpoint_pending",
+                },
+            ) as status,
+            patch("botmanager.operations_commands.time.monotonic") as clock,
+            patch("botmanager.operations_commands.time.sleep") as sleep,
+        ):
+            result = ui_command({"action": "status"}, self.context)
+        self.assertFalse(result["running"])
+        status.assert_called_once_with(self.ecosystem, self.home)
+        operation.assert_not_called()
+        clock.assert_not_called()
+        sleep.assert_not_called()
 
     def test_ui_open_uses_verified_url_and_exposes_launch_failure(self):
         with (
