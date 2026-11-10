@@ -83,11 +83,13 @@ class NativeSuiteTests(unittest.TestCase):
             self.assertFalse(thread.is_alive())
 
     def test_controller_failures_are_sanitized_and_missing_runtime_is_incompatible(self):
-        for error, code in ((RuntimeError("secret-canary"), "failed"), (ImportError("secret-canary"), "incompatible_helper")):
+        for error, code in ((RuntimeError("secret-canary"), "suite_failed"), (ImportError("secret-canary"), "incompatible_helper")):
             with patch.object(host, "suite_control", side_effect=error):
                 response = self.request("start")
                 self.assertEqual(response["error"]["code"], code)
                 self.assertNotIn("secret-canary", json.dumps(response))
+                if code == 'suite_failed':
+                    self.assertIn('solbot stack status', response['error']['message'])
 
     def test_real_status_and_health_do_not_create_homes_or_start_owners(self):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {

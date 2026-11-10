@@ -54,6 +54,17 @@ test('missing helper, old helper, startup and server failure remain different st
   assert.ok(!JSON.stringify(missing).includes('secret-canary'));
 });
 
+test('a suite controller failure keeps the answered helper available and health unknown', async () => {
+  const f = fixture(() => ({ ok: false, command: 'suite', result: null,
+    error: { code: 'suite_failed', message: 'managed suite request failed; inspect local solbot stack status' } }));
+  const snapshot = await controlRoomSnapshot(f.deps, 'start');
+  assert.equal(snapshot.helper, 'available'); assert.equal(snapshot.state, 'unknown'); assert.equal(snapshot.ready, null);
+  assert.equal(snapshot.reason, 'suite_request_failed'); assert.equal(snapshot.ui_url, null);
+  assert.equal(controlRoomPresentation(snapshot).title, 'Suite request failed');
+  assert.match(controlRoomPresentation(snapshot).detail, /solbot stack status/);
+  assert.deepEqual(controlRoomTransitions(snapshot, null, 1).alerts, []);
+});
+
 test('only explicit start/open requests can bring up servers and no path or execution fields are accepted', async () => {
   const f = fixture(request => response(request.action === 'status' ? { overall: 'down', ready: false, url: null } : {}));
   const opened = await openControlRoom(f.deps);

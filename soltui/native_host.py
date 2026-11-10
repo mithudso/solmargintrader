@@ -182,7 +182,7 @@ def _suite_request(request: dict[str, Any], raw: bytes) -> dict[str, Any]:
         except (ImportError, AttributeError):
             envelope = commands.error_envelope("suite", "incompatible_helper", "native helper needs the managed-suite runtime")
         except Exception:  # noqa: BLE001 -- no local paths or process errors cross this boundary
-            envelope = commands.error_envelope("suite", "failed", "managed suite request failed; inspect local solbot suite status")
+            envelope = commands.error_envelope("suite", "suite_failed", "managed suite request failed; inspect local solbot stack status")
         with _suite_lock:
             _suite_replies[identity] = (action, envelope)
             while len(_suite_replies) > 128:

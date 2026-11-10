@@ -17,7 +17,10 @@ const INSTALLED = process.env.SOLBOT_TEST_INSTALLED === '1';
 const ALLOWED = new Set(['controlRoomStatus', 'controlRoomStart', 'controlRoomOpen']);
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const shq = value => `'${String(value).replace(/'/g, `'\\''`)}'`;
-const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'solbot-control-room-'));
+// Darwin's per-user TMPDIR often exceeds AF_UNIX's 104-byte pathname limit.
+// Keep the private owner homes short, including the manager's .suite/control.sock.
+const temporaryBase = ['darwin', 'linux'].includes(process.platform) ? fs.realpathSync('/tmp') : os.tmpdir();
+const temporary = fs.mkdtempSync(path.join(temporaryBase, 'solbot-ui-'));
 const manager = path.join(temporary, 'manager');
 const ecosystem = path.join(temporary, 'ecosystem');
 const consoleHome = path.join(temporary, 'console');
@@ -34,7 +37,7 @@ const python = (code, args = [], timeout = 20000) => new Promise((resolve, rejec
 });
 const report = { kind: 'isolated_real_chrome_control_room_availability', installed_runtime: INSTALLED,
   runtime_python: PYTHON, everyday_browser_changed: false, trading_armed: false, network: [], checks: {} };
-let browser, started = false;
+let browser, started = false, accepted = false, completed = false;
 try {
   assert(INSTALLED, 'This gate requires SOLBOT_TEST_INSTALLED=1 and a compatible regular SOLBOT_TEST_PYTHON runtime');
   browser = await launch({ chrome: process.env.CHROME || findChromeForTesting(), extension: EXTENSION,
@@ -102,6 +105,20 @@ try {
     assert(reply?.ok && reply.result?.ok, `Installed headless native read ${command} unavailable`);
   }
   report.checks.legacy_ping_help_build_hash_status_calls = true;
+  // Local fixture configuration fails before any controller may start. The
+  // browser still sends the same fixed read; it cannot supply the failing path.
+  const unavailableHome = path.join(temporary, 'unavailable-ecosystem-home');
+  fs.writeFileSync(unavailableHome, 'not a directory', { mode: 0o600 });
+  const unavailableWrapper = wrapper.replace(/^export SOLBOT_ECOSYSTEM_HOME=.*$/m,
+    `export SOLBOT_ECOSYSTEM_HOME=${shq(unavailableHome)}`);
+  try {
+    fs.writeFileSync(install.wrapper, unavailableWrapper, { mode: 0o700 });
+    const unavailableSuite = await call('controlRoomStatus');
+    assert(unavailableSuite.helper === 'available' && unavailableSuite.state === 'unknown'
+      && unavailableSuite.ready === null && unavailableSuite.reason === 'suite_request_failed',
+    'A failed local suite operation was misclassified as a missing helper or measured server health');
+    report.checks.failed_suite_keeps_helper_available_health_unknown = true;
+  } finally { fs.writeFileSync(install.wrapper, wrapper, { mode: 0o700 }); }
   const down = await call('controlRoomStatus');
   assert(down.helper === 'available' && down.state === 'down' && down.ui_url === null,
     'Installed helper did not distinguish stopped servers from a missing helper');
@@ -114,8 +131,12 @@ try {
   started = true;
   const healthy = await browser.waitFor(async () => {
     const snapshot = await call('controlRoomStatus');
+    report.startup_observations ??= [];
+    report.startup_observations.push(snapshot);
+    if (report.startup_observations.length > 20) report.startup_observations.shift();
     return snapshot.ui_url && snapshot.components?.find(item => item.name === 'control_room')?.state === 'up' ? snapshot : null;
   }, 60000, 500);
+  if (!healthy) report.startup_card = await browser.evaluate(pageSession, `document.getElementById('controlRoom').innerText`);
   assert(healthy && controlRoomUrl(healthy.ui_url) === healthy.ui_url, 'Explicit Start did not produce a verified loopback UI');
   report.checks.explicit_click_started_servers = true;
   report.initial_ui_url = healthy.ui_url;
@@ -153,6 +174,7 @@ try {
   report.checks.offline_helper_unknown = true;
   fs.renameSync(`${offlineManifest}.offline`, offlineManifest);
   report.recovered_ui_url = recovered.url;
+  accepted = true;
 } finally {
   try {
     if (started) {
@@ -162,10 +184,15 @@ try {
         && stopped.components.control_room.state === 'down', 'Test-owned suite left a component running');
       report.checks.test_owned_components_stopped = true;
     }
+    completed = accepted;
   } finally {
     if (browser) await browser.close();
     await sleep(100);
-    fs.rmSync(temporary, { recursive: true, force: true });
+    if (completed) fs.rmSync(temporary, { recursive: true, force: true });
+    else {
+      fs.writeFileSync(path.join(temporary, 'gate-failure.json'), JSON.stringify(report, null, 2), { mode: 0o600 });
+      console.error(`Availability gate evidence retained privately at ${temporary}`);
+    }
   }
 }
 console.log(JSON.stringify(report, null, 2));

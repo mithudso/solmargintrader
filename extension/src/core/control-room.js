@@ -45,6 +45,7 @@ export async function controlRoomSnapshot(deps, action = 'status') {
     ui_url: null, components: [], reason, opened: false });
   if (!envelope.ok) {
     if (envelope.error?.code === 'busy') return { ...absent('available', 'starting'), state: 'starting' };
+    if (envelope.error?.code === 'suite_failed') return absent('available', 'suite_request_failed');
     return ['unknown_command', 'incompatible_helper'].includes(envelope.error?.code)
       ? absent('incompatible', 'helper_incompatible') : absent('unavailable', 'helper_unavailable');
   }

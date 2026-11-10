@@ -7,6 +7,8 @@ export function controlRoomPresentation(snapshot) {
     detail: 'The installed helper does not support the managed suite. Update its local registration, then refresh.' };
   if (snapshot?.helper !== 'available') return { title: 'Native helper unavailable', tone: 'unknown',
     detail: 'Health is unknown. Install or repair the local native helper, then refresh.' };
+  if (snapshot.reason === 'suite_request_failed') return { title: 'Suite request failed', tone: 'unknown',
+    detail: 'The native helper answered. Inspect local solbot stack status and the managed-suite logs.' };
   const options = {
     starting: ['Starting servers', 'starting', 'Startup is pending. Health refreshes do not start another server.'],
     up: ['Servers healthy', 'up', 'Open Bot Manager, Backtester, Oracle, bot stages and server logs.'],
@@ -70,7 +72,8 @@ export function mountControlRoom(root = document.getElementById('controlRoom'), 
       if (!response?.ok) throw new Error('availability request failed');
       snapshot = response.result;
       if (!snapshot || typeof snapshot !== 'object') throw new Error('invalid availability response');
-      if (command === 'controlRoomOpen' && snapshot.opened) feedback.textContent = 'Control room opened in a new tab.';
+      if (snapshot.reason === 'suite_request_failed') feedback.textContent = 'The suite request failed. Inspect local solbot stack status and logs.';
+      else if (command === 'controlRoomOpen' && snapshot.opened) feedback.textContent = 'Control room opened in a new tab.';
       else if (command === 'controlRoomOpen' && snapshot.state === 'starting') feedback.textContent = 'Servers are starting. Click Open control room when its verified address appears.';
       else if (command === 'controlRoomStart') feedback.textContent = snapshot.ui_url ? 'Servers answered. Open the control room to inspect bot stages.' : 'Startup requested. Check component health for the result.';
     } catch {
