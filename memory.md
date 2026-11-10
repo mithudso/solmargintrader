@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 379
+Version: 380
+Delta: v379 to v380; record integrated source checks, review repairs and pending installed activation.
 Delta: v378 to v379; start authorized managed suite, complete help, machine health and Chrome helper delivery.
 Delta: v377 to v378; final full303 source suite passed after shutdown fix.
 Delta: v376 to v377; retain CI shutdown-order repair and fresh manager candidate revalidation.
@@ -1652,3 +1653,14 @@ Previous PR194/manager0.6 delivery remains complete; do not repeat its source wo
 Recoveryactualstate: publicalias0.6, butdefaultSOLBOT_HOMEalreadyownedbyold0.4daemon42535 via /Users/mitch/.venvs/solecosystem-0.2.1/bin/solbot; LaunchAgent /Users/mitch/Library/LaunchAgents/com.solmargintrader.solbot.3bbfdc4f6989.plist. UI0.2.1PID19142serves http://127.0.0.1:57927 forV2home. Current /healthonlyserveridentity, notcomponenthealth. Installednativewrapper /Users/mitch/Library/Application Support/soltui/native-host/soltui-native-host isstaleanddoesnotforwardoriginargv. No recoverymutationsoccurred. Inspectprocesseswithredactingallowlist; ownershiptokensappearintheirargv.
 
 UseexistingSupervisor/ui_service status+ensure, ownerlocks/checkpoints, commandregistries/nativehelper. Explicitservicemigrationmustreleaseoldownerbeforestartingnewoneandpreservebotintent/oldenv/data/recorder/F5producers. Newautomationmanagesavailability, neverfabricatesevidence/readiness/armslive. PeruserlaunchdRunAtLoad/KeepAlive startsatloginfollowingreboot; nofalseprelogin/reboottestedclaim. Linuxneedsactualsystemdassessment; nativeWindowshasfcntl/Unixsocket/OSjudgegaps, documentWSLlimitations. Allsource/integrationtools INDEX_NO_AUTO=1; noimplicitsemanticindexing/inference. Worknotyetimplemented; nextfanoutcontractsandcode, scopedreviews/sourcechecks/freshregularinstall/liveverification/serviceenable/finalCI/merge/cleanup.
+
+
+## Managed suite continuation v380 — 2026-11-10
+
+Task TASK-1247 remains active in /Users/mitch/dev/solmargintrader-wt-1247-suite on agent-1247-suite. CLI walkthrough covers all 57 registered commands with 118 parser-validated examples. Chrome source 0.6.5 adds explicit fixed native suite startup, verified UI opening, component cards and transition notifications. Root health endpoints are /api/health, /healthz, /readyz and /metrics. UI identity now binds the manager home in its private checkpoint and HTTP response; a mismatched manager cannot adopt it.
+
+Completed source checks: manager 319 tests, ecosystem 180 tests after UI-binding fix, extension 433 tests, ordinary real Chrome 25 checks, native/legacy 84 tests plus 14 focused checks; relevant Ruff and CI YAML parse passed. Core's new focused suite tests are additional and pending final count. Independent review found and repaired Linux enablement truth, disappearing archive alerts and generation-bound stop receipts. Core is finishing durable fast-crash alert observations before final source freeze.
+
+Fresh regular environments /Users/mitch/.venvs/solbot-0.7.0 and /Users/mitch/.venvs/solecosystem-0.4.0 are created but not installed. Production remains unchanged. Snapshot /Users/mitch/.local/state/solbot/releases/0.7.0/before-migration preserves old launchd/native definitions, one stopped desired bot intent, nine research/recorder process identities and all 139 primary untracked-file hashes. Old default-home service still uses ecosystem 0.2.1; exact migration and UI release must follow installed-wheel checks. Do not start duplicate recorder/F5/optimizer owners. INDEX_NO_AUTO=1 remains mandatory. Stele knowledge write is queued as outbox a4306231 after MCP transport closed.
+
+Remaining: final core commit and independent repair verification; regular wheel installation; isolated installed Chrome availability gate; exact legacy launchd/UI migration and native helper deployment; independent live acceptance including durable crash/recovery alerts and preserved state; final-head CI/merge, primary safe sync and owned worktree cleanup. macOS launchd startup means user login after reboot, not pre-login boot. Native Windows remains unsupported; Linux/WSL2 boundaries are in docs/bot-manager-managed-suite.md.
