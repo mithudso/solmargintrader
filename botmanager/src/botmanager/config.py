@@ -185,17 +185,21 @@ def _strategy(strategy_id: str) -> None:
         raise _invalid()
 
 
-def validate_values(strategy_id: str, values: Mapping[str, Any]) -> None:
+def _validate_fields(
+    strategy_id: str, values: Mapping[str, Any], *, partial: bool
+) -> None:
     _strategy(strategy_id)
     defaults = {
         **COMMON,
         **DEFAULTS[strategy_id],
         "execution_model": MODELS[strategy_id],
     }
-    if set(values) != set(defaults):
+    if not isinstance(values, Mapping) or (
+        not set(values) <= set(defaults) if partial else set(values) != set(defaults)
+    ):
         raise _invalid()
-    for key, default in defaults.items():
-        value = values[key]
+    for key, value in values.items():
+        default = defaults[key]
         if type(default) is float:
             try:
                 finite = type(value) in (int, float) and math.isfinite(value)
@@ -205,9 +209,9 @@ def validate_values(strategy_id: str, values: Mapping[str, Any]) -> None:
                 raise _invalid()
         elif type(value) is not type(default):
             raise _invalid()
-    for key, metadata in field_metadata(strategy_id).items():
-        value = values[key]
-        limits = metadata["constraints"]
+    metadata = field_metadata(strategy_id)
+    for key, value in values.items():
+        limits = metadata[key]["constraints"]
         if (
             "const" in limits
             and value != limits["const"]
@@ -223,6 +227,17 @@ def validate_values(strategy_id: str, values: Mapping[str, Any]) -> None:
             and value >= limits["exclusive_maximum"]
         ):
             raise _invalid()
+
+
+def validate_delta(strategy_id: str, changes: Mapping[str, Any]) -> None:
+    """Validate supplied fields only; a delta has no cross-field base yet."""
+    if not changes:
+        raise _invalid()
+    _validate_fields(strategy_id, changes, partial=True)
+
+
+def validate_values(strategy_id: str, values: Mapping[str, Any]) -> None:
+    _validate_fields(strategy_id, values, partial=False)
     if strategy_id == "trend" and values["fast_period"] >= values["slow_period"]:
         raise _invalid()
     if strategy_id == "dca":

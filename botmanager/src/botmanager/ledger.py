@@ -210,6 +210,21 @@ class RuntimeLedger:
                 db.execute("SELECT * FROM runs WHERE bot_id=?", (bot_id,)).fetchone(),
             )
 
+    def get_many(self, bot_ids):
+        """Capture all requested runtime rows and their fills in one snapshot."""
+        if not self.path.exists():
+            return {bot_id: None for bot_id in bot_ids}
+        with self.connection() as db:
+            return {
+                bot_id: self._decode(
+                    db,
+                    db.execute(
+                        "SELECT * FROM runs WHERE bot_id=?", (bot_id,)
+                    ).fetchone(),
+                )
+                for bot_id in bot_ids
+            }
+
     def ids(self):
         if not self.path.exists():
             return []

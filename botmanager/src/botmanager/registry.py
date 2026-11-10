@@ -118,21 +118,9 @@ def _edit(params, context):
 
 
 def _history(params, context):
-    from .ledger import RuntimeLedger
-
-    spec = _identity(params, context)
-    revision = params.get("revision")
-    versions = _store(context).history(spec.bot_id, revision)
-    if not versions:
-        raise ManagerError(
-            "revision_not_found", "Saved configuration revision was not found."
-        )
-    return {
-        "schema_version": 1,
-        "bot_id": spec.bot_id,
-        "versions": versions,
-        "runs": RuntimeLedger(context.home).history(spec.bot_id, revision),
-    }
+    return _store(context).capture_view(
+        params.get("identity"), history=True, revision=params.get("revision")
+    )
 
 
 def _apply(params, context):
@@ -286,19 +274,22 @@ def _status(params: Mapping[str, Any], context: CommandContext) -> dict[str, Any
                 if row["strategy_id"] == family:
                     return row
             raise ManagerError("bot_not_found", "External identity was not found.")
-        return _manager_status(_identity(params, context), context, why=why)
-    store = _store(context)
+        captured = _store(context).capture_view(params["identity"])
+        spec, row = captured["bots"][0]
+        return _manager_status(spec, row, context, why=why)
+    captured = _store(context).capture_view()
     return {
-        "initialized": store.initialized,
+        "initialized": captured["initialized"],
         "bots": [
-            _manager_status(spec, context, why=why) for spec in store.list_specs()
+            _manager_status(spec, row, context, why=why)
+            for spec, row in captured["bots"]
         ],
         "runtime": "reference_paper_available",
         "installations": _discover({}, context)["installations"],
     }
 
 
-def _manager_status(spec, context, *, why=False):
+def _manager_status(spec, row, context, *, why=False):
     import time
 
     from .ledger import RuntimeLedger
@@ -308,7 +299,7 @@ def _manager_status(spec, context, *, why=False):
     ledger = RuntimeLedger(context.home)
     return runtime_snapshot(
         spec,
-        ledger.get(spec.bot_id),
+        row,
         now=time.time(),
         worker_alive=lock_held(ledger.home / "locks" / (spec.bot_id + ".lock")),
         supervisor_alive=lock_held(ledger.home / "supervisor.lock"),
@@ -564,6 +555,7 @@ COMMANDS = {
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
 ERROR_EXIT_CODES = {
+    "read_conflict": 4,
     "adoption_blocked": 3,
     "incompatible_input": 3,
     "invalid_receipt": 4,

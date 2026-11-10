@@ -195,6 +195,69 @@ class ManagerStore:
                 )
             return self._checked_latest(db, rows[0]) if rows else None
 
+    def capture_view(self, identity=None, *, history=False, revision=None):
+        """Compose journals only while append-only saved identities stay stable.
+
+        A runtime snapshot lies between two equal manager inventories. Since
+        edits append monotonically increasing revisions and identities are never
+        deleted/reused, equality proves that the saved state was unchanged across
+        that runtime capture. Runtime-only changes share one SQLite snapshot.
+        No home, lock file, write transaction or mutation flock is needed.
+        """
+        from .ledger import RuntimeLedger
+
+        if identity is not None and (not isinstance(identity, str) or not identity):
+            raise ManagerError("invalid_input", "A bot identity is required.")
+        if history and identity is None:
+            raise ManagerError("invalid_input", "A bot identity is required.")
+        ledger = RuntimeLedger(self.home)
+        for _ in range(3):
+            initialized = self.initialized
+            inventory = self.list_specs()
+            error = None
+            result = None
+            try:
+                specs = inventory
+                if identity is not None:
+                    spec = self.get_spec(identity)
+                    if spec is None:
+                        raise ManagerError(
+                            "bot_not_found", "Bot identity was not found."
+                        )
+                    specs = [spec]
+                if history:
+                    versions = self.history(spec.bot_id, revision)
+                    if not versions:
+                        raise ManagerError(
+                            "revision_not_found",
+                            "Saved configuration revision was not found.",
+                        )
+                    result = {
+                        "schema_version": 1,
+                        "bot_id": spec.bot_id,
+                        "versions": versions,
+                        "runs": ledger.history(spec.bot_id, revision),
+                    }
+                else:
+                    rows = ledger.get_many([spec.bot_id for spec in specs])
+                    result = {
+                        "initialized": initialized,
+                        "bots": [(spec, rows[spec.bot_id]) for spec in specs],
+                    }
+            except ManagerError as exc:
+                # A changing inventory can also invalidate an intermediate
+                # selection. Recheck before returning that read's error.
+                error = exc
+            if initialized == self.initialized and inventory == self.list_specs():
+                if error is not None:
+                    raise error
+                return result
+        raise ManagerError(
+            "read_conflict",
+            "Saved configurations changed during the read; no combined snapshot was returned.",
+            4,
+        )
+
     def create_spec(self, spec: BotSpec) -> BotSpec:
         # Validate before any home or database creation, including direct store callers.
         spec = BotSpec.from_dict(spec.to_dict())
@@ -329,6 +392,7 @@ class ManagerStore:
             )
 
     def edit(self, identity, changes, *, expected_revision=None, request_id=None):
+        from .config import validate_delta
         from .ledger import RuntimeLedger
 
         request_id = request_identity(request_id, expected_revision)
@@ -336,10 +400,9 @@ class ManagerStore:
         initial = self.get_spec(identity)
         if initial is None:
             raise ManagerError("bot_not_found", "Bot identity was not found.")
-        # An accepted delta belongs to its historical base, and may no longer
-        # satisfy cross-field constraints on the latest saved revision.
-        if not self.has_edit_request(request_id):
-            initial.edited(changes)
+        # Only intrinsic delta checks belong here. Both new requests and replay
+        # validate merged values against their exact base inside the transaction.
+        validate_delta(initial.strategy_id, changes)
         request = request_body(
             "edit", initial.bot_id, changes, expected_revision, request_id
         )
