@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `f27f1e1` (2026-11-10T17:24:54+00:00). 3059 tracked files, 65.8 MB.
+**Generated** from `index/INDEX.json` at commit `593f1a9` (2026-11-10T18:22:40+00:00). 3065 tracked files, 66.1 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2646 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 484/569 Python modules and 65/112 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (167 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2649 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 484/569 Python modules and 65/112 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (170 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -33,8 +33,8 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 ## Contents
 
-- [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 125 files
+- [`(root)`](#root) — 24 files
+- [`docs`](#docs) — 128 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1929 files
 - [`research`](#research) — 206 files
@@ -43,6 +43,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
+- [`.cdo`](#cdo) — 2 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.superpowers`](#superpowers) — 32 files
@@ -66,7 +67,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 
 Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md` are the operative rules for anyone — human or agent — changing this repo; read them before the code.
 
-23 files.
+24 files.
 
 #### `.editorconfig`
 
@@ -78,7 +79,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.env.example`
 
-`config` · 19 lines · 858 B · description: **none**
+`config` · 33 lines · 1,593 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -118,7 +119,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 207 lines · 15,947 B · description: **curated**
+`doc` · 219 lines · 18,125 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -166,7 +167,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 165 lines · 11,079 B · description: **curated**
+`doc` · 174 lines · 11,638 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -182,41 +183,49 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms-facts.txt`
 
-`data` · 56 lines · 6,155 B · description: **derived**
+`data` · 30 lines · 4,365 B · description: **derived**
 
-**Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader: Sourced Facts
+**Purpose.** Generated report. Opens: # solmargintrader — atomic current facts / > Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
 
 **Use.** Read it.
 
 #### `llms-full.txt`
 
-`data` · 2111 lines · 108,845 B · description: **derived**
+`data` · 50 lines · 6,535 B · description: **derived**
 
-**Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / ---
+**Purpose.** Generated report. Opens: # solmargintrader — current operator and architecture reference / > Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
+
+**Use.** Read it.
+
+#### `llms-sitemap.txt`
+
+`data` · 3162 lines · 275,918 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # solmargintrader — source sitemap / > Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
 
 **Use.** Read it.
 
 #### `llms-small.txt`
 
-`data` · 10 lines · 1,320 B · description: **derived**
+`data` · 30 lines · 3,856 B · description: **derived**
 
-**Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader (small)
+**Purpose.** Generated report. Opens: # solmargintrader — budgeted navigation digest / > Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
 
 **Use.** Read it.
 
 #### `llms.txt`
 
-`data` · 47 lines · 2,734 B · description: **derived**
+`data` · 15 lines · 900 B · description: **derived**
 
-**Purpose.** Generated report. Opens: <!-- generated: llms-suite 1.0, 2026-09-25; verified-as-of 2026-09-25; local paths rewritten to repo-relative --> / # solmargintrader
+**Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
 
 **Use.** Read it.
 
 #### `memory.md`
 
-`doc` · 1681 lines · 325,167 B · description: **extracted**
+`doc` · 482 lines · 82,531 B · description: **extracted**
 
-**Purpose.** Version: 381 Delta: v380 to v381; install actual managed availability and retain final acceptance/CI delivery tail. Delta: v379 to v380; record integrated source checks, review repairs and pending installed activation.
+**Purpose.** Version: 383 Delta: v382 to v383; verified metadata/FIFO repairs, bounded audit coverage and delivery tail. Delta: v381 to v382; start source-backed bootstrap and maintained-wiki audit.
 
 **Use.** Read it.
 
@@ -230,9 +239,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1728 lines · 102,098 B · description: **extracted**
+`doc` · 1743 lines · 102,517 B · description: **extracted**
 
-**Purpose.** Version: 184 Delta: v183 to v184; preserve seven-part turnkey CLI, UI, service, health and Chrome request plus resume. Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.
+**Purpose.** Version: 186 Delta: v185 to v186; record authorized repo-bootstrapper execution. Delta: v184 to v185; record repo-bootstrapper wiki requirement.
 
 **Use.** Read it.
 
@@ -258,7 +267,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-125 files.
+128 files.
 
 #### `docs/API.md`
 
@@ -270,9 +279,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ARCHITECTURE.md`
 
-`doc` · 189 lines · 12,376 B · description: **extracted**
+`doc` · 212 lines · 13,735 B · description: **extracted**
 
-**Purpose.** Eight components with explicit execution boundaries. The backtester and research do not place orders. The extension, the executor and the liquidity manager each have their own live-capable execution path. Soltui reads research and liquidity status; MongoDB is a derived copy, never an execution dependency.
+**Purpose.** Ten components have explicit execution boundaries. Backtester, research, Oracle, Bot Manager and ecosystem automation do not place orders. The extension and optional executor retain separately gated live-capable paths. SolTUI has a separately armed
 
 **Use.** Read it.
 
@@ -286,9 +295,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/COMPONENTS.md`
 
-`doc` · 266 lines · 12,949 B · description: **extracted**
+`doc` · 290 lines · 14,269 B · description: **extracted**
 
-**Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. Dependency direction, strictly one-way:
+**Purpose.** What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md` is the flat file map; this page is the shape of the thing. The ten components have explicit ownership boundaries. `backtester/` supplies the
 
 **Use.** Read it.
 
@@ -310,7 +319,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 321 lines · 20,654 B · description: **extracted**
+`doc` · 321 lines · 20,608 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -358,7 +367,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ECOSYSTEM-WIKI.md`
 
-`doc` · 104 lines · 6,072 B · description: **extracted**
+`doc` · 152 lines · 9,454 B · description: **extracted**
 
 **Purpose.** The control room wiki collects the Oracle, ecosystem supervisor, Bot Manager and Backtester documentation in one searchable snapshot. It also includes the architecture, installation, testing, lifecycle, operating and accepted UI design
 
@@ -374,7 +383,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 28633 lines · 1,464,645 B · description: **extracted**
+`doc` · 29910 lines · 1,516,751 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -406,9 +415,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/MCP.md`
 
-`doc` · 25 lines · 1,134 B · description: **extracted**
+`doc` · 82 lines · 4,001 B · description: **extracted**
 
-**Purpose.** This repository does not ship an MCP server, register MCP tools, or require a repository registry in `extension/src/core/commands.js`. They are not MCP transports. Development agents may have machine-wide MCP connections such as Stele and the global
+**Purpose.** The repository ships one local stdio MCP server in `oracle/server.py`, installed as `soloracle-mcp` by `oracle/pyproject.toml`. It exposes read-only archive views, guide routing, readiness and advisory veto. It never signs or submits orders.
 
 **Use.** Read it.
 
@@ -430,7 +439,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/SECURITY.md`
 
-`doc` · 104 lines · 6,084 B · description: **extracted**
+`doc` · 135 lines · 7,827 B · description: **extracted**
 
 **Purpose.** This repository contains software that can move real money. Two assets matter: **signing keys** and the **Jupiter API key**. For the extension, `full-auto` is the only mode that uses its local signing key. Rules, all enforced in
 
@@ -446,7 +455,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/TESTING.md`
 
-`doc` · 283 lines · 21,413 B · description: **extracted**
+`doc` · 304 lines · 22,540 B · description: **extracted**
 
 **Purpose.** The `botmanager/` package has its own unittest suite and CI job. Install the four regular local projects into an isolated Python 3.13 environment, then run from the repository root:
 
@@ -526,9 +535,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-managed-suite.md`
 
-`doc` · 259 lines · 14,817 B · description: **extracted**
+`doc` · 259 lines · 14,896 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Delta: Initial 0.7 managed-suite operations, complete CLI walkthrough, component telemetry and platform comparison. The manager 0.7 CLI contains the ordered command reference itself:
+**Purpose.** Version: 1.0.1 Delta: Patch-candidate environment path refreshed; installed 0.4.0 remains immutable. Initial 0.7 managed-suite operations, complete CLI walkthrough, component telemetry and platform comparison. The manager 0.7 CLI contains the ordered command reference itself:
 
 **Use.** Read it.
 
@@ -588,6 +597,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/code-deep-optimizer-2026-11-10-bootstrap.md`
+
+`doc` · 310 lines · 19,220 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; reconcile the performed audit with the generated receipt and preserve the failed intermediate run. This is a **CAPPED** source review, not a repository-wide clean certificate. It reviews six explicitly prioritized availability files from 695 eligible source files; 689 remain unreviewed by the new ledger.
+
+**Use.** Read it.
+
 #### `docs/code-optimizer-scope-2026-11-06.json`
 
 `doc` · 329 lines · 11,977 B · description: **derived**
@@ -606,9 +623,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/codebase-overview.md`
 
-`doc` · 372 lines · 25,933 B · description: **extracted**
+`doc` · 423 lines · 28,877 B · description: **extracted**
 
-**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Eight components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
+**Purpose.** A file map for orientation, grouped by directory. Every path here is checked by Ten components with separate execution boundaries: Read `CLAUDE.md` before changing any of them; it carries the non-negotiables per
 
 **Use.** Read it.
 
@@ -622,15 +639,15 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/external-calls.md`
 
-`doc` · 136 lines · 14,812 B · description: **extracted**
+`doc` · 170 lines · 19,596 B · description: **extracted**
 
-**Purpose.** Inventory reviewed against source on 2026-11-06. A call includes public HTTP/RPC, MongoDB, browser/OS services, and child processes. The tables name the transport boundary and the logical callers that share it; they do not count each RPC inside a
+**Purpose.** The original inventory was reviewed on 2026-11-06. The managed-suite, Oracle and ecosystem boundary supplement below was reviewed on 2026-11-10. A call includes public HTTP/RPC, MongoDB, browser/OS services, and child processes. The tables name the transport
 
 **Use.** Read it.
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1590 lines · 48,123 B · description: **derived**
+`doc` · 1774 lines · 53,354 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -662,7 +679,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/logging.md`
 
-`doc` · 94 lines · 5,503 B · description: **extracted**
+`doc` · 130 lines · 8,197 B · description: **extracted**
 
 **Purpose.** What each component records, where it goes, and — the part worth reading — which paths currently record nothing. The extension's real log is **not the console**. `src/storage/store.js` defines four
 
@@ -670,9 +687,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/onboarding.md`
 
-`doc` · 146 lines · 6,043 B · description: **extracted**
+`doc` · 157 lines · 6,919 B · description: **extracted**
 
-**Purpose.** An offline verification path, followed by optional component setup. Identify the two components that can move money before running any live command. Seven components with different failure modes:
+**Purpose.** An offline verification path, followed by optional component setup. Read each execution boundary before running any live command. Ten components with different failure modes: Read `CLAUDE.md` before touching anything. It carries the non-negotiables per component and
 
 **Use.** Read it.
 
@@ -732,6 +749,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/repo-bootstrap-audit-2026-11-10.md`
+
+`doc` · 93 lines · 9,990 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: Refresh the ten-component workspace, maintained wiki, bounded availability fix and retrieval evidence. Task: TASK-1256. Baseline: 70ac8b74527281a9e49a4be22992b4ee44e8805e.
+
+**Use.** Read it.
+
 #### `docs/repository-review-2026-11-08.md`
 
 `doc` · 196 lines · 16,369 B · description: **extracted**
@@ -742,7 +767,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/requirements.md`
 
-`doc` · 36 lines · 2,604 B · description: **extracted**
+`doc` · 41 lines · 3,234 B · description: **extracted**
 
 **Purpose.** These requirements describe existing code boundaries, not future product promises. interpreter range and locked dependencies live in `liquidity/pyproject.toml` and `uv.lock`. remains ESM with zero runtime/development dependencies and no build step.
 
@@ -787,6 +812,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 1727 lines · 271,950 B · description: **extracted**
 
 **Purpose.** Archived on 2026-11-08. Active: repo-bootstrapper and code-deep-optimizer; Stele TASK-723. Base: eebadbb5a937aa485825016650589bd5a4538b0d.
+
+**Use.** Read it.
+
+#### `docs/archive/memory-2026-11-10.md`
+
+`doc` · 1207 lines · 245,578 B · description: **extracted**
+
+**Purpose.** Archived on 2026-11-10. The paper service and actual backtest-to-forward handoff are verified as described below. Delivery is tracked by https://github.com/mithudso/solmargintrader/pull/185. All 11 non-optional CI jobs passed on implementation commit 08d7807f76a98e983154f4b0a787be3f7b821665. The final notes/comment push must pass the same checks before merge.
 
 **Use.** Read it.
 
@@ -25622,6 +25655,28 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ---
 
+## .cdo
+
+2 files.
+
+#### `.cdo/ledger.json`
+
+`config` · 371 lines · 7,182 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (files, runs, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/remaining-2026-11-10.json`
+
+`config` · 2765 lines · 50,992 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+---
+
 ## .claude
 
 2 files.
@@ -26184,7 +26239,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/machine_health.py`
 
-`code-python` · 316 lines · 11,810 B · description: **extracted**
+`code-python` · 316 lines · 11,826 B · description: **extracted**
 
 **Purpose.** Bounded, inert availability measurements for collectors and alert engines. This module never opens an owner for writing. Availability is not a claim about financial reconciliation, market certification or permission to trade.
 
@@ -26314,7 +26369,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/suite.py`
 
-`code-python` · 879 lines · 31,581 B · description: **extracted**
+`code-python` · 888 lines · 31,923 B · description: **extracted**
 
 **Purpose.** One availability parent around the existing manager and control-room owner. The suite does not create bot intent, record market data or start research. Its OS service restarts availability; the existing Supervisor retains trading state.
 
@@ -26324,7 +26379,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/suite_service.py`
 
-`code-python` · 365 lines · 12,926 B · description: **extracted**
+`code-python` · 365 lines · 12,942 B · description: **extracted**
 
 **Purpose.** Explicit user-service installation for the availability suite. launchd starts at user login, not before login/FileVault unlock. Linux uses the user systemd manager; a persistent user manager across logout requires linger.
 
@@ -26682,7 +26737,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_machine_health.py`
 
-`test` · 180 lines · 6,938 B · description: **extracted**
+`test` · 262 lines · 10,863 B · description: **extracted**
 
 **Purpose.** Collectors must measure observed owners without creating runtime state.
 
@@ -26858,7 +26913,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/README.md`
 
-`doc` · 50 lines · 2,977 B · description: **extracted**
+`doc` · 53 lines · 3,205 B · description: **extracted**
 
 **Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
 
@@ -27012,7 +27067,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/ui_service.py`
 
-`code-python` · 402 lines · 13,703 B · description: **extracted**
+`code-python` · 402 lines · 13,735 B · description: **extracted**
 
 **Purpose.** Keep the installed control room independent of the paper pipeline process. A process ID is diagnostic. Readiness requires the canonical owner lock, its private generation checkpoint and a matching response from the bound HTTP port.
 
@@ -28948,7 +29003,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/build_doc_index.py`
 
-`code-python` · 180 lines · 6,253 B · description: **extracted**
+`code-python` · 181 lines · 6,342 B · description: **extracted**
 
 **Purpose.** Generate `docs/high_signal_file_index.json` from `docs/codebase-overview.md`. python3 scripts/build_doc_index.py The overview is the human-readable file map; the JSON is the machine-readable one for LLM retrieval.
 
