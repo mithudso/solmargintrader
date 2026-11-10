@@ -682,6 +682,10 @@ class RuntimeLedger:
                 )
             # Controls address the active run. A saved edit must not disable its stop.
             spec = BotSpec.from_dict(row["spec"])
+            if operation == "start":
+                from .strategies import validate_runtime_config
+
+                validate_runtime_config(spec)
             binding = self._control_binding(spec, operation, request_id)
             if operation == "start" and row["observed"] in ("failed", "blocked"):
                 raise ManagerError(

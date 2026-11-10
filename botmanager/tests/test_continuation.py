@@ -360,3 +360,448 @@ class ContinuationTests(unittest.TestCase):
                         ManagerError, "retained observed history"
                     ):
                         rebind_checkpoint(larger, data, before, entries_paused=True)
+
+    def test_grid_rollover_commits_empty_waiting_segment_and_resumes_same_account(self):
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        from uuid import uuid4
+
+        from botmanager.config import resolve_config
+        from botmanager.domain import BotSpec, fingerprint
+        from botmanager.ledger import RuntimeLedger
+        from botmanager.oracle_data import capture, prepare_descriptor
+        from botmanager.worker import prospective_tick
+
+        from tests.test_oracle_data import START, archive
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "oracle.sqlite3"
+            archive(path, 60)
+            descriptor = prepare_descriptor(
+                path, capital_quote=1000, strategy_id="grid", now=START + 60
+            )
+            data = capture(descriptor, now=START + 60)
+            base, origin = descriptor["activation_watermark"], descriptor["start_ts"]
+            completed = 512
+
+            def page(_path, *, after, now, **unused):
+                end = min(after + 1536, base + completed * 12 + 1)
+                points = []
+                for sequence in range(after + 1, end + 1):
+                    observed = origin + (sequence - base - 1) * 5
+                    bar = (observed - origin) // 60
+                    price = float(100 + 12 * np.sin(bar / 17) + 4 * np.sin(bar / 3))
+                    observation = {
+                        "event_id": f"p-{sequence}",
+                        "source": "coinbase_recorder",
+                        "venue": "coinbase_exchange",
+                        "instrument": "SOL/USD",
+                        "kind": "stream_snapshot_mid",
+                        "observed_at": observed,
+                        "received_at": observed,
+                        "price": price,
+                    }
+                    points.append(
+                        {
+                            "sequence": sequence,
+                            "sha256": fingerprint(observation),
+                            "observation": observation,
+                        }
+                    )
+                return {
+                    "policy_hash": descriptor["policy_hash"],
+                    "high_watermark": end,
+                    "observations": points,
+                    "latest_observed": now,
+                    "latest_received": now,
+                }
+
+            spec = BotSpec.create(
+                "empty-boundary", "grid", resolve_config("grid", {}, {}, None)
+            )
+            from botmanager.store import ManagerStore
+
+            ledger = RuntimeLedger(Path(tmp) / "manager")
+            manager = ManagerStore(ledger.home)
+            manager.create_spec(spec)
+            ledger.register(spec, data)
+            ledger.control(spec, "start", str(uuid4()))
+            generation = ledger.claim(spec.bot_id, "owner")
+            now = origin + 512 * 60 + 1
+            with patch("botmanager.oracle_data.read_page", side_effect=page):
+                while ledger.get(spec.bot_id)["cursor"] < 512:
+                    prospective_tick(
+                        ledger, ledger.get(spec.bot_id), generation, now=now
+                    )
+                before = ledger.get(spec.bot_id)
+                self.assertEqual(len(before["input"]["bars"]), 512)
+                prospective_tick(ledger, before, generation, now=now)
+                boundary = RuntimeLedger(ledger.home).get(spec.bot_id)
+                self.assertEqual(boundary["input"]["bars"], [])
+                self.assertEqual(boundary["input"]["bar_offset"], 512)
+                self.assertEqual(
+                    boundary["input"]["prospective"]["health"],
+                    "waiting_for_completed_bin",
+                )
+                self.assertEqual(
+                    boundary["input"]["prior_segment"],
+                    fingerprint(
+                        {"input": before["input"], "checkpoint": before["checkpoint"]}
+                    ),
+                )
+                for key, value in before["checkpoint"].items():
+                    if key not in ("fills", "prior_segment"):
+                        self.assertEqual(boundary["checkpoint"][key], value)
+                self.assertEqual(
+                    ledger.fills(spec.bot_id), before["checkpoint"]["fills"]
+                )
+                # Public reads use the pinned active account, even after a
+                # conflicting saved draft. They must never replay a fresh prefix.
+                manager.edit(
+                    spec.bot_id,
+                    {"capital_usd": 2000},
+                    expected_revision=1,
+                    request_id=str(uuid4()),
+                )
+
+                def public_read_check(row):
+                    from botmanager.registry import CommandContext, dispatch
+
+                    files = {
+                        name: (ledger.home / name).read_bytes()
+                        for name in ("manager.sqlite3", "runtime.sqlite3")
+                    }
+                    current = row["input"]["prospective"]
+                    source = {
+                        "policy_hash": descriptor["policy_hash"],
+                        "high_watermark": current["cursor"],
+                        "latest_observed": now,
+                        "latest_received": now,
+                        "read_at": now,
+                    }
+                    with (
+                        patch(
+                            "botmanager.input_commands.read_page", return_value=source
+                        ),
+                        patch("botmanager.input_commands.time.time", return_value=now),
+                        patch(
+                            "botmanager.strategies.evaluate",
+                            side_effect=AssertionError(
+                                "data-check replayed a fresh account"
+                            ),
+                        ),
+                    ):
+                        answer = dispatch(
+                            "data-check",
+                            {"identity": spec.bot_id},
+                            CommandContext(home=ledger.home),
+                        )
+                    self.assertTrue(answer["ok"], answer)
+                    self.assertTrue(answer["data"]["compatible"], answer)
+                    self.assertEqual(ledger.get(spec.bot_id), row)
+                    for name, content in files.items():
+                        self.assertEqual((ledger.home / name).read_bytes(), content)
+
+                public_read_check(boundary)
+                from botmanager.domain import ManagerError
+
+                fresh = RuntimeLedger(Path(tmp) / "must-not-reset")
+                with self.assertRaises(ManagerError) as error:
+                    fresh.register(spec, boundary["input"])
+                self.assertEqual(error.exception.code, "reconciliation_required")
+                self.assertFalse(fresh.path.exists())
+                ledger.recover("boundary-restart")
+                generation = ledger.claim(spec.bot_id, "boundary-restart")
+                completed = 513
+                prospective_tick(
+                    ledger,
+                    ledger.get(spec.bot_id),
+                    generation,
+                    now=origin + 513 * 60 + 1,
+                )
+            resumed = ledger.get(spec.bot_id)
+            self.assertEqual(resumed["cursor"], 513)
+            public_read_check(resumed)
+            t = np.arange(513)
+            close = 100 + 12 * np.sin(t / 17) + 4 * np.sin(t / 3)
+            full = run(
+                "grid",
+                {
+                    "ts": origin + t * 60,
+                    "open": close,
+                    "high": close,
+                    "low": close,
+                    "close": close,
+                },
+            )
+            self.assertEqual(
+                ledger.fills(spec.bot_id), [asdict(trade) for trade in full.trades]
+            )
+            self.assertEqual(resumed["checkpoint"]["equity_quote"], full.equity[-1])
+            self.assertEqual(
+                resumed["checkpoint"]["lots"],
+                [asdict(lot) for lot in full.open_lots_at_end],
+            )
+
+    def test_draft_extremes_refuse_before_runtime_allocation_source_research_or_adoption(
+        self,
+    ):
+        from unittest.mock import patch
+
+        from botmanager.config import resolve_config
+        from botmanager.domain import BotSpec, ManagerError
+        from botmanager.input_commands import check, prepare
+        from botmanager.learning import learned_spec, shadow_pair
+        from botmanager.research import candidate_spec, candidates, execute
+        from botmanager.strategies import (
+            evaluate,
+            rebind_checkpoint,
+            validate_registration,
+            validate_runtime_config,
+        )
+
+        for family, field in (("trend", "slow_period"), ("momentum", "window")):
+            for lookback in (2049, 1_000_000_000):
+                spec = BotSpec.create(
+                    family, family, resolve_config(family, {}, {field: lookback}, None)
+                )
+                self.assertEqual(
+                    spec.resolved_values[field], lookback
+                )  # retained editable draft
+                with (
+                    patch(
+                        "numpy.array",
+                        side_effect=AssertionError("allocation before guard"),
+                    ),
+                    patch(
+                        "botmanager.input_commands.prepare_descriptor",
+                        side_effect=AssertionError("source capture before guard"),
+                    ),
+                ):
+                    for action in (
+                        lambda spec=spec: validate_runtime_config(spec),
+                        lambda spec=spec: validate_registration(spec, None),
+                        lambda spec=spec: evaluate(spec, None, 1, research=True),
+                        lambda spec=spec: rebind_checkpoint(
+                            spec, None, None, entries_paused=True
+                        ),
+                        lambda spec=spec: prepare(spec, {}, {}),
+                        lambda spec=spec: candidate_spec(spec, {}),
+                        lambda spec=spec: candidates(spec, {}),
+                        lambda spec=spec: execute(None, spec, None, {}),
+                    ):
+                        with self.assertRaises(ManagerError) as error:
+                            action()
+                        self.assertEqual(error.exception.code, "resource_limit")
+                    diagnosed = check(spec, descriptor_path="/absent/not-read")
+                    self.assertFalse(diagnosed["compatible"])
+                    self.assertEqual(diagnosed["reason"], "resource_limit")
+            baseline = BotSpec.create(
+                family, family, resolve_config(family, {}, {}, None)
+            )
+            for action in (
+                lambda baseline=baseline, field=field: candidate_spec(
+                    baseline, {field: 1_000_000_000}
+                ),
+                lambda baseline=baseline, field=field: learned_spec(
+                    baseline, {field: 1_000_000_000}, "evidence"
+                ),
+                lambda baseline=baseline, field=field: shadow_pair(
+                    "/absent/not-created",
+                    baseline,
+                    {field: 1_000_000_000},
+                    "evidence",
+                    {},
+                ),
+            ):
+                with self.assertRaises(ManagerError) as error:
+                    action()
+                self.assertEqual(error.exception.code, "resource_limit")
+
+    def test_at_limit_manager_tail_and_checkpoint_stay_bounded_across_many_segments(
+        self,
+    ):
+        import tempfile
+        from pathlib import Path
+
+        from botmanager.config import resolve_config
+        from botmanager.data import load_recording
+        from botmanager.domain import BotSpec, ManagerError, fingerprint
+        from botmanager.strategies import (
+            MAX_RUNTIME_LOOKBACK_BARS,
+            MAX_RUNTIME_RETAINED_BARS,
+            evaluate,
+            rebind_checkpoint,
+            validate_runtime_config,
+        )
+
+        from tests.test_paper import recording
+
+        arrays = prices(4353)
+        with tempfile.TemporaryDirectory() as tmp:
+            for family, field in (("trend", "slow_period"), ("momentum", "window")):
+                spec = BotSpec.create(
+                    family,
+                    family,
+                    resolve_config(
+                        family, {}, {field: MAX_RUNTIME_LOOKBACK_BARS}, None
+                    ),
+                )
+                validate_runtime_config(spec)
+                base = load_recording(recording(Path(tmp), 8), strategy_id=family)
+                checkpoint = None
+                for start in range(0, len(arrays["ts"]), 128):
+                    data = copy.deepcopy(base)
+                    data.update(
+                        origin_hash=base["snapshot_hash"],
+                        bar_offset=start,
+                        prior_segment=str(start) if start else None,
+                        bars=[
+                            {key: value.item() for key, value in zip(arrays, row)}
+                            for row in zip(
+                                *(
+                                    values[start : start + 128]
+                                    for values in arrays.values()
+                                )
+                            )
+                        ],
+                    )
+                    data["snapshot_hash"] = fingerprint(
+                        {
+                            key: value
+                            for key, value in data.items()
+                            if key != "snapshot_hash"
+                        }
+                    )
+                    checkpoint = evaluate(
+                        spec, data, start + len(data["bars"]), previous=checkpoint
+                    )
+                    checkpoint = json.loads(json.dumps(checkpoint))
+                    self.assertLessEqual(
+                        len(checkpoint["continuation"]["tail"]["ts"]),
+                        MAX_RUNTIME_RETAINED_BARS,
+                    )
+                    self.assertLess(len(json.dumps(checkpoint)), 400000)
+                saved = copy.deepcopy(checkpoint)
+                with self.assertRaises(ManagerError) as error:
+                    rebind_checkpoint(
+                        spec.edited({field: 1_000_000_000}),
+                        data,
+                        checkpoint,
+                        entries_paused=True,
+                    )
+                self.assertEqual(error.exception.code, "resource_limit")
+                self.assertEqual(checkpoint, saved)
+                expected_tail = 2048 if family == "trend" else 2050
+                self.assertEqual(
+                    len(checkpoint["continuation"]["tail"]["ts"]), expected_tail
+                )
+
+    def test_legacy_unsupported_runtime_cannot_be_admitted_but_can_be_stopped(self):
+        import tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        from uuid import uuid4
+
+        from botmanager.config import resolve_config
+        from botmanager.data import load_recording
+        from botmanager.domain import BotSpec, ManagerError
+        from botmanager.ledger import RuntimeLedger
+
+        from tests.test_paper import recording
+
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = BotSpec.create(
+                "old-huge-lookback",
+                "momentum",
+                resolve_config("momentum", {}, {"window": 1_000_000_000}, None),
+            )
+            data = load_recording(recording(Path(tmp), 8), strategy_id="momentum")
+            ledger = RuntimeLedger(Path(tmp) / "manager")
+            # Seed the state an older manager could register; the current public
+            # registration guard rejects this same draft before opening a store.
+            with patch("botmanager.strategies.validate_registration"):
+                ledger.register(spec, data)
+            with self.assertRaises(ManagerError) as error:
+                ledger.control(spec, "start", str(uuid4()))
+            self.assertEqual(error.exception.code, "resource_limit")
+            self.assertEqual(ledger.get(spec.bot_id)["desired"], "stopped")
+            with ledger.connection() as db:
+                self.assertEqual(
+                    db.execute("SELECT count(*) FROM requests").fetchone()[0], 0
+                )
+            self.assertEqual(
+                ledger.control(spec, "stop", str(uuid4()))["outcome"], "skipped"
+            )
+
+    def test_direct_research_owner_refuses_extremes_before_temporal_exposure(self):
+        from unittest.mock import patch
+
+        from botmanager.config import resolve_config
+        from botmanager.domain import BotSpec
+
+        from soltui.experiments import ExperimentError, ExperimentStore
+        from soltui.research_owner import handle
+        from soltui.tests.test_research_owner import OwnerProtocolTests
+
+        fixture = OwnerProtocolTests(
+            "test_inert_status_does_not_initialize_absent_owner"
+        )
+        fixture.setUp()
+        try:
+            ExperimentStore(fixture.authority)
+            fixture.bind()
+            for operation, spec, options in (
+                (
+                    "backtest",
+                    BotSpec.create(
+                        "huge",
+                        "momentum",
+                        resolve_config("momentum", {}, {"window": 1_000_000_000}, None),
+                    ),
+                    None,
+                ),
+                (
+                    "research",
+                    BotSpec.create(
+                        "normal", "momentum", resolve_config("momentum", {}, {}, None)
+                    ),
+                    {"ranges": {"window": [1_000_000_000]}},
+                ),
+            ):
+                params = {
+                    "spec": spec.to_dict(),
+                    "descriptor": {"start_ts": 1700000040, "end_ts": 1700000640},
+                }
+                if options is not None:
+                    params["options"] = options
+                with (
+                    patch.object(
+                        ExperimentStore,
+                        "manager_pre_read",
+                        side_effect=AssertionError("temporal exposure before guard"),
+                    ),
+                    patch(
+                        "botmanager.data.load_recording",
+                        side_effect=AssertionError("source read before guard"),
+                    ),
+                    self.assertRaisesRegex(ExperimentError, "resource_limit"),
+                ):
+                    handle(
+                        {
+                            **fixture.request,
+                            "operation": operation,
+                            "params": params,
+                        }
+                    )
+            with ExperimentStore(fixture.authority)._connect() as db:
+                self.assertEqual(
+                    db.execute("SELECT count(*) FROM manager_exposures").fetchone()[0],
+                    0,
+                )
+                self.assertEqual(
+                    db.execute("SELECT count(*) FROM manager_attempts").fetchone()[0], 0
+                )
+        finally:
+            fixture.doCleanups()

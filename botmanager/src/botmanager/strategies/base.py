@@ -7,6 +7,22 @@ from dataclasses import asdict
 from ..data import engine_identity, validate_snapshot
 from ..domain import ManagerError, fingerprint
 
+# Runtime support is deliberately narrower than the editable draft schema.
+# TsMomentum needs window+2 retained observations; Trend needs slow_period.
+MAX_RUNTIME_LOOKBACK_BARS = 2048
+MAX_RUNTIME_RETAINED_BARS = MAX_RUNTIME_LOOKBACK_BARS + 2
+
+
+def validate_runtime_config(spec):
+    """Refuse unsupported history before source capture or array allocation."""
+    field = {"trend": "slow_period", "momentum": "window"}.get(spec.strategy_id)
+    if field is not None and spec.resolved_values[field] > MAX_RUNTIME_LOOKBACK_BARS:
+        raise ManagerError(
+            "resource_limit",
+            "Reference runtime supports at most 2048 lookback bars; larger settings remain draft-only.",
+            3,
+        )
+
 
 def compatible_engine(pinned, loaded):
     """A packaging-only version bump does not invalidate the economic code."""
@@ -18,6 +34,7 @@ def compatible_engine(pinned, loaded):
 
 
 def validate_input(spec, data):
+    validate_runtime_config(spec)
     validate_snapshot(data)
     if spec.mode != "paper" or spec.resolved_values["armed"] or spec.bar_seconds != 60:
         raise ManagerError(

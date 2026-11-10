@@ -34,7 +34,14 @@ def _configuration(spec: BotSpec, data: dict[str, Any]):
             "resource_limit", "Reference replay supports at most 100 rungs.", 3
         )
     d = data["descriptor"]
-    mid = data.get("origin_close", data["bars"][0]["close"])
+    # A committed segment can have no active bars while waiting for its first
+    # closed bin. Do not evaluate the first-bar fallback when the origin exists.
+    if "origin_close" in data:
+        mid = data["origin_close"]
+    elif data["bars"]:
+        mid = data["bars"][0]["close"]
+    else:
+        raise ManagerError("input_unavailable", "Grid origin price is unavailable.", 3)
     span = values["range_pct"] / 100
     if (
         values["range_pct"] >= MAX_REFERENCE_RANGE_PCT

@@ -5,7 +5,25 @@ from __future__ import annotations
 from ..data import engine_identity
 from ..domain import ManagerError, fingerprint
 from . import grid
-from .base import compatible_engine, evaluate_family, identity, validate_input
+from .base import (
+    MAX_RUNTIME_LOOKBACK_BARS,
+    MAX_RUNTIME_RETAINED_BARS,
+    compatible_engine,
+    evaluate_family,
+    identity,
+    validate_input,
+    validate_runtime_config,
+)
+
+__all__ = [
+    "MAX_RUNTIME_LOOKBACK_BARS",
+    "MAX_RUNTIME_RETAINED_BARS",
+    "evaluate",
+    "rebind_checkpoint",
+    "validate_checkpoint",
+    "validate_registration",
+    "validate_runtime_config",
+]
 
 
 def evaluate(
@@ -32,6 +50,12 @@ def evaluate(
 
 def validate_registration(spec, data):
     validate_input(spec, data)
+    if data.get("bar_offset", 0) != 0 or data.get("prior_segment") is not None:
+        raise ManagerError(
+            "reconciliation_required",
+            "Continued input requires its attributed active account; it cannot initialize a new run.",
+            3,
+        )
     if not compatible_engine(
         data["identity"]["engine_identity"], engine_identity(spec.strategy_id)
     ):

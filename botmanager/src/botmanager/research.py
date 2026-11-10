@@ -47,6 +47,9 @@ def partition(count, *, horizon, warmup, blocks=10):
 
 
 def candidate_spec(spec, changes):
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     from .config import DEFAULTS, validate_values
 
     if not isinstance(changes, dict) or not set(changes) <= set(
@@ -68,10 +71,15 @@ def candidate_spec(spec, changes):
             + spec.shared_compatibility["reason"],
         }
     raw["config_hash"] = fingerprint({key: raw[key] for key in spec._config_body()})
-    return BotSpec.from_dict(raw)
+    proposed = BotSpec.from_dict(raw)
+    validate_runtime_config(proposed)
+    return proposed
 
 
 def candidates(spec, ranges, *, max_configurations=32):
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     if not isinstance(ranges, dict) or len(ranges) > 8:
         raise ValueError("invalid search ranges or budget")
     if any(not isinstance(v, list) or not v or len(v) > 32 for v in ranges.values()):
@@ -262,6 +270,9 @@ def execute(
     authority_context=None,
 ):
     """Trusted owner orchestration. Test evaluator injection is not a wire API."""
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     if set(options) != {
         "ranges",
         "horizon_bars",

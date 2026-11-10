@@ -1,7 +1,7 @@
 # Task 4 report — bounded canonical continuation
 
-Version: 1.0.0
-Delta: initial implementation and verification receipt.
+Version: 1.2.0
+Delta: 1.1.0 to 1.2.0; also validate continued data-check reads through the pinned account without replay and refuse account-less continued registration.
 
 Implemented versioned continuation directly in canonical `backtester.core.engine`, `gridsim`, and `dcasim`. The existing loops still own decisions, costs and fills. Grid preserves fixed original geometry, resting intent, lot basis and carry. DCA preserves deal/safety/TP/cooldown state and pending next-open intent. Trend and Momentum retain bounded observed indicator tails, global warmup indices, position/account state and pending targets. Trend owns its hysteresis checkpoint hook. Other signal strategies do not advertise resumable state.
 
@@ -24,3 +24,33 @@ Verification (Python `/Users/mitch/.venvs/solbot/bin/python`, source PYTHONPATH,
 - Gap, duplicate observation, configuration-binding tampering, pause/exits and flat-rebind/history-bound refusal tests passed.
 
 Earlier full-suite attempts are not acceptance receipts: using the wrong manager discovery top directory caused spawned-worker import failures. The controller owns the correctly rooted final full manager run. An earlier 996-test backtester run found only Finder metadata in a frozen snapshot and stale index failures; the controller owns those integration fixes and the final full suite. Package versions/pins, indexes, external delivery and independent installed acceptance remain controller-owned. No claim of seven days of measured live evidence is made; tests prove the runtime can continue beyond the old bound while preserving the account.
+
+
+## Independent review P1 remediation
+
+The Grid constructor now reads `origin_close` explicitly and reads the first active bar only when the origin is absent. If both are unavailable it returns the recoverable `input_unavailable` error. A worker/ledger regression reaches 512 real completed bars, performs the next poll with no new completed bin, commits an empty active segment, verifies the immutable predecessor and unchanged economic account, restarts, and resumes at bar 513 with exact canonical fills, lots and equity.
+
+Manager runtime support now has a finite parameter budget: `MAX_RUNTIME_LOOKBACK_BARS = 2048` for Trend `slow_period` and Momentum `window`. The maximum retained signal history is 2,050 observations because canonical Momentum warmup requires `window + 2`. Editable draft validation remains unchanged: larger settings can be saved and inspected, but execution returns `resource_limit`. No parameter, indicator history or timeframe is clamped. Shared offline canonical backtester behavior is unchanged.
+
+`validate_runtime_config(spec)` executes before reference input validation or NumPy array creation. Registration, direct evaluation/research evaluation and flat rebind consume this guard. Input preparation/data checks run it before source selection or capture. Direct runtime start validates the pinned active specification before admission or accepting a request receipt; stop remains usable for legacy unsupported configurations. Research candidate construction, candidate enumeration and execution reject unsupported incumbent/proposal settings before planning or reserving attempts. The independent headless owner repeats that validation before client discovery, temporal pre-read exposure and source capture. Learned-spec construction and shadow-pair preparation reject unsupported proposals before selecting a prospective source. Rebind and adoption refusal preserve the incumbent account.
+
+The controller exposes the same exported constants in the schema and guards registry input/research routes before source capture. Draft schema fields retain their original editing behavior.
+
+New boundary checks include 2,049 and one-billion-bar drafts, exact-at-limit 2,048-bar settings, 4,353 observed bars over 35 segments with tail length at most 2,050 and checkpoints below 400 KB, unchanged incumbent checkpoints after extreme proposed adoption, rejected direct start of an older unsupported registration without a new request receipt, usable stop, and direct owner refusal before temporal exposure/attempt creation.
+
+Completed verification, all final exit codes 0:
+
+- `PYTHONPATH=botmanager/src:botmanager:. /Users/mitch/.venvs/solbot/bin/python -m unittest tests.test_continuation tests.test_strategy_parity tests.test_research tests.test_learning tests.test_oracle_data`: **44 tests passed**, log `/tmp/task4-p1-final-manager.log`.
+- `PYTHONPATH=botmanager/src:botmanager:. /Users/mitch/.venvs/solbot/bin/python -m unittest soltui.tests.test_research_owner backtester.tests.test_engine backtester.tests.test_engine_audit backtester.tests.test_gridsim backtester.tests.test_dcasim backtester.tests.test_open_prefix`: **135 tests passed**, log `/tmp/task4-p1-canonical-owner-correct-env.log`.
+- Ruff passed for all remediation-owned Python paths. `git diff --check` passed. Tests used the existing solbot interpreter with the worktree on PYTHONPATH; no packages, production state or services were modified.
+
+An earlier native-owner test invocation under the existing soltui interpreter lacked `solmargintrader-research-runtime` distribution metadata. That failed invocation is not an acceptance receipt; the successful existing solbot environment above supplies the required metadata.
+
+Resource claim clarification from the independent review: active input and checkpoint memory are bounded. Immutable attributed history intentionally grows linearly. Current ledger reads still verify prior segment hashes and historical fill ranges, so verification work grows with the amount of preserved history. This change does not claim constant total storage or constant history-verification time.
+
+
+## Continued public data-check correction
+
+The public `data-check` runtime path now selects the pinned active specification rather than a conflicting saved draft. It validates the existing source snapshot, compatible engine and retained checkpoint without invoking a fresh registration replay at cursor 1. Explicit descriptor checks still use fresh-registration validation. Fresh registration rejects continued input with a prior segment or nonzero bar offset because that input cannot initialize an attributed account by itself.
+
+The 512-bar regression now also saves a conflicting $2,000 draft while the active account retains $1,000. It invokes the actual public registry `data-check` at the empty rollover boundary and again after bar 513. Both reads remain compatible, never invoke strategy evaluation, preserve the complete runtime row, and leave both manager/runtime database bytes unchanged. Attempting to register the continued source into another home returns `reconciliation_required` before creating that runtime database. The targeted public regression passed independently (1 test, exit 0), and the complete 44-test focused command above was rerun on this final source into `/tmp/task4-p1-public-final-manager.log`.

@@ -103,6 +103,9 @@ def outcome_summary(outcomes):
 
 
 def learned_spec(spec, changes, evidence_digest):
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     if (
         not isinstance(changes, Mapping)
         or not changes
@@ -125,7 +128,9 @@ def learned_spec(spec, changes, evidence_digest):
             + spec.shared_compatibility["reason"],
         }
     raw["config_hash"] = fingerprint({key: raw[key] for key in spec._config_body()})
-    return BotSpec.from_dict(raw)
+    proposed = BotSpec.from_dict(raw)
+    validate_runtime_config(proposed)
+    return proposed
 
 
 def runtime_outcomes(run):
@@ -194,6 +199,8 @@ def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
     from .ledger import RuntimeLedger
     from .store import ManagerStore
 
+    # Validate both configurations before selecting or capturing a new source.
+    proposed = learned_spec(baseline, changes, evidence_digest)
     store, ledger = ManagerStore(home), RuntimeLedger(home)
     active = ledger.get(baseline.bot_id)
     if (
@@ -214,7 +221,6 @@ def shadow_pair(home, baseline, changes, evidence_digest, pair_ids):
         capital_quote=original["capital_quote"],
         strategy_id=baseline.strategy_id,
     )
-    proposed = learned_spec(baseline, changes, evidence_digest)
     results = []
     for role, spec in (("incumbent", baseline), ("challenger", proposed)):
         identifier = pair_ids[role]

@@ -310,6 +310,19 @@ def handle(request):
             raise ExperimentError("receipt does not bind accepted evidence proposal")
         store.manager_artifact(params["run_id"], "adoption_receipt", receipt)
         return {"identity": loaded, "receipt": receipt}
+    from botmanager.domain import BotSpec, ManagerError
+    from botmanager.research import candidates
+    from botmanager.strategies import validate_runtime_config
+
+    spec = BotSpec.from_dict(params["spec"])
+    try:
+        validate_runtime_config(spec)
+        if operation == "research":
+            candidates(spec, params["options"]["ranges"])
+    except ManagerError as exc:
+        raise ExperimentError(
+            "manager runtime configuration refused: " + exc.code
+        ) from None
     discovered, unknown_source = known_clients(configured, params["descriptor"])
     registered_roots = {
         str(Path(c["root"]).resolve()) for c in registration["known_clients"]
@@ -339,10 +352,8 @@ def handle(request):
         for client in registration["known_clients"]:
             store.manager_register_client(client)
         from botmanager.data import load_recording
-        from botmanager.domain import BotSpec
         from botmanager.research import backtest, execute
 
-        spec = BotSpec.from_dict(params["spec"])
         descriptor = params["descriptor"]
         if operation == "backtest":
             # Descriptive backtests consume all inspected dates, including failures.
