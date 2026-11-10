@@ -264,6 +264,106 @@
    "skipped_unchanged": 0,
    "started": "2026-11-10T18:15:00Z",
    "status": "CAPPED"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-10T18:20:08Z",
+   "id": "2026-11-10T18:20:08Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 6,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 6,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 6,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 6,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 6,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
+     "state": "ran"
+    },
+    "M4": {
+     "files": 6,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 0,
+     "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
+     "state": "ran"
+    },
+    "P1": {
+     "files": 6,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 6,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 6,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 6,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 6,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 0,
+     "reason": "Reviewed supported POSIX descriptors, O_NONBLOCK behavior, macOS/Linux branches and explicit native-Windows refusal; classification corrected from the original receipt.",
+     "state": "ran"
+    },
+    "S5": {
+     "files": 6,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 6,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
+     "state": "na"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 0,
+     "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
+     "state": "ran"
+    }
+   },
+   "reconciles_run_ids": [
+    "2026-11-10T18:08:26Z",
+    "2026-11-10T18:15:00Z"
+   ],
+   "reconciliation_note": "Reconstructs the same six-file review receipt after an erroneous post-receipt pass command created a partial run. No additional coverage or audit iteration.",
+   "reviewed": 6,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-10T18:20:08Z",
+   "status": "CAPPED"
   }
  ],
  "version": 1

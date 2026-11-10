@@ -1,7 +1,7 @@
 # Incremental code-quality audit — bootstrap 2026-11-10
 
-Version: 1.0.0
-Delta: Initial cumulative ledger and bounded availability-path audit.
+Version: 1.0.1
+Delta: v1.0.0 to v1.0.1; reconcile the performed audit with the generated receipt and preserve the failed intermediate run.
 
 This is a **CAPPED** source review, not a repository-wide clean certificate. It reviews six explicitly prioritized availability files from 695 eligible source files; 689 remain unreviewed by the new ledger. The existing 2026-11-08 report remains historical evidence and its 13 residual findings were not re-certified or silently closed here. The default planner's initial 50-file queue and 645 further paths were inspected as inventory only. The six availability files were prioritized under the caller's scope; unvisited paths remain ready for another run in `.cdo/remaining-2026-11-10.json`.
 
@@ -272,34 +272,38 @@ index: parent refreshes repository offline retrieval artifacts after all branche
 
 memory-central: no matching lesson rows consulted as authoritative · repository convention source verified · one concrete FIFO regression pattern from prior audit applied. Durable lesson: regular-file validation cannot bound a FIFO open unless O_NONBLOCK is set before fstat. Existing installed 0.7.0/0.4.0 environments and running producers were not modified. This source verification does not claim deployment, a physical reboot, live trading or comprehensive dependency-risk review.
 
+## Receipt reconciliation
+
+The ledger helper's receipt command closes the current run. The initial six-file review produced a valid receipt with 16 active passes and S4 incorrectly categorized as not applicable. A later pass command corrected S4 portability but implicitly started another run because the prior receipt had already finalized the original. That second receipt contained only S4 and exited 2. A later successful test command hid that nonzero shell status; this was a verification-record error.
+
+Both original run records remain in the ledger, including the failed run's explicit silent_drops list. The final reconciliation run checks that all six reviewed file hashes still match, records only the review work that actually happened, and carries reconciles_run_ids plus an explanatory note. This does not count as another audit iteration or additional file coverage. All pass states are written before one final receipt. The final receipt completed with exit 0 and no silently dropped passes. Dependency-risk evidence remains unavailable and explicitly not applicable to a claim of current package safety. No whole-repository clean claim is made.
+
 ## Passes that ran (receipt)
 
 | Pass | State | Files | Note |
 |---|---|---|---|
-| C1 | NOT RUN | 0 | no row recorded |
-| C2 | NOT RUN | 0 | no row recorded |
-| C3 | NOT RUN | 0 | no row recorded |
-| S1 | NOT RUN | 0 | no row recorded |
-| S2 | NOT RUN | 0 | no row recorded |
-| S3 | NOT RUN | 0 | no row recorded |
-| S4 | ran | 0 | Reviewed POSIX locking and O_NONBLOCK portability, supported macOS/Linux service branches and explicit native-Windows refusal. |
-| S5 | NOT RUN | 0 | no row recorded |
-| P1 | NOT RUN | 0 | no row recorded |
-| P2 | NOT RUN | 0 | no row recorded |
-| M1 | NOT RUN | 0 | no row recorded |
-| M2 | NOT RUN | 0 | no row recorded |
-| M3 | NOT RUN | 0 | no row recorded |
-| M4 | NOT RUN | 0 | no row recorded |
-| T1 | NOT RUN | 0 | no row recorded |
-| T2 | NOT RUN | 0 | no row recorded |
-| T3 | NOT RUN | 0 | no row recorded |
-| T4 | NOT RUN | 0 | no row recorded |
-| M5 | n/a | 0 | conditional; target is not a runnable tool |
+| C1 | ran | 6 |  |
+| C2 | ran | 6 |  |
+| C3 | ran | 6 |  |
+| S1 | ran | 6 |  |
+| S2 | ran | 6 |  |
+| S3 | ran | 6 |  |
+| S4 | ran | 0 | Reviewed supported POSIX descriptors, O_NONBLOCK behavior, macOS/Linux branches and explicit native-Windows refusal; classification corrected from the original receipt. |
+| S5 | ran | 6 |  |
+| P1 | ran | 6 |  |
+| P2 | ran | 6 |  |
+| M1 | ran | 6 |  |
+| M2 | ran | 6 |  |
+| M3 | ran | 0 | Scoped manager/UI ownership and import boundaries inspected; no architecture redesign. |
+| M4 | ran | 6 |  |
+| T1 | ran | 6 |  |
+| T2 | na | 0 | No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made. |
+| T3 | ran | 0 | Detected existing unittest, Ruff and CI gates; no missing harness introduced. |
+| T4 | ran | 0 | Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep. |
+| M5 | ran | 0 | Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage. |
 
-Fix-track passes that ran: 1 of 18 (+0 conditional)
+Fix-track passes that ran: 17 of 18 (+1 conditional)
 Mode: incremental   Status: CAPPED
-Files reviewed this run: 0
+Files reviewed this run: 6
 Source files covered by the ledger now: 6 of 695
 Still unreviewed or changed since review: 689
-Silently dropped (skip protocol violation): C1, C2, C3, S1, S2, S3, S5, P1, P2, M1, M2, M3, M4, T1, T2, T3, T4
-
