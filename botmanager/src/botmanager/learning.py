@@ -333,7 +333,16 @@ def record_owner_view(store, response):
 
 
 def learning_snapshot(home, bot_id):
-    """Inert local pointers; no owner subprocess, migration or schema creation."""
+    """Read bounded local pointers, without migration or owner subprocesses.
+
+    Each source permits 256 candidate rows, 16 KiB per JSON body and 256 KiB
+    aggregate body bytes. Both connections have a 32 KiB SQLite row/value cap
+    and 100000 SQL VM steps. The schedule reader separately caps 64 KiB;
+    auxiliary input is therefore at most 576 KiB, below the report's 8 MiB cap.
+    Legacy adoptions have no indexed bot identity. Inspect a bounded rowid window
+    and refuse an incomplete window rather than scan arbitrary JSON history.
+    """
+    import math
     import sqlite3
     from contextlib import closing
 
@@ -349,7 +358,68 @@ def learning_snapshot(home, bot_id):
         "owner_eligibility": "unknown",
         "proposals": [],
         "adoptions": [],
+        "local_metadata": {},
     }
+    fields = {
+        "bot_id",
+        "state",
+        "proposal_id",
+        "baseline_hash",
+        "owner_scope",
+        "counts",
+        "shadow_started_at",
+        "owner_eligibility",
+        "version",
+        "request_id",
+        "operation",
+        "runtime_id",
+        "accepted_revision",
+        "accepted_hash",
+        "prior_hash",
+        "owner_receipt_digest",
+        "predecessor",
+        "account_preserved",
+        "starts_workers",
+    }
+
+    def pointer(raw):
+        body = json.loads(raw)
+        if not isinstance(body, dict):
+            raise TypeError("invalid_pointer")
+        identity, state = body.get("bot_id"), body.get("state")
+        if (
+            not isinstance(identity, str)
+            or len(identity) > 128
+            or not isinstance(state, str)
+            or not 1 <= len(state) <= 64
+        ):
+            raise ValueError("invalid_pointer_identity_or_state")
+        # Keep the small documented pointer, never arbitrary proposal payloads.
+        projected = {key: value for key, value in body.items() if key in fields}
+        for key, value in projected.items():
+            if key == "counts":
+                if (
+                    not isinstance(value, dict)
+                    or len(value) > 32
+                    or any(
+                        not isinstance(name, str)
+                        or len(name) > 64
+                        or type(count) is not int
+                        or count < 0
+                        for name, count in value.items()
+                    )
+                ):
+                    raise ValueError("invalid_pointer_counts")
+            elif value is not None and (
+                not isinstance(value, (str, int, float, bool))
+                or isinstance(value, str)
+                and len(value) > 512
+                or isinstance(value, float)
+                and not math.isfinite(value)
+            ):
+                raise ValueError("invalid_pointer_field")
+        return projected
+
     for name, table, key in (
         ("manager.sqlite3", "learning_links", "proposals"),
         ("runtime.sqlite3", "learning_adoptions", "adoptions"),
@@ -357,31 +427,63 @@ def learning_snapshot(home, bot_id):
         path = home.absolute() / name
         if not path.is_file() or path.is_symlink():
             continue
-        with closing(
-            sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=1)
-        ) as db:
-            db.execute("PRAGMA query_only=ON")
-            db.execute("BEGIN")
-            if not db.execute(
-                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
-            ).fetchone():
-                continue
-            if key == "proposals":
+        try:
+            with closing(
+                sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=1)
+            ) as db:
+                db.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 32768)
+                steps = 0
+
+                def progress():
+                    nonlocal steps
+                    steps += 1000
+                    return int(steps > 100000)
+
+                db.set_progress_handler(progress, 1000)
+                db.execute("PRAGMA query_only=ON")
+                db.execute("BEGIN")
+                if not db.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                    (table,),
+                ).fetchone():
+                    continue
+                clause = " WHERE bot_id=?" if key == "proposals" else ""
+                # SQL identifiers are constants above. Never evaluate JSON while
+                # searching for a bot in the unindexed legacy adoption table.
                 rows = db.execute(
-                    "SELECT body FROM learning_links WHERE bot_id=? ORDER BY rowid DESC LIMIT 20",
-                    (bot_id,),
-                )
-            else:
-                rows = db.execute(
-                    "SELECT body FROM learning_adoptions WHERE json_extract(body,'$.bot_id')=? ORDER BY rowid DESC LIMIT 20",
-                    (bot_id,),
-                )
-            result[key] = [
-                body
-                for raw in rows
-                if (body := json.loads(raw[0])).get("bot_id") == bot_id
-            ]
-    if result["adoptions"]:
+                    f"SELECT rowid,length(CAST(body AS BLOB)) FROM {table}"
+                    + clause
+                    + " ORDER BY rowid DESC LIMIT 257",
+                    (bot_id,) if key == "proposals" else (),
+                ).fetchall()
+                if len(rows) > 256:
+                    raise ValueError("local_metadata_scan_budget_exceeded")
+                if any(type(size) is not int or size > 16384 for _, size in rows):
+                    raise ValueError("local_metadata_body_budget_exceeded")
+                if sum(size for _, size in rows) > 262144:
+                    raise ValueError("local_metadata_byte_budget_exceeded")
+                items = []
+                for rowid, _ in rows:
+                    raw = db.execute(
+                        f"SELECT body FROM {table} WHERE rowid=?", (rowid,)
+                    ).fetchone()[0]
+                    body = pointer(raw)
+                    if body["bot_id"] == bot_id and len(items) < 20:
+                        items.append(body)
+                result[key] = items
+                result["local_metadata"][key] = {"state": "available", "reason": None}
+        except (sqlite3.Error, ValueError, TypeError, RecursionError):
+            # Keep corrupt/oversized raw data out of both output and exceptions.
+            result["local_metadata"][key] = {
+                "state": "unavailable",
+                "reason": "local_metadata_invalid_or_budget_exceeded",
+            }
+    if any(
+        item["state"] == "unavailable" for item in result["local_metadata"].values()
+    ):
+        result["state"] = "unavailable"
+        result["reason"] = "local_learning_metadata_unavailable"
+    elif result["adoptions"]:
         result["state"] = result["adoptions"][0]["state"]
     elif result["proposals"]:
         result["state"] = result["proposals"][0]["state"]

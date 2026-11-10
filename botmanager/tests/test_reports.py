@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 
@@ -224,3 +226,58 @@ class ReportTests(unittest.TestCase):
                 self.store, self.bot, run_id=run["runtime_id"], after=1, limit=1
             )
         self.assertEqual(caught.exception.code, "report_budget_exceeded")
+
+    def test_oversized_learning_pointer_keeps_report_and_status_bounded(self):
+        with closing(sqlite3.connect(self.home / "manager.sqlite3")) as db, db:
+            db.execute(
+                "CREATE TABLE learning_links(proposal_id TEXT PRIMARY KEY,bot_id TEXT,body TEXT)"
+            )
+            db.execute(
+                "INSERT INTO learning_links VALUES ('huge',?,?)",
+                (
+                    self.bot,
+                    json.dumps(
+                        {
+                            "bot_id": self.bot,
+                            "state": "proposed",
+                            "payload": "PRIVATE_MARKER" * 700000,
+                        }
+                    ),
+                ),
+            )
+        before = {p.name: p.read_bytes() for p in self.home.glob("*.sqlite3")}
+        page = report_page(self.store, self.bot, limit=1)
+        self.assertEqual(page["report"]["learning"]["state"], "unavailable")
+        status = dispatch("status", {"identity": self.bot}, self.context)
+        self.assertTrue(status["ok"], status)
+        for projection in (page, status):
+            output = json.dumps(projection)
+            self.assertNotIn("PRIVATE_MARKER", output)
+            self.assertLess(len(output), 65536)
+            self.assertIn("local_learning_metadata_unavailable", output)
+        self.assertEqual(
+            before, {p.name: p.read_bytes() for p in self.home.glob("*.sqlite3")}
+        )
+
+    def test_unrelated_adoption_history_is_not_json_scanned(self):
+        with self.ledger.connection(True) as db:
+            db.execute(
+                "CREATE TABLE learning_adoptions(request_id TEXT PRIMARY KEY,owner_digest TEXT,body TEXT)"
+            )
+            db.executemany(
+                "INSERT INTO learning_adoptions VALUES (?, 'digest', ?)",
+                [
+                    (str(i), json.dumps({"bot_id": "unrelated", "state": "published"}))
+                    for i in range(10000)
+                ],
+            )
+        before = {p.name: p.read_bytes() for p in self.home.glob("*.sqlite3")}
+        page = report_page(self.store, self.bot, limit=1)
+        self.assertEqual(page["report"]["learning"]["state"], "unavailable")
+        self.assertEqual(page["report"]["learning"]["adoptions"], [])
+        status = dispatch("status", {"identity": self.bot}, self.context)
+        self.assertTrue(status["ok"], status)
+        self.assertIn("local_learning_metadata_unavailable", json.dumps(status))
+        self.assertEqual(
+            before, {p.name: p.read_bytes() for p in self.home.glob("*.sqlite3")}
+        )
