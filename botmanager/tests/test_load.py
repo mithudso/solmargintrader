@@ -111,6 +111,15 @@ class LoadTests(unittest.TestCase):
                 supervisor.step()
                 metrics["crash_detection_s"] = time.monotonic() - started
                 self.assertLess(metrics["crash_detection_s"], 15)
+                # Recovery keeps its slot while all other intents remain queued.
+                spin(
+                    lambda: (
+                        bot in supervisor.children
+                        and ledger.get(bot)["observed"] == "waiting"
+                    )
+                )
+                self.assertEqual(ledger.get(bot)["checkpoint"], before)
+                self.assertEqual(len(supervisor.children), 4)
                 for queued in specs:
                     if queued.bot_id != bot:
                         ledger.control(queued, "stop", str(uuid4()))
@@ -156,7 +165,8 @@ class LoadTests(unittest.TestCase):
                 metrics["stale_detection_from_last_heartbeat_s"] = (
                     time.time() - heartbeat
                 )
-                self.assertLess(metrics["stale_detection_from_freeze_s"], 16)
+                self.assertLess(metrics["stale_detection_from_freeze_s"], 15)
+                self.assertLess(metrics["stale_detection_from_last_heartbeat_s"], 15)
                 metrics["optimizer_kind"] = (
                     "synthetic_cpu_pressure_with_canonical_optimizer_lease_not_research_quality_run"
                 )

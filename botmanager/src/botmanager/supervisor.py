@@ -63,6 +63,15 @@ class Supervisor:
         if self.server is None:
             raise RuntimeError("Supervisor is not open")
         self.server.poll()
+        recovering = set()
+        if self.ledger.path.exists():
+            with self.ledger.connection() as db:
+                recovering = {
+                    row[0]
+                    for row in db.execute(
+                        "SELECT bot_id FROM runs WHERE desired='running' AND observed='recovering' AND failures!='[]'"
+                    )
+                }
         check_health = time.monotonic() - self._health_at >= 1.0
         if check_health:
             self._health_at = time.monotonic()
@@ -107,19 +116,29 @@ class Supervisor:
                     reason = "generation_revoked"
                 elif (
                     row["tick_started"] is not None
-                    and time.time() - row["tick_started"] >= STALE_SECONDS
+                    and time.time() - row["tick_started"] >= STALE_SECONDS - 1
                 ):
                     reason = "tick_stalled"
                 elif (
                     row["heartbeat"] is None
-                    or time.time() - row["heartbeat"] >= STALE_SECONDS
+                    or time.time() - row["heartbeat"] >= STALE_SECONDS - 1
                 ):
                     reason = "heartbeat_stale"
                 if reason:
                     if reason != "generation_revoked":
                         self.ledger.failed(bot_id, generation, reason)
+                        if self.ledger.get(bot_id)["observed"] == "recovering":
+                            recovering.add(bot_id)
                     if self._terminate(process):
                         self.children.pop(bot_id)
+                continue
+            # A failed worker retains its slot during bounded retry delays.
+            # Otherwise a queued EOF worker can occupy it forever and prevent
+            # the original account from reconciling after a crash.
+            reserved = recovering - self.children.keys()
+            if bot_id not in reserved and len(self.children) >= MAX_ACTIVE - min(
+                MAX_ACTIVE, len(reserved)
+            ):
                 continue
             if len(self.children) >= MAX_ACTIVE or lock_held(
                 self.home / "locks" / (bot_id + ".lock")

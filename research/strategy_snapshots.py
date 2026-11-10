@@ -42,7 +42,10 @@ def ensure_snapshots(experiment: Path = DEFAULT_EXPERIMENT) -> None:
                     target = root / member.filename
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes(zipped.read(member))
+        # Finder metadata is ignored by Git and cannot execute as experiment
+        # source. Keep every other extra file and all source hashes fail-closed.
         actual = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-                  for p in root.rglob('*') if p.is_file() and '__pycache__' not in p.parts}
+                  for p in root.rglob('*') if p.is_file() and '__pycache__' not in p.parts
+                  and p.name != '.DS_Store'}
         if actual != expected:
             raise ValueError(f'{variant} expanded sources differ from frozen manifest')

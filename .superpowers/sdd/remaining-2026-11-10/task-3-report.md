@@ -23,3 +23,8 @@ Measured: status p95 0.013618s, durable stop acknowledgement 0.001194s, owner re
 Forced restart retained the exact canonical checkpoint/fills; no duplicate tick financial events occurred. Under a saturated pool, queued accounts initially occupied a crashed account's retry slot; controller is repairing retry-slot reservation. The current committed fixture isolates restart by stopping other accounts before restart, then probes the actual watchdog separately. Re-run saturated automatic recovery after controller fix.
 
 Full manager and changed owner suites, actual installed acceptance and remote delivery remain controller release gates.
+
+
+## Controller repair and stricter recheck
+
+Supervisor now reserves a recovering worker slot during bounded retry delays and detects stale work at14seconds, leaving polling/termination headroom for the15second SLO. The saturated crash fixture retains all other desired-running intents through automatic recovery. Recheck passed: active4,queued6,statusp95=0.010360s,stopack=0.001163s,release=0.008282s,crashdetect=0.007881s,staledetectfromheartbeat=14.022469s. Strict assertions now require both watchdog measurements below15seconds. Supervisor18testregressions passed. Original failed/tolerant measurements above remain historical evidence.
