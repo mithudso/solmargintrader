@@ -88,3 +88,17 @@ class AccountingTests(unittest.TestCase):
         run = fixture()
         run["starting_equity"] = 1000.0
         self.assertIsNone(accounting_snapshot(run)["net_pnl"]["value"])
+
+    def test_missing_cashflow_amount_is_not_reported_as_zero(self):
+        run = fixture()
+        run["cashflows"] = [{"kind": "deposit"}]
+        result = accounting_snapshot(run)
+        self.assertIsNone(result["deposits"]["value"])
+        self.assertIsNone(result["net_pnl"]["value"])
+
+    def test_missing_fee_preserves_known_gross(self):
+        run = fixture()
+        del run["fills"][0]["fee"]
+        result = accounting_snapshot(run)
+        self.assertEqual(self.value(result, "realized_gross_pnl"), Decimal(20))
+        self.assertIsNone(result["realized_net_pnl"]["value"])

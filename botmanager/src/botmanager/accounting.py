@@ -89,6 +89,7 @@ def accounting_snapshot(run: Mapping[str, Any]) -> dict[str, Any]:
 def _exact(run):
     reasons = []
     unknown_cost = False
+    invalid_event = False
     try:
         starting = _decimal(run.get("starting_equity"))
         cash = starting
@@ -167,6 +168,7 @@ def _exact(run):
             str(exc) if isinstance(exc, ValueError) else "invalid_accounting_event"
         )
         unknown_cost = True
+        invalid_event = True
         cash = None
     traded, basis, retained_fees = zero, zero, zero
     missing_mark = False
@@ -205,15 +207,15 @@ def _exact(run):
         "refundable_rent_asset": rent,
         "equity": equity,
         "net_pnl": net,
-        "realized_gross_pnl": realized_gross if not unknown_cost else None,
+        "realized_gross_pnl": realized_gross if not invalid_event else None,
         "realized_net_pnl": realized if not unknown_cost else None,
         "unrealized_net_pnl": None
         if missing_mark or unknown_cost
         else traded - basis - retained_fees,
-        "deposits": deposits,
-        "withdrawals": withdrawals,
+        "deposits": deposits if not invalid_event else None,
+        "withdrawals": withdrawals if not invalid_event else None,
         "fees": None if unknown_cost else fees,
-        "transaction_expense": expenses,
+        "transaction_expense": expenses if not invalid_event else None,
     }
     return {
         "schema_version": 1,
