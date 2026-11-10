@@ -90,6 +90,7 @@ def _exact(run):
     reasons = []
     unknown_cost = False
     invalid_event = False
+    invalid_cashflows = False
     try:
         starting = _decimal(run.get("starting_equity"))
         cash = starting
@@ -100,13 +101,11 @@ def _exact(run):
     deposits = withdrawals = fees = expenses = rent = realized = realized_gross = zero
     lots = {}
     try:
-        if run.get("fills") is None or run.get("cashflows") is None:
-            raise ValueError("fill_or_cashflow_ledger_unavailable")
-        if not isinstance(run.get("fills"), (list, tuple)) or not isinstance(
-            run.get("cashflows"), (list, tuple)
-        ):
-            raise TypeError("invalid_ledger_type")
+        if not isinstance(run.get("cashflows"), (list, tuple)):
+            raise TypeError("cashflow_ledger_unavailable")
         for event in run.get("cashflows", []):
+            if not isinstance(event, Mapping):
+                raise TypeError("invalid_cashflow_event")
             amount = _decimal(event.get("amount"))
             if amount < 0:
                 raise ValueError("negative_cashflow")
@@ -125,7 +124,16 @@ def _exact(run):
                 raise ValueError("cashflow_kind_or_rent_invalid")
             if cash is not None:
                 cash += amount if kind in ("deposit", "rent_refund") else -amount
+    except (ValueError, TypeError, KeyError) as exc:
+        reasons.append(str(exc))
+        invalid_cashflows = True
+        cash = None
+    try:
+        if not isinstance(run.get("fills"), (list, tuple)):
+            raise TypeError("fill_ledger_unavailable")
         for fill in run.get("fills", []):
+            if not isinstance(fill, Mapping):
+                raise TypeError("invalid_fill_event")
             quantity, price = (
                 _decimal(fill.get("quantity")),
                 _decimal(fill.get("price")),
@@ -171,7 +179,9 @@ def _exact(run):
                 raise ValueError("invalid_fill_side")
     except (ValueError, TypeError, KeyError) as exc:
         reasons.append(
-            str(exc) if isinstance(exc, ValueError) else "invalid_accounting_event"
+            str(exc)
+            if isinstance(exc, (ValueError, TypeError))
+            else "invalid_accounting_event"
         )
         unknown_cost = True
         invalid_event = True
@@ -179,13 +189,15 @@ def _exact(run):
     traded, basis, retained_fees = zero, zero, zero
     missing_mark = False
     residuals = []
+    marks = run.get("marks")
+    marks = marks if isinstance(marks, Mapping) else {}
     for asset, inventory in lots.items():
         quantity = sum((lot[0] for lot in inventory), zero)
         basis += sum((lot[0] * lot[1] for lot in inventory), zero)
         retained_fees += sum((lot[2] for lot in inventory), zero)
         if quantity:
             try:
-                mark = _decimal(run.get("marks", {}).get(asset))
+                mark = _decimal(marks.get(asset))
                 if mark <= 0:
                     raise ValueError("invalid_mark")
                 traded += quantity * mark
@@ -193,7 +205,9 @@ def _exact(run):
                 missing_mark = True
                 reasons.append("inventory_mark_unavailable:" + str(asset))
             residuals.append({"asset": asset, "quantity": str(quantity)})
-    marked = None if missing_mark else traded + rent
+    marked = (
+        None if missing_mark or invalid_event or invalid_cashflows else traded + rent
+    )
     equity = (
         cash + marked
         if cash is not None and marked is not None and not unknown_cost
@@ -209,8 +223,8 @@ def _exact(run):
         "starting_equity": starting,
         "cash": cash if not unknown_cost else None,
         "marked_inventory": marked,
-        "traded_inventory": None if missing_mark else traded,
-        "refundable_rent_asset": rent,
+        "traded_inventory": None if missing_mark or invalid_event else traded,
+        "refundable_rent_asset": None if invalid_cashflows else rent,
         "equity": equity,
         "net_pnl": net,
         "realized_gross_pnl": realized_gross if not invalid_event else None,
@@ -218,10 +232,10 @@ def _exact(run):
         "unrealized_net_pnl": None
         if missing_mark or unknown_cost
         else traded - basis - retained_fees,
-        "deposits": deposits if not invalid_event else None,
-        "withdrawals": withdrawals if not invalid_event else None,
+        "deposits": deposits if not invalid_cashflows else None,
+        "withdrawals": withdrawals if not invalid_cashflows else None,
         "fees": None if unknown_cost else fees,
-        "transaction_expense": expenses if not invalid_event else None,
+        "transaction_expense": expenses if not invalid_cashflows else None,
     }
     return {
         "schema_version": 1,
@@ -229,6 +243,7 @@ def _exact(run):
         "currency": run.get("currency"),
         "account_scope": run.get("account_scope", "single_account"),
         **{k: measurement(v, reason if v is None else None) for k, v in values.items()},
-        "residuals": residuals,
+        "residuals": None if invalid_event else residuals,
+        "residuals_reason": reason if invalid_event else None,
         "uncertainties": list(dict.fromkeys(reasons)),
     }

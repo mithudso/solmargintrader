@@ -5,11 +5,95 @@ from __future__ import annotations
 import csv
 import io
 import json
+import sqlite3
 from collections.abc import Mapping
+from contextlib import contextmanager
 
 from .accounting import accounting_snapshot
 from .domain import ManagerError
 from .ledger import RuntimeLedger
+
+# Legacy reports verify full evidence only inside a fixed resource envelope.
+REPORT_MAX_BYTES = 8 * 1024 * 1024
+REPORT_MAX_ROWS = 4096
+REPORT_MAX_SEGMENTS = 128
+REPORT_SQL_STEPS = 2_000_000
+
+
+def _budget_error():
+    return ManagerError(
+        "report_budget_exceeded",
+        "Evidence exceeds bounded report verification (8 MiB, 4096 fills, "
+        "128 segments, 2000000 SQL steps). A trusted compact manifest is required.",
+        4,
+    )
+
+
+@contextmanager
+def _report_connection(ledger):
+    with ledger.connection() as db:
+        db.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, REPORT_MAX_BYTES)
+        steps = 0
+
+        def progress():
+            nonlocal steps
+            steps += 1000
+            return int(steps > REPORT_SQL_STEPS)
+
+        db.set_progress_handler(progress, 1000)
+        try:
+            yield db
+        except sqlite3.DataError as exc:
+            raise _budget_error() from exc
+        except sqlite3.OperationalError as exc:
+            if "interrupted" in str(exc):
+                raise _budget_error() from exc
+            raise
+        finally:
+            db.set_progress_handler(None, 0)
+
+
+def _evidence_budget(db, bot_id, runtime_id, archived):
+    """Read lengths before bodies, pinned to the decoder's read transaction.
+
+    Bound both transferred bytes and rows. The VM guard bounds unindexed legacy
+    scans and repeated queries in corrupt cyclic segment chains. Within budget,
+    retain every original integrity check; never trust an unchecked total.
+    """
+    version = db.execute("PRAGMA user_version").fetchone()[0]
+    if archived:
+        if version < 3:
+            return
+        row = db.execute(
+            "SELECT length(CAST(body AS BLOB)) FROM archives WHERE bot_id=? AND runtime_id=?",
+            (bot_id, runtime_id),
+        ).fetchone()
+        size = row[0] if row else 0
+    else:
+        row = db.execute(
+            "SELECT length(CAST(spec AS BLOB))+length(CAST(input AS BLOB))+"
+            "coalesce(length(CAST(checkpoint AS BLOB)),0)+length(CAST(failures AS BLOB)) "
+            "FROM runs WHERE bot_id=? AND runtime_id=?",
+            (bot_id, runtime_id),
+        ).fetchone()
+        size = row[0] if row else 0
+        rows = db.execute(
+            "SELECT length(CAST(body AS BLOB)) FROM fills WHERE bot_id=? LIMIT ?",
+            (bot_id, REPORT_MAX_ROWS + 1),
+        ).fetchall()
+        if len(rows) > REPORT_MAX_ROWS:
+            raise _budget_error()
+        size += sum(row[0] for row in rows)
+    if version >= 5:
+        rows = db.execute(
+            "SELECT length(CAST(body AS BLOB)) FROM segments WHERE runtime_id=? LIMIT ?",
+            (runtime_id, REPORT_MAX_SEGMENTS + 1),
+        ).fetchall()
+        if len(rows) > REPORT_MAX_SEGMENTS:
+            raise _budget_error()
+        size += sum(row[0] for row in rows)
+    if size > REPORT_MAX_BYTES:
+        raise _budget_error()
 
 
 def _bounds(after, limit):
@@ -195,7 +279,15 @@ def report_page(
             "reason": "runtime_not_available",
             **_page([], after, limit),
         }
-    with ledger.connection() as db:
+    with _report_connection(ledger) as db:
+        selected = db.execute(
+            "SELECT runtime_id FROM runs WHERE bot_id=?"
+            + (" AND runtime_id=?" if run_id else ""),
+            (spec.bot_id, run_id) if run_id else (spec.bot_id,),
+        ).fetchone()
+        _evidence_budget(
+            db, spec.bot_id, selected[0] if selected else run_id, selected is None
+        )
         raw = db.execute(
             "SELECT * FROM runs WHERE bot_id=?"
             + (" AND runtime_id=?" if run_id else ""),

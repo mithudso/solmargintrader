@@ -4,7 +4,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from botmanager.domain import ManagerError
 from botmanager.ledger import RuntimeLedger
 from botmanager.registry import CommandContext, dispatch
 from botmanager.reports import (
@@ -137,3 +139,88 @@ class ReportTests(unittest.TestCase):
             run_history_page(self.store, self.bot, limit=1)["items"][0]["runtime_id"],
             old["runtime_id"],
         )
+
+    def test_many_segments_refused_before_unbounded_decoder(self):
+        from botmanager.reports import REPORT_MAX_SEGMENTS
+
+        run = self.ledger.get(self.bot)
+        with self.ledger.connection(True) as db:
+            db.executemany(
+                "INSERT INTO segments VALUES (?,?,?,?)",
+                [
+                    (run["runtime_id"], str(i), "{}", 0)
+                    for i in range(REPORT_MAX_SEGMENTS + 500)
+                ],
+            )
+        with (
+            patch.object(
+                RuntimeLedger,
+                "_decode",
+                side_effect=AssertionError("decoder must not run"),
+            ),
+            self.assertRaises(ManagerError) as caught,
+        ):
+            report_page(self.store, self.bot, limit=1)
+        self.assertEqual(caught.exception.code, "report_budget_exceeded")
+
+    def test_large_archive_refused_before_body_decode(self):
+        from botmanager.reports import REPORT_MAX_BYTES
+
+        runtime_id = "00000000-0000-4000-8000-000000000001"
+        with self.ledger.connection(True) as db:
+            db.execute(
+                "INSERT INTO archives VALUES (?,?,?,?)",
+                (runtime_id, self.bot, " " * (REPORT_MAX_BYTES + 1), "invalid"),
+            )
+        with (
+            patch.object(
+                RuntimeLedger,
+                "_decode_archive",
+                side_effect=AssertionError("decoder must not run"),
+            ),
+            self.assertRaises(ManagerError) as caught,
+        ):
+            report_page(self.store, self.bot, run_id=runtime_id, limit=1)
+        self.assertEqual(caught.exception.code, "report_budget_exceeded")
+
+    def test_oversized_fill_history_refused_before_decode(self):
+        from botmanager.reports import REPORT_MAX_ROWS
+
+        with self.ledger.connection(True) as db:
+            db.executemany(
+                "INSERT INTO fills VALUES (?,?,?)",
+                [(self.bot, i, "{}") for i in range(REPORT_MAX_ROWS + 1)],
+            )
+        with (
+            patch.object(
+                RuntimeLedger,
+                "_decode",
+                side_effect=AssertionError("decoder must not run"),
+            ),
+            self.assertRaises(ManagerError) as caught,
+        ):
+            report_page(self.store, self.bot, limit=1)
+        self.assertEqual(caught.exception.code, "report_budget_exceeded")
+
+    def test_bounded_report_retains_integrity_validation(self):
+        with self.ledger.connection(True) as db:
+            db.execute("UPDATE runs SET cursor=100 WHERE bot_id=?", (self.bot,))
+        with self.assertRaises(ManagerError) as caught:
+            report_page(self.store, self.bot, limit=1)
+        self.assertEqual(caught.exception.code, "corrupt_checkpoint")
+
+    def test_sql_work_budget_refuses_unindexed_event_scan(self):
+        run = self.ledger.get(self.bot)
+        with self.ledger.connection(True) as db:
+            db.executemany(
+                "INSERT INTO events(bot_id,generation,kind,cursor,at,runtime_id,origin) VALUES (?,0,'test',0,1,?,'native')",
+                [(self.bot, "another-runtime") for _ in range(2000)],
+            )
+        with (
+            patch("botmanager.reports.REPORT_SQL_STEPS", 1000),
+            self.assertRaises(ManagerError) as caught,
+        ):
+            report_page(
+                self.store, self.bot, run_id=run["runtime_id"], after=1, limit=1
+            )
+        self.assertEqual(caught.exception.code, "report_budget_exceeded")

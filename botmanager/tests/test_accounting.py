@@ -111,3 +111,77 @@ class AccountingTests(unittest.TestCase):
             result = accounting_snapshot(run)
             self.assertIsNone(result["net_pnl"]["value"])
             self.assertIn("ledger_unavailable", result["net_pnl"]["reason"])
+
+    def test_unavailable_marks_mapping_never_crashes(self):
+        for marks in (None, [], "missing", 42):
+            run = fixture()
+            run["marks"] = marks
+            result = accounting_snapshot(run)
+            for key in (
+                "traded_inventory",
+                "marked_inventory",
+                "unrealized_net_pnl",
+                "equity",
+                "net_pnl",
+            ):
+                self.assertIsNone(result[key]["value"])
+                self.assertIn("inventory_mark_unavailable", result[key]["reason"])
+            self.assertEqual(self.value(result, "realized_net_pnl"), Decimal("18.2"))
+
+    def test_incomplete_fill_ledger_does_not_claim_inventory(self):
+        for fills in (None, {}, [fixture()["fills"][0], None], ["bad"]):
+            run = fixture()
+            run["fills"] = fills
+            result = accounting_snapshot(run)
+            for key in (
+                "traded_inventory",
+                "marked_inventory",
+                "unrealized_net_pnl",
+                "net_pnl",
+            ):
+                self.assertIsNone(result[key]["value"])
+                self.assertTrue(result[key]["reason"])
+            self.assertIsNone(result["residuals"])
+            self.assertTrue(result["residuals_reason"])
+            self.assertEqual(self.value(result, "refundable_rent_asset"), Decimal(0))
+            self.assertEqual(self.value(result, "deposits"), Decimal(50))
+
+    def test_incomplete_cashflows_preserve_known_trade_accounting(self):
+        for flows in (None, {}, [None], [{"kind": "rent_lock", "amount": "2"}, {}]):
+            run = fixture()
+            run["cashflows"] = flows
+            result = accounting_snapshot(run)
+            for key in (
+                "refundable_rent_asset",
+                "marked_inventory",
+                "cash",
+                "equity",
+                "net_pnl",
+                "deposits",
+            ):
+                self.assertIsNone(result[key]["value"])
+                self.assertTrue(result[key]["reason"])
+            self.assertEqual(self.value(result, "traded_inventory"), Decimal(72))
+            self.assertEqual(self.value(result, "realized_net_pnl"), Decimal("18.2"))
+            self.assertEqual(result["residuals"], [{"asset": "base", "quantity": "6"}])
+
+    def test_reference_loss_and_cost_float_lineage_remains_canonical(self):
+        result = accounting_snapshot(
+            {
+                "spec": {},
+                "input": {"descriptor": {"capital_quote": 100.0}},
+                "checkpoint": {
+                    "cash_quote": 70.0,
+                    "exposure_quote": 20.0,
+                    "equity_quote": 90.0,
+                    "fees_quote": 1.25,
+                    "quote_currency": "USD",
+                    "lots": [],
+                },
+            }
+        )
+        self.assertEqual(result["arithmetic"], "canonical_simulator_float")
+        self.assertEqual(result["net_pnl"]["value"], -10.0)
+        self.assertIsInstance(result["net_pnl"]["value"], float)
+        self.assertEqual(result["fees"]["value"], 1.25)
+        self.assertEqual(result["currency"], "USD")
