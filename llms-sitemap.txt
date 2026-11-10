@@ -1,11 +1,15 @@
 # solmargintrader — source sitemap
-> Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty
+> Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
 > Generated: 2026-11-10 by crawl-repo-to-llms v1.4.0
-> Census: 3066 enumerated / 9 deep-read / 3057 shallow · partial: nine small manifest/parser inputs; no inference or index probes
+> Census: 3071 enumerated / 9 deep-read / 3062 shallow · partial: nine small manifest/parser inputs; no inference or index probes
 
-> Kind: repo · Entries: 3066
+> Kind: repo · Entries: 3071
 
 ## Files
+
+### .cdo
+- .cdo/ledger.json — config [src: git]
+- .cdo/remaining-2026-11-10.json — config [src: git]
 
 ### .claude
 - .claude/agents/aero-pool-scout.md — docs [src: git]
@@ -2144,6 +2148,7 @@
 - docs/TRADINGVIEW-REFERENCE.md — docs [src: git]
 - docs/TRADINGVIEW-SCRIPT-CARD-FILES.md — docs [src: git]
 - docs/archive/memory-2026-11-08.md — docs [src: git]
+- docs/archive/memory-2026-11-10.md — docs [src: git]
 - docs/backtester-history-handoff.md — docs [src: git]
 - docs/bot-manager-0.6-operations.md — docs [src: git]
 - docs/bot-manager-handoff.md — docs [src: git]
@@ -2155,6 +2160,7 @@
 - docs/caching-and-optimization.md — docs [src: git]
 - docs/code-deep-optimizer-2026-11-06.md — docs [src: git]
 - docs/code-deep-optimizer-2026-11-08.md — docs [src: git]
+- docs/code-deep-optimizer-2026-11-10-bootstrap.md — docs [src: git]
 - docs/code-optimizer-scope-2026-11-06.json — config [src: git]
 - docs/code-optimizer-scope-2026-11-08.json — config [src: git]
 - docs/codebase-overview.md — docs [src: git]
@@ -2214,6 +2220,7 @@
 - docs/profitable-crypto-strategies-analysis.md — docs [src: git]
 - docs/repo-bootstrap-audit-2026-11-06.md — docs [src: git]
 - docs/repo-bootstrap-audit-2026-11-08.md — docs [src: git]
+- docs/repo-bootstrap-audit-2026-11-10.md — docs [src: git]
 - docs/repository-review-2026-11-08.md — docs [src: git]
 - docs/requirements.md — docs [src: git]
 - docs/runbooks/handoff.md — docs [src: git]

@@ -1,7 +1,7 @@
 # solmargintrader — atomic current facts
-> Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty
+> Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 968819a5b7a9
 > Generated: 2026-11-10 by crawl-repo-to-llms v1.4.0
-> Census: 3066 enumerated / 9 deep-read / 3057 shallow · partial: nine small manifest/parser inputs; no inference or index probes
+> Census: 3071 enumerated / 9 deep-read / 3062 shallow · partial: nine small manifest/parser inputs; no inference or index probes
 
 ## Facts
 - Misbelief: SolTUI is read-only and cannot move money. Actually: it retains a separately armed manual Coinbase path. [src: /Users/mitch/.local/state/solbot/bootstrap-1256/llms-before/llms-small.txt#solmargintrader-small; CLAUDE.md#what-this-is]
