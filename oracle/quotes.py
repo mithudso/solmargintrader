@@ -308,7 +308,7 @@ def import_quote(archive_path, observation):
             db.close()
 
 
-def read_quotes(archive_path, *, after=0, limit=1000):
+def read_quote_page(archive_path, *, after=0, limit=1000):
     if (
         type(after) is not int
         or after < 0
@@ -323,14 +323,28 @@ def read_quotes(archive_path, *, after=0, limit=1000):
             "SELECT body FROM metadata WHERE key='quote_schema'"
         ).fetchone()
         if version is None:
-            return []
+            return {
+                "schema_version": 1,
+                "items": [],
+                "next_after": after,
+                "has_more": False,
+            }
         if version[0] != "1":
             raise QuoteError("quote_schema_incompatible")
         rows = db.execute(
-            "SELECT body FROM quote_observations WHERE sequence>? ORDER BY sequence LIMIT ?",
-            (after, limit),
+            "SELECT sequence,body FROM quote_observations WHERE sequence>? ORDER BY sequence LIMIT ?",
+            (after, limit + 1),
         ).fetchall()
-        return [validate_observation(json.loads(r[0])) for r in rows]
+        items = [
+            {"sequence": r[0], "observation": validate_observation(json.loads(r[1]))}
+            for r in rows[:limit]
+        ]
+        return {
+            "schema_version": 1,
+            "items": items,
+            "next_after": items[-1]["sequence"] if items else after,
+            "has_more": len(rows) > limit,
+        }
     except (sqlite3.Error, ValueError) as exc:
         if isinstance(exc, QuoteError):
             raise
@@ -338,6 +352,14 @@ def read_quotes(archive_path, *, after=0, limit=1000):
     finally:
         if db is not None:
             db.close()
+
+
+def read_quotes(archive_path, *, after=0, limit=1000):
+    """Compatibility list projection; new consumers use sequence-bearing pages."""
+    return [
+        item["observation"]
+        for item in read_quote_page(archive_path, after=after, limit=limit)["items"]
+    ]
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
