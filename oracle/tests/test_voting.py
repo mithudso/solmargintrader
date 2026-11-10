@@ -15,8 +15,12 @@ class VotingTests(unittest.TestCase):
         self.assertEqual(self.result([self.vote(hits=60)])["signal"], "Strong Buy")
 
     def test_bonus_uses_hits_not_resolutions(self):
-        first = self.result([self.vote(hits=100, resolved=110)])["included"][0]["weight"]
-        second = self.result([self.vote(hits=101, resolved=110)])["included"][0]["weight"]
+        first = self.result([self.vote(hits=100, resolved=110)])["included"][0][
+            "weight"
+        ]
+        second = self.result([self.vote(hits=101, resolved=110)])["included"][0][
+            "weight"
+        ]
         self.assertAlmostEqual(first, 100 / 110)
         self.assertAlmostEqual(second, 202 / 110)
 
@@ -26,8 +30,11 @@ class VotingTests(unittest.TestCase):
         self.assertEqual(result["balance_percent"], 0)
 
     def test_future_expired_and_insufficient_abstain(self):
-        votes = [self.vote(issued=6, expires=7), self.vote("b", expires=5),
-                 self.vote("c", hits=1, resolved=1)]
+        votes = [
+            self.vote(issued=6, expires=7),
+            self.vote("b", expires=5),
+            self.vote("c", hits=1, resolved=1),
+        ]
         self.assertEqual(self.result(votes)["status"], "unavailable")
 
     def test_duplicate_and_invalid_counts_are_rejected(self):
@@ -37,11 +44,19 @@ class VotingTests(unittest.TestCase):
             self.result([self.vote(hits=101, resolved=100)])
 
     def test_signal_boundaries(self):
-        for direction, opposing, expected in ((1, 2, "Buy"), (1, 1, "Strong Buy"),
-                                              (-1, 2, "Sell"), (-1, 1, "Strong Sell")):
+        for direction, opposing, expected in (
+            (1, 2, "Buy"),
+            (1, 1, "Strong Buy"),
+            (-1, 2, "Sell"),
+            (-1, 1, "Strong Sell"),
+        ):
             with self.subTest(expected=expected):
-                votes = [self.vote(str(i), -direction if i < opposing else direction,
-                                   100, 100) for i in range(5)]
+                votes = [
+                    self.vote(
+                        str(i), -direction if i < opposing else direction, 100, 100
+                    )
+                    for i in range(5)
+                ]
                 self.assertEqual(self.result(votes)["signal"], expected)
 
     def test_nonfinite_clock_and_oversized_roster_refused(self):

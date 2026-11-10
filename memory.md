@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 340
+Version: 343
+Delta: v342 to v343; verify installed service and all required local checks before final delivery.
+Delta: v341 to v342; complete service implementation and source checks; installed acceptance and delivery pending.
+Delta: v340 to v341; execute full Oracle implementation with parallel owned components.
 Delta: v338 to v339; implement and test an isolated Oracle voting foundation.
 Delta: v337 to v338; resume Oracle implementation at the user's request.
 Delta: v336 to v337; checkpoint the Oracle prompt and unresolved integrations.
@@ -85,6 +88,18 @@ Delta: v284 to v285; diagnose stale predictions and verify backtest against cach
 Delta: v283 to v284; resume backtest activation and investigate unavailable agreement.
 Delta: v282 to v283; reconcile the merged extension audit checkpoint.
 
+
+## v343 - 2026-11-09: Oracle final acceptance
+
+Final source Oracle53 tests, Ruff, pip check, backtester999, extension408, Bot Manager109 and mongo46 (11 infrastructure skips) pass. Offline grid round trip remains positive. Doc/index gates pass after rebuilding offline retrieval files. Independent installed acceptance from /tmp confirms package bytes match source, bounded exact-pair consumption, no-data abstention, immutable snapshots, restart, synthetic declining-feed Strong Sell, eight official-SDK tools, three resources, notifications, unsubscribe and clean EOF. Live read-only readiness confirms no JUPITER_API_KEY and no exact SOL-USDC entry in the existing recorder; no real Jupiter prices or authenticated trades were established. The source service is runnable and fails closed for these real dependencies. No money moved and no recorder/service was started persistently. Complete PR181 CI, merge and remote verification remain. Stele disconnected; architecture write queued as outbox8da31d20. Preserve the unrelated untracked .opencode/opencode.json.
+
+## v342 - 2026-11-09: runnable Oracle service
+
+Implemented a single-owner foreground daemon, strict recorder/Jupiter reference adapters, private immutable event archive, 14 card-bound strategies, prospective target resolution and historical voting, snapshots, eight MCP tools and three subscribable resources, guide provenance and read-only Bot Manager status, conservative readiness and expiring advisory veto. Registered the repository Oracle agent and separate package/CI job. The MA crossover uses its supported bearish parameter variant with explicit provenance; 13 other defaults remain unchanged. Bad strategies remain shadow-evaluated with review flags; no automatic parameter adoption or live promotion. Source Oracle53 tests and Ruff pass; extension408, Bot Manager109, mongo46 (11 infrastructure skips) and positive offline round-trip checks pass. The first backtester999 run failed only the expected stale repository index; rebuild indexes and rerun that suite before committing. Installed package is /Users/mitch/.venvs/soloracle; independent loaded acceptance is running with temp data. Endor package-risk review for mcp1.30.0 is UNKNOWN because its risk tooling is unavailable; no security endorsement claimed. Live Jupiter push source, authenticated live trading and executor veto enforcement remain explicitly unavailable. Default recorder may lack the exact SOL-USDC entry; do not substitute USD. The .opencode/opencode.json untracked file appeared during this run without established ownership: preserve it and do not stage it. Finish index/doc gates, install acceptance, final PR181 CI, merge and remote verification.
+
+## v341 - 2026-11-09: full Oracle implementation
+
+TASK-1154 is active. Integrated current origin/master at 56b34c9, preserving both workflow histories. Workers own core/store/strategy modules, feeds, and MCP/guidance. Root owns CLI, packaging, export, integration, docs, verification and delivery. No more prompt optimization is needed: the user directly supplied the implementation contract. Keep single-owner recorder boundaries, paper defaults and no-order scope. Initial live Jupiter integration is explicitly polled reference pricing, never a verified stream or executable quote. The separate exact-pair recorder reader never starts or relabels Coinbase. Each strategy version and source owns its prospective evidence. Remaining: implement, verify installed behavior, complete PR181 CI and merge.
 
 ## v339 - 2026-11-09: Oracle voting foundation
 
