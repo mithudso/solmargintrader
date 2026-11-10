@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 from .data import load_recording
-from .domain import ManagerError, canonical
+from .domain import BotSpec, ManagerError, canonical
 from .oracle_data import KNOWN_ARCHIVE, prepare_descriptor, read_page
 
 
@@ -25,6 +25,9 @@ def read_document(path, limit=65536):
 
 
 def prepare(spec, params, changes):
+    from .strategies import validate_runtime_config
+
+    validate_runtime_config(spec)
     if params.get("reference") is not True:
         raise ManagerError(
             "reference_consent_required",
@@ -94,7 +97,13 @@ def prepare(spec, params, changes):
 
 
 def check(spec, *, descriptor_path=None, runtime=None):
+    from .strategies import validate_runtime_config
+
     try:
+        if runtime and not descriptor_path:
+            # A saved draft can differ from the active immutable specification.
+            spec = BotSpec.from_dict(runtime["spec"])
+        validate_runtime_config(spec)
         if descriptor_path:
             data = load_recording(
                 read_document(descriptor_path), strategy_id=spec.strategy_id
@@ -107,9 +116,32 @@ def check(spec, *, descriptor_path=None, runtime=None):
                 "Register or select explicit input before checking data.",
                 3,
             )
-        from .strategies import validate_registration
+        if descriptor_path:
+            from .strategies import validate_registration
 
-        validate_registration(spec, data)
+            validate_registration(spec, data)
+        else:
+            from .data import engine_identity
+            from .strategies import validate_checkpoint
+            from .strategies.base import compatible_engine, validate_input
+
+            validate_input(spec, data)
+            if not compatible_engine(
+                data["identity"]["engine_identity"], engine_identity(spec.strategy_id)
+            ):
+                raise ManagerError(
+                    "engine_identity_changed",
+                    "Loaded economic engine differs from the active account.",
+                    3,
+                )
+            if runtime["checkpoint"] is not None:
+                validate_checkpoint(spec, data, runtime["checkpoint"])
+            elif runtime["cursor"] != 0 or data.get("bar_offset", 0) != 0:
+                raise ManagerError(
+                    "corrupt_checkpoint",
+                    "Continued input is missing its attributed account.",
+                    4,
+                )
         d = data["descriptor"]
         source = None
         if d["source"] == "oracle_archive":

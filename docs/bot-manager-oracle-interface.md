@@ -1,6 +1,9 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.2.0
+Version: 0.3.2
+Delta: State explicit human/CSV stdout rendering alongside JSON command envelopes.
+Delta: Advance the coordinated remaining-work release to manager 0.6 after concurrent M4 delivery.
+Delta: Add remaining backend commands, bounded reports, runtime schema 5, health/learning and external owner receipts.
 Delta: Add canonical four-family prospective reference operation and strict direct-route quote evidence.
 Delta: Integrated editing release delivered through PR186; 50 installed checks and 167 source files/assets verified.
 Delta: Expose registry-derived global arguments and explicit legacy event-reuse continuity metadata.
@@ -16,6 +19,67 @@ the later Oracle visual-interface work. Update its version and capability table
 at every manager release. A future command or an illustrative UI control is not
 evidence that its backend is available. The implementation epic remains open
 until its required work and applicable acceptance gates actually pass.
+
+## Current 0.6 contract
+
+The release matrix and operating semantics are maintained in
+/Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md.
+The existing graphical control room retains its registry-backed edit/apply/start/stop
+actions and durable action ledger. New research, learning, report navigation and
+external-owner screens remain future Oracle client work. This handoff supplies
+the backend contract without adding a supervisor or another state model.
+
+The registry now also exposes research setup/registration/plans/backtests, reports,
+health/alerts, explicit backup/restore, entry pause/resume, protected learning,
+browser control/receipt inspection and optional executor setup/admission/intent
+reconciliation. Query the installed `schema` rather than inferring availability
+from these command names. Real evidence and owner capability gates remain active.
+
+Runtime schema 5 adds bounded canonical segments and fences old writers. State
+reads support older schemas without migrating them. `status` adds independent
+`health`, attributed `accounting`, and an inert local `learning` projection.
+`status --why` includes the last completed evaluation, decision, blockers and next
+trigger. A normal realized loss remains a valid result, separate from missing
+measurements or a process fault. `learning.schedule` reports the selected daemon's
+last daily attempt; reading it never starts a helper or initializes an authority.
+
+Use `report BOT --format json|human|csv` for a selected current run and
+`report BOT --run-id UUID` for an archive. Preserve the reported arithmetic,
+currency and unknown-value reasons. Current-bot learning pointers in an archived
+report are explicitly labelled separate from that run's historical accounting.
+`events`, report events, `history-page` and `run-history` return stable sequence
+cursors with `next_after` and `has_more`. Row count is not a cursor. Existing full
+`history` remains a compatibility read; prefer bounded pages for a visual client.
+Unsupported archive sizes return a concrete bounded-read refusal.
+
+Grid/DCA `pause` and `resume` require a durable request UUID and revoke the previous
+worker generation. Existing exits continue; stop, cancel, close and kill/disarm
+remain distinct. Trend/Momentum entry pause stays unavailable. Learning promotion
+uses an explicit paused, stopped and reconciled flat boundary, preserving cash,
+losses, fees, cursor and runtime identity. It does not use independent-run reset.
+
+A browser slot has identity `browser:INSTALLATION_UUID:grid` and a separately
+stable UUID, native origin, source hash, config revision/hash, owner generation
+and optional runtime ID. Offline state is unknown. Armed/non-dry-run owners are
+unsupported by the manager's paper controls. Start/stop use the inspected
+`--expected-generation`, `--expected-config-hash` and durable `--request-id`;
+`browser-receipt` reconciles the outcome. A queued request remains pending until
+its actual owner reports it. No ownership transfer or multi-instance slot is implied.
+
+Actual Oracle forecast provenance remains visible but ineligible for manager
+training without verified parameter/version/horizon/source attribution. No catalog
+name alias or directional hit rate supplies comparable training or profit evidence.
+
+Executor descriptors come from public `executor-setup`; the optional executor
+retains signing, aggregate wallet rails and reservation authority. Current reference
+research/shadow data cannot produce certified admission. Unknown sends retain
+reservations and are never retried automatically. Trigger/V2, Grid/DCA entry
+construction and non-atomic arbitrage remain unavailable. A graphical button must
+preserve those reasons and cannot convert a fixture into live readiness.
+
+The older source/delivery sections below retain the 0.4 interface history. Their
+past package pins and remaining-work snapshots are historical. Current release
+acceptance and machine-specific installation state belong to the handoff receipt.
 
 ## Authority and source maintenance
 
@@ -39,9 +103,11 @@ Do not edit the SQLite bodies or hashes from a UI.
 
 ## Current access and discovery
 
-The stable executable is `/Users/mitch/.local/bin/solbot`, a symlink to
-`/Users/mitch/.venvs/solbot/bin/solbot`. The regular installed Python is
-`/Users/mitch/.venvs/solbot/bin/python`. The default manager home is
+The stable executable is `/Users/mitch/.local/bin/solbot`. After current-release
+acceptance it selects `/Users/mitch/.venvs/solbot-0.6.0/bin/solbot`; the matching
+regular Python is `/Users/mitch/.venvs/solbot-0.6.0/bin/python`. Verify its actual
+symlink target and loaded identity against the release receipt. Older regular
+environments remain preserved. The default manager home is
 `/Users/mitch/.config/solbot`; isolated clients/tests use `SOLBOT_HOME` explicitly.
 Bare invocation prints help. Ordinary command output is JSON, not an interactive
 menu. A start receipt alone does not prove a running worker; an explicit daemon
@@ -65,7 +131,9 @@ remote web authentication or graphical API server supplied by this editing relea
 
 ## Versioned commands and receipts
 
-Every ordinary result has exactly `{schema_version, request_id, ok, data, error}`.
+Machine-readable ordinary results have exactly `{schema_version, request_id, ok, data, error}`.
+`report --format human` and `report --format csv` print their selected text format
+directly. Machine clients should select `report --format json`.
 Errors contain `{code, message, retryable, detail_ref}`. Exit 0 means command
 success,2 invalid input,3 missing evidence/capability,4 operational/integrity
 failure. Preserve nulls and their reasons. Unknown schema/capability must refuse

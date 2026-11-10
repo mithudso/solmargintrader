@@ -60,7 +60,7 @@ def allowed_origins(extra: list[str] | None = None) -> list[str]:
 
 
 def wrapper_text(repo: Path, python: Path) -> str:
-    return f'#!/bin/sh\ncd {shlex.quote(str(repo))} || exit 1\nexec {shlex.quote(str(python))} -m soltui.native_host\n'
+    return f'#!/bin/sh\ncd {shlex.quote(str(repo))} || exit 1\nexec {shlex.quote(str(python))} -m soltui.native_host "$@"\n'
 
 
 def manifest(wrapper: Path, extra: list[str] | None = None) -> dict[str, Any]:

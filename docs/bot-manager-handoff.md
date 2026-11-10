@@ -1,6 +1,9 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.1.2
+- Version: 1.3.1
+- Delta: v1.3.0 to v1.3.1; bind final source, installation and delivery gates to the versioned release receipt.
+- Delta: v1.2.0 to v1.3.0; integrate the delivered historical M4 0.5.0 release and advance the current candidate matrix to manager 0.6.0/runtime 0.3.0/ecosystem 0.3.0.
+- Delta: v1.1.1 to v1.2.0; integrate the remaining backend contracts and retain original release history separately.
 - Delta: v1.1.1 to v1.1.2; integrate the M4 research checkpoint with the newer control room and forward package matrix.
 - Delta: v1.1.0 to v1.1.1; record actual PR188 delivery and full final-head manager checks.
 - Delta: v1.1.0 to v1.1.1; link the concrete remaining-work plan and distinguish the M4 source checkpoint from delivery.
@@ -15,6 +18,83 @@
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
+## Current 0.6 backend handoff
+
+The 0.6 source implements M4 research, M5 accounting/health/recovery, canonical
+bounded continuation, protected learning and the default daemon daily job, browser
+native delegation and guarded executor admission. Source implementation is separate
+from independent review, installed acceptance and final remote delivery. The current
+release receipt records each gate only after it passes.
+
+Use /Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md for the
+current feature map, exact version matrix, defaults, state ownership, reports,
+backup/restore and remaining data/time/venue gates. Use
+/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md for the executed
+first-use workflow and
+/Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md for the
+current client contract. The older sections below are historical through 0.4.0;
+their old worktree paths, package versions and unfinished-milestone descriptions
+do not describe the 0.6 candidate.
+
+Default manager state remains /Users/mitch/.config/solbot. Candidate installation
+uses a fresh regular environment; old immutable environments, existing producers,
+canonical research histories and the stopped default demo remain preserved.
+
+Current first-party versions: manager 0.6.0, backtester 0.2.0, research-runtime
+0.3.0, Oracle 0.2.2 and ecosystem 0.3.0. Executor 0.2.0 is optional and retains
+its own environment. The extension source is version 0.6.4; the everyday browser
+installation is not implicitly updated by source or isolated-profile acceptance. Runtime schema 5 fences older writers while preserving
+inert old-schema reads. Public commands and report schemas come from the manager
+registry; no UI supplies its own financial or execution authority.
+
+Current real reference input remains uncertified. No release test creates seven
+calendar days of genuine prospective shadow operation, thirty completed comparable
+shadow trades, complete Jupiter costs or a certified live strategy. Missing evidence
+retains the incumbent and prevents new live entry admission. The source contains
+no certified executor evidence issuer. The everyday browser installation remains
+separate from isolated Chrome acceptance.
+
+## Current verification and delivery receipt
+
+The machine-specific release record is
+/Users/mitch/.local/state/solbot/releases/0.6.0/delivery-receipt.json.
+Its `status` and `remaining` fields distinguish an active candidate from completed
+delivery. It binds the final source and packaged asset hashes, installed interpreters,
+actual command outcomes, check exit codes, final PR head and remote merge commit.
+The maintained continuation record is
+/Users/mitch/.local/state/solbot/releases/0.6.0/delivery-memory.md.
+A completed receipt supersedes earlier candidate/remaining-step observations.
+
+The release PR is
+https://github.com/mithudso/solmargintrader/pull/194
+Regular environments are /Users/mitch/.venvs/solbot-0.6.0 and
+/Users/mitch/.venvs/solecosystem-0.3.0. The optional executor is
+/Users/mitch/.venvs/executor-0.2.0. The stable CLI changes to the accepted manager
+only after independent installed acceptance. Old environments remain intact.
+
+The current source acceptance includes the two learning recovery repairs: an
+interrupted shadow pair recovers its exact original activation descriptor, and a
+learning authorization binds its canonical manager home before target mutation or
+receipt replay. A restored copy cannot use the original home's authorization.
+The watchdog retires a stalled owned writer even when its SQLite transaction blocks
+journal reads. It retains the account and generation-checked recovery evidence.
+
+## Historical M4 0.5.0 release
+
+The concurrent M4 research release was delivered through
+https://github.com/mithudso/solmargintrader/pull/192
+It reached the remote default branch at `72819d6fd4dd9678c7b648f4236c24dc4c6b4e08` before this
+0.6 candidate was integrated. Its manager 0.5.0 release is historical evidence for
+M4; it does not establish installed acceptance or delivery of the newer accounting,
+continuation, learning, browser and executor changes in this candidate.
+
+The retained pre-M4 handoff below records its then-current milestone state. Its
+statements that M4 integration or later milestones remained unfinished are historical,
+not the current 0.6 feature map. The original PR188 delivery evidence, package
+observations and acceptance receipts remain unchanged below.
+
+## Historical handoff through 0.4.0
+
 The standalone application is installed as `solbot`. It saves and edits immutable named bot specifications, discovers an existing SolTUI owner, delegates supported legacy controls and supervises independent reference paper accounts. It defaults to paper and disarmed. Milestones 1–3 plus editing are delivered. Grid, DCA, Trend and Momentum use canonical reference execution; prospective shared-source input is supported. Current evidence does not certify Jupiter execution or profitability.
 
 The concrete remaining implementation and delivery plan is /Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-10-bot-manager-remaining.md. M4 research has a committed source checkpoint but still needs current-master integration, independent review, installed acceptance and delivery. M5 accounting/monitoring, M6 continuation/learning, M7 browser integration, M8 executor gates and the final Oracle handoff remain. The plan separates working code from actual elapsed shadow evidence and live readiness.
@@ -28,7 +108,7 @@ The retained default-home demonstration below remains unchanged.
 
 This handoff is for the operator using the installed tool and the developer continuing it. It records what this session built, why it chose these boundaries, where the authoritative code and evidence live, and how to inspect, maintain and recover the application. Source references below use the canonical repository path; verify the actual checkout revision before editing or reinstalling.
 
-## 1. Access and current state
+## Historical 1. Access and current state
 
 ### Installed entry points
 
@@ -68,7 +148,7 @@ The configured legacy SolTUI endpoint reported `incompatible_owner`, with unknow
 
 The primary checkout was held by other active sessions and behind the verified release when this handoff began. Do not reinstall from an old checkout merely because its path is canonical. Check `git rev-parse HEAD` and use a clean checkout containing the intended release. Preserve the other sessions' dirty files and services.
 
-## 2. What was delivered and why
+## Historical 2. What was delivered and why
 
 ### Request and architecture
 
@@ -107,7 +187,7 @@ Concurrent historical-data, monitor and signal-research work was preserved durin
 | Label Coinbase replay as a reference | A target Jupiter specification cannot certify historical route/fill economics | Reference results remain ineligible for live promotion |
 | Keep configuration immutable | Installing new defaults or editing a draft must not silently alter a running account | `edit` stages a saved revision; `apply` separately verifies a stopped zero-exposure boundary and archives prior evidence |
 
-## 3. Complete current feature and capability map
+## Historical 3. Complete current feature and capability map
 
 | Capability | Delivered behavior | Boundary |
 | --- | --- | --- |
@@ -135,7 +215,7 @@ Concurrent historical-data, monitor and signal-research work was preserved durin
 | Blind optimization/learning | Designed with protected evidence and manual pins | Not delivered or running |
 | Live Jupiter execution | Preserved existing executor restrictions | No autonomous live bot is certified by this release |
 
-## 4. CLI and configuration reference
+## Historical 4. CLI and configuration reference
 
 Every application command dispatches through `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/registry.py`. The parser in `/Users/mitch/dev/solmargintrader/botmanager/src/botmanager/cli.py` only parses, dispatches and renders. Add future commands to the registry, not a second parser-only execution path.
 
@@ -206,7 +286,7 @@ Shared values must match strategy ID/version, venue, both mints, bar duration an
 
 The normal existing token path is `/Users/mitch/Library/Application Support/soltui/api-token`. The manager verifies public health says `service=soltui` before resolving or sending a token. The token must already be a regular owner-owned mode-0600 file. It never creates, repairs or prints credentials. Redirects, proxies and unrelated services receive no bearer token.
 
-## 5. Operator workflows
+## Historical 5. Operator workflows
 
 ### Create and inspect without starting work
 
@@ -310,7 +390,7 @@ Legacy forward sessions in `/Users/mitch/dev/solmargintrader/soltui/bots.py` are
 
 The owner starts the exact configuration and costs it compared. A raw legacy command can still change its own state; the next guarded operation must observe that change. This is delegation, not ownership transfer or fencing of every old client. No fallback to an unguarded restart exists. Source and fixture coverage do not prove that the current default installed owner supports these controls.
 
-## 6. Data, accounting and operational limits
+## Historical 6. Data, accounting and operational limits
 
 Inputs must be `coinbase_exchange_recorder` recordings for SOL-USD/USD or SOL-USDC/USDC. Target and reference identities remain separate. USD and USDC are not assumed equal. USDC results stay in `reference_financials`; USD-named fields remain null where conversion has not been measured.
 
@@ -340,7 +420,7 @@ The grid adapter invokes canonical `run_grid_backtest(close_at_end=False)`. It p
 
 `financials` provides measured USD reference exposure, realized/unrealized net P&L and costs only when supported by the checkpoint currency. Other values remain null with reasons. `configured_virtual_capital` and `configured_reference_capital` are not reserved allocation. Do not subtract displayed costs again from values already labeled net, or add independent virtual accounts as one funded portfolio. Full deposits/withdrawals, live marks, integer-token reconciliation and training/profit reports belong to milestone 5 and later.
 
-## 7. Architecture, authoritative files and change ownership
+## Historical 7. Architecture, authoritative files and change ownership
 
 ```mermaid
 flowchart TD
@@ -466,7 +546,7 @@ Jupiter quote evidence is a separate explicit opt-in capability in /Users/mitch/
 
 The local HTTP stand-in and its scope are documented in /Users/mitch/dev/solmargintrader/postman/mocks/botmanager-jupiter-swap-v1/README.md. Simulated HTTP success is separate from actual provider data, regular installed source identity and chain acceptance.
 
-## 8. Maintenance, upgrades, backup and recovery
+## Historical 8. Maintenance, upgrades, backup and recovery
 
 ### Upgrade from verified source
 
@@ -559,7 +639,7 @@ The snippet is a copy primitive, not an automatic quiesce/restore/migration syst
 | `stable_install_required` | Service command loaded source/editable/temporary code | Install reviewed regular packages into the stable environment |
 | `service_unavailable` with retained definition | Registration/removal could not be confirmed | Inspect the exact service identity and reconcile; do not claim all workers stopped |
 
-## 9. Verification and bugs caught before delivery
+## Historical 9. Verification and bugs caught before delivery
 
 ### Editing extension evidence
 
@@ -691,7 +771,7 @@ The root documentation gate discovers 1,002 backtester, 1,434 SolTUI, 408 extens
 
 Regenerate tracked metadata only after staging new/resolved paths. Run the existing offline generators `/Users/mitch/dev/solmargintrader/index/build.py all`, `/Users/mitch/dev/solmargintrader/index/make_files_doc.py`, `/Users/mitch/dev/solmargintrader/index/make_concepts_doc.py`, then the index `--check` and docs gate. Semantic embeddings are separately opt-in. Use `INDEX_NO_AUTO=1` for local index searches; an earlier search fallback started an idle builder, which this session identified and stopped without touching shared model services.
 
-## 10. Resume the approved implementation
+## Historical 10. Resume the approved implementation
 
 The controlling specification is `/Users/mitch/dev/solmargintrader/docs/superpowers/specs/2026-11-09-bot-manager-design.md`. The milestone order is `/Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-09-bot-manager.md`. Owner approval is recorded in the implementation-approval decision, KNOW-1115; older design-first wording does not prohibit the approved later implementation.
 
@@ -723,7 +803,7 @@ Future blind selection must hide parameters/incumbent identity through an enforc
 
 The future UI direction remains a fleet roster plus selected-bot inspector, persistent blockers and an attributable activity ledger. Creation proceeds Strategy → Market/budget → Rules/tuning → Risk boundaries → Review. A saved draft must continue to start no worker, reserve no capital and place no order. Supplemental graphics do not establish production execution, accessibility or profitability.
 
-## 11. Documents, evidence and continuation locations
+## Historical 11. Documents, evidence and continuation locations
 
 ### Tracked, durable references
 
@@ -772,7 +852,7 @@ Important local files are:
 
 These artifacts can contain machine-local paths and operational evidence. Do not publish arbitrary private raw evidence or credentials. Keep cumulative memory files intact. In particular, `/Users/mitch/dev/solmargintrader/.remember/remember.md` is tracked and cumulative; this handoff does not replace it.
 
-## 12. Acceptance boundary to retain
+## Historical 12. Acceptance boundary to retain
 
 The application is a usable standalone CLI with persistent drafts, truthful capability/status data, guarded legacy delegation and crash-tested independent grid reference accounts. It shares the existing simulator and preserves existing owners. The default installation is disarmed and its production service is not automatically enabled.
 

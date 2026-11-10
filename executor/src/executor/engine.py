@@ -64,6 +64,15 @@ class Engine:
         self.clock = clock
         self.sleep = sleep
         self.key_loader = key_loader
+        from .authority import WalletAuthority
+
+        self.authority = WalletAuthority(cfg, self.root)
+        if self.authority.policy_path.is_file():
+            self.journal = self.authority.journal
+        self._caller_request = None
+        self._caller_reserved = None
+        self._entry_admission = None
+        self._reviewed_cfg = None
 
     # -- quote ---------------------------------------------------------------------------------------------
 
@@ -100,6 +109,9 @@ class Engine:
         exit_only: bool = False,
         reason: str | None = None,
         slippage_bps: int | None = None,
+        request_id: str | None = None,
+        caller_context: dict | None = None,
+        admission=None,
     ) -> dict[str, Any]:
         token_in, token_out = resolve(frm), resolve(to)
         in_raw = ui_to_raw(amount, token_in.decimals)
@@ -109,9 +121,105 @@ class Engine:
         if strategy is not None and not strategy.strip():
             raise BadParams("strategy may not be blank")
         with self._swap_lock():
-            return self._swap_locked(
-                token_in, token_out, in_raw, strategy, live, exit_only, (reason or "").strip(), slip
-            )
+            if not live:
+                with self.authority.lock():
+                    original_cfg = self.cfg
+                    self.authority.check()
+                    if admission is not None:
+                        admission()
+                    self.cfg = self.authority.effective_config(persist=False)
+                    self.journal = self.authority.journal
+                    try:
+                        return self._swap_locked(
+                            token_in, token_out, in_raw, strategy, live, exit_only, (reason or "").strip(), slip
+                        )
+                    finally:
+                        self.cfg = original_cfg
+            from .authority import STRATEGIES, identity
+
+            if strategy not in STRATEGIES and not exit_only:
+                raise Refused("live strategy must be a canonical executor risk family")
+            with self.authority.lock():
+                self.authority.check()
+                original_cfg = self.cfg
+                effective_cfg = self.authority.effective_config()
+                self.journal = self.authority.journal
+                request_id = request_id or str(uuid.uuid4())
+                body = {
+                    "from": token_in.mint,
+                    "to": token_out.mint,
+                    "in_raw": in_raw,
+                    "strategy": strategy,
+                    "exit": exit_only,
+                    "reason": (reason or "").strip(),
+                    "slippage_bps": slip,
+                    "owner": identity(original_cfg),
+                    "context": caller_context,
+                }
+                old = self.authority.bind(request_id, body)
+                if old:
+                    self.cfg = original_cfg
+                    return self.authority.replay(old)
+                self._caller_request = request_id
+                self._caller_reserved = None
+                self._entry_admission = admission
+                self._reviewed_cfg = original_cfg
+                try:
+                    self.cfg = effective_cfg
+                    self.authority.require_no_pending(request_id, exit_only=exit_only)
+                    if admission is not None:
+                        # Identity binds the caller's reviewed config, not the
+                        # conservative cross-client cap projection below.
+                        self.cfg = original_cfg
+                        admission()
+                        self.cfg = self.authority.effective_config()
+                    result = self._swap_locked(
+                        token_in, token_out, in_raw, strategy, live, exit_only, (reason or "").strip(), slip
+                    )
+                    result["request_id"] = request_id
+                    self.authority.update(request_id, "terminal", result=result)
+                    return result
+                except Exception as exc:
+                    state = self.authority.status(request_id)["request"]
+                    intent = self.journal.states().get(state["intent_id"])
+                    uncertain = intent and intent["state"] in ("sending", "unknown")
+                    result = {
+                        "request_id": request_id,
+                        "state": "unknown" if uncertain else "refused",
+                        "sent": None if uncertain else False,
+                        "error": {
+                            "code": getattr(exc, "code", "failed"),
+                            "message": "executor request requires reconciliation"
+                            if uncertain
+                            else "executor refused; nothing sent",
+                        },
+                    }
+                    self.authority.update(
+                        request_id,
+                        "unknown" if uncertain else "terminal",
+                        reserved=state["reserved_usd"] if uncertain else "0",
+                        result=result,
+                    )
+                    raise
+                finally:
+                    self.authority.save_anchor()
+                    self.cfg = original_cfg
+                    self._caller_request = None
+                    self._caller_reserved = None
+                    self._entry_admission = None
+                    self._reviewed_cfg = None
+
+    def _check_entry_admission(self):
+        if self._entry_admission is not None:
+            effective = self.cfg
+            self.cfg = self._reviewed_cfg
+            try:
+                self._entry_admission()
+            finally:
+                self.cfg = effective
+
+    def _kill_present(self):
+        return (self.root / "KILL").exists() or self.authority.killed()
 
     def _swap_lock(self):
         self.root.mkdir(parents=True, exist_ok=True)
@@ -144,7 +252,7 @@ class Engine:
         decision = rails.check_trade(
             cfg, self.root, self.journal, report,
             strategy=strategy, live=live, exit_only=exit_only,
-            kill_present=(self.root / "KILL").exists(), native_lamports=native, now=now,
+            kill_present=self._kill_present(), native_lamports=native, now=now,
         )  # fmt: skip
         built = self.jup.build_swap(report.quote, cfg.owner, cfg.rails.max_priority_fee_lamports)
         tx = txverify.decode_b64(built["swapTransaction"])
@@ -168,11 +276,44 @@ class Engine:
         if econ:
             raise Refused([f"verifier: {p}" for p in econ])
         if not live:
+            # Dry-run evaluates the same aggregate financial ceilings without
+            # binding an intent, reserving capital or persisting a policy edit.
+            cfg = self.authority.effective_config(persist=False)
+            decision = rails.check_trade(
+                cfg,
+                self.root,
+                self.journal,
+                report,
+                strategy=strategy,
+                live=False,
+                exit_only=exit_only,
+                kill_present=self._kill_present(),
+                native_lamports=native,
+                now=now,
+            )
+            base_evidence["decision"] = decision.to_dict()
+            self.authority.budget(report, native, facts.fee_lamports, exit_only=exit_only, reserve=False)
+            try:
+                self.authority.require_no_pending(None)
+                if self.journal.unresolved():
+                    raise Refused("unresolved shared wallet send")
+            except Refused:
+                return {
+                    "mode": "dry-run",
+                    "sent": False,
+                    "would_send": False,
+                    "blocked_reason": "unresolved_shared_wallet_send_or_request",
+                    "strategy": strategy,
+                    **base_evidence,
+                }
             if strategy:
                 gates.record_dry_run(self.root, cfg, strategy, now)
             self.journal.append("dry_run", f"dry-{uuid.uuid4().hex[:12]}", strategy=strategy, side=decision.side,
                                 in_usd=str(round(report.in_usd, 6)), message_sha256=base_evidence["message_sha256"])  # fmt: skip
             return {"mode": "dry-run", "sent": False, "would_send": True, "strategy": strategy, **base_evidence}
+        self._caller_reserved = self.authority.budget(
+            report, native, facts.fee_lamports, request_id=self._caller_request, exit_only=exit_only
+        )
         return self._send_live(
             tx, facts, exp, info, report, decision, strategy, reason, built, base_evidence, exit_only
         )
@@ -203,6 +344,9 @@ class Engine:
         import base64
 
         cfg = self.cfg
+        self._check_entry_admission()
+        intent_id = f"swap-{int(self.clock())}-{uuid.uuid4().hex[:8]}"
+        self.authority.update(self._caller_request, "executing", reserved=self._caller_reserved, intent_id=intent_id)
         kp = self.key_loader(cfg.key_file, cfg.owner)
         signed = VersionedTransaction(tx.message, [kp])
         if txverify.message_hash(signed) != base_evidence["message_sha256"]:
@@ -216,7 +360,7 @@ class Engine:
         age = self.clock() - report.fetched_at
         if not 0 <= age <= cfg.rails.max_quote_age_s:
             raise Refused(f"quote is {age:.1f} s old, over max_quote_age_s {cfg.rails.max_quote_age_s:g}")
-        if (self.root / "KILL").exists() and not exit_only:
+        if self._kill_present() and not exit_only:
             raise Refused("KILL file appeared while the swap was being prepared")
         height = self.rpc.block_height()
         if built["lastValidBlockHeight"] - height < BLOCKHASH_MARGIN:
@@ -225,21 +369,25 @@ class Engine:
         # Re-run the position rails against the journal as it is NOW (a concurrent writer cannot have raced past the lock).
         decision = rails.check_trade(
             cfg, self.root, self.journal, report, strategy=strategy, live=True, exit_only=exit_only,
-            kill_present=(self.root / "KILL").exists(), native_lamports=native_now, now=self.clock(),
+            kill_present=self._kill_present(), native_lamports=native_now, now=self.clock(),
         )  # fmt: skip
         base_evidence["decision"] = decision.to_dict()
         # Every final RPC and gate read precedes the last pre-journal safety check.
         age = self.clock() - report.fetched_at
         if not 0 <= age <= cfg.rails.max_quote_age_s:
             raise Refused(f"quote is {age:.1f} s old, over max_quote_age_s {cfg.rails.max_quote_age_s:g}")
-        if (self.root / "KILL").exists() and not exit_only:
+        if self._kill_present() and not exit_only:
             raise Refused("KILL file appeared while the swap was being prepared")
 
-        intent_id = f"swap-{int(self.clock())}-{uuid.uuid4().hex[:8]}"
+        self.authority.budget(
+            report, native_now, facts.fee_lamports, request_id=self._caller_request, exit_only=exit_only
+        )
+        self._check_entry_admission()
         base_raw, quote_usd = self._base_and_quote(decision.side, report)
         self.journal.append(
             "intent", intent_id,
             strategy=strategy, side=decision.side, base_mint=decision.base_mint, exit=exit_only, reason=reason,
+            caller_request_id=self._caller_request,
             from_mint=report.token_in.mint, to_mint=report.token_out.mint, in_raw=report.quote.in_raw,
             min_out_raw=report.quote.min_out_raw, in_usd=str(round(report.in_usd, 6)),
             sol_price_usd=str(report.sol_price_usd), evidence={**base_evidence, "signed_check": evidence2},
@@ -251,10 +399,15 @@ class Engine:
         # Both journal writes can block on disk. A stop or expired quote during either write still wins.
         age = self.clock() - report.fetched_at
         refusal = None
-        if (self.root / "KILL").exists() and not exit_only:
+        if self._kill_present() and not exit_only:
             refusal = "KILL file appeared while the intent was being journalled; nothing was sent"
         elif not 0 <= age <= cfg.rails.max_quote_age_s:
             refusal = f"quote is {age:.1f} s old after journalling; outside max_quote_age_s; nothing was sent"
+        if not refusal:
+            try:
+                self._check_entry_admission()
+            except Refused:
+                refusal = "scoped admission changed before send; nothing was sent"
         if refusal:
             self.journal.append("result", intent_id, status="rejected", signature=signature, reason=refusal)
             raise Refused(refusal)
@@ -404,7 +557,15 @@ class Engine:
     def reconcile(self) -> dict[str, Any]:
         """Resolve every unknown send from the chain. The only way to clear the block; never re-sends anything."""
         with self._swap_lock():
-            return self._reconcile_locked()
+            if not self.authority.policy_path.is_file():
+                return self._reconcile_locked()
+            with self.authority.lock():
+                self.authority.check()
+                self.journal = self.authority.journal
+                result = self._reconcile_locked()
+                self.authority.reconcile_requests()
+                self.authority.save_anchor()
+                return result
 
     def _reconcile_locked(self) -> dict[str, Any]:
         out: list[dict[str, Any]] = []

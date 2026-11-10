@@ -1,8 +1,19 @@
 # Work continuation
 
+Version: 378
+Delta: v377 to v378; final full303 source suite passed after shutdown fix.
+Delta: v376 to v377; retain CI shutdown-order repair and fresh manager candidate revalidation.
+Delta: v375 to v376; record independent installed acceptance and final CI-only delivery tail.
+Delta: v374 to v375; retain Linux fixture correction and rendered-report contract clarification.
+Delta: v373 to v374; record final source/review passes and frozen regular wheel candidates.
+Delta: v372 to v373; record integrated test gates, full review findings and active repairs.
+Delta: concurrent v351/v371 to v372; preserve both implementation and accepted M4 histories; integrate release0.6.
+Delta: v350 to v351; retain independent review repairs, candidate environments and remaining executor gates.
+Delta: v349 to v350; retain bounded continuation, strict load results and current fanout ownership.
+Delta: v348 to v349; preserve recovered M4 and accounting source, operational health integration and next fanout.
+Delta: v347 to v348; start all-remaining bot-manager integration with parallel owners.
 PR192 delivery state: `/Users/mitch/.local/state/solmargintrader/pr192-01a1c44a/delivery-memory.md`. A completed receipt there supersedes the pre-merge remaining steps below.
 
-Version: 371
 Delta: v370 to v371; repair CI import-order and Linux fixture failures after installed behavior acceptance.
 Delta: v369 to v370; accept independent M4 source review and both integrity repairs.
 Delta: v368 to v369; verify integrated M4 and repair V2 owner discovery.
@@ -1480,6 +1491,37 @@ Canonical private entry /Users/mitch/dev/solmargintrader/.worktree-recovery poin
 Hash-preconditioned canonical reconciliation removed12copy-induced M4Pythonfiles plusduplicatedOpenCode and restored6stale/tasktrackedfiles from acceptedmaster4d773dcb. Primarytrackedstateisclean; originaluntrackedcontentremains. DraftPR182and192/branches remain. Only active nestedSolTUIworktree and our delivery worktree remain registered. No production service/install/state changed. Product-runtimechanges are absent; the integratedcatalogtest expands allguide/researchcards and checksduplicateIDs/spec-onlyexclusion.49targetedtests passedwith1expectedskip. Remaining: finalreport/wiki/offlineindexchecks, task-ownedcommit/push/PR/finalheadCI/merge, primaryfastforward preservinguntrackedhashes, and removeonlyourmergedbranch/worktree. Fullreport docs/worktree-consolidation-2026-11-10.md.
 
 
+## Remaining bot-manager implementation — TASK-1230
+
+User requested full remaining-plan implementation as agent fanout. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c447, branch agent-01a1c447-bot-remaining, baseline bd390a4. Primary checkout has77untracked paths and stays intact. Recover M4 source from PR192/e24ad7c, preserving newer ecosystem pins/referral defaults. Remaining: M4 review/acceptance; accounting/reports; health/alerts/backup/pause; long continuation; protected learning; browser registration/controls; guarded executor; final docs/install/source/CI/delivery. Real seven-day/thirty-trade shadow and certified venue evidence stay distinct. Stele TASK-1110 has a prior claim; use TASK-1230 for recovery coordination without force release.
+
+
+## Remaining implementation checkpoint — source only
+
+M4 recovery a3c638a fixed required-participant freshness and same-Python exec sandbox escape. Scoped17research/blind,70owner(1skip),137legacy tests pass; source installed/independent review/CI remain. Accounting64309e1 passed21focused tests. Health root adds separate process/input/evaluation/result states, derived durable alerts, pause/resume generation fencing and new registry command definitions. Root checks:2entry-control,13status,18supervisor tests pass, Ruff clean. No delivery claim: backup/load, continuation, protected learning, browser, executor, review/install/CI/merge remain. Continuation agent owns canonical/worker/ledger/source changes; accounting agent owns backup/tests then learning; M4 agent now owns executor. Preserve production homes and all prior immutable environments.
+
+
+## Remaining implementation — bounded state and release matrix
+
+Task1230 remains in progress, draft PR194 branchagent-01a1c447-bot-remaining. Task4cb6b08a implements512barsegments, fixedcanonicalstate, schema5(old1–4inertreads), pauseentryhooks and flatrebindhelper. Task3d097f44 repairs retry starvation at4workers/6queued and measures14.022469secondwatchdog;18supervisor tests passed. Frozenresearchsources unchanged; only.gitignoredFinder.DS_Storemetadata excluded by snapshotvalidator,9coveringtestspass.
+
+Current rootowned package matrix unstaged: manager0.5.0,backtester0.2.0,research-runtime0.2.0,Oracle0.2.2,ecosystem0.2.2. Keepoldimmutableenvironmentsand50bpsmanualreferralbehavior. Beforeinstalledacceptance snapshotat/Users/mitch/.local/state/solbot/releases/0.5.0/preserved-installations-before.json preserves defaultdemo hashes/mtimesandstablealias.
+
+Agents: m4_recovery now executorTask7(469offline+7adapterpass,finalcommit/reportpending);accounting_reports now learningTask5(ownerprotocol,realpairedshadowworkers,atomiclocalmanager/runtimeadoption,actualownerclockandcertificationgates);continuation now browserTask6(nativeorigin/stableprofileUUID/durabledelegatedpapercontrols). Rootownsregistry/status/CLI/backupintegration,versions/docs,indexes,delivery. Rootpending: finalAPIintegration;per-taskreviews;fullsourcechecks;freshregularinstall+independentloadedacceptance;wiki/index/docs;finalCI/merge;onlyownedcleanup. Realelapsed7days/30completedshadowtradesandcertifiedJupiterexecutionremainexplicitgates. Untracked.opencodeappearedinthisnewworktree;preserveandassessprovenancebeforecleanup;donotstageit.
+
+
+## Remaining implementation — review checkpoint
+
+Work continues in /Users/mitch/dev/solmargintrader-wt-01a1c447 on agent-01a1c447-bot-remaining, draft PR194. All source milestones have implementation commits. Independent Task1,2,3,4,5,6 reviews now PASS after concrete repairs; Task7 executor review still requires its fixes and re-review. Reviews and exact implementer reports live in .superpowers/sdd/remaining-2026-11-10. Do not treat a source review as installed acceptance or delivery.
+
+Important repaired cases: source judge same-Python exec and closed-pipe timeout; bounded financial/learning reads and missing ledger/marks; pause generation handoff and continuing exits; aged browser restore uses capture cutoff; prompt crash alerts; real M4 optimizer under ten-bot load; empty Grid rollover and 2048/2050 runtime lookback/tail caps; canonical owner pointer/provenance/overflow/clock validation; browser no-op poll leaves legacy owner alone, refused stops have no effect, valid later stops fence older starts, actual semantic source changes require reload. Accepted commits include f06fdfd,170797f,13e229f,6d7af98,a2ffd70 and bb437c1. The 425-test browser source gate passed on0.6.4; everyday browser/native installation is not verified.
+
+Executor worker m4_recovery is fixing Task7 P1 imported-send journal anchoring, tighter caps across client homes, manager paper/disarmed live refusal, and P2 dry-run shared portfolio checks. Its risk nodes KNOW-1242/1243 expire on TASK-1230. No key, production authority or real-money action was requested or performed. New regular environments are created but uninstalled: /Users/mitch/.venvs/solbot-0.5.0, /Users/mitch/.venvs/solecosystem-0.2.2 and /Users/mitch/.venvs/executor-0.2.0. Declared third-party dependencies installed successfully; Endor package-risk tooling unavailable, recorded as UNKNOWN in private dependency-risk.json (no approval claim). Existing environments and stable CLI alias remain preserved.
+
+Root owns versions/docs/registry/status/CLI and delivery. Current source matrix: manager0.5.0,core0.2.0,research-runtime0.2.0,Oracle0.2.2,ecosystem0.2.2,executor0.2.0,extension0.6.4. Existing control room already delegates edit/apply/start/stop to the manager; broader new0.5 graphical workflows are explicitly future Oracle work, not a new UI implementation obligation. Current operations guide and Oracle interface state that boundary.
+
+Remaining: finish Task7fix/re-review; final whole-branch review; correctly rooted full manager/canonical/Oracle/ecosystem/affected-owner/JS/executor checks; source docs/count/wiki/offline indexes; fresh regular candidate installs; live-acceptance-verifier outside checkout with exact packaged source/asset parity and public first-use/report/recovery/research/browser/executor guards; update stable CLI alias only after acceptance; final-head CI/merge/remote-content receipt; safe primary fast-forward preserving77untracked paths; remove only owned merged worktree/branch. Preserve untracked .opencode and private evidence. Canonical research histories, existing producers and stopped default demo remain unchanged. Real certified source/cost/fill evidence,7actualshadowdays and30comparablecompletedshadowtrades remain separate production gates.
+
 ## Preserved M4 checkpoint history — PR192
 
 
@@ -1551,3 +1593,52 @@ The docs environment import failure was traced to four Finder .DS_Store files in
 First integrated commit e50d5444 passed independent installed behavior: nine effective groups across public owner setup/refusals, four reference families/loss reporting, anonymous deterministic judging, actual OS denial with successful unsandboxed controls, shared authority, proposals/CAS, cancellation/history/legacy fences and preservation. Both regular environments matched1665 first-party files each with pipcheck0. Default demo seven-file hashes/size/mtime and decoded stopped/paper/disarmed cursor2 state, five frozen-environment metadata files and eight production process identities remained unchanged. A bounded actual shared-archive preparation refused invalid descriptor identity/costs/bounds; no absence, working actual venue evidence or new producer was inferred. Prior fixture-only acceptance failure used an invalid legacy bot name; corrected to supported grid and reran only that group successfully.
 
 CI42784289157 exposed two concrete missed paths. Linux research test's second call omitted its platform-selected judge, so it reached the intended macOS isolation_unavailable refusal before the expected date fence. Added judge=judge to that call; actual macOS sandbox coverage remains. Fresh standalone manager_evidence import failed: ImportError cannot import name ManagerEvidence from partially initialized module. Extracted unchanged error/finite canonical JSON/fingerprint helpers into dependency-free evidence_identity.py, preserving experiments re-exports and adding helper hashing to owner source identity. Fresh-process import-order/typed finite-JSON regression covers both orders. Sixty-two affected evidence/owner/native tests and the Linux-selected one-test path pass; Ruff passes changed modules. Scoped source re-review and fresh immutable regular candidates must bind this final import repair before merge. Existing installed sandbox/engine evidence remains bound to unchanged exact modules, not silently relabelled. New SolTUI count1436/total2892 includes the import regression.
+
+
+## Integrated remaining-work release — source validation pending
+
+Concurrent M4 PR192 merged as72819d6 on2026-11-10. Integrated its dependency-free identity helpers, V2 owner discovery, full typed receipt comparison, import-order regression and Linux judge fixture. Preserve its accepted0.5.0 installation evidence and immutable environments. This broader release advances manager0.6.0/research-runtime0.3.0/ecosystem0.3.0; core0.2.0/Oracle0.2.2/executor0.2.0/extension0.6.4 remain. Integration agents staged only their owned semantic conflict resolutions. Executor four reviewed findings repaired in2f2eb26; independent re-review pending. Actual full manager run had one stale schema4 test expectation; expected5 repaired25a157b, focused test passed. Final full integrated tests, regular installation, independent loaded acceptance, whole-branch review, documentation/wiki/index, final PR194 CI/merge and safe cleanup remain. Existing candidate0.5/0.2.2 paths are preliminary task-owned environments, not accepted release proof; use new0.6/0.3 paths. Default demo and stable alias remain preserved.
+
+
+## Cross-milestone review and final test checkpoint
+
+Integration commit f24ad19 preserves M4 and includes executor pending-awareness crash replay fix. Task7 final independent review PASS; executor491offline/5networkdeselected and62authority pass. Final cross-milestone reviewer found two learning P2 recovery cases: shadow-pair retries recompute activation after first-member crash; authorization receipt lacks canonical manager-home binding and can mutate a restored clone before owner reconciliation. Original learning author accounting_reports owns both fixes and regressions (learning.py, owner and ledger method). Health reviewer owns exact owned-PID load fixture and SQLite-lock watchdog fallback; full manager296run had strict load timeout, not accepted. Initial focusedload passes14.0188s but does not erase failure. Source fullOracle76,ecosystem173,extension425,canonical1003(1expectedskip) and Ruff pass. Docs discovery now1457SolTUI/1003canonical/425JS/46mongo=2931 after concurrentM4tests. Affected219SolTUIrun had intermittent experiment-interface temporary-directory/reaper cleanup race; focusedone-testpass does not repair it; route textual lifecycle specialist when slot opens.
+
+New regular candidate manager0.6.0/ecosystem0.3.0/executor0.2.0 install and pipcheck pass; initial parallel wheelbuild collided in build/lib/backtester/strategy_cards/README.md, sequentialmanagerretry passed. Candidates are not final while runtime source changes; reinstall final source before independent loaded verification. OrdinaryChrome26/26 and actualtwo-profile installednative/browser0.6.4 pass, everydayprofile unchanged. Private artifacts /Users/mitch/.local/state/solbot/releases/0.6.0; earlier0.5 preliminarysourceevidence preserved. Owned untracked rootlogs/diffpackages/schema relocated under0.6.0/source-evidence. Current remotePR194 remainsdraft withinitialhead; finishedsource/review/install/docs/index/finalCI/merge stillrequired. No productionhome/researchauthority/producer/key/order change.
+
+
+## Final source accepted; installed gate active
+
+Final productsource2431ed7 includes370c758 SQLite-lock watchdog andc949a4e test reaper teardown. Final fullmanager301tests90.617s exit0; affectedSolTUI219tests46.816s exit0/1expectedcatalogskip; canonical1003exit0/1expectedskip; Oracle76,ecosystem173,JS425,ordinaryChrome26/26,executor491offline/5networkdeselected andRuff pass. Docsdiscovery1457SolTUI/1003canonical/425JS/46mongo=2931 current. FinalwholebranchreviewPASSv1.1.0 after3independentlearningregressions and2watchdogshutdownregressions. BothrecoveryP2sclosed2431ed7. TenexperimentJobLifecyclerepetitions70testspassed, no productionjobchange.
+
+Finalsixregularwheels built once, sharedreadonlywheelset /Users/mitch/.local/state/solbot/releases/0.6.0/wheels withwheel-manifest.json. Frozenmanager0.6/ecosystem0.3/executor0.2 candidates installfromwheels andpipcheck; independentlive-acceptance-verifier owns actual loaded command/sandbox/recovery/refusal gates. No aliaspromotion beforePASS. Acceptancepreparation accidentally invoked index/search.py --text without INDEX_NO_AUTO, causingnewmxbaiembeddingjob; verifier terminatedonlyownedPIDs2464/2492, unloadedonlythatnewmodel andpreservedexistingserver/othermodels. Exactcorrectionmustremaininprivateacceptancereceipt; do notclaimunchangedallruntimestate. Allfurtherlookups useINDEX_NO_AUTO=1. Defaultdemo exacthash/size/mtimeunchanged inpreservation-current-before-alias.json.
+
+Remaining: independentinstalledacceptance, stablealiaspromotion+independentactualidentity, finalofflineindex/wiki/docs checks, finaltask-ownedcommit/push/PR194finalheadCI/merge, remotecontentreceipt, safeprimarysync andownedcleanup. Machine-specificdelivery-receipt.json/delivery-memory.md under0.6.0supersedepremergegateswhencomplete. No realvenuecertification, elapsed7days/30comparabletrades, everydaybrowserupdate orlivecapabilityclaimed.
+
+
+## Final CI portability correction
+
+Finalhead6aadd54 passed10of11activeCIjobs; Linuxbotmanager301tests126.726s failed only loadfixtureoptimizer: productionrun_judge correctlyrefusedisolation_unavailableonunsupportedhost. review_health owns test-onlyplatformselection: macOSusesactualrun_judge; nonmacOSusesexplicitpure numericalfixturedecide, labellednoOSisolationclaim. Productionblindsourceandfailclosedunsupported-host unchanged. Rootaddsactualtest_load macOSCIstepsoOSoptimizer/watchdogloadremainsrequired. FocusedactualmacOSandforcedLinuxfixturechecks precedecommit. FinalCI mustrerunonnewhead; oldfailedheadnotaccepted. AllotheroldheadjobsincludingtargetmacOSpassed.
+
+IndependentinstalledM4ninegroups/secondregularenvironmentidentity+ownercompatibilitytwo groups/allfour2307barcontinuation pass. Operationsharness initiallyassumedhumanCSVstdoutwasJSON; actualCLIcorrectlyrendersplainformats. Privatefailedreceiptpreservedandharnesscorrectedonly. Interface0.3.2clarifiesrenderedstdout. Onlyecosystemwikiassetsrebuiltandinstalledbothenvs, exactv2assetreceiptfinal-assets-installation.json supersedesonlyoriginalecosystemwheelhash. Runtimecodeisunchanged. Installedverifierfinishingoperations/learning/keylessexecutor/cleanup; stablealiasnotyetpromoted.
+
+
+## Independent installed acceptance accepted
+
+Live-acceptance-verifier finalreceipt /Users/mitch/.local/state/solbot/releases/0.6.0/acceptance/installed-acceptance.json iscomplete,24selectedcompletedchecksPASS. Eachregularmanager/ecosystemmatches1680semantic source/assetsfiles; executor22. Publicactualsharedarchiveprepare/register/start/daemon/status/report/health/stop/releasepassedcursor0 honestshort-runlimit; numericalfixturescoverrenderedreports/pause/archive/backuprestore/2307barfourfamilycontinuation/2learningrepairs/sharedwalletguards. ActualOSdenyprobesandunsandboxedcontrolsPASS. Defaultsevenfilesbytes/size/mtimesunchanged; noownedfixtureprocess. Everydaybrowsernotupdated andrealproductionevidence/time/livegatesremainpending. Oldfailedprivateharnessreceiptsretainedwithcorrectedreruns.
+
+NarrowportableloadactualmacOS+forcedLinuxnumericalfixtures2tests32.224sPASS, strict15sunchanged; source-onlytestcorrectionneverchangesproductionblindisolation. RootrequiresnewfinalheadCIonPR194beforemerge, stablealiaspromotion+independentaliasreceipt, remotecontentverification, safeprimarysync andonlyownedworktree/branchcleanup. Finalprivate delivery-receipt.json/delivery-memory.md supersedes thispremergecheckpoint afteractualdelivery. Preserveunrelated.opencode archiveandactualfolderoutsideownedworktreebeforecleanup.
+
+
+## macOS shutdown gate repair
+
+CI4f5ff7a passed10activejobsincludingLinux302manager; actualmacOSsandboxandoptimizer/watchdogtests passed, butnewshutdowncaseobserved2.405sversusunchanged2sbound. Source680afa8 fixesrealorder: reapallownedchildrenbeforeanySQLiteoroptionalhelperclose, thenoriginalgenerationconditionalfencesandpendingfailurehandling. Newdeterministic2.1sbusyguardfailedoldsource3.342s/pre-reapSQLattemptTrue; final21coveringSup/shutdowntestsPASS3.620sexit0,Ruff0. Independentnarrowreview3shutdown testsPASS0.250sexit0, no findings; finalreviewv1.3.0. Rootfull303sourcecheckisrunningbeforefinalrecordscommit/push.
+
+Onlymanagerwheelrebuilt /Users/mitch/.local/state/solbot/releases/0.6.0/wheels-shutdown-r2, SHA08cc950776322866b7c1a67031ccb8b2abab5580c88bb4dba88c097be848eb36. Bothunreleasedcandidateenvsreinstalled/pipcheck0. Priorv1candidateacceptedinstalledgatewasinvalidatedbyCIshutdownfailure; itwasneverreleasedorpromoted. Originalwheels/receiptsretained. FreshindependentinstalledSupdeltaandfullsource/assets/pipcheckbothenvsactive; allothercode/assetv2bytesunchanged. Stablealiasstilloriginal0.4; originalproduction/M4immutableenvironmentsremainintact. FinalCInewhead/aliasindependentcheck/merge/remoteproof/cleanupremain.
+
+Unrelateduntrackedworktree.opencode hadnoopenfiles(lsofexit1emptyoutput); fullarchiveSHAandmanifestretained, directorymovedintactto /Users/mitch/.local/state/solbot/releases/0.6.0/preserved-worktree-opencode. Primary139untrackedfileshashmanifestisinprimary-untracked-before-delivery.json; incomingcollisionsnone. Preserveallprimaryfilesatfastforward. Ownworktreecurrentlyreattachedagent-01a1c447-bot-remainingforfix; detachonlyafterfinalpushandcleantreebeforegatedmergefromprimary.
+
+
+## Full final manager gate complete
+
+Final303manager tests104.139sexit0 after680afa8shutdownrepair. Offlineindex/wiki checks0, CIselector6tests0. Installedidentitybothmanager/ecosystemandconfirmed-stopped-childshutdownv2receiptscomplete; verifier isfinalizingexplicitSupbindingsupersessionreceipt. Originalv1andinitialharnessattemptsremainhistorical. No newpublicdocs/assets/runtimechangesareplanned. Onlyfinalrecord/indexcommit/push, final-headCI, stablealiasindependentreceipt, gatedmerge/remotetreeproof, preservedprimaryfastforward/ownedcleanupandtrackercompletionremain.

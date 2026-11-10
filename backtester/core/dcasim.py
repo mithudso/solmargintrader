@@ -57,7 +57,13 @@ from typing import Any
 import numpy as np
 
 from .metrics import Metrics, compute_metrics
-from .types import CostConfig, Trade, periods_per_year, validate_bar_arrays
+from .types import (
+    INTERVAL_SECONDS,
+    CostConfig,
+    Trade,
+    periods_per_year,
+    validate_bar_arrays,
+)
 
 VENUE_MIN_ORDER_USD = 10.0
 MAX_SAFETY_ORDERS = 50
@@ -92,7 +98,7 @@ class DcaConfig:
         for name in ("max_safety_orders", "cooldown_bars"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int):
-                raise ValueError(f"{name} must be an integer")
+                raise ValueError(f"{name} must be an integer")  # noqa: TRY004 -- retain public validation contract
         if not 0 <= self.max_safety_orders <= MAX_SAFETY_ORDERS:
             raise ValueError(f"max_safety_orders must be in [0, {MAX_SAFETY_ORDERS}]")
         if self.cooldown_bars < 0:
@@ -216,6 +222,7 @@ class DcaRunResult:
     avg_deal_bars: float
     skipped: dict[str, int]
     first_plan: dict[str, Any] | None
+    continuation: dict | None = None
 
     def summary(self) -> dict[str, Any]:
         """JSON-ready digest (no arrays)."""
@@ -252,15 +259,15 @@ class DcaRunResult:
             f"deals                {self.deals_completed} took profit, {self.deals_stopped} stopped out",
             f"safety orders        {self.safety_orders_filled} filled (deepest used: {self.max_safety_used})",
             f"realized P&L         ${self.realized_pnl_usd:,.2f}",
-            f"fees + slippage      ${self.fees_paid_usd + self.slippage_paid_usd:,.2f}"
-            f"  (fees ${self.fees_paid_usd:,.2f}, slippage ${self.slippage_paid_usd:,.2f})",
+            (f"fees + slippage      ${self.fees_paid_usd + self.slippage_paid_usd:,.2f}"
+            f"  (fees ${self.fees_paid_usd:,.2f}, slippage ${self.slippage_paid_usd:,.2f})"),
             "open deal at end     " + ("none" if not open_deal else
                                        f"{open_deal['qty']:,.6f} base at avg ${open_deal['avg_entry']:,.4f}, "
                                        f"{open_deal['safety_filled']} safety orders, force-closed"),
-            f"bot    total return  {m.total_return * 100:,.2f}%   Sharpe {m.sharpe:,.2f}   "
-            f"maxDD {m.max_drawdown * 100:,.2f}%   final ${m.final_equity:,.2f}",
-            f"hold   total return  {b.total_return * 100:,.2f}%   Sharpe {b.sharpe:,.2f}   "
-            f"maxDD {b.max_drawdown * 100:,.2f}%   final ${b.final_equity:,.2f}",
+            (f"bot    total return  {m.total_return * 100:,.2f}%   Sharpe {m.sharpe:,.2f}   "
+            f"maxDD {m.max_drawdown * 100:,.2f}%   final ${m.final_equity:,.2f}"),
+            (f"hold   total return  {b.total_return * 100:,.2f}%   Sharpe {b.sharpe:,.2f}   "
+            f"maxDD {b.max_drawdown * 100:,.2f}%   final ${b.final_equity:,.2f}"),
         ]
 
 
@@ -299,6 +306,8 @@ def run_dca_backtest(
     costs: CostConfig | None = None,
     risk_free_rate: float = 0.0,
     close_at_end: bool = True,
+    continuation: dict | None = None,
+    entries_paused: bool = False,
 ) -> DcaRunResult:
     """Run one DCA bot over one OHLCV series, starting a deal from the first bar's close.
 
@@ -307,7 +316,7 @@ def run_dca_backtest(
     """
     costs = CostConfig() if costs is None else costs
     if not isinstance(costs, CostConfig):
-        raise ValueError("costs must be a CostConfig")
+        raise ValueError("costs must be a CostConfig")  # noqa: TRY004 -- retain public validation contract
     costs.validate()
     if not 0.0 <= costs.slippage_bps < 10_000.0:
         raise ValueError(f"slippage_bps must be in [0, 10000), got {costs.slippage_bps}")
@@ -344,6 +353,26 @@ def run_dca_backtest(
     equity = np.empty(n, dtype="float64")
     exposure = np.zeros(n, dtype="float64")
 
+    from dataclasses import asdict
+    offset = 0
+    length_sum = length_count = 0
+    binding = repr((cfg.to_dict(), capital, interval, asdict(costs)))
+    if continuation is not None:
+        if continuation["binding"] != binding:
+            raise ValueError("continuation configuration changed")
+        offset = continuation["cursor"]
+        if int(ts[0]) != continuation["last_ts"] + INTERVAL_SECONDS[interval]:
+            raise ValueError("continuation source gap")
+        cash, pending, pending_index, cooldown_until = continuation["control"]
+        deals_completed, deals_stopped, safety_filled_total, max_safety_used = continuation["counts"]
+        realized, fees_paid, slip_paid = continuation["totals"]
+        length_sum, length_count = continuation["lengths"]
+        first_plan = continuation["first_plan"]
+        skipped = Counter(continuation["skipped"])
+        if continuation["deal"] is not None:
+            deal = _Deal(1, 0)
+            deal.__dict__.update(continuation["deal"])
+
     def buy(price_level: float, usd: float, i: int, reason: str) -> bool:
         nonlocal cash, fees_paid, slip_paid
         fill = price_level * (1 + slip)
@@ -358,8 +387,8 @@ def run_dca_backtest(
         deal.qty += qty
         deal.cost_usd += usd + fee_usd
         deal.notional_usd += usd
-        trades.append(Trade(int(ts[i]), i, "buy", fill, qty, usd, fee_usd, qty * (fill - price_level),
-                            0.0, 0.0, cash + deal.qty * closes[i], reason))
+        trades.append(Trade(int(ts[i - offset]), i, "buy", fill, qty, usd, fee_usd, qty * (fill - price_level),
+                            0.0, 0.0, cash + deal.qty * closes[i - offset], reason))
         return True
 
     def sell_all(price_level: float, i: int, reason: str) -> float:
@@ -373,40 +402,41 @@ def run_dca_backtest(
         fees_paid += fee_usd
         slip_paid += deal.qty * (price_level - fill)
         realized += pnl
-        trades.append(Trade(int(ts[i]), i, "sell", fill, deal.qty, gross, fee_usd,
+        trades.append(Trade(int(ts[i - offset]), i, "sell", fill, deal.qty, gross, fee_usd,
                             deal.qty * (price_level - fill), 0.0, pnl, cash, reason))
         qty = deal.qty
         deal_lengths.append(i - deal.start_index)
         deal = None
         return qty
 
-    for i in range(n):
+    for j in range(n):
+        i = j + offset
         bought_this_bar = False
 
         # -- 1. queued market order at this bar's open ----------------------
-        if pending == "base" and pending_index < i:
+        if not entries_paused and pending == "base" and pending_index < i:
             pending = None
             if cash >= cfg.base_order_usd * (1 + fee) - 1e-9:
-                deal = _Deal(float(opens[i]), i)
-                buy(float(opens[i]), cfg.base_order_usd, i, "open")
+                deal = _Deal(float(opens[j]), i)
+                buy(float(opens[j]), cfg.base_order_usd, i, "open")
                 bought_this_bar = True
                 if first_plan is None:
-                    first_plan = plan_deal(cfg, float(opens[i]), costs.fee_bps)
+                    first_plan = plan_deal(cfg, float(opens[j]), costs.fee_bps)
                 for k, (dev, usd) in enumerate(zip(safety_deviations_pct(cfg), safety_sizes_usd(cfg)), start=1):
                     deal.safety.append((deal.base_price * (1 - dev / 100.0), usd, k, i))
             else:
                 skipped["base-order-insufficient-cash"] += 1
         elif pending == "exit" and pending_index < i and deal is not None:
             pending = None
-            sell_all(float(opens[i]), i, "dca_stop_loss")
+            sell_all(float(opens[j]), i, "dca_stop_loss")
             deals_stopped += 1
             cooldown_until = i + cfg.cooldown_bars
 
         # -- 2. safety orders against the low, highest (shallowest) first ----
-        if deal is not None and deal.safety:
+        if not entries_paused and deal is not None and deal.safety:
             remaining = []
             for level, usd, k, planned in sorted(deal.safety, key=lambda o: -o[0]):
-                if planned < i and lows[i] <= level:
+                if planned < i and lows[j] <= level:
                     if buy(level, usd, i, "resize_up"):
                         deal.safety_filled += 1
                         safety_filled_total += 1
@@ -420,37 +450,37 @@ def run_dca_backtest(
 
         # -- 3. take-profit against the high ---------------------------------
         if (deal is not None and deal.tp_level is not None and not bought_this_bar
-                and deal.tp_planned_index < i and highs[i] >= deal.tp_level):
+                and deal.tp_planned_index < i and highs[j] >= deal.tp_level):
             sell_all(deal.tp_level, i, "dca_take_profit")
             deals_completed += 1
             cooldown_until = i + cfg.cooldown_bars
-        elif deal is not None and bought_this_bar and deal.tp_level is not None and highs[i] >= deal.tp_level:
+        elif deal is not None and bought_this_bar and deal.tp_level is not None and highs[j] >= deal.tp_level:
             skipped["take-profit-deferred-same-bar-buy"] += 1
 
         # -- 4. mark to market ----------------------------------------------
         held = deal.qty if deal is not None else 0.0
-        equity[i] = cash + held * closes[i]
-        exposure[i] = held * closes[i] / equity[i] if equity[i] > 1e-12 else 0.0
+        equity[j] = cash + held * closes[j]
+        exposure[j] = held * closes[j] / equity[j] if equity[j] > 1e-12 else 0.0
 
         # -- 5. plan from this close ----------------------------------------
         if deal is not None:
             deal.tp_level = deal.avg_entry * (1 + cfg.take_profit_pct / 100.0)
             deal.tp_planned_index = i
-            if cfg.stop_loss_pct > 0 and closes[i] <= deal.avg_entry * (1 - cfg.stop_loss_pct / 100.0):
+            if cfg.stop_loss_pct > 0 and closes[j] <= deal.avg_entry * (1 - cfg.stop_loss_pct / 100.0):
                 pending, pending_index = "exit", i
                 deal.safety = []  # a stopped deal cancels its ladder
                 deal.tp_level = None
-        elif pending is None and i >= cooldown_until:
+        elif not entries_paused and pending is None and i >= cooldown_until:
             pending, pending_index = "base", i
 
     forced_qty = 0.0
     open_deal = None
     if deal is not None:
         open_deal = {"qty": deal.qty, "avg_entry": deal.avg_entry, "safety_filled": deal.safety_filled,
-                     "cost_usd": deal.cost_usd, "bars_open": n - 1 - deal.start_index,
+                     "cost_usd": deal.cost_usd, "bars_open": offset + n - 1 - deal.start_index,
                      "unrealized_usd": deal.qty * closes[-1] - deal.cost_usd}
         if close_at_end:
-            forced_qty = sell_all(float(closes[-1]), n - 1, "dca_forced_exit")
+            forced_qty = sell_all(float(closes[-1]), offset + n - 1, "dca_forced_exit")
             equity[-1] = cash
             exposure[-1] = 0.0
 
@@ -459,7 +489,16 @@ def run_dca_backtest(
     baseline = _baseline_equity(closes, capital, costs)
     baseline_metrics = compute_metrics(baseline, ts, [], np.ones(n, dtype="float64"), ppy,
                                        risk_free_rate, 0, initial_equity=capital)
+    state = {
+        "schema_version": 1, "cursor": offset + n, "last_ts": int(ts[-1]), "binding": binding,
+        "control": [cash, pending, pending_index, cooldown_until],
+        "counts": [deals_completed, deals_stopped, safety_filled_total, max_safety_used],
+        "totals": [realized, fees_paid, slip_paid], "deal": vars(deal).copy() if deal else None,
+        "lengths": [length_sum + sum(deal_lengths), length_count + len(deal_lengths)],
+        "first_plan": first_plan, "skipped": dict(skipped),
+    }
     return DcaRunResult(
+        continuation=state,
         config=cfg.to_dict(),
         metrics=metrics,
         baseline_metrics=baseline_metrics,
@@ -478,7 +517,21 @@ def run_dca_backtest(
         slippage_paid_usd=slip_paid,
         open_deal_at_end=open_deal,
         forced_exit_qty=forced_qty,
-        avg_deal_bars=float(np.mean(deal_lengths)) if deal_lengths else 0.0,
+        avg_deal_bars=state["lengths"][0] / state["lengths"][1] if state["lengths"][1] else 0.0,
         skipped=dict(skipped),
         first_plan=first_plan,
     )
+
+
+def rebind_dca_state(state, cfg, *, initial_capital, interval, costs):
+    """Replace a paused flat deal constructor while preserving its cash book."""
+    import copy
+    from dataclasses import asdict
+
+    if (state.get("schema_version") != 1 or state["deal"] is not None
+            or state["control"][1] is not None):
+        raise ValueError("DCA configuration adoption requires a flat account without pending intent")
+    result = copy.deepcopy(state)
+    result["binding"] = repr((cfg.to_dict(), initial_capital, interval, asdict(costs)))
+    result["first_plan"] = None
+    return result

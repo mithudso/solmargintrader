@@ -185,6 +185,13 @@ class TsMomentum:
         self.name = f"ts_momentum_{window}"
         self.params: dict[str, Any] = {"window": window, "threshold": threshold}
 
+    def checkpoint_state(self) -> dict:
+        return {"schema_version": 1}
+
+    def restore_state(self, state: dict) -> None:
+        if state != {"schema_version": 1}:
+            raise ValueError("unsupported momentum continuation state")
+
     def warmup_bars(self) -> int:
         """One lookback plus the base bar."""
         return self.window + 1

@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 179
+Version: 180
+Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.
+Delta: v171 to v172; implement remaining bot-manager work with agent fanout.
 Delta: concurrent histories to v179; preserve M4 checkpoint and PR192 integration records.
 Delta: v170 to v171; record additional GoonFi documentation and supplied swap enum.
 Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
@@ -1674,6 +1676,10 @@ Another copy is running; I’ll stop it
 Yes, it has stopped
 ```
 
+
+## 2026-11-10 — remaining bot-manager implementation
+
+Read these files: ~/dev/solmargintrader/2026-11-10-bot-manager-remaining.md  ~/dev/solmargintrader bot-manager-handoff.md /Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md And implement all remaining changes as a fanout of agents
 
 ## Preserved M4 checkpoint history — PR192
 

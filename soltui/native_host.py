@@ -97,7 +97,7 @@ def _reply(request_id: Any, envelope: dict[str, Any]) -> bytes:
         envelope = commands.error_envelope("", "bad_params", "request id exceeds the metadata limit")
     # JSON permits escaped unpaired surrogates. Preserve them as escapes instead
     # of allowing UTF-8 encoding to terminate the persistent connection.
-    body = ('{"id":%s,"response":%s}' % (encoded_id, commands.dumps(envelope))).encode("utf-8", errors="backslashreplace")
+    body = f'{{"id":{encoded_id},"response":{commands.dumps(envelope)}}}'.encode("utf-8", errors="backslashreplace")
     if len(body) > MAX_REPLY_BYTES:
         small = commands.error_envelope("", "failed", OVERSIZE_MESSAGE)
         body = json.dumps({"id": request_id if len(json.dumps(request_id)) <= 4096 else None,
@@ -111,15 +111,28 @@ def handle_request(raw: bytes) -> bytes:
     """Turn one request frame into one reply frame body. Never raises."""
     try:
         return _handle_request(raw)
-    except Exception:
+    except Exception:  # noqa: BLE001 -- sanitize the native trust boundary
         return _reply(None, commands.error_envelope("", "failed", "request could not be processed"))
+
+
+def browser_origin() -> str:
+    # Chrome supplies this process argument. A JSON field is never an origin.
+    return sys.argv[1] if len(sys.argv) > 1 else ""
+
+
+def browser_manager(message):
+    from botmanager.adapters.extension import BrowserStore
+
+    from .native_host_install import allowed_origins
+
+    return BrowserStore().poll(message, origin=browser_origin(), allowed_origins=allowed_origins())
 
 
 def _handle_request(raw: bytes) -> bytes:
     try:
         request = json.loads(raw.decode("utf-8"))
         if not isinstance(request, dict):
-            raise ValueError("request must be an object")
+            raise ValueError("request must be an object")  # noqa: TRY004 -- public protocol error
     except ValueError:
         return _reply(None, commands.error_envelope("", "bad_params", "request is not a JSON object"))
     request_id = request.get("id")
@@ -134,7 +147,23 @@ def _handle_request(raw: bytes) -> bytes:
             return _reply(request_id, commands.error_envelope("", "bad_params", "invalid request operation or command"))
     if len(json.dumps(request_id)) > 4096:
         return _reply(None, commands.error_envelope("", "bad_params", "request id exceeds the metadata limit"))
-    if op == "ping":
+    if op == "browserManager":
+        if len(raw) > 65536:
+            return _reply(None, commands.error_envelope("browserManager", "bad_params", "browser message exceeds the protocol bound"))
+        from uuid import UUID
+        try:
+            if type(request_id) is not str or str(UUID(request_id)) != request_id:
+                raise ValueError
+        except ValueError:
+            return _reply(None, commands.error_envelope("browserManager", "bad_params", "invalid browser request identity"))
+        if set(request) != {"id", "op", "message"}:
+            env = commands.error_envelope("browserManager", "bad_params", "invalid browser message fields")
+        else:
+            try:
+                env = commands.ok_envelope("browserManager", browser_manager(request["message"]))
+            except Exception:  # noqa: BLE001 -- sanitize the native trust boundary
+                env = commands.error_envelope("browserManager", "failed", "browser owner registration refused")
+    elif op == "ping":
         env = commands.ok_envelope("ping", {"pong": True, "host": HOST_NAME, "protocol": PROTOCOL})
     elif op == "list":
         env = commands.dispatch("list", {}, surface="native")

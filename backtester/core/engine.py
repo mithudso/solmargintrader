@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import math
 import warnings
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from numbers import Integral, Real
 from typing import Any, Protocol, runtime_checkable
 
@@ -173,6 +173,7 @@ class BacktestResult:
     leverage: float
     # Held perp bars that a finer layer covered completely / that fell back to
     # the coarse range / whose coarse range exceeded the fine range.
+    continuation: dict | None = None
     account: AccountState | None = None
     bars_refined: int = 0
     bars_unrefined: int = 0
@@ -491,6 +492,7 @@ def run_backtest(
     *,
     close_at_end: bool = True,
     price_only: bool = False,
+    continuation: dict | None = None,
 ) -> BacktestResult:
     """Run one strategy over one price series.
 
@@ -504,6 +506,21 @@ def run_backtest(
     )
     if "open" not in arrays:
         raise ValueError("next-open execution requires observed open prices")
+    binding = repr((strategy.name, strategy.params, asdict(config)))
+    start = offset = 0
+    totals = {"fees_paid": 0.0, "slippage_paid": 0.0, "borrow_paid": 0.0, "realized_pnl": 0.0}
+    if continuation is not None:
+        if not hasattr(strategy, "restore_state"):
+            raise ValueError("strategy does not support continuation")
+        if continuation["binding"] != binding:
+            raise ValueError("continuation configuration changed")
+        if int(arrays["ts"][0]) != continuation["last_ts"] + INTERVAL_SECONDS[config.interval]:
+            raise ValueError("continuation source gap")
+        start = len(continuation["tail"]["ts"])
+        offset = continuation["cursor"] - start
+        arrays = {k: np.concatenate((np.asarray(continuation["tail"][k]), v)) for k, v in arrays.items()}
+        strategy.restore_state(continuation["strategy_state"])
+        totals = continuation["totals"]
     ts = arrays["ts"]
     op, hi, lo, cl, vol = (
         arrays["open"],
@@ -536,6 +553,15 @@ def run_backtest(
 
     pending: dict[int, float] = {}
     first_tradeable = warmup
+    if continuation is not None:
+        for key in ("cash", "gross_cash", "gross_units", "liquidations"):
+            setattr(book, key, continuation["book"][key])
+        position = dict(continuation["position"])
+        position["side"] = Side(position["side"])
+        book.pos = Position(**position)
+        if book.pos.is_open:
+            book.pos.opened_index -= offset
+        pending = {int(k) - offset: v for k, v in continuation["pending"].items()}
 
     # Coverage of each coarse bar by each finer layer, computed once. A bar is
     # refined by the FIRST (finest) layer that covers it completely.
@@ -563,7 +589,7 @@ def run_backtest(
                 )
             layer_of = np.where((layer_of < 0) & full, k, layer_of)
 
-    for i in range(n):
+    for i in range(start, n):
         # A gap can breach the OLD position before any queued exit or rebalance
         # releases collateral. Only fees through the prior boundary are due here.
         if is_perp and book.pos.is_open:
@@ -634,7 +660,7 @@ def run_backtest(
 
         # -- 4. strategy decision, from data <= i only --------------------
         target: float | None = None
-        if i >= warmup:
+        if i + offset >= warmup:
             window = BarWindow(ts, op, hi, lo, cl, vol, i)
             target = _resolve_target(
                 strategy.on_bar(window), config.mode, config.allow_short
@@ -662,6 +688,27 @@ def run_backtest(
         equity_curve[-1] = max(0.0, book.equity(cl[-1]))
         gross_curve[-1] = book.gross_equity(cl[-1])
 
+    for trade in book.trades:
+        trade.bar_index += offset
+    if book.pos.is_open:
+        book.pos.opened_index += offset
+    totals = dict(totals)
+    for trade in book.trades:
+        for key, attr in (("fees_paid", "fee"), ("slippage_paid", "slippage"),
+                          ("borrow_paid", "borrow_fee_settled"), ("realized_pnl", "realized_pnl")):
+            totals[key] += getattr(trade, attr)
+    tail_size = strategy.warmup_bars() + 1
+    state = {
+        "schema_version": 1, "binding": binding, "cursor": offset + n, "last_ts": int(ts[-1]),
+        "tail": {k: v[-tail_size:].tolist() for k, v in arrays.items()},
+        "strategy_state": strategy.checkpoint_state() if hasattr(strategy, "checkpoint_state") else None,
+        "book": {k: getattr(book, k) for k in ("cash", "gross_cash", "gross_units", "liquidations")},
+        "position": asdict(book.pos), "pending": {k + offset: v for k, v in pending.items() if k >= n},
+        "totals": totals,
+    }
+    import json
+    state = json.loads(json.dumps(state, default=lambda value: value.item())) if hasattr(strategy, "checkpoint_state") else None
+    ts, equity_curve, gross_curve, exposure_curve = (x[start:] for x in (ts, equity_curve, gross_curve, exposure_curve))
     net = compute_metrics(
         equity_curve,
         ts,
@@ -684,6 +731,7 @@ def run_backtest(
     )
 
     return BacktestResult(
+        continuation=state,
         strategy_name=strategy.name,
         params=dict(strategy.params),
         timestamps=ts,
@@ -699,13 +747,13 @@ def run_backtest(
         account=AccountState(
             cash=book.cash,
             position=book.pos,
-            pending_targets={k: v for k, v in pending.items() if k >= n}
+            pending_targets={k + offset: v for k, v in pending.items() if k >= n}
             if not close_at_end
             else {},
-            fees_paid=sum(t.fee for t in book.trades),
-            slippage_paid=sum(t.slippage for t in book.trades),
-            borrow_paid=sum(t.borrow_fee_settled for t in book.trades),
-            realized_pnl=sum(t.realized_pnl for t in book.trades),
+            fees_paid=totals["fees_paid"],
+            slippage_paid=totals["slippage_paid"],
+            borrow_paid=totals["borrow_paid"],
+            realized_pnl=totals["realized_pnl"],
         ),
         bars_refined=refined,
         bars_unrefined=unrefined,
@@ -888,3 +936,23 @@ def _apply_target(
         return
 
     book.open(target_notional, desired_side, price, ts, index)
+
+
+def rebind_signal_state(state, strategy, config):
+    """Reconfigure a flat signal book only when retained observed history suffices."""
+    import copy
+
+    config.validate()
+    if (state.get("schema_version") != 1 or state["position"]["units"] != 0
+            or any(target != 0 for target in state["pending"].values())):
+        raise ValueError("signal configuration adoption requires flat exposure without pending entries")
+    needed = min(state["cursor"], strategy.warmup_bars() + 1)
+    if len(state["tail"]["ts"]) < needed:
+        raise ValueError("new signal warmup exceeds retained observed history")
+    result = copy.deepcopy(state)
+    result["binding"] = repr((strategy.name, strategy.params, asdict(config)))
+    result["tail"] = {k: v[-needed:] for k, v in state["tail"].items()}
+    # At a flat adoption boundary the new strategy begins with no held signal.
+    # Its first new observed bar computes indicators from the retained prices.
+    result["strategy_state"] = strategy.checkpoint_state()
+    return result

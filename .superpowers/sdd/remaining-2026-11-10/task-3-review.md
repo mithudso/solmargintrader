@@ -1,0 +1,73 @@
+# Task 3 independent review
+
+SPEC COMPLIANCE: PASS for the reviewed Task 3 source scope after f06fdfd. All three prior findings are resolved. Actual installed acceptance and remote delivery remain separate controller release gates.
+
+CODE QUALITY: PASS after f06fdfd and the current browser ownership integration. No remaining actionable source findings in the reviewed scope. No product files changed during this review.
+
+Reviewed the Task 3 brief, implementation report, review-package diff, current backup/health/control/supervisor/worker/status integration and relevant runtime/browser decoders. Current Task 5 learning implementation itself is outside this review. Broad previously passed suites were not repeated. Targeted reproductions used `/Users/mitch/.venvs/solbot/bin/python` with source PYTHONPATH and temporary fixture homes only; final exit code 0.
+
+## Original findings, ordered by severity — all resolved below
+
+### P1 — Pause/resume fences the worker without making its retained account claimable
+
+`/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/health.py:285` updates only generation. A running/waiting row retains that observation. `/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/supervisor.py:123` treats the mismatch as generation_revoked and deliberately skips `ledger.failed`; it then removes the child. `/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/ledger.py:817` refuses to claim running/waiting rows. The worker also exits when it sees the new generation. Consequently no replacement evaluates exits until an unrelated explicit stop/start or supervisor restart repairs the observation. The acknowledged `exits_continue: true` receipt is false for the normal active account.
+
+Reproduction: create/register fixture account, start, `ledger.claim`, `HealthStore.pause(row, 'pause', uuid)`, then inspect and claim. Actual output: `pause observed running next claim None`. This is independent of scheduling and covers the precise branch a revoked supervisor child reaches. Resume has the same generation-only defect. Transition active rows to a claimable handoff state atomically with fencing, preserve checkpoint/cursor/fills, and test pause/resume with the real supervisor and a later exit bar. Retain failure counters without charging a requested control as a crash. The replacement must retain admission priority under a saturated pool.
+
+### P1 — Valid browser-inclusive backups become unrestorable after 90 seconds
+
+`/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/backup.py:398` calls `_quiescent(source)` during restore. Its browser branch at line 229 invokes `browser_quiescent`, which calls current-time `BrowserStore.discover`. `/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/adapters/extension.py:406` requires the copied `seen` timestamp to be within 90 seconds of the restore clock. The copied journal cannot receive fresh reports. A snapshot that was safely stopped and reconciled at capture therefore ceases to be a valid recovery artifact.
+
+Reproduction: poll a stopped dry-run/disarmed browser fixture at current time; create backup successfully; patch only the browser discovery clock to captured time +91 seconds; restore into absent home. Actual: `ManagerError: Browser ownership is not freshly stopped and reconciled.` No destination created. Verify browser quiescence at the manifest capture cutoff during restore, preserve the original owner timestamps unchanged, and leave restored owner reachability expired until fresh reconciliation. Do not rewrite owner observations to manufacture current ownership. Add a delayed restore regression including exact journal/receipt/account identity preservation.
+
+### P2 — A crash that recovers promptly can leave no attributable alert
+
+`/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/health.py:34` labels any desired-running account with a recent heartbeat healthy, including observed recovering/failed/blocked. Lines 64–75 derive alert codes only from heartbeat/input/tick freshness. `ledger.failed` clears tick_started; a two-second crash recovery refreshes heartbeat before it ages out. The durable worker.failed event exists, but the new alerts inspection can remain empty throughout that failure. A stalled evaluation killed at the new 14-second watchdog threshold can similarly lose its evaluation-stalled identity when failed clears tick_started, becoming at best a later heartbeat alert.
+
+Reproduction: pass a valid fixture row with fresh heartbeat, `observed='recovering'`, `reason='worker_exited'` to health_snapshot. Actual blockers: `[]`; HealthStore.observe therefore has no crash code to persist. Observe the durable failure transition/event with its reason and generation before clearing transient clocks, then resolve from a later successful recovery observation. Add a fast crash/recovery test proving an attributable resolved alert remains, plus a watchdog-stall reason test. Maintain valid losing results independently; a loss alone must not become an unsupported performance warning.
+
+## Requirement assessment
+
+- Independent process/input/evaluation/result fields, unavailable measurements and retained stopped exposure: implemented for normal validated runtime rows. The failure-state alert gap above blocks full compliance. Public arbitrary malformed Mapping values can still raise AttributeError, but production runtime decoding validates the shape; no separate blocker raised without an externally reachable malformed-row route.
+- Persistent alert deduplication, cooldown, attribution and resolution: implemented and fixture-covered for derived freshness blockers. Fast crash/stall transitions require repair above. Compatible-baseline performance warnings remain explicitly unavailable; they do not invent a healthy/zero-loss result.
+- Pause capability restrictions and request replay: supported grid/DCA only, durable request binding, same-ID replay and generation fence implemented. Active exit continuity fails as above. Canonical continuation tests cover economic entry/exit separation but do not exercise supervisor handoff.
+- Backup/restore: SQLite backup API, file checksums, table cutoffs, absent destination, immutable decoder validation and external canonical research binding/spending subset checks are present. Canonical authority is read-only and excluded from the copy. Controls with unresolved outcomes fail closed; acknowledged delegated starts conservatively refuse even after later local stop receipts, a disclosed capability limitation rather than proof of external quiescence. Browser delayed restore is a blocker.
+- Old/current journal compatibility: runtime connection supports schemas 1–5 without read migration; restore decodes archives only when schema >=3. Entry controls live in the copied runtime journal. Browser current schema1 ownership timestamps must remain original after repair. Full copied ledger accounting preservation is structurally supported through whole SQLite snapshots; existing exact-identity test is on a small current fixture, so include nonempty current/archived/segment ledger regression in release evidence if not covered by Task2.
+- Read-only paths: alerts absent-home path, health snapshot and runtime decoders do not initialize stores. Restore validation reads source journals in mode=ro. Backup deliberately takes locks and reserves database writers as an explicit mutation. No installations, service starts or real homes were touched in this review.
+- Diagnostic bounds: rotation helper restricts the selected filename to diagnostics.log and leaves financial/training journals untouched. No production diagnostic writer/call site was found; helper test proves rotation behavior only, not an installed logging policy.
+- Load/recovery: accepted report records four active/six queued and strict14.022469-second stale detection after repair; test source asserts strict <15-second watchdog targets and preserves checkpoint/fills through saturated crash recovery. The extra process is honestly labelled synthetic CPU pressure holding the optimizer lease, not a research-quality optimizer run. This is a measured scope limitation against the literal one-optimizer workload requirement. Existing tests do not exercise the pause-induced generation handoff under saturation.
+- Status --why includes evaluation, decision, reason, blockers and trigger fields. Installed report/backup/health behavior and remote final-head delivery remain controller gates; this read-only review does not certify them.
+
+
+## Re-review of f06fdfd — version 1.1.0
+
+Reviewed the exact f06fdfd diff and current source integration, including current `/Users/mitch/dev/solmargintrader-wt-01a1c447/botmanager/src/botmanager/adapters/extension.py` support for `browser_quiescent(home, now=...)`. That browser adapter integration is outside the eight-file f06fdfd diff and must be included in the final release candidate; the pass applies to the combined reviewed candidate, not an isolated cherry-pick of f06fdfd without its browser dependency.
+
+### Finding 1 resolved
+
+Pause/resume now atomically move eligible desired-running rows to recovering while fencing the old generation. The supervisor reserves entry-policy handoff slots even with an empty failure history. Failed/blocked rows remain blocked and no longer advertise continuing exits. The worker replacement can claim the retained account. Reviewed and independently ran the real saturated handoff regression: four active workers, six queued, buy checkpoint retained, replacement PID, later sells with no new buys while paused, empty lots after exit, unchanged failure counters, and another replacement on resume. PASS.
+
+### Finding 2 resolved
+
+Backup now records the cutoff used for final source quiescence validation. Restore rejects malformed/nonfinite capture timestamps and passes the original cutoff to browser ownership validation. The copied `seen` timestamps and receipts remain unchanged. Reviewed and independently ran the one-hour delayed restore regression: exact copied browser database bytes, stop receipt and account snapshot survive; current-time discovery stays offline. Also independently ran the nonempty archive/segment/accepted-request/entry-control restore regression and verified its explicit whole-row equality assertions. PASS.
+
+### Finding 3 resolved
+
+Health now retains observed lifecycle and durable failure reasons separately from heartbeat liveness. Supervisor records health immediately after the worker failure transition and before replacement, so the periodic sample cannot miss a fast crash. Resolution retains original source/runtime/generation/reason evidence. A replacement claim with no owned PID does not resolve a crash. Reviewed and independently ran the real fast-crash regression with periodic sampling disabled, including retained resolved worker_exited evidence and watchdog tick_stalled/evaluation_stalled evidence after transient tick intent was cleared. Also ran the synthetic-claim regression. PASS.
+
+### Recheck evidence and remaining release scope
+
+Six targeted tests completed successfully in 2.591 seconds, final exit code 0, using `/Users/mitch/.venvs/solbot/bin/python` with the current source PYTHONPATH. The tests cover active pause handoff, failed-state pause, aged browser restore, nonempty current/archive/segment restoration, immediate crash/stall alerts and claimed-but-not-owned alert resolution. Numerical fixture annualization emitted the existing overflow RuntimeWarning; no assertion or check failed. No installed environment, production manager home, service or canonical research authority changed.
+
+The revised load source now executes actual canonical M4 `execute` and `backtest` work against an explicitly registered temporary ExperimentStore authority under optimizer_lease. It uses disjoint numerical recordings per attempt and retains the incumbent honestly when evidence is uncertified. Admission/trial/exposure inspection proves real work and tests no overlapping spent dates. It asserts optimizer liveness/lease ownership, four active/six queued accounts, strict watchdog <15s, required latency gates, exact crash/restart checkpoint/fill retention, clean optimizer cancellation/exit and retained-incumbent outcomes. This resolves the original synthetic-pressure scope limitation. The controller report records 2464 completed cells, four attempts and strict14.021062-second watchdog behavior; these new timing numbers are controller-run evidence, not an independently repeated load benchmark in this review. The older root-load-tests.log is historical synthetic-pressure evidence and must not be presented as the new actual-optimizer receipt.
+
+The diagnostic helper remains deliberately limited to the selected diagnostic filename, with no new production log stream claimed. The earlier report's conservative browser-refusal paragraph is historical and superseded by its explicit version1.1.0 repair section. Required full manager/changed-owner checks, installed acceptance and final-head remote delivery remain the controller's gates. No new blocking finding arose in this source re-review.
+
+
+## Integrated watchdog repair addendum — version 1.2.0
+
+The controller's full manager run exposed a load-fixture timeout after the prior review. The Task3 reviewer then became the authorized implementation owner for supervisor.py/test_load.py. Therefore the new watchdog repair is subject to the separate final-integration review, not represented as an independent self-review.
+
+The original integrated timeout did not reproduce in the standalone before-change run. The fixture now requires an actual owned PID, worker lock and waiting state before SIGSTOP, tracks the exact Process instance and retains detailed diagnostics on failure. A separate deterministic BEGIN EXCLUSIVE reproduction demonstrated a genuine supervisor watchdog/shutdown gap while its own frozen worker held the journal. The repair and exact evidence are in the version1.2.0 Task3 report. Reserved/exclusive fault recovery keeps the public15-second target and preserves uncommitted-state rollback and account identity.
+
+The final-integration reviewer inspected the new source diff and reported no concrete P1/P2 finding. Thirty-four supervisor/health/control/load tests passed; the final shutdown reconciliation guard passed two focused tests. The final-integration reviewer independently reran both final shutdown tests: PASS, exit0,1.190s, and reported no actionable source finding. Full integrated suite and installed acceptance receipts remain controller gates. The earlier three findings remain resolved.

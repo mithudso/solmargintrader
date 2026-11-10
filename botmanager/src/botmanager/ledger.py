@@ -101,7 +101,13 @@ class RuntimeLedger:
                 self._migrate_event_stream(db)
                 db.execute("PRAGMA user_version=4")
                 version = 4
-            if version not in (1, 2, 3, 4):
+            if version == 4 and write:
+                db.execute(
+                    "CREATE TABLE IF NOT EXISTS segments (runtime_id TEXT NOT NULL, digest TEXT NOT NULL, body TEXT NOT NULL, fill_end INTEGER NOT NULL, PRIMARY KEY(runtime_id,digest))"
+                )
+                db.execute("PRAGMA user_version=5")
+                version = 5
+            if version not in (1, 2, 3, 4, 5):
                 raise ManagerError(
                     "incompatible_store", "Runtime journal schema is incompatible.", 4
                 )
@@ -118,6 +124,8 @@ class RuntimeLedger:
                     archives="runtime_id bot_id body checksum",
                     adoption_requests="request_id request result checksum acceptance",
                 )
+            if version >= 5:
+                tables["segments"] = "runtime_id digest body fill_end"
             validate_tables(db, tables)
             yield db
             if write:
@@ -273,14 +281,65 @@ class RuntimeLedger:
                 json.loads(row["checkpoint"]) if row["checkpoint"] is not None else None
             )
             result["checkpoint"] = checkpoint
+            fill_base = 0
+            if result["input"].get("prior_segment") is not None:
+                digest = result["input"]["prior_segment"]
+                head = True
+                upper_cursor = row["cursor"] + 1
+                expected_fill_end = None
+                while digest is not None:
+                    segment = db.execute(
+                        "SELECT * FROM segments WHERE runtime_id=? AND digest=?",
+                        (row["runtime_id"], digest),
+                    ).fetchone()
+                    if segment is None:
+                        raise ValueError
+                    body = json.loads(segment["body"])
+                    segment_cursor = body["checkpoint"]["cursor"]
+                    if fingerprint(body) != digest or segment_cursor > upper_cursor:
+                        raise ValueError
+                    prior_offset = body["input"].get("bar_offset", 0)
+                    if prior_offset >= segment_cursor:
+                        raise ValueError
+                    upper_cursor = prior_offset
+                    if segment_cursor != upper_cursor + len(body["input"]["bars"]):
+                        raise ValueError
+                    segment_fills = body["checkpoint"]["fills"]
+                    segment_start = segment["fill_end"] - len(segment_fills)
+                    if segment_start < 0 or (
+                        expected_fill_end is not None
+                        and segment["fill_end"] != expected_fill_end
+                    ):
+                        raise ValueError
+                    saved_fills = (
+                        archived_fills[segment_start : segment["fill_end"]]
+                        if archived_fills is not None
+                        else [
+                            json.loads(f["body"])
+                            for f in db.execute(
+                                "SELECT body FROM fills WHERE bot_id=? AND sequence>=? AND sequence<? ORDER BY sequence",
+                                (row["bot_id"], segment_start, segment["fill_end"]),
+                            )
+                        ]
+                    )
+                    if segment_fills != saved_fills:
+                        raise ValueError
+                    expected_fill_end = segment_start
+                    if head:
+                        fill_base = segment["fill_end"]
+                        head = False
+                    digest = body["input"].get("prior_segment")
+                if expected_fill_end != 0:
+                    raise ValueError
+                result["fill_base"] = fill_base
             fills = (
-                archived_fills
+                archived_fills[fill_base:]
                 if archived_fills is not None
                 else [
                     json.loads(f["body"])
                     for f in db.execute(
-                        "SELECT body FROM fills WHERE bot_id=? ORDER BY sequence",
-                        (row["bot_id"],),
+                        "SELECT body FROM fills WHERE bot_id=? AND sequence>=? ORDER BY sequence",
+                        (row["bot_id"], fill_base),
                     )
                 ]
             )
@@ -335,7 +394,15 @@ class RuntimeLedger:
 
     def fills(self, bot_id):
         row = self.get(bot_id)
-        return row["checkpoint"]["fills"] if row and row["checkpoint"] else []
+        if not row:
+            return []
+        with self.connection() as db:
+            return [
+                json.loads(r["body"])
+                for r in db.execute(
+                    "SELECT body FROM fills WHERE bot_id=? ORDER BY sequence", (bot_id,)
+                )
+            ]
 
     def events(self, bot_id, limit=100):
         if type(limit) is not int or not 1 <= limit <= 1000:
@@ -615,6 +682,10 @@ class RuntimeLedger:
                 )
             # Controls address the active run. A saved edit must not disable its stop.
             spec = BotSpec.from_dict(row["spec"])
+            if operation == "start":
+                from .strategies import validate_runtime_config
+
+                validate_runtime_config(spec)
             binding = self._control_binding(spec, operation, request_id)
             if operation == "start" and row["observed"] in ("failed", "blocked"):
                 raise ManagerError(
@@ -639,11 +710,11 @@ class RuntimeLedger:
                     and db.execute(
                         "SELECT count(*) FROM runs WHERE desired='running'"
                     ).fetchone()[0]
-                    >= MAX_ACTIVE
+                    >= MAX_INSTANCES
                 ):
                     raise ManagerError(
                         "resource_limit",
-                        "Four reference workers are already admitted.",
+                        "Reference instance admission capacity is exhausted.",
                         3,
                     )
                 # Stop invalidates any tick already in flight before its acknowledgment.
@@ -880,15 +951,48 @@ class RuntimeLedger:
                     "stale_cursor", "Prospective source cursor changed.", 3
                 )
             old_state, new_state = previous["prospective"], data["prospective"]
+            transition = data.get("prior_segment") != previous.get("prior_segment")
+            if transition:
+                from .oracle_data import rollover
+
+                prepared = rollover(previous, row["checkpoint"])
+                if prepared is previous or prepared.get("prior_segment") != data.get(
+                    "prior_segment"
+                ):
+                    raise ManagerError(
+                        "reconciliation_required",
+                        "Segment transition differs from durable predecessor.",
+                        4,
+                    )
+                segment_body = {"input": previous, "checkpoint": row["checkpoint"]}
+                fill_end = db.execute(
+                    "SELECT count(*) FROM fills WHERE bot_id=?", (bot_id,)
+                ).fetchone()[0]
+                db.execute(
+                    "INSERT INTO segments VALUES (?,?,?,?)",
+                    (
+                        row["runtime_id"],
+                        data["prior_segment"],
+                        canonical(segment_body),
+                        fill_end,
+                    ),
+                )
+                comparison = prepared
+            else:
+                comparison = previous
+            compared_state = comparison["prospective"]
             if (
                 data["identity"] != previous["identity"]
                 or data["descriptor"] != previous["descriptor"]
                 or data["origin_hash"] != previous["origin_hash"]
-                or data["bars"][: len(previous["bars"])] != previous["bars"]
-                or new_state["observations"][: len(old_state["observations"])]
-                != old_state["observations"]
-                or new_state["evaluation_ranges"][: len(old_state["evaluation_ranges"])]
-                != old_state["evaluation_ranges"]
+                or data.get("bar_offset", 0) != comparison.get("bar_offset", 0)
+                or data["bars"][: len(comparison["bars"])] != comparison["bars"]
+                or new_state["observations"][: len(compared_state["observations"])]
+                != compared_state["observations"]
+                or new_state["evaluation_ranges"][
+                    : len(compared_state["evaluation_ranges"])
+                ]
+                != compared_state["evaluation_ranges"]
                 or new_state["cursor"] < old_state["cursor"]
             ):
                 raise ManagerError(
@@ -897,11 +1001,18 @@ class RuntimeLedger:
                     4,
                 )
             cursor = checkpoint["cursor"] if checkpoint is not None else 0
-            if cursor != len(data["bars"]) or cursor < row["cursor"]:
+            if (
+                cursor != data.get("bar_offset", 0) + len(data["bars"])
+                or cursor < row["cursor"]
+            ):
                 raise ManagerError(
                     "stale_cursor", "Prospective account and source bars disagree.", 3
                 )
-            old_fills = row["checkpoint"]["fills"] if row["checkpoint"] else []
+            old_fills = (
+                row["checkpoint"]["fills"]
+                if row["checkpoint"] and not transition
+                else []
+            )
             if checkpoint is not None:
                 validate_checkpoint(BotSpec.from_dict(row["spec"]), data, checkpoint)
                 if checkpoint["fills"][: len(old_fills)] != old_fills:
@@ -910,8 +1021,11 @@ class RuntimeLedger:
                         "Prospective fills changed across restart.",
                         4,
                     )
+                fill_end = db.execute(
+                    "SELECT count(*) FROM fills WHERE bot_id=?", (bot_id,)
+                ).fetchone()[0]
                 for index, fill in enumerate(
-                    checkpoint["fills"][len(old_fills) :], len(old_fills)
+                    checkpoint["fills"][len(old_fills) :], fill_end
                 ):
                     db.execute(
                         "INSERT INTO fills VALUES (?,?,?)",
@@ -1402,3 +1516,221 @@ class RuntimeLedger:
                     "Adoption receipt disagrees with archived generation.",
                     4,
                 )
+
+    def learning_adopt(self, store, owner_receipt):
+        """Publish one owner-authorized revision and retained account together.
+
+        The external owner receipt is committed before this local transaction.
+        DELETE journals permit SQLite's attached-database atomic commit. WAL is
+        refused rather than claiming atomicity it cannot provide across files.
+        """
+        from .domain import utc_now
+        from .learning import learned_spec
+        from .strategies import rebind_checkpoint
+
+        receipt = dict(owner_receipt)
+        digest = receipt.pop("digest", None)
+        if (
+            fingerprint(receipt) != digest
+            or receipt.get("state") != "authorized_pending_manager"
+        ):
+            raise ManagerError(
+                "invalid_receipt", "Learning owner receipt integrity failed.", 4
+            )
+        manager_home = receipt.get("manager_home")
+        if (
+            not isinstance(manager_home, str)
+            or not Path(manager_home).is_absolute()
+            or manager_home != str(Path(manager_home).resolve())
+        ):
+            raise ManagerError(
+                "invalid_receipt",
+                "Learning authorization lacks a canonical manager-home binding.",
+                4,
+            )
+        if manager_home != str(self.home.resolve()) or manager_home != str(
+            store.home.resolve()
+        ):
+            raise ManagerError(
+                "identity_conflict",
+                "Learning authorization belongs to another manager home.",
+                3,
+            )
+        request_id = receipt["request_id"]
+        # Audience checks precede locks, migrations and even replay lookup: a
+        # copied journal must never steal an authorization for its source home.
+        with mutation_lock(self.home), self.connection(True) as db:
+            db.execute("ATTACH DATABASE ? AS saved", (str(store.path),))
+            if any(
+                db.execute(f"PRAGMA {schema}.journal_mode").fetchone()[0].lower()
+                != "delete"
+                for schema in ("main", "saved")
+            ):
+                raise ManagerError(
+                    "learning_blocked",
+                    "Atomic account adoption requires DELETE SQLite journals.",
+                    3,
+                )
+            if db.execute("PRAGMA saved.user_version").fetchone()[0] != 2:
+                raise ManagerError(
+                    "incompatible_store", "Saved revision schema is incompatible.", 4
+                )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS learning_adoptions (request_id TEXT PRIMARY KEY, owner_digest TEXT NOT NULL, body TEXT NOT NULL)"
+            )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS learning_boundaries (request_id TEXT PRIMARY KEY, runtime_id TEXT NOT NULL, predecessor TEXT NOT NULL, body TEXT NOT NULL)"
+            )
+            old = db.execute(
+                "SELECT * FROM learning_adoptions WHERE request_id=?", (request_id,)
+            ).fetchone()
+            if old is not None:
+                if old["owner_digest"] != digest:
+                    raise ManagerError(
+                        "identity_conflict", "Learning request binding changed."
+                    )
+                return json.loads(old["body"])
+            raw_spec = db.execute(
+                "SELECT body FROM saved.specs WHERE bot_id=?", (receipt["bot_id"],)
+            ).fetchone()
+            if raw_spec is None:
+                raise ManagerError("bot_not_found", "Learning bot was not found.")
+            spec = BotSpec.from_dict(json.loads(raw_spec[0]))
+            if (
+                spec.config_revision != receipt["expected_revision"]
+                or spec.config_hash != receipt["expected_hash"]
+                or dict(spec.user_overrides) != receipt["pins"]
+            ):
+                raise ManagerError(
+                    "stale_revision",
+                    "Learning originating revision or pins changed.",
+                    3,
+                )
+            proposed = learned_spec(
+                spec, receipt["changes"], receipt["evidence_digest"]
+            )
+            if proposed.to_dict() != receipt["accepted_spec"]:
+                raise ManagerError(
+                    "invalid_receipt",
+                    "Owner specification differs from the protected learning delta.",
+                    4,
+                )
+            raw = db.execute(
+                "SELECT * FROM runs WHERE bot_id=?", (spec.bot_id,)
+            ).fetchone()
+            run = self._decode(db, raw)
+            if (
+                not run
+                or run["runtime_id"] != receipt["runtime_id"]
+                or run["spec"]["config_hash"] != spec.config_hash
+                or run["desired"] != "stopped"
+                or run["observed"] != "stopped"
+                or run["pid"] is not None
+                or run["tick_started"] is not None
+            ):
+                raise ManagerError(
+                    "learning_blocked",
+                    "Stop the owner at a reconciled safe account boundary before adoption.",
+                    3,
+                )
+            pause_exists = db.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='entry_pauses'"
+            ).fetchone()
+            pause = (
+                db.execute(
+                    "SELECT * FROM entry_pauses WHERE bot_id=?", (spec.bot_id,)
+                ).fetchone()
+                if pause_exists
+                else None
+            )
+            paused = bool(
+                pause and pause["runtime_id"] == run["runtime_id"] and pause["paused"]
+            )
+            if not paused or run["checkpoint"] is None:
+                raise ManagerError(
+                    "learning_blocked",
+                    "A retained checkpoint and explicit entry pause are required.",
+                    3,
+                )
+            checkpoint = rebind_checkpoint(
+                proposed, run["input"], run["checkpoint"], entries_paused=paused
+            )
+            boundary = {
+                "spec": run["spec"],
+                "input_hash": run["input"]["snapshot_hash"],
+                "checkpoint": run["checkpoint"],
+                "owner_receipt_digest": digest,
+            }
+            predecessor = fingerprint(boundary)
+            checkpoint["configuration_predecessor"] = predecessor
+            result = {
+                "version": 1,
+                "request_id": request_id,
+                "proposal_id": receipt["proposal_id"],
+                "operation": receipt["operation"],
+                "bot_id": spec.bot_id,
+                "runtime_id": run["runtime_id"],
+                "accepted_revision": proposed.config_revision,
+                "accepted_hash": proposed.config_hash,
+                "prior_hash": spec.config_hash,
+                "owner_receipt_digest": digest,
+                "predecessor": predecessor,
+                "account_preserved": True,
+                "state": "published",
+                "starts_workers": False,
+            }
+            now = utc_now()
+            db.execute(
+                "UPDATE saved.specs SET body=? WHERE bot_id=?",
+                (canonical(proposed.to_dict()), spec.bot_id),
+            )
+            db.execute(
+                "INSERT INTO saved.spec_versions VALUES (?,?,?,?,?)",
+                (
+                    spec.bot_id,
+                    proposed.config_revision,
+                    canonical(proposed.to_dict()),
+                    now,
+                    request_id,
+                ),
+            )
+            db.execute(
+                "INSERT INTO saved.events(event_id,bot_id,body) VALUES (?,?,?)",
+                (
+                    str(uuid4()),
+                    spec.bot_id,
+                    canonical(
+                        {
+                            "schema_version": 1,
+                            "event_type": "learning." + receipt["operation"],
+                            "occurred_at": now,
+                            "config_revision": proposed.config_revision,
+                            "config_hash": proposed.config_hash,
+                            "receipt": result,
+                        }
+                    ),
+                ),
+            )
+            db.execute(
+                "UPDATE runs SET spec=?,checkpoint=?,checkpoint_hash=?,generation=generation+1,reason='learning_account_preserved' WHERE bot_id=?",
+                (
+                    canonical(proposed.to_dict()),
+                    canonical(checkpoint),
+                    fingerprint(checkpoint),
+                    spec.bot_id,
+                ),
+            )
+            self._event(
+                db,
+                {**dict(raw), "generation": run["generation"] + 1},
+                "learning." + receipt["operation"],
+            )
+            db.execute(
+                "INSERT INTO learning_boundaries VALUES (?,?,?,?)",
+                (request_id, run["runtime_id"], predecessor, canonical(boundary)),
+            )
+            db.execute(
+                "INSERT INTO learning_adoptions VALUES (?,?,?)",
+                (request_id, digest, canonical(result)),
+            )
+            return result

@@ -330,7 +330,13 @@ class OwnerProtocolTests(unittest.TestCase):
         self.assertFalse(refused["ok"])
         self.assertFalse((self.authority / "experiments.sqlite3").exists())
 
+    def test_final_receipt_rejects_changed_required_participation(self):
+        self._check_final_receipt_freshness(participation=True)
+
     def test_final_receipt_survives_future_reads_but_rejects_prior_overlap(self):
+        self._check_final_receipt_freshness(participation=False)
+
+    def _check_final_receipt_freshness(self, *, participation):
         from botmanager.blind import decide
         from botmanager.data import load_recording
         from botmanager.research import execute
@@ -449,20 +455,44 @@ class OwnerProtocolTests(unittest.TestCase):
             "later-training", "spent-dates", "b" * 64, [interval], attempts=1
         )
         self.assertEqual(handle(request), before)
-        owner.manager_import(
-            "imported-old-client",
-            "prior-exposure",
-            "c" * 64,
-            [interval],
-            attempts=1,
-            historical=True,
-        )
+        if participation:
+            request["authority"] = {
+                **request["authority"],
+                "known_clients": [
+                    *request["authority"]["known_clients"],
+                    {
+                        "root": str(self.root / "new-required-client"),
+                        "kind": "f5",
+                        "active": True,
+                    },
+                ],
+            }
+            pending = handle(request)
+            self.assertFalse(pending["reconcilable"])
+            self.assertEqual(pending["proposal"], before["proposal"])
+            handle({
+                **request,
+                "operation": "register",
+                "params": {"accept_registered_roots_only": True, "initialize_first": False},
+            })
+        else:
+            owner.manager_import(
+                "imported-old-client",
+                "prior-exposure",
+                "c" * 64,
+                [interval],
+                attempts=1,
+                historical=True,
+            )
         after = handle(request)
         self.assertFalse(after["reconcilable"])
         self.assertEqual(after["proposal"], before["proposal"])
         self.assertEqual(
             after["reason"], "research_authority_roster_or_history_changed"
         )
+        with self.assertRaisesRegex(ExperimentError, "receipt does not bind"):
+            handle({**request, "operation": "receipt", "params": receipt_request["params"]})
+        self.assertEqual(owner.manager_read_artifact(run["run_id"], "adoption_receipt"), receipt)
 
     def test_hostile_nested_canary_never_reaches_logs_or_artifacts(self):
         from unittest.mock import patch

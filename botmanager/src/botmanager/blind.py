@@ -58,7 +58,6 @@ def _profile(workspace):
             '(allow file-read-data (literal "/"))',
             f'(allow file-read* {read_rules} (subpath {json.dumps(str(workspace))}) (literal "/dev/urandom") (literal "/dev/random") (literal "/dev/null"))',
             f"(allow file-map-executable {read_rules})",
-            f"(allow process-exec (literal {json.dumps(str(executable))}))",
             "(allow sysctl-read)",
             "(allow process-info* (target self))",
         ]
@@ -108,6 +107,10 @@ def bounded_process(argv, payload, *, cwd, env, timeout=15, limit=MAX_PACKET):
                 bytes(streams[process.stdout]),
                 bytes(streams[process.stderr]),
             )
+        except subprocess.TimeoutExpired:
+            # EOF on both pipes does not establish child exit. Preserve the
+            # same deadline refusal boundary when its final wait times out.
+            raise ValueError("process deadline exceeded") from None
         finally:
             if process.poll() is None:
                 import signal
@@ -124,16 +127,30 @@ def _isolated(code, payload=b""):
         script = workspace / "judge.py"
         script.write_text(code)
         profile, executable = _profile(workspace)
+        # Apply Seatbelt after trusted CPython startup. Allowing Python's initial
+        # exec in a sandbox-exec profile also permits a judge to re-exec Python.
+        # This fixed bootstrap installs the deny-default policy before loading
+        # any judge source or reading the packet; failure never runs the judge.
+        bootstrap = workspace / "bootstrap.py"
+        bootstrap.write_text(
+            "import ctypes, sys\n"
+            "library = ctypes.CDLL('/usr/lib/libsandbox.dylib')\n"
+            "error = ctypes.c_char_p()\n"
+            "library.sandbox_init.argtypes = [ctypes.c_char_p, ctypes.c_uint64, ctypes.POINTER(ctypes.c_char_p)]\n"
+            "library.sandbox_init.restype = ctypes.c_int\n"
+            f"policy = {profile.encode()!r}\n"
+            "if library.sandbox_init(policy, 0, ctypes.byref(error)) != 0:\n"
+            "    raise RuntimeError('isolation_unavailable: sandbox initialization failed')\n"
+            f"source = {str(script)!r}\n"
+            "exec(compile(open(source).read(), source, 'exec'), {'__name__': '__main__'})\n"
+        )
         status, stdout, _stderr = bounded_process(
             [
-                "/usr/bin/sandbox-exec",
-                "-p",
-                profile,
                 str(executable),
                 "-I",
                 "-S",
                 "-B",
-                str(script),
+                str(bootstrap),
             ],
             payload,
             cwd=workspace,
@@ -147,6 +164,10 @@ def _isolated(code, payload=b""):
 
 def probe_isolation(paths):
     """Run real denial probes using the same profile/runtime as the judge."""
+    try:
+        executable = str(_runtime()[1])
+    except (OSError, ValueError):
+        return {"available": False, "reason": "isolation_unavailable"}
     code = """import json, os, socket, subprocess
 reads=[]
 metadata=[]
@@ -165,11 +186,22 @@ except PermissionError: network=True
 finally:
     try: s.close()
     except NameError: pass
+fork=False
+try:
+    child=os.fork()
+    if child == 0: os._exit(0)
+    os.waitpid(child, 0)
+except PermissionError: fork=True
+exec_denied=False
+try: os.execv(EXECUTABLE, [EXECUTABLE, '-I', '-S', '-c', 'print(123)'])
+except PermissionError: exec_denied=True
 process=False
 try: subprocess.run(['/bin/echo', 'escape'], check=True, capture_output=True)
 except PermissionError: process=True
-print(json.dumps(dict(available=True, reads_denied=reads, metadata_denied=metadata, network_denied=network, process_denied=process)))
-""".replace("PATHS", repr([str(Path(p).resolve()) for p in paths]))
+print(json.dumps(dict(available=True, reads_denied=reads, metadata_denied=metadata, network_denied=network, fork_denied=fork, exec_denied=exec_denied, process_denied=process)))
+""".replace("PATHS", repr([str(Path(p).resolve()) for p in paths])).replace(
+        "EXECUTABLE", repr(executable)
+    )
     try:
         result, profile_digest = _isolated(code)
         return {**result, "profile_digest": profile_digest}

@@ -1,11 +1,13 @@
 # Solbot: create, edit, run and inspect a paper bot
 
-Version: 1.1.0
+Version: 1.3.0
+Delta: Preserve delivered M4 history and identify the broader manager 0.6 release.
+Delta: Add the 0.6 reports, health, continuing-state and guarded owner workflow.
 Delta: Add the milestone 3 shared-archive workflow and four canonical reference strategies; retain the original demonstration as historical evidence.
 
 `/Users/mitch/.local/bin/solbot` is a command-line program. Bare invocation prints help. Ordinary commands return JSON. `ok: true` confirms that command; a start receipt alone does not establish a running worker.
 
-The manager supports saved defaults, immutable editing, independent Grid, DCA, Trend and Momentum reference-paper accounts, historical replay and prospective observations from the existing shared Oracle archive. It also diagnoses conditional Solana quote cycles. Jupiter execution certification, blind selection, learning, broader diagnostics and browser/executor integration have separate implementation and acceptance gates in the maintained handoff.
+The manager supports saved defaults, immutable editing, independent Grid, DCA, Trend and Momentum reference-paper accounts, historical replay and prospective observations from the existing shared Oracle archive. It also diagnoses conditional Solana quote cycles. The 0.6 backend adds research, reports, health, bounded continuation, protected learning and browser/executor adapters. Actual Jupiter certification and elapsed shadow evidence remain separate gates. Current operations are documented in /Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md.
 
 ## Start a new paper bot watching the existing stream
 
@@ -48,7 +50,7 @@ Prospective evidence starts after the frozen activation boundary. It excludes th
 
 Status separates process heartbeat, source age, evaluation progress and decision. Missing, stale, gapped or changed-policy input holds entries. Catch-up is labelled delayed replay. The existing producer owns acquisition; the manager does not start another recorder to clear a blocker.
 
-This first prospective release has an explicit limit of 2,048 bars and 245,760 accepted samples per account. At the limit it holds with `resource_limit`, preserving inventory and cursor. Longer continuing observation belongs to the later learning milestone. Passing a fixture does not establish profitable or indefinite autonomous operation.
+The current release preserves one canonical account across 512-bar segments. Restart and rollover retain cash, lots, fees, fills, pending next-open decisions and cursor. Trend/Momentum runtime lookback is bounded at 2,048 bars with a 2,050-bar tail; unsupported settings refuse with `resource_limit`. Frozen research snapshots retain their separate 2,048-bar capture limit. Passing a fixture does not establish profitable or indefinite autonomous operation.
 
 ## Change only the values you want
 
@@ -87,7 +89,7 @@ Use `dca`, `trend` or `momentum` instead of `grid`, then prepare and register a 
 /Users/mitch/.local/bin/solbot status paper-trend --why
 ```
 
-The existing supervisor observes the new request. The current release admits at most four desired-running bots; an extra start reports a capacity blocker. Later load/queue work must prove any broader capacity. Independent virtual capital is not reserved wallet money and must not be summed as a funded portfolio.
+The existing supervisor observes the new request. The current release admits up to 100 desired-running bots and runs at most four worker processes. Additional admitted bots remain queued. The ten-bot load fixture verifies four active workers and six queued while one canonical optimizer holds its own lease. Independent virtual capital is not reserved wallet money and must not be summed as a funded portfolio.
 
 Arbitrage currently supports explicit directed-quote cycle diagnosis, with exact amounts, timing and cost assumptions. It has no autonomous live cycle worker. Council remains externally owned. Use `help` and `schema` for actual capabilities rather than assuming a strategy label enables execution.
 
@@ -110,3 +112,25 @@ A read leaves its old schema, identity and evidence unchanged. Follow the new-bo
 The complete operating, architecture, source ownership, recovery and release guide is /Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md. The Oracle UI contract is /Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md. The approved remaining milestone order is /Users/mitch/dev/solmargintrader/docs/superpowers/plans/2026-11-09-bot-manager.md.
 
 The stable regular installation lives in /Users/mitch/.venvs/solbot. Source lives in /Users/mitch/dev/solmargintrader/botmanager. Installing source does not start a service. Upgrade compatible first-party packages together and verify the loaded code before restarting an affected owner. Preserve frozen experiment environments and take a consistent backup before a state migration.
+
+
+## Reports, health and bounded history in 0.6
+
+After the normal paper workflow below, inspect the same pinned account through
+`report BOT --format human`, `report BOT --format json`, `report BOT --format csv`,
+`health BOT`, `alerts`, `events BOT --after 0 --limit 100`, `history-page BOT` and
+`run-history BOT`. These reads start no worker and do not change saved settings.
+Reuse each returned `next_after`; missing measurements remain null with reasons.
+
+Stop the selected accounts and release the daemon before `backup DESTINATION`.
+Restore with `restore BACKUP NEW_HOME`. A restore starts nothing and does not copy
+or reset the canonical research authority. Read the restored home before starting
+any explicit worker. Supported entry pause and versioned learning adoption retain
+existing account losses; neither command closes positions implicitly.
+
+`research-setup` and `research-plan BOT` generate normal-use descriptors/plans.
+The owner must be explicitly registered before research. A conditional refusal for
+uncertified costs, source coverage, untouched final windows or real shadow time is
+an expected evidence result. It does not require manually editing a database or
+inventing a configuration/price. Browser and executor owner setup/control examples
+are in the 0.6 operations guide; current availability comes from installed `schema`.

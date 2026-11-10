@@ -23,6 +23,123 @@ def unavailable(reason: str) -> dict[str, Any]:
     return {"value": None, "reason": reason}
 
 
+def browser_snapshot(record, *, why=False):
+    """Last owner observation stays distinct from current offline uncertainty."""
+    saved, bot = record["snapshot"], record["bots"][0]
+    fresh = record["state"] in ("available", "unsupported")
+    paper_owner = saved["mode"] == "dry-run" and not saved["armed"]
+    supported = (
+        fresh
+        and saved["mode"] == "dry-run"
+        and not saved["armed"]
+        and not saved["kill_switch"]
+    )
+    observed = (
+        ("running" if saved["running"] else "stopped")
+        if fresh and paper_owner
+        else "unknown"
+    )
+    reason = (
+        "browser_owner_expired"
+        if not fresh
+        else "browser_paper_slot_unavailable"
+        if not paper_owner
+        else "browser_owner_report"
+    )
+    actions = {
+        operation: {
+            "available": operation == "inspect"
+            or operation == "stop"
+            and fresh
+            and paper_owner
+            or operation == "start"
+            and supported,
+            "reason": reason
+            if operation in ("inspect", "start", "stop")
+            else "browser_operation_unavailable",
+            "semantics": semantics,
+        }
+        for operation, semantics in ACTION_SEMANTICS.items()
+    }
+    result = {
+        "schema_version": 1,
+        "bot_id": bot["bot_id"],
+        "identity": bot["identity"],
+        "display_name": "Browser grid " + record["installation_id"],
+        "source": "browser",
+        "source_identity": record["installation_id"] + ":grid",
+        "strategy_id": "grid",
+        "strategy_version": None,
+        "owner": "browser",
+        "spec_owner": None,
+        "runtime_id": saved["runtime_id"],
+        "runtime_owner_id": record["installation_id"],
+        "owner_generation": saved["generation"],
+        "config_revision": saved["config_revision"],
+        "config_hash": saved["config_hash"],
+        "mode": "paper" if paper_owner else None,
+        "mode_reason": None if paper_owner else "browser_paper_slot_unavailable",
+        "owner_mode": saved["mode"],
+        "armed": saved["armed"],
+        "lifecycle": observed,
+        "observed_state": observed,
+        "desired_state": None,
+        "desired_state_reason": "owner_control_receipt_required",
+        "last_reported_running": saved["running"],
+        "reason": reason,
+        "owner_reachability": {
+            "state": "reachable" if fresh else "unreachable",
+            "reason": reason,
+        },
+        "input_quality": {
+            "state": "unknown",
+            "reason": "browser_does_not_certify_market_data",
+        },
+        "heartbeat_age_seconds": unavailable("owner_poll_is_not_worker_heartbeat"),
+        "data_age_seconds": unavailable("market_data_not_observed"),
+        "last_completed_evaluation": unavailable("evaluation_not_reported"),
+        "latest_decision": unavailable("decision_not_reported"),
+        "submission_certainty": unavailable("owner_receipts_required"),
+        "next_trigger": {"value": "browser_native_poll", "reason": reason},
+        "process_health": {
+            "state": "unknown",
+            "reason": "browser_process_not_independently_observed",
+        },
+        "blockers": [] if fresh and paper_owner else [reason],
+        "capabilities": [key for key, value in actions.items() if value["available"]],
+        "action_capabilities": actions,
+        "financials": {
+            key: unavailable("browser_financials_not_reported")
+            for key in (
+                "exposure_usd",
+                "allocated_capital_usd",
+                "realized_net_pnl_usd",
+                "unrealized_net_pnl_usd",
+                "costs_usd",
+            )
+        },
+        "transfer": {
+            "available": False,
+            "reason": "owner_prepare_quiesce_snapshot_commit_unavailable",
+        },
+        "loaded_identity": {
+            "extension_version": saved["extension_version"],
+            "source_hash": saved["source_hash"],
+            "provenance": "owner_reported",
+        },
+    }
+    if why:
+        result["explanation"] = {
+            "reason": reason,
+            "summary": "Browser retains its singleton paper slot; controls reconcile through durable native receipts.",
+            "blockers": result["blockers"],
+            "latest_decision": result["latest_decision"],
+            "last_completed_evaluation": result["last_completed_evaluation"],
+            "next_trigger": result["next_trigger"],
+        }
+    return result
+
+
 def _evidence() -> dict[str, Any]:
     # Each mode gets its own record. Absence never certifies another venue/model.
     return {
@@ -608,5 +725,25 @@ def runtime_snapshot(
             "reason": reason,
             "summary": "Independent virtual-account Coinbase reference replay; stopping retains simulated lots.",
             "remedy": "Inspect process health, recorded input and committed cursor independently.",
+        }
+        snapshot["explanation"].update(
+            last_completed_evaluation=snapshot["last_completed_evaluation"],
+            latest_decision=snapshot["latest_decision"],
+            blockers=snapshot["blockers"],
+            next_trigger=snapshot["next_trigger"],
+        )
+    from .accounting import accounting_snapshot
+    from .health import health_snapshot
+
+    snapshot["health"] = health_snapshot(row, now=now)
+    snapshot["accounting"] = accounting_snapshot(row)
+    for operation in ("pause_entries", "resume_entries"):
+        supported = active.strategy_id in ("grid", "dca")
+        snapshot["action_capabilities"][operation] = {
+            "available": supported,
+            "reason": "separable_entry_exit_model"
+            if supported
+            else "entry_exit_model_not_separable",
+            "semantics": "Change entry admission; retain account and continue existing exits.",
         }
     return snapshot

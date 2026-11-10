@@ -27,8 +27,34 @@ import { RequestBudget } from '../jupiter/http.js';
 import { makeSigner } from '../wallet/signer.js';
 import { restorePaperVenue } from './paper-venue.js';
 import { createLiveWindows } from './live-windows.js';
+import { digest } from '../core/bot-manager.js';
+import { OWNER_SOURCE_SCHEMA, OWNER_SOURCE_FILES } from '../core/owner-source.js';
 
 const ALARM = 'solmargintrader-tick';
+const MANAGER_ALARM = 'solmargintrader-manager';
+// Capture the resource baseline at worker startup, never lazily after a start.
+// Fetch attests packaged resources, not the browser's internal ESM cache. Any
+// subsequent resource change requires an actual extension reload before grants.
+async function resourceSourceHash() {
+  const parts = await Promise.all(OWNER_SOURCE_FILES.map(async path => {
+    const response = await platformFetch(chrome.runtime.getURL(path), { cache: 'no-store' });
+    if (!response.ok) throw new Error('loaded browser source unavailable');
+    return `${path}\0${await response.text()}`;
+  }));
+  return digest(`${OWNER_SOURCE_SCHEMA}\0${parts.join('\0')}`);
+}
+let startupSource;
+let sourceChanged = false;
+async function loadedSourceHash({ revoke = true } = {}) {
+  const baseline = await startupSource;
+  if (sourceChanged || await resourceSourceHash() !== baseline) {
+    sourceChanged = true;
+    const state = revoke ? await configStore.get('browserManager', null) : null;
+    if (state?.running) await configStore.set('browserManager', { ...state, running: false, generation: state.generation + 1 });
+    throw new Error('browser source changed; extension reload required');
+  }
+  return baseline;
+}
 
 // Asks the soltui host once a minute whether the code on disk changed.
 const BUILD_ALARM = 'solmargintrader-soltui-build';
@@ -49,6 +75,9 @@ const configStore = new ConfigStore();
 // throws "Illegal invocation", and a fresh closure per message would defeat the
 // pool cache, which keys on this function (src/market/pools.js).
 const platformFetch = (...a) => fetch(...a);
+startupSource = resourceSourceHash();
+// Avoid unhandled rejection on environments without packaged-resource fetch.
+startupSource.catch(() => {});
 const budget = new RequestBudget({ maxPerWindow: 30, windowMs: 60_000 });
 const nativeTransport = createNativeTransport();
 const liveWindows = chrome.runtime.onConnect && chrome.windows && chrome.runtime.getURL
@@ -69,6 +98,8 @@ export async function chromeDeps({ passphrase, openStore = () => Store.open(), s
     configStore,
     budget,
     soltui,
+    extensionVersion: chrome.runtime.getManifest?.().version,
+    loadedSourceHash,
     fetch: platformFetch,
     async buildVenue() {
       const config = await configStore.getConfig();
@@ -87,6 +118,10 @@ export async function chromeDeps({ passphrase, openStore = () => Store.open(), s
 async function runTick(reason) {
   const deps = await chromeDeps();
   const config = await configStore.getConfig();
+  const manager = await configStore.get('browserManager', null);
+  if (manager?.last_sequence > 0 && !manager.running && config.mode === MODE.DRY_RUN && !(await configStore.getRuntime()).armed) {
+    return { errors: [], skipped: [{ reason: 'browser-paper-owner-stopped' }] };
+  }
 
   // Refuse a config that claims leverage the venue cannot deliver, rather than
   // quietly trading unleveraged while the UI says 3x.
@@ -223,6 +258,20 @@ export async function runBuildCheck({
   });
 }
 
+async function scheduleManagerAlarm() {
+  if (!(await chrome.alarms.get?.(MANAGER_ALARM))) {
+    await chrome.alarms.create(MANAGER_ALARM, { periodInMinutes: 0.5, delayInMinutes: 0.5 });
+  }
+}
+
+export async function runManagerPoll() {
+  return runCommand({ name: 'browserManagerPoll', args: {}, deps: await chromeDeps() });
+}
+
+// Listener registration stays synchronous. Re-create missing alarms after every
+// worker activation, because Chrome does not guarantee alarm persistence.
+scheduleManagerAlarm().catch(() => {});
+
 /* ----------------------------------------------------------------- lifecycle -- */
 
 /**
@@ -253,13 +302,17 @@ export async function handleInstalled(details = {}, { store } = {}) {
   } else {
     await configStore.setRuntime({ armed: false });
   }
+  const managed = await configStore.get('browserManager', null);
+  if (managed?.running) await configStore.set('browserManager', { ...managed, running: false, generation: managed.generation + 1 });
   await configStore.set('limits', { ...DEFAULT_LIMITS, ...(await configStore.get('limits', {})) });
   await rescheduleAlarm();
   await scheduleBuildAlarm();
+  await scheduleManagerAlarm();
   await scheduleAlertAlarm({ soon: true });
 
   const runtime = await configStore.getRuntime();
   const config = await configStore.getConfig();
+  runManagerPoll().catch(() => {});
   if (fresh) await setBadge('—', '#6b7280');
   else await paintBadge({ errors: [] });
 
@@ -283,6 +336,8 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 chrome.runtime.onStartup.addListener(() => {
+  scheduleManagerAlarm().catch(() => {});
+  runManagerPoll().catch(() => {});
   rescheduleAlarm().catch((err) => console.error('[smt] reschedule threw', err));
   scheduleBuildAlarm().catch((err) => console.error('[smt] build alarm threw', err));
   scheduleAlertAlarm({ soon: true }).catch((err) => console.error('[smt] alert alarm threw', err));
@@ -296,6 +351,7 @@ chrome.notifications?.onClicked?.addListener((id) => {
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === MANAGER_ALARM) { runManagerPoll().catch(() => {}); return; }
   if (alarm.name === BUILD_ALARM) {
     runBuildCheck().catch((err) => console.error('[smt] build check threw', String(err?.message ?? err)));
     return;
@@ -318,7 +374,14 @@ chrome.alarms.onAlarm.addListener((alarm) => {
  */
 const ALIASES = { tickNow: 'tick' };
 
-chrome.runtime.onMessage.addListener((msg, _sender, respond) => {
+chrome.runtime.onMessage.addListener((msg, sender, respond) => {
+  if (['browserManagerPoll', 'browserManagerSnapshot'].includes(msg?.type)) {
+    const origin = chrome.runtime.getURL('').replace(/\/$/, '');
+    if (sender?.origin !== origin && !String(sender?.url ?? '').startsWith(`${origin}/`)) {
+      respond({ ok: false, error: 'browser owner messages require an extension origin' });
+      return false;
+    }
+  }
   handleMessage(msg)
     .then(respond)
     .catch((err) => respond({ ok: false, error: String(err?.message ?? err) }));

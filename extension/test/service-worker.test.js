@@ -273,3 +273,33 @@ test('Chrome paper orders and fills survive dependency and worker recreation', a
   assert.deepEqual(await other.getFills(), []);
   assert.deepEqual(await other.getOpenOrders(), []);
 });
+
+test('startup resource baseline fences changed economic code until a worker reload', async () => {
+  reset();
+  const oldFetch = globalThis.fetch;
+  const oldURL = chrome.runtime.getURL;
+  const oldManifest = chrome.runtime.getManifest;
+  let engineSource = 'engine-v1';
+  chrome.runtime.getURL = path => `chrome-extension://${'a'.repeat(32)}/${path}`;
+  chrome.runtime.getManifest = () => ({ version: '0.6.4' });
+  globalThis.fetch = async url => ({ ok: true, text: async () => url.endsWith('/engine.js') ? engineSource : String(url) });
+  try {
+    const worker = await import('../src/bg/service-worker.js?source-fence-regression');
+    const deps = await worker.chromeDeps({ openStore: async () => new MemoryStore() });
+    const baseline = await deps.loadedSourceHash();
+    assert.match(baseline, /^[a-f0-9]{64}$/);
+    area.set('browserManager', { running: true, generation: 7 });
+    engineSource = 'engine-v2';
+    await assert.rejects(deps.loadedSourceHash(), /extension reload required/);
+    assert.equal(area.get('browserManager').running, false);
+    assert.equal(area.get('browserManager').generation, 8);
+    engineSource = 'engine-v1';
+    // A resource rollback cannot certify what this worker actually loaded.
+    await assert.rejects(deps.loadedSourceHash(), /extension reload required/);
+    assert.equal(area.get('browserManager').generation, 8);
+  } finally {
+    globalThis.fetch = oldFetch;
+    chrome.runtime.getURL = oldURL;
+    chrome.runtime.getManifest = oldManifest;
+  }
+});

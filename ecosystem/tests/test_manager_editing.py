@@ -185,7 +185,7 @@ class ManagerEditingIntegrationTests(unittest.TestCase):
         with self.ledger.connection(True):
             pass
         with closing(sqlite3.connect(self.ledger.path)) as db:
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 4)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 5)
             self.assertEqual(
                 db.execute("SELECT body FROM archives").fetchone()[0], body
             )

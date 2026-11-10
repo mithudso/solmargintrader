@@ -43,6 +43,9 @@ export const ALLOWED_MESSAGES = Object.freeze([
 export const FORBIDDEN_MESSAGES = Object.freeze([
   // Window creation needs a separate trusted-gesture/lifetime browser probe.
   'openLiveWindow',
+  // Delegated controls require the separate isolated paper-manager gate.
+  'browserManagerSnapshot',
+  'browserManagerPoll',
   'arm',
   'disarm',
   'kill',

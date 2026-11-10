@@ -109,10 +109,24 @@ class BlindTests(unittest.TestCase):
                 self.assertEqual(proof["metadata_denied"], [True, True])
                 self.assertTrue(proof["network_denied"])
                 self.assertTrue(proof["process_denied"])
+                self.assertTrue(proof["fork_denied"])
+                self.assertTrue(proof["exec_denied"])
                 self.assertEqual(blind.run_judge(packet())["tied_ids"], ["b" * 32])
             else:
                 with self.assertRaisesRegex(ValueError, "isolation_unavailable"):
                     blind.run_judge(packet())
+
+    def test_unsupported_host_never_starts_unrestricted_judge(self):
+        from unittest.mock import patch
+
+        with (
+            patch.object(blind.sys, "platform", "unsupported"),
+            patch.object(blind, "bounded_process") as process,
+        ):
+            self.assertFalse(blind.probe_isolation([])["available"])
+            with self.assertRaisesRegex(ValueError, "isolation_unavailable"):
+                blind.run_judge(packet())
+            process.assert_not_called()
 
     def test_process_output_and_deadline_are_bounded(self):
         with tempfile.TemporaryDirectory() as d:
@@ -132,3 +146,40 @@ class BlindTests(unittest.TestCase):
                     env={},
                     timeout=0.05,
                 )
+
+    def test_closed_pipes_do_not_escape_deadline_refusal_and_child_is_reaped(self):
+        import os
+        from unittest.mock import patch
+
+        children = []
+        popen = blind.subprocess.Popen
+
+        def start(*args, **kwargs):
+            process = popen(*args, **kwargs)
+            children.append(process)
+            return process
+
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch.object(blind.subprocess, "Popen", side_effect=start),
+            self.assertRaisesRegex(ValueError, "^process deadline exceeded$"),
+        ):
+            blind.bounded_process(
+                [
+                    sys.executable,
+                    "-I",
+                    "-S",
+                    "-c",
+                    "import os,time; os.close(1); os.close(2); time.sleep(5)",
+                ],
+                b"",
+                cwd=directory,
+                env={},
+                timeout=0.1,
+            )
+        child = children[0]
+        self.assertIsNotNone(child.poll())
+        self.assertTrue(child.stdout.closed)
+        self.assertTrue(child.stderr.closed)
+        with self.assertRaises(ChildProcessError):
+            os.waitpid(child.pid, os.WNOHANG)

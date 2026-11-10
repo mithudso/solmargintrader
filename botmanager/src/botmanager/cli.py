@@ -39,8 +39,8 @@ def parser() -> argparse.ArgumentParser:
             "Running a bot requires explicit input, a start request,\n"
             "and an explicitly running 'solbot daemon' or installed service.\n"
             "Edit saved settings with solbot edit; solbot apply explicitly adopts them.\n"
-            "Current runtime: bounded historical/prospective reference families. Jupiter\n"
-            "execution and automatic learning remain unavailable.\n\n"
+            "Current runtime: bounded historical/prospective reference families. Learning\n"
+            "and executor entries retain source, sample, clock and authority gates.\n\n"
             "Working example and exact steps:\n"
             "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
         ),
@@ -73,5 +73,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         envelope = dispatch(command, args, CommandContext(**context_args))
     except InputError:
         envelope = dispatch("__invalid_input__", {})
-    print(json.dumps(envelope, sort_keys=True, allow_nan=False))
+    if (
+        envelope["ok"]
+        and command == "report"
+        and args.get("format") in ("human", "csv")
+    ):
+        print(envelope["data"]["rendered"])
+    else:
+        print(json.dumps(envelope, sort_keys=True, allow_nan=False))
     return 0 if envelope["ok"] else ERROR_EXIT_CODES.get(envelope["error"]["code"], 2)

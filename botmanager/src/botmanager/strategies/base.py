@@ -7,6 +7,22 @@ from dataclasses import asdict
 from ..data import engine_identity, validate_snapshot
 from ..domain import ManagerError, fingerprint
 
+# Runtime support is deliberately narrower than the editable draft schema.
+# TsMomentum needs window+2 retained observations; Trend needs slow_period.
+MAX_RUNTIME_LOOKBACK_BARS = 2048
+MAX_RUNTIME_RETAINED_BARS = MAX_RUNTIME_LOOKBACK_BARS + 2
+
+
+def validate_runtime_config(spec):
+    """Refuse unsupported history before source capture or array allocation."""
+    field = {"trend": "slow_period", "momentum": "window"}.get(spec.strategy_id)
+    if field is not None and spec.resolved_values[field] > MAX_RUNTIME_LOOKBACK_BARS:
+        raise ManagerError(
+            "resource_limit",
+            "Reference runtime supports at most 2048 lookback bars; larger settings remain draft-only.",
+            3,
+        )
+
 
 def compatible_engine(pinned, loaded):
     """A packaging-only version bump does not invalidate the economic code."""
@@ -18,6 +34,7 @@ def compatible_engine(pinned, loaded):
 
 
 def validate_input(spec, data):
+    validate_runtime_config(spec)
     validate_snapshot(data)
     if spec.mode != "paper" or spec.resolved_values["armed"] or spec.bar_seconds != 60:
         raise ManagerError(
@@ -81,7 +98,9 @@ def identity(spec, data):
     }
 
 
-def evaluate_family(spec, data, cursor, *, research=False):
+def evaluate_family(
+    spec, data, cursor, *, research=False, previous=None, entries_paused=False
+):
     import numpy as np
 
     from backtester.core.types import CostConfig
@@ -95,12 +114,42 @@ def evaluate_family(spec, data, cursor, *, research=False):
             "Pinned economic engine differs from loaded code.",
             3,
         )
-    if type(cursor) is not int or not 1 <= cursor <= len(data["bars"]):
+    if type(cursor) is not int or not data.get("bar_offset", 0) < cursor <= data.get(
+        "bar_offset", 0
+    ) + len(data["bars"]):
         raise ManagerError("invalid_input", "Cursor is outside the reference input.")
     d = data["descriptor"]
+    offset = data.get("bar_offset", 0)
+    start = previous["cursor"] - offset if previous else 0
+    if start < 0 or start >= cursor - offset:
+        raise ManagerError(
+            "stale_cursor", "Continuation cursor does not advance the account.", 3
+        )
+    if previous:
+        saved = previous.get("continuation")
+        if (
+            not isinstance(saved, dict)
+            or saved.get("schema_version") != 1
+            or saved.get("cursor") != previous["cursor"]
+            or saved.get("last_ts") != previous["last_bar_ts"]
+        ):
+            raise ManagerError(
+                "continuation_unavailable",
+                "The prior account lacks compatible canonical continuation state.",
+                3,
+            )
+        from . import validate_checkpoint
+
+        validate_checkpoint(spec, data, previous, allow_prior=True)
+    if entries_paused and spec.strategy_id not in ("dca",):
+        raise ManagerError(
+            "capability_unavailable",
+            "Entry pause is unsupported for signal accounts.",
+            3,
+        )
     values = spec.resolved_values
     arrays = {
-        key: np.array([b[key] for b in data["bars"][:cursor]])
+        key: np.array([b[key] for b in data["bars"][start : cursor - offset]])
         for key in ("ts", "open", "high", "low", "close")
     }
     costs = CostConfig(fee_bps=d["fee_bps"], slippage_bps=d["slippage_bps"])
@@ -123,6 +172,8 @@ def evaluate_family(spec, data, cursor, *, research=False):
             interval="1m",
             costs=costs,
             close_at_end=False,
+            continuation=previous.get("continuation") if previous else None,
+            entries_paused=entries_paused,
         )
         lots = [result.open_deal_at_end] if result.open_deal_at_end else []
         exposure = sum(l["qty"] for l in lots) * arrays["close"][-1]
@@ -163,6 +214,7 @@ def evaluate_family(spec, data, cursor, *, research=False):
             ),
             close_at_end=False,
             price_only=True,
+            continuation=previous.get("continuation") if previous else None,
         )
         account = result.account
         lots = [asdict(account.position)] if account.position.is_open else []
@@ -177,9 +229,16 @@ def evaluate_family(spec, data, cursor, *, research=False):
     run_identity = identity(spec, data)
     state = {
         "schema_version": 1,
+        "continuation": result.continuation,
+        "prior_segment": data.get("prior_segment"),
         "cursor": cursor,
         "last_bar_ts": int(arrays["ts"][-1]),
-        "fills": [asdict(t) for t in result.trades],
+        "fills": (
+            previous["fills"]
+            if previous and previous.get("prior_segment") == data.get("prior_segment")
+            else []
+        )
+        + [asdict(t) for t in result.trades],
         "lots": lots,
         "equity_quote": equity,
         "exposure_quote": float(exposure),
@@ -200,14 +259,16 @@ def evaluate_family(spec, data, cursor, *, research=False):
         if isinstance(value, np.generic):
             return value.item()
         if isinstance(value, dict):
-            return {k: native(v) for k, v in value.items()}
+            return {str(k): native(v) for k, v in value.items()}
         if isinstance(value, list):
             return [native(v) for v in value]
         return value
 
     if research:
         state["research_metrics"] = research_metrics(result, d["capital_quote"])
-    return native(state)
+    import json
+
+    return json.loads(json.dumps(native(state)))
 
 
 def research_metrics(result, capital):

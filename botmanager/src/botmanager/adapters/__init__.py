@@ -90,4 +90,11 @@ def discover_installations(
                     "bots": None,
                 }
             )
+    from .extension import discover_browser
+
+    browsers = discover_browser(home)
+    if browsers:
+        records = [
+            record for record in records if record["source"] != "browser"
+        ] + browsers
     return Inventory(tuple(records))

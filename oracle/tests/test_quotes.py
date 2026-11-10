@@ -9,6 +9,7 @@ from oracle.quotes import (
     capture_quote,
     collect_quote,
     import_quote,
+    read_quote_page,
     read_quotes,
 )
 
@@ -252,3 +253,43 @@ class QuoteEvidenceReviewTests(unittest.TestCase):
             QuoteError, "quote_platform_fee_topology_unsupported"
         ):
             self.capture(raw)
+
+
+class QuotePageTests(unittest.TestCase):
+    def test_sequence_gaps_append_and_exact_replay(self):
+        from oracle.store import Store
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "quotes.sqlite3"
+            Store(path)
+
+            def add(output):
+                response = fixture(output=output)
+                request = {
+                    k: response[k] for k in ("inputMint", "outputMint", "slippageBps")
+                }
+                request["amount"] = int(response["inAmount"])
+                q = capture_quote(
+                    request,
+                    response,
+                    requested_at=100,
+                    received_at=100.1,
+                    expires_at=105,
+                    max_latency_s=2,
+                )
+                import_quote(path, q)
+                return q
+
+            first = add(1000)
+            import_quote(path, first)  # ignored insert consumes an AUTOINCREMENT id
+            add(2000)
+            page = read_quote_page(path, limit=1)
+            self.assertEqual(page, read_quote_page(path, limit=1))
+            self.assertEqual(page["next_after"], 1)
+            self.assertTrue(page["has_more"])
+            add(3000)
+            rest = read_quote_page(path, after=page["next_after"], limit=10)
+            self.assertEqual([row["sequence"] for row in rest["items"]], [3, 4])
+            self.assertEqual(rest["next_after"], 4)
+            self.assertFalse(rest["has_more"])
+            self.assertEqual(read_quote_page(path, after=4)["next_after"], 4)
