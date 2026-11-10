@@ -48,6 +48,10 @@ def isolated(tmp_path, monkeypatch):
     monkeypatch.setenv("EXECUTOR_HOME", str(tmp_path / "home"))
     monkeypatch.setenv("EXECUTOR_LOG_DIR", str(tmp_path / "logs"))
     monkeypatch.delenv("JUPITER_API_KEY", raising=False)
+    from executor import authority
+
+    monkeypatch.setattr(authority, "wallet_root", lambda owner: tmp_path / "wallets" / owner)
+    monkeypatch.setattr(authority, "default_client_root", lambda: tmp_path / "home")
     return tmp_path
 
 
@@ -330,6 +334,10 @@ def cfg(owner, tmp_path, owner_kp) -> Config:
     c = load_config()
     c.owner = owner
     c.key_file = keyfile
+    from executor.authority import WalletAuthority
+    from executor.config import home
+
+    WalletAuthority(c, home()).register("100", [{"root": str(home()), "aware": True}], True)
     return c
 
 

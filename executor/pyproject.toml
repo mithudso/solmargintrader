@@ -1,6 +1,6 @@
 [project]
 name = "executor"
-version = "0.1.0"
+version = "0.2.0"
 description = "Guarded spot-swap executor for Solana (Jupiter), with a semantic transaction verifier, rails and an append-only journal"
 readme = "README.md"
 requires-python = ">=3.13,<3.15"

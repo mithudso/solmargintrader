@@ -104,7 +104,7 @@ class Context:
 
     @classmethod
     def load(cls) -> Context:
-        cfg = load_config()
+        cfg = load_config(create=False)
         return cls(cfg, Engine(cfg))
 
 
@@ -325,6 +325,7 @@ def _quote(ctx: Context, p: dict[str, Any]) -> Any:
             "Reduce-only sell of the strategy's open position; not stopped by KILL, the loss stop or gates",
         ),
         P("reason", "string", "Why; required for live, written to the journal before sending"),
+        P("request_id", "string", "Durable caller UUID; identical replay never sends again"),
         P("slippage_bps", "number", "Tighter slippage than the configured cap (never looser)"),
     ),
     read_only=False,
@@ -340,6 +341,7 @@ def _swap(ctx: Context, p: dict[str, Any]) -> Any:
         live=bool(p.get("live", False)),
         exit_only=bool(p.get("exit", False)),
         reason=p.get("reason"),
+        request_id=p.get("request_id"),
         slippage_bps=int(s) if s is not None else None,
     )
 
@@ -478,3 +480,57 @@ def _reconcile(ctx: Context, p: dict[str, Any]) -> Any:
 
 def default_home() -> Path:
     return home()
+
+
+@command("wallet.capabilities", "Versioned installed executor identity and supported guarded capabilities.")
+def _wallet_capabilities(ctx, p):
+    from .manager import capabilities
+
+    return capabilities(ctx.engine)
+
+
+@command(
+    "wallet.register",
+    "Enroll explicit shared-wallet writers and portfolio cap; never enable live mode.",
+    (
+        P("portfolio_cap_usd", "string", "Explicit wallet-wide capital cap", True),
+        P("clients", "json", "Complete writer inventory: absolute root and aware boolean", True),
+        P("inventory_complete", "bool", "Explicit complete known writer inventory", True),
+    ),
+    read_only=False,
+)
+def _wallet_register(ctx, p):
+    return ctx.engine.authority.register(p["portfolio_cap_usd"], p["clients"], p["inventory_complete"])
+
+
+@command(
+    "manager.admit",
+    "Read exact current scoped evidence and guarded executor admission; never sign.",
+    (P("request", "json", "Exact protocol1 scope and intent", True),),
+)
+def _manager_admit(ctx, p):
+    from .manager import admit
+
+    return admit(ctx.engine, p["request"])
+
+
+@command(
+    "manager.swap",
+    "Delegate exact caller intent through the existing verifier, shared writer and journal.",
+    (P("request", "json", "Exact protocol1 scope and intent", True),),
+    read_only=False,
+    long_running=True,
+)
+def _manager_swap(ctx, p):
+    from .manager import execute
+
+    return execute(ctx.engine, p["request"])
+
+
+@command(
+    "manager.status",
+    "Read a caller request receipt without initializing a wallet authority.",
+    (P("request_id", "string", "Original caller UUID", True),),
+)
+def _manager_status(ctx, p):
+    return ctx.engine.authority.status(p["request_id"])
