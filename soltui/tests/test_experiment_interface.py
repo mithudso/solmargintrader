@@ -4,6 +4,7 @@ from __future__ import annotations
 import fcntl
 import subprocess
 import tempfile
+import threading
 import time
 import unittest
 from pathlib import Path
@@ -37,6 +38,19 @@ class Isolated(unittest.TestCase):
 
 
 class JobLifecycle(Isolated):
+    def setUp(self):
+        super().setUp()
+        self.addCleanup(self.join_reapers)
+
+    def join_reapers(self):
+        # Process exit precedes the detached reaper's journal reconciliation.
+        # Keep the test-owned store until every reaper for this run has ended.
+        name = f"experiment-reap-{self.id[:12]}"
+        for reaper in threading.enumerate():
+            if reaper.name == name:
+                reaper.join(timeout=5)
+                self.assertFalse(reaper.is_alive(), "experiment reaper did not finish")
+
     def fake_launch(self, body):
         real = subprocess.Popen
         processes = []
@@ -101,6 +115,7 @@ while True:
         with patch:
             jobs.launch(self.store, self.id, self.settings)
         self.wait(lambda: processes[0].returncode is not None)
+        self.wait(lambda: jobs.status(self.store, self.id)["status"] in {"failed", "interrupted"})
         self.assertNotEqual(jobs.status(self.store, self.id)["status"], "completed")
 
     def test_nonzero_exit_keeps_stderr_and_recovers_interrupted(self):
@@ -282,6 +297,7 @@ class Screen(unittest.IsolatedAsyncioTestCase):
     async def test_parameter_units_defaults_and_relative_adjustments(self):
         from textual.app import App
         from textual.widgets import Button, Input, Select, Static
+
         from soltui.experiment_screens import ExperimentScreen
 
         calls = []
