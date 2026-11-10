@@ -16,6 +16,9 @@ currently record nothing.
 | `soltui/` | App stdout/stderr plus detached sweep/fetch logs | Yes, via launchd or worker files |
 | `mongo/` | Loader counts, subprocess output and provenance stored in derived documents | Console/output records; no common JSONL error sink |
 | `liquidity/` | `Daemon.log` writes SQLite ledger events and stdout; stage results retain transaction hashes | Ledger, state files and service `daemon.log` |
+| `botmanager/` | Owner journals, `health.sqlite3`, and the suite's private `.suite/alerts.json` plus stdout/stderr | Yes; bounded derived alerts are distinct from financial/evidence journals |
+| `ecosystem/` | Pipeline `supervisor.log`, control-room `control-room.log`, `control.sqlite3` action receipts and sanitized `telemetry.sqlite3` mirror | Yes; original manager evidence remains with its owner |
+| `oracle/` | Selected archive's events, observations, forecasts and resolutions; fixed CLI/MCP failure envelopes | Archive records persist; failure envelopes are not a universal transport-attempt log |
 
 The extension's real log is **not the console**. `src/storage/store.js` defines four
 object stores — `intents`, `fills`, `carry`, `events` — and the intent journal is what
@@ -84,6 +87,39 @@ following distinctions remain load-bearing after any such fix:
 These are remaining coverage/contract limits, not a claim that every listed path is
 silent. Log changes need behavior assertions on the emitted event and redaction. The
 full five-standard contract is not implemented; see `docs/repo-bootstrap-audit-2026-11-06.md`.
+
+## Managed-suite and local-control diagnostics
+
+`botmanager/src/botmanager/suite.py` records component failure/recovery events in
+`.suite/alerts.json` under the selected manager home and emits sanitized JSON to
+stderr. The journal retains at most 256 events, monotonic cursors and explicit
+history truncation. Repeated failures have a five-minute reminder cooldown.
+Fast UI transitions pass through a bounded queue and a single journal writer;
+a quick repair must not erase the incident. The manager shares the suite process,
+so an unclean suite incident covers their shared owner loss. See
+[managed-suite operation](bot-manager-managed-suite.md).
+
+The suite's stdout/stderr files rotate at the implemented size bound. These are
+availability diagnostics, not immutable financial evidence. `health-check` and
+`metrics` report compact measurements; `component-alerts` reads the durable event
+cursor. An unavailable alert journal makes suite monitoring readiness false.
+Tests in `botmanager/tests/test_suite.py` and
+`botmanager/tests/test_machine_health.py` exercise transition persistence,
+cooldowns, read-only measurements and journal failures.
+
+`ecosystem/telemetry.py` mirrors bounded, sanitized manager events. It does not
+copy free-form logs or take ownership of the original journals. Control actions
+have durable receipts in `ecosystem/control.py`; public HTTP failures in
+`ecosystem/web.py` return fixed codes rather than raw exceptions. See
+`ecosystem/tests/test_telemetry.py`, `ecosystem/tests/test_control_http.py` and
+`ecosystem/tests/test_machine_health_http.py` for failure/redaction assertions.
+
+`oracle/store.py` persists source observations and forecast/outcome events. An
+archive write failure must not become an unlogged forecast (`oracle/cli.py`).
+The public boundaries in `oracle/feeds.py` and `oracle/server.py` sanitize provider
+and dependency errors. Protocol stdout belongs to JSON/MCP frames. These existing
+records do not provide the common per-request JSONL error sink, remediation maps
+or generated call cards required by the complete five-standard contract.
 
 ## Testing a log
 
