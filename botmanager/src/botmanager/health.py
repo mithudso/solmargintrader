@@ -71,10 +71,25 @@ def health_snapshot(runtime: Mapping[str, Any], *, now: float) -> dict[str, Any]
         "waiting_for_observations",
     ):
         blockers.append(input_state)
+    observed, reason = runtime.get("observed"), runtime.get("reason")
+    if running and observed in ("recovering", "failed", "blocked"):
+        if reason in (
+            "worker_exited",
+            "worker_spawn_failed",
+            "tick_stalled",
+            "heartbeat_stale",
+            "corrupt_checkpoint",
+        ):
+            blockers.append(reason)
+        if observed in ("failed", "blocked"):
+            blockers.append("runtime_" + observed)
+    if reason == "tick_stalled" and observed in ("recovering", "failed", "blocked"):
+        evaluation = "stalled"
     if evaluation == "stalled":
         blockers.append("evaluation_stalled")
     return {
         "schema_version": 1,
+        "lifecycle": {"observed": observed, "reason": reason},
         "process": {"state": process, "heartbeat_age_seconds": age},
         "input": {"state": input_state, "reason": input_reason},
         "evaluation": {"state": evaluation, "last_completed_at": evaluated},
@@ -138,15 +153,23 @@ class HealthStore:
         snapshot = health_snapshot(row, now=now)
         codes = set(snapshot["blockers"])
         bot_id, runtime_id = row["bot_id"], row["runtime_id"]
-        evidence = canonical(
-            {
-                "health": snapshot,
+        evidence_body = {
+            "health": snapshot,
+            "source": row["input"]["identity"],
+            "generation": row["generation"],
+            "origin": {
+                "runtime_id": runtime_id,
                 "source": row["input"]["identity"],
+                "observed": row.get("observed"),
+                "reason": row.get("reason"),
                 "generation": row["generation"],
-            }
-        )
+                "at": now,
+            },
+        }
+        evidence = canonical(evidence_body)
         with self.connection(True) as db:
             for code in codes:
+                evidence = canonical(evidence_body)
                 key = fingerprint([bot_id, runtime_id, code])
                 old = db.execute("SELECT * FROM alerts WHERE key=?", (key,)).fetchone()
                 if old is None:
@@ -155,6 +178,13 @@ class HealthStore:
                         (key, bot_id, runtime_id, code, now, now, now, 1, evidence),
                     )
                 else:
+                    previous = json.loads(old["evidence"])
+                    evidence = canonical(
+                        {
+                            **evidence_body,
+                            "origin": previous.get("origin", evidence_body["origin"]),
+                        }
+                    )
                     notified = (
                         now
                         if old["state"] == "resolved"
@@ -171,13 +201,41 @@ class HealthStore:
                             (key,),
                         )
             for old in db.execute(
-                "SELECT key,code,runtime_id FROM alerts WHERE bot_id=? AND state='active'",
+                "SELECT key,code,runtime_id,evidence FROM alerts WHERE bot_id=? AND state='active'",
                 (bot_id,),
             ).fetchall():
                 if old["code"] not in codes or old["runtime_id"] != runtime_id:
+                    failure_codes = {
+                        "worker_exited",
+                        "worker_spawn_failed",
+                        "tick_stalled",
+                        "runtime_failed",
+                        "runtime_blocked",
+                        "corrupt_checkpoint",
+                    }
+                    if (
+                        old["runtime_id"] == runtime_id
+                        and old["code"] in failure_codes
+                        and row.get("desired") == "running"
+                        and (
+                            row.get("observed")
+                            in ("pending", "recovering", "failed", "blocked")
+                            or row.get("pid") is None
+                        )
+                    ):
+                        # A new claim's synthetic heartbeat is not proof that its
+                        # replacement process has actually taken ownership.
+                        continue
+                    previous = json.loads(old["evidence"])
+                    resolution = canonical(
+                        {
+                            **evidence_body,
+                            "origin": previous.get("origin", evidence_body["origin"]),
+                        }
+                    )
                     db.execute(
                         "UPDATE alerts SET state='resolved',resolved_at=?,last_at=?,evidence=? WHERE key=?",
-                        (now, now, evidence, old["key"]),
+                        (now, now, resolution, old["key"]),
                     )
                     db.execute(
                         "UPDATE alerts SET sequence=(SELECT coalesce(max(sequence),0)+1 FROM alerts) WHERE key=?",
@@ -266,6 +324,12 @@ class HealthStore:
                     3,
                 )
             paused = operation == "pause"
+            handoff = current["desired"] == "running" and current["observed"] in (
+                "running",
+                "waiting",
+                "pending",
+                "recovering",
+            )
             generation = current["generation"] + 1
             receipt = {
                 "schema_version": 1,
@@ -275,7 +339,8 @@ class HealthStore:
                 "outcome": "acknowledged",
                 "reason": "entry_policy_persisted_and_prior_generation_revoked",
                 "entries_paused": paused,
-                "exits_continue": True,
+                "exits_continue": handoff,
+                "exit_owner_state": "handoff" if handoff else current["observed"],
                 "safe_to_retry": False,
             }
             db.execute(
@@ -283,8 +348,8 @@ class HealthStore:
                 (row["bot_id"], row["runtime_id"], int(paused)),
             )
             db.execute(
-                "UPDATE runs SET generation=? WHERE bot_id=?",
-                (generation, row["bot_id"]),
+                "UPDATE runs SET generation=?,observed=CASE WHEN desired='running' AND observed IN ('running','waiting','pending','recovering') THEN 'recovering' ELSE observed END,reason=CASE WHEN desired='running' AND observed IN ('running','waiting','pending','recovering') THEN ? ELSE reason END WHERE bot_id=?",
+                (generation, "entry_" + operation + "_handoff", row["bot_id"]),
             )
             ledger._event(
                 db, {**dict(current), "generation": generation}, operation + ".entries"

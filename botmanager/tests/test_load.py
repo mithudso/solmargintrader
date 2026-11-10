@@ -1,8 +1,8 @@
-"""Real process capacity fixture; optimizer pressure is a labelled CPU fixture."""
+"""Real paper workers and a canonical optimizer over isolated numerical inputs."""
 
 from __future__ import annotations
 
-import hashlib
+import gzip
 import json
 import multiprocessing
 import os
@@ -13,6 +13,7 @@ import time
 import unittest
 from contextlib import closing
 from pathlib import Path
+from unittest.mock import patch
 from uuid import uuid4
 
 from botmanager.data import load_recording
@@ -25,16 +26,154 @@ from botmanager.worker import lock_held
 from tests.test_paper import grid, recording
 
 
-def optimizer_pressure(root, ready, stop):
-    from soltui.research_admission import optimizer_lease
+def optimizer_recording(root, attempt, count=1024):
+    """Generate explicit non-overlapping numerical-source fixture observations."""
+    root.mkdir()
+    path = root / "observations.jsonl.gz"
+    start = 1700000040 + attempt * (count + 100) * 60
+    with gzip.open(path, "wt") as out:
+        for second in range(count * 60):
+            price = [100, 92, 101, 108][(second // 60) % 4]
+            timestamp = start + second
+            out.write(
+                json.dumps(
+                    {
+                        "t": timestamp,
+                        "q": {
+                            "SOL-USD": [
+                                price - 0.1,
+                                price + 0.1,
+                                price,
+                                10,
+                                10,
+                                timestamp,
+                            ]
+                        },
+                    }
+                )
+                + "\n"
+            )
+    return {
+        "schema_version": 1,
+        "installation_id": "isolated-load-numerical-fixture",
+        "source": "coinbase_exchange_recorder",
+        "paths": [str(path)],
+        "product": "SOL-USD",
+        "quote_currency": "USD",
+        "bar_seconds": 60,
+        "start_ts": start,
+        "end_ts": start + count * 60,
+        "fee_bps": 6.0,
+        "slippage_bps": 2.0,
+        "carry_bps_per_hour": 0.0,
+        "min_order_quote": 10.0,
+        "capital_quote": 1000.0,
+    }
 
-    with optimizer_lease(Path(root)):
-        ready.set()
-        digest = b"deterministic-pressure"
-        while not stop.is_set():
-            for _ in range(500):
-                digest = hashlib.sha256(digest).digest()
-            time.sleep(0.001)
+
+def optimizer_pressure(root, ready, stop):
+    from botmanager.research import backtest, execute
+
+    from soltui.experiments import ExperimentStore
+    from soltui.research_admission import optimizer_lease, register_authority
+
+    root = Path(root).resolve()
+    config = root / "owner-config"
+    environment = {
+        "SOLTUI_CONFIG_DIR": str(config),
+        "SOLTUI_RESEARCH_REGISTRY": str(root / "namespace.json"),
+    }
+    reports = []
+    owner = ExperimentStore(root)
+    authority = {
+        "id": str(uuid4()),
+        "root": str(root),
+        "known_clients": [{"root": str(root), "kind": "native", "active": False}],
+        "inventory_complete": True,
+    }
+
+    def save():
+        temporary = root / "load-outcome.tmp"
+        temporary.write_text(
+            json.dumps(
+                {
+                    "fixture": "isolated_numerical_source_not_production_certification",
+                    "runs": reports,
+                }
+            )
+        )
+        temporary.replace(root / "load-outcome.json")
+
+    with patch.dict(os.environ, environment):
+        registration = register_authority(
+            authority, config, consent=True, initialize_first=False
+        )
+        from botmanager.domain import fingerprint
+
+        context = {
+            key: registration[key]
+            for key in (
+                "namespace_id",
+                "isolation_mode",
+                "coverage",
+                "initialization_epoch",
+            )
+        }
+        context["roster_revision"] = fingerprint(registration)
+        with optimizer_lease(root):
+            attempt = 0
+            while not stop.is_set():
+                descriptor = optimizer_recording(
+                    root / ("source-" + str(attempt)), attempt
+                )
+                data = load_recording(descriptor)
+
+                def evaluator(spec, snapshot):
+                    # Reservation is already durable when the first real cell starts.
+                    ready.set()
+                    return backtest(spec, snapshot)
+
+                options = {
+                    "ranges": {"rungs": list(range(5, 36))},
+                    "horizon_bars": 1,
+                    "warmup_bars": 1,
+                    "blocks": 10,
+                    "confidence": {
+                        "method": "block_bootstrap",
+                        "seed": 0,
+                        "minimum_blocks": 10,
+                    },
+                }
+                try:
+                    report = execute(
+                        owner,
+                        grid("load-optimizer"),
+                        data,
+                        options,
+                        evaluator=evaluator,
+                        cancelled=stop.is_set,
+                        authority_context=context,
+                    )
+                    reports.append(
+                        {
+                            "run_id": report["run_id"],
+                            "consumed_cells": report["consumed_cells"],
+                            "outcome": report["outcome"],
+                        }
+                    )
+                except ValueError:
+                    if not stop.is_set():
+                        raise
+                    reports.append(
+                        {
+                            "outcome": {
+                                "outcome": "retained_incumbent",
+                                "reason": "cancelled_by_load_fixture_shutdown",
+                            }
+                        }
+                    )
+                save()
+                attempt += 1
 
 
 class LoadTests(unittest.TestCase):
@@ -51,8 +190,6 @@ class LoadTests(unittest.TestCase):
                 ledger.control(spec, "start", str(uuid4()))
             authority = home / "isolated-research-pressure"
             authority.mkdir()
-            with closing(sqlite3.connect(authority / "experiments.sqlite3")) as db:
-                db.execute("CREATE TABLE fixture (id INTEGER)")
             context = multiprocessing.get_context("spawn")
             ready, stop = context.Event(), context.Event()
             optimizer = context.Process(
@@ -62,7 +199,19 @@ class LoadTests(unittest.TestCase):
             supervisor = None
             metrics = {}
             try:
-                self.assertTrue(ready.wait(5))
+                self.assertTrue(ready.wait(10))
+                self.assertTrue(optimizer.is_alive())
+                self.assertTrue(lock_held(authority / "research-optimizer.lock"))
+                with closing(
+                    sqlite3.connect(
+                        (authority / "experiments.sqlite3").as_uri() + "?mode=ro",
+                        uri=True,
+                    )
+                ) as db:
+                    self.assertGreater(
+                        db.execute("SELECT count(*) FROM manager_trials").fetchone()[0],
+                        0,
+                    )
                 supervisor = Supervisor(home).open()
 
                 def spin(predicate, timeout=10):
@@ -167,8 +316,39 @@ class LoadTests(unittest.TestCase):
                 )
                 self.assertLess(metrics["stale_detection_from_freeze_s"], 15)
                 self.assertLess(metrics["stale_detection_from_last_heartbeat_s"], 15)
+                self.assertTrue(optimizer.is_alive())
+                self.assertTrue(lock_held(authority / "research-optimizer.lock"))
+                with closing(
+                    sqlite3.connect(
+                        (authority / "experiments.sqlite3").as_uri() + "?mode=ro",
+                        uri=True,
+                    )
+                ) as db:
+                    metrics["optimizer_attempts"] = db.execute(
+                        "SELECT count(*) FROM manager_attempts"
+                    ).fetchone()[0]
+                    metrics["optimizer_reserved_cells"] = db.execute(
+                        "SELECT count(*) FROM manager_trials"
+                    ).fetchone()[0]
+                    metrics["optimizer_completed_cells"] = db.execute(
+                        "SELECT count(*) FROM manager_trials WHERE result IS NOT NULL"
+                    ).fetchone()[0]
+                    metrics["optimizer_stages"] = [
+                        row[0]
+                        for row in db.execute(
+                            "SELECT DISTINCT split FROM manager_trials"
+                        )
+                    ]
+                    metrics["optimizer_outcomes"] = [
+                        json.loads(row[0])
+                        for row in db.execute(
+                            "SELECT outcome FROM manager_attempts WHERE outcome IS NOT NULL"
+                        )
+                    ]
+                self.assertGreater(metrics["optimizer_completed_cells"], 0)
+                self.assertIn("train", metrics["optimizer_stages"])
                 metrics["optimizer_kind"] = (
-                    "synthetic_cpu_pressure_with_canonical_optimizer_lease_not_research_quality_run"
+                    "canonical_m4_training_and_isolated_resolver_numerical_fixture_uncertified_source"
                 )
                 print("LOAD_METRICS " + json.dumps(metrics, sort_keys=True), flush=True)
             finally:
@@ -179,4 +359,44 @@ class LoadTests(unittest.TestCase):
                 if optimizer.is_alive():
                     optimizer.kill()
                     optimizer.join(2)
+                exitcode = optimizer.exitcode
                 optimizer.close()
+                self.assertEqual(exitcode, 0)
+                with closing(
+                    sqlite3.connect(
+                        (authority / "experiments.sqlite3").as_uri() + "?mode=ro",
+                        uri=True,
+                    )
+                ) as db:
+                    final_outcomes = [
+                        json.loads(row[0])
+                        for row in db.execute(
+                            "SELECT outcome FROM manager_attempts ORDER BY ordinal"
+                        )
+                    ]
+                    self.assertTrue(
+                        all(
+                            outcome["outcome"] == "retained_incumbent"
+                            for outcome in final_outcomes
+                        )
+                    )
+                    reused_dates = db.execute(
+                        "SELECT count(*) FROM exposures a JOIN exposures b ON a.run_id<b.run_id AND a.coin=b.coin AND a.start<b.end AND a.end>b.start"
+                    ).fetchone()[0]
+                    self.assertGreater(
+                        db.execute("SELECT count(*) FROM exposures").fetchone()[0], 0
+                    )
+                    self.assertEqual(reused_dates, 0)
+                print(
+                    "OPTIMIZER_OUTCOME "
+                    + json.dumps(
+                        {
+                            "source_certified": False,
+                            "outcomes": final_outcomes,
+                            "overlapping_reused_dates": reused_dates,
+                            "clean_exit": exitcode == 0,
+                        },
+                        sort_keys=True,
+                    ),
+                    flush=True,
+                )

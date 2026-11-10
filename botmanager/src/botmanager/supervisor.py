@@ -77,7 +77,7 @@ class Supervisor:
                 recovering = {
                     row[0]
                     for row in db.execute(
-                        "SELECT bot_id FROM runs WHERE desired='running' AND observed='recovering' AND failures!='[]'"
+                        "SELECT bot_id FROM runs WHERE desired='running' AND observed='recovering' AND (failures!='[]' OR reason IN ('entry_pause_handoff','entry_resume_handoff'))"
                     )
                 }
         check_health = time.monotonic() - self._health_at >= 1.0
@@ -135,7 +135,16 @@ class Supervisor:
                 if reason:
                     if reason != "generation_revoked":
                         self.ledger.failed(bot_id, generation, reason)
-                        if self.ledger.get(bot_id)["observed"] == "recovering":
+                        failed = self.ledger.get(bot_id)
+                        # Persist the failure before a fast replacement can hide its
+                        # reason by refreshing heartbeat or clearing tick intent.
+                        from .health import HealthStore
+
+                        try:
+                            HealthStore(self.home).observe(failed, now=time.time())
+                        except ManagerError:
+                            pass
+                        if failed["observed"] == "recovering":
                             recovering.add(bot_id)
                     if self._terminate(process):
                         self.children.pop(bot_id)

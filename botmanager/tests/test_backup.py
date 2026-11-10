@@ -241,3 +241,141 @@ class BackupTests(unittest.TestCase):
         self.assertTrue((self.backup / plan.name).is_file())
         self.assertFalse((self.backup / "diagnostics.log").exists())
         self.assertFalse((self.backup / "credentials.secret").exists())
+
+    def test_aged_browser_snapshot_restores_at_capture_cutoff_without_freshening(self):
+        import time
+
+        from botmanager.adapters.extension import BrowserStore, browser_quiescent
+
+        from tests.test_extension_adapter import ORIGIN, snapshot
+
+        captured_at = time.time()
+        browser = BrowserStore(self.home)
+        observed = snapshot()
+        browser.poll(
+            {"schema_version": 1, "snapshot": observed, "receipts": []},
+            origin=ORIGIN,
+            allowed_origins=[ORIGIN],
+            now=captured_at,
+        )
+        receipt = browser.control(
+            observed["installation_id"],
+            "stop",
+            str(uuid4()),
+            expected_generation=observed["generation"],
+            expected_config_hash=observed["config_hash"],
+            now=captured_at,
+        )
+        observed = {**observed, "generation": 1}
+        browser.poll(
+            {
+                "schema_version": 1,
+                "snapshot": observed,
+                "receipts": [
+                    {
+                        "request_id": receipt["request_id"],
+                        "outcome": "acknowledged",
+                        "reason": "paper_stopped",
+                        "generation": 1,
+                        "runtime_id": None,
+                        "config_hash": observed["config_hash"],
+                    }
+                ],
+            },
+            origin=ORIGIN,
+            allowed_origins=[ORIGIN],
+            now=captured_at,
+        )
+        receipt = browser.receipt(receipt["request_id"])
+        self.assertTrue(browser_quiescent(self.home, now=captured_at))
+        before = browser.path.read_bytes()
+        with patch("botmanager.backup.time.time", return_value=captured_at):
+            result = create_backup(self.home, self.backup)
+        self.assertEqual(result["manifest"]["captured_at"], captured_at)
+        # The copied timestamp is intentionally stale at restore time.
+        with patch(
+            "botmanager.adapters.extension.time.time", return_value=captured_at + 3600
+        ):
+            restore_backup(self.backup, self.restored)
+            restored = BrowserStore(self.restored)
+            self.assertFalse(browser_quiescent(self.restored))
+            self.assertEqual(restored.discover()[0]["state"], "offline")
+        self.assertEqual(
+            (self.backup / "browser.sqlite3").read_bytes(), restored.path.read_bytes()
+        )
+        self.assertEqual(before, browser.path.read_bytes())
+        with restored.connection() as db:
+            raw = db.execute("SELECT * FROM requests").fetchone()
+            _, copied_receipt = restored._request(raw)
+        self.assertEqual(receipt, copied_receipt)
+        self.assertEqual(restored.discover(now=captured_at)[0]["snapshot"], observed)
+
+    def test_restore_retains_current_archive_and_segment_bindings(self):
+        from botmanager.health import HealthStore
+        from botmanager.oracle_data import capture, prepare_descriptor
+        from botmanager.worker import prospective_tick
+
+        from tests.test_oracle_data import START, append, archive
+        from tests.test_paper import grid
+
+        store, ledger = ManagerStore(self.home), RuntimeLedger(self.home)
+        archived_id = ledger.get(self.bot)["runtime_id"]
+        store.edit(self.bot, {"range_pct": 12}, expected_revision=1)
+        ledger.apply(self.bot)
+        source_path = self.root / "segment-oracle.sqlite3"
+        source = archive(source_path, 120)
+        spec = grid("retained-segments")
+        store.create_spec(spec)
+        data = capture(
+            prepare_descriptor(
+                source_path, capital_quote=1000, strategy_id="grid", now=START + 120
+            ),
+            now=START + 120,
+        )
+        ledger.register(spec, data)
+        HealthStore(self.home).pause(ledger.get(spec.bot_id), "pause", str(uuid4()))
+        ledger.control(spec, "start", str(uuid4()))
+        generation = ledger.claim(spec.bot_id, "segment-fixture")
+        append(source, 120, 241)
+        prospective_tick(ledger, ledger.get(spec.bot_id), generation, now=START + 241)
+        append(source, 241, 361)
+        with patch("botmanager.oracle_data.SEGMENT_BARS", 2):
+            prospective_tick(
+                ledger, ledger.get(spec.bot_id), generation, now=START + 361
+            )
+        ledger.control(spec, "stop", str(uuid4()))
+        ledger.stopped(spec.bot_id)
+        before = ledger.get(spec.bot_id)
+        self.assertIsNotNone(before["input"].get("prior_segment"))
+        create_backup(self.home, self.backup)
+        restore_backup(self.backup, self.restored)
+        restored = RuntimeLedger(self.restored)
+        self.assertEqual(before, restored.get(spec.bot_id))
+        self.assertTrue(
+            any(
+                run["runtime_id"] == archived_id and run["archived"]
+                for run in restored.history(self.bot)
+            )
+        )
+        with ledger.connection() as original_db, restored.connection() as copied_db:
+            for table in (
+                "segments",
+                "archives",
+                "requests",
+                "entry_controls",
+                "entry_pauses",
+            ):
+                old = [
+                    tuple(row)
+                    for row in original_db.execute(
+                        "SELECT * FROM " + table + " ORDER BY rowid"
+                    )
+                ]
+                copied = [
+                    tuple(row)
+                    for row in copied_db.execute(
+                        "SELECT * FROM " + table + " ORDER BY rowid"
+                    )
+                ]
+                self.assertTrue(old, table)
+                self.assertEqual(old, copied, table)

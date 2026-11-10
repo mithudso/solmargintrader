@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import shutil
 import sqlite3
@@ -203,7 +204,7 @@ def _dependencies(home):
     return sorted(set(result))
 
 
-def _quiescent(home):
+def _quiescent(home, *, now=None):
     controls = home / "controls.sqlite3"
     if controls.is_file():
         with closing(_read_db(controls)) as db:
@@ -224,9 +225,10 @@ def _quiescent(home):
                     )
     browser = home / "browser.sqlite3"
     if browser.is_file():
-        raise _error(
-            "Browser ownership quiescence is not yet verifiable; stop and reconcile through its owner."
-        )
+        from .adapters.extension import browser_quiescent
+
+        if not browser_quiescent(home, now=now):
+            raise _error("Browser ownership is not freshly stopped and reconciled.")
     path = home / "runtime.sqlite3"
     if path.is_file():
         with closing(_read_db(path)) as db:
@@ -288,7 +290,8 @@ def create_backup(home, destination):
                     "sha256": _hash(temporary / name),
                     "cutoff": _cutoff(temporary / name),
                 }
-            _quiescent(home)
+            captured_at = time.time()
+            _quiescent(home, now=captured_at)
             documents = {}
             names = (
                 [home / "research-owner.json"]
@@ -319,7 +322,7 @@ def create_backup(home, destination):
                 documents[path.name] = {"sha256": _hash(temporary / path.name)}
             manifest = {
                 "schema_version": 1,
-                "captured_at": time.time(),
+                "captured_at": captured_at,
                 "source_home": str(home),
                 "consistency": "stopped_quiescent_per_database_cutoffs",
                 "databases": databases,
@@ -394,7 +397,15 @@ def restore_backup(source, destination):
             _validate_authority(_json(source / "research-owner.json"), authority)
         elif "research-owner.json" in documents:
             raise _error("Snapshot research authority binding is absent.")
-        _quiescent(source)
+        captured_at = manifest.get("captured_at")
+        if (
+            isinstance(captured_at, bool)
+            or not isinstance(captured_at, (int, float))
+            or not math.isfinite(captured_at)
+            or captured_at <= 0
+        ):
+            raise _error("Snapshot capture cutoff is invalid.")
+        _quiescent(source, now=captured_at)
         # Existing decoders verify immutable references without starting runtime.
         store = ManagerStore(source)
         from .ledger import RuntimeLedger
