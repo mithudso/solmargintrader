@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 347
+Version: 348
+Delta: v347 to v348; record reviewed editing and independent installed acceptance before final-head delivery.
 Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
 Delta: v345 to v346; resume all remaining milestones with safe editing and Oracle coordination.
 Delta: v344 to v345; preserve merged Oracle work and the proven solbot startup/demo repair.
@@ -1141,3 +1142,12 @@ Editing must append immutable spec revisions, preserve pins, use CAS/request ded
 - M3/M4 requirements briefs and read-only reports are prepared in the active .superpowers workspace but NOT dispatched or completed. Browser/executor contract investigations active. .opencode/ is unrelated tooling state and must remain unstaged. Primary checkout and the older worktree's unrelated quickstart TOC remain untouched.
 - Postman CLI1.87.0 signed out/uninitialized in this worktree; owner search/Context Graph skipped, no signup/init/workspace publication. Orbit returned third-party previews/unrelated APIs, no suitable direct contract. Current official Jupiter docs and existing owner-selected Swap v1 contract consulted. Do not mix v2 fields or silently migrate executor.
 - Continue all remaining milestones after editing review/installed acceptance/delivery; an absent source, incomplete route history, real7-day shadow requirement or unsupported verifier is a genuine gate to report, not a reason to skip independent implementation. Final persistent Oracle interface report belongs in docs and a comment on existing Oracle task TASK1154; do not claim another chat read it.
+
+## v348 — editing source and installed acceptance ready for delivery
+
+- Product7af12d82 (initial5133c1b7, parent recordsf580dafb/8d9b473) implements manager0.3.0 edit/history/apply/schema, manager schema2/runtime schema3, immutable revisions/archives/receipt/CAS and separate saved/active identity. Original full136tests passed; after independent review found I1 stale pre-lock validation and I2 mixed read snapshots, one fix round passed117covering tests including9new deterministic races. Scoped re-review approved both; Ruff/format/diff passed. Preexisting overflow/unclosed-fixture warnings remain disclosed, not suppressed.
+- Stable regular manager0.3.0 refreshed from7af, backtester0.1.0 unchanged. Independent live-acceptance-verifier passed29checks, all21manager+49canonical Python hashes matched, fresh installed CLI/CAS/replay/worker pinning/full archive/repeated apply/old-start fencing passed. Exposed fixture retained2lots272.7338753287547USD and refused adoption. Owned daemons exit0/locksreleased. Default demo DB hashes/schema/mtime/state unchanged, still schema1/2 stopped/disarmed cursor2 zero fills/exposure. Stable private receipts copied to /Users/mitch/.local/state/solbot/releases/0.3.0 (json+md, mode0600). Socket107-byte custom-home path failed onmacOS; short/tmp fixturepassed.
+- Initial --no-build-isolation install failed BackendUnavailable setuptools.build_meta; no install change. Normal isolated wheelbuild/install thenrefresh completedexit0; pipcheck0. Endor package-risk fallback UNKNOWN because role/MCP/endorctl unavailable; no package approval claimed and no runtime dependency changed.
+- Offlinecatalog regeneration/hashcheck completed. Initial docscheck with shellpython failed95moduleimports; rerun with recorded /Users/mitch/.venvs/soltui/bin/python passed:999backtester/1402SolTUI/408extension/46mongo total2855. That was an environment mismatch, not a source fix.
+- Root handoff/quickstart and new docs/bot-manager-oracle-interface.md reflect actual editing contract, maintenance paths and still-open milestones3–8. All6remaining briefs and4read-only owner reports are preserved in active planworkspace. Do not redispatch completedM1/M2/editingimplementation.
+- Final release records/catalogcommit, push/PR/current-headCI/merge and remote/source proof remain at this checkpoint. TASK1178 staysactive until actualdelivery. Then claimTASK1109 and implementM3, continuing1110–1114; the explicit all-milestones request is NOT satisfied by this editing release. Primary/oldworktree unrelatedchanges and .opencode remainpreserved.

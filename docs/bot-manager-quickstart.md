@@ -1,11 +1,11 @@
 # Solbot: the working commands and what they actually do
 
 Version: 1.0.1
-Delta: Add immutable editing, history, schema inspection and explicit safe application in manager0.3.0.
+Delta: Add immutable editing, history, schema inspection and explicit safe application in manager 0.3.0.
 Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine.
 
 `solbot` is a command-line program. It does not open a menu. Version 0.2.1 prints
-help when run without arguments. Version0.3.0 adds editing. Ordinary commands print JSON; `ok: true` means
+help when run without arguments. Version 0.3.0 adds editing. Ordinary commands print JSON; `ok: true` means
 the command succeeded, not that a trading worker is alive.
 
 **What works today:** saved bot drafts with defaults, guarded existing-owner

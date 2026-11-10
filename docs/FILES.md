@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `a14f9213` (2026-11-10T02:07:12+00:00). 2869 tracked files, 63.2 MB.
+**Generated** from `index/INDEX.json` at commit `7af12d82` (2026-11-10T03:27:00+00:00). 2873 tracked files, 63.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2523 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 403/447 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2525 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 404/450 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (162 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 114 files
+- [`docs`](#docs) — 115 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1927 files
 - [`research`](#research) — 206 files
@@ -46,7 +46,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
-- [`botmanager`](#botmanager) — 33 files
+- [`botmanager`](#botmanager) — 36 files
 - [`executor`](#executor) — 44 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
@@ -211,9 +211,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1123 lines · 213,156 B · description: **extracted**
+`doc` · 1154 lines · 220,565 B · description: **extracted**
 
-**Purpose.** Version: 345 Delta: v344 to v345; preserve merged Oracle work and the proven solbot startup/demo repair. Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch.
+**Purpose.** Version: 348 Delta: v347 to v348; record reviewed editing and independent installed acceptance before final-head delivery. Delta: v346 to v347; preserve remaining milestone preflights and active editing verification.
 
 **Use.** Read it.
 
@@ -227,9 +227,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1503 lines · 88,567 B · description: **extracted**
+`doc` · 1522 lines · 89,028 B · description: **extracted**
 
-**Purpose.** Version: 170 Delta: v169 to v170; preserve the owner usability request and merged Oracle request history. Delta: v167 to v168; record the failed-startup report and requested working demonstration.
+**Purpose.** Version: 171 Delta: v170 to v171; record editing, Oracle UI handoff and explicit all-milestones scope. Delta: v169 to v170; preserve the owner usability request and merged Oracle request history.
 
 **Use.** Read it.
 
@@ -255,7 +255,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-114 files.
+115 files.
 
 #### `docs/API.md`
 
@@ -339,7 +339,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27858 lines · 1,437,377 B · description: **extracted**
+`doc` · 28129 lines · 1,446,422 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -475,7 +475,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-handoff.md`
 
-`doc` · 637 lines · 63,315 B · description: **extracted**
+`doc` · 690 lines · 68,269 B · description: **extracted**
 
 **Purpose.** Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes. The standalone application is installed as `solbot`.
 
@@ -497,11 +497,19 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/bot-manager-oracle-interface.md`
+
+`doc` · 188 lines · 12,924 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0 Delta: Initial consumer contract for immutable editing over the delivered M1/M2 runtime. Owner request: complete all remaining milestones, add editing and report the result to Oracle for a visual interface.
+
+**Use.** Read it.
+
 #### `docs/bot-manager-quickstart.md`
 
-`doc` · 122 lines · 5,857 B · description: **extracted**
+`doc` · 176 lines · 8,563 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine. help when run without arguments. Ordinary commands print JSON; `ok: true` means
+**Purpose.** Version: 1.0.1 Delta: Add immutable editing, history, schema inspection and explicit safe application in manager 0.3.0. Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine.
 
 **Use.** Read it.
 
@@ -1125,9 +1133,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/superpowers/plans/2026-11-09-bot-manager.md`
 
-`doc` · 167 lines · 22,319 B · description: **extracted**
+`doc` · 180 lines · 24,655 B · description: **extracted**
 
-**Purpose.** Version: 1.0.3 Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance. Delta: v1.0.1 to v1.0.2; record approved implementation and delivered milestone1.
+**Purpose.** Version: 1.0.4 Delta: v1.0.3 to v1.0.4; add owner-requested revision editing before milestone3, record delivered milestone2 and preserve the explicit all-remaining-milestones scope. Delta: v1.0.2 to v1.0.3; record verified milestone2 source and installed acceptance.
 
 **Use.** Read it.
 
@@ -1193,9 +1201,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/superpowers/specs/2026-11-09-bot-manager-design.md`
 
-`doc` · 205 lines · 34,027 B · description: **extracted**
+`doc` · 216 lines · 36,398 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; make the first paper runtime independently buildable after builder review. Status: proposed architecture; design and planning delivered, product not implemented.
+**Purpose.** Version: 1.0.2 Delta: v1.0.1 to v1.0.2; record subsequent owner implementation approval and the immutable editing/adoption contract without relabelling historical design observations. Delta: v1.0.0 to v1.0.1; make the first paper runtime independently buildable after builder review.
 
 **Use.** Read it.
 
@@ -25371,7 +25379,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## botmanager
 
-33 files.
+36 files.
 
 #### `botmanager/.gitignore`
 
@@ -25383,9 +25391,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/README.md`
 
-`doc` · 474 lines · 29,286 B · description: **extracted**
+`doc` · 556 lines · 34,621 B · description: **extracted**
 
-**Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. The current runnable strategy is grid against recorded input; no edit command, prospective Jupiter trading or learning is implemented yet.
+**Purpose.** Running bare `solbot` now prints help and concrete next steps. It is a command-line program, not an interactive menu. The current runnable strategy is grid against recorded input. Saved settings support explicit editing and stopped-run adoption;
 
 **Use.** Read it.
 
@@ -25417,7 +25425,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/cli.py`
 
-`code-python` · 66 lines · 2,459 B · description: **extracted**
+`code-python` · 66 lines · 2,469 B · description: **extracted**
 
 **Purpose.** Parse, dispatch, render, and select an exit code; no application logic.
 
@@ -25427,11 +25435,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/config.py`
 
-`code-python` · 298 lines · 10,023 B · description: **extracted**
+`code-python` · 364 lines · 12,625 B · description: **extracted**
 
 **Purpose.** Typed constructor snapshots, with exact-context learned-default adoption.
 
-**Contents.** Defines `SOURCE_REVISION`, `SOL_MINT`, `USDC_MINT`, `STRATEGY_VERSIONS`, `MODELS`, `DEFAULT_CONTEXT`, `COMMON`, `DEFAULTS`, `SOURCE_FILES`, `SHARED_PROTECTED_FIELDS` and 4 more.
+**Contents.** Defines `SOURCE_REVISION`, `SOL_MINT`, `USDC_MINT`, `STRATEGY_VERSIONS`, `MODELS`, `DEFAULT_CONTEXT`, `COMMON`, `DEFAULTS`, `SOURCE_FILES`, `SHARED_PROTECTED_FIELDS` and 9 more.
 
 **Use.** `import botmanager.src.botmanager.config`
 
@@ -25447,7 +25455,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/domain.py`
 
-`code-python` · 279 lines · 9,767 B · description: **extracted**
+`code-python` · 328 lines · 11,784 B · description: **extracted**
 
 **Purpose.** Versioned immutable specifications; no owner imports or state access.
 
@@ -25457,13 +25465,23 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/ledger.py`
 
-`code-python` · 695 lines · 28,823 B · description: **extracted**
+`code-python` · 1224 lines · 50,673 B · description: **extracted**
 
-**Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The immutable specification database remains version 1. This separate journal has its own version and must be included in backups with the specifications.
+**Purpose.** Transactional intent, generation fencing and reference-paper fill ledger. The specification database and this separate runtime journal has its own version and must be included in backups with the specifications.
 
 **Contents.** Defines `RESTART_DELAYS`, `FAILURE_WINDOW`, `MAX_ACTIVE`, `MAX_INSTANCES`, `MAX_REQUESTS`, `STOP_RECEIPT_RESERVE`, `INTEGRITY_ERRORS`, `class RuntimeLedger`.
 
 **Use.** `import botmanager.src.botmanager.ledger`
+
+#### `botmanager/src/botmanager/mutations.py`
+
+`code-python` · 283 lines · 9,799 B · description: **extracted**
+
+**Purpose.** Serialized saved-spec mutations and attributable, replay-only receipts.
+
+**Contents.** Defines `MAX_MUTATIONS`, `request_identity()`, `check_revision()`, `mutation_lock()`, `request_body()`, `mutation_result()`, `save_mutation()`, `validate_tables()`, `_validate_acceptance()`, `replay_mutation()`.
+
+**Use.** `import botmanager.src.botmanager.mutations`
 
 #### `botmanager/src/botmanager/receipts.py`
 
@@ -25477,11 +25495,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/registry.py`
 
-`code-python` · 459 lines · 15,134 B · description: **extracted**
+`code-python` · 631 lines · 20,921 B · description: **extracted**
 
 **Purpose.** One application registry, shared by CLI and future local transports.
 
-**Contents.** Defines `class CommandContext`, `class CommandSpec`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()`, `_external()`, `_discover()` and 16 more.
+**Contents.** Defines `class CommandContext`, `class CommandSpec`, `_store()`, `_identity()`, `_settings()`, `_create()`, `_list()`, `_config()`, `_edit()`, `_history()` and 21 more.
 
 **Use.** `import botmanager.src.botmanager.registry`
 
@@ -25497,17 +25515,17 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/status.py`
 
-`code-python` · 502 lines · 20,204 B · description: **extracted**
+`code-python` · 563 lines · 22,826 B · description: **extracted**
 
 **Purpose.** Pure, versioned draft views; configuration is never a runtime observation.
 
-**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `_evidence()`, `draft_snapshot()`, `legacy_snapshot()`, `runtime_snapshot()`.
+**Contents.** Defines `STATUS_SCHEMA_VERSION`, `RUNTIME_UNAVAILABLE`, `ACTION_SEMANTICS`, `unavailable()`, `_evidence()`, `draft_snapshot()`, `legacy_snapshot()`, `_editing_status()`, `runtime_snapshot()`.
 
 **Use.** `import botmanager.src.botmanager.status`
 
 #### `botmanager/src/botmanager/store.py`
 
-`code-python` · 262 lines · 9,672 B · description: **extracted**
+`code-python` · 591 lines · 23,902 B · description: **extracted**
 
 **Purpose.** Local SQLite ledger. Constructing a store and reading absent state are inert.
 
@@ -25589,11 +25607,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/strategies/grid.py`
 
-`code-python` · 167 lines · 5,809 B · description: **extracted**
+`code-python` · 171 lines · 5,948 B · description: **extracted**
 
 **Purpose.** Bounded prefix replay of the canonical ladder; no copied trading algorithm.
 
-**Contents.** Defines `_configuration()`, `run_identity()`, `validate_checkpoint()`, `evaluate()`. Depends on `backtester`.
+**Contents.** Defines `MAX_REFERENCE_RUNGS`, `MAX_REFERENCE_RANGE_PCT`, `REFERENCE_BAR_SECONDS`, `_configuration()`, `run_identity()`, `validate_checkpoint()`, `evaluate()`. Depends on `backtester`.
 
 **Use.** `import botmanager.src.botmanager.strategies.grid`
 
@@ -25609,7 +25627,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_cli.py`
 
-`test` · 105 lines · 4,106 B · description: **none**
+`test` · 105 lines · 4,102 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -25626,6 +25644,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `learned()`, `class ConfigTests`.
 
 **Use.** `python3 -m pytest botmanager/tests/test_config.py -q`
+
+#### `botmanager/tests/test_editing.py`
+
+`test` · 621 lines · 25,935 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class EditingTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_editing.py -q`
 
 #### `botmanager/tests/test_legacy.py`
 
@@ -25647,6 +25675,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 -m pytest botmanager/tests/test_paper.py -q`
 
+#### `botmanager/tests/test_read_consistency.py`
+
+`test` · 288 lines · 11,683 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ReadConsistencyTests`.
+
+**Use.** `python3 -m pytest botmanager/tests/test_read_consistency.py -q`
+
 #### `botmanager/tests/test_receipts.py`
 
 `test` · 189 lines · 7,723 B · description: **none**
@@ -25659,7 +25697,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_recovery.py`
 
-`test` · 564 lines · 25,492 B · description: **none**
+`test` · 566 lines · 25,593 B · description: **none**
 
 **Purpose.** _No description available._
 

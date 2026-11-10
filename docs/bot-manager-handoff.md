@@ -1,10 +1,10 @@
 # Standalone Solbot manager: implementation and operations handoff
 
 - Version: 1.0.2
-- Delta: Document manager0.3.0 immutable editing, safe application, schema/history and separate saved/active configuration identity.
+- Delta: Document manager 0.3.0 immutable editing, safe application, schema/history and separate saved/active configuration identity.
 - Delta: Add the executed default-home demonstration and 0.2.1 usable-startup quickstart.
 - Reviewed: 2026-11-09, America/New_York. Runtime observations are a snapshot, not a monitoring feed.
-- Product baseline: remote master commit `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
+- Product source baseline: `7af12d82f4e9b8eb04262e9636487f4751730d1d` for manager 0.3.0; prior M2 delivery is merge `2810f4b23cbd7842dcf03924608e7cb758836ee8`.
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
@@ -12,7 +12,7 @@ The standalone application is installed as `solbot`. It saves and edits immutabl
 
 For the shortest working instructions and the bot actually run on this machine,
 start with `/Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md`.
-Version0.2.1 made bare invocation show useful help. Version0.3.0 adds `edit`,
+Version 0.2.1 made bare invocation show useful help. Version 0.3.0 adds `edit`,
 `history`, `apply` and `schema`; it does not certify new trading capability.
 The retained default-home demonstration below remains unchanged.
 
@@ -382,8 +382,8 @@ All manager paths below follow `SOLBOT_HOME`; the listed paths are the default h
 
 | Path | Schema/role | Preservation rule |
 | --- | --- | --- |
-| `/Users/mitch/.config/solbot/manager.sqlite3` | Schema2 on an authorized writer; immutable specification versions, latest index, events and mutation receipts | Schema1 remains readable without migration; preserve every prior body and pin |
-| `/Users/mitch/.config/solbot/runtime.sqlite3` | Schema3 on an authorized writer; pinned runs/input, complete archived runs, adoption receipts, fills, checkpoints, generations and controls | Schemas1/2 remain readable without migration; preserve cursor, lots and all accepted request IDs |
+| `/Users/mitch/.config/solbot/manager.sqlite3` | Schema 2 on an authorized writer; immutable specification versions, latest index, events and mutation receipts | Schema 1 remains readable without migration; preserve every prior body and pin |
+| `/Users/mitch/.config/solbot/runtime.sqlite3` | Schema 3 on an authorized writer; pinned runs/input, complete archived runs, adoption receipts, fills, checkpoints, generations and controls | Schemas 1/2 remain readable without migration; preserve cursor, lots and all accepted request IDs |
 | `/Users/mitch/.config/solbot/controls.sqlite3` | Schema 2; external-owner pending/outcome receipts | Preserve uncertainty and request bindings across restarts |
 | `/Users/mitch/.config/solbot/mutation.lock` | Cross-process configuration edit/application lock | Stop does not require this lock or consume mutation quota |
 | `/Users/mitch/.config/solbot/supervisor.lock` | Lifetime home lock | File existence alone does not mean lock held |
@@ -499,6 +499,36 @@ The snippet is a copy primitive, not an automatic quiesce/restore/migration syst
 | `service_unavailable` with retained definition | Registration/removal could not be confirmed | Inspect the exact service identity and reconcile; do not claim all workers stopped |
 
 ## 9. Verification and bugs caught before delivery
+
+### Editing extension evidence
+
+The initial full manager suite passed 136 tests. Independent review then reproduced
+two concurrency faults: pre-lock cross-field validation could reject a valid
+latest-spec delta, and separate journal reads could mix saved/active revisions.
+The fix moved merged validation inside the serialized write and added bounded
+coherent inventory/runtime capture. The 117-test covering run, including 9 new
+deterministic race regressions, passed; scoped re-review approved both fixes.
+Ruff, formatting and whitespace checks passed. Final-head repository CI remains
+the delivery gate rather than being inferred from those local checks.
+
+Independent installed acceptance passed 29 observations with all 21 manager and
+49 canonical Python files matching reviewed source. It verified fresh-process
+editing, concurrent CAS, exact historical replay, active-worker pinning, complete
+archival application, repeated-application progress preservation and old-start
+receipt fencing. An exposed stopped fixture retained 2 lots and 272.7338753287547 USD
+of simulated exposure; adoption refused without altering its checkpoint.
+Owned daemons exited 0 and all locks released. These are isolated reference-paper
+fixtures, not Jupiter execution or profitability evidence.
+
+Read-only installed status/history/schema checks left the retained default demo's
+file hashes, sizes, mtimes, schema versions and state unchanged: manager schema 1,
+runtime schema 2, stopped/disarmed,2 bars, 0 fills/exposure. Only explicit future
+writes may migrate it. The stable acceptance artifacts are
+`/Users/mitch/.local/state/solbot/releases/0.3.0/editing-installed-acceptance.json`
+and `/Users/mitch/.local/state/solbot/releases/0.3.0/editing-installed-acceptance.md`.
+macOS refused a 107-byte Unix socket path in the first fixture; the shorter
+isolated home passed. Use a short local `SOLBOT_HOME` if a custom path exceeds
+the platform socket limit.
 
 ### M1 evidence
 

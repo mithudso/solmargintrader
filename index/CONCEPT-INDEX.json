@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T02:07:12+00:00",
+  "generatedAt": "2026-11-10T03:27:03+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1662,
+      "matchingFiles": 1663,
       "shown": 30,
       "files": [
         {
@@ -143,7 +143,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 32
+          "hits": 33
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1396,
+      "matchingFiles": 1398,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1346,
+      "matchingFiles": 1347,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 732,
+      "matchingFiles": 735,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 640,
+      "matchingFiles": 643,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 514,
+      "matchingFiles": 516,
       "shown": 30,
       "files": [
         {
@@ -1003,7 +1003,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 203
+          "hits": 262
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -1027,7 +1027,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 110
+          "hits": 122
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -1106,12 +1106,12 @@
           "hits": 47
         },
         {
-          "path": "soltui/jupiter_manual.py",
-          "hits": 43
+          "path": "prompts.md",
+          "hits": 46
         },
         {
-          "path": "prompts.md",
-          "hits": 42
+          "path": "soltui/jupiter_manual.py",
+          "hits": 43
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1260,7 +1260,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 355,
+      "matchingFiles": 356,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 250,
+      "matchingFiles": 251,
       "shown": 30,
       "files": [
         {

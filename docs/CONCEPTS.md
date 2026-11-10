@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-10T02:07:12+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-10T03:27:00+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1662 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1663 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,11 +36,11 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1662`
+Full list: `python3 index/search.py --concept risk-rails -n 1663`
 
 ### Cost model
 
-`costs` · **1396 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
+`costs` · **1398 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
 
 Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.
 
@@ -55,7 +55,7 @@ Strongest files:
 - `backtester/tests/test_engine.py` (58 hits)
 - `backtester/core/engine.py` (55 hits)
 
-Full list: `python3 index/search.py --concept costs -n 1396`
+Full list: `python3 index/search.py --concept costs -n 1398`
 
 ### Lookahead and fill timing
 
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept lookahead -n 1380`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1346 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1347 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
@@ -93,11 +93,11 @@ Strongest files:
 - `research/results/minute_sweep_x1_common.txt` (54 hits)
 - `docs/SCRIPTS.md` (50 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1346`
+Full list: `python3 index/search.py --concept transfer -n 1347`
 
 ### Grid trading
 
-`grid` · **640 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **643 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -112,7 +112,7 @@ Strongest files:
 - `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (125 hits)
 
-Full list: `python3 index/search.py --concept grid -n 640`
+Full list: `python3 index/search.py --concept grid -n 643`
 
 ### Data integrity
 
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 583`
 
 ### On-chain execution reality
 
-`execution-onchain` · **514 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **516 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -143,14 +143,14 @@ Strongest files:
 
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (203 hits)
+- `docs/FILES.md` (263 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `soltui/tui.py` (141 hits)
 - `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
 - `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (124 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 514`
+Full list: `python3 index/search.py --concept execution-onchain -n 516`
 
 ### Buy-and-hold benchmark
 
@@ -173,7 +173,7 @@ Full list: `python3 index/search.py --concept benchmark -n 322`
 
 ### Evidence floor
 
-`evidence-floor` · **250 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **251 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 250`
+Full list: `python3 index/search.py --concept evidence-floor -n 251`
 
 ### Combinatorial purged cross-validation
 
@@ -257,9 +257,9 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 732 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `trend` | 735 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 464 | `rsi`, `stochastic`, `oscillator` |
-| `momentum` | 355 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `momentum` | 356 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 323 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `baseline` | 271 | `buy_and_hold`, `baseline` |
 | `breakout` | 240 | `breakout`, `bb_breakout`, `keltner` |
