@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 356
+Version: 358
+Delta: v357 to v358; integrate explicit provider/cost policy and isolated manual referral swap.
+Delta: v356 to v357; begin operational control plane and user-confirmed forward accounting.
 Delta: v355 to v356; record accepted INT1/INT2 fixes before refreshed installation and final-head checks.
 Delta: concurrent histories to v355; preserve editing and PR187 Basic Memory records without changing application source.
 Delta: v353 to v354; record merge-aware docs gate success before combined integration commit.
@@ -1266,3 +1268,25 @@ Incoming65ad42ce PR187 changes only memory/prompts/threeindexes; preserveitsBasi
 Scoped integration re-review approves both INT1 and INT2 at c48e2e7b; zero new blockers. Runtime4 preserves immutable legacy sequence provenance and derives reused-ID fingerprint metadata; an unchanged first event cannot hide anotherbot's reused laterIDs. GLOBAL_ARGUMENTS nowdrivesparser/context/schema.105coveringtests passed; no source suite rerun byreviewer. PriorI1/I2 closed;M1 warningsdeferred.
 
 PR187 metadata-only65ad merge is resolved with both memory/prompt bodies intact (prompts176). Application source remains identical to reviewedc48. Parent finalofflinegeneration/hash/docs/whitespace gate, combinedmetadata mergecommit/push, source-currentCI and freshstablemanager/ecosystem0.1.2 installation/independentacceptance remain. Do not claim integratedinstalled state untilnewreceipt. ThenmergeLAST,verifyremotecontent,close1178andcontinue1109–1114.
+
+
+## v357 — operational control room implementation
+
+TASK-1194 owns this request in /Users/mitch/dev/solmargintrader-wt-control-01a1c228, branch agent-control-01a1c228 from13525f2a. The original checkout is held by another live session and contains unrelated untracked files. Preserve it. TASK-1109 owns manager milestone3; do not edit manager core or strategy adapters. Reuse the merged immutable editing/owner dispatch API and advertise current capabilities.
+
+The user requests server action buttons and observability; config-based bot launches and lifecycle progress; per-coin historical and current results; explicit forward-test profit measurement and recording controls; selected Oracle voters with prominent aggregate strength; and a complete source-linked wiki. The user confirmed P&L recording ON by default. Disable only new paper accounting entries, retain source evidence and prior entries, and report unknown profitability over gaps. Native forward net_return includes costs, trial calls do not overlap, and native net_pct is a fraction. Each trial is its own virtual account, not shared allocated capital. Require resolved economics before claiming break-even or profit.
+
+Root owns durable action backend/HTTP integration, research config orchestration, packaging, verification and delivery. Parallel workers own UI assets, wiki snapshots and performance/vote projections. The recall specialist failed because its configured model is unavailable; root used direct named-node reads instead. Existing decision KNOW-361 requires explicit paper/modelled labels on financial figures.
+
+Plan: identify and preserve owners; implement authenticated idempotent controls and evidence views; integrate configuration and wiki UI; verify source/security/accounting/restart and installed browser behavior; deliver through final-head CI/merge. No live order path, signing custody, competing recorder or paused indexing changes.
+
+
+## v358 — controls, economics and swap integration
+
+Implemented durable same-origin action receipts, scoped research launches and child-run lookup, shared-recorder recovery limits, Oracle pause/restart preferences, per-trial forward accounting policies, read-only selected-voter views, compiled wiki and UI controls. Unit checks exposed and repaired credential-field omissions, launch validation after mutation and non-atomic schema DDL. An independent verifier found limited run lookup and child-only recorder recovery policy; both are repaired. Child runs share family recorder recovery policy. External owners can still recover the global recorder, and the UI must say so.
+
+The user's added requirement separates quote source from swap provider. New experiments freeze swap_provider plus explicit modelled base/referral/slippage/borrow assumptions; the native F5 settings use base plus referral exactly once. Market quotes remain explicitly Coinbase USD reference data. This is a configured paper scenario, not verified Jupiter spot fees, market availability or live execution. Existing owner's F5 accounting model remains unchanged.
+
+The manual swap page uses a separate loopback origin so third-party Jupiter SDK code cannot access control-plane session nonces. It loads only on a manual click and uses wallet approval in the browser, never server signing. Public referral accounts come from KNOW-1062. Published Swap API fees require50–255bps, while the retained default is10bps. The user was asked whether to retain10 requiring an explicit fee change or choose50. Until answered, retain10 and refuse SDK loading at unsupported fees. No fee increase, wallet connection or transaction is authorized automatically.
+
+Wiki currently compiles1861 tracked documents with hashes and original source locations. JSON snapshot assets must be packaged, installer-fingerprinted and checked by their own generator; exclude those duplicate generated bodies from generic indexing. Remaining: final root log adapter, UI/backend integration checks, selected-voter MCP transport, docs and wiki rebuild, immutable0.2.0 installation, actual browser/action lifecycle acceptance, then final-head delivery.

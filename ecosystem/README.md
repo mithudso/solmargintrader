@@ -1,18 +1,29 @@
-# Paper ecosystem bootstrap 0.1.2
+# Paper ecosystem control room 0.2.0
 
-`python3 scripts/bootstrap_ecosystem.py start` installs and verifies the headless
-research stack, downloads the configured 14-coin history, freezes all 34 strategy
-cells per coin, then uses the existing F5 owner for backtesting and prospective
-forward testing. Oracle evaluates genuine per-coin observations while the
-supervisor maintains stable external bot registrations. Its local control room
-reuses the accepted design and shows owner-derived matrix, Oracle, lifecycle and
-manager telemetry. Native manager journals are mirrored incrementally with
-redaction and provenance. No live arming or orders are available.
+The headless service coordinates the existing F5 Backtester, prospective forward
+trials, per-instrument Oracle archives and Bot Manager. Its independent local
+control room remains available when a pipeline stops. It provides scoped action
+buttons, configuration launches, stage progress, per-coin costed paper results,
+versioned P&L recording and voter policies, source-linked documentation and an
+isolated manual Jupiter swap page.
 
-The explicit `costed-shadow-v1` research policy evaluates raw strategy signals
-with trading costs by default (`research_min_confidence=0`). It does not change
-another experiment or any live execution setting. The frozen policy is part of
-each batch and registration's evidence.
+Run `python3 scripts/bootstrap_ecosystem.py start` from a clean source checkout,
+or use the installed `solecosystem` and `solecosystem-ui` commands. Setup verifies
+five installed packages, both strategy catalogs and actual MCP transport. Existing
+completed environments stay immutable; new releases use a new versioned environment.
 
-See `docs/ECOSYSTEM-BOOTSTRAP.md` in the repository for exact commands, resume and
-stop behavior, receipts, supported sources, partial-coverage semantics and gates.
+All automated research and manager controls remain paper/disarmed. Oracle has no
+order path. Forward P&L uses source-resolved, non-overlapping virtual trials with
+costs already included. Missing outcomes, incomplete economics or disabled
+recording periods do not establish profitability. Each trial has independent
+configured capital, not a shared portfolio allocation.
+
+Market-data venue and intended swap provider are separate. A configured Jupiter
+cost scenario is not a verified executable quote or certified historical spot
+execution model. Manual wallet swaps use Jupiter's separate browser interface;
+no server key, signing or submission method is exposed.
+
+See `docs/ECOSYSTEM-CONTROL-ROOM.md`, `docs/ECOSYSTEM-BOOTSTRAP.md`,
+`docs/ECOSYSTEM-WIKI.md` and `docs/ECOSYSTEM-SWAPS.md` for operating contracts,
+limits, exact commands and evidence. The packaged wiki provides all component
+documentation with original file locations and content hashes.

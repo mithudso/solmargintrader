@@ -1,4 +1,4 @@
-# Oracle 0.2.0
+# Oracle 0.2.1
 
 Oracle is a local shadow signal service, defaulting to SOL/USDC. Explicit
 `--instrument BTC/USD` (or another supported symbol/quote) binds each archive,
@@ -182,3 +182,12 @@ integrity, vote boundaries, malformed feeds, secret redaction, real SDK stdio
 round trips, subscription isolation, timeouts and teardown. Tests do not establish
 a profitable edge, verified upstream Jupiter event time, an authenticated live
 account, or enforced execution veto.
+
+
+The controller integration adds an inert archive reader and selected-voter MCP
+views. Exact `home/oracle/ASSET/history.sqlite3` archives bind to their control
+home automatically; `--control-home /absolute/home` makes that binding explicit.
+Tools, resources, subscriptions and advisory veto use the same operator selection.
+Missing required selection adapters fail unavailable. Forecasts, resolutions and
+the four-file engine policy identity remain unchanged. See
+`docs/ECOSYSTEM-CONTROL-ROOM.md` for current operating commands and scope.

@@ -1,4 +1,4 @@
-"""Read-only, loopback control room over the existing ecosystem owners.
+"""Local paper controls and observability over the established ecosystem owners.
 
 ``make_server`` binds before returning. The caller owns serving and shutdown, so
 the supervisor can publish the actual ephemeral port without claiming liveness
@@ -10,15 +10,19 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
+import secrets
+import sqlite3
 import sys
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from ecosystem import registration, runner
+from ecosystem import __version__, registration, runner
 
 SCHEMA_VERSION = 1
 STATIC = {
@@ -64,6 +68,14 @@ class ControlRoomServer(ThreadingHTTPServer):
     block_on_close = False
     allow_reuse_address = False
 
+    def server_close(self):
+        if hasattr(self, "controls"):
+            self.controls.close()
+        if getattr(self, "swap_server", None) is not None:
+            self.swap_server.shutdown()
+            self.swap_server.server_close()
+        super().server_close()
+
 
 def make_server(
     home: str | Path,
@@ -71,9 +83,9 @@ def make_server(
     *,
     port: int = 8768,
 ) -> ThreadingHTTPServer:
-    """Bind a read-only HTTP server to 127.0.0.1; port 0 chooses a free port.
+    """Bind paper controls to loopback, retaining strict origin isolation.
 
-    GET/HEAD expose only bundled assets and owner-derived JSON. Host and Origin
+    GET/HEAD expose bundled assets and owner-derived JSON. Host and Origin
     checks defend against DNS rebinding and cross-site reads. No CORS is enabled.
     Missing or unreadable owner data returns an explicit unavailable response.
     """
@@ -85,6 +97,12 @@ def make_server(
     )
     assets = Path(__file__).with_name("web")
     started = time.monotonic()
+    csrf_nonce = secrets.token_urlsafe(32)
+    swap_lock = threading.Lock()
+
+    from .control import ControlPlane
+
+    controls = ControlPlane(home, manager_home)
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.0"
@@ -110,7 +128,7 @@ def make_server(
                 "Content-Security-Policy",
                 "default-src 'self'; script-src 'self'; style-src 'self'; "
                 "connect-src 'self'; img-src 'self'; object-src 'none'; "
-                "base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
+                "base-uri 'none'; frame-ancestors 'none'; form-action 'none'; frame-src http://127.0.0.1:*",
             )
             self.end_headers()
             if self.command != "HEAD":
@@ -166,7 +184,19 @@ def make_server(
                     target.query, keep_blank_values=True, strict_parsing=True
                 )
                 if (
-                    target.path not in ("/api/registrations", "/api/telemetry")
+                    target.path
+                    not in (
+                        "/api/status",
+                        "/api/control",
+                        "/api/registrations",
+                        "/api/telemetry",
+                        "/api/actions",
+                        "/api/analytics",
+                        "/api/oracle",
+                        "/api/wiki",
+                        "/api/wiki/page",
+                        "/api/logs",
+                    )
                     and query
                 ):
                     raise ValueError
@@ -180,7 +210,12 @@ def make_server(
                         200,
                         {
                             "status": "listening",
-                            "read_only": True,
+                            "read_only": False,
+                            "scope": "paper_controls",
+                            "orders_available": False,
+                            "control_instance": self.server.control_instance,
+                            "control_home": str(home),
+                            "ecosystem_version": __version__,
                             "bind": "127.0.0.1",
                             "port": self.server.server_address[1],
                             "uptime_seconds": round(time.monotonic() - started, 3),
@@ -188,9 +223,125 @@ def make_server(
                         },
                     )
                 elif target.path == "/api/status":
-                    self._json(200, runner.status(home))
+                    values = self._query(query, {"run_id"})
+                    self._json(
+                        200,
+                        runner.status(controls.experiment_home(values.get("run_id"))),
+                    )
+                elif target.path == "/api/session":
+                    self._json(
+                        200,
+                        {
+                            "csrf_nonce": csrf_nonce,
+                            "scope": "paper_controls",
+                            "expires_when": "server_restart",
+                        },
+                    )
+                elif target.path == "/api/control":
+                    values = self._query(query, {"run_id"})
+                    snapshot = controls.snapshot(values.get("run_id"))
+                    snapshot["servers"].insert(
+                        0,
+                        {
+                            "id": "control",
+                            "label": "Control server",
+                            "owner": "ecosystem.web",
+                            "state": "running",
+                            "running": True,
+                            "pid": os.getpid(),
+                            "version": __version__,
+                            "heartbeat_at": time.time(),
+                            "uptime_seconds": time.monotonic() - started,
+                            "actions": [],
+                        },
+                    )
+                    self._json(200, snapshot)
+                elif target.path == "/api/openapi":
+                    self._send(
+                        200,
+                        Path(__file__)
+                        .with_name("api")
+                        .joinpath("control.openapi.json")
+                        .read_bytes(),
+                        "application/json",
+                    )
+                elif target.path == "/api/logs":
+                    from .observability import logs
+
+                    values = self._query(query, {"server", "limit", "run_id"})
+                    self._json(
+                        200,
+                        logs(
+                            controls.experiment_home(values.get("run_id")),
+                            values.get("server", "pipeline"),
+                            limit=int(values.get("limit", "100")),
+                            manager_home=manager_home,
+                        ),
+                    )
+                elif target.path == "/api/actions":
+                    values = self._query(query, {"id"})
+                    self._json(200, controls.actions(values.get("id")))
+                elif target.path == "/api/analytics":
+                    from .performance import report
+
+                    values = self._query(query, {"bot_id", "run_id"})
+                    self._json(
+                        200,
+                        report(
+                            controls.experiment_home(values.get("run_id")),
+                            values.get("bot_id"),
+                        ),
+                    )
+                elif target.path == "/api/oracle":
+                    from .votes import report
+
+                    values = self._query(query, {"instrument", "run_id"})
+                    self._json(
+                        200,
+                        report(
+                            controls.experiment_home(values.get("run_id")),
+                            values.get("instrument", "SOL/USD"),
+                        ),
+                    )
+                elif target.path in {"/api/wiki", "/api/wiki/page"}:
+                    from . import wiki
+
+                    values = self._query(
+                        query,
+                        {"id"}
+                        if target.path.endswith("/page")
+                        else {"q", "limit", "offset"},
+                    )
+                    if target.path.endswith("/page"):
+                        result = wiki.page(values.get("id", ""))
+                    else:
+                        result = wiki.catalog(
+                            values.get("q", ""),
+                            int(values.get("limit", "100")),
+                            int(values.get("offset", "0")),
+                        )
+                    self._json(200, result)
+                elif target.path == "/api/swap":
+                    from . import swap_web, swaps
+
+                    with swap_lock:
+                        if self.server.swap_server is None:
+                            child = swap_web.make_server(port=0)
+                            thread = threading.Thread(
+                                target=child.serve_forever, daemon=True
+                            )
+                            thread.start()
+                            self.server.swap_server = child
+                    self._json(
+                        200,
+                        {
+                            "url": f"http://127.0.0.1:{self.server.swap_server.server_port}",
+                            "config": swaps.config(),
+                            "scope": "manual_wallet_swap",
+                        },
+                    )
                 elif target.path == "/api/registrations":
-                    if set(query) - {"limit", "after"} or any(
+                    if set(query) - {"limit", "after", "run_id"} or any(
                         len(values) != 1 for values in query.values()
                     ):
                         raise ValueError
@@ -205,7 +356,11 @@ def make_server(
                         raise ValueError
                     self._json(
                         200,
-                        registration.read_registrations(home, limit=limit, after=after),
+                        registration.read_registrations(
+                            controls.experiment_home(query.get("run_id", [None])[0]),
+                            limit=limit,
+                            after=after,
+                        ),
                     )
                 elif target.path == "/api/telemetry":
                     if set(query) - {"limit", "after"} or any(
@@ -228,7 +383,7 @@ def make_server(
                     )
                 else:
                     self._json(404, error="not_found")
-            except ValueError:
+            except (ValueError, TypeError):
                 self._json(400, error="invalid_request_or_owner_data")
             except (OSError, ImportError, RuntimeError):
                 self._json(503, error="owner_data_unavailable")
@@ -236,13 +391,72 @@ def make_server(
                 # Owner exceptions never become an HTTP traceback or raw log.
                 self._json(503, error="owner_data_unavailable")
 
+        def _query(self, query, allowed):
+            if set(query) - allowed or any(
+                len(values) != 1 for values in query.values()
+            ):
+                raise ValueError("invalid_query")
+            return {key: values[0] for key, values in query.items()}
+
+        def do_POST(self):
+            if not self._authorized():
+                return
+            if self.path != "/api/actions":
+                self._json(404, error="not_found")
+                return
+            if self.headers.get(
+                "Origin"
+            ) != f"http://{self.headers.get('Host')}" or not secrets.compare_digest(
+                self.headers.get("X-Sol-CSRF", ""), csrf_nonce
+            ):
+                self._json(403, error="control_session_required")
+                return
+            sizes = self.headers.get_all("Content-Length", [])
+            if (
+                self.headers.get("Transfer-Encoding")
+                or len(sizes) != 1
+                or not re.fullmatch(r"[1-9][0-9]{0,5}", sizes[0])
+                or int(sizes[0]) > 65536
+                or self.headers.get("Content-Type", "").split(";", 1)[0]
+                != "application/json"
+            ):
+                self._json(400, error="invalid_action_body")
+                return
+            try:
+                raw = self.rfile.read(int(sizes[0]))
+                if len(raw) != int(sizes[0]):
+                    raise ValueError
+                body = json.loads(raw)
+                if (
+                    not isinstance(body, dict)
+                    or set(body) != {"action", "request_id", "params"}
+                    or not isinstance(body["action"], str)
+                ):
+                    raise ValueError
+                action, created = controls.submit(
+                    body["action"], body["request_id"], body["params"]
+                )
+                self._json(202 if created else 200, action)
+            except (ValueError, TypeError, UnicodeError):
+                self._json(400, error="invalid_action_or_conflicting_request")
+            except (OSError, sqlite3.Error, TimeoutError):
+                self._json(503, error="control_store_unavailable")
+
         def _read_only(self):
             if self._authorized():
                 self._json(405, error="read_only_interface")
 
-        do_POST = do_PUT = do_PATCH = do_DELETE = do_OPTIONS = _read_only
+        do_PUT = do_PATCH = do_DELETE = do_OPTIONS = _read_only
 
-    return ControlRoomServer(("127.0.0.1", port), Handler)
+    try:
+        server = ControlRoomServer(("127.0.0.1", port), Handler)
+    except BaseException:
+        controls.close()
+        raise
+    server.controls = controls
+    server.control_instance = str(uuid4())
+    server.swap_server = None
+    return server
 
 
 def main(argv=None) -> int:
@@ -250,28 +464,43 @@ def main(argv=None) -> int:
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--manager-home", type=Path)
     parser.add_argument("--port", type=int, default=8768)
+    parser.add_argument(
+        "--persistent",
+        action="store_true",
+        help="Run the separately owned control service.",
+    )
     args = parser.parse_args(argv)
+    from . import ui_service
+
+    home = args.home.expanduser().absolute()
     try:
-        server = make_server(args.home, args.manager_home, port=args.port)
+        with (
+            ui_service.lock(home),
+            make_server(home, args.manager_home, port=args.port) as server,
+        ):
+            url = f"http://127.0.0.1:{server.server_port}"
+            ui_service.checkpoint(home, server.control_instance, url)
+            print(
+                json.dumps(
+                    {
+                        "status": "listening",
+                        "url": url,
+                        "read_only": False,
+                        "scope": "paper_controls",
+                    }
+                ),
+                flush=True,
+            )
+            try:
+                server.serve_forever(poll_interval=0.2)
+            except KeyboardInterrupt:
+                pass
+            finally:
+                ui_service.clear_checkpoint(home, server.control_instance)
+        return 0
     except (ValueError, OSError):
-        print("control_room_bind_failed", file=sys.stderr)
+        print("control_room_unavailable_or_owned", file=sys.stderr)
         return 1
-    with server:
-        print(
-            json.dumps(
-                {
-                    "status": "listening",
-                    "url": f"http://127.0.0.1:{server.server_address[1]}",
-                    "read_only": True,
-                }
-            ),
-            flush=True,
-        )
-        try:
-            server.serve_forever(poll_interval=0.2)
-        except KeyboardInterrupt:
-            pass
-    return 0
 
 
 if __name__ == "__main__":

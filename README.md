@@ -20,6 +20,9 @@ SOL trading research and execution tooling, in nine parts:
 
 ## Automated paper ecosystem
 
+The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
+
+
 `python3 scripts/bootstrap_ecosystem.py start` installs the headless components,
 checks health, acquires the configured universe, runs the complete strategy matrix
 and hands usable results to registered forward trials with per-coin Oracle

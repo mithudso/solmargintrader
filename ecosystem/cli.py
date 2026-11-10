@@ -118,11 +118,18 @@ def main(argv=None) -> int:
                 emit({"ok": False, "error": "supervisor_failed"})
                 return 3
         else:
+            from .ui_service import ensure as ensure_ui
+
             if runner.running(home):
+                interface = ensure_ui(home, args.manager_home)
                 emit(
                     {
                         "ok": True,
-                        "data": {"status": "already_running", "home": str(home)},
+                        "data": {
+                            "status": "already_running",
+                            "home": str(home),
+                            "ui": interface,
+                        },
                     }
                 )
                 return 0
@@ -158,6 +165,7 @@ def main(argv=None) -> int:
                 else existing.get("research_min_confidence", 0.0),
             }
             runner.plan(home, **config)
+            interface = ensure_ui(home, Path(config["manager_home"]))
             result = runner.start(home)
             # Observe real progress, not just successful Popen.
             for _ in range(100):
@@ -166,7 +174,8 @@ def main(argv=None) -> int:
                     break
                 time.sleep(0.1)
             result["phase"] = state["phase"]
-            result["ui_url"] = state.get("ui_url")
+            result["ui_url"] = interface.get("url")
+            result["control_server"] = interface
             result["supervisor_running"] = runner.running(home)
             emit({"ok": state["phase"] != "failed", "data": result})
             return (
