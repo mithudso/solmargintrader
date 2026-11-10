@@ -27,15 +27,17 @@ class SwapTests(unittest.TestCase):
             **changes,
         }
 
-    def test_default_preserves_recorded_referral_and_known_fee_mismatch(self):
+    def test_default_uses_supported_referral_without_claiming_live_readiness(self):
         value = config()
         self.assertEqual(value["selected_referral_account"], ULTRA_REFERRAL_ACCOUNT)
         self.assertEqual(
             value["referral_accounts"]["swap_trigger"], SWAP_TRIGGER_REFERRAL_ACCOUNT
         )
-        self.assertEqual(value["default_referral_fee_bps"], 10)
+        self.assertEqual(value["default_referral_fee_bps"], 50)
         self.assertEqual(value["minimum_referral_fee_bps"], 50)
-        self.assertFalse(value["default_fee_supported"])
+        self.assertTrue(value["default_fee_supported"])
+        self.assertEqual(value["integration_status"], "available")
+        self.assertIsNone(value["integration_reason"])
         self.assertFalse(value["live_ready"])
         self.assertFalse(value["server_can_sign_or_submit"])
         self.assertIsNone(value["actual_quote_fees"])
@@ -55,9 +57,13 @@ class SwapTests(unittest.TestCase):
     def test_cost_model_is_explicit_and_idempotent_without_double_counting(self):
         value = validate_cost_model(self.model())
         self.assertEqual(value["fee_bps"], 6.0)
-        self.assertEqual(value["referral_fee_bps"], 10.0)
-        self.assertEqual(value["total_fee_bps"], 16.0)
+        self.assertEqual(value["referral_fee_bps"], 50.0)
+        self.assertEqual(value["total_fee_bps"], 56.0)
         self.assertEqual(validate_cost_model(value), value)
+        previous = validate_cost_model(self.model(referral_fee_bps=10))
+        self.assertEqual(previous["referral_fee_bps"], 10.0)
+        self.assertEqual(previous["total_fee_bps"], 16.0)
+        self.assertEqual(validate_cost_model(previous), previous)
         self.assertEqual(
             validate_cost_model(self.model(referral_fee_bps=0))["total_fee_bps"], 6.0
         )
@@ -80,7 +86,7 @@ class SwapTests(unittest.TestCase):
             with self.subTest(value=list(value)), self.assertRaises(ValueError):
                 validate_cost_model(value)
 
-    def test_browser_contract_blocks_unsupported_fee_then_requires_a_manual_sdk_click(
+    def test_browser_contract_default_and_bounds_require_a_manual_sdk_click(
         self,
     ):
         node = shutil.which("node")
@@ -90,22 +96,31 @@ class SwapTests(unittest.TestCase):
         program = r"""
 const vm=require('node:vm'), fs=require('node:fs');
 const cfg=JSON.parse(fs.readFileSync(0,'utf8')), nodes=new Map(), scripts=[];
-function element(id){if(!nodes.has(id))nodes.set(id,{value:id==='referral-fee'?'10':'SOL',disabled:false,textContent:'',events:{},addEventListener(k,f){this.events[k]=f;},replaceChildren(){}});return nodes.get(id);}
+function element(id){if(!nodes.has(id))nodes.set(id,{value:id==='referral-fee'?'50':'SOL',disabled:false,textContent:'',events:{},addEventListener(k,f){this.events[k]=f;},replaceChildren(){}});return nodes.get(id);}
 let timer=0;const timers=new Map();
 const context={Number,Error,URLSearchParams,AbortController,location:{search:'?asset=SOL'},window:{},setTimeout(f){timers.set(++timer,f);return timer;},clearTimeout(t){timers.delete(t);},fetch:async(url)=>({ok:true,json:async()=>({schema_version:1,ok:true,data:cfg})}),document:{getElementById:element,createElement(){return {remove(){this.removed=true;}};},head:{append(script){scripts.push(script);}}}};
 vm.createContext(context);vm.runInContext(fs.readFileSync(process.argv[1],'utf8'),context);
 (async()=>{
  await new Promise(setImmediate);
  const initial=element('load-jupiter').disabled;
- await element('load-jupiter').events.click();
+ const defaultFee=element('referral-fee').value, automatic=scripts.length;
+ const boundaries=[];
+ for(const [fee,disabled] of [['10',true],['49',true],['50',false],['255',false],['256',true],['NaN',true],['Infinity',true],['50.5',true],['',true]]) {
+   element('referral-fee').value=fee;element('referral-fee').events.input();
+   boundaries.push({fee,disabled:element('load-jupiter').disabled,expected:disabled});
+   if(disabled) await element('load-jupiter').events.click();
+ }
  const blocked=scripts.length;
- element('referral-fee').value='50';element('referral-fee').events.input();
+ element('referral-fee').value='10';element('referral-fee').events.input();
+ element('swap-asset').value='USDC';await element('swap-asset').events.change();await new Promise(setImmediate);
+ const preservedFee=element('referral-fee').value, preservedBlocked=element('load-jupiter').disabled;
+ element('referral-fee').value=defaultFee;element('referral-fee').events.input();
  const before=scripts.length, pending=element('load-jupiter').events.click();
  const requested=scripts.length;scripts[0].onerror();await pending;
  const error=element('swap-state').textContent;
  let options=null;context.window.Jupiter={init(value){options=value;}};
  await element('load-jupiter').events.click();
- console.log(JSON.stringify({initial,blocked,before,requested,error,options,src:scripts[0].src}));
+ console.log(JSON.stringify({initial,defaultFee,automatic,boundaries,blocked,preservedFee,preservedBlocked,before,requested,error,options,src:scripts[0].src}));
 })().catch(()=>process.exit(1));
 """
         result = subprocess.run(
@@ -117,10 +132,18 @@ vm.createContext(context);vm.runInContext(fs.readFileSync(process.argv[1],'utf8'
             timeout=10,
         )
         observed = json.loads(result.stdout)
-        self.assertTrue(observed["initial"])
+        self.assertFalse(observed["initial"])
+        self.assertEqual(observed["defaultFee"], "50")
+        self.assertEqual(observed["automatic"], 0)
+        for boundary in observed["boundaries"]:
+            with self.subTest(fee=boundary["fee"]):
+                self.assertEqual(boundary["disabled"], boundary["expected"])
+        self.assertEqual(observed["preservedFee"], "10")
+        self.assertTrue(observed["preservedBlocked"])
         self.assertEqual(observed["blocked"], 0)
         self.assertEqual(observed["before"], 0)
         self.assertEqual(observed["requested"], 1)
+        self.assertEqual(observed["src"], "https://plugin.jup.ag/plugin-v1.js")
         self.assertIn("Unavailable", observed["error"])
         self.assertFalse(observed["options"]["autoConnect"])
         self.assertFalse(observed["options"]["enableWalletPassthrough"])

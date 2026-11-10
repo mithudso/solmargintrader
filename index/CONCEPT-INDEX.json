@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T06:19:13+00:00",
+  "generatedAt": "2026-11-10T06:30:28+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1667,
+      "matchingFiles": 1669,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1423,
+      "matchingFiles": 1424,
       "shown": 30,
       "files": [
         {
@@ -1011,7 +1011,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 155
+          "hits": 158
         },
         {
           "path": "soltui/tui.py",
@@ -1107,7 +1107,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 47
+          "hits": 48
         },
         {
           "path": "soltui/wallet.py",

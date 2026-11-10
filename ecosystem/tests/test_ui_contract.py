@@ -67,6 +67,23 @@ const read = (context, code) => vm.runInContext(code, context);
 const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
 (async()=>{
   {
+    const {context,element} = await fixture();
+    read(context,"state.swap={config:{default_referral_fee_bps:50},url:'http://127.0.0.1:9000',scope:'manual_wallet_swap'};renderSwapState()");
+    assert(tree(element('swap-facts')).some(item=>item.textContent==='0.50% (50 bps) configured default'));
+    assert.equal(element('swap-load').disabled,false);
+    assert.equal(element('swap-container').children.length,0);
+  }
+  {
+    const {context,element} = await fixture();
+    element('launch-referral-bps').value='50';
+    read(context,"state.status={config:{cost_model:{referral_fee_bps:10,fee_bps:6}}};renderLaunchCatalog()");
+    assert.equal(element('launch-referral-bps').value,'50');
+    assert.equal(element('launch-fee-bps').value,6);
+    assert.equal(read(context,'state.status.config.cost_model.referral_fee_bps'),10);
+    element('launch-referral-bps').value='75';read(context,'renderLaunchCatalog()');
+    assert.equal(element('launch-referral-bps').value,'75');
+  }
+  {
     const {context,element} = await fixture(); const now = Date.now()/1000;
     context.sample = {instrument:'SOL/USD',status:'available',signal:'Strong Buy',as_of:now,horizon_seconds:60,market:{status:'available',observation:{observed_at:now,received_at:now,source:'fixture',kind:'reference'},limitations:[]},aggregate:{balance_percent:75,expires_at:now-1,included:[],excluded:[]},selection:{instrument:'SOL/USD',revision:2,selected_ids:['rsi']},catalog:[{strategy_id:'rsi'}],strategies:[]};
     read(context,'state.oracle=sample; renderSelectedAggregate()');

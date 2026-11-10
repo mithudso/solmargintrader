@@ -20,16 +20,16 @@
       <h2 id="configuration-title">Choose the manual interface</h2>
       <p id="asset-note">Reading public configuration…</p>
       <label>Verified initial input token<select id="swap-asset"><option value="SOL">SOL → USDC</option><option value="USDC">USDC → SOL</option></select></label>
-      <label>Referral fee, in basis points<input id="referral-fee" type="number" min="10" max="255" step="1" value="10" inputmode="numeric"></label>
-      <small>10 bps = 0.1%. Current published referral range is 50–255 bps. The configured 10 bps is preserved and loading stays unavailable until you explicitly choose a supported fee. Nothing raises it automatically.</small>
-      <p id="selected-fee">Configured referral: 0.1% (10 bps).</p>
+      <label>Referral fee, in basis points<input id="referral-fee" type="number" min="50" max="255" step="1" value="50" inputmode="numeric"></label>
+      <small>50 bps = 0.5%, the selected default and current published minimum. The supported referral range is 50–255 bps. Any explicit edit stays selected; an unsupported fee blocks loading.</small>
+      <p id="selected-fee">Configured referral: 0.5% (50 bps).</p>
       <button id="load-jupiter" type="button" disabled>Load Jupiter manually</button>
       <p id="swap-state" role="status" aria-live="polite">Unavailable until public settings are checked.</p>
       <dl><dt>Selected public referral account</dt><dd id="referral-account">Unavailable</dd><dt>Referral-account eligibility</dt><dd>Unverified until the provider supplies actual quote evidence.</dd></dl>
     </section>
     <section aria-labelledby="fees-title">
       <h2 id="fees-title">See all costs before approval</h2>
-      <dl><dt>Configured referral</dt><dd id="fee-summary">0.1% (10 bps); currently outside published range</dd><dt>Provider or route fee</dt><dd>Unknown until Jupiter returns a quote</dd><dt>Network and priority fees</dt><dd>Unknown until quote and wallet preview</dd><dt>Output token-account rent</dt><dd>Unknown until quote and wallet preview</dd><dt>Slippage and price impact</dt><dd>Inspect Jupiter's current quote</dd><dt>Actual total</dt><dd>Unavailable here. Review the provider and wallet breakdown; do not count the same included fee twice.</dd></dl>
+      <dl><dt>Configured referral</dt><dd id="fee-summary">0.5% (50 bps); actual application requires provider quote evidence</dd><dt>Provider or route fee</dt><dd>Unknown until Jupiter returns a quote</dd><dt>Network and priority fees</dt><dd>Unknown until quote and wallet preview</dd><dt>Output token-account rent</dt><dd>Unknown until quote and wallet preview</dd><dt>Slippage and price impact</dt><dd>Inspect Jupiter's current quote</dd><dt>Actual total</dt><dd>Unavailable here. Review the provider and wallet breakdown; do not count the same included fee twice.</dd></dl>
       <p>A configured account or referral percentage is not proof that a route applied it. If Jupiter rejects the account or fee, the integration remains unavailable.</p>
       <p><a href="https://developers.jup.ag/docs/tool-kits/plugin" target="_blank" rel="noopener noreferrer">Jupiter Plugin documentation</a><br><a href="https://developers.jup.ag/docs/swap/order-and-execute#referral-fees" target="_blank" rel="noopener noreferrer">Current referral and fee rules</a></p>
     </section>

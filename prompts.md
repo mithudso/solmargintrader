@@ -1,7 +1,7 @@
 # Prompt history
 
 Version: 179
-Delta: v178 to v179; restore the exact operational-control request and confirmed accounting default.
+Delta: v178 to v179; retain exact confirmations and apply the approved50bps referral default.
 Delta: concurrent histories to v178; preserve both concurrent request histories.
 Delta: v176 to v177; add independent Jupiter swap routing and referral page.
 Delta: v175 to v176; preserve operational controls, per-coin P&L, voter selection and wiki request.
@@ -1582,16 +1582,16 @@ What're you doing now? How much more do you have?
 Answered directly: editing delivered; M3finalgates; fivefurthermilestones; severalhoursremain. This steering question did not cancel, pause or replace the all-remaining-milestones scope.
 
 
-## v179 — 2026-11-10 — exact operational control-room request
+## v179 — 2026-11-10 — accounting confirmation and supported referral default
 
-```text
-Give me full server observability and control, a button per action, with visibility into its state, what's running, and control over whether profit and loss is not recorded for the forward tests specifically and explicitly to determine if there's a profit. For the bots, I need the ability to choose a config and launch a bot and wtch it go through every stage of its cycle with progress bars and status updates. I should be able to click on a bot and see how well it did with each coin, how well it's doing so far, and which coins its performing and not performing in. I need the choice of choosing which strategies get to vote for an aggregate that should show up very visibly and easily and be clear how strongly it was predicted. Compile a wiki and put all of your documentation and the bot manager's documentation and the backtester's documentation in it along with file locations, architectural choices, etc.
-```
-
-User confirmation:
+The full operational-control request remains verbatim under v176 (2026-11-09). The independent swap-provider and referral-page request remains verbatim under v177. This section retains the exact follow-up answers without duplicating those requests.
 
 ```text
 Record P&L by default
 ```
 
-Confirmed behavior: disabling recording stops new paper accounting for later-issued calls, preserves source journals and earlier records, and marks profit unknown across unrecorded evidence. The independent swap-provider and referral-page request remains verbatim under v177. This request and confirmation were implemented and delivered in PR189; this addition repairs their missing exact-text handoff record.
+```text
+Use the supported 0.5% referral minimum
+```
+
+The latter answer selects the new swap-page referral default. New Jupiter paper scenarios use the same50bps default. Existing frozen configurations retain their explicit cost assumptions. This does not authorize automatic SDK loading, wallet connection or order submission.

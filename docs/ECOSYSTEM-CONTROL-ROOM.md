@@ -8,18 +8,18 @@ paper/disarmed. Oracle has no order, signing or submission authority.
 
 ## Release and installation
 
-Release 0.2.0 installs these compatible local packages:
+Release 0.2.1 installs these compatible local packages:
 
 | Package | Version |
 | --- | --- |
-| Ecosystem | 0.2.0 |
+| Ecosystem | 0.2.1 |
 | Bot Manager | 0.4.0 |
 | Oracle | 0.2.1 |
 | Headless research runtime | 0.1.2 |
 | Canonical Backtester | 0.1.1 |
 
 Python 3.13 or newer is required. The dedicated environment is
-`/Users/mitch/.venvs/solecosystem-0.2.0`. The primary experiment home is
+`/Users/mitch/.venvs/solecosystem-0.2.1`. The primary experiment home is
 `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`.
 
 From a clean source checkout, installation and start use:
@@ -38,11 +38,11 @@ does not establish that market history, future outcomes or live execution exist.
 The installed lifecycle commands are:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem start \
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/solecosystem start \
   --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem status \
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/solecosystem status \
   --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem stop \
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/solecosystem stop \
   --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2
 ```
 
@@ -62,7 +62,7 @@ exists without taking ownership of the shared recorder.
 A foreground control service can also run independently:
 
 ```sh
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/solecosystem-ui \
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/solecosystem-ui \
   --home /Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2 --port 8768
 ```
 
@@ -70,6 +70,17 @@ Its address is then `http://127.0.0.1:8768`. A second server for the same home
 refuses while the first owner holds its lock. Do not start another server merely
 because a pipeline is stopped; inspect the published control-server identity.
 No OS login auto-start is implied by these commands.
+
+For the 0.2.1 fee release, update only the independent UI generation using the
+new environment after reconciling its prior owner lock, checkpoint and HTTP
+identity. Keep the running V1 and V2 pipelines, recorder, archives and frozen
+economic settings unchanged. Each owner retains its observed version. Do not
+restart a pipeline merely to replace the UI, and do not use a blanket process
+kill. Existing explicit 10 bps cohorts remain 10 bps; a newly launched Jupiter
+paper scenario defaults to the user-approved 50 bps referral assumption.
+Keep `/Users/mitch/.venvs/solecosystem-0.1.1` and
+`/Users/mitch/.venvs/solecosystem-0.2.0` immutable for their existing pipeline
+owners; the replacement UI runs from `/Users/mitch/.venvs/solecosystem-0.2.1`.
 
 ## Preserve the existing V1 experiment
 
@@ -229,20 +240,23 @@ actual owner persists; absent manager log sinks remain unavailable.
 
 The manual Jupiter page uses a separate public loopback origin and a browser
 wallet. It has no privileged control session or server signing/submission API.
-The configured 10 bps referral assumption can be used in paper modelling, but
-the current Jupiter Plugin requires an explicit fee choice from 50 through 255
-bps. Under the 10 bps setting the live Plugin path remains unavailable. The UI
-does not silently increase the fee. Connecting a wallet, executable quotes and
-funded swaps remain separate live verification gates. See
+The owner approved 0.5% = 50 bps as the manual page's default referral fee and
+for new Jupiter paper scenarios. This is within the current published range of
+50 through 255 bps. Existing explicit 10 bps cost models remain frozen; earlier
+results are not recalculated under the new default. A supported configuration
+only makes the manual integration eligible for initialization. A manual click,
+provider availability, referral-account eligibility, wallet connection and each
+wallet approval remain separate gates. Supported configuration is not evidence
+of an eligible on-chain referral account or funded-swap readiness. See
 `/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-SWAPS.md`.
 
 ## Verification and source locations
 
 ```sh
 cd /Users/mitch/dev/solmargintrader
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/ecosystem/tests -t /Users/mitch/dev/solmargintrader -v
-/Users/mitch/.venvs/solecosystem-0.2.0/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/oracle/tests -t /Users/mitch/dev/solmargintrader -v
-PYTHONPATH=/Users/mitch/dev/solmargintrader/botmanager/src /Users/mitch/.venvs/solecosystem-0.2.0/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/botmanager/tests -t /Users/mitch/dev/solmargintrader/botmanager
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/ecosystem/tests -t /Users/mitch/dev/solmargintrader -v
+/Users/mitch/.venvs/solecosystem-0.2.1/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/oracle/tests -t /Users/mitch/dev/solmargintrader -v
+PYTHONPATH=/Users/mitch/dev/solmargintrader/botmanager/src /Users/mitch/.venvs/solecosystem-0.2.1/bin/python -m unittest discover -s /Users/mitch/dev/solmargintrader/botmanager/tests -t /Users/mitch/dev/solmargintrader/botmanager
 ruff check /Users/mitch/dev/solmargintrader/ecosystem /Users/mitch/dev/solmargintrader/oracle /Users/mitch/dev/solmargintrader/scripts/bootstrap_ecosystem.py /Users/mitch/dev/solmargintrader/scripts/build_ecosystem_wiki.py
 node --check /Users/mitch/dev/solmargintrader/ecosystem/web/app.js
 node --check /Users/mitch/dev/solmargintrader/ecosystem/web/swap.js
