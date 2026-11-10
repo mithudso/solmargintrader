@@ -218,3 +218,63 @@ test('registry owner snapshot stays read-only and never initializes or revokes d
   await assert.rejects(runCommand({ name: 'browserManagerSnapshot', deps: d }), /reload required/);
   assert.deepEqual(await d.configStore.get(MANAGER_KEY), before);
 });
+
+
+test('valid stop-first revokes an earlier fetched start and replays after owner restart', async () => {
+  const d = deps();
+  const start = await command(d, 'start', 1);
+  const stop = await command(d, 'stop', 2);
+  const before = await execution(d);
+  const receipt = await applyManagerControl(d, stop);
+  assert.equal(receipt.outcome, 'skipped');
+  assert.equal(receipt.reason, 'already_stopped');
+  assert.deepEqual(await execution(d), { ...before, last_sequence: 2 });
+  const restarted = { ...d, store: new MemoryStore() };
+  assert.deepEqual(await applyManagerControl(restarted, stop), receipt);
+  const late = await applyManagerControl(restarted, start);
+  assert.equal(late.reason, 'revoked_by_later_stop');
+  assert.deepEqual(await execution(restarted), { ...before, last_sequence: 2 });
+  assert.deepEqual(await applyManagerControl(restarted, start), late);
+});
+
+test('registry stop-first fence survives lost acknowledgment, late start and owner restart', async () => {
+  const d = deps(); await poll(d);
+  const start = await command(d, 'start', 1);
+  const stop = await command(d, 'stop', 2);
+  const before = await execution(d);
+  d.soltui.request = async () => reply([stop]);
+  await poll(d);
+  const stopped = await execution(d);
+  assert.deepEqual(stopped, { ...before, last_sequence: 2 });
+  const savedReceipt = (await d.configStore.get(MANAGER_KEY)).requests[stop.request_id].receipt;
+  await poll(d); // Host did not acknowledge the receipt; same stop is replayed.
+  assert.deepEqual(await execution(d), stopped);
+  const restarted = { ...d, store: new MemoryStore() };
+  let sent;
+  restarted.soltui.request = async request => { sent = request; return reply([start, stop]); };
+  await poll(restarted);
+  assert.ok(sent.message.receipts.some(r => r.request_id === stop.request_id && r.reason === 'already_stopped'));
+  const state = await restarted.configStore.get(MANAGER_KEY);
+  assert.deepEqual(state.requests[stop.request_id].receipt, savedReceipt);
+  assert.equal(state.requests[start.request_id].receipt.reason, 'revoked_by_later_stop');
+  assert.deepEqual(await execution(restarted), stopped);
+  restarted.soltui.request = async () => reply([start], [stop.request_id, start.request_id]);
+  await poll(restarted);
+  assert.deepEqual(await execution(restarted), stopped);
+  assert.equal((await restarted.configStore.get(MANAGER_KEY)).requests[stop.request_id].delivered, true);
+});
+
+test('expired, stale and unbound stop-first requests cannot revoke a valid fetched start', async () => {
+  for (const kind of ['expired', 'stale', 'unbound']) {
+    const d = deps(); const start = await command(d, 'start', 1);
+    const stop = await command(d, 'stop', 2);
+    if (kind === 'expired') stop.expires_at = Date.now() / 1000 - 1;
+    if (kind === 'stale') stop.expected_generation += 1;
+    if (kind === 'unbound') stop.installation_id = randomUUID();
+    const before = await execution(d);
+    if (kind === 'unbound') await assert.rejects(applyManagerControl(d, stop), /invalid owner control/);
+    else assert.equal((await applyManagerControl(d, stop)).outcome, 'failed');
+    assert.deepEqual(await execution(d), before);
+    assert.equal((await applyManagerControl(d, start)).outcome, 'acknowledged');
+  }
+});

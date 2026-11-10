@@ -95,7 +95,10 @@ export async function applyManagerControl(deps, control) {
     state = { ...state, running: control.operation === 'start', generation: state.generation + 1,
       runtime_id: control.operation === 'start' ? crypto.randomUUID() : state.runtime_id };
   }
-  if (outcome === 'acknowledged') state.last_sequence = Math.max(state.last_sequence, control.sequence);
+  // A validated stop revokes older fetched starts even when execution is
+  // already stopped. Refused controls and receipt replays never gain a fence.
+  const revokesEarlierStarts = control.operation === 'stop' && reason === 'already_stopped';
+  if (outcome === 'acknowledged' || revokesEarlierStarts) state.last_sequence = Math.max(state.last_sequence, control.sequence);
   const result = receipt(control, state, outcome, reason);
   state.requests[control.request_id] = { ...prepared, receipt: result, prepared: false };
   await deps.configStore.set(MANAGER_KEY, state);

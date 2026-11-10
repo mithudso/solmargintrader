@@ -1,7 +1,7 @@
 # Task 6 report — browser discovery and delegated controls
 
-Version: 1.1.0
-Delta: 1.0.0 to 1.1.0; fix legacy-owner and failed-stop review findings, expand semantic source fencing, and repeat source-browser checks.
+Version: 1.2.0
+Delta: 1.1.0 to 1.2.0; retain the valid already-stopped stop revocation fence and verify stop-first/start-late ordering through owner and registry paths.
 
 Implemented the actual browser-owner path. `browserManagerPoll` and `browserManagerSnapshot` live in the extension command registry. MV3 installation/startup events register the owner; a recreated 30-second Chrome alarm bounds polling. The installation UUID resides in actual `chrome.storage.local` and remains distinct between profiles. The browser advertises exactly one global `grid` slot. Per-coin settings do not create workers or manager-owned replacements.
 
@@ -41,7 +41,7 @@ The everyday browser installation is unchanged. Existing installed wrappers that
 
 ## Independent-review fixes (version 1.1.0)
 
-Registration no longer unconditionally stops or resumes the engine. Only a committed manager generation transition changes the paper engine gate. Registration, pending requests, lost acknowledgment/replay, failed expired/stale stops and prepared unknown controls preserve the owner's execution fields and queue generation. Armed legacy owners in both dry-run and semi-auto retain engine ownership. Failed/skipped controls record receipts without changing running, runtime UUID, generation or the accepted sequence fence.
+Registration no longer unconditionally stops or resumes the engine. Only a committed manager generation transition changes the paper engine gate. Registration, pending requests, lost acknowledgment/replay, failed expired/stale stops and prepared unknown controls preserve the owner's execution fields and queue generation. Armed legacy owners in both dry-run and semi-auto retain engine ownership. Failed controls record receipts without changing running, runtime UUID, generation or the accepted sequence fence. A valid already-stopped stop is an explicit logical revocation: its skipped/already_stopped receipt leaves execution unchanged while advancing the accepted sequence fence.
 
 Source identity schema 2 covers the manifest and every shipped JavaScript module, including engine, grid, risk, P&L, venue, storage/configuration and worker modules. A regression checks completeness against the source tree. The worker captures the packaged-resource hash at startup and verifies resources before manager registration/control and effective paper tick permission. Changed resources revoke an existing paper grant and permanently require extension reload for that worker, even if the resource later reverts. An engine.js resource-change regression exercises this fence through the actual worker dependency factory. The source hash describes fetched packaged resources; it does not attest Chrome's internal ESM module cache. Final installed-source acceptance must establish a fresh actual extension load. The read-only registry snapshot never initializes or durably revokes owner state: source validation refuses with reload-required while registration/tick paths own revocation writes. A registry regression checks this classification and durable-state boundary.
 
@@ -54,3 +54,12 @@ Completed checks (each final exit code 0):
 - `git diff --check`: passed.
 
 The separate gate preserved the controller's `SOLBOT_TEST_INSTALLED` mode, but this source gate used `installed_owner:false`. Final independently reviewed installed 0.6.4 acceptance and remote delivery remain controller-owned. The everyday browser profile and native manifest remain unchanged. No signing, arming or real orders were performed.
+
+
+## Out-of-order revocation fix (version 1.2.0)
+
+The independent re-review identified a missing ordering: stop sequence 2 can arrive while the paper slot is already stopped, before fetched start sequence 1 arrives. The valid stop now durably advances `last_sequence` even though its execution outcome is `skipped/already_stopped`. The late start therefore receives `skipped/revoked_by_later_stop`. The stop does not change generation, runtime UUID, running state or the engine queue. This is an explicit logical revocation, not a failed control side effect. Expired, stale, unbound and otherwise refused stops cannot advance the fence.
+
+Regressions cover the exact stop-first/start-late order through both `applyManagerControl` and actual `runCommand(browserManagerPoll)`, persisted owner recreation, lost native acknowledgment, receipt resend/replay, and final receipt acknowledgment. Negative coverage verifies that expired/stale/unbound stop-first requests preserve execution and cannot revoke an otherwise valid fetched start.
+
+Checks for this revision (final exit code 0): full JavaScript unit/parity suite, 425 tests (`/tmp/task6-ordering-js.log`); actual two-profile paper Chrome 0.6.4 gate (`/tmp/task6-ordering-paper.log`); `git diff --check`. The ordinary Chrome guard and economics source were unchanged from their passing version 1.1.0 checks. Final independent installed 0.6.4 acceptance and delivery remain controller-owned. No everyday browser profile, installed native manifest, arm flag or live order was changed.
