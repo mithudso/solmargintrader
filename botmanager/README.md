@@ -7,6 +7,10 @@ pinned Coinbase recording. Creating a draft cannot start a process, fetch prices
 initialize another component's database, load keys, or trade.
 Arbitrage reports `Solana adapter unavailable`. Council is external-only.
 
+For the complete implementation history, operator workflows, source ownership,
+backup/recovery guidance, release evidence and remaining milestones, read
+[the bot-manager handoff](../docs/bot-manager-handoff.md).
+
 ## Install and use
 
 Python 3.13 or newer is required. The manager uses the standard library and the

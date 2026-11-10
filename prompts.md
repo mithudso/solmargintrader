@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 166
+Version: 167
+Delta: v166 to v167; record the comprehensive bot-manager handoff request.
 Delta: v165 to v166; preserve the merged forward-signal research prompt.
 Delta: v164 to v165; record the current branch conflict-resolution and merge request.
 Delta: v154 to v155; record forward signal daemon research request.
@@ -1452,4 +1453,10 @@ Find, download, and pre-process all the coins' data that you will need to the gr
 
 ```text
 Resolve the conflicts with that branch and merge and commit it
+```
+
+## 2026-11-09 — full standalone bot-manager handoff
+
+```text
+Write full detailed handoff with everything you did and why, how to access it, where to maintain it, all the features, etc.
 ```
