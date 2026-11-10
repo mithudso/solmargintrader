@@ -1080,7 +1080,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 428
+      "lines": 437
     },
     {
       "path": "CONTRIBUTING.md",

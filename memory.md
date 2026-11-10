@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 365
+Version: 366
+Delta: v365 to v366; accept independently verified installed behavior and track PR189 delivery.
 Delta: v364 to v365; verify installed control room and prepare final delivery.
 Delta: v363 to v364; preserve source verification and immutable installation handoff.
 Delta: concurrent histories to v363; merge milestone3 provenance and preserve operational-control continuation.
@@ -1358,3 +1359,12 @@ Immutable installation /Users/mitch/.venvs/solecosystem-0.2.0 has source fingerp
 Independent browser acceptance in isolated /Users/mitch/.local/share/solmargintrader/control-acceptance-01a1c228 created run5bcfc75ff9184f639fa541bdcefba8aa, completed real acquisition/backtesting and registered a genuine unresolved forward call. Native isolated trendbot885d1e49-cd3d-455e-9346-1a166d491ab8 prepared/registered existing sharedSOL/USD source, adopted a paper runtime and advanced its real prospective source cursor. P&L defaultON; disabling preserved priorrecordedcall and unknownprofit. Voter14→13 persistedrevision1; fresh insufficient evidence remains unavailable. Wiki snapshot has1863 source-linked pages. Separate-origin manualswap default10bps remains blocked; explicit50bps enables manual loading without wallet connection or server signing. No funded trade, calibrated probability, Jupiter execution readiness or profit has been established.
 
 Remaining at this checkpoint: finish independent final-install/mobile/disconnect/legacy-source acceptance, stop only isolated acceptance owners, refresh offline indexes, push records/code and obtain final-headCI, merge finaltip, verifyremote content, preserve the other active checkout and remove only this task's merged worktree/branch. TASK-1194 holds the final delivery receipt; consult its completed summary and merged PR before repeating accepted installation or producer work. Preserve the active V1 recorder/feed/archives and original solecosystem-0.1.1 environment. Actual directed quote-cycle inputs and funded/manual Jupiter acceptance remain external capabilities, not completed controls.
+
+
+## v366 — final installed acceptance and delivery boundary
+
+The independent live-acceptance-verifier accepted source6946c852 against twelve installed modules and served HTML/JS/CSS at fingerprint67290ed3609c8d4aa3e80868a8ab48c35b8b9596f4f4cb687569a5bd77b64d31 on2026-11-10T06:07:24Z. Its actual browser checks cover real research launch/acquisition/backtest/forward registration, native Manager preparation/registration/start/source ingestion/stop, P&L ON/OFF/ON revisions retaining the original recorded call, selected-voter persistence, Oracle pause/stale/restart, offline withheld controls/reconnect,390px mobile without overflow or JS errors, wiki search/provenance, and separate-origin manual official Jupiter SDK loading. It did not connect a wallet or submit a transaction. Real future-horizon outcomes remain pending, so profit remains unknown.
+
+Final installed legacy-v1 view returns476registrations and a recorded-policy Oracle aggregate (Flat0.00% weighted vote balance,10contributors/4excluded at inspection). All11 legacy producer buttons are disabled in API and DOM. Final installed manager.apply rejects arbitrary descriptors before ownerdispatch, and a repeated UUID returns the same failed receipt without replay. All isolated acceptance Manager/F5/pipeline/daemon/UI processes stopped; daemon exited0 and UI60902 closed. ProductionV2, shared recorder and legacy producers remain running. Production Manager mutations were excluded from acceptance.
+
+The final full Backtester1002-test check also passes. All source/installed checks are accepted; no product implementation work remains. PR https://github.com/mithudso/solmargintrader/pull/189 carries delivery. Final-headCI and squash merge establish publication; a local checkpoint or this pre-merge note is not a merge receipt. TASK-1194 records final CI, remote merge/content and cleanup. Before resuming, inspect that task and PR state so a completed delivery does not repeat producer work. The unresolved10bps default and actual funded/on-chain Jupiter acceptance remain documented limits; manual valid-fee choice does not silently change bot cost settings. No unrelated indexing/inference, signing custody or existing source journals changed.
