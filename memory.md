@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 368
+Version: 369
+Delta: v368 to v369; record the remaining-work plan and exact unfinished M4 source checkpoint.
 Delta: v367 to v368; accept installed0.2.1 fee default and unchanged producer identities.
 Delta: v366 to v367; record completed delivery, verify existing prompt history and apply the approved fee decision.
 Delta: v365 to v366; accept independently verified installed behavior and track PR189 delivery.
@@ -1392,3 +1393,18 @@ Immutable /Users/mitch/.venvs/solecosystem-0.2.1 has fingerprint9a816a6c638641cd
 Independent affected installed acceptance passed at2026-11-10T06:29:02Z:50bps page/new-paper defaults and56bps total preview; manual officialSDKload with no wallet connection/sign/submit; invalid10bps refusal; installed module/asset equality; unchanged V1/V2 supervisor/F5PIDs, start times and config hashes. V1supervisor98998/F5child99637 retain configSHA b48110165920b43c163d3652607ed32b5f6520ea55e7bb45905d5ff3bdeb6559. V2supervisor646/F5child677 retain configSHA a1b8a1da5464d5d7954f2af7e2ba2207ba2df80d4256ac3f733f188224438637, priorcost6+10=16bps/slip2 andcapital10000. Owned test tab closed; production tab points to57927. Existing V1/V2 environments, producers and archives remain intact. Funded/on-chain referral application and future profit remain unverified.
 
 PR https://github.com/mithudso/solmargintrader/pull/190 now carries the approved-default update and corrected final records. The full original control request remains exactly once under v176; only its explicit follow-up confirmations were added under v179. TASK-1217 holds final-headCI, merge and cleanup receipts. Source/installed work is accepted. At this checkpoint only publication gates and owned-worktree cleanup remain; check the task/PR before repeating any service work.
+
+
+## v369 — remaining implementation plan and recoverable M4 checkpoint
+
+Owner requested a written implementation plan after challenging repeated wrap-up language. TASK-1220 tracks this focused documentation delivery. The plan is docs/superpowers/plans/2026-11-10-bot-manager-remaining.md, version1.0.0, linked from the main handoff. It preserves the approved architecture and orders M4 release, M5 accounting/health, M6 continuation/learning, M7 browser, M8 executor and final Oracle interface/acceptance. Engineering completion, real elapsed evidence and live readiness are separate gates. Do not provide another unsupported short ETA.
+
+M4 source is recoverable in /Users/mitch/dev/solmargintrader-wt-01a1c189-editing on agent-01a1c189-m4: implementation e24ad7ca343a07910d04f3c3471494fcba763c75 and report/proof65a5a40020a21849fadd3476c556a5d4cdedca3a. Original worker reports187 manager,150 owner/legacy,42 bridge tests passed plus actual OS sandbox denial. Public setup/default plan and immutable first-registration epoch are implemented. Independent source review, integrated installation, installed acceptance, CI and release remain pending. Parent-owned root docs/CI/bootstrap/records are still dirty in that worktree; unrelated .opencode/ is untouched. Do not mark TASK1110 complete or install this pre-integration candidate.
+
+Current remote baseline21331e37 includes PR189 ecosystem control-room/Oracle work and PR190 approved50bps referral default. Ecosystem is0.2.1. The M4 source checkpoint still has obsolete planned0.1.4 metadata. KNOW1221 binds integration/version risk to TASK1110: preserve newer behavior and bump forward before final review/install. Do not downgrade active immutable environments or primary checkout. This plan's isolated worktree is /Users/mitch/dev/solmargintrader-wt-01a1c189-remaining-plan; primary is held by other live sessions.
+
+The Stele search specialist could not start because its fixed gpt-5.4-mini model is unsupported on this account. Parent read its installed definition and used direct MCP searches/fetches instead. Verified KNOW1115 approval and KNOW1216 scoped freshness. No graph readiness or prior-venue claim was invented. No production bot, recorder, wallet, service or research authority was changed by the plan.
+
+Plan self-review and documentation/index checks, explicit commit, push/PR/final-head CI/merge and remote-content verification are the remaining TASK1220 delivery gates at this checkpoint. M4 implementation/parent records will remain recoverable in a pushed draft checkpoint rather than being folded into the plan-only release. Continue implementation from the new remaining-work plan when resuming the approved epic.
+
+PR191 initial head7ae0d593 passed docs/index checks, but ecosystem CI42772639288 failed after173 successful ecosystem tests at `python scripts/build_ecosystem_wiki.py --check`: {"ok": false, "status": "stale"}. PR189 introduced a compiled documentation bundle; changing the manager handoff/adding an allowlisted plan requires regenerating ecosystem/wiki_content/manifest.json and pages.json before offline indexes. The remaining plan now includes this gate. No app logic or runtime installation changed. Rebuild with the existing offline compiler, require its --check exit0, then regenerate/check indexes and push the fix before final-head CI/merge.
