@@ -366,6 +366,21 @@ class AlertTests(unittest.TestCase):
         suite.alerts(self.home)
         self.assertEqual((self.home / ".suite/alerts.json").stat().st_mtime_ns, before)
 
+    def test_stale_observation_cannot_reverse_a_newer_alert_transition(self):
+        journal = suite.AlertJournal(self.home)
+        with contextlib.redirect_stderr(io.StringIO()):
+            journal.observe(self.value(200, "down", "manager_exited"))
+            journal.observe(self.value(199))
+            journal.observe(self.value(201))
+            journal.observe(self.value(202))
+            journal.observe(self.value(201.5, "down", "manager_exited"))
+
+        events = suite.alerts(self.home)["events"]
+        self.assertEqual(
+            [(row["kind"], row["reason"]) for row in events],
+            [("component_failure", "manager_exited"), ("component_recovered", "available")],
+        )
+
     def test_rotation_preserves_monotonic_cursor_and_signals_history_loss(self):
         with contextlib.redirect_stderr(io.StringIO()):
             journal = suite.AlertJournal(self.home)

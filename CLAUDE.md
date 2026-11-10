@@ -127,7 +127,7 @@ Ecosystem setup and control room use `python -m pip install ./backtester ./oracl
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1466 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1467 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive

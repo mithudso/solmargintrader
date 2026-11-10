@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T20:32:16+00:00",
+  "generatedAt": "2026-11-10T22:40:11+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1432,
+      "matchingFiles": 1434,
       "shown": 30,
       "files": [
         {
@@ -257,6 +257,10 @@
           "hits": 28
         },
         {
+          "path": "research/strategy_config_sweep.py",
+          "hits": 24
+        },
+        {
           "path": "soltui/council.py",
           "hits": 24
         },
@@ -279,10 +283,6 @@
         {
           "path": "backtester/core/perps.py",
           "hits": 22
-        },
-        {
-          "path": "backtester/core/scorecard.py",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1403,
+      "matchingFiles": 1406,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 630,
+      "matchingFiles": 632,
       "shown": 30,
       "files": [
         {
@@ -945,7 +945,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 64
+          "hits": 63
         },
         {
           "path": "memory.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 613,
+      "matchingFiles": 614,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 266,
+      "matchingFiles": 267,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 178,
+      "matchingFiles": 181,
       "shown": 30,
       "files": [
         {
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 139,
+      "matchingFiles": 140,
       "shown": 30,
       "files": [
         {

@@ -16,7 +16,8 @@ from unittest.mock import patch
 
 import numpy as np
 
-from soltui import config as app_config, council, simulation
+from soltui import config as app_config
+from soltui import council, simulation
 
 BASE = 1_800_000_000
 
@@ -35,7 +36,8 @@ def bars(now, overrides=None):
     ts = np.arange(BASE - 600, latest + 1, 60)
     values = [overrides.get(int(t), (100., 102., 100., 101.)) if overrides else (100., 102., 100., 101.) for t in ts]
     columns = np.asarray(values)
-    return dict(ts=ts, open=columns[:, 0], high=columns[:, 1], low=columns[:, 2], close=columns[:, 3], volume=np.ones(len(ts)))
+    return {"ts": ts, "open": columns[:, 0], "high": columns[:, 1], "low": columns[:, 2],
+            "close": columns[:, 3], "volume": np.ones(len(ts))}
 
 
 class CouncilPaper(unittest.TestCase):
@@ -180,6 +182,21 @@ class CouncilPaper(unittest.TestCase):
         self.assertAlmostEqual(result["confidence"], simulation.confidence_score(20, 20))
         self.assertIsNotNone(result["pending"])
 
+    def test_default_confidence_floor_can_reach_a_paper_fill_with_long_lived_votes(self):
+        council.config({"execution": {"min_confidence": .8}})
+        for minute in range(22):
+            result = self.tick(minute, expires=BASE + 10_000)
+            self.assertIsNone(result["position"])
+        self.assertEqual(result["confidence_samples"], 20)
+        self.assertGreaterEqual(result["confidence"], .8)
+        self.assertEqual(result["pending"]["target"], 1)
+
+        filled = self.tick(23, expires=BASE + 10_000)
+
+        self.assertEqual(filled["position"]["direction"], 1)
+        self.assertEqual(filled["fills"][0]["side"], "buy")
+        self.assertGreater(filled["position"]["entered_at"], BASE + 21 * 60 + 5)
+
     def test_one_minute_votes_train_after_expiry_but_cannot_enter_at_expired_future_open(self):
         council.config({"execution": {"min_confidence": .8}})
         for minute in range(24):
@@ -284,9 +301,9 @@ class CouncilPaper(unittest.TestCase):
             inherited.append(os.dup(kwargs["pass_fds"][0]))
             return Child()
         try:
-            with patch.object(council.subprocess, "Popen", side_effect=spawn) as start:
-                with ThreadPoolExecutor(max_workers=6) as pool:
-                    results = list(pool.map(lambda _: council.start(), range(6)))
+            with patch.object(council.subprocess, "Popen", side_effect=spawn) as start, \
+                    ThreadPoolExecutor(max_workers=6) as pool:
+                results = list(pool.map(lambda _: council.start(), range(6)))
             self.assertEqual(start.call_count, 1)
             self.assertTrue(all(r["running"] for r in results))
             with self.assertRaisesRegex(ValueError, "Stop Council"):

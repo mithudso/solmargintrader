@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from botmanager.registry import CommandContext, dispatch
@@ -80,6 +81,7 @@ class CliTests(unittest.TestCase):
             "solbot browser-control",
             "solbot executor-capabilities",
             "solbot restore",
+            "solbot diagnostics",
         ):
             self.assertIn(command, run.stdout)
         self.assertNotIn("credential-canary-98", run.stdout + run.stderr)
@@ -128,3 +130,19 @@ class CliTests(unittest.TestCase):
         self.assertEqual(result["schema_version"], 1)
         self.assertTrue(result["request_id"])
         self.assertEqual(result["error"]["code"], "invalid_input")
+
+    def test_diagnostics_bundle_is_local_bounded_and_excludes_secrets(self):
+        output = Path(self.temp.name) / "friend-diagnostics.zip"
+        self.env["SOLBOT_ECOSYSTEM_HOME"] = str(Path(self.temp.name) / "private-account-canary")
+        result = self.cli("diagnostics", "--output", str(output))["data"]
+        self.assertEqual(result["uploaded"], False)
+        self.assertTrue(output.is_file())
+        self.assertLess(output.stat().st_size, 128 * 1024)
+        with zipfile.ZipFile(output) as archive:
+            self.assertEqual(set(archive.namelist()), {
+                "README.txt", "setup-checks.json", "component-health.json"})
+            body = b"".join(archive.read(name) for name in archive.namelist())
+        self.assertNotIn(b"credential-canary-98", body)
+        self.assertNotIn(b"private-account-canary", body)
+        if os.name == "posix":
+            self.assertEqual(output.stat().st_mode & 0o777, 0o600)

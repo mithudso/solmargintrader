@@ -18,6 +18,12 @@ pinned Coinbase recording or the selected existing Oracle archive. Creating a dr
 initialize another component's database, load keys, or trade.
 Arbitrage offers conditional directed Solana quote-cycle diagnosis through `cycle-check`; autonomous arbitrage remains unavailable. Council is external-only.
 
+For troubleshooting, run `solbot diagnostics`. It writes a private ZIP under
+`~/Downloads` with Python/package checks and bounded component health. The bundle
+does not include configuration, environment values, wallet data, account history,
+or raw logs, and it is never uploaded. Review it before sharing. Use
+`solbot diagnostics --output /path/to/solbot-diagnostics.zip` to choose the file.
+
 For the current operations and remaining evidence gates, read
 [the 0.6 operations guide](../docs/bot-manager-0.6-operations.md).
 
