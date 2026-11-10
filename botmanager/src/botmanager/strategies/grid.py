@@ -34,7 +34,7 @@ def _configuration(spec: BotSpec, data: dict[str, Any]):
             "resource_limit", "Reference replay supports at most 100 rungs.", 3
         )
     d = data["descriptor"]
-    mid = data["bars"][0]["close"]
+    mid = data.get("origin_close", data["bars"][0]["close"])
     span = values["range_pct"] / 100
     if (
         values["range_pct"] >= MAX_REFERENCE_RANGE_PCT
@@ -83,6 +83,7 @@ def validate_checkpoint(
     checkpoint: dict[str, Any],
     *,
     code: str = "corrupt_checkpoint",
+    allow_prior=False,
 ) -> None:
     """A matching config alone cannot attribute a result to a virtual account."""
     try:
@@ -93,8 +94,18 @@ def validate_checkpoint(
             type(checkpoint["schema_version"]) is not int
             or checkpoint["schema_version"] != 1
             or type(cursor) is not int
-            or not 1 <= cursor <= len(data["bars"])
-            or checkpoint["last_bar_ts"] != data["bars"][cursor - 1]["ts"]
+            or not data.get("bar_offset", 0)
+            <= cursor
+            <= data.get("bar_offset", 0) + len(data["bars"])
+            or (
+                cursor > data.get("bar_offset", 0)
+                and checkpoint["last_bar_ts"]
+                != data["bars"][cursor - data.get("bar_offset", 0) - 1]["ts"]
+            )
+            or (
+                not allow_prior
+                and checkpoint.get("prior_segment") != data.get("prior_segment")
+            )
             or checkpoint["quote_currency"] != data["identity"]["quote_currency"]
             or fingerprint(checkpoint["identity"]) != expected_hash
             or checkpoint["run_hash"] != expected_hash
@@ -106,7 +117,15 @@ def validate_checkpoint(
         ) from exc
 
 
-def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]:
+def evaluate(
+    spec: BotSpec,
+    data: dict[str, Any],
+    cursor: int,
+    *,
+    research=False,
+    previous=None,
+    entries_paused=False,
+) -> dict[str, Any]:
     import numpy as np
 
     from backtester.core.gridsim import run_grid_backtest
@@ -119,14 +138,36 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
             "Pinned simulation engine differs from the loaded engine.",
             3,
         )
-    if type(cursor) is not int or not 1 <= cursor <= len(data["bars"]):
+    if type(cursor) is not int or not data.get("bar_offset", 0) <= cursor <= data.get(
+        "bar_offset", 0
+    ) + len(data["bars"]):
         raise ManagerError(
             "invalid_input", "Replay cursor is outside the immutable input."
         )
+    offset = data.get("bar_offset", 0)
+    start = previous["cursor"] - offset if previous else 0
+    if start < 0 or start >= cursor - offset:
+        raise ManagerError(
+            "stale_cursor", "Continuation cursor does not advance the account.", 3
+        )
+    if previous:
+        saved = previous.get("continuation")
+        if (
+            not isinstance(saved, dict)
+            or saved.get("schema_version") != 1
+            or saved.get("cursor") != previous["cursor"]
+            or saved.get("last_ts") != previous["last_bar_ts"]
+        ):
+            raise ManagerError(
+                "continuation_unavailable",
+                "The prior account lacks compatible canonical continuation state.",
+                3,
+            )
+        validate_checkpoint(spec, data, previous, allow_prior=True)
     cfg = _configuration(spec, data)
     d = data["descriptor"]
     arrays = {
-        key: np.array([b[key] for b in data["bars"][:cursor]])
+        key: np.array([b[key] for b in data["bars"][start : cursor - offset]])
         for key in ("ts", "high", "low", "close")
     }
     result = run_grid_backtest(
@@ -137,8 +178,14 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
         costs=CostConfig(fee_bps=d["fee_bps"], slippage_bps=d["slippage_bps"]),
         carry_bps_per_hour=d["carry_bps_per_hour"],
         close_at_end=False,
+        continuation=previous.get("continuation") if previous else None,
+        entries_paused=entries_paused,
     )
-    fills = [asdict(t) for t in result.trades]
+    fills = (
+        previous["fills"]
+        if previous and previous.get("prior_segment") == data.get("prior_segment")
+        else []
+    ) + [asdict(t) for t in result.trades]
     if len(fills) > 200000:
         raise ManagerError(
             "resource_limit", "Reference replay fill capacity is exhausted.", 3
@@ -146,8 +193,10 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
     exposure = result.unmatched_inventory_qty * float(arrays["close"][-1])
     equity = float(result.equity[-1])
     identity = run_identity(spec, data)
-    return {
+    state = {
         "schema_version": 1,
+        "continuation": result.continuation,
+        "prior_segment": data.get("prior_segment"),
         "cursor": cursor,
         "last_bar_ts": int(arrays["ts"][-1]),
         "fills": fills,
@@ -169,3 +218,11 @@ def evaluate(spec: BotSpec, data: dict[str, Any], cursor: int) -> dict[str, Any]
         "identity": identity,
         "run_hash": fingerprint(identity),
     }
+
+    if research:
+        from .base import research_metrics
+
+        state["research_metrics"] = research_metrics(result, d["capital_quote"])
+    import json
+
+    return json.loads(json.dumps(state))

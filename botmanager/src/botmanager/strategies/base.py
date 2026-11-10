@@ -81,7 +81,9 @@ def identity(spec, data):
     }
 
 
-def evaluate_family(spec, data, cursor):
+def evaluate_family(
+    spec, data, cursor, *, research=False, previous=None, entries_paused=False
+):
     import numpy as np
 
     from backtester.core.types import CostConfig
@@ -95,12 +97,42 @@ def evaluate_family(spec, data, cursor):
             "Pinned economic engine differs from loaded code.",
             3,
         )
-    if type(cursor) is not int or not 1 <= cursor <= len(data["bars"]):
+    if type(cursor) is not int or not data.get("bar_offset", 0) < cursor <= data.get(
+        "bar_offset", 0
+    ) + len(data["bars"]):
         raise ManagerError("invalid_input", "Cursor is outside the reference input.")
     d = data["descriptor"]
+    offset = data.get("bar_offset", 0)
+    start = previous["cursor"] - offset if previous else 0
+    if start < 0 or start >= cursor - offset:
+        raise ManagerError(
+            "stale_cursor", "Continuation cursor does not advance the account.", 3
+        )
+    if previous:
+        saved = previous.get("continuation")
+        if (
+            not isinstance(saved, dict)
+            or saved.get("schema_version") != 1
+            or saved.get("cursor") != previous["cursor"]
+            or saved.get("last_ts") != previous["last_bar_ts"]
+        ):
+            raise ManagerError(
+                "continuation_unavailable",
+                "The prior account lacks compatible canonical continuation state.",
+                3,
+            )
+        from . import validate_checkpoint
+
+        validate_checkpoint(spec, data, previous, allow_prior=True)
+    if entries_paused and spec.strategy_id not in ("dca",):
+        raise ManagerError(
+            "capability_unavailable",
+            "Entry pause is unsupported for signal accounts.",
+            3,
+        )
     values = spec.resolved_values
     arrays = {
-        key: np.array([b[key] for b in data["bars"][:cursor]])
+        key: np.array([b[key] for b in data["bars"][start : cursor - offset]])
         for key in ("ts", "open", "high", "low", "close")
     }
     costs = CostConfig(fee_bps=d["fee_bps"], slippage_bps=d["slippage_bps"])
@@ -123,6 +155,8 @@ def evaluate_family(spec, data, cursor):
             interval="1m",
             costs=costs,
             close_at_end=False,
+            continuation=previous.get("continuation") if previous else None,
+            entries_paused=entries_paused,
         )
         lots = [result.open_deal_at_end] if result.open_deal_at_end else []
         exposure = sum(l["qty"] for l in lots) * arrays["close"][-1]
@@ -163,6 +197,7 @@ def evaluate_family(spec, data, cursor):
             ),
             close_at_end=False,
             price_only=True,
+            continuation=previous.get("continuation") if previous else None,
         )
         account = result.account
         lots = [asdict(account.position)] if account.position.is_open else []
@@ -177,9 +212,16 @@ def evaluate_family(spec, data, cursor):
     run_identity = identity(spec, data)
     state = {
         "schema_version": 1,
+        "continuation": result.continuation,
+        "prior_segment": data.get("prior_segment"),
         "cursor": cursor,
         "last_bar_ts": int(arrays["ts"][-1]),
-        "fills": [asdict(t) for t in result.trades],
+        "fills": (
+            previous["fills"]
+            if previous and previous.get("prior_segment") == data.get("prior_segment")
+            else []
+        )
+        + [asdict(t) for t in result.trades],
         "lots": lots,
         "equity_quote": equity,
         "exposure_quote": float(exposure),
@@ -200,9 +242,48 @@ def evaluate_family(spec, data, cursor):
         if isinstance(value, np.generic):
             return value.item()
         if isinstance(value, dict):
-            return {k: native(v) for k, v in value.items()}
+            return {str(k): native(v) for k, v in value.items()}
         if isinstance(value, list):
             return [native(v) for v in value]
         return value
 
-    return native(state)
+    if research:
+        state["research_metrics"] = research_metrics(result, d["capital_quote"])
+    import json
+
+    return json.loads(json.dumps(native(state)))
+
+
+def research_metrics(result, capital):
+    """Metrics use the canonical costed equity curve, including open inventory."""
+    peak = float(capital)
+    drawdown = 0.0
+    for value in result.equity:
+        value = float(value)
+        peak = max(peak, value)
+        drawdown = max(drawdown, (peak - value) / peak if peak > 0 else 1.0)
+    import statistics
+
+    returns = [
+        float(b) / float(a) - 1
+        for a, b in zip(result.equity[:-1], result.equity[1:])
+        if a > 0
+    ]
+    uncertainty = (
+        statistics.stdev(returns) / len(returns) ** 0.5 if len(returns) > 1 else 0.0
+    )
+    if hasattr(result, "round_trips"):
+        completed = result.round_trips
+    elif hasattr(result, "deals_completed"):
+        completed = result.deals_completed + result.deals_stopped
+    else:
+        completed = sum(
+            t.side == "close" and t.reason != "final" for t in result.trades
+        )
+    return {
+        "uncertainty": uncertainty,
+        "net_return": float(result.equity[-1]) / capital - 1,
+        "drawdown": drawdown,
+        "turnover": sum(abs(t.notional) for t in result.trades) / capital,
+        "trades": completed,
+    }

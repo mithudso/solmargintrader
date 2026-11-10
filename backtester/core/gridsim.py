@@ -49,16 +49,24 @@ grid, and the number will be labelled in the result.
 
 from __future__ import annotations
 
-from collections import Counter
 import math
+from collections import Counter
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 from numbers import Real
-from dataclasses import dataclass, field
-from typing import Any, Iterable, Sequence
+from typing import Any
 
 import numpy as np
 
 from .metrics import Metrics, compute_metrics
-from .types import CostConfig, Trade, hours_per_bar, periods_per_year, validate_bar_arrays
+from .types import (
+    INTERVAL_SECONDS,
+    CostConfig,
+    Trade,
+    hours_per_bar,
+    periods_per_year,
+    validate_bar_arrays,
+)
 
 SPACING_GEOM = "geom"
 SPACING_ARITH = "arith"
@@ -324,6 +332,7 @@ class GridRunResult:
     bars_above_grid: int
     bars_below_grid: int
     skipped: dict[str, int]
+    continuation: dict | None = None
 
     def summary_lines(self) -> list[str]:
         """Human-readable digest. Kept here so the CLI stays a thin adapter."""
@@ -333,22 +342,22 @@ class GridRunResult:
             f"capital required     ${self.capital_required_usd:,.2f}",
             f"round trips          {self.round_trips}",
             f"gross captured       ${self.gross_captured_usd:,.2f}",
-            f"fees + slippage      ${self.fees_paid_usd + self.slippage_paid_usd:,.2f}"
-            f"  (fees ${self.fees_paid_usd:,.2f}, slippage ${self.slippage_paid_usd:,.2f})",
-            f"carry                ${self.carry_paid_usd:,.2f}"
-            f"  ({self.carry_bps_per_hour:g} bps/hr on inventory)",
+            (f"fees + slippage      ${self.fees_paid_usd + self.slippage_paid_usd:,.2f}"
+            f"  (fees ${self.fees_paid_usd:,.2f}, slippage ${self.slippage_paid_usd:,.2f})"),
+            (f"carry                ${self.carry_paid_usd:,.2f}"
+            f"  ({self.carry_bps_per_hour:g} bps/hr on inventory)"),
             f"realized P&L         ${self.realized_pnl_usd:,.2f}",
-            f"unmatched inventory  {self.unmatched_inventory_qty:,.6f} base"
-            f" ({len(self.open_lots_at_end)} open lots, force-closed {self.forced_exit_qty:,.6f})",
-            f"fills                {self.buys_filled} buys / {self.sells_filled} sells"
-            f" from {self.orders_placed} placed, {self.orders_cancelled} cancelled",
+            (f"unmatched inventory  {self.unmatched_inventory_qty:,.6f} base"
+            f" ({len(self.open_lots_at_end)} open lots, force-closed {self.forced_exit_qty:,.6f})"),
+            (f"fills                {self.buys_filled} buys / {self.sells_filled} sells"
+            f" from {self.orders_placed} placed, {self.orders_cancelled} cancelled"),
             f"bars outside ladder  {self.bars_above_grid} above / {self.bars_below_grid} below",
-            f"grid   total return  {m.total_return * 100:,.2f}%   "
+            (f"grid   total return  {m.total_return * 100:,.2f}%   "
             f"Sharpe {m.sharpe:,.2f}   maxDD {m.max_drawdown * 100:,.2f}%   "
-            f"final ${m.final_equity:,.2f}",
-            f"hold   total return  {b.total_return * 100:,.2f}%   "
+            f"final ${m.final_equity:,.2f}"),
+            (f"hold   total return  {b.total_return * 100:,.2f}%   "
             f"Sharpe {b.sharpe:,.2f}   maxDD {b.max_drawdown * 100:,.2f}%   "
-            f"final ${b.final_equity:,.2f}",
+            f"final ${b.final_equity:,.2f}"),
         ]
 
 
@@ -690,6 +699,8 @@ def run_grid_backtest(
     carry_bps_per_hour: float = 0.0,
     risk_free_rate: float = 0.0,
     close_at_end: bool = True,
+    continuation: dict | None = None,
+    entries_paused: bool = False,
 ) -> GridRunResult:
     """Run one ladder over one OHLCV series.
 
@@ -700,7 +711,7 @@ def run_grid_backtest(
     """
     costs = CostConfig() if costs is None else costs
     if not isinstance(costs, CostConfig):
-        raise ValueError("costs must be a CostConfig")
+        raise ValueError("costs must be a CostConfig")  # noqa: TRY004 -- retain public validation contract
     costs.validate()
     for name, value in (("initial_capital", initial_capital), ("carry_bps_per_hour", carry_bps_per_hour), ("risk_free_rate", risk_free_rate)):
         if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
@@ -738,17 +749,32 @@ def run_grid_backtest(
     bars_above = 0
     bars_below = 0
 
-    for i in range(n):
+    offset = 0
+    if continuation is not None:
+        from dataclasses import asdict
+        if continuation["binding"] != repr((cfg.to_dict(), initial_capital, interval, asdict(costs), carry_bps_per_hour)):
+            raise ValueError("continuation configuration changed")
+        offset = continuation["cursor"]
+        if int(ts[0]) != continuation["last_ts"] + INTERVAL_SECONDS[interval]:
+            raise ValueError("continuation source gap")
+        for key, value in continuation["book"].items():
+            setattr(book, key, value)
+        book.lots = [Lot(**x) for x in continuation["lots"]]
+        resting = {k: RestingOrder(**v) for k, v in continuation["resting"].items()}
+        skipped = Counter(continuation["skipped"])
+        orders_placed, orders_cancelled, bars_above, bars_below = continuation["counts"]
+    for j in range(n):
+        i = j + offset
         # -- 1. carry on inventory carried into this bar -------------------
-        book.accrue_carry(closes[i], hpb, carry_bps_per_hour)
+        book.accrue_carry(closes[j], hpb, carry_bps_per_hour)
 
         # -- 2/3. fills. Buys first: cash a sell frees must not fund a buy in
         # the same bar, because the intrabar path is unknown.
         for key, order in sorted(resting.items(), key=lambda kv: -kv[1].level):
-            if order.side != SIDE_BUY or order.planned_index >= i:
+            if entries_paused or order.side != SIDE_BUY or order.planned_index >= i:
                 continue
-            if lows[i] <= order.level:
-                if book.buy(order.level, order.qty, int(ts[i]), i):
+            if lows[j] <= order.level:
+                if book.buy(order.level, order.qty, int(ts[j]), i):
                     del resting[key]
                 else:
                     skipped["insufficient-cash"] += 1
@@ -756,13 +782,13 @@ def run_grid_backtest(
         for key, order in sorted(resting.items(), key=lambda kv: kv[1].level):
             if order.side != SIDE_SELL or order.planned_index >= i:
                 continue
-            if highs[i] >= order.level:
+            if highs[j] >= order.level:
                 # `max_open_index=i` is what forbids the same-bar round trip: the
                 # exit may only consume inventory bought on an earlier bar.
                 _, matched = book.sell(
                     order.level,
                     order.qty,
-                    int(ts[i]),
+                    int(ts[j]),
                     i,
                     reason="grid_exit",
                     max_open_index=i,
@@ -785,29 +811,29 @@ def run_grid_backtest(
         # drawdown and return figure would inherit the floor in the flattering
         # direction. Refusing matches the cash guard in `_GridBook.sell`; the two
         # insolvency paths must not disagree.
-        equity[i] = book.equity(closes[i])
-        if equity[i] < -1e-9:
+        equity[j] = book.equity(closes[j])
+        if equity[j] < -1e-9:
             raise RuntimeError(
-                f"bar {i}: equity went negative (${equity[i]:,.6f}) with "
+                f"bar {i}: equity went negative (${equity[j]:,.6f}) with "
                 f"${book.unsettled_carry:,.6f} of carry accrued on open inventory. "
                 "This run models carry but not liquidation, so the curve past this "
                 "bar would describe an account that could not have existed. Lower "
                 "--carry-bps-per-hour, shorten the holding period, or add a "
                 "liquidation model."
             )
-        exposure[i] = (
-            book.inventory_qty * closes[i] / equity[i] if equity[i] > 1e-12 else 0.0
+        exposure[j] = (
+            book.inventory_qty * closes[j] / equity[j] if equity[j] > 1e-12 else 0.0
         )
-        if closes[i] > cfg.upper:
+        if closes[j] > cfg.upper:
             bars_above += 1
-        elif closes[i] < cfg.lower:
+        elif closes[j] < cfg.lower:
             bars_below += 1
 
         # -- 5. re-plan from this close; fillable from the next bar --------
         # Diff desired against resting. An order already on the venue keeps its
         # original `planned_index`, so re-planning cannot reset a rung's fill
         # eligibility and thereby delay it forever.
-        wanted = _plan(cfg, levels, closes[i], book.lots, skipped, level_index)
+        wanted = _plan(cfg, levels, closes[j], book.lots, skipped, level_index)
         desired = {_level_key(o.side, o.level): o for o in wanted}
         for key in list(resting):
             if key not in desired:
@@ -830,7 +856,7 @@ def run_grid_backtest(
         forced_qty = book.inventory_qty
         # No `max_open_index` here: the run is over, so every lot must be closed
         # even one opened on the final bar.
-        book.sell(closes[-1], forced_qty, int(ts[-1]), n - 1, reason="grid_forced_exit")
+        book.sell(closes[-1], forced_qty, int(ts[-1]), offset + n - 1, reason="grid_forced_exit")
         equity[-1] = book.equity(closes[-1])
         exposure[-1] = 0.0
 
@@ -842,7 +868,17 @@ def run_grid_backtest(
         initial_equity=initial_capital,
     )
 
+    from dataclasses import asdict
+    state = {
+        "schema_version": 1, "cursor": offset + n, "last_ts": int(ts[-1]),
+        "binding": repr((cfg.to_dict(), initial_capital, interval, asdict(costs), carry_bps_per_hour)),
+        "book": {k: v for k, v in vars(book).items() if k not in ("costs", "lots", "trades")},
+        "lots": [asdict(x) for x in book.lots],
+        "resting": {k: asdict(v) for k, v in resting.items()},
+        "skipped": dict(skipped), "counts": [orders_placed, orders_cancelled, bars_above, bars_below],
+    }
     return GridRunResult(
+        continuation=state,
         config=cfg.to_dict(),
         metrics=metrics,
         baseline_metrics=baseline_metrics,
@@ -871,3 +907,18 @@ def run_grid_backtest(
         bars_below_grid=bars_below,
         skipped=dict(skipped),
     )
+
+
+def rebind_grid_state(state, cfg, *, initial_capital, interval, costs, carry_bps_per_hour=0.0):
+    """Replace a paused flat ladder's geometry without funding a new account."""
+    import copy
+    from dataclasses import asdict
+
+    if state.get("schema_version") != 1 or state["lots"]:
+        raise ValueError("grid configuration adoption requires a flat canonical account")
+    result = copy.deepcopy(state)
+    result["binding"] = repr((cfg.to_dict(), initial_capital, interval, asdict(costs), carry_bps_per_hour))
+    # Old resting entries belong to the old geometry. The next observed close
+    # plans the replacement ladder; no synthetic bar or fill is introduced.
+    result["resting"] = {}
+    return result

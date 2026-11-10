@@ -478,6 +478,33 @@ def capture(descriptor, *, strategy_id="grid", now=None):
     return data
 
 
+SEGMENT_BARS = 512
+
+
+def rollover(data, checkpoint):
+    """Prepare a bounded next segment; the ledger archives the predecessor atomically."""
+    if (
+        checkpoint is None
+        or len(data["bars"]) < SEGMENT_BARS
+        or checkpoint["cursor"] != data.get("bar_offset", 0) + len(data["bars"])
+    ):
+        return data
+    result = copy.deepcopy(data)
+    result["prior_segment"] = fingerprint({"input": data, "checkpoint": checkpoint})
+    result["bar_offset"] = checkpoint["cursor"]
+    result["origin_close"] = data.get("origin_close", data["bars"][0]["close"])
+    result["segment_start_ts"] = data["bars"][-1]["ts"] + 60
+    result["previous_arrival"] = data["bars"][-1]["last_arrival"]
+    result["bars"] = []
+    result["prospective"]["observations"] = [
+        x
+        for x in data["prospective"]["observations"]
+        if x["observation"]["observed_at"] >= result["segment_start_ts"]
+    ]
+    result["prospective"]["evaluation_ranges"] = []
+    return _seal(result)
+
+
 def advance(data, *, now=None):
     """Pure transition over a read-only page; caller atomically commits input+book."""
     now = time.time() if now is None else now
@@ -546,7 +573,22 @@ def advance(data, *, now=None):
             int(through) // 60 * 60,
             d["start_ts"] + d["max_bars"] * 60,
         )
-        bars = _bars(combined, d, end)
+        segment_d = dict(d, start_ts=result.get("segment_start_ts", d["start_ts"]))
+        end = min(
+            int(now) // 60 * 60,
+            int(through) // 60 * 60,
+            segment_d["start_ts"] + d["max_bars"] * 60,
+        )
+        if (
+            combined
+            and result.get("previous_arrival") is not None
+            and combined[0]["observation"]["observed_at"] - result["previous_arrival"]
+            > d["max_sample_gap_s"]
+        ):
+            raise ManagerError(
+                "source_gap", "Segment boundary lacks continuous observed cadence.", 3
+            )
+        bars = _bars(combined, segment_d, end)
         if bars[: len(data["bars"])] != data["bars"]:
             raise ManagerError("source_mismatch", "A closed reference bar changed.", 3)
         state["observations"] = combined
@@ -578,7 +620,7 @@ def advance(data, *, now=None):
                     "source_high_watermark": page["high_watermark"],
                 }
             )
-        state["evaluated_bars"] = len(bars)
+        state["evaluated_bars"] = result.get("bar_offset", 0) + len(bars)
         result["bars"] = bars
     except ManagerError as exc:
         state["health"] = exc.code

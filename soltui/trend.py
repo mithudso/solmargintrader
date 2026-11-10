@@ -58,6 +58,14 @@ class TrendFollowing:
         self.params = config.to_dict()
         self.holding = False
 
+    def checkpoint_state(self) -> dict:
+        return {"schema_version": 1, "holding": self.holding}
+
+    def restore_state(self, state: dict) -> None:
+        if state.get("schema_version") != 1 or type(state.get("holding")) is not bool:
+            raise ValueError("unsupported trend continuation state")
+        self.holding = state["holding"]
+
     def warmup_bars(self) -> int:
         return self.config.slow_period - 1
 

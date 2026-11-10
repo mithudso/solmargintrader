@@ -43,17 +43,30 @@ def lock_held(path: Path) -> bool:
 
 
 def prospective_tick(ledger, row, generation, *, now=None, before_commit=None):
-    from .oracle_data import advance
+    from .health import entries_paused
+    from .oracle_data import advance, rollover
     from .strategies import evaluate
 
     # The independent heartbeat cannot attest that archive reads or economics
     # are progressing. Fence intent before either can block; atomic progress
     # clears it, including a completed no-data/held-source poll.
     ledger.begin_tick(row["bot_id"], generation)
-    data = advance(row["input"], now=now)
+    data = advance(rollover(row["input"], row["checkpoint"]), now=now)
     checkpoint = row["checkpoint"]
-    if len(data["bars"]) > row["cursor"]:
-        checkpoint = evaluate(BotSpec.from_dict(row["spec"]), data, len(data["bars"]))
+    total = data.get("bar_offset", 0) + len(data["bars"])
+    if total > row["cursor"]:
+        checkpoint = evaluate(
+            BotSpec.from_dict(row["spec"]),
+            data,
+            total,
+            previous=row["checkpoint"],
+            entries_paused=entries_paused(
+                ledger.home, row["bot_id"], row["runtime_id"]
+            ),
+        )
+    elif data.get("prior_segment") != row["input"].get("prior_segment"):
+        # A transition with no new completed bin still binds the same account.
+        checkpoint = dict(checkpoint, fills=[], prior_segment=data.get("prior_segment"))
     ledger.commit_progress(
         row["bot_id"],
         generation,
@@ -84,6 +97,7 @@ def run_worker(home: str, bot_id: str, generation: int, parent_pid: int):
             ledger.heartbeat(bot_id, generation, os.getpid())
             thread = threading.Thread(target=pulse, daemon=True)
             thread.start()
+            from .health import entries_paused
             from .strategies import evaluate
 
             while os.getppid() == parent_pid:
@@ -107,6 +121,10 @@ def run_worker(home: str, bot_id: str, generation: int, parent_pid: int):
                     BotSpec.from_dict(row["spec"]),
                     row["input"],
                     min(row["cursor"] + BARS_PER_TICK, len(row["input"]["bars"])),
+                    previous=row["checkpoint"],
+                    entries_paused=entries_paused(
+                        ledger.home, bot_id, row["runtime_id"]
+                    ),
                 )
                 ledger.commit_tick(bot_id, generation, row["cursor"], state)
                 done.wait(0.05)
