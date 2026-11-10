@@ -2,7 +2,7 @@
 
 Version: 1.1.0
 Delta: v1.0.0 to v1.1.0; distinguish the current 0.6 candidate from the delivered historical M4 0.5 release and align the coordinated package matrix.
-Release status: candidate; independent review, installed acceptance and delivery receipts are recorded in the handoff.
+Release status: check the versioned source, installed acceptance and delivery receipt linked from the handoff.
 
 The manager defaults to paper and disarmed. A draft, an input descriptor, a running
 worker, a research result, a shadow proposal and live admission are separate stages.

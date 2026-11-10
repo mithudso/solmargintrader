@@ -1,6 +1,7 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.3.0
+- Version: 1.3.1
+- Delta: v1.3.0 to v1.3.1; bind final source, installation and delivery gates to the versioned release receipt.
 - Delta: v1.2.0 to v1.3.0; integrate the delivered historical M4 0.5.0 release and advance the current candidate matrix to manager 0.6.0/runtime 0.3.0/ecosystem 0.3.0.
 - Delta: v1.1.1 to v1.2.0; integrate the remaining backend contracts and retain original release history separately.
 - Delta: v1.1.1 to v1.1.2; integrate the M4 research checkpoint with the newer control room and forward package matrix.
@@ -19,11 +20,11 @@ Maintainer: repository owner and the agent implementing the next approved milest
 
 ## Current 0.6 backend handoff
 
-The 0.6 candidate implements M4 research, M5 accounting/health/recovery, canonical
+The 0.6 source implements M4 research, M5 accounting/health/recovery, canonical
 bounded continuation, protected learning and the default daemon daily job, browser
 native delegation and guarded executor admission. Source implementation is separate
 from independent review, installed acceptance and final remote delivery. The current
-release receipt below will record those gates after they pass.
+release receipt records each gate only after it passes.
 
 Use /Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md for the
 current feature map, exact version matrix, defaults, state ownership, reports,
@@ -52,6 +53,31 @@ shadow trades, complete Jupiter costs or a certified live strategy. Missing evid
 retains the incumbent and prevents new live entry admission. The source contains
 no certified executor evidence issuer. The everyday browser installation remains
 separate from isolated Chrome acceptance.
+
+## Current verification and delivery receipt
+
+The machine-specific release record is
+/Users/mitch/.local/state/solbot/releases/0.6.0/delivery-receipt.json.
+Its `status` and `remaining` fields distinguish an active candidate from completed
+delivery. It binds the final source and packaged asset hashes, installed interpreters,
+actual command outcomes, check exit codes, final PR head and remote merge commit.
+The maintained continuation record is
+/Users/mitch/.local/state/solbot/releases/0.6.0/delivery-memory.md.
+A completed receipt supersedes earlier candidate/remaining-step observations.
+
+The release PR is
+https://github.com/mithudso/solmargintrader/pull/194
+Regular environments are /Users/mitch/.venvs/solbot-0.6.0 and
+/Users/mitch/.venvs/solecosystem-0.3.0. The optional executor is
+/Users/mitch/.venvs/executor-0.2.0. The stable CLI changes to the accepted manager
+only after independent installed acceptance. Old environments remain intact.
+
+The current source acceptance includes the two learning recovery repairs: an
+interrupted shadow pair recovers its exact original activation descriptor, and a
+learning authorization binds its canonical manager home before target mutation or
+receipt replay. A restored copy cannot use the original home's authorization.
+The watchdog retires a stalled owned writer even when its SQLite transaction blocks
+journal reads. It retains the account and generation-checked recovery evidence.
 
 ## Historical M4 0.5.0 release
 

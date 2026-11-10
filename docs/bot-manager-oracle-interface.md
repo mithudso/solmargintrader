@@ -1,6 +1,7 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.3.0
+Version: 0.3.1
+Delta: Advance the coordinated remaining-work release to manager 0.6 after concurrent M4 delivery.
 Delta: Add remaining backend commands, bounded reports, runtime schema 5, health/learning and external owner receipts.
 Delta: Add canonical four-family prospective reference operation and strict direct-route quote evidence.
 Delta: Integrated editing release delivered through PR186; 50 installed checks and 167 source files/assets verified.
@@ -18,7 +19,7 @@ at every manager release. A future command or an illustrative UI control is not
 evidence that its backend is available. The implementation epic remains open
 until its required work and applicable acceptance gates actually pass.
 
-## Current 0.5 contract
+## Current 0.6 contract
 
 The release matrix and operating semantics are maintained in
 /Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md.
@@ -101,9 +102,11 @@ Do not edit the SQLite bodies or hashes from a UI.
 
 ## Current access and discovery
 
-The stable executable is `/Users/mitch/.local/bin/solbot`, a symlink to
-`/Users/mitch/.venvs/solbot/bin/solbot`. The regular installed Python is
-`/Users/mitch/.venvs/solbot/bin/python`. The default manager home is
+The stable executable is `/Users/mitch/.local/bin/solbot`. After current-release
+acceptance it selects `/Users/mitch/.venvs/solbot-0.6.0/bin/solbot`; the matching
+regular Python is `/Users/mitch/.venvs/solbot-0.6.0/bin/python`. Verify its actual
+symlink target and loaded identity against the release receipt. Older regular
+environments remain preserved. The default manager home is
 `/Users/mitch/.config/solbot`; isolated clients/tests use `SOLBOT_HOME` explicitly.
 Bare invocation prints help. Ordinary command output is JSON, not an interactive
 menu. A start receipt alone does not prove a running worker; an explicit daemon

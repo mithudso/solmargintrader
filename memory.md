@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 372
+Version: 374
+Delta: v373 to v374; record final source/review passes and frozen regular wheel candidates.
+Delta: v372 to v373; record integrated test gates, full review findings and active repairs.
 Delta: concurrent v351/v371 to v372; preserve both implementation and accepted M4 histories; integrate release0.6.
 Delta: v350 to v351; retain independent review repairs, candidate environments and remaining executor gates.
 Delta: v349 to v350; retain bounded continuation, strict load results and current fanout ownership.
@@ -1592,3 +1594,19 @@ CI42784289157 exposed two concrete missed paths. Linux research test's second ca
 ## Integrated remaining-work release — source validation pending
 
 Concurrent M4 PR192 merged as72819d6 on2026-11-10. Integrated its dependency-free identity helpers, V2 owner discovery, full typed receipt comparison, import-order regression and Linux judge fixture. Preserve its accepted0.5.0 installation evidence and immutable environments. This broader release advances manager0.6.0/research-runtime0.3.0/ecosystem0.3.0; core0.2.0/Oracle0.2.2/executor0.2.0/extension0.6.4 remain. Integration agents staged only their owned semantic conflict resolutions. Executor four reviewed findings repaired in2f2eb26; independent re-review pending. Actual full manager run had one stale schema4 test expectation; expected5 repaired25a157b, focused test passed. Final full integrated tests, regular installation, independent loaded acceptance, whole-branch review, documentation/wiki/index, final PR194 CI/merge and safe cleanup remain. Existing candidate0.5/0.2.2 paths are preliminary task-owned environments, not accepted release proof; use new0.6/0.3 paths. Default demo and stable alias remain preserved.
+
+
+## Cross-milestone review and final test checkpoint
+
+Integration commit f24ad19 preserves M4 and includes executor pending-awareness crash replay fix. Task7 final independent review PASS; executor491offline/5networkdeselected and62authority pass. Final cross-milestone reviewer found two learning P2 recovery cases: shadow-pair retries recompute activation after first-member crash; authorization receipt lacks canonical manager-home binding and can mutate a restored clone before owner reconciliation. Original learning author accounting_reports owns both fixes and regressions (learning.py, owner and ledger method). Health reviewer owns exact owned-PID load fixture and SQLite-lock watchdog fallback; full manager296run had strict load timeout, not accepted. Initial focusedload passes14.0188s but does not erase failure. Source fullOracle76,ecosystem173,extension425,canonical1003(1expectedskip) and Ruff pass. Docs discovery now1457SolTUI/1003canonical/425JS/46mongo=2931 after concurrentM4tests. Affected219SolTUIrun had intermittent experiment-interface temporary-directory/reaper cleanup race; focusedone-testpass does not repair it; route textual lifecycle specialist when slot opens.
+
+New regular candidate manager0.6.0/ecosystem0.3.0/executor0.2.0 install and pipcheck pass; initial parallel wheelbuild collided in build/lib/backtester/strategy_cards/README.md, sequentialmanagerretry passed. Candidates are not final while runtime source changes; reinstall final source before independent loaded verification. OrdinaryChrome26/26 and actualtwo-profile installednative/browser0.6.4 pass, everydayprofile unchanged. Private artifacts /Users/mitch/.local/state/solbot/releases/0.6.0; earlier0.5 preliminarysourceevidence preserved. Owned untracked rootlogs/diffpackages/schema relocated under0.6.0/source-evidence. Current remotePR194 remainsdraft withinitialhead; finishedsource/review/install/docs/index/finalCI/merge stillrequired. No productionhome/researchauthority/producer/key/order change.
+
+
+## Final source accepted; installed gate active
+
+Final productsource2431ed7 includes370c758 SQLite-lock watchdog andc949a4e test reaper teardown. Final fullmanager301tests90.617s exit0; affectedSolTUI219tests46.816s exit0/1expectedcatalogskip; canonical1003exit0/1expectedskip; Oracle76,ecosystem173,JS425,ordinaryChrome26/26,executor491offline/5networkdeselected andRuff pass. Docsdiscovery1457SolTUI/1003canonical/425JS/46mongo=2931 current. FinalwholebranchreviewPASSv1.1.0 after3independentlearningregressions and2watchdogshutdownregressions. BothrecoveryP2sclosed2431ed7. TenexperimentJobLifecyclerepetitions70testspassed, no productionjobchange.
+
+Finalsixregularwheels built once, sharedreadonlywheelset /Users/mitch/.local/state/solbot/releases/0.6.0/wheels withwheel-manifest.json. Frozenmanager0.6/ecosystem0.3/executor0.2 candidates installfromwheels andpipcheck; independentlive-acceptance-verifier owns actual loaded command/sandbox/recovery/refusal gates. No aliaspromotion beforePASS. Acceptancepreparation accidentally invoked index/search.py --text without INDEX_NO_AUTO, causingnewmxbaiembeddingjob; verifier terminatedonlyownedPIDs2464/2492, unloadedonlythatnewmodel andpreservedexistingserver/othermodels. Exactcorrectionmustremaininprivateacceptancereceipt; do notclaimunchangedallruntimestate. Allfurtherlookups useINDEX_NO_AUTO=1. Defaultdemo exacthash/size/mtimeunchanged inpreservation-current-before-alias.json.
+
+Remaining: independentinstalledacceptance, stablealiaspromotion+independentactualidentity, finalofflineindex/wiki/docs checks, finaltask-ownedcommit/push/PR194finalheadCI/merge, remotecontentreceipt, safeprimarysync andownedcleanup. Machine-specificdelivery-receipt.json/delivery-memory.md under0.6.0supersedepremergegateswhencomplete. No realvenuecertification, elapsed7days/30comparabletrades, everydaybrowserupdate orlivecapabilityclaimed.
