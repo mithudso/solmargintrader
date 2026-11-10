@@ -6,9 +6,14 @@ import argparse
 import json
 import sys
 from collections.abc import Sequence
-from pathlib import Path
 
-from .registry import COMMANDS, ERROR_EXIT_CODES, CommandContext, dispatch
+from .registry import (
+    COMMANDS,
+    ERROR_EXIT_CODES,
+    GLOBAL_ARGUMENTS,
+    CommandContext,
+    dispatch,
+)
 
 
 class InputError(Exception):
@@ -40,11 +45,8 @@ def parser() -> argparse.ArgumentParser:
             "https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-quickstart.md"
         ),
     )
-    root.add_argument(
-        "--ecosystem-home",
-        type=Path,
-        help="Read registered external paper trials from this explicit ecosystem home.",
-    )
+    for flags, options in GLOBAL_ARGUMENTS:
+        root.add_argument(*flags, **options)
     subcommands = root.add_subparsers(dest="command", required=True)
     for command in COMMANDS.values():
         child = subcommands.add_parser(
@@ -64,10 +66,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         args = vars(root.parse_args(arguments))
         command = args.pop("command")
-        ecosystem_home = args.pop("ecosystem_home", None)
-        envelope = dispatch(
-            command, args, CommandContext(ecosystem_home=ecosystem_home)
-        )
+        context_args = {
+            options["dest"]: args.pop(options["dest"])
+            for _, options in GLOBAL_ARGUMENTS
+        }
+        envelope = dispatch(command, args, CommandContext(**context_args))
     except InputError:
         envelope = dispatch("__invalid_input__", {})
     print(json.dumps(envelope, sort_keys=True, allow_nan=False))

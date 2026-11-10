@@ -258,6 +258,94 @@ class ManagerEditingIntegrationTests(unittest.TestCase):
             [1, 2, 3],
         )
 
+    def test_two_bot_stable_first_event_cannot_hide_reused_legacy_sequence(self):
+        anchor = self.bot
+        target = self.call("create", strategy="grid", name="target")["bot_id"]
+        self.call(
+            "register-input",
+            identity=target,
+            descriptor=str(self.root / "descriptor.json"),
+        )
+        self.call("start", identity=target)
+        self.call("stop", identity=target)
+        initial = sync(self.home, self.manager)
+        self.assertEqual(initial["sources"]["manager_runtime"]["cursor"], 4)
+        self.call("edit", identity=target, set=["range_pct=20"])
+        self.call("apply", identity=target)
+        current_runtime = self.ledger.get(target)["runtime_id"]
+        with closing(sqlite3.connect(self.ledger.path)) as db, db:
+            db.row_factory = sqlite3.Row
+            archive = db.execute("SELECT * FROM archives").fetchone()
+            body = json.loads(archive["body"])
+            for event in body["events"]:
+                for field in ("runtime_id", "origin_sequence", "origin"):
+                    event.pop(field)
+            db.execute(
+                "UPDATE archives SET body=?,checksum=?",
+                (canonical(body), fingerprint(body)),
+            )
+            latest = dict(
+                db.execute(
+                    "SELECT * FROM events WHERE bot_id=? ORDER BY sequence DESC LIMIT 1",
+                    (target,),
+                ).fetchone()
+            )
+            db.execute("DELETE FROM events WHERE bot_id=?", (target,))
+            for field in ("runtime_id", "origin_sequence", "origin"):
+                db.execute(f"ALTER TABLE events DROP COLUMN {field}")
+            db.execute(
+                "INSERT INTO events VALUES(?,?,?,?,?,?)",
+                (
+                    2,
+                    target,
+                    latest["generation"],
+                    latest["kind"],
+                    latest["cursor"],
+                    latest["at"],
+                ),
+            )
+            db.execute("PRAGMA user_version=3")
+        anchor_event = self.ledger.events(anchor)[0]
+        with self.ledger.connection(True):
+            pass
+        self.assertEqual(self.ledger.events(anchor)[0]["sequence"], 1)
+        self.assertEqual(self.ledger.events(anchor)[0]["at"], anchor_event["at"])
+        self.assertEqual(max(e["sequence"] for e in self.ledger.events(target)), 7)
+        for _ in range(2):
+            result = sync(self.home, self.manager)
+            source = result["sources"]["manager_runtime"]
+            self.assertEqual(source["status"], "unavailable", source)
+            self.assertEqual(source["reason"], "source_journal_replaced")
+            self.assertEqual(source["cursor"], 4)
+            self.assertEqual(source["legacy_reused_sequence_count"], 1)
+            self.assertRegex(source["legacy_reuse_fingerprint"], r"^[0-9a-f]{64}$")
+        mirrored = [
+            e
+            for e in report(self.home, self.manager)["events"]
+            if e["source"] == "manager_runtime"
+        ]
+        self.assertEqual([e["source_sequence"] for e in mirrored], [1, 2, 3, 4])
+        fresh = self.root / "fresh-mirror"
+        result = sync(fresh, self.manager)
+        self.assertEqual(result["sources"]["manager_runtime"]["status"], "available")
+        fresh_events = [
+            e
+            for e in report(fresh, self.manager)["events"]
+            if e["source"] == "manager_runtime"
+        ]
+        self.assertIn(current_runtime, {e["runtime_id"] for e in fresh_events})
+        self.assertEqual([e["source_sequence"] for e in fresh_events], [1, 2, 5, 6, 7])
+        evidence = result["sources"]["manager_runtime"]["legacy_reuse_fingerprint"]
+        self.call("start", identity=target)
+        self.call("stop", identity=target)
+        continued = sync(fresh, self.manager)["sources"]["manager_runtime"]
+        self.assertEqual(continued["status"], "available")
+        self.assertEqual(continued["legacy_reuse_fingerprint"], evidence)
+        self.assertEqual(continued["cursor"], 9)
+        old = sync(self.home, self.manager)["sources"]["manager_runtime"]
+        self.assertEqual(old["status"], "unavailable")
+        self.assertEqual(old["cursor"], 4)
+
     def test_corrupt_schema3_archive_does_not_block_current_stop(self):
         self.schema3_with_reused_sequence()
         with closing(sqlite3.connect(self.ledger.path)) as db, db:
@@ -306,6 +394,12 @@ class ManagerEditingIntegrationTests(unittest.TestCase):
         result = sync(self.home, self.manager)
         self.assertEqual(result["sources"]["manager_runtime"]["status"], "available")
         self.assertEqual(result["sources"]["manager_runtime"]["cursor"], 2)
+        self.assertEqual(
+            result["sources"]["manager_runtime"]["legacy_reused_sequence_count"], 0
+        )
+        self.assertIsNone(
+            result["sources"]["manager_runtime"]["legacy_reuse_fingerprint"]
+        )
         events = [
             e
             for e in report(self.home, self.manager)["events"]

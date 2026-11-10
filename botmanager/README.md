@@ -226,7 +226,9 @@ operations outside the supervisor socket request loop.
 `schema [STRATEGY]` exposes version-1 machine-readable field types, exact defaults,
 units and limits from the validation definitions, cross-field constraints,
 protected identity fields, current runtime/certification limits and arguments
-from the actual command registry. Arbitrage remains unavailable and Council is
+from the actual command registry. Its `global_arguments` section also defines
+root context options such as the opt-in `--ecosystem-home`; the parser uses those
+same definitions. Arbitrage remains unavailable and Council is
 external-only. The schema is a form contract, not certification of live trading.
 
 ## Default sources and semantics
@@ -500,7 +502,15 @@ fresh Jupiter data. Additional recordings need the later prospective-data design
 current and archived runs. Each schema-4 event includes its runtime UUID;
 `origin_sequence` and `origin` distinguish imported legacy rows from new events.
 A schema-3 mirror whose cursor already became ambiguous through prior sequence
-reuse remains unavailable; the manager never resets or silently rebinds it. The local supervisor socket
+reuse remains unavailable; the manager never resets or silently rebinds it.
+Telemetry checks persisted `origin_sequence` values across both legacy-current
+and legacy-archive rows. Reused IDs contribute a stable fingerprint to the source
+marker, even if another bot retains the first event. Source metadata exposes
+`legacy_reused_sequence_count` and `legacy_reuse_fingerprint` (null when no reuse
+exists). A fresh mirror can bind the migrated stream, while a prior ambiguous
+mirror retains its cursor and refuses ingestion. An unambiguous migration keeps
+the original marker. Native events do not change this migration evidence.
+The local supervisor socket
 is mode 0600 with same-user peer checks on macOS/Linux, a 64 KiB request ceiling,
 a bounded listen backlog and monotonic whole-request I/O deadlines (0.2 seconds
 for server receipt/response and one second for client connect/send/receive).

@@ -74,3 +74,34 @@ class EcosystemEditingCliTests(unittest.TestCase):
                 "draft_uses_saved_revision",
             )
             self.assertFalse(ecosystem.exists())
+
+
+class GlobalArgumentContractTests(unittest.TestCase):
+    def test_actual_parser_and_schema_global_arguments_match(self):
+        from botmanager.cli import parser
+        from botmanager.registry import dispatch
+
+        root = parser()
+        actions = [
+            action
+            for action in root._actions
+            if action.option_strings and action.dest != "help"
+        ]
+        schema = dispatch("schema", {})["data"]
+        self.assertIn("global_arguments", schema)
+        definitions = schema["global_arguments"]
+        self.assertEqual(
+            {tuple(action.option_strings) for action in actions},
+            {tuple(argument["flags"]) for argument in definitions},
+        )
+        for action in actions:
+            definition = next(
+                row for row in definitions if row["flags"] == action.option_strings
+            )
+            self.assertEqual(definition["dest"], action.dest)
+            self.assertEqual(definition["type"], action.type.__name__)
+            self.assertEqual(definition["default"], action.default)
+            self.assertEqual(definition["help"], action.help)
+        parsed = root.parse_args(["--ecosystem-home", "/explicit/home", "schema"])
+        self.assertEqual(parsed.ecosystem_home, Path("/explicit/home"))
+        self.assertIsNone(root.parse_args(["schema"]).ecosystem_home)

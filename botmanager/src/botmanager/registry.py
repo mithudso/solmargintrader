@@ -32,6 +32,32 @@ class CommandSpec:
     api_parameters: tuple[str, ...] = ()
 
 
+GLOBAL_ARGUMENTS = (
+    (
+        ("--ecosystem-home",),
+        {
+            "dest": "ecosystem_home",
+            "type": Path,
+            "default": None,
+            "help": "Read registered external paper trials from this explicit ecosystem home.",
+        },
+    ),
+)
+
+
+def _argument_schema(arguments):
+    return [
+        {
+            "flags": list(flags),
+            **{
+                key: value.__name__ if key == "type" else value
+                for key, value in options.items()
+            },
+        }
+        for flags, options in arguments
+    ]
+
+
 def _store(context: CommandContext) -> ManagerStore:
     return ManagerStore(context.home)
 
@@ -208,20 +234,12 @@ def _schema(params, context):
             "edit_starts_worker": False,
             "apply_starts_worker": False,
         },
+        "global_arguments": _argument_schema(GLOBAL_ARGUMENTS),
         "commands": {
             name: {
                 "description": command.description,
                 "api_parameters": list(command.api_parameters),
-                "arguments": [
-                    {
-                        "flags": list(flags),
-                        **{
-                            key: value.__name__ if key == "type" else value
-                            for key, value in options.items()
-                        },
-                    }
-                    for flags, options in command.arguments
-                ],
+                "arguments": _argument_schema(command.arguments),
             }
             for name, command in COMMANDS.items()
         },
