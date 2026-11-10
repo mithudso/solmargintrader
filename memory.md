@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 347
+Version: 349
+Delta: v348 to v349; preserve recovered M4 and accounting source, operational health integration and next fanout.
+Delta: v347 to v348; start all-remaining bot-manager integration with parallel owners.
 Delta: v346 to v347; record on-chain variant evidence, offline tests and network refusal.
 Delta: v345 to v346; record Jupiter documentation and fresh unsigned route evidence.
 Delta: v344 to v345; record proof-trade clarification and verifier refusals.
@@ -1472,3 +1474,13 @@ The owner confirmed the other copy had stopped. Independent recovery-v2 preserve
 Canonical private entry /Users/mitch/dev/solmargintrader/.worktree-recovery points to /Users/mitch/.local/state/solmargintrader/consolidation-01a1c44a/recovery-v2. Its recovery.sqlite3, recover.py, snapshot-summary.json, restoration-proof.json, inventory-receipts.zip and cleanup-receipt.json retain exact content and provenance. Keep the independent147MB rebuilt.git mirror; both repos pin original heads. No missing-source cleanup was attempted after the first Git overwrite. Original staging/reflog/uninventoried local metadata remains unrecoverable; do not claim otherwise.
 
 Hash-preconditioned canonical reconciliation removed12copy-induced M4Pythonfiles plusduplicatedOpenCode and restored6stale/tasktrackedfiles from acceptedmaster4d773dcb. Primarytrackedstateisclean; originaluntrackedcontentremains. DraftPR182and192/branches remain. Only active nestedSolTUIworktree and our delivery worktree remain registered. No production service/install/state changed. Product-runtimechanges are absent; the integratedcatalogtest expands allguide/researchcards and checksduplicateIDs/spec-onlyexclusion.49targetedtests passedwith1expectedskip. Remaining: finalreport/wiki/offlineindexchecks, task-ownedcommit/push/PR/finalheadCI/merge, primaryfastforward preservinguntrackedhashes, and removeonlyourmergedbranch/worktree. Fullreport docs/worktree-consolidation-2026-11-10.md.
+
+
+## Remaining bot-manager implementation — TASK-1230
+
+User requested full remaining-plan implementation as agent fanout. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c447, branch agent-01a1c447-bot-remaining, baseline bd390a4. Primary checkout has77untracked paths and stays intact. Recover M4 source from PR192/e24ad7c, preserving newer ecosystem pins/referral defaults. Remaining: M4 review/acceptance; accounting/reports; health/alerts/backup/pause; long continuation; protected learning; browser registration/controls; guarded executor; final docs/install/source/CI/delivery. Real seven-day/thirty-trade shadow and certified venue evidence stay distinct. Stele TASK-1110 has a prior claim; use TASK-1230 for recovery coordination without force release.
+
+
+## Remaining implementation checkpoint — source only
+
+M4 recovery a3c638a fixed required-participant freshness and same-Python exec sandbox escape. Scoped17research/blind,70owner(1skip),137legacy tests pass; source installed/independent review/CI remain. Accounting64309e1 passed21focused tests. Health root adds separate process/input/evaluation/result states, derived durable alerts, pause/resume generation fencing and new registry command definitions. Root checks:2entry-control,13status,18supervisor tests pass, Ruff clean. No delivery claim: backup/load, continuation, protected learning, browser, executor, review/install/CI/merge remain. Continuation agent owns canonical/worker/ledger/source changes; accounting agent owns backup/tests then learning; M4 agent now owns executor. Preserve production homes and all prior immutable environments.

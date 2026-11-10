@@ -39,7 +39,7 @@ def stalled_prospective_worker(home, bot_id, generation, parent_pid):
 
     from tests.test_oracle_data import START
 
-    def hang(*args):
+    def hang(*args, **kwargs):
         (Path(home) / "prospective-evaluation-entered").write_text("entered")
         while True:
             time.sleep(0.01)
@@ -251,7 +251,10 @@ class SupervisorTests(unittest.TestCase):
             self.start(spec)
         fifth = grid("fifth")
         self.ledger.register(fifth, self.data)
-        with self.assertRaises(ManagerError):
+        with (
+            patch("botmanager.ledger.MAX_INSTANCES", 4),
+            self.assertRaises(ManagerError),
+        ):
             self.start(fifth)
 
     def test_local_socket_dispatch_and_inert_service_status(self):

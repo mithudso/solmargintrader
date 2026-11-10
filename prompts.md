@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 171
+Version: 172
+Delta: v171 to v172; implement remaining bot-manager work with agent fanout.
 Delta: v170 to v171; record additional GoonFi documentation and supplied swap enum.
 Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
 Delta: v168 to v169; clarify that either trade direction can prove execution.
@@ -1672,3 +1673,8 @@ Another copy is running; I’ll stop it
 ```text
 Yes, it has stopped
 ```
+
+
+## 2026-11-10 — remaining bot-manager implementation
+
+Read these files: ~/dev/solmargintrader/2026-11-10-bot-manager-remaining.md  ~/dev/solmargintrader bot-manager-handoff.md /Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md And implement all remaining changes as a fanout of agents

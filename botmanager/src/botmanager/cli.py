@@ -73,5 +73,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         envelope = dispatch(command, args, CommandContext(**context_args))
     except InputError:
         envelope = dispatch("__invalid_input__", {})
-    print(json.dumps(envelope, sort_keys=True, allow_nan=False))
+    if (
+        envelope["ok"]
+        and command == "report"
+        and args.get("format") in ("human", "csv")
+    ):
+        print(envelope["data"]["rendered"])
+    else:
+        print(json.dumps(envelope, sort_keys=True, allow_nan=False))
     return 0 if envelope["ok"] else ERROR_EXIT_CODES.get(envelope["error"]["code"], 2)

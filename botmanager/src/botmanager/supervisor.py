@@ -25,6 +25,7 @@ class Supervisor:
         self.context = multiprocessing.get_context("spawn")
         self.server = None
         self._lock = None
+        self._health_at = 0.0
 
     def open(self):
         if self._lock is not None:
@@ -62,6 +63,9 @@ class Supervisor:
         if self.server is None:
             raise RuntimeError("Supervisor is not open")
         self.server.poll()
+        check_health = time.monotonic() - self._health_at >= 1.0
+        if check_health:
+            self._health_at = time.monotonic()
         for bot_id in self.ledger.ids():
             try:
                 row = self.ledger.get(bot_id)
@@ -79,6 +83,14 @@ class Supervisor:
                     if child and self._terminate(child[0]):
                         self.children.pop(bot_id)
                 continue
+            if check_health:
+                from .health import HealthStore
+
+                try:
+                    HealthStore(self.home).observe(row, now=time.time())
+                except ManagerError:
+                    # The derived alert journal cannot prevent durable stop.
+                    pass
             child = self.children.get(bot_id)
             if row["desired"] == "stopped":
                 if child and self._terminate(child[0]):
@@ -104,7 +116,8 @@ class Supervisor:
                 ):
                     reason = "heartbeat_stale"
                 if reason:
-                    self.ledger.failed(bot_id, generation, reason)
+                    if reason != "generation_revoked":
+                        self.ledger.failed(bot_id, generation, reason)
                     if self._terminate(process):
                         self.children.pop(bot_id)
                 continue

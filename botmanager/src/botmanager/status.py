@@ -609,4 +609,22 @@ def runtime_snapshot(
             "summary": "Independent virtual-account Coinbase reference replay; stopping retains simulated lots.",
             "remedy": "Inspect process health, recorded input and committed cursor independently.",
         }
+        snapshot["explanation"].update(
+            last_completed_evaluation=snapshot["last_completed_evaluation"],
+            latest_decision=snapshot["latest_decision"],
+            blockers=snapshot["blockers"],
+            next_trigger=snapshot["next_trigger"],
+        )
+    from .health import health_snapshot
+
+    snapshot["health"] = health_snapshot(row, now=now)
+    for operation in ("pause_entries", "resume_entries"):
+        supported = active.strategy_id in ("grid", "dca")
+        snapshot["action_capabilities"][operation] = {
+            "available": supported,
+            "reason": "separable_entry_exit_model"
+            if supported
+            else "entry_exit_model_not_separable",
+            "semantics": "Change entry admission; retain account and continue existing exits.",
+        }
     return snapshot
