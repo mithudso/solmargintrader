@@ -113,7 +113,9 @@ this run or reset it silently. A separately named bot has its own virtual accoun
 The complete original request is not finished. The next planned milestone adds
 other strategy runtimes and shared prospective/Solana data. The approved later
 milestones cover blind research, diagnostics, learning, browser integration and
-guarded execution. See the full operations/source-maintenance handoff at
+guarded execution. The separately delivered Oracle component is preserved; its
+prospective feeds are not connected to the manager's grid worker yet.
+See the full operations/source-maintenance handoff at
 `/Users/mitch/dev/solmargintrader/docs/bot-manager-handoff.md`, or its remote copy:
 
 https://github.com/mithudso/solmargintrader/blob/master/docs/bot-manager-handoff.md

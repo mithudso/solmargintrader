@@ -1,9 +1,10 @@
 # solmargintrader
 
-SOL trading research and execution tooling, in eight parts:
+SOL trading research and execution tooling, in nine parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
+| [`oracle/`](oracle/README.md) | Source-labelled market observations, prospective strategy votes, durable history and read-only MCP subscriptions. Never signs or submits orders. | Python 3.13 |
 | [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance grid reference-paper supervisor. Paper/disarmed; bounded Coinbase replay does not certify Jupiter execution. | Python 3.13 |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
 | [`research/`](research/STRATEGIES.md) | Strategy survey, ranked lists, parameter sweeps and the per-bar rule readout, built on the backtester. | Python |

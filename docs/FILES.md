@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `49de66bb` (2026-11-10T02:05:49+00:00). 2845 tracked files, 63.1 MB.
+**Generated** from `index/INDEX.json` at commit `a14f9213` (2026-11-10T02:07:12+00:00). 2869 tracked files, 63.2 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2511 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 394/428 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (161 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2523 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 403/447 Python modules and 60/103 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (162 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 23 files
-- [`docs`](#docs) — 113 files
+- [`docs`](#docs) — 114 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1927 files
 - [`research`](#research) — 206 files
@@ -43,7 +43,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 9 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.claude`](#claude) — 1 files
+- [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.vscode`](#vscode) — 3 files
 - [`botmanager`](#botmanager) — 33 files
@@ -51,6 +51,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 3 files
 - [`mongo`](#mongo) — 18 files
+- [`oracle`](#oracle) — 22 files
 - [`scripts`](#scripts) — 14 files
 - [`skills`](#skills) — 67 files
 - [`tools`](#tools) — 3 files
@@ -106,7 +107,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `AGENTS.md`
 
-`doc` · 28 lines · 1,473 B · description: **curated**
+`doc` · 29 lines · 1,660 B · description: **curated**
 
 **Purpose.** The operative rules for changing this repo. The backtester never gains live-trading capability, no lookahead, costs are never optional, the engine does not touch the network; the extension defaults to dry-run and its risk rails fail closed.
 
@@ -114,7 +115,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `CLAUDE.md`
 
-`doc` · 201 lines · 14,805 B · description: **curated**
+`doc` · 204 lines · 15,319 B · description: **curated**
 
 **Purpose.** Agent-facing companion to AGENTS.md — the same non-negotiables plus the workflow conventions (commit discipline, where numbers may come from, what must be regenerable).
 
@@ -162,7 +163,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 141 lines · 9,234 B · description: **curated**
+`doc` · 142 lines · 9,428 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -210,9 +211,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1086 lines · 205,399 B · description: **extracted**
+`doc` · 1123 lines · 213,156 B · description: **extracted**
 
-**Purpose.** Version: 343 Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch. Delta: v341 to v342; reproduce bare-command failure and begin usable entry/demonstration repair.
+**Purpose.** Version: 345 Delta: v344 to v345; preserve merged Oracle work and the proven solbot startup/demo repair. Delta: v342 to v343; execute the retained bot demo and verify/install the usable startup patch.
 
 **Use.** Read it.
 
@@ -226,9 +227,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1470 lines · 80,175 B · description: **extracted**
+`doc` · 1503 lines · 88,567 B · description: **extracted**
 
-**Purpose.** Version: 168 Delta: v167 to v168; record the failed-startup report and requested working demonstration. Delta: v166 to v167; record the comprehensive bot-manager handoff request.
+**Purpose.** Version: 170 Delta: v169 to v170; preserve the owner usability request and merged Oracle request history. Delta: v167 to v168; record the failed-startup report and requested working demonstration.
 
 **Use.** Read it.
 
@@ -254,7 +255,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-113 files.
+114 files.
 
 #### `docs/API.md`
 
@@ -338,7 +339,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 27850 lines · 1,437,002 B · description: **extracted**
+`doc` · 27858 lines · 1,437,377 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -498,7 +499,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/bot-manager-quickstart.md`
 
-`doc` · 120 lines · 5,727 B · description: **extracted**
+`doc` · 122 lines · 5,857 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0 Delta: Initial short walkthrough after executing create/register/start/daemon/status/stop on this machine. help when run without arguments. Ordinary commands print JSON; `ok: true` means
 
@@ -570,7 +571,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1584 lines · 47,895 B · description: **derived**
+`doc` · 1590 lines · 48,122 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -637,6 +638,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 58 lines · 8,523 B · description: **extracted**
 
 **Purpose.** The Bots tab's **Experiment workbench** keeps complete simulated search evidence. It adds a bounded search editor, candidate/coin/window explorer, observed parameter maps, resumable workers and reported TradingView comparison. It never places an order. Open Bots, choose a bot, then open **Experiment workbench**.
+
+**Use.** Read it.
+
+#### `docs/oracle-optimized-prompt.md`
+
+`doc` · 16 lines · 4,948 B · description: **extracted**
+
+**Purpose.** Create the Oracle for this crypto trading ecosystem. Inspect current code, existing work, the crypto trading and bot-management skills, and relevant llms-explorer concept packs first. Reuse established owners, feeds, strategy implementations, archive contracts and lifecycle evidence. Do not start a competing recorder or change another active task's work.
 
 **Use.** Read it.
 
@@ -25244,7 +25253,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 393 lines · 16,559 B · description: **curated**
+`ci` · 408 lines · 17,138 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -25286,7 +25295,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .claude
 
-1 files.
+2 files.
 
 ### `.claude/agents/`
 
@@ -25295,6 +25304,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 `doc` · 42 lines · 3,732 B · description: **extracted**
 
 **Purpose.** Research agent that scouts Aero (aero.xyz) Slipstream pools on Base for the most likely profitable liquidity positions. It runs the liquidity component's scout, checks the top candidates' tokens and numbers against independent sources, and writes a ranked recommendation.
+
+**Use.** Read it.
+
+#### `.claude/agents/oracle.md`
+
+`doc` · 26 lines · 1,505 B · description: **extracted**
+
+**Purpose.** Inspect Oracle market provenance, prospective strategy votes, archive history, lifecycle guidance and readiness. Use for SOL/USDC price or prediction questions, strategy accuracy, subscription setup, and the next evidence step for a bot. Never signs or places orders.
 
 **Use.** Read it.
 
@@ -26897,6 +26914,222 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class SnapshotAudit`. Depends on `backtester`.
 
 **Use.** `python3 -m pytest mongo/tests/test_snapshot_audit.py -q`
+
+---
+
+## oracle
+
+22 files.
+
+#### `oracle/README.md`
+
+`doc` · 183 lines · 10,311 B · description: **extracted**
+
+**Purpose.** Oracle is a local shadow signal service for SOL/USDC. A single foreground daemon consumes source-labelled observations into a durable historical SQLite archive. It evaluates 14 existing strategy cards prospectively and serves snapshots,
+
+**Use.** Read it.
+
+#### `oracle/__init__.py`
+
+`code-python` · 2 lines · 70 B · description: **extracted**
+
+**Purpose.** Oracle research components; this package does not place orders.
+
+**Use.** `import oracle.__init__`
+
+#### `oracle/__main__.py`
+
+`code-python` · 4 lines · 48 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `import oracle.__main__`
+
+#### `oracle/cli.py`
+
+`code-python` · 205 lines · 7,432 B · description: **extracted**
+
+**Purpose.** Foreground Oracle owner and inert queries. No signing or order entry points.
+
+**Contents.** Defines `default_archive()`, `emit()`, `owner()`, `snapshot()`, `run()`, `class Parser`, `main()`.
+
+**Use.** `python3 oracle/cli.py --help`
+
+#### `oracle/engine.py`
+
+`code-python` · 441 lines · 18,770 B · description: **extracted**
+
+**Purpose.** Prospective, source-bound shadow forecasts; no execution capability.
+
+**Contents.** Defines `SCHEMA_VERSION`, `IDENTITY`, `number()`, `class OracleEngine`.
+
+**Use.** `import oracle.engine`
+
+#### `oracle/feeds.py`
+
+`code-python` · 258 lines · 10,014 B · description: **extracted**
+
+**Purpose.** Read-only market adapters with explicit source and clock semantics. No adapter starts the shared recorder, loads a signing key, or obtains a swap. Jupiter's Price V3 API supplies USD reference prices, not a SOL/USDC execution quote or a push stream. Its response has block IDs but no market-event timestamp.
+
+**Contents.** Defines `SOL_MINT`, `USDC_MINT`, `JUPITER_PRICE_URL`, `MAX_RESPONSE_BYTES`, `class FeedUnavailable`, `_number()`, `_identity()`, `class _NoRedirect`, `_get_json()`, `class RecorderFeed` and 1 more.
+
+**Use.** `import oracle.feeds`
+
+#### `oracle/guidance.py`
+
+`code-python` · 187 lines · 6,297 B · description: **extracted**
+
+**Purpose.** Read-only guide routing and conservative lifecycle/readiness summaries.
+
+**Contents.** Defines `REPO`, `STAGES`, `GUIDES`, `guidance()`, `manager_inventory()`, `readiness()`, `veto()`.
+
+**Use.** `import oracle.guidance`
+
+#### `oracle/mcp-requirements.txt`
+
+`data` · 3 lines · 98 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # The MCP adapter is optional; the observation and strategy engine stay stdlib-first. / mcp==1.30.0
+
+**Use.** Read it.
+
+#### `oracle/pyproject.toml`
+
+`config` · 20 lines · 500 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Configuration; nothing to run.
+
+#### `oracle/server.py`
+
+`code-python` · 325 lines · 11,616 B · description: **extracted**
+
+**Purpose.** Local stdio MCP views over the Oracle archive; never a submission surface.
+
+**Contents.** Defines `VERSION`, `RESOURCE_NAMES`, `EMPTY`, `ENVELOPE_SCHEMA`, `TOOL_SCHEMAS`, `DESCRIPTIONS`, `envelope()`, `encode()`, `class SubscriptionHub`, `build_server()` and 3 more.
+
+**Use.** `python3 oracle/server.py --help`
+
+#### `oracle/store.py`
+
+`code-python` · 108 lines · 4,602 B · description: **extracted**
+
+**Purpose.** Private append-only SQLite Oracle event archive with transactional state.
+
+**Contents.** Defines `canonical()`, `class Store`.
+
+**Use.** `import oracle.store`
+
+#### `oracle/strategies.py`
+
+`code-python` · 123 lines · 4,508 B · description: **extracted**
+
+**Purpose.** Pinned adapters over fourteen existing price-only strategy cards. These are exposure rules reused as prospective directional hypotheses. A flat exposure remains FLAT; it is never silently reinterpreted as a bearish forecast.
+
+**Contents.** Defines `STRATEGY_IDS`, `REPLAY_BARS`, `class StrategySet`. Depends on `backtester`.
+
+**Use.** `import oracle.strategies`
+
+#### `oracle/voting.py`
+
+`code-python` · 115 lines · 3,769 B · description: **extracted**
+
+**Purpose.** Pure prospective-vote aggregation; inputs are not proof of their provenance.
+
+**Contents.** Defines `class Vote`, `aggregate()`.
+
+**Use.** `import oracle.voting`
+
+### `oracle/tests/`
+
+#### `oracle/tests/__init__.py`
+
+`test` · 0 lines · 0 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** `python3 -m pytest oracle/tests/__init__.py -q`
+
+#### `oracle/tests/test_cli.py`
+
+`test` · 73 lines · 2,522 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class CliTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_cli.py -q`
+
+#### `oracle/tests/test_core.py`
+
+`test` · 177 lines · 6,775 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `observation()`, `class CoreTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_core.py -q`
+
+#### `oracle/tests/test_feeds.py`
+
+`test` · 204 lines · 7,638 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class RecorderFeedTests`, `class JupiterFeedTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_feeds.py -q`
+
+#### `oracle/tests/test_guidance.py`
+
+`test` · 61 lines · 2,317 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Engine`, `class GuidanceTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_guidance.py -q`
+
+#### `oracle/tests/test_server.py`
+
+`test` · 175 lines · 6,864 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `HAS_MCP`, `REPO`, `class SubscriptionTests`, `class ProtocolTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_server.py -q`
+
+#### `oracle/tests/test_store.py`
+
+`test` · 47 lines · 1,838 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StoreTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_store.py -q`
+
+#### `oracle/tests/test_strategies.py`
+
+`test` · 77 lines · 2,776 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class StrategyTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest oracle/tests/test_strategies.py -q`
+
+#### `oracle/tests/test_voting.py`
+
+`test` · 71 lines · 2,631 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class VotingTests`.
+
+**Use.** `python3 -m pytest oracle/tests/test_voting.py -q`
 
 ---
 
