@@ -279,29 +279,31 @@ class Supervisor:
             )
 
     def close(self):
+        failure = None
+        owners = list(self.children.items())
+        # Reap every exact owned process before touching SQLite. A frozen
+        # writer can hold even a schema read in its busy timeout; an attempted
+        # pre-kill fence therefore cannot provide bounded owner release.
+        for bot_id, (process, _) in owners:
+            if self._terminate(process):
+                self.children.pop(bot_id)
+                self._watchdogs.pop(bot_id, None)
+            else:
+                failure = ManagerError(
+                    "store_unavailable", "Owned process release remains unavailable.", 4
+                )
         try:
             self.learning_job.close()
         except (OSError, ManagerError):
             # An optional scheduler receipt failure cannot hold worker ownership.
             pass
-        failure = None
-        for bot_id, (process, generation) in list(self.children.items()):
-            # Normally fence first. A frozen writer can prevent that write, so
-            # terminate the owned PID and retry the same conditional fence.
-            fenced = False
+        for bot_id, (_, generation) in owners:
             try:
+                # Retain the captured generation. A later control must never be
+                # overwritten, and an uncommitted owner write rolls back on reap.
                 self._shutdown_fence(bot_id, generation)
-                fenced = True
-            except ManagerError:
-                pass
-            if self._terminate(process):
-                self.children.pop(bot_id)
-                self._watchdogs.pop(bot_id, None)
-            if not fenced:
-                try:
-                    self._shutdown_fence(bot_id, generation)
-                except ManagerError as exc:
-                    failure = exc
+            except ManagerError as exc:
+                failure = exc
         self._flush_failures()
         if self._pending_failures:
             failure = ManagerError(

@@ -1,7 +1,7 @@
 # Task 3 — backup and health/load verification
 
-Version: 1.3.0
-Delta: 1.2.0 -> 1.3.0; make the numerical load test portable without changing production resolver isolation requirements.
+Version: 1.4.0
+Delta: 1.3.0 -> 1.4.0; remove the pre-reap SQLite busy wait from shutdown while retaining conditional generation fences.
 
 Status: source backup implementation and owned tests ready. Controller owns health.py, supervisor/status/control/registry integration and release verification.
 
@@ -74,3 +74,12 @@ Linux CI failed the load fixture because its optimizer child called production `
 Only the test fixture now chooses its judge by platform, following the existing research-test convention. Darwin still runs the actual deny-default sandbox resolver. Other platforms use the pure `decide` function for explicitly numerical, uncertified fixture inputs. Metrics and durable fixture outcome records label this path `pure_numerical_fixture_no_os_isolation` with `os_isolation_claimed: false`; they never claim Linux operating-system isolation. A separate forced-Linux test executes the entire ten-bot/one-real-optimizer fixture through that branch on macOS. Both branches retain canonical training/admission, four active/six queued workers, exact financial crash/restart checks, nonoverlapping exposure checks, honest incumbent retention, clean cancellation and every strict latency assertion.
 
 Both targeted branches passed in32.224s, final exit0; Ruff passed. Native macOS sandbox branch completed2411 cells and measured heartbeat watchdog14.007026s, statusp95 0.012078s, stopack 0.000783s and ownerrelease 0.007192s. Forced-Linux pure numerical branch completed2468 cells and measured heartbeat watchdog14.023086s, statusp95 0.011756s, stopack 0.000783s and ownerrelease 0.007364s. Both reported four active/six queued, three uncertified-reference incumbent retentions and a cancelled final attempt with no final spend. Exact log: `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-load-portable-final.log`. This test-only change does not change installed product source or wheel bindings. Final reviewer inspected the narrow selection/label behavior and found no actionable issue. Controller owns the macOS CI gate and final delivery receipts.
+
+
+## Bounded shutdown ordering — version 1.4.0
+
+Final macOS CI passed the actual sandbox load and strict15-second watchdog checks but failed the exclusive-writer shutdown bound: close took2.405574334s against the unchanged2-second assertion. The log is `/Users/mitch/.local/state/solbot/releases/0.6.0/ci-macos-failed.log`. The prior close implementation attempted a runtime-journal write before reaping the frozen writer. SQLite's busy timeout and scheduler delay therefore preceded the operation that could release that lock.
+
+Shutdown now captures the exact owned process/generation pairs, reaps all those processes before any SQLite operation, and then applies the same generation-conditional shutdown fences. It retains desired intent and accounting checkpoints. A later control generation cannot be overwritten. An uncommitted worker transaction rolls back when the owned process exits. Pending failure writes still retry, and unreconciled writes still return an explicit unavailable error. A process that does not release also produces an explicit unavailable error. No deadline assertion changed.
+
+The new deterministic regression wraps SQLite connection entry with a2.1-second busy-wait simulation whenever the owned process remains in the supervisor. It freezes a real exclusive-lock writer and asserts that this blocking branch is never entered. Before the fix it failed with one pre-reap connection attempt in3.342s, exit1; after the fix it passed together with all18 supervisor tests and the other two shutdown regressions:21 tests in3.620s, exit0. Existing assertions still require shutdown under2seconds and unchanged checkpoint/cursor plus the exact next generation. Ruff passed. Before/final logs: `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-close-order-before.log` and `/Users/mitch/.local/state/solbot/releases/0.6.0/task3-close-order-final.log`. Production supervisor source changed, so the controller must rebuild the manager wheel and independently verify the loaded shutdown behavior before delivery. No production service or old installed alias was changed by these tests.

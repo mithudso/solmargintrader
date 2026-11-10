@@ -598,3 +598,29 @@ class LockedJournalWatchdogTests(unittest.TestCase):
             self.assertFalse(lock_held(home / "supervisor.lock"))
             self.assertIn(spec.bot_id, supervisor._pending_failures)
             self.assertEqual(ledger.get(spec.bot_id), before)
+
+    def test_shutdown_never_enters_sqlite_busy_timeout_before_reaping(self):
+        with tempfile.TemporaryDirectory() as directory:
+            supervisor, ledger, spec, _, before = self.frozen_owner(
+                Path(directory), "EXCLUSIVE"
+            )
+            connection = supervisor.ledger.connection
+            blocked_attempts = []
+
+            def delayed_connection(*args, **kwargs):
+                if spec.bot_id in supervisor.children:
+                    blocked_attempts.append(True)
+                    # Model an overloaded runner's SQLite busy wait. This delay
+                    # must be unreachable until the exact owner is reaped.
+                    time.sleep(2.1)
+                return connection(*args, **kwargs)
+
+            started = time.monotonic()
+            with patch.object(supervisor.ledger, "connection", delayed_connection):
+                supervisor.close()
+            self.assertEqual(blocked_attempts, [])
+            self.assertLess(time.monotonic() - started, 2)
+            after = ledger.get(spec.bot_id)
+            self.assertEqual(after["checkpoint"], before["checkpoint"])
+            self.assertEqual(after["cursor"], before["cursor"])
+            self.assertEqual(after["generation"], before["generation"] + 1)
