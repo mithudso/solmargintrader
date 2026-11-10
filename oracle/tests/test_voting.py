@@ -10,9 +10,14 @@ class VotingTests(unittest.TestCase):
     def result(self, votes):
         return aggregate(votes, now=5, minimum_resolved=10)
 
-    def test_threshold_exclusion_and_recovery(self):
-        self.assertEqual(self.result([self.vote(hits=59)])["status"], "unavailable")
-        self.assertEqual(self.result([self.vote(hits=60)])["signal"], "Strong Buy")
+    def test_accuracy_must_be_strictly_greater_than_fifty_percent(self):
+        exactly_fifty = self.result([self.vote(hits=50)])
+        self.assertEqual(exactly_fifty["status"], "unavailable")
+        self.assertEqual(
+            exactly_fifty["excluded"][0]["reason"],
+            "accuracy_at_or_below_threshold",
+        )
+        self.assertEqual(self.result([self.vote(hits=51)])["signal"], "Strong Buy")
 
     def test_bonus_uses_hits_not_resolutions(self):
         first = self.result([self.vote(hits=100, resolved=110)])["included"][0][

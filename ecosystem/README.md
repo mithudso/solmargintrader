@@ -1,4 +1,4 @@
-# Paper ecosystem control room 0.4.0
+# Paper ecosystem control room 0.4.2
 
 The headless service coordinates the existing F5 Backtester, prospective forward
 trials, per-instrument Oracle archives and Bot Manager. Its independent local
@@ -13,9 +13,9 @@ from a clean source checkout, or use the installed `solecosystem` and
 five installed packages, both strategy catalogs and actual MCP transport. Existing
 completed environments stay immutable; new releases use a new versioned environment.
 
-The current patch candidate uses `/Users/mitch/.venvs/solecosystem-0.4.1` with
-Bot Manager 0.7.1, Oracle 0.2.2, research runtime 0.4.0 and Backtester 0.2.0.
-The previously installed 0.4.0 environment remains immutable until a separate
+The current patch candidate uses `/Users/mitch/.venvs/solecosystem-0.4.2` with
+Bot Manager 0.7.1, Oracle 0.2.3, research runtime 0.4.0 and Backtester 0.2.0.
+The previously installed 0.4.0 and 0.4.1 environments remain immutable until a separate
 authorized upgrade. The managed suite can maintain manager/UI availability independently of research;
 see [managed operations](../docs/bot-manager-managed-suite.md).
 The primary home remains `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`.

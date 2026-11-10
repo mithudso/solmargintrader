@@ -24,7 +24,7 @@ from pydantic import AnyUrl
 from .feeds import validate_instrument
 from .guidance import guidance, readiness, veto
 
-VERSION = "0.2.1"
+VERSION = "0.2.3"
 RESOURCE_NAMES = {
     f"oracle://{name}": name for name in ("market", "predictions", "status")
 }

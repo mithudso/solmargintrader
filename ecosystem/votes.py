@@ -166,6 +166,16 @@ def report(
             raise ValueError("oracle_archive_unavailable")
         engine = ReadOnlyOracle(path, instrument=instrument, archived_versions=True)
         prediction = engine.predictions(now)
+        try:
+            graph = engine.graph_history(limit=240)
+        except (OSError, ValueError, TypeError, sqlite3.Error):
+            graph = {
+                "schema_version": 1,
+                "status": "unavailable",
+                "reason": "graph_history_invalid_or_unavailable",
+                "instrument": instrument,
+                "ticks": [],
+            }
         base["catalog"] = [
             {
                 **item,
@@ -190,6 +200,13 @@ def report(
                 "included": [],
                 "excluded": [],
                 "expires_at": None,
+            },
+            "graph": {
+                "schema_version": 1,
+                "status": "unavailable",
+                "reason": "oracle_archive_unavailable_or_incompatible",
+                "instrument": instrument,
+                "ticks": [],
             },
         }
     votes, disabled = [], []
@@ -242,6 +259,7 @@ def report(
     return {
         **prediction,
         **base,
+        "graph": graph,
         "status": result["status"],
         "reason": result.get("reason"),
         "signal": result["signal"],

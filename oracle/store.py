@@ -28,7 +28,7 @@ class Store:
                 r[0]
                 for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")
             }
-            if version not in (0, 1) or (tables and application != 0x4F52434C):
+            if version not in (0, 1, 2) or (tables and application != 0x4F52434C):
                 raise ValueError("archive_schema_not_supported")
             if application not in (0, 0x4F52434C):
                 raise ValueError("archive_schema_not_supported")
@@ -47,18 +47,40 @@ class Store:
                 CREATE TABLE IF NOT EXISTS resolutions (
                     forecast TEXT PRIMARY KEY REFERENCES forecasts(id),
                     outcome INTEGER, hit INTEGER, resolved_at REAL NOT NULL, body TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS graphdb_ticks (
+                    tick_id TEXT PRIMARY KEY, instrument TEXT NOT NULL, policy_hash TEXT NOT NULL,
+                    bar_index INTEGER NOT NULL, chart_time INTEGER NOT NULL,
+                    observed_at REAL NOT NULL, received_at REAL NOT NULL, price REAL NOT NULL,
+                    observation_id TEXT NOT NULL, market_shape TEXT NOT NULL, aggregate TEXT NOT NULL,
+                    UNIQUE(instrument,policy_hash,bar_index));
+                CREATE TABLE IF NOT EXISTS graphdb_predictions (
+                    tick_id TEXT NOT NULL REFERENCES graphdb_ticks(tick_id),
+                    strategy_id TEXT NOT NULL, strategy_version TEXT NOT NULL,
+                    forecast_id TEXT, direction INTEGER, issued_at REAL, expires_at REAL,
+                    hits INTEGER NOT NULL, resolved INTEGER NOT NULL, accuracy_percent REAL,
+                    vote_weight REAL, vote_eligible INTEGER NOT NULL CHECK(vote_eligible IN (0,1)),
+                    reason TEXT, PRIMARY KEY(tick_id,strategy_id),
+                    CHECK(direction IS NULL OR direction IN (-1,0,1)));
                 CREATE INDEX IF NOT EXISTS observation_time ON observations(observed);
                 CREATE INDEX IF NOT EXISTS forecast_target ON forecasts(target);
+                CREATE INDEX IF NOT EXISTS graphdb_tick_time ON graphdb_ticks(instrument,bar_index);
             """
             for statement in schema.split(";"):
                 if statement.strip():
                     db.execute(statement)
-            for table in ("events", "observations", "forecasts", "resolutions"):
+            for table in (
+                "events",
+                "observations",
+                "forecasts",
+                "resolutions",
+                "graphdb_ticks",
+                "graphdb_predictions",
+            ):
                 for operation in ("UPDATE", "DELETE"):
                     db.execute(
                         f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT,'immutable_archive'); END"
                     )
-            db.execute("PRAGMA user_version=1")
+            db.execute("PRAGMA user_version=2")
             db.execute("PRAGMA application_id=1330791244")
         self.path.chmod(0o600)
 

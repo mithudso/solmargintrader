@@ -5,6 +5,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
+MINIMUM_ACCURACY = 0.50
+
 
 @dataclass(frozen=True)
 class Vote:
@@ -16,7 +18,13 @@ class Vote:
     expires_at: float
 
 
-def aggregate(votes: list[Vote], *, now: float, minimum_resolved: int) -> dict:
+def aggregate(
+    votes: list[Vote],
+    *,
+    now: float,
+    minimum_resolved: int,
+    minimum_accuracy: float = MINIMUM_ACCURACY,
+) -> dict:
     """Aggregate a single instrument and horizon from caller-verified evidence.
 
     A flat vote contributes to the denominator. Agreement is a signed weighted
@@ -31,6 +39,12 @@ def aggregate(votes: list[Vote], *, now: float, minimum_resolved: int) -> dict:
         raise ValueError("invalid clock")
     if type(minimum_resolved) is not int or minimum_resolved < 1:
         raise ValueError("minimum_resolved must be positive")
+    if (
+        type(minimum_accuracy) not in (int, float)
+        or not math.isfinite(minimum_accuracy)
+        or not 0 <= minimum_accuracy < 1
+    ):
+        raise ValueError("minimum_accuracy must be in [0, 1)")
     if len(votes) > 14:
         raise ValueError("at most 14 strategy votes")
     seen: set[str] = set()
@@ -68,8 +82,8 @@ def aggregate(votes: list[Vote], *, now: float, minimum_resolved: int) -> dict:
             reason = "forecast_not_current"
         elif vote.resolved < minimum_resolved:
             reason = "insufficient_evidence"
-        elif vote.hits / vote.resolved < 0.60:
-            reason = "accuracy_below_threshold"
+        elif vote.hits / vote.resolved <= minimum_accuracy:
+            reason = "accuracy_at_or_below_threshold"
         if reason:
             excluded.append({"strategy_id": vote.strategy_id, "reason": reason})
             continue

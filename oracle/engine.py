@@ -11,11 +11,13 @@ from pathlib import Path
 from typing import Any
 
 from .feeds import validate_instrument
+from .graphdb import history as graph_history
+from .graphdb import market_shape, record_tick
 from .store import Store, canonical
 from .strategies import StrategySet
-from .voting import Vote, aggregate
+from .voting import MINIMUM_ACCURACY, Vote, aggregate
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 IDENTITY = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:/ -]{0,199}\Z")
 
 
@@ -47,20 +49,29 @@ class OracleEngine:
         self.instrument = validate_instrument(instrument)
         self.horizon_seconds, self.bar_seconds = horizon_seconds, bar_seconds
         self.max_age, self.minimum_resolved = max_age, minimum_resolved
+        self.minimum_vote_accuracy = MINIMUM_ACCURACY
         self.resolution_tolerance = resolution_tolerance
         self.strategy_set = StrategySet()
         implementation = hashlib.sha256()
-        for name in ("engine.py", "store.py", "strategies.py", "voting.py"):
+        for name in (
+            "engine.py",
+            "store.py",
+            "strategies.py",
+            "voting.py",
+            "graphdb.py",
+        ):
             implementation.update(name.encode())
             implementation.update(Path(__file__).with_name(name).read_bytes())
         self.policy = {
-            "schema_version": 1,
+            "schema_version": SCHEMA_VERSION,
             "instrument": self.instrument,
             "horizon_seconds": horizon_seconds,
             "implementation_sha256": implementation.hexdigest(),
             "bar_seconds": bar_seconds,
             "max_age": max_age,
             "minimum_resolved": minimum_resolved,
+            "minimum_vote_accuracy": MINIMUM_ACCURACY,
+            "vote_threshold_semantics": "strictly_greater_than_minimum",
             "resolution_tolerance": resolution_tolerance,
             "flat_band_bps": 0,
             "window": "all_resolved_in_this_policy",
@@ -271,50 +282,132 @@ class OracleEngine:
         if previous and int(previous[0]) >= bucket:
             return
         features = self._bars(db, bucket)
-        for signal in self.strategy_set.predict(features):
-            if signal["direction"] is None:
-                continue
-            identity = f"{self.policy_hash}:{signal['strategy_id']}:{bucket}"
-            forecast_id = hashlib.sha256(identity.encode()).hexdigest()
-            body = {
-                "schema_version": 1,
-                "forecast_id": forecast_id,
-                "source": observation["source"],
-                "instrument": observation["instrument"],
-                "venue": observation["venue"],
-                "kind": observation["kind"],
-                "strategy_id": signal["strategy_id"],
-                "version": signal["version"],
-                "parameters": signal["parameters"],
-                "parameter_overrides": signal["parameter_overrides"],
-                "parameter_rationale": signal["parameter_rationale"],
-                "card_sha256": signal["card_sha256"],
-                "direction": signal["direction"],
-                "issued_at": now,
-                "expires_at": now + self.horizon_seconds,
-                "horizon_seconds": self.horizon_seconds,
-                "reference_price": observation["price"],
-                "observation_id": observation["event_id"],
-                "feature_cutoff": features[-1]["ts"] + self.bar_seconds,
-                "policy_hash": self.policy_hash,
-                "tradable": False,
-                "prediction_semantics": signal["prediction_semantics"],
-                "upstream_recency_verified": observation["upstream_recency_verified"],
-            }
-            db.execute(
-                "INSERT INTO forecasts VALUES(?,?,?,?,?,?,?,?)",
-                (
-                    forecast_id,
-                    signal["strategy_id"],
-                    signal["version"],
-                    now,
-                    now + self.horizon_seconds,
-                    signal["direction"],
-                    observation["price"],
-                    canonical(body),
-                ),
+        signals = self.strategy_set.predict(features)
+        candidates, votes = [], []
+        for signal in signals:
+            strategy_id = signal["strategy_id"]
+            resolved_row = db.execute(
+                "SELECT count(r.hit),coalesce(sum(r.hit),0) FROM resolutions r JOIN forecasts f ON f.id=r.forecast WHERE f.strategy=? AND f.version=? AND r.resolved_at<=?",
+                (strategy_id, signal["version"], now),
+            ).fetchone()
+            resolved, hits = resolved_row
+            forecast_id = None
+            if signal["direction"] is not None:
+                identity = f"{self.policy_hash}:{strategy_id}:{bucket}"
+                forecast_id = hashlib.sha256(identity.encode()).hexdigest()
+                body = {
+                    "schema_version": 1,
+                    "forecast_id": forecast_id,
+                    "source": observation["source"],
+                    "instrument": observation["instrument"],
+                    "venue": observation["venue"],
+                    "kind": observation["kind"],
+                    "strategy_id": strategy_id,
+                    "version": signal["version"],
+                    "parameters": signal["parameters"],
+                    "parameter_overrides": signal["parameter_overrides"],
+                    "parameter_rationale": signal["parameter_rationale"],
+                    "card_sha256": signal["card_sha256"],
+                    "direction": signal["direction"],
+                    "issued_at": now,
+                    "expires_at": now + self.horizon_seconds,
+                    "horizon_seconds": self.horizon_seconds,
+                    "reference_price": observation["price"],
+                    "observation_id": observation["event_id"],
+                    "feature_cutoff": features[-1]["ts"] + self.bar_seconds,
+                    "policy_hash": self.policy_hash,
+                    "tradable": False,
+                    "prediction_semantics": signal["prediction_semantics"],
+                    "upstream_recency_verified": observation[
+                        "upstream_recency_verified"
+                    ],
+                }
+                db.execute(
+                    "INSERT INTO forecasts VALUES(?,?,?,?,?,?,?,?)",
+                    (
+                        forecast_id,
+                        strategy_id,
+                        signal["version"],
+                        now,
+                        now + self.horizon_seconds,
+                        signal["direction"],
+                        observation["price"],
+                        canonical(body),
+                    ),
+                )
+                self.store.event(db, "prediction", "prediction:" + forecast_id, body)
+                votes.append(
+                    Vote(
+                        strategy_id,
+                        signal["direction"],
+                        hits,
+                        resolved,
+                        now,
+                        now + self.horizon_seconds,
+                    )
+                )
+            candidates.append(
+                {
+                    **signal,
+                    "forecast_id": forecast_id,
+                    "issued_at": now if forecast_id else None,
+                    "expires_at": now + self.horizon_seconds if forecast_id else None,
+                    "hits": hits,
+                    "resolved": resolved,
+                    "accuracy_percent": hits * 100 / resolved if resolved else None,
+                }
             )
-            self.store.event(db, "prediction", "prediction:" + forecast_id, body)
+
+        aggregate_snapshot = aggregate(
+            votes,
+            now=now,
+            minimum_resolved=self.minimum_resolved,
+            minimum_accuracy=self.minimum_vote_accuracy,
+        )
+        included = {
+            row["strategy_id"]: row["weight"] for row in aggregate_snapshot["included"]
+        }
+        excluded = {
+            row["strategy_id"]: row["reason"] for row in aggregate_snapshot["excluded"]
+        }
+        graph_predictions = [
+            {
+                **candidate,
+                "vote_eligible": candidate["strategy_id"] in included,
+                "vote_weight": included.get(candidate["strategy_id"]),
+                "reason": candidate["reason"]
+                or excluded.get(candidate["strategy_id"]),
+            }
+            for candidate in candidates
+        ]
+        aggregate_snapshot.update(
+            {
+                "instrument": self.instrument,
+                "as_of": now,
+                "horizon_seconds": self.horizon_seconds,
+                "percentage_semantics": "signed_weighted_vote_balance_not_probability",
+                "tradable": False,
+            }
+        )
+        record_tick(
+            db,
+            {
+                "tick_id": hashlib.sha256(
+                    f"{self.policy_hash}:graphdb:{self.instrument}:{bucket}".encode()
+                ).hexdigest(),
+                "instrument": self.instrument,
+                "policy_hash": self.policy_hash,
+                "bar_index": bucket,
+                "chart_time": int(observation["observed_at"]),
+                "observed_at": observation["observed_at"],
+                "received_at": observation["received_at"],
+                "price": observation["price"],
+                "observation_id": observation["event_id"],
+                "market_shape": market_shape(features),
+                "aggregate": aggregate_snapshot,
+            },
+            graph_predictions,
+        )
         db.execute("INSERT OR REPLACE INTO metadata VALUES(?,?)", (key, str(bucket)))
 
     def market(self, now: float | None = None) -> dict:
@@ -384,9 +477,10 @@ class OracleEngine:
                         else None,
                         "confidence_semantics": "historical_directional_accuracy_not_profit_probability",
                         "needs_review": resolved >= self.minimum_resolved
-                        and hits / resolved < 0.60,
+                        and hits / resolved <= MINIMUM_ACCURACY,
                         "suggested_next_step": "versioned_shadow_challenger"
-                        if resolved >= self.minimum_resolved and hits / resolved < 0.60
+                        if resolved >= self.minimum_resolved
+                        and hits / resolved <= MINIMUM_ACCURACY
                         else None,
                     }
                 )
@@ -402,7 +496,12 @@ class OracleEngine:
                             body["expires_at"],
                         )
                     )
-        result = aggregate(votes, now=now, minimum_resolved=self.minimum_resolved)
+        result = aggregate(
+            votes,
+            now=now,
+            minimum_resolved=self.minimum_resolved,
+            minimum_accuracy=self.minimum_vote_accuracy,
+        )
         if market["status"] != "available":
             result.update(
                 {
@@ -431,12 +530,32 @@ class OracleEngine:
     def history(self, limit: int = 100, after: int = 0) -> dict:
         return {**self.store.history(limit, after), "instrument": self.instrument}
 
+    def graph_history(self, limit: int = 240) -> dict:
+        with self.store.connection() as db:
+            return graph_history(db, self.instrument, limit)
+
     def status(self) -> dict:
         with self.store.connection() as db:
+            tables = {
+                row[0]
+                for row in db.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                )
+            }
             counts = {
                 table: db.execute(f"SELECT count(*) FROM {table}").fetchone()[0]
-                for table in ("events", "observations", "forecasts", "resolutions")
+                for table in (
+                    "events",
+                    "observations",
+                    "forecasts",
+                    "resolutions",
+                    "graphdb_ticks",
+                    "graphdb_predictions",
+                )
+                if table in tables
             }
+            counts.setdefault("graphdb_ticks", 0)
+            counts.setdefault("graphdb_predictions", 0)
         return {
             "schema_version": 1,
             "instrument": self.instrument,

@@ -1,9 +1,27 @@
 # Work continuation
 
-Version: 383
+Version: 388
+Delta: v387 to v388; fix the packaged zero-lookback chart failure and verify the final wheel in Chrome.
+Delta: v385 to v386; bind graph-shape recording logic into the Oracle evaluator fingerprint and add the root README feature summary.
+Delta: v384 to v385; implement contextual Oracle voting, immutable graph history, chart overlays, compatibility, tests, and installed UI verification; delivery pending.
+Delta: v383 to v384; begin contextual Oracle vote history and chart overlays in an isolated worktree.
 Delta: v382 to v383; verified metadata/FIFO repairs, bounded audit coverage and delivery tail.
 Delta: v381 to v382; start source-backed bootstrap and maintained-wiki audit.
 Delta: v381 to v382; record repo-bootstrapper wiki guidance and concurrent history reconciliation.
+
+## 2026-11-10 — Oracle contextual votes and chart history
+
+The owner requested a strict voting floor above 50 percent, persistent predictions for every strategy and the aggregate at each Oracle tick, and a TradingView chart on the Oracle page with all strategy predictions overlaid. The request is captured verbatim in `prompts.md` version 187. Stele tracks the implementation as TASK-1262, linked as a blocker to the existing Oracle prospective-evaluation task TASK-1173.
+
+The existing Oracle archive is private append-only SQLite. It already stores prospective per-strategy forecasts and resolutions, but `ecosystem/votes.py` recomputes the selected aggregate during reads and does not archive per-tick aggregate/context snapshots. The Oracle page is the ecosystem control-room view. TradingView Advanced Charts is not licensed for this private UI; the repository decision selects vendored Lightweight Charts 5.2.1.
+
+The voting floor changes from the provisional 60 percent rule to accuracy strictly greater than 50 percent. Exactly 50 percent remains ineligible. Missing, stale, expired and insufficiently evidenced predictions still fail closed. Directional agreement and historical accuracy are not profit probabilities. Context fields must use only data known at prediction time, and contextual performance remains descriptive until comparable prospective samples validate it.
+
+The primary checkout has many unrelated pre-existing untracked files. Implementation is isolated in `/Users/mitch/dev/solmargintrader-wt-oracle-1262` on branch `codex/oracle-contextual-forecast-1262`, based on `da2bbcd65f629e4bf0e5ede2cc1518810470a971`. Oracle schema v2 adds immutable `graphdb_ticks` and `graphdb_predictions` rows in the forecast archive transaction. One completed-bar evaluation records all fourteen strategy directions, current resolved counts and weights, all-catalog aggregate, observed price, and prior-completed-bar shape. `/api/oracle` returns at most 240 ticks. The private Oracle page renders the locally vendored Lightweight Charts 5.2.1 bundle, observed price, strategy/aggregate markers, shape details, latest tick rows, and overlay toggles. Exactly 50 percent accuracy is excluded; eligibility requires accuracy strictly above 50 percent and the existing minimum of twenty resolved calls. Quote readers accept archive schema v1 and v2. Read-only v1 archives keep working and report graph history as unrecorded without mutation.
+
+Validation completed: Oracle unittest suite 80 passed; ecosystem unittest suite 180 passed; Ruff clean; OpenAPI JSON, `node --check` for both UI scripts, and `git diff --check` clean. Built Oracle 0.2.3 and Ecosystem 0.4.2 wheels and installed them only under `/tmp/solmargintrader-install-final-1262`. In Chrome, the installed server displayed 86 recorded fixture ticks, all fifteen toggles started enabled, an overlay toggle changed the count to fourteen and restored it, and the console had no chart/CSP errors. Fixture data and the temporary server stayed outside the repository and were stopped after verification. No persistent user service was installed or changed.
+
+Final rerun: Oracle 80 tests, Ecosystem 180 tests, Ruff, JS syntax, OpenAPI JSON, wheel builds, and `git diff --check` pass. `scripts/check_docs.py` passes with `PYTHONPATH=botmanager/src:.` in the existing docs environment (2,949 tests counted, docs agree). Fresh Oracle 0.2.3/Ecosystem 0.4.2 wheels installed in an isolated target and passed Chrome acceptance with four ticks, including zero lookback, 14 strategy rows, 15 initial overlays, toggle off/on, and no console errors; server and tab were closed. The Postman CLI status check already ran earlier; do not rerun it because it created a task-external `.opencode/` artifact in the primary checkout. Next: commit only task-owned files, push and open a PR, wait for CI, merge the final verified tip, sync `master`, clean up this worktree, then complete Stele TASK-1262. Preserve all unrelated untracked files in the primary checkout and the separate UI redesign worktree.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
 

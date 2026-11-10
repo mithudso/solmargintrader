@@ -236,7 +236,7 @@
     },
     "/api/oracle": {
       "get": {
-        "summary": "Selected-voter predictions; abstain on missing evidence",
+        "summary": "Selected-voter predictions and bounded strategy graph history",
         "parameters": [
           {
             "name": "run_id",
@@ -257,7 +257,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Versioned JSON observation or existing action receipt"
+            "description": "Versioned Oracle observation with selected-voter aggregation and up to 240 immutable evaluated-bar ticks. Each tick includes observed price, prior-bar shape, all fourteen strategy directions and the full-catalog aggregate. Signed agreement is not a probability and markers are not price targets. Existing v1 archives report graph history unavailable."
           },
           "400": {
             "description": "Invalid input or conflicting request"

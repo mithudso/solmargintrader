@@ -33,7 +33,7 @@ python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
 ## Current managed-suite candidate gates
 
 The coordinated candidate uses manager 0.7.1, research-runtime 0.4.0 and ecosystem
-0.4.1. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
+0.4.2. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
 and remaining evidence gates separate from the historical M4 0.5.0 release.
 
 Run the separate browser-owner paper gate from the repository root:
