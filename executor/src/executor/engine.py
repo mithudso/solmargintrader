@@ -122,11 +122,19 @@ class Engine:
             raise BadParams("strategy may not be blank")
         with self._swap_lock():
             if not live:
-                if admission is not None:
-                    admission()
-                return self._swap_locked(
-                    token_in, token_out, in_raw, strategy, live, exit_only, (reason or "").strip(), slip
-                )
+                with self.authority.lock():
+                    original_cfg = self.cfg
+                    self.authority.check()
+                    if admission is not None:
+                        admission()
+                    self.cfg = self.authority.effective_config(persist=False)
+                    self.journal = self.authority.journal
+                    try:
+                        return self._swap_locked(
+                            token_in, token_out, in_raw, strategy, live, exit_only, (reason or "").strip(), slip
+                        )
+                    finally:
+                        self.cfg = original_cfg
             from .authority import STRATEGIES, identity
 
             if strategy not in STRATEGIES and not exit_only:
@@ -268,6 +276,36 @@ class Engine:
         if econ:
             raise Refused([f"verifier: {p}" for p in econ])
         if not live:
+            # Dry-run evaluates the same aggregate financial ceilings without
+            # binding an intent, reserving capital or persisting a policy edit.
+            cfg = self.authority.effective_config(persist=False)
+            decision = rails.check_trade(
+                cfg,
+                self.root,
+                self.journal,
+                report,
+                strategy=strategy,
+                live=False,
+                exit_only=exit_only,
+                kill_present=self._kill_present(),
+                native_lamports=native,
+                now=now,
+            )
+            base_evidence["decision"] = decision.to_dict()
+            self.authority.budget(report, native, facts.fee_lamports, exit_only=exit_only, reserve=False)
+            try:
+                self.authority.require_no_pending(None)
+                if self.journal.unresolved():
+                    raise Refused("unresolved shared wallet send")
+            except Refused:
+                return {
+                    "mode": "dry-run",
+                    "sent": False,
+                    "would_send": False,
+                    "blocked_reason": "unresolved_shared_wallet_send_or_request",
+                    "strategy": strategy,
+                    **base_evidence,
+                }
             if strategy:
                 gates.record_dry_run(self.root, cfg, strategy, now)
             self.journal.append("dry_run", f"dry-{uuid.uuid4().hex[:12]}", strategy=strategy, side=decision.side,

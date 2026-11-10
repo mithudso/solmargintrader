@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import time
+
+from .accounting import accounting_snapshot
 from .adapters.executor import ExecutorAdapter, prepare_descriptor
 from .domain import ManagerError
+from .health import entries_paused, health_snapshot
 from .input_commands import read_document
 from .ledger import RuntimeLedger
 from .store import ManagerStore, data_home
@@ -42,6 +46,63 @@ def _request(params, context):
         "timeframe": pinned["bar_seconds"],
         "execution_model": pinned["execution_model"],
     }
+    swap = request.get("swap")
+    if (
+        not isinstance(swap, dict)
+        or type(swap.get("live")) is not bool
+        or type(swap.get("exit")) is not bool
+    ):
+        raise ManagerError(
+            "invalid_input", "Explicit live and exit booleans are required.", 3
+        )
+    health = health_snapshot(row, now=time.time())
+    accounting = accounting_snapshot(row)
+    authorization = {
+        "mode": pinned.get("mode"),
+        "armed": pinned.get("resolved_values", {}).get("armed"),
+        "desired": row.get("desired"),
+        "observed": row.get("observed"),
+        "input_state": health["input"]["state"],
+        "accounting_state": accounting.get("account_scope", "unavailable"),
+        "entries_paused": entries_paused(context.home, spec.bot_id, row["runtime_id"]),
+    }
+    expected["authorization"] = authorization
+    if swap["live"]:
+        if (
+            pinned.get("mode") != "live"
+            or pinned.get("resolved_values", {}).get("armed") is not True
+        ):
+            raise ManagerError(
+                "executor_runtime_disarmed",
+                "A paper or disarmed manager runtime cannot delegate live orders.",
+                3,
+            )
+        if row.get("desired") != "running" or row.get("observed") != "running":
+            raise ManagerError(
+                "executor_runtime_ineligible",
+                "The manager runtime lifecycle is not eligible for live delegation.",
+                3,
+            )
+        if (
+            health["process"]["state"] != "healthy"
+            or health["input"]["state"] != "available"
+            or health["evaluation"]["state"] != "completed"
+            or accounting.get("account_scope") != "funded_wallet_reconciled"
+            or authorization["entries_paused"]
+        ):
+            raise ManagerError(
+                "executor_runtime_ineligible",
+                "Live input, accounting or entry authorization is unavailable.",
+                3,
+            )
+        # The current manager owns virtual paper accounts and has no live owner
+        # authorization implementation. A certificate cannot invent one. Direct
+        # executor tracked exits retain the existing explicit recovery policy.
+        raise ManagerError(
+            "executor_live_authorization_unavailable",
+            "Manager live authorization is unsupported; no live intent was delegated.",
+            3,
+        )
     if any(scope.get(key) != value for key, value in expected.items()):
         raise ManagerError(
             "executor_scope_changed",

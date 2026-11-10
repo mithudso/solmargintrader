@@ -149,3 +149,111 @@ class ExecutorAdapterTests(unittest.TestCase):
                 "executor-reconcile",
             },
         )
+
+
+class ExecutorManagerAuthorizationTests(unittest.TestCase):
+    def fixture(self):
+        from types import SimpleNamespace
+        from uuid import uuid4
+
+        bot_id, runtime_id = str(uuid4()), str(uuid4())
+        pinned = {
+            "strategy_id": "trend",
+            "strategy_version": "sma-crossover-v1",
+            "config_hash": "a" * 64,
+            "config_revision": 1,
+            "bar_seconds": 60,
+            "execution_model": "next_open",
+            "mode": "paper",
+            "resolved_values": {"armed": False},
+        }
+        row = {
+            "spec": pinned,
+            "runtime_id": runtime_id,
+            "generation": 1,
+            "desired": "stopped",
+            "observed": "stopped",
+            "input": {"descriptor": {}},
+            "checkpoint": {},
+            "heartbeat": None,
+            "evaluated": None,
+        }
+        authorization = {
+            "mode": "paper",
+            "armed": False,
+            "desired": "stopped",
+            "observed": "stopped",
+            "input_state": "reference",
+            "accounting_state": "independent_virtual_account_not_funded_wallet",
+            "entries_paused": False,
+        }
+        scope = {
+            "bot_id": bot_id,
+            "runtime_id": runtime_id,
+            "generation": 1,
+            "strategy": "trend",
+            "strategy_version": "sma-crossover-v1",
+            "config_hash": "a" * 64,
+            "revision": 1,
+            "timeframe": 60,
+            "execution_model": "next_open",
+            "authorization": authorization,
+        }
+        return (
+            SimpleNamespace(bot_id=bot_id),
+            row,
+            {"scope": scope, "swap": {"live": False, "exit": False}},
+        )
+
+    def call_boundary(self, spec, row, request):
+        from types import SimpleNamespace
+
+        from botmanager.executor_commands import _request
+
+        with (
+            patch("botmanager.executor_commands.ManagerStore") as store,
+            patch("botmanager.executor_commands.RuntimeLedger") as ledger,
+            patch("botmanager.executor_commands.read_document", return_value=request),
+            patch("botmanager.executor_commands.entries_paused", return_value=False),
+        ):
+            store.return_value.get_spec.return_value = spec
+            ledger.return_value.get.return_value = row
+            return _request(
+                {"request": "/unused.json", "identity": spec.bot_id},
+                SimpleNamespace(home="/nonexistent/manager-fixture"),
+            )
+
+    def test_paper_disarmed_stopped_runtime_never_forwards_live_flag(self):
+        spec, row, request = self.fixture()
+        for exit_only in (False, True):
+            request["swap"].update(live=True, exit=exit_only)
+            with self.assertRaises(ManagerError) as error:
+                self.call_boundary(spec, row, request)
+            self.assertEqual(error.exception.code, "executor_runtime_disarmed")
+
+    def test_preview_binds_actual_authorization_not_client_claims(self):
+        spec, row, request = self.fixture()
+        self.assertEqual(self.call_boundary(spec, row, request), request)
+        request["scope"]["authorization"]["armed"] = True
+        with self.assertRaises(ManagerError) as error:
+            self.call_boundary(spec, row, request)
+        self.assertEqual(error.exception.code, "executor_scope_changed")
+
+    def test_generation_transplant_refuses_before_owner_transport(self):
+        spec, row, request = self.fixture()
+        request["scope"]["generation"] += 1
+        with self.assertRaises(ManagerError) as error:
+            self.call_boundary(spec, row, request)
+        self.assertEqual(error.exception.code, "executor_scope_changed")
+
+    def test_forged_live_spec_stopped_or_reference_runtime_still_refuses(self):
+        spec, row, request = self.fixture()
+        row["spec"].update(mode="live", resolved_values={"armed": True})
+        request["swap"]["live"] = True
+        with self.assertRaises(ManagerError) as error:
+            self.call_boundary(spec, row, request)
+        self.assertEqual(error.exception.code, "executor_runtime_ineligible")
+        row.update(desired="running", observed="running")
+        with self.assertRaises(ManagerError) as error:
+            self.call_boundary(spec, row, request)
+        self.assertEqual(error.exception.code, "executor_runtime_ineligible")

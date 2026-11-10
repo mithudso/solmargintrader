@@ -36,6 +36,15 @@ def request(engine, *, live=False):
             "cost_model": "measured-v1",
             "data_model": "jupiter-measured-v1",
             "owner_identity": identity(engine.cfg),
+            "authorization": {
+                "mode": "paper",
+                "armed": False,
+                "desired": "stopped",
+                "observed": "stopped",
+                "input_state": "reference",
+                "accounting_state": "independent_virtual_account_not_funded_wallet",
+                "entries_paused": False,
+            },
         },
         "swap": {
             "from": "USDC",
@@ -309,22 +318,21 @@ def test_path_validation_manager_bypass_and_non_atomic_execution_refused(cfg, ch
         manager.admit(engine, req)
 
 
-def test_manager_live_fixture_replays_exact_original_receipt(cfg, chain, owner, monkeypatch):
+def test_manager_paper_live_refuses_even_with_certified_fixture(cfg, chain, owner):
     cfg.mode = "live"
     engine = buyer(cfg, chain, owner)
     req = request(engine, live=True)
     certify(engine, req)
-    monkeypatch.setattr(gates, "check_live_allowed", lambda *args: ([], []))
-    receipt = manager.execute(engine, req)
-    assert receipt["sent"] is True
-    assert manager.execute(engine, req) == receipt
-    assert len(chain.sent) == 1
+    engine.key_loader = lambda *args: pytest.fail("paper manager cannot load a key")
+    with pytest.raises(Refused, match="paper or disarmed"):
+        manager.execute(engine, req)
+    assert chain.sent == [] and chain.simulations == 0
 
 
-def test_scoped_evidence_revoked_after_journaling_cannot_send(cfg, chain, owner, monkeypatch):
+def test_executor_admission_callback_revoked_after_journaling_cannot_send(cfg, chain, owner, monkeypatch):
     cfg.mode = "live"
     engine = buyer(cfg, chain, owner)
-    req = request(engine, live=True)
+    req = request(engine)
     path, cert = certify(engine, req)
     monkeypatch.setattr(gates, "check_live_allowed", lambda *args: ([], []))
     append = engine.journal.append
@@ -338,7 +346,16 @@ def test_scoped_evidence_revoked_after_journaling_cannot_send(cfg, chain, owner,
 
     monkeypatch.setattr(engine.journal, "append", revoke)
     with pytest.raises(Refused, match="admission changed"):
-        manager.execute(engine, req)
+        engine.swap(
+            "USDC",
+            "SOL",
+            "1",
+            strategy="trend",
+            live=True,
+            reason="synthetic admission callback",
+            request_id=req["request_id"],
+            admission=lambda: manager.admit(engine, req),
+        )
     assert chain.sent == []
     state = engine.authority.status(req["request_id"])["request"]
     assert state["reserved_usd"] == "0"
@@ -471,5 +488,214 @@ def test_manager_tracked_grid_exit_keeps_existing_exit_semantics(cfg, chain, own
     )
     req["swap"].update({"from": "SOL", "to": "USDC", "amount": "0.01", "exit": True})
     (engine.root / "KILL").write_text("fixture entry stop")
-    assert manager.execute(engine, req)["sent"] is True
-    assert len(chain.sent) == 1
+    with pytest.raises(Refused, match="paper or disarmed"):
+        manager.execute(engine, req)
+    # Deliberate recovery remains the existing owner command, not a live flag
+    # transplanted onto the manager's virtual paper account.
+    result = engine.swap(
+        "SOL", "USDC", "0.01", strategy="grid", live=True, exit_only=True, reason="explicit tracked recovery"
+    )
+    assert result["sent"] is True and len(chain.sent) == 1
+
+
+def test_first_enrollment_anchors_imported_unknown_before_success(cfg, tmp_path, monkeypatch):
+    from executor.journal import Journal
+
+    client = tmp_path / "legacy-client"
+    monkeypatch.setattr(authority, "wallet_root", lambda owner: tmp_path / "fresh-authority")
+    monkeypatch.setattr(authority, "default_client_root", lambda: client)
+    journal = Journal(client / "journal.jsonl")
+    journal.append("intent", "legacy", strategy="trend")
+    journal.append("sending", "legacy", signature="unknown-legacy-signature")
+    wallet = WalletAuthority(cfg, client)
+    wallet.register("100", [{"root": str(client), "aware": True}], True)
+    assert len(wallet.journal.unresolved()) == 1
+    wallet.journal.path.unlink()
+    with pytest.raises(Refused, match="history disappeared"):
+        wallet.check()
+    with pytest.raises(Refused, match="history disappeared"):
+        wallet.register("100", [{"root": str(client), "aware": True}], True)
+
+
+def test_additional_client_import_is_anchored_before_success(cfg, tmp_path):
+    from executor.journal import Journal
+
+    first = WalletAuthority(cfg, tmp_path / "home")
+    other = tmp_path / "legacy-other"
+    journal = Journal(other / "journal.jsonl")
+    journal.append("intent", "legacy", strategy="trend")
+    journal.append("sending", "legacy", signature="another-unknown-signature")
+    wallet = WalletAuthority(cfg, other)
+    wallet.register("100", [{"root": str(other), "aware": True}], True)
+    assert len(first.journal.unresolved()) == 1
+    wallet.journal.path.write_bytes(b"")
+    with pytest.raises(Refused, match="history disappeared"):
+        first.check()
+
+
+def test_enrollment_crash_exact_replay_retains_imported_unknown(cfg, tmp_path, monkeypatch):
+    from executor.journal import Journal
+
+    client = tmp_path / "legacy-client"
+    monkeypatch.setattr(authority, "wallet_root", lambda owner: tmp_path / "fresh-authority")
+    monkeypatch.setattr(authority, "default_client_root", lambda: client)
+    journal = Journal(client / "journal.jsonl")
+    journal.append("intent", "legacy", strategy="trend")
+    journal.append("sending", "legacy", signature="unknown-before-enrollment")
+    wallet = WalletAuthority(cfg, client)
+    write = authority._atomic_write
+
+    def crash(path, body):
+        if path == wallet.policy_path:
+            raise RuntimeError("enrollment crash after anchored import")
+        return write(path, body)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(authority, "_atomic_write", crash)
+        with pytest.raises(RuntimeError, match="enrollment crash"):
+            wallet.register("100", [{"root": str(client), "aware": True}], True)
+    assert len(wallet.journal.unresolved()) == 1
+    with pytest.raises(Refused):
+        wallet.check()
+    wallet.register("100", [{"root": str(client), "aware": True}], True)
+    assert len(wallet.journal.unresolved()) == 1
+    wallet.journal.path.unlink()
+    with pytest.raises(Refused, match="history disappeared"):
+        wallet.check()
+
+
+@pytest.mark.parametrize("field", ["max_position_usd", "max_trade_usd", "daily_loss_stop_usd"])
+def test_observed_tightening_is_sticky_without_reenrolling_first_client(cfg, tmp_path, field):
+    from dataclasses import replace
+
+    first = WalletAuthority(cfg, tmp_path / "home")
+    setattr(cfg.rails, field, 1)
+    assert getattr(first.effective_config().rails, field) == 1
+    defaults = replace(cfg, rails=__import__("executor.config", fromlist=["Rails"]).Rails())
+    second = WalletAuthority(defaults, tmp_path / "new-client")
+    second.register("100", [{"root": str(second.client), "aware": True}], True)
+    assert getattr(second.effective_config().rails, field) == 1
+    assert second._policy()["limits"][field] == 1
+
+
+def test_new_enrollment_reads_tighter_existing_home_config(cfg, tmp_path):
+    from dataclasses import replace
+
+    first = WalletAuthority(cfg, tmp_path / "home")
+    path = first.client / "config.toml"
+    raw = (
+        path.read_text()
+        .replace("max_position_usd = 25.0", "max_position_usd = 1.0")
+        .replace("max_trade_usd = 10.0", "max_trade_usd = 1.0")
+        .replace("daily_loss_stop_usd = 10.0", "daily_loss_stop_usd = 1.0")
+    )
+    path.write_text(raw)
+    second = WalletAuthority(replace(cfg), tmp_path / "new-client")
+    second.register("100", [{"root": str(second.client), "aware": True}], True)
+    assert set(second._policy()["limits"].values()) == {1.0}
+    assert first._policy()["revision"] > 0
+
+
+def test_dry_run_and_live_share_portfolio_refusal_without_dry_reservation(cfg, chain, owner, monkeypatch):
+    cfg.mode = "live"
+    engine = buyer(cfg, chain, owner)
+    wallet = engine.authority
+    wallet.register("1.40", [{"root": str(wallet.client), "aware": True}], True)
+    monkeypatch.setattr(gates, "check_live_allowed", lambda *args: ([], []))
+    engine.key_loader = lambda *args: pytest.fail("financial refusal precedes key loading")
+    policy_before = wallet.policy_path.read_bytes()
+    with wallet._database() as db:
+        before = db.execute("SELECT COUNT(*) FROM requests").fetchone()[0]
+    with pytest.raises(Refused, match="portfolio cap"):
+        engine.swap("USDC", "SOL", "1", strategy="trend")
+    with wallet._database() as db:
+        assert db.execute("SELECT COUNT(*) FROM requests").fetchone()[0] == before
+    assert wallet.policy_path.read_bytes() == policy_before
+    assert not (engine.root / "soak.json").exists()
+    with pytest.raises(Refused, match="portfolio cap"):
+        engine.swap("USDC", "SOL", "1", strategy="trend", live=True, reason="paired live refusal")
+    assert chain.sent == []
+
+
+def test_dryrun_reads_known_tighter_caps_without_persisting_or_reserving(cfg, chain, owner):
+    engine = buyer(cfg, chain, owner)
+    path = engine.authority.client / "config.toml"
+    path.write_text(path.read_text().replace("max_trade_usd = 10.0", "max_trade_usd = 0.5"))
+    before = engine.authority.policy_path.read_bytes()
+    with pytest.raises(Refused, match="max_trade_usd"):
+        engine.swap("USDC", "SOL", "1", strategy="trend")
+    assert engine.authority.policy_path.read_bytes() == before
+    with engine.authority._database() as db:
+        assert db.execute("SELECT COUNT(*) FROM requests").fetchone()[0] == 0
+    assert chain.sent == [] and chain.simulations == 0
+
+
+def test_eligible_looking_manager_claims_still_cannot_issue_live_authorization(cfg, chain, owner):
+    cfg.mode = "live"
+    engine = buyer(cfg, chain, owner)
+    req = request(engine, live=True)
+    req["scope"]["authorization"] = {
+        "mode": "live",
+        "armed": True,
+        "desired": "running",
+        "observed": "running",
+        "input_state": "available",
+        "accounting_state": "funded_wallet_reconciled",
+        "entries_paused": False,
+    }
+    certify(engine, req)
+    with pytest.raises(Refused, match="manager live authorization is unavailable"):
+        manager.execute(engine, req)
+    assert chain.sent == [] and chain.simulations == 0
+
+
+def test_dryrun_missing_authority_never_initializes_it(cfg, chain, owner, tmp_path, monkeypatch):
+    monkeypatch.setattr(authority, "wallet_root", lambda wallet: tmp_path / "not-enrolled")
+    engine = buyer(cfg, chain, owner)
+    with pytest.raises(Refused, match="not enrolled"):
+        engine.swap("USDC", "SOL", "1", strategy="trend")
+    assert not engine.authority.root.exists()
+    assert chain.sent == [] and chain.simulations == 0
+
+
+def test_interrupted_additional_import_blocks_reads_until_exact_replay(cfg, tmp_path, monkeypatch):
+    from executor.journal import Journal
+
+    client = tmp_path / "legacy-client"
+    journal = Journal(client / "journal.jsonl")
+    journal.append("intent", "legacy", strategy="trend")
+    journal.append("sending", "legacy", signature="unknown-during-enrollment")
+    wallet = WalletAuthority(cfg, client)
+    with monkeypatch.context() as patch:
+        patch.setattr(wallet, "save_anchor", lambda: (_ for _ in ()).throw(SystemExit("before anchor")))
+        with pytest.raises(SystemExit, match="before anchor"):
+            wallet.register("100", [{"root": str(client), "aware": True}], True)
+    assert len(wallet.journal.unresolved()) == 1
+    wallet.journal.path.unlink()
+    with pytest.raises(Refused, match="enrollment is incomplete"):
+        WalletAuthority(cfg, tmp_path / "home").check()
+    wallet.register("100", [{"root": str(client), "aware": True}], True)
+    assert len(wallet.journal.unresolved()) == 1
+    wallet.journal.path.unlink()
+    with pytest.raises(Refused, match="history disappeared"):
+        wallet.check()
+
+
+def test_concurrent_home_cannot_enroll_over_newly_observed_tighter_caps(cfg, tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    from dataclasses import replace
+
+    from executor.config import Rails
+
+    first = WalletAuthority(cfg, tmp_path / "home")
+    cfg.rails.max_position_usd = 1
+    second = WalletAuthority(replace(cfg, rails=Rails()), tmp_path / "new-client")
+    with first.lock(), ThreadPoolExecutor(max_workers=1) as pool:
+        with pytest.raises(Refused, match="another shared wallet writer"):
+            pool.submit(first.effective_config).result()
+        assert first.owns_lock
+        assert first.effective_config().rails.max_position_usd == 1
+        with pytest.raises(Refused, match="another shared wallet writer"):
+            pool.submit(second.register, "100", [{"root": str(second.client), "aware": True}], True).result()
+    second.register("100", [{"root": str(second.client), "aware": True}], True)
+    assert second.effective_config().rails.max_position_usd == 1

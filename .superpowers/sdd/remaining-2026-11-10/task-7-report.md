@@ -1,7 +1,7 @@
 # Task 7 — M8 guarded executor integration
 
-Version: 1.0.0
-Delta: implemented shared executor wallet authority, exact caller intents and guarded optional manager delegation; executor 0.1.0 -> 0.2.0 with synchronized uv.lock.
+Version: 1.0.1
+Delta: 1.0.0 -> 1.0.1; repaired all four independent-review findings. Initial implementation: implemented shared executor wallet authority, exact caller intents and guarded optional manager delegation; executor 0.1.0 -> 0.2.0 with synchronized uv.lock.
 
 ## Implemented
 
@@ -37,3 +37,24 @@ The original executor .venv is absent. The controller authorized a dedicated ver
 ## Remaining controller gates and limitations
 
 Perform fresh independent source review, final integrated tests and regular installed outside-checkout acceptance with exact source/asset parity. Include executor 0.2.0 in the regular candidate installation; the editable test environment is not that proof. Verify public executor-setup/capabilities and keyless refusal through the installed manager registry. Real production activation remains blocked without independently certified compatible research/shadow evidence, actual venue/data/soak evidence, explicit wallet enrollment and live configuration/call flags. No autonomous live-readiness claim is established by this source work.
+
+## Independent review remediation — all four findings
+
+The independent review found three P1 gaps and one P2 gap. This correction supersedes earlier statements that manager-originated live fixtures established an available live delegation path. Current manager specifications remain paper/disarmed virtual accounts. The manager and executor now explicitly refuse all manager-originated live requests because no independently verifiable manager live authorization implementation exists. A compatible certificate or live request flag cannot override that refusal. Existing direct executor tracked --exit recovery still follows the original tracked-quantity, unknown-send, verifier and fee/reserve rules; its dedicated regression passes despite KILL. No certificate issuer was introduced.
+
+1. **Imported history:** enrollment writes a durable enrollment.pending marker before import. The marker binds the exact known-client histories, portfolio cap and observed risk ceilings. Enrollment imports idempotently, persists the journal anchor, then publishes policy and clears the marker with directory synchronization. Successful first and additional enrollment therefore cannot have a zero-length anchor over imported sending history. Interrupted enrollment blocks ordinary checks/admission. Exact replay retains the same uncertainty and refuses changed history. Tests delete only the shared journal after first/additional import, interrupt before anchoring and after anchored import, replay enrollment and verify unknown barriers survive or refuse.
+
+2. **Tighter ceilings:** authority observations read the three configured risk ceilings from all known existing client configuration files, retain every previously observed lower ceiling and record client/shared policy revisions. effective_config persists newly observed lower limits under the shared wallet lock; a different thread/home cannot race enrollment over that observation. New enrollment also reads existing clients' tighter files. Pure checks/admissions/dry-run use the conservative observed projection without writing. Capabilities remain inert. Tests reproduce tightening A without re-enrollment, then enrolling B with defaults, for position/trade/daily loss; each stays at the lower ceiling. Concurrent same-object and second-home writer attempts refuse and leave lock ownership intact.
+
+3. **Manager authorization:** manager executor_commands reads actual pinned mode/arming, runtime desired/observed state, process/input/evaluation health, accounting scope, entry pause and generation. Preview scope now contains an exact authorization object with mode, armed, desired, observed, input_state, accounting_state and entries_paused. Client-supplied authorization claims must match actual state. Paper/disarmed live requests never reach owner transport, including transplanted exit flags. Ineligible or hypothetical live runtime states also refuse; the current paper-only model never delegates live. The executor independently checks authorization shape/mode/state and refuses even eligible-looking forged client claims because its manager live authorization issuer is unavailable. Synthetic certificates do not bypass this gate. Raw executor manual recovery remains available under existing restrictions.
+
+4. **Dry-run parity:** dry-run takes the shared writer for a stable read, evaluates shared journal/effective aggregate rails and the same measured portfolio budget, and uses reserve=False. It binds no request, reserves no capital, persists no risk policy edit and initializes no absent authority. Over-cap or unavailable financial evidence refuses before soak credit. Unresolved wallet requests/sends produce would_send=False with an explicit blocker and no soak credit. Paired $1 dry-run/live tests against a $1.40 cap both refuse once measured fees/reserve are included; the dry-run leaves request count, policy bytes and soak unchanged. Known tighter client limits also refuse during dry-run without persistence.
+
+Completed final checks for this correction:
+
+- /Users/mitch/.local/state/solbot/releases/0.5.0/executor-test-venv/bin/pytest -q from the worktree executor directory: **488 passed, 5 network tests deselected**, final exit 0.
+- The same environment's Ruff check over src/tests: exit 0. Ruff format --check: **37 files already formatted**, exit 0.
+- Manager tests.test_executor_adapter with worktree absolute PYTHONPATH: **11 tests passed**, final exit 0. This includes the actual _request boundary reproduction, scope/arming and generation transplants, lifecycle/reference-health refusals and inert setup transport.
+- Ruff check/format --check over the manager adapter, executor command module and adapter tests: exit 0; three files formatted. Owned-path git diff --check: exit 0.
+
+Only source and synthetic temporary test state changed. No real key, network, production wallet home or installed candidate was used. Independent re-review, final regular installed acceptance and delivery remain controller gates.

@@ -31,6 +31,7 @@ SCOPE_FIELDS = {
     "cost_model",
     "data_model",
     "owner_identity",
+    "authorization",
 }
 SWAP_FIELDS = {"from", "to", "amount", "live", "exit", "reason"}
 
@@ -41,6 +42,7 @@ def capabilities(engine):
         **identity(engine.cfg),
         "canonical_strategies": sorted(STRATEGIES - {"path-validation"}),
         "manager_entry_strategies": ["momentum", "trend"],
+        "manager_live_delegation": False,
         "registered": authority.policy_path.is_file(),
         "automatic_live_ready": False,
         "certificate_issuer": "unavailable: independently certified research and shadow receipts required",
@@ -88,12 +90,41 @@ def validate(engine, request):
             or not swap["reason"].strip()
         ):
             raise ValueError
+        authorization = scope["authorization"]
+        if (
+            not isinstance(authorization, dict)
+            or set(authorization)
+            != {"mode", "armed", "desired", "observed", "input_state", "accounting_state", "entries_paused"}
+            or type(authorization["armed"]) is not bool
+            or type(authorization["entries_paused"]) is not bool
+            or any(
+                not isinstance(authorization[key], str) or not authorization[key]
+                for key in ("mode", "desired", "observed", "input_state", "accounting_state")
+            )
+        ):
+            raise ValueError
         tin, tout = resolve(swap["from"]), resolve(swap["to"])
         ui_to_raw(swap["amount"], tin.decimals)
         if scope["mints"] != [tin.mint, tout.mint] or set(scope["mints"]) != {USDC_MINT, WSOL_MINT}:
             raise ValueError
     except (TypeError, ValueError, AttributeError, KeyError):
         raise Refused("invalid exact manager intent scope or measurements") from None
+    if swap["live"]:
+        if authorization["mode"] != "live" or authorization["armed"] is not True:
+            raise Refused("paper or disarmed manager authorization cannot submit live orders")
+        if (
+            authorization["desired"] != "running"
+            or authorization["observed"] != "running"
+            or authorization["entries_paused"] is True
+            or authorization["input_state"] != "available"
+            or authorization["accounting_state"] != "funded_wallet_reconciled"
+        ):
+            raise Refused("manager lifecycle, input or funded accounting is not live eligible")
+        # The current manager protocol has no independently verifiable live
+        # authorization issuer. Reject even forged 'eligible' client claims.
+        raise Refused(
+            "manager live authorization is unavailable; use explicit executor recovery policy for tracked exits"
+        )
     if scope["strategy"] not in STRATEGIES - {"path-validation"}:
         raise Refused("unsupported manager strategy; canonical spot families only")
     if scope["owner_identity"] != identity(engine.cfg):
