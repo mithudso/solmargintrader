@@ -1,7 +1,7 @@
 # Final cross-milestone integration review
 
-Version: 1.1.0
-Delta: 1.0.0 to 1.1.0; independently re-reviewed both P2 repairs in 2431ed7d9990d64f15f7147bdf22c3419012417a and closed both findings. Includes the independently reviewed watchdog repair committed as 370c758. Original whole-branch review covered remote baseline 72819d6fd4dd9678c7b648f4236c24dc4c6b4e08 through f24ad194a541f99e4a6902a5c054d046fb90c48e. Historical reproductions remain below.
+Version: 1.2.0
+Delta: 1.1.0 to 1.2.0; reviewed the test-only Linux load-fixture correction 2dcbcac, required macOS CI load step and interface stdout clarification. Overall source SPEC/QUALITY remains PASS. Previous delta: independently re-reviewed both P2 repairs in 2431ed7d9990d64f15f7147bdf22c3419012417a and closed both findings. Includes the independently reviewed watchdog repair committed as 370c758. Original whole-branch review covered remote baseline 72819d6fd4dd9678c7b648f4236c24dc4c6b4e08 through f24ad194a541f99e4a6902a5c054d046fb90c48e. Historical reproductions remain below.
 
 SPEC COMPLIANCE: PASS for the reviewed source scope. Both recovery/identity findings are resolved. Final full-source checks, regular installed acceptance, CI and remote delivery remain separate controller gates.
 
@@ -77,3 +77,15 @@ Independent targeted execution used /Users/mitch/.venvs/solbot/bin/python with e
 - soltui.tests.test_learning_owner.LearningOwnerTests.test_owner_manager_publication_and_rollback_preserve_account.
 
 All three passed in 1.059 seconds, final process exit 0. The reviewed production paths had no unstaged changes and HEAD was 2431ed7d9990d64f15f7147bdf22c3419012417a. The author's 28-test/Ruff receipt is additional supplied evidence; broad suites were not repeated. The controller's c949a4e test-fixture teardown change is outside these production repairs and introduces no production job implementation change. No additional source finding arose. Both original P2 findings are closed, and the overall source SPEC/QUALITY verdicts are PASS with the release and real-evidence limits above.
+
+## Narrow CI portability review — 2dcbcac
+
+SPEC COMPLIANCE: PASS. CODE QUALITY: PASS. No additional actionable finding.
+
+The failed Linux CI load fixture had called the production macOS-only resolver. Its isolation_unavailable refusal was correct. The correction changes only the explicit numerical test workload: Darwin retains the actual run_judge sandbox, while other platforms select the existing pure decide function and label the result pure_numerical_fixture_no_os_isolation with os_isolation_claimed=false. Production blind.py and blind_judge.py are unchanged and retain the unsupported-host refusal. This is not an unrestricted production fallback.
+
+Both paths reuse the same complete ten-bot/four-worker fixture, canonical optimizer lease, actual simulation cells, crash/restart checks and strict watchdog thresholds. The extra forced-Linux test exercises that branch even on macOS. The reviewed /Users/mitch/dev/solmargintrader-wt-01a1c447/.github/workflows/ci.yml change runs test_load.py explicitly in the macOS PR/push job after installing the headless owners and running actual OS-isolation checks. The Linux fixture does not replace that real sandbox-backed load gate.
+
+Independently verified exact callable identity and evidence labels for both branches with a completed exit-0 probe. Inspected the final /Users/mitch/.local/state/solbot/releases/0.6.0/task3-load-portable-final.log: two tests passed in 32.224 seconds. The test author confirmed the process's final exit_code=0 and Ruff exit 0. Reported watchdog ages were 14.007026 seconds for the actual macOS sandbox and 14.023086 seconds for the forced-Linux numerical fixture; both retained four active/six queued bots, uncertified source outcomes and clean optimizer exit. This load run is supplied evidence inspected by the reviewer; it was not broadly duplicated.
+
+Also checked the interface 0.3.2 clarification against cli.py: human and CSV report formats print rendered text directly, while JSON clients receive the machine envelope. That documentation change introduces no runtime behavior. Packaged wiki asset refresh and current installed asset parity remain the controller/installed-verifier scope. Final CI and remote delivery still require their own successful receipts. No product source, installation or live state changed during this narrow review.

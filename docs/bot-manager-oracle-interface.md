@@ -1,6 +1,7 @@
 # Bot Manager interface and implementation report for Oracle
 
-Version: 0.3.1
+Version: 0.3.2
+Delta: State explicit human/CSV stdout rendering alongside JSON command envelopes.
 Delta: Advance the coordinated remaining-work release to manager 0.6 after concurrent M4 delivery.
 Delta: Add remaining backend commands, bounded reports, runtime schema 5, health/learning and external owner receipts.
 Delta: Add canonical four-family prospective reference operation and strict direct-route quote evidence.
@@ -130,7 +131,9 @@ remote web authentication or graphical API server supplied by this editing relea
 
 ## Versioned commands and receipts
 
-Every ordinary result has exactly `{schema_version, request_id, ok, data, error}`.
+Machine-readable ordinary results have exactly `{schema_version, request_id, ok, data, error}`.
+`report --format human` and `report --format csv` print their selected text format
+directly. Machine clients should select `report --format json`.
 Errors contain `{code, message, retryable, detail_ref}`. Exit 0 means command
 success,2 invalid input,3 missing evidence/capability,4 operational/integrity
 failure. Preserve nulls and their reasons. Unknown schema/capability must refuse

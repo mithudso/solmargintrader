@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 374
+Version: 376
+Delta: v375 to v376; record independent installed acceptance and final CI-only delivery tail.
+Delta: v374 to v375; retain Linux fixture correction and rendered-report contract clarification.
 Delta: v373 to v374; record final source/review passes and frozen regular wheel candidates.
 Delta: v372 to v373; record integrated test gates, full review findings and active repairs.
 Delta: concurrent v351/v371 to v372; preserve both implementation and accepted M4 histories; integrate release0.6.
@@ -1610,3 +1612,17 @@ Final productsource2431ed7 includes370c758 SQLite-lock watchdog andc949a4e test 
 Finalsixregularwheels built once, sharedreadonlywheelset /Users/mitch/.local/state/solbot/releases/0.6.0/wheels withwheel-manifest.json. Frozenmanager0.6/ecosystem0.3/executor0.2 candidates installfromwheels andpipcheck; independentlive-acceptance-verifier owns actual loaded command/sandbox/recovery/refusal gates. No aliaspromotion beforePASS. Acceptancepreparation accidentally invoked index/search.py --text without INDEX_NO_AUTO, causingnewmxbaiembeddingjob; verifier terminatedonlyownedPIDs2464/2492, unloadedonlythatnewmodel andpreservedexistingserver/othermodels. Exactcorrectionmustremaininprivateacceptancereceipt; do notclaimunchangedallruntimestate. Allfurtherlookups useINDEX_NO_AUTO=1. Defaultdemo exacthash/size/mtimeunchanged inpreservation-current-before-alias.json.
 
 Remaining: independentinstalledacceptance, stablealiaspromotion+independentactualidentity, finalofflineindex/wiki/docs checks, finaltask-ownedcommit/push/PR194finalheadCI/merge, remotecontentreceipt, safeprimarysync andownedcleanup. Machine-specificdelivery-receipt.json/delivery-memory.md under0.6.0supersedepremergegateswhencomplete. No realvenuecertification, elapsed7days/30comparabletrades, everydaybrowserupdate orlivecapabilityclaimed.
+
+
+## Final CI portability correction
+
+Finalhead6aadd54 passed10of11activeCIjobs; Linuxbotmanager301tests126.726s failed only loadfixtureoptimizer: productionrun_judge correctlyrefusedisolation_unavailableonunsupportedhost. review_health owns test-onlyplatformselection: macOSusesactualrun_judge; nonmacOSusesexplicitpure numericalfixturedecide, labellednoOSisolationclaim. Productionblindsourceandfailclosedunsupported-host unchanged. Rootaddsactualtest_load macOSCIstepsoOSoptimizer/watchdogloadremainsrequired. FocusedactualmacOSandforcedLinuxfixturechecks precedecommit. FinalCI mustrerunonnewhead; oldfailedheadnotaccepted. AllotheroldheadjobsincludingtargetmacOSpassed.
+
+IndependentinstalledM4ninegroups/secondregularenvironmentidentity+ownercompatibilitytwo groups/allfour2307barcontinuation pass. Operationsharness initiallyassumedhumanCSVstdoutwasJSON; actualCLIcorrectlyrendersplainformats. Privatefailedreceiptpreservedandharnesscorrectedonly. Interface0.3.2clarifiesrenderedstdout. Onlyecosystemwikiassetsrebuiltandinstalledbothenvs, exactv2assetreceiptfinal-assets-installation.json supersedesonlyoriginalecosystemwheelhash. Runtimecodeisunchanged. Installedverifierfinishingoperations/learning/keylessexecutor/cleanup; stablealiasnotyetpromoted.
+
+
+## Independent installed acceptance accepted
+
+Live-acceptance-verifier finalreceipt /Users/mitch/.local/state/solbot/releases/0.6.0/acceptance/installed-acceptance.json iscomplete,24selectedcompletedchecksPASS. Eachregularmanager/ecosystemmatches1680semantic source/assetsfiles; executor22. Publicactualsharedarchiveprepare/register/start/daemon/status/report/health/stop/releasepassedcursor0 honestshort-runlimit; numericalfixturescoverrenderedreports/pause/archive/backuprestore/2307barfourfamilycontinuation/2learningrepairs/sharedwalletguards. ActualOSdenyprobesandunsandboxedcontrolsPASS. Defaultsevenfilesbytes/size/mtimesunchanged; noownedfixtureprocess. Everydaybrowsernotupdated andrealproductionevidence/time/livegatesremainpending. Oldfailedprivateharnessreceiptsretainedwithcorrectedreruns.
+
+NarrowportableloadactualmacOS+forcedLinuxnumericalfixtures2tests32.224sPASS, strict15sunchanged; source-onlytestcorrectionneverchangesproductionblindisolation. RootrequiresnewfinalheadCIonPR194beforemerge, stablealiaspromotion+independentaliasreceipt, remotecontentverification, safeprimarysync andonlyownedworktree/branchcleanup. Finalprivate delivery-receipt.json/delivery-memory.md supersedes thispremergecheckpoint afteractualdelivery. Preserveunrelated.opencode archiveandactualfolderoutsideownedworktreebeforecleanup.
