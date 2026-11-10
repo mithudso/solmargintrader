@@ -897,6 +897,7 @@ COMMANDS = {
     "help": CommandSpec("help", "Show commands and current capability limits.", _help),
 }
 from .browser_commands import command_specs as browser_command_specs
+from .diagnostics_commands import command_specs as diagnostics_command_specs
 from .executor_commands import command_specs as executor_command_specs
 from .health_commands import command_specs as health_command_specs
 from .learning_commands import command_specs as learning_command_specs
@@ -912,6 +913,7 @@ COMMANDS.update(
             *learning_command_specs(CommandSpec),
             *executor_command_specs(CommandSpec),
             *browser_command_specs(CommandSpec),
+            *diagnostics_command_specs(CommandSpec),
             *operations_command_specs(CommandSpec),
         )
     }

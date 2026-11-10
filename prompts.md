@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 187
+Version: 189
+Delta: v188 to v189; record complete implementation status and the validated resumable sweep run.
+Delta: v187 to v188; capture all-strategy coin sweeps, Council entry verification, and a solbot troubleshooting bundle.
 Delta: v186 to v187; capture contextual Oracle voting, per-tick graph history, and strategy overlays.
 Delta: v185 to v186; record authorized repo-bootstrapper execution.
 Delta: v184 to v185; record repo-bootstrapper wiki requirement.
@@ -8,6 +10,14 @@ Delta: v184 to v185; record repo-bootstrapper wiki requirement.
 ## 2026-11-10 — Oracle contextual votes and chart history
 
 For the voting, make the 60% limit to vote actually great than 50%, I have the feeling that the different strategies are contextually good if given the right graph shape for the current period. Add a graphdb and record what the predictions were for each strategy at each tick, including the aggregate. Also on the Oracle page show a tradingview graph with all of the strategies overlayed on it.
+
+## 2026-11-10 — broad strategy configuration sweep and Council entry check
+
+Write a script to backtest every strategy, on every coin, with at least 10 different configuration options each, and record the results. This is clearly a huge task, so if there is something we can do to speed up batch processing do that. When we have our winners then we will do forward testing. Also look at the council bot code, and make sure it would ever trigger a trade, right now it seems like it won't.
+
+## 2026-11-10 — solbot troubleshooting bundle
+
+Also my friend is troubleshooting this and is having some errors, add a command to the solbot to download a set of troubleshooting and diagnostic data and to do some basic checks on the setup.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
 

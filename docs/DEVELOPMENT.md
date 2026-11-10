@@ -70,7 +70,27 @@ python3 research/decide.py --data data/ZEC_1d.csv --json
 python3 research/sweep.py            # parameter sweeps
 python3 research/cpcv_sweep.py       # CPCV, with the interpretation guard
 python3 research/verify_numbers.py   # re-derives every figure quoted in the research docs
+
+# Parallel, resumable CPCV across every locally cached coin and buildable strategy card:
+python3 research/strategy_config_sweep.py --plan
+python3 research/strategy_config_sweep.py --workers 8
 ```
+
+The config sweep does not fetch data. It discovers cached 1m/1h/1d coin files,
+aggregates minute-only inputs into complete UTC 1h/1d bars when that interval has
+enough complete buckets, uses each series' longest continuous window, and writes an append-only `results.jsonl` plus a
+provenance manifest and OOS CPCV shortlist under
+`~/.local/share/solmargintrader/research/strategy-config-sweep`. Each result is
+flushed immediately, so rerunning the same command resumes. Use `--limit N` for
+a bounded run. Parameterless cards get clearly labelled execution-sensitivity
+cases to reach ten distinct configurations; these do not pretend to tune the
+strategy itself. The shortlist requires at least ten trades and is not a
+forward-test authorization or proof of profitability.
+
+Historical CPCV evaluation sets `min_confidence=0` because each isolated fold
+starts without prior resolved predictions, so the prospective confidence gate
+cannot warm up inside that fold. This exception applies only to historical
+research; paper and forward testing retain the configured confidence gate.
 
 `verify_numbers.py` exiting 0 is the gate on research prose. Run it after editing any
 document that quotes a number.
@@ -136,7 +156,7 @@ Run all of these before claiming a change works:
 
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1003 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1466 tests (~840s, optional)
+python3 -m unittest discover -s soltui/tests -t .       # 1467 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE

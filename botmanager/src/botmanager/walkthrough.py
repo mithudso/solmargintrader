@@ -43,6 +43,13 @@ STAGES = (
         ),
     ),
     Stage(
+        "1b. Package troubleshooting data for support",
+        "Creates a private local ZIP in Downloads with setup checks and bounded component health. "
+        "It excludes raw logs, configuration, environment values, wallet data and account history; "
+        "review it before sharing. Nothing is uploaded.",
+        ("solbot diagnostics",),
+    ),
+    Stage(
         "2. Enable persistent availability, then find/open the UI",
         "Run after reviewing stage 1. stack install refuses a competing legacy supervisor; "
         "migrate only its verified service, as described in stage 12. On macOS the user LaunchAgent "
