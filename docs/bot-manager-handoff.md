@@ -1,7 +1,10 @@
 # Standalone Solbot manager: implementation and operations handoff
 
-- Version: 1.2.0
+- Version: 1.3.0
+- Delta: v1.2.0 to v1.3.0; integrate the delivered historical M4 0.5.0 release and advance the current candidate matrix to manager 0.6.0/runtime 0.3.0/ecosystem 0.3.0.
 - Delta: v1.1.1 to v1.2.0; integrate the remaining backend contracts and retain original release history separately.
+- Delta: v1.1.1 to v1.1.2; integrate the M4 research checkpoint with the newer control room and forward package matrix.
+- Delta: v1.1.0 to v1.1.1; record actual PR188 delivery and full final-head manager checks.
 - Delta: v1.1.0 to v1.1.1; link the concrete remaining-work plan and distinguish the M4 source checkpoint from delivery.
 - Delta: v1.0.5 to v1.1.0; describe milestone 3 canonical strategies, shared prospective input and quote evidence.
 - Delta: v1.0.4 to v1.0.5; record integrated editing delivery and coordinated five-package maintenance.
@@ -14,15 +17,15 @@
 
 Maintainer: repository owner and the agent implementing the next approved milestone. Review this document whenever a command, schema, execution capability or installed package changes.
 
-## Current 0.5 backend handoff
+## Current 0.6 backend handoff
 
-The 0.5 candidate implements M4 research, M5 accounting/health/recovery, canonical
+The 0.6 candidate implements M4 research, M5 accounting/health/recovery, canonical
 bounded continuation, protected learning and the default daemon daily job, browser
 native delegation and guarded executor admission. Source implementation is separate
 from independent review, installed acceptance and final remote delivery. The current
 release receipt below will record those gates after they pass.
 
-Use /Users/mitch/dev/solmargintrader/docs/bot-manager-0.5-operations.md for the
+Use /Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md for the
 current feature map, exact version matrix, defaults, state ownership, reports,
 backup/restore and remaining data/time/venue gates. Use
 /Users/mitch/dev/solmargintrader/docs/bot-manager-quickstart.md for the executed
@@ -30,15 +33,16 @@ first-use workflow and
 /Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md for the
 current client contract. The older sections below are historical through 0.4.0;
 their old worktree paths, package versions and unfinished-milestone descriptions
-do not describe the 0.5 candidate.
+do not describe the 0.6 candidate.
 
 Default manager state remains /Users/mitch/.config/solbot. Candidate installation
 uses a fresh regular environment; old immutable environments, existing producers,
 canonical research histories and the stopped default demo remain preserved.
 
-Current first-party versions: manager 0.5.0, backtester 0.2.0, research-runtime
-0.2.0, Oracle 0.2.2 and ecosystem 0.2.2. Executor 0.2.0 is optional and retains
-its own environment. Runtime schema 5 fences older writers while preserving
+Current first-party versions: manager 0.6.0, backtester 0.2.0, research-runtime
+0.3.0, Oracle 0.2.2 and ecosystem 0.3.0. Executor 0.2.0 is optional and retains
+its own environment. The extension source is version 0.6.4; the everyday browser
+installation is not implicitly updated by source or isolated-profile acceptance. Runtime schema 5 fences older writers while preserving
 inert old-schema reads. Public commands and report schemas come from the manager
 registry; no UI supplies its own financial or execution authority.
 
@@ -48,6 +52,20 @@ shadow trades, complete Jupiter costs or a certified live strategy. Missing evid
 retains the incumbent and prevents new live entry admission. The source contains
 no certified executor evidence issuer. The everyday browser installation remains
 separate from isolated Chrome acceptance.
+
+## Historical M4 0.5.0 release
+
+The concurrent M4 research release was delivered through
+https://github.com/mithudso/solmargintrader/pull/192
+It reached the remote default branch at `72819d6fd4dd9678c7b648f4236c24dc4c6b4e08` before this
+0.6 candidate was integrated. Its manager 0.5.0 release is historical evidence for
+M4; it does not establish installed acceptance or delivery of the newer accounting,
+continuation, learning, browser and executor changes in this candidate.
+
+The retained pre-M4 handoff below records its then-current milestone state. Its
+statements that M4 integration or later milestones remained unfinished are historical,
+not the current 0.6 feature map. The original PR188 delivery evidence, package
+observations and acceptance receipts remain unchanged below.
 
 ## Historical handoff through 0.4.0
 
@@ -124,6 +142,7 @@ The UI control-room findings were incorporated as backend contracts. A future UI
 | PR180 | Milestone 2: persistent concurrent grid reference-paper runtime, stable packaging and explicit launchd lifecycle | https://github.com/mithudso/solmargintrader/pull/180 |
 | PR184 | Useful bare-command help and the actual retained demonstration | https://github.com/mithudso/solmargintrader/pull/184 |
 | PR186 | Immutable editing, explicit safe adoption and schema 4 shared telemetry | https://github.com/mithudso/solmargintrader/pull/186 |
+| PR188 | Canonical four-family reference workers, shared prospective input and strict directed quote evidence | https://github.com/mithudso/solmargintrader/pull/188 |
 
 M1 merge: `4a65a06bf0d5968f56ab861deb2d588aefe42f2d`. M2 merge: `2810f4b23cbd7842dcf03924608e7cb758836ee8`. The M2 reviewed product source was `39e0c262d715fe6d9ec2e877a3a9cabdf3eceb9f`; subsequent changes repaired one test fixture and updated release records, without changing accepted runtime modules.
 
@@ -641,7 +660,7 @@ https://github.com/mithudso/solmargintrader/pull/186
 
 ### Milestone 3 source and installed evidence
 
-Reviewed source is bfc6d2f479a5765937eed651430c13bd3eea3731, including initial 18aa3c70 and first fix da2cae09. Completed checks passed: 168 manager tests before the final status repair, 1,002 canonical tests, 68 Oracle tests and 8 Trend tests. The narrow final repair passed 31 covering tests; final-head repository CI independently runs the complete current manager suite. Ruff and formatting passed.
+Reviewed source is bfc6d2f479a5765937eed651430c13bd3eea3731, including initial 18aa3c70 and first fix da2cae09. Completed checks passed: 168 manager tests before the final status repair, 1,002 canonical tests, 68 Oracle tests and 8 Trend tests. The narrow final repair passed 31 covering tests; final-head repository CI passed the complete 171-test manager suite. Ruff and formatting passed.
 
 Review caught a missing prospective tick-intent marker, inconsistent inner routes that could produce a false conditional cycle, and lost price-impact data. Fixes added actual hung-worker recovery coverage, explicit direct-route reconciliation and exact impact retention. Real installed acceptance then found completed source-schema-2 status reading the old engine key. Eight family/mode cases reproduced the CLI failure; the versioned mapper now reads the pinned identity and preserves old schema-1 labels. The initial failed report remains preserved instead of being relabelled as passing.
 
@@ -722,7 +741,7 @@ INDEX_NO_AUTO=1 /Users/mitch/.venvs/solmargintrader-docs/bin/python /Users/mitch
 
 Also test regular installed imports from outside the checkout; source `PYTHONPATH` is development/test support, not a deployment dependency. If canonical economics change, run affected backtester suites and Python/extension grid parity. If owner registry commands change, maintain `/Users/mitch/dev/solmargintrader/soltui/tests/bridge_support.py` and bridge parity checks. If service/worker behavior changes, independent installed fixture acceptance remains required; unit mocks cannot replace it.
 
-The root documentation gate discovers 1,002 backtester, 1,405 SolTUI, 408 extension and 46 mongo tests, total 2,861. The separate manager suite is not included in that legacy total. The full SolTUI suite is optional in normal CI; two skips in M2 CI were the full SolTUI suite and informational Jupiter endpoints, not failed required jobs.
+The root documentation gate discovers 1,002 backtester, 1,434 SolTUI, 408 extension and 46 mongo tests, total 2,890. The separate manager suite is not included in that legacy total. The full SolTUI suite is optional in normal CI; two skips in M2 CI were the full SolTUI suite and informational Jupiter endpoints, not failed required jobs.
 
 Regenerate tracked metadata only after staging new/resolved paths. Run the existing offline generators `/Users/mitch/dev/solmargintrader/index/build.py all`, `/Users/mitch/dev/solmargintrader/index/make_files_doc.py`, `/Users/mitch/dev/solmargintrader/index/make_concepts_doc.py`, then the index `--check` and docs gate. Semantic embeddings are separately opt-in. Use `INDEX_NO_AUTO=1` for local index searches; an earlier search fallback started an idle builder, which this session identified and stopped without touching shared model services.
 
@@ -735,7 +754,7 @@ The controlling specification is `/Users/mitch/dev/solmargintrader/docs/superpow
 | 1 / TASK-1107 | Delivered | CLI/defaults/specifications/legacy controls; preserve contracts |
 | 2 / TASK-1108 | Delivered | Persistent independent grid reference runtime; preserve recovery and identity |
 | Editing / TASK-1178 | Delivered extension | Immutable revisions/history/schema and explicit stopped zero-exposure application; no active-run relabelling |
-| 3 / TASK-1109 | Source and installed acceptance verified | Four canonical reference adapters, shared prospective input, strict direct-route quote evidence and conditional cycles; final-head CI/remote delivery remains separately recorded |
+| 3 / TASK-1109 | Delivered through PR188 | Merge a610868dbac61b46dba2a0047aa22d79b23cab34; source, installed and all 11 active CI gates passed; Jupiter execution certification remains unavailable |
 | 4 / TASK-1110 | Planned | Isolated blind judge/resolver, private parameter mapping, frozen objectives, shared exposure/holdout authority and repeated-testing controls |
 | 5 / TASK-1111 | Planned | Accounting, loss cohorts, health/performance diagnostics, reproducibility and load checks |
 | 6 / TASK-1112 | Planned | Gated training proposals and adoption; protected manual pins; fresh compatible evidence and shadow comparison |

@@ -238,6 +238,10 @@ class WalletAuthority:
                 "wallet": self.cfg.owner,
                 "portfolio_cap_usd": str(cap),
                 "histories": {root: digest(rows) for root, rows in histories.items()},
+                # Awareness is part of the writer inventory, not a property of
+                # its empty history. Crash replay cannot upgrade an unaware
+                # writer merely because its roots and history bytes match.
+                "writers": {root: client["aware"] for root, client in normalized.items()},
             }
             if pending:
                 if any(pending.get(key) != value for key, value in planned.items()):

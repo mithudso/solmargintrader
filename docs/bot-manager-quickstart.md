@@ -6,7 +6,7 @@ Delta: Add the milestone 3 shared-archive workflow and four canonical reference 
 
 `/Users/mitch/.local/bin/solbot` is a command-line program. Bare invocation prints help. Ordinary commands return JSON. `ok: true` confirms that command; a start receipt alone does not establish a running worker.
 
-The manager supports saved defaults, immutable editing, independent Grid, DCA, Trend and Momentum reference-paper accounts, historical replay and prospective observations from the existing shared Oracle archive. It also diagnoses conditional Solana quote cycles. The 0.5 backend adds research, reports, health, bounded continuation, protected learning and browser/executor adapters. Actual Jupiter certification and elapsed shadow evidence remain separate gates. Current operations are documented in /Users/mitch/dev/solmargintrader/docs/bot-manager-0.5-operations.md.
+The manager supports saved defaults, immutable editing, independent Grid, DCA, Trend and Momentum reference-paper accounts, historical replay and prospective observations from the existing shared Oracle archive. It also diagnoses conditional Solana quote cycles. The 0.6 backend adds research, reports, health, bounded continuation, protected learning and browser/executor adapters. Actual Jupiter certification and elapsed shadow evidence remain separate gates. Current operations are documented in /Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md.
 
 ## Start a new paper bot watching the existing stream
 
@@ -132,4 +132,4 @@ The owner must be explicitly registered before research. A conditional refusal f
 uncertified costs, source coverage, untouched final windows or real shadow time is
 an expected evidence result. It does not require manually editing a database or
 inventing a configuration/price. Browser and executor owner setup/control examples
-are in the 0.5 operations guide; current availability comes from installed `schema`.
+are in the 0.6 operations guide; current availability comes from installed `schema`.

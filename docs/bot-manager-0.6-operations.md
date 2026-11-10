@@ -1,7 +1,7 @@
-# Solbot 0.5 operations and evidence boundaries
+# Solbot 0.6 operations and evidence boundaries
 
-Version: 1.0.0
-Delta: Document the remaining-plan implementation and its public backend contracts.
+Version: 1.1.0
+Delta: v1.0.0 to v1.1.0; distinguish the current 0.6 candidate from the delivered historical M4 0.5 release and align the coordinated package matrix.
 Release status: candidate; independent review, installed acceptance and delivery receipts are recorded in the handoff.
 
 The manager defaults to paper and disarmed. A draft, an input descriptor, a running
@@ -14,12 +14,17 @@ and thirty completed comparable shadow trades cannot be supplied by a test clock
 
 | Distribution | Version | Changed contract |
 | --- | --- | --- |
-| solbot-manager | 0.5.0 | Research, reports, health, continuing accounts, learning and owner adapters |
+| solbot-manager | 0.6.0 | Research, reports, health, continuing accounts, learning and owner adapters |
 | solmargintrader-backtester | 0.2.0 | Canonical resumable Grid, DCA, Trend and Momentum state |
-| solmargintrader-research-runtime | 0.2.0 | Canonical research admission, learning receipts and native browser bridge |
+| solmargintrader-research-runtime | 0.3.0 | Canonical research admission, learning receipts and native browser bridge |
 | solmargintrader-oracle | 0.2.2 | Sequence-bearing bounded quote pages; existing list API remains |
-| solmargintrader-ecosystem | 0.2.2 | Compatible package pins; existing producer, control room and 50bps manual referral default |
+| solmargintrader-ecosystem | 0.3.0 | Compatible package pins; existing producer, control room and 50bps manual referral default |
 | executor | 0.2.0 | Shared wallet authority, aggregate rails, reservations and request replay |
+| Chrome extension | 0.6.4 | Profile-local browser identity and delegated paper controls; everyday installation remains separately verified |
+
+The historical M4 research release, manager 0.5.0, was delivered separately through
+https://github.com/mithudso/solmargintrader/pull/192
+Its delivery does not establish acceptance of this broader 0.6 candidate.
 
 Older immutable environments and their experiments remain separate. The executor
 is optional for manager installation. The manager delegates to its selected regular
@@ -33,13 +38,13 @@ prints help. `schema` describes actual arguments and capability reasons. Use a
 unique name and a selected existing archive; preparation starts no producer.
 
 ```sh
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot create grid --name reference-grid
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot config reference-grid --effective
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot prepare-input reference-grid --archive shared-sol-usd --reference --output /Users/mitch/.local/state/sb05/input.json
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot data-check reference-grid --descriptor /Users/mitch/.local/state/sb05/input.json
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot register-input reference-grid --descriptor /Users/mitch/.local/state/sb05/input.json
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot start reference-grid
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot daemon
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot create grid --name reference-grid
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot config reference-grid --effective
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot prepare-input reference-grid --archive shared-sol-usd --reference --output /Users/mitch/.local/state/sb06/input.json
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot data-check reference-grid --descriptor /Users/mitch/.local/state/sb06/input.json
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot register-input reference-grid --descriptor /Users/mitch/.local/state/sb06/input.json
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot start reference-grid
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot daemon
 ```
 
 The daemon runs in its own terminal. Another terminal can read status, reports and
@@ -47,11 +52,11 @@ events, or request stop. A pending start means durable intent; inspect the actua
 worker, completed evaluation and source health separately.
 
 ```sh
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot status reference-grid --why
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot report reference-grid --format human
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot report reference-grid --format csv
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot events reference-grid --after 0 --limit 100
-SOLBOT_HOME=/Users/mitch/.local/state/sb05 /Users/mitch/.local/bin/solbot stop reference-grid
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot status reference-grid --why
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot report reference-grid --format human
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot report reference-grid --format csv
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot events reference-grid --after 0 --limit 100
+SOLBOT_HOME=/Users/mitch/.local/state/sb06 /Users/mitch/.local/bin/solbot stop reference-grid
 ```
 
 Grid and DCA additionally support `pause BOT --request-id UUID` and
@@ -187,5 +192,5 @@ The Oracle contract is maintained in
 
 The existing graphical control room continues to delegate edit, apply, start and
 stop through the manager registry and its durable action ledger. This release
-supplies the full 0.5 backend contract for future Oracle screens; it does not claim
+supplies the full 0.6 backend contract for future Oracle screens; it does not claim
 that every new command has a graphical workflow.

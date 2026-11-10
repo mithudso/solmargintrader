@@ -699,3 +699,67 @@ def test_concurrent_home_cannot_enroll_over_newly_observed_tighter_caps(cfg, tmp
             pool.submit(second.register, "100", [{"root": str(second.client), "aware": True}], True).result()
     second.register("100", [{"root": str(second.client), "aware": True}], True)
     assert second.effective_config().rails.max_position_usd == 1
+
+
+@pytest.mark.parametrize("first_enrollment", [True, False])
+def test_crashed_enrollment_retains_exact_unaware_writer_inventory(cfg, tmp_path, monkeypatch, first_enrollment):
+    if first_enrollment:
+        client = tmp_path / "first-client"
+        monkeypatch.setattr(authority, "wallet_root", lambda owner: tmp_path / "fresh-wallet")
+        monkeypatch.setattr(authority, "default_client_root", lambda: client)
+    else:
+        client = tmp_path / "home"
+    other = tmp_path / "unaware-client"
+    wallet = WalletAuthority(cfg, client)
+    inventory = [{"root": str(client), "aware": True}, {"root": str(other), "aware": False}]
+    write = authority._atomic_write
+
+    def crash_before_publication(path, body):
+        if path == wallet.policy_path:
+            raise RuntimeError("crash before writer policy publication")
+        return write(path, body)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(authority, "_atomic_write", crash_before_publication)
+        with pytest.raises(RuntimeError, match="writer policy publication"):
+            wallet.register("100", inventory, True)
+    pending_path = wallet.root / "enrollment.pending"
+    retained = pending_path.read_bytes()
+    assert json.loads(retained)["writers"][str(other.resolve())] is False
+    changed = [{"root": str(client), "aware": True}, {"root": str(other), "aware": True}]
+    with pytest.raises(Refused, match="incomplete enrollment conflicts"):
+        wallet.register("100", changed, True)
+    assert pending_path.read_bytes() == retained
+    with pytest.raises(Refused):
+        wallet.check()
+    wallet.register("100", inventory, True)
+    assert wallet._policy()["clients"][str(other.resolve())]["aware"] is False
+    assert not pending_path.exists()
+    with pytest.raises(Refused, match="unaware wallet writer"):
+        wallet.check()
+
+
+def test_old_pending_enrollment_without_awareness_refuses_replay(cfg, tmp_path, monkeypatch):
+    client = tmp_path / "home"
+    other = tmp_path / "unaware-client"
+    wallet = WalletAuthority(cfg, client)
+    inventory = [{"root": str(client), "aware": True}, {"root": str(other), "aware": False}]
+    write = authority._atomic_write
+
+    def crash_before_publication(path, body):
+        if path == wallet.policy_path:
+            raise RuntimeError("crash before policy")
+        return write(path, body)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(authority, "_atomic_write", crash_before_publication)
+        with pytest.raises(RuntimeError, match="before policy"):
+            wallet.register("100", inventory, True)
+    pending_path = wallet.root / "enrollment.pending"
+    legacy = json.loads(pending_path.read_text())
+    del legacy["writers"]
+    pending_path.write_text(json.dumps(legacy))
+    with pytest.raises(Refused, match="incomplete enrollment conflicts"):
+        wallet.register("100", inventory, True)
+    with pytest.raises(Refused, match="enrollment is incomplete"):
+        wallet.check()

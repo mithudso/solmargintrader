@@ -21,7 +21,7 @@ until its required work and applicable acceptance gates actually pass.
 ## Current 0.5 contract
 
 The release matrix and operating semantics are maintained in
-/Users/mitch/dev/solmargintrader/docs/bot-manager-0.5-operations.md.
+/Users/mitch/dev/solmargintrader/docs/bot-manager-0.6-operations.md.
 The existing graphical control room retains its registry-backed edit/apply/start/stop
 actions and durable action ledger. New research, learning, report navigation and
 external-owner screens remain future Oracle client work. This handoff supplies

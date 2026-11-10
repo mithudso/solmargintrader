@@ -1,0 +1,19 @@
+{
+  "available": true,
+  "reads_denied": [
+    true,
+    true
+  ],
+  "metadata_denied": [
+    true,
+    true
+  ],
+  "network_denied": true,
+  "process_denied": true,
+  "profile_digest": "80dc0cdb9e788d93645b940580e4e97ea30989db7cc7d1ceef85152932451970",
+  "version": "1.0.0",
+  "delta": "Actual final deny-default profile and denial receipt",
+  "python": "3.13.18 (main, Oct 25 2026, 18:31:23) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "profile_template": "(version 1)\n(deny default)\n(allow file-read-metadata (literal \"/\") (literal \"/System\") (literal \"/opt\") (literal \"/opt/homebrew\") (literal \"/opt/homebrew/Cellar\") (literal \"/opt/homebrew/Cellar/python@3.13\") (literal \"/opt/homebrew/Cellar/python@3.13/3.13.18\") (literal \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks\") (literal \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework\") (literal \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions\") (literal \"/private\") (literal \"/private/tmp\") (literal \"/usr\"))\n(allow file-read-data (literal \"/\"))\n(allow file-read* (subpath \"/System/Library\") (subpath \"/usr/lib\") (subpath \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13\") (subpath \"/private/tmp/solbot-judge-REDACTED\") (literal \"/dev/urandom\") (literal \"/dev/random\") (literal \"/dev/null\"))\n(allow file-map-executable (subpath \"/System/Library\") (subpath \"/usr/lib\") (subpath \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13\"))\n(allow process-exec (literal \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python\"))\n(allow sysctl-read)\n(allow process-info* (target self))",
+  "source_sha256": "405c99912af9cf62bd9e0648e18d81e1fd6e7318dde4434f16e7c9c1bcdc242c"
+}

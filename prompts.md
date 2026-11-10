@@ -1,7 +1,9 @@
 # Prompt history
 
-Version: 172
+Version: 180
+Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.
 Delta: v171 to v172; implement remaining bot-manager work with agent fanout.
+Delta: concurrent histories to v179; preserve M4 checkpoint and PR192 integration records.
 Delta: v170 to v171; record additional GoonFi documentation and supplied swap enum.
 Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
 Delta: v168 to v169; clarify that either trade direction can prove execution.
@@ -1678,3 +1680,34 @@ Yes, it has stopped
 ## 2026-11-10 — remaining bot-manager implementation
 
 Read these files: ~/dev/solmargintrader/2026-11-10-bot-manager-remaining.md  ~/dev/solmargintrader bot-manager-handoff.md /Users/mitch/dev/solmargintrader/docs/bot-manager-oracle-interface.md And implement all remaining changes as a fanout of agents
+
+## Preserved M4 checkpoint history — PR192
+
+
+## v177 — 2026-11-10 — correct the milestone completion report
+
+```text
+Havne't you been wrapping up for an hour and a half?
+```
+
+The owner is correcting inaccurate progress language. The all-remaining-milestones scope remains active. Report source freeze, review, installed acceptance and delivery as separate observed gates. Do not claim wrap-up while implementation is still changing.
+
+
+## v178 — 2026-11-10 — remaining implementation plan and status
+
+```text
+Write an implementation plan for the rest of the work you have to do
+```
+
+```text
+Are you not done?
+```
+
+The plan is written in a separate worktree for independent documentation delivery. M4 source is checkpointed; integration/review/installed acceptance/release and M5–8 remain open.
+
+
+## PR192 conflict resolution — 2026-11-10
+
+```text
+Resolve the conflicts in https://github.com/mithudso/solmargintrader/pull/192 and merge and commit it
+```

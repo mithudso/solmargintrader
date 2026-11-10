@@ -22,6 +22,7 @@ def source_identity():
         Path(__file__),
         Path(__file__).with_name("experiments.py"),
         Path(__file__).with_name("manager_evidence.py"),
+        Path(__file__).with_name("evidence_identity.py"),
     ]
     return {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
@@ -580,7 +581,7 @@ def known_clients(config_root, source_descriptor=None):
         config_roots.add((Path.home() / ".config/soltui").resolve())
         ecosystem_roots.update(
             Path.home() / ".local/share/solmargintrader" / name
-            for name in ("ecosystem", "ecosystem-paper-v1")
+            for name in ("ecosystem", "ecosystem-paper-v1", "ecosystem-paper-v2")
         )
     unknown_source = False
     if source_descriptor and source_descriptor.get("source") == "oracle_archive":

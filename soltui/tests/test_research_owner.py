@@ -340,13 +340,15 @@ class OwnerProtocolTests(unittest.TestCase):
         from botmanager.blind import decide
         from botmanager.data import load_recording
         from botmanager.research import execute
+        from botmanager.store import ManagerStore
 
         from soltui.experiments import fingerprint
         from soltui.research_admission import registered_authority
 
         owner = ExperimentStore(self.authority)
         self.bind()
-        spec = grid()
+        manager = ManagerStore(self.root / "manager")
+        spec = manager.create_spec(grid())
         data = load_recording(recording(self.root, 800))
         registration = registered_authority(
             self.request["authority"], self.root / "config"
@@ -399,6 +401,46 @@ class OwnerProtocolTests(unittest.TestCase):
         self.assertTrue(before["reconcilable"])
         self.assertTrue(before["proposal"]["authority"]["scoped_fresh"])
         self.assertFalse(before["proposal"]["production_eligible"])
+        receipt = manager.record_research_proposal(before["proposal"])
+        receipt_request = {
+            **self.request,
+            "operation": "receipt",
+            "params": {"run_id": run["run_id"], "receipt": receipt},
+        }
+        malformed = [
+            {key: receipt[key] for key in ("request_id", "proposal_digest", "state")},
+            *[
+                {key: value for key, value in receipt.items() if key != missing}
+                for missing in receipt
+            ],
+            {**receipt, "baseline_revision": receipt["baseline_revision"] + 1},
+            {**receipt, "baseline_hash": "f" * 64},
+            {**receipt, "authority": {**receipt["authority"], "namespace_id": "other"}},
+            {**receipt, "evidence_digest": "e" * 64},
+            {**receipt, "production_eligible": True},
+            {**receipt, "configuration_changed": True},
+            {**receipt, "configuration_changed": 0},
+            {**receipt, "version": 2.0},
+            {**receipt, "unexpected": "value"},
+        ]
+        for invalid in malformed:
+            with self.subTest(receipt=invalid):
+                with self.assertRaisesRegex(ExperimentError, "receipt does not bind"):
+                    handle(
+                        {
+                            **receipt_request,
+                            "params": {**receipt_request["params"], "receipt": invalid},
+                        }
+                    )
+                self.assertIsNone(
+                    owner.manager_read_artifact(run["run_id"], "adoption_receipt")
+                )
+        accepted = handle(receipt_request)
+        self.assertEqual(accepted["receipt"], receipt)
+        self.assertEqual(
+            owner.manager_read_artifact(run["run_id"], "adoption_receipt"), receipt
+        )
+        self.assertEqual(handle(receipt_request), accepted)
         end = data["bars"][-1]["ts"] + 60
         owner.manager_import(
             "later-paper",
@@ -448,6 +490,9 @@ class OwnerProtocolTests(unittest.TestCase):
         self.assertEqual(
             after["reason"], "research_authority_roster_or_history_changed"
         )
+        with self.assertRaisesRegex(ExperimentError, "receipt does not bind"):
+            handle({**request, "operation": "receipt", "params": receipt_request["params"]})
+        self.assertEqual(owner.manager_read_artifact(run["run_id"], "adoption_receipt"), receipt)
 
     def test_hostile_nested_canary_never_reaches_logs_or_artifacts(self):
         from unittest.mock import patch
@@ -519,6 +564,12 @@ class OwnerProtocolTests(unittest.TestCase):
             paths,
         )
         self.assertIn(
+            str(
+                Path.home() / ".local/share/solmargintrader/ecosystem-paper-v2/batches"
+            ),
+            paths,
+        )
+        self.assertIn(
             str((self.root / "selected-ecosystem" / "batches").resolve()), paths
         )
         self.assertFalse(unknown)
@@ -536,6 +587,45 @@ class OwnerProtocolTests(unittest.TestCase):
         self.assertNotIn(
             str(Path.home() / ".local/share/solmargintrader/ecosystem/batches"), paths
         )
+
+    def test_default_v2_activity_and_unknown_history_block_final_freshness(self):
+        import fcntl
+        from unittest.mock import patch
+
+        home = self.root / "isolated-user"
+        batches = home / ".local/share/solmargintrader/ecosystem-paper-v2/batches"
+        batches.mkdir(parents=True)
+        legacy = batches / "unclassified-history.json"
+        legacy.write_text('{"prior_attempts": 1}')
+        ExperimentStore(self.authority)
+        request = {
+            **self.request,
+            "operation": "register",
+            "authority": {**self.request["authority"], "known_clients": []},
+            "params": {"accept_registered_roots_only": True, "initialize_first": False},
+        }
+        with (
+            patch.dict(os.environ, {"SOLTUI_RESEARCH_REGISTRY": ""}),
+            patch.object(Path, "home", return_value=home),
+            (batches / "f5-worker.lock").open("a+b") as lock,
+        ):
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            registered = handle(request)
+            evidence = next(
+                row
+                for row in registered["registration"]["history"]
+                if row["root"] == str(batches.resolve())
+            )
+            self.assertTrue(evidence["active"])
+            self.assertEqual(evidence["coverage"], "unknown_history")
+            status = handle(self.request)
+            self.assertTrue(
+                any(
+                    row.get("root") == str(batches.resolve())
+                    for row in status["coverage_report"]["blockers"]
+                )
+            )
+            self.assertEqual(legacy.read_text(), '{"prior_attempts": 1}')
 
     def test_preledger_bot_history_imports_even_without_experiment_directory(self):
         bots = self.root / "config" / "bots"

@@ -1,7 +1,7 @@
 # Task 7 — M8 guarded executor integration
 
-Version: 1.0.1
-Delta: 1.0.0 -> 1.0.1; repaired all four independent-review findings. Initial implementation: implemented shared executor wallet authority, exact caller intents and guarded optional manager delegation; executor 0.1.0 -> 0.2.0 with synchronized uv.lock.
+Version: 1.0.2
+Delta: 1.0.1 -> 1.0.2; bound pending enrollment writer awareness after independent crash-replay review. Previous delta: 1.0.0 -> 1.0.1; repaired all four independent-review findings. Initial implementation: implemented shared executor wallet authority, exact caller intents and guarded optional manager delegation; executor 0.1.0 -> 0.2.0 with synchronized uv.lock.
 
 ## Implemented
 
@@ -58,3 +58,13 @@ Completed final checks for this correction:
 - Ruff check/format --check over the manager adapter, executor command module and adapter tests: exit 0; three files formatted. Owned-path git diff --check: exit 0.
 
 Only source and synthetic temporary test state changed. No real key, network, production wallet home or installed candidate was used. Independent re-review, final regular installed acceptance and delivery remain controller gates.
+
+## Remaining independent P1 — pending writer awareness
+
+The reviewer reproduced first and additional enrollment crashes before policy publication where replay kept the same wallet, cap, roots and history digests but changed a newly observed writer from aware=False to aware=True. The pending record did not bind awareness. This could remove the known-unaware writer barrier before policy publication.
+
+The pending record now includes the exact normalized writers map from absolute root to strict awareness boolean. Replay compares that map with the retained record before imports or policy publication. A changed awareness flag refuses and leaves the pending marker unchanged. Pending records from the earlier schema without this map fail closed; the code does not guess their original awareness. Unchanged replay remains supported and retains the original unaware-writer admission block.
+
+Regressions exercise both first enrollment and additional-client enrollment with a real RuntimeError injected only at policy publication. Each verifies false-to-true replay refusal, unchanged pending bytes, successful exact original replay and continued unaware-writer refusal afterward. A separate regression removes the map to simulate an older pending record and confirms both replay and admission refuse. All state uses synthetic temporary authorities; no key, network, production home or candidate installation was accessed.
+
+Completed checks: targeted authority suite **62 passed**, exit 0; full offline executor pytest **491 passed, 5 network tests deselected**, exit 0; executor Ruff check exit 0; Ruff format --check **37 files already formatted**, exit 0. Changes are staged for the controller's in-progress integration merge and were not independently committed while MERGE_HEAD exists. Independent review must confirm the fix before installation/delivery.

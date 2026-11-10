@@ -1,4 +1,4 @@
-# Solbot manager 0.5.0
+# Solbot manager 0.6.0
 
 **Start with the [short working quickstart](../docs/bot-manager-quickstart.md).**
 Running bare `solbot` now prints help and concrete next steps. It is a command-line
@@ -14,7 +14,7 @@ initialize another component's database, load keys, or trade.
 Arbitrage offers conditional directed Solana quote-cycle diagnosis through `cycle-check`; autonomous arbitrage remains unavailable. Council is external-only.
 
 For the current operations and remaining evidence gates, read
-[the 0.5 operations guide](../docs/bot-manager-0.5-operations.md).
+[the 0.6 operations guide](../docs/bot-manager-0.6-operations.md).
 
 For the complete implementation history, operator workflows, source ownership,
 backup/recovery guidance, release evidence and remaining milestones, read
@@ -685,3 +685,123 @@ out-of-range impact refuses capture/import. Missing impact can be archived as
 incomplete evidence but prevents conditional cycle diagnosis. These semantics
 follow the current official Metis guide:
 https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-metis.mdx
+
+## M4 research owner and blind selection (0.5.0)
+
+`backtest` and `research` use the existing headless SolTUI `ExperimentStore` through
+its registered `research.protocol` action. The manager never opens the owner's
+SQLite database. The current reviewed installation must contain manager 0.6.0,
+research-runtime 0.3.0, backtester 0.2.0 and Oracle 0.2.2. Textual is unnecessary.
+The CLI launches the explicitly selected interpreter with `-I`, a clean environment,
+a 120-second deadline and 1 MiB limits on each transport stream.
+
+Use `research-setup` to generate the descriptor and capture the selected installed
+owner's actual protocol/package/source identity. No Python snippet or hand-authored
+JSON is required. Defaults select the current manager interpreter, its environment
+as working directory, the configured SolTUI root and the existing canonical
+namespace binding if present. It writes only the descriptor. Explicit
+`--interpreter`, `--repository`, `--config-root`, `--authority-root` and
+`--authority-id` select another reviewed installation; a conflicting canonical
+root/UUID refuses. Repeating identical setup is idempotent.
+
+The complete first-use flow is:
+
+```sh
+/Users/mitch/.venvs/solbot/bin/solbot create grid --name research-grid
+/Users/mitch/.venvs/solbot/bin/solbot research-setup --output /Users/mitch/.config/solbot/research-owner.json
+/Users/mitch/.venvs/solbot/bin/solbot research-register --owner /Users/mitch/.config/solbot/research-owner.json --accept-registered-roots-only
+/Users/mitch/.venvs/solbot/bin/solbot research-status --owner /Users/mitch/.config/solbot/research-owner.json
+/Users/mitch/.venvs/solbot/bin/solbot prepare-input research-grid --archive shared-sol-usd --reference --mode historical --output /Users/mitch/.config/solbot/reference-input.json
+/Users/mitch/.venvs/solbot/bin/solbot research-plan research-grid --output /Users/mitch/.config/solbot/research-plan.json
+/Users/mitch/.venvs/solbot/bin/solbot backtest research-grid --owner /Users/mitch/.config/solbot/research-owner.json --descriptor /Users/mitch/.config/solbot/reference-input.json
+/Users/mitch/.venvs/solbot/bin/solbot research research-grid --owner /Users/mitch/.config/solbot/research-owner.json --descriptor /Users/mitch/.config/solbot/reference-input.json --plan /Users/mitch/.config/solbot/research-plan.json
+```
+
+The existing Oracle archive must have sufficient usable history; this flow never
+starts a producer. `research-plan` selects at most two neighboring validated values
+for one unpinned tunable and freezes feature-aware purge/warmup with block-bootstrap
+confidence. `research` can omit `--plan` to use the same conservative default.
+There is no supported independent-position-horizon claim for current reference
+engines; the generated plan explicitly reports strict final eligibility unavailable.
+All-pinned/unsupported tunables refuse rather than invent a search.
+
+The descriptor's `inventory_complete` field acknowledges the registered inventory
+schema; it cannot certify machine-wide completeness. Optional explicit clients
+have exactly `root`, `kind` (`native`, `f5`, `bg`, `forward`) and boolean `active`
+fields. Registration also discovers selected/standard native configuration roots,
+the documented ecosystem F5 homes, explicit `--ecosystem-home`, and recognized
+selected Oracle archive context. Omitting a list cannot remove those owners.
+
+For a clean installation only, append `--initialize-first-authority` to the
+registration command. It explicitly creates the first `ExperimentStore` and records
+unknown prior history before an immutable owner-clock initialization epoch. Those
+historical dates remain unavailable. Genuinely later final intervals may qualify
+when required owners and relevant history are verified; the epoch never resets
+canonical attempt counters. Without that option the
+selected database must already exist. Status/backtest never initialize it. A missing
+previously registered database refuses initialization even with the option.
+
+The per-user binding is `/Users/mitch/.local/share/solbot-research/authority.json`
+(on another account, the same suffix under that account's home). It is independent
+of both manager home and owner configuration root. A new configuration root must
+register against the same authority; another UUID/root cannot reset attempts or
+spent dates. The per-config `research-authority.json` is a receipt, not a second
+ledger. Registration is locked, idempotent and imports history before recording
+its receipt. `SOLTUI_RESEARCH_REGISTRY` selects an explicit isolated namespace for
+controlled fixtures; receipts in that namespace are never production-eligible.
+
+A research plan freezes the complete bounded search and confidence policy:
+
+```json
+{
+  "ranges": {"rungs": [8, 12]},
+  "horizon_bars": 1,
+  "warmup_bars": 1,
+  "blocks": 10,
+  "confidence": {"method": "block_bootstrap", "seed": 0, "minimum_blocks": 10}
+}
+```
+
+Ranges cannot change manual pins. The maximum is 32 configurations including the
+incumbent and 1000 evaluated cells, including doubled-cost stress cells. Geometry
+is chronological 50/25/25 with purge/embargo and 10–15 blocks. Horizon and warmup
+must cover every candidate's feature window. Feature purge does not prove a bounded
+position horizon: current reference simulations explicitly report unsupported
+independence, retain end-of-window inventory, and never manufacture completed exits.
+They remain useful descriptive backtests but cannot pass strict certification.
+
+The anonymous deterministic judge runs in an actual deny-default macOS sandbox.
+It cannot read the parameter mapping or repository, inspect their metadata, access
+the network, or launch another process. Unsupported hosts refuse with
+`isolation_unavailable`. This is a platform requirement for research, not a fallback
+to an unsandboxed judge. Reports never claim current Coinbase reference data or
+Jupiter indicative quotes establish certified execution costs or profitable edge.
+
+Known active unaware owners and incomplete imported history block fresh finals.
+Participating native/F5/bg/forward clients use one optimizer lease and record read
+admission before evaluation. A participating native runner must use the canonical ExperimentStore; a different
+native ledger refuses before capture. Legacy installations remain unmanaged until explicitly
+configured with `SOLTUI_RESEARCH_AUTHORITY` pointing to the selected canonical root;
+a declaration or snapshot import does not prove that an already running old process
+participates. Existing immutable F5 installations remain unchanged.
+
+`research-status --owner … --run-id …` shows retained outcomes and coverage blockers.
+`research-cancel` requests durable cancellation; `research-recover` closes an
+interrupted attempt only after acquiring the shared optimizer lease. An unsealed
+final remains spent after error, timeout or cancellation. Retries cannot reset it
+with a new bot UUID, owner home, dataset hash or search seed.
+
+`research-proposal --owner … --run-id …` reconciles an accepted proposal into an
+immutable manager receipt using baseline revision/hash and manual-pin checks, then
+mirrors that receipt to the owner. Retry reconciles an exact receipt after a crash
+between databases. It never edits the active bot configuration. Stale proposal
+bodies remain inspectable through owner status/proposal responses, with explicit
+reconciliation refusal. Roster changes or newly imported prior exposure overlapping
+the final invalidate eligibility; harmless later paper reads do not.
+
+A valid conditional final is scoped to `registered_roots_only`, its stable namespace,
+required roster revision, relevant final-history proof and attempt/alpha context.
+It is never a machine-wide completeness claim. M4 only stages `pending_shadow`:
+M6 must establish at least seven calendar days **and** 30 prospective-paper trades
+before automatic promotion. Current uncertified data, unknown-history and unaware
+client blockers remain real deployment gates.

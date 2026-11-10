@@ -135,7 +135,12 @@ class ResearchTests(unittest.TestCase):
             # A different bot ID or random opaque IDs cannot reopen those dates.
             with self.assertRaises(ExperimentError):
                 research.execute(
-                    owner, grid("new-bot"), data, options, evaluator=fixture
+                    owner,
+                    grid("new-bot"),
+                    data,
+                    options,
+                    evaluator=fixture,
+                    judge=judge,
                 )
 
     def test_proposal_receipt_crash_reconciliation_and_pin_race(self):

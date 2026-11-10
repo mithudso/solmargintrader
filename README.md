@@ -4,7 +4,7 @@ SOL trading research and execution tooling, in ten parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
-| [`ecosystem/`](ecosystem/README.md) | Paper bootstrap, shared Oracle/F5 coordination, external bot registrations and a local read-only control room. | Python 3.13 |
+| [`ecosystem/`](ecosystem/README.md) | Paper bootstrap, shared Oracle/F5 coordination, external bot registrations and a local paper control room with delegated operations. | Python 3.13 |
 | [`oracle/`](oracle/README.md) | Source-labelled market observations, prospective strategy votes, durable history and read-only MCP subscriptions. Never signs or submits orders. | Python 3.13 |
 | [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance reference-paper supervisor for Grid, DCA, Trend and Momentum. Reuses the shared Oracle archive; Jupiter quote evidence stays separate. | Python 3.13 |
 | [`backtester/`](backtester/README.md) | Offline event-driven backtester for spot and Jupiter-Perps-style leveraged strategies, with an honestly modelled borrow fee. **No live-trading capability, by design.** | Python 3.13 |
@@ -23,12 +23,20 @@ SOL trading research and execution tooling, in ten parts:
 
 The operational control room adds server buttons, configuration launches, stage progress, per-coin paper P&L, selected Oracle voters, a source-linked wiki and an isolated manual Jupiter swap page. See [the operating guide](docs/ECOSYSTEM-CONTROL-ROOM.md).
 
-
 `python3 scripts/bootstrap_ecosystem.py start` installs the headless components,
 checks health, acquires the configured universe, runs the complete strategy matrix
 and hands usable results to registered forward trials with per-coin Oracle
 forecasts. See [setup and recovery](docs/ECOSYSTEM-BOOTSTRAP.md) for source,
 coverage and lifecycle limits.
+
+## Standalone manager candidate
+
+The current coordinated candidate is manager 0.6.0, research-runtime 0.3.0 and
+ecosystem 0.3.0, with backtester 0.2.0, Oracle 0.2.2, optional executor 0.2.0
+and extension source 0.6.4. It retains paper/disarmed defaults and separates source
+checks from installed acceptance and final delivery. Current operations and evidence
+limits are in [the 0.6 guide](docs/bot-manager-0.6-operations.md); the
+[handoff](docs/bot-manager-handoff.md) preserves the earlier M4 0.5.0 release history.
 
 ## Quick start
 

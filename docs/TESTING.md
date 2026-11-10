@@ -21,6 +21,33 @@ do not establish installed service behavior; that remains an independent gate.
 Current runtime and venue limits are listed in `botmanager/README.md`; tests do not
 establish a profitable trading edge.
 
+The targeted macOS CI job also installs the headless owners and runs the blind
+judge tests on an actual supported operating-system sandbox. Linux refusal tests
+do not establish macOS isolation. When changing the judge, run this focused suite
+on macOS and independently verify its installed runtime/profile:
+
+```bash
+python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
+```
+
+## Current 0.6 candidate gates
+
+The coordinated candidate uses manager 0.6.0, research-runtime 0.3.0 and ecosystem
+0.3.0. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
+and remaining evidence gates separate from the historical M4 0.5.0 release.
+
+Run the separate browser-owner paper gate from the repository root:
+
+```bash
+node extension/tools/bot-manager-e2e.mjs
+```
+
+That gate uses test-owned profiles/native manifests, verifies actual Chrome storage
+and native origin, and tests delegated paper start/stop, worker restart and offline
+behavior. The ordinary e2e guard still forbids manager controls and arming. Neither
+gate updates or certifies the everyday browser installation. Independent installed
+acceptance and final-head CI remain separate release gates.
+
 ## Existing component suites
 
 ```bash

@@ -24,24 +24,10 @@ from pathlib import Path
 from typing import Any
 
 from . import config
+from .evidence_identity import ExperimentError, canonical, fingerprint
+from .manager_evidence import ManagerEvidence
 
 _UNSET = object()
-
-
-class ExperimentError(ValueError):
-    """Invalid, conflicting or unavailable experiment evidence."""
-
-
-def canonical(value: Any) -> str:
-    """One finite, deterministic JSON representation for identities and evidence."""
-    try:
-        return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
-    except (TypeError, ValueError) as exc:
-        raise ExperimentError(f"evidence must be finite JSON: {exc}") from exc
-
-
-def fingerprint(value: Any) -> str:
-    return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
 def _candidate_map(spec: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -75,9 +61,6 @@ def _timestamp(value: Any) -> float:
     if not math.isfinite(result):
         raise ExperimentError("window timestamp must be finite")
     return result
-
-
-from .manager_evidence import ManagerEvidence
 
 
 class ExperimentStore(ManagerEvidence):
