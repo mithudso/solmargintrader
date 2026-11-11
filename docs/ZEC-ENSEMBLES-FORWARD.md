@@ -60,3 +60,17 @@ Each database stores its frozen selection, seed provenance, observed candles,
 decisions, modelled fills and account continuation. A private publication pointer
 under the UI home identifies the selected study without copying or altering the
 existing Oracle archives. Reads do not create stores or start services.
+
+
+## Transient feed recovery
+
+A successful poll can return no new closed candle. If the stored candle is fresh,
+that poll clears a prior transient `feed_unavailable` or `closed_candle_stale`
+state. The account returns to its existing waiting/running phase without a new
+decision or fill. Source-gap and missed-bar review blocks remain blocked.
+This health transition does not alter the frozen policy or the financial book.
+
+The ecosystem 0.4.4 correction preserves the original selection, study seeds,
+activation and account state. Its deployment receipt separately records the
+reviewed worker-implementation binding transition; implementations never adopt
+a changed binding automatically.

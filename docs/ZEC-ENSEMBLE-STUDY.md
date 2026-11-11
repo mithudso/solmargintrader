@@ -152,7 +152,7 @@ then supplies the modeled reference fill. The Oracle page already displays the
 frozen rank-one configuration and all ten account identities.
 
 The existing managed environment was upgraded coherently to manager 0.7.2,
-Oracle 0.2.3, research runtime 0.4.0, backtester 0.2.0 and ecosystem 0.4.3.
+Oracle 0.2.3, research runtime 0.4.0, backtester 0.2.0 and ecosystem 0.4.4.
 The managed supervisor restarted gracefully; the old stopped/disarmed demo-grid
 retains its intent and account journal. Other external owners remain separate.
 The service pins installed implementation hashes and refuses changed policy
@@ -174,3 +174,10 @@ Check the installed paper owner directly:
 Healthy waiting accounts have a fresh heartbeat and `first_post_start_closed_bar`.
 A fresh running account has a new closed-candle decision. `available: false` during
 startup or an outage is a withheld signal, not a synthetic flat forecast.
+
+
+The final live health gate found and corrected a recovery latch after a temporary
+feed error: successful polls with no new hourly candle now recover waiting or
+running state when the stored candle is fresh. The scientific policy and every
+original account/activation remain unchanged. The separate correction acceptance
+receipt is `independent-recovery-acceptance.json` in the same external directory.

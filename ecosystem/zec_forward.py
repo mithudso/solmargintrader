@@ -342,14 +342,24 @@ def tick(home, *, now=None, fetcher=fetch_closed):
         except (OSError, ValueError, TypeError, TimeoutError):
             fetched[interval] = "feed_unavailable"
     for row in candidates:
+        if row["reason"] in {"forward_source_gap", "missed_forward_bars_review_required"}:
+            # Recovering transport health cannot authorize missing decisions.
+            # Keep the preserved book blocked until an explicit review.
+            continue
         step = INTERVALS[row["interval"]]
         value = fetched[row["interval"]]
         reason = None
         if isinstance(value, str):
             reason = value
         elif value is None:
-            if now - (row["last_ts"] + step) > step + 30:
+            age = now - (row["last_ts"] + step)
+            if age > step + 30:
                 reason = "closed_candle_stale"
+            elif 0 <= age < step and row["reason"] in {"feed_unavailable", "closed_candle_stale"}:
+                # A successful poll need not contain a new native candle. Clear
+                # only transport/staleness health; never alter the paper book.
+                row["status"] = "waiting" if row["last_ts"] < row["activation"] else "running"
+                row["reason"] = "first_post_start_closed_bar" if row["status"] == "waiting" else None
         else:
             arrays = {k: v[value["ts"] > row["last_ts"]] for k, v in value.items()}
             if not len(arrays["ts"]):
