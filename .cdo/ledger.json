@@ -1,370 +1,854 @@
 {
- "files": {
-  "botmanager/src/botmanager/machine_health.py": {
-   "date": "2026-11-10",
-   "findings": 0,
-   "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "T1"
-   ],
-   "sha": "be5a604467776a537a0f732f20aa18eafe3049d0",
-   "verdict": "CAPPED"
-  },
-  "botmanager/src/botmanager/operations_commands.py": {
-   "date": "2026-11-10",
-   "findings": 0,
-   "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "T1"
-   ],
-   "sha": "c19c58334eef76743604ca35f654c7b9530fa951",
-   "verdict": "CAPPED"
-  },
-  "botmanager/src/botmanager/suite.py": {
-   "date": "2026-11-10",
-   "findings": 0,
-   "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "T1"
-   ],
-   "sha": "cb20777a58ccec2f254beb4c54e7b72a051c6228",
-   "verdict": "CAPPED"
-  },
-  "botmanager/src/botmanager/suite_service.py": {
-   "date": "2026-11-10",
-   "findings": 0,
-   "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "T1"
-   ],
-   "sha": "636402d66248e477beb3b553b42111ddc3f19789",
-   "verdict": "CAPPED"
-  },
-  "botmanager/tests/test_machine_health.py": {
-   "date": "2026-11-10",
-   "findings": 0,
-   "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "T1"
-   ],
-   "sha": "8ec606338acb6c071db6ea6711c4b8da099484df",
-   "verdict": "CAPPED"
-  },
-  "ecosystem/ui_service.py": {
-   "date": "2026-11-10",
-   "findings": 0,
-   "mode": "full",
-   "passes": [
-    "C1",
-    "C2",
-    "C3",
-    "M1",
-    "M2",
-    "M4",
-    "P1",
-    "P2",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "T1"
-   ],
-   "sha": "9947bc9f254691c88a52b26a9d8698c480f7688c",
-   "verdict": "CAPPED"
-  }
- },
- "runs": [
-  {
-   "deferred": 0,
-   "finished": "2026-11-10T18:14:11Z",
-   "id": "2026-11-10T18:08:26Z",
-   "mode": "incremental",
-   "passes": {
-    "C1": {
-     "files": 6,
-     "state": "ran"
+  "files": {
+    "botmanager/src/botmanager/learning_job.py": {
+      "audit_receipt_sha256": "dc15a956d464f210fd409e1abe27a9a0ec2a8c421b67246cce97eb4c77bf2a64",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          151,
+          300
+        ],
+        [
+          301,
+          367
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 1,
+      "iteration": 1,
+      "line_count": 367,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "7eb187068f4fa68a3773b7e67ad919fa2ce1dcd9",
+      "source_sha256": "aeeb03ceb8b243007857a2c960106c17f9ad94fba98c6fd20021cfcce1801fa1",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     },
-    "C2": {
-     "files": 6,
-     "state": "ran"
+    "botmanager/src/botmanager/machine_health.py": {
+      "date": "2026-11-10",
+      "findings": 0,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "T1"
+      ],
+      "sha": "be5a604467776a537a0f732f20aa18eafe3049d0",
+      "verdict": "CAPPED"
     },
-    "C3": {
-     "files": 6,
-     "state": "ran"
+    "botmanager/src/botmanager/operations_commands.py": {
+      "date": "2026-11-10",
+      "findings": 0,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "T1"
+      ],
+      "sha": "c19c58334eef76743604ca35f654c7b9530fa951",
+      "verdict": "CAPPED"
     },
-    "M1": {
-     "files": 6,
-     "state": "ran"
+    "botmanager/src/botmanager/suite.py": {
+      "date": "2026-11-10",
+      "findings": 0,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "T1"
+      ],
+      "sha": "cb20777a58ccec2f254beb4c54e7b72a051c6228",
+      "verdict": "CAPPED"
     },
-    "M2": {
-     "files": 6,
-     "state": "ran"
+    "botmanager/src/botmanager/suite_service.py": {
+      "date": "2026-11-10",
+      "findings": 0,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "T1"
+      ],
+      "sha": "636402d66248e477beb3b553b42111ddc3f19789",
+      "verdict": "CAPPED"
     },
-    "M3": {
-     "files": 0,
-     "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
-     "state": "ran"
+    "botmanager/src/botmanager/supervisor.py": {
+      "audit_receipt_sha256": "38e02c937b4c9e86a52ea7328fb825f63f75a81c33d618aed02d244271adee61",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          320
+        ],
+        [
+          321,
+          347
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 2,
+      "iteration": 1,
+      "line_count": 347,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "9fad3c0ecc3ffe8d8ab60c946bbdd4256519ac16",
+      "source_sha256": "99af15f677f019c0b07441b51746d0aee5927d998fc58183ee1f99ab565731c7",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     },
-    "M4": {
-     "files": 6,
-     "state": "ran"
+    "botmanager/tests/test_learning_job.py": {
+      "audit_receipt_sha256": "57c62fb3688f1ab5af15c1043d66325755be6868166d94d7402d9790d0eff744",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          311
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 2,
+      "iteration": 1,
+      "line_count": 311,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1",
+        "T4"
+      ],
+      "sha": "7b5d7f5399649d6b26c966b57d3089e91ebef75c",
+      "source_sha256": "f899769f6a62a2338f9f55d054452863ff88349971e360e84449506f48f7476b",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     },
-    "M5": {
-     "files": 0,
-     "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
-     "state": "ran"
+    "botmanager/tests/test_machine_health.py": {
+      "date": "2026-11-10",
+      "findings": 0,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "T1"
+      ],
+      "sha": "8ec606338acb6c071db6ea6711c4b8da099484df",
+      "verdict": "CAPPED"
     },
-    "P1": {
-     "files": 6,
-     "state": "ran"
+    "ecosystem/meta_forward.py": {
+      "audit_receipt_sha256": "88111aa1db93d1ff0c6480f19777bbd7404b4eae3c2397e092429e72084fb392",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          151,
+          300
+        ],
+        [
+          301,
+          450
+        ],
+        [
+          451,
+          586
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 1,
+      "iteration": 1,
+      "line_count": 586,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "M5",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "857587ad5dc155af5c47b505151d339ab16a1678",
+      "source_sha256": "fbc8386d66d78ac095a3ec3c216d8030eb5880ee678accf6fb7dd27f9c300b3a",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     },
-    "P2": {
-     "files": 6,
-     "state": "ran"
+    "ecosystem/ui_service.py": {
+      "date": "2026-11-10",
+      "findings": 0,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "T1"
+      ],
+      "sha": "9947bc9f254691c88a52b26a9d8698c480f7688c",
+      "verdict": "CAPPED"
     },
-    "S1": {
-     "files": 6,
-     "state": "ran"
+    "executor/src/executor/engine.py": {
+      "audit_receipt_sha256": "3a3a8dd11d1cf8db5fd493e8bc093f0017f204c783f39f8d5489957e6b1862db",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          170
+        ],
+        [
+          171,
+          340
+        ],
+        [
+          341,
+          510
+        ],
+        [
+          511,
+          680
+        ],
+        [
+          681,
+          785
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 1,
+      "iteration": 1,
+      "line_count": 785,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "7b6e44d57026dd469548e684fef2c78192e8be67",
+      "source_sha256": "98dab8319b051be3bf48e120b564a54e9ca80402cb2a3266ed177239e55dd2b1",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     },
-    "S2": {
-     "files": 6,
-     "state": "ran"
+    "executor/src/executor/txverify.py": {
+      "audit_receipt_sha256": "5a7855c5fa2cb1377875b23e55e0e4a680979e49fbf2f0e0743ab9f45f110628",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          170
+        ],
+        [
+          171,
+          340
+        ],
+        [
+          341,
+          508
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 0,
+      "iteration": 1,
+      "line_count": 508,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "91817e679a97087010909e6bf2ba451eb0e272dd",
+      "source_sha256": "1b76ccc98a37f8e9151ed1c11f663ec9a91cd967b9ec02cd27a67dae9dd90968",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-NO-MEDIUM"
     },
-    "S3": {
-     "files": 6,
-     "state": "ran"
+    "extension/src/core/risk.js": {
+      "audit_receipt_sha256": "e42a76b75a774cd3f42163eeb689454d2ee16641a860705b435fbd0df8fd7bfc",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          145
+        ],
+        [
+          146,
+          292
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 0,
+      "iteration": 1,
+      "line_count": 292,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "ca52df78c801f6c0ff81e6b18f847da933c304b4",
+      "source_sha256": "abbcd1f48f738a4bfea79d0ed5fd699c6a518003097bf99a56dc8fb1804cb255",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-NO-MEDIUM"
     },
-    "S4": {
-     "files": 0,
-     "reason": "No cryptographic operation in the six audited files; existing authenticated peer and identity checks reviewed under S1-S3.",
-     "state": "na"
+    "liquidity/src/aero_lp/engine.py": {
+      "audit_receipt_sha256": "4cfe61feff81b3d60219e90275fa70fb9e2194430a5bfc0026909ff95f3cc89e",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          175
+        ],
+        [
+          176,
+          345
+        ],
+        [
+          346,
+          510
+        ],
+        [
+          511,
+          665
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 1,
+      "iteration": 1,
+      "line_count": 665,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "2fdc5c9f29057b751863ae666750e3f58f03faa1",
+      "source_sha256": "3fd065e37e5762dbd2f64881cbdee3ff7d6dd989cb1eced3e14605683c4fe470",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     },
-    "S5": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T2": {
-     "files": 0,
-     "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
-     "state": "na"
-    },
-    "T3": {
-     "files": 0,
-     "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
-     "state": "ran"
-    },
-    "T4": {
-     "files": 0,
-     "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
-     "state": "ran"
+    "oracle/gum_orders.py": {
+      "audit_receipt_sha256": "88e3712d7ba96debf088c45a3db0227031529f941bdf04e82b2440539b652024",
+      "coverage_complete": true,
+      "covered_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          320
+        ],
+        [
+          321,
+          480
+        ],
+        [
+          481,
+          640
+        ],
+        [
+          641,
+          800
+        ],
+        [
+          801,
+          957
+        ]
+      ],
+      "date": "2026-11-11",
+      "findings": 1,
+      "iteration": 1,
+      "line_count": 957,
+      "mode": "full",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "M1",
+        "M2",
+        "M4",
+        "P1",
+        "P2",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "T1"
+      ],
+      "sha": "9977f35c5b1e1d05b43d56e94c61cc4d49aabcba",
+      "source_sha256": "cf82278b0f214775a70a80dfa447edd5c2bc78984dac5c7ca1f094df933d973b",
+      "task": "TASK-1423",
+      "verdict": "DIAGNOSED-PENDING-TRIAGE"
     }
-   },
-   "reviewed": 6,
-   "silent_drops": [],
-   "skipped_unchanged": 0,
-   "started": "2026-11-10T18:08:26Z",
-   "status": "CAPPED"
   },
-  {
-   "deferred": 0,
-   "finished": "2026-11-10T18:15:00Z",
-   "id": "2026-11-10T18:15:00Z",
-   "mode": "incremental",
-   "passes": {
-    "S4": {
-     "files": 0,
-     "reason": "Reviewed POSIX locking and O_NONBLOCK portability, supported macOS/Linux service branches and explicit native-Windows refusal.",
-     "state": "ran"
+  "runs": [
+    {
+      "deferred": 0,
+      "finished": "2026-11-10T18:14:11Z",
+      "id": "2026-11-10T18:08:26Z",
+      "mode": "incremental",
+      "passes": {
+        "C1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "C2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "C3": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M3": {
+          "files": 0,
+          "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
+          "state": "ran"
+        },
+        "M4": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M5": {
+          "files": 0,
+          "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
+          "state": "ran"
+        },
+        "P1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "P2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S3": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S4": {
+          "files": 0,
+          "reason": "No cryptographic operation in the six audited files; existing authenticated peer and identity checks reviewed under S1-S3.",
+          "state": "na"
+        },
+        "S5": {
+          "files": 6,
+          "state": "ran"
+        },
+        "T1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "T2": {
+          "files": 0,
+          "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
+          "state": "na"
+        },
+        "T3": {
+          "files": 0,
+          "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
+          "state": "ran"
+        },
+        "T4": {
+          "files": 0,
+          "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
+          "state": "ran"
+        }
+      },
+      "reviewed": 6,
+      "silent_drops": [],
+      "skipped_unchanged": 0,
+      "started": "2026-11-10T18:08:26Z",
+      "status": "CAPPED"
+    },
+    {
+      "deferred": 0,
+      "finished": "2026-11-10T18:15:00Z",
+      "id": "2026-11-10T18:15:00Z",
+      "mode": "incremental",
+      "passes": {
+        "S4": {
+          "files": 0,
+          "reason": "Reviewed POSIX locking and O_NONBLOCK portability, supported macOS/Linux service branches and explicit native-Windows refusal.",
+          "state": "ran"
+        }
+      },
+      "reviewed": 0,
+      "silent_drops": [
+        "C1",
+        "C2",
+        "C3",
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "P1",
+        "P2",
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "skipped_unchanged": 0,
+      "started": "2026-11-10T18:15:00Z",
+      "status": "CAPPED"
+    },
+    {
+      "deferred": 0,
+      "finished": "2026-11-10T18:20:08Z",
+      "id": "2026-11-10T18:20:08Z",
+      "mode": "incremental",
+      "passes": {
+        "C1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "C2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "C3": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M3": {
+          "files": 0,
+          "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
+          "state": "ran"
+        },
+        "M4": {
+          "files": 6,
+          "state": "ran"
+        },
+        "M5": {
+          "files": 0,
+          "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
+          "state": "ran"
+        },
+        "P1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "P2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S2": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S3": {
+          "files": 6,
+          "state": "ran"
+        },
+        "S4": {
+          "files": 0,
+          "reason": "Reviewed supported POSIX descriptors, O_NONBLOCK behavior, macOS/Linux branches and explicit native-Windows refusal; classification corrected from the original receipt.",
+          "state": "ran"
+        },
+        "S5": {
+          "files": 6,
+          "state": "ran"
+        },
+        "T1": {
+          "files": 6,
+          "state": "ran"
+        },
+        "T2": {
+          "files": 0,
+          "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
+          "state": "na"
+        },
+        "T3": {
+          "files": 0,
+          "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
+          "state": "ran"
+        },
+        "T4": {
+          "files": 0,
+          "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
+          "state": "ran"
+        }
+      },
+      "reconciles_run_ids": [
+        "2026-11-10T18:08:26Z",
+        "2026-11-10T18:15:00Z"
+      ],
+      "reconciliation_note": "Reconstructs the same six-file review receipt after an erroneous post-receipt pass command created a partial run. No additional coverage or audit iteration.",
+      "reviewed": 6,
+      "silent_drops": [],
+      "skipped_unchanged": 0,
+      "started": "2026-11-10T18:20:08Z",
+      "status": "CAPPED"
+    },
+    {
+      "deferred": 0,
+      "finished": null,
+      "id": "2026-11-11T19:07:28Z",
+      "mode": "full",
+      "passes": {
+        "C1": {
+          "files": 9,
+          "state": "ran"
+        },
+        "C2": {
+          "files": 9,
+          "state": "ran"
+        },
+        "C3": {
+          "files": 9,
+          "state": "ran"
+        },
+        "M1": {
+          "files": 9,
+          "state": "ran"
+        },
+        "M2": {
+          "files": 9,
+          "state": "ran"
+        },
+        "M4": {
+          "files": 9,
+          "state": "ran"
+        },
+        "M5": {
+          "files": 1,
+          "state": "ran"
+        },
+        "P1": {
+          "files": 9,
+          "state": "ran"
+        },
+        "P2": {
+          "files": 9,
+          "state": "ran"
+        },
+        "S1": {
+          "files": 9,
+          "state": "ran"
+        },
+        "S2": {
+          "files": 9,
+          "state": "ran"
+        },
+        "S3": {
+          "files": 9,
+          "state": "ran"
+        },
+        "S4": {
+          "files": 9,
+          "state": "ran"
+        },
+        "S5": {
+          "files": 9,
+          "state": "ran"
+        },
+        "T1": {
+          "files": 9,
+          "state": "ran"
+        },
+        "T4": {
+          "files": 1,
+          "state": "ran"
+        }
+      },
+      "reviewed": 9,
+      "skipped_unchanged": 0,
+      "started": "2026-11-11T19:07:28Z"
     }
-   },
-   "reviewed": 0,
-   "silent_drops": [
-    "C1",
-    "C2",
-    "C3",
-    "S1",
-    "S2",
-    "S3",
-    "S5",
-    "P1",
-    "P2",
-    "M1",
-    "M2",
-    "M3",
-    "M4",
-    "T1",
-    "T2",
-    "T3",
-    "T4"
-   ],
-   "skipped_unchanged": 0,
-   "started": "2026-11-10T18:15:00Z",
-   "status": "CAPPED"
-  },
-  {
-   "deferred": 0,
-   "finished": "2026-11-10T18:20:08Z",
-   "id": "2026-11-10T18:20:08Z",
-   "mode": "incremental",
-   "passes": {
-    "C1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "C2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "C3": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M3": {
-     "files": 0,
-     "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
-     "state": "ran"
-    },
-    "M4": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M5": {
-     "files": 0,
-     "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
-     "state": "ran"
-    },
-    "P1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "P2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S3": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S4": {
-     "files": 0,
-     "reason": "Reviewed supported POSIX descriptors, O_NONBLOCK behavior, macOS/Linux branches and explicit native-Windows refusal; classification corrected from the original receipt.",
-     "state": "ran"
-    },
-    "S5": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T2": {
-     "files": 0,
-     "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
-     "state": "na"
-    },
-    "T3": {
-     "files": 0,
-     "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
-     "state": "ran"
-    },
-    "T4": {
-     "files": 0,
-     "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
-     "state": "ran"
-    }
-   },
-   "reconciles_run_ids": [
-    "2026-11-10T18:08:26Z",
-    "2026-11-10T18:15:00Z"
-   ],
-   "reconciliation_note": "Reconstructs the same six-file review receipt after an erroneous post-receipt pass command created a partial run. No additional coverage or audit iteration.",
-   "reviewed": 6,
-   "silent_drops": [],
-   "skipped_unchanged": 0,
-   "started": "2026-11-10T18:20:08Z",
-   "status": "CAPPED"
-  }
- ],
- "version": 1
+  ],
+  "version": 1
 }
