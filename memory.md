@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 435
+Version: 436
+Delta: v435 to v436; link the final delivery receipt and retain only live activation prerequisites.
 Delta: v434 to v435; record installed acceptance and preserve concurrent delivery records.
 Delta: v433 to v434; integrate Jupiter webhook delivery with concurrent private MCP records.
 Delta: v432 to v433; finish verified GUM code and preserve runtime activation prerequisites.
@@ -65,7 +66,9 @@ Runtime: /Users/mitch/Library/LaunchAgents/com.mitch.soloracle-tradingview.plist
 
 Installed acceptance passed its scoped checks: all5 installed execution module hashes match source, installed CLI real preflight exit0, persistent PID50212 started after installation and runs inbox-only, public invalid-secret request400, persistent inbox0rows/0liveorders, isolated installed dry-run accepted+deduped then refused missing-account plan; signer loads, realkeyopens and non-GETvenueAPIcalls all0. Auditfixture clean shutdown exit0. Receipt: /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/installed-acceptance.json (SHA256ffd37e36d7c768845a4d916ca22361d1998b5669f1eb7629a176ba0be63dae61). Overallliveacceptance remains partial because fundedaccount andpolicy are missing.
 
-Remaining: final offline indexes and PR/CI/merge delivery. Then activate only after the owner supplies the account and leverage/allocation decisions and a funded/preference-compatible account passes read-only preflight. Runtime activation and actual venue fills remain unverified; lower fees do not validate strategy profitability.
+Code delivery: https://github.com/mithudso/solmargintrader/pull/214 . Final CI and remote merge identity are recorded in /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/delivery.json; consult that receipt for the authoritative final status. Full source/runtime artifact inventory: /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/artifact-manifest.json. Offline indexes and wiki checks passed exit0 before the initial push. Shared private MCP changes were preserved in the merge.
+
+Remaining runtime work: activate only after the owner supplies the account and leverage/allocation decisions and a funded/preference-compatible account passes read-only preflight. Runtime activation and actual venue fills remain unverified; lower fees do not validate strategy profitability.
 
 ## 2026-11-11 — Private MCP service selection
 
