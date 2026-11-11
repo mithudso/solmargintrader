@@ -66,7 +66,7 @@ remains unqualified.
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
 ecosystem 0.4.4, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
-and extension source 0.6.5. It retains paper/disarmed defaults and separates source
+and extension source 0.6.6. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
 for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
@@ -91,7 +91,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 434 tests
+npm test                                               # 437 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -105,7 +105,7 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 434 tests
+cd extension && npm test                                # 437 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

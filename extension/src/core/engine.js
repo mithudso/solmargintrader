@@ -288,9 +288,15 @@ const DIAGNOSTIC_KINDS = new Set(['Error', 'TypeError', 'RangeError', 'SyntaxErr
 function diagnosticError(error, stage) {
   // Error messages and response bodies can contain credentials. Persist the
   // operation, a known error class and an HTTP status instead of those strings.
-  const detail = { stage, kind: DIAGNOSTIC_KINDS.has(error?.name) ? error.name : 'Error' };
-  if (Number.isInteger(error?.status) && error.status >= 100 && error.status <= 599) detail.status = error.status;
+  const name = error?.name, status = error?.status;
+  const detail = { stage, kind: DIAGNOSTIC_KINDS.has(name) ? name : 'Error' };
+  if (Number.isInteger(status) && status >= 100 && status <= 599) detail.status = status;
   return detail;
+}
+
+function diagnosticMessage(detail) {
+  // Only locally selected metadata reaches display, log and journal strings.
+  return `${detail.stage} failed (${detail.kind}${detail.status ? `, HTTP ${detail.status}` : ''})`;
 }
 
 export function tick(args) {
@@ -570,21 +576,25 @@ async function tickUnlocked({
       } catch (err) {
         // A thrown call may have reached the venue. A local persistence error
         // after acceptance is equally ambiguous. Neither permits an auto-retry.
+        const detail = diagnosticError(err, 'submit');
+        const error = diagnosticMessage(detail);
         await store.updateIntent(intent.intentKey, {
           status: INTENT_STATUS.UNKNOWN,
-          error: String(err.message ?? err).slice(0, 300),
+          error,
         });
-        result.errors.push({ intentKey: intent.intentKey, error: String(err.message ?? err) });
-        result.errorDetails.push(diagnosticError(err, 'submit'));
-        log({ level: 'error', msg: 'placeOrder failed', intentKey: intent.intentKey, error: String(err) });
+        result.errors.push({ intentKey: intent.intentKey, error });
+        result.errorDetails.push(detail);
+        log({ level: 'error', msg: 'placeOrder failed', intentKey: intent.intentKey, error, ...detail });
       }
     }
 
     await persistRuntime();
   } catch (err) {
-    result.errors.push({ error: String(err.message ?? err) });
-    result.errorDetails.push(diagnosticError(err, stage));
-    log({ level: 'error', msg: 'tick failed', error: String(err) });
+    const detail = diagnosticError(err, stage);
+    const error = diagnosticMessage(detail);
+    result.errors.push({ error });
+    result.errorDetails.push(detail);
+    log({ level: 'error', msg: 'tick failed', error, ...detail });
   }
 
   return result;
