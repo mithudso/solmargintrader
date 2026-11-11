@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 426
+Version: 430
+Delta: v429 to v430; finalize the evidence-bound review for delivery without activating live alerts.
+Delta: v428 to v429; finish authenticated chart validation and reject live activation under the requested condition.
+Delta: v427 to v428; record evidence review and TradingView two-factor blocker.
+Delta: v426 to v427; begin conditional Volty strategy validation and TradingView setup.
 Delta: v425 to v426; repair deterministic repository index after CI drift check.
 Delta: v424 to v425; record completed Coinbase order worker, installed acceptance and active webhook.
 Delta: v423 to v424; implement Coinbase webhook worker and 75 percent sizing.
@@ -27,6 +31,10 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Validate and configure ZEC Volty TradingView alerts
+
+TASK-1301 tracks the request. Work in /Users/mitch/dev/solmargintrader-wt-01a1c9f1 on agent-01a1c9f1 because the primary checkout has active sessions. Validate the actual listed ZEC Volty source/settings and economic evidence before enabling Coinbase75percent webhook alerts. Prior study reports losing fixed winners and stop-and-reverse semantics; verify against source. Chrome extension transport is initially unavailable although extension/native host checks pass. Requested Computer Use sees a system Google passkey prompt. The user was asked to complete or dismiss it. No TradingView alert has been created or enabled. Independent audit verified nine final artifact hashes, two source hashes, four tracked result copies and six focused mechanics tests. All fixed winners lose OOS and the long/short stop-and-reverse semantics do not match the75percent spot bridge. Review saved in docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md. The Chrome extension connected and the user completed two-factor sign-in. Inspected saved layout CRYPTO:ZECUSD1m, Volty length5 multiplier1. Tester properties use100%equity,2xlong/short,zero commission and slippage; report shows3738trades and0.09%average expectancy. Current authenticated Coinbase taker fee is0.9%per side. ZEC-USD product is online. Chart settings were preserved; no secret entered, no alert created/enabled and no trade sent. Saved private screenshot at /Users/mitch/.local/state/soloracle-tradingview/volty-review-20261111/strategy-report.png. Validation condition failed for live75%spot execution. Recommend paper-only observation or a separately tested spot adaptation; neither is silently substituted. Deliver the completed report and await a new user choice before any live alert activation. Preserve existing browser/account state and do not send synthetic live signals.
 
 ## 2026-11-11 — Coinbase webhook sizing
 
