@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T13:07:28+00:00",
+  "generatedAt": "2026-11-11T13:26:04+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1799,
+      "matchingFiles": 1801,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1509,
+      "matchingFiles": 1512,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1480,
+      "matchingFiles": 1488,
       "shown": 30,
       "files": [
         {
@@ -308,16 +308,20 @@
           "hits": 196
         },
         {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 183
+        },
+        {
           "path": "research/coin-intelligence/doge-dogecoin.md",
           "hits": 147
         },
         {
-          "path": "research/results/shape_spot_20261111_manifest.json",
+          "path": "memory.md",
           "hits": 97
         },
         {
-          "path": "memory.md",
-          "hits": 94
+          "path": "research/results/shape_spot_20261111_manifest.json",
+          "hits": 97
         },
         {
           "path": "research/tradingview-card-coverage.json",
@@ -368,12 +372,12 @@
           "hits": 39
         },
         {
-          "path": "prompts.md",
+          "path": "research/tradingview-card-readiness.json",
           "hits": 36
         },
         {
-          "path": "research/tradingview-card-readiness.json",
-          "hits": 36
+          "path": "prompts.md",
+          "hits": 35
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -418,10 +422,6 @@
         {
           "path": "research/cross_asset_cpcv.py",
           "hits": 28
-        },
-        {
-          "path": "research/RATIO-ROTATION.md",
-          "hits": 27
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 839,
+      "matchingFiles": 840,
       "shown": 30,
       "files": [
         {
@@ -713,12 +713,16 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 772,
+      "matchingFiles": 780,
       "shown": 30,
       "files": [
         {
           "path": "research/tradingview-card-coverage.json",
           "hits": 800
+        },
+        {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 530
         },
         {
           "path": "research/tradingview-script-understanding.json",
@@ -831,10 +835,6 @@
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
           "hits": 51
-        },
-        {
-          "path": "research/strategy_experiment/FILES.md",
-          "hits": 50
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 757,
+      "matchingFiles": 763,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 680,
+      "matchingFiles": 685,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 411,
+      "matchingFiles": 414,
       "shown": 30,
       "files": [
         {
@@ -1455,6 +1455,10 @@
           "hits": 25
         },
         {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 24
+        },
+        {
           "path": "archive/memory-2026-11-08.md",
           "hits": 23
         },
@@ -1512,10 +1516,6 @@
         },
         {
           "path": "docs/code-optimizer-scope-2026-11-08.json",
-          "hits": 12
-        },
-        {
-          "path": "research/coin-intelligence/eth-ethereum.md",
           "hits": 12
         }
       ],
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 354,
+      "matchingFiles": 357,
       "shown": 30,
       "files": [
         {
@@ -1712,6 +1712,10 @@
         {
           "path": "soltui/learning_owner.py",
           "hits": 25
+        },
+        {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 24
         },
         {
           "path": "research/RANKED_LISTS.md",
@@ -1784,10 +1788,6 @@
         {
           "path": "botmanager/tests/test_continuation.py",
           "hits": 10
-        },
-        {
-          "path": "botmanager/tests/test_learning.py",
-          "hits": 10
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 313,
+      "matchingFiles": 318,
       "shown": 30,
       "files": [
         {
@@ -1842,6 +1842,10 @@
         {
           "path": "research/CANDLE-GAP-AUDIT.md",
           "hits": 36
+        },
+        {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 34
         },
         {
           "path": "backtester/tests/test_cross_asset_cpcv.py",
@@ -1922,10 +1926,6 @@
         {
           "path": "research/geometry.py",
           "hits": 9
-        },
-        {
-          "path": "backtester/core/cpcv.py",
-          "hits": 8
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 216,
+      "matchingFiles": 217,
       "shown": 30,
       "files": [
         {
@@ -2111,6 +2111,10 @@
         {
           "path": "research/coin-intelligence/sol-solana.md",
           "hits": 35
+        },
+        {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 33
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -2195,10 +2199,6 @@
         {
           "path": "backtester/strategy_cards/hurst_regime_test.md",
           "hits": 13
-        },
-        {
-          "path": "backtester/strategy_cards/obv_trend.md",
-          "hits": 13
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -2214,7 +2214,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 164,
+      "matchingFiles": 166,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 163,
+      "matchingFiles": 164,
       "shown": 30,
       "files": [
         {
@@ -2378,6 +2378,10 @@
         {
           "path": "docs/FILES.md",
           "hits": 34
+        },
+        {
+          "path": "research/results/coinbase50_20261111_summary.json",
+          "hits": 33
         },
         {
           "path": "mongo/queries/06-experiments-and-pbo.js",
@@ -2469,10 +2473,6 @@
         },
         {
           "path": "mongo/tests/test_load.py",
-          "hits": 10
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 10
         }
       ],

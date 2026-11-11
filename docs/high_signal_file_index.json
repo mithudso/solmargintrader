@@ -142,7 +142,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Explicit source/archive CLI",
-      "lines": 273
+      "lines": 327
     },
     {
       "path": "oracle/engine.py",
@@ -343,7 +343,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Ladder-grid simulator; a port of extension/src/core/grid.js that must agree with it",
-      "lines": 924
+      "lines": 932
     },
     {
       "path": "backtester/core/dcasim.py",
@@ -617,6 +617,48 @@
       "kind": "python",
       "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts",
       "lines": 471
+    },
+    {
+      "path": "research/coinbase50_data.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Identity-bound Coinbase universe and resumable native-candle evidence collection",
+      "lines": 150
+    },
+    {
+      "path": "research/coinbase50_stats.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Cross-coin period stability, frozen forecasts and corrected hour-of-day tests",
+      "lines": 177
+    },
+    {
+      "path": "research/coinbase50_grid.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Training-only recovery ranking, shape/cycle/calendar/H1 gates and normalized canonical grids",
+      "lines": 185
+    },
+    {
+      "path": "research/coinbase50_study.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Protected-window study runner, matched-budget factorial portfolios and source-bound manifests",
+      "lines": 314
+    },
+    {
+      "path": "research/coinbase50_report.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Top50 numerical report and standalone scientific figures",
+      "lines": 113
+    },
+    {
+      "path": "research/COINBASE50-GRID-CYCLES.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Measured wavelength, grid-combination and time-of-day findings with exclusions and costs",
+      "lines": 585
     },
     {
       "path": "research/zec_cycle_report.py",
@@ -1306,7 +1348,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 462
+      "lines": 470
     },
     {
       "path": "CONTRIBUTING.md",

@@ -1,10 +1,12 @@
 # Prompt history
 
-Version: 212
+Version: 213
+Delta: v212 to v213; preserve concurrent owner-policy/mobile records and verified top50 study.
 Delta: v211 to v212; capture cross-platform mobile push discovery and self-owned design request.
 Delta: v210 to v211; preserve concurrent MCP client records and selected ZEC/USDC configuration.
 Delta: v209 to v210; capture explicit Jupiter2x75%USDCcollateral selection.
 Delta: v208 to v209; record ZEC/USDC wallet selection and repeated memory hook failure fix.
+Delta: v209 to v210; capture top50 cycle/grid study and time-of-day steering.
 Delta: v208 to v209; preserve swing research and verified MCP client setup.
 Delta: v207 to v208; preserve concurrent Jupiter delivery and verified MCP clients.
 Delta: v206 to v207; capture all requested CLI and desktop MCP clients.
@@ -1892,3 +1894,10 @@ Using the research done in ~/dev/llms-explorer identify the major graph shapes a
 ## 2026-11-11 — ZEC periodicity — TASK-1307
 
 I have often thought I saw a certain width on the charts that seems to be the coin's frequency that there always seems to ber a local peak or dip at roughly equal intervals, can you validate this for me please? I did see it on the ZEC charts yesterday.
+
+
+## 2026-11-11 — Coinbase top50 grid/cycle/shape/time-of-day study — TASK-1336
+
+Check for the wavelength on other coins and see if there are any where it is more or less consistent. More consistent would obviously be helpful. Also branch out to the top 50 coins on coinbase and check them as well. Also take a look at the top 50 coins and use the previous research on which coins would make good candidates for a grid strategy, and see if combining a good coin, with frequency observation, and with shape topolopgy aware strategies combine to make a difference.
+
+I am also curious if ther time of day has any consistent effect on the price.
