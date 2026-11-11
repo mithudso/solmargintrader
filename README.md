@@ -48,6 +48,11 @@ The [ZEC cycle validation](research/ZEC-CYCLE-VALIDATION.md) tests apparent regu
 peak/dip spacing against no-clock simulations and frozen future forecasts. A
 short local rhythm was visible, but the declared tests did not validate a stable clock.
 
+The [Coinbase top50 study](research/COINBASE50-GRID-CYCLES.md) compares wavelength
+consistency, hour-of-day seasonality, grid-coin selection, chart geometry and
+persistent homology. Its factorial spot backtests count idle cash, residual
+inventory and execution costs, and keep incomplete-history exclusions visible.
+
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and

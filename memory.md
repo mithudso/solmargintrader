@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 438
+Version: 440
+Delta: v439 to v440; measured top50 results and preserve audited source/input continuation.
+Delta: v438 to v439; capture top50 cycle/grid study and time-of-day steering.
 Delta: v437 to v438; preserve swing research and verified MCP client setup.
 Delta: v436 to v437; preserve concurrent Jupiter delivery and verified MCP clients.
 Delta: v434 to v435; verify loaded desktop MCP tools and preserve complete client receipt.
@@ -923,3 +925,25 @@ All1005 backtester tests passed with exit0 in29.756seconds in the isolated cycle
 ## Cycle-study delivery integration
 
 Preserved origin/master 81bf2fa and all independently completed Jupiter execution source, documentation and activation limits. Both concurrent prompt and continuation histories remain intact. This study changes no installed execution settings. All 1,005 local backtester tests passed with exit code 0; 18 combined research tests, Ruff and documentation checks passed. The frozen cycle calculations need no repeat because the merged update did not alter their inputs or numerical source. Rebuilt combined wiki and retrieval metadata. Final CI, merge and cleanup receipts belong in TASK-1307 and the external delivery receipt.
+
+
+## 2026-11-11 — Coinbase top50 grid/cycle/shape/time-of-day study — TASK-1336
+
+User requests cross-coin wavelength consistency, top50 Coinbase spot coverage, prior grid-coin research and combined strategy ablations. Latest steering includes time-of-day effects. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1ca3c; branch agent-01a1ca3c; base d703634. Define current top50 Coinbase-listed spot assets by market cap, inventory all50/exclusions/identity and history, preserve runtime ten-coin defaults. Use training-only selectors and causal cycle/shape/time features; full-equity grid simulation with nonzero execution drag and appropriate baselines. Separate direction from volatility/volume seasonality. Current-universe hindsight/survivorship must remain explicit. No installed/live/paper state changes. Steps: freeze universe/protocol and collect source-bound data; implement tests/ablation and statistical controls; complete analysis, independent audit, report and verified merged delivery. Existing shape/cycle studies remain accepted and separate.
+
+
+## 2026-11-11 — Coinbase51 evidence and matched-budget factorial results — TASK-1336
+
+Collected153 native Coinbase cells (51assets x1h/15m/5m),1,384,682bars,0requesterrors. Replayed allcachedchunks with conflicting-duplicate refusal; exit0. Identity join uses venue coin_id, includes LIGHTER, rejects misleading AERO/EDGE symboljoins. Literal50 includesUSDT andendsBEAM; directional50 replacesUSDTwithCOMP;51distinctIDs. Current-membership and complete-feed survivorship are explicit. Analysis clips before2026-11-08 19:00UTC toprotect allunsealedholdouts. Three30daytests use26daytrainingwindows. Inputs/protocolv3: /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/input. Run: /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/run-v1/manifest.json (3610artifacts). Frozen sourcecopies: /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/source-snapshot-manifest.json.
+
+Implemented research/coinbase50_data.py, coinbase50_stats.py, coinbase50_grid.py, coinbase50_study.py, coinbase50_report.py; report research/COINBASE50-GRID-CYCLES.md; compactJSON andthreefigures research/results/coinbase50_20261111_*. canonicalgridsim gains optionalboolean entry_allowed vector; default unchanged, exitsalwaysactive. No runtimeuniverse, live/paperjobs, armedsettings, margin ororderschanged. Research-onlydependencies isolated /Users/mitch/.venvs/coinbase50-20261111; package-riskUNKNOWN withoutEndor intelligence. Dependencies pinned research/coinbase50-requirements.txt and externaldependencies.txt.
+
+Time-of-day:300max-hourtests (50directionalcoins xUTC/NY xdirection/absreturn/logquotevolume),9999nullreplicates,globalHolm.0direction,89volatility,96volumesignificanttests. These are tests, notuniquecoins. Activitypeaks often10amNY; no dependable directionalbuyhourvalidated. RawTODincludescommonmarket effects, notcoin-specificalpha. Fullavailable-dayfirsthalf/secondhalfprofilesrecordlaterstability. DST/incomplete days excluded.
+
+Wavelengths vary; lowIQRoftenclusters nearsearchboundary. Controlled5m RENDER9.6hmedian hasIQR0butfutureMSEratio0.987 andonly6/12wins; ADA0.985ratio9/12wins; LTCIQR0but1.021ratio; ZEC1.033ratio3/12wins. SlowcontrolledHBARratio0.973,27/51wins; ZEC1.022. These small selected differences do notvalidatefixednaturalclocks. BTCselfresidualizedfeaturesunavailable; numericalfloor preventsOLSroundoffnormalization intofalseH1/cycle. H1knownanswerscrosscheckedindependentZ2reduction. Priorgeometryefficacyclaimsnotimported.
+
+17/50complete116day15m histories qualify forgrid;33excludedwithvisiblecashcontrols. Primaryselection-off uses10largesteligiblemarketcapcoins;selection-on usestrainingrecoveryrank10,samebudgets. Extraall50cashslotandalleligiblecontrols retained.32factorialportfolios x4costs; paired7daybootstrap andHolm128. Zero+2bpsprimarybase1.192720%,selection1.896060%,allfactors-0.479915%; selectiongain0.70334pp adjustedp1.0. Selectedhold20.03563%,marketcap10hold26.97%approx. AllfactorsreduceDD/exposurebutdonotimproveprofit. Zero+25bpsselection0.572884%,base-0.017118%. Unfilteredgridcoins:ZEC13.337351%,NEAR9.954392%,ONDO5.495119%,SUI5.337804%;ZEC/NEARhold154.700420%/128.848748%. Griddoesnotcapturemostoftheirrally.
+
+Checks:32combinedresearchtests(14new+18prior)exit0;Ruffexit0;collection,diagnostics,grid,aggregation,reportexit0. Initialfullbacktester1005runexit1solelybecauseindexstalenessbeforeplannedregeneration; finalregeneration/fulltestrerunrequired. Independentpre-runauditclosedcacheprovenance,degeneracy,budgetandidentitygaps. Outcomeauditrequested. Remaining:finalindependentaudit;refreshdeterministicdocs/wiki/index;requiredchecks;commit/push/PR/CI/merge;confirmremotecontents;cleanonlyownedworktree. DeliveryphaseTASK-1341andparentTASK-1336closeonlyafterverifiedmerge. Externalfinalreceipt /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/delivery-receipt.json recordscompletionwithoutanothermemoryedit.
+
+Exact analysis command: OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /Users/mitch/.venvs/coinbase50-20261111/bin/python -m research.coinbase50_study --data /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/input --output /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/run-v1 --phase aggregate. Existingcellbindingsuseoriginalworktreeabsoluteidentity; forindependentreplayfromanothercheckout,usefreshoutputandrun diagnostics,grid,aggregate inthatorder. Acceptedoutputsremainimmutableandcanbeverifiedagainstfrozen sourcecopies.

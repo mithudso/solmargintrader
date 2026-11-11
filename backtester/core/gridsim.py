@@ -701,6 +701,7 @@ def run_grid_backtest(
     close_at_end: bool = True,
     continuation: dict | None = None,
     entries_paused: bool = False,
+    entry_allowed: np.ndarray | None = None,
 ) -> GridRunResult:
     """Run one ladder over one OHLCV series.
 
@@ -732,6 +733,13 @@ def run_grid_backtest(
     checked = validate_bar_arrays(arrays, interval, require_open_volume=False)
     ts, highs, lows, closes = (checked[name] for name in ("ts", "high", "low", "close"))
     n = closes.size
+
+    # Research callers supply a decision known before each bar. This masks
+    # entries only; existing offers retain their ordinary fill eligibility.
+    if entry_allowed is not None:
+        entry_allowed = np.asarray(entry_allowed)
+        if entry_allowed.shape != (n,) or entry_allowed.dtype != np.dtype(bool):
+            raise ValueError("entry_allowed must be a boolean vector matching bars")
 
     levels = grid_levels(cfg)
     # The ladder is fixed for the whole run, so its level -> index map is built
@@ -771,7 +779,7 @@ def run_grid_backtest(
         # -- 2/3. fills. Buys first: cash a sell frees must not fund a buy in
         # the same bar, because the intrabar path is unknown.
         for key, order in sorted(resting.items(), key=lambda kv: -kv[1].level):
-            if entries_paused or order.side != SIDE_BUY or order.planned_index >= i:
+            if entries_paused or (entry_allowed is not None and not entry_allowed[j]) or order.side != SIDE_BUY or order.planned_index >= i:
                 continue
             if lows[j] <= order.level:
                 if book.buy(order.level, order.qty, int(ts[j]), i):

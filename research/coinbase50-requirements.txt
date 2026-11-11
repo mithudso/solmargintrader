@@ -1,0 +1,5 @@
+# Research-only. Do not add these to a trading-runtime environment.
+numpy==2.5.4
+pandas==3.1.1
+matplotlib==3.11.2
+ripser==0.6.15

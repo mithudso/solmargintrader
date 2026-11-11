@@ -1,0 +1,12 @@
+{
+  "artifacts": {
+    "/Users/mitch/dev/solmargintrader-wt-01a1ca3c/research/results/coinbase50_20261111_cycles.png": "efb10a61a35b5f0313c6f0fa4693a444c43930a48794798bd266cd5ff0292cf0",
+    "/Users/mitch/dev/solmargintrader-wt-01a1ca3c/research/results/coinbase50_20261111_hours.png": "89bfd56aa5662c1ce514c2a26afaaad56eb773052f4a9c1a4469a9b37fef8287",
+    "/Users/mitch/dev/solmargintrader-wt-01a1ca3c/research/results/coinbase50_20261111_portfolios.png": "e08a99caacd70ca47358d6b64edc6eca49074057df18691619778838cd25f807",
+    "/Users/mitch/dev/solmargintrader-wt-01a1ca3c/research/results/coinbase50_20261111_summary.json": "17f93a936797e8a1c342539e55c6afeb0aff83a92589b2c5dc06be5aef971765"
+  },
+  "report": {
+    "/Users/mitch/dev/solmargintrader-wt-01a1ca3c/research/COINBASE50-GRID-CYCLES.md": "50a40b2ff4a050d4eb85d35fc7ea532d0a9c7db725d2b34c650342156feabd77"
+  },
+  "run_manifest_sha256": "c5a2e549d8085e27e97dc40ade23ff7f283d6843e9cbe9cc15c6b51048a4425d"
+}

@@ -254,8 +254,11 @@ set on exactly 25, every key real.
 
 - Extension: `extension/test/*.test.js`, `node:test` + `node:assert/strict`. Assert behaviour and
   observable effects, not line execution.
-- Backtester and research: `backtester/tests/`, `unittest`. `research/` has no test directory of
-  its own; its modules are tested from there (`test_decide.py`, `test_cpcv.py`, `test_interpret.py`).
+- Backtester: `backtester/tests/`, `unittest`, including older research modules
+  (`test_decide.py`, `test_cpcv.py`, `test_interpret.py`). Causal shape/cycle studies
+  also use `research/tests/`. The top50 study installs its research-only dependencies
+  from `research/coinbase50-requirements.txt` and runs
+  `python3 -m unittest research.tests.test_coinbase50_study -v`; CI runs that gate.
 - soltui: `soltui/tests/`, `unittest`.
 - mongo: `mongo/tests/`, `unittest`. Guard anything server-dependent with the module's
   `needs_server` decorator so a checkout without mongod still passes.
