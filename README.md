@@ -53,6 +53,15 @@ consistency, hour-of-day seasonality, grid-coin selection, chart geometry and
 persistent homology. Its factorial spot backtests count idle cash, residual
 inventory and execution costs, and keep incomplete-history exclusions visible.
 
+## Combined research and prospective plan
+
+The [trial meta-analysis](research/META-ANALYSIS.md) consolidates the retained
+strategy families, tests actual API fees and passive attribution, and compares
+an independent recommendation. The [frozen paper cohort](docs/META-FORWARD.md)
+runs ten separate accounts with durable future-only decisions. The tiny
+authenticated live round trip validates execution plumbing; prospective profit
+remains unqualified.
+
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and

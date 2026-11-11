@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 452
+Version: 456
+Delta: v455 to v456; save the successful documentation environment and immutable final review target.
+Delta: v454 to v455; record accepted paper restart and final bound analysis before delivery.
+Delta: v453 to v454; record reviewed meta followups, actual canary, activated cohort and owner risk tolerance.
+Delta: v452 to v453; start TASK-1391 evidence synthesis, independent analysis and bounded live-readiness work.
 Delta: v451 to v452; snapshot completed feature for independent delivery while full default50 code audit continues.
 Delta: v450 to v451; retire first watcher cohort after independent durability defect and continue default50 audit.
 Delta: v449 to v450; record implemented chart/service, costed diagnostics, checks and prepared funding review.
@@ -1027,3 +1031,41 @@ Wavelengths vary; lowIQRoftenclusters nearsearchboundary. Controlled5m RENDER9.6
 Checks:32combinedresearchtests(14new+18prior)exit0;Ruffexit0;collection,diagnostics,grid,aggregation,reportexit0. Initialfullbacktester1005runexit1solelybecauseindexstalenessbeforeplannedregeneration; finalregenerationfollowedby1005testsexit0in28.200seconds. Independentpre-runauditclosedcacheprovenance,degeneracy,budgetandidentitygaps. OutcomeauditPASS:3610artifacts,4896rawchunks,153sidecars,300TODtests,128portfolios/281curves,204passives andsamplecanonicalgrids independentlyreproduced.32researchtests0;1005backtester0;Ruff/docs/index0. Preservedremoted7ba688 ownerpolicyandmobilealertdesignduringintegration. Remaining:commit/push/PR/CI/merge;confirmremotecontents;cleanonlyownedworktree. DeliveryphaseTASK-1341andparentTASK-1336closeonlyafterverifiedmerge. Externalfinalreceipt /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/delivery-receipt.json recordscompletionwithoutanothermemoryedit.
 
 Exact analysis command: OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /Users/mitch/.venvs/coinbase50-20261111/bin/python -m research.coinbase50_study --data /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/input --output /Users/mitch/.local/share/solmargintrader/research/coinbase50-20261111/run-v1 --phase aggregate. Existingcellbindingsuseoriginalworktreeabsoluteidentity; forindependentreplayfromanothercheckout,usefreshoutputandrun diagnostics,grid,aggregate inthatorder. Acceptedoutputsremainimmutableandcanbeverifiedagainstfrozen sourcecopies.
+
+
+## 2026-11-11 — Comprehensive trading meta-analysis — TASK-1391
+
+Private worktree /Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta at740a49f; branch agent-01a1ca3c-meta. Inventory all completed trial families and evidence types without pooling dependent or incompatible horizons. Independent analyst and inventory/forward-path scouts are read-only. DDO full-depth applies to one consolidated report; /dr routes through the installed command for expertise gaps. Preserve held intervals, existing runtime/forward/live owners and the separate default50 audit. User authorizes forward implementation and small live validation; use supported guarded paths, exact current fees/balances/preview, venue-minimum and at most10USD deployed; never auto-retry ambiguous submits. First implement evidence aggregation and predeclared followup tests, then reconcile independent conclusions, freeze candidates, start isolated durable forward evidence and validate execution plumbing. No future elapsed performance can be claimed at startup. Remaining: all analysis, implementation, checks, audit and merged delivery.
+
+## 2026-11-11 — Meta-analysis implementation checkpoint
+
+TASK-1391, private worktree `/Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta`, base740a49f. Original146source consolidated ledger: `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/run-v2/all-trials.json`; inventory sibling. Repeated history is dependent; do not pool returns as independent studies. Followups-v1 retains22hashed outputs; independent reviewer reproduced18curves exactly. At90bps+2, original delay1 BB+4.5344% versus training-volatility-scaled initial passive ZEC budget+62.1427%. Fixed delay2 reference adds BB+6.8179% versus scaled passive+61.5877%. Budget0.4793342110254035 is initial fixed budget, not continuing matched volatility. New live strategy capital stayscash.
+
+Owner answered “About 30% drawdown.” This is a planning tolerance, never a guaranteed cap. `/Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/docs/META-FORWARD-RISK-AMENDMENT.json` records this after the original protocol freeze without changing cohort parameters.
+
+New installed paper cohort home `/Users/mitch/.local/share/solmargintrader/meta-forward-20261111`; venv `/Users/mitch/.venvs/meta-forward-20261111`; job `com.solmargintrader.meta-forward.1391`. All48numerical installed source hashes matched reviewed code. Protocol freeze17:42:10Z precedes activation17:42:24Z;10independent10kbooks, firstdecision confirmed before18Zeligible open, initially0trades/0snapshots. Independent installed acceptance pending. Existing Volty/ZEC owners preserved.
+
+Tiny actual guarded Coinbase SOL-USDC manual-adapter canary completed: BUY e1115fbb-18e6-4217-be24-c631af728949; SELL ef956d48-c450-48d9-90e1-846a4873308a;0.02332942SOLeach;1.9979911742729938USDCdeployed; fees0.0356811310138138USDC; netcash-0.0314503132597938USDC; zero netbase. BothFILLED, durable unique clientIDrecords complete. Private receipts under `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/live-validation`. No more liveorders required. Authenticated fees50mak­er/90takerbps contradict API zero-fee premise.
+
+Checks completed:12new researchtests0,20forwardtests0,Ruff0, full ecosystem suite0. Full canonical backtester suite running. DDO at final independent exit audit; /dr fiveconcepts researched, failed temporal claim withheld, reduced semantic gate running. Remaining: finish gates and aggregate refreshed inventory, deployed acceptance, docs/index/wiki checks, commit/push/PR/CI/merge/default-contentverification and clean task worktree.
+
+## 2026-11-11 — Verified meta-analysis delivery preparation
+
+Final primary ledger `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/run-v4/all-trials.json` SHA72d86b9d035060a07702f995363371309ef8175ca5a682d9e31a61e26f03973a:171distinctsourceartifacts,0readerrors. Its inventory includes all original146sourcefamilies and25additional result/operational/methodology artifacts, with byte-identical aliases separate. Legacy generic forward metadata:21,085trialrows/1,083,241callrows; these are not trades or P&L, and protected candle/outcome values were not mined.
+
+Independent installed acceptance passed: `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/acceptance.json`, SHA81f3c8f87aa668c4d8331390a97e185d6846ac17786378dbc99896b376421924. All48numericalhashes,10books,67seedbars, confirmedfuture18Zdecision,0historicalPnL. Controlled only-new-service restart PID2186to11596 preserved7capturedtables; otherownersunchanged. No further acceptance probing needed absent a source/runtime change. ZEC-USDC/USD product reads and2USDCdrypreview succeeded; noZECorder submitted.
+
+Requested three-iteration DDO ended blind_audit_dissent with1Medium continuation-status finding, and closed10findings. OriginalboundDDOreport retained. Parent updated actualreceipt/statusspans; finalread-onlydocumentreview is completing its navigation/sourcebinding check. New training-mixture-check reproduces sigma ratio0.8595394713571798 with unchanged originalweight; not matched risk.
+
+/dr5concepts and115/115semanticassertions pass:92SUPPORTED23NO-FACTUAL-ASSERTION. OneKraken temporalclaim withheldentirely; unsupportedprocessnotes retainedprivate. Owninghubstructuralbaseline8preexistingHighmissingreferences means skillpublication withheld. AdapterfinishedBLOCKEDexit0, noregistry/sitecompletionclaim. Report `/Users/mitch/.global-ai-hub/research/sequential-validation-and-capital-allocation-after-dependent-crypto-strategy-trials/report.md`; restorehubpublicationtaskTASK-1410. Do not broaden trading delivery into unrelated hub restructuring.
+
+Completed actualchecks:12researchtests0,20forwardtests0,236ecosystemtests0,27Coinbasecontracts0 in existingcompleteSolTUIenvironment,Ruff0. Initial1005backtest suite had onlyindexstaleness1; rebuildofflineindex afterfinaldocs, thenrequiredsuite mustpass. UItest inheadlesspaperenv initiallyfailedmissingtextual, rerun in correct existing complete environment passed. Neededfinaldelivery:stageonlyownedpaths; buildwiki/offlineindex/docs; finalchecks; commitpushPRCImerge; verifyremotedefaultcontentandsynccleanmain; removesoleownworktree. Finalreceiptsliveunderexternalroot and completefilemanifest.
+
+## 2026-11-11 — Final verification continuation
+
+The final readable report SHA is0896717d0aae4ada02a0b1a41c051916b29f85121a4e54daa2e78de5e1b0c26b. The primary link now names the171source run-v4 ledger; run-v2 is explicitly the preserved146source DDO baseline. The original3iterationDDOreport remains unchanged; final changed-span audit is saved separately under `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/final-document-navigation-audit.json`. Check that receipt for its actual result.
+
+Documentation gate succeededexit0 using the actualsrc-layout manager source and existing completeUIenvironment:
+`PYTHONPATH=/Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/botmanager/src:/Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta /Users/mitch/.venvs/soltui/bin/python scripts/check_docs.py`. It discovered2957tests and agreedwithdocs. Barepaperenv lackedTextual; oldSolTUIanddocsenvs couldnotimport `botmanager.blind` or `botmanager.config`; `/botmanager` alone is notthesrc-layout importroot. Do not mutate installedproductionowners tofixa source-documentcheck.
+
+Finalcheckanddeliveryreceipts are `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/verification-final.json`, `delivery.json` and `complete-file-manifest.json`. These willrecord actual completed exits/remotecontent atdelivery. The frozenpaper service continues independently of thisworktree; futureeconomicqualification requires elapsedmarketobservations.

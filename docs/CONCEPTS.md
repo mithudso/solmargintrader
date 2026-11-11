@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-10T20:32:03+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-11T17:58:30+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1715 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1812 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -30,17 +30,17 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
 - `docs/FILES.md` (160 hits)
+- `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 - `research/TRADINGVIEW-SCRIPT-CARDS.md` (113 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
-- `skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md` (86 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1715`
+Full list: `python3 index/search.py --concept risk-rails -n 1812`
 
 ### Cost model
 
-`costs` · **1432 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
+`costs` · **1521 files** · matched on `fee_bps`, `slippage`, `slippage_bps`, `costconfig`, `break-even`, `borrow`, `financing`
 
 Fees and slippage are never optional and must be applied exactly once. The engine runs fee_bps=6.0, slippage_bps=2.0, fill_delay=1.
 
@@ -48,18 +48,37 @@ Strongest files:
 
 - `research/strategy_experiment/results/results.json` (2176 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (1632 hits)
+- `llms/jupsol-llms.txt` (117 hits)
 - `research/ratio_rotation.py` (89 hits)
 - `soltui/coin_fit.py` (73 hits)
 - `soltui/simulation.py` (68 hits)
 - `backtester/core/engine.py` (67 hits)
 - `skills/trading-and-investing/references/jupiter-perps-trading.md` (61 hits)
-- `backtester/tests/test_engine.py` (58 hits)
 
-Full list: `python3 index/search.py --concept costs -n 1432`
+Full list: `python3 index/search.py --concept costs -n 1521`
+
+### Cross-asset and cross-timeframe transfer
+
+`transfer` · **1508 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+
+The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
+
+Strongest files:
+
+- `research/coin-intelligence/zec-zcash.md` (196 hits)
+- `research/results/coinbase50_20261111_summary.json` (183 hits)
+- `research/coin-intelligence/doge-dogecoin.md` (147 hits)
+- `memory.md` (107 hits)
+- `research/results/shape_spot_20261111_manifest.json` (97 hits)
+- `research/tradingview-card-coverage.json` (90 hits)
+- `FILES.md` (78 hits)
+- `docs/FILES.md` (78 hits)
+
+Full list: `python3 index/search.py --concept transfer -n 1508`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1403 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1455 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -71,71 +90,52 @@ Strongest files:
 - `research/tradingview-script-profiles/shard-b.jsonl` (39 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (36 hits)
 - `backtester/core/strategies/advanced.py` (32 hits)
+- `TRADINGVIEW-REFERENCE.md` (31 hits)
 - `docs/TRADINGVIEW-REFERENCE.md` (31 hits)
-- `backtester/core/engine.py` (30 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1403`
-
-### Cross-asset and cross-timeframe transfer
-
-`transfer` · **1373 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
-
-The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
-
-Strongest files:
-
-- `research/coin-intelligence/zec-zcash.md` (196 hits)
-- `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `research/tradingview-card-coverage.json` (90 hits)
-- `docs/FILES.md` (78 hits)
-- `research/results/frontier-2026-11-07.json` (62 hits)
-- `research/CROSS-ASSET-TRANSFER.md` (60 hits)
-- `research/results/minute_sweep_x1_common.txt` (54 hits)
-- `docs/SCRIPTS.md` (50 hits)
-
-Full list: `python3 index/search.py --concept transfer -n 1373`
+Full list: `python3 index/search.py --concept lookahead -n 1455`
 
 ### Grid trading
 
-`grid` · **702 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **785 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
 Strongest files:
 
 - `research/tradingview-card-coverage.json` (800 hits)
+- `research/results/coinbase50_20261111_summary.json` (530 hits)
 - `research/tradingview-script-understanding.json` (256 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
 - `docs/FILES.md` (177 hits)
+- `FILES.md` (176 hits)
 - `backtester/tests/test_gridsim.py` (167 hits)
-- `ecosystem/web/styles.css` (128 hits)
-- `skills/trading-and-investing/references/grid-trading-strategy.md` (128 hits)
-- `research/tradingview-script-profiles/shard-c.jsonl` (125 hits)
+- `ecosystem/web/styles.css` (129 hits)
 
-Full list: `python3 index/search.py --concept grid -n 702`
+Full list: `python3 index/search.py --concept grid -n 785`
 
 ### On-chain execution reality
 
-`execution-onchain` · **630 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **776 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
 Strongest files:
 
 - `research/strategy_experiment/results/results.json` (544 hits)
+- `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (312 hits)
+- `docs/FILES.md` (311 hits)
+- `FILES.md` (283 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
+- `memory.md` (142 hits)
 - `docs/archive/memory-2026-11-10.md` (141 hits)
-- `soltui/tui.py` (141 hits)
-- `skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md` (127 hits)
-- `skills/trading-and-investing/references/jupiter-perps-trading.md` (125 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 630`
+Full list: `python3 index/search.py --concept execution-onchain -n 776`
 
 ### Data integrity
 
-`data-integrity` · **613 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **692 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -144,17 +144,17 @@ Strongest files:
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (272 hits)
 - `research/tradingview-card-coverage.json` (267 hits)
 - `research/tradingview-script-understanding.json` (144 hits)
+- `ecosystem/web/styles.css` (108 hits)
 - `research/tradingview-card-readiness.json` (106 hits)
-- `ecosystem/web/styles.css` (106 hits)
+- `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/FILES.md` (75 hits)
-- `research/tradingview-script-profiles/shard-b.jsonl` (61 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 613`
+Full list: `python3 index/search.py --concept data-integrity -n 692`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **360 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **420 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -167,13 +167,13 @@ Strongest files:
 - `research/strategy_experiment/results/auxiliary.json` (77 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (68 hits)
 - `docs/FILES.md` (62 hits)
-- `research/tradingview-script-profiles/shard-b.jsonl` (56 hits)
+- `FILES.md` (61 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 360`
+Full list: `python3 index/search.py --concept benchmark -n 420`
 
 ### Evidence floor
 
-`evidence-floor` · **266 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **326 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,16 +188,17 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 266`
+Full list: `python3 index/search.py --concept evidence-floor -n 326`
 
 ### Combinatorial purged cross-validation
 
-`cpcv` · **178 files** · matched on `cpcv`, `purged`, `combinatorial`, `n_groups`, `k_test`, `path_sharpes`
+`cpcv` · **220 files** · matched on `cpcv`, `purged`, `combinatorial`, `n_groups`, `k_test`, `path_sharpes`
 
 The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced the single 70/30 split, whose in-sample window ended on the highest close in the series.
 
 Strongest files:
 
+- `FILES.md` (77 hits)
 - `docs/FILES.md` (77 hits)
 - `research/cpcv_sweep.py` (68 hits)
 - `research/verify_numbers.py` (63 hits)
@@ -205,13 +206,31 @@ Strongest files:
 - `backtester/tests/test_cross_asset_cpcv.py` (41 hits)
 - `research/RANKED_LISTS.md` (37 hits)
 - `research/coin-intelligence/sol-solana.md` (35 hits)
-- `research/cross_asset_cpcv.py` (31 hits)
 
-Full list: `python3 index/search.py --concept cpcv -n 178`
+Full list: `python3 index/search.py --concept cpcv -n 220`
+
+### Perturbation and robustness
+
+`robustness` · **169 files** · matched on `perturb`, `perturbation`, `ratio_to_iqr`, `sign_flips`, `stability`
+
+Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.
+
+Strongest files:
+
+- `FILES.md` (100 hits)
+- `docs/FILES.md` (100 hits)
+- `research/perturb.py` (54 hits)
+- `llms-sitemap.txt` (32 hits)
+- `research/verify_numbers.py` (31 hits)
+- `research/RANKED_LISTS.md` (25 hits)
+- `research/tradingview-card-coverage.json` (23 hits)
+- `soltui/compound.py` (16 hits)
+
+Full list: `python3 index/search.py --concept robustness -n 169`
 
 ### Overfitting and PBO
 
-`overfitting-pbo` · **139 files** · matched on `pbo`, `overfitting`, `cscv`, `deflated`, `anti-informative`, `multiple-testing`
+`overfitting-pbo` · **166 files** · matched on `pbo`, `overfitting`, `cscv`, `deflated`, `anti-informative`, `multiple-testing`
 
 PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.
 
@@ -221,31 +240,12 @@ Strongest files:
 - `backtester/tests/test_cpcv.py` (58 hits)
 - `research/RANKED_LISTS.md` (42 hits)
 - `research/verify_numbers.py` (39 hits)
+- `FILES.md` (34 hits)
 - `docs/FILES.md` (34 hits)
+- `research/results/coinbase50_20261111_summary.json` (33 hits)
 - `mongo/queries/06-experiments-and-pbo.js` (27 hits)
-- `docs/strategy-optimization-concept-family.md` (25 hits)
-- `backtester/tests/test_interpret.py` (24 hits)
 
-Full list: `python3 index/search.py --concept overfitting-pbo -n 139`
-
-### Perturbation and robustness
-
-`robustness` · **139 files** · matched on `perturb`, `perturbation`, `ratio_to_iqr`, `sign_flips`, `stability`
-
-Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.
-
-Strongest files:
-
-- `docs/FILES.md` (100 hits)
-- `research/perturb.py` (54 hits)
-- `llms-sitemap.txt` (31 hits)
-- `research/verify_numbers.py` (31 hits)
-- `research/RANKED_LISTS.md` (25 hits)
-- `research/tradingview-card-coverage.json` (23 hits)
-- `soltui/compound.py` (16 hits)
-- `research/coin-intelligence/sol-solana.md` (11 hits)
-
-Full list: `python3 index/search.py --concept robustness -n 139`
+Full list: `python3 index/search.py --concept overfitting-pbo -n 166`
 
 ---
 
@@ -257,15 +257,15 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 772 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 479 | `rsi`, `stochastic`, `oscillator` |
-| `momentum` | 392 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `regime-filter` | 325 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
-| `baseline` | 307 | `buy_and_hold`, `baseline` |
-| `breakout` | 243 | `breakout`, `bb_breakout`, `keltner` |
-| `volume-flow` | 134 | `obv`, `volume-flow` |
-| `mean-reversion` | 124 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
-| `risk-overlay` | 58 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
+| `trend` | 841 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `oscillator-reversion` | 515 | `rsi`, `stochastic`, `oscillator` |
+| `momentum` | 431 | `momentum`, `ts_momentum`, `dual_momentum` |
+| `regime-filter` | 368 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
+| `baseline` | 362 | `buy_and_hold`, `baseline` |
+| `breakout` | 279 | `breakout`, `bb_breakout`, `keltner` |
+| `volume-flow` | 157 | `obv`, `volume-flow` |
+| `mean-reversion` | 140 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
+| `risk-overlay` | 67 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
 
 ---
 
@@ -280,6 +280,7 @@ Facts already written in the 46 cards' frontmatter, inverted so a value points b
 - **single-split-70-30** (18) — `pairs_cointegration`, `atr_position_sizing`, `bb_reversion`, `breakout`, `buy_and_hold`, `garch_vol_forecast`, `grid`, `ichimoku_cloud`, `keltner`, `ma_crossover`, `ma_ribbon`, `macd` and 6 more
 - **cpcv-8-groups-k2** (6) — `adx_filtered_trend`, `bb_breakout`, `dual_momentum_12_1`, `obv_trend`, `vol_regime_hmm`, `zscore`
 - **cpcv-8-groups-k2-sol-btc-eth** (2) — `hurst_regime_test`, `ou_half_life_sizing`
+- **ZEC 250-trial study 2026-11-10: chronological 50/50 holdout and five expanding walk-forward folds; 10 bps fee, 2 bps slippage, 0.1 bps/hour synthetic carry** (1) — `volty_expan_close`
 - **real-sol-daily-and-hourly-recentred-blocks** (1) — `ladder_grid`
 
 ### `family`
@@ -305,16 +306,17 @@ Facts already written in the 46 cards' frontmatter, inverted so a value points b
 - **arbitrage** (1) — `triangular_arbitrage`
 - **intraday** (1) — `day_trading`
 - **trigger** (1) — `trigger_trade`
+- **volatility-breakout** (1) — `volty_expan_close`
 - **volume-flow** (1) — `obv_trend`
 
 ### `status`
 
 - **spec-only** (1103) — `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained`, `tv_43000762388_understanding_crypto_open_interest`, `tv_43000762390_funding_rate_a_guide_to_market_sentiment`, `tv_4psxdoyc_a_technique_from_1202_really`, `tv_7biqbrfz_how_to_utilize_multi_time_frame_analysis_in_your_trading` and 1091 more
 - **documentation-only** (678) — `tv_2lgyzykc_ultimate_strategy_template`, `tv_9iwinz7i_how_to_use_leverage_and_margin_in_pinescript`, `tv_ihvpg6ts_stop_loss_and_take_profit_in_example`, `tv_kzp8e4x3_monthly_returns_in_pinescript_strategies`, `tv_m9taaikp_oscillator_evaluator_analysis_tool`, `tv_n8bgynwl_template_trailing_strategy_backtester`, `tv_otfw8b2a_trading_report_generator_from_csv`, `tv_xaeg4zjg_how_to_set_backtest_time_ranges`, `tv_00jfil5w_security_revisited_pinecoders`, `tv_06gcx5ql_innovation_adaptive_kalman_filter_oscillator`, `tv_0enoetmo_smartphase_analyzer`, `tv_0ghsw1kr_moving_regression` and 666 more
-- **measured** (27) — `ladder_grid`, `pairs_cointegration`, `adx_filtered_trend`, `atr_position_sizing`, `bb_breakout`, `bb_reversion`, `breakout`, `buy_and_hold`, `dual_momentum_12_1`, `garch_vol_forecast`, `grid`, `hurst_regime_test` and 15 more
+- **measured** (28) — `ladder_grid`, `pairs_cointegration`, `volty_expan_close`, `adx_filtered_trend`, `atr_position_sizing`, `bb_breakout`, `bb_reversion`, `breakout`, `buy_and_hold`, `dual_momentum_12_1`, `garch_vol_forecast`, `grid` and 16 more
 - **implemented** (12) — `dca_bot`, `jlp_vs_sol_relative_value`, `triangular_arbitrage`, `dca`, `ema_crossover`, `fib_retracement`, `lev_high`, `lev_low`, `lev_medium`, `ppo`, `swing_confluence`, `trigger_trade`
 
 ### `success_likelihood`
 
 - **low** (1108) — `dca_bot`, `jlp_vs_sol_relative_value`, `ladder_grid`, `pairs_cointegration`, `tv_0n0xkpl7_bitcoin_and_correlation_alternative_trading_strategies_cc`, `tv_43000474007_understanding_range_charts`, `tv_43000502272_learn_to_use_kagi_charts`, `tv_43000502273_introduction_to_line_break_charts`, `tv_43000502276_learn_using_point_and_figure_charts`, `tv_43000724995_understanding_volume_candle_charts`, `tv_43000725590_time_price_opportunity_charts_explained`, `tv_43000745275_session_volume_profile_charts_explained` and 1096 more
-- **very-low** (34) — `triangular_arbitrage`, `dca`, `dual_momentum_12_1`, `ema_crossover`, `fib_retracement`, `garch_vol_forecast`, `grid`, `keltner`, `lev_high`, `lev_low`, `lev_medium`, `ma_ribbon` and 22 more
+- **very-low** (35) — `triangular_arbitrage`, `volty_expan_close`, `dca`, `dual_momentum_12_1`, `ema_crossover`, `fib_retracement`, `garch_vol_forecast`, `grid`, `keltner`, `lev_high`, `lev_low`, `lev_medium` and 23 more
