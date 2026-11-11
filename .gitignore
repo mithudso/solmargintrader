@@ -133,6 +133,8 @@ cdp_api_key*.json
 
 # Local Codex CLI settings.
 .codex/
+.opencode/
+.playwright-mcp/
 
 # Vendor documentation mirrors under llms/ (public docs, 0.3 to 11 MB each; refetchable, and the
 # global AI hub keeps them as docsets). The small curated llms files and notes there are tracked.
