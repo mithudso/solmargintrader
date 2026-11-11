@@ -99,7 +99,7 @@ contiguous intervals and a matching source/hash receipt. A cached file without
 that proof is not accepted. Downloads and their receipts are immutable.
 Only verified accepted copies enter the F5 data directory.
 
-Some of the 14 assets may not have Coinbase USD markets or enough history for
+Some of the 13 active assets may not have Coinbase USD markets or enough history for
 the requested bounds. Those downloads are reported `blocked`; their matrix
 cells remain missing/unsupported. This is not an all-assets-success claim.
 `--offline` validates proven cached data, creates the frozen batch and registration

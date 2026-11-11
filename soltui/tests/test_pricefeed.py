@@ -10,6 +10,7 @@ import json
 import socket
 import struct
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -149,6 +150,12 @@ class Products(unittest.TestCase):
     def test_usd_markets_and_crosses_among_known_coins(self) -> None:
         self.assertEqual(pf.select_products(self.LISTING, ["SOL", "ETH", "BTC"]), ["ETH-USD", "SOL-ETH", "SOL-USD"])
 
+    def test_select_products_omits_removed_assets(self) -> None:
+        listing = [{"id": f"{asset}-USD", "base_currency": asset, "quote_currency": "USD"}
+                   for asset in ("SOL", "RAIN", "WBT", "HTX", "JST", "MNT", "XMR")]
+        self.assertEqual(pf.select_products(listing, [p["base_currency"] for p in listing]),
+                         ["SOL-USD"])
+
     def test_cached_for_a_day_and_falls_back_offline(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -160,6 +167,14 @@ class Products(unittest.TestCase):
                 def offline(url):
                     raise OSError("offline")
                 self.assertEqual(pf.stream_products(offline, root=Path(tmp2)), list(pf.FALLBACK_PRODUCTS))
+
+    def test_cached_product_list_drops_removed_assets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "products.json").write_text(json.dumps({
+                "at": time.time(), "products": ["SOL-USD", "XMR-USD", "ETH-MNT"]
+            }))
+            self.assertEqual(pf.stream_products(root=root), ["SOL-USD"])
 
 
 class Books(unittest.TestCase):

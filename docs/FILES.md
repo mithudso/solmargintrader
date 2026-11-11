@@ -1823,7 +1823,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 **Purpose.** Fetch a multi-asset universe into the local CSV cache. `fetch.py` fetches one product. This fetches a named set of them and, more importantly, is honest about the set it could not fetch.
 
-**Contents.** Defines `COINBASE_PRODUCTS_URL`, `TOP10_NON_PEGGED`, `ALREADY_CACHED`, `TRADEABLE_UNIVERSE`, `COMPOUND_5M_UNIVERSE`, `class FetchPlan`, `product_id()`, `plan_universe_fetch()`, `list_coinbase_products()`, `fetch_universe()` and 1 more.
+**Contents.** Defines `COINBASE_PRODUCTS_URL`, `CANDIDATE_ASSETS`, `ALREADY_CACHED`, `TRADEABLE_UNIVERSE`, `COMPOUND_5M_UNIVERSE`, `class FetchPlan`, `product_id()`, `plan_universe_fetch()`, `list_coinbase_products()`, `fetch_universe()` and 1 more.
 
 **Use.** `python3 backtester/core/universe.py --help`
 

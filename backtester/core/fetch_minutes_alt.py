@@ -1,16 +1,16 @@
 """1-minute candles for coins Coinbase does not list, from the venue that does.
 
     python3 -m backtester.core.fetch_minutes_alt --plan
-    python3 -m backtester.core.fetch_minutes_alt --assets TRX,XMR,LEO --years 7
+    python3 -m backtester.core.fetch_minutes_alt --assets TRX,LEO --years 7
 
 Like `fetch.py` and `fetch_minutes.py`, this is an explicit network step that writes the local
 cache; no backtest calls it.
 
 ## Why a second fetcher
 
-Of the top 50 non-pegged coins (research/results/top50-nonpegged-2026-11-07.json), 14 are not
-listed on Coinbase, and Binance and Bybit refuse this machine. Probing on 2026-11-07 found
-minute history for each of the 14 on one of four venues: OKX, KuCoin, Bitget or WhiteBIT.
+The 2026-11-07 probe found minute history on OKX, KuCoin, Bitget or WhiteBIT for assets in
+the top-50 non-pegged screen that Coinbase does not list. The active venue map omits the
+six assets the owner removed from coin lists; the dated screen remains historical evidence.
 
 ## What differs from the Coinbase cache, and how it is kept visible
 
@@ -122,9 +122,7 @@ VENUES: dict[str, Venue] = {
 # Venue per coin, chosen by the 2026-11-07 probes (deepest 1m history among reachable venues).
 ASSET_VENUE: dict[str, str] = {
     "TRX": "okx", "LEO": "okx", "OKB": "okx", "CC": "okx", "GRAM": "okx",
-    "XMR": "kucoin", "JST": "kucoin", "MNT": "kucoin", "HTX": "kucoin", "RAIN": "kucoin",
     "BGB": "bitget", "M": "bitget", "BTW": "bitget",
-    "WBT": "whitebit",
 }
 
 

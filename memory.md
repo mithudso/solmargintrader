@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 398
-Delta: v397 to v398; record the merged delivery receipt and final task state.
+Version: 401
+Delta: v400 to v401; record CI-generated index and packaged wiki fixes and PR state.
 Delta: v396 to v397; rerun final repository checks and record the pre-delivery state.
 Delta: v395 to v396; finish the data-validated 22,913-configuration rerun and verify the result ledger.
 Delta: v394 to v395; fix review findings and reject the first sweep after auditing duplicate minute candles.
@@ -572,3 +572,27 @@ The corrected sweep output remains at `/Users/mitch/.local/share/solmargintrader
 The task worktree and branch are being cleaned after confirming the squash merge. The primary checkout remains behind by one commit and has unrelated untracked files; do not fast-forward it during this cleanup. The merged tree is verified at `origin/master`.
 
 No implementation or verification work remains for this request. Keep the local sweep artifacts outside Git; forward testing waits for the owner's winner selection.
+
+## v399 — 2026-11-11 — remove six excluded assets from coin lists
+
+The user requested that RAIN, WBT, HTX, JST, MNT, and XMR be removed completely from coin lists. Stele task TASK-1269 tracks this change. Existing decision KNOW-845 defines the owner's current Compound 5m universe as BTC, ETH, SOL, XRP, HYPE, DOGE, LINK, NEAR, SUI, and AVAX. TASK-862 is a separate active sweep task claimed in the primary checkout and must not be closed or repurposed.
+
+The primary checkout `/Users/mitch/dev/solmargintrader` contains unrelated untracked files and a locked SolTUI UI worktree. The task is isolated in `/Users/mitch/dev/solmargintrader-wt-remove-coins-20261110` on branch `codex/remove-excluded-coins-20261110`. Preserve all unrelated checkout and worktree state.
+
+Remaining: inspect selectable coin lists and universe definitions; remove the six requested symbols from active lists while preserving source data and historical evidence; add regression coverage; run focused checks; update this record with results; commit and deliver through PR, CI, and merge.
+
+
+## v400 — 2026-11-11 — implementation and verification
+
+The six symbols are centralized in `backtester/core/assets.py` and rejected or filtered at active universe selection, cache discovery, data fetching, research runners, ecosystem acquisition, SolTUI selectors, and stream-product discovery. The current Compound 5m universe remains the ten assets recorded in KNOW-845. Historical datasets and dated research evidence remain unchanged.
+
+Regression tests cover the central exclusion policy and the affected selection/discovery paths. Focused tests passed: 54 backtester/research/ecosystem tests and 165 SolTUI tests. Targeted Ruff checks, `git diff --check`, and `scripts/check_docs.py` passed; docs report 1,005 backtester, 434 extension, 46 mongo, and 1,472 SolTUI tests (2,957 total).
+
+Remaining: inspect final diff, commit task-owned changes, push the task branch, open PR, wait for final-head CI, merge after checks pass, then verify the merged tree and clean only this task worktree/branch. The primary checkout and locked SolTUI worktree remain untouched.
+
+
+## v401 — 2026-11-11 — generated artifacts and CI rerun
+
+PR 201 was opened at commit `1eb7baaca600a6d8ded809c702af083f2f45a901`. The first CI run passed application jobs but failed the generated retrieval-index freshness gate because the new policy module and changed source files were not indexed. The packaged ecosystem wiki snapshot was also stale after documentation edits. `python3 index/build.py all` and `python scripts/build_ecosystem_wiki.py` regenerated the committed artifacts without semantic embedding generation or network access. Both `python3 index/build.py --check` and `python scripts/build_ecosystem_wiki.py --check` now pass.
+
+Remaining: rebuild these generated artifacts after this memory edit, commit and push the correction, wait for final-head CI, resolve any failures, merge after all required checks pass, then verify remote default-branch content and clean only the task worktree/branch. GitHub CLI auth is unavailable; PR creation and CI access use the connected GitHub integration.

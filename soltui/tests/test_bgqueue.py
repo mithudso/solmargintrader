@@ -626,6 +626,11 @@ class TestMissingSeries(unittest.TestCase):
         with self.assertRaises(ValueError):
             q.missing_series("../etc", data_dir=self.dir)
 
+    def test_removed_assets_cannot_be_selected_for_background_jobs(self) -> None:
+        for asset in ("RAIN", "WBT", "HTX", "JST", "MNT", "XMR"):
+            with self.subTest(asset=asset), self.assertRaisesRegex(ValueError, "removed"):
+                q.validate_asset(asset)
+
 
 class TestIncompleteSweepIsDisclosed(unittest.TestCase):
     def test_a_done_sweep_still_reports_a_missing_price_file(self) -> None:

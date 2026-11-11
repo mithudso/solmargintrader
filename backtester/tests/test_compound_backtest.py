@@ -48,6 +48,11 @@ class DataTests(unittest.TestCase):
         self.assertIn("SOL_5m.csv", source)
         self.assertEqual(cbt.available_assets(self.dir), ["SOL"])
 
+    def test_available_asset_list_omits_removed_symbols_even_when_cached(self) -> None:
+        for asset in ("SOL", "RAIN", "WBT", "HTX", "JST", "MNT", "XMR"):
+            (self.dir / f"{asset}_1m.csv").touch()
+        self.assertEqual(cbt.available_assets(self.dir), ["SOL"])
+
     def test_missing_data_names_the_fetch_command(self) -> None:
         with self.assertRaises(cbt.CompoundDataError) as cm:
             cbt.load_bars_5m("ZZZ", self.dir)

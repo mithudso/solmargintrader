@@ -136,7 +136,9 @@ def available_assets(data_dir: Path | None = None) -> list[str]:
         asset = name.split("_", 1)[0]
         if any(name == c.name for c, _ in candidate_files(asset, data_dir)):
             found.add(asset)
-    return sorted(found)
+    from .assets import filter_removed_assets
+
+    return sorted(filter_removed_assets(found))
 
 
 def load_funding(asset: str, data_dir: Path | None = None) -> dict[str, np.ndarray] | None:

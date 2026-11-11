@@ -12,7 +12,7 @@ Run it with the soltui interpreter (it has numpy/pandas/Textual):
 ## What "full" means here, and its size
 
 1. **Fetch** (the only network step, explicit as CLAUDE.md requires): daily and hourly candles
-   for the tradeable universe (`backtester.core.universe`), **1-minute candles back to each
+   for the active tradeable universe (`backtester.core.universe`), **1-minute candles back to each
    coin's earliest available minute** (`backtester.core.fetch_minutes`, resumable, with a
    coverage manifest), and Hyperliquid hourly funding (`backtester.core.funding`). Written to the main checkout's `data/` cache, never a worktree.
 2. **Registry sweep**: `soltui.bgworker` per asset -- every strategy card, every horizon,
@@ -185,6 +185,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.skip_fetch and args.fetch_only:
         ap.error("--skip-fetch and --fetch-only contradict each other")
     assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    from backtester.core.assets import REMOVED_ASSETS
+
+    removed = sorted(set(assets) & REMOVED_ASSETS)
+    if removed:
+        ap.error(f"removed from active coin lists: {', '.join(removed)}")
     if not assets:
         assets = list(DEFAULT_ASSETS)
     data = resolve_data_dir()

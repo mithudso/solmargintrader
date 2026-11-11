@@ -29,10 +29,11 @@ def frame(days: int = 5) -> pd.DataFrame:
 
 
 class DataTests(unittest.TestCase):
-    def test_universe_preserves_all_fourteen_owner_assets(self):
-        self.assertEqual(len(universe()), 14)
-        self.assertEqual(len(set(universe())), 14)
-        self.assertTrue({"JITOSOL", "KMNO", "USDC", "XMR"}.issubset(universe()))
+    def test_universe_preserves_thirteen_owner_assets_and_removes_requested_symbols(self):
+        self.assertEqual(len(universe()), 13)
+        self.assertEqual(len(set(universe())), 13)
+        self.assertTrue({"JITOSOL", "KMNO", "USDC"}.issubset(universe()))
+        self.assertTrue({"RAIN", "WBT", "HTX", "JST", "MNT", "XMR"}.isdisjoint(universe()))
 
     def test_acquisition_has_exact_pair_proof_and_excludes_end_bar(self):
         with (
@@ -53,6 +54,11 @@ class DataTests(unittest.TestCase):
                 json.loads(receipt_path.read_text())["sha256"], result["sha256"]
             )
             self.assertEqual(Path(result["path"]).stat().st_mode & 0o077, 0)
+
+    def test_removed_asset_cannot_be_acquired(self):
+        result = acquire("XMR", tempfile.gettempdir(), start=START, end=END)
+        self.assertEqual(result["status"], "blocked")
+        self.assertEqual(result["reason"], "removed_asset")
 
     def test_offline_reuses_only_proven_identical_input(self):
         with (

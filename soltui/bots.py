@@ -401,13 +401,15 @@ def data_dir(settings: Any = None) -> Path:
 
 
 def available_coins(settings: Any = None) -> list[str]:
-    """Every coin with cached 1h or 1m bars, which is what "all the coins" means here."""
+    """Every active coin with cached 1h or 1m bars."""
     base = data_dir(settings)
     if not base.exists():
         return []
     coins = {p.name.split("_", 1)[0].upper() for p in base.glob("*_1h.csv")}
     coins |= {p.name.split("_", 1)[0].upper() for p in base.glob("*_1m.csv")}
-    return sorted(coins)
+    from backtester.core.assets import filter_removed_assets
+
+    return sorted(filter_removed_assets(coins))
 
 
 _HOURLY_CACHE: dict[tuple, dict[str, np.ndarray]] = {}
