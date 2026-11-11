@@ -1,4 +1,4 @@
-"""Oracle forecasts, inert queries and explicitly enabled Coinbase webhooks."""
+"""Oracle forecasts, inert queries and explicitly enabled venue webhooks."""
 
 from __future__ import annotations
 
@@ -172,14 +172,30 @@ def main(argv=None) -> int:
     p.add_argument("--after", type=int, default=0)
     p = commands.add_parser(
         "webhook",
-        help="receive TradingView alerts; optional Coinbase 75 percent orders",
+        help="receive TradingView alerts; optional Coinbase spot or Jupiter ZEC perps",
     )
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--inbox", type=Path, required=True)
     p.add_argument("--secret-file", type=Path)
-    p.add_argument("--coinbase", action="store_true")
+    venues = p.add_mutually_exclusive_group()
+    venues.add_argument("--coinbase", action="store_true")
+    venues.add_argument("--jupiter-perps", action="store_true")
     p.add_argument("--portfolio-id")
+    p.add_argument("--owner")
+    p.add_argument("--trading-account")
+    p.add_argument("--subaccount-id", type=int, default=0)
+    p.add_argument("--leverage")
+    p.add_argument(
+        "--allocation", default="75", help="percentage of available USDC (maximum 75)"
+    )
+    p.add_argument("--allocation-basis", choices=("collateral", "notional"))
+    p.add_argument("--max-slippage-bps", type=int, default=10)
+    p.add_argument("--key-file", type=Path)
     p.add_argument("--live", action="store_true")
+    p = commands.add_parser(
+        "jupiter-preflight", help="read ZEC GUM market and owner accounts; never signs"
+    )
+    p.add_argument("--owner", required=True)
     p = commands.add_parser("webhook-status", help="read inbox order receipts")
     p.add_argument("--inbox", type=Path, required=True)
     p.add_argument("--limit", type=int, default=50)
@@ -187,16 +203,32 @@ def main(argv=None) -> int:
     p.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command == "jupiter-preflight":
+            from .gum_orders import discover
+
+            emit({"ok": True, "data": discover(args.owner)})
+            return 0
         if args.command == "webhook":
             from .webhook import serve
+            from .webhook_orders import process_one, recover_planning
 
             if (
                 args.live
-                and not args.coinbase
+                and not (args.coinbase or args.jupiter_perps)
                 or args.coinbase
                 and not args.portfolio_id
             ):
                 raise ValueError("coinbase_requires_portfolio")
+            if args.jupiter_perps and (
+                not args.owner
+                or not args.trading_account
+                or not args.leverage
+                or not args.allocation_basis
+                or args.portfolio_id
+                or args.live
+                and not args.key_file
+            ):
+                raise ValueError("jupiter_requires_explicit_account_and_policy")
             secret = os.environ.get("ORACLE_WEBHOOK_SECRET", "")
             if args.secret_file:
                 fd = os.open(args.secret_file, os.O_RDONLY | os.O_NOFOLLOW)
@@ -216,6 +248,26 @@ def main(argv=None) -> int:
                 from .coinbase_orders import CoinbaseOrders
 
                 venue = CoinbaseOrders()
+            if args.jupiter_perps:
+                from .gum_orders import GumOrders
+                from .gum_webhook_orders import process_one, recover_planning
+
+                def sign_action(message):
+                    from .gum_signer import load_signer
+
+                    return load_signer(args.key_file, args.owner)(message)
+
+                venue = GumOrders(
+                    owner=args.owner,
+                    trading_account=args.trading_account,
+                    subaccount_id=args.subaccount_id,
+                    leverage=args.leverage,
+                    allocation=args.allocation,
+                    allocation_basis=args.allocation_basis,
+                    max_slippage_bps=args.max_slippage_bps,
+                    signer=sign_action if args.live else None,
+                )
+                args.portfolio_id = venue.binding
             with owner(args.inbox):
                 serve(
                     args.inbox,
@@ -224,6 +276,8 @@ def main(argv=None) -> int:
                     venue=venue,
                     portfolio_id=args.portfolio_id,
                     live=args.live,
+                    processor=process_one,
+                    recover=recover_planning,
                 )
             return 0
         if args.command == "webhook-status":

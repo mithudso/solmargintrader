@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 207
+Version: 208
+Delta: v207 to v208; preserve concurrent Jupiter delivery and verified MCP clients.
 Delta: v206 to v207; capture all requested CLI and desktop MCP clients.
+Delta: v206 to v207; integrate Jupiter webhook delivery with concurrent private MCP records.
+Delta: v205 to v206; capture the Jupiter leveraged ZEC webhook request.
 Delta: v205 to v206; preserve concurrent shape research and verified private MCP setup.
 Delta: v204 to v205; preserve concurrent Volty review and private MCP acceptance.
 Delta: v203 to v204; preserve concurrent TradingView delivery and verified Tailscale MCP setup.
@@ -9,7 +12,6 @@ Delta: v201 to v202; select MCP as the first private service.
 Delta: v200 to v201; capture screenshot of Tailscale local-service error.
 Delta: v199 to v200; capture Tailscale installation and remote-service access request.
 Delta: v204 to v205; preserve concurrent Volty review and shape-study histories during integration.
-
 Delta: v203 to v204; capture shape-aware Coinbase spot backtest request.
 Delta: v203 to v204; record conditional TradingView Volty alert setup request.
 Delta: v202 to v203; record Coinbase venue and 75 percent balance sizing.
@@ -31,6 +33,9 @@ Delta: v189 to v190; capture the additional friend-facing solbot diagnostics req
 ## 2026-11-11 — MCP clients across apps
 
 I want both codex, and claude code, and antigravity, and agy, and the desktop apps;
+## 2026-11-11 — Jupiter leveraged TradingView execution
+
+OK can you make it use leverage with Jupiter instead?
 
 ## 2026-11-11 — First private Tailscale service
 

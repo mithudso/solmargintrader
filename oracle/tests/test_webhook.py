@@ -13,7 +13,7 @@ import urllib.request
 from contextlib import closing
 from pathlib import Path
 
-from oracle.webhook import accept_signal
+from oracle.webhook import accept_signal, serve
 
 
 class WebhookTests(unittest.TestCase):
@@ -112,6 +112,24 @@ class WebhookTests(unittest.TestCase):
             with self.subTest(change=change), self.assertRaises(ValueError):
                 self.send(**change)
         self.assertFalse(self.db.exists())
+
+    def test_unexpected_worker_failure_stops_receiver_and_surfaces_failure(self):
+        with socket.socket() as sock:
+            sock.bind(("127.0.0.1", 0))
+            port = sock.getsockname()[1]
+
+        def malformed_upstream(*args, **kwargs):
+            raise AttributeError("untrusted upstream payload with private data")
+
+        with self.assertRaisesRegex(RuntimeError, "^venue_worker_failed$"):
+            serve(
+                self.db,
+                self.secret,
+                port,
+                venue=object(),
+                portfolio_id="test-account",
+                processor=malformed_upstream,
+            )
 
 
 if __name__ == "__main__":
