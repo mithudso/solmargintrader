@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-11-11T11:21:08+00:00",
+  "generatedAt": "2026-11-11T11:22:33+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "e088e63",
+  "commit": "d5dd8f8",
   "counts": {
-    "files": 3233,
-    "bytes": 74921341,
+    "files": 3234,
+    "bytes": 74928280,
     "byKind": {
       "strategy-card": 1478,
-      "doc": 746,
+      "doc": 747,
       "code-python": 318,
       "test": 282,
       "code-js": 125,
@@ -25,7 +25,7 @@
       "backtester": 1934,
       "research": 219,
       "soltui": 181,
-      "docs": 131,
+      "docs": 132,
       "extension": 126,
       "botmanager": 90,
       "(root)": 89,
@@ -57,7 +57,7 @@
       "archive": 1,
       "tradingskilllist": 1
     },
-    "withSummary": 2977
+    "withSummary": 2978
   },
   "files": [
     {
@@ -69919,6 +69919,24 @@
       "bytes": 239149,
       "lines": 736,
       "sha1": "66d51795035b6551250351d9038fc989d0e78295",
+      "symbols": [],
+      "imports": [],
+      "internalImports": [],
+      "frontmatter": {}
+    },
+    {
+      "id": "docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md",
+      "path": "docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md",
+      "dir": "docs",
+      "name": "VOLTY-TRADINGVIEW-ALERT-REVIEW.md",
+      "ext": ".md",
+      "kind": "doc",
+      "title": "ZEC Volty TradingView alert review",
+      "summary": "Version: 1.0.1. Delta: 1.0.0 to 1.0.1; add authenticated chart settings, displayed results and current Coinbase fee comparison. As of 2026-11-11, the available evidence does not validate enabling the listed Volty strategy as a live Coinbase spot strategy. The authenticated chart and its settings were inspected in Chrome after the user completed sign-in. No alert was created or enabled.",
+      "summarySource": "opening-prose",
+      "bytes": 6939,
+      "lines": 81,
+      "sha1": "0db4714b01794ff75920f2332aaf31f986dc6008",
       "symbols": [],
       "imports": [],
       "internalImports": [],
