@@ -1,7 +1,7 @@
 # Work continuation
 
-Version: 401
-Delta: v400 to v401; record CI-generated index and packaged wiki fixes and PR state.
+Version: 402
+Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
 Delta: v396 to v397; rerun final repository checks and record the pre-delivery state.
 Delta: v395 to v396; finish the data-validated 22,913-configuration rerun and verify the result ledger.
 Delta: v394 to v395; fix review findings and reject the first sweep after auditing duplicate minute candles.
@@ -596,3 +596,12 @@ Remaining: inspect final diff, commit task-owned changes, push the task branch, 
 PR 201 was opened at commit `1eb7baaca600a6d8ded809c702af083f2f45a901`. The first CI run passed application jobs but failed the generated retrieval-index freshness gate because the new policy module and changed source files were not indexed. The packaged ecosystem wiki snapshot was also stale after documentation edits. `python3 index/build.py all` and `python scripts/build_ecosystem_wiki.py` regenerated the committed artifacts without semantic embedding generation or network access. Both `python3 index/build.py --check` and `python scripts/build_ecosystem_wiki.py --check` now pass.
 
 Remaining: rebuild these generated artifacts after this memory edit, commit and push the correction, wait for final-head CI, resolve any failures, merge after all required checks pass, then verify remote default-branch content and clean only the task worktree/branch. GitHub CLI auth is unavailable; PR creation and CI access use the connected GitHub integration.
+
+
+## v402 — 2026-11-11 — delivery complete
+
+PR 201 merged to `master` as squash commit `4053d2528076e022540336250ae17919b123b0b2`. Its final head was `a5b3a11e5cb6cf274e8eb070e92d16e883ce6940`. Final CI run 641 passed all required jobs, including backtester, botmanager, ecosystem, docs, browser extension, targeted macOS SolTUI, mongo, oracle, and liquidity. The standard SolTUI shard and informational Jupiter job were skipped by workflow configuration. The first CI attempt identified stale generated retrieval indexes and ecosystem wiki artifacts; the correction is included in the merged final head.
+
+Active lists now exclude RAIN, WBT, HTX, JST, MNT, and XMR. Historical datasets and dated evidence remain intact. The task worktree is based at `/Users/mitch/dev/solmargintrader-wt-remove-coins-20261110`; preserve the primary checkout's unrelated dirty paths and the locked SolTUI worktree during cleanup.
+
+No remaining implementation, verification, or delivery steps for this request.
