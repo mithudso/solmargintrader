@@ -2116,8 +2116,8 @@
     "docs/TRADINGVIEW-CARD-READINESS.md": 32579,
     "docs/TRADINGVIEW-REFERENCE.md": 40585,
     "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 27838,
-    "docs/ZEC-ENSEMBLE-STUDY.md": 1049,
-    "docs/ZEC-ENSEMBLES-FORWARD.md": 442,
+    "docs/ZEC-ENSEMBLE-STUDY.md": 1091,
+    "docs/ZEC-ENSEMBLES-FORWARD.md": 515,
     "docs/archive/memory-2026-11-08.md": 28446,
     "docs/archive/memory-2026-11-10.md": 25704,
     "docs/backtester-history-handoff.md": 3451,
@@ -2256,7 +2256,7 @@
     "ecosystem/tests/test_web.py": 824,
     "ecosystem/tests/test_wiki.py": 935,
     "ecosystem/tests/test_wrapper.py": 132,
-    "ecosystem/tests/test_zec_forward.py": 973,
+    "ecosystem/tests/test_zec_forward.py": 1222,
     "ecosystem/ui_service.py": 1266,
     "ecosystem/votes.py": 862,
     "ecosystem/web.py": 1767,
@@ -2270,7 +2270,7 @@
     "ecosystem/web/vendor/NOTICE": 15,
     "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 9272,
     "ecosystem/wiki.py": 1322,
-    "ecosystem/zec_forward.py": 3171,
+    "ecosystem/zec_forward.py": 3249,
     "executor/.gitignore": 23,
     "executor/CLAUDE.md": 703,
     "executor/README.md": 728,
@@ -2520,7 +2520,7 @@
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
     "market-graph-geometry-prompt.md": 728,
-    "memory.md": 11731,
+    "memory.md": 12099,
     "mongo/README.md": 915,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3358,
@@ -2577,7 +2577,7 @@
     "postman/mocks/botmanager-jupiter-swap-v1/default.js": 276,
     "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 245,
     "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.sim.yaml": 33,
-    "prompts.md": 9824,
+    "prompts.md": 9836,
     "research/5minleveragestrategies.json": 4184,
     "research/CANDLE-GAP-AUDIT.md": 634,
     "research/COMPOUND-FRONTIER.md": 883,
@@ -3087,7 +3087,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-11T01:59:49+00:00",
+  "generatedAt": "2026-11-11T02:17:00+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -23814,7 +23814,7 @@
       "docs/FILES.md": 25,
       "docs/TESTING.md": 5,
       "docs/TRADINGVIEW-CARD-READINESS.md": 11,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
       "docs/archive/memory-2026-11-08.md": 78,
       "docs/archive/memory-2026-11-10.md": 115,
       "docs/backtester-history-handoff.md": 3,
@@ -24092,7 +24092,8 @@
       "memory.md": 3
     },
     "accepted1": {
-      "docs/archive/memory-2026-11-08.md": 1
+      "docs/archive/memory-2026-11-08.md": 1,
+      "memory.md": 1
     },
     "accepted21": {
       "docs/FILES.md": 1,
@@ -24214,6 +24215,7 @@
       "extension/src/core/commands.js": 1,
       "extension/vendor/lightweight-charts/LICENSE": 3,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "memory.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/cross_asset_cpcv.py": 1,
@@ -24963,8 +24965,8 @@
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 8,
       "docs/TRADINGVIEW-REFERENCE.md": 49,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 6,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 4,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 8,
       "docs/archive/memory-2026-11-08.md": 29,
       "docs/archive/memory-2026-11-10.md": 6,
       "docs/backtester-history-handoff.md": 1,
@@ -25036,7 +25038,7 @@
       "liquidity/tests/test_providers.py": 1,
       "liquidity/uv.lock": 6,
       "llms-sitemap.txt": 3,
-      "memory.md": 5,
+      "memory.md": 7,
       "oracle/README.md": 1,
       "prompts.md": 6,
       "research/5minleveragestrategies.json": 1,
@@ -25323,7 +25325,7 @@
       "ecosystem/performance.py": 13,
       "ecosystem/runner.py": 3,
       "ecosystem/tests/test_cli.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 10,
       "ecosystem/web/app.js": 2,
       "ecosystem/zec_forward.py": 2,
       "executor/README.md": 1,
@@ -25421,6 +25423,9 @@
     "accounting_healthy": {
       "executor/src/executor/manager.py": 2,
       "executor/tests/test_authority.py": 2
+    },
+    "accounting_identity": {
+      "ecosystem/tests/test_zec_forward.py": 8
     },
     "accounting_projection_unavailable": {
       "ecosystem/performance.py": 1
@@ -25557,7 +25562,7 @@
       "ecosystem/performance.py": 2,
       "ecosystem/swaps.py": 2,
       "ecosystem/tests/test_swaps.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 12,
+      "ecosystem/tests/test_zec_forward.py": 19,
       "ecosystem/web/app.js": 4,
       "ecosystem/web/index.html": 1,
       "ecosystem/zec_forward.py": 8,
@@ -25581,7 +25586,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_safe_exit.py": 2,
       "llms-sitemap.txt": 5,
-      "memory.md": 2,
+      "memory.md": 3,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -29811,7 +29816,8 @@
       "botmanager/tests/test_suite_service.py": 1,
       "docs/FILES.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 17,
       "docs/archive/memory-2026-11-10.md": 20,
       "docs/bot-manager-handoff.md": 6,
@@ -29823,13 +29829,13 @@
       "docs/superpowers/plans/2026-11-09-bot-control-room.md": 2,
       "docs/superpowers/plans/2026-11-09-bot-manager.md": 2,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 2,
-      "ecosystem/tests/test_zec_forward.py": 4,
+      "ecosystem/tests/test_zec_forward.py": 6,
       "ecosystem/votes.py": 1,
-      "ecosystem/zec_forward.py": 19,
+      "ecosystem/zec_forward.py": 20,
       "extension/src/bg/live-windows.js": 1,
       "extension/src/bg/service-worker.js": 1,
       "extension/test/live-tools.test.js": 1,
-      "memory.md": 5,
+      "memory.md": 7,
       "prompts.md": 2,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
       "research/five-minute-perps-suite/skill-installation-receipt.json": 5,
@@ -31696,6 +31702,9 @@
       "memory.md": 1
     },
     "actualshadowdays": {
+      "memory.md": 1
+    },
+    "actualsuccessfulnone": {
       "memory.md": 1
     },
     "actualtwo": {
@@ -36554,6 +36563,7 @@
       "docs/FILES.md": 2,
       "docs/OPERATIONS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 5,
       "docs/bot-manager-quickstart.md": 1,
       "docs/optimization-workbench-plan.md": 1,
@@ -37259,6 +37269,7 @@
       "backtester/strategy_research/tv_43000589093_advance_decline_ratio.md": 2,
       "backtester/tests/test_fetch_minutes.py": 1,
       "docs/archive/memory-2026-11-10.md": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "extension/e2e/lib/signal-desk.mjs": 1,
       "extension/test/alerts.test.js": 1,
       "memory.md": 1,
@@ -41801,6 +41812,7 @@
       "ecosystem/tests/test_recovery.py": 2,
       "ecosystem/tests/test_registration.py": 2,
       "ecosystem/tests/test_telemetry.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web/app.js": 2,
       "executor/src/executor/txverify.py": 1,
       "executor/tests/test_authority.py": 2,
@@ -42343,6 +42355,7 @@
       "ecosystem/runner.py": 2,
       "ecosystem/tests/test_registration.py": 1,
       "ecosystem/web/app.js": 7,
+      "ecosystem/zec_forward.py": 3,
       "executor/src/executor/config.py": 4,
       "executor/src/executor/engine.py": 17,
       "executor/tests/test_optimizer_regressions.py": 2,
@@ -49180,6 +49193,9 @@
     "allotheroldheadjobsincludingtargetmacospassed": {
       "memory.md": 1
     },
+    "allotheruntrackedpaths": {
+      "memory.md": 1
+    },
     "allotment": {
       "skills/trading-and-investing/references/equity-fundamentals-and-corporate-actions.md": 2
     },
@@ -50246,6 +50262,9 @@
     },
     "alltasksourcechangesshipthroughprivatebranches": {
       "docs/archive/memory-2026-11-08.md": 1
+    },
+    "alltenaccounts": {
+      "memory.md": 1
     },
     "alltestlocksreleased": {
       "memory.md": 1
@@ -51416,6 +51435,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 1,
       "docs/ECOSYSTEM-SWAPS.md": 1,
       "docs/FILES.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/backtester-history-handoff.md": 1,
@@ -51426,6 +51446,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "ecosystem/tests/test_manager_editing.py": 3,
       "ecosystem/tests/test_performance.py": 2,
+      "ecosystem/zec_forward.py": 1,
       "extension/src/bg/service-worker.js": 1,
       "extension/src/ui/soltui-panel.js": 1,
       "prompts.md": 1,
@@ -57493,7 +57514,7 @@
       "ecosystem/tests/test_votes.py": 6,
       "ecosystem/tests/test_web.py": 8,
       "ecosystem/tests/test_wiki.py": 7,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web.py": 1,
       "executor/src/executor/engine.py": 5,
       "executor/tests/test_authority.py": 21,
@@ -57815,6 +57836,9 @@
     },
     "and1384soltui": {
       "docs/archive/memory-2026-11-10.md": 1
+    },
+    "and145untrackedfiles": {
+      "memory.md": 1
     },
     "and1466": {
       "docs/repo-bootstrap-audit-2026-11-10.md": 1
@@ -58241,6 +58265,9 @@
       "memory.md": 1
     },
     "andpre": {
+      "memory.md": 1
+    },
+    "andpreservation": {
       "memory.md": 1
     },
     "andpreservedexistingserver": {
@@ -72998,7 +73025,7 @@
       "ecosystem/tests/test_web.py": 30,
       "ecosystem/tests/test_wiki.py": 29,
       "ecosystem/tests/test_wrapper.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 21,
+      "ecosystem/tests/test_zec_forward.py": 32,
       "mongo/tests/test_analysis_regressions.py": 24,
       "mongo/tests/test_load.py": 30,
       "mongo/tests/test_load_audit.py": 23,
@@ -73183,7 +73210,7 @@
       "ecosystem/tests/test_votes.py": 1,
       "ecosystem/tests/test_web.py": 6,
       "ecosystem/tests/test_wiki.py": 3,
-      "ecosystem/tests/test_zec_forward.py": 7,
+      "ecosystem/tests/test_zec_forward.py": 8,
       "oracle/tests/test_archived_reader.py": 1,
       "oracle/tests/test_core.py": 1,
       "oracle/tests/test_feeds.py": 1,
@@ -73769,7 +73796,7 @@
       "ecosystem/tests/test_telemetry.py": 1,
       "ecosystem/tests/test_votes.py": 2,
       "ecosystem/tests/test_wiki.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "mongo/tests/test_load.py": 7,
       "oracle/tests/test_feeds.py": 4,
       "oracle/tests/test_graphdb.py": 1,
@@ -74474,7 +74501,7 @@
       "ecosystem/tests/test_votes.py": 3,
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
@@ -81520,7 +81547,8 @@
       "research/tradingview-card-coverage.json": 2
     },
     "atthischeckpoint": {
-      "docs/archive/memory-2026-11-10.md": 1
+      "docs/archive/memory-2026-11-10.md": 1,
+      "memory.md": 1
     },
     "attitude": {
       "backtester/strategy_cards/incomplete/tv_43000583794_tri_star_bearish.md": 1,
@@ -86463,6 +86491,7 @@
       "docs/superpowers/plans/2026-11-09-bot-control-room.md": 2,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
+      "ecosystem/zec_forward.py": 1,
       "extension/e2e/lib/dashboard-workspace.mjs": 1,
       "extension/src/core/bot-manager.js": 1,
       "extension/src/ui/soltui-panel.js": 1,
@@ -87391,6 +87420,7 @@
       "docs/OPERATIONS.md": 1,
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 6,
       "docs/archive/memory-2026-11-10.md": 3,
       "docs/backtester-history-handoff.md": 1,
@@ -93427,6 +93457,9 @@
     },
     "b1bde5fff63b645666f3a5161f0baa9c223625ed785f191ffbf06c5abdfde7": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "b1be2abc": {
+      "memory.md": 1
     },
     "b1beaff57a0aadeeeb89add9b75c3b704c16164d3d86d62e90db78b1af7f52c": {
       "research/tradingview-card-coverage.json": 1
@@ -104117,7 +104150,7 @@
       "oracle/guidance.py": 7,
       "oracle/server.py": 1,
       "oracle/tests/test_guidance.py": 1,
-      "prompts.md": 38,
+      "prompts.md": 37,
       "research/5minleveragestrategies.json": 1,
       "research/COMPOUND-FRONTIER.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -104969,7 +105002,7 @@
       "docs/dso-skill/SKILL.md": 1,
       "docs/repository-review-2026-11-08.md": 5,
       "docs/superpowers/plans/2026-11-09-backtester-integrity.md": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "oracle/README.md": 2
     },
     "backuptests": {
@@ -108407,6 +108440,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 309,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 12,
       "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 28,
       "docs/archive/memory-2026-11-10.md": 18,
       "docs/backtester-history-handoff.md": 14,
@@ -108455,14 +108489,14 @@
       "ecosystem/tests/test_manager_editing.py": 1,
       "ecosystem/tests/test_performance.py": 13,
       "ecosystem/tests/test_registration.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 5,
       "ecosystem/votes.py": 1,
       "ecosystem/web/app.js": 13,
       "ecosystem/web/index.html": 3,
       "ecosystem/web/oracle-chart.js": 2,
       "ecosystem/web/styles.css": 6,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 5,
-      "ecosystem/zec_forward.py": 25,
+      "ecosystem/zec_forward.py": 26,
       "extension/README.md": 2,
       "extension/src/core/alerts.js": 2,
       "extension/src/ui/dashboard.js": 2,
@@ -108482,7 +108516,7 @@
       "liquidity/tests/test_providers.py": 17,
       "llms-sitemap.txt": 15,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/README.md": 9,
       "mongo/load.py": 20,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -110640,11 +110674,11 @@
       "ecosystem/backtests.py": 3,
       "ecosystem/data.py": 7,
       "ecosystem/tests/test_data.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web/app.js": 3,
       "ecosystem/web/oracle-chart.js": 2,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 1,
-      "ecosystem/zec_forward.py": 8,
+      "ecosystem/zec_forward.py": 9,
       "extension/README.md": 6,
       "extension/src/core/alerts.js": 2,
       "extension/src/ui/live-panel.js": 2,
@@ -112897,6 +112931,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 5,
       "ecosystem/tests/test_control.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 7,
       "ecosystem/web/styles.css": 1,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 11,
       "extension/e2e/lib/dashboard-workspace.mjs": 9,
@@ -120732,6 +120767,7 @@
       "ecosystem/tests/test_setup.py": 1,
       "ecosystem/tests/test_telemetry.py": 1,
       "ecosystem/tests/test_web.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "executor/tests/test_authority.py": 14,
       "executor/tests/test_engine.py": 8,
       "executor/tests/test_journal_integrity.py": 4,
@@ -120853,6 +120889,9 @@
     },
     "beforeiteration2": {
       "docs/archive/memory-2026-11-08.md": 2
+    },
+    "beforemerging": {
+      "memory.md": 1
     },
     "beforenetworkcompleted": {
       "extension/test/cdo-regressions.test.js": 2
@@ -126897,6 +126936,7 @@
       "docs/ECOSYSTEM-WIKI.md": 1,
       "docs/FILES.md": 5,
       "docs/SCRIPTS.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 5,
       "docs/archive/memory-2026-11-10.md": 3,
       "docs/bot-manager-handoff.md": 3,
@@ -130201,7 +130241,7 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 7,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 8,
       "docs/archive/memory-2026-11-10.md": 9,
       "docs/code-deep-optimizer-2026-11-08.md": 6,
@@ -130240,11 +130280,11 @@
       "ecosystem/tests/test_registration.py": 3,
       "ecosystem/tests/test_runner.py": 1,
       "ecosystem/tests/test_swaps.py": 3,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 4,
       "ecosystem/web/app.js": 8,
       "ecosystem/web/index.html": 2,
       "ecosystem/web/styles.css": 2,
-      "ecosystem/zec_forward.py": 3,
+      "ecosystem/zec_forward.py": 4,
       "executor/src/executor/engine.py": 1,
       "executor/tests/test_optimizer_regressions.py": 1,
       "extension/README.md": 2,
@@ -130267,7 +130307,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 4,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/04-decisions.js": 1,
@@ -130865,7 +130905,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 6,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/archive/memory-2026-11-10.md": 4,
       "docs/bot-manager-0.6-operations.md": 1,
@@ -130885,6 +130925,7 @@
       "docs/trading-signals-concept-family.md": 3,
       "ecosystem/tests/test_recovery.py": 1,
       "ecosystem/tests/test_runner.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web/swap.html": 1,
       "executor/CLAUDE.md": 1,
       "executor/README.md": 1,
@@ -130927,7 +130968,7 @@
       "liquidity/tests/test_strategy.py": 6,
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/06-experiments-and-pbo.js": 3,
       "oracle/README.md": 1,
@@ -132959,7 +133000,7 @@
       "docs/FILES.md": 16,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-10.md": 3,
       "docs/backtester-history-handoff.md": 5,
@@ -132974,7 +133015,7 @@
       "docs/design/soltui-v2/screens/03-signal-explain.svg": 1,
       "docs/dso-skill/references/passes.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 5,
-      "ecosystem/zec_forward.py": 1,
+      "ecosystem/zec_forward.py": 3,
       "executor/src/executor/ledger.py": 3,
       "extension/test/core.test.js": 1,
       "extension/test/node-deps-audit.test.js": 1,
@@ -135092,6 +135133,9 @@
     },
     "bothregularidentity": {
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1
+    },
+    "bothstable": {
+      "memory.md": 1
     },
     "bothunreleasedcandidateenvsreinstalled": {
       "memory.md": 1
@@ -140098,7 +140142,7 @@
       "executor/CLAUDE.md": 1,
       "extension/test/charts.test.js": 1,
       "liquidity/CLAUDE.md": 1,
-      "memory.md": 19,
+      "memory.md": 22,
       "prompts.md": 14,
       "research/candle_crosscheck.py": 1,
       "research/cross_asset_cpcv.py": 3,
@@ -150719,7 +150763,7 @@
       "extension/tools/soltui-transport.js": 2,
       "extension/vendor/lightweight-charts/README.md": 1,
       "liquidity/src/aero_lp/config.py": 1,
-      "memory.md": 1,
+      "memory.md": 3,
       "mongo/README.md": 1,
       "mongo/tests/test_analysis_regressions.py": 2,
       "mongo/tests/test_snapshot_audit.py": 2,
@@ -168141,6 +168185,7 @@
       "docs/strategy-agent/optimized-prompt.md": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "ecosystem/recovery.py": 9,
+      "ecosystem/tests/test_zec_forward.py": 4,
       "ecosystem/zec_forward.py": 14,
       "extension/src/core/engine.js": 8,
       "extension/src/ui/live-panel.js": 1,
@@ -168561,8 +168606,8 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 82,
       "docs/TRADINGVIEW-REFERENCE.md": 15,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 10,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 5,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 5,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 7,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 8,
       "docs/archive/memory-2026-11-08.md": 7,
       "docs/archive/memory-2026-11-10.md": 4,
       "docs/backtester-history-handoff.md": 2,
@@ -168574,16 +168619,17 @@
       "docs/design/bot-control-room/index.html": 1,
       "docs/design/bot-control-room/mockup.js": 1,
       "docs/integrations-and-assumptions.md": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web/app.js": 2,
       "ecosystem/web/index.html": 1,
-      "ecosystem/zec_forward.py": 6,
+      "ecosystem/zec_forward.py": 8,
       "extension/src/ui/charts.js": 3,
       "extension/src/ui/signal-desk.js": 1,
       "extension/src/ui/soltui-panel.js": 1,
       "extension/src/ui/vote-tools.js": 1,
       "extension/test/live-tools.test.js": 6,
       "llms-sitemap.txt": 14,
-      "memory.md": 1,
+      "memory.md": 5,
       "research/5minleveragestrategies.json": 3,
       "research/CANDLE-GAP-AUDIT.md": 19,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -168944,6 +168990,7 @@
       "docs/external-calls.md": 3,
       "docs/high_signal_file_index.json": 1,
       "ecosystem/data.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/web/app.js": 2,
       "ecosystem/web/index.html": 2,
       "ecosystem/zec_forward.py": 14,
@@ -168954,7 +169001,7 @@
       "extension/src/ui/vote-tools.js": 1,
       "extension/test/live-tools.test.js": 4,
       "llms-sitemap.txt": 34,
-      "memory.md": 7,
+      "memory.md": 8,
       "research/5minleveragestrategies.json": 2,
       "research/CANDLE-GAP-AUDIT.md": 2,
       "research/STRATEGIES.md": 1,
@@ -169616,7 +169663,7 @@
       "ecosystem/web/swap.html": 1,
       "ecosystem/web/vendor/LICENSE": 1,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 5,
-      "ecosystem/zec_forward.py": 1,
+      "ecosystem/zec_forward.py": 2,
       "executor/README.md": 1,
       "executor/src/executor/authority.py": 4,
       "executor/src/executor/engine.py": 5,
@@ -173022,7 +173069,7 @@
       "mongo/load.py": 3,
       "oracle/quotes.py": 5,
       "oracle/tests/test_quotes.py": 18,
-      "prompts.md": 8,
+      "prompts.md": 7,
       "research/5minleveragestrategies.json": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -174092,6 +174139,7 @@
       "extension/test/core.test.js": 1,
       "index/make_files_doc.py": 1,
       "memory.md": 2,
+      "prompts.md": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 3,
       "research/sweep.py": 1,
@@ -187999,7 +188047,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms-free.txt": 4,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 8,
+      "memory.md": 9,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "oracle/README.md": 1,
       "oracle/tests/test_archived_reader.py": 10,
@@ -188318,6 +188366,7 @@
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 50,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 43,
       "docs/archive/memory-2026-11-10.md": 49,
       "docs/backtester-history-handoff.md": 1,
@@ -188412,7 +188461,7 @@
       "liquidity/src/aero_lp/gates.py": 2,
       "liquidity/tests/test_gates.py": 6,
       "llms/aero-lp-explained-2026-11-06.md": 2,
-      "memory.md": 14,
+      "memory.md": 16,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 4,
@@ -188551,6 +188600,9 @@
     },
     "changedelegate": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
+    },
+    "changedonlycanonicalgeneration": {
+      "memory.md": 1
     },
     "changedsettingsstillrequireanewnameddraft": {
       "docs/archive/memory-2026-11-10.md": 1
@@ -195486,7 +195538,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 2,
       "docs/worktree-consolidation-2026-11-10.md": 1,
       "llms-sitemap.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "research/five-minute-perps-suite/full-suite-receipt.json": 11,
       "research/five-minute-perps-suite/skill-installation-receipt.json": 4,
@@ -195720,7 +195772,7 @@
       "liquidity/tests/test_strategy.py": 6,
       "llms-sitemap.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 3,
-      "memory.md": 68,
+      "memory.md": 69,
       "mongo/load.py": 1,
       "oracle/README.md": 3,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
@@ -207895,6 +207947,9 @@
       "research/tradingview-script-profiles/shard-b.jsonl": 3,
       "research/tradingview-script-understanding.json": 2
     },
+    "cleantaskworktree": {
+      "memory.md": 1
+    },
     "cleantech": {
       "research/tradingview-card-coverage.json": 5
     },
@@ -207959,7 +208014,7 @@
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
       "ecosystem/tests/test_zec_forward.py": 1,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
       "oracle/tests/test_archived_reader.py": 1,
@@ -208124,6 +208179,7 @@
       "ecosystem/web/app.js": 1,
       "ecosystem/web/index.html": 1,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 19,
+      "ecosystem/zec_forward.py": 1,
       "executor/src/executor/engine.py": 1,
       "executor/src/executor/journal.py": 3,
       "executor/src/executor/registry.py": 1,
@@ -208499,6 +208555,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/SECURITY.md": 1,
       "docs/SIGNAL-DESK.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/code-deep-optimizer-2026-11-08.md": 1,
       "docs/design/bot-control-room/REVIEW.md": 1,
@@ -208506,6 +208563,7 @@
       "docs/repository-review-2026-11-08.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "executor/tests/test_engine_integrity.py": 2,
       "executor/tests/test_journal_ledger_signer.py": 2,
       "extension/e2e/lib/dashboard-workspace.mjs": 1,
@@ -211930,7 +211988,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 28,
       "docs/ZEC-ENSEMBLE-STUDY.md": 5,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 4,
       "docs/archive/memory-2026-11-08.md": 19,
       "docs/archive/memory-2026-11-10.md": 38,
       "docs/backtester-history-handoff.md": 3,
@@ -211971,9 +212029,9 @@
       "ecosystem/tests/test_setup.py": 1,
       "ecosystem/tests/test_ui_service.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 4,
       "ecosystem/web/index.html": 1,
-      "ecosystem/zec_forward.py": 10,
+      "ecosystem/zec_forward.py": 12,
       "executor/CLAUDE.md": 1,
       "executor/src/executor/authority.py": 1,
       "executor/src/executor/config.py": 2,
@@ -212034,7 +212092,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/tests/test_load.py": 1,
       "oracle/feeds.py": 1,
       "oracle/tests/test_archived_reader.py": 1,
@@ -212146,7 +212204,9 @@
       "liquidity/tests/test_submission_audit.py": 1
     },
     "closed_candle_stale": {
-      "ecosystem/zec_forward.py": 1
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/zec_forward.py": 2
     },
     "closed_frame": {
       "docs/FILES.md": 1,
@@ -214505,7 +214565,7 @@
       "docs/design/chrome-workspace/prompt-optimization.md": 2,
       "docs/design/chrome-workspace/proposal.md": 2,
       "docs/repository-review-2026-11-08.md": 5,
-      "memory.md": 5,
+      "memory.md": 6,
       "research/five-minute-perps-suite/run-state.json": 1,
       "research/nonlinear-lead-lag-children/run-report.md": 1,
       "research/tradingview-strategy-card-locations.json": 1
@@ -214862,7 +214922,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
       "ecosystem/README.md": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -214879,6 +214939,9 @@
     "coherently": {
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/code-deep-optimizer-2026-11-08.md": 1
+    },
+    "coherentversion": {
+      "memory.md": 1
     },
     "cohn": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -223320,7 +223383,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-sitemap.txt": 2,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 26,
+      "memory.md": 27,
       "mongo/README.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/schema.py": 1,
@@ -236619,7 +236682,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_cdo_gates.py": 1,
       "liquidity/tests/test_executor.py": 1,
-      "memory.md": 21,
+      "memory.md": 20,
       "prompts.md": 20,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/fetch_zec_history.py": 2,
@@ -237930,7 +237993,7 @@
       "ecosystem/tests/test_swap_web.py": 8,
       "ecosystem/tests/test_swaps.py": 7,
       "ecosystem/tests/test_ui_contract.py": 4,
-      "ecosystem/tests/test_zec_forward.py": 20,
+      "ecosystem/tests/test_zec_forward.py": 21,
       "ecosystem/web.py": 2,
       "ecosystem/web/app.js": 73,
       "ecosystem/web/index.html": 8,
@@ -238036,7 +238099,7 @@
       "liquidity/tests/test_submission_audit.py": 6,
       "llms-sitemap.txt": 113,
       "llms/aero-lp-explained-2026-11-06.md": 3,
-      "memory.md": 15,
+      "memory.md": 16,
       "oracle/README.md": 3,
       "oracle/feeds.py": 2,
       "postman/mocks/botmanager-jupiter-swap-v1/config.yaml": 2,
@@ -239127,7 +239190,7 @@
       "liquidity/tests/test_config_audit.py": 2,
       "liquidity/tests/test_gates.py": 3,
       "llms-sitemap.txt": 1,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/load.py": 1,
       "mongo/tests/test_load_audit.py": 1,
       "oracle/server.py": 1,
@@ -245750,6 +245813,7 @@
       "ecosystem/tests/test_ui_contract.py": 1,
       "ecosystem/tests/test_votes.py": 1,
       "ecosystem/tests/test_web.py": 12,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web.py": 1,
       "ecosystem/web/app.js": 3,
       "ecosystem/web/index.html": 2,
@@ -246848,6 +246912,12 @@
       "skills/trading-and-investing/references/walk-forward-window-length-and-refit-cadence.md": 4,
       "soltui/coinbase_account.py": 1,
       "soltui/tests/test_bots.py": 1
+    },
+    "consistentbackup": {
+      "memory.md": 1
+    },
+    "consistentledgerbackup": {
+      "memory.md": 1
     },
     "consistently": {
       "backtester/core/strategies/advanced.py": 1,
@@ -248365,7 +248435,7 @@
       "docs/bot-manager-handoff.md": 1,
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
       "docs/strategy-agent/optimized-prompt.md": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "research/tradingview-card-coverage.json": 3,
       "skills/trading-and-investing/SKILL.md": 1,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1,
@@ -248751,6 +248821,7 @@
       "docs/optimization-workbench-plan.md": 2,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "ecosystem/web.py": 1,
+      "ecosystem/zec_forward.py": 1,
       "executor/src/executor/registry.py": 1,
       "executor/tests/test_journal_ledger_signer.py": 2,
       "extension/README.md": 1,
@@ -248802,6 +248873,9 @@
       "soltui/wallet.py": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/logging.md": 2
+    },
+    "contain0": {
+      "memory.md": 1
     },
     "contained": {
       ".superpowers/sdd/2026-11-09-bot-manager/task-m4-report.md": 1,
@@ -251533,7 +251607,7 @@
       "ecosystem/web/index.html": 2,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 9,
       "ecosystem/wiki.py": 1,
-      "ecosystem/zec_forward.py": 3,
+      "ecosystem/zec_forward.py": 4,
       "executor/src/executor/authority.py": 2,
       "executor/src/executor/engine.py": 5,
       "executor/src/executor/journal.py": 1,
@@ -251596,7 +251670,7 @@
       "oracle/strategies.py": 1,
       "oracle/voting.py": 1,
       "pagesource": 1,
-      "prompts.md": 6,
+      "prompts.md": 8,
       "research/5minleveragestrategies.json": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -253173,7 +253247,7 @@
       "liquidity/src/aero_lp/cli.py": 2,
       "liquidity/src/aero_lp/providers.py": 4,
       "llms-sitemap.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/load.py": 1,
       "mongo/tests/test_analysis_regressions.py": 2,
       "postman/collections/solbot-managed-health.postman_collection.json": 1,
@@ -256507,7 +256581,7 @@
       "executor/src/executor/signer.py": 2,
       "extension/src/ui/workspace-model.js": 1,
       "liquidity/src/aero_lp/abi.py": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "oracle/README.md": 1,
       "research/minute_sweep.py": 1,
       "research/signal_redundancy.py": 1,
@@ -259110,6 +259184,7 @@
       "docs/FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 18,
       "docs/archive/memory-2026-11-10.md": 8,
       "docs/backtester-history-handoff.md": 2,
@@ -259231,6 +259306,8 @@
       "docs/FILES.md": 9,
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 17,
       "docs/archive/memory-2026-11-10.md": 5,
       "docs/backtester-history-handoff.md": 4,
@@ -259246,7 +259323,7 @@
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/core/grid.js": 1,
       "llms.txt": 1,
-      "memory.md": 7,
+      "memory.md": 11,
       "prompts.md": 3,
       "research/TOP_COINS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
@@ -273739,7 +273816,7 @@
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/config.py": 1,
       "liquidity/src/aero_lp/state.py": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "mongo/queries/04-decisions.js": 1,
       "prompts.md": 1,
       "research/RANKED_LISTS.md": 2,
@@ -285220,6 +285297,9 @@
     "dab8adbc7f666df7c69e42b3893797ab55d689c54a8d69a4f614f8d20d30dd1a": {
       "research/tradingview-card-coverage.json": 1
     },
+    "dab94a2d84bf0fab1cc3bfb46dfa28862a8f46d6": {
+      "memory.md": 1
+    },
     "dab9ac5a67c8d1f070c00fa8fccb7cbd1b8dcc1a8d6b42f37540df9b3d4cc603": {
       "liquidity/uv.lock": 1
     },
@@ -285491,7 +285571,7 @@
       "liquidity/tests/test_submission_audit.py": 26,
       "llms-sitemap.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 3,
-      "memory.md": 4,
+      "memory.md": 5,
       "oracle/README.md": 5,
       "prompts.md": 14,
       "soltui/README.md": 12,
@@ -297026,7 +297106,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "docs/ZEC-ENSEMBLE-STUDY.md": 3,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
       "docs/archive/memory-2026-11-08.md": 17,
       "docs/archive/memory-2026-11-10.md": 20,
       "docs/backtester-history-handoff.md": 2,
@@ -297102,7 +297182,7 @@
       "liquidity/tests/test_engine.py": 3,
       "llms-sitemap.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/queries/04-decisions.js": 8,
       "mongo/queries/08-provenance-and-health.js": 4,
       "mongo/schema.py": 4,
@@ -297328,7 +297408,7 @@
       "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/web/app.js": 1,
       "ecosystem/web/index.html": 1,
-      "ecosystem/zec_forward.py": 4,
+      "ecosystem/zec_forward.py": 5,
       "executor/CLAUDE.md": 2,
       "extension/src/core/control-room.js": 2,
       "extension/src/ui/desk-model.js": 1,
@@ -297341,6 +297421,7 @@
       "liquidity/tests/test_daemon.py": 10,
       "liquidity/tests/test_daemon_audit.py": 3,
       "llms-sitemap.txt": 1,
+      "memory.md": 1,
       "mongo/README.md": 6,
       "mongo/load.py": 4,
       "mongo/queries/03-signals-and-indicators.js": 2,
@@ -303587,6 +303668,7 @@
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "extension/test/core.test.js": 1,
+      "memory.md": 2,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/five-minute-perps-suite/run-report.md": 1,
@@ -312845,6 +312927,9 @@
       "research/tradingview-script-understanding.json": 2,
       "soltui/liquidity.py": 1
     },
+    "deployandindependentlyverify": {
+      "memory.md": 1
+    },
     "deploydeltaneutral": {
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "research/profitable-crypto-strategies-analysis.md": 1
@@ -312880,6 +312965,7 @@
       "liquidity/tests/test_daemon_audit.py": 5,
       "liquidity/tests/test_gates.py": 1,
       "liquidity/tests/test_metrics.py": 4,
+      "memory.md": 3,
       "research/GRID-REVIEW.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 3,
       "research/coin-intelligence/rain-rain.md": 3,
@@ -312931,6 +313017,7 @@
       "docs/FILES.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/bot-manager-handoff.md": 1,
       "docs/bot-manager-managed-suite.md": 1,
@@ -312952,7 +313039,7 @@
       "liquidity/src/aero_lp/recovery.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_network.py": 3,
-      "memory.md": 8,
+      "memory.md": 10,
       "prompts.md": 1,
       "research/defillama-llms-risk-analysis.md": 1,
       "research/nonlinear-lead-lag-children/run-report.md": 3,
@@ -320435,7 +320522,7 @@
       "llms-sitemap.txt": 2,
       "llms-small.txt": 2,
       "llms.txt": 2,
-      "memory.md": 21,
+      "memory.md": 22,
       "oracle/README.md": 5,
       "pagesource": 5,
       "postman/collections/botmanager-swap-v1.postman_collection.json": 1,
@@ -324029,7 +324116,7 @@
       "extension/src/core/grid.js": 1,
       "liquidity/src/aero_lp/chain.py": 4,
       "liquidity/src/aero_lp/daemon.py": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/candle_crosscheck.py": 1,
@@ -327601,7 +327688,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_daemon_audit.py": 2,
       "liquidity/tests/test_safe_exit.py": 5,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/quotes.py": 2,
       "oracle/tests/test_quotes.py": 2,
       "prompts.md": 1,
@@ -329094,7 +329181,7 @@
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 7,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
       "docs/archive/memory-2026-11-08.md": 13,
       "docs/archive/memory-2026-11-10.md": 6,
       "docs/backtester-history-handoff.md": 5,
@@ -330049,6 +330136,12 @@
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_v2_shell.py": 1,
       "soltui/tui.py": 6
+    },
+    "disarmedpaper": {
+      "memory.md": 1
+    },
+    "disarmedpreviousowner": {
+      "memory.md": 1
     },
     "disarmingly": {
       "backtester/strategy_research/tv_5ghqjxjj_vol_control_fund_positioning.md": 1,
@@ -339931,6 +340024,9 @@
     "doc_val": {
       "research/verify_numbers.py": 3
     },
+    "docchecks": {
+      "memory.md": 1
+    },
     "docentry": {
       "docs/FILES.md": 1,
       "soltui/commands.py": 5,
@@ -348332,7 +348428,7 @@
       "extension/src/ui/signal-desk.css": 2,
       "extension/src/ui/signal-desk.js": 22,
       "extension/src/ui/soltui-panel.js": 6,
-      "memory.md": 8,
+      "memory.md": 9,
       "prompts.md": 3,
       "research/coin-intelligence/eth-ethereum.md": 5,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -369868,6 +369964,7 @@
       "liquidity/src/aero_lp/providers.py": 2,
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 3,
+      "memory.md": 1,
       "mongo/load.py": 1,
       "research/LEVERAGE-ECONOMICS.md": 8,
       "research/LEVERAGE-TIERS.md": 1,
@@ -370004,7 +370101,7 @@
       "docs/SECURITY.md": 6,
       "docs/TESTING.md": 3,
       "docs/ZEC-ENSEMBLE-STUDY.md": 2,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 8,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 9,
       "docs/archive/memory-2026-11-10.md": 18,
       "docs/bot-manager-0.6-operations.md": 1,
       "docs/bot-manager-handoff.md": 14,
@@ -370110,7 +370207,7 @@
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/repo-bootstrap-audit-2026-11-10.md": 1,
-      "memory.md": 17
+      "memory.md": 19
     },
     "ecosystem173": {
       "memory.md": 2
@@ -370121,6 +370218,9 @@
       "memory.md": 2
     },
     "ecosystem190": {
+      "memory.md": 1
+    },
+    "ecosystem192tests": {
       "memory.md": 1
     },
     "ecosystem54": {
@@ -377155,7 +377255,7 @@
       "ecosystem/ui_service.py": 1,
       "ecosystem/votes.py": 3,
       "ecosystem/web.py": 17,
-      "ecosystem/zec_forward.py": 6,
+      "ecosystem/zec_forward.py": 7,
       "executor/src/executor/authority.py": 1,
       "executor/src/executor/config.py": 4,
       "executor/src/executor/engine.py": 2,
@@ -377913,7 +378013,7 @@
       "ecosystem/web/swap.js": 1,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 32,
       "ecosystem/wiki.py": 5,
-      "ecosystem/zec_forward.py": 39,
+      "ecosystem/zec_forward.py": 41,
       "executor/CLAUDE.md": 2,
       "executor/src/executor/api.py": 5,
       "executor/src/executor/authority.py": 14,
@@ -380705,6 +380805,7 @@
       "ecosystem/runner.py": 1,
       "ecosystem/tests/test_telemetry.py": 2,
       "ecosystem/tests/test_votes.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web/app.js": 18,
       "ecosystem/web/index.html": 21,
       "ecosystem/web/styles.css": 5,
@@ -380755,7 +380856,7 @@
       "liquidity/src/aero_lp/gates.py": 4,
       "liquidity/src/aero_lp/providers.py": 2,
       "liquidity/src/aero_lp/safe_exit.py": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/README.md": 1,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load.py": 1,
@@ -385232,7 +385333,7 @@
       "ecosystem/wiki.py": 2,
       "ecosystem/zec_forward.py": 9,
       "memory.md": 4,
-      "prompts.md": 3,
+      "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/ZEC-ENSEMBLE-HYPOTHESES.md": 5,
       "research/strategy_experiment/audit_realism.json": 2,
@@ -385252,7 +385353,7 @@
       "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "ecosystem/README.md": 2,
       "ecosystem/wiki.py": 1,
-      "memory.md": 8,
+      "memory.md": 9,
       "prompts.md": 1,
       "research/ZEC-ENSEMBLE-HYPOTHESES.md": 5,
       "research/fetch_zec_history.py": 1,
@@ -389894,7 +389995,7 @@
       "ecosystem/README.md": 2,
       "extension/src/bg/service-worker.js": 1,
       "llms-sitemap.txt": 1,
-      "memory.md": 19,
+      "memory.md": 20,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/tradingview-card-coverage.json": 13,
       "research/tradingview-card-readiness.json": 2,
@@ -397578,6 +397679,7 @@
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 10,
       "docs/TRADINGVIEW-REFERENCE.md": 28,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 9,
       "docs/archive/memory-2026-11-10.md": 7,
       "docs/backtester-history-handoff.md": 1,
@@ -397756,7 +397858,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "mongo/schema.py": 3,
@@ -406421,7 +406523,7 @@
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 40,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
       "docs/archive/memory-2026-11-08.md": 59,
       "docs/archive/memory-2026-11-10.md": 21,
       "docs/backtester-history-handoff.md": 11,
@@ -406615,7 +406717,7 @@
       "llms-full.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 14,
+      "memory.md": 15,
       "mongo/README.md": 6,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -407862,6 +407964,9 @@
     "exact_task808_snapshot_pairs_reused": {
       "research/nonlinear-lead-lag-children/accepted-gate-receipt.json": 1
     },
+    "exactbuild": {
+      "memory.md": 1
+    },
     "exactcoordinate": {
       "docs/archive/memory-2026-11-10.md": 1
     },
@@ -408217,6 +408322,12 @@
     },
     "exactly_fifty": {
       "oracle/tests/test_voting.py": 3
+    },
+    "exactold": {
+      "memory.md": 1
+    },
+    "exactoldimplementationbinding": {
+      "memory.md": 1
     },
     "exactout": {
       "executor/tests/test_quote.py": 1
@@ -415150,6 +415261,7 @@
       "ecosystem/tests/test_telemetry.py": 9,
       "ecosystem/tests/test_votes.py": 6,
       "ecosystem/tests/test_wiki.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 5,
       "ecosystem/votes.py": 13,
       "ecosystem/web/swap.html": 1,
       "ecosystem/zec_forward.py": 25,
@@ -418316,6 +418428,7 @@
       "index/idle.py": 3,
       "liquidity/tests/test_gates.py": 1,
       "liquidity/tests/test_safe_exit.py": 1,
+      "memory.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
       "research/tradingview-card-coverage.json": 6,
@@ -420616,7 +420729,7 @@
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 37,
       "docs/TRADINGVIEW-REFERENCE.md": 22,
       "docs/ZEC-ENSEMBLE-STUDY.md": 2,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 4,
       "docs/archive/memory-2026-11-08.md": 85,
       "docs/archive/memory-2026-11-10.md": 93,
       "docs/backtester-history-handoff.md": 20,
@@ -424149,7 +424262,7 @@
       "liquidity/tests/test_safe_exit.py": 5,
       "llms-sitemap.txt": 5,
       "llms/aero-lp-explained-2026-11-06.md": 4,
-      "memory.md": 1,
+      "memory.md": 2,
       "mongo/load.py": 5,
       "mongo/schema.py": 2,
       "mongo/tests/test_snapshot_audit.py": 2,
@@ -428504,7 +428617,7 @@
       "ecosystem/web/swap.html": 1,
       "ecosystem/web/swap.js": 1,
       "ecosystem/wiki.py": 1,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "executor/CLAUDE.md": 1,
       "executor/README.md": 1,
       "executor/src/executor/authority.py": 3,
@@ -432726,7 +432839,7 @@
       "mongo/load.py": 7,
       "mongo/schema.py": 1,
       "oracle/README.md": 1,
-      "prompts.md": 27,
+      "prompts.md": 26,
       "research/GRID-REVIEW.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
       "research/results/grid_review_20261107.json": 1,
@@ -433240,7 +433353,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 12,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
       "docs/archive/memory-2026-11-08.md": 3,
       "docs/archive/memory-2026-11-10.md": 14,
       "docs/bot-manager-0.6-operations.md": 2,
@@ -445249,7 +445362,7 @@
       "ecosystem/tests/test_setup.py": 9,
       "ecosystem/tests/test_votes.py": 1,
       "ecosystem/tests/test_wrapper.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/ui_service.py": 1,
       "ecosystem/web/app.js": 4,
       "ecosystem/web/styles.css": 1,
@@ -454862,6 +454975,8 @@
       "docs/MCP.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 22,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 3,
       "docs/archive/memory-2026-11-10.md": 5,
       "docs/backtester-history-handoff.md": 1,
@@ -454878,7 +454993,8 @@
       "ecosystem/runner.py": 2,
       "ecosystem/tests/test_runner.py": 3,
       "ecosystem/tests/test_ui_contract.py": 1,
-      "ecosystem/zec_forward.py": 4,
+      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 5,
       "extension/README.md": 2,
       "extension/src/core/commands.js": 1,
       "extension/src/market/pools.js": 2,
@@ -454889,14 +455005,14 @@
       "liquidity/tests/test_daemon.py": 5,
       "liquidity/tests/test_daemon_audit.py": 3,
       "liquidity/tests/test_safe_exit.py": 2,
-      "memory.md": 1,
+      "memory.md": 6,
       "oracle/README.md": 3,
       "oracle/cli.py": 3,
       "oracle/feeds.py": 1,
       "oracle/tests/test_cli.py": 1,
       "oracle/tests/test_core.py": 2,
       "oracle/tests/test_feeds.py": 22,
-      "prompts.md": 4,
+      "prompts.md": 6,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/LEVERAGE-TIERS.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -454962,7 +455078,10 @@
       "ecosystem/zec_forward.py": 1
     },
     "feed_unavailable": {
-      "ecosystem/zec_forward.py": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
+      "memory.md": 1,
       "oracle/cli.py": 1
     },
     "feedback": {
@@ -455960,6 +456079,9 @@
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_research_owner.py": 1
     },
+    "fence8": {
+      "memory.md": 1
+    },
     "fenced": {
       ".superpowers/sdd/remaining-2026-11-10/final-integration-review.md": 1,
       ".superpowers/sdd/remaining-2026-11-10/task-4-report.md": 1,
@@ -456239,7 +456361,7 @@
       "index/build.py": 1,
       "liquidity/src/aero_lp/providers.py": 3,
       "llms-sitemap.txt": 5,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/load.py": 2,
       "mongo/tests/test_analysis_regressions.py": 1,
       "research/GRID-REVIEW.md": 1,
@@ -456351,7 +456473,8 @@
     },
     "fetch_closed": {
       "ecosystem/tests/test_zec_forward.py": 1,
-      "ecosystem/zec_forward.py": 4
+      "ecosystem/zec_forward.py": 4,
+      "memory.md": 1
     },
     "fetch_closed_candles": {
       "soltui/compound.py": 5,
@@ -456697,7 +456820,7 @@
       "docs/TESTING.md": 1,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/superpowers/plans/2026-11-09-backtester-integrity.md": 1,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 6,
       "ecosystem/zec_forward.py": 2,
       "research/TOP_COINS.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 2,
@@ -463303,7 +463426,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 13,
       "docs/TRADINGVIEW-REFERENCE.md": 29,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 10,
       "docs/archive/memory-2026-11-10.md": 7,
       "docs/backtester-history-handoff.md": 12,
@@ -464134,7 +464257,7 @@
       "extension/tools/measure-recentre.js": 2,
       "index/build.py": 1,
       "index/make_files_doc.py": 1,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/README.md": 1,
       "mongo/queries/05-backtests.js": 6,
       "oracle/README.md": 1,
@@ -465248,7 +465371,7 @@
       "docs/TESTING.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 19,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 4,
       "docs/archive/memory-2026-11-08.md": 234,
       "docs/archive/memory-2026-11-10.md": 250,
       "docs/backtester-history-handoff.md": 2,
@@ -465318,7 +465441,7 @@
       "liquidity/tests/test_backtest.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "llms-sitemap.txt": 3,
-      "memory.md": 133,
+      "memory.md": 135,
       "mongo/queries/05-backtests.js": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "prompts.md": 6,
@@ -465608,8 +465731,14 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_fq7ig92h_deeptest.md": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 1
     },
+    "finalexternalcompletionreceipt": {
+      "memory.md": 1
+    },
     "finalfull303source": {
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1
+    },
+    "finalgate": {
+      "memory.md": 1
     },
     "finalgates": {
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1
@@ -466464,6 +466593,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 15,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 6,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 2,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/bot-manager-handoff.md": 1,
@@ -466489,7 +466619,7 @@
       "extension/tools/e2e.mjs": 1,
       "liquidity/README.md": 1,
       "llms-sitemap.txt": 6,
-      "memory.md": 3,
+      "memory.md": 5,
       "mongo/README.md": 1,
       "pagesource": 1,
       "prompts.md": 1,
@@ -469027,6 +469157,9 @@
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tui.py": 3
     },
+    "finishindependentcorrectionacceptance": {
+      "memory.md": 1
+    },
     "finishing": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ucux0rjl_tops_bottoms_time_of_day_report.md": 1,
       "backtester/strategy_cards/incomplete/tv_jgafgaly_gann_theory_finally_completed_strategy.md": 1,
@@ -470916,10 +471049,10 @@
       "ecosystem/tests/test_telemetry.py": 3,
       "ecosystem/tests/test_votes.py": 2,
       "ecosystem/tests/test_wiki.py": 8,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web/app.js": 3,
       "ecosystem/web/styles.css": 5,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "executor/CLAUDE.md": 3,
       "executor/src/executor/__init__.py": 2,
       "executor/src/executor/api.py": 2,
@@ -471397,7 +471530,8 @@
     },
     "first_post_start_closed_bar": {
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "ecosystem/zec_forward.py": 2
+      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/zec_forward.py": 3
     },
     "first_prefix_bars": {
       "research/zec_ensembles.py": 1
@@ -471477,6 +471611,9 @@
     },
     "firstdatarequest": {
       "docs/TRADINGVIEW-REFERENCE.md": 4
+    },
+    "firstdecisionclose03": {
+      "memory.md": 1
     },
     "firstelementchild": {
       "extension/src/ui/signal-desk.js": 1
@@ -473509,7 +473646,7 @@
       "extension/src/core/soltui.js": 1,
       "liquidity/src/aero_lp/wallet.py": 2,
       "memory.md": 12,
-      "prompts.md": 4,
+      "prompts.md": 6,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/cross_asset_cpcv.py": 1,
@@ -474081,7 +474218,7 @@
       "docs/repository-review-2026-11-08.md": 4,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 2,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 2,
-      "memory.md": 7,
+      "memory.md": 8,
       "prompts.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
@@ -474157,6 +474294,9 @@
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "research/tradingview-card-coverage.json": 1,
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1
+    },
+    "fixonly": {
+      "memory.md": 1
     },
     "fixpoint": {
       "index/README.md": 1
@@ -474255,7 +474395,7 @@
       "ecosystem/tests/test_votes.py": 2,
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "executor/CLAUDE.md": 1,
       "executor/tests/conftest.py": 13,
       "executor/tests/test_authority.py": 9,
@@ -479648,6 +479788,9 @@
     "focused18": {
       "memory.md": 1
     },
+    "focused21runtime": {
+      "memory.md": 1
+    },
     "focused31": {
       "memory.md": 1
     },
@@ -481776,6 +481919,9 @@
       "docs/FILES.md": 1,
       "soltui/learning_owner.py": 6
     },
+    "forecastcredit": {
+      "memory.md": 1
+    },
     "forecasted": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_iipj0kjz_timeseriesbenchmarkmeasures.md": 1,
       "backtester/strategy_cards/incomplete/tv_oe3v6w93_new_technical_tools_back_tested_on_old_extreme_markets.md": 1,
@@ -481900,13 +482046,14 @@
       "docs/strategy-agent/optimized-prompt.md": 1,
       "ecosystem/control.py": 1,
       "ecosystem/tests/test_votes.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/votes.py": 1,
       "ecosystem/web/app.js": 1,
       "ecosystem/web/index.html": 1,
       "ecosystem/zec_forward.py": 5,
       "extension/src/ui/live-score.js": 1,
       "extension/test/prediction-recovery.test.js": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/README.md": 5,
       "oracle/engine.py": 8,
       "oracle/reader.py": 4,
@@ -481936,6 +482083,9 @@
       "soltui/tests/test_advanced_order_ui.py": 3,
       "soltui/tests/test_learning_owner.py": 4,
       "soltui/tui.py": 1
+    },
+    "forecaststatechanged": {
+      "memory.md": 1
     },
     "forecaststatstests": {
       "backtester/tests/test_scorecard.py": 2
@@ -485995,12 +486145,12 @@
       "ecosystem/tests/test_performance.py": 5,
       "ecosystem/tests/test_registration.py": 16,
       "ecosystem/tests/test_runner.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 6,
+      "ecosystem/tests/test_zec_forward.py": 8,
       "ecosystem/votes.py": 1,
       "ecosystem/web/app.js": 58,
       "ecosystem/web/index.html": 10,
       "ecosystem/wiki.py": 1,
-      "ecosystem/zec_forward.py": 11,
+      "ecosystem/zec_forward.py": 13,
       "extension/README.md": 5,
       "extension/e2e/lib/dashboard-workspace.mjs": 1,
       "extension/e2e/lib/signal-desk.mjs": 13,
@@ -486029,7 +486179,7 @@
       "oracle/engine.py": 1,
       "oracle/guidance.py": 7,
       "oracle/server.py": 1,
-      "prompts.md": 40,
+      "prompts.md": 39,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/PROMPT_STRATEGIES.md": 2,
@@ -486388,8 +486538,8 @@
     },
     "forward_source_gap": {
       "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
-      "ecosystem/zec_forward.py": 1
+      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 2
     },
     "forward_source_record_changed": {
       "ecosystem/performance.py": 1
@@ -486834,6 +486984,7 @@
       "docs/FILES.md": 5,
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 22,
       "docs/archive/memory-2026-11-10.md": 25,
       "docs/backtester-history-handoff.md": 1,
@@ -486886,7 +487037,7 @@
       "liquidity/tests/test_providers_network.py": 2,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms/defillama-llms-free.txt": 3,
-      "memory.md": 11,
+      "memory.md": 13,
       "mongo/load.py": 3,
       "oracle/tests/test_feeds.py": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -490845,6 +490996,9 @@
     "freezeauthoritydisabled": {
       "soltui/tests/fixtures/wallet/jupiter_recorded.json": 1
     },
+    "freezepackageddocs": {
+      "memory.md": 1
+    },
     "freezes": {
       ".superpowers/sdd/2026-11-09-bot-manager/task-m4-report.md": 1,
       ".superpowers/sdd/remaining-2026-11-10/task-1-review.md": 2,
@@ -491229,7 +491383,8 @@
       "docs/SECURITY.md": 1,
       "docs/TESTING.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 47,
       "docs/archive/memory-2026-11-10.md": 53,
       "docs/backtester-history-handoff.md": 4,
@@ -491338,7 +491493,7 @@
       "liquidity/tests/test_engine_audit.py": 2,
       "liquidity/tests/test_executor.py": 2,
       "llms-sitemap.txt": 1,
-      "memory.md": 22,
+      "memory.md": 25,
       "prompts.md": 7,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/GRID-REVIEW.md": 2,
@@ -492549,7 +492704,7 @@
       "docs/FILES.md": 15,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/ZEC-ENSEMBLE-STUDY.md": 9,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 4,
       "docs/archive/memory-2026-11-08.md": 11,
       "docs/archive/memory-2026-11-10.md": 15,
       "docs/bot-manager-0.6-operations.md": 1,
@@ -492605,7 +492760,7 @@
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/src/aero_lp/providers.py": 2,
       "liquidity/src/aero_lp/strategy.py": 5,
-      "memory.md": 9,
+      "memory.md": 12,
       "oracle/tests/test_feeds.py": 1,
       "oracle/voting.py": 1,
       "prompts.md": 1,
@@ -494901,7 +495056,7 @@
       "llms.txt": 2,
       "llms/defillama-llms.txt": 4,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 35,
+      "memory.md": 37,
       "mongo/README.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/07-documents-and-search.js": 3,
@@ -502755,7 +502910,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 73,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 12,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
       "docs/archive/memory-2026-11-08.md": 10,
       "docs/archive/memory-2026-11-10.md": 19,
       "docs/backtester-history-handoff.md": 12,
@@ -502788,10 +502943,10 @@
       "ecosystem/recovery.py": 2,
       "ecosystem/tests/test_performance.py": 1,
       "ecosystem/tests/test_recovery.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web/styles.css": 106,
       "ecosystem/web/swap.html": 1,
-      "ecosystem/zec_forward.py": 1,
+      "ecosystem/zec_forward.py": 2,
       "executor/src/executor/gates.py": 7,
       "executor/src/executor/jupiter.py": 8,
       "executor/src/executor/lifi.py": 2,
@@ -502812,7 +502967,7 @@
       "liquidity/tests/test_gates.py": 1,
       "liquidity/tests/test_metrics.py": 1,
       "llms-sitemap.txt": 22,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/queries/07-documents-and-search.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -504557,7 +504712,7 @@
       "docs/TESTING.md": 14,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 9,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 8,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 9,
       "docs/archive/memory-2026-11-08.md": 54,
       "docs/archive/memory-2026-11-10.md": 52,
       "docs/backtester-history-handoff.md": 1,
@@ -504655,7 +504810,7 @@
       "liquidity/tests/test_gates.py": 25,
       "liquidity/tests/test_safe_exit.py": 1,
       "llms-sitemap.txt": 6,
-      "memory.md": 16,
+      "memory.md": 17,
       "oracle/README.md": 1,
       "prompts.md": 5,
       "research/5minleveragestrategies.json": 1,
@@ -507259,6 +507414,9 @@
     "generatedindexes": {
       "docs/archive/memory-2026-11-08.md": 1
     },
+    "generatedwiki": {
+      "memory.md": 1
+    },
     "generates": {
       "backtester/core/data.py": 1,
       "backtester/strategy_cards/grid.md": 1,
@@ -508322,7 +508480,7 @@
       "index/make_files_doc.py": 3,
       "llms-sitemap.txt": 11,
       "market-graph-geometry-prompt.md": 7,
-      "memory.md": 8,
+      "memory.md": 7,
       "mongo/README.md": 1,
       "mongo/load.py": 4,
       "mongo/queries/06-experiments-and-pbo.js": 4,
@@ -516703,8 +516861,11 @@
     "gracefully": {
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "soltui/make_icon.py": 1
+    },
+    "gracefulmanagedsuiteversionrefresh": {
+      "memory.md": 1
     },
     "gracy": {
       "research/coin-intelligence/hype-hyperliquid.md": 2
@@ -521141,6 +521302,12 @@
     },
     "guarded_terminal": {
       "executor/tests/test_optimizer_regressions.py": 2
+    },
+    "guardedmigration": {
+      "memory.md": 1
+    },
+    "guardedreviewedhealth": {
+      "memory.md": 1
     },
     "guardian": {
       "research/tradingview-card-coverage.json": 4
@@ -528446,7 +528613,7 @@
       "liquidity/tests/test_submission_audit.py": 6,
       "liquidity/uv.lock": 1183,
       "llms-sitemap.txt": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/load.py": 2,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_snapshot_audit.py": 1,
@@ -531723,6 +531890,8 @@
       "docs/SECURITY.md": 1,
       "docs/SIGNAL-DESK.md": 1,
       "docs/TESTING.md": 3,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/archive/memory-2026-11-10.md": 7,
       "docs/backtester-history-handoff.md": 1,
@@ -531761,9 +531930,11 @@
       "ecosystem/tests/test_swap_web.py": 2,
       "ecosystem/tests/test_ui_service.py": 2,
       "ecosystem/tests/test_web.py": 8,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/ui_service.py": 6,
       "ecosystem/web.py": 8,
       "ecosystem/web/app.js": 1,
+      "ecosystem/zec_forward.py": 2,
       "executor/README.md": 1,
       "executor/src/executor/api.py": 4,
       "executor/src/executor/manager.py": 1,
@@ -531785,7 +531956,7 @@
       "llms-full.txt": 3,
       "llms-sitemap.txt": 8,
       "llms-small.txt": 2,
-      "memory.md": 15,
+      "memory.md": 21,
       "mongo/README.md": 2,
       "mongo/queries/08-provenance-and-health.js": 6,
       "postman/collections/solbot-managed-health.postman_collection.json": 9,
@@ -531944,6 +532115,7 @@
       "extension/test/control-room.test.js": 1,
       "extension/tools/control-room-e2e.mjs": 9,
       "liquidity/tests/test_metrics.py": 2,
+      "memory.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "prompts.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
@@ -532036,6 +532208,7 @@
       "ecosystem/web/index.html": 1,
       "ecosystem/zec_forward.py": 4,
       "extension/src/ui/soltui-panel.js": 3,
+      "memory.md": 1,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 1,
       "skills/trading-and-investing/references/trading-bot-infrastructure-and-monitoring.md": 2,
@@ -533613,7 +533786,7 @@
       "extension/test/live-tools.test.js": 1,
       "extension/test/service-worker.test.js": 2,
       "extension/tools/control-room-e2e.mjs": 17,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/tests/test_load_audit.py": 1,
       "oracle/server.py": 1,
       "prompts.md": 3,
@@ -540583,7 +540756,7 @@
       "llms.txt": 1,
       "llms/defillama-llms-free.txt": 16,
       "llms/defillama-llms.txt": 17,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/tests/test_analysis_regressions.py": 1,
       "oracle/README.md": 5,
       "oracle/engine.py": 1,
@@ -546686,7 +546859,7 @@
       "ecosystem/tests/test_ui_service.py": 67,
       "ecosystem/tests/test_votes.py": 21,
       "ecosystem/tests/test_web.py": 7,
-      "ecosystem/tests/test_zec_forward.py": 12,
+      "ecosystem/tests/test_zec_forward.py": 20,
       "ecosystem/ui_service.py": 91,
       "ecosystem/votes.py": 10,
       "ecosystem/web.py": 45,
@@ -549950,7 +550123,7 @@
       "docs/FILES.md": 16,
       "docs/SCRIPTS.md": 6,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 7,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 8,
       "docs/archive/memory-2026-11-08.md": 16,
       "docs/archive/memory-2026-11-10.md": 5,
       "docs/backtester-history-handoff.md": 3,
@@ -549980,7 +550153,7 @@
       "liquidity/tests/test_market_state.py": 5,
       "liquidity/tests/test_metrics.py": 1,
       "liquidity/tests/test_providers.py": 4,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/schema.py": 1,
       "prompts.md": 1,
@@ -552081,7 +552254,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-sitemap.txt": 5,
-      "memory.md": 13,
+      "memory.md": 14,
       "oracle/README.md": 1,
       "oracle/feeds.py": 1,
       "oracle/quotes.py": 3,
@@ -552128,6 +552301,9 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/external-calls.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/integrations-and-assumptions.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 1
+    },
+    "http200": {
+      "memory.md": 1
     },
     "http_call": {
       "soltui/jupiter_manual.py": 14
@@ -558289,7 +558465,7 @@
       "extension/tools/e2e.mjs": 3,
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/README.md": 1,
       "mongo/tests/test_load.py": 3,
       "research/CROSS-ASSET-TRANSFER.md": 4,
@@ -559539,6 +559715,7 @@
       "ecosystem/tests/test_ui_contract.py": 2,
       "ecosystem/tests/test_ui_service.py": 4,
       "ecosystem/tests/test_wiki.py": 4,
+      "ecosystem/tests/test_zec_forward.py": 8,
       "ecosystem/ui_service.py": 19,
       "ecosystem/web/app.js": 23,
       "ecosystem/wiki.py": 10,
@@ -564010,7 +564187,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 19,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "prompts.md": 22,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/tradingview-card-coverage.json": 80,
@@ -564102,6 +564279,7 @@
       "botmanager/src/botmanager/adapters/__init__.py": 2,
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 3,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/codebase-overview.md": 1,
       "docs/external-calls.md": 1,
@@ -572249,6 +572427,9 @@
     "independentauditor": {
       "docs/archive/memory-2026-11-08.md": 1
     },
+    "independentcorrectionacceptance": {
+      "memory.md": 1
+    },
     "independentfinal58": {
       "memory.md": 1
     },
@@ -573958,6 +574139,9 @@
     "independentui641": {
       "memory.md": 1
     },
+    "independentverifier": {
+      "memory.md": 1
+    },
     "indeterminate": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mc8mxglm_fearzone_panel.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_vnzbp63l_zigzag_trend_divergence_detector.md": 2,
@@ -574312,7 +574496,7 @@
       "llms-sitemap.txt": 69,
       "llms-small.txt": 2,
       "llms.txt": 4,
-      "memory.md": 27,
+      "memory.md": 29,
       "mongo/README.md": 3,
       "mongo/load.py": 12,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -583026,7 +583210,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "ecosystem/installation.py": 1,
       "ecosystem/tests/test_registration.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 10,
+      "ecosystem/tests/test_zec_forward.py": 13,
       "ecosystem/web/swap.js": 1,
       "ecosystem/zec_forward.py": 6,
       "executor/src/executor/txverify.py": 1,
@@ -587305,7 +587489,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 70,
+      "memory.md": 69,
       "mongo/schema.py": 1,
       "mongo/tests/test_load.py": 1,
       "oracle/README.md": 1,
@@ -595560,7 +595744,7 @@
       "ecosystem/tests/test_performance.py": 1,
       "ecosystem/tests/test_registration.py": 1,
       "ecosystem/tests/test_ui_service.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 12,
+      "ecosystem/tests/test_zec_forward.py": 14,
       "ecosystem/web.py": 1,
       "ecosystem/web/app.js": 12,
       "ecosystem/web/index.html": 4,
@@ -601925,6 +602109,9 @@
     "is3tap": {
       "research/tradingview-card-coverage.json": 4
     },
+    "is4aca10d64ae85a3719966bdc20d1e11e29b835294dfd0d32d4492d6437d888f5": {
+      "memory.md": 1
+    },
     "is4d773dcb": {
       "memory.md": 1
     },
@@ -604137,6 +604324,7 @@
       "executor/tests/test_authority.py": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "llms-sitemap.txt": 2,
+      "memory.md": 1,
       "oracle/engine.py": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -613353,7 +613541,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 23,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 24,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
       "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 102,
       "docs/archive/memory-2026-11-10.md": 62,
@@ -613589,7 +613777,7 @@
       "llms-sitemap.txt": 103,
       "llms/defillama-llms.txt": 2,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 29,
+      "memory.md": 31,
       "mongo/README.md": 3,
       "mongo/load.py": 12,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -619193,6 +619381,7 @@
       "ecosystem/web.py": 1,
       "ecosystem/web/app.js": 1,
       "ecosystem/web/index.html": 1,
+      "ecosystem/zec_forward.py": 1,
       "executor/src/executor/gates.py": 1,
       "executor/src/executor/jupiter_route.py": 1,
       "executor/src/executor/txverify.py": 1,
@@ -624125,7 +624314,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/test/core.test.js": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 4,
@@ -633811,7 +634000,7 @@
       "ecosystem/tests/test_control.py": 1,
       "ecosystem/tests/test_ui_service.py": 3,
       "ecosystem/tests/test_wiki.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 5,
       "ecosystem/wiki.py": 1,
       "ecosystem/zec_forward.py": 1,
       "executor/src/executor/config.py": 1,
@@ -635273,11 +635462,12 @@
       "ecosystem/registration.py": 11,
       "ecosystem/telemetry.py": 4,
       "ecosystem/tests/test_data.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web/app.js": 7,
       "ecosystem/web/index.html": 1,
       "ecosystem/web/styles.css": 5,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 2,
-      "ecosystem/zec_forward.py": 28,
+      "ecosystem/zec_forward.py": 29,
       "executor/CLAUDE.md": 1,
       "executor/src/executor/engine.py": 4,
       "executor/src/executor/gates.py": 14,
@@ -635830,8 +636020,9 @@
       "docs/FILES.md": 1,
       "ecosystem/data.py": 2,
       "ecosystem/tests/test_data.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web/app.js": 1,
-      "ecosystem/zec_forward.py": 16,
+      "ecosystem/zec_forward.py": 17,
       "extension/src/ui/signal-desk.js": 1,
       "research/decide.py": 4,
       "research/grid_holdout.py": 1,
@@ -636009,6 +636200,10 @@
     },
     "lastwarm": {
       "extension/src/ui/live-panel.js": 4
+    },
+    "latch": {
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "memory.md": 1
     },
     "latched": {
       "docs/API.md": 2,
@@ -657983,6 +658178,7 @@
       "ecosystem/tests/test_setup.py": 1,
       "ecosystem/tests/test_swaps.py": 1,
       "ecosystem/tests/test_ui_service.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/votes.py": 4,
       "ecosystem/web.py": 1,
       "ecosystem/web/app.js": 5,
@@ -659670,7 +659866,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 37,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
       "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 130,
       "docs/archive/memory-2026-11-10.md": 138,
@@ -659877,7 +660073,7 @@
       "llms-small.txt": 1,
       "llms.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 18,
+      "memory.md": 20,
       "mongo/README.md": 1,
       "mongo/load.py": 9,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -659891,7 +660087,7 @@
       "oracle/tests/test_guidance.py": 1,
       "oracle/tests/test_server.py": 1,
       "postman/collections/solbot-managed-health.postman_collection.json": 1,
-      "prompts.md": 43,
+      "prompts.md": 45,
       "research/5minleveragestrategies.json": 5,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -660475,7 +660671,8 @@
     "liveorders": {
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-10.md": 1,
-      "extension/src/core/engine.js": 3
+      "extension/src/core/engine.js": 3,
+      "memory.md": 1
     },
     "livepoints": {
       "extension/src/ui/soltui-panel.js": 9
@@ -664694,7 +664891,7 @@
       "llms-sitemap.txt": 4,
       "llms-small.txt": 1,
       "llms.txt": 1,
-      "memory.md": 59,
+      "memory.md": 60,
       "mongo/README.md": 3,
       "mongo/load.py": 2,
       "mongo/schema.py": 5,
@@ -664902,6 +665099,9 @@
     },
     "localbitcoins": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "localchecksandfollowuppr": {
+      "memory.md": 1
     },
     "localcontext": {
       "botmanager/src/botmanager/accounting.py": 2
@@ -665863,6 +666063,9 @@
     "lockedjournalwatchdogtests": {
       "botmanager/tests/test_load.py": 2,
       "docs/FILES.md": 1
+    },
+    "lockedworktree": {
+      "memory.md": 1
     },
     "lockers": {
       "docs/profitable-crypto-strategies-analysis.md": 1,
@@ -684738,6 +684941,9 @@
     "managedhomes": {
       "memory.md": 1
     },
+    "managedsuite": {
+      "memory.md": 1
+    },
     "management": {
       ".superpowers/sdd/suite-2026-11-10/chrome-report.md": 1,
       "backtester/guides/tv_43000762390_funding_rate_a_guide_to_market_sentiment.md": 1,
@@ -687299,6 +687505,9 @@
     "manualordertests": {
       "docs/FILES.md": 1,
       "soltui/tests/test_coinbase_manual.py": 2
+    },
+    "manualreviewblocks": {
+      "memory.md": 1
     },
     "manualsignalresult": {
       "extension/e2e/lib/dashboard-workspace.mjs": 2,
@@ -690687,7 +690896,7 @@
       "ecosystem/zec_forward.py": 1,
       "executor/tests/fixtures/lifi_quote_usdc_base.json": 3,
       "liquidity/src/aero_lp/providers.py": 1,
-      "memory.md": 11,
+      "memory.md": 12,
       "oracle/engine.py": 1,
       "oracle/graphdb.py": 1,
       "oracle/quotes.py": 1,
@@ -701707,7 +701916,7 @@
       "extension/test/surfaces.test.js": 1,
       "index/build.py": 1,
       "llms-sitemap.txt": 5,
-      "memory.md": 59,
+      "memory.md": 63,
       "prompts.md": 14,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -701823,7 +702032,7 @@
       "extension/src/core/commands.js": 16,
       "extension/src/core/risk.js": 14,
       "extension/src/ui/signal-desk.js": 1,
-      "memory.md": 22,
+      "memory.md": 23,
       "prompts.md": 12,
       "research/candle_gap_audit.py": 7,
       "research/coin-intelligence/doge-dogecoin.md": 3,
@@ -702906,6 +703115,9 @@
     },
     "metadataimg": {
       "pagesource": 1
+    },
+    "metadataimplementationbinding": {
+      "memory.md": 1
     },
     "metadex": {
       "docs/FILES.md": 1,
@@ -707047,7 +707259,7 @@
       "docs/trading-signals-concept-family.md": 3,
       "ecosystem/telemetry.py": 3,
       "ecosystem/tests/test_manager_editing.py": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/trx-tron.md": 1,
       "research/tradingview-script-profiles/shard-b.jsonl": 2,
@@ -711138,17 +711350,17 @@
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 5,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
       "docs/design/bot-control-room/index.html": 1,
       "docs/strategy-agent/optimization-report.md": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "docs/trading-signals-concept-family.md": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "extension/src/ui/ui-kit.js": 2,
       "extension/src/ui/view-grid.js": 1,
       "llms-sitemap.txt": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "research/LEVERAGE-TIERS.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -711183,8 +711395,8 @@
     },
     "missed_forward_bars_review_required": {
       "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
-      "ecosystem/zec_forward.py": 1
+      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 2
     },
     "misses": {
       "backtester/core/scorecard.py": 1,
@@ -711637,7 +711849,7 @@
       "llms-small.txt": 2,
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 73,
+      "memory.md": 75,
       "oracle/README.md": 25,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "prompts.md": 80,
@@ -717070,7 +717282,7 @@
       "liquidity/tests/test_providers_network.py": 1,
       "liquidity/tests/test_submission_audit.py": 5,
       "llms/defillama-llms-free.txt": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/schema.py": 1,
       "mongo/tests/test_load.py": 1,
       "oracle/quotes.py": 2,
@@ -718927,6 +719139,9 @@
       "backtester/tests/test_deflated_sharpe.py": 1,
       "research/strategy_experiment/audit_realism.json": 1,
       "research/strategy_experiment/audit_realism.md": 1
+    },
+    "monotonicrecoveryfence8": {
+      "memory.md": 1
     },
     "monster": {
       "research/tradingview-card-coverage.json": 3,
@@ -731486,6 +731701,9 @@
     "narrow3m": {
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1
     },
+    "narrowcode": {
+      "memory.md": 1
+    },
     "narrowed": {
       ".superpowers/sdd/remaining-2026-11-10/task-5-review.md": 1,
       "docs/codebase-overview.md": 1,
@@ -732549,7 +732767,7 @@
       "ecosystem/tests/test_telemetry.py": 1,
       "ecosystem/tests/test_ui_contract.py": 7,
       "ecosystem/web/app.js": 3,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "executor/CLAUDE.md": 1,
       "executor/src/executor/authority.py": 6,
       "executor/src/executor/config.py": 1,
@@ -734945,6 +735163,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 3,
       "ecosystem/web/index.html": 1,
       "ecosystem/web/swap.js": 1,
+      "ecosystem/zec_forward.py": 1,
       "executor/src/executor/jupiter.py": 1,
       "extension/README.md": 2,
       "extension/src/core/alerts.js": 1,
@@ -740438,7 +740657,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 6,
       "docs/TRADINGVIEW-REFERENCE.md": 47,
       "docs/ZEC-ENSEMBLE-STUDY.md": 3,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 32,
       "docs/archive/memory-2026-11-10.md": 23,
       "docs/backtester-history-handoff.md": 3,
@@ -740515,13 +740734,13 @@
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
       "ecosystem/tests/test_wrapper.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/ui_service.py": 4,
       "ecosystem/web.py": 5,
       "ecosystem/web/app.js": 2,
       "ecosystem/web/swap.js": 1,
       "ecosystem/wiki.py": 2,
-      "ecosystem/zec_forward.py": 4,
+      "ecosystem/zec_forward.py": 5,
       "executor/CLAUDE.md": 11,
       "executor/README.md": 5,
       "executor/src/executor/api.py": 1,
@@ -742252,8 +742471,8 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 17,
       "docs/TRADINGVIEW-REFERENCE.md": 108,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 4,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 5,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 4,
       "docs/archive/memory-2026-11-08.md": 116,
       "docs/archive/memory-2026-11-10.md": 58,
       "docs/backtester-history-handoff.md": 14,
@@ -742327,6 +742546,7 @@
       "ecosystem/web/oracle-chart.js": 3,
       "ecosystem/web/swap.js": 7,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 283,
+      "ecosystem/zec_forward.py": 1,
       "executor/CLAUDE.md": 3,
       "executor/README.md": 2,
       "executor/src/executor/api.py": 1,
@@ -742474,7 +742694,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 7,
       "llms-small.txt": 1,
-      "memory.md": 34,
+      "memory.md": 37,
       "mongo/README.md": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/tests/test_analysis_regressions.py": 5,
@@ -743025,6 +743245,9 @@
     "newimbalance": {
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 1
     },
+    "newimplementationguard": {
+      "memory.md": 1
+    },
     "newissues": {
       "docs/archive/memory-2026-11-08.md": 1
     },
@@ -743431,6 +743654,9 @@
     "newtraderu": {
       "skills/trading-and-investing/references/trading-risk-management.md": 1
     },
+    "newuiobservedat": {
+      "memory.md": 1
+    },
     "newurl": {
       "ecosystem/ui_service.py": 1,
       "oracle/feeds.py": 1,
@@ -743787,7 +744013,7 @@
       "ecosystem/tests/test_registration.py": 11,
       "ecosystem/tests/test_telemetry.py": 2,
       "ecosystem/tests/test_wiki.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 12,
+      "ecosystem/tests/test_zec_forward.py": 17,
       "ecosystem/web/app.js": 29,
       "ecosystem/web/index.html": 2,
       "ecosystem/web/styles.css": 3,
@@ -752993,6 +753219,7 @@
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 14,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 80,
       "docs/archive/memory-2026-11-10.md": 64,
       "docs/backtester-history-handoff.md": 1,
@@ -753046,7 +753273,7 @@
       "ecosystem/tests/test_performance.py": 18,
       "ecosystem/tests/test_ui_contract.py": 7,
       "ecosystem/tests/test_votes.py": 9,
-      "ecosystem/tests/test_zec_forward.py": 44,
+      "ecosystem/tests/test_zec_forward.py": 62,
       "ecosystem/votes.py": 18,
       "ecosystem/web/app.js": 20,
       "ecosystem/web/index.html": 1,
@@ -753147,7 +753374,7 @@
       "llms-sitemap.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/defillama-llms-free.txt": 1,
-      "memory.md": 26,
+      "memory.md": 27,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 1,
       "oracle/engine.py": 48,
@@ -773486,6 +773713,9 @@
     "oldsqlite": {
       "docs/archive/memory-2026-11-10.md": 1
     },
+    "oldstopped": {
+      "memory.md": 1
+    },
     "oldurl": {
       "extension/test/service-worker.test.js": 2
     },
@@ -776041,7 +776271,7 @@
       "ecosystem/tests/test_votes.py": 1,
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/votes.py": 1,
       "ecosystem/web.py": 5,
       "ecosystem/web/app.js": 2,
@@ -776221,6 +776451,9 @@
     },
     "onlyh": {
       "prompts.md": 1
+    },
+    "onlyimplementationmetadataadoption": {
+      "memory.md": 1
     },
     "onlylocalstand": {
       "memory.md": 2
@@ -782381,7 +782614,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 34,
       "llms-small.txt": 2,
-      "memory.md": 55,
+      "memory.md": 56,
       "oracle/README.md": 30,
       "oracle/__init__.py": 3,
       "oracle/__main__.py": 1,
@@ -782414,7 +782647,7 @@
       "oracle/voting.py": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 2,
-      "prompts.md": 26,
+      "prompts.md": 25,
       "research/5minleveragestrategies.json": 4,
       "research/FIVE-MINUTE-PERPS.md": 3,
       "research/SWEEP-9COIN.md": 1,
@@ -784785,7 +785018,8 @@
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 5,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 66,
       "docs/archive/memory-2026-11-10.md": 49,
       "docs/backtester-history-handoff.md": 5,
@@ -784868,7 +785102,7 @@
       "liquidity/tests/test_daemon_audit.py": 6,
       "liquidity/tests/test_submission_audit.py": 6,
       "llms-sitemap.txt": 3,
-      "memory.md": 9,
+      "memory.md": 12,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
       "mongo/schema.py": 2,
@@ -785155,6 +785389,9 @@
     "original_write": {
       "soltui/tests/test_cdo_tui_regressions.py": 2
     },
+    "originalactivation": {
+      "memory.md": 1
+    },
     "originaladagridda7d73b04ef1": {
       "docs/archive/memory-2026-11-10.md": 1
     },
@@ -785164,6 +785401,9 @@
     },
     "originaldemo7filesunchanged": {
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1
+    },
+    "originalfirstprospectivehourlydecision": {
+      "memory.md": 1
     },
     "originally": {
       "backtester/core/fetch_minutes.py": 1,
@@ -785222,6 +785462,9 @@
     "originalsend": {
       "extension/e2e/lib/signal-desk.mjs": 2
     },
+    "originaltenaccounts": {
+      "memory.md": 1
+    },
     "originaltime": {
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 12,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 12
@@ -785236,6 +785479,9 @@
       "memory.md": 1
     },
     "originalworkeractive": {
+      "memory.md": 1
+    },
+    "originalzeclaunchagent": {
       "memory.md": 1
     },
     "originate": {
@@ -786200,7 +786446,7 @@
       "ecosystem/telemetry.py": 4,
       "ecosystem/tests/test_recovery.py": 1,
       "ecosystem/tests/test_runner.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/ui_service.py": 4,
       "ecosystem/votes.py": 2,
       "ecosystem/web.py": 3,
@@ -788328,7 +788574,7 @@
       "docs/code-deep-optimizer-2026-11-08.md": 3,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/known-issues.md": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "extension/src/core/autoreload.js": 1,
       "extension/test/autoreload.test.js": 3,
       "liquidity/src/aero_lp/daemon.py": 1,
@@ -788388,7 +788634,7 @@
       "docs/archive/memory-2026-11-08.md": 17,
       "docs/archive/memory-2026-11-10.md": 46,
       "docs/code-deep-optimizer-2026-11-08.md": 1,
-      "memory.md": 7
+      "memory.md": 8
     },
     "outbox8da31d20": {
       "docs/archive/memory-2026-11-10.md": 1
@@ -795775,7 +796021,7 @@
       "liquidity/tests/test_safe_exit.py": 14,
       "liquidity/tests/test_submission_audit.py": 23,
       "llms-sitemap.txt": 7,
-      "memory.md": 54,
+      "memory.md": 55,
       "oracle/README.md": 3,
       "oracle/cli.py": 7,
       "oracle/guidance.py": 2,
@@ -796594,7 +796840,7 @@
       "extension/test/wallet-audit.test.js": 1,
       "index/ollama_ensure.py": 1,
       "liquidity/config.example.toml": 1,
-      "memory.md": 14,
+      "memory.md": 15,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/five-minute-perps-suite/run-state.json": 5,
@@ -796646,6 +796892,9 @@
     "owns_lock": {
       "executor/src/executor/authority.py": 3,
       "executor/tests/test_authority.py": 1
+    },
+    "ownsdocs": {
+      "memory.md": 1
     },
     "ownwha4c": {
       "research/tradingview-card-coverage.json": 3
@@ -801548,7 +801797,7 @@
       "ecosystem/web/index.html": 41,
       "ecosystem/web/styles.css": 6,
       "ecosystem/web/swap.html": 1,
-      "ecosystem/zec_forward.py": 9,
+      "ecosystem/zec_forward.py": 10,
       "executor/src/executor/manager.py": 3,
       "executor/tests/test_authority.py": 7,
       "extension/README.md": 9,
@@ -801588,10 +801837,10 @@
       "llms-sitemap.txt": 9,
       "llms-small.txt": 1,
       "llms.txt": 1,
-      "memory.md": 36,
+      "memory.md": 40,
       "oracle/README.md": 2,
       "oracle/guidance.py": 1,
-      "prompts.md": 9,
+      "prompts.md": 8,
       "research/5minleveragestrategies.json": 3,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -808516,7 +808765,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-full.txt": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/queries/04-decisions.js": 1,
       "mongo/schema.py": 2,
       "prompts.md": 4,
@@ -810337,7 +810586,7 @@
       "liquidity/tests/test_gates.py": 4,
       "liquidity/tests/test_safe_exit.py": 5,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 38,
+      "memory.md": 41,
       "mongo/load.py": 2,
       "oracle/guidance.py": 1,
       "oracle/reader.py": 1,
@@ -812280,7 +812529,7 @@
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_gates.py": 2,
-      "memory.md": 44,
+      "memory.md": 45,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
       "prompts.md": 3,
@@ -812705,6 +812954,9 @@
       "docs/runbooks/incident.md": 2,
       "extension/src/ui/session-key-form.js": 1,
       "extension/test/soltui-bridge.test.js": 1
+    },
+    "passpipcheck": {
+      "memory.md": 1
     },
     "passports": {
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 1
@@ -815724,6 +815976,9 @@
       "backtester/core/kucoin_history.py": 1,
       "docs/design/bot-control-room/index.html": 1,
       "docs/design/bot-control-room/mockup.js": 2
+    },
+    "pausingonlythe": {
+      "memory.md": 1
     },
     "paw": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -822854,7 +823109,7 @@
       "docs/design/soltui-v2/DESIGN.md": 1,
       "docs/optimization-workbench-run.md": 1,
       "docs/trading-signals-concept-family.md": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "prompts.md": 1,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 2,
@@ -825162,6 +825417,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 17,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 4,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-10.md": 3,
       "docs/bot-manager-milestone-1.md": 1,
       "docs/code-deep-optimizer-2026-11-08.md": 2,
@@ -838035,8 +838291,8 @@
       "docs/LIVE-PREDICTION-SCORE.md": 1,
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 46,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 4,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 4,
       "docs/archive/memory-2026-11-08.md": 5,
       "docs/archive/memory-2026-11-10.md": 19,
       "docs/bot-manager-0.6-operations.md": 2,
@@ -838334,7 +838590,7 @@
       "botmanager/tests/test_supervisor.py": 2,
       "docs/API.md": 1,
       "docs/FILES.md": 4,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/bot-manager-managed-suite.md": 1,
       "docs/bot-manager-oracle-interface.md": 1,
@@ -838346,9 +838602,10 @@
       "ecosystem/runner.py": 1,
       "ecosystem/tests/test_runner.py": 1,
       "ecosystem/tests/test_ui_service.py": 5,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/ui_service.py": 5,
       "ecosystem/web.py": 1,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "extension/e2e/lib/dashboard-workspace.mjs": 1,
       "extension/src/ui/dashboard.html": 1,
       "extension/src/ui/soltui-panel.js": 7,
@@ -838362,7 +838619,7 @@
       "liquidity/tests/test_config_audit.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_gates.py": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "oracle/cli.py": 1,
       "oracle/feeds.py": 3,
       "oracle/server.py": 10,
@@ -838520,11 +838777,13 @@
       "botmanager/tests/test_operations.py": 1,
       "docs/SIGNAL-DESK.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "extension/src/core/control-room.js": 1,
       "extension/test/prediction-recovery.test.js": 1,
       "index/ollama_ensure.py": 1,
+      "memory.md": 2,
       "research/tradingview-card-coverage.json": 1,
       "soltui/bots_screens.py": 1,
       "soltui/council.py": 1,
@@ -842449,9 +842708,10 @@
       "ecosystem/tests/test_swap_web.py": 1,
       "ecosystem/tests/test_ui_contract.py": 4,
       "ecosystem/tests/test_web.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/web.py": 1,
       "ecosystem/web/app.js": 1,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "executor/CLAUDE.md": 1,
       "executor/README.md": 2,
       "executor/src/executor/api.py": 6,
@@ -842488,7 +842748,7 @@
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_cdo_execution.py": 1,
       "liquidity/tests/test_executor.py": 1,
-      "memory.md": 3,
+      "memory.md": 5,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/default.js": 1,
       "prompts.md": 1,
@@ -843968,7 +844228,10 @@
       "memory.md": 1
     },
     "pr204": {
-      "memory.md": 3
+      "memory.md": 2
+    },
+    "pr205": {
+      "memory.md": 1
     },
     "pr2tvrj": {
       "docs/design/bot-control-room/screens/fleet-desktop.png": 1
@@ -848930,7 +849193,7 @@
       "docs/superpowers/plans/2026-11-09-bot-manager.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/worktree-consolidation-2026-11-10.md": 1,
-      "memory.md": 6,
+      "memory.md": 7,
       "prompts.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/five-minute-perps-suite/benchmark-scope-review.json": 1,
@@ -849690,7 +849953,7 @@
       "extension/test/soltui-panel.test.js": 2,
       "extension/tools/bot-manager-e2e.mjs": 1,
       "liquidity/tests/test_executor_audit.py": 2,
-      "memory.md": 60,
+      "memory.md": 63,
       "mongo/tests/test_analysis_regressions.py": 1,
       "prompts.md": 42,
       "research/GRID-REVIEW.md": 1,
@@ -850694,12 +850957,13 @@
       "ecosystem/tests/test_recovery.py": 1,
       "ecosystem/tests/test_setup.py": 1,
       "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/zec_forward.py": 1,
       "executor/tests/test_gate_integrity.py": 2,
       "extension/tools/bot-manager-e2e.mjs": 1,
       "extension/tools/control-room-e2e.mjs": 1,
       "llms-full.txt": 1,
       "llms-sitemap.txt": 1,
-      "memory.md": 21,
+      "memory.md": 24,
       "mongo/queries/02-strategies-and-cards.js": 2,
       "prompts.md": 2,
       "research/FIVE-MINUTE-PERPS.md": 4,
@@ -850854,6 +851118,7 @@
       "docs/SCRIPTS.md": 2,
       "docs/SIGNAL-DESK.md": 1,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 12,
       "docs/archive/memory-2026-11-10.md": 16,
       "docs/bot-manager-0.6-operations.md": 1,
@@ -851005,7 +851270,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 4,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "executor/README.md": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "prompts.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
@@ -853383,7 +853648,7 @@
       "liquidity/src/aero_lp/engine.py": 2,
       "liquidity/src/aero_lp/executor.py": 2,
       "llms-sitemap.txt": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
       "oracle/engine.py": 6,
@@ -856568,7 +856833,7 @@
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/ledger.py": 8,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 37,
+      "memory.md": 38,
       "oracle/quotes.py": 2,
       "oracle/store.py": 7,
       "pagesource": 17,
@@ -857611,6 +857876,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 12,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 28,
       "docs/archive/memory-2026-11-10.md": 18,
       "docs/backtester-history-handoff.md": 2,
@@ -871381,7 +871647,7 @@
       "extension/src/ui/popup.html": 1,
       "extension/src/ui/signal-desk.js": 2,
       "extension/src/ui/workspace-model.js": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "oracle/README.md": 3,
       "oracle/engine.py": 2,
       "oracle/guidance.py": 1,
@@ -871714,6 +871980,7 @@
       "backtester/tests/test_strategy_cards.py": 1,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
+      "memory.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/tradingview-card-coverage.json": 3,
@@ -872123,7 +872390,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/guidance.py": 1,
       "oracle/tests/test_guidance.py": 1,
       "prompts.md": 2,
@@ -872157,6 +872424,7 @@
       "backtester/strategy_research/tv_34r4mh5w_market_microstructure_analytics.md": 1,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "docs/archive/memory-2026-11-10.md": 3,
+      "memory.md": 1,
       "research/tradingview-card-coverage.json": 8,
       "skills/trading-and-investing/references/empirical-backtest-findings-log.md": 1,
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1,
@@ -872201,9 +872469,10 @@
       "liquidity/tests/test_allocator_ledger.py": 3,
       "liquidity/tests/test_cdo_recovery.py": 2,
       "liquidity/tests/test_submission_audit.py": 7,
-      "memory.md": 2,
+      "memory.md": 4,
       "mongo/load.py": 1,
       "mongo/tests/test_analysis_regressions.py": 1,
+      "prompts.md": 2,
       "research/RANKED_LISTS.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -872893,7 +873162,7 @@
       "liquidity/tests/test_providers.py": 5,
       "liquidity/tests/test_providers_network.py": 2,
       "liquidity/tests/test_submission_audit.py": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "oracle/engine.py": 5,
       "oracle/feeds.py": 16,
       "oracle/quotes.py": 1,
@@ -876873,6 +877142,9 @@
       "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md": 1,
       "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md": 2,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 1
+    },
+    "pushfollowuppr": {
+      "memory.md": 1
     },
     "pushing": {
       "backtester/strategy_cards/incomplete/tv_oe3v6w93_new_technical_tools_back_tested_on_old_extreme_markets.md": 1,
@@ -887616,7 +887888,7 @@
       "extension/test/live-tools.test.js": 2,
       "extension/test/soltui-bridge.test.js": 1,
       "extension/test/wallet-audit.test.js": 1,
-      "memory.md": 6,
+      "memory.md": 7,
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/strategy_experiment/audit_integrity.json": 1,
       "research/strategy_experiment/audit_integrity.md": 1,
@@ -893787,6 +894059,7 @@
       "ecosystem/swaps.py": 5,
       "ecosystem/telemetry.py": 18,
       "ecosystem/tests/test_recovery.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/ui_service.py": 10,
       "ecosystem/votes.py": 10,
       "ecosystem/web.py": 14,
@@ -896033,6 +896306,7 @@
       "docs/dso-skill/SKILL.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 2,
       "docs/strategy-optimization-concept-family.md": 2,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/web/app.js": 3,
       "ecosystem/web/index.html": 1,
       "ecosystem/zec_forward.py": 5,
@@ -896681,6 +896955,7 @@
       "docs/repository-review-2026-11-08.md": 1,
       "docs/requirements.md": 1,
       "extension/src/ui/dashboard.html": 1,
+      "memory.md": 1,
       "research/RANKED_LISTS.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
@@ -903592,7 +903867,7 @@
       "llms-small.txt": 4,
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/README.md": 4,
       "mongo/load.py": 26,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -909227,7 +909502,7 @@
       "ecosystem/tests/test_ui_service.py": 6,
       "ecosystem/tests/test_votes.py": 4,
       "ecosystem/tests/test_wiki.py": 3,
-      "ecosystem/tests/test_zec_forward.py": 3,
+      "ecosystem/tests/test_zec_forward.py": 18,
       "ecosystem/ui_service.py": 5,
       "ecosystem/votes.py": 12,
       "ecosystem/web/app.js": 48,
@@ -909235,7 +909510,7 @@
       "ecosystem/web/oracle-chart.js": 3,
       "ecosystem/web/vendor/LICENSE": 1,
       "ecosystem/wiki.py": 3,
-      "ecosystem/zec_forward.py": 28,
+      "ecosystem/zec_forward.py": 31,
       "executor/README.md": 4,
       "executor/src/executor/authority.py": 2,
       "executor/src/executor/cli.py": 4,
@@ -910535,8 +910810,8 @@
       "docs/SECURITY.md": 1,
       "docs/SIGNAL-DESK.md": 2,
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 62,
       "docs/archive/memory-2026-11-10.md": 62,
       "docs/backtester-history-handoff.md": 7,
@@ -910612,7 +910887,7 @@
       "liquidity/tests/test_safe_exit.py": 5,
       "liquidity/tests/test_submission_audit.py": 36,
       "llms-sitemap.txt": 11,
-      "memory.md": 26,
+      "memory.md": 27,
       "oracle/README.md": 2,
       "oracle/feeds.py": 2,
       "oracle/tests/test_cli.py": 2,
@@ -910827,7 +911102,7 @@
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 2,
       "market-graph-geometry-prompt.md": 5,
-      "memory.md": 8,
+      "memory.md": 9,
       "mongo/README.md": 2,
       "mongo/load.py": 2,
       "mongo/schema.py": 5,
@@ -913619,7 +913894,7 @@
       "liquidity/tests/test_cdo_recovery.py": 3,
       "liquidity/tests/test_safe_exit.py": 4,
       "liquidity/tests/test_submission_audit.py": 7,
-      "memory.md": 5,
+      "memory.md": 4,
       "oracle/quotes.py": 1,
       "oracle/tests/test_quotes.py": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -916508,7 +916783,7 @@
       "llms-small.txt": 1,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 58,
+      "memory.md": 59,
       "mongo/load.py": 1,
       "mongo/queries/05-backtests.js": 1,
       "oracle/README.md": 1,
@@ -918566,7 +918841,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 10,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 79,
       "docs/archive/memory-2026-11-10.md": 55,
       "docs/backtester-history-handoff.md": 8,
@@ -919875,6 +920150,7 @@
       "docs/MCP.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 245,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/backtester-history-handoff.md": 1,
@@ -919998,6 +920274,7 @@
       "docs/design/chrome-workspace/proposal.md": 1,
       "docs/worktree-consolidation-2026-11-10.md": 2,
       "ecosystem/tests/test_recovery.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 9,
       "executor/tests/test_engine_integrity.py": 2,
       "extension/src/core/control-room.js": 1,
       "extension/test/control-room.test.js": 1,
@@ -920101,6 +920378,7 @@
       "docs/bot-manager-0.6-operations.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "ecosystem/telemetry.py": 1,
+      "ecosystem/zec_forward.py": 1,
       "llms-sitemap.txt": 1,
       "research/LEVERAGE-TIERS.md": 1,
       "research/tradingview-card-coverage.json": 11,
@@ -920158,6 +920436,9 @@
       "soltui/tests/test_top5.py": 2,
       "soltui/tests/test_wallet.py": 1,
       "soltui/top5.py": 1
+    },
+    "recoverwaiting": {
+      "memory.md": 2
     },
     "recovery": {
       ".cdo/remaining-2026-11-10.json": 9,
@@ -920227,7 +920508,8 @@
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 22,
       "docs/archive/memory-2026-11-10.md": 48,
       "docs/backtester-history-handoff.md": 8,
@@ -920300,9 +920582,9 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 9,
       "llms-small.txt": 1,
-      "memory.md": 23,
+      "memory.md": 34,
       "oracle/README.md": 1,
-      "prompts.md": 4,
+      "prompts.md": 6,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -928998,6 +929280,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mykmv8br_linear_regression_oscillator_chartprime.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_vt3jbshj_cointegration_heatmap_spread_table_edgeterminal.md": 1,
       "backtester/strategy_cards/ou_half_life_sizing.md": 1,
+      "memory.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/STRATEGIES.md": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 3,
@@ -929324,7 +929607,7 @@
       "liquidity/tests/test_engine_audit.py": 2,
       "liquidity/tests/test_executor_audit.py": 2,
       "llms-sitemap.txt": 9,
-      "memory.md": 2,
+      "memory.md": 4,
       "mongo/tests/test_analysis_regressions.py": 2,
       "mongo/tests/test_load_audit.py": 2,
       "prompts.md": 1,
@@ -933562,7 +933845,7 @@
       "docs/bot-manager-milestone-2.md": 1,
       "docs/design/bot-control-room/DESIGN.md": 1,
       "extension/tools/control-room-e2e.mjs": 1,
-      "memory.md": 2,
+      "memory.md": 4,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/five-minute-perps-suite/run-report.md": 1,
@@ -933703,7 +933986,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 28,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 55,
+      "memory.md": 57,
       "prompts.md": 20,
       "research/5minleveragestrategies.json": 1,
       "research/CANDLE-GAP-AUDIT.md": 2,
@@ -934297,6 +934580,9 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/DEVELOPMENT.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
     },
+    "remains03": {
+      "memory.md": 1
+    },
     "remains1142": {
       "docs/archive/memory-2026-11-08.md": 1
     },
@@ -934316,6 +934602,9 @@
       "docs/archive/memory-2026-11-08.md": 1
     },
     "remainsdraft": {
+      "memory.md": 1
+    },
+    "remainsfixed": {
       "memory.md": 1
     },
     "remainsincompatible": {
@@ -934993,7 +935282,7 @@
       "liquidity/src/aero_lp/recovery.py": 2,
       "liquidity/tests/test_cdo_recovery.py": 6,
       "liquidity/tests/test_metrics.py": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "prompts.md": 1,
       "research/TOP_COINS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -938101,7 +938390,7 @@
       "docs/oracle-optimized-prompt.md": 1,
       "executor/src/executor/rpc.py": 2,
       "index/make_files_doc.py": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "prompts.md": 2,
       "research/RANKED_LISTS.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -942082,7 +942371,7 @@
       "liquidity/tests/test_providers.py": 14,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 12,
+      "memory.md": 13,
       "oracle/feeds.py": 7,
       "oracle/quotes.py": 42,
       "oracle/server.py": 5,
@@ -942094,7 +942383,7 @@
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "postman/mocks/botmanager-jupiter-swap-v1/default.js": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
-      "prompts.md": 42,
+      "prompts.md": 43,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -943550,7 +943839,8 @@
       "docs/archive/memory-2026-11-10.md": 1
     },
     "requiredci": {
-      "docs/archive/memory-2026-11-08.md": 1
+      "docs/archive/memory-2026-11-08.md": 1,
+      "memory.md": 1
     },
     "requiredfinaldocsgatependingafterallrecordedits": {
       "memory.md": 1
@@ -944709,7 +944999,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 3,
+      "memory.md": 5,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "mongo/schema.py": 1,
@@ -944999,7 +945289,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 10,
+      "memory.md": 11,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/results/grid_review_20261107.json": 2,
@@ -949439,7 +949729,7 @@
       "liquidity/README.md": 2,
       "liquidity/src/aero_lp/ledger.py": 1,
       "liquidity/tests/test_submission_audit.py": 2,
-      "memory.md": 8,
+      "memory.md": 9,
       "mongo/schema.py": 1,
       "oracle/README.md": 1,
       "oracle/tests/test_core.py": 1,
@@ -949510,7 +949800,7 @@
       "extension/test/service-worker.test.js": 3,
       "extension/tools/bot-manager-e2e.mjs": 4,
       "liquidity/tests/test_submission_audit.py": 13,
-      "memory.md": 1,
+      "memory.md": 2,
       "oracle/tests/test_feeds.py": 2,
       "research/tradingview-card-coverage.json": 1,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
@@ -952219,7 +952509,7 @@
       "liquidity/scripts/aero-lp-service": 4,
       "liquidity/src/aero_lp/safe_exit.py": 2,
       "llms/aero-lp-explained-2026-11-06.md": 3,
-      "memory.md": 7,
+      "memory.md": 9,
       "prompts.md": 12,
       "research/run_backfill.sh": 1,
       "research/strategy_config_sweep.py": 1,
@@ -956874,7 +957164,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 8,
       "docs/TRADINGVIEW-REFERENCE.md": 51,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 4,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 18,
       "docs/archive/memory-2026-11-10.md": 4,
       "docs/backtester-history-handoff.md": 1,
@@ -960402,7 +960692,7 @@
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 18,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
       "docs/archive/memory-2026-11-08.md": 70,
       "docs/archive/memory-2026-11-10.md": 90,
       "docs/backtester-history-handoff.md": 3,
@@ -960459,13 +960749,13 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-review.txt": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "ecosystem/swaps.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web/app.js": 1,
       "ecosystem/web/index.html": 2,
       "ecosystem/web/styles.css": 7,
       "ecosystem/web/swap.html": 1,
       "ecosystem/web/swap.js": 1,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 4,
       "extension/README.md": 5,
       "extension/e2e/lib/dashboard-workspace.mjs": 2,
       "extension/e2e/lib/signal-desk.mjs": 1,
@@ -960492,7 +960782,7 @@
       "index/make_files_doc.py": 3,
       "liquidity/README.md": 1,
       "llms-sitemap.txt": 16,
-      "memory.md": 58,
+      "memory.md": 59,
       "oracle/engine.py": 1,
       "oracle/tests/test_core.py": 1,
       "prompts.md": 9,
@@ -961350,6 +961640,7 @@
       "docs/MCP.md": 2,
       "docs/SIGNAL-DESK.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 14,
       "docs/archive/memory-2026-11-10.md": 18,
       "docs/bot-manager-0.6-operations.md": 2,
@@ -961385,7 +961676,7 @@
       "extension/src/ui/soltui-panel.js": 1,
       "extension/tools/e2e.mjs": 1,
       "llms-full.txt": 1,
-      "memory.md": 13,
+      "memory.md": 14,
       "oracle/README.md": 1,
       "prompts.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -967860,7 +968151,7 @@
       "ecosystem/tests/test_runner.py": 17,
       "ecosystem/tests/test_setup.py": 5,
       "ecosystem/tests/test_telemetry.py": 9,
-      "ecosystem/tests/test_zec_forward.py": 6,
+      "ecosystem/tests/test_zec_forward.py": 7,
       "ecosystem/web/styles.css": 1,
       "ecosystem/web/swap.html": 1,
       "ecosystem/wiki.py": 10,
@@ -967910,7 +968201,7 @@
       "liquidity/tests/test_submission_audit.py": 4,
       "llms-full.txt": 1,
       "llms-sitemap.txt": 10,
-      "memory.md": 24,
+      "memory.md": 25,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_analysis_regressions.py": 12,
       "mongo/tests/test_load_audit.py": 8,
@@ -970012,7 +970303,7 @@
       "ecosystem/tests/test_telemetry.py": 4,
       "ecosystem/tests/test_votes.py": 4,
       "ecosystem/tests/test_wiki.py": 6,
-      "ecosystem/tests/test_zec_forward.py": 15,
+      "ecosystem/tests/test_zec_forward.py": 26,
       "ecosystem/votes.py": 35,
       "ecosystem/web/app.js": 44,
       "ecosystem/web/index.html": 3,
@@ -970020,7 +970311,7 @@
       "ecosystem/web/styles.css": 12,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 2,
       "ecosystem/wiki.py": 26,
-      "ecosystem/zec_forward.py": 97,
+      "ecosystem/zec_forward.py": 104,
       "executor/src/executor/authority.py": 24,
       "executor/src/executor/gates.py": 13,
       "executor/tests/test_optimizer_regressions.py": 2,
@@ -970076,7 +970367,7 @@
       "liquidity/tests/test_providers_network.py": 12,
       "liquidity/tests/test_safe_exit.py": 1,
       "liquidity/tests/test_submission_audit.py": 5,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/README.md": 4,
       "mongo/load.py": 59,
       "mongo/queries/03-signals-and-indicators.js": 1,
@@ -972960,7 +973251,7 @@
       "liquidity/CLAUDE.md": 1,
       "liquidity/pyproject.toml": 3,
       "liquidity/uv.lock": 21,
-      "memory.md": 24,
+      "memory.md": 25,
       "oracle/README.md": 1,
       "prompts.md": 1
     },
@@ -975104,7 +975395,7 @@
       "llms-sitemap.txt": 18,
       "llms-small.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 40,
+      "memory.md": 41,
       "mongo/README.md": 11,
       "mongo/load.py": 59,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -977224,7 +977515,8 @@
       "docs/TESTING.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 35,
       "docs/archive/memory-2026-11-10.md": 25,
       "docs/backtester-history-handoff.md": 1,
@@ -977281,11 +977573,12 @@
       "ecosystem/tests/test_telemetry.py": 1,
       "ecosystem/tests/test_ui_service.py": 18,
       "ecosystem/tests/test_web.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/ui_service.py": 7,
       "ecosystem/web.py": 2,
       "ecosystem/web/app.js": 35,
       "ecosystem/web/styles.css": 2,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "executor/README.md": 1,
       "executor/src/executor/manager.py": 2,
       "executor/src/executor/registry.py": 7,
@@ -978268,7 +978561,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 2,
       "llms-small.txt": 2,
-      "memory.md": 19,
+      "memory.md": 18,
       "oracle/README.md": 1,
       "pagesource": 6,
       "prompts.md": 7,
@@ -978523,6 +978816,9 @@
       "docs/FILES.md": 1
     },
     "runtimeadoption": {
+      "memory.md": 1
+    },
+    "runtimeagent": {
       "memory.md": 1
     },
     "runtimechanges": {
@@ -982218,6 +982514,9 @@
     },
     "samefile": {
       "research/cross_asset_cpcv.py": 2
+    },
+    "samehome": {
+      "memory.md": 1
     },
     "sameorigin": {
       "docs/TRADINGVIEW-REFERENCE.md": 4
@@ -989362,6 +989661,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_an7yrdfo_priceformat.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_bzo4yadb_per_bak_self_organized_criticality.md": 2,
       "backtester/strategy_cards/incomplete/tv_toatqabg_diluted_earnings_per_share_signal_astrideunicorn.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/archive/memory-2026-11-10.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -1000062,7 +1000362,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 3,
       "ecosystem/control.py": 1,
       "ecosystem/observability.py": 1,
-      "ecosystem/tests/test_zec_forward.py": 12,
+      "ecosystem/tests/test_zec_forward.py": 13,
       "ecosystem/zec_forward.py": 20,
       "executor/src/executor/txverify.py": 11,
       "executor/tests/conftest.py": 6,
@@ -1001275,7 +1001575,7 @@
       "docs/FILES.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 5,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/backtester-history-handoff.md": 1,
       "docs/dso-skill/references/passes.md": 1,
@@ -1002248,6 +1002548,7 @@
       "ecosystem/tests/test_recovery.py": 1,
       "ecosystem/tests/test_registration.py": 5,
       "ecosystem/tests/test_votes.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/votes.py": 5,
       "ecosystem/web/app.js": 4,
       "ecosystem/web/index.html": 26,
@@ -1003574,7 +1003875,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 88,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
       "docs/ZEC-ENSEMBLE-STUDY.md": 6,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 5,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 6,
       "docs/archive/memory-2026-11-08.md": 10,
       "docs/archive/memory-2026-11-10.md": 15,
       "docs/backtester-history-handoff.md": 1,
@@ -1003631,7 +1003932,7 @@
       "liquidity/src/aero_lp/strategy.py": 4,
       "llms-sitemap.txt": 2,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 11,
+      "memory.md": 14,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
       "mongo/tests/test_load_audit.py": 2,
@@ -1006719,7 +1007020,7 @@
       "docs/TESTING.md": 8,
       "docs/TRADINGVIEW-CARD-READINESS.md": 12,
       "docs/TRADINGVIEW-REFERENCE.md": 21,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 6,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 7,
       "docs/archive/memory-2026-11-08.md": 38,
       "docs/archive/memory-2026-11-10.md": 45,
       "docs/backtester-history-handoff.md": 10,
@@ -1008219,7 +1008520,7 @@
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 13,
       "docs/archive/memory-2026-11-10.md": 15,
       "docs/backtester-history-handoff.md": 3,
@@ -1012949,6 +1013250,7 @@
       "ecosystem/tests/test_ui_contract.py": 7,
       "ecosystem/tests/test_ui_service.py": 2,
       "ecosystem/tests/test_votes.py": 6,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/ui_service.py": 1,
       "ecosystem/votes.py": 4,
       "ecosystem/web.py": 4,
@@ -1017876,7 +1018178,7 @@
       "extension/vendor/lightweight-charts/README.md": 3,
       "liquidity/src/aero_lp/gates.py": 1,
       "liquidity/uv.lock": 1178,
-      "memory.md": 4,
+      "memory.md": 5,
       "mongo/README.md": 2,
       "mongo/load.py": 11,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -1018988,7 +1019290,7 @@
       "liquidity/tests/test_metrics.py": 1,
       "liquidity/tests/test_providers.py": 2,
       "llms-sitemap.txt": 2,
-      "memory.md": 18,
+      "memory.md": 19,
       "mongo/load.py": 1,
       "oracle/README.md": 3,
       "oracle/cli.py": 1,
@@ -1047941,6 +1048243,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-original.txt": 2,
       "ecosystem/web/vendor/LICENSE": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
+      "memory.md": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/tradingview-card-coverage.json": 32,
@@ -1048170,7 +1048473,7 @@
       "llms-sitemap.txt": 8,
       "llms-small.txt": 8,
       "llms.txt": 7,
-      "memory.md": 54,
+      "memory.md": 56,
       "mongo/README.md": 4,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -1051598,6 +1051901,9 @@
       "memory.md": 1
     },
     "sourcefprce49b1536f642e4795337176122a892ac0d75a0aea8a9a1566099fe608cc8726": {
+      "memory.md": 1
+    },
+    "sourcegap": {
       "memory.md": 1
     },
     "sourcegraphic": {
@@ -1066767,7 +1067073,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 22,
       "docs/archive/memory-2026-11-10.md": 37,
       "docs/backtester-history-handoff.md": 1,
@@ -1066819,9 +1067125,9 @@
       "ecosystem/tests/test_ui_contract.py": 1,
       "ecosystem/tests/test_ui_service.py": 1,
       "ecosystem/tests/test_votes.py": 5,
-      "ecosystem/tests/test_zec_forward.py": 4,
+      "ecosystem/tests/test_zec_forward.py": 5,
       "ecosystem/web/app.js": 7,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 3,
       "executor/src/executor/manager.py": 1,
       "executor/tests/test_authority.py": 2,
       "executor/tests/test_engine.py": 2,
@@ -1067039,8 +1067345,10 @@
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
       "docs/short-horizon-leverage-concept-family.md": 2,
+      "ecosystem/zec_forward.py": 1,
       "index/README.md": 1,
       "index/build.py": 3,
+      "memory.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "research/decide.py": 5,
       "research/strategy_experiment/audit_integrity.json": 1,
@@ -1069211,14 +1069519,14 @@
       "ecosystem/tests/test_ui_service.py": 7,
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wrapper.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 5,
+      "ecosystem/tests/test_zec_forward.py": 6,
       "ecosystem/ui_service.py": 6,
       "ecosystem/web.py": 1,
       "ecosystem/web/app.js": 13,
       "ecosystem/web/index.html": 6,
       "ecosystem/web/styles.css": 16,
       "ecosystem/wiki.py": 3,
-      "ecosystem/zec_forward.py": 7,
+      "ecosystem/zec_forward.py": 8,
       "executor/src/executor/gates.py": 3,
       "executor/tests/test_optimizer_regressions.py": 1,
       "executor/tests/test_surfaces.py": 1,
@@ -1071122,8 +1071430,8 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 55,
       "docs/TRADINGVIEW-REFERENCE.md": 53,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 4,
       "docs/archive/memory-2026-11-08.md": 23,
       "docs/archive/memory-2026-11-10.md": 77,
       "docs/backtester-history-handoff.md": 3,
@@ -1071205,7 +1071513,7 @@
       "ecosystem/tests/test_ui_contract.py": 21,
       "ecosystem/tests/test_web.py": 3,
       "ecosystem/tests/test_wiki.py": 3,
-      "ecosystem/tests/test_zec_forward.py": 5,
+      "ecosystem/tests/test_zec_forward.py": 6,
       "ecosystem/web.py": 2,
       "ecosystem/web/app.js": 310,
       "ecosystem/web/index.html": 7,
@@ -1071335,7 +1071643,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 2,
       "llms-sitemap.txt": 7,
-      "memory.md": 31,
+      "memory.md": 38,
       "oracle/README.md": 1,
       "oracle/feeds.py": 1,
       "oracle/guidance.py": 1,
@@ -1076211,7 +1076519,7 @@
       "ecosystem/web/index.html": 7,
       "ecosystem/web/styles.css": 1,
       "ecosystem/web/swap.html": 1,
-      "ecosystem/zec_forward.py": 18,
+      "ecosystem/zec_forward.py": 19,
       "executor/CLAUDE.md": 1,
       "executor/src/executor/engine.py": 2,
       "executor/src/executor/jupiter_route.py": 2,
@@ -1079476,7 +1079784,7 @@
       "liquidity/src/aero_lp/safe_exit.py": 2,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "liquidity/tests/test_daemon.py": 1,
-      "memory.md": 16,
+      "memory.md": 18,
       "oracle/server.py": 1,
       "prompts.md": 6,
       "research/RATIO-ROTATION.md": 2,
@@ -1080435,6 +1080743,8 @@
       "docs/SECURITY.md": 1,
       "docs/SIGNAL-DESK.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 8,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/backtester-history-handoff.md": 3,
@@ -1086384,7 +1086694,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 5,
       "docs/TRADINGVIEW-REFERENCE.md": 71,
       "docs/ZEC-ENSEMBLE-STUDY.md": 11,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 7,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 8,
       "docs/archive/memory-2026-11-08.md": 4,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/codebase-overview.md": 1,
@@ -1086403,7 +1086713,7 @@
       "ecosystem/wiki.py": 1,
       "ecosystem/zec_forward.py": 24,
       "llms-sitemap.txt": 2,
-      "memory.md": 9,
+      "memory.md": 10,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/LEVERAGE-TIERS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
@@ -1090547,6 +1090857,7 @@
       "ecosystem/tests/test_votes.py": 1,
       "ecosystem/tests/test_web.py": 3,
       "ecosystem/tests/test_wiki.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "mongo/tests/test_analysis_regressions.py": 4,
       "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
@@ -1094498,6 +1094809,8 @@
       "docs/FILES.md": 4,
       "docs/LIVE-PREDICTION-SCORE.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 7,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 9,
       "docs/archive/memory-2026-11-10.md": 11,
       "docs/backtester-history-handoff.md": 1,
@@ -1094520,7 +1094833,9 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "ecosystem/cli.py": 1,
       "ecosystem/runner.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/web/app.js": 1,
+      "ecosystem/zec_forward.py": 1,
       "executor/README.md": 1,
       "executor/src/executor/gates.py": 1,
       "executor/tests/test_gate_integrity.py": 2,
@@ -1094548,6 +1094863,9 @@
       "soltui/wallet_activity.py": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/INSTALLATION.md": 1
     },
+    "successfulempty": {
+      "memory.md": 1
+    },
     "successfully": {
       ".superpowers/sdd/remaining-2026-11-10/task-1-brief.md": 1,
       ".superpowers/sdd/remaining-2026-11-10/task-1-review.md": 2,
@@ -1094574,6 +1094892,9 @@
       "memory.md": 3,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/tradingview-card-coverage.json": 15
+    },
+    "successfulnone": {
+      "memory.md": 1
     },
     "succession": {
       "backtester/strategy_cards/incomplete/tv_43000583792_three_black_crows_bearish.md": 1,
@@ -1107456,7 +1107777,7 @@
       "liquidity/src/aero_lp/state.py": 4,
       "llms-sitemap.txt": 1,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/eth-ethereum.md": 2,
@@ -1107584,7 +1107905,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/archive/memory-2026-11-08.md": 6,
       "docs/archive/memory-2026-11-10.md": 5,
-      "memory.md": 4,
+      "memory.md": 5,
       "research/tradingview-card-coverage.json": 8,
       "research/tradingview-card-readiness.json": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 2
@@ -1107723,7 +1108044,7 @@
       "docs/archive/memory-2026-11-10.md": 4,
       "docs/design/bot-control-room/SKILLS.md": 1,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -1114602,7 +1114923,7 @@
       "ecosystem/tests/test_ui_contract.py": 1,
       "ecosystem/tests/test_ui_service.py": 1,
       "ecosystem/tests/test_web.py": 9,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/web.py": 30,
       "ecosystem/web/app.js": 14,
       "ecosystem/web/index.html": 1,
@@ -1115405,7 +1115726,7 @@
       "extension/test/service-worker.test.js": 2,
       "extension/test/venues.test.js": 2,
       "llms-sitemap.txt": 24,
-      "memory.md": 87,
+      "memory.md": 88,
       "oracle/server.py": 4,
       "prompts.md": 23,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -1118205,6 +1118526,7 @@
       "docs/TRADINGVIEW-CARD-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS-FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 3,
       "docs/archive/memory-2026-11-10.md": 10,
       "docs/bot-manager-handoff.md": 5,
@@ -1118219,6 +1118541,7 @@
       "ecosystem/runner.py": 3,
       "ecosystem/tests/test_setup.py": 3,
       "ecosystem/tests/test_wiki.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "ecosystem/zec_forward.py": 6,
       "executor/README.md": 1,
       "executor/tests/test_engine_integrity.py": 2,
@@ -1118578,8 +1118901,8 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 26,
-      "prompts.md": 3,
+      "memory.md": 28,
+      "prompts.md": 2,
       "research/COMPOUND-FRONTIER.md": 3,
       "research/CROSS-ASSET-TRANSFER.md": 4,
       "research/STRATEGIES.md": 1,
@@ -1131825,6 +1132148,12 @@
       "docs/FILES.md": 1,
       "liquidity/tests/test_daemon_audit.py": 2
     },
+    "test_successful_empty_poll_clears_only_transient_health_before_and_after_activation": {
+      "ecosystem/tests/test_zec_forward.py": 1
+    },
+    "test_successful_poll_never_clears_or_advances_review_blocks": {
+      "ecosystem/tests/test_zec_forward.py": 1
+    },
     "test_successful_rebalance_snapshots_replacement_reward_balance": {
       "liquidity/tests/test_daemon_audit.py": 2
     },
@@ -1136536,7 +1136865,7 @@
       "llms-sitemap.txt": 269,
       "llms-small.txt": 1,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 71,
+      "memory.md": 72,
       "mongo/README.md": 6,
       "mongo/load.py": 11,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -1139120,6 +1139449,9 @@
       "soltui/tests/test_status_roster.py": 1,
       "soltui/tests/test_strategy_history.py": 3,
       "soltui/tests/test_tui.py": 2
+    },
+    "thatcompletionreceiptbefore": {
+      "memory.md": 1
     },
     "thatguid": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -1144454,7 +1144786,7 @@
       "oracle/README.md": 2,
       "oracle/reader.py": 2,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
-      "prompts.md": 13,
+      "prompts.md": 15,
       "research/5minleveragestrategies.json": 3,
       "research/GRID-REVIEW.md": 3,
       "research/LEVERAGE-TIERS.md": 1,
@@ -1145197,7 +1145529,7 @@
       "ecosystem/api/control.openapi.json": 1,
       "ecosystem/telemetry.py": 2,
       "ecosystem/tests/test_telemetry.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 2,
+      "ecosystem/tests/test_zec_forward.py": 6,
       "ecosystem/web/app.js": 2,
       "ecosystem/web/index.html": 3,
       "ecosystem/web/oracle-chart.js": 27,
@@ -1156157,6 +1156489,9 @@
       "docs/profitable-crypto-strategies-analysis.md": 2,
       "research/profitable-crypto-strategies-analysis.md": 2
     },
+    "toload": {
+      "memory.md": 1
+    },
     "tolocalestring": {
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 3,
       "extension/src/ui/desk-model.js": 1,
@@ -1158230,7 +1158565,7 @@
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "mongo/schema.py": 1,
       "pagesource": 17,
-      "prompts.md": 22,
+      "prompts.md": 21,
       "research/5minleveragestrategies.json": 4,
       "research/COMPOUND-FRONTIER.md": 49,
       "research/CROSS-ASSET-TRANSFER.md": 6,
@@ -1168020,17 +1168355,21 @@
       "botmanager/tests/test_supervisor.py": 1,
       "docs/SCRIPTS.md": 1,
       "docs/SIGNAL-DESK.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/archive/memory-2026-11-08.md": 3,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/bot-manager-handoff.md": 1,
       "docs/bot-manager-milestone-2.md": 1,
       "docs/design/chrome-workspace/proposal.md": 1,
+      "ecosystem/tests/test_zec_forward.py": 1,
       "extension/src/bg/live-windows.js": 1,
       "extension/src/ui/charts.js": 1,
       "extension/src/ui/floating-owner.js": 1,
       "extension/src/ui/popup.js": 1,
       "extension/test/http-audit.test.js": 1,
       "extension/test/wallet-audit.test.js": 1,
+      "memory.md": 8,
+      "prompts.md": 2,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/minute_sweep.py": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -1168038,6 +1168377,9 @@
       "soltui/paper_experiments.py": 1,
       "soltui/tests/test_experiment_runner.py": 1,
       "soltui/tests/test_experiments.py": 1
+    },
+    "transienthealthrecovery": {
+      "memory.md": 1
     },
     "transit": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qakfjgfu_liquidity_levels_luxalgo.md": 1,
@@ -1168132,6 +1168474,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 7,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
       "docs/bot-manager-handoff.md": 1,
       "docs/bot-manager-milestone-2.md": 1,
       "docs/bot-manager-oracle-interface.md": 1,
@@ -1168573,6 +1168916,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 4,
       "ecosystem/README.md": 1,
+      "ecosystem/zec_forward.py": 2,
       "executor/src/executor/engine.py": 1,
       "executor/src/executor/errors.py": 1,
       "executor/src/executor/journal.py": 1,
@@ -1213753,6 +1214097,7 @@
       "docs/SIGNAL-DESK.md": 5,
       "docs/TRADINGVIEW-CARD-READINESS.md": 2,
       "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 6,
       "docs/archive/memory-2026-11-10.md": 37,
       "docs/backtester-history-handoff.md": 1,
@@ -1213824,7 +1214169,7 @@
       "ecosystem/tests/test_votes.py": 6,
       "ecosystem/tests/test_web.py": 3,
       "ecosystem/tests/test_wiki.py": 7,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 5,
       "ecosystem/ui_service.py": 17,
       "ecosystem/votes.py": 13,
       "ecosystem/web.py": 7,
@@ -1213835,7 +1214180,7 @@
       "ecosystem/web/swap.html": 4,
       "ecosystem/web/swap.js": 10,
       "ecosystem/wiki.py": 8,
-      "ecosystem/zec_forward.py": 7,
+      "ecosystem/zec_forward.py": 8,
       "executor/src/executor/manager.py": 7,
       "executor/tests/test_authority.py": 3,
       "extension/README.md": 2,
@@ -1213885,7 +1214230,7 @@
       "liquidity/tests/test_cdo_execution.py": 1,
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_metrics.py": 1,
-      "memory.md": 11,
+      "memory.md": 12,
       "mongo/queries/04-decisions.js": 1,
       "oracle/README.md": 7,
       "oracle/cli.py": 1,
@@ -1214513,6 +1214858,7 @@
       "docs/SCRIPTS.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 6,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 1,
       "docs/archive/memory-2026-11-08.md": 39,
       "docs/archive/memory-2026-11-10.md": 49,
       "docs/backtester-history-handoff.md": 2,
@@ -1214562,7 +1214908,7 @@
       "liquidity/tests/test_abi_config_wallet.py": 1,
       "liquidity/tests/test_chain_vol.py": 1,
       "liquidity/tests/test_daemon.py": 1,
-      "memory.md": 16,
+      "memory.md": 18,
       "oracle/README.md": 1,
       "oracle/cli.py": 1,
       "oracle/tests/test_selected_server.py": 1,
@@ -1223085,7 +1223431,7 @@
       "ecosystem/tests/test_swap_web.py": 1,
       "ecosystem/web/app.js": 4,
       "ecosystem/web/swap.html": 6,
-      "ecosystem/zec_forward.py": 3,
+      "ecosystem/zec_forward.py": 4,
       "executor/CLAUDE.md": 1,
       "executor/README.md": 2,
       "executor/src/executor/gates.py": 1,
@@ -1224686,7 +1225032,7 @@
       "ecosystem/tests/test_runner.py": 3,
       "ecosystem/tests/test_telemetry.py": 2,
       "ecosystem/tests/test_wiki.py": 2,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 3,
       "ecosystem/votes.py": 2,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 8,
       "ecosystem/zec_forward.py": 3,
@@ -1224734,7 +1225080,7 @@
       "liquidity/tests/test_market_state.py": 1,
       "liquidity/tests/test_providers.py": 4,
       "liquidity/tests/test_strategy.py": 1,
-      "memory.md": 15,
+      "memory.md": 16,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
       "oracle/engine.py": 5,
@@ -1232414,7 +1232760,7 @@
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms.txt": 2,
-      "memory.md": 73,
+      "memory.md": 75,
       "oracle/README.md": 25,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "prompts.md": 81,
@@ -1234320,7 +1234666,7 @@
       "extension/tools/e2e.mjs": 3,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 3,
       "index/build.py": 2,
-      "memory.md": 6,
+      "memory.md": 8,
       "mongo/load.py": 11,
       "mongo/queries/04-decisions.js": 2,
       "prompts.md": 2,
@@ -1236969,18 +1237315,19 @@
     },
     "v191": {
       "docs/archive/memory-2026-11-10.md": 1,
-      "prompts.md": 4
+      "prompts.md": 3
     },
     "v192": {
       "docs/archive/memory-2026-11-10.md": 1,
-      "prompts.md": 5
+      "prompts.md": 4
     },
     "v193": {
       "docs/archive/memory-2026-11-10.md": 1,
-      "prompts.md": 2
+      "prompts.md": 4
     },
     "v194": {
-      "docs/archive/memory-2026-11-10.md": 1
+      "docs/archive/memory-2026-11-10.md": 1,
+      "prompts.md": 2
     },
     "v195": {
       "docs/archive/memory-2026-11-10.md": 1
@@ -1238226,18 +1238573,24 @@
       "memory.md": 3
     },
     "v406": {
-      "memory.md": 4
+      "memory.md": 3
     },
     "v407": {
-      "memory.md": 6
+      "memory.md": 4
     },
     "v408": {
-      "memory.md": 3
+      "memory.md": 4
+    },
+    "v409": {
+      "memory.md": 5
     },
     "v41": {
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/design/bot-control-room/screens/fleet-desktop.png": 2,
       "prompts.md": 1
+    },
+    "v410": {
+      "memory.md": 3
     },
     "v42": {
       "docs/archive/memory-2026-11-08.md": 2,
@@ -1250289,7 +1250642,7 @@
       "extension/tools/e2e.mjs": 1,
       "index/build.py": 1,
       "liquidity/tests/test_network.py": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/queries/07-documents-and-search.js": 1,
       "prompts.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -1251474,7 +1251827,8 @@
     "version0": {
       "docs/archive/memory-2026-11-10.md": 3,
       "docs/code-deep-optimizer-2026-11-08.md": 2,
-      "docs/code-optimizer-scope-2026-11-08.json": 1
+      "docs/code-optimizer-scope-2026-11-08.json": 1,
+      "memory.md": 1
     },
     "version1": {
       ".superpowers/sdd/remaining-2026-11-10/task-3-review.md": 2,
@@ -1260062,7 +1260416,7 @@
       "extension/test/prediction-recovery.test.js": 2,
       "extension/test/signal-desk.test.js": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/README.md": 4,
       "oracle/engine.py": 6,
       "oracle/server.py": 1,
@@ -1264404,7 +1264758,8 @@
       "docs/FILES.md": 2,
       "docs/SIGNAL-DESK.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 4,
-      "docs/ZEC-ENSEMBLE-STUDY.md": 2,
+      "docs/ZEC-ENSEMBLE-STUDY.md": 3,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-10.md": 5,
       "docs/bot-manager-handoff.md": 3,
       "docs/bot-manager-milestone-2.md": 1,
@@ -1264416,10 +1264771,10 @@
       "ecosystem/control.py": 3,
       "ecosystem/runner.py": 2,
       "ecosystem/telemetry.py": 3,
-      "ecosystem/tests/test_zec_forward.py": 1,
+      "ecosystem/tests/test_zec_forward.py": 2,
       "ecosystem/web/app.js": 3,
       "ecosystem/web/index.html": 13,
-      "ecosystem/zec_forward.py": 2,
+      "ecosystem/zec_forward.py": 4,
       "extension/src/core/commands.js": 1,
       "extension/src/ui/dashboard.html": 1,
       "extension/src/ui/live-panel.js": 1,
@@ -1264480,6 +1264835,9 @@
     },
     "waitingconfidence": {
       "docs/archive/memory-2026-11-10.md": 1
+    },
+    "waititsfinalci": {
+      "memory.md": 1
     },
     "waitpid": {
       ".superpowers/sdd/remaining-2026-11-10/task-1-report.md": 1,
@@ -1269440,6 +1269798,9 @@
     "warmupparityregressions": {
       "backtester/tests/test_research_regressions.py": 2,
       "docs/FILES.md": 1
+    },
+    "warmupprofit": {
+      "memory.md": 1
     },
     "warmups": {
       "backtester/tests/test_research_regressions.py": 2,
@@ -1274503,7 +1274864,7 @@
       "executor/pyproject.toml": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 2,
       "liquidity/pyproject.toml": 1,
-      "memory.md": 11,
+      "memory.md": 12,
       "research/tradingview-card-coverage.json": 5,
       "soltui/README.md": 1
     },
@@ -1276963,7 +1277324,7 @@
       "llms-full.txt": 6,
       "llms-sitemap.txt": 6,
       "llms-small.txt": 6,
-      "memory.md": 41,
+      "memory.md": 43,
       "prompts.md": 5,
       "research/coin-intelligence/hype-hyperliquid.md": 9,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 1,
@@ -1280493,7 +1280854,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 112,
       "docs/TRADINGVIEW-REFERENCE.md": 29,
       "docs/ZEC-ENSEMBLE-STUDY.md": 1,
-      "docs/ZEC-ENSEMBLES-FORWARD.md": 2,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 3,
       "docs/archive/memory-2026-11-08.md": 55,
       "docs/archive/memory-2026-11-10.md": 51,
       "docs/backtester-history-handoff.md": 5,
@@ -1280662,7 +1281023,7 @@
       "liquidity/tests/test_providers.py": 9,
       "liquidity/tests/test_safe_exit.py": 4,
       "liquidity/tests/test_submission_audit.py": 4,
-      "memory.md": 18,
+      "memory.md": 19,
       "mongo/README.md": 6,
       "mongo/load.py": 4,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -1282745,7 +1283106,7 @@
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/allocator.py": 2,
       "llms-sitemap.txt": 3,
-      "memory.md": 31,
+      "memory.md": 33,
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "prompts.md": 27,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -1283094,6 +1283455,7 @@
       "docs/SIGNAL-DESK.md": 3,
       "docs/TESTING.md": 7,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
+      "docs/ZEC-ENSEMBLES-FORWARD.md": 1,
       "docs/archive/memory-2026-11-08.md": 30,
       "docs/archive/memory-2026-11-10.md": 28,
       "docs/bot-manager-0.6-operations.md": 7,
@@ -1283184,7 +1283546,7 @@
       "extension/vendor/lightweight-charts/README.md": 1,
       "index/make_files_doc.py": 1,
       "llms-sitemap.txt": 3,
-      "memory.md": 16,
+      "memory.md": 17,
       "oracle/server.py": 1,
       "prompts.md": 3,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -1284876,7 +1285238,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 6,
       "docs/worktree-consolidation-2026-11-10.md": 13,
       "llms-sitemap.txt": 1,
-      "memory.md": 47,
+      "memory.md": 49,
       "prompts.md": 9,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
       "research/full_suite.py": 1,
@@ -1286551,7 +1286913,7 @@
       "ecosystem/tests/test_telemetry.py": 2,
       "ecosystem/tests/test_ui_service.py": 1,
       "ecosystem/tests/test_wiki.py": 8,
-      "ecosystem/tests/test_zec_forward.py": 4,
+      "ecosystem/tests/test_zec_forward.py": 6,
       "ecosystem/web.py": 1,
       "ecosystem/zec_forward.py": 11,
       "executor/CLAUDE.md": 1,
@@ -1286632,7 +1286994,7 @@
       "liquidity/tests/test_gates.py": 5,
       "liquidity/tests/test_providers.py": 1,
       "liquidity/tests/test_safe_exit.py": 3,
-      "memory.md": 3,
+      "memory.md": 5,
       "mongo/README.md": 4,
       "mongo/load.py": 2,
       "mongo/queries/07-documents-and-search.js": 3,
@@ -1287152,6 +1287514,9 @@
       "extension/tools/bot-manager-e2e.mjs": 3,
       "extension/tools/control-room-e2e.mjs": 6,
       "scripts/rotate-workflow-logs.mjs": 2
+    },
+    "writefinalexternalcompletion": {
+      "memory.md": 1
     },
     "writehead": {
       "extension/test/cdo-regressions.test.js": 1,
@@ -1306860,9 +1307225,9 @@
       "index/build.py": 2,
       "index/make_files_doc.py": 2,
       "llms-sitemap.txt": 4,
-      "memory.md": 25,
+      "memory.md": 29,
       "pagesource": 1,
-      "prompts.md": 8,
+      "prompts.md": 9,
       "research/CANDLE-GAP-AUDIT.md": 6,
       "research/CROSS-ASSET-TRANSFER.md": 25,
       "research/RANKED_LISTS.md": 1,
@@ -1306976,6 +1307341,9 @@
     },
     "zecforwardtests": {
       "ecosystem/tests/test_zec_forward.py": 2
+    },
+    "zecowner": {
+      "memory.md": 1
     },
     "zect": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -1314167,10 +1314535,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1647.5,
+    "avgDocLength": 1647.7,
     "documents": 3086,
-    "terms": 108332,
-    "termsBeforePrune": 108389,
-    "totalTokens": 5084056
+    "terms": 108414,
+    "termsBeforePrune": 108471,
+    "totalTokens": 5084878
   }
 }

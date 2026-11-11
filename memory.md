@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 408
+Version: 410
+Delta: v409 to v410; record deployed transient-health recovery correction and preserved paper state.
+Delta: v408 to v409; resume a proven post-merge transient feed health recovery defect while preserving frozen ZEC paper state.
 Delta: v407 to v408; reconcile concurrent PR204 geometry research records while preserving the accepted ZEC study and runtime.
 Delta: v406 to v407; record independent installed acceptance and final delivery checkpoint.
 Delta: v405 to v406; record paper deployment, honest first-bar waiting and final installed acceptance gate.
@@ -675,3 +677,25 @@ Stele stage writes queued in outbox: dbd061cf, 130ff2b6. Final task close writes
 ## v408 — 2026-11-10 — concurrent documentation integrated
 
 PR204 added market graph geometry research instructions and workflow records while the ZEC task ran. Its prompt artifact and all continuation/request text are preserved. This merge changes no ZEC policy, source dataset, ranking or installed runtime. Generated retrieval indexes are rebuilt from the combined source. TASK-1276 remains a separate research task; do not close or repurpose it. Final delivery still uses the external completion receipt named in v407.
+
+
+## v409 — 2026-11-10 — final live gate found transient health latch
+
+PR205 merged as dab94a2d84bf0fab1cc3bfb46dfa28862a8f46d6 after all requiredCI passed. Primary master synchronized and145untrackedfiles were byte-preserved. The original task worktree/branch is removed. The original implementation and full historical study remain accepted; do not rerun or change its selection.
+
+A final live status read found alltenaccounts blocked/feed_unavailable after a transient request error. The daemon heartbeat remained fresh and no prospective decisions or fills existed. Direct fetch_closed and raw HTTP200 proved the provider currently healthy; no new hourly candle was expected yet. The successfulNone branch copied its previous blocked status. Fixonly transient feed/staleness recovery on fresh successfulempty polls; preserve sourcegap/manualreviewblocks and every account/candle/config/activation/checkpoint. The issue knowledge write is queued as outbox b1be2abc.
+
+The correction worktree is `/Users/mitch/dev/solmargintrader-wt-zec-recovery-20261110`, branch `codex/zec-feed-recovery-20261110`. Runtimeagent owns narrowcode/regressions/version0.4.4, root ownsdocs/records/index/wiki/delivery. Deployment requires pausingonlythe ZECowner, exactoldimplementationbinding and consistentledgerbackup, guardedreviewedhealth-onlyimplementationmetadataadoption, and samehome/selection/activation restart. Independentverifier must prove no financial/candle/forecaststatechanged. A coherent ecosystem0.4.4 update requires gracefulmanagedsuiteversionrefresh; preserve stopped/disarmedpreviousowner, accepting only its monotonicrecoveryfence8->9. Original firstdecisionclose03:00UTC remainsfixed.
+
+Remaining: implement/regress transienthealthrecovery, freezepackageddocs/wiki, deployandindependentlyverify originaltenaccounts recoverwaiting, localchecksandfollowupPR/CI/merge, synchronize/cleanup, write finalexternalcompletionreceipt. No liveorders are part of this work.
+
+
+## v410 — 2026-11-10 — recovery correction deployed
+
+Ecosystem0.4.4 fixes only transient fresh-empty-poll recovery and protects permanent source-gap/missed-bar review blocks. Two new state-preservation regressions pass; full ecosystem192tests, focused21runtime/votes tests, Ruff and generatedwiki checks pass. No backtester/strategy/selection/data/economics code changed. The accepted1,652-run study and ten frozen rankings remain unchanged.
+
+The originalZECLaunchAgent was stopped for a consistentbackup and exactold/newimplementationguard. Only one metadataimplementationbinding row changed; its diff is solely the reviewed worker health module hash. All account contracts, originalactivation, state/checkpoints, candles and forecasts remained byte-identical during migration. The same ten accounts now recoverwaiting on actualsuccessfulNone polls without a new candle or decision. Bothstable environments contain0.4.4 and passpipcheck. The final wheel SHA256 is4aca10d64ae85a3719966bdc20d1e11e29b835294dfd0d32d4492d6437d888f5. Backups, guardedmigration helper and deployment receipts are under `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/recovery-0.4.4`.
+
+The managedsuite restarted gracefully toload its coherentversion. Its oldstopped/disarmedpaper draft changedonlycanonicalgeneration/owner fence8->9; financial/configuration/evidence state is unchanged. NewUIobservedat http://127.0.0.1:55473/#oracle. Independentcorrectionacceptance verifies this exactbuild andpreservation in `independent-recovery-acceptance.json`; that finalgate must pass beforemerging. The originalfirstprospectivehourlydecision remains03:00UTC, no warmupprofit/forecastcredit.
+
+Remaining atthischeckpoint: finishindependentcorrectionacceptance, source/index/docchecks, commit/pushfollowupPR, waititsfinalCI, merge,sync/cleantaskworktree, and writefinalexternalcompletion-receipt.json. Consult thatcompletionreceiptbefore repeating work. Preserve allotheruntrackedpaths and lockedworktree.

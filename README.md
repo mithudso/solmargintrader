@@ -40,7 +40,7 @@ and [forward owner and recovery](docs/ZEC-ENSEMBLES-FORWARD.md).
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
-ecosystem 0.4.3, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
+ecosystem 0.4.4, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
 and extension source 0.6.5. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`

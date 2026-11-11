@@ -129,11 +129,64 @@ class ZecForwardTests(unittest.TestCase):
         self.assertEqual(row["status"], "blocked")
         self.assertEqual(row["reason"], "forward_source_gap")
         self.assertFalse(row["available"])
+        self.home = self.root / "outage"
+        self.initialize()
+        self.next(self.now, self.now + 61)
         report = self.next(self.now + 60, self.now + 600)
         row = report["accounts"][0]
         self.assertEqual(row["reason"], "missed_forward_bars_review_required")
         self.assertEqual(row["decisions"], 0)
         self.assertEqual(row["costs_paid"]["fees_paid"], 0)
+
+    def accounting_identity(self):
+        with z.connection(self.home) as db:
+            return {
+                "candidates": [list(row) for row in db.execute("SELECT id,rank,interval,config,activation,seed,state,last_ts FROM candidates ORDER BY rank")],
+                "forecasts": [list(row) for row in db.execute("SELECT * FROM forecasts ORDER BY id,bar")],
+                "candles": [list(row) for row in db.execute("SELECT * FROM candles ORDER BY interval,bar")],
+            }
+
+    def test_successful_empty_poll_clears_only_transient_health_before_and_after_activation(self):
+        def unavailable(*_):
+            raise OSError("temporary fixture failure")
+        self.initialize()
+        baseline = self.accounting_identity()
+        failed = z.tick(self.home, now=self.now + 1, fetcher=unavailable)
+        self.assertEqual(failed["accounts"][0]["reason"], "feed_unavailable")
+        recovered = z.tick(self.home, now=self.now + 2, fetcher=lambda *_: None)
+        self.assertEqual(recovered["accounts"][0]["status"], "waiting")
+        self.assertEqual(recovered["accounts"][0]["reason"], "first_post_start_closed_bar")
+        self.assertFalse(recovered["accounts"][0]["available"])
+        self.assertEqual(self.accounting_identity(), baseline)
+        self.next(self.now, self.now + 61)
+        self.next(self.now + 60, self.now + 121)
+        baseline = self.accounting_identity()
+        for reason in ("feed_unavailable", "closed_candle_stale"):
+            with self.subTest(reason=reason):
+                with z.connection(self.home, write=True) as db:
+                    db.execute("UPDATE candidates SET status='blocked',reason=?", (reason,))
+                recovered = z.tick(self.home, now=self.now + 122, fetcher=lambda *_: None)
+                row = recovered["accounts"][0]
+                self.assertEqual(row["status"], "running")
+                self.assertIsNone(row["reason"])
+                self.assertTrue(row["available"])
+                self.assertEqual(row["target"], 1)
+                self.assertEqual(self.accounting_identity(), baseline)
+
+    def test_successful_poll_never_clears_or_advances_review_blocks(self):
+        self.initialize()
+        self.next(self.now, self.now + 61)
+        baseline = self.accounting_identity()
+        for reason in ("forward_source_gap", "missed_forward_bars_review_required"):
+            with self.subTest(reason=reason):
+                with z.connection(self.home, write=True) as db:
+                    db.execute("UPDATE candidates SET status='blocked',reason=?", (reason,))
+                recovered = z.tick(self.home, now=self.now + 62, fetcher=lambda *_: None)
+                self.assertEqual(recovered["accounts"][0]["reason"], reason)
+                self.assertEqual(recovered["accounts"][0]["status"], "blocked")
+                self.assertEqual(self.accounting_identity(), baseline)
+                self.next(self.now + 60, self.now + 121)
+                self.assertEqual(self.accounting_identity(), baseline)
 
     def test_configuration_and_seed_hash_are_bound(self):
         self.value["selected"][0]["config"]["persistence"] = 2

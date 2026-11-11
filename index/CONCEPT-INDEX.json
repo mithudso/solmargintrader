@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T01:59:49+00:00",
+  "generatedAt": "2026-11-11T02:17:00+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -491,6 +491,10 @@
           "hits": 39
         },
         {
+          "path": "memory.md",
+          "hits": 37
+        },
+        {
           "path": "research/tradingview-card-readiness.json",
           "hits": 36
         },
@@ -500,10 +504,6 @@
         },
         {
           "path": "research/coin-intelligence/README.md",
-          "hits": 33
-        },
-        {
-          "path": "memory.md",
           "hits": 33
         },
         {
@@ -539,16 +539,16 @@
           "hits": 22
         },
         {
+          "path": "prompts.md",
+          "hits": 21
+        },
+        {
           "path": "research/coin-intelligence/trx-tron.md",
           "hits": 21
         },
         {
           "path": "docs/COMPOUND-5M.md",
           "hits": 21
-        },
-        {
-          "path": "prompts.md",
-          "hits": 20
         },
         {
           "path": "backtester/core/funding.py",
@@ -917,7 +917,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 73
+          "hits": 74
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -936,10 +936,6 @@
           "hits": 67
         },
         {
-          "path": "prompts.md",
-          "hits": 66
-        },
-        {
           "path": "research/5minleveragestrategies.json",
           "hits": 66
         },
@@ -950,6 +946,10 @@
         {
           "path": "skills/trading-and-investing/references/solana-dex-and-amm-landscape.md",
           "hits": 66
+        },
+        {
+          "path": "prompts.md",
+          "hits": 65
         },
         {
           "path": "soltui/commands.py",
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 363,
+      "matchingFiles": 364,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 310,
+      "matchingFiles": 311,
       "shown": 30,
       "files": [
         {

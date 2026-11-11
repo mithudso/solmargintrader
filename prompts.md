@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 193
+Version: 194
+Delta: v193 to v194; continue the captured ZEC request through a proven live transient-feed recovery fix.
 Delta: v192 to v193; preserve concurrent geometry and ZEC requests during integration.
 Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten paper forward and Oracle publication request.
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
