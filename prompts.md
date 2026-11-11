@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 203
+Version: 204
+Delta: v203 to v204; record conditional TradingView Volty alert setup request.
 Delta: v202 to v203; record Coinbase venue and 75 percent balance sizing.
 Delta: v201 to v202; record owner decision on signal qualification.
 Delta: v200 to v201; record maximum available qualified webhook trade request.
@@ -16,6 +17,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Validate and configure ZEC Volty TradingView alerts
+
+Use the chrome and computer use extensions to go to my tradingview account and set up webhook alerts for the zec volty expans strategy. But validate that it's a reasonable strategy as listed first.
 
 ## 2026-11-11 — Coinbase webhook sizing
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T10:51:01+00:00",
+  "generatedAt": "2026-11-11T11:16:24+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1498,
+      "matchingFiles": 1500,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1448,
+      "matchingFiles": 1449,
       "shown": 30,
       "files": [
         {
@@ -333,7 +333,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 56
+          "hits": 59
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -404,12 +404,12 @@
           "hits": 28
         },
         {
-          "path": "research/RATIO-ROTATION.md",
+          "path": "prompts.md",
           "hits": 27
         },
         {
-          "path": "prompts.md",
-          "hits": 25
+          "path": "research/RATIO-ROTATION.md",
+          "hits": 27
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 741,
+      "matchingFiles": 742,
       "shown": 30,
       "files": [
         {
@@ -909,7 +909,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 98
+          "hits": 99
         },
         {
           "path": "pagesource",
