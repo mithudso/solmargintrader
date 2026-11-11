@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 418
+Version: 419
+Delta: v418 to v419; record TradingView webhook execution investigation and open mapping.
 Delta: v417 to v418; fix CI schema parity and preserve frozen TradingView source card for PR209.
 Delta: v416 to v417; complete installed Volty study and supplied-dossier comparison; delivery pending.
 Delta: v415 to v416; start Volty ZEC stop-entry and walk-forward study.
@@ -19,6 +20,10 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — TradingView webhook signals
+
+Stele TASK-1286 tracks this request. Oracle 0.2.3 is a shadow service without order capability; executor registry swap provides a durable request_id and guarded dry-run/live path. TradingView may resend 5xx deliveries, so durable duplicate handling and ambiguous-submit recovery are required. The owner was asked for pair, venue, trade size and sell semantics. No webhook or execution code has been implemented or tested. Next: establish sender authentication and transport, explicit configured mapping and durable event identity; integrate only through executor rails, test recovery and deliver. Preserve dry-run defaults.
 
 ## 2026-11-10 — Commit all repository artifacts
 
