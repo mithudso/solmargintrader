@@ -43,6 +43,8 @@ DOC_DOCUMENTS = {
     "DEVELOPMENT.md",
     "INSTALLATION.md",
     "TESTING.md",
+    "ZEC-ENSEMBLE-STUDY.md",
+    "ZEC-ENSEMBLES-FORWARD.md",
     "codebase-overview.md",
     "integrations-and-assumptions.md",
     "known-issues.md",
@@ -84,7 +86,7 @@ def selected_source(source_path: str) -> bool:
         return True
     if path.parts[0] in {"oracle", "botmanager", "backtester"}:
         return True
-    if source_path == "ecosystem/README.md":
+    if source_path in {"ecosystem/README.md", "research/ZEC-ENSEMBLE-HYPOTHESES.md"}:
         return True
     if path.parts[0] != "docs":
         return False

@@ -22,7 +22,7 @@
 
   const byId = (id) => document.getElementById(id);
   const text = (id, value) => { byId(id).textContent = value; };
-  const directionName = (value) => value === 1 ? "Up" : value === -1 ? "Down" : value === 0 ? "Flat" : "No call";
+  const directionName = (value) => value === 1 ? (graphData?.aggregate_semantics === "target_exposure_not_probability" ? "Long" : "Up") : value === -1 ? "Down" : value === 0 ? "Flat" : "No call";
   const directionMark = (value) => value === 1 ? "↑" : value === -1 ? "↓" : value === 0 ? "·" : "";
   const formatBps = (value) => Number.isFinite(value) ? `${value > 0 ? "+" : ""}${value.toFixed(1)} bps` : "Unavailable";
 
@@ -114,10 +114,10 @@
     const aggregateBalance = document.createElement("td");
     const aggregateEligible = document.createElement("td");
     aggregateLabel.scope = "row";
-    aggregateLabel.textContent = "Full-catalog aggregate";
+    aggregateLabel.textContent = graphData?.aggregate_semantics === "target_exposure_not_probability" ? "Selected ensemble" : "Full-catalog aggregate";
     aggregateSignal.textContent = tick.aggregate?.signal || "Unavailable";
     aggregateBalance.textContent = Number.isFinite(tick.aggregate?.balance_percent)
-      ? `${tick.aggregate.balance_percent.toFixed(1)}% signed vote balance`
+      ? `${tick.aggregate.balance_percent.toFixed(1)}% ${graphData?.aggregate_semantics === "target_exposure_not_probability" ? "target exposure" : "signed vote balance"}`
       : "No vote balance";
     aggregateEligible.textContent = `${tick.aggregate?.included?.length || 0} included · ${tick.aggregate?.excluded?.length || 0} excluded`;
     aggregate.append(aggregateLabel, aggregateSignal, aggregateBalance, aggregateEligible);
@@ -161,7 +161,7 @@
       drawMarkers();
     });
     const name = document.createElement("span");
-    name.textContent = "Full-catalog aggregate";
+    name.textContent = graphData?.aggregate_semantics === "target_exposure_not_probability" ? "Selected ensemble" : "Full-catalog aggregate";
     aggregate.append(input, name);
     fragment.append(aggregate);
     container.replaceChildren(fragment);

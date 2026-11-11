@@ -1,6 +1,12 @@
 # Work continuation
 
-Version: 403
+Version: 408
+Delta: v407 to v408; reconcile concurrent PR204 geometry research records while preserving the accepted ZEC study and runtime.
+Delta: v406 to v407; record independent installed acceptance and final delivery checkpoint.
+Delta: v405 to v406; record paper deployment, honest first-bar waiting and final installed acceptance gate.
+Delta: v404 to v405; record completed ZEC sweep, independent audit and deployment transition.
+Delta: v403 to v404; record validated long ZEC data and research stage transition.
+Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
 
@@ -611,3 +617,61 @@ PR 201 merged to `master` as squash commit `4053d2528076e022540336250ae17919b123
 Active lists now exclude RAIN, WBT, HTX, JST, MNT, and XMR. Historical datasets and dated evidence remain intact. The task worktree is based at `/Users/mitch/dev/solmargintrader-wt-remove-coins-20261110`; preserve the primary checkout's unrelated dirty paths and the locked SolTUI worktree during cleanup.
 
 No remaining implementation, verification, or delivery steps for this request.
+
+
+## v403 — 2026-11-10 — ZEC ensemble study scope
+
+TASK-1270 owns the ZEC 1m/1h study. The user supplied `/Users/mitch/Downloads/Strategy Ensembles.md` and authorized more history, a broad hypothesis sweep, ten paper forward configurations started, and Oracle UI publication of the top selected configuration. The guide has only 848 hourly bars and 11 trades in its headline result; its claims are hypotheses. KNOW-819 records dropped Coinbase minute candles, so no partial aggregate or silent gap bridge is accepted. Use chronological validation-only ranking, freeze the top ten, and report reserved test results without reranking. Keep actual trial count and selection bias visible.
+
+The task worktree is `/Users/mitch/dev/solmargintrader-wt-zec-20261110`, branch `codex/zec-ensembles-20261110`, based on `08e1b460`. Preserve the primary checkout's 78 unrelated untracked paths and the locked SolTUI redesign worktree. Data/results go outside Git at `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110`. Agents own data acquisition, the shared causal ensemble builder plus sweep, and an isolated paper forward daemon plus Oracle publication. Root owns workflow records, review, report, verification, installation coordination, and delivery.
+
+Remaining: obtain and validate longer history; finish hypothesis catalog and sweep; freeze and audit ten selected configurations; install/start isolated paper tests and verify live Oracle publication; complete checks and deliver through PR/CI/merge.
+
+
+## v404 — 2026-11-10 — longer ZEC history validated
+
+Downloaded 182 SHA256/ZIPCRC-verified Binance ZECUSDT archives plus closed API tail. Data spans 2020-01-01 through 2026-11-11: 3,606,401 native minute candles and 60,114 native hourly candles. Each interval has 15 retained gap runs (2,326 minutes and 31 hours missing). The longest contiguous run starts 2023-03-24 14:00UTC, with 1,911,567 minute candles and 31,859 hourly candles. Root independently validated OHLCV, timestamp contract, source hashes and exact gap counts. No synthetic fills. Data and provenance remain in the external artifact directory.
+
+The root review found default daily volatility annualization inside canonical VolTargetTrend/GarchVolTarget. The shared intraday ensemble wrapper must normalize annual targets before comparing 1m/1h. The research worker owns this correction and parity tests. The study's primary windows and validation/test split remain fixed before results are inspected.
+
+Stele MCP transport closed after data validation. Task-stage writes are queued in the outbox: 2b38fed5 (complete TASK-1272) and 90471005 (claim TASK-1273). Root still owns completion and delivery. Remaining: finish/run/audit sweep; start exact frozen top ten paper sessions; verify Oracle UI primary config; local gates, PR/CI/merge and cleanup.
+
+
+## v405 — 2026-11-10 — validated ZEC sweep complete
+
+The authoritative run is `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/study-validated`: 1,652 unique configurations, 1,592 eligible and 1,084 distinct validation behaviors. Root independently recomputed all scores and eligibility, reconstructed the ten frozen ranks without test metrics, and verified source/core/selection/result hashes. The earlier `study/` output is a preserved computation checkpoint; a metadata and diagnostic-alignment correction required the source-bound validated rerun. No manual fingerprint rebinding occurred.
+
+All ten selected configurations use hourly bars. Rank one is `bb_breakout(window=40, num_std=2.5)`, candidate `0b5f50401a87b47b82f29119`. On the reserved hourly test it returned +282.64% with -21.64% maximum drawdown, versus holding +266.52%/-56.02%. All selected validation DSR probabilities round to zero under the 1,652-trial heuristic. These are experimental paper candidates, not statistically established winners. The latest common-calendar leader diagnostic lost 7.63%; older leader stress windows returned +0.99%, +4.34%, -9.00%. A separate post-selection best-minute diagnostic lost 0.81% versus hold losing 24.74%; it did not change selection or deployment.
+
+Study ID b68d46c7c105f3230dc0cdad8584df517f81c0054676c50f250c1f17e92d318e. Selected JSON SHA256 28fea860600ccd86096840f4f7e6c1573f5b4c6a700ccf9c36b4374007ab7e66. Results SHA256 8a55069b14380148674335cd8b70f4d5a455feeb3f7ef2bf2054e311cfd51843. Root focused18 tests, targeted Ruff, JS syntax and docs counts passed before the newest source-identity runtime fence. Ecosystem full suite previously passed186 tests; rerun after finalruntime tests/source changes.
+
+Actual installed UI was older ecosystem0.4.0, manager0.7.0 and Oracle0.2.2. Deployment agent has a rollback code/package backup and consistent SQLite snapshots. The current stopped/disarmed demo-grid must remain stopped/disarmed at generation7. A coherent five-wheel package update and a graceful managed-suite restart are necessary for the actual UI to load the new projection. A dedicated noneditable ZEC environment and LaunchAgent will own ten new independent10kUSDT paper accounts. Independent acceptance agent will verify installed hashes, exact selection, launchd, HTTP and browser.
+
+Stele stage writes queued in outbox: b5230f49, 9354f6ad. Remaining: finish actual paper deployment and Oracle UI acceptance, update report/records, run required final local checks, push PR and wait final CI, merge, verify default branch and clean only task-owned worktree/branches.
+
+
+## v406 — 2026-11-10 — ten ZEC paper tests started
+
+The dedicated noneditable environment is `/Users/mitch/.venvs/zec-ensembles-20261110`; forward home is `/Users/mitch/.local/share/solmargintrader/zec-forward-20261110`. LaunchAgent `com.solmargintrader.zec-forward.85f5d35fb445` is running with RunAtLoad/KeepAlive and ten fresh independent10kUSDT accounts. All selected configurations are hourly, so the first fully post-start decision close is 2026-11-11 03:00UTC (22:00 New York on November10). The current Oracle signal is honestly unavailable while its exact top configuration and all ten account identities are displayed. No historical warmup profits or fills were credited.
+
+The coherent five-wheel update upgraded the actual managed UI environment from ecosystem0.4.0/manager0.7.0/Oracle0.2.2 to ecosystem0.4.3/manager0.7.2/Oracle0.2.3 with research-runtime0.4.0 and backtester0.2.0. Dedicated and managed environments pass pipcheck. The managed supervisor restarted gracefully. Existing demo-grid financial state, stopped/disarmed intent, configuration, inputs, cursor, evaluation and fills remained unchanged. Its generation advanced7->8 through the existing monotonic Ledger.recover owner fence; do not roll that counter back.
+
+The initial bundle was a deployment checkpoint. The final ecosystem wheel must include the refreshed1869-page wiki, explicit allowlisting of the three newZECdocuments, and corrected latest-observed-candle wording. A same-version UI-only restart can load that final wheel. The independent acceptance agent is verifying exact loaded hashes, final wheel, launchd, selection/config/seed bindings, HTTP/browser behavior and prior-owner preservation. Preserve `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/deployment-before-zec` for rollback evidence.
+
+Remaining: receive final installed acceptance, run required local checks and final docs/index/wiki gates, commit/push task-owned paths, PR/final-headCI/merge, synchronize safely and clean task-owned branches/worktree. The untracked `.opencode` bootstrap cache appeared in this worktree during tooling; preserve it outsideGit rather than staging it.
+
+
+## v407 — 2026-11-10 — independent installed acceptance passed
+
+All requested research and operational work is complete. Independent acceptance at 2026-11-11T01:56:40.767271UTC verified1,694 packaged files in each stable environment against all five frozen wheels and reviewed source. Both pipchecks pass. LaunchAgent is enabled/running with KeepAlive/RunAtLoad. ActualHTTP and Chrome browser show ZEC/USDT, the frozen rank-one Bollinger breakout configuration and all ten exact account/config/seed/cost identities. All ten correctly wait for03:00UTC with10,000USDT each and no prospective decision, exposure, cost or warmup credit yet. This is started paper research, not a profitable-forward-result claim. The final runtime receipt is `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/independent-acceptance.json`.
+
+Final ecosystem wheel SHA256 e59012fa85e2cd0afb7bc7932f3b0f521c21d7c5d042dae43f40a645e1c08541 is preserved under release-final-graph. The read-only projection excludes preactivation warmup rows, so a seed bar cannot appear as a prospective Flat call. Existing manager/runtime ledgers match their backups except monotonic generation/owner recovery fencing7->8; stopped/disarmed intent and financial/configuration/evidence state remain intact. The actual UI at acceptance is http://127.0.0.1:59945/#oracle (use solbot ui open after future port changes).
+
+Local gates passed: backtester1,005 tests; ecosystem190 tests; research/data11 tests; final projection/runtime-focused31 tests; full ecosystem/oracle Ruff plus targeted research/builder Ruff; JavaScript syntax; docs count2,957; generated wiki11tests and snapshot check. Refresh retrieval indexes after this record, inspect/stage only task-owned changes, then commit/push, wait final-head CI and merge. The authoritative final delivery outcome is written after merge to `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/completion-receipt.json`; consult that receipt before repeating completed work or treating this pre-merge checkpoint as unfinished.
+
+Stele stage writes queued in outbox: dbd061cf, 130ff2b6. Final task close writes also use the outbox if transport remains unavailable. Keep downloaded data/results/wheels/rollback backups outsideGit. Preserve the unrelated primary checkout paths and locked redesign worktree. Synchronize primary master only after verifying no tracked changes or untracked-path collision; preserve the task-created .opencode cache outsideGit during cleanup.
+
+
+## v408 — 2026-11-10 — concurrent documentation integrated
+
+PR204 added market graph geometry research instructions and workflow records while the ZEC task ran. Its prompt artifact and all continuation/request text are preserved. This merge changes no ZEC policy, source dataset, ranking or installed runtime. Generated retrieval indexes are rebuilt from the combined source. TASK-1276 remains a separate research task; do not close or repurpose it. Final delivery still uses the external completion receipt named in v407.

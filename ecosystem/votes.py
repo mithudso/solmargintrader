@@ -142,6 +142,16 @@ def report(
     now = time.time() if now is None else now
     if type(now) not in (int, float) or not math.isfinite(now) or now < 0:
         raise ValueError("invalid_oracle_clock")
+    from .zec_forward import oracle_view, publication
+
+    study = publication(home, instrument, now=now)
+    if study and study["selected"]:
+        winner = study.get("publication")
+        if winner:
+            # Cash-only priming observations are not issued ensemble forecasts.
+            study["history"] = [row for row in study.get("history", [])
+                                if row["bar"] >= winner["activation"]]
+        return oracle_view(study, now=now)
     selection = settings(home, instrument)
     chosen = selection["selected_ids"] if selected_ids is None else _ids(selected_ids)
     cards = [{"strategy_id": key, "selected": key in chosen} for key in STRATEGY_IDS]
@@ -154,6 +164,7 @@ def report(
         "catalog": cards,
         "tradable": False,
         "percentage_semantics": "signed_weighted_vote_balance_not_probability",
+        "selected_experiment": study,
     }
     path = (
         Path(home).expanduser().absolute()

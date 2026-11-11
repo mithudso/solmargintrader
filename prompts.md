@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 192
+Version: 193
+Delta: v192 to v193; preserve concurrent geometry and ZEC requests during integration.
+Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten paper forward and Oracle publication request.
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
@@ -1771,3 +1773,9 @@ resume
 ```text
 Run the repo-bootstrapper skill on this repo
 ```
+
+
+## 2026-11-10 — ZEC ensemble research and forward tests
+
+Focus on ZEC and run it through the backtests again, with 1m and 1hr time frames And using this as a guide '/Users/mitch/Downloads/Strategy Ensembles.md' Come up with as many different testable hypothesis as you can. If possible download more and longer testing data,
+  and then with the top 10 winning sets create forward tests and start them. With the configuration of the top configuration being the one the oracle publishes on the UI.
