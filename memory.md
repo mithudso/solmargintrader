@@ -1,12 +1,19 @@
 # Work continuation
 
-Version: 407
+Version: 408
+Delta: v407 to v408; reconcile concurrent PR204 geometry research records while preserving the accepted ZEC study and runtime.
 Delta: v406 to v407; record independent installed acceptance and final delivery checkpoint.
 Delta: v405 to v406; record paper deployment, honest first-bar waiting and final installed acceptance gate.
 Delta: v404 to v405; record completed ZEC sweep, independent audit and deployment transition.
 Delta: v403 to v404; record validated long ZEC data and research stage transition.
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
+Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-10 — Market Graph Geometry and Strategy Regime Efficacy
+
+The owner provided the optimized Lead Quantitative Orchestrator protocol for multi-scale market graph geometry research. Tracked in Stele as TASK-1276 under COMP-329 (Research & Evidence), linked to KNOW-1263 (Oracle voting admits only measured accuracy strictly above 50 percent and records context). Shared research artifacts live in `/Users/mitch/.global-ai-hub/research/market-graph-geometry/` (`dossier.md`, `claims.jsonl`, `strategy_shape_matrix.json`, `landing-receipts.jsonl`) backed by peer-reviewed quantitative literature in `~/.global-ai-hub/research/.library/`. Local prompt artifact saved to `market-graph-geometry-prompt.md`.
+
 Delta: v396 to v397; rerun final repository checks and record the pre-delivery state.
 Delta: v395 to v396; finish the data-validated 22,913-configuration rerun and verify the result ledger.
 Delta: v394 to v395; fix review findings and reject the first sweep after auditing duplicate minute candles.
@@ -663,3 +670,8 @@ Final ecosystem wheel SHA256 e59012fa85e2cd0afb7bc7932f3b0f521c21d7c5d042dae43f4
 Local gates passed: backtester1,005 tests; ecosystem190 tests; research/data11 tests; final projection/runtime-focused31 tests; full ecosystem/oracle Ruff plus targeted research/builder Ruff; JavaScript syntax; docs count2,957; generated wiki11tests and snapshot check. Refresh retrieval indexes after this record, inspect/stage only task-owned changes, then commit/push, wait final-head CI and merge. The authoritative final delivery outcome is written after merge to `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/completion-receipt.json`; consult that receipt before repeating completed work or treating this pre-merge checkpoint as unfinished.
 
 Stele stage writes queued in outbox: dbd061cf, 130ff2b6. Final task close writes also use the outbox if transport remains unavailable. Keep downloaded data/results/wheels/rollback backups outsideGit. Preserve the unrelated primary checkout paths and locked redesign worktree. Synchronize primary master only after verifying no tracked changes or untracked-path collision; preserve the task-created .opencode cache outsideGit during cleanup.
+
+
+## v408 — 2026-11-10 — concurrent documentation integrated
+
+PR204 added market graph geometry research instructions and workflow records while the ZEC task ran. Its prompt artifact and all continuation/request text are preserved. This merge changes no ZEC policy, source dataset, ranking or installed runtime. Generated retrieval indexes are rebuilt from the combined source. TASK-1276 remains a separate research task; do not close or repurpose it. Final delivery still uses the external completion receipt named in v407.

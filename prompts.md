@@ -1,8 +1,16 @@
 # Prompt history
 
-Version: 192
+Version: 193
+Delta: v192 to v193; preserve concurrent geometry and ZEC requests during integration.
 Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten paper forward and Oracle publication request.
+Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
+Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-10 — Market Graph Geometry and Strategy Regime Efficacy
+
+Run the Lead Quantitative Orchestrator full-suite research protocol on market graph shapes across microstructure, meso, and macro scales to determine if quantitative strategies exhibit localized regime-dependent efficacy inside geometric boundaries and decay outside them. Deliver dossier.md, claims.jsonl, and strategy_shape_matrix.json.
+
 Delta: v188 to v189; record complete implementation status and the validated resumable sweep run.
 Delta: v187 to v188; capture all-strategy coin sweeps, Council entry verification, and a solbot troubleshooting bundle.
 Delta: v186 to v187; capture contextual Oracle voting, per-tick graph history, and strategy overlays.
