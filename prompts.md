@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 197
+Version: 199
+Delta: v198 to v199; capture supplied Volty research dossier.
+Delta: v197 to v198; start Volty ZEC stop-entry and walk-forward study.
 Delta: v196 to v197; capture owner authorization to commit all untracked repository documentation, design artifacts, runbooks, and configurations.
 Delta: v195 to v196; capture Oracle frequency, strategy and coin display selectors.
 Delta: v194 to v195; capture immediate historical warmup Oracle publication and latest five days of ZEC minute data.
@@ -1797,3 +1799,11 @@ You can use historical data as the warm up period before a first candle, this is
 ## v196 — 2026-11-10 — Oracle display selectors
 
 When on the oracle tab let me choose the time frequency, strategy, and coin that the oracle displays.
+
+## 2026-11-10 — Volty Expan Close ZEC study
+
+You don't have many tokens left so do this quietly and with minimal verification, download and install the volty expan close strategy  and backtest it on ZEC coin with 1, 5, 10, 1hr, and 1d intervals with lenghts 1-10 and ATR Mult of .25, .5., .75, 1. and 1.25, then tthe winning strategies create forward walk tests
+
+## 2026-11-10 — Volty dossier follow-up
+
+You can use this /Users/mitch/.gemini/antigravity-cli/brain/0e524dea-a3e5-4646-a99c-96aeb14eb8b4/volty_expan_close_strategy_dossier.md
