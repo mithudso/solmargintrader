@@ -1,7 +1,13 @@
 # Work continuation
 
-Version: 402
+Version: 403
+Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-10 — Market Graph Geometry and Strategy Regime Efficacy
+
+The owner provided the optimized Lead Quantitative Orchestrator protocol for multi-scale market graph geometry research. Tracked in Stele as TASK-1276 under COMP-329 (Research & Evidence), linked to KNOW-1263 (Oracle voting admits only measured accuracy strictly above 50 percent and records context). Shared research artifacts live in `/Users/mitch/.global-ai-hub/research/market-graph-geometry/` (`dossier.md`, `claims.jsonl`, `strategy_shape_matrix.json`, `landing-receipts.jsonl`) backed by peer-reviewed quantitative literature in `~/.global-ai-hub/research/.library/`. Local prompt artifact saved to `market-graph-geometry-prompt.md`.
+
 Delta: v396 to v397; rerun final repository checks and record the pre-delivery state.
 Delta: v395 to v396; finish the data-validated 22,913-configuration rerun and verify the result ledger.
 Delta: v394 to v395; fix review findings and reject the first sweep after auditing duplicate minute candles.

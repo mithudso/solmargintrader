@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T00:48:51+00:00",
+  "generatedAt": "2026-11-11T01:45:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1406,
+      "matchingFiles": 1407,
       "shown": 30,
       "files": [
         {
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 772,
+      "matchingFiles": 773,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 702,
+      "matchingFiles": 703,
       "shown": 30,
       "files": [
         {
@@ -945,7 +945,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 64
+          "hits": 65
         },
         {
           "path": "prompts.md",
@@ -1532,7 +1532,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 325,
+      "matchingFiles": 328,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 243,
+      "matchingFiles": 244,
       "shown": 30,
       "files": [
         {

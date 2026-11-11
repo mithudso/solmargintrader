@@ -2514,7 +2514,8 @@
     "llms/aero-lp-explained-2026-11-06.md": 678,
     "llms/defillama-llms-free.txt": 1332,
     "llms/defillama-llms.txt": 997,
-    "memory.md": 10494,
+    "market-graph-geometry-prompt.md": 728,
+    "memory.md": 10589,
     "mongo/README.md": 915,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3358,
@@ -2571,7 +2572,7 @@
     "postman/mocks/botmanager-jupiter-swap-v1/default.js": 276,
     "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 245,
     "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.sim.yaml": 33,
-    "prompts.md": 9685,
+    "prompts.md": 9756,
     "research/5minleveragestrategies.json": 4184,
     "research/CANDLE-GAP-AUDIT.md": 634,
     "research/COMPOUND-FRONTIER.md": 883,
@@ -3076,7 +3077,7 @@
     "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 483,
     "tradingview/tradingviewinputoptimizer_v2-7/prompts.md": 64
   },
-  "generatedAt": "2026-11-11T00:48:51+00:00",
+  "generatedAt": "2026-11-11T01:45:14+00:00",
   "postings": {
     "000": {
       "backtester/strategy_cards/incomplete/tv_1avreiwr_bitcoin_approaches_25_000_how_can_we_identify_a_potential_top.md": 1,
@@ -22270,6 +22271,7 @@
       "executor/src/executor/registry.py": 1,
       "extension/src/ui/signal-desk.css": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 8,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/README.md": 2,
       "oracle/cli.py": 1,
       "oracle/quotes.py": 1,
@@ -22566,8 +22568,12 @@
     "abstraction": {
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 3,
       "skills/trading-and-investing/references/self-custody-wallets-and-key-security.md": 8
+    },
+    "abstraction_level": {
+      "market-graph-geometry-prompt.md": 1
     },
     "abstractor": {
       "research/five-minute-perps-suite/run-state.json": 1
@@ -27235,7 +27241,7 @@
       "extension/test/live-tools.test.js": 1,
       "extension/test/prediction-recovery.test.js": 2,
       "extension/test/signal-desk.test.js": 4,
-      "memory.md": 5,
+      "memory.md": 6,
       "oracle/README.md": 3,
       "oracle/engine.py": 13,
       "oracle/graphdb.py": 3,
@@ -28529,6 +28535,7 @@
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 3,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 5,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
@@ -28536,7 +28543,7 @@
       "mongo/queries/06-experiments-and-pbo.js": 1,
       "mongo/schema.py": 1,
       "mongo/tests/test_load.py": 1,
-      "prompts.md": 6,
+      "prompts.md": 7,
       "research/5minleveragestrategies.json": 3,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -29169,6 +29176,7 @@
       "liquidity/tests/test_strategy.py": 21,
       "llms-sitemap.txt": 7,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 5,
       "mongo/load.py": 3,
       "mongo/queries/04-decisions.js": 9,
@@ -30057,6 +30065,7 @@
       "liquidity/tests/test_providers.py": 4,
       "liquidity/tests/test_submission_audit.py": 3,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 25,
       "pagesource": 22,
       "prompts.md": 9,
@@ -34409,7 +34418,7 @@
       "extension/e2e/lib/signal-desk.mjs": 1,
       "extension/vendor/lightweight-charts/LICENSE": 5,
       "memory.md": 3,
-      "prompts.md": 2,
+      "prompts.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 12,
@@ -34783,6 +34792,7 @@
       "llms-sitemap.txt": 2,
       "llms/defillama-llms-free.txt": 9,
       "llms/defillama-llms.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 103,
       "postman/collections/solbot-managed-health.postman_collection.json": 1,
       "prompts.md": 3,
@@ -35550,6 +35560,7 @@
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/core/grid.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 2,
@@ -36362,6 +36373,7 @@
       "docs/code-optimizer-scope-2026-11-08.json": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "executor/tests/test_optimizer_regressions.py": 2,
+      "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/sweep.py": 4,
       "research/tradingview-script-profiles/shard-c.jsonl": 2,
@@ -37325,6 +37337,7 @@
       "docs/trading-signals-concept-family.md": 1,
       "liquidity/config.example.toml": 1,
       "liquidity/src/aero_lp/strategy.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 2,
       "research/COMPOUND-FRONTIER.md": 1,
@@ -41457,6 +41470,7 @@
       "skills/trading-and-investing/references/order-lifecycle-and-execution.md": 1
     },
     "affiliated": {
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/coin-intelligence/trx-tron.md": 1,
@@ -42407,6 +42421,7 @@
       "liquidity/scripts/aero-lp-service": 2,
       "llms-sitemap.txt": 4,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 26,
       "memory.md": 16,
       "prompts.md": 15,
       "research/coin-intelligence/eth-ethereum.md": 5,
@@ -47348,6 +47363,7 @@
       "docs/bot-manager-handoff.md": 1,
       "docs/superpowers/plans/2026-11-09-bot-manager.md": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "research/tradingview-card-coverage.json": 47,
       "research/tradingview-card-readiness.json": 11,
       "research/tradingview-script-context-bundle.json": 1,
@@ -54444,6 +54460,7 @@
       "extension/src/ui/workspace-model.js": 1,
       "liquidity/STATE_FILES.md": 1,
       "llms-sitemap.txt": 25,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/tests/test_analysis_regressions.py": 2,
       "prompts.md": 2,
       "research/5minleveragestrategies.json": 1,
@@ -54820,6 +54837,7 @@
       "backtester/strategy_cards/incomplete/tv_shevujyq_machine_learning_rsi_bullvision.md": 1,
       "docs/FILES.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 4,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 8,
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -65123,6 +65141,7 @@
       "docs/strategy-agent/optimization-report.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/strategy_experiment/FILES.md": 2,
@@ -66371,6 +66390,7 @@
       "executor/src/executor/manager.py": 1,
       "llms-sitemap.txt": 6,
       "llms/aero-lp-explained-2026-11-06.md": 5,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 8,
       "research/5minleveragestrategies.json": 5,
       "research/RATIO-ROTATION.md": 3,
@@ -66752,6 +66772,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 6,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "prompts.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
@@ -70690,7 +70711,7 @@
       "index/README.md": 1,
       "index/build.py": 3,
       "index/make_files_doc.py": 3,
-      "memory.md": 1,
+      "memory.md": 2,
       "mongo/README.md": 1,
       "mongo/load.py": 12,
       "mongo/tests/test_analysis_regressions.py": 2,
@@ -70836,7 +70857,8 @@
       "index/README.md": 1,
       "index/build.py": 1,
       "index/make_files_doc.py": 4,
-      "memory.md": 11,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 12,
       "mongo/README.md": 2,
       "mongo/load.py": 3,
       "mongo/tests/test_analysis_regressions.py": 3,
@@ -70968,6 +70990,7 @@
       "backtester/guides/triangular_arbitrage.md": 2,
       "backtester/strategy_research/dex_cex_dislocation.md": 1,
       "docs/archive/memory-2026-11-08.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 5,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 7,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 24,
@@ -71643,6 +71666,7 @@
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/tests/test_market_state.py": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/engine.py": 3,
       "oracle/feeds.py": 6,
       "oracle/tests/test_feeds.py": 5,
@@ -73379,6 +73403,7 @@
       "docs/repository-review-2026-11-08.md": 1,
       "extension/test/service-worker.test.js": 1,
       "llms-full.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 4,
@@ -75733,6 +75758,7 @@
       "llms-sitemap.txt": 19,
       "llms/defillama-llms-free.txt": 2,
       "llms/defillama-llms.txt": 4,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 6,
       "mongo/README.md": 2,
       "mongo/load.py": 20,
@@ -76423,6 +76449,7 @@
       "extension/test/wallet.test.js": 1,
       "index/build.py": 1,
       "liquidity/tests/test_providers.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/candle_crosscheck.py": 1,
@@ -79533,7 +79560,8 @@
       "soltui/soltui-service": 1
     },
     "asynchronously": {
-      "docs/TRADINGVIEW-REFERENCE.md": 1
+      "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "market-graph-geometry-prompt.md": 1
     },
     "asyncio": {
       "docs/design/soltui-v2/mockup.py": 2,
@@ -80060,6 +80088,7 @@
       "liquidity/tests/test_market_state.py": 2,
       "llms-facts.txt": 3,
       "llms.txt": 1,
+      "market-graph-geometry-prompt.md": 3,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/profitable-crypto-strategies-analysis.md": 1,
       "research/strategy_config_sweep.py": 5,
@@ -81262,6 +81291,7 @@
     },
     "attractor": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ertrxbpf_musashi_fractal_dimension.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 1
     },
     "attracts": {
@@ -82633,6 +82663,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 39,
       "llms/defillama-llms-free.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 10,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load_audit.py": 2,
@@ -82828,6 +82859,7 @@
     },
     "auditor": {
       "docs/archive/memory-2026-11-08.md": 6,
+      "market-graph-geometry-prompt.md": 1,
       "research/five-minute-perps-suite/benchmark-scope-review.json": 1,
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/five-minute-perps-suite/synthesis-audit-receipt.json": 1,
@@ -101901,7 +101933,7 @@
       "executor/tests/conftest.py": 3,
       "extension/src/ui/dashboard.html": 1,
       "llms.txt": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "oracle/tests/test_strategies.py": 1,
       "prompts.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -102296,6 +102328,7 @@
       "docs/ECOSYSTEM-CONTROL-ROOM.md": 1,
       "docs/repo-bootstrap-audit-2026-11-10.md": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
+      "market-graph-geometry-prompt.md": 2,
       "research/tradingview-card-coverage.json": 4,
       "soltui/f5_batch.py": 4,
       "soltui/tests/test_batch_ui.py": 1,
@@ -103741,6 +103774,7 @@
       "liquidity/tests/test_metrics.py": 32,
       "liquidity/tests/test_providers.py": 7,
       "llms-sitemap.txt": 16,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 8,
       "mongo/README.md": 6,
       "mongo/load.py": 10,
@@ -105679,6 +105713,7 @@
       "liquidity/src/aero_lp/providers.py": 5,
       "liquidity/tests/test_providers.py": 6,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 2
     },
     "balances": {
@@ -105806,6 +105841,7 @@
     "balancing": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ewwysggk_smooth_theil_sen.md": 1,
       "backtester/strategy_cards/incomplete/tv_zewvhavq_divergence_screener_trendoscope.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 10,
       "research/tradingview-script-profiles/shard-c.jsonl": 1
     },
@@ -114852,6 +114888,7 @@
       "ecosystem/tests/test_runner.py": 1,
       "extension/src/ui/dashboard.html": 1,
       "liquidity/src/aero_lp/providers.py": 3,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/load.py": 13,
       "mongo/tests/test_analysis_regressions.py": 1,
       "research/tradingview-script-profile-audits/shard-b.jsonl": 1,
@@ -125089,6 +125126,7 @@
       "docs/trading-signals-concept-family.md": 3,
       "liquidity/src/aero_lp/chain.py": 4,
       "llms-sitemap.txt": 6,
+      "market-graph-geometry-prompt.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 3,
       "research/PROMPT_STRATEGIES.md": 3,
       "research/RANKED_LISTS.md": 1,
@@ -125387,6 +125425,7 @@
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/tests/test_market_state.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/engine.py": 3,
       "oracle/feeds.py": 6,
       "oracle/tests/test_feeds.py": 7,
@@ -131581,6 +131620,7 @@
       "extension/tools/api-server.js": 2,
       "index/build.py": 1,
       "llms-full.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/feeds.py": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -132502,6 +132542,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_executor.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 2,
       "research/5minleveragestrategies.json": 4,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -135324,6 +135365,9 @@
     "bottleneck": {
       "research/coin-intelligence/eth-ethereum.md": 1
     },
+    "bottlenecked": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "bottlenecks": {
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-card-coverage.json": 2,
@@ -135529,6 +135573,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
       "research/strategy_experiment/FILES.md": 4,
       "research/strategy_experiment/archives.json": 4,
@@ -136146,10 +136191,11 @@
       "ecosystem/web/index.html": 1,
       "executor/tests/test_optimizer_regressions.py": 2,
       "extension/test/wallet.test.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/README.md": 1,
       "oracle/tests/test_voting.py": 1,
-      "prompts.md": 3,
+      "prompts.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 10,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
       "research/five-minute-perps-suite/synthesis-audit-receipt.json": 1,
@@ -137007,6 +137053,7 @@
       "extension/src/core/soltui.js": 1,
       "extension/src/market/quote.js": 2,
       "extension/src/ui/signal-desk.js": 1,
+      "market-graph-geometry-prompt.md": 6,
       "memory.md": 4,
       "oracle/README.md": 1,
       "oracle/engine.py": 1,
@@ -139851,6 +139898,7 @@
       "docs/dso-skill/references/passes.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 3,
       "research/RATIO-ROTATION.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
@@ -140045,6 +140093,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/server.py": 1,
       "oracle/tests/test_server.py": 2,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -140501,6 +140550,7 @@
       "index/build.py": 3,
       "index/make_concepts_doc.py": 1,
       "llms-sitemap.txt": 14,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "oracle/README.md": 2,
@@ -141562,6 +141612,7 @@
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
       "docs/design/chrome-workspace/proposal.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 28,
@@ -145004,6 +145055,7 @@
       "liquidity/src/aero_lp/daemon.py": 1,
       "liquidity/src/aero_lp/executor.py": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/tests/test_load_audit.py": 1,
       "oracle/quotes.py": 2,
       "prompts.md": 1,
@@ -167267,6 +167319,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 4,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 5,
       "memory.md": 7,
       "oracle/engine.py": 6,
       "oracle/tests/test_core.py": 2,
@@ -170525,6 +170578,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 16,
       "mongo/load.py": 2,
       "oracle/README.md": 1,
@@ -172367,7 +172421,7 @@
       "mongo/load.py": 3,
       "oracle/quotes.py": 5,
       "oracle/tests/test_quotes.py": 18,
-      "prompts.md": 6,
+      "prompts.md": 7,
       "research/5minleveragestrategies.json": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -178566,6 +178620,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "catastrophe": {
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 1
     },
     "catastrophic": {
@@ -188823,6 +188878,7 @@
       "extension/e2e/lib/cdp.mjs": 2,
       "extension/src/bg/service-worker.js": 1,
       "llms-sitemap.txt": 16,
+      "market-graph-geometry-prompt.md": 1,
       "research/STRATEGIES.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 45,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -192540,6 +192596,7 @@
       "llms-sitemap.txt": 3,
       "llms-small.txt": 2,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 28,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
@@ -194993,7 +195050,7 @@
       "liquidity/tests/test_strategy.py": 6,
       "llms-sitemap.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 3,
-      "memory.md": 66,
+      "memory.md": 65,
       "mongo/load.py": 1,
       "oracle/README.md": 3,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
@@ -200674,6 +200731,7 @@
     "citation": {
       "docs/FILES.md": 2,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 133,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -202340,6 +202398,7 @@
       "liquidity/tests/test_executor.py": 8,
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 9,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -203633,6 +203692,7 @@
       "liquidity/tests/test_daemon_audit.py": 3,
       "liquidity/tests/test_executor.py": 4,
       "liquidity/tests/test_safe_exit.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/coin-intelligence/README.md": 1,
@@ -204991,9 +205051,10 @@
       "llms-sitemap.txt": 1,
       "llms.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 1,
+      "market-graph-geometry-prompt.md": 5,
+      "memory.md": 2,
       "oracle/README.md": 1,
-      "prompts.md": 1,
+      "prompts.md": 2,
       "research/LEVERAGE-ECONOMICS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -205537,6 +205598,7 @@
       "backtester/strategy_research/tv_xlv4mwjk_time_range_statistics.md": 1,
       "docs/FILES.md": 1,
       "docs/profitable-crypto-strategies-analysis.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/profitable-crypto-strategies-analysis.md": 1,
       "research/tradingview-card-coverage.json": 15,
@@ -206296,6 +206358,7 @@
       "ecosystem/wiki.py": 3,
       "executor/tests/test_rails.py": 2,
       "llms-sitemap.txt": 9,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 20,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -207073,6 +207136,7 @@
       "skills/trading-and-investing/references/signal-backtest-protocol-and-regime-evidence.md": 1
     },
     "cleaning": {
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/tradingview-card-coverage.json": 1
@@ -211259,6 +211323,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 10,
       "mongo/tests/test_load.py": 1,
       "oracle/feeds.py": 1,
@@ -222047,6 +222112,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 9,
       "llms-small.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "mongo/load.py": 2,
       "oracle/README.md": 1,
@@ -222506,6 +222572,7 @@
       "liquidity/tests/test_cdo_gates.py": 1,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 24,
       "mongo/README.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
@@ -222674,6 +222741,7 @@
       "docs/optimization-workbench.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "liquidity/CLAUDE.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 2,
       "mongo/load.py": 1,
       "research/tradingview-card-coverage.json": 7,
@@ -223269,6 +223337,7 @@
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/design/soltui-v2/mockup.py": 2,
+      "memory.md": 1,
       "research/frontier_tune.py": 9,
       "research/strategy_aux_compare.py": 10,
       "research/tradingview-card-coverage.json": 11,
@@ -226501,6 +226570,7 @@
       "ecosystem/web.py": 1,
       "ecosystem/wiki.py": 3,
       "executor/src/executor/api.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/engine.py": 1,
       "oracle/feeds.py": 2,
       "oracle/quotes.py": 1,
@@ -232182,6 +232252,7 @@
       "docs/design/chrome-workspace/proposal.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 2,
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 1,
       "research/profitable-crypto-strategies-analysis.md": 2,
       "research/tradingview-card-coverage.json": 56,
@@ -232292,6 +232363,7 @@
       "docs/COMPOUND-5M-PAPER.md": 5,
       "docs/FILES.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -232374,6 +232446,9 @@
     },
     "compustat": {
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1
+    },
+    "computability": {
+      "market-graph-geometry-prompt.md": 1
     },
     "computable": {
       "backtester/core/cpcv.py": 1,
@@ -234600,6 +234675,7 @@
       "extension/README.md": 2,
       "extension/src/core/commands.js": 1,
       "extension/src/core/engine.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -235169,6 +235245,7 @@
       "index/search.py": 21,
       "liquidity/CLAUDE.md": 1,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 7,
       "memory.md": 1,
       "oracle/README.md": 1,
       "oracle/guidance.py": 2,
@@ -235287,6 +235364,7 @@
       "index/search.py": 10,
       "liquidity/CLAUDE.md": 2,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 6,
       "oracle/guidance.py": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -235352,6 +235430,7 @@
       "docs/trading-signals-concept-family.md": 1,
       "index/make_concepts_doc.py": 3,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -235932,6 +236011,7 @@
       "extension/src/jupiter/trigger.js": 6,
       "extension/tools/bot-manager-e2e.mjs": 2,
       "extension/tools/control-room-e2e.mjs": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/RANKED_LISTS.md": 1,
@@ -236362,6 +236442,7 @@
       "executor/CLAUDE.md": 2,
       "extension/vendor/lightweight-charts/LICENSE": 13,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 2,
       "research/5minleveragestrategies.json": 1,
       "research/RANKED_LISTS.md": 2,
       "research/RELIABLE_SIGNALS.md": 8,
@@ -236691,6 +236772,7 @@
       "liquidity/tests/test_providers.py": 22,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 8,
       "oracle/engine.py": 2,
       "oracle/strategies.py": 1,
@@ -246948,6 +247030,7 @@
       "extension/src/wallet/solana.js": 2,
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/recovery.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
       "research/decide.py": 1,
@@ -247904,6 +247987,7 @@
       "docs/worktree-consolidation-2026-11-10.md": 1,
       "ecosystem/web/vendor/LICENSE": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -247982,6 +248066,7 @@
       "docs/code-deep-optimizer-2026-11-08.md": 3,
       "docs/design/bot-control-room/REVIEW.md": 1,
       "extension/test/cdo-regressions.test.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 1,
@@ -249714,7 +249799,7 @@
       "liquidity/tests/test_cdo_recovery.py": 4,
       "llms-full.txt": 1,
       "llms-sitemap.txt": 4,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/load.py": 23,
       "mongo/tests/test_analysis_regressions.py": 9,
       "oracle/server.py": 2,
@@ -251919,6 +252004,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms-free.txt": 2,
       "llms/defillama-llms.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "mongo/load.py": 1,
       "mongo/tests/test_analysis_regressions.py": 4,
@@ -252320,6 +252406,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_jqrhr1xy_relative_strength_of_volume_indicators_by_dgt.md": 3,
       "backtester/tests/test_decide.py": 1,
       "docs/FILES.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -255364,6 +255451,7 @@
       "docs/optimization-workbench-plan.md": 1,
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/tradingview-card-coverage.json": 5,
@@ -255484,6 +255572,7 @@
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
       "ecosystem/runner.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "prompts.md": 1
     },
@@ -256454,6 +256543,7 @@
       "liquidity/src/aero_lp/addresses.py": 1,
       "liquidity/uv.lock": 98,
       "llms-sitemap.txt": 60,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 4,
       "mongo/README.md": 1,
       "mongo/load.py": 8,
@@ -265402,6 +265492,9 @@
       "llms-small.txt": 1,
       "llms.txt": 1
     },
+    "crawled": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "craze": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -267179,6 +267272,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-manifest.json": 1,
       "ecosystem/api/control.openapi.json": 6,
       "ecosystem/web.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/server.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/coin-intelligence/rain-rain.md": 2,
@@ -267661,6 +267755,7 @@
       "index/search.py": 2,
       "liquidity/README.md": 1,
       "llms-sitemap.txt": 9,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "mongo/load.py": 2,
       "mongo/queries/06-experiments-and-pbo.js": 2,
@@ -270575,6 +270670,9 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_i2k4hidp_pine3d_a_native_3d_graphical_rendering_engine.md": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 1
     },
+    "culls": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "culminating": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -271022,6 +271120,7 @@
     },
     "curator": {
       "docs/profitable-crypto-strategies-analysis.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "research/profitable-crypto-strategies-analysis.md": 1
     },
     "curators": {
@@ -272972,6 +273071,7 @@
       "backtester/strategy_cards/incomplete/tv_asev0vxd_tasc_2022_07_pairs_rotation_with_ehlers_loops.md": 1,
       "backtester/strategy_cards/incomplete/tv_qrevzodw_mad_acceleration_based_dampened_sma_projections.md": 1,
       "docs/FILES.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/tradingview-card-coverage.json": 8,
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1,
@@ -273082,6 +273182,7 @@
       "liquidity/tests/test_providers.py": 12,
       "llms-sitemap.txt": 5,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/05-backtests.js": 5,
@@ -274394,6 +274495,7 @@
     },
     "cvs": {
       "docs/archive/memory-2026-11-08.md": 2,
+      "market-graph-geometry-prompt.md": 3,
       "research/LEVERAGE-ECONOMICS.md": 3,
       "research/five-minute-perps-suite/run-report.md": 1,
       "research/five-minute-perps-suite/run-state.json": 53,
@@ -289060,6 +289162,7 @@
       "docs/bot-manager-handoff.md": 1,
       "docs/design/chrome-workspace/proposal.md": 1,
       "docs/worktree-consolidation-2026-11-10.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
@@ -295075,7 +295178,9 @@
       "docs/TRADINGVIEW-REFERENCE.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 2,
       "docs/trading-signals-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 1,
+      "prompts.md": 1,
       "research/PROMPT_STRATEGIES.md": 3,
       "research/RANKED_LISTS.md": 3,
       "research/RATIO-ROTATION.md": 1,
@@ -299742,6 +299847,7 @@
       "llms-sitemap.txt": 5,
       "llms-small.txt": 1,
       "llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "pagesource": 2,
       "prompts.md": 18,
@@ -299848,6 +299954,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "deepening": {
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 1
     },
     "deepens": {
@@ -306703,6 +306810,7 @@
       "ecosystem/web/vendor/LICENSE": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "llms-full.txt": 9,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "mongo/queries/03-signals-and-indicators.js": 2,
       "research/PROMPT_STRATEGIES.md": 3,
@@ -307055,6 +307163,7 @@
       "soltui/tests/test_docs_search.py": 1
     },
     "degrading": {
+      "market-graph-geometry-prompt.md": 1,
       "skills/trading-and-investing/references/sleeve-weighting-and-objective-selection.md": 1
     },
     "degram": {
@@ -309346,7 +309455,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 3,
       "extension/src/bg/service-worker.js": 2,
       "memory.md": 3,
-      "prompts.md": 4,
+      "prompts.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
       "research/short_horizon_economics.py": 1,
@@ -309383,6 +309492,7 @@
       "docs/design/chrome-workspace/prompt-optimization.md": 7,
       "docs/superpowers/plans/2026-11-09-backtester-integrity.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/PROMPT_STRATEGIES.md": 3
     },
     "delivered": {
@@ -309553,7 +309663,7 @@
       "docs/worktree-consolidation-2026-11-10.md": 2,
       "ecosystem/web.py": 1,
       "extension/tools/bot-manager-e2e.mjs": 1,
-      "memory.md": 66,
+      "memory.md": 65,
       "oracle/README.md": 1,
       "oracle/tests/test_core.py": 1,
       "prompts.md": 11,
@@ -311296,6 +311406,8 @@
       "docs/strategy-agent/optimized-prompt.md": 3,
       "ecosystem/api/control.openapi.json": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
+      "market-graph-geometry-prompt.md": 1,
+      "prompts.md": 1,
       "research/LEVERAGE-ECONOMICS.md": 2,
       "research/RANKED_LISTS.md": 2,
       "research/STRATEGIES.md": 2,
@@ -311608,6 +311720,7 @@
     },
     "depletion": {
       "backtester/guides/triangular_arbitrage.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 4
     },
     "deploy": {
@@ -312295,6 +312408,7 @@
       "extension/test/market.test.js": 1,
       "liquidity/src/aero_lp/abi.py": 4,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 5,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/FIVE-MINUTE-PERPS.md": 3,
@@ -316779,6 +316893,7 @@
     },
     "detailing": {
       "docs/archive/memory-2026-11-08.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 1
     },
@@ -318738,7 +318853,7 @@
       "docs/strategy-agent/optimized-prompt.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 2,
       "docs/superpowers/prompts/2026-11-09-bot-manager-original.txt": 1,
-      "prompts.md": 8,
+      "prompts.md": 9,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 9,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -321931,7 +322046,7 @@
       "extension/test/cdo-regressions.test.js": 1,
       "extension/test/http-audit.test.js": 1,
       "memory.md": 6,
-      "prompts.md": 1,
+      "prompts.md": 2,
       "research/RATIO-ROTATION.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
       "research/strategy_experiment/REPORT.md": 1,
@@ -325041,6 +325156,7 @@
       "backtester/strategy_cards/incomplete/tv_7s0lx2bw_redk_volume_accelerated_directional_energy_ratio_redk_vader.md": 1,
       "backtester/strategy_cards/incomplete/tv_y1wyhpg2_the_best_long_term_indicator.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/strategy_experiment/audit_integrity.json": 1,
       "research/strategy_experiment/audit_integrity.md": 1,
       "research/tradingview-card-coverage.json": 6,
@@ -327331,6 +327447,7 @@
       "extension/src/ui/signal-desk.js": 2,
       "extension/src/ui/soltui-panel.js": 1,
       "llms-sitemap.txt": 12,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "mongo/README.md": 1,
       "mongo/queries/04-decisions.js": 1,
@@ -328897,6 +329014,7 @@
       "extension/src/bg/service-worker.js": 2,
       "extension/src/ui/signal-desk.js": 1,
       "extension/test/node-deps-audit.test.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -332086,6 +332204,7 @@
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/src/aero_lp/scout.py": 3,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "oracle/README.md": 1,
@@ -334455,6 +334574,7 @@
       "backtester/strategy_research/tv_xh8tldte_realtime_delta_volume_action_lucf.md": 1,
       "docs/FILES.md": 4,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/sweep.py": 2,
@@ -335366,6 +335486,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 4,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/07-documents-and-search.js": 1,
@@ -336201,6 +336322,7 @@
       "llms-sitemap.txt": 12,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
@@ -336837,6 +336959,7 @@
       "liquidity/tests/test_market_state.py": 1
     },
     "dives": {
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 1
     },
     "divide": {
@@ -345441,7 +345564,9 @@
       "docs/optimization-workbench-run.md": 1,
       "docs/repo-bootstrap-audit-2026-11-10.md": 2,
       "llms-full.txt": 1,
-      "memory.md": 1,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 2,
+      "prompts.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/CLAUDE.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/RETRIEVAL.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/codebase-overview.md": 2,
@@ -345449,6 +345574,9 @@
       "tradingview/tradingviewinputoptimizer_v2-7/docs/onboarding.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 5,
       "tradingview/tradingviewinputoptimizer_v2-7/memory.md": 5
+    },
+    "dossiers": {
+      "market-graph-geometry-prompt.md": 1
     },
     "dot": {
       "backtester/core/cointegration.py": 3,
@@ -346024,6 +346152,7 @@
       "backtester/strategy_cards/hurst_regime_test.md": 2,
       "backtester/strategy_cards/ou_half_life_sizing.md": 3,
       "backtester/strategy_cards/zscore.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
       "research/tradingview-card-coverage.json": 3,
@@ -349820,6 +349949,7 @@
       "docs/dso-skill/SKILL.md": 1,
       "docs/repo-bootstrap-audit-2026-11-06.md": 1,
       "index/make_files_doc.py": 4,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/requirements.txt": 2,
       "mongo/tests/test_load.py": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -354877,6 +355007,9 @@
       "liquidity/src/aero_lp/providers.py": 2,
       "liquidity/tests/test_providers.py": 2
     },
+    "dynamical": {
+      "market-graph-geometry-prompt.md": 2
+    },
     "dynamically": {
       "backtester/guides/tv_p3xsntqp_how_to_use_session_volume_hd_to_study_price_and_volume.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ej53t8wv_support_resistance_channels.md": 1,
@@ -354973,6 +355106,7 @@
       "backtester/strategy_research/tv_43000778574_mean_transaction_size_in_bytes.md": 1,
       "docs/FILES.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 2,
       "research/tradingview-card-coverage.json": 51,
@@ -369935,6 +370069,7 @@
       "liquidity/tests/test_providers_network.py": 1,
       "liquidity/tests/test_strategy.py": 11,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 3,
       "oracle/README.md": 1,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 3,
@@ -373073,6 +373208,7 @@
       "executor/tests/test_authority.py": 9,
       "extension/src/core/commands.js": 2,
       "extension/test/bot-manager.test.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
@@ -373153,6 +373289,9 @@
     "effective_leverage": {
       "soltui/council.py": 2,
       "soltui/simulation.py": 3
+    },
+    "effective_strategies": {
+      "market-graph-geometry-prompt.md": 1
     },
     "effective_trials": {
       "backtester/core/deflated_sharpe.py": 3,
@@ -373313,6 +373452,9 @@
     "efficacy": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_12ferxal_harmonicpattern.md": 1,
       "backtester/strategy_cards/incomplete/tv_rs3xqwyx_support_and_resistance_logistic_regression_flux_charts.md": 1,
+      "market-graph-geometry-prompt.md": 5,
+      "memory.md": 1,
+      "prompts.md": 2,
       "research/five-minute-perps-suite/source-leads.json": 1,
       "research/tradingview-card-coverage.json": 2,
       "research/tradingview-script-profiles/shard-a.jsonl": 1
@@ -375387,6 +375529,7 @@
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "liquidity/src/aero_lp/providers.py": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/strategy_experiment/FILES.md": 4,
       "research/strategy_experiment/archives.json": 4,
@@ -377938,6 +378081,7 @@
       "backtester/strategy_cards/bb_breakout.md": 1,
       "docs/design/bot-control-room/SKILLS.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/forex-and-currency-trading.md": 1,
@@ -378382,6 +378526,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 4,
       "docs/superpowers/prompts/2026-11-09-bot-manager-manifest.json": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 4,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/STRATEGIES.md": 1,
@@ -384791,6 +384936,7 @@
       "docs/profitable-crypto-strategies-analysis.md": 2,
       "ecosystem/web/vendor/LICENSE": 10,
       "extension/vendor/lightweight-charts/LICENSE": 10,
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 4,
       "research/coin-intelligence/hype-hyperliquid.md": 2,
       "research/coin-intelligence/rain-rain.md": 1,
@@ -392223,6 +392369,7 @@
       "docs/bot-manager-oracle-interface.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 4,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 8,
@@ -402427,6 +402574,7 @@
       "docs/optimization-workbench.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "ecosystem/wiki.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/strategy_config_sweep.py": 2,
       "research/tradingview-card-coverage.json": 29,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
@@ -402564,6 +402712,7 @@
       "docs/strategy-optimization-concept-family.md": 1,
       "ecosystem/backtests.py": 1,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/README.md": 1,
       "oracle/reader.py": 9,
@@ -413688,6 +413837,7 @@
       "liquidity/tests/test_executor.py": 24,
       "liquidity/tests/test_executor_audit.py": 14,
       "liquidity/tests/test_submission_audit.py": 13,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 3,
       "oracle/cli.py": 1,
       "oracle/engine.py": 21,
@@ -414041,6 +414191,7 @@
       "executor/src/executor/authority.py": 3,
       "executor/src/executor/engine.py": 1,
       "extension/test/surfaces.test.js": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 1,
       "oracle/tests/test_archived_reader.py": 1,
       "oracle/tests/test_guidance.py": 1,
@@ -415442,6 +415593,7 @@
       "llms-sitemap.txt": 4,
       "llms-small.txt": 1,
       "llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 7,
       "mongo/queries/04-decisions.js": 1,
       "mongo/queries/05-backtests.js": 1,
@@ -416348,6 +416500,7 @@
       "docs/repo-bootstrap-audit-2026-11-10.md": 1,
       "docs/strategy-agent/optimized-prompt.md": 1,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-card-coverage.json": 2,
@@ -416386,6 +416539,8 @@
       "backtester/strategy_research/tv_43000589195_pivot_points_high_low.md": 2,
       "backtester/strategy_research/tv_y3pnzg2q_correlation_heatmap.md": 1,
       "docs/profitable-crypto-strategies-analysis.md": 1,
+      "market-graph-geometry-prompt.md": 1,
+      "prompts.md": 1,
       "research/RANKED_LISTS.md": 2,
       "research/coin-intelligence/rain-rain.md": 4,
       "research/profitable-crypto-strategies-analysis.md": 1,
@@ -419232,6 +419387,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 34,
       "mongo/schema.py": 6,
       "mongo/tests/test_analysis_regressions.py": 1,
@@ -421981,6 +422137,7 @@
       "docs/design/soltui-v2/mockup.py": 3,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "extension/README.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/strategy_experiment/README.md": 1,
@@ -422201,6 +422358,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 7,
       "docs/archive/memory-2026-11-08.md": 2,
       "docs/archive/memory-2026-11-10.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 3,
       "research/RANKED_LISTS.md": 2,
       "research/STRATEGIES.md": 3,
@@ -427837,6 +427995,7 @@
       "extension/src/market/tokens.js": 2,
       "extension/src/ui/view-markets.js": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 2,
       "prompts.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
@@ -431727,6 +431886,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 4,
       "llms.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 8,
       "oracle/feeds.py": 1,
       "prompts.md": 4,
@@ -432230,6 +432390,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/backtester-history-handoff.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/RANKED_LISTS.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
@@ -432321,6 +432482,7 @@
       "backtester/strategy_cards/incomplete/tv_ctjx82hp_extrapolated_pivot_connector_lets_make_support_and_resistances.md": 1,
       "backtester/strategy_research/tv_mketjg7e_periodic_linear_regressions_luxalgo.md": 1,
       "docs/FILES.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -442374,7 +442536,7 @@
       "docs/integrations-and-assumptions.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "index/make_files_doc.py": 1,
-      "prompts.md": 1,
+      "prompts.md": 2,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/coin-intelligence/doge-dogecoin.md": 2,
@@ -442434,6 +442596,7 @@
       "index/search.py": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/07-documents-and-search.js": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/candle_gap_audit.py": 1,
@@ -442928,6 +443091,7 @@
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-08.md": 2,
       "docs/crypto-bot-monitor-full-suite-20261109.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -443368,6 +443532,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/README.md": 1,
       "oracle/tests/test_archived_reader.py": 1,
@@ -444072,6 +444237,7 @@
       "extension/tools/control-room-e2e.mjs": 1,
       "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/tests/test_daemon.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -444391,6 +444557,9 @@
       "soltui/commands.py": 3,
       "soltui/tests/test_tui.py": 3,
       "soltui/tui.py": 1
+    },
+    "failure_trigger": {
+      "market-graph-geometry-prompt.md": 1
     },
     "failure_window": {
       "botmanager/src/botmanager/ledger.py": 3,
@@ -445564,6 +445733,7 @@
       "skills/trading-and-investing/references/trading-psychology-and-behavioral-finance.md": 1
     },
     "falsification": {
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "skills/trading-and-investing/references/cross-asset-generalisation-testing.md": 1
     },
@@ -447073,6 +447243,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 3,
       "llms.txt": 3,
+      "market-graph-geometry-prompt.md": 3,
       "mongo/load.py": 5,
       "mongo/queries/02-strategies-and-cards.js": 6,
       "mongo/queries/04-decisions.js": 4,
@@ -462896,6 +463067,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_providers.py": 2,
       "llms-sitemap.txt": 19,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "mongo/queries/01-coins-and-bars.js": 2,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -463390,6 +463562,7 @@
     },
     "fin": {
       "docs/design/bot-control-room/screens/studio-desktop.png": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1,
@@ -463605,7 +463778,7 @@
       "liquidity/tests/test_backtest.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "llms-sitemap.txt": 3,
-      "memory.md": 116,
+      "memory.md": 115,
       "mongo/queries/05-backtests.js": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "prompts.md": 6,
@@ -467693,6 +467866,7 @@
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/backtester-history-handoff.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "prompts.md": 5,
       "research/five-minute-perps-suite/source-leads.json": 2,
       "tradingskilllist/trading-skills.md": 1
@@ -469286,6 +469460,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 21,
       "mongo/README.md": 2,
       "mongo/load.py": 5,
@@ -471244,6 +471419,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/LEVERAGE-TIERS.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -473198,6 +473374,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_daemon.py": 2,
       "llms-sitemap.txt": 5,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/tests/test_load.py": 1,
@@ -476288,6 +476465,7 @@
       "liquidity/src/aero_lp/strategy.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "liquidity/tests/test_safe_exit.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 4,
       "prompts.md": 4,
       "research/CROSS-ASSET-TRANSFER.md": 3,
@@ -476597,6 +476775,7 @@
       "liquidity/tests/test_safe_exit.py": 1,
       "liquidity/tests/test_submission_audit.py": 3,
       "llms-sitemap.txt": 12,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/quotes.py": 1,
       "research/5minleveragestrategies.json": 12,
@@ -477738,6 +477917,7 @@
       "extension/src/ui/ui.css": 5,
       "extension/src/ui/vote-tools.js": 2,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 2,
       "pagesource": 121,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 7,
@@ -481212,6 +481392,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "executor/src/executor/signer.py": 1,
       "extension/src/ui/ui-kit.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/tests/test_analysis_regressions.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -481308,6 +481489,7 @@
       "docs/repo-bootstrap-audit-2026-11-08.md": 1,
       "extension/src/ui/ui-kit.js": 2,
       "liquidity/src/aero_lp/providers_report.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/tradingview-card-coverage.json": 8,
       "research/tradingview-script-profile-audit-prompts.md": 1,
@@ -483893,6 +484075,9 @@
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 3,
       "skills/trading-and-investing/references/onchain-pnl-and-tax-accounting.md": 1
     },
+    "formulations": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "forsee": {
       "research/tradingview-card-coverage.json": 1
     },
@@ -484193,6 +484378,7 @@
       "liquidity/README.md": 1,
       "llms-sitemap.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 25,
       "oracle/README.md": 1,
       "oracle/cli.py": 1,
@@ -485206,6 +485392,7 @@
     },
     "foundational": {
       "backtester/strategy_research/tv_yhpgau7a_carrier_volatility_pumori.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 4,
       "skills/trading-and-investing/references/portfolio-theory-and-asset-allocation.md": 1,
@@ -486803,6 +486990,7 @@
       "docs/FILES.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/dso-skill/references/passes.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/RANKED_LISTS.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -487374,6 +487562,7 @@
       "docs/FILES.md": 3,
       "docs/archive/memory-2026-11-08.md": 3,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/tradingview-card-coverage.json": 2,
       "skills/trading-and-investing/SKILL.md": 7,
@@ -489811,7 +490000,7 @@
     "friend": {
       "botmanager/tests/test_cli.py": 1,
       "memory.md": 1,
-      "prompts.md": 3,
+      "prompts.md": 4,
       "research/tradingview-card-coverage.json": 23
     },
     "friendlier": {
@@ -490510,6 +490699,7 @@
       "docs/strategy-optimization-concept-family.md": 2,
       "docs/trading-signals-concept-family.md": 2,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 4,
       "prompts.md": 9,
       "research/COMPOUND-FRONTIER.md": 14,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -493010,6 +493200,7 @@
       "llms-sitemap.txt": 5,
       "llms.txt": 2,
       "llms/defillama-llms.txt": 4,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 33,
       "mongo/README.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -493019,7 +493210,7 @@
       "oracle/README.md": 1,
       "oracle/strategies.py": 1,
       "pagesource": 40,
-      "prompts.md": 30,
+      "prompts.md": 31,
       "research/5minleveragestrategies.json": 1,
       "research/COMPOUND-FRONTIER.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -504904,6 +505095,7 @@
       "extension/src/wallet/signer.js": 1,
       "index/make_concepts_doc.py": 2,
       "index/make_files_doc.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 1,
       "research/RANKED_LISTS.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 7,
@@ -505355,6 +505547,7 @@
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -506200,6 +506393,8 @@
       "extension/src/ui/dashboard.html": 1,
       "extension/test/core.test.js": 1,
       "liquidity/src/aero_lp/strategy.py": 1,
+      "market-graph-geometry-prompt.md": 9,
+      "prompts.md": 1,
       "research/GRID-REVIEW.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 14,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -506364,10 +506559,13 @@
       "extension/test/signal-desk.test.js": 1,
       "index/make_files_doc.py": 3,
       "llms-sitemap.txt": 11,
+      "market-graph-geometry-prompt.md": 7,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/load.py": 4,
       "mongo/queries/06-experiments-and-pbo.js": 4,
       "mongo/schema.py": 2,
+      "prompts.md": 3,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/RANKED_LISTS.md": 13,
       "research/TOP5-RECOMMENDATION.md": 1,
@@ -510558,6 +510756,7 @@
       "index/make_files_doc.py": 3,
       "liquidity/config.example.toml": 2,
       "llms-sitemap.txt": 3072,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 22,
       "mongo/load.py": 9,
       "mongo/queries/08-provenance-and-health.js": 1,
@@ -512104,7 +512303,8 @@
       "liquidity/tests/test_clmath.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_executor.py": 1,
-      "memory.md": 1,
+      "market-graph-geometry-prompt.md": 3,
+      "memory.md": 3,
       "oracle/guidance.py": 1,
       "pagesource": 1,
       "prompts.md": 1,
@@ -515307,14 +515507,15 @@
       "ecosystem/web/index.html": 4,
       "ecosystem/web/oracle-chart.js": 18,
       "llms-sitemap.txt": 3,
-      "memory.md": 4,
+      "market-graph-geometry-prompt.md": 7,
+      "memory.md": 10,
       "oracle/README.md": 2,
       "oracle/engine.py": 5,
       "oracle/graphdb.py": 9,
       "oracle/reader.py": 3,
       "oracle/tests/test_graphdb.py": 16,
       "pagesource": 1,
-      "prompts.md": 10,
+      "prompts.md": 14,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 7,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 7,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -516506,6 +516707,7 @@
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_allocator_ledger.py": 1,
       "llms-sitemap.txt": 17,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
@@ -517384,6 +517586,7 @@
       "backtester/core/report.py": 2,
       "docs/design/chrome-workspace/prompt-optimization.md": 4,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/PROMPT_STRATEGIES.md": 2
     },
     "grounds": {
@@ -519175,6 +519378,7 @@
     "guardrails": {
       "docs/dso-skill/SKILL.md": 5,
       "docs/strategy-optimization-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/dso_audit.py": 1
     },
     "guards": {
@@ -524802,6 +525006,7 @@
       "extension/src/market/net.js": 2,
       "extension/test/wallet-pubkey.test.js": 1,
       "extension/tools/bot-manager-e2e.mjs": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/load.py": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
       "prompts.md": 1,
@@ -527732,6 +527937,7 @@
       "liquidity/tests/test_executor.py": 4,
       "liquidity/tests/test_executor_audit.py": 2,
       "liquidity/tests/test_safe_exit.py": 6,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 8,
       "mongo/README.md": 2,
       "mongo/tests/test_load_audit.py": 1,
@@ -533413,6 +533619,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_jpkfecgc_no_duplicates_interval_range_eq.md": 3,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_x2llrvbe_higher_order_pivots.md": 1,
       "docs/FILES.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/five-minute-perps-suite/accepted-gate-receipt.json": 3,
       "research/five-minute-perps-suite/coverage-resolution.json": 3,
@@ -533422,6 +533629,9 @@
       "research/tradingview-card-coverage.json": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 2,
       "research/tradingview-script-understanding.json": 1
+    },
+    "hierarchies": {
+      "market-graph-geometry-prompt.md": 1
     },
     "hierarchy": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hv8ghojp_recursive_auto_pitchfork_trendoscope.md": 4,
@@ -534107,6 +534317,7 @@
       "liquidity/tests/test_providers.py": 9,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-sitemap.txt": 12,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "mongo/load.py": 2,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -544848,6 +545059,9 @@
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md": 1
     },
+    "homology": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "homz": {
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1
@@ -546596,6 +546810,7 @@
       "liquidity/tests/test_market_state.py": 2,
       "liquidity/tests/test_strategy.py": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "mongo/README.md": 4,
       "mongo/load.py": 2,
@@ -550257,6 +550472,8 @@
       "index/idle.py": 1,
       "index/ollama_ensure.py": 1,
       "liquidity/CLAUDE.md": 12,
+      "market-graph-geometry-prompt.md": 3,
+      "memory.md": 2,
       "oracle/guidance.py": 1,
       "oracle/server.py": 6,
       "oracle/tests/test_server.py": 8,
@@ -552031,6 +552248,7 @@
     "hyperbolic": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_34r4mh5w_market_microstructure_analytics.md": 1,
       "backtester/strategy_cards/incomplete/tv_cluzc70g_wavetrend_3d.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "research/tradingview-card-coverage.json": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
       "research/tradingview-script-understanding.json": 1
@@ -552291,6 +552509,7 @@
       "docs/dso-skill/SKILL.md": 1,
       "docs/dso-skill/references/passes.md": 1,
       "docs/strategy-optimization-concept-family.md": 2,
+      "market-graph-geometry-prompt.md": 2,
       "oracle/README.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/PROMPT_STRATEGIES.md": 2,
@@ -556298,6 +556517,7 @@
       "soltui/bgqueue.py": 1
     },
     "identifiable": {
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/xrp-ripple.md": 2,
       "research/tradingview-card-coverage.json": 1,
       "skills/trading-and-investing/references/jupiter-jlp-pool.md": 2
@@ -556325,6 +556545,7 @@
       "docs/archive/memory-2026-11-08.md": 1,
       "ecosystem/web/vendor/LICENSE": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/tradingview-card-coverage.json": 21,
@@ -557054,6 +557275,7 @@
       "executor/README.md": 1,
       "extension/test/http-audit.test.js": 1,
       "llms-sitemap.txt": 5,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 3,
       "research/5minleveragestrategies.json": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 35,
@@ -557742,6 +557964,7 @@
       "liquidity/tests/test_submission_audit.py": 4,
       "llms-sitemap.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/feeds.py": 5,
       "pagesource": 9,
@@ -560923,6 +561146,7 @@
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 10,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -563932,6 +564156,9 @@
     },
     "in_ata": {
       "executor/src/executor/txverify.py": 4
+    },
+    "in_boundary_edge_metrics": {
+      "market-graph-geometry-prompt.md": 1
     },
     "in_domain": {
       "backtester/README.md": 1,
@@ -574979,6 +575206,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "index/build.py": 1,
       "llms-sitemap.txt": 20,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 5,
       "mongo/load.py": 4,
       "mongo/queries/03-signals-and-indicators.js": 12,
@@ -576154,6 +576382,12 @@
     "ine": {
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1
+    },
+    "ineffective": {
+      "market-graph-geometry-prompt.md": 1
+    },
+    "ineffective_strategies": {
+      "market-graph-geometry-prompt.md": 1
     },
     "inefficiencies": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_axtmvrud_fair_value_gap_profile_rolling_poc_bigbeluga.md": 2,
@@ -578077,6 +578311,7 @@
     "inflections": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_x2llrvbe_higher_order_pivots.md": 4,
       "docs/FILES.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 2,
       "research/tradingview-script-understanding.json": 1
@@ -579591,6 +579826,7 @@
       "ecosystem/tests/test_votes.py": 1,
       "extension/README.md": 1,
       "extension/src/core/commands.js": 1,
+      "market-graph-geometry-prompt.md": 2,
       "oracle/cli.py": 1,
       "oracle/engine.py": 1,
       "oracle/tests/test_archived_reader.py": 1,
@@ -579639,7 +579875,8 @@
       "soltui/tests/test_learning_owner.py": 1
     },
     "ingests": {
-      "docs/TRADINGVIEW-REFERENCE.md": 1
+      "docs/TRADINGVIEW-REFERENCE.md": 1,
+      "market-graph-geometry-prompt.md": 1
     },
     "ingredient": {
       "docs/COMPOUND-5M-PAPER.md": 1
@@ -580408,6 +580645,7 @@
       "extension/tools/control-room-e2e.mjs": 1,
       "liquidity/src/aero_lp/daemon.py": 1,
       "llms-sitemap.txt": 7,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 8,
       "oracle/README.md": 1,
       "oracle/feeds.py": 1,
@@ -580818,7 +581056,7 @@
       "extension/src/core/bot-manager.js": 6,
       "extension/src/core/commands.js": 1,
       "extension/test/bot-manager.test.js": 3,
-      "memory.md": 3,
+      "memory.md": 5,
       "oracle/tests/test_multi_instrument.py": 1,
       "oracle/tests/test_selected_server.py": 1,
       "oracle/tests/test_server.py": 1,
@@ -583681,7 +583919,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 4,
       "oracle/tests/test_selected_server.py": 1,
-      "prompts.md": 1,
+      "prompts.md": 2,
       "research/5minleveragestrategies.json": 6,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -584168,6 +584406,7 @@
       "extension/test/soltui-panel.test.js": 1,
       "extension/tools/e2e.mjs": 1,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 6,
       "oracle/server.py": 1,
       "oracle/strategies.py": 2,
@@ -587037,6 +587276,7 @@
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 7,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 12,
       "research/coin-intelligence/bnb-binance-coin.md": 2,
       "research/coin-intelligence/btc-bitcoin.md": 2,
@@ -587284,6 +587524,7 @@
       "extension/test/wallet.test.js": 2,
       "index/make_files_doc.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/tests/test_archived_reader.py": 1,
       "prompts.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
@@ -590699,6 +590940,7 @@
       "docs/design/soltui-v2/DESIGN.md": 2,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "extension/README.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/tradingview-card-coverage.json": 15,
@@ -590910,6 +591152,9 @@
     "interdependent": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qldv6ukv_lognormal.md": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 1
+    },
+    "interdisciplinary": {
+      "market-graph-geometry-prompt.md": 1
     },
     "interest": {
       "backtester/core/coinfit.py": 2,
@@ -593635,6 +593880,7 @@
       "llms-sitemap.txt": 4,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "prompts.md": 2,
       "research/CANDLE-GAP-AUDIT.md": 2,
@@ -596978,6 +597224,7 @@
       "extension/tools/dryrun.js": 1,
       "index/make_files_doc.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 7,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
@@ -597472,6 +597719,7 @@
       "docs/design/chrome-workspace/proposal.md": 1,
       "docs/oracle-optimized-prompt.md": 1,
       "docs/strategy-agent/optimized-prompt.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -611230,7 +611478,8 @@
       "liquidity/tests/test_submission_audit.py": 6,
       "llms-sitemap.txt": 103,
       "llms/defillama-llms.txt": 2,
-      "memory.md": 25,
+      "market-graph-geometry-prompt.md": 2,
+      "memory.md": 26,
       "mongo/README.md": 3,
       "mongo/load.py": 12,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -611264,7 +611513,7 @@
       "postman/mocks/botmanager-jupiter-swap-v1/config.yaml": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/default.js": 4,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 2,
-      "prompts.md": 3,
+      "prompts.md": 4,
       "research/5minleveragestrategies.json": 2,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 3,
@@ -611614,8 +611863,9 @@
       "liquidity/src/aero_lp/gates.py": 2,
       "liquidity/tests/test_gates.py": 1,
       "llms-sitemap.txt": 9,
-      "memory.md": 5,
-      "prompts.md": 4,
+      "market-graph-geometry-prompt.md": 4,
+      "memory.md": 7,
+      "prompts.md": 5,
       "research/five-minute-perps-suite/run-state.json": 4,
       "research/frontier_tune.py": 1,
       "research/full_suite.py": 2,
@@ -621558,7 +621808,7 @@
       "liquidity/tests/test_gates.py": 3,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 9,
+      "memory.md": 10,
       "prompts.md": 10,
       "research/5minleveragestrategies.json": 7,
       "research/LEVERAGE-TIERS.md": 3,
@@ -630395,6 +630645,7 @@
       "liquidity/tests/test_executor_audit.py": 2,
       "liquidity/tests/test_providers.py": 2,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 1,
       "research/RANKED_LISTS.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 39,
@@ -630651,6 +630902,7 @@
       "liquidity/src/aero_lp/chain.py": 1,
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/src/aero_lp/recovery.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "mongo/load.py": 1,
       "prompts.md": 1,
@@ -631735,6 +631987,8 @@
       "docs/trading-signals-concept-family.md": 4,
       "extension/src/bg/service-worker.js": 1,
       "extension/test/service-worker.test.js": 1,
+      "market-graph-geometry-prompt.md": 5,
+      "memory.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/five-minute-perps-suite/coverage-resolution.json": 3,
@@ -637158,7 +637412,9 @@
       "extension/test/alerts.test.js": 10,
       "liquidity/src/aero_lp/providers_report.py": 1,
       "llms-sitemap.txt": 4,
-      "prompts.md": 3,
+      "market-graph-geometry-prompt.md": 2,
+      "memory.md": 3,
+      "prompts.md": 6,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 10,
       "research/RANKED_LISTS.md": 1,
@@ -644041,6 +644297,7 @@
       "index/make_files_doc.py": 4,
       "liquidity/STATE_FILES.md": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "mongo/schema.py": 1,
       "oracle/reader.py": 3,
@@ -644556,6 +644813,7 @@
       "extension/tools/dryrun.js": 3,
       "index/build.py": 1,
       "llms-sitemap.txt": 12,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 3,
       "research/STRATEGIES.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 65,
@@ -646243,7 +646501,8 @@
       "index/search.py": 3,
       "liquidity/scripts/aero-lp-service": 1,
       "llms-sitemap.txt": 410,
-      "memory.md": 2,
+      "market-graph-geometry-prompt.md": 4,
+      "memory.md": 3,
       "mongo/queries/05-backtests.js": 1,
       "oracle/README.md": 1,
       "pagesource": 2,
@@ -652360,6 +652619,7 @@
       "docs/short-horizon-leverage-concept-family.md": 2,
       "extension/e2e/lib/signal-desk.mjs": 2,
       "llms-sitemap.txt": 31,
+      "market-graph-geometry-prompt.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 46,
@@ -653250,7 +653510,8 @@
       "extension/src/core/pnl.js": 2,
       "extension/test/core.test.js": 3,
       "index/make_files_doc.py": 1,
-      "memory.md": 4,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 5,
       "research/5minleveragestrategies.json": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/coin-intelligence/eth-ethereum.md": 3,
@@ -655041,6 +655302,7 @@
       "llms-small.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 6,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "mongo/queries/07-documents-and-search.js": 1,
       "pagesource": 2,
@@ -655614,6 +655876,7 @@
       "liquidity/tests/test_safe_exit.py": 6,
       "llms/defillama-llms-free.txt": 12,
       "llms/defillama-llms.txt": 12,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 2,
       "mongo/load.py": 32,
       "mongo/queries/03-signals-and-indicators.js": 1,
@@ -656814,6 +657077,8 @@
       "backtester/strategy_research/xs_momentum.md": 3,
       "docs/FILES.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
+      "market-graph-geometry-prompt.md": 3,
+      "memory.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -657393,7 +657658,7 @@
       "llms-small.txt": 1,
       "llms.txt": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 16,
+      "memory.md": 17,
       "mongo/README.md": 1,
       "mongo/load.py": 9,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -659804,6 +660069,7 @@
       "liquidity/tests/test_providers.py": 10,
       "liquidity/tests/test_safe_exit.py": 2,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 8,
       "mongo/README.md": 9,
       "mongo/load.py": 50,
@@ -662195,7 +662461,7 @@
       "llms-sitemap.txt": 4,
       "llms-small.txt": 1,
       "llms.txt": 1,
-      "memory.md": 48,
+      "memory.md": 49,
       "mongo/README.md": 3,
       "mongo/load.py": 2,
       "mongo/schema.py": 5,
@@ -662507,6 +662773,8 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_u1l7ixmp_rolling_candle_profile_with_buy_sell_signals_zeiierman.md": 3,
       "backtester/strategy_cards/incomplete/tv_4rlnnl5e_polynomial_linear_regression_volume_profile_bigbeluga.md": 2,
       "docs/FILES.md": 2,
+      "market-graph-geometry-prompt.md": 1,
+      "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/tradingview-card-coverage.json": 4,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
@@ -664637,6 +664905,7 @@
       "liquidity/tests/test_safe_exit.py": 3,
       "liquidity/tests/test_submission_audit.py": 7,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -665218,6 +665487,7 @@
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/tests/test_daemon.py": 1,
       "llms-sitemap.txt": 40,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "mongo/queries/04-decisions.js": 2,
       "mongo/tests/test_load.py": 1,
@@ -666182,6 +666452,7 @@
       "docs/trading-signals-concept-family.md": 1,
       "index/build.py": 3,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 1,
       "research/SWEEP-9COIN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -667206,6 +667477,7 @@
       "docs/dso-skill/SKILL.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "llms-sitemap.txt": 8,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 11,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/profitable-crypto-strategies-analysis.md": 1,
@@ -678000,6 +678272,8 @@
       "docs/FILES.md": 6,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 6,
+      "market-graph-geometry-prompt.md": 1,
+      "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 7,
       "research/coin-intelligence/btc-bitcoin.md": 6,
       "research/coin-intelligence/eth-ethereum.md": 3,
@@ -678031,6 +678305,7 @@
       "backtester/strategy_cards/incomplete/tv_8jahmkxs_bear_market_probability_model.md": 1,
       "backtester/strategy_cards/incomplete/tv_hjgcuw6g_dynamic_equity_allocation_model.md": 1,
       "docs/FILES.md": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/tradingview-card-coverage.json": 15,
       "research/tradingview-script-profiles/shard-a.jsonl": 4,
@@ -679542,6 +679817,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-original.txt": 1,
       "ecosystem/README.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/tradingview-card-coverage.json": 28,
@@ -681741,6 +682017,7 @@
       "extension/src/core/grid.js": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 2,
       "prompts.md": 3,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -684231,6 +684508,9 @@
       "backtester/tests/test_fetch_minutes_alt.py": 2,
       "docs/FILES.md": 1
     },
+    "manifolds": {
+      "market-graph-geometry-prompt.md": 2
+    },
     "manipulate": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_85fu3jne_simple_trendlines.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mzhkugci_geo.md": 1,
@@ -685433,6 +685713,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_providers.py": 2,
       "llms-sitemap.txt": 12,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/07-documents-and-search.js": 1,
       "mongo/queries/08-provenance-and-health.js": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 29,
@@ -685737,6 +686018,7 @@
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/tests/test_providers.py": 4,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/feeds.py": 11,
       "oracle/tests/test_multi_instrument.py": 3,
       "research/RANKED_LISTS.md": 1,
@@ -685876,6 +686158,7 @@
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/abi.py": 1,
       "liquidity/tests/test_providers.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 10,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -690575,6 +690858,7 @@
       "docs/FILES.md": 4,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/archive/memory-2026-11-08.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 13,
       "research/tradingview-card-coverage.json": 33,
       "research/tradingview-card-readiness.json": 4,
@@ -690590,6 +690874,9 @@
       "skills/trading-and-investing/references/technical-analysis.md": 1,
       "skills/trading-and-investing/references/the-greeks.md": 1,
       "skills/trading-and-investing/references/trading-risk-management.md": 1
+    },
+    "mathematical_metric": {
+      "market-graph-geometry-prompt.md": 1
     },
     "mathematically": {
       "backtester/PROMPT.md": 1,
@@ -690741,6 +691028,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_mmfinh17_zigzag.md": 1,
       "backtester/strategy_cards/incomplete/publication-profiles/tv_qaaxkw1p_ai_predictive_flow_zeiierman.md": 1,
       "docs/ECOSYSTEM-BOOTSTRAP.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 3,
       "research/tradingview-script-profile-audits/shard-b.jsonl": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 3,
@@ -690836,8 +691124,10 @@
       "index/build.py": 1,
       "index/search.py": 5,
       "llms-sitemap.txt": 18,
-      "memory.md": 5,
+      "market-graph-geometry-prompt.md": 3,
+      "memory.md": 6,
       "pagesource": 4,
+      "prompts.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 32,
       "research/coin-intelligence/README.md": 1,
@@ -695185,6 +695475,7 @@
       "liquidity/src/aero_lp/metrics.py": 1,
       "liquidity/tests/test_market_state.py": 2,
       "llms-sitemap.txt": 19,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "prompts.md": 2,
       "research/5minleveragestrategies.json": 8,
@@ -697059,6 +697350,7 @@
       "docs/high_signal_file_index.json": 1,
       "docs/short-horizon-leverage-concept-family.md": 1,
       "extension/README.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 2,
       "research/PROMPT_STRATEGIES.md": 3,
@@ -697088,6 +697380,7 @@
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 1
     },
     "mechanistic": {
+      "market-graph-geometry-prompt.md": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1
     },
     "mecp": {
@@ -699402,6 +699695,10 @@
       "research/tradingview-card-coverage.json": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 1
     },
+    "meso": {
+      "market-graph-geometry-prompt.md": 1,
+      "prompts.md": 1
+    },
     "message": {
       ".github/dependabot.yml": 5,
       "CLAUDE.md": 2,
@@ -700133,6 +700430,7 @@
       "liquidity/src/aero_lp/submissions.py": 8,
       "liquidity/uv.lock": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 16,
       "mongo/README.md": 1,
       "mongo/load.py": 22,
@@ -702467,6 +702765,7 @@
       "ecosystem/web/styles.css": 5,
       "extension/e2e/lib/signal-desk.mjs": 1,
       "extension/src/ui/soltui-panel.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 3,
       "research/COMPOUND-FRONTIER.md": 4,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -702743,6 +703042,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 5,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "mongo/README.md": 1,
       "mongo/queries/05-backtests.js": 4,
@@ -703687,6 +703987,7 @@
       "executor/tests/conftest.py": 4,
       "executor/tests/test_engine.py": 1,
       "executor/tests/test_txverify.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/TOP_COINS.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/coin-intelligence/sol-solana.md": 1,
@@ -703798,6 +704099,8 @@
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "llms-sitemap.txt": 5,
+      "market-graph-geometry-prompt.md": 2,
+      "prompts.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
@@ -708664,6 +708967,7 @@
       "soltui/commands.py": 1
     },
     "mission": {
+      "market-graph-geometry-prompt.md": 7,
       "research/tradingview-card-coverage.json": 4,
       "skills/trading-and-investing/references/trading-risks-and-protections.md": 4
     },
@@ -708927,7 +709231,7 @@
       "llms-small.txt": 2,
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 63,
+      "memory.md": 64,
       "oracle/README.md": 25,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "prompts.md": 79,
@@ -716026,6 +716330,7 @@
       "extension/src/ui/ui.css": 5
     },
     "monograph": {
+      "market-graph-geometry-prompt.md": 2,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1
     },
     "monopoly": {
@@ -720711,6 +721016,8 @@
       "liquidity/src/aero_lp/safe_exit.py": 1,
       "liquidity/tests/test_providers.py": 3,
       "llms-sitemap.txt": 39,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 1,
       "oracle/tests/test_multi_instrument.py": 2,
       "prompts.md": 3,
       "research/5minleveragestrategies.json": 4,
@@ -745219,6 +745526,7 @@
       "llms-full.txt": 3,
       "llms-sitemap.txt": 6,
       "llms-small.txt": 2,
+      "market-graph-geometry-prompt.md": 4,
       "memory.md": 4,
       "mongo/load.py": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
@@ -749941,6 +750249,7 @@
       "skills/trading-and-investing/references/ml-backtesting-pitfalls-and-production-systems.md": 1
     },
     "novelty": {
+      "market-graph-geometry-prompt.md": 4,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1
     },
     "november": {
@@ -760497,6 +760806,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 11,
       "research/coin-intelligence/eth-ethereum.md": 2,
@@ -762297,6 +762607,7 @@
       "extension/README.md": 1,
       "extension/src/bg/service-worker.js": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/5minleveragestrategies.json": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -773570,6 +773881,9 @@
       "soltui/tui.py": 1,
       "tools/land.sh": 1
     },
+    "ontologies": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "ontouchend": {
       "ecosystem/web/vendor/lightweight-charts-5.2.1.mjs": 2,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 2
@@ -776115,6 +776429,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "ecosystem/README.md": 1,
       "ecosystem/web/index.html": 2,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/README.md": 1,
       "prompts.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
@@ -776338,6 +776653,7 @@
       "ecosystem/web/styles.css": 4,
       "extension/README.md": 1,
       "extension/test/wallet-audit.test.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 4,
       "prompts.md": 2,
       "research/5minleveragestrategies.json": 1,
@@ -777377,7 +777693,7 @@
       "extension/src/ui/workspace-model.js": 1,
       "llms-sitemap.txt": 8,
       "memory.md": 1,
-      "prompts.md": 1,
+      "prompts.md": 3,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/profitable-crypto-strategies-analysis.md": 1,
       "research/sweep_untested.py": 1,
@@ -777629,6 +777945,7 @@
       "liquidity/src/aero_lp/allocator.py": 2,
       "liquidity/src/aero_lp/scout.py": 1,
       "llms-sitemap.txt": 5,
+      "memory.md": 1,
       "prompts.md": 9,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
@@ -779423,7 +779740,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 34,
       "llms-small.txt": 2,
-      "memory.md": 46,
+      "memory.md": 47,
       "oracle/README.md": 30,
       "oracle/__init__.py": 3,
       "oracle/__main__.py": 1,
@@ -779925,6 +780242,9 @@
     },
     "orchestrator": {
       "docs/optimization-workbench-run.md": 1,
+      "market-graph-geometry-prompt.md": 2,
+      "memory.md": 3,
+      "prompts.md": 3,
       "research/strategy_experiment/audit_integrity.json": 1
     },
     "ord": {
@@ -780136,6 +780456,7 @@
       "backtester/strategy_research/tv_34r4mh5w_market_microstructure_analytics.md": 2,
       "backtester/strategy_research/tv_43000773994_realized_market_cap.md": 2,
       "backtester/strategy_research/tv_xh8tldte_realtime_delta_volume_action_lucf.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 2,
       "research/strategy_aux_compare.py": 1,
       "research/strategy_experiment/audit_realism.json": 21,
@@ -785174,6 +785495,7 @@
       "liquidity/tests/test_providers.py": 8,
       "liquidity/tests/test_safe_exit.py": 7,
       "liquidity/tests/test_strategy.py": 4,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/engine.py": 1,
       "oracle/guidance.py": 1,
       "oracle/quotes.py": 3,
@@ -785258,6 +785580,9 @@
     },
     "out_md": {
       "liquidity/tests/test_providers.py": 3
+    },
+    "out_of_boundary_decay": {
+      "market-graph-geometry-prompt.md": 1
     },
     "out_of_bounds": {
       "soltui/tui.py": 1
@@ -786549,6 +786874,7 @@
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_providers.py": 4,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 6,
       "memory.md": 9,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
@@ -789242,11 +789568,13 @@
       "liquidity/tests/test_clmath.py": 3,
       "llms-full.txt": 2,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 8,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
       "mongo/tests/test_load_audit.py": 3,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
+      "prompts.md": 1,
       "research/5minleveragestrategies.json": 4,
       "research/GRID-REVIEW.md": 1,
       "research/TOP5-RECOMMENDATION.md": 1,
@@ -792754,7 +793082,7 @@
       "liquidity/tests/test_safe_exit.py": 14,
       "liquidity/tests/test_submission_audit.py": 23,
       "llms-sitemap.txt": 7,
-      "memory.md": 50,
+      "memory.md": 51,
       "oracle/README.md": 3,
       "oracle/cli.py": 7,
       "oracle/guidance.py": 2,
@@ -798847,6 +799175,7 @@
     },
     "papers": {
       "backtester/strategy_research/tv_ujgvguvt_volatility_risk_premium.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 10,
       "research/five-minute-perps-suite/run-state.json": 2,
       "research/five-minute-perps-suite/scored-concepts.json": 1,
@@ -799039,6 +799368,7 @@
       "docs/short-horizon-leverage-concept-family.md": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "ecosystem/backtests.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -800361,6 +800691,7 @@
       "index/make_files_doc.py": 4,
       "llms-sitemap.txt": 2,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "mongo/queries/06-experiments-and-pbo.js": 2,
       "oracle/engine.py": 5,
@@ -807253,6 +807584,7 @@
       "liquidity/tests/test_engine.py": 1,
       "liquidity/tests/test_gates.py": 4,
       "liquidity/tests/test_safe_exit.py": 5,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 36,
       "mongo/load.py": 2,
       "oracle/guidance.py": 1,
@@ -811601,6 +811933,7 @@
       "liquidity/src/aero_lp/gates.py": 1,
       "liquidity/src/aero_lp/providers.py": 1,
       "llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 16,
       "mongo/load.py": 3,
       "oracle/README.md": 1,
@@ -812008,6 +812341,7 @@
       "index/make_files_doc.py": 1,
       "llms-sitemap.txt": 21,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -814534,6 +814868,7 @@
       "docs/external-calls.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
+      "memory.md": 1,
       "research/RANKED_LISTS.md": 3,
       "research/STRATEGIES.md": 5,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
@@ -815841,7 +816176,7 @@
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
       "llms-sitemap.txt": 7,
-      "memory.md": 6,
+      "memory.md": 7,
       "oracle/engine.py": 3,
       "oracle/graphdb.py": 3,
       "oracle/quotes.py": 5,
@@ -820728,6 +821063,7 @@
       "extension/test/final-gate-audit.test.js": 1,
       "extension/test/wallet-audit.test.js": 1,
       "liquidity/tests/test_engine_audit.py": 2,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 7,
@@ -820842,6 +821178,7 @@
       "llms-facts.txt": 2,
       "llms-full.txt": 2,
       "llms-small.txt": 2,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 7,
       "oracle/README.md": 1,
       "prompts.md": 1,
@@ -822045,6 +822382,7 @@
       "extension/test/cdo-regressions.test.js": 1,
       "extension/test/live-tools.test.js": 3,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 6,
       "memory.md": 1,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 13,
@@ -822115,6 +822453,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-examples.json": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-manifest.json": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "skills/trading-and-investing/references/market-sessions-and-venues.md": 1
     },
     "phases": {
@@ -822189,6 +822528,9 @@
     },
     "phenomen": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "phenomena": {
+      "market-graph-geometry-prompt.md": 1
     },
     "phenomenal": {
       "research/tradingview-card-coverage.json": 1
@@ -823116,6 +823458,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_hjgcuw6g_dynamic_equity_allocation_model.md": 1,
       "backtester/strategy_cards/incomplete/tv_builtin_accumulative_swing_index.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-readiness.json": 2,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
       "skills/trading-and-investing/references/jupiter-perps-trading.md": 1
@@ -824571,6 +824914,7 @@
       "research/tradingview-card-coverage.json": 4
     },
     "pioneer": {
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 22
     },
     "pioneered": {
@@ -824748,6 +825092,7 @@
       "executor/src/executor/gates.py": 2,
       "executor/src/executor/manager.py": 2,
       "executor/tests/test_engine.py": 2,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/trx-tron.md": 1,
@@ -832814,6 +833159,7 @@
       "liquidity/tests/test_providers.py": 2,
       "llms-sitemap.txt": 9,
       "llms/defillama-llms-free.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
@@ -836412,6 +836758,7 @@
     },
     "populates": {
       "backtester/strategy_cards/incomplete/tv_llaoploy_liquidation_ranges_volume_oi_dots_kioseff_trading.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 1,
       "soltui/tests/test_coin_fit_ui.py": 1,
       "soltui/tests/test_liquidity.py": 1
@@ -839784,6 +840131,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 4,
       "docs/design/chrome-workspace/prompt-optimization.md": 1,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 1,
@@ -841229,7 +841577,8 @@
       "liquidity/tests/test_executor.py": 2,
       "llms-sitemap.txt": 2,
       "llms/defillama-llms.txt": 6,
-      "memory.md": 12,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 11,
       "mongo/schema.py": 1,
       "prompts.md": 4,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -842863,6 +843212,7 @@
       "docs/TRADINGVIEW-SCRIPT-CARD-FILES.md": 4,
       "docs/archive/memory-2026-11-08.md": 1,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -844647,6 +844997,7 @@
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/code-deep-optimizer-2026-11-08.md": 1,
       "docs/code-optimizer-scope-2026-11-08.json": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "research/five-minute-perps-suite/source-leads.json": 7,
       "research/minute_sweep.py": 7,
@@ -851737,6 +852088,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 6,
       "llms/defillama-llms-free.txt": 2,
       "llms/defillama-llms.txt": 3,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 2,
       "mongo/README.md": 5,
       "mongo/load.py": 5,
@@ -853323,6 +853675,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 1,
       "liquidity/src/aero_lp/ledger.py": 8,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 32,
       "oracle/quotes.py": 2,
       "oracle/store.py": 7,
@@ -856772,6 +857125,7 @@
       "liquidity/src/aero_lp/cli.py": 3,
       "liquidity/src/aero_lp/executor.py": 2,
       "liquidity/src/aero_lp/providers.py": 10,
+      "market-graph-geometry-prompt.md": 1,
       "research/RANKED_LISTS.md": 1,
       "research/candle_gap_audit.py": 1,
       "research/coin-intelligence/trx-tron.md": 1,
@@ -858999,6 +859353,7 @@
       "extension/test/wallet.test.js": 1,
       "extension/tools/control-room-e2e.mjs": 1,
       "index/make_files_doc.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "oracle/README.md": 2,
       "prompts.md": 1,
@@ -866636,8 +866991,9 @@
       "extension/README.md": 1,
       "extension/src/ui/popup.js": 1,
       "llms-sitemap.txt": 13,
-      "memory.md": 7,
-      "prompts.md": 31,
+      "market-graph-geometry-prompt.md": 3,
+      "memory.md": 9,
+      "prompts.md": 33,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/STRATEGIES.md": 2,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -868543,10 +868899,12 @@
       "llms-sitemap.txt": 1,
       "llms/defillama-llms-free.txt": 19,
       "llms/defillama-llms.txt": 25,
-      "memory.md": 3,
+      "market-graph-geometry-prompt.md": 4,
+      "memory.md": 6,
       "oracle/guidance.py": 1,
       "oracle/tests/test_selected_server.py": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/config.yaml": 1,
+      "prompts.md": 1,
       "research/PROMPT_STRATEGIES.md": 2,
       "research/TOP_COINS.md": 1,
       "research/coin-intelligence/README.md": 3,
@@ -869523,6 +869881,7 @@
       "extension/tools/api-server.js": 4,
       "extension/tools/control-room-e2e.mjs": 1,
       "extension/vendor/lightweight-charts/LICENSE": 5,
+      "memory.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 8,
       "research/coin-intelligence/rain-rain.md": 2,
       "research/strategy_experiment/audit_integrity.json": 26,
@@ -870000,6 +870359,7 @@
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/code-deep-optimizer-2026-11-08.md": 1,
       "executor/src/executor/config.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/coin-intelligence/sol-solana.md": 1,
       "research/tradingview-card-coverage.json": 10,
@@ -870350,6 +870710,7 @@
     "pruned": {
       "backtester/core/ticks.py": 1,
       "index/build.py": 4,
+      "market-graph-geometry-prompt.md": 1,
       "research/ratio_rotation.py": 1,
       "research/results/triggers_sol_1d.json": 1,
       "research/results/triggers_sol_1h.json": 1,
@@ -882782,6 +883143,9 @@
       "docs/design/chrome-workspace/prompt-optimized.md": 1,
       "docs/design/chrome-workspace/proposal.md": 1,
       "docs/profitable-crypto-strategies-analysis.md": 3,
+      "market-graph-geometry-prompt.md": 6,
+      "memory.md": 4,
+      "prompts.md": 4,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/profitable-crypto-strategies-analysis.md": 3,
@@ -884119,6 +884483,7 @@
       "extension/test/engine-command-audit.test.js": 1,
       "extension/test/wallet-audit.test.js": 4,
       "extension/tools/bot-manager-e2e.mjs": 3,
+      "market-graph-geometry-prompt.md": 2,
       "oracle/server.py": 1,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -884347,6 +884712,7 @@
       "extension/src/wallet/signer.js": 3,
       "extension/test/autoreload.test.js": 1,
       "liquidity/src/aero_lp/providers.py": 9,
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "research/tradingview-script-profile-audits/shard-b.jsonl": 1,
       "soltui/bgcontrol.py": 1,
@@ -889772,6 +890138,9 @@
     "raa": {
       "docs/design/bot-control-room/screens/fleet-desktop.png": 1
     },
+    "rabbithole": {
+      "market-graph-geometry-prompt.md": 2
+    },
     "rabby": {
       "skills/trading-and-investing/SKILL.md": 2,
       "skills/trading-and-investing/manifest.yaml": 1,
@@ -893458,6 +893827,7 @@
       "docs/FILES.md": 4,
       "docs/design/bot-control-room/DESIGN.md": 2,
       "extension/test/control-room.test.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/defillama-llms-risk-analysis.md": 1,
@@ -893869,6 +894239,7 @@
       "llms-sitemap.txt": 5,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
       "mongo/tests/test_load_audit.py": 2,
@@ -895970,6 +896341,7 @@
       "index/search.py": 4,
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/providers.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "mongo/README.md": 3,
       "mongo/load.py": 6,
@@ -899645,6 +900017,7 @@
       "backtester/strategy_cards/incomplete/tv_ya0kopdo_markov_chain_3d_fractalyst.md": 1,
       "backtester/strategy_research/tv_43000502040_volume_profile_indicators_basic_concepts.md": 1,
       "docs/FILES.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/tradingview-card-coverage.json": 8,
       "research/tradingview-script-profiles/shard-b.jsonl": 2,
@@ -907417,7 +907790,8 @@
       "liquidity/src/aero_lp/executor.py": 5,
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 2,
-      "memory.md": 7,
+      "market-graph-geometry-prompt.md": 5,
+      "memory.md": 8,
       "mongo/README.md": 2,
       "mongo/load.py": 2,
       "mongo/schema.py": 5,
@@ -911800,6 +912174,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/bot-manager-handoff.md": 1,
       "docs/design/chrome-workspace/proposal.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 8,
       "research/tick_backfill.py": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -913085,13 +913460,13 @@
       "llms-small.txt": 1,
       "llms/defillama-llms-free.txt": 1,
       "llms/defillama-llms.txt": 1,
-      "memory.md": 54,
+      "memory.md": 53,
       "mongo/load.py": 1,
       "mongo/queries/05-backtests.js": 1,
       "oracle/README.md": 1,
       "oracle/engine.py": 2,
       "oracle/graphdb.py": 2,
-      "prompts.md": 49,
+      "prompts.md": 50,
       "research/FIVE-MINUTE-PERPS.md": 2,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -915230,7 +915605,8 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 29,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 30,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
@@ -922695,11 +923071,14 @@
       "index/build.py": 4,
       "index/make_concepts_doc.py": 1,
       "llms-sitemap.txt": 16,
+      "market-graph-geometry-prompt.md": 6,
+      "memory.md": 1,
       "oracle/README.md": 1,
       "oracle/guidance.py": 1,
       "oracle/reader.py": 1,
       "oracle/strategies.py": 1,
       "oracle/tests/test_strategies.py": 2,
+      "prompts.md": 2,
       "research/5minleveragestrategies.json": 6,
       "research/COMPOUND-FRONTIER.md": 6,
       "research/CROSS-ASSET-TRANSFER.md": 10,
@@ -922853,6 +923232,9 @@
     "regime40": {
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1
     },
+    "regime_condition": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "regime_identification": {
       "backtester/core/scorecard.py": 4,
       "docs/FILES.md": 1,
@@ -922910,6 +923292,7 @@
       "docs/SCRIPTS.md": 1,
       "docs/design/chrome-workspace/proposal.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "research/5minleveragestrategies.json": 2,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -926487,6 +926870,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "index/README.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 20,
       "research/coin-intelligence/eth-ethereum.md": 2,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
@@ -926556,6 +926940,7 @@
       "botmanager/tests/test_legacy.py": 1,
       "docs/FILES.md": 14,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 18,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
       "research/tradingview-card-coverage.json": 28,
@@ -936211,6 +936596,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/05-backtests.js": 1,
       "prompts.md": 2,
       "research/CROSS-ASSET-TRANSFER.md": 2,
@@ -936725,7 +937111,7 @@
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "postman/mocks/botmanager-jupiter-swap-v1/default.js": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
-      "prompts.md": 40,
+      "prompts.md": 41,
       "research/LEVERAGE-ECONOMICS.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -937769,6 +938155,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/defillama-llms.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 8,
       "mongo/tests/test_snapshot_audit.py": 1,
       "postman/mocks/botmanager-jupiter-swap-v1/default.js": 1,
@@ -939606,7 +939993,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 9,
+      "memory.md": 8,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/results/grid_review_20261107.json": 2,
@@ -946675,7 +947062,7 @@
       "ecosystem/__init__.py": 2,
       "ecosystem/pyproject.toml": 1,
       "memory.md": 2,
-      "prompts.md": 3,
+      "prompts.md": 2,
       "research/full_suite.py": 2,
       "research/strategy_config_sweep.py": 2,
       "research/tick_backfill.py": 3,
@@ -946992,6 +947379,7 @@
       "docs/FILES.md": 2,
       "docs/profitable-crypto-strategies-analysis.md": 5,
       "docs/trading-signals-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 2,
       "research/coin-intelligence/doge-dogecoin.md": 2,
@@ -949070,6 +949458,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 2,
       "llms-small.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 7,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
@@ -953944,6 +954333,7 @@
       "liquidity/README.md": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
       "llms-sitemap.txt": 16,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/README.md": 1,
       "oracle/reader.py": 1,
       "oracle/strategies.py": 1,
@@ -955912,7 +956302,7 @@
       "extension/src/ui/soltui-panel.js": 1,
       "extension/tools/e2e.mjs": 1,
       "llms-full.txt": 1,
-      "memory.md": 11,
+      "memory.md": 12,
       "oracle/README.md": 1,
       "prompts.md": 3,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -963739,6 +964129,7 @@
       "docs/optimization-workbench.md": 1,
       "extension/src/market/evm.js": 1,
       "liquidity/tests/test_clmath.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/quotes.py": 1,
       "research/RANKED_LISTS.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -970515,6 +970906,7 @@
     "runbook": {
       "docs/ECOSYSTEM-WIKI.md": 1,
       "docs/OPERATIONS.md": 2,
+      "prompts.md": 2,
       "tradingview/tradingviewinputoptimizer_v2-7/README.md": 1,
       "tradingview/tradingviewinputoptimizer_v2-7/docs/repo-bootstrap-audit-2026-11-08.md": 1
     },
@@ -975733,9 +976125,15 @@
       "research/strategy_experiment/candidate.zip": 2,
       "research/strategy_experiment/original.zip": 2
     },
+    "saddle": {
+      "market-graph-geometry-prompt.md": 2
+    },
     "saddler": {
       "backtester/strategy_research/tv_y1x3vuyd_bollinger_band_and_t_line_timing.md": 1,
       "research/tradingview-card-coverage.json": 1
+    },
+    "saddles": {
+      "market-graph-geometry-prompt.md": 1
     },
     "sae": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -980074,7 +980472,7 @@
       "liquidity/tests/test_cdo_recovery.py": 4,
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_engine.py": 4,
-      "memory.md": 1,
+      "memory.md": 2,
       "oracle/README.md": 1,
       "oracle/cli.py": 1,
       "oracle/engine.py": 5,
@@ -981351,6 +981749,8 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 5,
       "liquidity/CLAUDE.md": 1,
       "liquidity/src/aero_lp/metrics.py": 1,
+      "market-graph-geometry-prompt.md": 4,
+      "memory.md": 1,
       "pagesource": 20,
       "prompts.md": 1,
       "research/5minleveragestrategies.json": 1,
@@ -981606,6 +982006,8 @@
       "index/README.md": 1,
       "index/search.py": 1,
       "liquidity/tests/test_market_state.py": 2,
+      "market-graph-geometry-prompt.md": 1,
+      "prompts.md": 1,
       "research/STRATEGIES.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -983210,6 +983612,7 @@
       "liquidity/tests/test_daemon.py": 4,
       "liquidity/tests/test_providers.py": 3,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 6,
       "mongo/README.md": 5,
       "mongo/load.py": 4,
@@ -984632,6 +985035,7 @@
       "liquidity/tests/test_providers_network.py": 1,
       "liquidity/tests/test_strategy.py": 2,
       "llms-sitemap.txt": 16,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/07-documents-and-search.js": 4,
       "oracle/README.md": 1,
       "oracle/guidance.py": 1,
@@ -986003,6 +986407,7 @@
     },
     "scorer": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_3xe8qqfr_directional_volume_shapes_zeiierman.md": 4,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 4,
       "research/tradingview-script-understanding.json": 2
@@ -986074,6 +986479,7 @@
       "liquidity/src/aero_lp/strategy.py": 2,
       "liquidity/tests/test_providers.py": 3,
       "liquidity/tests/test_providers_network.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/RANKED_LISTS.md": 1,
@@ -986180,6 +986586,7 @@
       "liquidity/src/aero_lp/providers_report.py": 1,
       "liquidity/tests/test_providers.py": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/coin-intelligence/hype-hyperliquid.md": 1,
@@ -986261,6 +986668,7 @@
       "liquidity/tests/test_metrics.py": 12,
       "llms-sitemap.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "prompts.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 1,
       "research/five-minute-perps-suite/source-leads.json": 11,
@@ -986477,6 +986885,7 @@
       "research/tradingview-card-coverage.json": 1
     },
     "scrape": {
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2
     },
     "scraped": {
@@ -986594,6 +987003,7 @@
       "docs/strategy-optimization-concept-family.md": 9,
       "docs/superpowers/plans/2026-11-09-bot-control-room.md": 1,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 1,
       "prompts.md": 5,
       "research/TOP_COINS.md": 1,
@@ -990553,6 +990963,7 @@
       "liquidity/CLAUDE.md": 3,
       "liquidity/src/aero_lp/providers.py": 2,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 4,
       "mongo/README.md": 3,
       "mongo/load.py": 3,
@@ -990666,6 +991077,9 @@
       "soltui/tests/bridge_support.py": 1,
       "soltui/tests/test_docs_search.py": 2,
       "soltui/tui.py": 2
+    },
+    "search_web": {
+      "market-graph-geometry-prompt.md": 1
     },
     "searchable": {
       "docs/ECOSYSTEM-WIKI.md": 2,
@@ -992637,6 +993051,7 @@
       "ecosystem/web/app.js": 4,
       "ecosystem/web/index.html": 7,
       "ecosystem/web/styles.css": 1,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 2,
       "research/coin-intelligence/README.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 5,
@@ -994470,6 +994885,7 @@
       "extension/test/live-tools.test.js": 2,
       "extension/test/wallet-audit.test.js": 22,
       "extension/test/wallet.test.js": 12,
+      "market-graph-geometry-prompt.md": 3,
       "mongo/queries/05-backtests.js": 1,
       "oracle/tests/test_core.py": 5,
       "prompts.md": 1,
@@ -994564,6 +994980,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_l1zvvqbx_monte_carlo_polyline_traceback_kioseff_trading.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 6,
       "extension/src/wallet/solana.js": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 2
@@ -996189,6 +996606,9 @@
       "research/tradingview-script-profiles/shard-b.jsonl": 2,
       "research/tradingview-script-profiles/shard-c.jsonl": 3,
       "research/tradingview-script-understanding.json": 1
+    },
+    "segmentations": {
+      "market-graph-geometry-prompt.md": 1
     },
     "segmentbar": {
       "soltui/shell.py": 3,
@@ -997969,6 +998389,7 @@
       "liquidity/src/aero_lp/providers.py": 6,
       "liquidity/src/aero_lp/strategy.py": 4,
       "llms-sitemap.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 5,
       "mongo/load.py": 1,
       "mongo/schema.py": 1,
@@ -1010460,6 +1010881,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-review.txt": 1,
       "liquidity/tests/test_providers.py": 3,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 2,
@@ -1012754,7 +1013176,8 @@
       "index/make_files_doc.py": 3,
       "index/search.py": 2,
       "llms-sitemap.txt": 2,
-      "memory.md": 3,
+      "market-graph-geometry-prompt.md": 7,
+      "memory.md": 4,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -1012769,7 +1013192,7 @@
       "oracle/tests/test_graphdb.py": 5,
       "pagesource": 2,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
-      "prompts.md": 1,
+      "prompts.md": 2,
       "research/RATIO-ROTATION.md": 1,
       "research/STRATEGIES.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 16,
@@ -1012847,8 +1013270,14 @@
     "shape_diamond": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
     },
+    "shape_entity": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "shape_flag": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
+    },
+    "shape_id": {
+      "market-graph-geometry-prompt.md": 1
     },
     "shape_label_down": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
@@ -1012975,7 +1013404,9 @@
       "extension/src/jupiter/price.js": 2,
       "extension/src/jupiter/trigger.js": 2,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 4,
       "mongo/load.py": 1,
+      "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 9,
       "research/coin-intelligence/eth-ethereum.md": 1,
       "research/evidence.py": 1,
@@ -1013523,7 +1013954,8 @@
       "liquidity/src/aero_lp/recovery.py": 2,
       "liquidity/src/aero_lp/validation.py": 2,
       "liquidity/tests/test_providers.py": 1,
-      "memory.md": 15,
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 16,
       "mongo/README.md": 1,
       "mongo/schema.py": 1,
       "oracle/feeds.py": 3,
@@ -1014015,6 +1014447,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 2,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 2,
       "mongo/queries/05-backtests.js": 4,
       "mongo/queries/06-experiments-and-pbo.js": 6,
@@ -1014197,6 +1014630,9 @@
       "backtester/core/types.py": 1,
       "backtester/tests/test_run_archive.py": 1,
       "mongo/queries/05-backtests.js": 2
+    },
+    "sharpe_delta": {
+      "market-graph-geometry-prompt.md": 1
     },
     "sharpe_iqr": {
       "extension/src/ui/signal-desk.js": 1
@@ -1017988,6 +1018424,7 @@
       "ecosystem/control.py": 1,
       "index/build.py": 1,
       "index/search.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "prompts.md": 2,
       "research/STRATEGIES.md": 1,
@@ -1021064,6 +1021501,7 @@
       "liquidity/tests/test_engine.py": 15,
       "liquidity/tests/test_engine_audit.py": 9,
       "llms-sitemap.txt": 33,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "mongo/README.md": 3,
       "mongo/load.py": 1,
@@ -1023321,6 +1023759,7 @@
       "extension/test/wallet.test.js": 4,
       "liquidity/src/aero_lp/abi.py": 3,
       "liquidity/src/aero_lp/executor.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 3,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -1023726,6 +1024165,7 @@
       "docs/optimization-workbench-run.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
       "research/PROMPT_STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
@@ -1028639,6 +1029079,7 @@
       "liquidity/tests/test_clmath.py": 2,
       "liquidity/tests/test_providers.py": 32,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "mongo/load.py": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -1029152,6 +1029593,7 @@
       "extension/README.md": 3,
       "extension/test/surfaces.test.js": 2,
       "extension/tools/api-server.js": 3,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 2,
       "prompts.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 4,
@@ -1030918,6 +1031360,7 @@
       "docs/backtester-history-handoff.md": 1,
       "docs/strategy-optimization-concept-family.md": 1,
       "liquidity/src/aero_lp/strategy.py": 7,
+      "market-graph-geometry-prompt.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 2,
@@ -1041793,7 +1042236,7 @@
       "memory.md": 22,
       "oracle/README.md": 1,
       "postman/collections/solbot-managed-health.postman_collection.json": 4,
-      "prompts.md": 10,
+      "prompts.md": 11,
       "soltui/README.md": 2,
       "soltui/native_host.py": 1,
       "soltui/native_host_install.py": 2,
@@ -1045346,6 +1045789,9 @@
       "soltui/commands.py": 2,
       "soltui/tests/test_desk.py": 2
     },
+    "source_library": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "source_limit": {
       "soltui/live_tools.py": 1
     },
@@ -1045583,6 +1046029,7 @@
     "source_url": {
       "ecosystem/tests/test_wiki.py": 2,
       "ecosystem/wiki.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/5minleveragestrategies.json": 26,
       "research/exchangefees.json": 10,
       "research/tradingstrategyresults.json": 21,
@@ -1045665,6 +1046112,7 @@
       "docs/optimization-workbench-run.md": 2,
       "docs/superpowers/plans/2026-11-09-backtester-integrity.md": 1,
       "docs/trading-signals-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 3,
       "research/coin-intelligence/btc-bitcoin.md": 9,
       "research/coin-intelligence/doge-dogecoin.md": 1,
@@ -1046935,6 +1047383,7 @@
       "liquidity/tests/test_providers.py": 2,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "mongo/load.py": 5,
       "mongo/queries/03-signals-and-indicators.js": 4,
       "mongo/schema.py": 1,
@@ -1047288,6 +1047737,7 @@
       "extension/test/core.test.js": 2,
       "liquidity/src/aero_lp/strategy.py": 1,
       "liquidity/tests/test_clmath.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 2,
       "prompts.md": 1,
       "research/RANKED_LISTS.md": 2,
@@ -1048595,6 +1049045,7 @@
       "docs/design/soltui-v2/mockup.py": 1,
       "docs/known-issues.md": 1,
       "liquidity/tests/test_chain_vol.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
@@ -1050427,6 +1050878,7 @@
       "docs/design/bot-control-room/SKILLS.md": 1,
       "docs/design/chrome-workspace/council-review.md": 1,
       "docs/optimization-workbench-run.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 2,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/stock-and-equity-trading.md": 2
@@ -1050444,6 +1050896,7 @@
       "backtester/strategy_cards/incomplete/tv_qetnobdk_half_causal_estimator.md": 1,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/design/chrome-workspace/proposal.md": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/strategy_experiment/audit_realism.json": 1,
       "research/strategy_experiment/audit_realism.md": 1,
       "research/tradingview-card-coverage.json": 11,
@@ -1051477,6 +1051930,7 @@
       "index/build.py": 1,
       "index/make_files_doc.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 3,
       "mongo/load.py": 1,
       "mongo/queries/04-decisions.js": 2,
       "mongo/schema.py": 1,
@@ -1058600,6 +1059054,7 @@
       "llms-full.txt": 34,
       "llms-sitemap.txt": 3236,
       "llms-small.txt": 21,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 40,
       "research/ratio_rotation.py": 3,
       "research/strategy_experiment/candidate.zip": 6,
@@ -1059064,6 +1059519,7 @@
     },
     "ssrn": {
       "backtester/strategy_research/dex_cex_dislocation.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/five-minute-perps-suite/source-leads.json": 3,
       "skills/trading-and-investing/references/ai-and-ml-for-trading.md": 1,
       "skills/trading-and-investing/references/algorithmic-and-quant-trading.md": 3,
@@ -1065377,7 +1065833,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 2,
       "llms-sitemap.txt": 7,
-      "memory.md": 30,
+      "memory.md": 29,
       "oracle/README.md": 1,
       "oracle/feeds.py": 1,
       "oracle/guidance.py": 1,
@@ -1067942,6 +1068398,7 @@
       "extension/src/ui/ui.css": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 6,
       "liquidity/tests/test_providers.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "pagesource": 12,
       "postman/mocks/botmanager-jupiter-swap-v1/config.yaml": 1,
@@ -1068284,6 +1068741,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "docs/trading-signals-concept-family.md": 2,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 3,
       "prompts.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/PROMPT_STRATEGIES.md": 1,
@@ -1070014,7 +1070472,7 @@
       "extension/src/ui/view-grid.js": 2,
       "extension/src/ui/view-trade.js": 2,
       "extension/vendor/lightweight-charts/README.md": 2,
-      "memory.md": 11,
+      "memory.md": 14,
       "prompts.md": 9,
       "research/LEVERAGE-TIERS.md": 4,
       "research/RELIABLE_SIGNALS.md": 2,
@@ -1074000,6 +1074458,7 @@
       "extension/tools/measure-recentre.js": 2,
       "extension/tools/verify-endpoints.js": 1,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 3,
       "pagesource": 3,
       "prompts.md": 2,
@@ -1074238,7 +1074697,7 @@
       "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/wallet.py": 1,
       "llms-sitemap.txt": 7,
-      "memory.md": 2,
+      "memory.md": 4,
       "mongo/README.md": 6,
       "mongo/load.py": 6,
       "mongo/queries/04-decisions.js": 2,
@@ -1075657,6 +1076116,7 @@
       "index/make_files_doc.py": 3,
       "llms-full.txt": 2,
       "llms-sitemap.txt": 35,
+      "market-graph-geometry-prompt.md": 4,
       "memory.md": 4,
       "mongo/README.md": 11,
       "mongo/load.py": 10,
@@ -1075683,7 +1076143,7 @@
       "oracle/tests/test_multi_instrument.py": 2,
       "oracle/tests/test_selected_server.py": 1,
       "oracle/tests/test_strategies.py": 11,
-      "prompts.md": 39,
+      "prompts.md": 40,
       "research/5minleveragestrategies.json": 47,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -1076413,6 +1076873,11 @@
       "oracle/engine.py": 3,
       "oracle/reader.py": 3,
       "oracle/tests/test_archived_reader.py": 1
+    },
+    "strategy_shape_matrix": {
+      "market-graph-geometry-prompt.md": 1,
+      "memory.md": 1,
+      "prompts.md": 1
     },
     "strategy_snapshots": {
       ".cdo/remaining-2026-11-10.json": 1,
@@ -1077207,6 +1077672,7 @@
       "docs/coin-fit/README.md": 1,
       "docs/superpowers/plans/2026-11-09-backtester-integrity.md": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 6,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 3,
@@ -1077654,7 +1078120,8 @@
       "docs/design/chrome-workspace/implementation-acceptance.md": 1,
       "docs/profitable-crypto-strategies-analysis.md": 1,
       "extension/src/ui/charts.js": 1,
-      "memory.md": 2,
+      "market-graph-geometry-prompt.md": 2,
+      "memory.md": 3,
       "oracle/README.md": 1,
       "oracle/engine.py": 1,
       "oracle/reader.py": 1,
@@ -1079392,6 +1079859,7 @@
       "index/README.md": 1,
       "index/search.py": 1,
       "llms-sitemap.txt": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 15,
       "research/tradingview-card-coverage.json": 63,
       "research/tradingview-card-readiness.json": 7,
@@ -1082224,6 +1082692,7 @@
       "liquidity/src/aero_lp/cli.py": 12,
       "liquidity/tests/test_chain_vol.py": 4,
       "liquidity/tests/test_market_state.py": 1,
+      "market-graph-geometry-prompt.md": 2,
       "prompts.md": 2,
       "research/CANDLE-GAP-AUDIT.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -1082307,6 +1082776,9 @@
       "research/PROMPT_STRATEGIES.md": 1,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 2
+    },
+    "subagents": {
+      "market-graph-geometry-prompt.md": 1
     },
     "subarray": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ijpiemfw_rolling_largest_impulse_murreys_lines.md": 5,
@@ -1083112,6 +1083584,7 @@
       "extension/src/storage/store.js": 4,
       "extension/test/core.test.js": 2,
       "extension/test/engine-command-audit.test.js": 2,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/guidance.py": 1,
       "prompts.md": 1,
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
@@ -1089403,6 +1089876,7 @@
       "llms-full.txt": 11,
       "llms-sitemap.txt": 31,
       "llms-small.txt": 7,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 31,
       "mongo/README.md": 4,
       "mongo/load.py": 20,
@@ -1089413,7 +1089887,7 @@
       "oracle/README.md": 1,
       "oracle/guidance.py": 1,
       "postman/collections/solbot-managed-health.postman_collection.json": 1,
-      "prompts.md": 14,
+      "prompts.md": 15,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 6,
       "research/PROMPT_STRATEGIES.md": 2,
@@ -1090181,6 +1090655,9 @@
     },
     "summarising": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "summarization": {
+      "market-graph-geometry-prompt.md": 1
     },
     "summarize": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_0enoetmo_smartphase_analyzer.md": 3,
@@ -1096891,6 +1097368,7 @@
       "docs/high_signal_file_index.json": 1,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "docs/trading-signals-concept-family.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/queries/07-documents-and-search.js": 1,
       "research/STRATEGIES.md": 3,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -1098287,7 +1098765,7 @@
       "mongo/tests/test_load.py": 2,
       "mongo/tests/test_load_audit.py": 5,
       "mongo/tests/test_snapshot_audit.py": 1,
-      "prompts.md": 15,
+      "prompts.md": 14,
       "research/5minleveragestrategies.json": 2,
       "research/COMPOUND-FRONTIER.md": 9,
       "research/CROSS-ASSET-TRANSFER.md": 2,
@@ -1101316,6 +1101794,7 @@
       "liquidity/scripts/aero-lp-service": 1,
       "liquidity/src/aero_lp/state.py": 4,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 4,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -1101750,6 +1102229,7 @@
       "docs/design/bot-control-room/mockup.css": 1,
       "ecosystem/web/styles.css": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 3,
       "research/five-minute-perps-suite/synthesis-audit-receipt.json": 4,
       "research/nonlinear-lead-lag-children/run-report.md": 1,
@@ -1109216,7 +1109696,7 @@
       "extension/test/service-worker.test.js": 2,
       "extension/test/venues.test.js": 2,
       "llms-sitemap.txt": 24,
-      "memory.md": 70,
+      "memory.md": 73,
       "oracle/server.py": 4,
       "prompts.md": 23,
       "research/FIVE-MINUTE-PERPS.md": 2,
@@ -1109478,6 +1109958,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "prompts.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -1109748,7 +1110229,11 @@
       "research/tradingview-card-coverage.json": 1,
       "skills/trading-and-investing/references/asset-classes-and-instruments.md": 1
     },
+    "taxonomic": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "taxonomies": {
+      "market-graph-geometry-prompt.md": 1,
       "research/PROMPT_STRATEGIES.md": 1
     },
     "taxonomy": {
@@ -1127420,6 +1127905,9 @@
     "test_zscore_row_uses_only_prior_rows": {
       "backtester/tests/test_ratio_rotation.py": 1
     },
+    "testability": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "testable": {
       "backtester/PROMPT.md": 1,
       "backtester/core/universe.py": 1,
@@ -1130236,6 +1130724,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 269,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 61,
       "mongo/README.md": 6,
       "mongo/load.py": 11,
@@ -1131669,6 +1132158,7 @@
       "liquidity/tests/test_safe_exit.py": 12,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 4,
       "memory.md": 1,
       "mongo/README.md": 1,
       "mongo/load.py": 9,
@@ -1133463,6 +1133953,7 @@
       "backtester/tests/test_cpcv.py": 1,
       "docs/FILES.md": 5,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 5,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -1133581,6 +1134072,7 @@
       "ecosystem/web/vendor/LICENSE": 1,
       "extension/vendor/lightweight-charts/LICENSE": 1,
       "llms-sitemap.txt": 4,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 8,
       "research/strategy_experiment/FILES.md": 6,
       "research/strategy_experiment/archives.json": 6,
@@ -1135987,6 +1136479,7 @@
       "liquidity/src/aero_lp/market.py": 1,
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 9,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 7,
       "mongo/load.py": 1,
       "mongo/queries/03-signals-and-indicators.js": 1,
@@ -1137215,6 +1137708,7 @@
       "liquidity/src/aero_lp/executor.py": 3,
       "liquidity/tests/test_allocator_ledger.py": 4,
       "liquidity/tests/test_metrics.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/engine.py": 1,
       "oracle/reader.py": 3,
       "oracle/tests/test_graphdb.py": 1,
@@ -1151473,6 +1151967,7 @@
       "index/build.py": 1,
       "liquidity/CLAUDE.md": 2,
       "llms-sitemap.txt": 19,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "oracle/README.md": 2,
       "oracle/server.py": 2,
@@ -1152312,6 +1152807,9 @@
     },
     "topmargin": {
       "docs/TRADINGVIEW-REFERENCE.md": 1
+    },
+    "topological": {
+      "market-graph-geometry-prompt.md": 4
     },
     "topologies": {
       "docs/bot-manager-oracle-interface.md": 1
@@ -1154859,6 +1155357,7 @@
       "liquidity/src/aero_lp/daemon.py": 2,
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/tests/test_daemon.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "mongo/tests/test_load.py": 1,
       "prompts.md": 6,
@@ -1154954,7 +1155453,7 @@
       "liquidity/tests/test_daemon.py": 2,
       "liquidity/tests/test_submission_audit.py": 3,
       "llms.txt": 1,
-      "memory.md": 2,
+      "memory.md": 3,
       "mongo/queries/03-signals-and-indicators.js": 2,
       "mongo/tests/test_load.py": 2,
       "prompts.md": 1,
@@ -1157803,6 +1158302,7 @@
       "backtester/strategy_research/tv_yhpgau7a_carrier_volatility_pumori.md": 2,
       "docs/TRADINGVIEW-CARD-READINESS.md": 3,
       "docs/TRADINGVIEW-REFERENCE.md": 3,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/btc-bitcoin.md": 1,
       "research/tradingview-card-coverage.json": 92,
@@ -1158366,6 +1158866,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_l1zvvqbx_monte_carlo_polyline_traceback_kioseff_trading.md": 1,
       "docs/FILES.md": 2,
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/tradingview-card-coverage.json": 1,
       "research/tradingview-script-profiles/shard-c.jsonl": 3,
@@ -1161837,6 +1162338,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 2,
       "executor/README.md": 1,
       "executor/src/executor/journal.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 4,
       "research/TRADINGVIEW-STRATEGY-CARDS.md": 1,
@@ -1162634,6 +1163136,7 @@
       "liquidity/STATE_FILES.md": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "liquidity/src/aero_lp/providers_report.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "prompts.md": 2,
       "research/CANDLE-GAP-AUDIT.md": 1,
@@ -1163111,6 +1163614,7 @@
       "index/build.py": 11,
       "index/idle.py": 2,
       "index/make_files_doc.py": 2,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 3,
       "prompts.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -1163157,6 +1163661,7 @@
       "backtester/strategy_cards/incomplete/tv_eji1igag_binomial_option_pricing_model.md": 1,
       "botmanager/README.md": 1,
       "docs/backtester-history-handoff.md": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 1,
       "research/strategy_experiment/README.md": 2,
       "research/tradingview-card-coverage.json": 3,
@@ -1163715,6 +1164220,7 @@
       "index/make_concepts_doc.py": 1,
       "liquidity/tests/test_backtest.py": 3,
       "llms-sitemap.txt": 70,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 4,
       "oracle/tests/test_strategies.py": 1,
       "prompts.md": 10,
@@ -1165411,6 +1165917,7 @@
       "extension/tools/verify-endpoints.js": 9,
       "liquidity/src/aero_lp/backtest.py": 2,
       "llms-sitemap.txt": 9,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 5,
       "oracle/quotes.py": 1,
       "oracle/store.py": 1,
@@ -1169409,6 +1169916,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_ttq7bdk2_real_time_candles.md": 1,
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "liquidity/src/aero_lp/abi.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 3,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
       "research/tradingview-script-profiles/shard-b.jsonl": 1,
@@ -1207579,6 +1208087,9 @@
       "research/tradingview-script-understanding.json": 1,
       "skills/coin-strategy-fit/references/method.md": 1
     },
+    "unblock": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "unblocked": {
       "backtester/core/archive_price.py": 2,
       "backtester/guides/jlp_vs_sol_relative_value.md": 1,
@@ -1208478,6 +1208989,7 @@
       "backtester/strategy_cards/incomplete/tv_0j7owdat_flowscope_hapharmonic.md": 1,
       "backtester/strategy_cards/incomplete/tv_cbnacnmq_volume_and_price_z_score_multi_asset_by_leviathan.md": 1,
       "backtester/strategy_cards/incomplete/tv_vt3jbshj_cointegration_heatmap_spread_table_edgeterminal.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tradingview-card-coverage.json": 7
     },
     "uncovered": {
@@ -1216840,6 +1217352,7 @@
       "extension/README.md": 1,
       "extension/src/market/evm.js": 1,
       "extension/test/trigger-audit.test.js": 1,
+      "market-graph-geometry-prompt.md": 2,
       "prompts.md": 2,
       "research/tradingview-script-profile-audit-prompts.md": 1,
       "research/tradingview-script-profile-prompts.md": 1,
@@ -1217086,6 +1217599,7 @@
       "docs/bot-manager-managed-suite.md": 1,
       "docs/dso-skill/SKILL.md": 1,
       "ecosystem/tests/test_manager_editing.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/verify_numbers.py": 2
     },
@@ -1217330,6 +1217844,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
       "prompts.md": 2,
@@ -1218625,6 +1219140,7 @@
       "extension/test/prediction-recovery.test.js": 1,
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 1,
       "mongo/README.md": 1,
       "oracle/feeds.py": 3,
       "prompts.md": 2,
@@ -1218946,6 +1219462,7 @@
       "backtester/strategy_cards/incomplete/tv_wpbrh5sq_simple_decesion_matrix_classification_algorithm_ss.md": 1,
       "backtester/strategy_cards/incomplete/tv_ypaxpury_interactive_motive_wave_checklist.md": 1,
       "backtester/strategy_research/tv_yhpgau7a_carrier_volatility_pumori.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
       "research/tradingview-card-coverage.json": 57,
       "research/tradingview-script-profiles/shard-a.jsonl": 1,
@@ -1220343,6 +1220860,7 @@
       "llms-small.txt": 1,
       "llms/defillama-llms-free.txt": 35,
       "llms/defillama-llms.txt": 5,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "oracle/feeds.py": 6,
       "oracle/tests/test_feeds.py": 6,
@@ -1225809,7 +1226327,7 @@
       "llms.txt": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
       "llms/defillama-llms.txt": 2,
-      "memory.md": 63,
+      "memory.md": 64,
       "oracle/README.md": 25,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 2,
       "prompts.md": 80,
@@ -1227147,6 +1227665,7 @@
       "liquidity/src/aero_lp/gates.py": 1,
       "llms-sitemap.txt": 5,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 1,
       "oracle/README.md": 1,
       "pagesource": 1,
@@ -1230336,7 +1230855,7 @@
     },
     "v188": {
       "docs/archive/memory-2026-11-08.md": 1,
-      "prompts.md": 3
+      "prompts.md": 2
     },
     "v189": {
       "docs/archive/memory-2026-11-08.md": 1,
@@ -1230350,14 +1230869,15 @@
     },
     "v190": {
       "docs/archive/memory-2026-11-08.md": 1,
-      "prompts.md": 2
+      "prompts.md": 3
     },
     "v191": {
       "docs/archive/memory-2026-11-10.md": 1,
-      "prompts.md": 2
+      "prompts.md": 4
     },
     "v192": {
-      "docs/archive/memory-2026-11-10.md": 1
+      "docs/archive/memory-2026-11-10.md": 1,
+      "prompts.md": 2
     },
     "v193": {
       "docs/archive/memory-2026-11-10.md": 1
@@ -1231496,10 +1232016,10 @@
       "memory.md": 2
     },
     "v396": {
-      "memory.md": 4
+      "memory.md": 3
     },
     "v397": {
-      "memory.md": 2
+      "memory.md": 1
     },
     "v398": {
       "memory.md": 1
@@ -1231597,7 +1232117,10 @@
       "memory.md": 3
     },
     "v402": {
-      "memory.md": 3
+      "memory.md": 5
+    },
+    "v403": {
+      "memory.md": 2
     },
     "v41": {
       "docs/archive/memory-2026-11-08.md": 1,
@@ -1233428,10 +1233951,11 @@
       "extension/test/surfaces.test.js": 1,
       "extension/test/trigger-audit.test.js": 1,
       "liquidity/tests/test_chain_audit.py": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 9,
       "mongo/queries/08-provenance-and-health.js": 1,
       "oracle/tests/test_multi_instrument.py": 1,
-      "prompts.md": 5,
+      "prompts.md": 4,
       "research/FIVE-MINUTE-PERPS.md": 3,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 2,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 11,
@@ -1234855,6 +1235379,7 @@
       "liquidity/tests/test_strategy.py": 2,
       "llms-sitemap.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 5,
       "mongo/README.md": 1,
       "mongo/tests/test_load.py": 2,
@@ -1235179,6 +1235704,7 @@
       "docs/high_signal_file_index.json": 1,
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 1,
       "docs/trading-signals-concept-family.md": 2,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/quotes.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
       "research/coin-intelligence/zec-zcash.md": 1,
@@ -1241983,6 +1242509,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 18,
       "oracle/README.md": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 3,
@@ -1243289,6 +1243816,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 22,
       "oracle/README.md": 2,
       "oracle/engine.py": 8,
@@ -1243528,6 +1244056,7 @@
       "extension/src/venues/triggerVenue.js": 4,
       "extension/test/blind-core-audit.test.js": 2,
       "index/make_files_doc.py": 1,
+      "market-graph-geometry-prompt.md": 3,
       "memory.md": 9,
       "oracle/guidance.py": 2,
       "prompts.md": 1,
@@ -1245531,6 +1246060,9 @@
     "vettedpropfirms": {
       "skills/trading-and-investing/references/trading-strategies-and-styles.md": 1
     },
+    "vetting": {
+      "market-graph-geometry-prompt.md": 1
+    },
     "veu": {
       "docs/design/bot-control-room/screens/fleet-desktop.png": 1,
       "docs/design/bot-control-room/screens/fleet-mobile.png": 1,
@@ -1246280,6 +1246812,7 @@
     },
     "viability": {
       "docs/profitable-crypto-strategies-analysis.md": 1,
+      "market-graph-geometry-prompt.md": 3,
       "prompts.md": 4,
       "research/profitable-crypto-strategies-analysis.md": 1,
       "research/tradingview-card-coverage.json": 1,
@@ -1251417,6 +1251950,7 @@
       "liquidity/tests/test_providers.py": 2,
       "llms-sitemap.txt": 19,
       "llms/aero-lp-explained-2026-11-06.md": 3,
+      "market-graph-geometry-prompt.md": 1,
       "oracle/graphdb.py": 2,
       "oracle/tests/test_graphdb.py": 1,
       "research/5minleveragestrategies.json": 13,
@@ -1252390,6 +1252924,7 @@
       "llms-sitemap.txt": 197,
       "llms/defillama-llms-free.txt": 2,
       "llms/defillama-llms.txt": 2,
+      "market-graph-geometry-prompt.md": 2,
       "memory.md": 2,
       "mongo/load.py": 2,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -1253380,7 +1253915,7 @@
       "extension/src/ui/soltui-panel.js": 19,
       "extension/test/live-score.test.js": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "oracle/README.md": 1,
       "oracle/engine.py": 2,
       "oracle/reader.py": 2,
@@ -1258044,6 +1258579,7 @@
       "backtester/core/ticks.py": 1,
       "backtester/core/types.py": 1,
       "backtester/strategy_cards/incomplete/tv_xkbwnq2h_intrabar_run_count_indicator_tbiktag.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/tick_backfill.py": 1,
       "research/tradingview-card-coverage.json": 3,
       "skills/trading-and-investing/references/indicator-signal-implementation-and-backtesting.md": 1,
@@ -1265106,6 +1265642,7 @@
       "extension/tools/api-server.js": 1,
       "index/build.py": 1,
       "llms-sitemap.txt": 9,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 2,
       "pagesource": 1,
       "prompts.md": 1,
@@ -1265241,6 +1265778,7 @@
       "docs/archive/memory-2026-11-08.md": 10,
       "extension/README.md": 1,
       "llms/aero-lp-explained-2026-11-06.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "pagesource": 10,
       "research/coin-intelligence/rain-rain.md": 1,
       "research/five-minute-perps-suite/full-suite-receipt.json": 2,
@@ -1265378,6 +1265916,7 @@
       "docs/FILES.md": 2,
       "docs/TRADINGVIEW-CARD-COVERAGE.md": 1,
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
+      "market-graph-geometry-prompt.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/tradingview-card-coverage.json": 23,
       "research/tradingview-script-profiles/shard-a.jsonl": 5,
@@ -1268537,6 +1269076,7 @@
       "skills/trading-and-investing/references/defi-and-onchain-trading.md": 4
     },
     "whitepapers": {
+      "market-graph-geometry-prompt.md": 1,
       "skills/trading-and-investing/SKILL.md": 1
     },
     "whitespace": {
@@ -1270544,6 +1271084,7 @@
       "extension/vendor/lightweight-charts/lightweight-charts.standalone.production.mjs": 1,
       "index/README.md": 1,
       "liquidity/uv.lock": 135,
+      "market-graph-geometry-prompt.md": 1,
       "research/COMPOUND-FRONTIER.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 4,
       "research/LEVERAGE-ECONOMICS.md": 1,
@@ -1270645,6 +1271186,7 @@
       "backtester/tests/test_engine_audit.py": 2,
       "docs/FILES.md": 2,
       "extension/src/ui/view-markets.js": 2,
+      "market-graph-geometry-prompt.md": 1,
       "research/strategy_compare.py": 1,
       "research/strategy_experiment/audit_integrity.md": 1,
       "research/strategy_experiment/results/auxiliary.json": 20,
@@ -1273141,6 +1273683,7 @@
       "liquidity/src/aero_lp/safe_exit.py": 1,
       "liquidity/tests/test_clmath.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 2,
       "mongo/schema.py": 1,
       "oracle/README.md": 2,
       "oracle/feeds.py": 1,
@@ -1276676,6 +1277219,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 4,
       "llms-small.txt": 2,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 8,
       "prompts.md": 4,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 9,
@@ -1301660,6 +1302204,7 @@
       "liquidity/tests/test_providers.py": 19,
       "liquidity/tests/test_safe_exit.py": 1,
       "llms-sitemap.txt": 1,
+      "market-graph-geometry-prompt.md": 1,
       "memory.md": 4,
       "mongo/tests/test_analysis_regressions.py": 1,
       "oracle/README.md": 1,
@@ -1307192,10 +1307737,10 @@
   },
   "schemaVersion": 1,
   "stats": {
-    "avgDocLength": 1648.2,
-    "documents": 3075,
-    "terms": 107993,
-    "termsBeforePrune": 108051,
-    "totalTokens": 5068121
+    "avgDocLength": 1647.9,
+    "documents": 3076,
+    "terms": 108034,
+    "termsBeforePrune": 108092,
+    "totalTokens": 5069015
   }
 }
