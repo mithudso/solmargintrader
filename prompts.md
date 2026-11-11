@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 205
+Version: 206
+Delta: v205 to v206; capture the Jupiter leveraged ZEC webhook request.
+
 Delta: v204 to v205; preserve concurrent Volty review and shape-study histories during integration.
 
 Delta: v203 to v204; capture shape-aware Coinbase spot backtest request.
@@ -20,6 +22,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Jupiter leveraged TradingView execution
+
+OK can you make it use leverage with Jupiter instead?
 
 ## 2026-11-11 — Validate and configure ZEC Volty TradingView alerts
 
