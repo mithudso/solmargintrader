@@ -1,6 +1,11 @@
 # Work continuation
 
-Version: 436
+Version: 437
+Delta: v436 to v437; preserve concurrent Jupiter delivery and cycle validation records.
+
+Delta: v434 to v435; record passing full local checks before cycle-study delivery.
+Delta: v433 to v434; complete measured ZEC cycle validation and independent review.
+Delta: v432 to v433; start ZEC periodicity validation.
 Delta: v435 to v436; link the final delivery receipt and retain only live activation prerequisites.
 Delta: v434 to v435; record installed acceptance and preserve concurrent delivery records.
 Delta: v433 to v434; integrate Jupiter webhook delivery with concurrent private MCP records.
@@ -876,3 +881,29 @@ Independent research-contract-auditor final acceptance passed: all 316 hashes an
 ## Shape-study delivery integration
 
 Integrated origin/master 1accb91, the independently completed Volty alert review, without changing its reviewed conclusions or owner instructions. Both prompt histories and continuation records are preserved. Rebuilt deterministic indexes and packaged wiki from the combined tracked source. No market replay needs repeating because upstream changed documentation only. Final focused tests, source hash verification and metadata checks revalidate the integrated tree before shipping.
+
+
+## 2026-11-11 — ZEC periodicity — TASK-1307
+
+TASK-1307 validates ZEC peak/dip periodicity, yesterday 2026-11-10 America/New_York, with unknown chart timeframe. Check 1m/5m/15m/1h completed candles, fresh public Coinbase ZEC-USD, no interpolation, frequency-search-aware random-sign and permutation nulls, peak-spacing controls and train-only frozen harmonic prediction. Study is separate from completed shape study TASK-1296; preserve its accepted artifacts. No trading state or held reservations change. Private worktree /Users/mitch/dev/solmargintrader-wt-01a1ca3c, branch agent-01a1ca3c, base9779104. Steps: freeze protocol and inputs; implement/test/run analysis; independent review and verified delivery.
+
+
+## 2026-11-11 — ZEC periodicity measured — TASK-1307
+
+Implemented research/zec_cycles.py, research/zec_cycle_report.py and eight meaningful tests. Source and report remain separate from the accepted shape study. Native Coinbase ZEC-USD 1m/5m/15m/1h input covers Oct20 through Nov11 11:40 UTC. Yesterday means Nov10 America/New_York; original chart timeframe/venue is unspecified. Minute input has119 gaps overall and4 missing minutes yesterday. The regression uses actual timestamps; native larger candles are fetched rather than interpolated.
+
+Final run /Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/run-v1 exited0, with50 corrected price/return spectral tests and116 frozen forecasts. No test rejected either conservative no-clock comparison after Holm correction; all adjusted p=1.0. The daily strongest admissible price period is6h at the search boundary and does not validate a natural frequency. At15m and2percent log reversal threshold, alternating gaps were270,285,120,285,270minutes. Four similar half-cycle gaps are locally suggestive but onlyfive intervals; a symmetric full cycle would be roughly9h, too slow to observe four cycles/day. Prior-week longer-period tests also failed to validate a clock. At5m, frozen3day-fit/6h forecast beat last-price persistence only6/29 times; mean squared log-price error was4.54x persistence. This is a bounded historical test, not proof no adaptive/slower cycle exists or a profit backtest.
+
+Report research/ZEC-CYCLE-VALIDATION.md; compact data and two scientific figures under research/results/zec_cycles_20261111_*. Full artifact inventory is the external run manifest. Independent research-contract-auditor reproduced11 run hashes, four inputs, all50 selected powers within2.23e-14, all116 forecast errors and all50 Gaussian calibration controls (0rejections). Final report/output hashes and both plots passed independent review. Eight cycle tests plus ten existing shape tests passed together, exit0; Ruff passed. Endor dependency evidence is UNKNOWN; isolated NumPy2.5.4/pandas3.1.1/matplotlib3.11.2 environment is not a package-security certification. No installed trading services, accounts or reserved holdouts changed.
+
+Remaining product steps: none. Delivery still requires refreshed deterministic docs/wiki/index metadata, full backtester/docs checks, commit/push/PR, passing final-head CI and confirmed remote merge. Parent TASK-1307 and delivery phase TASK-1311 remain open until those gates pass. Final completion receipt will be /Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/delivery-receipt.json and delivery-memory.md. KNOW-1322 records the measured limitations; KNOW-1308 records the pre-result protocol.
+
+
+## ZEC cycle final local acceptance
+
+All1005 backtester tests passed with exit0 in29.756seconds in the isolated cycle environment. Eighteen combined cycle/shape tests, Ruff, docs counts and offline index/wiki checks passed. All50 Gaussian calibration controls and report/plot hashes passed independent review. No product steps remain; final-head CI and verified merge close the delivery phase. A concurrent origin/master update81bf2fa added the independently owned Jupiter execution work; integration preserves it without rerunning or activating that service. The cycle dataset, source and statistical results remain frozen.
+
+
+## Cycle-study delivery integration
+
+Preserved origin/master 81bf2fa and all independently completed Jupiter execution source, documentation and activation limits. Both concurrent prompt and continuation histories remain intact. This study changes no installed execution settings. All 1,005 local backtester tests passed with exit code 0; 18 combined research tests, Ruff and documentation checks passed. The frozen cycle calculations need no repeat because the merged update did not alter their inputs or numerical source. Rebuilt combined wiki and retrieval metadata. Final CI, merge and cleanup receipts belong in TASK-1307 and the external delivery receipt.

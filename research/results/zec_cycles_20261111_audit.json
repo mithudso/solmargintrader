@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "task": "TASK-1307",
+  "reviewer": "research-contract-auditor",
+  "status": "pass",
+  "run": "/Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/run-v1",
+  "run_artifacts_verified": 11,
+  "report_outputs_verified": 11,
+  "input_hashes_verified": 4,
+  "spectral_tests_verified": 50,
+  "forecast_errors_verified": 116,
+  "calibration_controls_reproduced": 50,
+  "calibration_rejections": 0,
+  "unit_tests_passed": 8,
+  "unit_test_exit": 0,
+  "independent_power_max_error": 2.23e-14,
+  "claims": [
+    "No declared spectral test rejects after family-wise correction",
+    "All p_holm=1.0",
+    "Target15m2percent alternating gaps270,285,120,285,270minutes are exploratory",
+    "Frozen cycle forecasts have3.85\u20134.60times persistence MSE"
+  ],
+  "limits": [
+    "Search bands restrict daily tests toatmost6h",
+    "Exact original chart timeframe/venue unknown",
+    "Dependent resolutions; onecoin only",
+    "Spacing references descriptive, not adjusted significance",
+    "No live or trading-profit claim"
+  ]
+}

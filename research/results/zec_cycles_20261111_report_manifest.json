@@ -1,0 +1,19 @@
+{
+  "analysis_source_sha256": "b002e5f429c14ba041f3c8b8db97810d4a67e64f3ce373b1bbbe6b3b4743715e",
+  "outputs": {
+    "research/ZEC-CYCLE-VALIDATION.md": "ae6de47ad92a28f3463fac57ddf442513e6621fdaaf44267f9ba4ce75f627cba",
+    "research/results/zec_cycles_20261111_calibration.json": "e62bc829201559477c3f6f50986f9a49065f29cd078aad6da29e04562dc8beda",
+    "research/results/zec_cycles_20261111_coverage.csv": "95b2f47e76b10df36233310b7eb0d056b1ee4afded0aa08c7114db4f959b0827",
+    "research/results/zec_cycles_20261111_forecast_summary.csv": "b0473b80e79cb2c6d7e1ffc4869b2cf35482fddf92d7b66097aecc170bc72bdc",
+    "research/results/zec_cycles_20261111_forecasts.csv": "c3c35e4c5183bbf2cdf3838e86841b44a3c188da5899ff75794ecee3941413d3",
+    "research/results/zec_cycles_20261111_manifest.json": "2d6864df5fb6a618244491ad80e448f5aeba3f9735f795fc71e2631c13638dd9",
+    "research/results/zec_cycles_20261111_pivots.csv": "26e3804e9bbdf03ab1e1c018cd49c4e635148dcd5a19e1f491b3334bfca91a69",
+    "research/results/zec_cycles_20261111_spacing.csv": "b6ddc5a6743cad358daf54ed8843dc4908c46c4f4ba55fc58558fa735e4fce08",
+    "research/results/zec_cycles_20261111_spectral_tests.csv": "da40efda3d06f665e166b0cc8178a9b593bd4be98a93b36ef0a99bcdda4f949e",
+    "research/results/zec_cycles_20261111_stability.png": "85b274ccd9cf7398a51e77e0686e2115fb2e0f69b499256cfaeeda2b5d393170",
+    "research/results/zec_cycles_20261111_yesterday.png": "8914256d1477c82778e581be376bd3d11a9cf11a98c7bc89b07cc00f9b4435db"
+  },
+  "report_source_sha256": "4827f4f5a111c25e584bcc33c03cc83f122bff272e042b15f41071c7226a3a6d",
+  "run_manifest_sha256": "2d6864df5fb6a618244491ad80e448f5aeba3f9735f795fc71e2631c13638dd9",
+  "version": 1
+}
