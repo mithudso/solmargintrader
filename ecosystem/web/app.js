@@ -5,7 +5,7 @@ const $ = (id) => document.getElementById(id);
 const state = { status: null, registrations: null, telemetry: null, selected: null,
   cursors: [""], page: 0, next: null, polling: false, eventCursor: 0,
   events: [], droppedEvents: 0, receivedAt: null, control: null, analytics: null,
-  oracle: null, oracleInstrument: "SOL/USD", selectedRecord: null, session: null,
+  oracle: null, oracleInstrument: "SOL/USD", oraclePublicationChosen: false, selectedRecord: null, session: null,
   busy: new Set(), localActions: new Map(), voterDrafts: new Map(), managerDrafts: new Map(), managerInputModes: new Map(), pendingPrefs: new Map(),
   wikiCatalog: null, wikiPage: null, wikiKnownPages: new Map(), wikiRequest: 0, wikiPageRequest: 0,
   launchCatalogKey: null, managerCatalogKey: null, instrumentCatalogKey: null,
@@ -105,6 +105,12 @@ async function refresh() {
     const results = await Promise.allSettled(requests.map(([, promise]) => promise));
     if (requestedRun !== state.activeRun) return;
     requests.forEach(([key], index) => { state[key] = key === "oracle" && requestedInstrument !== state.oracleInstrument ? null : results[index].status === "fulfilled" ? results[index].value : null; });
+    const publication = state.oracle?.selected_experiment;
+    if (!state.oraclePublicationChosen && publication?.instrument) {
+      state.oraclePublicationChosen = true;
+      state.oracleInstrument = publication.instrument;
+      state.oracle = null;
+    }
     state.receivedAt = Date.now();
     render();
     const unavailable = results.filter((result) => result.status === "rejected").length;
@@ -766,6 +772,7 @@ function renderAnalytics() {
   text("equity-reason", state.selected ? `${human(state.selectedRecord?.strategy_id)} · ${calls} prospective calls · ${resolved} resolved · ${recorded} included in accounting · ${measured} coins with measured P&L. Independent trial comparisons; costs included. No shared portfolio total is inferred.` : "Choose a fleet row. Recorded paper economics and directional accuracy are reported separately.");
 }
 function currentVoterDraft() {
+  if (state.oracle?.selected_experiment?.selected) return null;
   const policy = state.oracle?.selection;
   if (!policy || policy.instrument !== state.oracleInstrument || !Array.isArray(policy.selected_ids)) return null;
   let draft = state.voterDrafts.get(voterKey());
@@ -780,18 +787,22 @@ function renderSelectedAggregate() {
   const now = Date.now() / 1000;
   const expiry = value?.aggregate?.expires_at ?? value?.aggregate?.expiry;
   const fresh = market?.status === "available" && finite(observation?.observed_at) && finite(observation?.received_at) && observation.observed_at <= now && observation.received_at <= now && now - observation.observed_at <= 15 && now - observation.received_at <= 15;
-  const available = value?.instrument === state.oracleInstrument && fresh && value?.status === "available" && finite(expiry) && expiry > now && finite(value?.aggregate?.balance_percent) && finite(value?.as_of) && value.as_of <= now && now - value.as_of <= 30;
+  const studySelected = value?.selected_experiment?.selected === true;
+  const studyFresh = studySelected && value.selected_experiment?.publication?.available === true && finite(value.selected_experiment?.heartbeat) && now - value.selected_experiment.heartbeat <= 35;
+  const available = value?.instrument === state.oracleInstrument && (studySelected ? studyFresh : fresh) && value?.status === "available" && finite(expiry) && expiry > now && finite(value?.aggregate?.balance_percent) && finite(value?.as_of) && value.as_of <= now && now - value.as_of <= 30;
   const signal = available ? value.signal : "Unavailable";
   const balance = available ? value.aggregate.balance_percent : null;
-  const reason = available ? `${array(value.aggregate.included).length} contributing votes · ${array(value.aggregate.excluded).length} excluded. Directional vote balance, not profit probability.` : human(value?.aggregate?.reason || market?.reason || (!fresh ? "fresh_market_evidence_unavailable" : "insufficient_or_expired_forecast_evidence"));
+  const reason = studySelected ? (available ? `Frozen rank 1 configuration · ${value.horizon_seconds} second native candles · paper long-or-flat target, not a probability.` : human(value?.reason || "selected_study_unavailable")) : available ? `${array(value.aggregate.included).length} contributing votes · ${array(value.aggregate.excluded).length} excluded. Directional vote balance, not profit probability.` : human(value?.aggregate?.reason || market?.reason || (!fresh ? "fresh_market_evidence_unavailable" : "insufficient_or_expired_forecast_evidence"));
   ["aggregate-signal", "oracle-signal"].forEach((id) => text(id, signal));
-  ["aggregate-balance", "oracle-balance"].forEach((id) => text(id, available ? `${balance > 0 ? "+" : ""}${balance.toFixed(2)}% signed weighted vote balance` : "No current vote balance"));
+  ["aggregate-balance", "oracle-balance"].forEach((id) => text(id, available ? studySelected ? `${balance.toFixed(2)}% target exposure · ${value.selected_experiment.publication.interval}` : `${balance > 0 ? "+" : ""}${balance.toFixed(2)}% signed weighted vote balance` : "No current vote balance"));
   ["aggregate-reason", "oracle-reason"].forEach((id) => text(id, reason));
   text("aggregate-freshness", value ? `${value.instrument} · ${label(value.horizon_seconds)} second horizon · expires ${timestamp(expiry)}` : "No current Oracle response");
   const meter = $("aggregate-meter"); meter.hidden = !available; meter.value = available ? Math.abs(balance) : 0;
   const reading = meter.closest(".aggregate-reading"); reading.dataset.direction = !available ? "unavailable" : balance > 0 ? "buy" : balance < 0 ? "sell" : "flat";
   $("oracle-signal").className = available ? balance > 0 ? "positive" : balance < 0 ? "negative" : "" : "";
-  text("oracle-explanation", `Engine ${state.control?.servers?.find((server) => server.id === "oracle")?.running === true ? "observed running" : "not observed running"}. Source: ${human(observation?.source)} · ${human(observation?.kind)} · observed ${timestamp(observation?.observed_at)}. ${array(market?.limitations).map(human).join(" · ")}. Historical accuracy and vote balance do not measure a probability of profit.`);
+  text("oracle-explanation", studySelected ? `ZEC paper owner heartbeat ${timestamp(value.selected_experiment?.heartbeat)}. Source: Binance spot native ${value.selected_experiment?.publication?.interval || "unknown"} ZEC/USDT candles · latest observed candle close ${timestamp(observation?.observed_at)}. Next-open fills are modelled reference prices observed after the following candle closes; they do not prove executable fills. Exposure is not a probability of profit.` : `Engine ${state.control?.servers?.find((server) => server.id === "oracle")?.running === true ? "observed running" : "not observed running"}. Source: ${human(observation?.source)} · ${human(observation?.kind)} · observed ${timestamp(observation?.observed_at)}. ${array(market?.limitations).map(human).join(" · ")}. Historical accuracy and vote balance do not measure a probability of profit.`);
+  $("voter-form").hidden = studySelected;
+  renderZecStudy(value?.selected_experiment);
   const instruments = array(state.control?.catalog?.coins).map((coin) => `${coin}/USD`);
   if (!instruments.includes(state.oracleInstrument)) instruments.push(state.oracleInstrument);
   fillSelect("oracle-instrument", instruments, state.oracleInstrument); fillSelect("oracle-instrument-detail", instruments, state.oracleInstrument);
@@ -820,6 +831,20 @@ function renderSelectedAggregate() {
   $("voter-options").replaceChildren(fragment);
   if (focused) Array.from($("voter-options").querySelectorAll("input")).find((input) => input.dataset.strategyId === focused)?.focus();
   renderVoterStatus();
+}
+function renderZecStudy(study) {
+  const panel = $("zec-study-panel"); panel.hidden = !study;
+  if (!study) return;
+  const winner = study.publication;
+  text("zec-study-summary", winner ? `${study.instrument} · ${human(study.source)} · rank 1 ${winner.id} · ${winner.interval}. Each account starts with 10,000 USDT virtual capital; balances are independent. Historical ranks do not establish a profitable edge.` : human(study.reason));
+  text("zec-study-config", winner ? JSON.stringify(winner.candidate.config, null, 2) : "Selected study unavailable");
+  const fragment = document.createDocumentFragment();
+  array(study.accounts).forEach((account) => {
+    const row = node("tr");
+    [`${account.rank} · ${account.interval}`, `${account.candidate.config.mode} · ${account.id}`, `${account.status} · ${account.available ? `${(account.target * 100).toFixed(1)}% target` : human(account.reason)}`, finite(account.net_return) ? `${(account.net_return * 100).toFixed(3)}% net` : "Unavailable", String(account.decisions)].forEach((value) => row.append(node("td", value)));
+    fragment.append(row);
+  });
+  $("zec-study-rows").replaceChildren(fragment);
 }
 function renderVoterStatus() {
   const draft = currentVoterDraft(); const policy = state.oracle?.selection;

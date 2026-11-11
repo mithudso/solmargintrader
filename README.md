@@ -29,10 +29,18 @@ and hands usable results to registered forward trials with per-coin Oracle
 forecasts. See [setup and recovery](docs/ECOSYSTEM-BOOTSTRAP.md) for source,
 coverage and lifecycle limits.
 
+## ZEC ensemble study
+
+The ZEC study tests 1m and 1h hypotheses using checksum-verified Binance ZEC/USDT
+history, a shared causal ensemble policy, validation-only selection and ten
+independent paper forward accounts. The selected top configuration is published
+on the Oracle page. See [measured results and reproduction](docs/ZEC-ENSEMBLE-STUDY.md)
+and [forward owner and recovery](docs/ZEC-ENSEMBLES-FORWARD.md).
+
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
-ecosystem 0.4.2, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
+ecosystem 0.4.3, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
 and extension source 0.6.5. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
