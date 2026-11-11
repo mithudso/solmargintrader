@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 414
+Version: 415
+Delta: v414 to v415; record staging and delivery of untracked repository documentation, design prototypes, runbooks, and index rebuild.
 Delta: v413 to v414; record completed read-only display controls and focused checks before final delivery.
 Delta: v412 to v413; extend the active Oracle task with user-requested display selectors.
 Delta: v411 to v412; record refreshed five-day minute data and narrow current-reference implementation.
@@ -15,6 +16,10 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-10 — Commit all repository artifacts
+
+Per owner instruction "No just commit all of them", staged all untracked repository documentation, design prototypes, runbooks, and configurations, excluded ephemeral browser logs and tool dependencies in `.gitignore`, rebuilt the search index, and delivered via PR.
 
 ## 2026-11-10 — Market Graph Geometry and Strategy Regime Efficacy
 
