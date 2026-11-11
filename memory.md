@@ -1,9 +1,15 @@
 # Work continuation
 
-Version: 429
+Version: 431
+Delta: v430 to v431; preserve concurrent Volty review and shape-study histories during integration.
+
 Delta: v428 to v429; record passing final local checks and independent acceptance before delivery.
 Delta: v427 to v428; complete causal shape study and begin independently verified delivery.
 Delta: v426 to v427; start causal geometry and Coinbase cost study.
+Delta: v429 to v430; finalize the evidence-bound review for delivery without activating live alerts.
+Delta: v428 to v429; finish authenticated chart validation and reject live activation under the requested condition.
+Delta: v427 to v428; record evidence review and TradingView two-factor blocker.
+Delta: v426 to v427; begin conditional Volty strategy validation and TradingView setup.
 Delta: v425 to v426; repair deterministic repository index after CI drift check.
 Delta: v424 to v425; record completed Coinbase order worker, installed acceptance and active webhook.
 Delta: v423 to v424; implement Coinbase webhook worker and 75 percent sizing.
@@ -30,6 +36,10 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Validate and configure ZEC Volty TradingView alerts
+
+TASK-1301 tracks the request. Work in /Users/mitch/dev/solmargintrader-wt-01a1c9f1 on agent-01a1c9f1 because the primary checkout has active sessions. Validate the actual listed ZEC Volty source/settings and economic evidence before enabling Coinbase75percent webhook alerts. Prior study reports losing fixed winners and stop-and-reverse semantics; verify against source. Chrome extension transport is initially unavailable although extension/native host checks pass. Requested Computer Use sees a system Google passkey prompt. The user was asked to complete or dismiss it. No TradingView alert has been created or enabled. Independent audit verified nine final artifact hashes, two source hashes, four tracked result copies and six focused mechanics tests. All fixed winners lose OOS and the long/short stop-and-reverse semantics do not match the75percent spot bridge. Review saved in docs/VOLTY-TRADINGVIEW-ALERT-REVIEW.md. The Chrome extension connected and the user completed two-factor sign-in. Inspected saved layout CRYPTO:ZECUSD1m, Volty length5 multiplier1. Tester properties use100%equity,2xlong/short,zero commission and slippage; report shows3738trades and0.09%average expectancy. Current authenticated Coinbase taker fee is0.9%per side. ZEC-USD product is online. Chart settings were preserved; no secret entered, no alert created/enabled and no trade sent. Saved private screenshot at /Users/mitch/.local/state/soloracle-tradingview/volty-review-20261111/strategy-report.png. Validation condition failed for live75%spot execution. Recommend paper-only observation or a separately tested spot adaptation; neither is silently substituted. Deliver the completed report and await a new user choice before any live alert activation. Preserve existing browser/account state and do not send synthetic live signals.
 
 ## 2026-11-11 — Coinbase webhook sizing
 
@@ -84,7 +94,6 @@ Final rerun: Oracle 80 tests, Ecosystem 180 tests, Bot Manager 361 tests, Ruff, 
 
 The canonical skill and audit checklist require a discoverable wiki for commands, reference, scripts and applicable strategy. Both installed copies include the guidance; 18 skill tests passed. Skills commit aa6244a5 is pushed at https://github.com/mithudso/skills/pull/107. The skills PR has no CI checks; the check-gated merge command exits without merging. Project records are in https://github.com/mithudso/solmargintrader/pull/196. Stele task TASK-1254 remains open until delivery.
 
-Version: 382
 Delta: v380 to v381; install actual managed availability and retain final acceptance/CI delivery tail.
 Delta: v379 to v380; record integrated source checks, review repairs and pending installed activation.
 Delta: v378 to v379; start authorized managed suite, complete help, machine health and Chrome helper delivery.
@@ -115,7 +124,6 @@ Delta: v340 to v341; record optimizer and initial SOL backtest evidence and unre
 Delta: v339 to v340; start strategy agent proof of concept and guarded Jupiter proof investigation.
 Consolidation delivery state: `/Users/mitch/dev/solmargintrader/.worktree-recovery/delivery-memory.md`. A completed receipt there supersedes the pre-merge publication steps below.
 
-Version: 372
 Delta: v371 to v372; finish content preservation, reconciliation and duplicate-folder removal.
 Delta: v370 to v371; record verified preservation and the concurrent Git-metadata overwrite.
 Delta: v369 to v370; inventory all owner-named folders and preserve unreviewed checkpoints.
@@ -801,3 +809,8 @@ Remaining product steps: none. Delivery gates before completion: final independe
 ## 2026-11-11 — Shape study final acceptance
 
 Independent research-contract-auditor final acceptance passed: all 316 hashes and runner/canonical source bindings; all 2520 equity endpoints; 19200 conditional rows; continuous passive known-answer error at most 4.55e-13 percentage points. Final local full backtester suite: 1005 tests, exit zero, one existing skip, 26.253 seconds. Focused shape suite: 10 tests, exit zero. Ruff and docs checker passed; docs counts remain 1005/434/46/1472 (2957 total). Final source includes the separate continuous passive baseline and the first partial-day return in daily Sharpe. Source and compact audit are committed together; final PR/merge receipt is maintained in TASK-1296 and external delivery-memory.md. Remaining product steps: none; final-head remote CI and merge complete the delivery phase.
+
+
+## Shape-study delivery integration
+
+Integrated origin/master 1accb91, the independently completed Volty alert review, without changing its reviewed conclusions or owner instructions. Both prompt histories and continuation records are preserved. Rebuilt deterministic indexes and packaged wiki from the combined tracked source. No market replay needs repeating because upstream changed documentation only. Final focused tests, source hash verification and metadata checks revalidate the integrated tree before shipping.

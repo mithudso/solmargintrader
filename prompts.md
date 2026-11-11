@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 204
+Version: 205
+Delta: v204 to v205; preserve concurrent Volty review and shape-study histories during integration.
+
 Delta: v203 to v204; capture shape-aware Coinbase spot backtest request.
+Delta: v203 to v204; record conditional TradingView Volty alert setup request.
 Delta: v202 to v203; record Coinbase venue and 75 percent balance sizing.
 Delta: v201 to v202; record owner decision on signal qualification.
 Delta: v200 to v201; record maximum available qualified webhook trade request.
@@ -17,6 +20,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Validate and configure ZEC Volty TradingView alerts
+
+Use the chrome and computer use extensions to go to my tradingview account and set up webhook alerts for the zec volty expans strategy. But validate that it's a reasonable strategy as listed first.
 
 ## 2026-11-11 — Coinbase webhook sizing
 
@@ -72,7 +79,6 @@ Completely remove RAIN, WBT, HTX, JST, MNT, and XMR from the coin lists.
 
 Add to the repo-bootstrapper skill that the repo should have a wiki for commands, reference, scripts, strategy, etc.
 
-Version: 184
 Delta: v183 to v184; preserve seven-part turnkey CLI, UI, service, health and Chrome request plus resume.
 Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.
 Delta: v171 to v172; implement remaining bot-manager work with agent fanout.
@@ -82,7 +88,6 @@ Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
 Delta: v168 to v169; clarify that either trade direction can prove execution.
 Delta: v167 to v168; record SOL/USDC buy-direction clarification.
 Delta: v166 to v167; record strategy agent and Jupiter proof purchase request.
-Version: 183
 Delta: v182 to v183; record confirmation that the competing copy stopped.
 Delta: v181 to v182; preserve the owner confirmation of a concurrent copy.
 Delta: v180 to v181; record the owner request to consolidate fifteen sibling folders.

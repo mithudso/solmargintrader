@@ -594,19 +594,22 @@
       "path": "research/shape_study.py",
       "component": "research",
       "kind": "python",
-      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity"
+      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity",
+      "lines": 666
     },
     {
       "path": "research/shape_report.py",
       "component": "research",
       "kind": "python",
-      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report"
+      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report",
+      "lines": 333
     },
     {
       "path": "research/SHAPE-AWARE-SPOT.md",
       "component": "research",
       "kind": "markdown",
-      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits"
+      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits",
+      "lines": 214
     },
     {
       "path": "research/perturb.py",
@@ -1282,7 +1285,7 @@
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 459
+      "lines": 462
     },
     {
       "path": "CONTRIBUTING.md",
