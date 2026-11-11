@@ -20,10 +20,8 @@ presets: {}
 
 Version: 1.0.0 (2026-11-08). Delta: first source-reconciled card.
 
-> **Archived source-description card.** The independent stop-order implementation
-> now lives in `backtester/guides/volty_expan_close.md`, with runner
-> `python -m backtester.voltycli`. The retained text below describes the earlier
-> specification-only state, not the current implementation status.
+> **Spec-only — no strategy implementation or performance result is claimed.**
+> This card records a signal or research method. An indicator alone is not an order rule.
 
 ## Mechanism and equations
 

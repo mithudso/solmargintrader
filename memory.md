@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 417
+Version: 418
+Delta: v417 to v418; fix CI schema parity and preserve frozen TradingView source card for PR209.
 Delta: v416 to v417; complete installed Volty study and supplied-dossier comparison; delivery pending.
 Delta: v415 to v416; start Volty ZEC stop-entry and walk-forward study.
 Delta: v414 to v415; record staging and delivery of untracked repository documentation, design prototypes, runbooks, and index rebuild.
@@ -749,6 +750,10 @@ TASK-1282: Implement original stop-entry Volty Expan Close, run 250 costed ZEC c
 
 ## 2026-11-10 — Volty completed research, delivery pending
 
-TASK-1282; decisions KNOW-1283 and findings KNOW-1284. Added backtester/core/volty.py and backtester/voltycli.py, a standalone stop-strategy guide/card kind, source-archive cross-reference and six behavioral tests. Installed in /Users/mitch/.venvs/volty-zec-20261110. Downloaded original mechanism and public Pine reproduction. User dossier corroborates the formula; separate LX/SX components were not silently added. All 250 configurations and 25 expanding train-only selected OOS folds finished. Five fixed winners lost OOS; daily adaptive walk-forward +22.688%, passive +1783.710%. Prepared future specs do not run a paper service. Existing paper accounts untouched.
+TASK-1282; decisions KNOW-1283 and findings KNOW-1284. Added backtester/core/volty.py and backtester/voltycli.py, a standalone stop-strategy guide/card kind and six behavioral tests. Installed in /Users/mitch/.venvs/volty-zec-20261110. Downloaded original mechanism and public Pine reproduction. User dossier corroborates the formula; separate LX/SX components were not silently added. All 250 configurations and 25 expanding train-only selected OOS folds finished. Five fixed winners lost OOS; daily adaptive walk-forward +22.688%, passive +1783.710%. Prepared future specs do not run a paper service. Existing paper accounts untouched.
 
 Authoritative outputs: /Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final; successful log final.log. Report docs/VOLTY-ZEC-STUDY.md; five tracked result artifacts in research/results. 49 focused tests, Ruff, artifact hashes and independent installed known-answer replay passed. Initial JSON printing failure was corrected and rerun successfully. Docs checker passes under INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. /Users/mitch/.venvs/soltui/bin/python. Dependency-reviewer package-risk fallback has UNKNOWN evidence: no Endor MCP or endorctl is available; no package-security verdict is claimed. Research and focused verification complete. Delivery branch: feat/volty-zec-study. Remaining at this checkpoint: refresh tracked indexes/wiki, commit, push, passing CI, merge and sync. The final delivery receipt is recorded in Stele TASK-1282 and the merged PR.
+
+## 2026-11-10 — Volty delivery correction
+
+Delivery PR: https://github.com/mithudso/solmargintrader/pull/209 . First CI caught Mongo schema kind parity and a checksum-bound historical-card edit. Added stop-strategy to mongo/schema.py and restored the historical source card byte for byte. New runner details remain in backtester/guides/volty_expan_close.md. Four Mongo schema checks and scripts/check_tradingview_cards.py now pass. Stele lesson KNOW-1285 records the literal triggers. Research and installed simulation code are unchanged; no repeat of the completed market sweep is needed. Remaining: passing final-head CI and merged-delivery confirmation. Final receipt will be at /Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/delivery-memory.md and in Stele TASK-1282.
