@@ -1,6 +1,11 @@
 # Work continuation
 
-Version: 432
+Version: 436
+Delta: v435 to v436; link the final delivery receipt and retain only live activation prerequisites.
+Delta: v434 to v435; record installed acceptance and preserve concurrent delivery records.
+Delta: v433 to v434; integrate Jupiter webhook delivery with concurrent private MCP records.
+Delta: v432 to v433; finish verified GUM code and preserve runtime activation prerequisites.
+Delta: v431 to v432; begin Jupiter ZEC Beta leverage integration investigation.
 Delta: v431 to v432; preserve concurrent shape research and verified private MCP setup.
 Delta: v430 to v431; preserve concurrent Volty review and private MCP acceptance.
 Delta: v426 to v427; preserve concurrent TradingView delivery and verified Tailscale MCP setup.
@@ -13,7 +18,6 @@ Delta: v420 to v421; record passing documentation and offline index checks befor
 Delta: v419 to v420; checkpoint installed client and pending macOS authorization.
 Delta: v418 to v419; start private Tailscale remote-access setup.
 Delta: v430 to v431; preserve concurrent Volty review and shape-study histories during integration.
-
 Delta: v428 to v429; record passing final local checks and independent acceptance before delivery.
 Delta: v427 to v428; complete causal shape study and begin independently verified delivery.
 Delta: v426 to v427; start causal geometry and Coinbase cost study.
@@ -47,6 +51,24 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Jupiter leveraged ZEC webhook (TASK-1305)
+
+Owner requests Jupiter leverage instead of Coinbase spot for the current TradingView ZEC Volty strategy. Prior policy was 75% available funds, no Oracle reference/timeframe veto. No TradingView alert was created because the conditional strategy review failed for Coinbase spot fees and long/short mismatch. Current docs list ZEC as a Jupiter Beta perpetual powered by GUM; the old JLP SOL/ETH/wBTC list does not exclude ZEC. Existing repo live executor is spot only and its verifier cannot approve GUM instructions.
+
+Worktree: /Users/mitch/dev/solmargintrader-wt-01a1c9f1-jupiter, branch agent-01a1c9f1-jupiter, based on origin/master 7b36ccce87402eca16ba08599d0d5a5d87a8c151. Preserve other sessions' changes. Official GUM SDK revision 08bc398d78350a49ae047ecbdd3ffc6233c082d3 and current market/health/account snapshots are bound by /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/discovery-manifest.json. Golden open/close Action vectors match the official Rust SDK; generator provenance is sdk-golden-vectors.json in the same directory. Its initial helper compile error exited101; corrected generator exited0; temporary build removed.
+
+Implemented oracle/gum_orders.py (owner-verified ZEC market/account reads, explicit allocation/leverage basis, fee/price/lot limits, locally built isolated FOK Action, owner signature verification, paginated history/fill economics and collateral-settlement proof), oracle/gum_webhook_orders.py (durable close/flat/settle/open state machine, deterministic per-leg IDs, no retry of ambiguous submission), oracle/gum_signer.py (private key-file and derived-owner guards), CLI and selectable webhook processor. Each signal binds its complete venue/account/policy. Default remains dry-run and no forecast gate applies. Added four test modules plus receiver failure coverage; README, CLAUDE boundary and docs/JUPITER-ZEC-WEBHOOK.md explain the separate GUM path. cryptography50.0.2 is pinned and was already installed; no-deps local Oracle installation exited0. Endor package-risk enrichment is UNKNOWN because no dependency-reviewer role, package-risk MCP tool or endorctl executable is available; inline installed reviewer instructions were applied without inventing security results.
+
+Checks: final Oracle183tests exit0; Ruffcheckoracle exit0; docs count check exit0; real source preflight exit0 (current ZEC online; known wallet no accounts). Ecosystem initial195test run exited1 (8failures/9errors) because stable environment imported an older installed botmanager with6-column events while repo expects9. Re-run with PYTHONPATH=/Users/mitch/dev/solmargintrader-wt-01a1c9f1-jupiter/botmanager/src:/Users/mitch/dev/solmargintrader-wt-01a1c9f1-jupiter passed195tests exit0. Independent reviewer found and verified fixes for percentage units, slippage types/rounding, delayed settlement, stale quotes, leverage preferences, final disarm/expiry guards and fill/fee receipts; focused62tests exit0. Postman signed out; Orbit public discovery HTTP403; current official SDK/live read-only API supplied the contract. No hosted Postman capture was possible.
+
+Runtime: /Users/mitch/Library/LaunchAgents/com.mitch.soloracle-tradingview.plist was backed up privately and changed from Coinbase live to inbox-only; bootout/bootstrap exit0 and loaded process verified no --coinbase/--live. /Users/mitch/.local/state/soloracle-tradingview/KILL is set; inbox was empty. Private runtime-switch.json records the change. No alert, account, transfer, key access or leveraged order was created. Chrome opened https://jup.ag/perps/long/USDC-ZEC, disconnected. The known Solana owner has no GUM perps account and zero GUM balance; GUM collateral is separate from Solana/Coinbase. Owner questions remain pending: funded account identity and 2x75%collateral versus75%notional (or different leverage). No live policy was guessed.
+
+Installed acceptance passed its scoped checks: all5 installed execution module hashes match source, installed CLI real preflight exit0, persistent PID50212 started after installation and runs inbox-only, public invalid-secret request400, persistent inbox0rows/0liveorders, isolated installed dry-run accepted+deduped then refused missing-account plan; signer loads, realkeyopens and non-GETvenueAPIcalls all0. Auditfixture clean shutdown exit0. Receipt: /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/installed-acceptance.json (SHA256ffd37e36d7c768845a4d916ca22361d1998b5669f1eb7629a176ba0be63dae61). Overallliveacceptance remains partial because fundedaccount andpolicy are missing.
+
+Code delivery: https://github.com/mithudso/solmargintrader/pull/214 . Final CI and remote merge identity are recorded in /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/delivery.json; consult that receipt for the authoritative final status. Full source/runtime artifact inventory: /Users/mitch/.local/state/soloracle-tradingview/jupiter-review-20261111/artifact-manifest.json. Offline indexes and wiki checks passed exit0 before the initial push. Shared private MCP changes were preserved in the merge.
+
+Remaining runtime work: activate only after the owner supplies the account and leverage/allocation decisions and a funded/preference-compatible account passes read-only preflight. Runtime activation and actual venue fills remain unverified; lower fees do not validate strategy profitability.
 
 ## 2026-11-11 — Private MCP service selection
 
