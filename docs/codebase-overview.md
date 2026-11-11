@@ -154,6 +154,9 @@ The danger here is overstating a result, so the honesty machinery is the point.
 | `research/shape_study.py` | Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity |
 | `research/shape_report.py` | Verify artifact/source hashes and regenerate the measured shape-study report |
 | `research/SHAPE-AWARE-SPOT.md` | Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits |
+| `research/zec_cycles.py` | Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts |
+| `research/zec_cycle_report.py` | Verify cycle artifacts and render the evidence report and figures |
+| `research/ZEC-CYCLE-VALIDATION.md` | Yesterday's ZEC swing spacing compared with no-clock controls and later prediction |
 | `research/perturb.py` | Parameter perturbation for robustness |
 | `research/STRATEGIES.md` | The strategy survey |
 | `research/RANKED_LISTS.md` | Ranked results |

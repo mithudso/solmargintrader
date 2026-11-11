@@ -44,6 +44,10 @@ six-hour and daily candles, compares individual strategies and mixtures, and tes
 train-only shape routing. Its zero-commission scenarios retain spread/slippage;
 Coinbase One does not waive Advanced Trade fees.
 
+The [ZEC cycle validation](research/ZEC-CYCLE-VALIDATION.md) tests apparent regular
+peak/dip spacing against no-clock simulations and frozen future forecasts. A
+short local rhythm was visible, but the declared tests did not validate a stable clock.
+
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and

@@ -612,6 +612,24 @@
       "lines": 214
     },
     {
+      "path": "research/zec_cycles.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Irregular-time ZEC periodicity tests, searched-frequency nulls and frozen harmonic forecasts"
+    },
+    {
+      "path": "research/zec_cycle_report.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Verify cycle artifacts and render the evidence report and figures"
+    },
+    {
+      "path": "research/ZEC-CYCLE-VALIDATION.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Yesterday's ZEC swing spacing compared with no-clock controls and later prediction"
+    },
+    {
       "path": "research/perturb.py",
       "component": "research",
       "kind": "python",
