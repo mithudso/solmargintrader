@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 200
+Version: 202
+Delta: v201 to v202; select MCP as the first private service.
+Delta: v200 to v201; capture screenshot of Tailscale local-service error.
 Delta: v199 to v200; capture Tailscale installation and remote-service access request.
 Delta: v198 to v199; capture supplied Volty research dossier.
 Delta: v197 to v198; start Volty ZEC stop-entry and walk-forward study.
@@ -13,6 +15,14 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — First private Tailscale service
+
+MCP server
+
+## 2026-11-11 — Tailscale local-service error
+
+User supplied a screenshot showing Tailscale Not Connected and the alert: "Invalid response from local Tailscale service. Verify Tailscale is properly configured and try again."
 
 ## 2026-11-11 — Tailscale remote access
 

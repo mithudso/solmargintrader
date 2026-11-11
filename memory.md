@@ -1,6 +1,11 @@
 # Work continuation
 
-Version: 421
+Version: 426
+Delta: v425 to v426; verify private HTTPS MCP with preserved bearer authentication.
+Delta: v424 to v425; select authenticated mitchlists MCP as first private endpoint.
+Delta: v423 to v424; resolve extension consent and verify healthy private-device connection.
+Delta: v422 to v423; preserve confirmed consent blocker and passing checkpoint checks.
+Delta: v421 to v422; diagnose local-service error as pending extension consent.
 Delta: v420 to v421; record passing documentation and offline index checks before checkpoint.
 Delta: v419 to v420; checkpoint installed client and pending macOS authorization.
 Delta: v418 to v419; start private Tailscale remote-access setup.
@@ -22,6 +27,26 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Private MCP service selection
+
+Owner selected "MCP server". Configured existing authenticated mitchlists MCP as the first private endpoint at https://m5.tail0781b8.ts.net/mcp. The backend remains http://127.0.0.1:7337, supervised by /Users/mitch/Library/LaunchAgents/com.mitch.mitchlists.plist. Its existing bearer token stays in /Users/mitch/.config/mitchlists/token with mode 0600; the value was never printed or committed. Preserve this token and middleware. The backend has read and mutation tools, so remote clients must authenticate. Global AI Hub8787 relies on localhost trust and includes administrative/write/indexing tools; it was not exposed.
+
+Ran /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg --https=443 http://127.0.0.1:7337 (exit 0). The daemon-level configuration explicitly reports tailnet only. Funnel is not enabled. HTTPS certificate issuance and trusted TLS1.3 hostname verification passed. Through the actual HTTPS endpoint, missing and invalid bearer tokens return401, authenticated initialize returns200 and identifies mitchlists0.1.0 with MCP2025-03-26, initialized notification returns202 and tools/list returns200 with21 tools. Independent live-acceptance-verifier reproduced these results. No mutation tool was called. Serve is configured in the daemon; restart/reboot persistence was not exercised.
+
+Sanitized acceptance results are in /Users/mitch/.local/state/tailscale-setup/acceptance.json version2, mode0600. Source auth checks are in /Users/mitch/dev/mitchlists/src/mitchlists/daemon.py (BearerAuth; stateless Streamable HTTP JSON responses), /Users/mitch/dev/mitchlists/src/mitchlists/notify.py (constant-time token comparison), and /Users/mitch/dev/mitchlists/src/mitchlists/config.py (token loader). No mitchlists code or service was changed. Postman status returned exit0; resources initialized but CLI account unavailable. No Postman login or workspace publishing was required for direct protocol acceptance.
+
+All registered peers remain offline. Remaining owner step: connect the phone or another computer to Tailscale and test the endpoint from there. A browser can use https://m5.tail0781b8.ts.net/health for a simple reachability check. An MCP client uses Streamable HTTP and the existing bearer token at /Users/mitch/.config/mitchlists/token. The private URL works for clients running on connected tailnet devices; a hosted cloud MCP connector needs separately authenticated public ingress. Current setup is locally verified; remote peer behavior is unverified. Deliver the completed setup records independently while TASK-1294 tracks the remaining peer acceptance.
+
+## 2026-11-11 — Tailscale local-service error
+
+Resolved the owner's screenshot error "Invalid response from local Tailscale service. Verify Tailscale is properly configured and try again." The Tailscale Network Extension was off. Opened its sheet with the computer-use skill; human interaction enabled it while the sheet was open. systemextensionsctl now reports activated enabled. scutil --nc start Tailscale returned exit 0. The app CLI now responds. The saved account was available, so a fresh account login was not required.
+
+The saved preferences unexpectedly advertised default routes and accepted routes. Plain tailscale up refused with the all-non-default-flags error. Used /Applications/Tailscale.app/Contents/MacOS/Tailscale set --advertise-exit-node=false --accept-routes=false --exit-node-allow-lan-access=false (exit 0), then up --timeout=20s (exit 0). This activates ordinary private-device access without inherited router roles. BackendState is Running, Self.Online is true, Health is empty, IPv4 is 100.93.168.117 and DNS name is m5.tail0781b8.ts.net. Independent live-acceptance-verifier confirmed the running extension and the same status. AdvertiseRoutes is null, RouteAll is false, ExitNodeID is empty, ExitNodeAllowLANAccess is false and RunSSH is false. No Serve/Funnel configuration exists. Preserve existing application authentication and trading rails; do not run Homebrew tailscaled alongside the app.
+
+All three registered peers (iPhone, another Mac and Linux computer) are offline. No peer connectivity or remote HTTP/API/MCP behavior is verified. Asked the owner which existing service should receive private HTTPS access; no target has been selected. Remaining: bring phone/peer online, select a concrete service, inspect authentication, configure private Serve ingress and verify from another network. Do not invent a service or proxy every listening port. The earlier entry below describes the pre-approval snapshot and is superseded by this connected state.
+
+Sanitized installed-state receipt: /Users/mitch/.local/state/tailscale-setup/acceptance.json (mode 0600), including prior values for the three changed routing preferences. The docs drift gate passed using the existing SolTUI environment with worktree botmanager/src on PYTHONPATH (2957 discovered tests); whitespace and offline index checks passed before this final record update. Refresh only offline indexes after this edit and push the task-owned checkpoint to draft PR211. TASK-1294 remains in progress because peer/service acceptance is incomplete. Original shared checkout and other sessions' work were preserved.
 
 ## 2026-11-11 — Tailscale remote access
 
