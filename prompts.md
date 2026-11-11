@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 208
+Version: 209
+Delta: v208 to v209; preserve swing research and verified MCP client setup.
+Delta: v207 to v208; preserve concurrent Jupiter delivery and verified MCP clients.
+Delta: v206 to v207; capture all requested CLI and desktop MCP clients.
 Delta: v207 to v208; preserve concurrent Jupiter delivery and cycle validation records.
 
 Delta: v206 to v207; start ZEC periodicity validation.
@@ -31,6 +34,9 @@ Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization a
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
 
+## 2026-11-11 — MCP clients across apps
+
+I want both codex, and claude code, and antigravity, and agy, and the desktop apps;
 ## 2026-11-11 — Jupiter leveraged TradingView execution
 
 OK can you make it use leverage with Jupiter instead?
