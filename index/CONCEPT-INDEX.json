@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T12:18:14+00:00",
+  "generatedAt": "2026-11-11T12:42:05+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -316,12 +316,12 @@
           "hits": 97
         },
         {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 90
+          "path": "memory.md",
+          "hits": 95
         },
         {
-          "path": "memory.md",
-          "hits": 84
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 90
         },
         {
           "path": "FILES.md",
@@ -368,6 +368,10 @@
           "hits": 39
         },
         {
+          "path": "prompts.md",
+          "hits": 36
+        },
+        {
           "path": "research/tradingview-card-readiness.json",
           "hits": 36
         },
@@ -390,10 +394,6 @@
         {
           "path": "oracle/tests/test_gum_orders.py",
           "hits": 32
-        },
-        {
-          "path": "prompts.md",
-          "hits": 31
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
@@ -889,7 +889,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 129
+          "hits": 136
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -920,15 +920,15 @@
           "hits": 86
         },
         {
+          "path": "prompts.md",
+          "hits": 84
+        },
+        {
           "path": "archive/memory-2026-11-08.md",
           "hits": 81
         },
         {
           "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 81
-        },
-        {
-          "path": "prompts.md",
           "hits": 81
         },
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 312,
+      "matchingFiles": 313,
       "shown": 30,
       "files": [
         {
@@ -1916,15 +1916,15 @@
           "hits": 10
         },
         {
+          "path": "memory.md",
+          "hits": 9
+        },
+        {
           "path": "research/geometry.py",
           "hits": 9
         },
         {
           "path": "backtester/core/cpcv.py",
-          "hits": 8
-        },
-        {
-          "path": "memory.md",
           "hits": 8
         }
       ],

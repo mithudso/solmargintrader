@@ -1,13 +1,18 @@
 # Work continuation
 
-Version: 438
+Version: 443
+Delta: v442 to v443; preserve concurrent MCP client records and selected ZEC/USDC configuration.
+Delta: v441 to v442; record merged and deployed memory hook repair.
+Delta: v440 to v441; record selected-policy installed acceptance and separate hook delivery links.
+Delta: v439 to v440; prepare owner-verified GUM account and selected dry-run service.
+Delta: v438 to v439; record explicit leveraged policy and verified signer identity.
+Delta: v437 to v438; bind the owner-selected ZEC/USDC wallet and continue activation checks.
 Delta: v437 to v438; preserve swing research and verified MCP client setup.
 Delta: v436 to v437; preserve concurrent Jupiter delivery and verified MCP clients.
 Delta: v434 to v435; verify loaded desktop MCP tools and preserve complete client receipt.
 Delta: v433 to v434; verify native clients and installed credential-safe MCP bridge.
 Delta: v432 to v433; start secure MCP configuration across CLI and desktop clients.
 Delta: v436 to v437; preserve concurrent Jupiter delivery and cycle validation records.
-
 Delta: v434 to v435; record passing full local checks before cycle-study delivery.
 Delta: v433 to v434; complete measured ZEC cycle validation and independent review.
 Delta: v432 to v433; start ZEC periodicity validation.
@@ -61,6 +66,22 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — ZEC/USDC wallet selection and hook repair
+
+Owner corrected Coinbase assumptions: this account has no leverage, and only simple trades are free. Owner selected ZEC/USDC and signer path /Users/mitch/.ssh/solana.private. Keep key material private; use guarded program loaders only. Existing configured public owner is EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV. Prior PR214 delivered the GUM Beta ZEC perpetual worker; do not silently switch it to spot or infer that native Solana USDC is funded GUM collateral. Owner explicitly confirmed Jupiter2x leverage with75%USDCcollateral. The installed guarded Oracle signer loaded the supplied file and verified its derived public owner without printing key material or signing any transaction (exit0). Current public reads show0USDC onSolana,0GUMbalance/noGUMaccount, and0.009919081SOL. A first attempt to invoke an absent executor/.venv Python exited127; the existing stable soloracle program performed the successful identity check without installing anything. Funding is the remaining external prerequisite; do not infer funding from the SOL balance.
+
+TASK-1305 is claimed again. Worktree /Users/mitch/dev/solmargintrader-wt-01a1c9f1-zec-usdc, branch agent-01a1c9f1-zec-usdc, base b9c6c31e93e0229e6711998ca15f84b48844d090. A read-only explorer verifies current Solana/GUM balances and exact supported funding/account-create path without key access or transactions. Root owns repo records, private intent/configuration and supported activation. Coinbase execution remains off. Root created the documented server-paid empty GUM cross parent (no user signature or fund movement), verified it under the derived owner, and prepared personal funding addresses. Parent HuLJpMfxh6D6AeVdbjqw6kKCraSWSmPzj5dUkgYKNrKD,subaccount0. Server creation transaction4kn79veF86Etn7XeNeDcCfurk6AwUEhJggf1wD1MYF2R3k9u93y8D1JZCEVvKG4fU4XQqj2EeKaTLQtCgCwgjidY. CurrentGumOrders.preflight passed; buy plan refused gum_insufficient_collateral. The persistent LaunchAgent now carries the exact2x75%collateral Jupiter arguments and signer path in dry-run, with KILL beside its new inbox; bootout/bootstrap0. No order was submitted.
+
+The owner also authorized fixing the memory-capture hook. A separate asset-parity specialist owns only canonical hook/config/skill files outside this repo and handles its separate verified delivery. The cause is hardcoded Basic Memory writes/captured-or-failed outcomes under a Codex restriction permitting only new ad_hoc notes. The authorized fix is truthful successful local checkpoint/readback/checksum handling in restricted Codex sessions, preserving Basic Memory behavior on other hosts. Do not write Basic Memory or edit injected MEMORY.md/memory_summary.md to bypass the restriction.
+
+Private selection /Users/mitch/.local/state/soloracle-tradingview/jupiter-selected-wallet.json and setup directory /Users/mitch/.local/state/soloracle-tradingview/zec-usdc-20261111/ bind policy, owner, contract, account creation intent/result, current preflight and funding addresses. Complete inventory and final delivery will be in that directory’s artifact-manifest.json and delivery.json. No raw private key, signed order or webhook secret is stored. The first personal deposit-addressGET is documented to create addresses; it was treated as an authorized provisioning action. NativeUSDC andGUMUSDC are0. Funding app balance and perps collateral are separate steps; the current order signer cannot sign arbitrary server-built deposit transactions.
+
+Selected-policy installed acceptance passed: five installed hashes match canonical source; PID26326 runs chosen Jupiteraccount0/2x/75%collateral/10bps with no --live and KILL. Real owner/account preflight is flat, freeUSDC0.00 and has noorders; buy refuses insufficientcollateral. Publicinvalidsecret400; persistentinbox0rows; isolated actualinstalledCLI ownsecret+realaccount dryrunaccepted/refused+deduped with0keyopens/0signerloads/0nonGET calls andshutdown0. Frozen receipt /Users/mitch/.local/state/soloracle-tradingview/zec-usdc-20261111/installed-acceptance.json SHA256dec6ec0d2d05e676f2b1d6ccc0a2dff329cd8dd15ab10d1ede3a238ba3838cb5. Exchange leverage preference remainsunset; actual order size is capped to2xnetcollateral by policy; no preference-changing transaction was sent.
+
+Hook repair is tracked separately as TASK-1332, PR https://github.com/mithudso/claude-config/pull/44 . It merged as28ca28e6c4c4448a75b29d2fee427bcb376fb75b and deployed to the actual registered Codex hook without changing the trusted command. Its authoritative deployed receipt is /Users/mitch/.local/state/memory-capture/repairs/20261111-codex-local/receipt.json with artifact-manifest.json beside it. All138localtests and finalCIpassed; registration13ok and parityin-sync. A fakeHOME actualregistered-command smoke captured/readback/hashed a private note, recordedcaptured and stayedsilent onrepeatStop. No unrelated canonicaldirty/stagedchanges were swept into delivery. The helper chooses codex-local via CODEX_THREAD_ID, continues noteversions in new allowedfiles, verifies bytes/checksum and records captured; BasicMemory remains for otherhosts. At end-turn run the deployed hook local-status for the session, then capture-local with synthesized Markdown through stdin; it records captured only after real readback/hash verification. Do not call the old failed Basic Memory finish flow on this restricted Codex session.
+
+Remaining repositorydelivery: docs/wiki/offline index checks and owned PR/CI/merge; finalstatus in /Users/mitch/.local/state/soloracle-tradingview/zec-usdc-20261111/delivery.json . External remaining: USDC funding, verified perps deposit, then live activation and actual TradingView/fill acceptance. The existing guarded program loaded the key only for public identity verification; it signed0transactions. No trades, deposits or transfers occurred. Only the server-paid empty account initialization occurred, with the public transaction above.
 
 ## 2026-11-11 — MCP clients across apps
 

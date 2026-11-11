@@ -1,6 +1,6 @@
 # TradingView ZEC → Jupiter Beta perpetuals
 
-Version: 1.0.0. Delta: initial GUM integration contract and activation prerequisites.
+Version: 1.0.1. Delta: bind the owner-selected ZEC/USDC2x75%collateral policy and prepared Solana/GUM account.
 
 Jupiter offers ZEC long/short perpetuals through its **GUM Beta market**. This is
 a separate execution path from Jupiter Swap and the SOL/ETH/wBTC JLP markets.
@@ -55,23 +55,15 @@ than silently retrying to reach the requested amount.
 
 ## Capital and account requirements
 
-The previous Coinbase allocation was 75% of available funds. Leverage requires
-an explicit allocation basis: 75% collateral at 2x means about 150% notional,
-whereas 75% notional at 2x needs about 37.5% collateral, before fees. The service
-requires both the leverage and basis; it does not infer them from a TradingView
-fill quantity or use the venue's 50x maximum as a default.
+The owner selected **ZEC/USDC, 2x leverage and 75% of available USDC as collateral**. The configured signer is `/Users/mitch/.ssh/solana.private`. Its guarded loader verified that the derived public owner matches the configured wallet without printing key material or signing a transaction. Percentage units are explicit: `--allocation 75 --allocation-basis collateral --leverage 2`. Opening fees and adverse execution reserve reduce size below the nominal150%notional budget; rounding never increases it.
 
-GUM holds separate balances. The configured Solana wallet's public identity can
-sign GUM Actions, but its Solana balance is not automatically GUM collateral.
-The inspected configured wallet has **no GUM perps account and zero GUM balance**.
-Jupiter was disconnected in Chrome. No account, deposit or leveraged trade was
-created during discovery. A funded, owner-verified cross parent account is
-required even for isolated orders. Never send a deposit to a profile public key;
-fund only the deposit address and network supplied by the verified account flow.
+GUM holds separate balances. Native Solana USDC is not automatically GUM collateral. As of2026-11-11, the selected wallet has **0USDC** and **0.009919081SOL**. A dedicated empty GUM cross parent was created through the documented server-paid account endpoint and verified in the owner's account list. No user transaction was signed and no funds were moved. Its exact public account, creation transaction and owner read-back are in the private setup receipt. The live read-only adapter preflight passed; planning a buy refused with `gum_insufficient_collateral`.
 
-The former Coinbase listener now runs in inbox-only mode with its KILL file set.
-No TradingView alert was created. Jupiter activation requires the owner's account
-and leverage/allocation choices, followed by independent installed verification.
+The persistent listener is now configured for this Jupiter account and policy in **dry-run**, with a KILL file beside its new inbox. Coinbase execution remains off. No TradingView alert or leveraged order was created. Funding is required before a verified collateral deposit and live activation. A funded account must pass preflight and independent installed/live acceptance.
+
+The personal GUM funding route is documented at https://docs.gum.ag/trading-api/reference/get-deposit-addresses . Its firstGET **creates personal deposit addresses**, so it is a provisioning action rather than a side-effect-free read. The prepared Solana route specifies chain900, the native USDC mint and a $2minimum. Never send a deposit to the profile public key or use another network. Funding the GUM application balance and depositing collateral into its perps parent are distinct steps. The order Action signer does not authorize arbitrary server-built deposit transactions; those still need a verified funding path.
+
+Private owner selection and setup receipts live under `/Users/mitch/.local/state/soloracle-tradingview/zec-usdc-20261111/`. The persistent configuration is `/Users/mitch/.local/state/soloracle-tradingview/deployment.json`; the explicit selection is `/Users/mitch/.local/state/soloracle-tradingview/jupiter-selected-wallet.json`. Neither file contains key material.
 
 ## Strategy evidence
 
