@@ -201,6 +201,9 @@ jobs:
       - name: Import check
         run: python3 -c "import backtester.cli; print('imports ok')"
 
+      - name: Causal shape study and spot accounting
+        run: python3 -m unittest research.tests.test_shape_study -v
+
   # soltui is macOS-only (py2app, the menu-bar app and launchd have no Linux
   # equivalent), so this job runs on a macOS runner. It covers the unit suite
   # only: the packaging paths -- the alias bundle and the launchd agent -- are

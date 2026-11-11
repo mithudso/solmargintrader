@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 431
+Version: 432
+Delta: v431 to v432; preserve concurrent shape research and verified private MCP setup.
 Delta: v430 to v431; preserve concurrent Volty review and private MCP acceptance.
 Delta: v426 to v427; preserve concurrent TradingView delivery and verified Tailscale MCP setup.
 Delta: v425 to v426; verify private HTTPS MCP with preserved bearer authentication.
@@ -11,6 +12,11 @@ Delta: v421 to v422; diagnose local-service error as pending extension consent.
 Delta: v420 to v421; record passing documentation and offline index checks before checkpoint.
 Delta: v419 to v420; checkpoint installed client and pending macOS authorization.
 Delta: v418 to v419; start private Tailscale remote-access setup.
+Delta: v430 to v431; preserve concurrent Volty review and shape-study histories during integration.
+
+Delta: v428 to v429; record passing final local checks and independent acceptance before delivery.
+Delta: v427 to v428; complete causal shape study and begin independently verified delivery.
+Delta: v426 to v427; start causal geometry and Coinbase cost study.
 Delta: v429 to v430; finalize the evidence-bound review for delivery without activating live alerts.
 Delta: v428 to v429; finish authenticated chart validation and reject live activation under the requested condition.
 Delta: v427 to v428; record evidence review and TradingView two-factor blocker.
@@ -128,7 +134,6 @@ Final rerun: Oracle 80 tests, Ecosystem 180 tests, Bot Manager 361 tests, Ruff, 
 
 The canonical skill and audit checklist require a discoverable wiki for commands, reference, scripts and applicable strategy. Both installed copies include the guidance; 18 skill tests passed. Skills commit aa6244a5 is pushed at https://github.com/mithudso/skills/pull/107. The skills PR has no CI checks; the check-gated merge command exits without merging. Project records are in https://github.com/mithudso/solmargintrader/pull/196. Stele task TASK-1254 remains open until delivery.
 
-Version: 382
 Delta: v380 to v381; install actual managed availability and retain final acceptance/CI delivery tail.
 Delta: v379 to v380; record integrated source checks, review repairs and pending installed activation.
 Delta: v378 to v379; start authorized managed suite, complete help, machine health and Chrome helper delivery.
@@ -159,7 +164,6 @@ Delta: v340 to v341; record optimizer and initial SOL backtest evidence and unre
 Delta: v339 to v340; start strategy agent proof of concept and guarded Jupiter proof investigation.
 Consolidation delivery state: `/Users/mitch/dev/solmargintrader/.worktree-recovery/delivery-memory.md`. A completed receipt there supersedes the pre-merge publication steps below.
 
-Version: 372
 Delta: v371 to v372; finish content preservation, reconciliation and duplicate-folder removal.
 Delta: v370 to v371; record verified preservation and the concurrent Git-metadata overwrite.
 Delta: v369 to v370; inventory all owner-named folders and preserve unreviewed checkpoints.
@@ -824,3 +828,29 @@ Authoritative outputs: /Users/mitch/.local/share/solmargintrader/research/volty-
 ## 2026-11-10 — Volty delivery correction
 
 Delivery PR: https://github.com/mithudso/solmargintrader/pull/209 . First CI caught Mongo schema kind parity and a checksum-bound historical-card edit. Added stop-strategy to mongo/schema.py and restored the historical source card byte for byte. New runner details remain in backtester/guides/volty_expan_close.md. Four Mongo schema checks and scripts/check_tradingview_cards.py now pass. Stele lesson KNOW-1285 records the literal triggers. Research and installed simulation code are unchanged; no repeat of the completed market sweep is needed. Remaining: passing final-head CI and merged-delivery confirmation. Final receipt will be at /Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/delivery-memory.md and in Stele TASK-1282.
+
+
+## 2026-11-11 — Shape-aware spot study — TASK-1296
+
+Private worktree /Users/mitch/dev/solmargintrader-wt-01a1ca3c; branch agent-01a1ca3c; base ea39827. Use completed-bar OHLC geometry proxies only. Compare fixed singles, mixtures and train-only conditional selection against cash and buy-and-hold; next-open fills, long/flat, no leverage. Existing research artifacts /Users/mitch/.global-ai-hub/research/market-graph-geometry/ provide taxonomy but unsupported effect sizes must not become measured claims. Coinbase One simple trades include spread and Advanced Trade is excluded. No installed trading services or accounts are changed. Next: inspect data and evidence; implement and test detector; run tagged common-window study; independently audit; commit/push/CI/merge. No holdout reservation is consumed by this exploratory study.
+
+
+## 2026-11-11 — Shape-aware spot study measured — TASK-1296
+
+Version 428 records the completed product work. Source: research/shape_study.py and research/shape_report.py. Report: research/SHAPE-AWARE-SPOT.md. Eight Coinbase USD assets, 1h/6h/1d, five cost scenarios, 21 policies, three expanding disjoint test folds. Final run /Users/mitch/.local/share/solmargintrader/research/shape-spot-20261111/run-v3 finished exit zero with 2520 policy cells and 316 checksum-bound artifacts. Full bars, causal tags, shape intervals, routing decisions, equity and selections remain there; compact results are committed under research/results/shape_spot_20261111_*. No installed services, live settings, paper accounts or held reservations changed.
+
+At zero commission plus 2 bps execution per side, hourly shape routing beats shape-free selection on 5/8 assets and continuous passive on 6/8. At 25 bps per side all eight hourly routers lose money. ZEC remains the strongest passive coin in each tested timeframe; hourly passive +141.27% and shape +95.29%. Different horizons must not be pooled. Prior numerical geometry claims failed independent evidence review; KNOW-1277 was corrected. Coinbase One excludes Advanced Trade and still charges spread; zero commission is conditional, not an established API execution fee. Shape/zone filtering does not reliably improve the simpler router.
+
+Focused verification: ten causal geometry/accounting/holdout tests and Ruff passed. The report generator verifies all saved hashes and equity endpoints. The independent research-contract-auditor accepted trailing detection and train-only selection and requested a continuous passive comparator; final run includes both continuous and fold-reset holding. The first full backtester suite attempt failed because INDEX_NO_AUTO=1 invalidates idle-job fixture expectations and the new docs had not yet refreshed the deterministic index. Rebuild offline indexes and rerun the full suite without that override; final receipts supersede the initial failed log.
+
+Remaining product steps: none. Delivery gates before completion: final independent source/result acceptance, refreshed docs/wiki/retrieval metadata, passing full backtester and docs checks, committed task-owned paths, pushed PR, passing final-head CI and verified merge. Phase TASK-1300 and the external delivery-memory.md in the study folder hold the final delivery receipt. Parent TASK-1296 closes only after remote-default-branch verification.
+
+
+## 2026-11-11 — Shape study final acceptance
+
+Independent research-contract-auditor final acceptance passed: all 316 hashes and runner/canonical source bindings; all 2520 equity endpoints; 19200 conditional rows; continuous passive known-answer error at most 4.55e-13 percentage points. Final local full backtester suite: 1005 tests, exit zero, one existing skip, 26.253 seconds. Focused shape suite: 10 tests, exit zero. Ruff and docs checker passed; docs counts remain 1005/434/46/1472 (2957 total). Final source includes the separate continuous passive baseline and the first partial-day return in daily Sharpe. Source and compact audit are committed together; final PR/merge receipt is maintained in TASK-1296 and external delivery-memory.md. Remaining product steps: none; final-head remote CI and merge complete the delivery phase.
+
+
+## Shape-study delivery integration
+
+Integrated origin/master 1accb91, the independently completed Volty alert review, without changing its reviewed conclusions or owner instructions. Both prompt histories and continuation records are preserved. Rebuilt deterministic indexes and packaged wiki from the combined tracked source. No market replay needs repeating because upstream changed documentation only. Final focused tests, source hash verification and metadata checks revalidate the integrated tree before shipping.

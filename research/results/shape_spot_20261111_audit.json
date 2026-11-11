@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "task": "TASK-1296",
+  "run": "/Users/mitch/.local/share/solmargintrader/research/shape-spot-20261111/run-v3",
+  "reviewer": "research-contract-auditor",
+  "verdict": "pass for reproducible exploratory historical research",
+  "artifacts_verified": 316,
+  "unique_policy_cells": 2520,
+  "conditional_rows_checked": 19200,
+  "focused_tests": 10,
+  "focused_test_exit": 0,
+  "source_binding": "runner and canonical engine/strategy hashes match",
+  "independent_passive_max_error_percentage_points": 4.55e-13,
+  "conditional_reconciliation_max_error_percentage_points": 5.92e-12,
+  "confirmed": [
+    "hourly shape_router beats selected_fixed on 5 of 8 coins at zero commission and 2 bps execution per side",
+    "hourly shape_router beats continuous buy_hold on 6 of 8 coins under that scenario",
+    "all eight hourly shape_router results are negative at 25 bps per side"
+  ],
+  "limits": [
+    "Reused historical data; not untouched final validation",
+    "Overlapping 48-bar shape windows and sparse states",
+    "Five shuffled training-label routes are diagnostics, not significance",
+    "Coinbase One excludes Advanced Trade and retains spread",
+    "No live trading edge established"
+  ],
+  "prior_geometry_efficacy_claims": "rejected; source taxonomy retained as hypotheses; KNOW-1277 corrected"
+}
