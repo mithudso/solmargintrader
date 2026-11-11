@@ -26,6 +26,11 @@ component.
 ## `ecosystem/` — paper orchestration and control room
 
 The 0.4 package coordinates existing owners and serves the independent local UI.
+
+The isolated `ecosystem/meta_forward.py` owner runs the frozen ten-book meta-analysis
+comparison. `docs/META-FORWARD.md` describes its durable timing;
+`docs/META-FORWARD-PROTOCOL.json` fixes the economic review and
+`docs/META-FORWARD-RISK-AMENDMENT.json` records owner risk tolerance.
 It never starts a second recorder or changes a frozen research owner's version.
 
 | Path | What it is |
@@ -152,6 +157,9 @@ The danger here is overstating a result, so the honesty machinery is the point.
 
 | Path | What it is |
 | --- | --- |
+| `research/meta_analysis.py` | Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts |
+| `research/meta_followups.py` | Actual-fee canonical spot replays and fixed-slot concentration attribution |
+| `research/META-ANALYSIS.md` | Evidence synthesis, independent comparison, implemented followups and investment decision |
 | `research/decide.py` | Per-bar readout: what every strategy, signal and indicator says about the last bar |
 | `research/sweep.py` | Parameter sweeps |
 | `research/cpcv_sweep.py` | CPCV sweep plus `interpret()`, which exists to kill the "lots of strategies work" misreading |

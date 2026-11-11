@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "paper_only": true,
+  "owner": "solmargintrader meta-analysis cohort TASK-1391",
+  "frozen_at_utc": "2026-11-11T17:42:10Z",
+  "hypothesis": "The fixed ZEC BB40/2.5 policy adds value beyond cash and passive exposure after actual API costs.",
+  "accounts": {
+    "capital_per_book_usd": 10000,
+    "policies": [
+      "breakout_zec",
+      "hold_zec",
+      "hold_core",
+      "cash",
+      "sized_hold_zec"
+    ],
+    "scenarios": {
+      "taker_primary": {
+        "fee_bps_per_side": 90,
+        "execution_bps_per_side": 2
+      },
+      "maker_cost_sensitivity": {
+        "fee_bps_per_side": 50,
+        "execution_bps_per_side": 2,
+        "fill_certification": false
+      }
+    },
+    "scaled_zec_initial_budget": 0.4793342110254035,
+    "passive_rebalancing": false,
+    "fill_delay_bars": 2
+  },
+  "calendar": {
+    "basis": "elapsed UTC days after the first eligible prospective open",
+    "engineering_checkpoint_day": 30,
+    "descriptive_economic_review_day": 180,
+    "terminal_economic_review_day": 365,
+    "interim_promotion": false,
+    "extension_after_insufficient_events": "No optional extension of the confirmatory endpoint. Report inconclusive and preregister a separate cohort."
+  },
+  "data_rules": [
+    "Use the common calendar from activation; exclude warmup from returns.",
+    "Use all ten frozen books; do not select a favorable cost scenario.",
+    "Record source gaps, missed-window blocks and outages. Never interpolate or backfill missed decisions.",
+    "A blocked cohort remains evidence; replacement has a distinct ID and is never spliced into this cohort."
+  ],
+  "economic_review": {
+    "primary_scenario": "taker_primary",
+    "outcome": "Paired hourly log changes in estimated net-liquidation equity; terminal net return and maximum drawdown also reported.",
+    "declared_comparisons": [
+      "breakout_zec minus cash",
+      "breakout_zec minus hold_zec",
+      "breakout_zec minus hold_core",
+      "breakout_zec minus sized_hold_zec"
+    ],
+    "dependence_method": "Paired stationary block bootstrap, mean block length 168 hourly observations, 10000 replicates, seed 1391; resample common time indices across all accounts.",
+    "multiplicity": "Holm adjustment across the four primary comparisons, two-sided alpha 0.05. Report effect estimates and intervals even when tests do not reject.",
+    "limitations": "Bootstrap inference is an approximation for dependent, potentially nonstationary returns. One cohort cannot establish universal future profitability. Maker sensitivity is descriptive only.",
+    "minimum_completed_breakout_roundtrips": 30
+  },
+  "promotion_requirements": [
+    "No automatic live promotion or increase in capital.",
+    "At the terminal endpoint require a complete valid common calendar, at least 30 completed primary breakout round trips, positive net return, and positive adjusted evidence against every declared comparator. Otherwise report no demonstrated active advantage.",
+    "Any candidate must meet the owner-selected drawdown/capital budget; that budget remains unanswered and no live investment allocation is authorized by a paper result.",
+    "Independently review event records, accounting, contemporary fees, executable quotes, fill/nonfill behavior and order reconciliation before a separately sized investment decision.",
+    "Successful software checks and the tiny live canary prove operational paths only."
+  ],
+  "current_live_allocation": "No new strategy investment capital; completed tiny canary only."
+}
