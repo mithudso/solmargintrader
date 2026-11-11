@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-11T04:10:35.901523+00:00",
+  "strategy": "Volty Expan Close",
+  "trials": 250,
+  "configs_per_interval": 50,
+  "selection": "net return on expanding past-only training, five disjoint OOS folds",
+  "sizing": "1x current equity on entry, fixed units until reverse, long/short synthetic reference",
+  "costs": {
+    "length": 5,
+    "atr_mult": 0.75,
+    "fee_bps": 10.0,
+    "slippage_bps": 2.0,
+    "carry_bps_hour": 0.1,
+    "initial_capital": 10000.0
+  },
+  "datasets": {
+    "1m": {
+      "source": "/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/data/ZEC_1m.csv",
+      "source_sha256": "f8f4e03b86e312895c2dd6e9b2e7aabcb43d2cfbb3197608b9ad8717a1887fa2",
+      "snapshot": "/Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final/ZEC_1m.csv",
+      "snapshot_sha256": "7803d0184c2a4437a89deda2e65869ef7d290576a1324e20bf52b8826ae3cd6f",
+      "venue": "Binance spot ZECUSDT",
+      "quote_currency": "USDT",
+      "rows": 129600,
+      "discarded_aggregate_rows_before_last_gap": 0,
+      "first_utc": "2026-08-13T01:27:00+00:00",
+      "last_bar_open_utc": "2026-11-11T01:26:00+00:00"
+    },
+    "5m": {
+      "source": "/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/data/ZEC_1m.csv",
+      "source_sha256": "f8f4e03b86e312895c2dd6e9b2e7aabcb43d2cfbb3197608b9ad8717a1887fa2",
+      "snapshot": "/Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final/ZEC_5m.csv",
+      "snapshot_sha256": "1f107b48f004080822b0d31b51945c5d4180175b57233772e80b554736f47921",
+      "venue": "Binance spot ZECUSDT",
+      "quote_currency": "USDT",
+      "rows": 25919,
+      "discarded_aggregate_rows_before_last_gap": 0,
+      "first_utc": "2026-08-13T01:30:00+00:00",
+      "last_bar_open_utc": "2026-11-11T01:20:00+00:00"
+    },
+    "10m": {
+      "source": "/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/data/ZEC_1m.csv",
+      "source_sha256": "f8f4e03b86e312895c2dd6e9b2e7aabcb43d2cfbb3197608b9ad8717a1887fa2",
+      "snapshot": "/Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final/ZEC_10m.csv",
+      "snapshot_sha256": "8cd54bdf7bcd1141e754e88e0633dd1f08b8d7c2f7ffd23c396520910cd0fb0b",
+      "venue": "Binance spot ZECUSDT",
+      "quote_currency": "USDT",
+      "rows": 12959,
+      "discarded_aggregate_rows_before_last_gap": 0,
+      "first_utc": "2026-08-13T01:30:00+00:00",
+      "last_bar_open_utc": "2026-11-11T01:10:00+00:00"
+    },
+    "1h": {
+      "source": "/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/data/ZEC_1h.csv",
+      "source_sha256": "87ed2a3ec56ebb5fc0744b87565ce7f5467ef286bd88f5a2948d5f7f0dda9a5a",
+      "snapshot": "/Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final/ZEC_1h.csv",
+      "snapshot_sha256": "abec30496764c9dff38f66a616392d7ce0bba4744fcc8255d72769f4238fc5f9",
+      "venue": "Binance spot ZECUSDT",
+      "quote_currency": "USDT",
+      "rows": 31859,
+      "discarded_aggregate_rows_before_last_gap": 28255,
+      "first_utc": "2023-03-24T14:00:00+00:00",
+      "last_bar_open_utc": "2026-11-11T00:00:00+00:00"
+    },
+    "1d": {
+      "source": "/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/data/ZEC_1h.csv",
+      "source_sha256": "87ed2a3ec56ebb5fc0744b87565ce7f5467ef286bd88f5a2948d5f7f0dda9a5a",
+      "snapshot": "/Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final/ZEC_1d.csv",
+      "snapshot_sha256": "ed14ff40fb6980e2052f997f7f1d16e814b32e0b19d9eba2d0224132c35667dd",
+      "venue": "Binance spot ZECUSDT",
+      "quote_currency": "USDT",
+      "rows": 1327,
+      "discarded_aggregate_rows_before_last_gap": 1164,
+      "first_utc": "2023-03-25T00:00:00+00:00",
+      "last_bar_open_utc": "2026-11-10T00:00:00+00:00"
+    }
+  },
+  "code_sha256": {
+    "/Users/mitch/.venvs/volty-zec-20261110/lib/python3.13/site-packages/backtester/voltycli.py": "3852079ffeb2d00083557946ba3478bb00a2489bcfd2c9481b027e9d2ed24b12",
+    "/Users/mitch/.venvs/volty-zec-20261110/lib/python3.13/site-packages/backtester/core/volty.py": "491c09f178f23d6aed59960dd4ed6ad63ea499d6ea5592b8f48b48e226d58966"
+  },
+  "limits": [
+    "OHLC assumed path, no certified Pine broker parity",
+    "Binance spot bars simulate synthetic shorts; no executable short venue proven",
+    "carry is a constant scenario, not observed funding",
+    "90-day intraday window versus longer hourly/daily history; compare within interval",
+    "full-bar carry charged on end-of-bar positions; close-mark insolvency guard, no venue margin/liquidation model",
+    "250 searched configurations; exploratory results, no multiplicity-adjusted significance",
+    "historical walk-forward is not prospective paper performance"
+  ],
+  "artifacts": {
+    "ZEC_1m.csv": "7803d0184c2a4437a89deda2e65869ef7d290576a1324e20bf52b8826ae3cd6f",
+    "ZEC_1h.csv": "abec30496764c9dff38f66a616392d7ce0bba4744fcc8255d72769f4238fc5f9",
+    "winners.csv": "b47b13f6d7ca1e195490819ed483af3719344436e48d2cbeb36fc0b56a3392b0",
+    "sweep.csv": "8defe525d6efb1b27bc46a556c8f4c29bd71f5548ee92532b935759b3707c2ed",
+    "walk_forward.csv": "9c32fa3147ca4bab9ac071eab7cf6391f4768356309683f07a18f6900d4b3974",
+    "ZEC_10m.csv": "8cd54bdf7bcd1141e754e88e0633dd1f08b8d7c2f7ffd23c396520910cd0fb0b",
+    "ZEC_5m.csv": "1f107b48f004080822b0d31b51945c5d4180175b57233772e80b554736f47921",
+    "forward_specs.json": "50d437ab43f33452da73a3a198640e9f643564ad03ffdeb0467d5e077cbf155a",
+    "ZEC_1d.csv": "ed14ff40fb6980e2052f997f7f1d16e814b32e0b19d9eba2d0224132c35667dd"
+  }
+}

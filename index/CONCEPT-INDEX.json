@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T03:49:16+00:00",
+  "generatedAt": "2026-11-11T04:14:51+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1788,
+      "matchingFiles": 1791,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1488,
+      "matchingFiles": 1498,
       "shown": 30,
       "files": [
         {
@@ -288,6 +288,145 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "transfer",
+      "label": "Cross-asset and cross-timeframe transfer",
+      "why": "The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.",
+      "terms": [
+        "cross_asset",
+        "cross-asset",
+        "transfer",
+        "doge",
+        "zec",
+        "universe",
+        "top_coins"
+      ],
+      "matchingFiles": 1447,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/coin-intelligence/zec-zcash.md",
+          "hits": 196
+        },
+        {
+          "path": "research/coin-intelligence/doge-dogecoin.md",
+          "hits": 147
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 90
+        },
+        {
+          "path": "FILES.md",
+          "hits": 78
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 78
+        },
+        {
+          "path": "research/results/frontier-2026-11-07.json",
+          "hits": 62
+        },
+        {
+          "path": "research/CROSS-ASSET-TRANSFER.md",
+          "hits": 60
+        },
+        {
+          "path": "memory.md",
+          "hits": 56
+        },
+        {
+          "path": "research/results/minute_sweep_x1_common.txt",
+          "hits": 54
+        },
+        {
+          "path": "SCRIPTS.md",
+          "hits": 50
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 50
+        },
+        {
+          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
+          "hits": 47
+        },
+        {
+          "path": "backtester/tests/test_cross_asset_cpcv.py",
+          "hits": 46
+        },
+        {
+          "path": "backtester/tests/test_universe.py",
+          "hits": 43
+        },
+        {
+          "path": "backtester/core/universe.py",
+          "hits": 39
+        },
+        {
+          "path": "research/tradingview-card-readiness.json",
+          "hits": 36
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 34
+        },
+        {
+          "path": "research/coin-intelligence/README.md",
+          "hits": 33
+        },
+        {
+          "path": "TRADINGVIEW-CARD-READINESS.md",
+          "hits": 32
+        },
+        {
+          "path": "docs/TRADINGVIEW-CARD-READINESS.md",
+          "hits": 32
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-a.jsonl",
+          "hits": 30
+        },
+        {
+          "path": "archive/memory-2026-11-08.md",
+          "hits": 29
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 29
+        },
+        {
+          "path": "research/results/volty_zec_20261110_manifest.json",
+          "hits": 29
+        },
+        {
+          "path": "research/cross_asset_cpcv.py",
+          "hits": 28
+        },
+        {
+          "path": "research/RATIO-ROTATION.md",
+          "hits": 27
+        },
+        {
+          "path": "prompts.md",
+          "hits": 26
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-c.jsonl",
+          "hits": 24
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 23
+        },
+        {
+          "path": "docs/ZEC-ENSEMBLE-STUDY.md",
+          "hits": 22
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "lookahead",
       "label": "Lookahead and fill timing",
       "why": "A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.",
@@ -300,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1442,
+      "matchingFiles": 1443,
       "shown": 30,
       "files": [
         {
@@ -422,145 +561,6 @@
         {
           "path": "docs/FILES.md",
           "hits": 12
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "transfer",
-      "label": "Cross-asset and cross-timeframe transfer",
-      "why": "The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.",
-      "terms": [
-        "cross_asset",
-        "cross-asset",
-        "transfer",
-        "doge",
-        "zec",
-        "universe",
-        "top_coins"
-      ],
-      "matchingFiles": 1437,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/coin-intelligence/zec-zcash.md",
-          "hits": 196
-        },
-        {
-          "path": "research/coin-intelligence/doge-dogecoin.md",
-          "hits": 147
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 90
-        },
-        {
-          "path": "FILES.md",
-          "hits": 78
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 78
-        },
-        {
-          "path": "research/results/frontier-2026-11-07.json",
-          "hits": 62
-        },
-        {
-          "path": "research/CROSS-ASSET-TRANSFER.md",
-          "hits": 60
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
-          "hits": 54
-        },
-        {
-          "path": "SCRIPTS.md",
-          "hits": 50
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 50
-        },
-        {
-          "path": "memory.md",
-          "hits": 48
-        },
-        {
-          "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
-          "hits": 47
-        },
-        {
-          "path": "backtester/tests/test_cross_asset_cpcv.py",
-          "hits": 46
-        },
-        {
-          "path": "backtester/tests/test_universe.py",
-          "hits": 43
-        },
-        {
-          "path": "backtester/core/universe.py",
-          "hits": 39
-        },
-        {
-          "path": "research/tradingview-card-readiness.json",
-          "hits": 36
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 34
-        },
-        {
-          "path": "research/coin-intelligence/README.md",
-          "hits": 33
-        },
-        {
-          "path": "TRADINGVIEW-CARD-READINESS.md",
-          "hits": 32
-        },
-        {
-          "path": "docs/TRADINGVIEW-CARD-READINESS.md",
-          "hits": 32
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-a.jsonl",
-          "hits": 30
-        },
-        {
-          "path": "archive/memory-2026-11-08.md",
-          "hits": 29
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 29
-        },
-        {
-          "path": "research/cross_asset_cpcv.py",
-          "hits": 28
-        },
-        {
-          "path": "research/RATIO-ROTATION.md",
-          "hits": 27
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-c.jsonl",
-          "hits": 24
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 23
-        },
-        {
-          "path": "prompts.md",
-          "hits": 22
-        },
-        {
-          "path": "docs/ZEC-ENSEMBLE-STUDY.md",
-          "hits": 22
-        },
-        {
-          "path": "research/coin-intelligence/trx-tron.md",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 767,
+      "matchingFiles": 770,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 725,
+      "matchingFiles": 735,
       "shown": 30,
       "files": [
         {
@@ -961,7 +961,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 73
+          "hits": 72
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 667,
+      "matchingFiles": 673,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 304,
+      "matchingFiles": 305,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 268,
+      "matchingFiles": 269,
       "shown": 30,
       "files": [
         {
@@ -2909,6 +2909,9 @@
         "backtester/strategy_research/trade_flow_imbalance.md",
         "backtester/strategy_research/vol_of_vol_term_structure.md",
         "backtester/strategy_research/xs_momentum.md"
+      ],
+      "ZEC 250-trial study 2026-11-10: chronological 50/50 holdout and five expanding walk-forward folds; 10 bps fee, 2 bps slippage, 0.1 bps/hour synthetic carry": [
+        "backtester/guides/volty_expan_close.md"
       ],
       "cpcv-8-groups-k2": [
         "backtester/strategy_cards/adx_filtered_trend.md",
@@ -5881,6 +5884,9 @@
         "backtester/strategy_research/tv_builtin_volatility_zero_trend_close_to_close.md",
         "backtester/strategy_research/vol_of_vol_term_structure.md"
       ],
+      "volatility-breakout": [
+        "backtester/guides/volty_expan_close.md"
+      ],
       "volume": [
         "backtester/strategy_cards/incomplete/tv_builtin_klinger_oscillator.md",
         "backtester/strategy_cards/incomplete/tv_builtin_session_volume_profile.md",
@@ -6598,6 +6604,7 @@
       "measured": [
         "backtester/guides/ladder_grid.md",
         "backtester/guides/pairs_cointegration.md",
+        "backtester/guides/volty_expan_close.md",
         "backtester/strategy_cards/adx_filtered_trend.md",
         "backtester/strategy_cards/atr_position_sizing.md",
         "backtester/strategy_cards/bb_breakout.md",
@@ -8843,6 +8850,7 @@
       ],
       "very-low": [
         "backtester/guides/triangular_arbitrage.md",
+        "backtester/guides/volty_expan_close.md",
         "backtester/strategy_cards/dca.md",
         "backtester/strategy_cards/dual_momentum_12_1.md",
         "backtester/strategy_cards/ema_crossover.md",

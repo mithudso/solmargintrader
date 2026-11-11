@@ -73,10 +73,11 @@ STATUSES = ("measured", "implemented", "spec-only")
 # order-lifecycle simulator of its own -- the DCA safety-order bot in
 # core/dcasim.py, or the triangular-arbitrage event replay in
 # core/trianglesim.py -- and runs through backtester.botcli.
-KINDS = ("exposure-strategy", "ladder", "bot")
+KINDS = ("exposure-strategy", "ladder", "bot", "stop-strategy")
 
+# Standalone stop-order runners live with the other non-registry guides.
 # Which entry point runs the card. `null` means nothing does yet (spec-only).
-RUNNERS = ("backtester.cli", "backtester.gridcli", "backtester.paircli", "backtester.botcli")
+RUNNERS = ("backtester.cli", "backtester.gridcli", "backtester.paircli", "backtester.botcli", "backtester.voltycli")
 
 REQUIRED_FIELDS = (
     "id",
@@ -512,6 +513,9 @@ def load_card(path: str | Path, *, text: str | None = None) -> StrategyCard:
                     f"{path.name}: a card running through backtester.cli must name "
                     "its registry_key"
                 )
+        elif data["kind"] == "stop-strategy":
+            if data.get("registry_key") is not None or runner != "backtester.voltycli":
+                raise CardError(f"{path.name}: stop-strategy requires backtester.voltycli and no exposure registry key")
         elif data["kind"] == "ladder":
             if data.get("registry_key") is not None:
                 raise CardError(

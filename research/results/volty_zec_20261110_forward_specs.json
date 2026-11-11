@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "accounts": [
+    {
+      "interval": "1m",
+      "config": {
+        "length": 10,
+        "atr_mult": 1.25,
+        "fee_bps": 10.0,
+        "slippage_bps": 2.0,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "status": "prepared_not_running",
+      "paper_only": true,
+      "selection": "best net return using all data available at freeze; no future outcome yet",
+      "activate_after_timestamp": 1794360420
+    },
+    {
+      "interval": "5m",
+      "config": {
+        "length": 7,
+        "atr_mult": 1.25,
+        "fee_bps": 10.0,
+        "slippage_bps": 2.0,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "status": "prepared_not_running",
+      "paper_only": true,
+      "selection": "best net return using all data available at freeze; no future outcome yet",
+      "activate_after_timestamp": 1794360300
+    },
+    {
+      "interval": "10m",
+      "config": {
+        "length": 6,
+        "atr_mult": 1.25,
+        "fee_bps": 10.0,
+        "slippage_bps": 2.0,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "status": "prepared_not_running",
+      "paper_only": true,
+      "selection": "best net return using all data available at freeze; no future outcome yet",
+      "activate_after_timestamp": 1794360000
+    },
+    {
+      "interval": "1h",
+      "config": {
+        "length": 6,
+        "atr_mult": 1.25,
+        "fee_bps": 10.0,
+        "slippage_bps": 2.0,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "status": "prepared_not_running",
+      "paper_only": true,
+      "selection": "best net return using all data available at freeze; no future outcome yet",
+      "activate_after_timestamp": 1794358800
+    },
+    {
+      "interval": "1d",
+      "config": {
+        "length": 1,
+        "atr_mult": 1.25,
+        "fee_bps": 10.0,
+        "slippage_bps": 2.0,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "status": "prepared_not_running",
+      "paper_only": true,
+      "selection": "best net return using all data available at freeze; no future outcome yet",
+      "activate_after_timestamp": 1794355200
+    }
+  ]
+}
