@@ -111,6 +111,22 @@ class CoinbaseStudyTests(unittest.TestCase):
                     self.assertEqual(reference[2]["round_trips"], result[2]["round_trips"])
                     self.assertEqual([(x.ts, x.side) for x in reference[3].trades], [(x.ts, x.side) for x in result[3].trades])
                     self.assertAlmostEqual(reference[2]["forced_native_qty"], result[2]["forced_native_qty"] * multiplier, places=8)
+        # The study's10%-per-rung budget normally cannot exhaust cash. Exercise
+        # the refusal path explicitly, rather than treating a small account as
+        # proof that normalization was checked under actual cash shortages.
+        cfg = GridConfig(lower=90, upper=110, rungs=7, notional_per_rung_usd=80, min_order_usd=1)
+        costs = CostConfig(fee_bps=10, slippage_bps=25)
+        permission = np.arange(len(f)) % 20 < 11
+        reference = run_grid_backtest(cfg, normalized_arrays(f, 1), initial_capital=100, interval="15m", costs=costs, entry_allowed=permission)
+        self.assertGreater(reference.skipped.get("insufficient-cash", 0), 0)
+        for multiplier in (1e-10, 1e8):
+            scaled = f.copy()
+            scaled[["open", "high", "low", "close"]] *= multiplier
+            scaled.volume /= multiplier
+            result = run_grid_backtest(cfg, normalized_arrays(scaled, 1 / multiplier), initial_capital=100, interval="15m", costs=costs, entry_allowed=permission)
+            np.testing.assert_allclose(reference.equity, result.equity, rtol=1e-10)
+            self.assertEqual(reference.skipped["insufficient-cash"], result.skipped["insufficient-cash"])
+            self.assertEqual([(x.ts, x.side) for x in reference.trades], [(x.ts, x.side) for x in result.trades])
 
     def test_passive_pays_both_sides_and_idle_cash_is_preserved(self):
         f = candles(24)
