@@ -1,8 +1,12 @@
 # Prompt history
 
-Version: 208
+Version: 209
+Delta: v208 to v209; preserve swing research and verified MCP client setup.
 Delta: v207 to v208; preserve concurrent Jupiter delivery and verified MCP clients.
 Delta: v206 to v207; capture all requested CLI and desktop MCP clients.
+Delta: v207 to v208; preserve concurrent Jupiter delivery and cycle validation records.
+
+Delta: v206 to v207; start ZEC periodicity validation.
 Delta: v206 to v207; integrate Jupiter webhook delivery with concurrent private MCP records.
 Delta: v205 to v206; capture the Jupiter leveraged ZEC webhook request.
 Delta: v205 to v206; preserve concurrent shape research and verified private MCP setup.
@@ -1865,3 +1869,8 @@ You can use this /Users/mitch/.gemini/antigravity-cli/brain/0e524dea-a3e5-4646-a
 ## 2026-11-11 — Shape-aware spot study — TASK-1296
 
 Using the research done in ~/dev/llms-explorer identify the major graph shapes and determine how to find out if we are inside of one of those shapes and where in it we are, and then identify if one or a combination of strategies are more or less effective. Once you can identify the shapes then tag the timeframes that they are in on the backtest data and run a shape-aware strategy back test Also which were the most profitable coins again? I have the coinbase one so there are no fees on trades for quite a while so let's use it. I don't have margin with them, but let's see if we can make up for that with no fees.
+
+
+## 2026-11-11 — ZEC periodicity — TASK-1307
+
+I have often thought I saw a certain width on the charts that seems to be the coin's frequency that there always seems to ber a local peak or dip at roughly equal intervals, can you validate this for me please? I did see it on the ZEC charts yesterday.

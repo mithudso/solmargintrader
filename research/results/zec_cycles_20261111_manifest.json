@@ -1,0 +1,60 @@
+{
+  "artifacts": {
+    "ZEC_USD_15m_bars.csv.gz": "32be58617b15ae34aa1084dd85995363a6307f1e3320d982107023866eb6dc82",
+    "ZEC_USD_1h_bars.csv.gz": "e41f62e6206e8eb605a7dd3ffd7b454f64d82edbcda6a51b0d8f4f8c719d2a6d",
+    "ZEC_USD_1m_bars.csv.gz": "22638a9d56b9b83849852e8e82c8ddd131f36a53ce166b3ce5a727ceecedba6c",
+    "ZEC_USD_5m_bars.csv.gz": "ede48c8ed76243c4fb6f0f9bf87cd57e55a49f534f81caa4bae79b523b028c24",
+    "coverage.csv": "95b2f47e76b10df36233310b7eb0d056b1ee4afded0aa08c7114db4f959b0827",
+    "forecast_curves.csv": "b9250b98d4a787e709c4d8fea3c9e7a8bd3914409ecb5bb2df4045ab280e1c99",
+    "forecasts.csv": "c3c35e4c5183bbf2cdf3838e86841b44a3c188da5899ff75794ecee3941413d3",
+    "pivots.csv": "26e3804e9bbdf03ab1e1c018cd49c4e635148dcd5a19e1f491b3334bfca91a69",
+    "spacing.csv": "b6ddc5a6743cad358daf54ed8843dc4908c46c4f4ba55fc58558fa735e4fce08",
+    "spectra.csv": "34c75a44c3bf4c2eb1bf5d865ed624ac235d8d23c449824e9ee2adb7ca7c7077",
+    "spectral_tests.csv": "da40efda3d06f665e166b0cc8178a9b593bd4be98a93b36ef0a99bcdda4f949e"
+  },
+  "cutoff": 1794397200,
+  "forecast": "3-day training, fixed period/phase/trend, non-overlapping 6-hour tests",
+  "inputs": {
+    "15m": {
+      "bars": 2142,
+      "first": 1792468800,
+      "last": 1794395700,
+      "path": "/Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/input/ZEC_USD_15m.csv",
+      "sha256": "66d7a0e89c60317c092e9e2f1c3bef1ad162b06d1ff35f8b3fb14718c98c46e8"
+    },
+    "1h": {
+      "bars": 535,
+      "first": 1792468800,
+      "last": 1794391200,
+      "path": "/Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/input/ZEC_USD_1h.csv",
+      "sha256": "2036db2d34e4372da2e59c295508b9f28f048002d21ceb65ebbd527168be6c25"
+    },
+    "1m": {
+      "bars": 32015,
+      "first": 1792468800,
+      "last": 1794397140,
+      "path": "/Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/input/ZEC_USD_1m.csv",
+      "sha256": "f2f3cbebb81b227841f4baef1b7318e0a585001fee5dc6628957f5b75f99e839"
+    },
+    "5m": {
+      "bars": 6428,
+      "first": 1792468800,
+      "last": 1794396900,
+      "path": "/Users/mitch/.local/share/solmargintrader/research/zec-cycles-20261111/input/ZEC_USD_5m.csv",
+      "sha256": "a324466b396e6ff18607f122c7d65ca8fc947f93a3f2e065a5c8c8dcbead807e"
+    }
+  },
+  "missing_bars": "Use actual timestamps and native coarse candles; no interpolation.",
+  "replicates": 1999,
+  "seed": 20261111,
+  "source_sha256": "b002e5f429c14ba041f3c8b8db97810d4a67e64f3ce373b1bbbe6b3b4743715e",
+  "status": "complete",
+  "target_day": "2026-11-10",
+  "tests": 50,
+  "timezone": "America/New_York",
+  "version": 1,
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.1"
+  }
+}

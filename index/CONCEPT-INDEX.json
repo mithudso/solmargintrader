@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T12:09:48+00:00",
+  "generatedAt": "2026-11-11T12:18:14+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1797,
+      "matchingFiles": 1799,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1463,
+      "matchingFiles": 1480,
       "shown": 30,
       "files": [
         {
@@ -320,16 +320,16 @@
           "hits": 90
         },
         {
+          "path": "memory.md",
+          "hits": 84
+        },
+        {
           "path": "FILES.md",
           "hits": 78
         },
         {
           "path": "docs/FILES.md",
           "hits": 78
-        },
-        {
-          "path": "memory.md",
-          "hits": 70
         },
         {
           "path": "research/results/frontier-2026-11-07.json",
@@ -392,6 +392,10 @@
           "hits": 32
         },
         {
+          "path": "prompts.md",
+          "hits": 31
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 30
         },
@@ -410,10 +414,6 @@
         {
           "path": "research/results/volty_zec_20261110_manifest.json",
           "hits": 29
-        },
-        {
-          "path": "prompts.md",
-          "hits": 28
         },
         {
           "path": "research/cross_asset_cpcv.py",
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 834,
+      "matchingFiles": 839,
       "shown": 30,
       "files": [
         {
@@ -713,7 +713,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 771,
+      "matchingFiles": 772,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 754,
+      "matchingFiles": 756,
       "shown": 30,
       "files": [
         {
@@ -888,12 +888,12 @@
           "hits": 141
         },
         {
-          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
-          "hits": 127
+          "path": "memory.md",
+          "hits": 129
         },
         {
-          "path": "memory.md",
-          "hits": 126
+          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
+          "hits": 127
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
@@ -929,7 +929,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 80
+          "hits": 81
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 675,
+      "matchingFiles": 680,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 513,
+      "matchingFiles": 515,
       "shown": 30,
       "files": [
         {
@@ -1395,7 +1395,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 409,
+      "matchingFiles": 411,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 352,
+      "matchingFiles": 354,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 309,
+      "matchingFiles": 312,
       "shown": 30,
       "files": [
         {
@@ -2204,6 +2204,143 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "robustness",
+      "label": "Perturbation and robustness",
+      "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
+      "terms": [
+        "perturb",
+        "perturbation",
+        "ratio_to_iqr",
+        "sign_flips",
+        "stability"
+      ],
+      "matchingFiles": 164,
+      "shown": 30,
+      "files": [
+        {
+          "path": "FILES.md",
+          "hits": 100
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 100
+        },
+        {
+          "path": "research/perturb.py",
+          "hits": 54
+        },
+        {
+          "path": "llms-sitemap.txt",
+          "hits": 31
+        },
+        {
+          "path": "research/verify_numbers.py",
+          "hits": 31
+        },
+        {
+          "path": "research/RANKED_LISTS.md",
+          "hits": 25
+        },
+        {
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 23
+        },
+        {
+          "path": "soltui/compound.py",
+          "hits": 16
+        },
+        {
+          "path": "research/coin-intelligence/sol-solana.md",
+          "hits": 11
+        },
+        {
+          "path": "research/triggers.py",
+          "hits": 10
+        },
+        {
+          "path": "research/results/perturb_all_singles_long.txt",
+          "hits": 9
+        },
+        {
+          "path": "research/results/perturb_all_singles_medium.txt",
+          "hits": 9
+        },
+        {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 9
+        },
+        {
+          "path": "research/tradingview-script-understanding.json",
+          "hits": 9
+        },
+        {
+          "path": "research/results/perturb_all_singles_short.txt",
+          "hits": 8
+        },
+        {
+          "path": "CONCEPTS.md",
+          "hits": 7
+        },
+        {
+          "path": "docs/CONCEPTS.md",
+          "hits": 7
+        },
+        {
+          "path": "research/TOP5-RECOMMENDATION.md",
+          "hits": 7
+        },
+        {
+          "path": "soltui/bgqueue.py",
+          "hits": 7
+        },
+        {
+          "path": "research/tradingview-script-profiles/shard-b.jsonl",
+          "hits": 7
+        },
+        {
+          "path": "SCRIPTS.md",
+          "hits": 6
+        },
+        {
+          "path": "docs/SCRIPTS.md",
+          "hits": 6
+        },
+        {
+          "path": "index/build.py",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_long.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_medium.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_all_singles_short.csv",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
+          "hits": 6
+        },
+        {
+          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
+          "hits": 6
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "overfitting-pbo",
       "label": "Overfitting and PBO",
       "why": "PBO measured 0.700 at daily horizons against a 0.500 noise line, so in-sample rank is anti-informative. This is the finding that governs how every other number here may be read.",
@@ -2337,143 +2474,6 @@
         {
           "path": "research/TOP5-RECOMMENDATION.md",
           "hits": 10
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
-      "id": "robustness",
-      "label": "Perturbation and robustness",
-      "why": "Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A point that collapses is a spike, not a plateau.",
-      "terms": [
-        "perturb",
-        "perturbation",
-        "ratio_to_iqr",
-        "sign_flips",
-        "stability"
-      ],
-      "matchingFiles": 160,
-      "shown": 30,
-      "files": [
-        {
-          "path": "FILES.md",
-          "hits": 100
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 100
-        },
-        {
-          "path": "research/perturb.py",
-          "hits": 54
-        },
-        {
-          "path": "llms-sitemap.txt",
-          "hits": 31
-        },
-        {
-          "path": "research/verify_numbers.py",
-          "hits": 31
-        },
-        {
-          "path": "research/RANKED_LISTS.md",
-          "hits": 25
-        },
-        {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 23
-        },
-        {
-          "path": "soltui/compound.py",
-          "hits": 16
-        },
-        {
-          "path": "research/coin-intelligence/sol-solana.md",
-          "hits": 11
-        },
-        {
-          "path": "research/triggers.py",
-          "hits": 10
-        },
-        {
-          "path": "research/results/perturb_all_singles_long.txt",
-          "hits": 9
-        },
-        {
-          "path": "research/results/perturb_all_singles_medium.txt",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
-          "hits": 9
-        },
-        {
-          "path": "research/tradingview-script-understanding.json",
-          "hits": 9
-        },
-        {
-          "path": "research/results/perturb_all_singles_short.txt",
-          "hits": 8
-        },
-        {
-          "path": "CONCEPTS.md",
-          "hits": 7
-        },
-        {
-          "path": "docs/CONCEPTS.md",
-          "hits": 7
-        },
-        {
-          "path": "research/TOP5-RECOMMENDATION.md",
-          "hits": 7
-        },
-        {
-          "path": "soltui/bgqueue.py",
-          "hits": 7
-        },
-        {
-          "path": "research/tradingview-script-profiles/shard-b.jsonl",
-          "hits": 7
-        },
-        {
-          "path": "SCRIPTS.md",
-          "hits": 6
-        },
-        {
-          "path": "docs/SCRIPTS.md",
-          "hits": 6
-        },
-        {
-          "path": "index/build.py",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_long.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_medium.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_all_singles_short.csv",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_dual_momentum_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_all_macd_vol_regime.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_adx_trend_ou_reversion.txt",
-          "hits": 6
-        },
-        {
-          "path": "research/results/perturb_long_any_hurst_switch_ou_reversion.txt",
-          "hits": 6
         }
       ],
       "source": "curated-from-repo-vocabulary"
