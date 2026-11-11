@@ -169,10 +169,20 @@ def main(argv=None) -> int:
     p = commands.add_parser("history")
     p.add_argument("--limit", type=int, default=100)
     p.add_argument("--after", type=int, default=0)
+    p = commands.add_parser(
+        "webhook", help="receive TradingView signals on loopback; no orders"
+    )
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--inbox", type=Path, required=True)
     p = commands.add_parser("snapshot")
     p.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command == "webhook":
+            from .webhook import serve
+
+            serve(args.inbox, os.environ.get("ORACLE_WEBHOOK_SECRET", ""), args.port)
+            return 0
         if args.command == "run":
             if (
                 not math.isfinite(args.interval)

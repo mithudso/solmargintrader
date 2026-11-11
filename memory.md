@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 419
+Version: 421
+Delta: v420 to v421; record experimental inbox implementation and outstanding trade integration.
+Delta: v419 to v420; resume webhook integration with qualified maximum sizing.
 Delta: v418 to v419; record TradingView webhook execution investigation and open mapping.
 Delta: v417 to v418; fix CI schema parity and preserve frozen TradingView source card for PR209.
 Delta: v416 to v417; complete installed Volty study and supplied-dossier comparison; delivery pending.
@@ -20,6 +22,10 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Qualified maximum TradingView trades
+
+The owner requests TradingView webhook buy and sell at the maximum available qualified amount. TASK-1286 is claimed. Preserve configured executor limits, exact balances, tracked positions, dry-run defaults and replay protection. The Oracle is currently read-only. Determine secure ingress, signal identity, qualification, and executor integration before enabling any live action. Implemented an experimental loopback HTTP inbox in oracle/webhook.py and exposed it via oracle/cli.py. It authenticates a shared body secret, bounds and validates events, enforces event time and durably rejects conflicting identities. It never places orders. The Oracle suite passed 83 tests and ruff check oracle passed. Postman webhook capture requires login and a real sender was not tested. A user decision is pending on whether Oracle agreement is an additional qualification. Remaining: secure public ingress, trade mapping, maximum sizing within executor locks and effective shared limits, independently enforced qualification, replay and ambiguous-submit recovery, live readiness, integration tests, installed verification and delivery.
 
 ## 2026-11-11 — TradingView webhook signals
 

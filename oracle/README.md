@@ -204,3 +204,25 @@ Tools, resources, subscriptions and advisory veto use the same operator selectio
 Missing required selection adapters fail unavailable. Forecasts, resolutions and
 the four-file engine policy identity remain unchanged. See
 `docs/ECOSYSTEM-CONTROL-ROOM.md` for current operating commands and scope.
+
+## Experimental TradingView inbox
+
+`soloracle webhook --inbox /absolute/private/path/signals.sqlite3` starts an
+optional loopback-only receiver on port 8765. Set `ORACLE_WEBHOOK_SECRET` in the
+process environment to a randomly generated value of at least 32 characters.
+The alert body must be JSON with `secret`, unique stable `event_id`, uppercase
+`symbol`, `side` (`buy` or `sell`), and `timestamp` (Unix seconds). Use a unique
+ID per alert firing and reuse it for retransmission. The receiver rejects events
+more than five minutes old or more than 30 seconds in the future. Identical
+retransmissions are deduplicated durably; a conflicting reuse is rejected.
+Responses do not include credentials. Inbox files contain signal metadata.
+
+The endpoint listens only on 127.0.0.1 and is not directly reachable by
+TradingView. A separately managed HTTPS ingress is required, and must protect
+request bodies and access logs. A shared secret is not a TradingView signature:
+anyone who obtains it can forge signals. Do not expose this experimental inbox
+to the public internet without a reviewed ingress and access policy.
+
+**Receiving a signal does not qualify or execute a trade.** There is no worker
+consuming this inbox, no sizing or executor integration, and no live readiness
+claim. `202` means only that the event was recorded or recognized as a duplicate.

@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 200
+Version: 201
+Delta: v200 to v201; record maximum available qualified webhook trade request.
 Delta: v199 to v200; capture TradingView webhook trading request.
 Delta: v198 to v199; capture supplied Volty research dossier.
 Delta: v197 to v198; start Volty ZEC stop-entry and walk-forward study.
@@ -13,6 +14,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Qualified maximum TradingView trades
+
+Add webhook integration into the oracle, listen for a webhook from TradingView and make the qualified buy and sell for the max available.
 
 ## 2026-11-11 — TradingView webhook signals
 
