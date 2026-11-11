@@ -6,8 +6,9 @@ CLI and MCP process to that instrument. No quote conversion is implied. A single
 consumes source-labelled observations into a durable historical SQLite archive.
 It evaluates 14 existing strategy cards prospectively and serves snapshots,
 history, guide routes, readiness and resource subscriptions through MCP.
-It never loads signing keys or submits orders. Live readiness is blocked and
-vetoes are advisory: no existing executor consumes them in this release.
+The forecast service never loads signing keys or submits orders. Its research
+readiness and veto remain advisory. A separately enabled TradingView webhook
+worker can submit Coinbase spot orders through the authenticated official CLI.
 
 ## Install
 
@@ -205,25 +206,83 @@ Missing required selection adapters fail unavailable. Forecasts, resolutions and
 the four-file engine policy identity remain unchanged. See
 `docs/ECOSYSTEM-CONTROL-ROOM.md` for current operating commands and scope.
 
-## Experimental TradingView inbox
+## TradingView → Coinbase orders
 
-`soloracle webhook --inbox /absolute/private/path/signals.sqlite3` starts an
-optional loopback-only receiver on port 8765. Set `ORACLE_WEBHOOK_SECRET` in the
-process environment to a randomly generated value of at least 32 characters.
-The alert body must be JSON with `secret`, unique stable `event_id`, uppercase
-`symbol`, `side` (`buy` or `sell`), and `timestamp` (Unix seconds or UTC
-`YYYY-MM-DDTHH:MM:SSZ`, as produced by TradingView `{{timenow}}`). Use a unique
-ID per alert firing and reuse it for retransmission. The receiver rejects events
-more than five minutes old or more than 30 seconds in the future. Identical
-retransmissions are deduplicated durably; a conflicting reuse is rejected.
-Responses do not include credentials. Inbox files contain signal metadata.
+The optional webhook worker treats TradingView as the trading decision. It does
+not compare the signal with Oracle's predictions or apply its research, accuracy,
+soak or timeframe gates. Each market buy spends **75% of available quote currency**;
+each market sell sells **75% of available base currency**. Held funds are excluded.
+Sizes round down to Coinbase's increment. Missing balances, unsupported/offline
+spot products and quantities outside venue min/max are refused without resizing
+or substituting a different currency. The manual ticket's $100 cap is separate.
 
-The endpoint listens only on 127.0.0.1 and is not directly reachable by
-TradingView. A separately managed HTTPS ingress is required, and must protect
-request bodies and access logs. A shared secret is not a TradingView signature:
-anyone who obtains it can forge signals. Do not expose this experimental inbox
-to the public internet without a reviewed ingress and access policy.
+The worker uses the already installed official `coinbase` CLI and its own
+credential store. The authenticated MCP connector remains available for chat;
+the daemon does not extract its OAuth tokens. Verify CLI access with
+`coinbase portfolios list`. Pass the same portfolio UUID to the service.
 
-**Receiving a signal does not qualify or execute a trade.** There is no worker
-consuming this inbox, no sizing or executor integration, and no live readiness
-claim. `202` means only that the event was recorded or recognized as a duplicate.
+Run from an environment with Oracle installed:
+
+```sh
+soloracle webhook --inbox /absolute/private/path/signals.sqlite3 --secret-file /absolute/private/path/webhook.secret --coinbase --portfolio-id PORTFOLIO_UUID
+```
+
+This default records dry-run plans and never calls order creation. Add `--live`
+to enable real orders for newly received alerts. With neither `--coinbase` nor
+`--live`, it acts as an inbox only. Existing inbox and dry-run alerts are never
+promoted to live. Each event binds its portfolio and mode at receipt; a dry-run
+service cannot dispatch old live alerts. Use a separate inbox for dry-run
+checks if a live backlog exists; the oldest live event remains disarmed. One process owns an inbox. Create a
+`KILL` file beside the inbox to pause new submissions; remove it to resume.
+Queued alerts expire after five minutes. A signal already being submitted may
+complete after shutdown or KILL; its durable receipt remains authoritative.
+
+The secret file must be a regular file owned by the process user, mode 600, and
+contain a random value of at least 32 characters. `ORACLE_WEBHOOK_SECRET` is also
+supported for foreground use. Do not commit the secret or alert payload. The
+HTTP receiver binds only 127.0.0.1:8765 (override `--port`). Connect an HTTPS
+reverse tunnel to it and set the TradingView webhook URL to its `/tradingview`
+path. Protect ingress logs and request bodies: the body secret grants order
+authority, and it is not a TradingView cryptographic signature.
+
+TradingView **strategy order-fill** alert message template:
+
+```json
+{
+  "secret": "YOUR_PRIVATE_WEBHOOK_SECRET",
+  "event_id": "{{ticker}}-{{strategy.order.id}}-{{strategy.order.action}}-{{time}}-{{timenow}}",
+  "symbol": "{{exchange}}:{{ticker}}",
+  "side": "{{strategy.order.action}}",
+  "timestamp": "{{timenow}}"
+}
+```
+
+Use unique stable event IDs for each intended order. The same ID and payload can
+be delivered repeatedly without creating another order. Multiple intended fills
+within the same second with the same strategy order ID need a unique ID generated
+by the Pine script. Indicator alerts should set `side` explicitly to `buy` or
+`sell` and use their own unique ID. Exact pairs (`SOL-USDC`, `SOL/USD`) and Coinbase
+compact tickers (`COINBASE:SOLUSDC`) are supported. Chart exchange prefixes are accepted, but Coinbase must offer the exact pair;
+ambiguous symbols are refused. The service never changes USDT into USD or USDC.
+
+The receiver validates timestamps (Unix seconds or UTC `YYYY-MM-DDTHH:MM:SSZ`),
+accepting events up to five minutes old or 30 seconds ahead. HTTP 202 acknowledges
+receipt; it does not mean Coinbase filled an order. Order dispatch runs separately.
+Read persisted outcomes with:
+
+```sh
+soloracle webhook-status --inbox /absolute/private/path/signals.sqlite3
+```
+
+The service commits the size and deterministic client order ID before its single
+create call. Unknown submissions and pending orders block subsequent submissions.
+Read-only order lookups reconcile known order IDs. If an interrupted submission
+has no saved order ID and the CLI omits client IDs, it stays unknown; an empty
+order search never proves no order was placed. Inspect Coinbase before resolving
+that condition. A replay never automatically submits again. Fills and fees come
+from order lookup rather than a forecast or estimated profit.
+
+Local tests cover authenticated reception, real loopback HTTP, 75% rounding,
+pagination, single submission, crash states, ambiguity and reconciliation. Those
+checks do not prove an actual TradingView alert or live fill. No real order is
+needed to test the transport; use the default dry-run mode for delivery checks.

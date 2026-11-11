@@ -29,7 +29,7 @@ Ten components with different risk profiles. Know which one you are in:
 | Component | Risk |
 | --- | --- |
 | `ecosystem/` (Python) | Paper-only setup, durable F5 coordination, external bot registrations, sanitized manager telemetry and a local paper control room with authenticated, durable owner actions. Reuses existing workers and recorder. Never arms or submits orders. |
-| `oracle/` (Python) | Source-labelled shadow forecasts and a historical event archive with read-only MCP subscriptions. Never signs or submits orders. Reference agreement is not profit probability; unavailable inputs fail closed. |
+| `oracle/` (Python) | Source-labelled shadow forecasts and a historical event archive with read-only MCP subscriptions. Forecasts never sign or submit orders; the optional explicitly enabled TradingView worker submits Coinbase spot orders at 75% of available quote (buy) or base (sell) through the official authenticated CLI. Reference agreement is not profit probability; unavailable inputs fail closed. |
 | `botmanager/` (Python) | Standalone `solbot` lifecycle and evidence application. Default paper/disarmed. Legacy adapters preserve the existing owner; missing data, credentials or execution capability fail closed. Never silently seize a bot or create a duplicate recorder/optimizer. |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability here** — see its README's Scope section. The danger is a dishonest backtest, not a lost trade. |
 | `research/` (Python) | Analysis built on the backtester. The danger is overstating a result. |

@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 423
+Version: 425
+Delta: v424 to v425; record completed Coinbase order worker, installed acceptance and active webhook.
+Delta: v423 to v424; implement Coinbase webhook worker and 75 percent sizing.
 Delta: v422 to v423; record TradingView timestamp compatibility and remaining executor integration.
 Delta: v421 to v422; record owner decision not to require Oracle agreement.
 Delta: v420 to v421; record experimental inbox implementation and outstanding trade integration.
@@ -24,6 +26,10 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Coinbase webhook sizing
+
+Owner chooses Coinbase and 75 percent of available quote balance for buys or base balance for sells. No Oracle prediction filter. Both authenticated MCP portfolios list and installed official CLI portfolios list succeeded. TASK-1286 is claimed. Implemented exact Coinbase75 percent sizing, durable queue dispatch/reconciliation, per-event mode and portfolio binding, and no Oracle filter. All116 Oracle tests,195 ecosystem tests, Ruff, documentation counts and wiki consistency pass. Independent installed verification matched four module hashes, produced a real-account dry-run plan, deduplicated replay, rejected bad auth and shut down cleanly. Live listener and HTTPS tunnel now run under dedicated launchd labels on port8766; no real order was placed. Public invalid-auth request returned400. Deployment, secret/template, endpoint and sanitized acceptance receipt are under /Users/mitch/.local/state/soloracle-tradingview/. Final merge evidence is recorded in delivery.json there and PR210. The remaining user action is to configure their TradingView alert using endpoint.txt and private tradingview-alert.json. Quick tunnel address changes when its process restarts; named stable ingress is not configured. Unknown Coinbase submissions without saved order IDs remain blocked if CLI omits client IDs. Preserve unrelated work.
 
 ## 2026-11-11 — Qualified maximum TradingView trades
 
