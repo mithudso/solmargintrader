@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 456
+Version: 459
+Delta: v458 to v459; record independent source and loaded-browser acceptance before delivery.
+Delta: v457 to v458; record Critical diagnostic red-to-green and component verification.
+Delta: v456 to v457; isolate Critical diagnostic exposure repair from the ongoing full audit.
 Delta: v455 to v456; save the successful documentation environment and immutable final review target.
 Delta: v454 to v455; record accepted paper restart and final bound analysis before delivery.
 Delta: v453 to v454; record reviewed meta followups, actual canary, activated cohort and owner risk tolerance.
@@ -81,6 +84,14 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — TASK-1431 immediate extension diagnostic repair
+
+The owner requested deep code optimization of every component (parent TASK-1423). The full 767-file review continues in /Users/mitch/dev/solmargintrader-wt-01a1ca3c-cdo. This separate worktree repairs confirmed EXT-ENGINE-001: tick catches forward arbitrary upstream messages into returned errors, logs and persisted intent.error. A disarmed, in-memory reproduction using a configured synthetic credential exits 1. The existing durable event summary already bounds errors to phase, known kind and HTTP status. Apply that boundary to caught-error sinks, preserve UNKNOWN holds and no retry, and retain internal preparation exceptions. No owner credentials, network, signing, service restart or real orders are needed.
+
+Implementation now bounds all caught-error string sinks using existing safe phase/kind/status metadata; preparation throws retain their contract. Two new regression cases failed before the repair and passed afterwards. First full extension suite: 436 passed, exit 0. Independent review then found changing metadata getters could bypass validation; snapshot-once repair and a third red-to-green regression now pass. Final full suite: 437 passed, exit 0. Independent final review: no Medium or higher, 111 focused tests exit 0 and original property counterexample exit 0. Offline dry run: one closed round trip, simulated net $0.3492, exit 0. Guarded Chrome: 26/26, disarmed, exit 0. Syntax and diff checks exit 0. Extension manifests are version 0.6.6. Independent loaded Chrome fixture acceptance passed 25/25, exit 0, with manifest 0.6.6 and 12 exact origin-source hashes, including engine 7b362a56673da5048fc2e8b943a36bc5f47a79f6a963df0cb59544f079041a57. The fixture native host omits the optional installed-SolTUI comparison, explaining 25 versus the first 26 checks. Everyday owner installation is untouched. Parent audit remains active; draft checkpoint https://github.com/mithudso/solmargintrader/pull/226 preserves its partial coverage.
+
+Before-source copies and original red fixtures are under /Users/mitch/.local/share/solmargintrader/audits/cdo-20261111-task1423/critical-repair. Documentation gate initially failed missing current manager PYTHONPATH; the corrected run found the expected total-test count drift from the three additions, now updated from 2957 to 2960. Final documentation, offline index, wiki, syntax and diff checks all exit 0. Remaining at commit: final-head CI and remote merge verification. The external critical-repair/delivery.json receipt is the authoritative post-commit delivery state. This repair does not establish whole-repository CDO completion. TASK-1431 is claimed; KNOW-1432 records the finding.
 
 ## 2026-11-11 — Verified feature delivery snapshot
 

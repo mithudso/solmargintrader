@@ -520,9 +520,10 @@ test('an unusable venue price aborts the tick instead of poisoning P&L', async (
     const result = await tick({ venue: stubVenue(bad), store, configStore });
 
     assert.ok(
-      result.errors.some((e) => /unusable price/.test(e.error)),
+      result.errors.some((e) => /price failed/.test(e.error)),
       `price ${bad} should abort the tick`,
     );
+    assert.deepEqual(result.errorDetails, [{ stage: 'price', kind: 'RangeError' }]);
     assert.equal(result.pnl, null, 'no P&L may be computed from an unusable price');
     // Runtime must not have recorded a NaN daily figure.
     const runtime = await configStore.getRuntime();
@@ -1084,7 +1085,8 @@ test('an envelope the client cannot read aborts the tick before placing anything
 
   const result = await tick({ venue, store, configStore });
   assert.equal(result.placed.length, 0, 'nothing may be placed when live state is unknown');
-  assert.ok(result.errors.some((e) => /unrecognised orders envelope/.test(e.error)));
+  assert.ok(result.errors.some((e) => /reconcile failed/.test(e.error)));
+  assert.deepEqual(result.errorDetails, [{ stage: 'reconcile', kind: 'Error' }]);
 });
 
 test('a fill with an unreported fee is recorded, flagged and counted', async () => {

@@ -68,7 +68,7 @@ funding boundary. Do not enable live mode during a code audit.
 python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 434 tests
+cd extension && npm test                                # 437 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 python3 -m unittest discover -s oracle/tests -t . -v
