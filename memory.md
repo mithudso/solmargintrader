@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 432
+Version: 434
+Delta: v433 to v434; verify native clients and installed credential-safe MCP bridge.
+Delta: v432 to v433; start secure MCP configuration across CLI and desktop clients.
 Delta: v431 to v432; preserve concurrent shape research and verified private MCP setup.
 Delta: v430 to v431; preserve concurrent Volty review and private MCP acceptance.
 Delta: v426 to v427; preserve concurrent TradingView delivery and verified Tailscale MCP setup.
@@ -48,6 +50,17 @@ Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TA
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
 
+## 2026-11-11 — MCP clients across apps
+
+Owner requests Codex, Claude Code, Antigravity, agy and desktop apps after a successful local curl health check. All five actual client profiles now contain secret-free mitchlists registrations. Codex /Users/mitch/.codex/config.toml and Claude Code /Users/mitch/.claude.json use native HTTPS plus runtime header helpers. Claude Desktop /Users/mitch/Library/Application Support/Claude/claude_desktop_config.json and Antigravity profiles /Users/mitch/.gemini/config/mcp_config.json and /Users/mitch/.gemini/antigravity/mcp_config.json use a shared stdio-to-HTTPS bridge. All unrelated entries were preserved, all config and backup files are mode0600, and the token value is absent from configuration and argv. Backups and sanitized receipts are under /Users/mitch/.local/state/tailscale-setup/ and the two Antigravity config .before-tailscale-20261111T115320Z files. Exact inventory is in /Users/mitch/.local/state/tailscale-setup/clients.json and codex-client-acceptance.json.
+
+Implemented version1.0.0 in scripts/mcp_remote_client.py and six credential-boundary tests in scripts/test_mcp_remote_client.py, with a CI gate. The headers mode reads a small, private, user-owned regular token file without following symlinks or blocking on FIFOs. Bridge mode reuses installed MCP2.3/httpx2/anyio transports and trusted HTTPS; no handwritten JSON-RPC proxy or new dependency install. It forwards responses/notifications and cancels cleanly at EOF. Error paths do not print raw exceptions, responses or credentials. Installed exact source at /Users/mitch/.local/lib/tailscale-mcp/mcp_remote_client.py (mode0600) and wrappers /Users/mitch/.local/bin/mitchlists-mcp-auth-headers and /Users/mitch/.local/bin/mitchlists-tailscale-mcp (mode0700), using the existing /Users/mitch/dev/mitchlists/.venv/bin/python. Token remains solely in /Users/mitch/.config/mitchlists/token (mode0600). Independent final installed/source SHA0500cd29c47cb0ffff0fa245d62b590ca6352d4456c41426c677a87aa43f1aee matched.
+
+Verification: all six unit tests and targeted Ruff passed. Fresh native Codex app-server discovered21tools at the HTTPS origin with no model/thread turn. A failing-helper negative control returned0tools with a discovery error, ruling out cached discovery; production helper returned21. Fresh Claude Code mcp get reports Connected, exit0. agy mcp list recognizes exactly one enabled mitchlists entry, exit0. Desktop-shaped minimal-environment bridge acceptance initialized mitchlists0.1.0 MCP2025-03-26, discovered21tools and closed at stdin EOF with exit0 and empty stderr; an independent verifier reproduced it against final installed code. No mutating MCP tool or inference ran.
+
+/Applications/ChatGPT.app is actually the Codex desktop host (com.openai.codex26.1103.60933), sharing CLI config. Claude Desktop4.23118.1 and Antigravity2.31.0 were not running, so root launched them for loaded acceptance. Claude Desktop Extensions > Local MCP servers shows mitchlists Running with the installed bridge command; fresh app logs contain initialize, initialized and tools/list and no token literal. agy1.5.5 is a separate executable from Antigravity desktop; both global profiles are configured. Antigravity loaded discovery remains under inspection. Existing active CLI/Codex sessions were preserved; new sessions/reconnection use updated configuration. No public Funnel or backend-auth change. Remote-device access still lacks evidence beyond a local curl; no inference or paused service was started.
+
+Remaining: finish Antigravity loaded-app check, record any client refresh limitation, deliver helper source/tests/workflow records and offline index updates through PR, then retain phone/peer acceptance as an explicit external check. Preserve other sessions' active main checkout and PR214.
 ## 2026-11-11 — Private MCP service selection
 
 Owner selected "MCP server". Configured existing authenticated mitchlists MCP as the first private endpoint at https://m5.tail0781b8.ts.net/mcp. The backend remains http://127.0.0.1:7337, supervised by /Users/mitch/Library/LaunchAgents/com.mitch.mitchlists.plist. Its existing bearer token stays in /Users/mitch/.config/mitchlists/token with mode 0600; the value was never printed or committed. Preserve this token and middleware. The backend has read and mutation tools, so remote clients must authenticate. Global AI Hub8787 relies on localhost trust and includes administrative/write/indexing tools; it was not exposed.

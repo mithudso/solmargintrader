@@ -387,6 +387,9 @@ jobs:
       - name: Offline HTML converter behavior
         run: python3 -m unittest scripts.test_html_to_markdown
 
+      - name: MCP credential and endpoint boundaries
+        run: python3 -m unittest scripts.test_mcp_remote_client
+
       - name: TradingView source-to-card coverage is consistent
         run: python3 scripts/check_tradingview_cards.py
 

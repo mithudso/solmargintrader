@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 206
+Version: 207
+Delta: v206 to v207; capture all requested CLI and desktop MCP clients.
 Delta: v205 to v206; preserve concurrent shape research and verified private MCP setup.
 Delta: v204 to v205; preserve concurrent Volty review and private MCP acceptance.
 Delta: v203 to v204; preserve concurrent TradingView delivery and verified Tailscale MCP setup.
@@ -26,6 +27,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — MCP clients across apps
+
+I want both codex, and claude code, and antigravity, and agy, and the desktop apps;
 
 ## 2026-11-11 — First private Tailscale service
 
