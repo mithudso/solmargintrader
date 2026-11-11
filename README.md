@@ -37,6 +37,13 @@ independent paper forward accounts. The selected top configuration is published
 on the Oracle page. See [measured results and reproduction](docs/ZEC-ENSEMBLE-STUDY.md)
 and [forward owner and recovery](docs/ZEC-ENSEMBLES-FORWARD.md).
 
+## Shape-aware spot study
+
+The [Coinbase spot shape study](research/SHAPE-AWARE-SPOT.md) tags completed hourly,
+six-hour and daily candles, compares individual strategies and mixtures, and tests
+train-only shape routing. Its zero-commission scenarios retain spread/slippage;
+Coinbase One does not waive Advanced Trade fees.
+
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and

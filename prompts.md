@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 204
+Version: 205
+Delta: v204 to v205; preserve concurrent Volty review and shape-study histories during integration.
+
+Delta: v203 to v204; capture shape-aware Coinbase spot backtest request.
 Delta: v203 to v204; record conditional TradingView Volty alert setup request.
 Delta: v202 to v203; record Coinbase venue and 75 percent balance sizing.
 Delta: v201 to v202; record owner decision on signal qualification.
@@ -76,7 +79,6 @@ Completely remove RAIN, WBT, HTX, JST, MNT, and XMR from the coin lists.
 
 Add to the repo-bootstrapper skill that the repo should have a wiki for commands, reference, scripts, strategy, etc.
 
-Version: 184
 Delta: v183 to v184; preserve seven-part turnkey CLI, UI, service, health and Chrome request plus resume.
 Delta: concurrent v172/v179 to v180; preserve original remaining-work prompt and concurrent M4 requests.
 Delta: v171 to v172; implement remaining bot-manager work with agent fanout.
@@ -86,7 +88,6 @@ Delta: v169 to v170; record supplied Jupiter documentation and MCP reference.
 Delta: v168 to v169; clarify that either trade direction can prove execution.
 Delta: v167 to v168; record SOL/USDC buy-direction clarification.
 Delta: v166 to v167; record strategy agent and Jupiter proof purchase request.
-Version: 183
 Delta: v182 to v183; record confirmation that the competing copy stopped.
 Delta: v181 to v182; preserve the owner confirmation of a concurrent copy.
 Delta: v180 to v181; record the owner request to consolidate fifteen sibling folders.
@@ -1832,3 +1833,8 @@ You don't have many tokens left so do this quietly and with minimal verification
 ## 2026-11-10 — Volty dossier follow-up
 
 You can use this /Users/mitch/.gemini/antigravity-cli/brain/0e524dea-a3e5-4646-a99c-96aeb14eb8b4/volty_expan_close_strategy_dossier.md
+
+
+## 2026-11-11 — Shape-aware spot study — TASK-1296
+
+Using the research done in ~/dev/llms-explorer identify the major graph shapes and determine how to find out if we are inside of one of those shapes and where in it we are, and then identify if one or a combination of strategies are more or less effective. Once you can identify the shapes then tag the timeframes that they are in on the backtest data and run a shape-aware strategy back test Also which were the most profitable coins again? I have the coinbase one so there are no fees on trades for quite a while so let's use it. I don't have margin with them, but let's see if we can make up for that with no fees.
