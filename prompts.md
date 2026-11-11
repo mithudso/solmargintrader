@@ -1,6 +1,12 @@
 # Prompt history
 
-Version: 205
+Version: 206
+Delta: v205 to v206; preserve concurrent shape research and verified private MCP setup.
+Delta: v204 to v205; preserve concurrent Volty review and private MCP acceptance.
+Delta: v203 to v204; preserve concurrent TradingView delivery and verified Tailscale MCP setup.
+Delta: v201 to v202; select MCP as the first private service.
+Delta: v200 to v201; capture screenshot of Tailscale local-service error.
+Delta: v199 to v200; capture Tailscale installation and remote-service access request.
 Delta: v204 to v205; preserve concurrent Volty review and shape-study histories during integration.
 
 Delta: v203 to v204; capture shape-aware Coinbase spot backtest request.
@@ -21,6 +27,17 @@ Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization a
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
 
+## 2026-11-11 — First private Tailscale service
+
+MCP server
+
+## 2026-11-11 — Tailscale local-service error
+
+User supplied a screenshot showing Tailscale Not Connected and the alert: "Invalid response from local Tailscale service. Verify Tailscale is properly configured and try again."
+
+## 2026-11-11 — Tailscale remote access
+
+Install and configure tailspin, my ultimate goal is I want to be able to access my server from anywhere with my phone and my other computers. And also I want to serve mcp and api and http data from this system.
 ## 2026-11-11 — Validate and configure ZEC Volty TradingView alerts
 
 Use the chrome and computer use extensions to go to my tradingview account and set up webhook alerts for the zec volty expans strategy. But validate that it's a reasonable strategy as listed first.
