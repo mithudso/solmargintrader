@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 211
+Version: 212
+Delta: v211 to v212; capture cross-platform mobile push discovery and self-owned design request.
 Delta: v210 to v211; preserve concurrent MCP client records and selected ZEC/USDC configuration.
 Delta: v209 to v210; capture explicit Jupiter2x75%USDCcollateral selection.
 Delta: v208 to v209; record ZEC/USDC wallet selection and repeated memory hook failure fix.
@@ -35,6 +36,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Mobile push alerts for iPhone and Android
+
+Design or discover a mobile system where we could do push alerts, I'd say pagerduty and that's sortof an option but it's not going anywhere. How would we do this on our own? WE have both iphone and android.
 
 ## 2026-11-11 — Confirmed Jupiter leverage allocation
 
