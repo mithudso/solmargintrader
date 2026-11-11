@@ -46,3 +46,37 @@ updates:
     commit-message:
       prefix: "deps"
     open-pull-requests-limit: 3
+
+  # Each headless component declares its own third-party dependencies. Coupled
+  # first-party version updates still require the repository's integration gates.
+  - package-ecosystem: pip
+    directory: /oracle
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: pip
+    directory: /botmanager
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: pip
+    directory: /ecosystem
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: uv
+    directory: /executor
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3

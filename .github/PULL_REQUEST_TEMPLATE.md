@@ -7,7 +7,11 @@
 - [ ] `backtester/` — simulation only. A dishonest backtest is the failure mode.
 - [ ] `research/` — analysis. Overstating a result is the failure mode.
 - [ ] `extension/` — **can place real orders.** Treat as production software.
-- [ ] `soltui/` — read-only display.
+- [ ] `soltui/` — research console; separately armed manual Coinbase spot path.
+- [ ] `oracle/` — shadow forecasts; separately enabled live-capable TradingView worker.
+- [ ] `botmanager/` — paper accounts, lifecycle and evidence.
+- [ ] `ecosystem/` — paper coordination and local control room.
+- [ ] `executor/` — guarded Solana spot execution, own pytest/Ruff gates.
 - [ ] `mongo/` — derived local datastore.
 - [ ] `liquidity/` — **moves real money on Base**, own pytest/Ruff gates.
 - [ ] Repo-level (docs, CI, tooling).
@@ -22,13 +26,15 @@ Paste the actual output, not a claim that it passed.
 
 ```
 python3 -m unittest discover -s backtester/tests -t .
-python3 -m unittest discover -s soltui/tests -t .
+python3 -m unittest discover -s soltui/tests -t .  # optional full suite; use focused checks where applicable
+python3 -m unittest discover -s oracle/tests -t .
+python3 -m unittest discover -s ecosystem/tests -t .
 cd extension && npm test
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100
 python3 scripts/check_docs.py
 ```
 
-- [ ] The suites above pass, and I have pasted the counts.
+- [ ] Applicable suites pass; actual commands, counts, exit codes and skipped gates are recorded.
 - [ ] The oscillating dry run still closes a round trip **positive** (extension changes).
 
 ## If this touches signal generation or fill timing

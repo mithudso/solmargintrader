@@ -1,6 +1,6 @@
 # Volty Expan Close: ZEC study
 
-Version: 1.0.0. Delta: source capture, 250 costed configurations and 25 walk-forward folds.
+Version: 1.0.1. Delta: link the separately initialized prospective watcher and frozen-chart diagnostics; historical study artifacts remain unchanged.
 
 All five first-half winners lost on the held-out second half. Expanding daily walk-forward selection returned +22.69%, while passive ZEC gained +1783.71% across the same overall test dates. These exploratory results establish no tradable edge.
 
@@ -29,6 +29,13 @@ These ranks use all history and are descriptive. The daily 1 / 1.25 leader gaine
 Each interval searches lengths 1–10 and multipliers 0.25, 0.5, 0.75, 1 and 1.25. The first 50% selects a fixed winner by net return; the remaining 50% is held out. Separately, five expanding training windows reselect from the same 50 configurations before the next disjoint 10% test window. No test return enters its own selection. Each book starts flat, warms stops from past history, and pays its final exit cost. Fold returns compound. The adaptive procedure is different from one fixed strategy.
 
 Five future-paper specifications are frozen separately using all data available at study time. Their status is `prepared_not_running`. No prospective performance or active paper service is claimed. The existing ensemble forward accounts were preserved.
+
+Update2026-11-11: the original specification artifact retains that freeze-time
+status. A separate durable cohort now observes those five configurations and the
+exact chart5/1setting prospectively. See [the installed service](VOLTY-FORWARD-SERVICE.md)
+and [the new diagnostic](VOLTY-PREDICTIVE-CHECKS.md). The watcher uses an additional
+bar of observation delay and modeled reference fills; its first observations do
+not establish TradingView/GUM fill parity or profitability.
 
 ## Observed history
 

@@ -132,12 +132,14 @@ Full reference: [docs/API.md](docs/API.md).
 useful: it identified the intended venue, yielded real token mints, and revealed a bundled
 `vendor-anchor-*.js` implying client-side Anchor instruction building. It is gitignored (~42 MB).
 
-**Jupiter Perps has no public REST write API.** Jupiter's docs state the Perps API is a work in
-progress and point at Anchor IDL parsing, so opening or closing a leveraged position is not
-shippable from a service worker today. The retained live-capable adapter targets **Trigger V2** price orders. Its bundled
-signing path remains blocked until an independent transaction-intent verifier is
-available. Both sit behind one `VenueAdapter`; the read-only Perps adapter does
-not imply an implemented leveraged-order path.
+**The extension's Perps adapter remains read-only.** It does not implement
+leveraged orders. Its separate live-capable adapter targets **Trigger V2** price
+orders, whose bundled signing path remains blocked pending an independent
+transaction-intent verifier. Jupiter's **GUM Beta** markets expose a distinct
+order Action API; the optional Oracle TradingView worker implements ZEC execution
+through that API. That implementation does not make the extension adapter live or
+verify arbitrary deposit transactions. See [the separate GUM account and signing
+boundary](docs/JUPITER-ZEC-WEBHOOK.md).
 
 ## Project wiki
 

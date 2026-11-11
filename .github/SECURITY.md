@@ -6,12 +6,15 @@ opening an issue, or directly to the repository owner.
 ## What is actually at risk here
 
 The extension **can place real orders and move real money**. That makes three things
-security-relevant. The liquidity component also holds a separate Base signing boundary:
+security-relevant. The optional Oracle TradingView worker, executor and separately
+armed SolTUI Coinbase path also move money. Liquidity retains a Base signing
+boundary but its daemon is archived and disabled:
 
 | Asset | Where it lives | Rule |
 | --- | --- | --- |
 | Jupiter API key | `chrome.storage.local` only | Never `chrome.storage.sync`, never a log, never a response body. `setApiKey` returns a length, never the key |
 | Session-key vault | `chrome.storage.local`, or a mode-0600 file (`src/storage/fileStore.js`) | Same |
+| Oracle webhook secret and GUM signing key | Private local process/file configuration; never committed | Default dry-run; authenticate ingress and verify owner-bound order Actions; see `docs/JUPITER-ZEC-WEBHOOK.md` |
 | Liquidity signing key | Owner-only key file / macOS Keychain / legacy environment fallback | Agents never read, print or copy it; see `liquidity/CLAUDE.md` |
 | Local HTTP API | `extension/tools/api-server.js`, bound locally | Requires `SMT_API_TOKEN`; treat the port as trusted-local only |
 
@@ -30,7 +33,8 @@ each of them can cause an order nobody asked for.
 
 - The backtester and research components do not touch the network during a run and place
   no orders. A bug there is a correctness bug, not a security one.
-- `soltui/` places no orders. It can explicitly start data-fetch subprocesses and toggle
-  the liquidity daemon KILL flag.
+- SolTUI's research runtime is paper-only. Manual Coinbase spot orders have a
+  separately armed path; manual Jupiter V2 submission remains blocked pending
+  independent economic transaction verification.
 - No live order has ever been placed by this extension. See the **Verification status**
   section of `extension/README.md` before treating any live-path behaviour as proven.

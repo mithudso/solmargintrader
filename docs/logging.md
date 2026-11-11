@@ -18,7 +18,7 @@ currently record nothing.
 | `liquidity/` | `Daemon.log` writes SQLite ledger events and stdout; stage results retain transaction hashes | Ledger, state files and service `daemon.log` |
 | `botmanager/` | Owner journals, `health.sqlite3`, and the suite's private `.suite/alerts.json` plus stdout/stderr | Yes; bounded derived alerts are distinct from financial/evidence journals |
 | `ecosystem/` | Pipeline `supervisor.log`, control-room `control-room.log`, `control.sqlite3` action receipts and sanitized `telemetry.sqlite3` mirror | Yes; original manager evidence remains with its owner |
-| `oracle/` | Selected archive's events, observations, forecasts and resolutions; fixed CLI/MCP failure envelopes | Archive records persist; failure envelopes are not a universal transport-attempt log |
+| `oracle/` | Selected archive events/forecasts; separate webhook SQLite signals, per-leg intents, sanitized results and public fill evidence | Durable journals; fixed CLI/MCP/HTTP failures are not a universal transport-attempt log |
 
 The extension's real log is **not the console**. `src/storage/store.js` defines four
 object stores — `intents`, `fills`, `carry`, `events` — and the intent journal is what
@@ -127,3 +127,19 @@ Assert on the event, not on the fact that a line ran. `src/storage/memoryStore.j
 implements the same `logEvent` interface, so a test can drive a tick against the memory
 store and assert the recorded event body. That is the pattern to follow for anything added
 from the gap list above.
+
+## TradingView execution journal
+
+The webhook inbox retains event identity, execution mode, venue/account binding,
+planned legs and sanitized results. GUM reconciliation records actual fill
+quantity, fee and public transaction signatures. An acknowledgment is labelled
+accepted; it is not promoted to filled without matching venue evidence. Unknown
+submission remains a durable hold rather than a retry instruction.
+
+HTTP access logging is deliberately disabled because alerts contain a secret.
+Failures return fixed symbolic errors; upstream exception bodies and signed
+requests are excluded. The worker failure boundary stops the receiver and exposes
+`venue_worker_failed`. The journal provides operation-level state and evidence,
+not a complete shared per-request error sink. Tests are in
+`oracle/tests/test_webhook.py`, `test_webhook_orders.py`, `test_gum_orders.py` and
+`test_gum_webhook_orders.py` under `oracle/tests/`.

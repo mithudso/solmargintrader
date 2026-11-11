@@ -29,6 +29,7 @@ STATIC = {
     "/": ("index.html", "text/html; charset=utf-8"),
     "/app.js": ("app.js", "text/javascript; charset=utf-8"),
     "/oracle-chart.js": ("oracle-chart.js", "text/javascript; charset=utf-8"),
+    "/tradingview-chart.js": ("tradingview-chart.js", "text/javascript; charset=utf-8"),
     "/lightweight-charts.mjs": ("vendor/lightweight-charts-5.2.1.mjs", "text/javascript; charset=utf-8"),
     "/styles.css": ("styles.css", "text/css; charset=utf-8"),
 }
@@ -152,7 +153,8 @@ def make_server(
                 "style-src 'self' 'sha256-3pRED1tOXas1FXFoPb9TGCjmYe9XQsmO9OV23khV2nY='; "
                 "style-src-attr 'unsafe-inline'; "
                 "connect-src 'self'; img-src 'self'; object-src 'none'; "
-                "base-uri 'none'; frame-ancestors 'none'; form-action 'none'; frame-src http://127.0.0.1:*",
+                "base-uri 'none'; frame-ancestors 'none'; form-action 'none'; "
+                "frame-src http://127.0.0.1:* https://www.tradingview-widget.com",
             )
             self.end_headers()
             if self.command != "HEAD":

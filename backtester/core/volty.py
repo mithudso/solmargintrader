@@ -64,13 +64,17 @@ def stop_levels(bars: dict[str, np.ndarray], config: VoltyConfig) -> tuple[np.nd
 
 def simulate(bars: dict[str, np.ndarray], config: VoltyConfig, step: int,
              start: int = 0, end: int | None = None, path: str = "nearest",
-             keep_fills: bool = False) -> dict:
+             keep_fills: bool = False, *, close_at_end: bool = True,
+             signal_delay_bars: int = 0) -> dict:
     """Fresh 1x equity-sized long/short book; no leverage or live venue claim.
 
     Size stays fixed until reversal. Both replacement stops are eligible each
     bar; same-side triggers do not pyramid. Opposite triggers close then reverse.
     Carry is a declared scenario on marked notional, not observed ZEC funding.
-    Each segment pays a final market close. Warm history creates no positions.
+    Each segment pays a final market close unless ``close_at_end`` is false.
+    Warm history creates no positions. ``signal_delay_bars`` delays stop
+    eligibility beyond the usual next bar; a prospective observer uses one
+    extra bar so it can persist the decision before the eligible bar opens.
     """
     validate(bars, step)
     end = len(bars["close"]) if end is None else end
@@ -78,7 +82,16 @@ def simulate(bars: dict[str, np.ndarray], config: VoltyConfig, step: int,
         raise ValueError("invalid replay window")
     if path not in ("nearest", "high-first", "low-first"):
         raise ValueError("unknown OHLC path")
+    if type(signal_delay_bars) is not int or signal_delay_bars < 0:
+        raise ValueError("signal_delay_bars must be a nonnegative integer")
     upper, lower = stop_levels(bars, config)
+    if signal_delay_bars:
+        def delayed(levels):
+            result = np.full(len(levels), np.nan)
+            if signal_delay_bars < len(levels):
+                result[signal_delay_bars:] = levels[:-signal_delay_bars]
+            return result
+        upper, lower = delayed(upper), delayed(lower)
     o, h, lo, c, ts = (bars[k] for k in ("open", "high", "low", "close", "timestamp"))
     cash, qty, entry = config.initial_capital, 0.0, 0.0
     fee, slip = config.fee_bps / 1e4, config.slippage_bps / 1e4
@@ -144,7 +157,7 @@ def simulate(bars: dict[str, np.ndarray], config: VoltyConfig, step: int,
                 bankrupt = True
                 cash, qty = 0.0, 0.0
         eq[i-start] = max(0.0, cash + qty * (c[i]-entry))
-    if qty:
+    if qty and close_at_end:
         fill(0, c[end-1], end-1, terminal=True)
         eq[-1] = cash
     previous = np.r_[config.initial_capital, eq[:-1]]
@@ -161,4 +174,7 @@ def simulate(bars: dict[str, np.ndarray], config: VoltyConfig, step: int,
               "equity": eq}
     if keep_fills:
         result["fills"] = fills
+    if not close_at_end:
+        result["open_account"] = {"cash": cash, "units": qty, "entry_price": entry,
+                                  "marked_price": float(c[end-1])}
     return result

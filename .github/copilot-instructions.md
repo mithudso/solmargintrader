@@ -19,12 +19,20 @@ repository; this file is a pointer plus the rules that get broken most often.
 
 | Component | Language | Risk |
 | --- | --- | --- |
-| `backtester/` | Python 3.13 | Simulation only. **Never add live-trading capability here.** The danger is a dishonest backtest, not a lost trade |
-| `research/` | Python 3.13 | Analysis built on the backtester. The danger is overstating a result |
-| `soltui/` | Python 3.13 | Read-only macOS menu-bar app and TUI. Places no orders |
-| `mongo/` | Python 3.13 | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
-| `extension/` | JavaScript (ESM) | **Can place real orders and move real money.** Production software |
-| `liquidity/` | Python, own venv | **Moves real money on Base.** Read `liquidity/CLAUDE.md` before changes |
+| `backtester/` | Python 3.13 | Offline simulation; no live trading |
+| `research/` | Python 3.13 | Analysis and prospective paper evidence; no live trading |
+| `oracle/` | Python 3.13 | Shadow forecasts and read-only MCP; separately enabled TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders |
+| `botmanager/` | Python 3.13 | Fenced paper accounts, lifecycle and evidence; no signing |
+| `ecosystem/` | Python 3.13 | Paper coordination and authenticated local control room; no order submission |
+| `soltui/` | Python 3.13 | Research console with a separately armed manual Coinbase spot path; Jupiter V2 submit remains blocked |
+| `mongo/` | Python 3.13 | Rebuildable derived storage; no execution dependency |
+| `extension/` | JavaScript ESM | Live-capable order paths behind separate rails; installs dry-run/disarmed |
+| `executor/` | Python, own environment | Guarded Solana spot swaps; read `executor/CLAUDE.md` |
+| `liquidity/` | Python, own environment | Base LP code retained; daemon archived, disabled and killed |
+
+The webhook's venue worker is independent of Oracle's prediction and timeframe
+votes. Read `docs/JUPITER-ZEC-WEBHOOK.md` before changing its account, signing or
+funding boundary. Do not enable live mode during a code audit.
 
 ## Non-negotiables — extension
 
@@ -63,6 +71,10 @@ python3 -m unittest discover -s mongo/tests -t .        # 46 tests
 cd extension && npm test                                # 434 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
+python3 -m unittest discover -s oracle/tests -t . -v
+ruff check oracle
+python3 -m unittest discover -s ecosystem/tests -t . -v
+ruff check ecosystem oracle scripts/bootstrap_ecosystem.py
 ```
 
 `cd extension && npm run e2e` verifies an unpacked extension in a temporary Chrome
@@ -78,7 +90,9 @@ Ruff and locked dependencies; verify from `liquidity/` with `.venv/bin/ruff chec
 and `.venv/bin/pytest -q`. The backtester deliberately excludes `pyarrow`, `requests`,
 and `pytest`.
 
-**JavaScript** — ESM, no build step, **zero runtime dependencies**. Do not suggest a package
+**JavaScript** — ESM, no build step, no npm runtime dependencies. The sanctioned
+vendored TradingView Lightweight Charts 5.2.1 build is pinned under
+`extension/vendor/lightweight-charts/`; read its README before changing it. Do not suggest a package
 for something `src/wallet/solana.js` already solves. Tests are `node:test` +
 `node:assert/strict`. Keep `src/core/grid.js`, `risk.js` and `pnl.js` free of I/O and
 `chrome.*`.
@@ -89,6 +103,9 @@ timers, base58 zero bytes, FIFO vs paired-lot attribution, one-bar leaks). Do no
 
 ## Known-unverified areas
 
-No live order has ever been placed, the Trigger order-list response envelope is guessed, and
-fee attribution is unconfirmed. See `docs/known-issues.md`. Do not present any of them as
-working.
+The extension Trigger live path remains unverified, including authenticated wallet
+responses, execution USD valuation and fee attribution. Its bundled signer lacks a
+Trigger semantic verifier. Oracle's GUM order Action verifier is a separate boundary;
+it does not verify arbitrary funding transactions. Unit tests and a successful
+preflight do not prove live fills or a profitable strategy. See `docs/known-issues.md`
+and `docs/JUPITER-ZEC-WEBHOOK.md`.

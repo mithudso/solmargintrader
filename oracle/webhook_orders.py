@@ -202,6 +202,15 @@ def process_one(
         )
         return "refused"
     try:
+        # The durable commit can wait on I/O; check the kill/deadline again after it.
+        if not enabled() or now + time.monotonic() - started - row["timestamp"] > 300:
+            _update(
+                path,
+                row["event_id"],
+                "refused",
+                result=json.dumps({"reason": "disarmed_or_expired_before_submission"}),
+            )
+            return "refused"
         result = venue.submit(plan, client_id)
         if (
             not isinstance(result, dict)

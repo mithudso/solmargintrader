@@ -464,6 +464,39 @@ class GumOrderTests(unittest.TestCase):
     @unittest.skipUnless(
         importlib.util.find_spec("cryptography"), "optional Jupiter signing extra"
     )
+    def test_every_post_exception_is_sanitized_as_ambiguous_without_retry(self):
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+        key = Ed25519PrivateKey.from_private_bytes(bytes(range(32)))
+        owner = b58encode(key.public_key().public_bytes_raw())
+        for error_type in (TypeError, KeyError, AssertionError):
+            with self.subTest(error_type=error_type):
+                provider = Provider()
+
+                def failed_call(
+                    method, path, owner, body=None, *, provider=provider, error_type=error_type
+                ):
+                    response = provider(method, path, owner, body)
+                    if method == "POST":
+                        raise error_type("upstream diagnostic must remain private")
+                    return response
+
+                venue = GumOrders(
+                    owner, ACCOUNT, 2, leverage="2", signer=key.sign, call=failed_call
+                )
+                plan = venue.plan("ZEC", "buy", ACCOUNT)
+                with self.assertRaisesRegex(
+                    GumAmbiguous, "^gum_submission_requires_reconciliation$"
+                ) as failure:
+                    venue.submit_leg(plan, CLIENT_ID)
+                self.assertNotIn("upstream", str(failure.exception))
+                self.assertEqual(
+                    len([call for call in provider.calls if call[0] == "POST"]), 1
+                )
+
+    @unittest.skipUnless(
+        importlib.util.find_spec("cryptography"), "optional Jupiter signing extra"
+    )
     def test_wrong_signer_is_refused_before_any_write(self):
         self.venue.signer = lambda message: bytes(64)
         plan = self.venue.plan("ZEC", "buy", ACCOUNT)
