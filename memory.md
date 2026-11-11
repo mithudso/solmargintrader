@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 418
+Version: 421
+Delta: v420 to v421; record passing documentation and offline index checks before checkpoint.
+Delta: v419 to v420; checkpoint installed client and pending macOS authorization.
+Delta: v418 to v419; start private Tailscale remote-access setup.
 Delta: v417 to v418; fix CI schema parity and preserve frozen TradingView source card for PR209.
 Delta: v416 to v417; complete installed Volty study and supplied-dossier comparison; delivery pending.
 Delta: v415 to v416; start Volty ZEC stop-entry and walk-forward study.
@@ -20,6 +23,15 @@ Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TA
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
 
+## 2026-11-11 — Tailscale remote access
+
+TASK-1294 tracks this unfinished host setup. Interpret tailspin as Tailscale. Official standalone /Applications/Tailscale.app 1.104.6 is installed and running. The app bundle passed codesign --verify --deep --strict. Downloaded /Users/mitch/Downloads/tailscale-setup-20261111/Tailscale-1.104.6-macos.pkg matches Homebrew cask SHA-256 6933e28302e5692a4be78da1a2e178445eb6e9d5539197647e64f187d5682c53 and has trusted Tailscale Inc. installer signature and Apple notarization. Opened Installer and requested human completion of install, VPN consent and login. systemextensionsctl list still reports io.tailscale.ipn.macsys.network-extension as activated waiting for user. Homebrew CLI reports failed to connect to local Tailscale service. The app CLI waits for initialization; do not repeatedly invoke it while extension consent is pending. No remote access, Tailscale Serve ingress or peer verification is established yet.
+
+Preserve existing services, bearer tokens, browser-origin restrictions and trading rails. Do not enable Funnel, exit-node or subnet routing. AC power sleep is already disabled. Homebrew tailscale 1.104.5 remains installed but its daemon is stopped; do not run it alongside the GUI client. /usr/local/bin/tailscale targets the app now restored by the official installer. Use /Users/mitch/dev/solmargintrader-wt-01a1ca3a on agent-01a1ca3a because another session owns the original checkout. This branch records only host-setup progress; it does not include the other session's TradingView work.
+
+Remaining: human approves Tailscale Network Extension in System Settings > General > Login Items & Extensions > Network Extensions and VPN configuration, then signs in. Verify status, tailnet name and IP before publishing URLs. Add the phone and other computers to the same account and test from cellular or another network. Select actual HTTP/MCP services; retain app authentication, bind backends to loopback and use private HTTPS Serve. Stdio MCP servers need an HTTP transport before remote clients can use them. External cloud MCP consumers need separate authenticated public ingress. Do not proxy every listening port. Checkpoint remains unfinished in a draft PR until these human steps allow completion.
+
+Verification: installer checksum/signature/notarization and installed app code signature passed. System and Homebrew Python cannot run the docs drift gate because suite dependencies are absent. Existing /Users/mitch/.venvs/soltui/bin/python has dependencies but requires this worktree's botmanager/src in PYTHONPATH; use the existing interpreter without altering installed services. With the worktree botmanager/src on PYTHONPATH, the existing interpreter passed scripts/check_docs.py (2957 tests discovered; docs agree). git diff --check and offline index/build.py --check passed. Rebuild only offline repository indexes after record edits.
 ## 2026-11-10 — Commit all repository artifacts
 
 Per owner instruction "No just commit all of them", staged all untracked repository documentation, design prototypes, runbooks, and configurations, excluded ephemeral browser logs and tool dependencies in `.gitignore`, rebuilt the search index, and delivered via PR.

@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 199
+Version: 200
+Delta: v199 to v200; capture Tailscale installation and remote-service access request.
 Delta: v198 to v199; capture supplied Volty research dossier.
 Delta: v197 to v198; start Volty ZEC stop-entry and walk-forward study.
 Delta: v196 to v197; capture owner authorization to commit all untracked repository documentation, design artifacts, runbooks, and configurations.
@@ -12,6 +13,10 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Tailscale remote access
+
+Install and configure tailspin, my ultimate goal is I want to be able to access my server from anywhere with my phone and my other computers. And also I want to serve mcp and api and http data from this system.
 
 ## 2026-11-10 — Commit all repository artifacts
 
