@@ -8,7 +8,8 @@ It evaluates 14 existing strategy cards prospectively and serves snapshots,
 history, guide routes, readiness and resource subscriptions through MCP.
 The forecast service never loads signing keys or submits orders. Its research
 readiness and veto remain advisory. A separately enabled TradingView webhook
-worker can submit Coinbase spot orders through the authenticated official CLI.
+worker can submit Coinbase spot orders through the authenticated official CLI,
+or explicitly configured ZEC Beta perpetual orders through GUM on Jupiter.
 
 ## Install
 
@@ -205,6 +206,42 @@ Tools, resources, subscriptions and advisory veto use the same operator selectio
 Missing required selection adapters fail unavailable. Forecasts, resolutions and
 the four-file engine policy identity remain unchanged. See
 `docs/ECOSYSTEM-CONTROL-ROOM.md` for current operating commands and scope.
+
+## TradingView → Jupiter ZEC perpetuals
+
+The Jupiter path uses GUM Beta perpetuals and preserves long/short direction.
+An opposite signal closes the old side and verifies the result before opening
+the new side. Same-side signals do not pyramid. The leverage, allocation basis,
+owner and account must be configured explicitly. Dry-run remains the default;
+the forecast service stays read-only. Read [the execution contract and account
+requirements](../docs/JUPITER-ZEC-WEBHOOK.md) before activation.
+
+Read current market health and the owner's GUM accounts without signing:
+
+```sh
+soloracle jupiter-preflight --owner OWNER_PUBLIC_KEY
+```
+
+GUM collateral is separate from Solana and Coinbase balances. A missing account
+or balance is a provisioning prerequisite; no automatic deposit is implied.
+
+For example, after choosing 2x and a 75% collateral allocation, preview newly
+received signals against a funded dedicated account:
+
+```sh
+soloracle webhook --inbox /absolute/private/path/gum-signals.sqlite3 --secret-file /absolute/private/path/webhook.secret --jupiter-perps --owner OWNER_PUBLIC_KEY --trading-account CROSS_ACCOUNT_PUBLIC_KEY --subaccount-id 0 --leverage 2 --allocation 75 --allocation-basis collateral --max-slippage-bps 10
+```
+
+Allocation uses percentage units (`75` means 75%). `notional` uses the same
+percentage as a position-size budget instead. Add `--live --key-file
+/absolute/private/path/keypair.json` only for deliberate live operation. The key
+file must be private and match the configured owner. Default operation never
+loads it. Use a separate inbox from Coinbase and from previous dry-run checks;
+every event binds the complete account and policy and cannot be promoted later.
+Signed orders are price-capped market Fill-or-Kill Actions. No automatic account
+creation, collateral deposit, leverage-preference change or transfer is performed.
+Existing incompatible preferences, unsettled collateral and venue limits refuse
+the order rather than changing the requested allocation.
 
 ## TradingView → Coinbase orders
 

@@ -1,4 +1,4 @@
-"""TradingView signal reception with optional Coinbase order dispatch."""
+"""TradingView signal reception with explicitly selected venue dispatch."""
 
 from __future__ import annotations
 
@@ -118,22 +118,30 @@ def accept_signal(
 
 
 def serve(
-    database: Path, secret: str, port: int, *, venue=None, portfolio_id=None, live=False
+    database: Path,
+    secret: str,
+    port: int,
+    *,
+    venue=None,
+    portfolio_id=None,
+    live=False,
+    processor=process_one,
+    recover=recover_planning,
 ) -> None:
     if len(secret) < 32 or not 1 <= port <= 65535:
         raise ValueError("invalid_configuration")
 
     if live and venue is None or venue is not None and not portfolio_id:
-        raise ValueError("invalid_coinbase_configuration")
+        raise ValueError("invalid_venue_configuration")
     mode = "live" if live else "dry-run" if venue is not None else "inbox"
     stop = threading.Event()
     failed = threading.Event()
-    recover_planning(database)
+    recover(database)
 
     def work():
         try:
             while not stop.is_set():
-                process_one(
+                processor(
                     database,
                     venue,
                     portfolio_id,
@@ -143,7 +151,7 @@ def serve(
                     ),
                 )
                 stop.wait(1)
-        except (ValueError, RuntimeError, OSError, sqlite3.Error):
+        except Exception:  # noqa: BLE001 - stop reception if any dispatch worker dies
             failed.set()
             stop.set()
 
@@ -202,4 +210,4 @@ def serve(
         for sig, handler in old.items():
             signal.signal(sig, handler)
     if failed.is_set():
-        raise RuntimeError("coinbase_worker_failed")
+        raise RuntimeError("venue_worker_failed")
