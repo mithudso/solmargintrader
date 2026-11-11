@@ -117,6 +117,12 @@ def _asset(asset: str) -> str:
     a = str(asset or "").strip().upper()
     if not a.isalnum() or len(a) > 12:
         raise CompoundError(f"bad asset symbol {asset!r}")
+    from backtester.core.assets import require_active_asset
+
+    try:
+        require_active_asset(a)
+    except ValueError as exc:
+        raise CompoundError(str(exc)) from None
     return a
 
 

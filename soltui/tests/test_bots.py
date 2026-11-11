@@ -147,6 +147,11 @@ class Configs(Isolated):
 
 
 class Data(Isolated):
+    def test_available_coins_omits_all_owner_removed_symbols(self) -> None:
+        for asset in ("SOL", "RAIN", "WBT", "HTX", "JST", "MNT", "XMR"):
+            (self.data / f"{asset}_1h.csv").write_text("timestamp\n")
+        self.assertEqual(bots.available_coins(self.settings), ["SOL"])
+
     def test_hourly_resamples_minutes_and_drops_thin_hours(self) -> None:
         start = 1_700_000_000 // 3600 * 3600
         minutes = SyntheticLoader(n_bars=60 * 5, seed=1, start_ts=start).load("ZZZ", None, None, "1m")

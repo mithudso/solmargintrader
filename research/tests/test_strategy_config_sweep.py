@@ -42,12 +42,13 @@ class StrategyConfigSweepTests(unittest.TestCase):
     def test_asset_discovery_ignores_funding_files_and_unrelated_csvs(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for name in ("SOL_1m.csv", "SOL_funding_1h.csv", "notes.csv", "XMR_1d.csv"):
+            for name in ("SOL_1m.csv", "SOL_funding_1h.csv", "notes.csv", "XMR_1d.csv",
+                         "RAIN_1d.csv", "WBT_1h.csv", "HTX_1d.csv", "JST_1d.csv", "MNT_1m.csv"):
                 (root / name).touch()
 
             assets = discover_assets(root)
 
-            self.assertEqual(set(assets), {"SOL", "XMR"})
+            self.assertEqual(set(assets), {"SOL"})
             self.assertEqual(set(assets["SOL"]), {"1m"})
 
     def test_resampling_uses_epoch_seconds_and_drops_incomplete_buckets(self):

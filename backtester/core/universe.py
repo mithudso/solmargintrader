@@ -4,10 +4,10 @@
 importantly, is honest about the set it could not fetch.
 
 The reason that matters more than the loop: **the venue does not list every asset
-in the universe.** Of the ten largest non-pegged coins as of 2026-08-04
-(`research/TOP_COINS.md`), Coinbase Exchange lists eight; TRX and RAIN are absent
+in the universe.** The 2026-08-04 screen is in `research/TOP_COINS.md`. Coinbase Exchange
+lists eight of the remaining active candidates; TRX is absent
 from its product list entirely. A fetcher that quietly writes eight files hands
-the next stage an eight-asset universe wearing a ten-asset name, and every
+the next stage a partial universe wearing a complete-set name, and every
 cross-sectional statistic computed on it — a rank, a breadth count, a
 "top-N momentum" selection — is then computed over a survivorship-filtered set
 chosen by *listing venue*, which is precisely the bias nobody notices.
@@ -30,25 +30,22 @@ from pathlib import Path
 
 import pandas as pd
 
+from .assets import REMOVED_ASSETS, filter_removed_assets
 from .data import validate_bars
 from .fetch import FetchError, default_cache_path, fetch_coinbase
 from .types import INTERVAL_SECONDS
 
 COINBASE_PRODUCTS_URL = "https://api.exchange.coinbase.com/products"
 
-# The ten largest non-pegged coins by market cap, 2026-08-04, in rank order.
-# Source and the reason pegged assets are excluded: research/TOP_COINS.md.
-# Stablecoins are omitted deliberately -- USDT and USDC rank 3rd and 5th overall,
-# and an asset whose design goal is not to move is not a directional candidate.
-TOP10_NON_PEGGED = ("BTC", "ETH", "BNB", "XRP", "SOL", "TRX", "HYPE", "DOGE", "RAIN", "ZEC")
+# Remaining candidates from the 2026-08-04 non-pegged screen after the owner's
+# six-symbol removal. The dated source snapshot remains unchanged as historical evidence.
+CANDIDATE_ASSETS = ("BTC", "ETH", "BNB", "XRP", "SOL", "TRX", "HYPE", "DOGE", "ZEC")
 
 # The subset this project already holds history for.
 ALREADY_CACHED = ("BTC", "ETH", "SOL")
 
-# Assets whose market-cap rank does not survive contact with evidence, and why.
-# Kept as data rather than silently dropped from TOP10_NON_PEGGED above: that constant
-# states what market cap says, and this states why we decline to believe it. Both are
-# true and a reader needs to see the disagreement.
+# Historical evidence explaining why RAIN was excluded from the original screen.
+# It is not an active candidate or selectable asset.
 EXCLUDED: dict[str, str] = {
     "RAIN": (
         "market-cap rank unreliable: CoinGecko #14 / CoinMarketCap #201 / DefiLlama #16 "
@@ -103,7 +100,7 @@ USD_ONLY: dict[str, str] = {
 
 # What a directional strategy should actually be pointed at. Nine, not ten -- backfilling
 # an eleventh to restore a round number would be choosing the number over the evidence.
-TRADEABLE_UNIVERSE = tuple(a for a in TOP10_NON_PEGGED if a not in EXCLUDED)
+TRADEABLE_UNIVERSE = tuple(a for a in CANDIDATE_ASSETS if a not in EXCLUDED)
 
 # The five-minute compound's coins, chosen by the owner on 2026-11-07 from a screen of the top
 # 50 non-pegged coins (research/results/top50-screen-2026-11-07.json). A 5m call pays only with
@@ -152,6 +149,9 @@ def plan_universe_fetch(
     missing: list[str] = []
     products: dict[str, str] = {}
     for asset in assets:
+        asset = asset.strip().upper()
+        if asset in REMOVED_ASSETS:
+            raise ValueError(f"asset {asset} has been removed from active coin lists")
         pid = product_id(asset, quote)
         if pid in listed:
             available.append(asset.upper())
@@ -238,7 +238,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=",".join(TRADEABLE_UNIVERSE),
         help=(
             "comma-separated base assets; defaults to the tradeable universe, which is the "
-            "top-10 non-pegged set minus those in EXCLUDED (currently RAIN)"
+            "remaining screened candidates after owner exclusions"
         ),
     )
     ap.add_argument("--quote", default="USD")
@@ -261,6 +261,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    removed = sorted(set(assets) & REMOVED_ASSETS)
+    if removed:
+        ap.error(f"removed from active coin lists: {', '.join(removed)}")
+    assets = list(filter_removed_assets(assets))
     listed = list_coinbase_products()
     plan = plan_universe_fetch(assets, listed, args.quote)
 

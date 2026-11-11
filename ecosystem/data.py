@@ -20,6 +20,7 @@ from typing import Any
 
 import pandas as pd
 
+from backtester.core.assets import require_active_asset
 from backtester.core.data import DataValidationError, validate_bars
 from backtester.core.fetch import SUPPORTED_GRANULARITIES, FetchError, fetch_coinbase
 from backtester.core.types import BAR_COLUMNS, INTERVAL_SECONDS
@@ -38,21 +39,23 @@ OWNER_UNIVERSE = (
     "JITOSOL",
     "KMNO",
     "USDC",
-    "XMR",
 )
 ASSET_PATTERN = re.compile(r"[A-Z][A-Z0-9]{0,19}\Z")
 SOURCE = "https://api.exchange.coinbase.com/products/{product}/candles"
 
 
 def universe() -> tuple[str, ...]:
-    """Return the owner's fourteen assets, including explicit missing markets."""
+    """Return the owner's thirteen active assets, including explicit missing markets."""
     return OWNER_UNIVERSE
 
 
 def _symbol(asset: str) -> str:
     if not isinstance(asset, str) or not ASSET_PATTERN.fullmatch(asset.upper()):
         raise ValueError("invalid_asset")
-    return asset.upper()
+    try:
+        return require_active_asset(asset)
+    except ValueError as exc:
+        raise ValueError("removed_asset") from exc
 
 
 def _epoch(value: str) -> int:
@@ -176,13 +179,13 @@ def acquire(
             raise ValueError("invalid_requested_window")
         if hi > int(time.time() // step) * step:
             raise ValueError("requested_bars_not_closed")
-    except (ValueError, TypeError, OverflowError):
+    except (ValueError, TypeError, OverflowError) as exc:
         return {
             "status": "blocked",
             "asset": asset
             if isinstance(asset, str) and ASSET_PATTERN.fullmatch(asset)
             else None,
-            "reason": "invalid_acquisition_request",
+            "reason": "removed_asset" if str(exc) == "removed_asset" else "invalid_acquisition_request",
         }
     directory = Path(output_dir).expanduser().absolute()
     path = directory / f"{asset}_{interval}.csv"

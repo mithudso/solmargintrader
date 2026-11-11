@@ -1,7 +1,7 @@
 # Prompt history
 
-Version: 190
-Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+Version: 191
+Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v188 to v189; record complete implementation status and the validated resumable sweep run.
 Delta: v187 to v188; capture all-strategy coin sweeps, Council entry verification, and a solbot troubleshooting bundle.
 Delta: v186 to v187; capture contextual Oracle voting, per-tick graph history, and strategy overlays.
@@ -23,6 +23,10 @@ Also my friend is troubleshooting this and is having some errors, add a command 
 ## 2026-11-10 — friend-facing solbot diagnostics
 
 Also my friend is troubleshooting this and is having some errors, add a command to the solbot to download a set of troubleshooting and diagnostic data and to do some basic checks on the setup.
+
+## 2026-11-11 — remove excluded coins from lists
+
+Completely remove RAIN, WBT, HTX, JST, MNT, and XMR from the coin lists.
 
 ## 2026-11-10 — Repo-bootstrapper wiki
 

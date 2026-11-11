@@ -87,9 +87,8 @@ REQUEST_RETRIES = 5
 RATE_LIMIT_PER_SECOND = 8.0
 
 
-# Coinbase-listed members of the top-10 non-pegged universe. TRX and RAIN are absent
-# from the venue entirely -- see backtester/core/universe.py, which documents that
-# refusal, and research/TOP_COINS.md for the ranking this is drawn from.
+# Coinbase-listed members of the active screened universe. TRX is absent from the
+# venue entirely -- see backtester/core/universe.py and research/TOP_COINS.md.
 MINUTE_ASSETS = ("BTC", "ETH", "SOL", "DOGE", "ZEC", "XRP", "BNB", "HYPE")
 
 DATA = Path("data")
@@ -709,6 +708,11 @@ def main(argv: list[str] | None = None) -> int:
     assets = list(dict.fromkeys(assets))
     if not assets:
         ap.error("pass --asset SYM (repeatable), --assets A,B,C or --all")
+    from .assets import REMOVED_ASSETS
+
+    removed = sorted(set(assets) & REMOVED_ASSETS)
+    if removed:
+        ap.error(f"removed from active coin lists: {', '.join(removed)}")
     unknown = [a for a in assets if a not in MINUTE_ASSETS]
     if unknown and not args.coverage_only:
         # Beyond the core universe, accept whatever the venue actually lists against USD,

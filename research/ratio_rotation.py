@@ -265,7 +265,10 @@ def describe_universes(interval: str = "1d", data_dir: Path | None = None) -> pd
     that this table answers with a number: the 8-asset intersection is 181 bars.
     """
     data_dir = data_dir or (REPO / "data")
-    available = sorted(p.name.split("_")[0] for p in data_dir.glob(f"*_{interval}.csv"))
+    from backtester.core.assets import filter_removed_assets
+
+    available = sorted(filter_removed_assets(p.name.split("_")[0]
+                                             for p in data_dir.glob(f"*_{interval}.csv")))
 
     # Load each asset's timestamps exactly once. The obvious implementation --
     # `load_panel` inside an `itertools.combinations` loop -- is O(2^n) full CSV
@@ -1366,6 +1369,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     assets = tuple(a.strip().upper() for a in args.assets.split(",") if a.strip())
+    from backtester.core.assets import REMOVED_ASSETS
+
+    removed = sorted(set(assets) & REMOVED_ASSETS)
+    if removed:
+        ap.error(f"removed from active coin lists: {', '.join(removed)}")
     panel = load_panel(assets, args.interval)
     print(f"Panel: {panel.describe()}\n", file=sys.stderr)
 

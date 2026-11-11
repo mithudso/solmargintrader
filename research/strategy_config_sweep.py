@@ -1,4 +1,4 @@
-"""Resumable, parallel CPCV sweep over every locally cached coin and buildable card.
+"""Resumable, parallel CPCV sweep over every active cached coin and buildable card.
 
 This command reads cached candles only. Use ``--plan`` first; fetching is a
 separate, explicit command. Results are append-only JSONL under the selected
@@ -31,6 +31,7 @@ from backtester.core.data import (
     resolve_data_dir,
     validate_bars,
 )
+from backtester.core.assets import REMOVED_ASSETS
 from backtester.core.strategies import build
 from backtester.core.strategy_cards import load_all
 from soltui.bgqueue import Job, build_queue
@@ -67,7 +68,7 @@ def _atomic_json(path: Path, value: Any) -> None:
 
 
 def discover_assets(data_dir: Path) -> dict[str, dict[str, Path]]:
-    """Find candle assets, excluding funding files and unrelated CSVs."""
+    """Find active candle assets, excluding funding, unrelated, and removed symbols."""
     found: dict[str, dict[str, Path]] = {}
     if not data_dir.is_dir():
         return found
@@ -75,7 +76,8 @@ def discover_assets(data_dir: Path) -> dict[str, dict[str, Path]]:
         match = ASSET_FILE.fullmatch(path.name)
         if match and path.is_file():
             asset, interval = match.groups()
-            found.setdefault(asset, {})[interval] = path.resolve()
+            if asset not in REMOVED_ASSETS:
+                found.setdefault(asset, {})[interval] = path.resolve()
     return dict(sorted(found.items()))
 
 

@@ -101,7 +101,7 @@ class Analysis:
 
 
 def available_assets(data_dir: Path | None = None) -> list[tuple[str, str]]:
-    """(asset, interval) pairs that are actually on disk, sorted.
+    """Active (asset, interval) pairs that are actually on disk, sorted.
 
     Reads the cache rather than a hardcoded universe: `data/` is gitignored and
     per-machine, so the only honest picker is one built from what exists.
@@ -109,13 +109,15 @@ def available_assets(data_dir: Path | None = None) -> list[tuple[str, str]]:
     root = data_dir or DATA_DIR
     if not root.exists():
         return []
+    from backtester.core.assets import REMOVED_ASSETS
+
     out = []
     for p in sorted(root.glob("*.csv")):
         stem = p.stem
         if "_" not in stem:
             continue
         asset, _, interval = stem.rpartition("_")
-        if asset and interval:
+        if asset and interval and asset.upper() not in REMOVED_ASSETS:
             out.append((asset, interval))
     return out
 

@@ -6,8 +6,7 @@ No test here touches the network. `list_coinbase_products` takes an injected
 that performs it is neither deterministic nor polite to the venue.
 
 The behaviour most worth pinning is the refusal. Coinbase does not list TRX or
-RAIN, so the honest top-10 fetch is an 8-of-10 fetch, and the failure mode is not
-an error — it is eight files that look like a complete universe.
+six owner-excluded symbols, so the active candidate list contains only current choices.
 """
 
 from __future__ import annotations
@@ -71,17 +70,14 @@ class PlanTests(unittest.TestCase):
         self.assertFalse(plan.partial)
         self.assertEqual(plan.missing, ())
 
-    def test_the_real_top_ten_is_partial_on_this_venue(self):
-        """The finding that motivates the refusal, pinned so it cannot regress into a
-        silent 8-of-10. If Coinbase lists TRX or RAIN later, this test should be
-        updated deliberately rather than discovered by accident.
-        """
-        plan = uni.plan_universe_fetch(uni.TOP10_NON_PEGGED, [p["id"] for p in LISTED])
+    def test_the_active_screened_candidates_are_partial_on_this_venue(self):
+        """The active candidate list omits owner-excluded symbols and records venue gaps."""
+        plan = uni.plan_universe_fetch(uni.CANDIDATE_ASSETS, [p["id"] for p in LISTED])
         self.assertIn("TRX", plan.missing)
-        self.assertIn("RAIN", plan.missing)
+        self.assertNotIn("RAIN", plan.missing)
 
-    def test_the_tradeable_universe_drops_assets_the_evidence_does_not_support(self):
-        """RAIN ranks top-20 by market cap and is excluded anyway.
+    def test_removed_assets_are_absent_from_active_universes(self):
+        """RAIN's historical evidence remains recorded while it stays out of active lists.
 
         Three aggregators disagree on its rank by ~190 places on the same day, total bid
         depth across all venues is ~$294k against an $8.6B nominal cap, and ~66% of supply
@@ -90,11 +86,16 @@ class PlanTests(unittest.TestCase):
         universe that backfilled a tenth to keep a round number would be choosing the
         number over the evidence.
         """
-        self.assertIn("RAIN", uni.TOP10_NON_PEGGED)
         self.assertNotIn("RAIN", uni.TRADEABLE_UNIVERSE)
-        self.assertEqual(len(uni.TRADEABLE_UNIVERSE), 9)
         self.assertIn("RAIN", uni.EXCLUDED)
         self.assertIn("rain-rain.md", uni.EXCLUDED["RAIN"])
+        removed = {"RAIN", "WBT", "HTX", "JST", "MNT", "XMR"}
+        self.assertTrue(removed.isdisjoint(uni.CANDIDATE_ASSETS))
+        self.assertTrue(removed.isdisjoint(uni.TRADEABLE_UNIVERSE))
+
+    def test_explicit_request_for_removed_asset_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "removed from active coin lists"):
+            uni.plan_universe_fetch(["xmr"], ["XMR-USD"])
 
     def test_short_history_assets_are_flagged_separately_from_unlisted_ones(self):
         """Availability and sufficiency are different failures and only one of them is

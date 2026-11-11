@@ -227,6 +227,8 @@ class AnalyzeTests(unittest.TestCase):
         root = Path(tmp.name)
         (root / "SOL_1d.csv").write_text("timestamp\n")
         (root / "BTC_1h.csv").write_text("timestamp\n")
+        for asset in ("RAIN", "WBT", "HTX", "JST", "MNT", "XMR"):
+            (root / f"{asset}_1d.csv").write_text("timestamp\n")
         (root / "notes.txt").write_text("ignored")
         self.assertEqual(analyze.available_assets(root),
                          [("BTC", "1h"), ("SOL", "1d")])

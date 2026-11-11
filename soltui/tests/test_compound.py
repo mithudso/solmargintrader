@@ -123,6 +123,11 @@ class ConfigTests(TempConfig):
             with self.assertRaises(compound.CompoundError):
                 compound.forward_path(bad)
 
+    def test_removed_assets_cannot_be_selected(self) -> None:
+        for asset in ("RAIN", "WBT", "HTX", "JST", "MNT", "XMR"):
+            with self.subTest(asset=asset), self.assertRaisesRegex(compound.CompoundError, "removed"):
+                compound._asset(asset)
+
 
 class LiveReadTests(TempConfig):
     def test_the_forming_bar_is_dropped_and_coinbase_order_is_mapped(self) -> None:

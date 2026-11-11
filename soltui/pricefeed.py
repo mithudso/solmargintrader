@@ -287,7 +287,8 @@ class WebSocket:
 
 
 def stream_coins() -> list[str]:
-    """Every coin the repo caches (data/<COIN>_1m.csv or _1h.csv) plus the Compound universe."""
+    """Every active cached coin plus the Compound universe."""
+    from backtester.core.assets import filter_removed_assets
     from backtester.core.data import resolve_data_dir
     from backtester.core.universe import COMPOUND_5M_UNIVERSE
 
@@ -296,12 +297,14 @@ def stream_coins() -> list[str]:
     if data.exists():
         for path in data.glob("*_1[mh].csv"):
             coins.add(path.name.split("_", 1)[0].upper())
-    return sorted(coins)
+    return sorted(filter_removed_assets(coins))
 
 
 def select_products(listing: Iterable[dict[str, Any]], coins: Iterable[str]) -> list[str]:
     """USD markets of `coins` plus every cross pair whose base and quote are both in `coins`."""
-    want = {c.upper() for c in coins}
+    from backtester.core.assets import filter_removed_assets
+
+    want = set(filter_removed_assets(coins))
     out = []
     for p in listing:
         if not isinstance(p, dict) or p.get("status", "online") != "online" or p.get("trading_disabled"):
@@ -320,7 +323,7 @@ def stream_products(fetch: Callable[[str], Any] | None = None, *, root: Path | N
     try:
         cached = json.loads(cache.read_text())
         if time.time() - float(cached["at"]) < max_age_s and cached["products"]:
-            return list(cached["products"])
+            return _active_products(cached["products"])
     except (OSError, ValueError, KeyError, TypeError):
         pass
     try:
@@ -329,10 +332,22 @@ def stream_products(fetch: Callable[[str], Any] | None = None, *, root: Path | N
     except (OSError, ValueError, PriceFeedError):
         products = []
     if not products:
-        return list(FALLBACK_PRODUCTS)
+        return _active_products(FALLBACK_PRODUCTS)
     base.mkdir(parents=True, exist_ok=True)
     _atomic_write(cache, json.dumps({"at": time.time(), "products": products}))
     return products
+
+
+def _active_products(products: Iterable[str]) -> list[str]:
+    """Filter stale cached product lists as well as newly fetched products."""
+    from backtester.core.assets import REMOVED_ASSETS
+
+    active = []
+    for product in products:
+        base, separator, quote = str(product).upper().partition("-")
+        if separator and base not in REMOVED_ASSETS and quote not in REMOVED_ASSETS:
+            active.append(str(product))
+    return active
 
 
 def _get_json(url: str) -> Any:

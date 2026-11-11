@@ -62,6 +62,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Iterable, Mapping, Sequence
 
+from backtester.core.assets import require_active_asset
 from backtester.core.strategy_cards import HORIZONS, StrategyCard, load_all
 
 from .config import CONFIG_DIR
@@ -323,6 +324,7 @@ def validate_asset(asset: str) -> str:
             f"invalid asset {asset!r}: expected a plain symbol like SOL, "
             "with no path separators"
         )
+    require_active_asset(symbol)
     return symbol
 
 
