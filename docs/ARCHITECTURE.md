@@ -1,7 +1,9 @@
 # Architecture
 
-Ten components have explicit execution boundaries. Backtester, research, Oracle,
-Bot Manager and ecosystem automation do not place orders. The extension and optional
+Ten components have explicit execution boundaries. Backtester, research, the Oracle
+forecast service, Bot Manager and ecosystem automation do not place orders. The
+separately enabled Oracle TradingView worker can submit Coinbase spot orders or
+GUM ZEC perpetual Actions. The extension and optional
 executor retain separately gated live-capable paths. SolTUI has a separately armed
 manual Coinbase path. Liquidity contains live-capable code but is archived, disabled
 and killed. MongoDB is derived research storage, never an execution dependency.
@@ -41,6 +43,22 @@ freshness. Server readiness requires the first three; market certification and o
 permission stay separate. The wiki is a validated public-document snapshot, not a
 runtime probe. See [managed-suite operations](bot-manager-managed-suite.md) and
 [wiki ownership](ECOSYSTEM-WIKI.md).
+
+## TradingView execution boundary
+
+`oracle/webhook.py` accepts a bounded, authenticated TradingView payload and stores
+it durably before replying. Forecast votes do not veto an accepted webhook.
+`oracle/webhook_orders.py` binds the journal to its execution mode and venue;
+`oracle/gum_webhook_orders.py` records each close/open leg before one submission.
+A missing or ambiguous fill blocks another open. Opposite-side signals require a
+full reduce-only close, flat-position read-back and settled collateral first.
+
+`oracle/gum_orders.py` checks ZEC market/account identity, integer lots, fees,
+collateral and price bounds before signing a locally constructed Jupnet Action.
+The optional private signer verifies its configured owner. It never signs an
+upstream opaque transaction. GUM app funding, perps collateral deposits and order
+Actions are separate operations; the order verifier does not prove a deposit safe.
+See [the account and execution contract](JUPITER-ZEC-WEBHOOK.md).
 
 ## Extension
 
@@ -108,7 +126,7 @@ getPrice · getDecimals · getOpenOrders · getFills · getCarryCosts · placeOr
 | --- | --- |
 | `TriggerVenue` | Live-capable. Spot. Trigger V2 returns signable transactions over HTTP |
 | `DryRunVenue` | Wraps any adapter: real prices and real code paths, simulated fills, zero writes |
-| `PerpsVenueReadOnly` | Writes throw `NotImplemented` with the concrete next step. Jupiter has no public REST write API for Perps |
+| `PerpsVenueReadOnly` | Extension adapter refuses writes. It does not implement the separate GUM Beta order API used by the Oracle worker |
 
 Fills in dry run are modelled **pessimistically** — each rung fills at its trigger price moved
 against us by the full slippage allowance. An optimistic simulator makes a losing grid look

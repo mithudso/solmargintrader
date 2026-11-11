@@ -794,7 +794,7 @@ class GumOrders:
                 or result.get("clientOrderId") != client_order_id
             ):
                 raise GumAmbiguous("gum_unverified_submission_identity")
-        except (ValueError, RuntimeError, OSError):
+        except Exception:  # noqa: BLE001 - every failure after POST starts is ambiguous
             raise GumAmbiguous("gum_submission_requires_reconciliation") from None
         return {
             "client_order_id": client_order_id,

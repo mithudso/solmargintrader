@@ -24,7 +24,7 @@
       "path": "oracle",
       "component": "oracle",
       "kind": "directory",
-      "summary": "Python 3.13 | No \u2014 source-labelled observations and shadow forecasts"
+      "summary": "Python 3.13 | Yes, separately enabled \u2014 forecasts are read-only; TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders"
     },
     {
       "path": "botmanager",
@@ -185,6 +185,55 @@
       "kind": "python",
       "summary": "Versioned source-labelled voting policy",
       "lines": 128
+    },
+    {
+      "path": "oracle/webhook.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Bounded authenticated TradingView ingress and durable deduplication",
+      "lines": 213
+    },
+    {
+      "path": "oracle/webhook_orders.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Journal, one-shot Coinbase submission and read-only reconciliation",
+      "lines": 237
+    },
+    {
+      "path": "oracle/coinbase_orders.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Official CLI adapter with exact available-balance sizing",
+      "lines": 332
+    },
+    {
+      "path": "oracle/gum_webhook_orders.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Durable GUM close/settle/open position transitions",
+      "lines": 452
+    },
+    {
+      "path": "oracle/gum_orders.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Verified locally constructed ZEC order Actions and fill read-back",
+      "lines": 957
+    },
+    {
+      "path": "oracle/gum_signer.py",
+      "component": "oracle",
+      "kind": "python",
+      "summary": "Private owner-bound Ed25519 loader, never upstream transaction signing",
+      "lines": 64
+    },
+    {
+      "path": "docs/JUPITER-ZEC-WEBHOOK.md",
+      "component": "repo",
+      "kind": "markdown",
+      "summary": "Separate account, collateral, signing and execution contract",
+      "lines": 82
     },
     {
       "path": "botmanager/src/botmanager/registry.py",

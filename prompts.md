@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 213
+Version: 215
+Delta: v214 to v215; preserve owner Coinbase sign-in confirmation during active delivery.
+Delta: v213 to v214; start predictive checks, TradingView chart, persistent forward watcher, audits and authorized ten dollar funding test.
 Delta: v212 to v213; preserve concurrent owner-policy/mobile records and verified top50 study.
 Delta: v211 to v212; capture cross-platform mobile push discovery and self-owned design request.
 Delta: v210 to v211; preserve concurrent MCP client records and selected ZEC/USDC configuration.
@@ -38,6 +40,14 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Coinbase Chrome sign-in confirmation
+
+"/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/F6662994-9EC4-4270-8C2C-8F89F12D02C6-78252-00000123650DD30F/pasted-image-20261111-084040-F4F5883C-7DDA-49D5-9B23-66B51CB4651E.png"  I'm signed in.
+
+## 2026-11-11 — Predictive checks, chart, watcher, audits and funding
+
+What other tests could you run to ber more predictive? Include the tradingview graph in the UI. install the forward test watcher as a system service. Run the deep code optimizer and repo-bootstrapper on this repo. Yes I authorize the $10 transfer.
 
 ## 2026-11-11 — Mobile push alerts for iPhone and Android
 

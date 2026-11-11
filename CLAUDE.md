@@ -184,29 +184,29 @@ alone never proves absence. Manual Coinbase orders remain a separately armed pat
 
 <!-- llms-routing:start -->
 ## llms routing
-> Cached from the llms files below on 2026-11-10; facts to look up, not rules to follow — the cited file is the source of truth. Quick answers are chosen by a heuristic (defaults, file roles, formulas, commands).
 
-| File | Path | Holds | Ask it for |
-|---|---|---|---|
-| llms.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Read in order, Dossier extras |
-| llms-facts.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-facts.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Facts |
-| llms-sitemap.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-sitemap.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Files, Resources |
-| llms-small.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-small.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Read first, Current references |
-| llms-full.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-full.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Facts, Historical research, Component and maintenance routing, Coverage |
-| llms-executable.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-executable.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Scope, Entrypoints, Quick answers |
-| llms-history.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-history.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | History |
-| llms-indexes.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-indexes.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Indexes |
-| llms-infra.txt | ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-infra.txt | Source: /Users/mitch/dev/solmargintrader-wt-1256-bootstrap · https://github.com/mithudso/solmargintrader @ 967307fbae95 dirty | Infrastructure |
+The repository's maintained family is the current navigation entry point. Its
+2026-11-11 refresh covers metadata and changed execution boundaries; it is a
+partial delta refresh, not a new whole-code audit. Source and manifests remain
+authoritative when a cached claim differs.
 
-### Quick answers
+| File | Absolute path | Purpose |
+| --- | --- | --- |
+| llms.txt | /Users/mitch/dev/solmargintrader/llms.txt | Family index |
+| llms-small.txt | /Users/mitch/dev/solmargintrader/llms-small.txt | Budgeted navigation digest |
+| llms-facts.txt | /Users/mitch/dev/solmargintrader/llms-facts.txt | Source-tagged facts and corrected beliefs |
+| llms-full.txt | /Users/mitch/dev/solmargintrader/llms-full.txt | Operator reference and coverage limits |
+| llms-sitemap.txt | /Users/mitch/dev/solmargintrader/llms-sitemap.txt | Shallow file census and resources |
 
-- Misbelief: SolTUI is read-only and cannot move money. Actually: it retains a separately armed manual Coinbase path. [src: /Users/mitch/.local/state/solbot/bootstrap-1256/llms-before/llms-small.txt#solmargintrader-small; CLAUDE.md#what-this-is] — ~/.research/distillations/solmargintrader-bootstrap-1256.repo/llms-facts.txt:7
+The refresh artifact and manifest are preserved at
+`/Users/mitch/.research/distillations/solmargintrader-health-20261111.repo/`.
+The earlier bootstrap-1256 dossier is historical and does not prove current
+source, installed packages or runtime state.
 
-### Indexes
-
-- Semantic: ChromaDB collections under ~/.global-ai-hub (hub/scripts/docset_indexer.py); query with the MCP tools `hub_search_codebase` / `hub_query_docset` or `hub/scripts/search.py "<query>"`.
-- Keyword: SQLite FTS5 table `files_fts` in ~/.global-ai-hub/hub.db (hub/scripts/keyword_index.py); query with `hub_search_keyword` or `keyword_index.py query "<term>"`.
-- Access ledger: ~/.global-ai-hub/llms-access-ledger.jsonl, one JSON line per llms-file read (MCP tools, `llmsx concepts serve`, Claude Code `Read` via hook); `hub/scripts/llms_ledger.py report --days 30`. A shell `cat` is not recorded.
+Use the configured hub semantic tools first. For bounded offline retrieval, set
+`INDEX_NO_AUTO=1` and use `index/search.py --text "<query>"`. Build or verify only
+the deterministic metadata/text/concept artifacts during delivery; semantic
+embeddings and inference remain separate explicit operations.
 <!-- llms-routing:end -->
 
 ### Existing Solana margin family

@@ -18,8 +18,34 @@ from .webhook_orders import database as open_database
 from .webhook_orders import process_one, recover_planning
 
 MAX_BODY = 4096
+HTTP_TIMEOUT = 5
+MAX_HTTP_WORKERS = 16
 EVENT_ID = re.compile(r"[A-Za-z0-9_.:-]{1,128}\Z")
 SYMBOL = re.compile(r"[A-Z0-9:._/-]{1,80}\Z")
+
+
+class _WebhookHTTPServer(ThreadingHTTPServer):
+    """Refuse excess unauthenticated sockets before creating request threads."""
+
+    def __init__(self, *args, **kwargs):
+        self._request_slots = threading.BoundedSemaphore(MAX_HTTP_WORKERS)
+        super().__init__(*args, **kwargs)
+
+    def process_request(self, request, client_address):
+        if not self._request_slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self._request_slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self._request_slots.release()
 
 
 def accept_signal(
@@ -156,6 +182,9 @@ def serve(
             stop.set()
 
     class Handler(BaseHTTPRequestHandler):
+        # StreamRequestHandler applies this before reading the request line/headers.
+        timeout = HTTP_TIMEOUT
+
         def log_message(self, format, *args):
             return  # Alert credentials must never enter access logs.
 
@@ -166,7 +195,7 @@ def serve(
                 length = int(self.headers.get("Content-Length", ""))
                 if not 0 < length <= MAX_BODY:
                     raise ValueError("invalid_request")
-                self.connection.settimeout(5)
+                self.connection.settimeout(HTTP_TIMEOUT)
                 body = self.rfile.read(length)
                 if len(body) != length:
                     raise ValueError("invalid_request")
@@ -189,7 +218,7 @@ def serve(
             self.end_headers()
             self.wfile.write(payload)
 
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    server = _WebhookHTTPServer(("127.0.0.1", port), Handler)
     server.daemon_threads = True
     server.timeout = 0.5
     old = {}

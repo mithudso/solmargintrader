@@ -78,7 +78,8 @@ class WebTests(unittest.TestCase):
         self.assertIn("Unavailable", html)
         self.assertNotIn("$10,000", html)
         self.assertNotIn("equity-line", html)
-        self.assertNotIn("https://", html)
+        self.assertIn("https://www.tradingview.com/chart/qV1poosp/", html)
+        self.assertNotIn("s3.tradingview.com", html)
         self.assertIn("/oracle-chart.js", html)
         self.assertIn("TradingView Lightweight Charts", html)
         status, _, raw = self.request("/app.js")
@@ -97,6 +98,18 @@ class WebTests(unittest.TestCase):
         self.assertEqual(status, 200)
         source = Path(__file__).parents[2] / "docs/design/bot-control-room/mockup.css"
         self.assertTrue(css.startswith(source.read_bytes()))
+
+    def test_tradingview_origin_is_allowed_only_for_an_isolated_frame(self):
+        _, headers, _ = self.request("/")
+        csp = headers["Content-Security-Policy"]
+        self.assertIn("script-src 'self';", csp)
+        self.assertIn("connect-src 'self';", csp)
+        self.assertIn("frame-src http://127.0.0.1:* https://www.tradingview-widget.com", csp)
+        self.assertNotIn("https://*.tradingview", csp)
+        status, _, script = self.request("/tradingview-chart.js")
+        self.assertEqual(status, 200)
+        self.assertNotIn("/api/", script.decode())
+        self.assertNotIn("fetch(", script.decode())
 
     def test_static_traversal_and_raw_logs_are_not_routes(self):
         for target in (

@@ -167,3 +167,22 @@ If CDP fails, the scanner tries paginated Blockscout and public RPC checks for t
 Unknown indexed tokens cause no contract calls. DefiLlama price URLs contain at most 40 identifiers.
 `soltui/tests/test_wallet.py:BaseDiscoveryTests` covers pagination, partial failures, malformed amounts,
 read-only argv, credential-safe errors and the unsolicited-contract boundary.
+
+## TradingView venue boundaries (reviewed 2026-11-11)
+
+These additions describe the actual transport implementations. They do not
+establish a generated per-call registry or a shared error sink.
+
+| ID | Source / logical caller | Target and transport | Timeout / retry | Log / tests / documentation |
+| --- | --- | --- | --- | --- |
+| W1 | `oracle/webhook.py:134` `serve`, `Handler.do_POST` | Loopback TradingView HTTP ingress; external tunnel is independently managed | 4096-byte body, 5s socket timeout before request parsing, maximum16 concurrent request threads, 300s past/30s future window; excess sockets close without parsing; no sender replay by receiver | Durable deduplicated signal and fixed response; access logs deliberately disabled to exclude the body secret; `oracle/tests/test_webhook.py`; `docs/JUPITER-ZEC-WEBHOOK.md` |
+| W2 | `oracle/coinbase_orders.py:117` `_invoke` | Authenticated official Coinbase CLI subprocess; balance/product/order reads and one create | 30s subprocess deadline, capped captured output, no shell; no automatic submit retry | Sanitized fixed failure and durable intent/result in `oracle/webhook_orders.py`; `oracle/tests/test_coinbase_orders.py`, `test_webhook_orders.py`; `oracle/README.md#tradingview-webhook` |
+| W3 | `oracle/gum_orders.py:171` `_http`, `discover`, `GumOrders` | Owner-scoped GUM market/health/account/position/order-history GET and `/order/create` POST | 15s transport deadline, 2MiB response bound, redirects refused; no automatic POST retry | Fixed credential-free failure; per-leg journal retains acceptance, fills, actual fee and public transaction signatures; no common per-request attempt sink; `oracle/tests/test_gum_orders.py`, `test_gum_webhook_orders.py`; `docs/JUPITER-ZEC-WEBHOOK.md` |
+
+GUM order Actions are constructed locally and signed only after account, market,
+lot, collateral, cost and final signal checks. Neither W3 nor the optional private
+loader verifies an opaque server-built funding transaction. An ambiguous POST,
+missing history or partial close holds the next open; a public API acknowledgment
+is not fill evidence. Account provisioning, GUM application-wallet funding and
+perps collateral deposits are separate operations and are not implemented by the
+order adapter. Coinbase portfolio transfers are not onchain withdrawals.

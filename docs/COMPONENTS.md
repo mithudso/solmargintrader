@@ -41,11 +41,16 @@ semantic economic verification. See [control-room operations](ECOSYSTEM-CONTROL-
 
 ## `oracle/`
 
-Oracle 0.2.2 owns instrument-bound observations, shadow forecasts and historical
+Oracle 0.2.3 owns instrument-bound observations, shadow forecasts and historical
 evidence. Its MCP surface exposes read-only tools and subscriptions. Reference
 prices, vote agreement and receipt freshness remain distinct from executable
-quotes, source certification and profit. It never loads keys or submits orders.
-See [Oracle integration](bot-manager-oracle-interface.md).
+quotes, source certification and profit. The forecast service never signs or
+submits orders. A separately enabled TradingView worker can dispatch Coinbase
+spot orders through the authenticated official CLI, or locally constructed GUM
+ZEC perpetual Actions through an explicitly configured owner signer. Durable
+per-leg intents, account reconciliation and ambiguity holds gate that path;
+dry-run remains the default. See [Oracle integration](bot-manager-oracle-interface.md)
+and [Jupiter ZEC execution](JUPITER-ZEC-WEBHOOK.md).
 
 ## `executor/`
 

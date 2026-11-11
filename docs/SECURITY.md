@@ -105,8 +105,9 @@ trading with it first (`node tools/cli.js kill`), then fix it.
 
 ## Manager, Oracle and managed control room
 
-The manager and ecosystem default to paper/disarmed. Oracle observes and records
-source-labelled evidence; it has no signer. A ready availability response does not
+The manager and ecosystem default to paper/disarmed. The Oracle forecast service
+observes and records source-labelled evidence; its MCP surface has no signer. The
+separate TradingView worker is described below. A ready availability response does not
 certify market data, research outcomes or permission to submit orders.
 
 The manager uses same-user Unix IPC, private records, generation-bound ownership
@@ -132,3 +133,22 @@ Authoritative implementation: `botmanager/src/botmanager/transport.py`,
 `botmanager/src/botmanager/machine_health.py`, `botmanager/src/botmanager/suite.py`,
 `ecosystem/ui_service.py`, `ecosystem/web.py`, `ecosystem/control.py`,
 `soltui/native_host.py` and `soltui/native_host_install.py`.
+
+## Oracle TradingView worker
+
+The forecast/MCP service remains read-only. The optional webhook worker is a
+separate money-moving path and defaults to dry-run. It authenticates an exact,
+bounded JSON payload with a private body secret, limits signal age and durably
+deduplicates event IDs. A socket timeout applies before request parsing, and
+request-thread admission is capped at16. Excess sockets close before parsing.
+Request bodies, secret values and upstream exception text
+never enter its HTTP response or access log. A worker failure stops reception.
+
+Coinbase commands use the authenticated official CLI and one explicitly bound
+portfolio. GUM signing uses a mode-0600, owner-owned regular file opened with
+no-follow/nonblocking flags. The loader verifies the derived public owner. The
+adapter constructs and verifies a narrow binary order Action locally; raw
+cryptographic signing is not permission to sign arbitrary server-built funding
+transactions. KILL, stale-signal and final account checks run before submission.
+Each leg is committed before one send; a timeout or absent history entry cannot
+authorize a retry. See [the ZEC execution contract](JUPITER-ZEC-WEBHOOK.md).

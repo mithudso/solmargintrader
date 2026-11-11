@@ -6,7 +6,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from oracle import webhook_orders
 from oracle.webhook import accept_signal
 from oracle.webhook_orders import database, process_one, records, recover_planning
 
@@ -265,6 +267,34 @@ class WebhookOrderTests(unittest.TestCase):
         self.assertEqual(self.first_record()["status"], "refused")
         self.assertFalse(self.venue.plans)
         self.assertFalse(self.venue.submissions)
+
+    def test_disarm_or_expiry_during_submit_commit_prevents_any_send(self):
+        real_update = webhook_orders._update
+        for scenario in ("disarm", "expire"):
+            with self.subTest(scenario=scenario):
+                self.venue = Venue()
+                self.enqueue(event_id="final-guard-" + scenario)
+                enabled, clock = [True], [20.0]
+
+                def committed(
+                    path, event_id, status, *, scenario=scenario, enabled=enabled, clock=clock, **fields
+                ):
+                    real_update(path, event_id, status, **fields)
+                    if status == "submitting":
+                        if scenario == "disarm":
+                            enabled[0] = False
+                        else:
+                            clock[0] += 301
+
+                with (
+                    patch.object(webhook_orders, "_update", side_effect=committed),
+                    patch.object(webhook_orders.time, "monotonic", side_effect=lambda clock=clock: clock[0]),
+                ):
+                    result = self.process(enabled=lambda enabled=enabled: enabled[0])
+                self.assertEqual(result, "refused")
+                self.assertEqual(self.first_record()["status"], "refused")
+                self.assertFalse(self.venue.submissions)
+                self.assertFalse(self.venue.lookups)
 
     def test_disarmed_worker_does_not_plan_or_submit(self):
         self.enqueue()

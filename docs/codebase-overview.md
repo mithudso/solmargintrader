@@ -8,7 +8,7 @@ Ten components with separate execution boundaries:
 | Component | Language | Can it move money? |
 | --- | --- | --- |
 | `ecosystem/` | Python 3.13 | No — paper orchestration, owner controls and local control room |
-| `oracle/` | Python 3.13 | No — source-labelled observations and shadow forecasts |
+| `oracle/` | Python 3.13 | **Yes, separately enabled** — forecasts are read-only; TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders |
 | `botmanager/` | Python 3.13 | No — manager 0.7, fenced paper workers and availability suite |
 | `mongo/` | Python 3.13 + pymongo | No — a derived datastore, rebuildable |
 | `research/` | Python 3.13 | No — analysis over the backtester |
@@ -42,8 +42,10 @@ It never starts a second recorder or changes a frozen research owner's version.
 
 ## `oracle/` — observations and shadow evidence
 
-Oracle 0.2.3 exposes instrument-bound observations, forecasts and history without
-signing or submitting orders. Reference forecasts do not certify execution.
+Oracle 0.2.3 exposes instrument-bound observations, forecasts and history. Its
+forecast/MCP service does not sign or submit orders. A separately enabled
+TradingView worker has independent Coinbase spot and GUM ZEC perpetual paths;
+reference forecasts do not certify execution or qualify webhook orders.
 
 | Path | What it is |
 | --- | --- |
@@ -54,6 +56,13 @@ signing or submitting orders. Reference forecasts do not certify execution.
 | `oracle/server.py` | Read-only MCP tools and subscriptions |
 | `oracle/guidance.py` | Source-linked consumer guidance |
 | `oracle/voting.py` | Versioned source-labelled voting policy |
+| `oracle/webhook.py` | Bounded authenticated TradingView ingress and durable deduplication |
+| `oracle/webhook_orders.py` | Journal, one-shot Coinbase submission and read-only reconciliation |
+| `oracle/coinbase_orders.py` | Official CLI adapter with exact available-balance sizing |
+| `oracle/gum_webhook_orders.py` | Durable GUM close/settle/open position transitions |
+| `oracle/gum_orders.py` | Verified locally constructed ZEC order Actions and fill read-back |
+| `oracle/gum_signer.py` | Private owner-bound Ed25519 loader, never upstream transaction signing |
+| `docs/JUPITER-ZEC-WEBHOOK.md` | Separate account, collateral, signing and execution contract |
 
 ## `botmanager/` — persistent paper lifecycle and availability
 

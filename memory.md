@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 448
+Version: 452
+Delta: v451 to v452; snapshot completed feature for independent delivery while full default50 code audit continues.
+Delta: v450 to v451; retire first watcher cohort after independent durability defect and continue default50 audit.
+Delta: v449 to v450; record implemented chart/service, costed diagnostics, checks and prepared funding review.
+Delta: v448 to v449; start predictive checks, TradingView chart, persistent forward watcher, audits and authorized ten dollar funding test.
 Delta: v447 to v448; explicitly test normalization under real cash-shortage refusals; study outputs unchanged.
 Delta: v446 to v447; record independent top50 outcome acceptance and passing final local gates.
 Delta: v445 to v446; preserve concurrent owner-policy/mobile records and verified top50 study.
@@ -73,6 +77,44 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Verified feature delivery snapshot
+
+This branch /Users/mitch/dev/solmargintrader-wt-01a1c9f1-feature (agent/tradingview-forward-01a1c9f1) contains the completed chart, corrected v2watcher, fixed-parameter diagnostic and bounded bootstrap repairs. Original /Users/mitch/dev/solmargintrader-wt-01a1c9f1 retains the active default50-file code audit and any manager fixes. Do not discard its dirty work. The audit ledger/targetplan/finalreport belong to the follow-up delivery, not a claim of finished whole-repo optimization here.
+
+Independent installed acceptance completed2026-11-11T14:11:32Z. ActualUI ecosystem0.4.5/PID78536, http://127.0.0.1:63873/#oracle renderedTradingViewCRYPTO:ZECUSD1m candlesticks+volume and correctsavedVoltylink. HTTPbytes/source/installedhashesandCSPmatch; load/closeonefeedworks. V2watcherPID3210/servicecom.solmargintrader.volty-forward.dec374f4ccc8 recorded19confirmeddecisions/8snapshots, allissued<=durable_at<effective withsnapshotjoinsvalid. SQLiteFULL/integrity/APPID2, restartcohort/cursors, oldv1unloaded and ensemblePID55453preserved. Finalwatcherhash786ed495aa33e0a7c5baab5184258f5f9f8736a3635572967e059a62c51bf614. Receipt /Users/mitch/.local/state/soloracle-tradingview/ui-chart-20261111/independent-installed-acceptance.json SHA2562e647430ff298034170b6c9c4addf5806a4a49b4bd4cd98bdc58763847191151. This supersedes the v1durability claim.
+
+Completed Oracle security fixes included: classify every ordinary exception after POST starts as ambiguous/sanitized; bound unauthenticated HTTPrequestthreads and apply timeout beforeheaderparse; recheckKILL/expiryafterjournalcommitbeforeCoinbasesubmit. Full187Oracle tests0 and Ruff0 afterthesechanges; no order/signature/networksubmit in tests. Predictive result has sixscenarios withno newOOS/2xexecutionclaim.
+
+Remaining for this snapshot: regeneratewiki/offlineindexes, runfinalgates, commit/push/CI/merge and remotecontentproof. Broader50-fileaudit continues independently and mustbecompleted/delivered afterward. Funding remains prepared10USDCoverSolana plus~$0.17fee,total$10.17, waiting for ownerfinalSendnow; Browserdocumentation requiresfinancialfinalhandoff. No transfertransactionobserved yet.
+
+## 2026-11-11 — Independent watcher review changed deployment
+
+The first watcher cohort is RETIRED_UNVERIFIED_DURABILITY. Independent review reproduced issued864119/effective864120/actualcommit864121: sampling issue time before SQLite commit could label a late decision prospective. Root disabled and unloaded com.solmargintrader.volty-forward.a9c5bedfae26, archived its plist to the private v1receipt directory and preserved the DB. Retirement receipt: /Users/mitch/.local/state/soloracle-tradingview/volty-forward-20261111/retirement.json. Earlier installed acceptance is superseded for prospective validity. Stele lesson KNOW-1379 preserves trigger and fix requirements.
+
+Worker implemented schema2 post-first-commit durability confirmation, immutable decisions and crash-unconfirmed refusal, plus a single immutable specs parse/hash.25focusedtests0 so far; independent re-review and newcohort /Users/mitch/.local/share/solmargintrader/volty-forward-20261111-v2 still required before installing/starting. Preserve old snapshots as unverified; never rewrite them as accepted evidence.
+
+Audit is continuing default50prioritizedfiles (741pending at intake), not claiming whole-repo convergence. Additional identified repairs include boundedslow-header admission and final post-journal KILL/expiry checks; finaltestsandserviceparity willfollowauditfreeze.29focusedshape/cycle/Volty/diagnostictests0. Legacyresearchnumberverificationreran0with1084parsedfigures afterdefaultpythonfailedmissingpandas. No transfer sent by the agent; Coinbase10USDC+$0.17fee review remains waiting for ownerSendnow.
+
+## 2026-11-11 — Implemented surfaces and verified diagnostic
+
+Completed: Oracle UI TradingView public ZECUSD1m chart and exact saved Volty layout link. External scripts run at the fixed TradingView iframe origin; local script/connect CSP and origin rails remain unchanged. Ecosystem0.4.5 is installed in the actual existing UI environment /Users/mitch/.venvs/solbot-0.7.0 and isolated watcher environment /Users/mitch/.venvs/volty-forward-20261111. Current UI at http://127.0.0.1:63873, PID78536. Stopping the former UI triggered its existing owner to restart0.4.4 at a new port; updating only the reviewed ecosystem package and restarting only the verified UI resolved the version mismatch. Pipeline/recorder and archived liquidity remained untouched. New dependencies were not added. Dependency reviewer role/tools unavailable; read-only local package-risk recipe applied inline, external risk posture UNKNOWN.
+
+Installed dedicated paper LaunchAgent com.solmargintrader.volty-forward.a9c5bedfae26. It observes six frozen accounts with durable issued stops, one-extra-bar delay and atomic snapshots; preserves existing ensemblePID55453. Restart64087→67091 preserved cohort/cursor; duplicateworker refused exit1 as expected; liveclosedbars recorded. Full receipt /Users/mitch/.local/state/soloracle-tradingview/volty-forward-20261111/installed-acceptance.json and artifact-manifest.json. Frozen BinanceZECUSDT1x with10bpsfee2bpsslippage/syntheticcarry is separate from GUM execution.
+
+Added research/volty_predictive_checks.py and research/results/volty_predictive_20261111.json: six fixed5/1chart scenarios over64,800previously examined minute bars. Gross+391.866%;3.5bpsfee+2bpsslippage/syntheticcarry−99.985%; extraonedelay−99.999%. Bothstops touched128candles. Paired7day2,000draw bootstrap on44complete days describes conditional uncertainty, not futureprofit probability or freshOOS. Source/implementation hashes and all scenarios are bound in the JSON.
+
+Checks so far: ecosystem207tests0; Oracle184tests0 after ambiguity sanitizer; extension434tests0; mongo46tests0 (11skipped); dryrun0 withclosedroundtripnet+$0.3492;19Volty/watcher/diagnosticfocusedtests0; scopedRuff0; docsdiscovery2957counts0. Fullbacktester1005 exited1 solely because offlineindex has not yet been regenerated for this task. Rebuild derivedindexes after audit freeze, then rerun required suite to a real0. UI installed independent acceptance and auditper-file reviews still pending.
+
+Funding: owner signed in after authenticatedMCP confirmed87.93569072614915USDC. Prepared exact10USDC Solana transfer to freshly read-back GUM personal deposit route3Qi7eyotA41qaxnnBQkyLs2LZNcPpM3rXzfuTgp8zQN1. Coinbase previewfee~$0.17,total$10.17; browser financial-action rules require owner finalSendnow click. Waiting for that; no transfer/txhash observed, no order/signature. ExistingJupiter dryrun/KILL still applies. Receipt /Users/mitch/.local/state/soloracle-tradingview/predictive-20261111/funding-status.json.
+
+## 2026-11-11 — Predictive validation and persistent paper monitoring
+
+Target: fulfill the owner request under Stele TASK-1369. Use isolated worktree /Users/mitch/dev/solmargintrader-wt-01a1c9f1, branch agent-01a1c9f1, starting from master 789d3bdd6b7f6a2ff2f0822a1da7325a262c278c. Other worktrees are active. Preserve paper/disarmed defaults and all unrelated changes. Root owns funding, workflow records, derived indexes and delivery; separate workers own the active Oracle UI chart, watcher service, and repo-bootstrapper/code-deep-optimizer audit.
+
+The owner explicitly authorizes a $10 funding transfer. Policy remains ZEC/USDC Jupiter 2x leverage and 75 percent available USDC collateral. The connected Coinbase MCP exposes interportfolio transfers but no external withdrawal method. Current paginated default portfolio balance confirms 87.93569072614915 USDC available, no hold. Browser preparation may be needed for the supported withdrawal flow. Do not misroute a portfolio transfer or sign an arbitrary GUM deposit transaction. Funding and leveraged activation remain distinct. No transfer has been submitted.
+
+Remaining: implement and verify chart and exactly one persistent forward watcher; run bounded causal/costed predictive checks and both requested audit workflows; finish supported funding preparation and execute/reconcile if available; run owning suites/docs/index checks; commit only owned files, push, wait for final CI, merge and verify remote delivery; capture current continuation locally.
 
 ## 2026-11-11 — Mobile push alert design reviewed; delivery in progress
 

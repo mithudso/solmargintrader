@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-11T13:51:39.112385+00:00",
+  "source": "/Users/mitch/.local/share/solmargintrader/research/volty-zec-20261110/final/ZEC_1m.csv",
+  "source_sha256": "7803d0184c2a4437a89deda2e65869ef7d290576a1324e20bf52b8826ae3cd6f",
+  "source_market": "Binance spot ZECUSDT; not GUM ZECUSDC or CRYPTO:ZECUSD",
+  "evaluation": "later half of previously examined data; sensitivity only, no new OOS claim",
+  "sizing": "synthetic 1x equity; no 2x margin or liquidation model",
+  "limits": [
+    "OHLC paths do not establish TradingView fill parity",
+    "3.5bps fee is an observed venue snapshot, not historical fee proof",
+    "carry is synthetic, not observed GUM funding",
+    "daily block intervals assume stationary blocks and are descriptive",
+    "spot candles do not prove executable perpetual returns"
+  ],
+  "code_sha256": {
+    "research/volty_predictive_checks.py": "1fe9854a1b288af0d51835ab031bfb1beb53a7dc9d9ee0c82cc7d1c4ac7d9fff",
+    "backtester/core/volty.py": "735932f834cf0fefcfa45571386728455b69b3552f2a5161eab217e62e4dbc47"
+  },
+  "results": [
+    {
+      "scenario": "gross_diagnostic_only",
+      "config": {
+        "length": 5,
+        "atr_mult": 1,
+        "fee_bps": 0,
+        "slippage_bps": 0,
+        "carry_bps_hour": 0,
+        "initial_capital": 10000.0
+      },
+      "path": "nearest",
+      "signal_delay_bars": 0,
+      "return": 3.9186571792198164,
+      "max_drawdown": 0.21834472850505782,
+      "sharpe": 12.288645415823423,
+      "trades": 9433,
+      "win_rate": 0.3991307113325559,
+      "fees": 0.0,
+      "slippage": 0.0,
+      "carry": 0.0,
+      "ambiguous_bars": 128,
+      "bankrupt": false,
+      "first_timestamp": 1790472420,
+      "last_timestamp": 1794360360,
+      "passive_return": -0.38017408006224096,
+      "paired_daily_block_bootstrap": {
+        "status": "descriptive_only",
+        "days": 44,
+        "block_days": 7,
+        "samples": 2000,
+        "seed": 20261111,
+        "mean_daily_log_excess": 0.045719780397626836,
+        "ci95_daily_log_excess": [
+          0.02153840316542819,
+          0.0725844820713128
+        ]
+      }
+    },
+    {
+      "scenario": "gum_fee_synthetic_carry",
+      "config": {
+        "length": 5,
+        "atr_mult": 1,
+        "fee_bps": 3.5,
+        "slippage_bps": 2,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "path": "nearest",
+      "signal_delay_bars": 0,
+      "return": -0.999848463694807,
+      "max_drawdown": 0.999850051957318,
+      "sharpe": -56.45536135263329,
+      "trades": 9433,
+      "win_rate": 0.25781829746634155,
+      "fees": 8119.836542587806,
+      "slippage": 4639.906706739602,
+      "carry": 13.132548012753965,
+      "ambiguous_bars": 128,
+      "bankrupt": false,
+      "first_timestamp": 1790472420,
+      "last_timestamp": 1794360360,
+      "passive_return": -0.38085551373795057,
+      "paired_daily_block_bootstrap": {
+        "status": "descriptive_only",
+        "days": 44,
+        "block_days": 7,
+        "samples": 2000,
+        "seed": 20261111,
+        "mean_daily_log_excess": -0.1844840803129376,
+        "ci95_daily_log_excess": [
+          -0.21249398982223228,
+          -0.1522410539823819
+        ]
+      }
+    },
+    {
+      "scenario": "adverse_execution",
+      "config": {
+        "length": 5,
+        "atr_mult": 1,
+        "fee_bps": 3.5,
+        "slippage_bps": 10,
+        "carry_bps_hour": 0.2,
+        "initial_capital": 10000.0
+      },
+      "path": "nearest",
+      "signal_delay_bars": 0,
+      "return": -0.9999999999590505,
+      "max_drawdown": 0.9999999999593592,
+      "sharpe": -125.55243842733174,
+      "trades": 9433,
+      "win_rate": 0.14767306265239055,
+      "fees": 2822.856682745349,
+      "slippage": 8065.305704984926,
+      "carry": 8.979024041581614,
+      "ambiguous_bars": 128,
+      "bankrupt": false,
+      "first_timestamp": 1790472420,
+      "last_timestamp": 1794360360,
+      "passive_return": -0.38184535324233415,
+      "paired_daily_block_bootstrap": {
+        "status": "descriptive_only",
+        "days": 44,
+        "block_days": 7,
+        "samples": 2000,
+        "seed": 20261111,
+        "mean_daily_log_excess": -0.5196490082047599,
+        "ci95_daily_log_excess": [
+          -0.5544262915637783,
+          -0.4800092404251084
+        ]
+      }
+    },
+    {
+      "scenario": "high_first",
+      "config": {
+        "length": 5,
+        "atr_mult": 1,
+        "fee_bps": 3.5,
+        "slippage_bps": 2,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "path": "high-first",
+      "signal_delay_bars": 0,
+      "return": -0.9998634032370847,
+      "max_drawdown": 0.9998648349172183,
+      "sharpe": -56.90802840971087,
+      "trades": 9433,
+      "win_rate": 0.2579243082794445,
+      "fees": 7933.943953003028,
+      "slippage": 4533.682358133345,
+      "carry": 12.882127880422358,
+      "ambiguous_bars": 128,
+      "bankrupt": false,
+      "first_timestamp": 1790472420,
+      "last_timestamp": 1794360360,
+      "passive_return": -0.38085551373795057,
+      "paired_daily_block_bootstrap": {
+        "status": "descriptive_only",
+        "days": 44,
+        "block_days": 7,
+        "samples": 2000,
+        "seed": 20261111,
+        "mean_daily_log_excess": -0.18710831740116562,
+        "ci95_daily_log_excess": [
+          -0.21403052314859852,
+          -0.15682195826235185
+        ]
+      }
+    },
+    {
+      "scenario": "low_first",
+      "config": {
+        "length": 5,
+        "atr_mult": 1,
+        "fee_bps": 3.5,
+        "slippage_bps": 2,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "path": "low-first",
+      "signal_delay_bars": 0,
+      "return": -0.9998735334469002,
+      "max_drawdown": 0.9998748589516031,
+      "sharpe": -57.26853457749338,
+      "trades": 9449,
+      "win_rate": 0.25653508307757433,
+      "fees": 7734.366972600978,
+      "slippage": 4419.6383567657585,
+      "carry": 12.444514116334439,
+      "ambiguous_bars": 128,
+      "bankrupt": false,
+      "first_timestamp": 1790472420,
+      "last_timestamp": 1794360360,
+      "passive_return": -0.38085551373795057,
+      "paired_daily_block_bootstrap": {
+        "status": "descriptive_only",
+        "days": 44,
+        "block_days": 7,
+        "samples": 2000,
+        "seed": 20261111,
+        "mean_daily_log_excess": -0.18813480565529,
+        "ci95_daily_log_excess": [
+          -0.21515913074676585,
+          -0.15740202360429684
+        ]
+      }
+    },
+    {
+      "scenario": "one_extra_bar_delay",
+      "config": {
+        "length": 5,
+        "atr_mult": 1,
+        "fee_bps": 3.5,
+        "slippage_bps": 2,
+        "carry_bps_hour": 0.1,
+        "initial_capital": 10000.0
+      },
+      "path": "nearest",
+      "signal_delay_bars": 1,
+      "return": -0.9999887861277937,
+      "max_drawdown": 0.9999888730151425,
+      "sharpe": -74.99412727886092,
+      "trades": 11980,
+      "win_rate": 0.24524207011686144,
+      "fees": 7713.622091449255,
+      "slippage": 4407.784137510983,
+      "carry": 9.849714639774342,
+      "ambiguous_bars": 311,
+      "bankrupt": false,
+      "first_timestamp": 1790472420,
+      "last_timestamp": 1794360360,
+      "passive_return": -0.38085551373795057,
+      "paired_daily_block_bootstrap": {
+        "status": "descriptive_only",
+        "days": 44,
+        "block_days": 7,
+        "samples": 2000,
+        "seed": 20261111,
+        "mean_daily_log_excess": -0.2435194746340353,
+        "ci95_daily_log_excess": [
+          -0.2668242885701925,
+          -0.21749630590699393
+        ]
+      }
+    }
+  ]
+}

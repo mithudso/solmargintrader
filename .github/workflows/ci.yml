@@ -201,8 +201,8 @@ jobs:
       - name: Import check
         run: python3 -c "import backtester.cli; print('imports ok')"
 
-      - name: Causal shape and cycle studies
-        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles -v
+      - name: Causal shape, cycle and frozen Volty diagnostics
+        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks -v
 
       - name: Top50 research correctness
         run: |
