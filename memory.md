@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 459
+Version: 462
+Delta: v461 to v462; record scored map, v4 initialization and running research.
+Delta: v460 to v461; preserve verified prior-suite limits and narrow retired-store guard interpretation.
+Delta: v459 to v460; start one-minute full-suite with isolated research ownership.
 Delta: v458 to v459; record independent source and loaded-browser acceptance before delivery.
 Delta: v457 to v458; record Critical diagnostic red-to-green and component verification.
 Delta: v456 to v457; isolate Critical diagnostic exposure repair from the ongoing full audit.
@@ -1080,3 +1083,33 @@ Documentation gate succeededexit0 using the actualsrc-layout manager source and 
 `PYTHONPATH=/Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/botmanager/src:/Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta /Users/mitch/.venvs/soltui/bin/python scripts/check_docs.py`. It discovered2957tests and agreedwithdocs. Barepaperenv lackedTextual; oldSolTUIanddocsenvs couldnotimport `botmanager.blind` or `botmanager.config`; `/botmanager` alone is notthesrc-layout importroot. Do not mutate installedproductionowners tofixa source-documentcheck.
 
 Finalcheckanddeliveryreceipts are `/Users/mitch/.local/share/solmargintrader/research/meta-analysis-20261111/verification-final.json`, `delivery.json` and `complete-file-manifest.json`. These willrecord actual completed exits/remotecontent atdelivery. The frozenpaper service continues independently of thisworktree; futureeconomicqualification requires elapsedmarketobservations.
+
+## 2026-11-11 — Ultra-short full-suite (TASK-1462)
+
+Target: research next-60-second direction conditioned on broader trends and immediate market state. Parent TASK-1462; map TASK-1464; research/compile TASK-1465; review/delivery TASK-1466.
+
+Completed: read repository workflow and full-suite authority; checked TASK-832 and EPIC-980; preserved existing work in an isolated worktree. TASK-832 is a separate unfinished broad handoff. Research agent owns private artifacts, not root source files.
+
+Constraints: distinguish terminal direction, adverse-path survival and executable returns after costs. No orders or strategy/config changes. Preserve paused indexing and inference. Treat chart-scale and interasset-graph readings separately.
+
+Current gate: /dr runner preflight and prior concept inventory; the presence of the legacy research directory is being checked against the exact guard. No research-gate pass, saturation, forecast accuracy or profitable strategy has been established.
+
+Remaining: score concept family and CQs; complete actual /dr and evidence gates where permitted; compile and audit packs/rollup; document exact blockers; run documentation checks; deliver reviewed task-owned changes.
+
+## 2026-11-11 — One-minute suite preflight and prior evidence
+
+The old short-window full-suite report exists on disk. Its legacy sampled claim gates do not establish new v4 all-claims acceptance or exact 60-second applicability. Treat prior reports as discovery material until verified. The older TASK-832 handoff body is stale; no completed status was inferred from it.
+
+The current repository explicitly stores its maintained health dossier in the distillations directory. The /dr legacy-store guard is interpreted narrowly: the existing distillations-only directory is a maintained dossier store, not retired /dr run storage. It remains untouched. All new /dr artifacts use the canonical global hub research directory and repository adapter. This does not waive evidence or semantic gates.
+
+The fixed-model Stele search agent failed because its model is unsupported for this account. Direct Stele reads supplied the named task records. Stele transport later closed. Exact writes are queued under outbox IDs 84086806 (constraint link) and 60afba2b (legacy-gate lesson); no graph write success is claimed for those operations.
+
+## 2026-11-11 — One-minute research started
+
+Scored map: 33 names across five neighborhoods; nine competency questions; eight exact-scope delta concepts selected. Independent parent invocation of cvs_check.py passed eight rows with no mismatches or failures (threshold3.2). The canonical adapter initialized a saturate-depth v4 run successfully. Research is running; no final research or gate success is claimed yet.
+
+The existing canonical parent resolves to “Trading and Investing — Active Trading & How Financial Markets Work (Family Root)”. Initial alias-like parent must be corrected through supported tooling before any registration.
+
+Local documentation check passed exit0 in the existing SolTUI environment with src-layout manager path configured: 2960 discovered tests, docs agreed. No code tests or market backtest were run for this research-only request.
+
+Task-map lifecycle writes queued while Stele is disconnected:55076957 (map completion),bb31365d (research claim),c4a9e903 (refresh stale TASK-832 handoff). Other existing outbox IDs remain recorded above. Research/compile, independent audit and delivery remain pending.

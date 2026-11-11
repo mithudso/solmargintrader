@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 218
+Version: 219
+Delta: v218 to v219; record one-minute macro-conditioned full-suite request.
 Delta: v217 to v218; record all-component deep code optimizer request and immediate diagnostic repair.
 Delta: v216 to v217; record owner thirty percent drawdown planning tolerance.
 Delta: v215 to v216; capture comprehensive meta-analysis and prospective/live validation request.
@@ -1931,3 +1932,7 @@ User answer to the drawdown question:
 > About 30% drawdown
 
 The question specified a USD10,000 simulated account and venue-minimum live validation capped at USD10 total deployed.
+
+## 2026-11-11 — Ultra-short macro-conditioned forecasts (TASK-1462)
+
+> run the full-suite skill on ultra-short trades, micro-graph predictions based on macro trends, under what conditions can you be more certain the next 1 min will go up or down?
