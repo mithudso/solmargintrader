@@ -1,14 +1,18 @@
 # Work continuation
 
-Version: 442
+Version: 443
+Delta: v442 to v443; preserve concurrent MCP client records and selected ZEC/USDC configuration.
 Delta: v441 to v442; record merged and deployed memory hook repair.
 Delta: v440 to v441; record selected-policy installed acceptance and separate hook delivery links.
 Delta: v439 to v440; prepare owner-verified GUM account and selected dry-run service.
 Delta: v438 to v439; record explicit leveraged policy and verified signer identity.
 Delta: v437 to v438; bind the owner-selected ZEC/USDC wallet and continue activation checks.
-
+Delta: v437 to v438; preserve swing research and verified MCP client setup.
+Delta: v436 to v437; preserve concurrent Jupiter delivery and verified MCP clients.
+Delta: v434 to v435; verify loaded desktop MCP tools and preserve complete client receipt.
+Delta: v433 to v434; verify native clients and installed credential-safe MCP bridge.
+Delta: v432 to v433; start secure MCP configuration across CLI and desktop clients.
 Delta: v436 to v437; preserve concurrent Jupiter delivery and cycle validation records.
-
 Delta: v434 to v435; record passing full local checks before cycle-study delivery.
 Delta: v433 to v434; complete measured ZEC cycle validation and independent review.
 Delta: v432 to v433; start ZEC periodicity validation.
@@ -79,6 +83,17 @@ Hook repair is tracked separately as TASK-1332, PR https://github.com/mithudso/c
 
 Remaining repositorydelivery: docs/wiki/offline index checks and owned PR/CI/merge; finalstatus in /Users/mitch/.local/state/soloracle-tradingview/zec-usdc-20261111/delivery.json . External remaining: USDC funding, verified perps deposit, then live activation and actual TradingView/fill acceptance. The existing guarded program loaded the key only for public identity verification; it signed0transactions. No trades, deposits or transfers occurred. Only the server-paid empty account initialization occurred, with the public transaction above.
 
+## 2026-11-11 — MCP clients across apps
+
+Owner requests Codex, Claude Code, Antigravity, agy and desktop apps after a successful local curl health check. All five actual client profiles now contain secret-free mitchlists registrations. Codex /Users/mitch/.codex/config.toml and Claude Code /Users/mitch/.claude.json use native HTTPS plus runtime header helpers. Claude Desktop /Users/mitch/Library/Application Support/Claude/claude_desktop_config.json and Antigravity profiles /Users/mitch/.gemini/config/mcp_config.json and /Users/mitch/.gemini/antigravity/mcp_config.json use a shared stdio-to-HTTPS bridge. All unrelated entries were preserved, all config and backup files are mode0600, and the token value is absent from configuration and argv. Backups and sanitized receipts are under /Users/mitch/.local/state/tailscale-setup/ and the two Antigravity config .before-tailscale-20261111T115320Z files. Exact inventory is in /Users/mitch/.local/state/tailscale-setup/clients.json and codex-client-acceptance.json.
+
+Implemented version1.0.0 in scripts/mcp_remote_client.py and six credential-boundary tests in scripts/test_mcp_remote_client.py, with a CI gate. The headers mode reads a small, private, user-owned regular token file without following symlinks or blocking on FIFOs. Bridge mode reuses installed MCP2.3/httpx2/anyio transports and trusted HTTPS; no handwritten JSON-RPC proxy or new dependency install. It forwards responses/notifications and cancels cleanly at EOF. Error paths do not print raw exceptions, responses or credentials. Installed exact source at /Users/mitch/.local/lib/tailscale-mcp/mcp_remote_client.py (mode0600) and wrappers /Users/mitch/.local/bin/mitchlists-mcp-auth-headers and /Users/mitch/.local/bin/mitchlists-tailscale-mcp (mode0700), using the existing /Users/mitch/dev/mitchlists/.venv/bin/python. Token remains solely in /Users/mitch/.config/mitchlists/token (mode0600). Independent final installed/source SHA0500cd29c47cb0ffff0fa245d62b590ca6352d4456c41426c677a87aa43f1aee matched.
+
+Verification: all six unit tests and targeted Ruff passed. Fresh native Codex app-server discovered21tools at the HTTPS origin with no model/thread turn. A failing-helper negative control returned0tools with a discovery error, ruling out cached discovery; production helper returned21. Fresh Claude Code mcp get reports Connected, exit0. agy mcp list recognizes exactly one enabled mitchlists entry, exit0. Desktop-shaped minimal-environment bridge acceptance initialized mitchlists0.1.0 MCP2025-03-26, discovered21tools and closed at stdin EOF with exit0 and empty stderr; an independent verifier reproduced it against final installed code. No mutating MCP tool or inference ran.
+
+/Applications/ChatGPT.app is actually the Codex desktop host (com.openai.codex26.1103.60933), sharing CLI config. Claude Desktop4.23118.1 and Antigravity2.31.0 were not running, so root launched them for loaded acceptance. Claude Desktop Extensions > Local MCP servers shows mitchlists Running with the installed bridge command; fresh app logs contain initialize, initialized and tools/list and no token literal. agy1.5.5 is a separate executable from Antigravity desktop; both global profiles are configured. Antigravity Customizations > Installed > MCP Servers shows mitchlists with21tools enabled. Both loaded desktop app checks passed without creating a model turn. Existing active CLI/Codex sessions were preserved; new sessions/reconnection use updated configuration. No public Funnel or backend-auth change. Remote-device access still lacks evidence beyond a local curl; no inference or paused service was started.
+
+Loaded desktop acceptance and final installed-code verification passed. clients.json version2 contains the five config paths, hashes, modes, complete backup manifest and native/bridge/UI results; codex-client-acceptance.json version2 includes the failing-helper negative control. Local unit tests6, targeted Ruff and docs drift check passed. Remaining: deliver this source/CI/record update, preserve other sessions and retain phone/peer acceptance as an explicit external check. Preserve other sessions' active main checkout and PR214.
 ## 2026-11-11 — Jupiter leveraged ZEC webhook (TASK-1305)
 
 Owner requests Jupiter leverage instead of Coinbase spot for the current TradingView ZEC Volty strategy. Prior policy was 75% available funds, no Oracle reference/timeframe veto. No TradingView alert was created because the conditional strategy review failed for Coinbase spot fees and long/short mismatch. Current docs list ZEC as a Jupiter Beta perpetual powered by GUM; the old JLP SOL/ETH/wBTC list does not exclude ZEC. Existing repo live executor is spot only and its verifier cannot approve GUM instructions.

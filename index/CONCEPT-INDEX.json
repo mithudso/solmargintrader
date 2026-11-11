@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T12:39:40+00:00",
+  "generatedAt": "2026-11-11T12:42:05+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -317,7 +317,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 93
+          "hits": 95
         },
         {
           "path": "research/tradingview-card-coverage.json",
@@ -368,12 +368,12 @@
           "hits": 39
         },
         {
-          "path": "research/tradingview-card-readiness.json",
+          "path": "prompts.md",
           "hits": 36
         },
         {
-          "path": "prompts.md",
-          "hits": 35
+          "path": "research/tradingview-card-readiness.json",
+          "hits": 36
         },
         {
           "path": "research/coin-intelligence/sol-solana.md",
@@ -889,7 +889,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 135
+          "hits": 136
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -921,7 +921,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 83
+          "hits": 84
         },
         {
           "path": "archive/memory-2026-11-08.md",

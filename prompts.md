@@ -1,11 +1,13 @@
 # Prompt history
 
-Version: 210
+Version: 211
+Delta: v210 to v211; preserve concurrent MCP client records and selected ZEC/USDC configuration.
 Delta: v209 to v210; capture explicit Jupiter2x75%USDCcollateral selection.
 Delta: v208 to v209; record ZEC/USDC wallet selection and repeated memory hook failure fix.
-
+Delta: v208 to v209; preserve swing research and verified MCP client setup.
+Delta: v207 to v208; preserve concurrent Jupiter delivery and verified MCP clients.
+Delta: v206 to v207; capture all requested CLI and desktop MCP clients.
 Delta: v207 to v208; preserve concurrent Jupiter delivery and cycle validation records.
-
 Delta: v206 to v207; start ZEC periodicity validation.
 Delta: v206 to v207; integrate Jupiter webhook delivery with concurrent private MCP records.
 Delta: v205 to v206; capture the Jupiter leveraged ZEC webhook request.
@@ -45,6 +47,9 @@ Jupiter 2× leverage, 75% USDC collateral
 
   Basic Memory capture was marked failed because session instructions restrict memory writes to new files in the local ad_hoc notes directory.
 
+## 2026-11-11 — MCP clients across apps
+
+I want both codex, and claude code, and antigravity, and agy, and the desktop apps;
 ## 2026-11-11 — Jupiter leveraged TradingView execution
 
 OK can you make it use leverage with Jupiter instead?
