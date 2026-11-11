@@ -50,6 +50,11 @@ class WebhookTests(unittest.TestCase):
             )
         self.assertNotIn(self.secret.encode(), self.db.read_bytes())
 
+    def test_tradingview_iso_timestamp(self):
+        self.assertEqual(self.send(timestamp="1970-01-01T00:16:40Z"), "received")
+        with self.assertRaises(ValueError):
+            self.send(event_id="other", timestamp="1970-01-01T00:16:40")
+
     def test_http_listener_records_without_order_submission(self):
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))

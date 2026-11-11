@@ -10,6 +10,7 @@ import re
 import sqlite3
 import time
 from contextlib import closing
+from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -48,6 +49,14 @@ def accept_signal(
         msg[k] for k in ("event_id", "symbol", "side", "timestamp")
     )
     now = time.time() if now is None else now
+    if isinstance(timestamp, str):
+        try:
+            parsed = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").replace(
+                tzinfo=UTC
+            )
+            timestamp = int(parsed.timestamp())
+        except (ValueError, OverflowError, OSError):
+            raise ValueError("invalid_request") from None
     if (
         not isinstance(event_id, str)
         or not EVENT_ID.fullmatch(event_id)

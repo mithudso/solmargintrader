@@ -211,7 +211,8 @@ the four-file engine policy identity remain unchanged. See
 optional loopback-only receiver on port 8765. Set `ORACLE_WEBHOOK_SECRET` in the
 process environment to a randomly generated value of at least 32 characters.
 The alert body must be JSON with `secret`, unique stable `event_id`, uppercase
-`symbol`, `side` (`buy` or `sell`), and `timestamp` (Unix seconds). Use a unique
+`symbol`, `side` (`buy` or `sell`), and `timestamp` (Unix seconds or UTC
+`YYYY-MM-DDTHH:MM:SSZ`, as produced by TradingView `{{timenow}}`). Use a unique
 ID per alert firing and reuse it for retransmission. The receiver rejects events
 more than five minutes old or more than 30 seconds in the future. Identical
 retransmissions are deduplicated durably; a conflicting reuse is rejected.

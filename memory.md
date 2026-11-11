@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 421
+Version: 423
+Delta: v422 to v423; record TradingView timestamp compatibility and remaining executor integration.
+Delta: v421 to v422; record owner decision not to require Oracle agreement.
 Delta: v420 to v421; record experimental inbox implementation and outstanding trade integration.
 Delta: v419 to v420; resume webhook integration with qualified maximum sizing.
 Delta: v418 to v419; record TradingView webhook execution investigation and open mapping.
@@ -25,7 +27,7 @@ Delta: v401 to v402; record merged delivery and final CI for excluded coin remov
 
 ## 2026-11-11 — Qualified maximum TradingView trades
 
-The owner requests TradingView webhook buy and sell at the maximum available qualified amount. TASK-1286 is claimed. Preserve configured executor limits, exact balances, tracked positions, dry-run defaults and replay protection. The Oracle is currently read-only. Determine secure ingress, signal identity, qualification, and executor integration before enabling any live action. Implemented an experimental loopback HTTP inbox in oracle/webhook.py and exposed it via oracle/cli.py. It authenticates a shared body secret, bounds and validates events, enforces event time and durably rejects conflicting identities. It never places orders. The Oracle suite passed 83 tests and ruff check oracle passed. Postman webhook capture requires login and a real sender was not tested. A user decision is pending on whether Oracle agreement is an additional qualification. Remaining: secure public ingress, trade mapping, maximum sizing within executor locks and effective shared limits, independently enforced qualification, replay and ambiguous-submit recovery, live readiness, integration tests, installed verification and delivery.
+The owner requests TradingView webhook buy and sell at the maximum available qualified amount. TASK-1286 is claimed. Preserve configured executor limits, exact balances, tracked positions, dry-run defaults and replay protection. The Oracle is currently read-only. Determine secure ingress, signal identity, qualification, and executor integration before enabling any live action. Implemented an experimental loopback HTTP inbox in oracle/webhook.py and exposed it via oracle/cli.py. It authenticates a shared body secret, bounds and validates events, enforces event time and durably rejects conflicting identities. It never places orders. The receiver also accepts TradingView UTC timestamp placeholders. The Oracle suite passed 84 tests and ruff check oracle passed. Postman webhook capture requires login and a real sender was not tested. The owner says the signal should pass through without Oracle prediction agreement because it may use a different timeframe. Remaining: secure public ingress, trade mapping, maximum sizing within executor locks and effective shared limits, independently enforced qualification, replay and ambiguous-submit recovery, live readiness, integration tests, installed verification and delivery.
 
 ## 2026-11-11 — TradingView webhook signals
 
