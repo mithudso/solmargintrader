@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 208
+Version: 210
+Delta: v209 to v210; capture explicit Jupiter2x75%USDCcollateral selection.
+Delta: v208 to v209; record ZEC/USDC wallet selection and repeated memory hook failure fix.
+
 Delta: v207 to v208; preserve concurrent Jupiter delivery and cycle validation records.
 
 Delta: v206 to v207; start ZEC periodicity validation.
@@ -30,6 +33,17 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Confirmed Jupiter leverage allocation
+
+Jupiter 2× leverage, 75% USDC collateral
+
+## 2026-11-11 — ZEC/USDC Solana wallet and memory hook repair
+
+1. I was wrong I don't have leverage at Coinbase, and only simple trades are free. 2. Go with zec/usdc instead and the wallet is in ~/.ssh/solana.private  Also I keep getting this error for the memory-capture hook which I like the hook, but it needs to not error like that every time: 
+• Saved a verified local checkpoint.
+
+  Basic Memory capture was marked failed because session instructions restrict memory writes to new files in the local ad_hoc notes directory.
 
 ## 2026-11-11 — Jupiter leveraged TradingView execution
 

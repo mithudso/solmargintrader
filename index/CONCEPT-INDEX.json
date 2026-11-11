@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T12:06:20+00:00",
+  "generatedAt": "2026-11-11T12:39:40+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -316,12 +316,12 @@
           "hits": 97
         },
         {
-          "path": "research/tradingview-card-coverage.json",
-          "hits": 90
+          "path": "memory.md",
+          "hits": 93
         },
         {
-          "path": "memory.md",
-          "hits": 84
+          "path": "research/tradingview-card-coverage.json",
+          "hits": 90
         },
         {
           "path": "FILES.md",
@@ -372,6 +372,10 @@
           "hits": 36
         },
         {
+          "path": "prompts.md",
+          "hits": 35
+        },
+        {
           "path": "research/coin-intelligence/sol-solana.md",
           "hits": 34
         },
@@ -385,10 +389,6 @@
         },
         {
           "path": "docs/TRADINGVIEW-CARD-READINESS.md",
-          "hits": 32
-        },
-        {
-          "path": "prompts.md",
           "hits": 32
         },
         {
@@ -889,7 +889,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 128
+          "hits": 135
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
@@ -920,16 +920,16 @@
           "hits": 86
         },
         {
+          "path": "prompts.md",
+          "hits": 83
+        },
+        {
           "path": "archive/memory-2026-11-08.md",
           "hits": 81
         },
         {
           "path": "docs/archive/memory-2026-11-08.md",
           "hits": 81
-        },
-        {
-          "path": "prompts.md",
-          "hits": 80
         },
         {
           "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 312,
+      "matchingFiles": 313,
       "shown": 30,
       "files": [
         {
@@ -1916,15 +1916,15 @@
           "hits": 10
         },
         {
+          "path": "memory.md",
+          "hits": 9
+        },
+        {
           "path": "research/geometry.py",
           "hits": 9
         },
         {
           "path": "backtester/core/cpcv.py",
-          "hits": 8
-        },
-        {
-          "path": "memory.md",
           "hits": 8
         }
       ],
