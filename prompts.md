@@ -1,6 +1,10 @@
 # Prompt history
 
-Version: 199
+Version: 203
+Delta: v202 to v203; record Coinbase venue and 75 percent balance sizing.
+Delta: v201 to v202; record owner decision on signal qualification.
+Delta: v200 to v201; record maximum available qualified webhook trade request.
+Delta: v199 to v200; capture TradingView webhook trading request.
 Delta: v198 to v199; capture supplied Volty research dossier.
 Delta: v197 to v198; start Volty ZEC stop-entry and walk-forward study.
 Delta: v196 to v197; capture owner authorization to commit all untracked repository documentation, design artifacts, runbooks, and configurations.
@@ -12,6 +16,22 @@ Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten pape
 Delta: v191 to v192; record Lead Quantitative Orchestrator prompt optimization and market graph geometry research runbook.
 Delta: v190 to v191; capture the request to remove six assets from coin lists.
 Delta: v189 to v190; capture the additional friend-facing solbot diagnostics request.
+
+## 2026-11-11 — Coinbase webhook sizing
+
+Let's do 75% of whatever it's trading on right now. And it's going to use coinbase. which is authenticated with its mcp server on myu account alreadyu
+
+## 2026-11-11 — TradingView signal qualification
+
+1. I suspect your gates are far too conservative, so no it should simply pass through the order, it may be using a different timeframe than you.
+
+## 2026-11-11 — Qualified maximum TradingView trades
+
+Add webhook integration into the oracle, listen for a webhook from TradingView and make the qualified buy and sell for the max available.
+
+## 2026-11-11 — TradingView webhook signals
+
+Add to the oracle to listen for a webhook from Tradingview and to buy or sell based on that signal
 
 ## 2026-11-10 — Commit all repository artifacts
 

@@ -1,4 +1,4 @@
-"""Foreground Oracle owner and inert queries. No signing or order entry points."""
+"""Oracle forecasts, inert queries and explicitly enabled Coinbase webhooks."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import math
 import os
 import signal
 import sqlite3
+import stat
 import sys
 import tempfile
 import threading
@@ -169,10 +170,67 @@ def main(argv=None) -> int:
     p = commands.add_parser("history")
     p.add_argument("--limit", type=int, default=100)
     p.add_argument("--after", type=int, default=0)
+    p = commands.add_parser(
+        "webhook",
+        help="receive TradingView alerts; optional Coinbase 75 percent orders",
+    )
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--inbox", type=Path, required=True)
+    p.add_argument("--secret-file", type=Path)
+    p.add_argument("--coinbase", action="store_true")
+    p.add_argument("--portfolio-id")
+    p.add_argument("--live", action="store_true")
+    p = commands.add_parser("webhook-status", help="read inbox order receipts")
+    p.add_argument("--inbox", type=Path, required=True)
+    p.add_argument("--limit", type=int, default=50)
     p = commands.add_parser("snapshot")
     p.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command == "webhook":
+            from .webhook import serve
+
+            if (
+                args.live
+                and not args.coinbase
+                or args.coinbase
+                and not args.portfolio_id
+            ):
+                raise ValueError("coinbase_requires_portfolio")
+            secret = os.environ.get("ORACLE_WEBHOOK_SECRET", "")
+            if args.secret_file:
+                fd = os.open(args.secret_file, os.O_RDONLY | os.O_NOFOLLOW)
+                with os.fdopen(fd) as handle:
+                    info = os.fstat(handle.fileno())
+                    if (
+                        not stat.S_ISREG(info.st_mode)
+                        or info.st_uid != os.getuid()
+                        or info.st_mode & 0o077
+                    ):
+                        raise ValueError("secret_file_must_be_private")
+                    secret = handle.read(4097).strip()
+                    if len(secret) > 4096:
+                        raise ValueError("secret_file_too_large")
+            venue = None
+            if args.coinbase:
+                from .coinbase_orders import CoinbaseOrders
+
+                venue = CoinbaseOrders()
+            with owner(args.inbox):
+                serve(
+                    args.inbox,
+                    secret,
+                    args.port,
+                    venue=venue,
+                    portfolio_id=args.portfolio_id,
+                    live=args.live,
+                )
+            return 0
+        if args.command == "webhook-status":
+            from .webhook_orders import records
+
+            emit({"ok": True, "data": records(args.inbox, args.limit)})
+            return 0
         if args.command == "run":
             if (
                 not math.isfinite(args.interval)

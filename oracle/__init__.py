@@ -1,1 +1,1 @@
-"""Oracle research components; this package does not place orders."""
+"""Oracle forecasts and optional explicitly enabled Coinbase webhook orders."""

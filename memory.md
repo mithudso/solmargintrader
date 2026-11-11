@@ -1,6 +1,14 @@
 # Work continuation
 
-Version: 418
+Version: 426
+Delta: v425 to v426; repair deterministic repository index after CI drift check.
+Delta: v424 to v425; record completed Coinbase order worker, installed acceptance and active webhook.
+Delta: v423 to v424; implement Coinbase webhook worker and 75 percent sizing.
+Delta: v422 to v423; record TradingView timestamp compatibility and remaining executor integration.
+Delta: v421 to v422; record owner decision not to require Oracle agreement.
+Delta: v420 to v421; record experimental inbox implementation and outstanding trade integration.
+Delta: v419 to v420; resume webhook integration with qualified maximum sizing.
+Delta: v418 to v419; record TradingView webhook execution investigation and open mapping.
 Delta: v417 to v418; fix CI schema parity and preserve frozen TradingView source card for PR209.
 Delta: v416 to v417; complete installed Volty study and supplied-dossier comparison; delivery pending.
 Delta: v415 to v416; start Volty ZEC stop-entry and walk-forward study.
@@ -19,6 +27,18 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Coinbase webhook sizing
+
+Owner chooses Coinbase and 75 percent of available quote balance for buys or base balance for sells. No Oracle prediction filter. Both authenticated MCP portfolios list and installed official CLI portfolios list succeeded. TASK-1286 is claimed. Implemented exact Coinbase75 percent sizing, durable queue dispatch/reconciliation, per-event mode and portfolio binding, and no Oracle filter. All116 Oracle tests,195 ecosystem tests, Ruff, documentation counts and wiki consistency pass. Independent installed verification matched four module hashes, produced a real-account dry-run plan, deduplicated replay, rejected bad auth and shut down cleanly. Live listener and HTTPS tunnel now run under dedicated launchd labels on port8766; no real order was placed. Public invalid-auth request returned400. Deployment, secret/template, endpoint and sanitized acceptance receipt are under /Users/mitch/.local/state/soloracle-tradingview/. CI first caught stale index artifacts; rebuilt the offline metadata/text/concept indexes without embeddings. Final merge evidence is recorded in delivery.json there and PR210. The remaining user action is to configure their TradingView alert using endpoint.txt and private tradingview-alert.json. Quick tunnel address changes when its process restarts; named stable ingress is not configured. Unknown Coinbase submissions without saved order IDs remain blocked if CLI omits client IDs. Preserve unrelated work.
+
+## 2026-11-11 — Qualified maximum TradingView trades
+
+The owner requests TradingView webhook buy and sell at the maximum available qualified amount. TASK-1286 is claimed. Preserve configured executor limits, exact balances, tracked positions, dry-run defaults and replay protection. The Oracle is currently read-only. Determine secure ingress, signal identity, qualification, and executor integration before enabling any live action. Implemented an experimental loopback HTTP inbox in oracle/webhook.py and exposed it via oracle/cli.py. It authenticates a shared body secret, bounds and validates events, enforces event time and durably rejects conflicting identities. It never places orders. The receiver also accepts TradingView UTC timestamp placeholders. The Oracle suite passed 84 tests and ruff check oracle passed. Postman webhook capture requires login and a real sender was not tested. The owner says the signal should pass through without Oracle prediction agreement because it may use a different timeframe. Remaining: secure public ingress, trade mapping, maximum sizing within executor locks and effective shared limits, independently enforced qualification, replay and ambiguous-submit recovery, live readiness, integration tests, installed verification and delivery.
+
+## 2026-11-11 — TradingView webhook signals
+
+Stele TASK-1286 tracks this request. Oracle 0.2.3 is a shadow service without order capability; executor registry swap provides a durable request_id and guarded dry-run/live path. TradingView may resend 5xx deliveries, so durable duplicate handling and ambiguous-submit recovery are required. The owner was asked for pair, venue, trade size and sell semantics. No webhook or execution code has been implemented or tested. Next: establish sender authentication and transport, explicit configured mapping and durable event identity; integrate only through executor rails, test recovery and deliver. Preserve dry-run defaults.
 
 ## 2026-11-10 — Commit all repository artifacts
 
