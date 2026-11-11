@@ -18,6 +18,7 @@
   let graphData = null;
   let selected = null;
   let signature = "";
+  let renderGeneration = 0;
   let libraryPromise;
 
   const byId = (id) => document.getElementById(id);
@@ -121,7 +122,7 @@
       : "No vote balance";
     aggregateEligible.textContent = `${tick.aggregate?.included?.length || 0} included · ${tick.aggregate?.excluded?.length || 0} excluded`;
     aggregate.append(aggregateLabel, aggregateSignal, aggregateBalance, aggregateEligible);
-    fragment.append(aggregate);
+    if (!graphData?.hide_aggregate) fragment.append(aggregate);
     byId("oracle-chart-rows").replaceChildren(fragment);
   }
 
@@ -149,6 +150,7 @@
       label.append(input, name);
       fragment.append(label);
     });
+    if (graphData?.hide_aggregate) { container.replaceChildren(fragment); return; }
     const aggregate = document.createElement("label");
     aggregate.className = "oracle-overlay-toggle aggregate-overlay-toggle";
     const input = document.createElement("input");
@@ -183,7 +185,7 @@
         });
       });
       const total = tick.aggregate?.signal;
-      if (selected.has("__aggregate__") && total) {
+      if (!graphData.hide_aggregate && selected.has("__aggregate__") && total) {
         const direction = total.includes("Buy") ? 1 : total.includes("Sell") ? -1 : total === "Flat" ? 0 : null;
         if (direction !== null) points.push({
           time: tick.time,
@@ -200,8 +202,12 @@
   }
 
   async function render(graph) {
+    const generation = ++renderGeneration;
     if (!setStatus(graph)) {
       graphData = null;
+      signature = "";
+      selected = null;
+      byId("oracle-chart-legend").replaceChildren();
       if (priceSeries) priceSeries.setData([]);
       if (markers) markers.setMarkers([]);
       text("oracle-shape-summary", "No completed Oracle graph tick is recorded.");
@@ -220,9 +226,10 @@
       return;
     }
     await ensureChart();
+    if (generation !== renderGeneration) return;
     graphData = graph;
     createLegend(ticks.at(-1).strategies || []);
-    const key = `${ticks[0].tick_id}:${ticks.at(-1).tick_id}:${ticks.length}:${[...selected].sort().join(",")}`;
+    const key = `${graph.view_key || graph.instrument}:${ticks[0].tick_id}:${ticks.at(-1).tick_id}:${ticks.length}:${[...selected].sort().join(",")}`;
     updateShape(ticks.at(-1));
     renderLatestRows(ticks.at(-1));
     if (key === signature) return;

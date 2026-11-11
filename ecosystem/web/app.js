@@ -2,10 +2,18 @@
 
 // Owner content is data: every dynamic string enters the DOM through textContent.
 const $ = (id) => document.getElementById(id);
+function savedOracleDisplay() {
+  try {
+    const value = JSON.parse(localStorage.getItem("solmargintrader.oracle.display.v1"));
+    return value && /^[A-Z][A-Z0-9]{0,15}\/[A-Z][A-Z0-9]{0,15}$/.test(value.instrument) &&
+      /^(published|[1-9][0-9]{0,5}[smhd])$/.test(value.interval) && /^[A-Za-z0-9_-]{1,120}$/.test(value.strategy) ? value : null;
+  } catch { return null; }
+}
+const oracleSaved = savedOracleDisplay();
 const state = { status: null, registrations: null, telemetry: null, selected: null,
   cursors: [""], page: 0, next: null, polling: false, eventCursor: 0,
   events: [], droppedEvents: 0, receivedAt: null, control: null, analytics: null,
-  oracle: null, oracleInstrument: "SOL/USD", oraclePublicationChosen: false, selectedRecord: null, session: null,
+  oracle: null, oracleInstrument: oracleSaved?.instrument || "SOL/USD", oracleInterval: oracleSaved?.interval || "published", oracleStrategy: oracleSaved?.strategy || "published", oraclePublicationChosen: Boolean(oracleSaved), oracleStudyInstrument: null, oracleDisplayOptions: null, selectedRecord: null, session: null,
   busy: new Set(), localActions: new Map(), voterDrafts: new Map(), managerDrafts: new Map(), managerInputModes: new Map(), pendingPrefs: new Map(),
   wikiCatalog: null, wikiPage: null, wikiKnownPages: new Map(), wikiRequest: 0, wikiPageRequest: 0,
   launchCatalogKey: null, managerCatalogKey: null, instrumentCatalogKey: null,
@@ -91,7 +99,7 @@ async function refresh() {
   state.polling = true;
   $("refresh").disabled = true;
   const requestedRun = state.activeRun;
-  const requestedInstrument = state.oracleInstrument;
+  const requestedOracleView = oracleViewKey();
   try {
     const cursor = state.cursors[state.page];
     const requests = [
@@ -99,12 +107,12 @@ async function refresh() {
       ["registrations", get(scoped(`/api/registrations?limit=100${cursor ? `&after=${encodeURIComponent(cursor)}` : ""}`))],
       ["telemetry", telemetryPage()],
       ["control", get(scoped("/api/control"))],
-      ["oracle", get(scoped(`/api/oracle?instrument=${encodeURIComponent(state.oracleInstrument)}`))],
+      ["oracle", get(scoped(oracleDisplayPath()))],
       ["analytics", state.selected ? get(scoped(`/api/analytics?bot_id=${encodeURIComponent(state.selected)}`)) : Promise.resolve(null)],
     ];
     const results = await Promise.allSettled(requests.map(([, promise]) => promise));
     if (requestedRun !== state.activeRun) return;
-    requests.forEach(([key], index) => { state[key] = key === "oracle" && requestedInstrument !== state.oracleInstrument ? null : results[index].status === "fulfilled" ? results[index].value : null; });
+    requests.forEach(([key], index) => { state[key] = key === "oracle" && requestedOracleView !== oracleViewKey() ? null : results[index].status === "fulfilled" ? results[index].value : null; });
     const publication = state.oracle?.selected_experiment;
     if (!state.oraclePublicationChosen && publication?.instrument) {
       state.oraclePublicationChosen = true;
@@ -121,7 +129,7 @@ async function refresh() {
   } finally {
     state.polling = false;
     $("refresh").disabled = false;
-    if (requestedRun !== state.activeRun || requestedInstrument !== state.oracleInstrument) queueMicrotask(refresh);
+    if (requestedRun !== state.activeRun || requestedOracleView !== oracleViewKey()) queueMicrotask(refresh);
   }
 }
 function renderSummary() {
@@ -772,7 +780,7 @@ function renderAnalytics() {
   text("equity-reason", state.selected ? `${human(state.selectedRecord?.strategy_id)} · ${calls} prospective calls · ${resolved} resolved · ${recorded} included in accounting · ${measured} coins with measured P&L. Independent trial comparisons; costs included. No shared portfolio total is inferred.` : "Choose a fleet row. Recorded paper economics and directional accuracy are reported separately.");
 }
 function currentVoterDraft() {
-  if (state.oracle?.selected_experiment?.selected) return null;
+  if (state.oracle?.selected_experiment?.selected || state.oracleStrategy !== "published") return null;
   const policy = state.oracle?.selection;
   if (!policy || policy.instrument !== state.oracleInstrument || !Array.isArray(policy.selected_ids)) return null;
   let draft = state.voterDrafts.get(voterKey());
@@ -792,7 +800,7 @@ function renderSelectedAggregate() {
   const available = value?.instrument === state.oracleInstrument && (studySelected ? studyFresh : fresh) && value?.status === "available" && finite(expiry) && expiry > now && finite(value?.aggregate?.balance_percent) && finite(value?.as_of) && value.as_of <= now && now - value.as_of <= 30;
   const signal = available ? value.signal : "Unavailable";
   const balance = available ? value.aggregate.balance_percent : null;
-  const reason = studySelected ? (available ? `Frozen rank 1 configuration · ${value.horizon_seconds} second native candles · paper long-or-flat target, not a probability.` : human(value?.reason || "selected_study_unavailable")) : available ? `${array(value.aggregate.included).length} contributing votes · ${array(value.aggregate.excluded).length} excluded. Directional vote balance, not profit probability.` : human(value?.aggregate?.reason || market?.reason || (!fresh ? "fresh_market_evidence_unavailable" : "insufficient_or_expired_forecast_evidence"));
+  const reason = studySelected ? (available ? value.selected_experiment.publication.historical_warmup ? `Historical warmup reference · latest closed ${value.selected_experiment.publication.interval} candles · paper accounts await their first post-start close; no prospective credit.` : `Selected rank ${value.selected_experiment.publication.rank} configuration · ${value.horizon_seconds} second native candles · paper long-or-flat target, not a probability.` : human(value?.reason || "selected_study_unavailable")) : available ? `${array(value.aggregate.included).length} contributing votes · ${array(value.aggregate.excluded).length} excluded. Directional vote balance, not profit probability.` : human(value?.aggregate?.reason || market?.reason || (!fresh ? "fresh_market_evidence_unavailable" : "insufficient_or_expired_forecast_evidence"));
   ["aggregate-signal", "oracle-signal"].forEach((id) => text(id, signal));
   ["aggregate-balance", "oracle-balance"].forEach((id) => text(id, available ? studySelected ? `${balance.toFixed(2)}% target exposure · ${value.selected_experiment.publication.interval}` : `${balance > 0 ? "+" : ""}${balance.toFixed(2)}% signed weighted vote balance` : "No current vote balance"));
   ["aggregate-reason", "oracle-reason"].forEach((id) => text(id, reason));
@@ -801,9 +809,11 @@ function renderSelectedAggregate() {
   const reading = meter.closest(".aggregate-reading"); reading.dataset.direction = !available ? "unavailable" : balance > 0 ? "buy" : balance < 0 ? "sell" : "flat";
   $("oracle-signal").className = available ? balance > 0 ? "positive" : balance < 0 ? "negative" : "" : "";
   text("oracle-explanation", studySelected ? `ZEC paper owner heartbeat ${timestamp(value.selected_experiment?.heartbeat)}. Source: Binance spot native ${value.selected_experiment?.publication?.interval || "unknown"} ZEC/USDT candles · latest observed candle close ${timestamp(observation?.observed_at)}. Next-open fills are modelled reference prices observed after the following candle closes; they do not prove executable fills. Exposure is not a probability of profit.` : `Engine ${state.control?.servers?.find((server) => server.id === "oracle")?.running === true ? "observed running" : "not observed running"}. Source: ${human(observation?.source)} · ${human(observation?.kind)} · observed ${timestamp(observation?.observed_at)}. ${array(market?.limitations).map(human).join(" · ")}. Historical accuracy and vote balance do not measure a probability of profit.`);
-  $("voter-form").hidden = studySelected;
+  $("voter-form").hidden = studySelected || state.oracleStrategy !== "published";
   renderZecStudy(value?.selected_experiment);
+  renderOracleSelectors(value);
   const instruments = array(state.control?.catalog?.coins).map((coin) => `${coin}/USD`);
+  if (state.oracleStudyInstrument && !instruments.includes(state.oracleStudyInstrument)) instruments.push(state.oracleStudyInstrument);
   if (!instruments.includes(state.oracleInstrument)) instruments.push(state.oracleInstrument);
   fillSelect("oracle-instrument", instruments, state.oracleInstrument); fillSelect("oracle-instrument-detail", instruments, state.oracleInstrument);
   $("oracle-instrument").value = state.oracleInstrument; $("oracle-instrument-detail").value = state.oracleInstrument;
@@ -836,7 +846,7 @@ function renderZecStudy(study) {
   const panel = $("zec-study-panel"); panel.hidden = !study;
   if (!study) return;
   const winner = study.publication;
-  text("zec-study-summary", winner ? `${study.instrument} · ${human(study.source)} · rank 1 ${winner.id} · ${winner.interval}. Each account starts with 10,000 USDT virtual capital; balances are independent. Historical ranks do not establish a profitable edge.` : human(study.reason));
+  text("zec-study-summary", winner ? `${study.instrument} · ${human(study.source)} · displayed rank ${winner.rank} ${winner.id} · ${winner.interval}. The published winner remains rank 1. Each account starts with 10,000 USDT virtual capital; balances are independent. Historical ranks do not establish a profitable edge.` : human(study.reason));
   text("zec-study-config", winner ? JSON.stringify(winner.candidate.config, null, 2) : "Selected study unavailable");
   const fragment = document.createDocumentFragment();
   array(study.accounts).forEach((account) => {
@@ -982,10 +992,41 @@ $("recording-form").addEventListener("submit", async (event) => {
   const result = await submitAction("pnl.recording.set", { enabled: $("record-pnl").checked, expected_revision: recording.revision }, $("recording-save"));
   if (result) state.pendingPrefs.set(result.id, { kind: "recording", run });
 });
+function oracleViewKey() {
+  return JSON.stringify([state.activeRun, state.oracleInstrument, state.oracleInterval, state.oracleStrategy]);
+}
+function oracleDisplayPath() {
+  return `/api/oracle?instrument=${encodeURIComponent(state.oracleInstrument)}` +
+    (state.oracleInterval !== "published" ? `&interval=${encodeURIComponent(state.oracleInterval)}` : "") +
+    (state.oracleStrategy !== "published" ? `&strategy=${encodeURIComponent(state.oracleStrategy)}` : "");
+}
+function renderOracleSelectors(value) {
+  if (value?.display) state.oracleDisplayOptions = value.display;
+  if (value?.display?.publication_instrument) state.oracleStudyInstrument = value.display.publication_instrument;
+  const display = state.oracleDisplayOptions;
+  const intervals = [...new Set(["1m", "1h", ...array(display?.available_intervals)])];
+  fillSelect("oracle-frequency", [{ id: "published", label: "Published / native frequency" }, ...intervals.map((id) => ({ id, label: id }))], state.oracleInterval);
+  if (!intervals.includes(state.oracleInterval) && state.oracleInterval !== "published") {
+    fillSelect("oracle-frequency", [{id:"published",label:"Published / native frequency"}, ...[...intervals, state.oracleInterval].map((id) => ({id,label:id}))], state.oracleInterval);
+  }
+  const strategies = [{ id: "published", label: "Published / saved aggregate" }, ...array(display?.strategies)];
+  if (!strategies.some((row) => row.id === state.oracleStrategy)) strategies.push({ id: state.oracleStrategy, label: `${state.oracleStrategy} · unavailable for this coin` });
+  fillSelect("oracle-strategy", strategies, state.oracleStrategy);
+  $("oracle-frequency").value = state.oracleInterval; $("oracle-strategy").value = state.oracleStrategy;
+  text("oracle-display-status", value ? `${value.instrument} · native frequencies: ${array(value.display?.available_intervals).join(", ") || "unavailable"}. Display only; saved voters, paper accounts and the published winner are unchanged.${value.status !== "available" ? ` ${human(value.reason || "forecast_unavailable")}.` : ""}` : "Loading the selected coin, frequency and strategy; earlier values are cleared.");
+}
+function changeOracleDisplay() {
+  state.oraclePublicationChosen = true;
+  try { localStorage.setItem("solmargintrader.oracle.display.v1", JSON.stringify({ instrument: state.oracleInstrument, interval: state.oracleInterval, strategy: state.oracleStrategy })); } catch { /* A private browser may disable local storage. */ }
+  state.oracle = null; state.oracleDisplayOptions = null;
+  renderSelectedAggregate(); renderOracle(); refresh();
+}
 function setInstrument(instrument) {
-  state.oracleInstrument = instrument; state.oracle = null; renderSelectedAggregate(); renderOracle(); refresh();
+  state.oracleInstrument = instrument; changeOracleDisplay();
 }
 ["oracle-instrument", "oracle-instrument-detail"].forEach((id) => $(id).addEventListener("change", (event) => setInstrument(event.target.value)));
+$("oracle-frequency").addEventListener("change", (event) => { state.oracleInterval = event.target.value; changeOracleDisplay(); });
+$("oracle-strategy").addEventListener("change", (event) => { state.oracleStrategy = event.target.value; changeOracleDisplay(); });
 $("voter-form").addEventListener("submit", async (event) => {
   event.preventDefault(); const draft = currentVoterDraft(); if (!draft) return;
   const instrument = state.oracleInstrument; const run = state.activeRun;

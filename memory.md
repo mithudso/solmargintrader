@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 410
+Version: 414
+Delta: v413 to v414; record completed read-only display controls and focused checks before final delivery.
+Delta: v412 to v413; extend the active Oracle task with user-requested display selectors.
+Delta: v411 to v412; record refreshed five-day minute data and narrow current-reference implementation.
+Delta: v410 to v411; start the user-authorized immediate warmed Oracle projection and five-day minute refresh.
 Delta: v409 to v410; record deployed transient-health recovery correction and preserved paper state.
 Delta: v408 to v409; resume a proven post-merge transient feed health recovery defect while preserving frozen ZEC paper state.
 Delta: v407 to v408; reconcile concurrent PR204 geometry research records while preserving the accepted ZEC study and runtime.
@@ -699,3 +703,35 @@ The originalZECLaunchAgent was stopped for a consistentbackup and exactold/newim
 The managedsuite restarted gracefully toload its coherentversion. Its oldstopped/disarmedpaper draft changedonlycanonicalgeneration/owner fence8->9; financial/configuration/evidence state is unchanged. NewUIobservedat http://127.0.0.1:55473/#oracle. Independentcorrectionacceptance verifies this exactbuild andpreservation in `independent-recovery-acceptance.json`; that finalgate must pass beforemerging. The originalfirstprospectivehourlydecision remains03:00UTC, no warmupprofit/forecastcredit.
 
 Remaining atthischeckpoint: finishindependentcorrectionacceptance, source/index/docchecks, commit/pushfollowupPR, waititsfinalCI, merge,sync/cleantaskworktree, and writefinalexternalcompletion-receipt.json. Consult thatcompletionreceiptbefore repeating work. Preserve allotheruntrackedpaths and lockedworktree.
+
+
+## v411 — 2026-11-10 — Immediate warmed Oracle reference
+
+TASK-1278 tracks the explicit change: historical warmup may establish the current Oracle signal before paper activation, and Oracle is consumed outside the paper bots. Download exactly the latest five days of closed Binance ZECUSDT minute candles, preserve the accepted study snapshot, and expose the frozen model's real warmed target as a clearly labelled current reference. Do not create historical paper profit, fills, or prospective decision counts. Keep verification narrow: focused regression and actual API read; no backtest rerun or broad audit. Worktree `/Users/mitch/dev/solmargintrader-wt-zec-current`, branch `codex/zec-current-oracle`. Remaining: refresh data, deploy the narrow read projection, focused verification and delivery.
+
+
+## v412 — 2026-11-10 — current reference and five-day minute refresh complete
+
+Downloaded exactly 7,200 contiguous closed Binance spot ZECUSDT one-minute candles from 2026-11-06T03:02:00UTC through the close at 2026-11-11T03:02:00UTC. Data is `/Users/mitch/.local/share/solmargintrader/research/zec-current/ZEC_1m_last5d.csv`; raw-page provenance and CSV SHA256 aa60539ca6428cec64614df97c90d7c0a1ddf95cf3017add8c12bac90121c5bf are in the adjacent ZEC_1m_last5d.source.json. No gaps. The accepted study data and ranking remain unchanged.
+
+The read-only Oracle projection now permits the frozen policy's actual persisted warmup target while accounts wait for first_post_start_closed_bar. It requires matching candidate/configuration/selection/implementation and fresh closed basis, heartbeat and state. The UI labels historical warmup explicitly. It changes no accounts, activation, P&L, fills, prospective decision counts or historical graph credit. Normal prospective forecasts take over automatically. One focused regression verifies warmup publication without account credit, graph exclusion, handover and stale withholding; Ruff and JavaScript syntax pass. No backtest or broad local suite was rerun at the owner's explicit request.
+
+The original ten hourly accounts naturally processed their first post-start candle at 03:00UTC. The leading Oracle configuration therefore already reports its regular prospective Flat target0.0, with one decision and10,000USDT equity, without using the warmup override. The same ecosystem0.4.4 read-projection hotfix is installed into both existing stable environments. Only the UI child restarts; the paper worker, database and implementation fences remain unchanged.
+
+TASK-1278 and KNOW-1279 record this change. Remaining at this pre-merge checkpoint: quick generated-doc/index gates, commit/push, final-head CI, merge and safe worktree cleanup. The authoritative outcome and installed URL are saved after delivery to `/Users/mitch/.local/share/solmargintrader/research/zec-current/completion-receipt.json`; consult that receipt before repeating work. Preserve all unrelated untracked paths and the locked UI-redesign worktree.
+
+
+## v413 — 2026-11-10 — Oracle frequency, strategy and coin display selectors
+
+The owner adds read-only display controls on the Oracle tab for time frequency, strategy and coin. Preserve the frozen winning ZEC policy as default and keep display choices separate from actual worker selection, paper policies and published scientific ranking. Reuse current instrument/catalog/evidence paths. Show unavailable evidence honestly; do not fabricate a forecast for a newly selected frequency. Explore the existing UI/data contracts, make the smallest coherent selector change, rebuild the same-version UI package, restart only the UI child, perform focused checks and deliver this with the warmed-reference change. TASK-1278 remains the single claimed task.
+
+
+## v414 — 2026-11-10 — Oracle display controls implemented
+
+The Oracle tab now exposes Coin, Frequency and Strategy controls. The API accepts optional interval/strategy GET parameters documented in ecosystem/api/control.openapi.json. The default retains the frozen published ZEC winner. Named frozen candidates use their own account and bounded forecast history. Canonical strategies use eligibility-preserving read-only previews; their charts exclude the full-catalog aggregate. Native-cadence metadata and explicit unavailable reasons prevent relabeling hourly forecasts as minute calls. Browser preferences store only these three display choices. Request keys include the run and all three choices, and switching clears prior calls/chart while loading. A render generation guard rejects late chart completions. The published study instrument remains available after switching away.
+
+Sixteen focused tests pass, including own-candidate identity, native-frequency mismatch, read-only selection, HTTP query routing, and browser persistence/request identity. Ruff and JavaScript syntax pass. Three new tests were added. No worker, core strategy, implementation fence, activation or account database code changed. KNOW-1280 records this display-only boundary and links to TASK-1278.
+
+The earlier warmed-reference build was installed and actual HTTP showed the normal prospective ZEC Flat signal at http://127.0.0.1:58714/#oracle. The final selector build replaces only ecosystem0.4.4 in the same two stable environments and restarts only its UI child. The final selector installation receipt is under `/Users/mitch/.local/share/solmargintrader/research/zec-ensembles-20261110/selectors-0.4.4-final/receipt.json`; installed browser acceptance is `/Users/mitch/.local/share/solmargintrader/research/zec-current/selectors-installed-acceptance.json`. These receipts establish the actual final loaded URL and result.
+
+Remaining at this checkpoint: finish installation/browser acceptance, final-head CI and merge, safe primary checkout sync, remove only this task's worktree/branch, complete TASK-1278 and write `/Users/mitch/.local/share/solmargintrader/research/zec-current/completion-receipt.json`. Consult the final external receipt before resuming. Preserve unrelated primary checkout paths, locked redesign worktree and tooling cache.

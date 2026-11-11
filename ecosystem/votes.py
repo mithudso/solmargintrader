@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import sqlite3
 import time
 from contextlib import closing
@@ -135,8 +136,65 @@ def set_voters(home, instrument: str, ids: list[str], expected_revision: int) ->
     }
 
 
-def report(
-    home, instrument: str, selected_ids=None, *, now: float | None = None
+def _warmup_reference(home, study, now):
+    """Expose the carried policy output without crediting a prospective call."""
+    winner = study.get("publication")
+    if not winner or winner.get("available") or winner.get("reason") != "first_post_start_closed_bar":
+        return study
+    try:
+        from backtester.core.zec_ensemble import candidate_id
+
+        from .zec_forward import (
+            INTERVALS,
+            canonical,
+            connection,
+            digest,
+            implementation,
+        )
+
+        pointer_path = Path(home).expanduser().absolute() / "zec-study.json"
+        if pointer_path.is_symlink():
+            return study
+        pointer = json.loads(pointer_path.read_text())
+        if pointer["selection_hash"] != study["selection_hash"]:
+            return study
+        with connection(pointer["home"]) as db:
+            db.execute("BEGIN")
+            metadata = {row[0]: row[1] for row in db.execute("SELECT key,value FROM metadata")}
+            row = db.execute("SELECT * FROM candidates WHERE id=?", (winner["id"],)).fetchone()
+            if row is None or metadata["implementation"] != canonical(implementation()):
+                return study
+            if metadata["selection_hash"] != study["selection_hash"]:
+                return study
+            interval = INTERVALS[row["interval"]]
+            close = row["last_ts"] + interval
+            heartbeat = float(metadata["heartbeat"])
+            if (row["status"] != "waiting" or row["reason"] != "first_post_start_closed_bar"
+                    or row["last_ts"] >= row["activation"]
+                    or not 0 <= now - heartbeat <= 35
+                    or not 0 <= now - row["updated"] <= 35
+                    or not 0 <= now - close < interval):
+                return study
+            candidate = json.loads(row["config"])
+            if (candidate_id(candidate["config"]) != winner["id"]
+                    or digest(candidate["config"]) != winner["config_hash"]):
+                return study
+            raw = json.loads(row["state"])["strategy_state"]["inner"]["persistence"]["last"]
+            if type(raw) not in (int, float) or not math.isfinite(raw) or not 0 <= raw <= 1:
+                return study
+            reference = {**winner, "available": True, "target": raw,
+                         "issued_at": row["updated"], "decision_close": close,
+                         "expires_at": close + interval, "reason": "historical_warmup_reference",
+                         "historical_warmup": True, "prospective": False,
+                         "source_basis_close": close}
+        # Accounts, P&L, paper forecasts, and their activation remain untouched.
+        return {**study, "publication": reference, "reference_kind": "historical_warmup"}
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error):
+        return study
+
+
+def _report(
+    home, instrument: str, selected_ids=None, *, now: float | None = None, display_strategy=None
 ) -> dict:
     instrument = validate_instrument(instrument)
     now = time.time() if now is None else now
@@ -146,12 +204,27 @@ def report(
 
     study = publication(home, instrument, now=now)
     if study and study["selected"]:
+        if display_strategy and display_strategy != "published":
+            chosen_account = next((row for row in study.get("accounts", []) if row["id"] == display_strategy), None)
+            if chosen_account:
+                from .zec_forward import connection
+
+                pointer = json.loads((Path(home).expanduser().absolute() / "zec-study.json").read_text())
+                with connection(pointer["home"]) as db:
+                    history = [dict(row) for row in db.execute(
+                        "SELECT bar,issued,target,equity,exposure,price FROM forecasts WHERE id=? AND bar<=? ORDER BY bar DESC LIMIT 240",
+                        (chosen_account["id"], chosen_account["last_ts"]))]
+                study = {**study, "publication": chosen_account, "history": list(reversed(history))}
+        study = _warmup_reference(home, study, now)
         winner = study.get("publication")
         if winner:
             # Cash-only priming observations are not issued ensemble forecasts.
             study["history"] = [row for row in study.get("history", [])
                                 if row["bar"] >= winner["activation"]]
-        return oracle_view(study, now=now)
+        view = oracle_view(study, now=now)
+        if study.get("reference_kind") == "historical_warmup":
+            view.update(reference_kind="historical_warmup", prospective=False)
+        return view
     selection = settings(home, instrument)
     chosen = selection["selected_ids"] if selected_ids is None else _ids(selected_ids)
     cards = [{"strategy_id": key, "selected": key in chosen} for key in STRATEGY_IDS]
@@ -177,6 +250,7 @@ def report(
             raise ValueError("oracle_archive_unavailable")
         engine = ReadOnlyOracle(path, instrument=instrument, archived_versions=True)
         prediction = engine.predictions(now)
+        base["native_interval"] = _interval_name(engine.bar_seconds)
         try:
             graph = engine.graph_history(limit=240)
         except (OSError, ValueError, TypeError, sqlite3.Error):
@@ -278,3 +352,64 @@ def report(
         "aggregate": result,
         "preview": selected_ids is not None,
     }
+
+
+def _interval_name(seconds):
+    for suffix, scale in (("d", 86400), ("h", 3600), ("m", 60), ("s", 1)):
+        if seconds % scale == 0:
+            return str(seconds // scale) + suffix
+
+
+def _unavailable_display(view, reason):
+    return {**view, "status": "unavailable", "reason": reason, "signal": None,
+            "balance_percent": None, "strategies": [],
+            "market": {"status": "unavailable", "reason": reason},
+            "aggregate": {"status": "unavailable", "reason": reason, "signal": None,
+                          "balance_percent": None, "expires_at": None, "included": [], "excluded": []},
+            "graph": {"status": "unavailable", "reason": reason, "instrument": view["instrument"], "ticks": []}}
+
+
+def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None):
+    """Display filters never change saved voters, worker policy, or native cadence."""
+    if interval is not None and (not isinstance(interval, str) or not re.fullmatch(r"[1-9][0-9]{0,5}[smhd]", interval)):
+        raise ValueError("invalid_oracle_display_interval")
+    if strategy is not None and (not isinstance(strategy, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,120}", strategy)):
+        raise ValueError("invalid_oracle_display_strategy")
+    requested = strategy or "published"
+    explicit = requested != "published"
+    ids = [requested] if explicit and requested in STRATEGY_IDS else selected_ids
+    view = _report(home, instrument, ids, now=now, display_strategy=requested)
+    study = view.get("selected_experiment")
+    selected_study = bool(study and study.get("selected"))
+    if selected_study:
+        accounts = study.get("accounts", [])
+        strategies = [{"id": row["id"], "label": "#" + str(row["rank"]) + " " +
+                       ", ".join(member["strategy"] for member in row["candidate"]["config"]["members"]) +
+                       " (" + row["interval"] + ")", "interval": row["interval"]} for row in accounts]
+        native = study.get("publication", {}).get("interval") if study.get("publication") else None
+        available = sorted({row["interval"] for row in accounts})
+    else:
+        strategies = [{"id": row["strategy_id"], "label": row["strategy_id"]} for row in view.get("catalog", [])]
+        native = view.get("native_interval")
+        available = [native] if native else []
+    display = {"instrument": view["instrument"], "interval": interval or native, "requested_interval": interval,
+               "strategy": requested, "available_intervals": available, "strategies": strategies,
+               "publication_instrument": study.get("instrument") if study else None,
+               "published_strategy": study.get("accounts", [{}])[0].get("id") if selected_study else "published",
+               "scope": "read_only_display_native_forecasts_no_resampling"}
+    if explicit and requested not in {row["id"] for row in strategies}:
+        view = _unavailable_display(view, "requested_strategy_unavailable_for_instrument")
+    elif interval is not None and native != interval:
+        view = _unavailable_display(view, "requested_interval_unavailable_no_native_forecasts")
+    elif explicit and not selected_study:
+        view["strategies"] = [row for row in view.get("strategies", []) if row["strategy_id"] == requested]
+        graph = dict(view.get("graph", {}))
+        graph["ticks"] = [{**row, "strategies": [entry for entry in row.get("strategies", []) if entry["strategy_id"] == requested],
+                            "aggregate": None} for row in graph.get("ticks", [])]
+        graph["hide_aggregate"] = True
+        view["graph"] = graph
+        view["preview"] = True
+    view["display"] = display
+    if "graph" in view:
+        view["graph"]["view_key"] = view["instrument"] + ":" + str(display["interval"]) + ":" + requested
+    return view
