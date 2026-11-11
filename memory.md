@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 443
+Version: 445
+Delta: v444 to v445; record reviewed mobile alert design and passing local documentation gates before delivery.
+Delta: v443 to v444; start evidence-based mobile alert discovery without deployment.
 Delta: v442 to v443; preserve concurrent MCP client records and selected ZEC/USDC configuration.
 Delta: v441 to v442; record merged and deployed memory hook repair.
 Delta: v440 to v441; record selected-policy installed acceptance and separate hook delivery links.
@@ -66,6 +68,18 @@ Delta: v403 to v404; record validated long ZEC data and research stage transitio
 Delta: v402 to v403; begin ZEC 1m/1h ensemble study and paper promotion under TASK-1270.
 Delta: v402 to v403; initialize Stele TASK-1276 for Market Graph Geometry research and store Lead Quantitative Orchestrator protocol.
 Delta: v401 to v402; record merged delivery and final CI for excluded coin removal.
+
+## 2026-11-11 — Mobile push alert design reviewed; delivery in progress
+
+Target: discover/design mobile alerts on iPhone and Android independent of PagerDuty. Saved /Users/mitch/dev/solmargintrader/docs/MOBILE-ALERTS-DESIGN.md v1.0.1. Recommend owning incident state, policy, authenticated ingress, acknowledgment/snooze and a durable outbox, using native ntfy apps and self-hosted ntfy. Keep Pushover replaceable for urgent repeats/receipts. Its current free quota is 10,000 messages per account shared across applications; individual app licensing is USD 4.99 once per platform. Stock ntfy iOS timely background delivery needs upstream ntfy.sh wake notifications; only message ID/topic hash goes upstream, and the phone must fetch private content. Locked-phone cellular/Tailscale behavior is unverified. The concrete pilot puts the router, ntfy and an independent direct-publishing watchdog on an always-on host outside the monitored Mac. Monitoring the alert host itself needs another failure domain and independent delivery.
+
+Independent review accepted the corrected design: cancel all active provider receipts on local acknowledgment/snooze/resolution; show cancellation failures; distinguish group capability possession from a named person; require monotonic source revisions and terminal episodes. Source inspection confirmed the botmanager read-only alert projection/cursor and the separate ESRE watcher webhook contract as possible future adapters. Preserve opt-in/private evidence rules; no source ownership, trading or service control is added.
+
+Scope/results: design only. No software install, phone enrollment, public ingress, purchase, notification send, inference, embeddings or paused-service restart. Context7 and primary provider documentation supplied evidence. Orbit discovery exited 1 with HTTP 403; Postman CLI status exited 0 but no account is signed in, so Postman resource discovery was skipped. A search subagent using an unsupported model failed before work; direct Stele recall supplied prior context instead. Stele research TASK-1351 and design TASK-1352 are done. Delivery TASK-1353 is in progress. Scope/risk knowledge: KNOW-1354 and KNOW-1355; existing private relay decision KNOW-1321 remains applicable.
+
+Local checks completed: documentation count/retrieval-path check exited 0 (2957 discovered tests; this was discovery, not execution); packaged ecosystem wiki --check exited 0 (current); git diff --check exited 0. No runtime code changed, so no new unit tests or runtime acceptance claim is appropriate. Remaining delivery: stage only the design, prompts.md, memory.md and regenerated offline index/INDEX.json, index/TEXT-INDEX.json and index/CONCEPT-INDEX.json; check the index; commit/push; wait for final-head CI and merge. Independent design and factual reviews are complete. Full phone acceptance, device enrollment, hosting selection and live delivery are future implementation work rather than blockers to this design.
+
+Worktree /Users/mitch/dev/solmargintrader-wt-push-01a1ca3a; branch agent/mobile-push-01a1ca3a. Preserve all other worktrees and the shared checkout. The final PR/merge/check receipt belongs in the completed Stele delivery task after it actually exists; do not infer delivery from this checkpoint.
 
 ## 2026-11-11 — ZEC/USDC wallet selection and hook repair
 
