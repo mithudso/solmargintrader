@@ -107,7 +107,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Loopback control room and collector routes",
-      "lines": 549
+      "lines": 555
     },
     {
       "path": "ecosystem/ui_service.py",
@@ -121,7 +121,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Validated packaged documentation catalog and page reads",
-      "lines": 337
+      "lines": 339
     },
     {
       "path": "scripts/build_ecosystem_wiki.py",
@@ -142,28 +142,28 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Explicit source/archive CLI",
-      "lines": 215
+      "lines": 273
     },
     {
       "path": "oracle/engine.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Observation and strategy evaluation owner",
-      "lines": 451
+      "lines": 570
     },
     {
       "path": "oracle/store.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Historical observation archive",
-      "lines": 107
+      "lines": 129
     },
     {
       "path": "oracle/reader.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded read-only archive access",
-      "lines": 300
+      "lines": 365
     },
     {
       "path": "oracle/server.py",
@@ -184,14 +184,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Versioned source-labelled voting policy",
-      "lines": 114
+      "lines": 128
     },
     {
       "path": "botmanager/src/botmanager/registry.py",
       "component": "botmanager",
       "kind": "python",
       "summary": "Shared command definitions and dispatch",
-      "lines": 1040
+      "lines": 1042
     },
     {
       "path": "botmanager/src/botmanager/supervisor.py",
@@ -212,7 +212,7 @@
       "component": "botmanager",
       "kind": "python",
       "summary": "Availability supervision and bounded component alerts",
-      "lines": 887
+      "lines": 915
     },
     {
       "path": "botmanager/src/botmanager/suite_service.py",
@@ -233,7 +233,7 @@
       "component": "botmanager",
       "kind": "python",
       "summary": "Recommended complete command-stage walkthrough",
-      "lines": 360
+      "lines": 367
     },
     {
       "path": "docs/bot-manager-managed-suite.md",
@@ -378,14 +378,14 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Resumable minute-bar cache fetch with rate limiting and coverage",
-      "lines": 747
+      "lines": 751
     },
     {
       "path": "backtester/core/fetch_minutes_alt.py",
       "component": "backtester",
       "kind": "python",
       "summary": "Minute bars from OKX/KuCoin/Bitget/WhiteBIT for coins Coinbase does not list",
-      "lines": 327
+      "lines": 325
     },
     {
       "path": "backtester/core/ticks.py",
@@ -434,7 +434,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Asset universe selection, with the survivorship-bias refusal",
-      "lines": 319
+      "lines": 323
     },
     {
       "path": "backtester/core/report.py",
@@ -455,7 +455,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Parses the cards and is checked against the registry both ways",
-      "lines": 663
+      "lines": 667
     },
     {
       "path": "backtester/core/scorecard.py",
@@ -469,7 +469,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "Backtests a scorecard configuration on 5m bars through the engine, in-sample vs out-of-sample, gaps split into segments",
-      "lines": 485
+      "lines": 487
     },
     {
       "path": "backtester/core/strategies/__init__.py",
@@ -581,7 +581,7 @@
       "component": "research",
       "kind": "python",
       "summary": "One command: fetch fresh candles and funding for the universe, then the registry sweep and the compound 5m sweep on every asset",
-      "lines": 244
+      "lines": 249
     },
     {
       "path": "research/geometry.py",
@@ -589,6 +589,24 @@
       "kind": "python",
       "summary": "Grid geometry helpers",
       "lines": 299
+    },
+    {
+      "path": "research/shape_study.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Causal OHLC price-path labels, shape intervals and train-only spot strategy routing with execution-cost sensitivity"
+    },
+    {
+      "path": "research/shape_report.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Verify artifact/source hashes and regenerate the measured shape-study report"
+    },
+    {
+      "path": "research/SHAPE-AWARE-SPOT.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Eight-coin Coinbase spot geometry study, shape-conditioned comparisons and cost limits"
     },
     {
       "path": "research/perturb.py",
@@ -1006,7 +1024,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Compound 5m tab backend: saved config, public live reads (Coinbase, Hyperliquid, RSS), forward-test ledger, sweeps; CLI python3 -m soltui.compound",
-      "lines": 2085
+      "lines": 2091
     },
     {
       "path": "soltui/liquidity.py",
@@ -1020,7 +1038,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Five-bot list and Grid, Arbitrage, DCA and Trend settings, backtests, recorded-stream forward tests and gated optimization",
-      "lines": 1647
+      "lines": 1649
     },
     {
       "path": "soltui/trend.py",
@@ -1062,7 +1080,7 @@
       "component": "soltui",
       "kind": "python",
       "summary": "Streaming price recorder: stdlib WebSocket to Coinbase level2_batch + ticker, one-second gzip JSONL snapshots, detached process",
-      "lines": 1021
+      "lines": 1036
     },
     {
       "path": "soltui/serve.py",

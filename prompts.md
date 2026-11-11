@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 203
+Version: 204
+Delta: v203 to v204; capture shape-aware Coinbase spot backtest request.
 Delta: v202 to v203; record Coinbase venue and 75 percent balance sizing.
 Delta: v201 to v202; record owner decision on signal qualification.
 Delta: v200 to v201; record maximum available qualified webhook trade request.
@@ -1827,3 +1828,8 @@ You don't have many tokens left so do this quietly and with minimal verification
 ## 2026-11-10 — Volty dossier follow-up
 
 You can use this /Users/mitch/.gemini/antigravity-cli/brain/0e524dea-a3e5-4646-a99c-96aeb14eb8b4/volty_expan_close_strategy_dossier.md
+
+
+## 2026-11-11 — Shape-aware spot study — TASK-1296
+
+Using the research done in ~/dev/llms-explorer identify the major graph shapes and determine how to find out if we are inside of one of those shapes and where in it we are, and then identify if one or a combination of strategies are more or less effective. Once you can identify the shapes then tag the timeframes that they are in on the backtest data and run a shape-aware strategy back test Also which were the most profitable coins again? I have the coinbase one so there are no fees on trades for quite a while so let's use it. I don't have margin with them, but let's see if we can make up for that with no fees.
