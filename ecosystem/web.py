@@ -341,12 +341,14 @@ def make_server(
                 elif target.path == "/api/oracle":
                     from .votes import report
 
-                    values = self._query(query, {"instrument", "run_id"})
+                    values = self._query(query, {"instrument", "run_id", "interval", "strategy"})
                     self._json(
                         200,
                         report(
                             controls.experiment_home(values.get("run_id")),
                             values.get("instrument", "SOL/USD"),
+                            interval=values.get("interval"),
+                            strategy=values.get("strategy"),
                         ),
                     )
                 elif target.path in {"/api/wiki", "/api/wiki/page"}:

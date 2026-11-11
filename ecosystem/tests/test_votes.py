@@ -78,6 +78,26 @@ class VoteSelectionTests(unittest.TestCase):
         self.assertEqual(len(result["selected_ids"]), 14)
         self.assertFalse(absent.exists())
 
+    def test_display_strategy_native_frequency_is_readonly_and_drops_archived_aggregate(self):
+        path, card = self.archive()
+        before = hashlib.sha256(path.read_bytes()).hexdigest()
+        saved = votes.settings(self.home, "SOL/USD")
+        view = votes.report(self.home, "SOL/USD", now=1001, interval="1m", strategy=card)
+        self.assertEqual(view["display"]["available_intervals"], ["1m"])
+        self.assertEqual(view["selected_ids"], [card])
+        self.assertTrue(view["preview"])
+        self.assertEqual(view["signal"], "Strong Buy")
+        self.assertTrue(view["graph"]["hide_aggregate"])
+        for tick in view["graph"]["ticks"]:
+            self.assertIsNone(tick["aggregate"])
+            self.assertEqual([row["strategy_id"] for row in tick["strategies"]], [card])
+        mismatch = votes.report(self.home, "SOL/USD", now=1001, interval="1h", strategy=card)
+        self.assertEqual(mismatch["status"], "unavailable")
+        self.assertIn("no_native_forecasts", mismatch["reason"])
+        self.assertEqual(mismatch["graph"]["ticks"], [])
+        self.assertEqual(saved, votes.settings(self.home, "SOL/USD"))
+        self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
+
     def test_selection_is_versioned_and_cannot_overwrite_history(self):
         card = votes.catalog()[0]["strategy_id"]
         first = votes.set_voters(self.home, "SOL/USD", [card], 0)

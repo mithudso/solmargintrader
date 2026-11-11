@@ -236,7 +236,7 @@
     },
     "/api/oracle": {
       "get": {
-        "summary": "Selected-voter predictions and bounded strategy graph history",
+        "summary": "Read-only Oracle display by coin, native candle frequency, and strategy",
         "parameters": [
           {
             "name": "run_id",
@@ -253,11 +253,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": false,
+            "description": "Native candle interval, for example 1m or 1h. Omit for published/native default. Missing combinations return unavailable; no resampling.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strategy",
+            "in": "query",
+            "required": false,
+            "description": "Recorded canonical strategy ID or frozen study candidate ID; omit for published/saved aggregate. Display preview never saves voter settings or changes workers.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Versioned Oracle observation with selected-voter aggregation and up to 240 immutable evaluated-bar ticks. Each tick includes observed price, prior-bar shape, all fourteen strategy directions and the full-catalog aggregate. Signed agreement is not a probability and markers are not price targets. Existing v1 archives report graph history unavailable."
+            "description": "Native-cadence Oracle observation and display choices. Unsupported coin/frequency/strategy combinations explicitly return unavailable. Named study candidates use their own account forecasts. Single canonical strategy graphs contain only its recorded calls and exclude the archived full-catalog aggregate. Display selection never changes the published winner, saved voters, or paper accounts."
           },
           "400": {
             "description": "Invalid input or conflicting request"

@@ -199,6 +199,18 @@ profit after every real execution cost.
 
 ## Oracle voters and aggregate strength
 
+The Oracle tab has Coin, Frequency and Strategy selectors. They choose the
+reference, cards and chart shown in the browser. The default uses the published
+winning ZEC configuration. Frozen paper candidates expose their own recorded
+forecasts; ordinary strategy views use their own archived evidence. Choices
+persist in the browser and do not change paper account policies or voter settings.
+
+Frequency follows the model's native candles. The selected ZEC/USDT study uses
+1h candles; ordinary archives normally use 1m candles. A combination without
+matching evidence shows an explicit unavailable reason. ZEC/USD and ZEC/USDT
+keep their source quote currencies. Changing controls clears the previous signal
+while the newly selected evidence loads.
+
 Choose voters per instrument from the fourteen identified cards. Save creates a
 selection revision; it does not alter strategy parameters, recorded predictions,
 resolution history or the producer's policy. Deselected cards remain observable

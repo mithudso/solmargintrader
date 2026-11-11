@@ -163,6 +163,13 @@ class WebTests(unittest.TestCase):
             with self.subTest(target=target):
                 self.assertEqual(self.body(target)[0], 400)
 
+    def test_oracle_display_query_routes_only_to_readonly_report(self):
+        with patch("ecosystem.votes.report", return_value={"status": "unavailable"}) as owner:
+            self.assertEqual(self.body("/api/oracle?instrument=ZEC%2FUSDT&interval=1h&strategy=macd")[0], 200)
+            owner.assert_called_once_with(self.home, "ZEC/USDT", interval="1h", strategy="macd")
+        self.assertEqual(self.body("/api/oracle?interval=1m&interval=1h")[0], 400)
+        self.assertEqual(self.body("/api/oracle?strategy=rsi&unknown=x")[0], 400)
+
     def test_passes_registration_and_event_cursors_to_existing_owners(self):
         cursor = "00000000-0000-0000-0000-000000000001"
         with patch(

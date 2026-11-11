@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 194
+Version: 196
+Delta: v195 to v196; capture Oracle frequency, strategy and coin display selectors.
+Delta: v194 to v195; capture immediate historical warmup Oracle publication and latest five days of ZEC minute data.
 Delta: v193 to v194; continue the captured ZEC request through a proven live transient-feed recovery fix.
 Delta: v192 to v193; preserve concurrent geometry and ZEC requests during integration.
 Delta: v191 to v192; capture ZEC ensemble backtest, data extension, top ten paper forward and Oracle publication request.
@@ -1780,3 +1782,13 @@ Run the repo-bootstrapper skill on this repo
 
 Focus on ZEC and run it through the backtests again, with 1m and 1hr time frames And using this as a guide '/Users/mitch/Downloads/Strategy Ensembles.md' Come up with as many different testable hypothesis as you can. If possible download more and longer testing data,
   and then with the top 10 winning sets create forward tests and start them. With the configuration of the top configuration being the one the oracle publishes on the UI.
+
+
+## 2026-11-10 — Current Oracle warmup and recent ZEC data
+
+You can use historical data as the warm up period before a first candle, this is a paper test anyway, so use the recent data to establish basis for now. Also I use the oracle predictions outside of the paper bots going forward. So make sure the most recent 5 days of 1m data is downloaded for zec. You don't have that many tokens left, so please just make that change and be done without an hour of checking and verifying.
+
+
+## v196 — 2026-11-10 — Oracle display selectors
+
+When on the oracle tab let me choose the time frequency, strategy, and coin that the oracle displays.

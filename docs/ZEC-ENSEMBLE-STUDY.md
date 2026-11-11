@@ -1,6 +1,6 @@
 # ZEC ensemble study and paper forward tests
 
-Status: historical study complete; ten paper accounts started. The Oracle page publishes the frozen top configuration and withholds a signal until the first prospective closed candle.
+Status: historical study complete; ten paper accounts started. The Oracle page publishes the frozen top configuration and may use historical warmup for a current reference independently of paper activation.
 
 The owner requested ZEC backtests at **1m and 1h**, guided by
 `/Users/mitch/Downloads/Strategy Ensembles.md`, more historical data where available,
@@ -146,7 +146,7 @@ capital is not a shared portfolio allocation.
 
 All ten hourly tests started waiting for the first fully post-start candle. Its
 first decision close is **2026-11-11 03:00UTC** (22:00 America/New_York on
-November 10). Warmup receives no historical paper profit. A signal remains
+November 10). Warmup receives no historical paper profit. A prospective paper decision remains
 unavailable until that observation arrives; the next observed candle's open
 then supplies the modeled reference fill. The Oracle page already displays the
 frozen rank-one configuration and all ten account identities.

@@ -74,3 +74,14 @@ The ecosystem 0.4.4 correction preserves the original selection, study seeds,
 activation and account state. Its deployment receipt separately records the
 reviewed worker-implementation binding transition; implementations never adopt
 a changed binding automatically.
+
+
+## Current Oracle reference before paper activation
+
+The owner allows historical warmup to establish a current Oracle reference.
+If fresh closed observations and the frozen policy checkpoint are available,
+the Oracle may publish the warmed model target before the paper account's first
+prospective candle. This is explicitly a historical-warmup reference. It does
+not create a paper decision, fill, account return, or historical forecast record.
+Paper activation remains separate. Stale sources or changed implementations
+continue to withhold the reference.

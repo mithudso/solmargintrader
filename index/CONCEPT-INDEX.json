@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T02:17:00+00:00",
+  "generatedAt": "2026-11-11T03:18:27+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -300,7 +300,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1415,
+      "matchingFiles": 1417,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1388,
+      "matchingFiles": 1391,
       "shown": 30,
       "files": [
         {
@@ -475,6 +475,10 @@
           "hits": 50
         },
         {
+          "path": "memory.md",
+          "hits": 48
+        },
+        {
           "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
           "hits": 47
         },
@@ -489,10 +493,6 @@
         {
           "path": "backtester/core/universe.py",
           "hits": 39
-        },
-        {
-          "path": "memory.md",
-          "hits": 37
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -531,16 +531,16 @@
           "hits": 24
         },
         {
+          "path": "prompts.md",
+          "hits": 23
+        },
+        {
           "path": "research/tradingview-script-profiles/shard-b.jsonl",
           "hits": 23
         },
         {
           "path": "docs/ZEC-ENSEMBLE-STUDY.md",
           "hits": 22
-        },
-        {
-          "path": "prompts.md",
-          "hits": 21
         },
         {
           "path": "research/coin-intelligence/trx-tron.md",
@@ -575,7 +575,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 778,
+      "matchingFiles": 779,
       "shown": 30,
       "files": [
         {
@@ -900,6 +900,10 @@
           "hits": 98
         },
         {
+          "path": "memory.md",
+          "hits": 88
+        },
+        {
           "path": "llms-sitemap.txt",
           "hits": 86
         },
@@ -916,7 +920,7 @@
           "hits": 79
         },
         {
-          "path": "memory.md",
+          "path": "prompts.md",
           "hits": 74
         },
         {
@@ -948,8 +952,12 @@
           "hits": 66
         },
         {
-          "path": "prompts.md",
+          "path": "ecosystem/web/app.js",
           "hits": 65
+        },
+        {
+          "path": "ecosystem/web/index.html",
+          "hits": 61
         },
         {
           "path": "soltui/commands.py",
@@ -962,14 +970,6 @@
         {
           "path": "skills/trading-and-investing/references/solana-execution-agents-keepers-and-rfq.md",
           "hits": 58
-        },
-        {
-          "path": "ecosystem/web/index.html",
-          "hits": 56
-        },
-        {
-          "path": "ecosystem/web/app.js",
-          "hits": 55
         },
         {
           "path": "docs/short-horizon-leverage-concept-family.md",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 485,
+      "matchingFiles": 486,
       "shown": 30,
       "files": [
         {
@@ -1786,7 +1786,7 @@
           "hits": 9
         },
         {
-          "path": "extension/e2e/lib/dashboard-workspace.mjs",
+          "path": "ecosystem/tests/test_zec_forward.py",
           "hits": 9
         }
       ],

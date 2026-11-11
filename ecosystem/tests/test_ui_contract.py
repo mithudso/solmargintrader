@@ -38,7 +38,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const {randomUUID} = require('node:crypto');
 const source = fs.readFileSync(process.argv[1], 'utf8');
-async function fixture() {
+async function fixture(preferences = null) {
   const elements = new Map(); let document;
   class Element {
     constructor(tag = 'div') { this.tagName = tag.toUpperCase(); this.children = []; this.dataset = {}; this.attributes = {}; this.value = ''; this.textContent = ''; this.checked = false; this.disabled = false; this.hidden = false; this.isConnected = true; }
@@ -58,7 +58,7 @@ async function fixture() {
   }
   const element = (id) => { if (!elements.has(id)) { const item = new Element(); item.id = id; elements.set(id,item); } return elements.get(id); };
   document = {activeElement:null, getElementById:element, createElement:tag=>new Element(tag), createDocumentFragment:()=>new Element('#fragment'), createTextNode:text=>({tagName:'#TEXT',textContent:text,children:[]}), querySelectorAll:()=>[]};
-  const context = vm.createContext({document, location:{hash:'',origin:'http://127.0.0.1:8768'}, window:{addEventListener(){}}, console, URL, AbortController, crypto:{randomUUID}, fetch:async()=>{throw new Error('offline');}, setTimeout:()=>1, clearTimeout(){}, setInterval(){}, queueMicrotask(){}});
+  const context = vm.createContext({document, location:{hash:'',origin:'http://127.0.0.1:8768'}, window:{addEventListener(){}}, localStorage:{getItem(){return preferences ? JSON.stringify(preferences) : null;},setItem(){}}, console, URL, AbortController, crypto:{randomUUID}, fetch:async()=>{throw new Error('offline');}, setTimeout:()=>1, clearTimeout(){}, setInterval(){}, queueMicrotask(){}});
   vm.runInContext(source, context);
   await new Promise(setImmediate); await new Promise(setImmediate);
   return {context,element};
@@ -100,6 +100,31 @@ const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
     assert.match(element('voters-status').textContent,/changed while you edited/);
     read(context,"state.activeRun='separate-run'");
     assert.equal(read(context,'currentVoterDraft().dirty'),false);
+  }
+  {
+    const prefs = {instrument:'ZEC/USDT',interval:'1h',strategy:'candidate1'};
+    const {context,element} = await fixture(prefs);
+    assert.equal(read(context,'state.oracleInstrument'),'ZEC/USDT');
+    assert.equal(read(context,'state.oracleInterval'),'1h');
+    assert.equal(read(context,'state.oracleStrategy'),'candidate1');
+    const saved = []; context.localStorage.setItem=(key,value)=>saved.push([key,JSON.parse(value)]);
+    context.window.OracleChart={render:async graph=>{context.lastGraph=graph;}};
+    read(context,"state.polling=true;state.oracle={signal:'Long'};setInstrument('SOL/USD')");
+    assert.equal(read(context,'state.oracle'),null); assert.equal(context.lastGraph,undefined);
+    element('oracle-frequency').value='1m';element('oracle-frequency').dispatch('change');
+    element('oracle-strategy').value='rsi';element('oracle-strategy').dispatch('change');
+    assert.equal(saved.at(-1)[0],'solmargintrader.oracle.display.v1');
+    assert.equal(saved.at(-1)[1].instrument,'SOL/USD');assert.equal(saved.at(-1)[1].interval,'1m');assert.equal(saved.at(-1)[1].strategy,'rsi');
+    assert.match(read(context,'oracleDisplayPath()'),/interval=1m&strategy=rsi/);
+    read(context,"state.oracle={instrument:'SOL/USD',status:'unavailable',display:{publication_instrument:'ZEC/USDT',available_intervals:['1m'],strategies:[]}};renderSelectedAggregate()");
+    assert(tree(element('oracle-instrument-detail')).some(item=>item.value==='ZEC/USDT'));
+  }
+  for (const changed of ["state.oracleInterval='1h'", "state.oracleStrategy='rsi'", "state.oracleInstrument='BTC/USD'"]) {
+    const {context} = await fixture(); let release;
+    context.fetch=async path=>{if(path.startsWith('/api/oracle?')) return new Promise(resolve=>{release=()=>resolve({ok:true,json:async()=>({schema_version:1,ok:true,data:{instrument:'SOL/USD',signal:'OLD'}})});});throw new Error('offline');};
+    const pending=read(context,'refresh()');await new Promise(setImmediate);
+    read(context,changed+';changeOracleDisplay()');release();await pending;
+    assert.equal(read(context,'state.oracle'),null);
   }
   {
     const {context,element} = await fixture();
@@ -190,10 +215,12 @@ class UiContractTests(unittest.TestCase):
             "innerHTML",
             "outerHTML",
             "insertAdjacentHTML",
-            "localStorage",
             "sessionStorage",
         ):
             self.assertNotIn(sink, source)
+        self.assertEqual(source.count("localStorage."), 2)
+        self.assertEqual(source.count('"solmargintrader.oracle.display.v1"'), 2)
+        self.assertNotIn("localStorage.clear", source)
 
     @unittest.skipUnless(
         shutil.which("node"), "Node is needed for the client behavior checks"
