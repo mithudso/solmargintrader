@@ -1,8 +1,10 @@
 # Work continuation
 
-Version: 478
+Version: 479
+Delta: v478 to v479; preserve concurrent default-branch history and pushed maintenance checkpoint.
 Delta: v477 to v478; resume current-checkout maintenance after usage limit.
 Delta: v476 to v477; finish initial maintenance diagnostics and begin source-bound safety repairs.
+Delta: v476 to v477; begin timestamped coin-news price-reaction study.
 Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
 Delta: v474 to v475; record live collector and repair unused URI default database validation.
 Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics.
@@ -937,3 +939,19 @@ service operations, paper-cohort resets and vector regeneration remain excluded.
 ## v478 — Resume current-checkout maintenance after usage limit
 
 Continue TASK-1541 on its existing isolated branch. Preserve the771-file diagnostic ledger:712 complete and59 partial. Source repairs already exist; prior worker contexts exited. Reconcile exact source and red/green receipts, finish remaining repairs, reuse the bounded later reviews and gate budget, then deliver through passing PR and verified remote master content. Keep the primary checkout fixed if live or paper consumers make synchronization an activation risk. Preserve recorded hook and portfolio-fixture incidents; isolate Git fixtures with empty templates and sanitized environments. No financial, runtime, research-search or semantic operations.
+
+## 2026-11-12 — Coin news event study — TASK-1539
+
+Owner requests measured historical publication-to-price associations. Default exploratory scope is90days BTC ETH SOL XRP DOGE ZEC, with optional steering pending. Select major publishers and factual event eligibility before price outcomes; preserve original publication vs modification/retrieval time, deduplicate same stories and expose exclusions. Measure exact timestamp pre/post horizons, missing coverage, market controls and uncertainty; no causality or profitable one-minute prediction claim. KNOW-1542 preserves the contract. Existing research did not supply a verified catalyst dataset; no same-topic completed task was found. Do not touch currentZEC capture or protected holdouts. Phases: acquire reliable news and price evidence; compute/review bounded event study; publish shared llms/graph and deliver source. Private run home:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112.
+
+News-event measured checkpoint: acquired6603rows acrossfivepublishers forAug14–Nov10UTC (89complete days). Independentpre-outcomeaudit reviewed103keyword candidates andretained61withoutreplacements:BTC9,ETH14,SOL17,XRP8,ZEC12,DOGE1. All960boundedCoinbasequeries completedexit0/errors0 after08:39:46Zfinalfreeze. Core source, reportgenerator,14tests and compact event/summary/eligibility/latency/plot/manifest outputs are task-owned. Report:/Users/mitch/dev/solmargintrader/research/NEWS-EVENT-STUDY.md. Pooledonehourmarket-relative+0.006pp, interval[-0.065,+0.084];ZECmean-0.179%1h,+1.658%24h. Eachprimaryhorizonhasall61endpoints;delayedDOGE1hhasnone, sopairedsensitivitydisplaysN. Archivefirst_seenlag43selectedrowsmedian40.31min;18timesaredirectpublisherAPI. Noexact-first-public60secondor70%forecastclaim.
+
+Independent raw-response audit reproduced366primary+244delayed rows,560meansand560blockintervalsto8.88e-16;noreservedquery/returnedbaroverlap. The final frozen-selection sourcehash6dda1438 differs from executedanalysisa2f1ed56 only byaddedfrozencohortguard,CLIverbosityanddocclarification;13statistical/selectionfunctionASTsunchanged. Exactfrozenbytes/delta andbothhashes are preservedoutsideGit;historicalfreezemanifestunchanged. Privateinventory:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112/file-manifest.json. Remaining:bindfinalaudit,sharedllms/graphsave,requiredsourcechecks/mergesandremoteverification. Sharedhubpublicationusesisolatedworktree/Users/mitch/dev/worktrees/global-ai-hub-news-events-20261112;canonicaldirtyhubpreserved.
+
+Finaloutcomeauditpassedexit0:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112/final-outcome-audit-v3.json SHA c72e41ad6c27ded0ad3082bb420891909c941563e8b02a37d8da54c808d7dc83. It reproducesall366primary+244delayedrows,560meansand560CIs,14pairedcomparisons,sixexamples,sourceprovenanceandzeroheldpriceoverlap. AcceptedreportSHA d99f8620a58e8615574779b27ae944c8ad2cc5fdba27291a0410f70ab3ca5e59;reporterSHA c525758fae026b95ef8472449e807626a0f5d44b723231e24d58f09fa6d3699a;compactmanifestSHA8cbadbce840ecd03078f011d60c62649848cb9873301f4074c73d32d158c8d65. PublishedCSVLFnormalizationpreservesparsedrecordsandpreventsGit/indexhashdrift.
+
+Current source and shared-graph delivery state, PRs/merge commits, check exits and canonical paths are recorded in /Users/mitch/.local/share/solmargintrader/research/news-events-20261112/delivery-final.json. Read that receipt and SteleTASK-1539 before resuming; do not rerun the accepted study or expand its event sample merely to refresh a handoff. The independent24hourZEC capture remains a separate active task with its original deadline.
+
+## v479 — Maintenance checkpoint and concurrent history reconciliation
+
+The maintenance checkpoint is pushed in draft PR235 at45cc41e. It is not delivered. Preserve the independently merged coin-news study and its accepted source/data; do not rerun or expand it. Resolve concurrent version labels by preserving both entry bodies. Continue changed/new/partial source review, remaining conventional checks, static index refresh and the original bounded audit/delivery gates. No semantic or owner-runtime activation is authorized.

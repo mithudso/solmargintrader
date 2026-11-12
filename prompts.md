@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 225
+Version: 226
+Delta: v225 to v226; preserve concurrent request history while integrating current master.
 Delta: v224 to v225; resume the same authorized maintenance task.
+
+Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
 Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
 Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
@@ -1993,3 +1996,9 @@ The complete request is preserved in the private task continuation record. Its l
 ## v225 — Resume the same authorized maintenance task
 
 Resume the existing all-repository maintenance task and TASK-1541 after the usage limit. Preserve all existing edits, review receipts, other owners and unfinished work. Continue remaining source repairs and later partial/changed-file rechecks without restarting the optimizer or gate budget. Finish checks, PR, actual merge, remote-content verification and owned cleanup. Do not move the primary checkout if that could activate code for live or paper consumers. No live/runtime, research-search, model, credential, database or semantic operations. Private operational paths are omitted from this public workflow record.
+
+## 2026-11-12 — Coin news publication and price lookback
+
+```text
+Can you do a lookback correlation of when major news articles came out about different coins and what happened to their prices afterwards?
+```
