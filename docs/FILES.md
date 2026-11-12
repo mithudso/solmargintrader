@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `d194d69d` (2026-11-12T22:07:59+00:00). 3500 tracked files, 87.9 MB.
+**Generated** from `index/INDEX.json` at commit `1908c3d1` (2026-11-12T22:10:36+00:00). 3500 tracked files, 87.9 MB.
 
 Regenerate with:
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1591 lines · 331,744 B · description: **extracted**
+`doc` · 1600 lines · 334,050 B · description: **extracted**
 
-**Purpose.** Version: 497 Delta: v496 to v497; preserve four failed integration gates, bind scoped fixture and private harness corrections, and prepare fresh full reruns. Delta: v495 to v496; freeze merged source, all current semantic receipts and concrete final integration gates.
+**Purpose.** Version: 499 Delta: v498 to v499; independently close the private stale-sentinel finding while retaining the required positive and full-suite gates. Delta: v497 to v498; preserve docs-only upstream Google Workspace decision and retain the final integration correction checkpoint.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2069 lines · 122,222 B · description: **extracted**
+`doc` · 2076 lines · 122,382 B · description: **extracted**
 
-**Purpose.** Version: 230 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration. Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
+**Purpose.** Version: 231 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace. Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
 
 **Use.** Read it.
 
@@ -887,7 +887,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,618 B · description: **extracted**
+`doc` · 323 lines · 20,580 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -951,7 +951,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 33785 lines · 1,673,521 B · description: **extracted**
+`doc` · 33827 lines · 1,675,211 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 

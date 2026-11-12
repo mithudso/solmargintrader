@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T22:07:59+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T22:10:36+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -30,7 +30,7 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
 - `docs/operations-registry.json` (210 hits)
-- `docs/FILES.md` (169 hits)
+- `docs/FILES.md` (170 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
@@ -110,7 +110,7 @@ Strongest files:
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `memory.md` (158 hits)
+- `memory.md` (159 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 866`
 

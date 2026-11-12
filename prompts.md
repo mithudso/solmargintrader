@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 230
+Version: 231
+Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
 Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
 Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
@@ -2065,4 +2066,10 @@ Can you do a lookback correlation of when major news articles came out about dif
 
 ```text
 for all of my domains in cloudflare make them forward email to my mitchphudson@gmail.com address.
+```
+
+## 2026-11-12 — Preserve Google Workspace
+
+```text
+Keep Google Workspace
 ```
