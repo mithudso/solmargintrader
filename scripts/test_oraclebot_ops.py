@@ -226,6 +226,11 @@ class IndependentWatchdogTests(unittest.TestCase):
             result = watchdog.website_health()
             self.assertEqual(result["status"], "ok")
             self.assertFalse(result["engine"])
+            request = opener.call_args.args[0]
+            self.assertEqual(
+                request.get_header("User-agent"), "Oraclebot-Operations/1.0"
+            )
+            self.assertFalse(request.has_header("Authorization"))
 
     def test_incident_deduplicates_and_resolves_only_owned_issue(self):
         calls = []
