@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T04:48:44+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T05:00:15+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -67,9 +67,9 @@ Strongest files:
 
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
-- `docs/FILES.md` (157 hits)
+- `docs/FILES.md` (159 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `memory.md` (113 hits)
+- `memory.md` (114 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
