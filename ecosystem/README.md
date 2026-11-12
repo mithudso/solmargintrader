@@ -26,6 +26,8 @@ The earlier `/Users/mitch/.venvs/solecosystem-0.4.2` candidate is historical.
 See [the measured ZEC study](../docs/ZEC-ENSEMBLE-STUDY.md) and
 [forward owner commands](../docs/ZEC-ENSEMBLES-FORWARD.md). The managed suite can maintain manager/UI availability independently of research;
 see [managed operations](../docs/bot-manager-managed-suite.md).
+Persistent supervision, independent heartbeat alerts and daily reports are documented in
+[Oraclebot operations](../docs/ORACLEBOT-OPERATIONS.md).
 The primary home remains `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`.
 Existing 0.2.1/V1 research owners and their environments remain frozen. The new
 runtime must not resume a frozen F5 plan or relabel its Oracle policy.

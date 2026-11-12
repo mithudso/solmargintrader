@@ -96,7 +96,15 @@
     },
     {
       "path": "scripts/build_operation_inventories.py",
-      "sha256": "5594594c6f425718fcc3d971e8b93a7219cf43f8b5116a854d57159c0993c669"
+      "sha256": "e2cd07e0916c323efc794bd158bdec204304c91b572bf64ef19fa2b29ba3ee78"
+    },
+    {
+      "path": "scripts/oraclebot_ops.py",
+      "sha256": "384b98a0917453ce6d1325c8c52008c54a0f2d8548ddff549388f549349fa984"
+    },
+    {
+      "path": "scripts/oraclebot_watchdog.py",
+      "sha256": "555d3783e1c6ce455abdef2f62bfe6111bc3b9826f2464516efd67d4d635f168"
     },
     {
       "path": "soltui/bin/soltui",
@@ -406,6 +414,32 @@
       "source": "scripts/build_operation_inventories.py",
       "symbol": "main or documented script entry",
       "help_command": "python3 scripts/build_operation_inventories.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:oraclebot-operations",
+      "kind": "explicit-source-tool",
+      "source": "scripts/oraclebot_ops.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 scripts/oraclebot_ops.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:oraclebot-watchdog",
+      "kind": "explicit-source-tool",
+      "source": "scripts/oraclebot_watchdog.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 scripts/oraclebot_watchdog.py --help",
       "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
       "signing": "not inferred; this inventory never invokes the tool",
       "ambiguity": "no financial retry inferred",

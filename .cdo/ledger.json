@@ -13939,8 +13939,8 @@
     "S5",
     "T1"
    ],
-   "sha": "5fad01cdd806914fd64a31fe3b11e053c9788d55",
-   "verdict": "CLEAN"
+   "sha": "d03c75675cb553e57aada546232c771824debc5c",
+   "verdict": "REVIEWED-FIXED"
   },
   "scripts/build_tradingview_script_profiles.py": {
    "date": "2026-11-12",
@@ -14129,6 +14129,56 @@
    ],
    "sha": "4f00754c176ad4eb98942f3f4207c37c0618aba9",
    "verdict": "REVIEWED"
+  },
+  "scripts/oraclebot_ops.py": {
+   "date": "2026-11-12",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "4d14cd155a33ccac5d7125e1504241c6872ac91f",
+   "verdict": "REVIEWED-FIXED"
+  },
+  "scripts/oraclebot_watchdog.py": {
+   "date": "2026-11-12",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "6c63d0bcf28fe2bc4747d06aef1c1cce1c125e12",
+   "verdict": "REVIEWED-FIXED"
   },
   "scripts/referral_scripts/claim-all-fees.ts": {
    "date": "2026-11-12",
@@ -14351,6 +14401,30 @@
    ],
    "sha": "2625b8b65ca744f75adac0ea10960fe1ebf6b7dc",
    "verdict": "REVIEWED"
+  },
+  "scripts/test_oraclebot_ops.py": {
+   "date": "2026-11-12",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "4a9a5a34ec979d949060253c4ebb2a118b0a77bf",
+   "verdict": "REVIEWED-FIXED"
   },
   "scripts/test_research_backfill.py": {
    "date": "2026-11-12",
@@ -19614,6 +19688,100 @@
    "skipped_unchanged": 0,
    "started": "2026-11-12T22:21:43Z",
    "status": "FULL_SOURCE_INSPECTION_SHORT_INTEGRATION_GREEN_SOLTUI_AND_DELIVERY_PENDING"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-12T22:57:07Z",
+   "id": "2026-11-12T22:56:31Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Incoming3operations sources and two manual inventory tuples reviewed; static tool documentation extended, not a new common runtime error/settings framework. Earlier Medium M3 architecture residuals remain PARTIAL.",
+     "state": "ran"
+    },
+    "M4": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 3,
+     "reason": "Two NEW public operations/watchdog CLIs have four exact fresh-interpreter source-pinned --help0/unknownflag2 gates under inherited ownerFS/network/process/database refusal. Preflight/missing prerequisites mocked; installed/native services not operated. Existing41file M5qualification limits remain explicit.",
+     "state": "ran"
+    },
+    "P1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 3,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 4,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Incoming helpers use stdlib and existing explicit solbot/gh prerequisites; no dependency/lock/native installed cohort changed. Existing scoped advisory/license limits preserved.",
+     "state": "ran"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Current4source pinned Ruff0.17.4 check0, new3ops source format0, compile/diff0. Operations31guarded and inventory11pure gates0; final CI separate.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 3,
+     "reason": "Universal thread-parallel/setup-hoisting equivalence remains BLOCKED (ambiguous intent/equivalence). All12original operations methods/assertion AST retained; no global fixture/concurrency rewrite.",
+     "state": "blocked"
+    }
+   },
+   "reviewed": 4,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-12T22:56:31Z",
+   "status": "FULL_SOURCE_INSPECTION_INCOMING_OPERATIONS_GREEN_SOLTUI_AND_DELIVERY_PENDING"
   }
  ],
  "version": 1

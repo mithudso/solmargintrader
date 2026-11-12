@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T22:27:34+00:00",
+  "generatedAt": "2026-11-12T23:06:29+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1889,
+      "matchingFiles": 1895,
       "shown": 30,
       "files": [
         {
@@ -83,7 +83,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 76
+          "hits": 80
         },
         {
           "path": ".cdo/reviews-2026-11-12/liquidity.json",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 737,
+      "matchingFiles": 740,
       "shown": 30,
       "files": [
         {
@@ -1260,12 +1260,12 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 491,
+      "matchingFiles": 495,
       "shown": 30,
       "files": [
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 826
+          "hits": 829
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -1293,7 +1293,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 77
+          "hits": 79
         },
         {
           "path": "research/strategy_experiment/results/auxiliary.json",
@@ -1529,12 +1529,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 423,
+      "matchingFiles": 427,
       "shown": 30,
       "files": [
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 826
+          "hits": 829
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -1554,7 +1554,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 53
+          "hits": 55
         },
         {
           "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",

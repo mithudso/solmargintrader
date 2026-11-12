@@ -29,6 +29,8 @@ MANUAL_TOOLS = (
     ("published-design-fixture", "docs/design/soltui-v2/mockup.py", "python3 docs/design/soltui-v2/mockup.py --help"),
     ("icon-generator", "soltui/make_icon.py", "python3 soltui/make_icon.py --help"),
     ("operation-inventories", "scripts/build_operation_inventories.py", "python3 scripts/build_operation_inventories.py --help"),
+    ("oraclebot-operations", "scripts/oraclebot_ops.py", "python3 scripts/oraclebot_ops.py --help"),
+    ("oraclebot-watchdog", "scripts/oraclebot_watchdog.py", "python3 scripts/oraclebot_watchdog.py --help"),
 )
 
 

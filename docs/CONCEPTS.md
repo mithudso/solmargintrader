@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T22:27:25+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T23:06:20+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1889 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1895 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,7 +36,7 @@ Strongest files:
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1889`
+Full list: `python3 index/search.py --concept risk-rails -n 1895`
 
 ### Cross-asset and cross-timeframe transfer
 
@@ -106,7 +106,7 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (384 hits)
+- `docs/FILES.md` (385 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept grid -n 834`
 
 ### Data integrity
 
-`data-integrity` · **737 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **740 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,26 +150,26 @@ Strongest files:
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 737`
+Full list: `python3 index/search.py --concept data-integrity -n 740`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **491 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **495 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
 Strongest files:
 
-- `.cdo/reviews-2026-11-12/coverage.json` (826 hits)
+- `.cdo/reviews-2026-11-12/coverage.json` (829 hits)
 - `research/strategy_experiment/results/results.json` (560 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (424 hits)
 - `research/results/news_events_20261112_manifest.json` (280 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
 - `research/tradingview-card-coverage.json` (112 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
-- `docs/FILES.md` (77 hits)
+- `docs/FILES.md` (79 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 491`
+Full list: `python3 index/search.py --concept benchmark -n 495`
 
 ### Evidence floor
 
@@ -260,7 +260,7 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 | `trend` | 858 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 530 | `rsi`, `stochastic`, `oscillator` |
 | `momentum` | 437 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `baseline` | 423 | `buy_and_hold`, `baseline` |
+| `baseline` | 427 | `buy_and_hold`, `baseline` |
 | `regime-filter` | 373 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 286 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 158 | `obv`, `volume-flow` |

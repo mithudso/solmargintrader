@@ -1,7 +1,7 @@
 # Oraclebot launch readiness
 
-Version: 0.1.0
-Delta: initial source and production capability inventory; separates owner decisions from engineering work.
+Version: 0.1.1
+Delta: clarify that public trial activation depends on delivering the promised hosted service.
 Verified: 2026-11-12. This document is a deployment snapshot, not a promise of live trading availability.
 
 ## Why the free trial did not start
@@ -136,6 +136,11 @@ guarantee a direction merely to fill the top card. A profitable historical
 backtest does not establish predictive reliability.
 
 ## Acceptance before enabling a paid service
+
+Keep public Checkout unavailable until the promised hosted features pass their
+acceptance checks. Reconnecting Stripe or selecting a Price alone must not start
+a customer's seven-day trial while the hosted engine is unavailable. Test-mode
+billing qualification can proceed while the remaining implementation continues.
 
 Verify a deployed wallet login and tenant isolation; a seven-day test-mode
 Checkout; signed webhook delivery, replay handling, cancellation and trial

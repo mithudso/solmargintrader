@@ -3,15 +3,15 @@
     "version": 1,
     "status": "source_inspection_complete_integration_pending",
     "baseline_files": 773,
-    "current_files": 824,
-    "semantically_complete": 819,
+    "current_files": 827,
+    "semantically_complete": 822,
     "pending": 0,
     "changed_after_review": 0,
     "note": "Full current application-source semantic inspection complete; M3/M5/T4 convergence and final integration/delivery remain explicitly partial. Five bound HTML captures are data classifications, not semantic code reviews.",
-    "raw_helper_files": 824,
+    "raw_helper_files": 827,
     "bound_data_exclusions": 5,
-    "application_helper_files": 819,
-    "application_semantically_complete": 819,
+    "application_helper_files": 822,
+    "application_semantically_complete": 822,
     "application_still_unreviewed_or_changed": 0,
     "supplement_inventory_file": "runtime-source-supplement.json",
     "supplement_note": "Static HTML/CSS and extensionless scripts are tracked separately; no credit from their census.",
@@ -5429,10 +5429,10 @@
     },
     {
       "path": "scripts/build_operation_inventories.py",
-      "blob_sha": "5fad01cdd806914fd64a31fe3b11e053c9788d55",
-      "lines": 321,
+      "blob_sha": "d03c75675cb553e57aada546232c771824debc5c",
+      "lines": 323,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/operation-inventory-generator.json",
+      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -5506,6 +5506,24 @@
       "semantic_review": "complete",
       "evidence": ".cdo/reviews-2026-11-12/research-scripts.json",
       "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "scripts/oraclebot_ops.py",
+      "blob_sha": "4d14cd155a33ccac5d7125e1504241c6872ac91f",
+      "lines": 616,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "scripts/oraclebot_watchdog.py",
+      "blob_sha": "6c63d0bcf28fe2bc4747d06aef1c1cce1c125e12",
+      "lines": 179,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -5619,6 +5637,15 @@
       "semantic_review": "complete",
       "evidence": ".cdo/reviews-2026-11-12/research-scripts.json",
       "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "scripts/test_oraclebot_ops.py",
+      "blob_sha": "4a9a5a34ec979d949060253c4ebb2a118b0a77bf",
+      "lines": 784,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {

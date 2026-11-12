@@ -1,0 +1,56 @@
+{
+  "agent": "/root/guarded_soltui_final",
+  "role": "textual-job-lifecycle-specialist",
+  "definition_version": "1.0.0",
+  "materialized_at": "2026-11-12T22:57:16.918166+00:00",
+  "review_mode": "bounded static review; retrospectively materialized from this agent session",
+  "baseline_origin_master": "240e617a0faba0c32ed2b8873d36480b8552752a",
+  "subject_repository": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "subject_mutations_by_reviewer": false,
+  "reviewer_runtime_execution": false,
+  "limits": [
+    "Static source/diff/test review only; reviewer did not import or execute reviewed scripts, runtime probes, process queries/signals or owner operations.",
+    "Guarded runtime counts are caller-produced recorded evidence, not an independent reviewer rerun.",
+    "The recorded suite admitted zero subprocesses; probe kill/reap coverage is mocked and scoped to the direct child, not process-group or installed-runtime acceptance.",
+    "No provider, GitHub, Alertlane-owner endpoint, installed observer or service execution was performed by this reviewer; caller-reported installed observer 1.0.0 remains untouched."
+  ],
+  "review_id": "oraclebot-ops-boundaries-initial",
+  "status": "partial",
+  "decision": "Requested boundary delta accepted; independently reproduced remote-ordering Medium remains open at this initial source epoch.",
+  "source_sha256": {
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py": "8758bf00e53e93773a6a7fe4c2807aa55977b4b1b3c41f1d6b44348334ac57fe",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_watchdog.py": "555d3783e1c6ce455abdef2f62bfe6111bc3b9826f2464516efd67d4d635f168",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py": "e31dec051609a383c4af3f1abc641da873e9e9f2c4e626daa1ad9c251ad34cb4"
+  },
+  "reviewed_areas": [
+    "shared stdout/stderr byte/deadline budget and direct-child cleanup",
+    "regular-file O_NOFOLLOW/O_NONBLOCK/fstat credential read with 64 KiB limit",
+    "strict HTTP 202 JSON object acceptance",
+    "CLI help and prerequisite validation before side effects",
+    "watchdog nullable issue body and oversized integer timestamps"
+  ],
+  "findings": [
+    {
+      "id": "OBS-REMOTE-ORDERING-1",
+      "severity": "medium",
+      "state": "open",
+      "anchor_file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+      "anchor_symbol": "deliver",
+      "condition": "A failed older remote trigger remains retryable after a later resolve succeeds, so a subsequent retry can reopen the remote incident.",
+      "basis": "Source inspection and caller-reported synthetic RED; reviewer did not run the regression."
+    }
+  ],
+  "additional_medium_or_higher_findings": [],
+  "evidence": [
+    {
+      "source": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-7eegqksy/result.json",
+      "observed_at": "2026-11-12T22:57:16.918166+00:00",
+      "artifact_sha256": "cef5c05e6838ec92dc476d94d64cb259d064d3eac00a8dfb65636961e79e83c2",
+      "supported_claim": "Recorded 30-case source-stable guarded baseline with zero failures/errors/skips/forbidden events and zero admitted subprocesses.",
+      "recorded_tests": 30,
+      "recorded_seconds": 0.5723560830083443,
+      "recorded_status": "pass",
+      "independently_rerun": false
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 231
+Version: 232
+Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
 Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
@@ -2072,4 +2073,9 @@ for all of my domains in cloudflare make them forward email to my mitchphudson@g
 
 ```text
 Keep Google Workspace
+```
+## 2026-11-12 — Oraclebot persistent operations
+
+```text
+For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
 ```

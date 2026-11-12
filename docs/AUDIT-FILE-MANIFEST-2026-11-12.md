@@ -1,11 +1,12 @@
 # Repository delivery file manifest
 
-Version: 0.1.0
-Delta: initial full absolute-path inventory for audit delivery.
+Version: 0.1.1
+Delta: include the reviewed incoming operations corrections and final evidence.
 
 This inventory names every repository path changed by the audit branch relative to
-default-branch commit e7194fe8ae4a9894bac8fa65690036c14dc7b4e1. It includes earlier
-task-owned checkpoints, the current source corrections and the supporting records.
+default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier
+task-owned checkpoints, the current source corrections and supporting records.
+The independently owned operations feature and client-identity fix are preserved.
 It does not certify optimizer convergence, deployed behavior or an uncompleted test.
 Host-private hook approvals and temporary diagnostic logs remain outside this repository.
 
@@ -13,7 +14,7 @@ Canonical paths below become current after merge and safe default-branch synchro
 The implementation worktree is /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112.
 The delivery PR is https://github.com/mithudso/solmargintrader/pull/234
 
-Total repository paths: 514
+Total repository paths: 526
 
 - /Users/mitch/dev/oraclebot.io/.cdo/ledger.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-boundaries-tools.json — Source review and verification evidence
@@ -64,6 +65,8 @@ Total repository paths: 514
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-executor-imports-receipt.md — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-fixture-plan.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-fixture-receipt.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-operations-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-operations-receipt.md — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity-independent-final.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity-independent-iter1.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity-python-advisories.json — Source review and verification evidence
@@ -75,6 +78,12 @@ Total repository paths: 514
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/news-event-incoming.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/news-event-independent-final.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operation-inventory-generator.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operations-incoming-current.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operations-independent-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operations-independent-initial.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operations-observer-initial.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operations-watchdog-remediation.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operations-watchdog-tests-initial.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/oracle-full-final.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/oracle.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/owned-fixes.json — Source review and verification evidence
@@ -218,6 +227,7 @@ Total repository paths: 514
 - /Users/mitch/dev/oraclebot.io/docs/INSTALLATION.md — Project guidance or verification configuration
 - /Users/mitch/dev/oraclebot.io/docs/MARKET-EVENT-CAPTURE.md — Project guidance or verification configuration
 - /Users/mitch/dev/oraclebot.io/docs/ORACLEBOT-LAUNCH-READINESS.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/ORACLEBOT-OPERATIONS.md — Project guidance or verification configuration
 - /Users/mitch/dev/oraclebot.io/docs/REPO-HEALTH-2026-11-12.md — Project guidance or verification configuration
 - /Users/mitch/dev/oraclebot.io/docs/SECURITY.md — Project guidance or verification configuration
 - /Users/mitch/dev/oraclebot.io/docs/TESTING.md — Project guidance or verification configuration
@@ -407,9 +417,12 @@ Total repository paths: 514
 - /Users/mitch/dev/oraclebot.io/scripts/capture_market.py — Reviewed implementation or component metadata
 - /Users/mitch/dev/oraclebot.io/scripts/check_docs.py — Reviewed implementation or component metadata
 - /Users/mitch/dev/oraclebot.io/scripts/html_to_markdown.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/oraclebot_ops.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/oraclebot_watchdog.py — Reviewed implementation or component metadata
 - /Users/mitch/dev/oraclebot.io/scripts/render_tradingview_script_cards.py — Reviewed implementation or component metadata
 - /Users/mitch/dev/oraclebot.io/scripts/test_capture_market.py — Regression coverage or isolated test fixture
 - /Users/mitch/dev/oraclebot.io/scripts/test_html_to_markdown.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/scripts/test_oraclebot_ops.py — Regression coverage or isolated test fixture
 - /Users/mitch/dev/oraclebot.io/scripts/test_research_backfill.py — Regression coverage or isolated test fixture
 - /Users/mitch/dev/oraclebot.io/scripts/test_tradingview_script_profiles.py — Regression coverage or isolated test fixture
 - /Users/mitch/dev/oraclebot.io/soltui/analyze.py — Reviewed implementation or component metadata
