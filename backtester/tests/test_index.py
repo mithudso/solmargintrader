@@ -20,11 +20,47 @@ import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 REPO = Path(__file__).resolve().parents[2]
 INDEX_DIR = REPO / "index"
 
 sys.path.insert(0, str(INDEX_DIR))
+
+
+def socket_call_owners(source):
+    offenders = []
+
+    class Check(ast.NodeVisitor):
+        def __init__(self):
+            self.allowed = False
+            self.owner = "<module>"
+
+        def visit_FunctionDef(self, node):
+            # Defaults/decorators execute in the enclosing scope, even on an
+            # otherwise permitted embedding function.
+            for field, value in ast.iter_fields(node):
+                if field != "body":
+                    for child in value if isinstance(value, list) else [value]:
+                        if isinstance(child, ast.AST):
+                            self.visit(child)
+            before = self.allowed, self.owner
+            self.allowed = self.allowed or node.name in {"embed", "build_semantic"}
+            self.owner = node.name
+            for child in node.body:
+                self.visit(child)
+            self.allowed, self.owner = before
+
+        visit_AsyncFunctionDef = visit_FunctionDef
+
+        def visit_Call(self, node):
+            name = node.func.attr if isinstance(node.func, ast.Attribute) else getattr(node.func, "id", None)
+            if name == "urlopen" and not self.allowed:
+                offenders.append(self.owner)
+            self.generic_visit(node)
+
+    Check().visit(ast.parse(source))
+    return offenders
 
 
 class IsolationTests(unittest.TestCase):
@@ -87,13 +123,13 @@ class IsolationTests(unittest.TestCase):
         would become false.
         """
         src = (INDEX_DIR / "build.py").read_text(encoding="utf-8")
-        tree = ast.parse(src)
-        allowed = {"embed", "build_semantic"}
-        for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef) and node.name not in allowed:
-                body = ast.get_source_segment(src, node) or ""
-                self.assertNotIn("urlopen", body,
-                                 f"{node.name}() must not open a socket")
+        self.assertEqual(socket_call_owners(src), [], "only semantic execution may open a socket")
+
+    def test_module_level_socket_mutant_is_detected_without_executing_it(self):
+        source = "import urllib.request\nurllib.request.urlopen('https://invalid.example')\n"
+        with patch.object(Path, "read_text", return_value=source), self.assertRaises(AssertionError):
+            self.test_only_the_semantic_path_can_open_a_socket()
+        self.assertEqual(socket_call_owners("def embed(x=urlopen('invalid')): pass"), ["<module>"])
 
 
 class ClassificationTests(unittest.TestCase):
@@ -260,6 +296,200 @@ class StalenessGateTests(unittest.TestCase):
         self.assertEqual(r.returncode, 0,
                          f"index is stale — rebuild with `python3 index/build.py all`\n"
                          f"{r.stdout}{r.stderr}")
+
+
+class IndexTreeBoundaryTests(unittest.TestCase):
+    """Tracked names are literal, and tracked links cannot export local files."""
+
+    def test_git_names_survive_quotes_unicode_and_newlines(self):
+        import tempfile
+        from unittest.mock import patch
+        import build
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            import os
+            template = root / "empty-template"
+            template.mkdir()
+            env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+            env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_SYSTEM=os.devnull,
+                       GIT_TEMPLATE_DIR=str(template))
+            subprocess.run(["git", "init", "--template=" + str(template), "-q", str(root)], check=True, env=env)
+            names = ['quoted"file.md', "unicodé.md", "line\nbreak.md", " leading.md"]
+            for name in names:
+                (root / name).write_text("public fixture\n")
+            subprocess.run(["git", "-C", str(root), "add", "--", *names], check=True, env=env)
+            with patch.object(build, "REPO", root):
+                self.assertEqual(build.tracked_files(), sorted(names))
+                self.assertEqual(sorted(e["path"] for e in build.build_meta()["files"]), sorted(names))
+
+    def test_tracked_file_symlink_cannot_export_a_local_canary(self):
+        import tempfile
+        from unittest.mock import patch
+        import build
+        with tempfile.TemporaryDirectory() as tmp:
+            outside = Path(tmp) / "outside.txt"
+            outside.write_text("PRIVATE-SYNTHETIC-CANARY")
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            (root / "leak.md").symlink_to(outside)
+            with patch.object(build, "REPO", root), patch.object(build, "tracked_files", return_value=["leak.md"]):
+                with self.assertRaises((OSError, ValueError)):
+                    build.build_meta()
+
+    def test_symlink_ancestor_cannot_export_a_local_canary(self):
+        import tempfile
+        from unittest.mock import patch
+        import build
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            outside = Path(tmp) / "outside"
+            outside.mkdir()
+            (outside / "secret.md").write_text("PRIVATE-SYNTHETIC-CANARY")
+            (root / "alias").symlink_to(outside, target_is_directory=True)
+            with patch.object(build, "REPO", root), patch.object(build, "tracked_files", return_value=["alias/secret.md"]):
+                with self.assertRaises((OSError, ValueError)):
+                    build.build_meta()
+
+    def test_direct_hash_and_text_reads_refuse_symlinks(self):
+        import tempfile
+        from unittest.mock import patch
+        import build
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "private.txt"
+            target.write_text("PRIVATE-SYNTHETIC-CANARY")
+            alias = root / "public.md"
+            alias.symlink_to(target)
+            with patch.object(build, "REPO", root):
+                for reader in (build.sha1_of, build.read_text):
+                    with self.subTest(reader=reader.__name__), self.assertRaises((OSError, ValueError)):
+                        reader(alias)
+
+
+class IndexSemanticEvidenceTests(unittest.TestCase):
+    def test_partial_embedding_batch_never_publishes_a_misaligned_pair(self):
+        import tempfile
+        from unittest.mock import patch
+        import build
+        import ollama_ensure
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch.object(build, "REPO", root), patch.object(build, "LOCAL_NPZ", root / "local.npz"), patch.object(build, "LOCAL_MANIFEST", root / "local.json"), patch.object(build, "semantic_corpus", return_value=(["x"] * 33, ["a.py"] * 33)), patch.object(ollama_ensure, "ensure", return_value=ollama_ensure.Status(True, True, False, True, "synthetic")), patch.object(build, "embed", side_effect=[[[1.0, 0.0]] * 32, []]), patch.object(build, "_atomic_write") as write:
+                self.assertEqual(build.build_semantic({"files": []}, local=True), 1)
+                write.assert_not_called()
+
+    def test_invalid_embedding_vectors_never_publish(self):
+        import tempfile
+        from unittest.mock import patch
+        import build
+        import ollama_ensure
+        for vectors in ([[[float("nan"), 1.0]]], [[[0.0, 0.0]]], [[[1.0, 0.0], [1.0]]]):
+            with self.subTest(vectors=vectors), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                count = len(vectors[0])
+                with patch.object(build, "REPO", root), patch.object(build, "LOCAL_NPZ", root / "local.npz"), patch.object(build, "LOCAL_MANIFEST", root / "local.json"), patch.object(build, "semantic_corpus", return_value=(["x"] * count, ["a.py"] * count)), patch.object(ollama_ensure, "ensure", return_value=ollama_ensure.Status(True, True, False, True, "synthetic")), patch.object(build, "embed", return_value=vectors[0]), patch.object(build, "_atomic_write") as write:
+                    self.assertEqual(build.build_semantic({"files": []}, local=True), 1)
+                    write.assert_not_called()
+
+    def test_interrupted_pair_publication_cannot_map_new_vectors_to_old_owners(self):
+        import tempfile
+        import numpy as np
+        from unittest.mock import patch
+        import build
+        import search
+        import ollama_ensure
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            array, manifest = root / "local.npz", root / "local.json"
+            np.savez_compressed(array, embeddings=np.array([[1.0, 0.0]], dtype="float16"))
+            manifest.write_text(json.dumps({"dims": 2, "chunks": 1, "chunkOwners": ["old.py"]}))
+            original_write = build._atomic_write
+            def write(path, data):
+                if path == manifest and b'new.py' in data:
+                    raise OSError("synthetic publication failure")
+                original_write(path, data)
+            with patch.object(build, "REPO", root), patch.object(build, "LOCAL_NPZ", array), patch.object(build, "LOCAL_MANIFEST", manifest), patch.object(build, "semantic_corpus", return_value=(["x"], ["new.py"])), patch.object(ollama_ensure, "ensure", return_value=ollama_ensure.Status(True, True, False, True, "synthetic")), patch.object(build, "embed", return_value=[[0.0, 1.0]]), patch.object(build, "_atomic_write", side_effect=write):
+                with self.assertRaises(OSError):
+                    build.build_semantic({"files": []}, local=True)
+            search._CACHE.clear()
+            with self.assertRaises(ValueError):
+                search._semantic_matrix((manifest, array))
+            search._CACHE.clear()
+
+
+class IndexHelperBoundaryTests(unittest.TestCase):
+    def test_local_ollama_probe_never_follows_a_redirect(self):
+        import threading
+        from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+        import ollama_ensure
+        reached = []
+        class Destination(BaseHTTPRequestHandler):
+            def do_GET(self):
+                reached.append(self.path)
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b'{"models": []}')
+            def log_message(self, *_):
+                pass
+        destination = ThreadingHTTPServer(("127.0.0.1", 0), Destination)
+        class Redirect(Destination):
+            def do_GET(self):
+                self.send_response(302)
+                self.send_header("Location", f"http://127.0.0.1:{destination.server_port}/elsewhere")
+                self.end_headers()
+        redirect = ThreadingHTTPServer(("127.0.0.1", 0), Redirect)
+        servers = [destination, redirect]
+        threads = [threading.Thread(target=s.serve_forever, daemon=True) for s in servers]
+        for thread in threads:
+            thread.start()
+        try:
+            self.assertIsNone(ollama_ensure.installed_models(f"http://127.0.0.1:{redirect.server_port}"))
+            self.assertEqual(reached, [])
+        finally:
+            for server, thread in zip(servers, threads):
+                server.shutdown()
+                server.server_close()
+                thread.join(2)
+
+    def test_malformed_model_lists_degrade_without_attribute_errors(self):
+        from unittest.mock import patch
+        import ollama_ensure
+        for data in ([], {"models": None}, {"models": [3]}, {"models": "bad"}):
+            with self.subTest(data=data), patch.object(ollama_ensure, "_get_json", return_value=data):
+                self.assertIsNone(ollama_ensure.installed_models())
+
+    def test_spawn_failure_reports_a_failed_readiness_status(self):
+        from unittest.mock import patch
+        import ollama_ensure
+        with patch.object(ollama_ensure, "installed_models", return_value=None), patch.object(ollama_ensure, "start_server", side_effect=OSError("synthetic")):
+            result = ollama_ensure.ensure()
+        self.assertFalse(result.ok)
+        self.assertFalse(result.started)
+
+    def test_busy_and_held_lock_decisions_are_throttled(self):
+        import tempfile
+        from unittest.mock import patch
+        import idle
+        for busy in (True, False):
+            with self.subTest(busy=busy), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                with patch.object(idle, "STATE_FILE", root / "state.json"), patch.object(idle, "semantic_status", return_value=("stale", "synthetic")) as status, patch.object(idle, "is_idle", return_value=not busy), patch.object(idle, "lock_free", return_value=False), patch.dict("os.environ", {"INDEX_NO_AUTO": "0"}), patch.object(idle.ollama_ensure, "ensure", side_effect=AssertionError("unexpected readiness")):
+                    idle._write_state({"last_build_at": 1900})
+                    idle.maybe_start(now=2000)
+                    idle.maybe_start(now=2001)
+                    self.assertEqual(status.call_count, 1)
+
+    def test_finished_build_preserves_the_hourly_sweep_clock(self):
+        import tempfile
+        from unittest.mock import patch
+        import idle
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch.object(idle, "STATE_FILE", root / "state.json"), patch.object(idle, "LOCK_FILE", root / "lock"), patch.object(idle, "OUT", root), patch.object(idle.build, "build_meta", return_value={}), patch.object(idle.build, "build_semantic", return_value=0):
+                idle._write_state({"last_build_at": 1900})
+                self.assertEqual(idle.run_build(), 0)
+                self.assertEqual(idle._read_state()["last_build_at"], 1900)
 
 
 if __name__ == "__main__":  # pragma: no cover

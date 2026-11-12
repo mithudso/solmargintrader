@@ -201,7 +201,10 @@ def target_range(tick_current: int, spacing: int, half_width: float, skew: float
     lower = min(lower, clmath.floor_tick(tick_current, spacing))
     upper = max(upper, clmath.floor_tick(tick_current, spacing) + spacing)
     min_t, max_t = clmath.usable_tick_bounds(spacing)
-    return Range(max(lower, min_t), min(upper, max_t))
+    result = Range(max(lower, min_t), min(upper, max_t))
+    if result.tick_lower >= result.tick_upper or not result.contains(tick_current):
+        raise ValueError("current tick cannot be contained in a usable range")
+    return result
 
 
 def range_position(tick: float, rng: Range) -> float:
@@ -225,6 +228,13 @@ class CostInputs:
     penalty_blocks_left: int = 0
     block_time_s: float = 2.0
 
+    def __post_init__(self) -> None:
+        for name in self.__dataclass_fields__:
+            finite_number(getattr(self, name), name, integer=name == "penalty_blocks_left")
+        for name in ("pool_fee", "swap_fraction", "penalty_rate"):
+            if getattr(self, name) > 1:
+                raise ValueError(f"{name} must be at most 1")
+
 
 @dataclass(frozen=True)
 class EarnInputs:
@@ -232,6 +242,10 @@ class EarnInputs:
     earn_usd_per_day_current: float  # current deposit's earnings (0 when out of range)
     lvr_usd_per_day_new: float = 0.0  # expected adverse-selection cost of the fresh range while active
     lvr_usd_per_day_current: float = 0.0  # 0 when out of range (an idle deposit has no LVR)
+
+    def __post_init__(self) -> None:
+        for name in self.__dataclass_fields__:
+            finite_number(getattr(self, name), name)
 
 
 @dataclass
@@ -312,11 +326,14 @@ def decide(
     new = target_range(tick, spacing, hw, skew)
     parts = rebalance_cost(cost, cfg)
     total_cost = sum(parts.values())
+    finite_number(total_cost, "total rebalance cost")
 
     occupancy = in_range_probability(hw, sigma_daily, cfg.horizon_days)
     net_new = earn.earn_usd_per_day_new - cfg.lvr_weight * earn.lvr_usd_per_day_new
     net_cur = earn.earn_usd_per_day_current - cfg.lvr_weight * earn.lvr_usd_per_day_current
     benefit = (net_new * occupancy - net_cur) * cfg.horizon_days
+    if not all(math.isfinite(value) for value in (net_new, net_cur, benefit, occupancy)):
+        raise ValueError("derived rebalance economics must be finite")
     breakdown = {**parts, "benefit": benefit, "occupancy": occupancy, "lvr_new_day": earn.lvr_usd_per_day_new}
     if net_new <= 0 and not in_range:
         return Decision(

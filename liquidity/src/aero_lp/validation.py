@@ -7,10 +7,14 @@ import math
 
 def finite_number(value: object, name: str, *, positive: bool = False, integer: bool = False) -> None:
     """Require a finite nonnegative number, or a positive one; integer fields require int."""
+    try:
+        finite = isinstance(value, int | float) and math.isfinite(value)
+    except OverflowError:
+        finite = False
     if (
         isinstance(value, bool)
         or not isinstance(value, int | float)
-        or not math.isfinite(value)
+        or not finite
         or (integer and not isinstance(value, int))
         or (value <= 0 if positive else value < 0)
     ):

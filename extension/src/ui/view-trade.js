@@ -183,6 +183,7 @@ export async function refreshStrategies(state) {
 
 let swapChain = 'base';
 let tokens = null;
+let swapGeneration = 0;
 
 function fillTokenSelects() {
   const list = tokens?.[swapChain] ?? [];
@@ -204,17 +205,22 @@ function showBalance(state) {
 
 export function mountSwap(state) {
   const form = $('#swapForm');
+  const stale = () => {
+    ++swapGeneration;
+    $('#swapQuote').hidden = true;
+    $('#swapHandoff').removeAttribute('href');
+    form.elements.out.value = '';
+  };
   for (const b of form.querySelectorAll('[data-chain]')) {
     b.addEventListener('click', () => {
       swapChain = b.dataset.chain;
       for (const o of form.querySelectorAll('[data-chain]')) o.setAttribute('aria-pressed', String(o === b));
       fillTokenSelects();
       showBalance(state);
-      $('#swapQuote').hidden = true;
+      stale();
     });
   }
   // Any change to the request makes the shown quote (and its hand-off link) stale.
-  const stale = () => { $('#swapQuote').hidden = true; form.elements.out.value = ''; };
   form.elements.from.addEventListener('change', () => { stale(); showBalance(state); });
   form.elements.to.addEventListener('change', stale);
   form.elements.amount.addEventListener('input', stale);
@@ -227,6 +233,8 @@ export function mountSwap(state) {
   });
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    stale();
+    const generation = swapGeneration;
     const f = form.elements;
     $('#swapError').textContent = '';
     $('#swapQuote').hidden = true;
@@ -242,6 +250,7 @@ export function mountSwap(state) {
         type: 'swapQuote', chain: swapChain, from: f.from.value, to: f.to.value,
         amount: f.amount.value.trim(), slippageBps,
       });
+      if (generation !== swapGeneration) return;
       f.out.value = amount(q.to.amount);
       $('#swapVenue').textContent = q.venue;
       const rows = [
@@ -261,6 +270,7 @@ export function mountSwap(state) {
       link.textContent = `Review and sign on ${q.chain === 'base' ? 'Aerodrome' : 'Jupiter'} ↗`;
       $('#swapQuote').hidden = false;
     } catch (err) {
+      if (generation !== swapGeneration) return;
       f.out.value = '';
       $('#swapError').textContent = err.message;
     }

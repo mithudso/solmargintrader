@@ -141,7 +141,8 @@ def plan_allocation(
             [], False, f"no pool worth it (min {cfg.min_net_apr}% on model AND backtest). Best: {top}"
         )
     best = cands[0]
-    close = [c for c in cands if c.score_apr >= best.score_apr * (1 - cfg.compare_margin)][: cfg.max_arms]
+    cutoff = best.score_apr - abs(best.score_apr) * cfg.compare_margin
+    close = [c for c in cands if c.score_apr >= cutoff][: cfg.max_arms]
     k = max(1, min(len(close), int(budget // cfg.min_position_usd)))
     floor = ARM_SIZE_FLOOR * scored_usd if isinstance(scored_usd, int | float) and math.isfinite(scored_usd) else 0.0
     per = min(budget / k, cfg.max_position_usd)

@@ -78,6 +78,7 @@ def domain() -> str:
 
 
 def install(python: Path = DEFAULT_PYTHON, repo: Path = REPO, start: bool = True) -> dict[str, Any]:
+    python, repo = Path(os.path.abspath(python.expanduser())), repo.expanduser().resolve()
     if not python.exists():
         raise SystemExit(f"interpreter not found: {python}")
     if is_worktree(repo):
@@ -101,8 +102,11 @@ def install(python: Path = DEFAULT_PYTHON, repo: Path = REPO, start: bool = True
 
 
 def uninstall() -> dict[str, Any]:
-    _launchctl("bootout", f"{domain()}/{LABEL}")
+    result = _launchctl("bootout", f"{domain()}/{LABEL}")
     path = plist_path()
+    if result.returncode:
+        return {"plist": str(path), "removed": False, "bootout": result.returncode,
+                "error": "agent unload failed; registration retained"}
     existed = path.exists()
     if existed:
         path.unlink()
@@ -142,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         result = status()
     print(json.dumps(result, indent=2))
-    return 0
+    return 1 if result.get("error") or result.get("bootstrap") not in (None, 0) or result.get("kickstart") not in (None, 0) else 0
 
 
 if __name__ == "__main__":

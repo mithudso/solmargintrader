@@ -1,4 +1,4 @@
-"""Durability, namespace and ambiguous-write regressions; no live network or DB."""
+"""Offline durability/namespace regressions; native Mongo requires explicit disposable opt-in."""
 import importlib.util
 import json
 import math
@@ -147,8 +147,9 @@ class CaptureTests(unittest.TestCase):
     def test_expired_capture_does_not_connect_or_extend_deadline(self):
         cfg = dict(self.cfg, deadline_epoch=0)
         m.atomic_json(self.home / 'config.json', cfg)
-        self.assertEqual(m.capture(self.home, ws_factory=lambda: self.fail('connected past deadline')), 0)
-        self.assertEqual(m.read_json(self.home / 'capture-status.json')['state'], 'completed')
+        self.assertEqual(m.capture(self.home, ws_factory=lambda: self.fail('connected past deadline')), 1)
+        self.assertEqual(m.read_json(self.home / 'capture-status.json')['state'], 'incomplete')
+        self.assertFalse(m.read_json(self.home / 'capture-status.json')['subscription_confirmed'])
         self.assertEqual(m.config(self.home)['deadline_epoch'], 0)
 
     def test_all_received_messages_and_trade_jump_survive_without_database(self):
@@ -180,22 +181,87 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(m.read_json(self.home / 'capture-status.json')['state'], 'stopped_early')
 
 
+    def test_unhashable_event_type_retains_raw_and_later_valid_messages(self):
+        spool = m.Spool(self.home, self.cfg)
+        raw = '{"type":[],"price":"synthetic"}'
+        first = spool.append(raw, 'fixture')
+        second = spool.append('{"type":"match","trade_id":2}', 'fixture')
+        spool.close()
+        self.assertEqual(first['type'], 'unparsed')
+        self.assertEqual(first['raw'], raw)
+        self.assertEqual(second['type'], 'match')
+        self.assertEqual([r['seq'] for r in m.read_batch(self.home / 'events.jsonl', 0)[0]], [1, 2])
+
+    def test_inflight_rename_directory_is_synced_before_insert(self):
+        import stat
+        self.spool()
+        events = []
+        real_fsync, real_replace = os.fsync, os.replace
+        def fsync(fd):
+            events.append('dirsync' if stat.S_ISDIR(os.fstat(fd).st_mode) else 'filesync')
+            return real_fsync(fd)
+        def replace(src, dst):
+            events.append('replace')
+            return real_replace(src, dst)
+        target = type('Target', (), {'insert_many': lambda *a, **k: events.append('insert')})()
+        client = type('Client', (), {'close': lambda self: None})()
+        with patch.object(m.os, 'fsync', fsync), patch.object(m.os, 'replace', replace), patch.object(m, 'collection', return_value=target):
+            m.upload_once(self.home, lambda _: client)
+        self.assertEqual(events[:4], ['filesync', 'replace', 'dirsync', 'insert'])
+
+    def test_failed_directory_sync_never_starts_insert_or_retries_ambiguous_checkpoint(self):
+        import stat
+        self.spool()
+        real_fsync = os.fsync
+        def fsync(fd):
+            if stat.S_ISDIR(os.fstat(fd).st_mode):
+                raise OSError('synthetic directory fsync failure')
+            return real_fsync(fd)
+        calls = []
+        target = type('Target', (), {'insert_many': lambda *a, **k: calls.append('insert')})()
+        client = type('Client', (), {'close': lambda self: calls.append('close')})()
+        with patch.object(m.os, 'fsync', fsync), patch.object(m, 'collection', return_value=target), self.assertRaises(OSError):
+            m.upload_once(self.home, lambda _: client)
+        self.assertEqual(calls, ['close'])
+        self.assertTrue(m.read_json(self.home / 'upload-progress.json')['inflight'])
+        with self.assertRaises(m.CaptureError):
+            m.upload_once(self.home, lambda _: self.fail('retried without reconciliation'))
+
+    def test_heartbeats_without_ack_are_bounded_and_never_complete_coverage(self):
+        clock = [0.0]
+        opened = []
+        cfg = dict(self.cfg, deadline_epoch=self.cfg['start_epoch'] + 30)
+        m.atomic_json(self.home / 'config.json', cfg)
+        class Feed:
+            def open(self): opened.append(clock[0])
+            def settimeout(self, value): pass
+            def send_text(self, value): pass
+            def recv_text(self):
+                clock[0] += 2
+                return '{"type":"heartbeat"}'
+            def close(self): pass
+        with patch.object(m.time, 'time', lambda: cfg['start_epoch'] + clock[0]), \
+                patch.object(m.time, 'monotonic', lambda: clock[0]), \
+                patch.object(m.time, 'sleep', lambda seconds: clock.__setitem__(0, clock[0] + seconds)):
+            self.assertEqual(m.capture(self.home, ws_factory=Feed), 1)
+        status = m.read_json(self.home / 'capture-status.json')
+        self.assertEqual(status['state'], 'incomplete')
+        self.assertFalse(status['subscription_confirmed'])
+        self.assertEqual(status['acknowledged_connections'], 0)
+        self.assertGreater(status['unacknowledged_connections'], 0)
+        self.assertGreater(len(opened), 1)
+        self.assertLessEqual(opened[1] - opened[0], m.SUBSCRIPTION_ACK_TIMEOUT_S + 2)
+        rows, _ = m.read_batch(self.home / 'events.jsonl', 0)
+        self.assertTrue(any(row['type'] == 'heartbeat' for row in rows))
+        self.assertTrue(any(row['type'] == 'connection_gap' for row in rows))
+
+
 class NativeMongoTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        try:
-            from pymongo import MongoClient
-            cls.client_factory = staticmethod(lambda: MongoClient(
-                'mongodb://127.0.0.1:27017', serverSelectionTimeoutMS=1500, tz_aware=True))
-            client = cls.client_factory()
-            try:
-                client.admin.command('ping')
-            finally:
-                client.close()
-        except Exception as error:
-            if os.environ.get('MARKET_CAPTURE_REQUIRE_MONGO') == '1':
-                raise
-            raise unittest.SkipTest('local MongoDB fixture unavailable') from error
+    def setUp(self):
+        from mongo.tests.mongo_fixture import DisposableMongoFixture
+        self.fixture = DisposableMongoFixture.for_test(self)
+        self.fixture.patch(m, "DATABASE", self.fixture.db_name)
+        self.client_factory = lambda: self.fixture.connect(self.fixture.uri)
 
     def test_real_time_series_insert_checkpoint_and_readback(self):
         with tempfile.TemporaryDirectory() as temporary:

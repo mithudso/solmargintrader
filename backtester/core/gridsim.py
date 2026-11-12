@@ -623,9 +623,14 @@ def _plan(
             continue
         # The extension anchors occupancy and exits to the actual fill price.
         # Keep lot.level only as the lot-matching and attribution identity.
-        idx = nearest_level_index(levels, lot.price)
+        # Levels are sorted by grid_levels. One binary lookup serves both
+        # occupancy and the paired exit instead of scanning the ladder twice.
+        from bisect import bisect_left
+        right = bisect_left(levels, lot.price)
+        candidates = [i for i in (right - 1, right) if 0 <= i < len(levels)]
+        idx = min(candidates, key=lambda i: (abs(levels[i] - lot.price), i))
         lot_level_indexes.add(idx)
-        exit_level = paired_exit_level(levels, lot.price)
+        exit_level = levels[idx + 1] if idx < len(levels) - 1 else levels[-1] * (levels[-1] / levels[-2])
         if not math.isfinite(exit_level) or exit_level <= lot.price:
             skipped["exit-not-above-entry"] += 1
             continue
@@ -674,7 +679,7 @@ def _plan(
     return wanted
 
 
-def _baseline_equity(closes: np.ndarray, initial_capital: float, costs: CostConfig) -> np.ndarray:
+def _baseline_equity(closes: np.ndarray, initial_capital: float, costs: CostConfig, observed: np.ndarray | None = None) -> np.ndarray:
     """Buy-and-hold equity on the same bars, paying entry costs once.
 
     The mandatory baseline: a grid that underperforms holding the asset has not
@@ -685,8 +690,13 @@ def _baseline_equity(closes: np.ndarray, initial_capital: float, costs: CostConf
         return np.zeros(0, dtype="float64")
     c = (costs.fee_bps + costs.slippage_bps) / 10_000.0
     notional = initial_capital / (1.0 + c)
-    units = notional / closes[0]
-    return units * closes.astype("float64")
+    indexes = np.flatnonzero(observed) if observed is not None else np.arange(closes.size)
+    equity = np.full(closes.size, initial_capital, dtype=float)
+    if indexes.size:
+        first = int(indexes[0])
+        units = notional / closes[first]
+        equity[first:] = units * closes[first:].astype("float64")
+    return equity
 
 
 def run_grid_backtest(
@@ -733,6 +743,7 @@ def run_grid_backtest(
     checked = validate_bar_arrays(arrays, interval, require_open_volume=False)
     ts, highs, lows, closes = (checked[name] for name in ("ts", "high", "low", "close"))
     n = closes.size
+    observed = checked["observed"]
 
     # Research callers supply a decision known before each bar. This masks
     # entries only; existing offers retain their ordinary fill eligibility.
@@ -779,7 +790,7 @@ def run_grid_backtest(
         # -- 2/3. fills. Buys first: cash a sell frees must not fund a buy in
         # the same bar, because the intrabar path is unknown.
         for key, order in sorted(resting.items(), key=lambda kv: -kv[1].level):
-            if entries_paused or (entry_allowed is not None and not entry_allowed[j]) or order.side != SIDE_BUY or order.planned_index >= i:
+            if not observed[j] or entries_paused or (entry_allowed is not None and not entry_allowed[j]) or order.side != SIDE_BUY or order.planned_index >= i:
                 continue
             if lows[j] <= order.level:
                 if book.buy(order.level, order.qty, int(ts[j]), i):
@@ -788,7 +799,7 @@ def run_grid_backtest(
                     skipped["insufficient-cash"] += 1
 
         for key, order in sorted(resting.items(), key=lambda kv: kv[1].level):
-            if order.side != SIDE_SELL or order.planned_index >= i:
+            if not observed[j] or order.side != SIDE_SELL or order.planned_index >= i:
                 continue
             if highs[j] >= order.level:
                 # `max_open_index=i` is what forbids the same-bar round trip: the
@@ -841,6 +852,8 @@ def run_grid_backtest(
         # Diff desired against resting. An order already on the venue keeps its
         # original `planned_index`, so re-planning cannot reset a rung's fill
         # eligibility and thereby delay it forever.
+        if not observed[j]:
+            continue
         wanted = _plan(cfg, levels, closes[j], book.lots, skipped, level_index)
         desired = {_level_key(o.side, o.level): o for o in wanted}
         for key in list(resting):
@@ -856,7 +869,7 @@ def run_grid_backtest(
             orders_placed += 1
 
     forced_qty = 0.0
-    if close_at_end and book.lots:
+    if close_at_end and observed[-1] and book.lots:
         # Force-close leftover inventory at the final close so metrics see the
         # real end state. Flagged separately from `round_trips`: a forced exit is
         # not a captured rung width, and counting it as one would inflate the
@@ -870,7 +883,7 @@ def run_grid_backtest(
 
     ppy = periods_per_year(interval)
     metrics = compute_metrics(equity, ts, book.trades, exposure, ppy, risk_free_rate, 0, initial_equity=initial_capital)
-    baseline = _baseline_equity(closes, initial_capital, costs)
+    baseline = _baseline_equity(closes, initial_capital, costs, observed)
     baseline_metrics = compute_metrics(
         baseline, ts, [], np.ones(n, dtype="float64"), ppy, risk_free_rate, 0,
         initial_equity=initial_capital,

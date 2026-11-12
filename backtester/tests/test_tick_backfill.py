@@ -15,6 +15,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import pandas as pd
 
@@ -139,6 +140,10 @@ class TestCheckpointRoundTrip(unittest.TestCase):
             _write_ck(ck, agg, cursor=1, pages=1, trades=1, done=True)
             self.assertEqual([p.name for p in Path(tmp).iterdir()], ["ck.json"])
             self.assertTrue(json.loads(ck.read_text())["done"])
+            accepted = ck.read_bytes()
+            with patch.object(Path, "replace", side_effect=OSError("disposable replacement failure")), self.assertRaises(OSError):
+                _write_ck(ck, agg, cursor=2, pages=2, trades=2, done=False)
+            self.assertEqual(ck.read_bytes(), accepted)
 
 
 if __name__ == "__main__":

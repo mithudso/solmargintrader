@@ -196,6 +196,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
   let editorRevision = null;
   let documentPath = null;
   let documentEpoch = 0;
+  let documentSaving = false;
   let lastEnvelope = null;
   let generation = null;
   let disposed = false;
@@ -234,6 +235,9 @@ export function mountSoltuiPanel(root = document, transport = send) {
     const res = await transport({ type: 'soltuiCall', command, params });
     if (!res?.ok) throw new Error(res?.error ?? 'The extension did not answer.');
     return res.result;
+  }
+  function collectParams(command, confirmed = false) {
+    return buildParams(command, Object.fromEntries([...inputs].map(([k, input]) => [k, input.value])), { confirmed, emptyFields: [...inputs].filter(([, input]) => input.clearBox?.checked).map(([key]) => key) });
   }
   function remember() {
     const vals = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));
@@ -321,7 +325,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
       $('#soltui').scrollIntoView({ block: 'nearest' });
       return;
     }
-    const built = buildParams(c, Object.fromEntries([...inputs].map(([k, input]) => [k, input.value])));
+    const built = collectParams(c);
     if (built.errors.length) return;
     expandOutput();
     run(c, built.params);
@@ -349,6 +353,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (c && workspace.value !== workspaceFor(select.value)) choose(c.name);
   }
   async function openDocument(path) {
+    if (documentSaving && path === documentPath) { selected.textContent = 'Wait for the current document save to finish.'; return; }
     if (editor && editor.value !== editorBase) {
       selected.textContent = 'Save your edited document before opening another document.';
       return;
@@ -365,7 +370,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     editor.readOnly = !env.result.editable || !/^[a-f0-9]{64}$/.test(editorRevision ?? '');
     $('#soltuiEditorCard').hidden = false;
     $('#soltuiEditorPath').textContent = `${path} · ${env.result.editable ? 'Editable' : 'Read only'}`;
-    $('#soltuiSave').disabled = editor.readOnly;
+    $('#soltuiSave').disabled = documentSaving || editor.readOnly;
   }
   function useRow(row) {
     selected.textContent = JSON.stringify(row, null, 2);
@@ -705,7 +710,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (!c || pending.has(c.name) || (c.requires_confirm && !confirmBox?.checked)) return;
     remember();
     const values = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));
-    const built = buildParams(c, values, { confirmed: confirmBox?.checked === true, emptyFields: [...inputs].filter(([, input]) => input.clearBox?.checked).map(([k]) => k) });
+    const built = collectParams(c, confirmBox?.checked === true);
     if (built.errors.length) { result.textContent = built.errors.join('\n'); $('#soltuiRunStatus').textContent = built.errors.join(' · '); return; }
     run(c, built.params);
   });
@@ -713,11 +718,12 @@ export function mountSoltuiPanel(root = document, transport = send) {
     if (lastEnvelope) download(`${lastEnvelope.command}.json`, JSON.stringify(lastEnvelope, null, 2), 'application/json');
   });
   $('#soltuiSave').addEventListener('click', async () => {
-    if (!editor || editor.readOnly) return;
+    if (documentSaving || !editor || editor.readOnly) return;
     const path = documentPath, epoch = documentEpoch, target = editor;
     const base = editorBase, expected_revision = editorRevision, text = target.value;
     const isCurrent = () => !disposed && documentEpoch === epoch && documentPath === path && editor === target;
     const save = $('#soltuiSave');
+    documentSaving = true;
     save.disabled = true;
     try {
       const latest = await ask('docs.read', { path });
@@ -730,12 +736,13 @@ export function mountSoltuiPanel(root = document, transport = send) {
       editorRevision = env.result.revision;
       $('#soltuiEditorStatus').textContent = 'Saved to disk.';
     } catch (e) { if (isCurrent()) $('#soltuiEditorStatus').textContent = `Save refused: ${e.message}`; }
-    finally { if (isCurrent()) save.disabled = target.readOnly; }
+    finally { documentSaving = false; if (!disposed) save.disabled = editor?.readOnly ?? true; }
   });
   $('#soltuiEditorExport').addEventListener('click', () => {
     if (editor) download('document-draft.txt', editor.value, 'text/plain;charset=utf-8');
   });
   $('#soltuiEditorReload').addEventListener('click', () => {
+    if (documentSaving) { $('#soltuiEditorStatus').textContent = 'Wait for the current document save to finish.'; return; }
     if (editor && editor.value !== editorBase) { $('#soltuiEditorStatus').textContent = 'Export your draft before reloading. Clear your changes to the saved text to reload.'; return; }
     if (documentPath) openDocument(documentPath).catch((e) => { $('#soltuiEditorStatus').textContent = e.message; });
   });
@@ -790,8 +797,7 @@ export function mountSoltuiPanel(root = document, transport = send) {
     updateBatch();
     const c = current();
     if (disposed || document.hidden || $('#view-soltui').hidden || !poll.checked || !c || !POLLABLE.has(c.name) || c.read_only !== true) return;
-    const values = Object.fromEntries([...inputs].map(([k, input]) => [k, input.value]));
-    const built = buildParams(c, values);
+    const built = collectParams(c);
     if (!built.errors.length) run(c, built.params, true);
   }, 10_000);
   function liveVisible() {

@@ -1672,6 +1672,7 @@ def analyze_run(ctx: Context, p: dict[str, Any]) -> Any:
     net = result.net_pct
     return {
         "headline": result.headline, "truncated": result.truncated,
+        "gap_count": result.gap_count, "missing_bars": result.missing_bars,
         "net_pct": net, "net_pct_text": labelled(net, "backtest", "data price change"),
         "decisions": [{"name": d.name, "family": d.family, "action": d.action, "detail": d.detail,
                        "warmup": d.warmup, "bars": d.bars} for d in result.decisions],
@@ -2236,7 +2237,15 @@ def docs_list(ctx: Context, p: dict[str, Any]) -> Any:
 DOCS_SEARCH_MODES = ("keyword", "semantic", "hybrid")
 
 
+_REPO_SEARCH_LOCK = threading.RLock()
+
+
 def _repo_search():
+    with _REPO_SEARCH_LOCK:
+        return _repo_search_locked()
+
+
+def _repo_search_locked():
     """The index/search.py module, imported on first use and never before.
 
     The keyword postings (12 MB of JSON), the embedding matrix and the ~670 MB embedding model
@@ -2427,7 +2436,10 @@ def _lp_curves() -> list[tuple[str, list[pnl_mod.Curve], list[str]]]:
         except sqlite3.Error as exc:
             notes.append(f"ledger.sqlite unreadable: {exc}")
     if curve is None:
-        curve = pnl_mod.curve_from_lp_status(status.data)
+        try:
+            curve = pnl_mod.curve_from_lp_status(status.data)
+        except ValueError:
+            notes.append("LP status financial measurements unavailable")
         if curve is not None:
             notes.append("no ledger history: showing the status.json cumulative figure")
     return [(source, [curve] if curve else [], notes)]

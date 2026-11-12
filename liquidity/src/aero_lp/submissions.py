@@ -217,6 +217,14 @@ class SubmissionJournal:
         with self._edit() as doc:
             doc["transactions"][tx_hash]["receipt"] = metadata
 
+    def cancel_before_broadcast(self, tx_hash: str) -> None:
+        """Only the sending runner may attest that its RPC send was never entered."""
+        with self._edit() as doc:
+            record = doc["transactions"][tx_hash]
+            if record["receipt"] is not None or record["processed"]:
+                raise PendingSubmission("cannot cancel an already resolved submission")
+            record.update(processed=True, cancelled_before_broadcast=True)
+
     def reconcile(self, chain: Any, apply: Callable[[dict[str, Any], list[dict[str, Any]]], None]) -> None:
         if not any(not r["processed"] for r in self.records()):
             return
@@ -241,7 +249,7 @@ class SubmissionJournal:
             if record["processed"]:
                 continue
             chain.min_block = max(getattr(chain, "min_block", None) or 0, record["receipt"]["blockNumber"])
-            group = [r for r in records if r["group"] == record["group"]]
+            group = [r for r in records if r["group"] == record["group"] and not r.get("cancelled_before_broadcast")]
             apply(record, group)
             with self._edit() as doc:
                 doc["transactions"][record["hash"]]["processed"] = True

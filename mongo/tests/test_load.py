@@ -5,8 +5,8 @@ therefore *idempotent*: loading twice must leave identical counts. Without that,
 the time series collections would silently double on a second run -- they accept no
 unique index, so nothing else would catch it.
 
-Tests needing a server skip cleanly when one is not listening, and they only ever
-touch the `solmargintrader` database.
+Native tests require explicit SOLMARGINTRADER_MONGO_TEST_URI opt-in. They use a
+unique disposable database; an explicitly unreachable URI fails instead of skipping.
 """
 
 from __future__ import annotations
@@ -20,46 +20,13 @@ REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-try:
-    from pymongo.errors import ServerSelectionTimeoutError, WriteError
-
-    HAVE_PYMONGO = True
-except ImportError:  # pragma: no cover - exercised on a checkout without the driver
-    HAVE_PYMONGO = False
-
-from mongo import schema  # noqa: E402
-
-if HAVE_PYMONGO:
-    from mongo import load  # noqa: E402
-
-
-def server_available() -> bool:
-    """True when a local mongod answers, so the integration tests can run."""
-    if not HAVE_PYMONGO:
-        return False
-    client = schema.connect()
-    try:
-        client.admin.command("ping")
-        return True
-    except ServerSelectionTimeoutError:
-        return False
-    finally:
-        # Closed explicitly: an abandoned client emits a ResourceWarning that
-        # buries real test output in a traceback that looks like a failure.
-        client.close()
-
-
-SERVER = server_available()
-needs_server = unittest.skipUnless(
-    SERVER, "no mongod on localhost:27017; start one or skip these"
-)
-needs_pymongo = unittest.skipUnless(HAVE_PYMONGO, "pymongo not installed")
+from mongo import load, schema
+from mongo.tests.mongo_fixture import DisposableMongoFixture
 
 
 class TestPureHelpers(unittest.TestCase):
     """No server, no files -- just the coercion rules."""
 
-    @needs_pymongo
     def test_clean_drops_non_finite_numbers(self) -> None:
         """NaN becomes None, not a value a later query would rank against.
 
@@ -71,7 +38,6 @@ class TestPureHelpers(unittest.TestCase):
         self.assertEqual(load.clean(1.5), 1.5)
         self.assertEqual(load.clean({"a": [float("nan"), 2]}), {"a": [None, 2]})
 
-    @needs_pymongo
     def test_clean_converts_numpy_scalars(self) -> None:
         """pymongo cannot encode a numpy scalar, so they must be unwrapped."""
         import numpy as np
@@ -80,7 +46,6 @@ class TestPureHelpers(unittest.TestCase):
         self.assertIsInstance(load.clean(np.int64(3)), int)
         self.assertIsNone(load.clean(np.float64("nan")))
 
-    @needs_pymongo
     def test_maybe_number_keeps_text_as_text(self) -> None:
         """A strategy name must not become a float."""
         self.assertEqual(load.maybe_number("42"), 42)
@@ -89,15 +54,21 @@ class TestPureHelpers(unittest.TestCase):
         self.assertIsNone(load.maybe_number(""))
         self.assertIsNone(load.maybe_number("nan"))
 
-    @needs_pymongo
     def test_bar_files_excludes_the_spot_snapshot(self) -> None:
         """`JLP_spot.csv` is not a bar series and must not be loaded as one."""
-        names = [path.name for path, _, _ in load.bar_files()]
+        import tempfile
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "data").mkdir()
+            (root / "data/SOL_1d.csv").write_text("timestamp,open,high,low,close,volume\n86400,1,2,1,2,1\n172800,2,3,2,3,1\n")
+            (root / "data/JLP_spot.csv").write_text("symbol,price\n")
+            with mock.patch.object(load, "REPO", root):
+                names = [path.name for path, _, _ in load.bar_files()]
         self.assertNotIn("JLP_spot.csv", names)
-        if names:
-            self.assertTrue(all(n.endswith(".csv") for n in names))
+        self.assertEqual(names, ["SOL_1d.csv"])
+        self.assertTrue(all(n.endswith(".csv") for n in names))
 
-    @needs_pymongo
     def test_experiment_kind_prefers_the_longest_prefix(self) -> None:
         """`cpcv_all25_*` is a cross-asset run, not a plain cpcv one."""
         self.assertEqual(load.experiment_kind("cpcv_all25_1h"), "cross-asset")
@@ -106,7 +77,6 @@ class TestPureHelpers(unittest.TestCase):
         self.assertEqual(load.experiment_kind("sweep_results"), "sweep")
         self.assertIsNone(load.experiment_kind("tables"))
 
-    @needs_pymongo
     def test_a_list_sidecar_becomes_rows_not_a_blob(self) -> None:
         """The PBO-per-horizon case, which the validator caught during development.
 
@@ -178,20 +148,14 @@ class TestSchemaLayout(unittest.TestCase):
                 self.assertIn("metaField", spec["timeseries"])
 
 
-@needs_server
 class TestLoadedStore(unittest.TestCase):
     """Assertions against the store as loaded by `python3 mongo/load.py`."""
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = schema.connect()
-        cls.db = cls.client[schema.DB_NAME]
-        if cls.db.strategies.count_documents({}) == 0:
-            raise unittest.SkipTest("store is empty; run `python3 mongo/load.py` first")
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        cls.client.close()
+        cls.fixture = DisposableMongoFixture.for_test(cls, class_scope=True)
+        cls.fixture.seed_store()
+        cls.db = cls.fixture.db
 
     def test_bars_is_a_native_time_series_collection(self) -> None:
         """Not a regular collection that merely holds timestamps."""
@@ -220,6 +184,7 @@ class TestLoadedStore(unittest.TestCase):
 
     def test_validation_is_strict(self) -> None:
         """A document missing provenance is refused by the server, not just by us."""
+        from pymongo.errors import WriteError
         with self.assertRaises(WriteError):
             self.db.signals.insert_one({"_id": "not-a-real-signal", "rule": "x"})
 
@@ -261,8 +226,7 @@ class TestLoadedStore(unittest.TestCase):
 
     def test_decisions_are_stored_as_the_readout_emits_them(self) -> None:
         """Same shape as `decide.build_report()`, so the two cannot disagree."""
-        if self.db.decisions.count_documents({}) == 0:
-            self.skipTest("decisions load from gitignored data/; CI loads only the tracked collections")
+        self.assertGreater(self.db.decisions.count_documents({}), 0)
         doc = self.db.decisions.find_one({"interval": "1d"})
         self.assertIsNotNone(doc)
         for key in ("asset", "interval", "bars", "decision_bar", "execution", "disclaimer"):
@@ -281,8 +245,7 @@ class TestLoadedStore(unittest.TestCase):
 
     def test_pbo_by_horizon_is_queryable(self) -> None:
         """The query the list-sidecar split exists to make possible."""
-        if self.db.experiment_rows.count_documents({}) == 0:
-            self.skipTest("experiment_rows load from gitignored results/; CI loads only the tracked collections")
+        self.assertGreater(self.db.experiment_rows.count_documents({}), 0)
         rows = list(
             self.db.experiment_rows.aggregate(
                 [
@@ -295,6 +258,7 @@ class TestLoadedStore(unittest.TestCase):
 
     def test_test_results_are_from_real_runs(self) -> None:
         """`ok` is observed, never assumed; a count with a guessed outcome is not data."""
+        self.assertGreater(self.db.test_results.count_documents({}), 0)
         for doc in self.db.test_results.find():
             with self.subTest(suite=doc["suite"]):
                 self.assertIsInstance(doc["ok"], bool)
@@ -302,7 +266,6 @@ class TestLoadedStore(unittest.TestCase):
                 self.assertEqual(doc["source_sha256"], "live-run-not-a-file")
 
 
-@needs_server
 class TestIdempotency(unittest.TestCase):
     """Loading twice must not double anything.
 
@@ -311,19 +274,21 @@ class TestIdempotency(unittest.TestCase):
     for every collection.
     """
 
-    SUBSET = "strategies,signals,indicators"
+    SUBSET = "bars,strategies,signals,indicators"
+
+    def setUp(self):
+        self.fixture = DisposableMongoFixture.for_test(self)
+        self.fixture.seed_store()
 
     def test_two_loads_leave_identical_counts(self) -> None:
         """The check that the module docstring's claim rests on."""
-        client = schema.connect()
-        self.addCleanup(client.close)
-        db = client[schema.DB_NAME]
+        db = self.fixture.db
         names = self.SUBSET.split(",")
 
-        self.assertEqual(load.main(["--only", self.SUBSET]), 0)
+        self.assertEqual(load.main(["--uri", self.fixture.uri, "--only", self.SUBSET]), 0)
         first = {name: db[name].count_documents({}) for name in names}
 
-        self.assertEqual(load.main(["--only", self.SUBSET]), 0)
+        self.assertEqual(load.main(["--uri", self.fixture.uri, "--only", self.SUBSET]), 0)
         second = {name: db[name].count_documents({}) for name in names}
 
         self.assertEqual(first, second)
@@ -331,13 +296,12 @@ class TestIdempotency(unittest.TestCase):
 
     def test_a_subset_load_leaves_other_collections_alone(self) -> None:
         """`--only` must not wipe the rest of the store."""
-        client = schema.connect()
-        self.addCleanup(client.close)
-        db = client[schema.DB_NAME]
+        db = self.fixture.db
         before = db.bars.count_documents({})
-        if before == 0:
-            self.skipTest("bars not loaded; run a full load first")
-        self.assertEqual(load.main(["--only", "signals"]), 0)
+        self.assertEqual(before, 2)
+        original = list(db.bars.find().sort("ts", 1))
+        self.assertEqual(load.main(["--uri", self.fixture.uri, "--only", "signals"]), 0)
+        self.assertEqual(list(db.bars.find().sort("ts", 1)), original)
         self.assertEqual(db.bars.count_documents({}), before)
 
 

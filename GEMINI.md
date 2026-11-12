@@ -12,10 +12,18 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 | --- | --- |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability.** The danger is a dishonest backtest |
 | `research/` (Python) | Analysis on the backtester. The danger is overstating a result |
-| `soltui/` (Python) | Read-only macOS display. Places no orders |
+| `soltui/` (Python) | Research console; separately armed manual Coinbase spot orders. Jupiter V2 submission remains blocked |
 | `mongo/` (Python) | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software |
-| `liquidity/` (Python, own venv) | **Can move real money on Base.** Read `liquidity/CLAUDE.md` first |
+| `liquidity/` (Python, own venv) | Retained Base signing code; daemon and scout archived, disabled and killed. Read `liquidity/CLAUDE.md` first |
+| `oracle/` (Python) | Read-only forecasts/MCP; separately enabled TradingView worker can submit Coinbase spot or GUM ZEC perpetual orders |
+| `botmanager/` (Python) | Paper accounts, evidence and owner-aware lifecycle; no signing |
+| `ecosystem/` (Python) | Paper coordination and authenticated local control room; no order submission |
+| `executor/` (Python, own venv) | **Guarded real Solana swaps.** Read `executor/CLAUDE.md` first |
+
+The separate `website/` package hosts wallet accounts, research and inactive paper bot
+definitions. It does not inherit local trading authority or execute those definitions.
+See [its guide](website/README.md) for independent billing, analysis and execution gates.
 
 ## The rules most often broken here
 
@@ -40,8 +48,8 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 437 tests
-node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close positive
+(cd extension && npm test)                              # 437 tests
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100) # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
 

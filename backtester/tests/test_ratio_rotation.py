@@ -95,6 +95,18 @@ class TestNoLookahead(unittest.TestCase):
         np.testing.assert_allclose(z_full[:150], z_trunc, rtol=1e-12, equal_nan=True)
 
 
+class TestFillDelay(unittest.TestCase):
+    def test_delay_cannot_earn_the_prior_jump(self):
+        panel = Panel(("A",), np.arange(4) * 86400, np.array([[100.], [200.], [200.], [200.]]), "1d")
+        weights = np.ones((4, 1))
+        costs = CostConfig(fee_bps=0, slippage_bps=0)
+        immediate = simulate(panel, weights, costs, fill_delay=0)
+        delayed = simulate(panel, weights, costs, fill_delay=1)
+        self.assertEqual(immediate.equity[-1], 2.)
+        self.assertEqual(delayed.equity[-1], 1.)
+        np.testing.assert_equal(immediate.turnover, delayed.turnover)
+
+
 class TestCosts(unittest.TestCase):
     """Costs stay in the P&L path -- a backtester non-negotiable."""
 

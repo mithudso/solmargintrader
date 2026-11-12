@@ -444,6 +444,8 @@ class TestCorruptRows(unittest.TestCase):
         self.assertEqual(len(rows), 2)
         ranked, _ = q.leaderboard(rows)  # must not raise comparing str to float
         self.assertEqual(ranked[0].job_id, "good")
+        self.assertNotIn("bad", [row.job_id for row in ranked])
+        self.assertFalse(next(row for row in rows if row.job_id == "bad").ranked_ok)
 
     def test_nan_is_neutralised(self) -> None:
         """NaN poisons every comparison it touches, silently reordering a sort."""

@@ -26,6 +26,46 @@ INTERVALS = ("1m", "5m", "15m", "1h", "6h", "1d")
 MAX_BARS = 6000
 MAX_CACHE_BYTES = 32 * 1024 * 1024
 MAX_BODY = 4096
+REQUEST_SECONDS = 10
+MAX_HANDLERS = 16
+
+
+class DeadlineReader:
+    """Keep request parsing within one deadline even if bytes keep arriving."""
+
+    def __init__(self, source, connection, *, clock=time.monotonic):
+        self.source, self.connection, self.clock = source, connection, clock
+        self.deadline = clock() + REQUEST_SECONDS
+
+    def read(self, size=-1):
+        if size < 0:
+            raise ValueError("bounded request read required")
+        data = bytearray()
+        while len(data) < size:
+            remaining = self.deadline - self.clock()
+            if remaining <= 0:
+                raise TimeoutError("request deadline exceeded")
+            self.connection.settimeout(remaining)
+            chunk = self.source.read(1)
+            if not chunk:
+                break
+            data.extend(chunk)
+        return bytes(data)
+
+    def readline(self, size=-1):
+        data = bytearray()
+        limit = 65537 if size < 0 else size
+        while len(data) < limit:
+            byte = self.read(1)
+            if not byte:
+                break
+            data.extend(byte)
+            if byte == b"\n":
+                break
+        return bytes(data)
+
+    def close(self):
+        self.source.close()
 
 
 class RequestError(ValueError):
@@ -158,12 +198,18 @@ class Analysis:
         columns = ("timestamp", "open", "high", "low", "close", "volume")
         if reader.fieldnames != list(columns):
             raise RequestError("invalid_cached_history")
-        rows = deque(reader, maxlen=MAX_BARS)
-        if len(rows) < 2:
-            raise RequestError("insufficient_history")
         try:
+            cutoff = time.time()
+            rows = deque(maxlen=MAX_BARS)
+            for row in reader:
+                timestamp = float(row["timestamp"])
+                if not math.isfinite(timestamp):
+                    raise ValueError("invalid timestamp")
+                if timestamp + INTERVAL_SECONDS[interval] <= cutoff:
+                    rows.append(row)
+            if len(rows) < 2:
+                raise RequestError("insufficient_history")
             numeric = pd.DataFrame(rows).apply(pd.to_numeric)
-            numeric = numeric[numeric.timestamp + INTERVAL_SECONDS[interval] <= time.time()]
             frame = validate_bars(numeric, interval, strict_gaps=True)
             config = EngineConfig(mode=Mode.PERP if leverage > 1 else Mode.SPOT, leverage=leverage,
                                   initial_capital=capital, interval=interval, fill_delay=1,
@@ -196,6 +242,26 @@ class Server(ThreadingHTTPServer):
     daemon_threads = True
     request_queue_size = 16
 
+    def __init__(self, *args, **kwargs):
+        self.handler_slots = threading.BoundedSemaphore(MAX_HANDLERS)
+        super().__init__(*args, **kwargs)
+
+    def process_request(self, request, client_address):
+        if not self.handler_slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self.handler_slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self.handler_slots.release()
+
 
 def make_server(analysis, token, host="127.0.0.1", port=8790):
     if not isinstance(token, str) or len(token) < 32:
@@ -207,7 +273,7 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
 
         def setup(self):
             super().setup()
-            self.connection.settimeout(5)
+            self.rfile = DeadlineReader(self.rfile, self.connection)
 
         def log_message(self, *args):
             pass

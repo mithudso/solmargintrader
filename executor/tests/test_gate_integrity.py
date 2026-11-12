@@ -196,7 +196,7 @@ def test_soak_duplicate_credit_keys_fail_closed(tmp_path):
 
 
 @pytest.mark.parametrize("kind", ["soak", "research"])
-def test_concurrent_read_modify_replace_preserves_both_updates(tmp_path, monkeypatch, kind):
+def test_concurrent_read_modify_replace_preserves_both_updates(tmp_path, monkeypatch, kind, gate_lock_barrier):
     cfg = Config()
     first_writing = threading.Event()
     second_started = threading.Event()
@@ -229,11 +229,13 @@ def test_concurrent_read_modify_replace_preserves_both_updates(tmp_path, monkeyp
     with ThreadPoolExecutor(max_workers=2) as pool:
         first = pool.submit(record, 0)
         assert first_writing.wait(3)
-        second = pool.submit(record, 1)
-        assert second_started.wait(3)
-        # Without a transaction lock the second writer reads stale evidence while the first is held here.
-        second_writing.wait(0.2)
-        release_first.set()
+        try:
+            second = pool.submit(record, 1)
+            assert second_started.wait(3)
+            assert gate_lock_barrier.wait(3)
+            assert not second_writing.is_set()
+        finally:
+            release_first.set()
         first.result(timeout=3)
         second.result(timeout=3)
     if kind == "soak":

@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from .http_limits import DeadlineReader
 from .webhook_orders import database as open_database
 from .webhook_orders import process_one, recover_planning
 
@@ -185,6 +186,10 @@ def serve(
         # StreamRequestHandler applies this before reading the request line/headers.
         timeout = HTTP_TIMEOUT
 
+        def setup(self):
+            super().setup()
+            self.rfile = DeadlineReader(self.rfile, self.connection, HTTP_TIMEOUT)
+
         def log_message(self, format, *args):
             return  # Alert credentials must never enter access logs.
 
@@ -195,7 +200,6 @@ def serve(
                 length = int(self.headers.get("Content-Length", ""))
                 if not 0 < length <= MAX_BODY:
                     raise ValueError("invalid_request")
-                self.connection.settimeout(HTTP_TIMEOUT)
                 body = self.rfile.read(length)
                 if len(body) != length:
                     raise ValueError("invalid_request")

@@ -122,13 +122,19 @@ def get_liquidity_for_amount0(sqrt_a: int, sqrt_b: int, amount0: int) -> int:
     if sqrt_a > sqrt_b:
         sqrt_a, sqrt_b = sqrt_b, sqrt_a
     intermediate = _mul_div(sqrt_a, sqrt_b, Q96)
-    return _mul_div(amount0, intermediate, sqrt_b - sqrt_a)
+    return _liquidity_uint128(_mul_div(amount0, intermediate, sqrt_b - sqrt_a))
 
 
 def get_liquidity_for_amount1(sqrt_a: int, sqrt_b: int, amount1: int) -> int:
     if sqrt_a > sqrt_b:
         sqrt_a, sqrt_b = sqrt_b, sqrt_a
-    return _mul_div(amount1, Q96, sqrt_b - sqrt_a)
+    return _liquidity_uint128(_mul_div(amount1, Q96, sqrt_b - sqrt_a))
+
+
+def _liquidity_uint128(value: int) -> int:
+    if not 0 <= value < 1 << 128:
+        raise ValueError("liquidity does not fit uint128")
+    return value
 
 
 def get_liquidity_for_amounts(sqrt_p: int, sqrt_a: int, sqrt_b: int, amount0: int, amount1: int) -> int:

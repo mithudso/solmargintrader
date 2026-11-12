@@ -652,6 +652,11 @@ class SummaryTests(unittest.TestCase):
 
 
 class UnattendedTests(TempConfig):
+    def setUp(self):
+        import signal
+        super().setUp()
+        self.addCleanup(signal.signal, signal.SIGTERM, signal.getsignal(signal.SIGTERM))
+
     def test_the_loop_ticks_survives_errors_and_stops_on_request(self) -> None:
         calls = []
 

@@ -563,6 +563,12 @@ def run_backtest(
             book.pos.opened_index -= offset
         pending = {int(k) - offset: v for k, v in continuation["pending"].items()}
 
+    segment_initial = book.equity(float(cl[start - 1])) if continuation is not None else config.initial_capital
+    segment_gross_initial = book.gross_equity(float(cl[start - 1])) if continuation is not None else config.initial_capital
+    segment_liquidations = book.liquidations
+
+    observed = arrays["observed"]
+
     # Coverage of each coarse bar by each finer layer, computed once. A bar is
     # refined by the FIRST (finest) layer that covers it completely.
     layers = list(config.intrabar) if is_perp else []
@@ -592,7 +598,7 @@ def run_backtest(
     for i in range(start, n):
         # A gap can breach the OLD position before any queued exit or rebalance
         # releases collateral. Only fees through the prior boundary are due here.
-        if is_perp and book.pos.is_open:
+        if observed[i] and is_perp and book.pos.is_open:
             liq = perps.liquidation_price(
                 book.pos.entry_price,
                 book.pos.side,
@@ -606,12 +612,20 @@ def run_backtest(
 
         # -- 1. execute open-price fills before this bar starts accruing --
         if i in pending:
-            _apply_target(book, pending.pop(i), op[i], ts[i], i, config)
+            queued = pending.pop(i)
+            if observed[i]:
+                _apply_target(book, queued, op[i], ts[i], i, config)
+            else:
+                # A later queued decision wins over an older deferred target.
+                pending.setdefault(i + 1, queued)
 
         # -- 2/3. accrue borrow fees and check liquidation ------------------
         # A close at OPEN owes no new interval; an entry at OPEN owes this one.
         # A fill_delay=0 entry happens later at CLOSE and starts accruing next bar.
-        if is_perp and book.pos.is_open:
+        if not observed[i] and is_perp and book.pos.is_open:
+            book.pos.accrued_borrow_fee += perps.accrue_borrow_fee(
+                config.costs, book.pos.side, book.pos.entry_notional, hpb)
+        if observed[i] and is_perp and book.pos.is_open:
             layer_k = int(layer_of[i]) if layer_of is not None else -1
             if layer_k >= 0:
                 lay = layers[layer_k]
@@ -660,7 +674,7 @@ def run_backtest(
 
         # -- 4. strategy decision, from data <= i only --------------------
         target: float | None = None
-        if i + offset >= warmup:
+        if observed[i] and i + offset >= warmup:
             window = BarWindow(ts, op, hi, lo, cl, vol, i)
             target = _resolve_target(
                 strategy.on_bar(window), config.mode, config.allow_short
@@ -683,7 +697,7 @@ def run_backtest(
         exposure_curve[i] = book.signed_notional(cl[i]) / eq if eq > 1e-12 else 0.0
 
     # Close any open position at the final close so metrics see realised PnL.
-    if close_at_end and book.pos.is_open:
+    if close_at_end and observed[-1] and book.pos.is_open:
         book.close(cl[-1], int(ts[-1]), n - 1, reason="final")
         equity_curve[-1] = max(0.0, book.equity(cl[-1]))
         gross_curve[-1] = book.gross_equity(cl[-1])
@@ -716,8 +730,8 @@ def run_backtest(
         exposure_curve,
         ppy,
         config.risk_free_rate,
-        book.liquidations,
-        initial_equity=config.initial_capital,
+        book.liquidations - segment_liquidations,
+        initial_equity=segment_initial,
     )
     gross = compute_metrics(
         gross_curve,
@@ -727,7 +741,7 @@ def run_backtest(
         ppy,
         config.risk_free_rate,
         0,
-        initial_equity=config.initial_capital,
+        initial_equity=segment_gross_initial,
     )
 
     return BacktestResult(
@@ -740,7 +754,7 @@ def run_backtest(
         trades=book.trades,
         metrics=net,
         gross_metrics=gross,
-        liquidation_count=book.liquidations,
+        liquidation_count=book.liquidations - segment_liquidations,
         first_tradeable_index=first_tradeable,
         mode=str(config.mode),
         leverage=config.leverage,

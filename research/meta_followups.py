@@ -134,15 +134,24 @@ def concentration(grid_root, output, bindings):
             for mask in (0, 1, 31):
                 caps = {"original": CAPITAL, "ZEC_to_cash": CAPITAL, "passive_original": CAPITAL, "passive_ZEC_to_cash": CAPITAL}
                 histories = {name: [] for name in caps}
+                fold_calendars = []
                 for fold in range(3):
                     names = selection[fold]["selected" if mask & 1 else "marketcap_ten"]
                     curves, passives = {}, {}
+                    fold_ts = None
                     for symbol in names:
                         path = grid_root / f"{symbol}_f{fold}_{scenario}.npz"
                         bindings[str(path)] = sha(path)
                         with np.load(path) as cell:
+                            current_ts = cell["timestamp"]
+                            if fold_ts is not None and not np.array_equal(fold_ts, current_ts):
+                                raise ValueError("concentration sleeves have different calendars")
+                            fold_ts = current_ts.copy()
                             curves[symbol] = cell["equity"][mask >> 1]
                             passives[symbol] = cell["passive"]
+                    if fold_ts is None:
+                        raise ValueError("empty concentration selection")
+                    fold_calendars.append(fold_ts)
                     for label, starting_capital in caps.items():
                         sleeve = passives if label.startswith("passive") else curves
                         removed = ("ZEC",) if "ZEC_to_cash" in label else ()
@@ -150,6 +159,8 @@ def concentration(grid_root, output, bindings):
                         curve = unit * starting_capital
                         histories[label].append(curve)
                         caps[label] = float(curve[-1])
+                if not np.array_equal(np.concatenate(fold_calendars), full_ts):
+                    raise ValueError("concentration timestamps differ from reference")
                 histories = {name: np.concatenate(curves) for name, curves in histories.items()}
                 maximum_error = float(np.max(np.abs(histories["original"] - reference[f"{scenario}_m{mask:02d}"])))
                 if maximum_error > 1e-7:

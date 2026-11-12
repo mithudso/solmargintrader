@@ -27,6 +27,7 @@ import re
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 REPO = Path(__file__).resolve().parent.parent
@@ -63,6 +64,9 @@ def turnover_table() -> pd.DataFrame:
     missing = set(SPOKES) - set(d["symbol"])
     if missing:
         raise SystemExit(f"{SOURCE.name} is missing {sorted(missing)}; cannot build the table")
+    values = d[["volume_24h_usd", "market_cap_usd"]].to_numpy(dtype=float)
+    if d.symbol.duplicated().any() or not np.isfinite(values).all() or (values <= 0).any():
+        raise ValueError("turnover requires unique coins and finite positive volume and cap")
     d["turnover_pct"] = 100.0 * d["volume_24h_usd"] / d["market_cap_usd"]
     d = d.sort_values("turnover_pct", ascending=False).reset_index(drop=True)
     d["turnover_rank"] = d.index + 1
@@ -157,8 +161,8 @@ def check(t: pd.DataFrame) -> int:
         # long footnote into a turnover claim; the figures this needs to catch sit
         # within a few words of the term ("Turnover 3.44%", "~1.4% turnover").
         for pat in (
-            r"[Tt]urnover[^.\n]{0,40}?([0-9]+\.[0-9]+)\s*%",
-            r"([0-9]+\.[0-9]+)\s*%[^.\n]{0,25}?[Tt]urnover",
+            r"[Tt]urnover[^.\n]{0,40}?([0-9]+(?:\.[0-9]+)?)\s*%",
+            r"([0-9]+(?:\.[0-9]+)?)\s*%[^.\n]{0,25}?[Tt]urnover",
         ):
             for m in re.finditer(pat, text):
                 if any(w in m.group(0).lower() for w in DISQUALIFY):

@@ -1054,7 +1054,7 @@ def forward_tick(asset: str, *, now: float | None = None, wallet_address: str | 
         adopted, adopt_rows = auto_adopt(asset, state, x["components"], ledger, stamp)
     except CompoundError as exc:
         adopted, adopt_rows = {}, []
-        extra["notes"] = [*extra["notes"], f"autopilot could not adopt tuned settings: {exc}"]
+        extra["notes"]["adoption_error"] = f"autopilot could not adopt tuned settings: {exc}"
     _append(asset, adopt_rows)
     return {"asset": asset, "recorded": new_call, "call": x["call"], "composite": x["composite"],
             "bar_ts": x["bar_ts"], "regime": x["regime"], "blocked_by": x["blocked_by"],
@@ -1142,17 +1142,19 @@ def horizon_status(ledger: Sequence[Mapping[str, Any]], recent: int = 30) -> dic
     return {"horizons": by_horizon, "recent": rows}
 
 
-def _tally(pairs: Sequence[tuple[int, float]], rt: float) -> dict[str, Any]:
-    decided = [(d, r) for d, r in pairs if d != 0 and r != 0]
+def _tally(pairs: Sequence[tuple[int, float] | tuple[int, float, float]], rt: float) -> dict[str, Any]:
+    observations = [(pair[0], pair[1], pair[2] if len(pair) == 3 else rt) for pair in pairs]
+    decided = [(d, r) for d, r, _ in observations if d != 0 and r != 0]
     hits = sum(1 for d, r in decided if (r > 0) == (d > 0))
     n = len(decided)
-    signed = [d * r for d, r in pairs if d != 0]
+    signed = [d * r for d, r, _ in observations if d != 0]
+    net = [d * r - cost for d, r, cost in observations if d != 0]
     return {
-        "calls": sum(1 for d, _ in pairs if d != 0), "decided": n,
+        "calls": sum(1 for d, _, _ in observations if d != 0), "decided": n,
         "hit_rate": None if n == 0 else round(hits / n, 4),
         "z_vs_coinflip": None if n == 0 else round((hits - 0.5 * n) / math.sqrt(0.25 * n), 2),
         "gross_bps_per_call": None if not signed else round(sum(signed) / len(signed), 3),
-        "net_bps_per_call_if_one_bar": None if not signed else round(sum(signed) / len(signed) - rt, 3),
+        "net_bps_per_call_if_one_bar": None if not net else round(sum(net) / len(net), 3),
     }
 
 
@@ -1172,14 +1174,14 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
     done = [(c, res[c["id"]]) for c in calls if c["id"] in res]
     rt = float(done[0][0].get("round_trip_bps", 16.0)) if done else 16.0
     dirs = {"UP": 1, "DOWN": -1}
-    compound = _tally([(dirs.get(c["call"], 0), float(r["ret_bps"])) for c, r in done], rt)
-    ungated = _tally([(int(c.get("ungated", 0)), float(r["ret_bps"])) for c, r in done], rt)
+    compound = _tally([(dirs.get(c["call"], 0), float(r["ret_bps"]), float(c.get("round_trip_bps", 16.0))) for c, r in done], rt)
+    ungated = _tally([(int(c.get("ungated", 0)), float(r["ret_bps"]), float(c.get("round_trip_bps", 16.0))) for c, r in done], rt)
     per: dict[str, list[tuple[int, float]]] = {}
     for c, r in done:
         entry = float(c.get("entry", 0.25))
         for cid, s in (c.get("scores") or {}).items():
             d = 0 if s is None or abs(s) < entry else (1 if s > 0 else -1)
-            per.setdefault(cid, []).append((d, float(r["ret_bps"])))
+            per.setdefault(cid, []).append((d, float(r["ret_bps"]), float(c.get("round_trip_bps", 16.0))))
     rows = []
     for c in calls[-recent:]:
         r = res.get(c["id"])
@@ -1190,11 +1192,11 @@ def forward_status(asset: str, config_hash: str | None = None, recent: int = 20)
                      else (r["ret_bps"] > 0) == (c["call"] == "UP")})
     # Paper dollars at the wallet size recorded with each call: what trading every compound call
     # for one bar would have made after costs. Calls made without a wallet reading are left out.
-    sized = [(dirs[c["call"]], float(r["ret_bps"]), float(c["notional_usd"])) for c, r in done
+    sized = [(dirs[c["call"]], float(r["ret_bps"]), float(c["notional_usd"]), float(c.get("round_trip_bps", 16.0))) for c, r in done
              if c["call"] in dirs and c.get("notional_usd")]
     paper = {"label": "paper $ at wallet size", "calls": len(sized),
-             "net_usd": round(sum(n * (d * ret - rt) / 1e4 for d, ret, n in sized), 2) if sized else None,
-             "costs_usd": round(sum(n * rt / 1e4 for _, _, n in sized), 2) if sized else None}
+             "net_usd": round(sum(n * (d * ret - rt) / 1e4 for d, ret, n, rt in sized), 2) if sized else None,
+             "costs_usd": round(sum(n * rt / 1e4 for _, _, n, rt in sized), 2) if sized else None}
     return {"asset": asset, "calls_recorded": len(calls), "resolved": len(done), "paper": paper,
             "pending": len(calls) - len(done), "round_trip_bps": rt,
             "compound": compound, "compound_ungated": ungated,
@@ -1243,11 +1245,18 @@ def materialize_bars(asset: str) -> tuple[Any, str]:
             pass
     df, source = cbt.load_bars_5m(a)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.stem + ".tmp.npz")
-    np.savez(tmp, sig=np.array([str(s) for s in sig]), source=np.array(source),
-             **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume", "minutes")
-                if k in df})
-    os.replace(tmp, path)
+    fd, name = tempfile.mkstemp(prefix=path.stem + ".tmp-", suffix=".npz", dir=path.parent)
+    tmp = Path(name)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            np.savez(stream, sig=np.array([str(s) for s in sig]), source=np.array(source),
+                     **{k: df[k].to_numpy() for k in ("timestamp", "open", "high", "low", "close", "volume", "minutes")
+                        if k in df})
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
     return df, source
 
 

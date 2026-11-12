@@ -82,6 +82,8 @@ class PeerSpreadReversion:
         adf_max_p: float = 0.05,
         require_cointegration: bool = True,
     ) -> None:
+        if not all(np.isfinite(value) for value in (entry_z, exit_z, stop_z, adf_max_p)):
+            raise ValueError("spread thresholds must be finite")
         if fit_window < 30:
             raise ValueError("fit_window must be at least 30 to fit a spread")
         if entry_z >= 0:
@@ -142,6 +144,7 @@ class PeerSpreadReversion:
         try:
             result = engle_granger(base, peer)
         except (ValueError, np.linalg.LinAlgError):
+            self._holding = False
             return 0.0
 
         if self.require_cointegration and result.adf.pvalue > self.adf_max_p:
@@ -155,6 +158,7 @@ class PeerSpreadReversion:
         spread = result.spread
         z = ind.zscore(spread, min(self.fit_window, len(spread)))
         if not np.isfinite(z):
+            self._holding = False
             return 0.0
 
         if self._holding:

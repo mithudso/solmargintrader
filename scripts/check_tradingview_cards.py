@@ -146,6 +146,7 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
         raise ValueError("source publication inventory count mismatch")
     claimed = set()
     verified_files: set[Path] = set()
+    verified_hashes: dict[Path, str] = {}
     descriptions: dict[str, str] = {}
     definitions: dict[str, set[str]] = {}
     allowed = {"new-card", "existing", "existing-code", "alias", "duplicate",
@@ -201,11 +202,11 @@ def validate(data: dict, repo: Path = REPO, source_root: Path | None = None) -> 
             root = repo if source.get("scope") == "repository" else source_root
             if root is not None:
                 source_path = root / path
-                if source_path not in verified_files:
-                    actual = hashlib.sha256(source_path.read_bytes()).hexdigest()
-                    if actual != source["sha256"]:
-                        raise ValueError(f"source hash mismatch: {source_path}")
-                    verified_files.add(source_path)
+                if source_path not in verified_hashes:
+                    verified_hashes[source_path] = hashlib.sha256(source_path.read_bytes()).hexdigest()
+                if verified_hashes[source_path] != source["sha256"]:
+                    raise ValueError(f"source hash mismatch: {source_path}")
+                verified_files.add(source_path)
         if source_root is not None and row.get("description_sha256"):
             if row["normalizer"] != "tv-description-v2":
                 raise ValueError("unsupported publication description normalizer")

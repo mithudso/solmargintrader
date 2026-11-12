@@ -116,6 +116,8 @@ def interpret(evaluable: int, total: int, positive: int, pbo: float) -> list[str
     if evaluable == 0:
         return ["      -> nothing evaluable; check warm-up lengths and trade floors"]
 
+    if total <= 0:
+        raise ValueError("no configurations were requested")
     share = positive / evaluable
     dropped = total - evaluable
     if dropped:
@@ -208,7 +210,10 @@ def bind_experiment(
         row.update({key: json.dumps(value, sort_keys=True) if isinstance(value, (dict, list)) else value
                     for key, value in metadata.items() if key != "manifest"})
     pbo.update(metadata)
-    return pd.DataFrame(rows), pbo
+    columns = list(rows[0]) if rows else ["horizon", "kind", "strategy", "label", "family", "n_paths", "usable_blocks", "median_sharpe", "q1_sharpe", "q3_sharpe", "iqr_spread", "frac_paths_positive", "median_path_return", "total_trades", "insufficient", "reason", *metadata]
+    frame = pd.DataFrame(rows, columns=columns)
+    frame["insufficient"] = frame["insufficient"].astype(bool)
+    return frame, pbo
 
 
 def run_horizon(horizon: str, n_groups: int, k_test: int) -> tuple[pd.DataFrame, dict]:
@@ -299,7 +304,7 @@ def run_combos(
     rows: list[dict] = []
     per_config_blocks: dict[str, dict[int, np.ndarray]] = {}
 
-    admitted = independent_combos(usable, size, horizon, gate, arrays)
+    admitted = list(independent_combos(usable, size, horizon, gate, arrays))
     for combo in admitted:
         specs = [(n, params[n]) for n in combo]
         for mode in modes:

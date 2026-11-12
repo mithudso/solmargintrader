@@ -60,11 +60,30 @@ def ui_to_raw(amount: str, decimals: int) -> int:
         raise BadParams(f"amount {amount!r} is not a decimal number") from None
     if not d.is_finite() or d <= 0:
         raise BadParams("amount must be a positive finite number")
-    raw = d.scaleb(decimals)
-    if raw != raw.to_integral_value():
+    if type(decimals) is not int or not 0 <= decimals <= 255:
+        raise BadParams("token decimals must be an integer in 0..255")
+    _, digits, exponent = d.as_tuple()
+    digits = list(digits)
+    while digits[-1] == 0:
+        digits.pop()
+        exponent += 1
+    shift = exponent + decimals
+    if shift < 0:
         raise BadParams(f"amount {amount!r} has more than {decimals} decimal places")
-    return int(raw)
+    # SPL token quantities are uint64. Check the exponent before constructing a
+    # power of ten, so an untrusted scientific-notation amount cannot allocate
+    # an arbitrarily large integer. No decimal-context rounding is permitted.
+    if len(digits) + shift > 20:
+        raise BadParams("amount exceeds the token quantity range")
+    coefficient = 0
+    for digit in digits:
+        coefficient = coefficient * 10 + digit
+    raw = coefficient * 10**shift
+    if raw >= 2**64:
+        raise BadParams("amount exceeds the token quantity range")
+    return raw
 
 
 def raw_to_ui(raw: int, decimals: int) -> Decimal:
-    return Decimal(raw).scaleb(-decimals)
+    # Tuple construction is exact even when a caller uses a small local context.
+    return Decimal((int(raw < 0), tuple(map(int, str(abs(raw)))), -decimals))

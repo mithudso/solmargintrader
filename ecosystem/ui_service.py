@@ -7,12 +7,15 @@ private generation checkpoint and a matching response from the bound HTTP port.
 from __future__ import annotations
 
 import fcntl
+import http.client
 import json
 import os
 import re
+import socket
 import stat
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -215,17 +218,48 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def _health(record: dict) -> bool:
-    # Local readiness must never follow a redirect or an inherited HTTP proxy.
-    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
-    request = urllib.request.Request(
-        record["url"] + "/health", headers={"Accept": "application/json"}
-    )
+def _health(record: dict, *, deadline=None) -> bool:
+    # One absolute budget covers headers and a slow-dripping body. A socket
+    # inactivity timeout alone lets a peer retain the launch lock indefinitely.
+    deadline = min(time.monotonic() + HTTP_TIMEOUT, deadline) if deadline is not None else time.monotonic() + HTTP_TIMEOUT
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        return False
+    connection = None
+    watchdog = None
+    transport = None
+    response = None
     try:
-        with opener.open(request, timeout=HTTP_TIMEOUT) as response:
-            raw = response.read(MAX_BYTES + 1)
-            if response.status != 200 or len(raw) > MAX_BYTES:
+        parts = urlsplit(_url(record["url"]))
+        connection = http.client.HTTPConnection("127.0.0.1", parts.port, timeout=remaining)
+        connection.connect()
+        transport = connection.sock.dup()
+
+        def expire():
+            try:
+                transport.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return False
+        watchdog = threading.Timer(remaining, expire)
+        watchdog.daemon = True
+        watchdog.start()
+        connection.request("GET", "/health", headers={"Accept": "application/json"})
+        response = connection.getresponse()
+        raw = bytearray()
+        while len(raw) <= MAX_BYTES:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
                 return False
+            part = response.read1(MAX_BYTES + 1 - len(raw))
+            if not part:
+                break
+            raw.extend(part)
+        if response.status != 200 or len(raw) > MAX_BYTES or time.monotonic() >= deadline:
+            return False
         body = json.loads(raw)
         if not isinstance(body, dict):
             return False
@@ -241,6 +275,16 @@ def _health(record: dict) -> bool:
         )
     except (OSError, ValueError, UnicodeError, HTTPException):
         return False
+    finally:
+        if watchdog is not None:
+            watchdog.cancel()
+            watchdog.join()
+        if response is not None:
+            response.close()
+        if connection is not None:
+            connection.close()
+        if transport is not None:
+            transport.close()
 
 
 def _unavailable(reason, *, occupied=False, held=False):
@@ -255,7 +299,7 @@ def _unavailable(reason, *, occupied=False, held=False):
     }
 
 
-def status(home, manager_home=None) -> dict:
+def status(home, manager_home=None, *, deadline=None) -> dict:
     """Read lock plus HTTP identity; never create a directory or trust a PID."""
     try:
         home = _home(home)
@@ -288,7 +332,7 @@ def status(home, manager_home=None) -> dict:
                 return _unavailable(
                     "control_server_version_mismatch", occupied=True, held=True
                 )
-            if _health(record):
+            if _health(record, deadline=deadline):
                 return {
                     "running": True,
                     "url": record["url"],
@@ -302,7 +346,7 @@ def status(home, manager_home=None) -> dict:
             return _unavailable(
                 "control_server_health_unverified", occupied=True, held=True
             )
-        if _health(record):
+        if _health(record, deadline=deadline):
             # A server whose lock file was replaced may still answer its port.
             return _unavailable("control_server_owner_unverified", occupied=True)
         return _unavailable("control_server_not_running")
@@ -328,7 +372,7 @@ def ensure(home, manager_home=None, *, on_spawn=None) -> dict:
     try:
         home = _home(home)
         with _exclusive(home, LAUNCH_LOCK_NAME, wait_seconds=STARTUP_SECONDS):
-            current = status(home, manager_home)
+            current = status(home, manager_home, deadline=deadline)
             if current["running"]:
                 return current
             if time.monotonic() >= deadline:
@@ -379,7 +423,7 @@ def ensure(home, manager_home=None, *, on_spawn=None) -> dict:
             elif current["reason"] != "control_checkpoint_pending":
                 return current
             while time.monotonic() < deadline:
-                current = status(home, manager_home)
+                current = status(home, manager_home, deadline=deadline)
                 if current["running"]:
                     return current
                 if process is not None and process.poll() is not None:
@@ -391,7 +435,7 @@ def ensure(home, manager_home=None, *, on_spawn=None) -> dict:
                 held=current["owner_lock_held"],
             )
     except BlockingIOError:
-        current = status(home, manager_home)
+        current = status(home, manager_home, deadline=deadline)
         return (
             current
             if current["running"]

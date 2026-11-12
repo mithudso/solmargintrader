@@ -168,6 +168,11 @@ class KeySourceLabelTests(unittest.TestCase):
 
 
 class TuiSettingsTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        self.world = World()
+        self.world.__enter__()
+        self.addCleanup(self.world.__exit__, None, None, None)
+
     async def test_xpub_inputs_are_blank_and_blank_keeps_the_saved_key(self) -> None:
         config.save_settings(config.Settings(btc_xpub=V2_M))
         self.addCleanup(lambda: config.CONFIG_PATH.exists() and config.CONFIG_PATH.unlink())

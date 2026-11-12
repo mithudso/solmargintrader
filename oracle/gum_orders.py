@@ -73,6 +73,7 @@ def _decimal(value: Any, *, zero=False) -> Decimal:
         result = Decimal(str(value))
         if (
             not result.is_finite()
+            or result.as_tuple().exponent < -128
             or result < 0
             or result > Decimal("1e18")
             or (not zero and result == 0)
@@ -90,7 +91,7 @@ def _integer(value, *, zero=False, maximum=U64_MAX):
 
 
 def _text(value: Decimal) -> str:
-    return format(value, "f")
+    return format(_decimal(value, zero=True), "f")
 
 
 def _symbol(symbol):

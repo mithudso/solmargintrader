@@ -75,19 +75,20 @@ class OwnerClient:
             envelope = json.loads(out)
             if (
                 code != 0
+                or not isinstance(envelope, dict)
                 or set(envelope) != {"ok", "command", "result", "error"}
                 or envelope["ok"] is not True
                 or envelope["command"] != "research.protocol"
             ):
                 raise ValueError
             result = envelope["result"]
-            if (
+            if not isinstance(result, dict) or (
                 operation != "describe"
                 and result.get("identity") != d["expected_identity"]
             ):
                 raise ValueError
             return result
-        except (ValueError, OSError, KeyError, TypeError) as exc:
+        except (ValueError, OSError, KeyError, TypeError, RecursionError) as exc:
             raise ManagerError(
                 "research_unavailable",
                 "Reviewed owner protocol refused or failed; evidence remains retained.",
@@ -117,7 +118,7 @@ def prepare_descriptor(params, home):
     import sys
     from uuid import UUID, uuid4
 
-    output = Path(params.get("output") or Path(home) / "research-owner.json")
+    output = Path(params.get("output") or Path(home) / "research-owner.json").expanduser().absolute()
     prior = json.loads(output.read_text()) if output.is_file() else None
     config_root = (
         Path(

@@ -117,7 +117,13 @@ from backtester.core.deflated_sharpe import (  # noqa: E402
 )
 from backtester.core.metrics import max_drawdown, sharpe_ratio  # noqa: E402
 from backtester.core.perps import hourly_borrow_rate  # noqa: E402
-from backtester.core.types import CostConfig, Side, hours_per_bar, periods_per_year  # noqa: E402
+from backtester.core.types import (  # noqa: E402
+    INTERVAL_SECONDS,
+    CostConfig,
+    Side,
+    hours_per_bar,
+    periods_per_year,
+)
 
 OUT_DIR = REPO / "research" / "results"
 
@@ -438,7 +444,11 @@ def target_weights(
             weights[t, held_long] = 1.0 / held_long.size
             continue
 
-        held_short = _select_with_hysteresis(-row, k, margin, held_short)
+        eligible = np.asarray([i for i in range(N) if i not in held_long], dtype=int)
+        previous = None if held_short is None else np.flatnonzero(np.isin(eligible, held_short))
+        if previous is not None and len(previous) != k:
+            previous = None
+        held_short = eligible[_select_with_hysteresis(-row[eligible], k, margin, previous)]
         overlap = set(held_long.tolist()) & set(held_short.tolist())
         if overlap:
             # Can only happen if hysteresis pinned both legs onto a shared asset.
@@ -591,9 +601,16 @@ def simulate(
     RATIO-ROTATION.md.
     """
     costs = costs or CostConfig()
-    if fill_delay < 0:
+    if (not np.isfinite(panel.closes).all() or (panel.closes <= 0).any()
+            or panel.n_bars < 2 or panel.closes.shape != (len(panel.timestamps), panel.n_assets)
+            or np.any(np.diff(panel.timestamps) != INTERVAL_SECONDS[panel.interval])):
+        raise ValueError("rotation requires finite prices on a contiguous calendar")
+    weights = np.asarray(weights, dtype=float)
+    if weights.shape != panel.closes.shape or not np.isfinite(weights).all():
+        raise ValueError("rotation weights must be finite and match the panel")
+    if isinstance(fill_delay, bool) or not isinstance(fill_delay, (int, np.integer)) or fill_delay < 0:
         raise ValueError(f"fill_delay must be >= 0, got {fill_delay}")
-    if leverage <= 0:
+    if not np.isfinite(leverage) or leverage <= 0:
         raise ValueError(f"leverage must be > 0, got {leverage}")
 
     rets = panel.returns()
@@ -607,7 +624,7 @@ def simulate(
     borrow_total = 0.0
 
     hours = hours_per_bar(panel.interval)
-    borrow_rate = 0.0
+    long_borrow_rate = short_borrow_rate = 0.0
     # A short leg is financed whether or not the book is levered -- you cannot
     # short spot, so any negative weight implies a perp or margin venue and its
     # borrow fee. Defaulting on `leverage > 1.0` alone would let a dollar-neutral
@@ -616,7 +633,8 @@ def simulate(
     has_short = bool(np.any(weights < 0.0))
     if accrue_borrow if accrue_borrow is not None else (leverage > 1.0 or has_short):
         util = borrow_utilization if borrow_utilization is not None else costs.utilization
-        borrow_rate = hourly_borrow_rate(costs, Side.LONG, util)
+        long_borrow_rate = hourly_borrow_rate(costs, Side.LONG, util)
+        short_borrow_rate = hourly_borrow_rate(costs, Side.SHORT, util)
 
     for t in range(T - 1):
         w = weights[t]
@@ -633,9 +651,9 @@ def simulate(
         gross_ret = float(np.dot(exposure, rets[t + 1])) * leverage
 
         borrow = 0.0
-        if borrow_rate > 0.0:
-            notional = float(np.abs(exposure).sum()) * leverage
-            borrow = notional * borrow_rate * hours
+        if long_borrow_rate > 0.0 or short_borrow_rate > 0.0:
+            borrow = float(np.maximum(exposure, 0).sum() * long_borrow_rate
+                           + np.maximum(-exposure, 0).sum() * short_borrow_rate) * leverage * hours
             borrow_total += borrow
 
         gross[t + 1] = gross_ret
@@ -724,6 +742,8 @@ def evaluate_controls(
     match_hold_bars: int = 30,
     match_top_k: int = 1,
     random_seeds: int = 50,
+    leverage: float = 1.0,
+    fill_delay: int = 0,
 ) -> pd.DataFrame:
     """Controls measured on the SAME out-of-sample slice the sweep rows report.
 
@@ -753,7 +773,7 @@ def evaluate_controls(
 
     for kind in ["equal_weight"] + [f"hold_{a}" for a in panel.assets]:
         w = control_weights(panel, kind, window=0)
-        res = simulate(oos, w[cut:], costs, kind, {"control": kind})
+        res = simulate(oos, w[cut:], costs, kind, {"control": kind}, leverage=leverage, fill_delay=fill_delay)
         rows.append(res.summary())
 
     draws = []
@@ -761,7 +781,7 @@ def evaluate_controls(
         w = control_weights(
             panel, "random", seed=seed, window=0, top_k=match_top_k, hold_bars=match_hold_bars
         )
-        draws.append(simulate(oos, w[cut:], costs, "random", {}))
+        draws.append(simulate(oos, w[cut:], costs, "random", {}, leverage=leverage, fill_delay=fill_delay))
     for label, pick in (
         ("random_p50", float(np.median([d.monthly_pct() for d in draws]))),
         ("random_p90", float(np.percentile([d.monthly_pct() for d in draws], 90))),
@@ -958,6 +978,8 @@ def walk_forward(
     costs: CostConfig | None = None,
     split: float = SPLIT,
     book: str = "long_only",
+    leverage: float = 1.0,
+    fill_delay: int = 0,
 ) -> tuple[RotationResult, RotationResult]:
     """In-sample and out-of-sample halves of one configuration.
 
@@ -988,8 +1010,8 @@ def walk_forward(
     # nine genuine rotations can clear MIN_OOS_ROTATIONS on the artifact.
     is_panel = slice_panel(panel, 0, cut)
     oos_panel = slice_panel(panel, cut, panel.n_bars)
-    is_res = simulate(is_panel, weights[:cut], costs, "in_sample", params)
-    oos_res = simulate(oos_panel, weights[cut:], costs, "out_of_sample", params)
+    is_res = simulate(is_panel, weights[:cut], costs, "in_sample", params, leverage=leverage, fill_delay=fill_delay)
+    oos_res = simulate(oos_panel, weights[cut:], costs, "out_of_sample", params, leverage=leverage, fill_delay=fill_delay)
     return is_res, oos_res
 
 
@@ -1002,6 +1024,8 @@ def block_returns(
     costs: CostConfig | None = None,
     n_groups: int = 8,
     book: str = "long_only",
+    leverage: float = 1.0,
+    fill_delay: int = 0,
 ) -> list[np.ndarray]:
     """Per-block net returns, for `pbo_cscv` and for a spread across regimes.
 
@@ -1015,7 +1039,7 @@ def block_returns(
         sub = slice_panel(panel, start, end)
         if sub.n_bars < 3:
             continue
-        res = simulate(sub, weights[start:end], costs, f"block_{start}", {})
+        res = simulate(sub, weights[start:end], costs, f"block_{start}", {}, leverage=leverage, fill_delay=fill_delay)
         out.append(res.net_returns[1:])
     return out
 
@@ -1029,6 +1053,8 @@ def sweep(
     margins: Sequence[float] = SWEEP_MARGINS,
     split: float = SPLIT,
     books: Sequence[str] = SWEEP_BOOKS,
+    leverage: float = 1.0,
+    fill_delay: int = 0,
 ) -> pd.DataFrame:
     """Every configuration, in-sample beside out-of-sample, with the count printed.
 
@@ -1044,7 +1070,7 @@ def sweep(
     ):
         try:
             is_res, oos_res = walk_forward(
-                panel, window, top_k, direction, margin, costs, split, book
+                panel, window, top_k, direction, margin, costs, split, book, leverage, fill_delay
             )
         except ValueError:
             continue
@@ -1349,6 +1375,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--fill-delay", type=int, default=0)
     ap.add_argument("--out", default=None, help="CSV filename written into research/results/")
     args = ap.parse_args(argv)
+    if (args.leverage != 1.0 or args.fill_delay != 0) and not args.sweep:
+        ap.error("--leverage and --fill-delay require --sweep")
 
     if args.self_test:
         return self_test()
@@ -1384,7 +1412,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if args.carry:
-        frame = sweep(panel, split=SPLIT)
+        frame = sweep(panel, split=SPLIT, leverage=args.leverage, fill_delay=args.fill_delay)
         rankable = frame[frame["rankable"]]
         if rankable.empty:
             print(
@@ -1410,7 +1438,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if args.sweep:
-        frame = sweep(panel, split=SPLIT)
+        frame = sweep(panel, split=SPLIT, leverage=args.leverage, fill_delay=args.fill_delay)
         n = len(frame)
         rankable = frame[frame["rankable"]]
         print(f"{n} configurations evaluated; {len(rankable)} cleared "
@@ -1422,7 +1450,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"\n--- controls, SAME out-of-sample slice (last {1 - SPLIT:.0%}), "
               f"random matched at {hold_bars}-bar holds ---")
         controls = evaluate_controls(
-            panel, split=SPLIT, match_hold_bars=hold_bars, match_top_k=int(best_row["top_k"])
+            panel, split=SPLIT, match_hold_bars=hold_bars, match_top_k=int(best_row["top_k"]), leverage=args.leverage, fill_delay=args.fill_delay
         )
         _print_frame(controls[
             ["label", "bars", "rotations", "total_return", "monthly_pct", "sharpe", "max_drawdown"]
@@ -1481,7 +1509,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 int(row["top_k"]),
                 str(row["direction"]),
                 float(row["margin"]),
-                book=str(row["book"]),
+                book=str(row["book"]), leverage=args.leverage, fill_delay=args.fill_delay,
             )
         print(json.dumps(pbo_cscv(blocks), indent=2, default=float))
 

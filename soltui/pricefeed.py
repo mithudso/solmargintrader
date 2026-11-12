@@ -191,6 +191,7 @@ class WebSocket:
         self.sock: Any = None
         self._buf = bytearray()
         self._parts: list[bytes] = []
+        self._parts_bytes = 0
 
     def open(self) -> None:
         parts = urlsplit(self.url)
@@ -260,10 +261,16 @@ class WebSocket:
             elif opcode == OP_CLOSE:
                 raise ConnectionClosed("server sent a close frame")
             elif opcode in (OP_TEXT, OP_BINARY, OP_CONT):
+                self._parts_bytes += len(payload)
+                if self._parts_bytes > MAX_FRAME_BYTES:
+                    self._parts = []
+                    self._parts_bytes = 0
+                    raise PriceFeedError("oversized fragmented WebSocket message")
                 self._parts.append(payload)
                 if fin:
                     text = b"".join(self._parts).decode("utf-8", errors="replace")
                     self._parts = []
+                    self._parts_bytes = 0
                     return text
 
     def settimeout(self, seconds: float) -> None:
@@ -386,7 +393,9 @@ def apply_ticker(state: dict[str, list[Any]], msg: dict[str, Any], received: flo
     bid, ask, last = _num(msg.get("best_bid")), _num(msg.get("best_ask")), _num(msg.get("price"))
     if not isinstance(product, str) or bid is None or ask is None or bid > ask:
         return False
-    qt = _iso_to_epoch(msg.get("time")) or received
+    qt = _iso_to_epoch(msg.get("time"))
+    if qt is None:
+        return False
     state[product] = [bid, ask, last, _num(msg.get("best_bid_size")), _num(msg.get("best_ask_size")),
                       round(qt, 3)]
     return True
@@ -403,8 +412,17 @@ class Book:
         self.updated = 0.0
 
     def load(self, bids: Iterable[Sequence[Any]], asks: Iterable[Sequence[Any]], now: float) -> None:
-        self.bids = {float(p): float(q) for p, q, *_ in bids if float(q) > 0}
-        self.asks = {float(p): float(q) for p, q, *_ in asks if float(q) > 0}
+        def levels(rows):
+            result = {}
+            for price, size, *_ in rows:
+                px, qty = float(price), float(size)
+                if not math.isfinite(px) or not math.isfinite(qty) or px <= 0 or qty < 0:
+                    raise ValueError("invalid book price or size")
+                if qty > 0:
+                    result[px] = qty
+            return result
+        new_bids, new_asks = levels(bids), levels(asks)
+        self.bids, self.asks = new_bids, new_asks
         self.updated = now
 
     def change(self, side: str, price: Any, size: Any, now: float) -> None:
@@ -412,6 +430,8 @@ class Book:
         if book is None:
             return
         px, qty = float(price), float(size)
+        if not math.isfinite(px) or not math.isfinite(qty) or px <= 0 or qty < 0:
+            raise ValueError("invalid book price or size")
         if qty > 0:
             book[px] = qty
         else:
@@ -553,6 +573,7 @@ class Recorder:
         for product, book in self.books.items():
             top = book.top()
             if top is None:
+                self.state.pop(product, None)
                 continue
             bid, ask, bsz, asz = top
             last = self.last_trade.get(product)

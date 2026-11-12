@@ -1,8 +1,7 @@
 # The extension has zero runtime and zero dev dependencies by design (see
-# CLAUDE.md, House style), so there is deliberately no npm ecosystem entry: an
-# npm updater here would have nothing to update and would invite the first
-# dependency in. What DOES need updating is pinned action SHAs and the Python
-# requirements files.
+# CLAUDE.md, House style), so it has no npm ecosystem entry. The separate hosted
+# website has a pinned development tool and its own lockfile. Action SHAs and
+# Python component requirements are maintained separately.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -75,6 +74,14 @@ updates:
 
   - package-ecosystem: uv
     directory: /executor
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: npm
+    directory: /website
     schedule:
       interval: monthly
     commit-message:

@@ -208,7 +208,7 @@ export function ingestFills(args) {
 
 async function ingestFillsUnlocked({ venue, store, config, log = () => {} }) {
   const venueFills = await venue.getFills();
-  const known = new Set((await store.allFills()).map((f) => f.id));
+  const known = new Map((await store.allFills()).map(f => [f.id, f]));
   const journal = await store.allIntents();
   const added = [];
   const rejected = [];
@@ -216,7 +216,14 @@ async function ingestFillsUnlocked({ venue, store, config, log = () => {} }) {
 
   for (const f of venueFills) {
     const id = f.venueOrderId;
-    if (id && known.has(id)) continue;
+    if (id && known.has(id)) {
+      const persisted = known.get(id);
+      const original = journal.find(i => i.venueOrderId === id && i.gridId === persisted.gridId);
+      if (original && ['unknown', 'submitting', 'resting'].includes(original.status) && ['buy', 'sell'].includes(persisted.side) && Number.isFinite(persisted.priceUsd) && persisted.priceUsd > 0 && Number.isFinite(persisted.baseQty) && persisted.baseQty > 0 && Number.isFinite(persisted.tsMs)) {
+        await store.updateIntent(original.intentKey, { status: INTENT_STATUS.FILLED, fillId: id });
+      }
+      continue;
+    }
     // Only the adapter can prove that terminal history represents zero
     // execution. A cancelled status alone may still contain a partial fill.
     if (f.executionAbsent === true && !(f.filledBaseQty > 0) && !(f.executedPriceUsd > 0)) {
@@ -405,7 +412,7 @@ async function tickUnlocked({
       markPriceUsd: price,
       carryEntries: carry.filter((c) => c.tsMs < midnight),
     }).realizedNetUsd;
-    const realizedPnlUsdToday = pnl.realizedNetUsd - dayStartRealizedUsd;
+    const realizedPnlUsdToday = Number.isFinite(pnl.realizedNetUsd) && Number.isFinite(dayStartRealizedUsd) ? pnl.realizedNetUsd - dayStartRealizedUsd : null;
     result.realizedPnlUsdToday = realizedPnlUsdToday;
 
     const persistRuntime = () =>

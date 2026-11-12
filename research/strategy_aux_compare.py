@@ -141,6 +141,8 @@ def run(experiment: Path, data_dir: Path, prices_dir: Path) -> dict[str, Any]:
         row = {'mechanism': 'peer_spread', 'dataset': 'SOL/' + peer_name + '_1d'}
         try:
             paths = [data_dir / (name + '_1d.csv') for name in ('SOL', peer_name)]
+            if any(name + '_1d' not in inputs for name in ('SOL', peer_name)):
+                raise ValueError('peer_input_unavailable')
             raw_pairs = [p.read_bytes() for p in paths]
             for raw, name in zip(raw_pairs, ('SOL', peer_name)):
                 if hashlib.sha256(raw).hexdigest() != inputs[name + '_1d']['sha256']:
@@ -251,6 +253,10 @@ def run(experiment: Path, data_dir: Path, prices_dir: Path) -> dict[str, Any]:
                             'Realized-fill win rate is not episode win rate. No suitable directional accuracy for resting-order bots.']}
 
 
+def percentage(value):
+    return 'n/a' if value is None else f'{value:.2%}'
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--experiment', type=Path, default=REPO / 'research/strategy_experiment')
@@ -279,8 +285,8 @@ def main() -> int:
         a, b = (score[v]['accuracy'] for v in ('original', 'candidate'))
         lines += ['', '## Directional accuracy', '',
                   f"Scorecard common executable next-open-to-close accuracy: {a['correct_calls']}/{a['active_calls']} "
-                  f"({a['accuracy']:.2%}) original, {b['correct_calls']}/{b['active_calls']} ({b['accuracy']:.2%}) candidate. "
-                  f"Flat calls abstain; coverage {b['coverage']:.2%}; same-active-bar majority baseline {b['majority_baseline']:.2%}. "
+                  f"({percentage(a['accuracy'])}) original, {b['correct_calls']}/{b['active_calls']} ({percentage(b['accuracy'])}) candidate. "
+                  f"Flat calls abstain; coverage {percentage(b['coverage'])}; same-active-bar majority baseline {percentage(b['majority_baseline'])}. "
                   'Ties count as incorrect in this common diagnostic.', '',
                   'Native forecast reporting uses a different interval boundary and excludes ties. Its old/new percentages change '
                   'because the label changed from previous-close to executable next-open. That is a measurement correction, not an improved signal. '

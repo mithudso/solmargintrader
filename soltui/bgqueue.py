@@ -53,6 +53,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import re
 import tempfile
@@ -233,7 +234,9 @@ class JobResult:
         Two gates, not one: the engine must have judged the path evaluable at
         all, AND the trade count must clear the evidence floor.
         """
-        return self.evaluable and self.trades >= MIN_TRADES
+        return (self.evaluable is True and type(self.trades) is int and self.trades >= MIN_TRADES
+                and all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+                        for value in (self.median_sharpe, self.iqr, self.frac_positive, self.median_return)))
 
     def to_json(self) -> str:
         """One line of `results.jsonl`."""
@@ -251,6 +254,18 @@ class JobResult:
         """
         known = {f for f in cls.__dataclass_fields__}  # noqa: SLF001 - dataclass API
         clean = {k: v for k, v in data.items() if k in known}
+        for name in ("job_id", "strategy", "horizon", "asset", "interval", "variation", "family"):
+            if not isinstance(clean.get(name), str):
+                raise TypeError("malformed result identity")
+        if not isinstance(clean.get("params"), dict) or any(not isinstance(key, str) for key in clean["params"]):
+            raise TypeError("malformed result parameters")
+        invalid = False
+        for name in ("median_sharpe", "iqr", "frac_positive", "median_return"):
+            try:
+                value = float(clean.get(name))
+                invalid |= isinstance(clean.get(name), bool) or not math.isfinite(value)
+            except (ValueError, TypeError, OverflowError):
+                invalid = True
         for name in ("median_sharpe", "iqr", "frac_positive", "median_return", "seconds",
                      "finished_at"):
             if name in clean:
@@ -259,7 +274,9 @@ class JobResult:
             if name in clean:
                 clean[name] = _as_int(clean[name])
         if "evaluable" in clean:
-            clean["evaluable"] = bool(clean["evaluable"])
+            clean["evaluable"] = clean["evaluable"] is True and not invalid
+        if invalid:
+            clean["reason"] = "invalid evaluation measurements"
         return cls(**clean)
 
 
@@ -301,18 +318,18 @@ def _as_float(value: Any, default: float = 0.0) -> float:
     """Coerce a value read off disk to a float, defaulting when it cannot be."""
     try:
         out = float(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return default
     # NaN would propagate silently through a sort and a median; a corrupt row
     # should read as uninformative, not as a value that poisons comparisons.
-    return default if out != out else out
+    return out if math.isfinite(out) else default
 
 
 def _as_int(value: Any, default: int = 0) -> int:
     """Coerce a value read off disk to an int, defaulting when it cannot be."""
     try:
         return int(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return default
 
 

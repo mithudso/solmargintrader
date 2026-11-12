@@ -17,6 +17,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 from .strategy import StrategyConfig
+from .validation import finite_number
 
 
 @dataclass
@@ -30,6 +31,7 @@ class BacktestResult:
     hours: int
     hodl_value: float
     start_value: float = 0.0  # capital at the start; 0 = unknown (APR then falls back to hodl_value)
+    exhausted: bool = False  # no further rebalance is affordable; existing inventory is still marked
 
     @property
     def total(self) -> float:
@@ -68,16 +70,28 @@ def run(
     label: str | None = None,
 ) -> BacktestResult:
     """Values are in token1 units (USD when token1 is a stablecoin)."""
+    if not len(prices):
+        raise ValueError("prices must be nonempty")
+    for price in prices:
+        finite_number(price, "price", positive=True)
+    finite_number(half_width, "half_width", positive=True)
+    finite_number(start_value, "start_value", positive=True)
+    for name, value in (("gas_cost", gas_cost), ("pool_fee", pool_fee), ("impact_bps", impact_bps)):
+        finite_number(value, name)
+    if pool_fee >= 1 or impact_bps >= 10000:
+        raise ValueError("fees and impact must be below the full notional")
     cfg = cfg or StrategyConfig()
     p0 = prices[0]
     pa, pb = p0 * math.exp(-half_width), p0 * math.exp(half_width)
     liq = _liq_for_value(start_value, p0, pa, pb)
     h0, h1 = _amounts(liq, p0, pa, pb)
     y = yield_per_usd_day(half_width)
+    finite_number(y, "yield_per_usd_day")
     earned = costs = 0.0
     rebalances = in_range_hours = edge_hours = 0
     last_rb = -(10**9)
     cooldown_h = cfg.cooldown_minutes / 60
+    exhausted = False
     for i, p in enumerate(prices[1:], start=1):
         a0, a1 = _amounts(liq, p, pa, pb)
         value = a0 * p + a1
@@ -88,13 +102,17 @@ def run(
             u = math.log(p / pa) / math.log(pb / pa)
             edge_hours = edge_hours + 1 if (u < cfg.edge_buffer or u > 1 - cfg.edge_buffer) else 0
         trigger = (not inside) or (edge_hours >= cfg.confirm_checks)
-        if trigger and i - last_rb >= cooldown_h:
+        if trigger and not exhausted and i - last_rb >= cooldown_h:
             new_pa, new_pb = p * math.exp(-half_width), p * math.exp(half_width)
             u0, u1 = _amounts(1.0, p, new_pa, new_pb)
             t0 = u0 * p / (u0 * p + u1)
             have0 = a0 * p / value if value > 0 else 0.0
             swapped = abs(have0 - t0) * value
             cost = gas_cost + swapped * (pool_fee + impact_bps / 1e4)
+            finite_number(cost, "rebalance cost")
+            if cost >= value:
+                exhausted = True
+                continue
             costs += cost
             value -= cost
             pa, pb = new_pa, new_pb
@@ -114,6 +132,7 @@ def run(
         hours=len(prices) - 1,
         hodl_value=h0 * p_end + h1,
         start_value=start_value,
+        exhausted=exhausted,
     )
 
 

@@ -36,6 +36,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
+import math
 import sys
 import threading
 import time
@@ -47,7 +49,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .fetch_minutes import DATA, MANIFEST, coverage, load_minutes, minute_path, render_coverage, write_manifest
+from .fetch_minutes import DATA, MANIFEST, coverage as candle_coverage, load_minutes, minute_path, render_coverage, write_manifest
 from .types import BAR_COLUMNS
 
 USER_AGENT = "solmargintrader-research/1.0 (read-only)"
@@ -154,7 +156,7 @@ def sane(rows: Sequence[Sequence[float]]) -> tuple[list[list[float]], int]:
     good, bad = [], 0
     for r in rows:
         _, o, h, low, c, v = r
-        if min(o, h, low, c) > 0 and v >= 0 and h + 1e-12 >= max(o, c) and low - 1e-12 <= min(o, c):
+        if all(math.isfinite(value) for value in r) and min(o, h, low, c) > 0 and v >= 0 and h + 1e-12 >= max(o, c) and low - 1e-12 <= min(o, c):
             good.append(list(r))
         else:
             bad += 1
@@ -221,7 +223,10 @@ def fetch_asset(asset: str, venue: Venue, years: float, *, get: Fetch = http_jso
 
     def save() -> None:
         prog.write_text(json.dumps({"venue": venue.name, "pair": pair, "oldest": oldest,
-                                    "newest": max(newest_done, end_bound)}) + "\n")
+                                    "newest": max(newest_done, end_bound),
+                                    "requested_start": start_bound, "requested_end": end_bound,
+                                    "complete": oldest <= start_bound,
+                                    "cache_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}) + "\n")
 
     # 1) Catch up the minutes after the last run (a resumed or repeated fetch).
     if newest_done:
@@ -261,9 +266,29 @@ def finalise(asset: str) -> pd.DataFrame:
     """Sort and de-duplicate the appended CSV in place; return it."""
     path = minute_path(asset)
     df = pd.read_csv(path)
-    df = df.drop_duplicates("timestamp").sort_values("timestamp").reset_index(drop=True)
-    df.to_csv(path, index=False)
+    df = df.drop_duplicates("timestamp", keep="last").sort_values("timestamp").reset_index(drop=True)
+    from .fetch import atomic_csv
+    atomic_csv(df, path)
+    prog = progress_path(asset)
+    if prog.exists():
+        state = json.loads(prog.read_text())
+        state["cache_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        prog.write_text(json.dumps(state) + "\n")
     return df
+
+
+def coverage(asset: str, frame: pd.DataFrame, years: float):
+    """Use this venue's durable receipt, never Coinbase's independent ledger."""
+    out = candle_coverage(asset, frame, years)
+    try:
+        state = json.loads(progress_path(asset).read_text())
+        valid = (state.get("complete") is True
+                 and state.get("cache_sha256") == hashlib.sha256(minute_path(asset).read_bytes()).hexdigest())
+    except (OSError, ValueError, TypeError):
+        valid = False
+    out.windows_total = 1
+    out.windows_done = out.durable_windows = int(valid)
+    return out
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -294,7 +319,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                                          log=lambda s: print(s, flush=True))
                 finalise(a)
                 print(f"{a} ({v}): done, {results[a]['rows']:,} rows, {results[a]['rejected']} rejected", flush=True)
-            except AltFetchError as exc:
+            except Exception as exc:  # noqa: BLE001 -- surface each asset worker failure in CLI status
                 errors[a] = str(exc)
                 print(f"{a} ({v}): FAILED {exc}", flush=True)
 

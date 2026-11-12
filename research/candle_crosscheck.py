@@ -24,6 +24,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 REPO = Path(__file__).resolve().parent.parent
@@ -42,6 +43,10 @@ VOLUME_REL_TOL = 1e-9
 def compare(fine: pd.DataFrame, coarse: pd.DataFrame, coarse_seconds: int,
             fine_seconds: int) -> dict:
     """Aggregate `fine` up to `coarse`'s interval and diff the complete bars."""
+    columns = ["timestamp", "open", "high", "low", "close", "volume"]
+    for frame in (fine, coarse):
+        if not np.isfinite(frame[columns].to_numpy(dtype=float)).all():
+            raise ValueError("nonfinite candle measurements cannot be compared")
     expected = coarse_seconds // fine_seconds
     f = fine.assign(b=(fine["timestamp"] // coarse_seconds).astype("int64") * coarse_seconds)
     agg = f.groupby("b").agg(

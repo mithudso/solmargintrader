@@ -36,6 +36,7 @@ tab then offers no roster shortcut for it rather than guessing.
 from __future__ import annotations
 
 import csv
+import math
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -142,9 +143,9 @@ def _f(row: dict[str, str], col: str) -> float | None:
     """
     try:
         v = float(row.get(col, ""))
-    except ValueError:
+    except (TypeError, ValueError, OverflowError):
         return None
-    return None if v != v else v
+    return v if math.isfinite(v) else None
 
 
 def _i(row: dict[str, str], col: str) -> int | None:
@@ -168,9 +169,11 @@ def load_top5(csv_path: Path | None = None) -> list[Top5Config]:
     try:
         with src.open(newline="", encoding="utf-8") as fh:
             for row in csv.DictReader(fh):
+                if None in row or any(value is None for value in row.values()):
+                    raise EvidenceUnavailable(f"{src.name} contains a truncated evidence row")
                 try:
                     rank = int(row["rank"])
-                except (KeyError, ValueError):
+                except (KeyError, TypeError, ValueError, OverflowError):
                     continue
                 sharpe = _f(row, "median_sharpe")
                 if sharpe is None:
@@ -182,6 +185,8 @@ def load_top5(csv_path: Path | None = None) -> list[Top5Config]:
                     label=row.get("label", "(unnamed)"),
                     horizon=row.get("horizon", ""),
                 ))
+                if (cfg.label, cfg.horizon) != (row.get("label", "(unnamed)"), row.get("horizon", "")):
+                    raise EvidenceUnavailable(f"{src.name} assigns conflicting configurations to rank {rank}")
                 q1, q3 = _f(row, "q1_sharpe"), _f(row, "q3_sharpe")
                 cfg.results.append(AssetResult(
                     asset=row.get("asset", ""),

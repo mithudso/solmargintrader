@@ -22,6 +22,7 @@ enforces, so a bad value fails in the Signals form rather than at sweep time.
 
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass, fields
 from typing import Any
 
@@ -231,6 +232,16 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
     Signals form is the place a bad value is caught.
     """
     d = defaults
+    for field in fields(d):
+        value = getattr(d, field.name)
+        if type(field.default) is int:
+            if type(value) is not int:
+                raise SignalError(f"{field.name} must be a whole number")
+        elif isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            raise SignalError(f"{field.name} must be a finite number")
+    for name, minimum in (("dual_formation", 2), ("adx_period", 2), ("ou_fit_window", 20), ("vol_window", 2)):
+        if getattr(d, name) < minimum:
+            raise SignalError(f"{name} must be at least {minimum}")
     positive_ints = [
         "sma_fast", "sma_slow", "regime_window", "macd_fast", "macd_slow",
         "macd_signal", "rsi_period", "stoch_k", "stoch_d", "bollinger_window",

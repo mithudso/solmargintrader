@@ -119,7 +119,7 @@ class Supervisor:
             if observation is None or observation[:2] != child:
                 continue
             process, generation, deadline, reason = observation[:4]
-            if time.monotonic() < deadline or not self._journal_blocked():
+            if time.monotonic() < deadline:
                 continue
             # A frozen owner may hold SQLite's exclusive lock. Kill that exact
             # owned process before attempting the generation-checked write.

@@ -196,8 +196,8 @@ class Curve:
     value_only: bool = False
 
     def __post_init__(self) -> None:
-        self.points = sorted((float(t), float(v)) for t, v in self.points
-                             if math.isfinite(t) and math.isfinite(v))
+        self.points = sorted(((float(t), float(v)) for t, v in self.points
+                              if math.isfinite(t) and math.isfinite(v)), key=lambda point: point[0])
 
 
 @dataclass
@@ -340,10 +340,13 @@ def drawdown_report(base: float, days: Sequence[Day]) -> dict[str, Any]:
     peak_v, peak_d = base, None
     worst_usd, worst_pct = 0.0, None
     best = None  # (usd, peak_value, peak_date, trough_date)
+    best_pct = None
     for d in days:
         if d.equity > peak_v:
             peak_v, peak_d = d.equity, d.date
         usd = peak_v - d.equity
+        if peak_v > 0 and (best_pct is None or usd / peak_v > best_pct[0]):
+            best_pct = (usd / peak_v, usd, peak_v, peak_d, d.date)
         if usd > worst_usd + 1e-12:
             worst_usd = usd
             best = (usd, peak_v, peak_d, d.date)
@@ -351,11 +354,11 @@ def drawdown_report(base: float, days: Sequence[Day]) -> dict[str, Any]:
         return {"max_drawdown_pct": 0.0 if base > 0 else None, "max_drawdown_usd": 0.0,
                 "peak_date": None, "trough_date": None, "recovered_date": None,
                 "recovery_days": None, "recovered": None}
-    usd, pk, pk_date, tr_date = best
-    pct = -(usd / pk) if pk > 0 else None
+    usd, pk, pk_date, tr_date = best_pct[1:] if best_pct is not None else best
+    pct = -best_pct[0] if best_pct is not None else None
     rec_date = next((d.date for d in days if d.date > tr_date and d.equity >= pk - 1e-12), None)
     return {
-        "max_drawdown_pct": pct, "max_drawdown_usd": -usd,
+        "max_drawdown_pct": pct, "max_drawdown_usd": -worst_usd,
         "peak_date": pk_date.isoformat() if pk_date else "window start",
         "trough_date": tr_date.isoformat(),
         "recovered_date": rec_date.isoformat() if rec_date else None,
@@ -619,7 +622,12 @@ def curve_from_lp_status(status: dict[str, Any]) -> Curve | None:
     positions = [p for p in (status.get("positions") or []) if isinstance(p, dict)]
     if not positions:
         return None
-    pnl = sum(_num(p.get("pnl_usd")) or 0.0 for p in positions)
+    if any(_num(position.get(field)) is None for position in positions
+           for field in ("pnl_usd", "deposited_usd", "gas_usd", "rewards_usd")):
+        raise ValueError("LP status financial measurements unavailable")
+    if _num(status.get("generated_at")) is None:
+        raise ValueError("LP status observation time unavailable")
+    pnl = sum(_num(p.get("pnl_usd")) for p in positions)
     deposited = sum(_num(p.get("deposited_usd")) or 0.0 for p in positions)
     gas = sum(_num(p.get("gas_usd")) or 0.0 for p in positions)
     rewards = sum(_num(p.get("rewards_usd")) or 0.0 for p in positions)

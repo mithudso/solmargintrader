@@ -7,15 +7,15 @@
 # fresh clone has no hooks until this runs. It is set on the COMMON git dir, so
 # every worktree of this repository picks the hooks up too.
 
-set -uo pipefail
+set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-chmod +x .githooks/* tools/*.sh 2>/dev/null || true
+chmod +x .githooks/* tools/*.sh
 git config core.hooksPath .githooks
 
 echo "hooks installed: core.hooksPath = $(git config --get core.hooksPath)"
 echo
-echo "  pre-commit         rebuilds + stages index/, refuses a red backtester suite"
+echo "  pre-commit         rebuilds + stages the three static indexes, refuses a red backtester suite"
 echo "  pre-merge-commit   runs tools/gate.sh --quick before a merge commit"
 echo
 echo "Git runs NO hook for a fast-forward merge, so use tools/land.sh <branch>"

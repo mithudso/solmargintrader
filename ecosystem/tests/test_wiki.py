@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -20,9 +21,21 @@ class WikiTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.repo = Path(self.temp.name) / "repo"
+        temporary = Path(self.temp.name)
+        template = temporary / "empty-git-template"
+        template.mkdir()
+        self.git_env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        self.git_env.update({
+            "HOME": str(temporary / "home"),
+            "GIT_CONFIG_GLOBAL": os.devnull,
+            "GIT_CONFIG_SYSTEM": os.devnull,
+            "GIT_CONFIG_NOSYSTEM": "1",
+            "GIT_TEMPLATE_DIR": str(template),
+        })
+        self.enterContext(patch.dict(os.environ, self.git_env, clear=True))
+        self.repo = temporary / "repo"
         self.repo.mkdir()
-        self.git("init", "-q")
+        self.git("init", "-q", "--template", str(template))
         sources = {
             "README.md": "# Workspace\nArchitecture map.\n",
             "oracle/README.md": "# Oracle guide\nFresh source timestamps.\n<script>untrusted()</script>\n[Do not execute](javascript:alert(1))\n",
@@ -50,6 +63,7 @@ class WikiTests(unittest.TestCase):
         return subprocess.run(
             ["git", *args],
             cwd=self.repo,
+            env=self.git_env,
             capture_output=True,
             text=True,
             check=True,

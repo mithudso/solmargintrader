@@ -2,7 +2,7 @@
 import unittest
 from unittest import mock
 
-from textual.widgets import Static, TabbedContent
+from textual.widgets import TabbedContent
 
 from soltui.tests.test_tui import TEST_SIZE, make_settings
 from soltui.tui import SolTuiApp
@@ -91,6 +91,7 @@ class BatchUiTests(unittest.IsolatedAsyncioTestCase):
         import threading
         app = SolTuiApp(make_settings())
         entered, release = threading.Event(), threading.Event()
+        finished, timed_out = threading.Event(), threading.Event()
         calls = []
         original = app._call
         def call(name, params=None, **kwargs):
@@ -101,7 +102,9 @@ class BatchUiTests(unittest.IsolatedAsyncioTestCase):
                 return envelope({"runs": []})
             if name == "batch.create":
                 entered.set()
-                release.wait(5)
+                if not release.wait(30):
+                    timed_out.set()
+                finished.set()
                 return envelope({"run_id": "created-1"})
             if name == "batch.start":
                 return {"ok": False, "error": {"message": "start refused"}}
@@ -119,6 +122,12 @@ class BatchUiTests(unittest.IsolatedAsyncioTestCase):
                     app.query_one(TabbedContent).active = "tab-forwardtest"
                     await pilot.pause()
                     self.assertEqual(app.query_one(TabbedContent).active, "tab-forwardtest")
+                    # CDO-2464451480: the UI switched while create is still held,
+                    # not after a synchronous call merely timed out.
+                    self.assertFalse(timed_out.is_set())
+                    self.assertFalse(finished.is_set())
+                    self.assertFalse(release.is_set())
+                    self.assertTrue(app._batch_busy)
                     app.action_batch_everything()
                     self.assertEqual(calls.count("batch.create"), 1)
                     release.set()

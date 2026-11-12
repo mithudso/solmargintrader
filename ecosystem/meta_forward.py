@@ -552,7 +552,7 @@ def run(home, poll=15):
                 print(canonical({"paper_only": True, "status": "blocked", "reason": "paper_store_failed"}), flush=True)
             until = time.monotonic() + poll
             while not stop and time.monotonic() < until:
-                time.sleep(min(1, until - time.monotonic()))
+                time.sleep(max(0, min(1, until - time.monotonic())))
 
 
 def main(argv=None):

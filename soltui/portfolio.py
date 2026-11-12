@@ -19,6 +19,8 @@ bug report without exposing the wallet's history.
 from __future__ import annotations
 
 import json
+import hashlib
+import tempfile
 import math
 import os
 import time
@@ -59,12 +61,16 @@ def save_last_scan(result: dict[str, Any], chain: str) -> Path:
     empty table until someone presses Scan. Owner-only, created that way: it lists the holdings."""
     target = last_scan_path()
     target.parent.mkdir(parents=True, exist_ok=True)
-    tmp = target.with_suffix(".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as fh:
-        json.dump({"chain": chain, "saved_at": time.time(), "result": result}, fh)
-    os.replace(tmp, target)
-    os.chmod(target, 0o600)
+    fd, name = tempfile.mkstemp(prefix=".last-scan-", dir=target.parent)
+    tmp = Path(name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            json.dump({"chain": chain, "saved_at": time.time(), "result": result}, fh)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, target)
+    finally:
+        tmp.unlink(missing_ok=True)
     return target
 
 
@@ -95,13 +101,21 @@ def build_snapshot(result: dict[str, Any]) -> dict[str, Any]:
         rows = ([ch["native"]] if ch.get("native") else []) + [h for h in ch["holdings"] if h["included"]] + ch["stakes"]
         balances: dict[str, float] = {}
         prices: dict[str, float] = {}
+        symbols: dict[str, str] = {}
         for r in rows:
             sym = r["symbol"] + (" (staked)" if r.get("kind") == "stake" else "")
+            display = sym
+            identifier = r.get("mint") or r.get("address") if r.get("kind") not in {"native", "stake"} else None
+            if isinstance(identifier, str) and identifier:
+                canonical = identifier.lower() if identifier.startswith("0x") else identifier
+                sym = "token#" + hashlib.sha256((name + "|" + canonical).encode()).hexdigest()
+            symbols[sym] = display
             balances[sym] = balances.get(sym, 0.0) + float(r["amount"])
             if r.get("price_usd") is not None:
                 prices[sym] = float(r["price_usd"])
         entry: dict[str, Any] = {
             "status": ch["status"], "balances": balances, "prices": prices, "usd": ch["total_usd"],
+            "balance_identity_version": 2, "balance_symbols": symbols,
             "usd_complete": ch.get("total_complete", True), "unpriced": ch.get("unpriced", []),
             "positions": len(ch["positions"]),
         }
@@ -126,6 +140,23 @@ def append_snapshot(snap: dict[str, Any], path: Path | None = None) -> Path:
     return target
 
 
+def _valid_snapshot(row):
+    def finite(value):
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+    if (not isinstance(row, dict) or not finite(row.get("ts")) or not isinstance(row.get("at"), str)
+            or not finite(row.get("total_usd")) or not isinstance(row.get("chains"), dict)):
+        return False
+    for name, chain in row["chains"].items():
+        if (not isinstance(name, str) or not isinstance(chain, dict) or not isinstance(chain.get("status"), str)
+                or type(chain.get("usd_complete")) is not bool or not finite(chain.get("usd"))):
+            return False
+        for field in ("balances", "prices"):
+            values = chain.get(field)
+            if not isinstance(values, dict) or any(not isinstance(key, str) or not finite(value) or value < 0 for key, value in values.items()):
+                return False
+    return True
+
+
 def load_snapshots(path: Path | None = None) -> list[dict[str, Any]]:
     target = path or snapshots_path()
     try:
@@ -138,7 +169,7 @@ def load_snapshots(path: Path | None = None) -> list[dict[str, Any]]:
             row = json.loads(raw)
         except ValueError:
             continue
-        if isinstance(row, dict) and isinstance(row.get("ts"), (int, float)) and isinstance(row.get("chains"), dict):
+        if _valid_snapshot(row):
             out.append(row)
     return sorted(out, key=lambda r: r["ts"])
 
@@ -185,12 +216,17 @@ def diff_snapshots(old: dict[str, Any], new: dict[str, Any]) -> dict[str, Any]:
             value_after += now["usd"]
         else:
             value_ok = False
+        if was.get("balance_identity_version", 1) != now.get("balance_identity_version", 1) and any(key.startswith("token#") for key in (*was["balances"], *now["balances"])):
+            skipped.append({"chain": name, "reason": "token identity format changed; need two snapshots using the current format"})
+            value_ok = False
+            continue
         for sym in sorted(set(was["balances"]) | set(now["balances"])):
             b, a = was["balances"].get(sym, 0.0), now["balances"].get(sym, 0.0)
             if not _differs(b, a):
                 continue
             px = now["prices"].get(sym) or was["prices"].get(sym)
-            changes.append({"chain": name, "symbol": sym, "before": b, "after": a, "delta": a - b,
+            changes.append({"chain": name, "symbol": now.get("balance_symbols", {}).get(sym, was.get("balance_symbols", {}).get(sym, sym)),
+                            "identity": sym, "before": b, "after": a, "delta": a - b,
                             "usd_delta": None if px is None else (a - b) * px})
     for name in old["chains"]:
         if name not in new["chains"]:

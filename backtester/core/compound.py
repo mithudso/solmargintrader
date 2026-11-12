@@ -151,6 +151,8 @@ def load_funding(asset: str, data_dir: Path | None = None) -> dict[str, np.ndarr
     if "timestamp" not in df or "funding_rate" not in df:
         return None
     df = df.dropna(subset=["timestamp", "funding_rate"])
+    if not np.isfinite(df[["timestamp", "funding_rate"]].to_numpy(dtype="float64")).all():
+        raise CompoundDataError("funding history requires finite timestamps and rates")
     return {"ts": df["timestamp"].to_numpy(dtype="int64"), "rate": df["funding_rate"].to_numpy(dtype="float64")}
 
 
@@ -252,6 +254,12 @@ def _stitch(slices: Sequence[_Slice | None]) -> dict[str, Any]:
     dd = float((equity / peak - 1.0).min()) if equity.size else 0.0
     sd = float(r.std(ddof=0)) if r.size else 0.0
     trades = sum(s.trades for s in kept)
+    capital = 1.0
+    fees = borrow = 0.0
+    for segment in kept:
+        fees += capital * segment.fees
+        borrow += capital * segment.borrow
+        capital *= float(np.prod(1 + segment.returns[np.isfinite(segment.returns)]))
     return {
         "bars": int(r.size),
         "total_return": round(float(equity[-1] - 1.0), 6) if equity.size else 0.0,
@@ -259,8 +267,8 @@ def _stitch(slices: Sequence[_Slice | None]) -> dict[str, Any]:
         "max_drawdown": round(dd, 6),
         "trades": trades,
         "win_rate": None if trades == 0 else round(sum(s.wins for s in kept) / trades, 4),
-        "fees_pct": round(float(100.0 * sum(s.fees for s in kept)), 4),
-        "borrow_pct": round(float(100.0 * sum(s.borrow for s in kept)), 4),
+        "fees_pct": round(float(100.0 * fees), 4),
+        "borrow_pct": round(float(100.0 * borrow), 4),
         "liquidations": sum(s.liquidations for s in kept),
         "time_in_market": round(sum(s.exposure_bars for s in kept) / max(1, r.size), 4),
     }

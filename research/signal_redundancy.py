@@ -242,7 +242,9 @@ def per_strategy_table(
     """
     rows = []
     for name in signals.columns:
-        series = signals[name]
+        series = signals[name].dropna()
+        if not np.isfinite(series.to_numpy()).all():
+            raise ValueError("nonfinite measured exposure")
         state = np.sign(series)
         rows.append(
             {

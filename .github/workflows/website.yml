@@ -1,10 +1,10 @@
 name: Website
 on:
   pull_request:
-    paths: ['website/**', 'extension/src/wallet/solana.js', '.github/workflows/website.yml']
+    paths: ['website/**', 'research/**', 'backtester/**', 'oracle/**', 'extension/src/wallet/solana.js', '.github/workflows/website.yml']
   push:
     branches: [master, main]
-    paths: ['website/**', 'extension/src/wallet/solana.js', '.github/workflows/website.yml']
+    paths: ['website/**', 'research/**', 'backtester/**', 'oracle/**', 'extension/src/wallet/solana.js', '.github/workflows/website.yml']
 permissions:
   contents: read
 jobs:

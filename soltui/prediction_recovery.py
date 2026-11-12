@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import fcntl
 import json
+import math
 import os
 import shlex
 import signal
@@ -31,11 +32,38 @@ def directory() -> Path:
     return config.CONFIG_DIR / "forwardtest"
 
 
-def _read(name: str) -> dict:
+class ControlUnavailable(ValueError):
+    """An existing control record cannot authorize producer work."""
+
+
+def _finite_time(value):
     try:
-        result = json.loads((directory() / name).read_text(encoding="utf-8"))
+        return type(value) in (int, float) and math.isfinite(value)
+    except OverflowError:
+        return False
+
+
+def _read(name: str) -> dict:
+    path = directory() / name
+    try:
+        if name == "control.json" and path.is_symlink():
+            raise ControlUnavailable("prediction_control_unavailable")
+        result = json.loads(path.read_text(encoding="utf-8"))
+        if name == "control.json" and (
+            not isinstance(result, dict)
+            or ("paused" in result and type(result["paused"]) is not bool)
+            or any(key in result and not isinstance(result[key], dict)
+                   for key in ("requests", "last_requested"))
+            or ("retry_after" in result and not _finite_time(result["retry_after"]))
+            or any(not _finite_time(value) for value in result.get("last_requested", {}).values())
+        ):
+            raise ControlUnavailable("prediction_control_unavailable")
         return result if isinstance(result, dict) else {}
-    except (OSError, ValueError):
+    except FileNotFoundError:
+        return {}
+    except (OSError, ValueError, RecursionError):
+        if name == "control.json":
+            raise ControlUnavailable("prediction_control_unavailable") from None
         return {}
 
 
@@ -151,7 +179,14 @@ def _registered_console(pid: int) -> bool:
 
 def health(asset: str) -> dict[str, Any]:
     now = time.time()
-    control, owner = _read("control.json"), _read("producer.json")
+    try:
+        control = _read("control.json")
+    except ControlUnavailable:
+        return {"state": "failed", "running": _locked(), "busy": False, "paused": True,
+                "can_start": False, "message": "Prediction control is unavailable; repair it before resuming.",
+                "asset": asset, "assets": [], "current_asset": None, "queued": False,
+                "owner": None, "cooldown_seconds": 0, "last_error": "prediction_control_unavailable", "last": {}}
+    owner = _read("producer.json")
     locked = _locked()
     legacy = _legacy_owner() if not locked else None
     is_paused = control.get("paused") is True
@@ -233,10 +268,17 @@ class Lease:
     def watch(self, stop: threading.Event) -> None:
         def monitor():
             while not self.closed.wait(.5):
-                if paused():
-                    stop.set()
                 try:
+                    if paused():
+                        stop.set()
                     self.update()
+                except ControlUnavailable:
+                    stop.set()
+                    try:
+                        self.update(state="failed", last_error="prediction_control_unavailable")
+                    except OSError:
+                        pass
+                    return
                 except OSError:
                     # Losing durable control/status access must stop the writer.
                     stop.set()
@@ -247,6 +289,8 @@ class Lease:
     def finish(self, *, error: str | None = None) -> None:
         if self.handle.closed:
             return
+        if error is None and self.metadata.get("last_error") == "prediction_control_unavailable":
+            error = "prediction_control_unavailable"
         self.closed.set()
         if self.monitor is not None:
             self.monitor.join(2)
@@ -281,9 +325,13 @@ def _acquire(plan: dict, kind: str) -> Lease | None:
 
 def acquire(plan: dict, kind: str, *, manual: bool = False) -> Lease | None:
     with _control():
+        try:
+            control = _read("control.json")
+        except ControlUnavailable:
+            return None
         if _locked() or _legacy_owner() is not None:
             return None
-        if paused() and not manual:
+        if control.get("paused") and not manual:
             return None
         lease = _acquire(plan, kind)
         if lease is not None and manual:
@@ -318,7 +366,11 @@ def _request(asset: str, control: dict, now: float, owner: dict) -> None:
 
 def ensure(asset: str, fallback_plan, *, manual: bool = False) -> dict:
     with _control():
-        control, owner = _read("control.json"), _read("producer.json")
+        try:
+            control = _read("control.json")
+        except ControlUnavailable:
+            return health(asset)
+        owner = _read("producer.json")
         now = time.time()
         if control.get("paused") and not manual:
             return health(asset)

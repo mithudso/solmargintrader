@@ -265,6 +265,7 @@ class ChainScan:
         # reader cannot take the total for the whole value.
         unpriced = [r["symbol"] for r in ([self.native] if self.native else []) + [h for h in self.holdings if h["included"]]
                     + self.stakes if r.get("usd") is None and (r.get("amount") or 0) > 0]
+        unpriced += [f"position {p.get('token_id', '?')}" for p in self.positions if _num(p.get("value_usd")) is None]
         flagged = [h for h in self.holdings if h["airdrop"]]
         got_any = bool(self.native or self.holdings or self.stakes or self.positions)
         status = "ok" if not self.errors else ("partial" if got_any else "error")
@@ -321,7 +322,31 @@ def _rpc(fetch: Fetch, url: str, method: str, params: list, ident: int = 1) -> A
     if reply.get("error"):
         err = reply["error"]
         raise WalletHttpError(0, f"{method}: {err.get('message') if isinstance(err, dict) else err}")
-    return reply.get("result")
+    result = reply.get("result")
+    if method == "getBalance":
+        if not isinstance(result, dict) or type(result.get("value")) is not int or result["value"] < 0:
+            raise WalletHttpError(0, "getBalance: invalid balance evidence")
+    if method in {"getTokenAccountsByOwner", "getProgramAccounts"}:
+        accounts = result.get("value") if isinstance(result, dict) and method == "getTokenAccountsByOwner" else result
+        if not isinstance(accounts, list):
+            raise WalletHttpError(0, f"{method}: invalid account evidence")
+        for item in accounts:
+            if not isinstance(item, dict) or not isinstance(item.get("account"), dict):
+                raise WalletHttpError(0, f"{method}: invalid account evidence")
+            data = item["account"].get("data")
+            if not isinstance(data, dict) or not isinstance(data.get("parsed"), dict) or not isinstance(data["parsed"].get("info"), dict):
+                raise WalletHttpError(0, f"{method}: invalid parsed account evidence")
+            info = data["parsed"]["info"]
+            if method == "getTokenAccountsByOwner":
+                amount = info.get("tokenAmount")
+                if (not isinstance(info.get("mint"), str) or not info["mint"]
+                        or not isinstance(amount, dict)):
+                    raise WalletHttpError(0, f"{method}: invalid token account evidence")
+            elif info.get("stake") is not None:
+                stake = info["stake"]
+                if not isinstance(stake, dict) or not isinstance(stake.get("delegation", {}), dict):
+                    raise WalletHttpError(0, f"{method}: invalid stake account evidence")
+    return result
 
 
 def solana_links(address: str, kind: str) -> str:
@@ -336,7 +361,10 @@ def scan_solana(address: str, fetch: Fetch, rpc: str = SOLANA_RPC) -> ChainScan:
     try:
         lamports = _rpc(fetch, rpc, "getBalance", [address])
         value = lamports.get("value") if isinstance(lamports, dict) else lamports
-        sol = (_num(value) or 0.0) / LAMPORTS
+        amount = _num(value)
+        if amount is None or amount < 0:
+            raise WalletHttpError(0, "getBalance: balance unavailable")
+        sol = amount / LAMPORTS
         scan.native = {"symbol": "SOL", "name": "Solana", "amount": sol, "price_usd": None, "usd": None,
                        "source": LABEL, "kind": "native"}
     except WalletHttpError as exc:
@@ -791,7 +819,8 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
                           "contracts are not visited or called")
 
     # 6. position NFTs and the daemon's Aero positions
-    daemon_ids = {str(p.get("token_id")): p for p in daemon["positions"] if p.get("token_id") is not None}
+    daemon_ids = ({str(p.get("token_id")): p for p in daemon["positions"] if p.get("token_id") is not None}
+                  if daemon.get("mode") == "live" else {})
     owned_ids: set[str] = set()
     for proto, manager in POSITION_MANAGERS.items():
         count_raw = call_rpc(f"base {proto} balanceOf", lambda u, m=manager: _rpc(

@@ -16,6 +16,7 @@ import json
 import sys
 import tempfile
 import unittest
+from contextlib import contextmanager, nullcontext
 from pathlib import Path
 from unittest import mock
 
@@ -130,8 +131,15 @@ class IdleTests(unittest.TestCase):
             patcher.start()
             self.addCleanup(patcher.stop)
 
+    @contextmanager
     def popen(self):
-        return mock.patch.object(idle.subprocess, "Popen")
+        # Exercise automatic admission only while every launch/readiness seam
+        # is inert. The inherited production kill switch remains set elsewhere.
+        guard = (nullcontext() if isinstance(oe.ensure, mock.Mock) else
+                 mock.patch.object(oe, "ensure", side_effect=AssertionError("unexpected readiness probe")))
+        with (mock.patch.object(idle.subprocess, "Popen") as process,
+              guard, mock.patch.dict(idle.os.environ, {"INDEX_NO_AUTO": "0"})):
+            yield process
 
     def test_fresh_means_no_rebuild_and_no_ollama(self):
         with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")), \
@@ -193,11 +201,11 @@ class IdleTests(unittest.TestCase):
         self.assertIn("not rebuilding", message)
 
     def test_a_second_check_inside_the_interval_is_throttled(self):
-        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status:
+        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status, self.popen():
             idle.maybe_start(now=1000.0)
             idle.maybe_start(now=1000.0 + idle.MIN_INTERVAL - 1)
         self.assertEqual(status.call_count, 1)
-        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status:
+        with mock.patch.object(idle, "semantic_status", return_value=("fresh", "ok")) as status, self.popen():
             idle.maybe_start(now=1000.0 + idle.MIN_INTERVAL + 1)
         self.assertEqual(status.call_count, 1)
 
@@ -319,10 +327,16 @@ class QueryTests(unittest.TestCase):
     def test_hybrid_falls_back_to_keyword_with_the_reason_when_ollama_is_down(self):
         down = oe.Status(False, False, False, None, "ollama is not reachable")
         with tempfile.TemporaryDirectory() as tmp:
+            import numpy as np
+
             manifest = Path(tmp) / "m.json"
-            manifest.write_text(json.dumps({"model": oe.EMBED_MODEL}))
+            vectors = Path(tmp) / "vectors.npz"
+            manifest.write_text(json.dumps({
+                "model": oe.EMBED_MODEL, "dims": 2, "chunkOwners": ["README.md"],
+            }))
+            np.savez(vectors, embeddings=np.array([[1.0, 0.0]], dtype="float32"))
             with mock.patch.object(oe, "ensure", return_value=down), \
-                    mock.patch.object(search, "semantic_pair", return_value=(manifest, manifest)), \
+                    mock.patch.object(search, "semantic_pair", return_value=(manifest, vectors)), \
                     mock.patch("builtins.print") as printed:
                 result = search.run_query("slippage", "hybrid", 3, auto_index=False)
         printed.assert_not_called()

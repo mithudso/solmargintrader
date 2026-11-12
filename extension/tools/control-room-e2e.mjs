@@ -33,7 +33,10 @@ else environment.PYTHONPATH = `${path.join(ROOT, 'botmanager/src')}:${ROOT}`;
 const python = (code, args = [], timeout = 20000) => new Promise((resolve, reject) => {
   execFile(PYTHON, [...(INSTALLED ? ['-I'] : []), '-c', code, ...args], {
     cwd: INSTALLED ? os.tmpdir() : ROOT, env: environment, timeout,
-  }, (error, output, stderr) => error ? reject(new Error(`isolated availability helper failed: ${stderr.slice(-2000)}`)) : resolve(JSON.parse(output)));
+  }, (error, output) => {
+    if (error) { reject(new Error('isolated availability helper failed')); return; }
+    try { resolve(JSON.parse(output)); } catch { reject(new Error('isolated availability helper returned invalid JSON')); }
+  });
 });
 const report = { kind: 'isolated_real_chrome_control_room_availability', installed_runtime: INSTALLED,
   runtime_python: PYTHON, everyday_browser_changed: false, trading_armed: false, network: [], checks: {} };
@@ -127,8 +130,8 @@ try {
   report.checks.servers_down_before_click = true;
   await browser.evaluate(pageSession, `document.getElementById('controlRoomRefresh').click()`);
   assert(await browser.waitFor(() => browser.evaluate(pageSession, `!document.getElementById('controlRoomStart').disabled`)), 'Start button did not enable after verified helper health');
-  await browser.evaluate(pageSession, `document.getElementById('controlRoomStart').click()`);
   started = true;
+  await browser.evaluate(pageSession, `document.getElementById('controlRoomStart').click()`);
   const healthy = await browser.waitFor(async () => {
     const snapshot = await call('controlRoomStatus');
     report.startup_observations ??= [];

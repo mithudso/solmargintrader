@@ -34,6 +34,7 @@ CSV is wrong, and the fix is in the driver that produced it.
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from statistics import median
@@ -73,9 +74,9 @@ def _as_float(v: str | None) -> float | None:
         return None
     try:
         f = float(v)
-    except ValueError:
+    except (TypeError, ValueError, OverflowError):
         return None
-    return None if f != f else f  # NaN -> None; an insufficient row writes NaN
+    return f if math.isfinite(f) else None  # NaN -> None; an insufficient row writes NaN
 
 
 def _as_int(v: str | None) -> int | None:
@@ -106,7 +107,7 @@ class ResultRow:
         is fine here — neither may be ranked — but conflating either with a valid
         row is the defect this module exists to prevent.
         """
-        return (self.n_paths or 0) > 0 and (self.trades or 0) >= MIN_RANKABLE_TRADES
+        return self.median_sharpe is not None and (self.n_paths or 0) > 0 and (self.trades or 0) >= MIN_RANKABLE_TRADES
 
 
 @dataclass
@@ -159,7 +160,10 @@ def load_result_file(path: Path) -> FileSummary:
     summary = FileSummary(source=path.name)
     try:
         with path.open(newline="", encoding="utf-8") as fh:
-            for row in csv.DictReader(fh):
+            reader = csv.DictReader(fh)
+            if not any(name in (reader.fieldnames or []) for name in COLUMNS["median_sharpe"]):
+                return summary
+            for row in reader:
                 sharpe = _as_float(_pick(row, "median_sharpe"))
                 label = _pick(row, "label")
                 if label is None and sharpe is None:
@@ -175,8 +179,8 @@ def load_result_file(path: Path) -> FileSummary:
                     trades=_as_int(_pick(row, "trades")),
                     n_paths=_as_int(_pick(row, "n_paths")),
                 ))
-    except (OSError, csv.Error):
-        return summary
+    except (OSError, csv.Error, UnicodeError) as exc:
+        raise ValueError(f"{path.name}: result evidence unavailable ({type(exc).__name__})") from None
     return summary
 
 

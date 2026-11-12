@@ -308,8 +308,11 @@ class Summary:
 
 
 def _sum(rows: list[dict[str, Any]], key: str) -> float | None:
-    vals = [v for v in (num(r.get(key)) for r in rows) if v is not None]
-    return sum(vals) if vals else None
+    vals = [num(r.get(key)) for r in rows]
+    if not vals or any(v is None for v in vals):
+        return None
+    total = sum(vals)
+    return total if math.isfinite(total) else None
 
 
 def summarise(

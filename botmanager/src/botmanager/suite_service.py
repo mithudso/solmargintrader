@@ -9,10 +9,12 @@ from __future__ import annotations
 import hashlib
 import os
 import plistlib
+import shlex
 import stat
 import subprocess
 import sys
 from pathlib import Path
+from xml.parsers.expat import ExpatError
 
 from .domain import ManagerError
 from .machine_health import homes
@@ -135,7 +137,7 @@ def definition(home, ecosystem_home, executable, platform_name):
         "",
         "[Service]",
         "Type=simple",
-        "ExecStart=" + " ".join(_quote(value) for value in arguments),
+        "ExecStart=" + " ".join(_quote(value).replace("$", "$$") for value in arguments),
         "Environment=" + _quote("SOLBOT_HOME=" + str(home)),
         "Environment=" + _quote("SOLBOT_ECOSYSTEM_HOME=" + str(ecosystem_home)),
         "Environment=INDEX_NO_AUTO=1",
@@ -188,6 +190,21 @@ def _read_definition(path):
         os.close(fd)
 
 
+def _retained_executable(raw, platform_name):
+    """Read identity from a retained definition without executing its launcher."""
+    if platform_name == "darwin":
+        body = plistlib.loads(raw)
+        arguments = body.get("ProgramArguments") if isinstance(body, dict) else None
+    else:
+        lines = [line.partition("=")[2] for line in raw.decode().splitlines() if line.startswith("ExecStart=")]
+        arguments = shlex.split(lines[0]) if len(lines) == 1 else None
+        if arguments:
+            arguments[0] = arguments[0].replace("%%", "%").replace("$$", "$")
+    if not isinstance(arguments, list) or not arguments or not isinstance(arguments[0], str) or not Path(arguments[0]).is_absolute():
+        raise ValueError("unverified_suite_definition")
+    return Path(arguments[0])
+
+
 def operation(
     action, home=None, ecosystem_home=None, *, directory=None, platform_name=None
 ):
@@ -232,10 +249,20 @@ def operation(
     if action not in ("install", "uninstall", "start", "stop"):
         raise ManagerError("invalid_input", "Unknown suite service action.")
     try:
-        executable = installed_executable()
-        wanted = definition(home, ecosystem_home, executable, platform_name)
         exists = path.exists() or path.is_symlink()
-        if exists and _read_definition(path) != wanted:
+        retained = _read_definition(path) if exists else None
+        if action in ("install", "start"):
+            executable = installed_executable()
+            wanted = definition(home, ecosystem_home, executable, platform_name)
+        elif exists:
+            try:
+                executable = _retained_executable(retained, platform_name)
+                wanted = definition(home, ecosystem_home, executable, platform_name)
+            except (ValueError, TypeError, ExpatError):
+                raise ManagerError("identity_conflict", "Existing suite service definition is unverified; it was retained.", 3) from None
+        else:
+            wanted = None
+        if exists and retained != wanted:
             raise ManagerError(
                 "identity_conflict",
                 "Existing suite service definition differs; it was retained.",
@@ -356,7 +383,7 @@ def operation(
         }
     except ManagerError:
         raise
-    except (OSError, ValueError, TypeError) as exc:
+    except (OSError, ValueError, TypeError, ExpatError) as exc:
         raise ManagerError(
             "suite_service_unavailable",
             "Service operation could not be confirmed; state was retained.",

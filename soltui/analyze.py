@@ -73,6 +73,8 @@ class Analysis:
     truncated: bool
     # Close of the series' first bar, the base of `net_pct`; None when unreadable.
     first_close: float | None = None
+    gap_count: int = 0
+    missing_bars: int = 0
 
     @property
     def net_pct(self) -> float | None:
@@ -97,7 +99,9 @@ class Analysis:
         parts = ", ".join(f"{v} {k}" for k, v in self.actions.items())
         return (f"{self.asset} {self.interval} @ {self.as_of:%Y-%m-%d %H:%M} UTC "
                 f"(bar {self.bar_index} of {self.bars_used}, close {self.close:,.2f}) "
-                f"— {parts or 'no decisions'}")
+                f"— {parts or 'no decisions'}"
+                + (f"; history incomplete: {self.missing_bars} missing bars in {self.gap_count} gaps"
+                   if self.gap_count else ""))
 
 
 def available_assets(data_dir: Path | None = None) -> list[tuple[str, str]]:
@@ -235,17 +239,23 @@ def analyse(asset: str, interval: str = "1d", as_of: datetime | None = None,
     composite): each is replayed by the same `replay_targets`/`classify` pair.
     """
     from research.decide import family_tally, strategy_decisions
+    import numpy as np
+    from backtester.core.types import INTERVAL_SECONDS
 
     sliced, idx, resolved, truncated = _prepare(asset, interval, as_of, data_dir)
     decisions = strategy_decisions(sliced, keys=keys) if (keys is None or keys) else []
     for key, family, strategy in extra or []:
         decisions.append(custom_decision(key, family, strategy, sliced))
+    deltas = np.diff(sliced["ts"])
+    step = INTERVAL_SECONDS[interval]
+    gaps = deltas[deltas > step]
     return Analysis(
         asset=asset, interval=interval, as_of=resolved, bar_index=int(idx),
         bars_used=int(len(sliced["close"])),
         close=float(sliced["close"][-1]),
         decisions=decisions, tally=family_tally(decisions),
         truncated=truncated, first_close=_first_close(asset, interval, data_dir),
+        gap_count=int(len(gaps)), missing_bars=int(sum(gaps // step - 1)),
     )
 
 

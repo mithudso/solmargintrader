@@ -1,5 +1,6 @@
 """Every rail, one test each, plus the property that dry-run applies the same trade rails as live."""
 
+import calendar
 import time
 from decimal import Decimal
 
@@ -19,7 +20,7 @@ PRICE_MAP = {
     WSOL_MINT: Decimal(str(PRICES[WSOL_MINT]["usdPrice"])),
     USDC_MINT: Decimal(str(PRICES[USDC_MINT]["usdPrice"])),
 }
-NOW = time.time()
+NOW = calendar.timegm((2026, 11, 12, 12, 0, 0))
 
 
 def report(side="sell", usd=1.0, **over):
@@ -130,7 +131,8 @@ def test_daily_loss_stop_blocks_buys_but_not_sells_or_exits(tmp_path):
     check(cfg, tmp_path, report("buy", 1.0), j, strategy="s2")
     # A sell/exit reduces risk and is never stopped by it.
     (tmp_path / "x").mkdir()
-    j2 = journal_with(tmp_path / "x", [("s1", "buy", 1_000_000_000, 20, today, 0)])
+    j2 = journal_with(tmp_path / "x", [("s1", "buy", 1_000_000_000, 20, today, 10.5)])
+    refused(cfg, tmp_path, report("buy", 1.0), "daily_loss_stop_usd", journal=j2)
     check(cfg, tmp_path, report("sell", 1.0), j2, exit_only=True)
 
 

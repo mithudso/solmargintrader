@@ -403,7 +403,9 @@ class WalletAuthority:
         if type(native) is not int or native < 0 or type(fee) is not int or fee < 0:
             raise Refused("missing measured wallet balance or transaction fee")
         states = self.journal.states()
-        strategies = {s["intent"]["strategy"] for s in states.values() if s.get("intent", {}).get("strategy")}
+        # A legacy intent without a strategy still owns exposure. Omitting its
+        # family must not create fresh capacity in the shared wallet.
+        strategies = {s["intent"].get("strategy") for s in states.values() if s.get("intent")}
         cost = Decimal(0)
         for strategy in strategies:
             positions = ledger.positions(states, strategy)

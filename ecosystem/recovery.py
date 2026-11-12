@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sqlite3
+import stat
 from contextlib import ExitStack, closing, contextmanager
 from itertools import product
 from pathlib import Path
@@ -40,14 +41,13 @@ def _json(value) -> str:
 
 @contextmanager
 def _idle(path: Path):
-    """Hold an existing owner lock without creating or rewriting its file."""
+    """Acquire the same stable lock inode a future worker must acquire."""
     if path.is_symlink():
         raise ValueError(ERROR)
-    if not path.exists():
-        yield
-        return
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    fd = os.open(path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
     try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise ValueError(ERROR)
         fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         yield
     finally:

@@ -86,7 +86,10 @@ def _read(connection, limit, deadline):
             raise ValueError
     if data.count(b"\n") != 1 or not data.endswith(b"\n"):
         raise ValueError
-    return json.loads(data)
+    try:
+        return json.loads(data)
+    except RecursionError:
+        raise ValueError("Malformed JSON frame") from None
 
 
 def request(home: Path, command: str, params: dict):

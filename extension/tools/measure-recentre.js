@@ -81,8 +81,9 @@ function recordingVenue(readPrice) {
     getFills: async () => [],
     getCarryCosts: async () => [],
     placeOrder: async ({ intent }) => {
-      live.push({ intentKey: intent.intentKey, side: intent.side, triggerPriceUsd: intent.level });
-      return { venueOrderId: `v-${intent.intentKey}`, simulated: true };
+      const venueOrderId = `v-${intent.intentKey}`;
+      live.push({ venueOrderId, intentKey: intent.intentKey, side: intent.side, triggerPriceUsd: intent.level, baseQty: intent.baseQty, notionalUsd: intent.notionalUsd });
+      return { venueOrderId, simulated: true };
     },
   };
 }
@@ -109,6 +110,7 @@ async function run({ closes, autoRecentre }) {
   for (const close of closes) {
     price = close;
     const result = await tick({ venue, store, configStore });
+    if (result.errors?.length) throw new Error(`measurement tick failed at bar ${outside + 1}`);
     // Read back AFTER the tick, so the bar that triggers a move is judged against
     // the ladder it moved to. That is the question being asked: did this run have
     // a ladder around the market on this bar?
@@ -129,8 +131,12 @@ async function main() {
   const { column, hasHeader } = closeColumn(lines[0], args.column);
   const closes = lines
     .slice(hasHeader ? 1 : 0)
-    .map((line) => Number(line.split(',')[column]))
-    .filter((c) => c > 0);
+    .map((line, index) => {
+      const cell = line.split(',')[column];
+      const value = typeof cell === 'string' && cell.trim() ? Number(cell) : NaN;
+      if (!Number.isFinite(value) || value <= 0) throw new Error(`invalid price at row ${index + (hasHeader ? 2 : 1)}`);
+      return value;
+    });
   if (closes.length < 2) {
     console.error(`error: ${args.csv} column ${column} yielded ${closes.length} usable closes`);
     return 1;

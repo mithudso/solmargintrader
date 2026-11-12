@@ -29,6 +29,7 @@ from web3 import Web3
 
 from . import abi, addresses, clmath
 from .chain import AeroChain, PoolState, PositionState
+from .diagnostics import safe_text
 from .strategy import Range
 from .submissions import PendingSubmission, SubmissionJournal
 from .validation import finite_number
@@ -166,8 +167,19 @@ class SimRunner:
         res = self.chain.w3.provider.make_request("eth_simulateV1", params)  # type: ignore[arg-type]
         if "error" in res:
             raise RuntimeError(f"eth_simulateV1 error: {res['error']}")
-        out = res["result"][0]["calls"]
+        try:
+            results = res["result"]
+            if not isinstance(results, list) or len(results) != 1:
+                raise ValueError("expected one simulated block")
+            out = results[0]["calls"]
+            if not isinstance(out, list) or len(out) != len(calls) or not all(isinstance(r, dict) for r in out):
+                raise ValueError("call response cardinality mismatch")
+            if any(int(row.get("status", "0x0"), 16) != 1 for row in out):
+                raise ValueError("transaction or balance/pool probe failed")
+        except (KeyError, IndexError, TypeError, ValueError) as error:
+            raise RuntimeError("simulation transaction/probe response is incomplete or failed") from error
         n_hist = len(self.history)
+        gas_used = dict(self.gas_used)
         for i, tx in enumerate(txs):
             r = out[n_hist + i]
             if int(r["status"], 16) != 1:
@@ -181,11 +193,24 @@ class SimRunner:
                 finite_number(gas, "simulated gas", positive=True, integer=True)
             except (KeyError, TypeError, ValueError) as error:
                 raise RuntimeError(f"simulated tx '{tx.label}' has invalid or missing gas evidence") from error
-            self.gas_used[tx.label] = self.gas_used.get(tx.label, 0) + gas
+            gas_used[tx.label] = gas_used.get(tx.label, 0) + gas
         logs = [lg for r in out[n_hist : n_hist + len(txs)] for lg in r.get("logs", [])]
         first_probe = len(calls) - len(probes)
-        bals = {t: int(out[first_probe + j]["returnData"], 16) for j, t in enumerate(self.tokens)}
-        sqrt_p = int(out[-1]["returnData"][2:66], 16) if self.pool else 0
+        try:
+
+            def decode_probe(row: dict[str, Any], types: list[str]) -> tuple[Any, ...]:
+                raw = row["returnData"]
+                if not isinstance(raw, str) or not raw.startswith("0x") or len(raw) != 2 + 64 * len(types):
+                    raise ValueError("invalid probe ABI length")
+                return self.chain.w3.codec.decode(types, bytes.fromhex(raw[2:]))
+
+            bals = {t: decode_probe(out[first_probe + j], ["uint256"])[0] for j, t in enumerate(self.tokens)}
+            sqrt_p = (
+                decode_probe(out[-1], ["uint160", "int24", "uint16", "uint16", "uint16", "bool"])[0] if self.pool else 0
+            )
+        except Exception as error:  # noqa: BLE001 -- malformed provider ABI evidence must not mutate state
+            raise RuntimeError("simulation balance/pool probe has invalid ABI evidence") from error
+        self.gas_used = gas_used
         self.history.extend(txs)
         self.logs.extend(logs)
         self.confirmed.extend(ConfirmedTx(tx, out[n_hist + i].get("logs", [])) for i, tx in enumerate(txs))
@@ -208,11 +233,13 @@ class LiveRunner:
         *,
         journal: SubmissionJournal | None = None,
         accounting: dict[str, str] | None = None,
+        before_send: Callable[[], None] | None = None,
     ):
         self.chain, self.acct, self.tokens, self.cfg, self.pool = chain, account, tokens, cfg, pool
         self.w3 = chain.w3
         self.journal = journal
         self.accounting = accounting
+        self.before_send = before_send
         self.group = uuid.uuid4().hex
         self._uncertain = False
         self._lease = None
@@ -302,6 +329,8 @@ class LiveRunner:
         hashes: list[str] = []
         block: int | str = "latest"
         for tx in txs:
+            if self.before_send is not None:
+                self.before_send()
             if self.journal is None:
                 raise RuntimeError("a durable submission journal is required before live writes")
             if self.journal.owner.lower() != self.acct.address.lower():
@@ -323,6 +352,8 @@ class LiveRunner:
                 "type": 2,
             }
             req["gas"] = int(self._estimate_gas(req) * 1.25)  # reverts here if the tx would fail
+            if self.before_send is not None:
+                self.before_send()
             signed = self.acct.sign_transaction(req)
             h = HexBytes(signed.hash)
             # Recorded before broadcasting: the RPC layer retries transport errors, so a send that raises may
@@ -337,6 +368,15 @@ class LiveRunner:
                 self.tokens,
                 accounting=self.accounting,
             )
+            try:
+                if self.before_send is not None:
+                    self.before_send()
+            except BaseException:
+                # This exact call has not entered the RPC send boundary. Do not leave an
+                # invented unknown submission blocking recovery after a late KILL.
+                self.journal.cancel_before_broadcast(_hex(h))
+                self._uncertain = False
+                raise
             self._next_nonce = req["nonce"] + 1
             self.sent_hashes.append(_hex(h))
             self._uncertain = True
@@ -402,7 +442,7 @@ class RebalanceError(RuntimeError):
     """
 
     def __init__(self, message: str, partial: RebalanceResult):
-        super().__init__(message)
+        super().__init__(safe_text(message))
         self.partial = partial
 
 
@@ -1046,8 +1086,10 @@ class Rebalancer:
         t0, t1 = pool.token0.address, pool.token1.address
         if token_in.lower() not in (t0.lower(), t1.lower()):
             raise ValueError(f"{token_in} is not a token of pool {pool.address}")
-        if amount_in <= 0:
-            raise ValueError("amount_in must be > 0")
+        finite_number(amount_in, "amount_in", positive=True, integer=True)
+        finite_number(min_out, "min_out", positive=True, integer=True)
+        if amount_in >= 2**256 or min_out >= 2**256:
+            raise ValueError("swap amounts must fit uint256")
         token_out = t1 if token_in.lower() == t0.lower() else t0
 
         def go() -> None:
@@ -1095,8 +1137,17 @@ class Rebalancer:
         """
         res = RebalanceResult(None, False, [], [], {})
         weth = Web3.to_checksum_address(addresses.WETH)
+        finite_number(amount_in, "amount_in", positive=True, integer=True)
+        finite_number(min_eth_out, "min_eth_out", positive=True, integer=True)
+        if amount_in >= 2**256 or min_eth_out >= 2**256:
+            raise ValueError("swap amounts must fit uint256")
         if weth not in (pool.token0.address, pool.token1.address):
             raise ValueError("swap_to_eth needs a pool that contains WETH")
+        if (
+            token_in.lower() not in (pool.token0.address.lower(), pool.token1.address.lower())
+            or token_in.lower() == weth.lower()
+        ):
+            raise ValueError("swap_to_eth input must be the pool's non-WETH token")
 
         def go() -> None:
             deadline = runner.block_timestamp() + self.cfg.deadline_s

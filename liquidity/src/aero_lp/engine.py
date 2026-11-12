@@ -15,7 +15,7 @@ from typing import Any
 from web3 import Web3
 
 from . import abi, addresses, clmath
-from .chain import MAX_HEAD_LAG_S, AeroChain, PoolState, PositionState, realized_vol_daily
+from .chain import MAX_HEAD_LAG_S, AeroChain, PoolState, PositionGone, PositionState, realized_vol_daily
 from .config import Config
 from .executor import (
     LiveRunner,
@@ -61,12 +61,12 @@ _signal_scope = threading.local()
 
 
 def _finite(value: object, *, positive: bool = False) -> bool:
-    return (
-        not isinstance(value, bool)
-        and isinstance(value, int | float)
-        and math.isfinite(value)
-        and (value > 0 if positive else value >= 0)
-    )
+    if isinstance(value, bool) or not isinstance(value, int | float):
+        return False
+    try:
+        return math.isfinite(value) and (value > 0 if positive else value >= 0)
+    except OverflowError:
+        return False
 
 
 @dataclass
@@ -133,22 +133,36 @@ class Engine:
         token_id = minted_token_id(receipt["logs"], addresses.NONFUNGIBLE_POSITION_MANAGER, self.cfg.owner)
         if token_id is None:
             raise RuntimeError("confirmed mint has no verified recipient Transfer receipt")
-        pos = self.chain.position(token_id, owner_hint=self.cfg.owner)
-        if pos.owner.lower() != self.cfg.owner.lower() or pos.pool.address.lower() != record["pool"].lower():
-            raise RuntimeError("confirmed mint ownership or pool does not match the recorded intent")
+        gone = False
+        try:
+            pos = self.chain.position(token_id, owner_hint=self.cfg.owner)
+        except PositionGone:
+            gone = True
+            pool = self.chain.pool_state(record["pool"])
+            intent = record["intent"]
+            if (
+                intent.get("recipient", "").lower() != self.cfg.owner.lower()
+                or intent.get("token0", "").lower() != pool.token0.address.lower()
+                or intent.get("token1", "").lower() != pool.token1.address.lower()
+            ):
+                raise RuntimeError("burned mint lacks verified historical pool/recipient identity") from None
+        else:
+            if pos.owner.lower() != self.cfg.owner.lower() or pos.pool.address.lower() != record["pool"].lower():
+                raise RuntimeError("confirmed mint ownership or pool does not match the recorded intent")
         old_ids = {r["intent"]["token_id"] for r in group if r["intent"]["kind"] == "remove"}
         for configured in self.cfg.token_ids:
             if configured in old_ids:
                 self.state.slot(configured)
         for slot in self.state.slots.values():
             if slot.current_token_id in old_ids or slot.current_token_id == token_id:
-                slot.current_token_id = token_id
+                if not gone:
+                    slot.current_token_id = token_id
                 if not any(record["hash"] in h.get("tx", []) for h in slot.history):
                     recovered_at = time.time()
                     slot.last_rebalance_ts = recovered_at
                     slot.edge_checks = 0
                     slot.history.append(
-                        {"ts": recovered_at, "new": token_id, "tx": [record["hash"]], "recovered": True}
+                        {"ts": recovered_at, "new": token_id, "tx": [record["hash"]], "recovered": True, "gone": gone}
                     )
         self.state.save()
 
@@ -191,6 +205,7 @@ class Engine:
             pool,
             journal=self.submission_journal(),
             accounting={"scope": "wallet"} if wallet else None,
+            before_send=self._gate,
         )
 
     def _gate(self) -> None:
@@ -389,9 +404,9 @@ class Engine:
             out.append("missing USD price for a pool token or ETH: max_position_usd / max_gas_usd cannot be enforced")
         if live and not all(_finite(v) for v in (ev.value_usd, ev.gas_usd)):
             out.append("invalid position value or gas estimate; safety caps cannot be enforced")
-        if live and ev.value_usd > sc.max_position_usd:
+        if live and _finite(ev.value_usd) and ev.value_usd > sc.max_position_usd:
             out.append(f"position ${ev.value_usd:,.0f} > safety.max_position_usd ${sc.max_position_usd:,.0f}")
-        if live and ev.gas_usd > sc.max_gas_usd:
+        if live and _finite(ev.gas_usd) and ev.gas_usd > sc.max_gas_usd:
             out.append(f"gas estimate ${ev.gas_usd:.2f} > safety.max_gas_usd ${sc.max_gas_usd:.2f}")
         return out
 
@@ -516,6 +531,9 @@ class Engine:
                 f"wallet holds {have_wei / 1e18:.6f} ETH, below the {need_wei / 1e18:.6f} ETH gas reserve"
             )
         fresh = self.chain.position(token_id, owner_hint=self.cfg.owner)
+        blocks = self.pool_blocks(fresh.pool, live=True)
+        if blocks:
+            raise RuntimeError("withdrawal manipulation guard: " + "; ".join(blocks))
         self.state.save()
         self._gate()
         with defer_sigint(self.on_stop):
@@ -632,7 +650,9 @@ def defer_sigint(on_stop: Callable[[int], None] | None = None) -> Iterator[None]
         if pending:
             raise KeyboardInterrupt
         pending.append(signum)
-        print("\nstop requested: finishing the in-flight transaction sequence first (send it again to force quit)")
+        # A failed notification cannot interrupt the protected sequence.
+        with contextlib.suppress(Exception):
+            print("\nstop requested: finishing the in-flight transaction sequence first (send it again to force quit)")
 
     previous = {sig: signal.signal(sig, handler) for sig in (signal.SIGINT, signal.SIGTERM)}
     _signal_scope.active = True

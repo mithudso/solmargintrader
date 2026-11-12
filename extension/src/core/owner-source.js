@@ -2,6 +2,7 @@
 export const OWNER_SOURCE_SCHEMA = 2;
 export const OWNER_SOURCE_FILES = [
   "manifest.json",
+  "vendor/lightweight-charts/lightweight-charts.standalone.production.mjs",
   "src/bg/live-windows.js",
   "src/bg/paper-venue.js",
   "src/bg/service-worker.js",

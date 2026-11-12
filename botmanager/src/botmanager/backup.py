@@ -12,6 +12,7 @@ import math
 import os
 import shutil
 import sqlite3
+import sys
 import tempfile
 import time
 from contextlib import ExitStack, closing
@@ -160,6 +161,10 @@ def _authority_binding(descriptor, registry_path=None, *, verify_owner=True):
 
 
 def _validate_authority(descriptor, expected):
+    # Snapshot hashes prove internal consistency, not permission to execute a
+    # program selected by that snapshot. Restore uses this installed runtime.
+    if Path(descriptor.get("interpreter", "")).resolve() != Path(sys.executable).resolve():
+        raise _error("Snapshot research interpreter requires a reviewed installation.")
     current = _authority_binding(descriptor, expected["registry_path"])
     if (
         current["authority"] != expected["authority"]

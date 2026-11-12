@@ -119,6 +119,18 @@ class FileTests(unittest.TestCase):
         (self.source / "cycle").symlink_to(self.source, target_is_directory=True)
         self.assertEqual(len(conversion_plan(self.source, self.output)), 1)
 
+    def test_output_ancestor_symlinks_are_refused_before_any_write(self) -> None:
+        nested = self.source / "nested"
+        nested.mkdir()
+        (nested / "page.html").write_text("<p>public fixture</p>")
+        outside = Path(self.temp.name) / "outside"
+        outside.mkdir()
+        self.output.mkdir()
+        (self.output / "nested").symlink_to(outside, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "symlink"):
+            conversion_plan(self.source, self.output)
+        self.assertEqual(list(outside.iterdir()), [])
+
     def test_invalid_encoding_reports_failure_and_continues(self) -> None:
         (self.source / "bad.html").write_bytes(b'<meta charset="not-real"><p>bad</p>')
         (self.source / "good.html").write_text("<p>ok</p>")

@@ -51,6 +51,7 @@ import shutil
 import subprocess
 import sys
 import sysconfig
+import tempfile
 from pathlib import Path
 
 try:
@@ -209,31 +210,68 @@ def install() -> int:
         )
 
     APPS_DIR.mkdir(parents=True, exist_ok=True)
-    if BUNDLE.exists():
-        print(f"replacing existing {BUNDLE}")
-        shutil.rmtree(BUNDLE)
-    shutil.copytree(DIST_BUNDLE, BUNDLE, symlinks=True)
-    dereference_resources(BUNDLE)
-    print(f"installed → {BUNDLE}")
-
-    SUPPORT.mkdir(parents=True, exist_ok=True)
-    LOG.parent.mkdir(parents=True, exist_ok=True)
-    AGENT.parent.mkdir(parents=True, exist_ok=True)
-    atomic_write(AGENT, render_plist(service_spec()))
-    print(f"wrote agent → {AGENT}")
-
-    if not reload_agent():
-        print(
-            "\nThe agent could not be loaded. Fix that before relying on login "
-            "startup:\n"
-            f"    launchctl bootstrap gui/{uid()} {AGENT}",
-            file=sys.stderr,
-        )
+    if BUNDLE.is_symlink() or AGENT.is_symlink():
+        print("refusing symlinked installation target", file=sys.stderr)
         return 1
-
-    print("\nInstalled and loaded. The app is supervised only while the flag exists:")
-    print("    soltui/soltui-service start")
-    return 0
+    staging = Path(tempfile.mkdtemp(prefix=".soltui-install-", dir=APPS_DIR))
+    candidate, previous = staging / "candidate.app", staging / "previous.app"
+    activated = False
+    complete = False
+    agent_written = False
+    recovery_required = False
+    old_agent = None
+    had_agent = AGENT.exists()
+    try:
+        old_agent = AGENT.read_bytes() if had_agent else None
+        if had_agent:
+            saved_agent = staging / "previous-agent.plist"
+            saved_agent.write_bytes(old_agent)
+            saved_agent.chmod(0o600)
+        shutil.copytree(DIST_BUNDLE, candidate, symlinks=True)
+        dereference_resources(candidate)
+        executable = candidate / "Contents" / "MacOS" / APP_NAME
+        problem = runtime_problem(candidate)
+        if not executable.is_file() or not os.access(executable, os.X_OK) or problem:
+            raise ValueError(problem or "staged bundle executable is unavailable")
+        SUPPORT.mkdir(parents=True, exist_ok=True)
+        LOG.parent.mkdir(parents=True, exist_ok=True)
+        AGENT.parent.mkdir(parents=True, exist_ok=True)
+        if BUNDLE.exists():
+            BUNDLE.rename(previous)
+        candidate.rename(BUNDLE)
+        activated = True
+        # Keep the previous app and plist until activation is confirmed.
+        agent_written = True
+        atomic_write(AGENT, render_plist(service_spec()))
+        if not reload_agent():
+            raise RuntimeError("replacement agent could not be loaded")
+        complete = True
+        print(f"installed and loaded → {BUNDLE}")
+        print("The app is supervised only while its supervision flag exists.")
+        return 0
+    except BaseException as exc:
+        try:
+            if activated and BUNDLE.exists():
+                shutil.rmtree(BUNDLE)
+            if previous.exists():
+                previous.rename(BUNDLE)
+            if agent_written:
+                if had_agent:
+                    atomic_write(AGENT, old_agent)
+                else:
+                    AGENT.unlink(missing_ok=True)
+        except OSError:
+            recovery_required = True
+            print(f"installation failed; retained recovery files at {staging}", file=sys.stderr)
+            return 1
+        if not isinstance(exc, (OSError, ValueError, RuntimeError)):
+            raise
+        print(f"installation failed; previous installation preserved: {exc}", file=sys.stderr)
+        return 1
+    finally:
+        # A failed rollback must retain its backup for explicit recovery.
+        if not recovery_required and (complete or not previous.exists()):
+            shutil.rmtree(staging, ignore_errors=True)
 
 
 def dereference_resources(bundle: Path) -> list[Path]:
@@ -343,8 +381,17 @@ def stop() -> int:
         print(f"flag removed → {FLAG}")
     else:
         print("flag was already absent")
-    run(["launchctl", "kill", "SIGTERM", f"gui/{uid()}/{LABEL}"])
-    print("stopped (will not start at login)")
+    result = run(["launchctl", "kill", "SIGTERM", f"gui/{uid()}/{LABEL}"])
+    if result.returncode:
+        detail = (result.stderr or result.stdout).strip()
+        absent = result.returncode in (3, 113) and any(message in detail.lower() for message in (
+            "no such process", "could not find service", "could not find specified service"))
+        if absent:
+            print("supervision disabled; launchd reports no running job")
+            return 0
+        print(f"supervision disabled; termination failed: {detail or 'no diagnostic'}", file=sys.stderr)
+        return 1
+    print("supervision disabled; termination requested")
     return 0
 
 
@@ -370,7 +417,9 @@ def status() -> int:
 
 def uninstall() -> int:
     """Remove the agent, the flag and the installed bundle."""
-    stop()
+    stopped = stop()
+    if stopped:
+        return stopped
     run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])
     for path in (AGENT, BUNDLE):
         if path.exists():

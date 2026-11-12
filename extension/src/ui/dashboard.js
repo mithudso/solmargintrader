@@ -29,6 +29,7 @@ const send = (msg) => chrome.runtime.sendMessage(msg);
 document.getElementById('version').textContent = `v${chrome.runtime.getManifest().version}`;
 
 const state = { overview: null, holdings: null, loaded: new Set() };
+const loading = new Map();
 
 /* --------------------------------------------------------------- shared -- */
 
@@ -82,8 +83,14 @@ function show() {
 
   // Overview and Alerts repaint every visit (they are cheap); the rest load once.
   if (!state.loaded.has(name) || name === 'overview' || name === 'alerts') {
-    state.loaded.add(name);
-    Promise.resolve(VIEWS[name].load()).catch((err) => console.warn('[smt] view failed', name, err));
+    if (!loading.has(name)) {
+      const task = Promise.resolve().then(() => VIEWS[name].load()).then(result => {
+        if (result !== null && result !== false) state.loaded.add(name);
+      }).catch(() => { $('#scanInfo').textContent = 'View unavailable. Revisit it to retry.'; })
+        .finally(() => loading.delete(name));
+      loading.set(name, task);
+    }
+    return loading.get(name);
   }
 }
 
@@ -115,6 +122,10 @@ function mountSettings() {
       await call({ type: 'setPrefs', patch });
       $('#walletStatus').textContent = 'Saved. Holdings now read these addresses.';
       state.holdings = null;
+      state.loaded.delete('holdings');
+      $('#holdingsKpis').textContent = 'Addresses changed. Refresh holdings to read these addresses.';
+      $('#holdingsChains').replaceChildren();
+      for (const id of ['kpiTotal', 'kpiBase', 'kpiSolana', 'kpiIdle']) $(`#${id}`).textContent = '—';
       await loadOverview();
     } catch (err) {
       $('#walletStatus').textContent = `Not saved: ${err.message}`;
@@ -134,8 +145,12 @@ function mountSettings() {
   $('#keyForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('#keyForm input[name="apiKey"]');
-    await send({ type: 'setApiKey', apiKey: input.value });
-    input.value = ''; // do not leave the key sitting in the DOM
+    try {
+      const response = await send({ type: 'setApiKey', apiKey: input.value });
+      $('#walletStatus').textContent = response?.ok ? 'API key saved locally.' : 'API key not saved: request refused.';
+    } catch {
+      $('#walletStatus').textContent = 'API key not saved: request unavailable.';
+    } finally { input.value = ''; }
   });
 }
 

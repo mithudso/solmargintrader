@@ -23,15 +23,31 @@ function report(name, ok, detail) {
   if (!ok) failures++;
 }
 
+async function endpointRead(url, init = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  let timer;
+  try {
+    return await Promise.race([
+      (async () => {
+        const res = await fetch(url, { ...init, signal: controller.signal });
+        return { ok: res.ok, status: res.status, body: res.ok ? await res.json() : null };
+      })(),
+      new Promise((_, reject) => { timer = setTimeout(() => { controller.abort(); reject(new Error('endpoint deadline exceeded')); }, timeoutMs); }),
+    ]);
+  } finally { clearTimeout(timer); }
+}
+
 async function checkPrice(host, label, key) {
   const url = `${host}?ids=${MINTS.join(',')}`;
   try {
-    const res = await fetch(url, { headers: key ? { 'x-api-key': key } : {} });
+    const res = await endpointRead(url, { headers: key ? { 'x-api-key': key } : {} });
     if (!res.ok) return report(label, false, `HTTP ${res.status}`);
-    const body = await res.json();
+    const body = res.body;
     const prices = parsePrices(body, MINTS);
     const base = prices[DEFAULT_CONFIG.baseMint];
-    const decimals = body?.[DEFAULT_CONFIG.baseMint]?.decimals;
+    const table = body?.data ?? body;
+    const decimals = table?.[DEFAULT_CONFIG.baseMint]?.decimals;
+    for (const mint of MINTS) report(`${label}: requested price`, Number.isFinite(prices[mint]) && prices[mint] > 0);
     report(label, base > 0, `${DEFAULT_CONFIG.baseSymbol} $${base?.toFixed(4)}, decimals ${decimals}`);
     if (decimals !== 9) {
       report(`${label}: SOL decimals are 9`, false, `got ${decimals} — order sizing depends on this`);
@@ -48,20 +64,20 @@ async function checkPrice(host, label, key) {
  */
 async function checkTriggerReachable() {
   try {
-    const res = await fetch(`${TRIGGER_BASE}/auth/challenge`, {
+    const res = await endpointRead(`${TRIGGER_BASE}/auth/challenge`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'x-api-key': apiKey } : {}) },
       body: JSON.stringify({ walletPubkey: DEFAULT_CONFIG.baseMint, type: 'message' }),
     });
-    const routeExists = res.status !== 404;
+    const routeExists = apiKey ? res.ok : [401, 403].includes(res.status);
     report(
       'trigger v2 auth/challenge route exists',
       routeExists,
       `HTTP ${res.status}${apiKey ? '' : ' (no API key: 401/403 expected)'}`,
     );
     if (apiKey && res.ok) {
-      const body = await res.json();
-      report('trigger v2 returns a challenge with a key', typeof body?.challenge === 'string');
+      const body = res.body;
+      report('trigger v2 returns a challenge with a key', typeof body?.challenge === 'string' && body.challenge.length > 0);
     }
   } catch (err) {
     report('trigger v2 reachable', false, err.message);

@@ -13,6 +13,7 @@ import os
 import plistlib
 import re
 import sqlite3
+import stat
 import time
 from collections.abc import Iterator
 from contextlib import closing, contextmanager
@@ -649,8 +650,12 @@ def _logs(manager_home: Path) -> dict:
             ):
                 continue
             try:
-                with path.open("rb") as stream:
-                    size = os.fstat(stream.fileno()).st_size
+                fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                with os.fdopen(fd, "rb") as stream:
+                    metadata = os.fstat(stream.fileno())
+                    if not stat.S_ISREG(metadata.st_mode):
+                        raise OSError("unsafe_log_path")
+                    size = metadata.st_size
                     stream.seek(max(0, size - MAX_LOG_TAIL))
                     tail = stream.read(MAX_LOG_TAIL)
                 files.append(
@@ -692,6 +697,8 @@ def _bootstrap(home: Path) -> dict:
         if not path.is_file() or path.stat().st_size > 1_048_576:
             raise ValueError
         state = json.loads(path.read_text())
+        if not isinstance(state, dict):
+            raise TypeError("invalid_bootstrap_state")
         phase = state.get("phase")
         if phase not in PHASES:
             phase = "unknown"

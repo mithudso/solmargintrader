@@ -146,10 +146,12 @@ export async function request({
       if (!RETRYABLE_STATUS.has(res.status)) break;
     }
     if (attempt === attempts - 1) break;
-    const retryAfter = Number(res?.headers?.get?.('retry-after'));
-    const delay = Number.isFinite(retryAfter) && retryAfter > 0
-      ? Math.min(retryAfter * 1000, 15_000)
-      : backoffDelayMs(attempt);
+    const rawRetryAfter = res?.headers?.get?.('retry-after');
+    const retryAfter = typeof rawRetryAfter === 'string' && rawRetryAfter.trim()
+      ? (/^\d+(?:\.\d+)?$/.test(rawRetryAfter.trim()) ? Number(rawRetryAfter) * 1000 : Date.parse(rawRetryAfter) - Date.now()) : NaN;
+    // A bounded caller may refuse a long server delay, but cannot replay early.
+    if (Number.isFinite(retryAfter) && retryAfter > 15_000) break;
+    const delay = Number.isFinite(retryAfter) ? Math.max(0, retryAfter) : backoffDelayMs(attempt);
     await sleepImpl(delay);
   }
 

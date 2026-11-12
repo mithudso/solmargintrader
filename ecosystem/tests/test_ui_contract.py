@@ -38,6 +38,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const {randomUUID} = require('node:crypto');
 const source = fs.readFileSync(process.argv[1], 'utf8');
+const watchdog = setTimeout(() => { console.error('UI assertions did not finish'); process.exit(1); }, 10000);
 async function fixture(preferences = null) {
   const elements = new Map(); let document;
   class Element {
@@ -194,8 +195,25 @@ const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
     assert.equal(posts,1);
     assert.equal(read(context,"Array.from(state.localActions.values()).at(-1).state"),'unknown');
   }
+  {
+    const {context} = await fixture(); let release;
+    read(context,"state.selected='old-bot'");
+    context.fetch=async path=>{if(path.startsWith('/api/analytics?'))return new Promise(resolve=>{release=()=>resolve({ok:true,json:async()=>({schema_version:1,ok:true,data:{bot:'old-bot'}})});});throw new Error('offline');};
+    const pending=read(context,'refresh()');await new Promise(setImmediate);
+    read(context,"state.selected='new-bot';state.analytics={bot:'new-bot'}");release();await pending;
+    assert.equal(read(context,'state.analytics.bot'),'new-bot');
+  }
+  {
+    const {context} = await fixture();
+    read(context,"state.activeRun='run';state.oracleInstrument='BTC/USD';state.oracle={instrument:'BTC/USD',selection:{revision:100}};state.localActions.set('save',{id:'save',action:'oracle.voters.set',state:'succeeded',result:{revision:2}});state.pendingPrefs.set('save',{kind:'voters',run:'run',instrument:'SOL/USD'});state.voterDrafts.set(voterKey('SOL/USD','run'),{dirty:true});renderActionLedger()");
+    assert.equal(read(context,"state.pendingPrefs.has('save')"),true);
+    assert.equal(read(context,"state.voterDrafts.has(voterKey('SOL/USD','run'))"),true);
+    read(context,"state.oracleInstrument='SOL/USD';state.oracle={instrument:'SOL/USD',selection:{revision:2}};renderActionLedger()");
+    assert.equal(read(context,"state.pendingPrefs.has('save')"),false);
+  }
   console.log('UI behavior: stale/pair gates, voter isolation, legacy guards, native input routing, hostile Markdown, run capture and no automatic mutation retry passed');
-})().catch(error=>{console.error(error);process.exitCode=1;});
+  console.log('UI_CONTRACT_COMPLETE');
+})().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>clearTimeout(watchdog));
 """
 
 
@@ -234,3 +252,4 @@ class UiContractTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("UI_CONTRACT_COMPLETE", completed.stdout)

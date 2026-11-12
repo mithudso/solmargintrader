@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import re
+import stat
 import subprocess
 from pathlib import Path
 
@@ -50,6 +51,7 @@ def title_summary(source, text):
 
 
 def export(repo=ROOT):
+    repo = Path(repo).resolve()
     names = subprocess.check_output(["git", "ls-files", "-z", "research", "backtester/strategy_cards"], cwd=repo).decode().split("\0")
     articles, skipped, bodies = [], [], []
     for source in sorted(filter(None, names)):
@@ -58,7 +60,15 @@ def export(repo=ROOT):
         if any(word in source.lower() for word in EXCLUDE_WORDS) or Path(source).name in ("FILES.md",):
             skipped.append({"source": source, "reason": "workflow_or_review_artifact"})
             continue
-        original = (repo / source).read_bytes()
+        path = repo / source
+        relative = Path(source)
+        if (relative.is_absolute() or ".." in relative.parts
+                or any((repo / Path(*relative.parts[:i])).is_symlink()
+                       for i in range(1, len(relative.parts) + 1))
+                or not path.resolve().is_relative_to(repo)
+                or not stat.S_ISREG(path.stat().st_mode)):
+            raise ValueError(f"unsafe publication source: {source}")
+        original = path.read_bytes()
         text = original.decode("utf-8")
         if SENSITIVE.search(text):
             raise ValueError(f"credential-like content refused in {source}")

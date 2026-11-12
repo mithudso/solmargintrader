@@ -91,7 +91,9 @@ def forward_outcomes(ts, o, h, l, c, step: int) -> Forward:
     for k in range(1, H_MAX + 1):
         ok = np.zeros(n, bool); ok[: n - k] = (ts[k:] - ts[: n - k]) == k * step
         # a window must be contiguous in time from t to t+k, or it spans a data gap
-        path[: n - k, k - 1] = np.where(ok[: n - k], c[k:] / entry[: n - k] - 1.0, np.nan)
+        if k + 1 < n:
+            exit_ok = (ts[k + 1:] - ts[:n-k-1]) == (k + 1) * step
+            path[:n-k-1, k - 1] = np.where(exit_ok & ok[:n-k-1], o[k + 1:] / entry[:n-k-1] - 1.0, np.nan)
         lows[: n - k, k - 1] = np.where(ok[: n - k], l[k:] / entry[: n - k] - 1.0, np.nan)
         highs[: n - k, k - 1] = np.where(ok[: n - k], h[k:] / entry[: n - k] - 1.0, np.nan)
     # bar t+1 itself must also be contiguous: ok at k=1 already; path[:,k-1] needs every step valid
@@ -194,19 +196,16 @@ def load_funding(asset: str, ts: np.ndarray, interval: str, data_dir: Path) -> n
         return None
     f = pd.read_csv(path).sort_values("timestamp")
     ft, fr = f["timestamp"].to_numpy("int64"), f["funding_rate"].to_numpy(float)
+    if (len(ft) == 0 or not np.isfinite(fr).all() or f.timestamp.duplicated().any()
+            or np.any(ft % 3600)):
+        return np.full(len(ts), np.nan)
     step = 86400 if interval == "1d" else 3600
-    if interval == "1d":
-        # funding settled inside day t is known by its close
-        pos = np.searchsorted(ts + step, ft, side="right")  # first bar whose end >= ft
-        out = np.zeros(len(ts)); hit = np.zeros(len(ts), bool)
-        for p, r in zip(np.searchsorted(ts, ft, side="right") - 1, fr):
-            if 0 <= p < len(ts) and ft[0] <= ts[p] + step:
-                out[p] += r; hit[p] = True
-        out[~hit] = np.nan
-        out = pd.Series(out).ffill().to_numpy()
-        return out
-    idx = np.searchsorted(ft, ts, side="right") - 1
-    out = np.where(idx >= 0, fr[np.clip(idx, 0, None)], np.nan)
+    out = np.full(len(ts), np.nan)
+    for i, stamp in enumerate(ts):
+        first, last = np.searchsorted(ft, [stamp, stamp + step])
+        expected = np.arange(stamp, stamp + step, 3600)
+        if np.array_equal(ft[first:last], expected):
+            out[i] = float(fr[first:last].sum())
     return out
 
 
@@ -381,6 +380,8 @@ def mine(asset: str, interval: str, max_combos: int = DEFAULT_MAX_COMBOS, data_d
     others = {}
     if interval == "1d":
         for a in REPLICATION_ASSETS:
+            if a.upper() == asset.upper():
+                continue
             try:
                 others[a] = load_dataset(a, "1d", data_dir, with_funding=a in ("BTC", "ETH"))
             except FileNotFoundError:
@@ -431,7 +432,8 @@ def mine(asset: str, interval: str, max_combos: int = DEFAULT_MAX_COMBOS, data_d
             "reliable": all(gates.values()), "failed_gates": ",".join(k for k, ok in gates.items() if not ok),
             "uses_funding": any(k in FUNDING_CONDITIONS for k in combo),
         })
-    df = pd.DataFrame(out)
+    columns = ("conditions", "depth", "direction", "horizon", "is_n", "is_hit", "is_base", "is_p", "is_z", "is_ci_lo", "is_ci_hi", "is_mean_ret", "is_median_ret", "oos_n", "oos_hit", "oos_base", "oos_p", "oos_ci_lo", "oos_ci_hi", "oos_mean_ret", "oos_median_ret", "oos_mae_median", "oos_mae_p10", "oos_mfe_median", "decay_hit", "stop_frac", "stable_share", "stable_periods", "stable_detail", "repl_assets", "repl_beating", "repl_detail", "path_is", "path_oos", "reliable", "failed_gates", "uses_funding")
+    df = pd.DataFrame(out, columns=columns)
     meta = {
         "asset": asset, "interval": interval, "bars": n,
         "first_bar_utc": str(pd.Timestamp(ds.ts[0], unit="s")), "last_bar_utc": str(pd.Timestamp(ds.ts[-1], unit="s")),

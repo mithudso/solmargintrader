@@ -44,7 +44,7 @@ function holdingsKpis(state) {
   }
   const base = chain('base');
   const idle = (base?.holdings ?? []).filter((x) => x.stable && x.included && Number.isFinite(x.usd)).reduce((s, x) => s + x.usd, 0);
-  $('#kpiIdle').textContent = base && base.status !== 'skipped' ? usd(idle) : '—';
+  $('#kpiIdle').textContent = base && ['ok', 'partial'].includes(base.status) ? usd(idle) : '—';
 }
 
 function lpKpi(state) {
@@ -64,7 +64,14 @@ function scoutTable(pools) {
   ], pools, { emptyText: 'No scout data. The aero-lp daemon writes it; soltui reads it.' });
 }
 
+let overviewGeneration = 0;
 export async function renderOverview(state, { onAck }) {
+  const generation = ++overviewGeneration;
+  const latest = () => generation === overviewGeneration;
+  const read = async (target, fn) => {
+    try { await fn(); }
+    catch (error) { if (latest()) target.textContent = `Refresh unavailable; displayed evidence may be stale: ${error.message}`; }
+  };
   holdingsKpis(state);
   lpKpi(state);
   const scan = state.overview?.scan;
@@ -78,8 +85,9 @@ export async function renderOverview(state, { onAck }) {
   }
 
   // Live: wallet P&L and strategy, each independent of the other.
-  guard($('#kpiPnlSub'), async () => {
+  const pnlRead = read($('#kpiPnlSub'), async () => {
     const r = await soltui('pnl.summary', { window: '30d', source: 'wallet (live)' });
+    if (!latest()) return;
     const s = r.sections?.find((x) => x.source === 'wallet (live)');
     if (s?.status === 'ok') {
       paint($('#kpiPnl'), s.totals?.net_usd, { sign: true });
@@ -89,11 +97,12 @@ export async function renderOverview(state, { onAck }) {
       $('#kpiPnlSub').textContent = s?.message ?? 'no wallet snapshots yet';
     }
   });
-  guard($('#overviewStrategy'), async () => {
+  const strategyRead = read($('#overviewStrategy'), async () => {
     const [rec, top5] = await Promise.all([
       soltui('live.recommendation').catch(() => null),
       soltui('top5.list').catch(() => null),
     ]);
+    if (!latest()) return;
     const leader = top5?.configs?.find((c) => c.rank === 1);
     clear($('#overviewStrategy'),
       leader ? el('div', {},
@@ -105,10 +114,13 @@ export async function renderOverview(state, { onAck }) {
   });
 
   // Fresh balances; the stored scan already painted something.
-  await guard(null, async () => {
-    state.holdings = await call({ type: 'holdings' });
+  const holdingsRead = read($('#kpiTotalSub'), async () => {
+    const holdings = await call({ type: 'holdings' });
+    if (!latest()) return;
+    state.holdings = holdings;
     holdingsKpis(state);
   });
+  await Promise.all([pnlRead, strategyRead, holdingsRead]);
 }
 
 /* --------------------------------------------------------------- Alerts -- */

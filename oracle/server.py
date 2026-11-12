@@ -127,10 +127,14 @@ class SubscriptionHub:
                         await asyncio.wait_for(
                             session.send_resource_updated(AnyUrl(uri)), self.timeout
                         )
-                    except Exception:  # noqa: BLE001 -- SDK transport failures must not echo request contents.
+                    except Exception as exc:  # noqa: BLE001 -- SDK transport failures must not echo request contents.
                         # A slow or dead client loses its subscriptions. It must reconnect,
                         # re-read the durable snapshot, and explicitly subscribe again.
                         self._sessions.pop(session, None)
+                        logging.getLogger(__name__).warning(
+                            "oracle_subscription_evicted reason=%s",
+                            "timeout" if isinstance(exc, TimeoutError) else "transport_failure",
+                        )
                         break
                     subscriptions[uri] = digest
 
@@ -180,7 +184,7 @@ def build_server(
             values = {}
             for uri in RESOURCE_NAMES:
                 try:
-                    values[uri] = encode(resource(uri))
+                    values[uri] = encode(await asyncio.to_thread(resource, uri))
                 except (ValueError, TypeError, OverflowError):
                     values[uri] = encode(envelope(error="snapshot_unavailable"))
             await hub.publish(values)
@@ -219,6 +223,17 @@ def build_server(
             for name, schema in TOOL_SCHEMAS.items()
         ]
 
+    def tool_data(name, arguments):
+        if name == "oracle_guidance":
+            return guidance(**arguments, repo=repo)
+        if name == "oracle_readiness":
+            return readiness(engine, manager_home=manager_home)
+        if name == "oracle_veto":
+            return veto(SelectedView())
+        if name == "oracle_predictions":
+            return predictions()
+        return getattr(engine, name.removeprefix("oracle_"))(**arguments)
+
     @server.call_tool(validate_input=False)
     async def call_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:
         try:
@@ -229,16 +244,7 @@ def build_server(
             result = envelope(error="invalid_request")
         else:
             try:
-                if name == "oracle_guidance":
-                    data = guidance(**arguments, repo=repo)
-                elif name == "oracle_readiness":
-                    data = readiness(engine, manager_home=manager_home)
-                elif name == "oracle_veto":
-                    data = veto(SelectedView())
-                elif name == "oracle_predictions":
-                    data = predictions()
-                else:
-                    data = getattr(engine, name.removeprefix("oracle_"))(**arguments)
+                data = await asyncio.to_thread(tool_data, name, arguments)
                 result = envelope(data)
                 encode(result)
             except Exception:  # noqa: BLE001 -- Public response boundary never serializes dependency exception text.
@@ -263,7 +269,7 @@ def build_server(
 
     @server.read_resource()
     async def read_resource(uri: AnyUrl) -> list[ReadResourceContents]:
-        value = resource(str(uri))
+        value = await asyncio.to_thread(resource, str(uri))
         try:
             text = encode(value)
         except (ValueError, TypeError, OverflowError):

@@ -226,7 +226,10 @@ def coins_transport(missing: set[str] | None = None, requests_seen: list[str] | 
             return httpx.Response(200, json=series_response(ids, span))
         if "/prices/current/" in path:
             return httpx.Response(
-                200, json={"coins": {i: {"price": 2000.0 if WETH.lower() in i else 3.0} for i in ids}}
+                200,
+                json={
+                    "coins": {i: {"price": 2000.0 if WETH.lower() in i else 0.97 if USDC in i else 3.0} for i in ids}
+                },
             )
         return httpx.Response(404)
 
@@ -255,10 +258,10 @@ def test_coins_remembers_a_token_without_a_chart_and_returns_no_ratio():
     assert not any(CBBTC in u for u in seen[n:])  # the missing token is not asked for again
 
 
-def test_coins_current_prices_stables_at_one_and_native_as_weth():
+def test_coins_current_observes_stable_price_and_native_as_weth():
     c = Coins(httpx.Client(transport=coins_transport()))
     px = c.current([ZERO, USDC, CBBTC])
-    assert px[USDC] == 1.0 and px[WETH.lower()] == 2000.0 and px[CBBTC] == 3.0
+    assert px[USDC] == 0.97 and px[WETH.lower()] == 2000.0 and px[CBBTC] == 3.0
 
 
 # ---------------------------------------------------------------------------- Tier 2 LVR formulas

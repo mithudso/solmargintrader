@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { tick, reconcile, ingestFills, summarise } from '../src/core/engine.js';
+import { tick, reconcile, ingestFills, summarise, enginePending } from '../src/core/engine.js';
 import { runCommand, CommandError } from '../src/core/commands.js';
 import { MemoryStore } from '../src/storage/memoryStore.js';
 import { ConfigStore, INTENT_STATUS } from '../src/storage/store.js';
@@ -76,13 +76,17 @@ test('UTC-day loss includes a previous-day lot sold before first wake and exclud
   assert.ok(r.rejected.every(x => x.blockedBy.includes('daily-loss-limit')));
 });
 
-test('unknown fee warning and stored tick summary persist on repeated history reads', async () => {
+test('CDO-32635dacde unknown fee warning and stored tick summary persist on repeated history reads', async () => {
   const ctx = await setup();
   ctx.venue.getFills = async () => [{ venueOrderId: 'no-fee', side: 'buy', executedPriceUsd: 100, filledBaseQty: 0.25, feeUsd: null, updatedAtMs: now - 1 }];
   for (let n = 0; n < 2; n++) {
     const r = await drive(ctx);
     assert.equal(r.feeUnknownFills, 1);
     assert.equal(summarise(r).feeUnknownFills, 1);
+    const events = await ctx.store.recentEvents();
+    assert.equal(events.filter(e => e.type === 'tick').length, n + 1);
+    assert.equal(events.find(e => e.type === 'tick').summary.feeUnknownFills, 1);
+    assert.equal(r.placed.length, 0);
   }
 });
 
@@ -228,18 +232,25 @@ test('an old fill cannot mark a different live order at the same rung filled', a
   assert.equal((await ctx.store.getIntent(key(100))).status, 'resting');
 });
 
-test('an earlier queued arm cannot revoke a later immediate kill request', async () => {
+test('CDO-126bb5da11 an earlier queued arm cannot revoke a later immediate kill request', { timeout: 2000 }, async () => {
   const ctx = await setup();
-  let release;
+  let release, entered;
   const gate = new Promise(resolve => { release = resolve; });
-  ctx.venue.getPrice = async () => { await gate; return 150; };
+  const priceEntered = new Promise(resolve => { entered = resolve; });
+  ctx.venue.getPrice = async () => { entered(); await gate; return 150; };
   let submits = 0;
   ctx.venue.placeOrder = async () => ({ venueOrderId: `v-${++submits}` });
   const active = drive(ctx);
-  const earlierArm = runCommand({ name: 'arm', deps: ctx.deps });
-  const queuedTick = drive(ctx);
-  const laterKill = runCommand({ name: 'kill', deps: ctx.deps });
-  release();
+  let earlierArm, queuedTick, laterKill;
+  try {
+    await priceEntered;
+    earlierArm = runCommand({ name: 'arm', deps: ctx.deps });
+    for (let i = 0; i < 100 && enginePending(ctx.store) < 2; i++) await Promise.resolve();
+    assert.equal(enginePending(ctx.store), 2, 'the arm must join behind the active tick before kill');
+    queuedTick = drive(ctx);
+    assert.equal(enginePending(ctx.store), 3);
+    laterKill = runCommand({ name: 'kill', deps: ctx.deps });
+  } finally { release(); }
   await Promise.all([active, earlierArm, queuedTick, laterKill]);
   assert.equal(submits, 0);
   assert.equal((await ctx.configStore.getRuntime()).killSwitch, true);

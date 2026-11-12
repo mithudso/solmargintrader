@@ -81,6 +81,8 @@ def prepare(source_root: Path) -> None:
         )
     if (
         len(sources) != 742
+        or len({s["publication_id"] for s in sources}) != len(sources)
+        or {s["publication_id"] for s in sources} != set(legacy)
         or {s["publication_id"] for s in sources if s["protected_strategy_profile"]}
         != ids
     ):

@@ -35,7 +35,7 @@ class PredictionControls(unittest.IsolatedAsyncioTestCase):
                 return {'ok': True, 'result': {'running': False, 'paused': paused,
                     'can_start': True, 'message': 'Paused' if paused else 'Stopped'}}
             return original(name, params, **kw)
-        with mock.patch.object(app, '_call', side_effect=call):
+        with mock.patch.object(app, '_call', side_effect=call), mock.patch('soltui.tui.time.time', return_value=1_800_000_000.):
             async with app.run_test(size=TEST_SIZE) as pilot:
                 await self.drain(app, pilot, '_signal_recovery_busy')
                 self.assertEqual(sum(n == 'forwardtest.ensure' for n, _ in calls), 1)
@@ -43,14 +43,21 @@ class PredictionControls(unittest.IsolatedAsyncioTestCase):
                 await self.drain(app, pilot, '_signal_recovery_busy')
                 self.assertEqual(sum(n == 'forwardtest.ensure' for n, _ in calls), 1)
                 paused = True
+                # CDO-db61e4dcb9: expire the independent cooldown so only the
+                # explicit owner pause can prevent automatic recovery.
+                app._signal_recovery_at.clear()
+                before_pause = sum(n == 'forwardtest.ensure' for n, _ in calls)
                 app._signal_live_request_recovery(startup=True)
                 await self.drain(app, pilot, '_signal_recovery_busy')
+                self.assertEqual(sum(n == 'forwardtest.ensure' for n, _ in calls), before_pause)
                 app._signal_live_prediction_rows = []
                 app._signal_live_update_score(time.time())
                 self.assertTrue(app.query_one('#signal-live-predictions-start', Button).display)
                 app._signal_live_start_predictions()
                 await self.drain(app, pilot, '_signal_recovery_busy')
-                self.assertEqual(calls[-1], ('forwardtest.ensure', {'asset': 'SOL', 'manual': True}))
+                ensures=[params for name,params in calls if name=='forwardtest.ensure']
+                self.assertEqual(len(ensures),before_pause+1)
+                self.assertEqual(ensures[-1],{'asset':'SOL','manual':True})
                 app._signal_live_open_forward()
                 self.assertEqual(app.query_one('#main-tabs', TabbedContent).active, 'tab-forwardtest')
 

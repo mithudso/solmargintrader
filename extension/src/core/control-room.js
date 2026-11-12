@@ -21,7 +21,7 @@ export function controlRoomTransitions(snapshot, previous, now) {
       alerts.push({ id: `control-room:${name}`, kind: 'availability', severity: 'info',
         title: `${COMPONENT_LABELS[name]} recovered. Open the control room for current health.` });
       row.active = false;
-    } else if (current !== 'up' && row.seen_up && old.state !== current
+    } else if (current !== 'up' && row.seen_up && (old.state !== current || !row.active)
         && (row.last_notified_at === null || now - row.last_notified_at >= CONTROL_ROOM_ALERT_COOLDOWN_MS)) {
       alerts.push({ id: `control-room:${name}`, kind: 'availability', severity: 'review',
         title: `${COMPONENT_LABELS[name]} is ${current}. Open the control room to inspect the component.` });
@@ -55,6 +55,7 @@ export async function controlRoomSnapshot(deps, action = 'status') {
   const health = result.health;
   const source = Array.isArray(health.components) ? health.components : Object.entries(health.components ?? {})
     .map(([name, value]) => ({ name, ...value }));
+  if (source.some(value => !value || typeof value !== 'object' || Array.isArray(value))) return absent('incompatible', 'helper_incompatible');
   const components = COMPONENTS.map(name => {
     const item = source.find(value => (value.name ?? value.id ?? value.component) === name);
     return { name, state: STATES.has(item?.state) ? item.state : 'unknown' };

@@ -531,6 +531,10 @@ class TestSettingsTab(unittest.IsolatedAsyncioTestCase):
 class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
     """The Signals tab edits values, not just displays them."""
 
+    def setUp(self):
+        from soltui.tests.bridge_support import World
+        self.enterContext(World())
+
     async def test_inputs_exist_for_every_tunable(self) -> None:
         """Every signal field must have an editable input."""
         from soltui.signals import SIGNAL_GROUPS

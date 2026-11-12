@@ -160,11 +160,11 @@ class IchimokuCloud:
         }
 
     def warmup_bars(self) -> int:
-        return self.senkou_b + self.displacement
+        return max(self.tenkan, self.kijun, self.senkou_b) + self.displacement
 
     def on_bar(self, history: BarWindow) -> float:
         highs, lows, closes = history.highs, history.lows, history.closes
-        need = self.senkou_b + self.displacement
+        need = self.warmup_bars()
         if len(closes) < need:
             return 0.0
         # Truncate to what was visible `displacement` bars ago; that is the cloud
@@ -447,6 +447,8 @@ class GarchVolTarget:
         if not 0.0 < lam < 1.0 or target_vol <= 0 or trend_window < 2:
             raise ValueError("need 0 < lam < 1, target_vol > 0, trend_window >= 2")
         self.lam, self.target_vol, self.trend_window = lam, target_vol, trend_window
+        self._variance_cursor = None
+        self._variance = None
         self.name = f"garch_voltarget_{lam:g}_{target_vol:g}"
         self.params: dict[str, Any] = {
             "lam": lam,
@@ -458,11 +460,23 @@ class GarchVolTarget:
         return self.trend_window + 1
 
     def on_bar(self, history: BarWindow) -> float:
-        closes = history.closes
-        anchor = ind.sma(closes, self.trend_window)
-        if not np.isfinite(anchor) or closes[-1] <= anchor:
+        current = history.bar()
+        previous = history.bar(1) if len(history) >= 2 else None
+        if (previous is not None and self._variance is not None
+                and np.isfinite(self._variance)
+                and self._variance_cursor == (history.i - 1, previous.ts, previous.close)):
+            ret = float(np.log(current.close) - np.log(previous.close))
+            self._variance = (1 - self.lam) * ret ** 2 + self.lam * self._variance
+        else:
+            initial = ind.ewma_vol(history.closes, self.lam)
+            self._variance = initial ** 2 / 365.0
+        self._variance_cursor = (history.i, current.ts, current.close)
+        if len(history) < self.trend_window:
             return 0.0
-        sigma = ind.ewma_vol(closes, self.lam)
+        anchor = float(np.mean([history.bar(offset).close for offset in range(self.trend_window)]))
+        if not np.isfinite(anchor) or current.close <= anchor:
+            return 0.0
+        sigma = float(np.sqrt(self._variance * 365.0))
         if not np.isfinite(sigma) or sigma <= 0:
             return 0.0
         return float(min(1.0, self.target_vol / sigma))

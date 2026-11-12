@@ -17,6 +17,7 @@ const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
 mountControlRoom();
 let glanceAsset = 'SOL';
+let actionError = null;
 // Send immediately in the trusted click. A native/store await here would lose
 // the gesture before the persistent owner's Picture-in-Picture request.
 $('detachLive').addEventListener('click', () => {
@@ -76,7 +77,7 @@ async function refresh() {
     usd(lastTick?.pnl?.feeTotalUsd) + (lastTick?.feeUnknownFills > 0 ? '?' : '');
   $('trips').textContent =
     lastTick?.pnl?.roundTripCount != null
-      ? `${lastTick.pnl.roundTripCount} (${(lastTick.pnl.winRate * 100).toFixed(0)}% win)`
+      ? `${lastTick.pnl.roundTripCount} (${lastTick.pnl.winRate == null ? 'win rate unavailable' : `${(lastTick.pnl.winRate * 100).toFixed(0)}% win`})`
       : '—';
   $('resting').textContent = lastTick?.placed != null ? String(lastTick.placed) : '—';
 
@@ -89,7 +90,8 @@ async function refresh() {
   $('disarm').disabled = !runtime.armed;
   $('clearKill').classList.toggle('hidden', !runtime.killSwitch);
 
-  if (lastTick?.errors?.length) showError(lastTick.errors[0].error);
+  if (actionError) showError(actionError);
+  else if (lastTick?.errors?.length) showError(lastTick.errors[0].error);
   else $('err').classList.add('hidden');
 }
 
@@ -100,9 +102,15 @@ function showError(text) {
 }
 
 async function act(msg) {
-  const res = await send(msg);
-  if (!res?.ok) showError(res?.error ?? 'action failed');
-  await refresh();
+  try {
+    const res = await send(msg);
+    actionError = res?.ok ? null : res?.error ?? 'action failed';
+    if (actionError) showError(actionError);
+    await refresh();
+  } catch {
+    actionError = 'Action unavailable. Read status before trying again.';
+    showError(actionError);
+  }
 }
 
 // Arming a live mode spends real money, so it takes a typed confirmation.
@@ -208,7 +216,7 @@ async function refreshOverview() {
   paintAlerts(res.scan);
   // A scan older than an hour is refreshed in the background; the popup has
   // already painted the stored one.
-  if (!res.scan || Date.now() - res.scan.scannedAtMs > 60 * 60_000) scan();
+  if (!res.scan || Date.now() - res.scan.scannedAtMs > 60 * 60_000) await scan();
 }
 
 async function scan() {
@@ -222,6 +230,8 @@ async function scan() {
     } else {
       $('scanAge').textContent = `scan failed: ${res?.error ?? 'no answer'}`;
     }
+  } catch {
+    $('scanAge').textContent = 'scan failed: request unavailable';
   } finally {
     $('scanNow').disabled = false;
   }
@@ -282,6 +292,10 @@ async function refreshGlance() {
   } finally { glanceBusy = false; }
 }
 const readGlance = () => refreshGlance().catch((e) => {
+  glanceCommands = [];
+  $('glanceScore').textContent = 'Agreement unavailable';
+  $('glanceScore').className = 'glance-value signal-score-gray';
+  $('glanceProcesses').textContent = 'Recorder, prediction checks and detached trainer status unavailable.';
   $('glancePrice').textContent = e.message; $('glanceAge').textContent = 'Prediction data unavailable.';
   renderPredictionRecovery($('glanceRecovery'), { needed: true, message: 'Open Forward testing to reconnect.', can_start: false });
 });

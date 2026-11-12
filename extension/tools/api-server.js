@@ -70,17 +70,22 @@ function send(res, status, payload) {
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
     let size = 0;
+    let refused = false;
     const chunks = [];
     req.on('data', (chunk) => {
+      if (refused) return;
       size += chunk.length;
       if (size > MAX_BODY_BYTES) {
+        refused = true;
+        chunks.length = 0;
         reject(new CommandError('request body too large', 413));
-        req.destroy();
+        req.resume();
         return;
       }
       chunks.push(chunk);
     });
     req.on('end', () => {
+      if (refused) return;
       const raw = Buffer.concat(chunks).toString('utf8').trim();
       if (!raw) {
         resolve({});

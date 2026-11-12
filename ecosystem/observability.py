@@ -23,8 +23,11 @@ def redact(line: str) -> tuple[str, bool]:
         return "[redacted sensitive log line]", True
     original = line
     for key, value in os.environ.items():
-        if SENSITIVE.search(key) and len(value) >= 6:
-            line = line.replace(value, "[redacted]")
+        if SENSITIVE.search(key) and (len(value) >= 6 or "\n" in value):
+            # Tails are split into lines before redaction; protect each fragment too.
+            for fragment in (value, *value.splitlines()):
+                if fragment:
+                    line = line.replace(fragment, "[redacted]")
     line = OPAQUE.sub("[redacted opaque value]", line)
     line = "".join(c if c in "\t" or ord(c) >= 32 else "�" for c in line)
     return line[:2000], line != original

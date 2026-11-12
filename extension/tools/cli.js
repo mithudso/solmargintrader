@@ -57,6 +57,7 @@ function parseArgv(argv) {
 /** Coerce a raw CLI string into the type the registry declares. */
 function coerce(param, raw) {
   if (param.type === TYPE.NUMBER) {
+    if (typeof raw !== 'string' || !raw.trim()) throw new CommandError(`--${param.name} must be a number`, 400);
     const n = Number(raw);
     if (!Number.isFinite(n)) {
       throw new CommandError(`--${param.name} must be a number, got "${raw}"`, 400);
@@ -154,6 +155,9 @@ function summariseSkips(skipped) {
 async function main() {
   const { positional, flags } = parseArgv(process.argv.slice(2));
   const name = positional[0];
+  for (const key of ['json', 'ephemeral', 'quiet', 'help']) {
+    if (Object.hasOwn(flags, key)) flags[key] = coerce({ name: key, type: TYPE.BOOL }, flags[key]);
+  }
 
   if (!name || flags.help === true && !name) {
     console.log(helpText());
@@ -175,8 +179,8 @@ async function main() {
   const params = COMMANDS[name].params;
   const args = {};
   for (const [key, raw] of Object.entries(flags)) {
-    if (GLOBAL_FLAGS.has(key)) continue;
     const param = params.find((p) => p.name === key);
+    if (!param && GLOBAL_FLAGS.has(key)) continue;
     if (!param) {
       console.error(
         `command "${name}" has no argument --${key}. Accepts: ${

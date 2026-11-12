@@ -24,6 +24,15 @@ printjson(
 
 print("\n=== what reproduces the run: the cost and execution settings ===");
 const run = db.backtest_runs.findOne();
+if (!run) {
+  print("No backtest run is loaded; selected-run reports unavailable.");
+} else {
+if (!db.equity_points.findOne({ "curve.run_id": run._id })) {
+  print("No equity points match the selected run; curve report unavailable.");
+}
+if (!db.trades.findOne({ run_id: run._id })) {
+  print("No trade rows match the selected run; fill reports unavailable.");
+}
 printjson({
   run: run._id,
   bars: run.manifest.bar_count,
@@ -46,6 +55,7 @@ print("\n=== equity: start, end and worst drawdown per curve ===");
 printjson(
   db.equity_points
     .aggregate([
+      { $match: { "curve.run_id": run._id } },
       { $sort: { ts: 1 } },
       {
         $setWindowFields: {
@@ -82,6 +92,7 @@ print("\n=== fills per strategy, and what they cost ===");
 printjson(
   db.trades
     .aggregate([
+      { $match: { run_id: run._id } },
       {
         $group: {
           _id: "$strategy",
@@ -102,6 +113,7 @@ print("\n=== why a fill happened: the reason field ===");
 printjson(
   db.trades
     .aggregate([
+      { $match: { run_id: run._id } },
       { $group: { _id: { strategy: "$strategy", reason: "$reason" }, n: { $sum: 1 } } },
       { $sort: { n: -1 } },
     ])
@@ -111,8 +123,10 @@ printjson(
 print("\n=== the first and last few fills of one strategy ===");
 printjson(
   db.trades
-    .find({ strategy: { $exists: true } }, { _id: 0, source_path: 0, source_sha256: 0, loaded_at: 0 })
+    .find({ run_id: run._id, strategy: { $exists: true } }, { _id: 0, source_path: 0, source_sha256: 0, loaded_at: 0 })
     .sort({ ts: 1 })
     .limit(3)
     .toArray(),
 );
+
+}

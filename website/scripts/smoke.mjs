@@ -1,11 +1,9 @@
 import assert from 'node:assert/strict';
 import { base58Encode, bytesToBase64 } from '../../extension/src/wallet/solana.js';
+import { requester } from './smoke_request.mjs';
 
 const base = new URL(process.argv[2] || 'http://localhost:8787').origin;
-const headers = { Origin: base, 'Content-Type': 'application/json' };
-async function request(path, init = {}) {
-  return fetch(`${base}${path}`, { ...init, headers: { ...headers, ...init.headers }, redirect: 'manual' });
-}
+const request = requester(base);
 const health = await request('/api/health');
 assert.equal(health.status, 200);
 assert.equal(health.headers.get('x-content-type-options'), 'nosniff');

@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 224
+Version: 225
+Delta: v224 to v225; resume the same authorized maintenance task.
 Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
 Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
@@ -1980,3 +1981,15 @@ I justnadded that Ip
 ```
 
 Verify that the existing supervised uploader resumes and validate stored ZEC records without restarting the collector or extending the persisted deadline.
+
+
+## v220 — full repository maintenance — 2026-11-12
+
+> User requested every personal repo get up to speed, repo-bootstrapper, whole-repo code-deep-optimizer, commit and fully deliver; root assigned this repository to you.
+
+The complete request is preserved in the private task continuation record. Its local paths and coordination details are withheld from this public workflow log. Scope: all maintained source and applicable bootstrap metadata; synthetic tests only; no financial actions, runtime changes, strategy searches or semantic regeneration. Preserve other active work and draft PR226. Deliver only this task's verified changes through passing CI to master.
+
+
+## v225 — Resume the same authorized maintenance task
+
+Resume the existing all-repository maintenance task and TASK-1541 after the usage limit. Preserve all existing edits, review receipts, other owners and unfinished work. Continue remaining source repairs and later partial/changed-file rechecks without restarting the optimizer or gate budget. Finish checks, PR, actual merge, remote-content verification and owned cleanup. Do not move the primary checkout if that could activate code for live or paper consumers. No live/runtime, research-search, model, credential, database or semantic operations. Private operational paths are omitted from this public workflow record.

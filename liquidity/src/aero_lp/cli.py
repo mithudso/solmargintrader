@@ -25,11 +25,11 @@ import argparse
 import math
 import sys
 import time
-import traceback
 
 from . import __version__, addresses, backtest, clmath, gates
 from .chain import DEFAULT_RPCS, AeroChain
 from .config import SAFE_EXIT_TARGETS, Config, load
+from .diagnostics import safe_error
 from .engine import Engine, Evaluation
 from .executor import RebalanceError, RebalanceResult, fmt_amount
 from .market import (
@@ -398,6 +398,7 @@ def cmd_run(a: argparse.Namespace) -> int:
     else:
         print("DRY RUN: decisions + eth_simulateV1 only. Add --live to sign and broadcast.")
     while True:
+        failed = False
         for tid in cfg.token_ids:
             try:
                 ev, res = eng.step(tid, live=a.live, signer=signer)
@@ -407,16 +408,17 @@ def cmd_run(a: argparse.Namespace) -> int:
                     print("   REBALANCED:" if a.live else "   SIMULATED REBALANCE:")
                     _print_result(res)
             except Exception as e:  # noqa: BLE001 - keep the loop alive; funds stay in the wallet on failure
-                print(f"error on slot {tid}: {e}", file=sys.stderr)
+                failed = True
+                print(f"error on slot {tid}: {safe_error(e)}", file=sys.stderr)
                 if isinstance(e, RebalanceError) and e.partial.tx_hashes:
                     # A live rebalance stopped half-way: print what is already on chain so it can be inspected.
                     print(f"   stages done: {' -> '.join(e.partial.stages) or 'none'}", file=sys.stderr)
                     print(f"   new token id: {e.partial.new_token_id}", file=sys.stderr)
                     for h in e.partial.tx_hashes:
                         print(f"   tx: https://basescan.org/tx/{h}", file=sys.stderr)
-                traceback.print_exc()
+                # Arbitrary RPC traceback text can contain credential-bearing endpoint URLs.
         if a.once:
-            return 0
+            return 1 if failed else 0
         time.sleep(max(cfg.poll_seconds, cfg.safety.min_check_interval_s))
 
 
@@ -551,6 +553,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--mode", choices=["aero", "fees"], default="aero")
     p.set_defaults(fn=cmd_backtest)
     a = ap.parse_args(argv)
+    if a.cmd == "backtest" and (
+        not a.widths
+        or not all(math.isfinite(w) and w > 0 for w in a.widths)
+        or not math.isfinite(a.value)
+        or a.value <= 0
+        or a.hours <= 0
+    ):
+        ap.error("backtest requires finite positive widths/value and positive hours")
     return int(a.fn(a))
 
 

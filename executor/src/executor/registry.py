@@ -19,6 +19,7 @@ import math
 import os
 import threading
 import time
+from collections import deque
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -117,7 +118,7 @@ CONTEXT_FACTORY: Callable[[], Context] = Context.load
 
 def dumps(envelope: Any) -> str:
     """The one serialiser every surface uses, so equal envelopes are equal bytes."""
-    return json.dumps(envelope, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+    return json.dumps(envelope, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False)
 
 
 def ok_envelope(name: str, result: Any) -> dict[str, Any]:
@@ -406,11 +407,12 @@ def _journal(ctx: Context, p: dict[str, Any]) -> Any:
     limit = int(p.get("limit", 20))
     if limit <= 0 or limit > 500:
         raise ExecutorError("limit must be 1..500", "bad_params")
-    recs = ctx.engine.journal.tail(500 if p.get("strategy") else limit)
     states = ctx.engine.journal.states()
     if p.get("strategy"):
         ids = {i for i, s in states.items() if (s.get("intent") or {}).get("strategy") == p["strategy"]}
-        recs = [r for r in recs if r.get("id") in ids][-limit:]
+        recs = list(deque((r for r in ctx.engine.journal.records() if r.get("id") in ids), maxlen=limit))
+    else:
+        recs = ctx.engine.journal.tail(limit)
     return {"records": recs, "unresolved": [s["id"] for s in ctx.engine.journal.unresolved()]}
 
 

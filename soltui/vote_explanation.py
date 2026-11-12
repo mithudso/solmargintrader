@@ -60,7 +60,7 @@ def _chart(db, asset, call):
             "proof": {"trial_id": call["trial_id"], "bar": call["bar"], "input_sha256": call["recorded_signal_basis"].get("input_sha256"),
                       "origin_indicator_verified": exact},
             "missing": missing,
-            "note": "SMA series use the backend indicator math on retained trailing windows. The origin value is verified against the saved call; earlier chart points are reconstructions, not logged indicator readings."}
+            "note": "Retained candles provide historical context. No original indicator value is verified without recorded interval, input membership and feature evidence."}
 
 
 def explain(asset, label, *, now=None, min_accuracy=60., min_resolved=20):
@@ -111,29 +111,12 @@ def explain(asset, label, *, now=None, min_accuracy=60., min_resolved=20):
             basis = {"available": bool(last), "source": "retained immutable closed Coinbase 1m candle", "bar": bar,
                      "candle": dict(zip(("ts", "open", "high", "low", "close", "volume"), last)) if last else None,
                      "contract_verified": contract, "features": [], "features_available": False,
-                     "reason": "The call did not fingerprint its complete original input membership/replay state. Stateful indicator values cannot be asserted as recorded."}
-            if contract and len(members) == 1 and members[0].get("name") in ("ma_crossover", "sma_regime"):
-                member = members[0]
-                p = member.get("params", {})
-                required = int(p.get("slow", 50)) if member["name"] == "ma_crossover" else int(p.get("window", 200))
-                if 1 <= required <= forwardtest.HISTORY:
-                    retained = db.execute("SELECT ts,close FROM candle WHERE asset=? AND ts<=? ORDER BY ts DESC LIMIT ?", (asset, bar, required)).fetchall()[::-1]
-                    if len(retained) == required and retained[-1][0] == bar and all(b[0] - a[0] == 60 for a, b in zip(retained, retained[1:])):
-                        prices = np.asarray([r[1] for r in retained], dtype=float)
-                        if np.all(np.isfinite(prices)) and np.all(prices > 0):
-                            slow = float(np.mean(prices))
-                            fast = float(np.mean(prices[-int(p.get("fast", 20)):])) if member["name"] == "ma_crossover" else float(prices[-1])
-                            allow_short = member["name"] == "ma_crossover" and bool((execution or {}).get("allow_short") or p.get("short_when_below"))
-                            reproduced = 1 if fast > slow else -1 if allow_short else 0
-                            if reproduced == direction:
-                                # A non-null call under this verified contract
-                                # implies more than warmup consecutive bars.
-                                # These stateless trailing windows therefore
-                                # belonged to its original contiguous tail.
-                                basis.update(features_available=True, features=[{"name": "fast_sma" if member["name"] == "ma_crossover" else "close", "value": fast},
-                                    {"name": "slow_sma" if member["name"] == "ma_crossover" else "sma", "period": required, "value": slow}],
-                                    reason="Verified current-code trial identity, required contiguous immutable trailing window, and reproduced saved direction.",
-                                    input_sha256=hashlib.sha256(forwardtest._json(retained).encode()).hexdigest())
+                     "signal_interval": None, "original_input_verified": False,
+                     "reason": "The call did not record its original signal interval, immutable input membership and feature values. Retained 1m candles are context; original indicators are unverified."}
+            # The trial identity and a matching direction do not bind the original
+            # signal interval or indicator inputs. Legacy calls recorded neither
+            # original feature values nor immutable input membership. Keep their
+            # saved forecast/eligibility, but never certify a 1m reconstruction.
             calls.append({"trial_id": key, "horizon_minutes": horizon, "issued_at": issued, "expires_at": finish,
                           "age_seconds": max(0., now - issued), "origin_candle_closed_at": bar + 60,
                           "bar": bar, "start": start, "direction": {1: "UP", -1: "DOWN", 0: "FLAT"}.get(direction),

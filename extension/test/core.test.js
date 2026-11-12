@@ -341,7 +341,7 @@ test('matchIntent refuses to match across sides', () => {
   assert.ok(matchIntent({ order: { side: 'buy', triggerPriceUsd: 125 }, journal }));
 });
 
-test('two live orders a hair apart do not both bind to one intent', async () => {
+test('CDO-a15367ce14 two live orders a hair apart do not both bind to one intent', async () => {
   const store = new MemoryStore();
   await seedResting(store, { side: 'buy', level: 125, venueOrderId: 'ord-a' });
 
@@ -357,6 +357,10 @@ test('two live orders a hair apart do not both bind to one intent', async () => 
   const rec = await reconcile({ venue, store, config: RECON_CONFIG });
   // Both live orders must be accounted for; neither may silently disappear.
   assert.equal(rec.restingKeys.length, 2, 'both live orders must occupy cap space');
+  const persisted = await store.allIntents();
+  assert.deepEqual(persisted.map(i => i.venueOrderId).sort(), ['ord-a', 'ord-b']);
+  assert.equal(new Set(persisted.map(i => i.intentKey)).size, 2);
+  assert.deepEqual([...rec.restingKeys].sort(), persisted.map(i => i.intentKey).sort());
 });
 
 // ------------------------------------------------------- lot aggregation ---
@@ -850,7 +854,7 @@ test('a link to a lot that is no longer open falls back to FIFO instead of dropp
   near(m.realizedNetUsd, 10);
 });
 
-test('an aggregated exit closes every lot it covers, in link order, and a partial fill leaves the rest', () => {
+test('CDO-79ce2e210c an aggregated exit closes every lot it covers, in link order, and a partial fill leaves the rest', () => {
   const buys = [
     fill({ id: 'a', side: 'buy', baseQty: 0.1, priceUsd: 100, tsMs: 1 }),
     fill({ id: 'b', side: 'buy', baseQty: 0.2, priceUsd: 90, tsMs: 2 }),
@@ -862,6 +866,9 @@ test('an aggregated exit closes every lot it covers, in link order, and a partia
   const part = matchFifo([...buys, fill({ id: 's', side: 'sell', baseQty: 0.25, priceUsd: 110, tsMs: 4, closesLots: links })]);
   near(part.roundTrips.reduce((a, r) => a + r.baseQty, 0), 0.25);
   near(part.openLots.reduce((a, l) => a + l.baseQty, 0), 0.15);
+  near(part.realizedGrossUsd, 4.5);
+  assert.ok(part.openLots.every(l => l.priceUsd === 100));
+  near(part.roundTrips[0].entryUsd, 18);
 });
 
 test('ingestFills links a sell to the lots on its journalled intent; buys and unlinked sells carry none', async () => {

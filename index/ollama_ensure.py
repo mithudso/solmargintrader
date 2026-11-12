@@ -63,11 +63,26 @@ def base_of(endpoint: str) -> str:
 
 def is_local(base: str) -> bool:
     host = urllib.parse.urlparse(base).hostname or ""
-    return host in LOCAL_HOSTS or host.strip("[]") in LOCAL_HOSTS
+    parsed = urllib.parse.urlparse(base)
+    return (parsed.scheme in {"http", "https"} and not parsed.username and not parsed.password
+            and (host in LOCAL_HOSTS or host.strip("[]") in LOCAL_HOSTS))
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise urllib.error.HTTPError(req.full_url, code, "local redirects are refused", headers, fp)
+
+
+def local_urlopen(url, *, timeout):
+    endpoint = url.full_url if isinstance(url, urllib.request.Request) else url
+    if not is_local(endpoint):
+        raise ValueError("index tooling only accepts a local HTTP endpoint")
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+    return opener.open(url, timeout=timeout)
 
 
 def _get_json(url: str, timeout: float) -> dict:
-    with urllib.request.urlopen(url, timeout=timeout) as r:  # noqa: S310 - local only, checked by caller
+    with local_urlopen(url, timeout=timeout) as r:
         return json.loads(r.read())
 
 
@@ -77,7 +92,11 @@ def installed_models(base: str = OLLAMA_BASE, timeout: float = 3.0) -> list[str]
         data = _get_json(f"{base}/api/tags", timeout)
     except (urllib.error.URLError, OSError, ValueError):
         return None
-    return [str(m.get("name", "")) for m in data.get("models", [])]
+    if not isinstance(data, dict) or not isinstance(data.get("models"), list):
+        return None
+    if any(not isinstance(m, dict) or not isinstance(m.get("name"), str) for m in data["models"]):
+        return None
+    return [m["name"] for m in data["models"]]
 
 
 def reachable(base: str = OLLAMA_BASE, timeout: float = 3.0) -> bool:
@@ -108,7 +127,7 @@ def pull_model(model: str, base: str = OLLAMA_BASE, timeout: float = 3600.0) -> 
     req = urllib.request.Request(f"{base}/api/pull", data=body,
                                  headers={"Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 - local only
+        with local_urlopen(req, timeout=timeout) as r:  # noqa: S310 - local only
             return json.loads(r.read()).get("status") == "success"
     except (urllib.error.URLError, OSError, ValueError):
         return False
@@ -125,7 +144,10 @@ def ensure(model: str = EMBED_MODEL, base: str = OLLAMA_BASE, *, start: bool = T
     started = False
     names = installed_models(base)
     if names is None and start:
-        how = start_server(popen)
+        try:
+            how = start_server(popen)
+        except OSError as exc:
+            return Status(False, False, False, None, f"could not start ollama ({type(exc).__name__})")
         if not how:
             return Status(False, False, False, None,
                           "ollama is not running and no Ollama app or `ollama` binary was found")

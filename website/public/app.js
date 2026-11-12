@@ -2,7 +2,7 @@ import { freshStrategy } from './evidence.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
-const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, bots: [], articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, bots: [], articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0, accountGeneration: 0, accountRequest: 0, botsStatus: 'unavailable', botsError: null, viewGeneration: 0, backtestRequest: 0 };
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
 const coinSymbols = { SOL: '◎', BTC: '₿', ETH: 'Ξ', ZEC: 'Z' };
@@ -133,7 +133,8 @@ function oracleView() {
 }
 function botsView() {
   main.innerHTML = heading('IDEAS, GIVEN STRUCTURE', 'Build with intention.', 'Create a bot configuration for Coinbase spot or a leveraged Jupiter position. Start in paper mode.', '<button class="button button-dark" data-action="new-bot">Create a bot <span aria-hidden="true">＋</span></button>');
-  if (!state.bots.length) {
+  if (state.botsError) appendText(main, 'p', 'form-message', state.botsError);
+  if (!state.bots.length && state.botsStatus === 'ready') {
     const empty = el('section', 'panel empty-state');
     empty.innerHTML = '<span class="empty-symbol" aria-hidden="true">⌘</span><h2>Great strategies start as ideas.</h2><p>Choose a market, set your budget and give your strategy a name. Your first configuration will appear here.</p><button class="button button-dark" data-action="new-bot">Create your first bot <span aria-hidden="true">↗</span></button>'; main.append(empty);
   } else {
@@ -290,9 +291,9 @@ function settingsView() {
   const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never send Oraclebot your private key or seed phrase.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
   grid.append(account, billing, permissions, risk); main.append(grid);
 }
-function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.bots.filter(item => item.status !== 'archived').length; }
+function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.botsStatus === 'ready' ? state.bots.filter(item => item.status !== 'archived').length : '—'; }
 function render() {
-  const [rawView, ...rest] = location.hash.slice(1).split('/'); const view = views[rawView] ? rawView : 'overview'; state.view = view;
+  const [rawView, ...rest] = location.hash.slice(1).split('/'); const view = views[rawView] ? rawView : 'overview'; state.view = view; ++state.viewGeneration; ++state.backtestRequest;
   $('#page-label').textContent = views[view];
   for (const link of $$('[data-view]')) { const active = link.dataset.view === view; link.classList.toggle('active', active); if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); }
   document.title = `${views[view]} · Oraclebot`;
@@ -308,26 +309,58 @@ async function loadOracle(coin = state.coin) {
   catch (error) { if (requestId === state.oracleRequest) state.oracle = { status: 'unavailable', message: errorText(error), topStrategy: null }; }
   finally { if (requestId === state.oracleRequest) { state.loadingOracle = false; if (state.view === 'overview' || state.view === 'oracle') render(); } }
 }
+function clearAccount() {
+  ++state.accountGeneration; ++state.accountRequest;
+  state.user = null; state.subscription = null; state.bots = [];
+  state.botsStatus = 'unavailable'; state.botsError = null;
+}
 async function refreshAccount() {
-  const result = await api('/api/me'); state.user = result.user; state.subscription = result.subscription;
-  if (state.user) { try { state.bots = (await api('/api/bots')).bots || []; } catch { state.bots = []; } } else state.bots = [];
+  const generation = state.accountGeneration, request = ++state.accountRequest;
+  let result;
+  try { result = await api('/api/me'); }
+  catch {
+    if (generation === state.accountGeneration && request === state.accountRequest) {
+      state.botsStatus = 'unavailable';
+      state.botsError = 'Account and configurations could not be refreshed. Previously loaded configurations may be stale.';
+      updateAccountUI();
+    }
+    return false;
+  }
+  if (generation !== state.accountGeneration || request !== state.accountRequest) return false;
+  let bots = [], botsError = null;
+  if (result.user) {
+    try { bots = (await api('/api/bots')).bots || []; }
+    catch { botsError = 'Configurations could not be refreshed. Previously loaded configurations may be stale.'; }
+  }
+  if (generation !== state.accountGeneration || request !== state.accountRequest) return false;
+  const sameAccount = result.user?.wallet === state.user?.wallet;
+  state.user = result.user; state.subscription = result.subscription;
+  if (!botsError || !sameAccount) state.bots = bots;
+  state.botsError = botsError;
+  state.botsStatus = botsError ? 'unavailable' : 'ready';
   updateAccountUI();
+  return !botsError;
 }
 function openWallet() { $('#wallet-message').textContent = ''; $('#wallet-dialog').showModal(); }
 async function connectWallet(name, button) {
   const provider = name === 'phantom' ? window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null) : window.solflare;
   if (!provider) { $('#wallet-message').textContent = `No ${name === 'phantom' ? 'Phantom' : 'Solflare'} wallet was detected. Open this site in that wallet’s browser or install its browser extension, then try again.`; return; }
+  const generation = ++state.accountGeneration; ++state.accountRequest;
   setBusy(button, true); $('#wallet-message').textContent = 'Waiting for your wallet…';
   try {
     const connection = await provider.connect(); const wallet = (connection?.publicKey || provider.publicKey)?.toString();
+    if (generation !== state.accountGeneration) return;
     if (!wallet) throw new Error('Your wallet did not return a public address.');
     const challenge = await api('/api/auth/challenge', { method: 'POST', body: JSON.stringify({ wallet }) });
+    if (generation !== state.accountGeneration) return;
     $('#wallet-message').textContent = 'Sign the one-time message in your wallet. No funds will move.';
     const signed = await provider.signMessage(new TextEncoder().encode(challenge.message), 'utf8');
     const bytes = signed.signature || signed; const signature = btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    if (generation !== state.accountGeneration) return;
     await api('/api/auth/verify', { method: 'POST', body: JSON.stringify({ id: challenge.id, signature }) });
-    await refreshAccount(); $('#wallet-dialog').close(); render(); toast('Wallet verified. Welcome to your workspace.');
-  } catch (error) { $('#wallet-message').textContent = error.code === 4001 || /reject|cancel/i.test(error.message) ? 'Connection cancelled. You can try again whenever you are ready.' : errorText(error); }
+    if (generation !== state.accountGeneration) return;
+    const fresh = await refreshAccount(); if (generation !== state.accountGeneration) return; $('#wallet-dialog').close(); render(); toast(fresh ? 'Wallet verified. Welcome to your workspace.' : 'Wallet verified. Account details could not be refreshed.');
+  } catch (error) { if (generation === state.accountGeneration) $('#wallet-message').textContent = error.code === 4001 || /reject|cancel/i.test(error.message) ? 'Connection cancelled. You can try again whenever you are ready.' : errorText(error); }
   finally { setBusy(button, false); }
 }
 async function billingAction(action, button) {
@@ -349,7 +382,7 @@ document.addEventListener('click', async event => {
   const provider = event.target.closest('[data-provider]'); if (provider) { connectWallet(provider.dataset.provider, provider); return; }
   const coin = event.target.closest('[data-coin]'); if (coin) { loadOracle(coin.dataset.coin); return; }
   const bot = event.target.closest('[data-bot-id]');
-  if (bot) { setBusy(bot, true); try { await api(`/api/bots/${encodeURIComponent(bot.dataset.botId)}`, { method: 'PATCH', body: JSON.stringify({ status: bot.dataset.botStatus }) }); await refreshAccount(); render(); toast(`Configuration ${bot.dataset.botStatus}.`); } catch (error) { toast(errorText(error)); } finally { setBusy(bot, false); } return; }
+  if (bot) { setBusy(bot, true); try { await api(`/api/bots/${encodeURIComponent(bot.dataset.botId)}`, { method: 'PATCH', body: JSON.stringify({ status: bot.dataset.botStatus }) }); const fresh = await refreshAccount(); render(); toast(`Configuration ${bot.dataset.botStatus}.${fresh ? '' : ' Saved, but the configuration list could not be refreshed.'}`); } catch (error) { toast(errorText(error)); } finally { setBusy(bot, false); } return; }
   const actionButton = event.target.closest('[data-action]'); if (!actionButton) return;
   const action = actionButton.dataset.action;
   if (action === 'wallet') { if (state.user) location.hash = 'settings'; else openWallet(); }
@@ -360,10 +393,10 @@ document.addEventListener('click', async event => {
   if (action === 'delete-account') {
     if (!confirm('Delete your Oraclebot account and all saved configurations? This cannot be undone.')) return;
     setBusy(actionButton, true);
-    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; render(); toast('Your account and saved configurations were deleted.'); }
+    try { ++state.accountGeneration; ++state.accountRequest; await api('/api/me', { method: 'DELETE', body: '{}' }); clearAccount(); render(); toast('Your account and saved configurations were deleted.'); }
     catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); }
   }
-  if (action === 'logout') { setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
+  if (action === 'logout') { setBusy(actionButton, true); try { ++state.accountGeneration; ++state.accountRequest; await api('/api/auth/logout', { method: 'POST', body: '{}' }); clearAccount(); render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
 });
 document.addEventListener('submit', async event => {
   if (!['bot-form', 'backtest-form'].includes(event.target.id)) return;
@@ -371,11 +404,12 @@ document.addEventListener('submit', async event => {
   if (!state.user) { openWallet(); message.textContent = 'Connect your wallet before starting this experiment.'; return; }
   values.leverage = Number(values.leverage || 1); if (isBot) { values.budget = Number(values.budget); values.mode = 'paper'; } else values.capital = Number(values.capital);
   if (isBot && values.venue === 'coinbase' && values.leverage !== 1) { message.textContent = 'Coinbase spot configurations use 1× leverage. Choose Jupiter for a leveraged configuration.'; return; }
+  const generation = state.viewGeneration, requestId = isBot ? null : ++state.backtestRequest;
   setBusy(button, true);
   try {
-    if (isBot) { await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }); await refreshAccount(); $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
-    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (state.view === 'backtest') renderBacktest(result); }
-  } catch (error) { message.textContent = errorText(error); } finally { setBusy(button, false); }
+    if (isBot) { await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }); const fresh = await refreshAccount(); $('#bot-dialog').close(); location.hash = 'bots'; render(); toast(fresh ? 'Paper configuration saved. No funds have moved.' : 'Paper configuration saved. The configuration list could not be refreshed.'); }
+    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (state.view === 'backtest' && generation === state.viewGeneration && requestId === state.backtestRequest && form.isConnected) renderBacktest(result); }
+  } catch (error) { if (isBot || (generation === state.viewGeneration && requestId === state.backtestRequest && form.isConnected)) message.textContent = errorText(error); } finally { setBusy(button, false); }
 });
 document.addEventListener('input', event => { if (event.target.id === 'research-search') { state.search = event.target.value; filterResearch(); } });
 document.addEventListener('change', event => {

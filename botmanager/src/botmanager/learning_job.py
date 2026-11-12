@@ -349,7 +349,7 @@ class DailyLearningJob:
             }
             for stream in self.streams:
                 os.set_blocking(stream.fileno(), False)
-        except (ValueError, OSError, ManagerError, KeyError, TypeError):
+        except (ValueError, OSError, ManagerError, KeyError, TypeError, RecursionError):
             self._stop()
             self._save(
                 "failed",

@@ -104,6 +104,19 @@ class PaperWorkflow(unittest.TestCase):
         self.assertEqual(self.assess.call_count, 2)
         self.assertEqual(self.state["grid_assessment"]["result"]["results"]["total_return"], -.01)
 
+    def test_fallback_assessment_binds_the_directory_actually_consumed(self):
+        # CDO-0bdfbd9a80: a missing configured path must not produce a reusable
+        # proof for absent files while the simulator reads a fallback cache.
+        actual = Path(self.settings.data_dir)
+        self.settings.data_dir = str(self.directory / "missing")
+        with patch.object(bots, "data_dir", return_value=actual):
+            workflow.run(self.settings, self.state, threading.Event())
+            (actual / "ADA_1h.csv").write_text("changed fallback source")
+            workflow.run(self.settings, self.state, threading.Event())
+        self.assertEqual(self.assess.call_count, 2)
+        self.assertEqual(Path(self.assess.call_args.args[2].data_dir), actual.resolve())
+        self.assertEqual(self.state["grid_assessment"]["proof"]["data_dir"], str(actual.resolve()))
+
     def test_one_failed_stage_does_not_hide_other_stage_outcomes_or_relax_gates(self):
         self.assess.side_effect = ValueError("missing historical bars")
         workflow.run(self.settings, self.state, threading.Event())

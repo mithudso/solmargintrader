@@ -39,7 +39,8 @@ upserting. See its docstring.
 from __future__ import annotations
 
 import argparse
-import sys
+import math
+from datetime import datetime
 from typing import Any
 
 DB_NAME = "solmargintrader"
@@ -352,6 +353,54 @@ COLLECTIONS: dict[str, dict[str, Any]] = {
 }
 
 ALL_COLLECTIONS = (*TIME_SERIES, *COLLECTIONS)
+
+
+def validate_batches(batches: dict[str, list[dict[str, Any]]]) -> None:
+    """Preflight the maintained validator subset before any destructive schema work.
+
+    The server remains authoritative. This checks the same required/type/enum/items
+    contracts locally so malformed source rows cannot trigger a drop first.
+    """
+    def check(value, spec, where):
+        types = spec.get("bsonType", [])
+        types = [types] if isinstance(types, str) else types
+        matches = {
+            "object": isinstance(value, dict), "array": isinstance(value, list),
+            "string": isinstance(value, str), "null": value is None,
+            "bool": isinstance(value, bool), "date": isinstance(value, datetime),
+            "int": type(value) is int and -(2**31) <= value < 2**31,
+            "long": type(value) is int and -(2**63) <= value < 2**63,
+            "double": isinstance(value, float) and math.isfinite(value),
+        }
+        if set(types) - set(matches):
+            raise ValueError(f"{where}: unsupported local validator type")
+        if types and not any(matches[t] for t in types):
+            raise ValueError(f"{where}: invalid BSON type")
+        if "enum" in spec and value not in spec["enum"]:
+            raise ValueError(f"{where}: value is outside the schema enum")
+        if isinstance(value, dict):
+            for name in spec.get("required", []):
+                if name not in value:
+                    raise ValueError(f"{where}.{name}: required field missing")
+            for name, child in spec.get("properties", {}).items():
+                if name in value:
+                    check(value[name], child, f"{where}.{name}")
+        if isinstance(value, list) and "items" in spec:
+            for index, child in enumerate(value):
+                check(child, spec["items"], f"{where}[{index}]")
+
+    for name, docs in batches.items():
+        if name not in ALL_COLLECTIONS or not isinstance(docs, list):
+            raise ValueError("invalid loader collection batch")
+        spec = COLLECTIONS[name]["validator"]["$jsonSchema"] if name in COLLECTIONS else {
+            "bsonType": "object", "required": [TIME_SERIES[name]["timeseries"]["timeField"],
+                                                      TIME_SERIES[name]["timeseries"]["metaField"], "loaded_at"],
+            "properties": {TIME_SERIES[name]["timeseries"]["timeField"]: {"bsonType": "date"},
+                           TIME_SERIES[name]["timeseries"]["metaField"]: {"bsonType": "object"},
+                           "loaded_at": {"bsonType": "date"}},
+        }
+        for index, doc in enumerate(docs):
+            check(doc, spec, f"{name}[{index}]")
 
 
 def connect(uri: str = "mongodb://localhost:27017"):

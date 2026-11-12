@@ -23,7 +23,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import fcntl
 import json
+import math
 import sys
 import urllib.error
 import urllib.request
@@ -49,6 +51,15 @@ class ArchiveError(RuntimeError):
     """Raised when a price could not be read or the file could not be appended."""
 
 
+def _price(value):
+    try:
+        if type(value) not in (int, float) or not math.isfinite(value) or value <= 0:
+            raise ValueError
+        return float(value)
+    except (ValueError, OverflowError):
+        raise ArchiveError("unusable financial price") from None
+
+
 def fetch_spot(mint: str, *, timeout: float = 10.0) -> float:
     """Current USD price for `mint`, or raise.
 
@@ -64,27 +75,29 @@ def fetch_spot(mint: str, *, timeout: float = 10.0) -> float:
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise ArchiveError(f"could not read a price for {mint}: {exc}") from exc
 
+    if not isinstance(payload, dict):
+        raise ArchiveError("price response is not an object")
     entry = payload.get(mint)
     if not isinstance(entry, dict):
         raise ArchiveError(f"response carried no entry for {mint}: {list(payload)[:3]}")
-    price = entry.get("usdPrice")
-    if not isinstance(price, (int, float)) or not price > 0:
-        raise ArchiveError(f"{mint} returned an unusable price: {price!r}")
-    return float(price)
+    return _price(entry.get("usdPrice"))
 
 
 def append_observation(path: Path, mint: str, price: float, *, when: datetime | None = None) -> None:
     """Append one row, writing the header if the file is new."""
+    price = _price(price)
     when = when or datetime.now(timezone.utc)
     path.parent.mkdir(parents=True, exist_ok=True)
-    new = not path.exists()
-    with path.open("a", newline="", encoding="utf-8") as handle:
+    with path.open("a+", newline="", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        handle.seek(0, 2)
         writer = csv.writer(handle)
-        if new:
+        if handle.tell() == 0:
             writer.writerow(HEADER)
         writer.writerow(
             [int(when.timestamp()), when.isoformat(), mint, f"{price:.10g}", "jupiter-price-v3"]
         )
+        handle.flush()
 
 
 def count_rows(path: Path) -> int:

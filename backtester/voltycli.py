@@ -54,6 +54,12 @@ def prepare(data_dir, output, minute_days):
             raise ValueError(f"source checksum mismatch: {path}")
         frame = pd.read_csv(path)
         step = STEPS[source_interval]
+        values = frame[["timestamp", "open", "high", "low", "close", "volume"]].to_numpy(dtype=float)
+        if (not np.isfinite(values).all() or (values[:, 0] % step != 0).any()
+                or (values[:, 1:5] <= 0).any() or (values[:, 5] < 0).any()
+                or (values[:, 2] < np.maximum(values[:, 1], values[:, 4])).any()
+                or (values[:, 3] > np.minimum(values[:, 1], values[:, 4])).any()):
+            raise ValueError("invalid full-source financial measurements or cadence")
         if frame.timestamp.duplicated().any() or np.any(np.diff(frame.timestamp) <= 0):
             raise ValueError("duplicate or unordered source candles")
         now = int(datetime.now(UTC).timestamp())

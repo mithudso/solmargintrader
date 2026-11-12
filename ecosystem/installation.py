@@ -119,6 +119,7 @@ def source_fingerprint(repo: Path) -> str:
                 ".html",
                 ".css",
                 ".js",
+                ".mjs",
                 ".json",
             ):
                 if path.is_symlink():
@@ -166,6 +167,9 @@ def _terminate(process: subprocess.Popen) -> None:
     try:
         process.wait(timeout=2)
     except subprocess.TimeoutExpired:
+        pass
+    finally:
+        # Descendants can retain pipes after the group leader has exited.
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
@@ -387,6 +391,18 @@ def install_environment(repo: Path, venv_dir: Path) -> dict:
             _installation_lock(venv_dir),
             tempfile.TemporaryDirectory(prefix="ecosystem-install-") as temporary,
         ):
+            if receipt_path.exists():
+                if _read_receipt(receipt_path) != receipt:
+                    return _failure("environment_source_changed_use_new_venv")
+                health = verify_environment(python, repo)
+                if health.get("status") != "complete":
+                    return health
+                if source_fingerprint(repo) != fingerprint:
+                    return _failure("source_changed_during_install")
+                return {"schema_version": 1, "status": "complete", "python": str(python),
+                        "source_fingerprint": fingerprint, "reused": True, "health": health}
+            if _read_receipt(owner_path) != receipt:
+                return _failure("environment_source_changed_use_new_venv")
             cwd = Path(temporary)
             if not (venv_dir / "pyvenv.cfg").is_file():
                 code, _ = _run(

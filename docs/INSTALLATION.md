@@ -11,12 +11,18 @@ can each install a persistent macOS launchd service. Test commands below do not 
 | Component | Install | Persistent? |
 | --- | --- | --- |
 | `backtester/` | `pip install -r backtester/requirements.txt` | No |
-| `research/` | Covered by the backtester's requirements | No |
+| `research/` | Core uses backtester requirements; Coinbase top50 adds `research/coinbase50-requirements.txt` in a separate research environment | No |
 | `extension/` | Nothing — no npm dependencies (Lightweight Charts is vendored). Load unpacked in Chrome | Browser profile only |
 | `soltui/` | `pip install -r soltui/requirements.txt`, optionally install a launchd agent | Optional login service |
 | `mongo/` | `pip install -r mongo/requirements.txt`, plus backtester deps | Local MongoDB service managed separately |
 | `liquidity/` | `uv sync --extra dev -p 3.13` in its directory | Optional live daemon; separate from installation |
 | `executor/` | `uv sync --extra dev -p 3.13` in its directory | No; the API server is started by hand |
+
+The separate hosted `website/` package uses its own Node lockfile and Cloudflare
+Worker/D1 configuration. See [website/README.md](../website/README.md) for local setup,
+read-only Python analysis prerequisites and deployment. Its offline checks do not
+deploy a Worker, apply remote migrations, configure Stripe or execute bot definitions.
+It never reuses the owner's local trading credentials.
 
 ## Prerequisites
 
@@ -34,6 +40,16 @@ can each install a persistent macOS launchd service. Test commands below do not 
 ```bash
 pip install -r backtester/requirements.txt
 ```
+
+The Coinbase top50 study also requires its pinned research-only plotting/numeric and
+`ripser` dependencies. In an isolated research environment, install and check it with:
+
+```bash
+python3 -m pip install -r research/coinbase50-requirements.txt
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -m unittest research.tests.test_coinbase50_study -v
+```
+
+Do not add those research extras to an active trading runtime merely to run this study.
 
 Verify:
 
@@ -134,7 +150,10 @@ rebuilds its selected derived collections and is not a harmless connectivity pro
 
 ## Liquidity
 
-Read `liquidity/CLAUDE.md` and `liquidity/README.md` before live operation.
+Archived on 2026-11-08: keep the daemon and scout disabled and the kill switch set.
+The following commands install dependencies and run offline tests only. Do not install
+or reactivate its service during onboarding. Read `liquidity/CLAUDE.md` and
+`liquidity/README.md` for the retained operational history.
 
 ```bash
 cd liquidity

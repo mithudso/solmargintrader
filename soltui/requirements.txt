@@ -35,4 +35,4 @@ httpx>=0.27,<1
 
 # Renders and loads the LaunchAgent for soltui/soltui-service (plist, bootout/bootstrap).
 # Needed wherever that script runs. Private repo: needs git credentials for github.com/mithudso.
-macos-launchd-supervisor @ git+https://github.com/mithudso/macos-launchd-supervisor
+macos-launchd-supervisor @ git+https://github.com/mithudso/macos-launchd-supervisor@33ba467eb5e2448ed188cc2076bba5984fd09d0e

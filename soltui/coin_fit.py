@@ -1346,6 +1346,12 @@ def cli_main(argv: list[str] | None = None) -> int:
             fee_bps=args.fee_bps,
             slippage_bps=args.slippage_bps,
         )
+        if args.output:
+            destination = args.output.expanduser().resolve()
+            for source in _cache_dir(settings).glob("*.csv"):
+                if (destination == source.resolve()
+                        or (destination.exists() and source.exists() and destination.samefile(source))):
+                    raise bots.BotError("Report output must not overwrite a source candle file")
         selected = (
             ("grid", "dca", "scheduled_dca") if args.bot == "all" else (args.bot,)
         )

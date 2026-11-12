@@ -117,6 +117,10 @@ class DcaConfig:
             raise ValueError("price_deviation_pct must be > 0")
         if not self.step_scale > 0 or not self.volume_scale > 0:
             raise ValueError("step_scale and volume_scale must be > 0")
+        for k in range(self.max_safety_orders):
+            amount = self.safety_order_usd * self.volume_scale ** k
+            if not math.isfinite(amount) or amount < max(self.min_order_usd, 1e-9):
+                raise ValueError("derived safety order is below the venue minimum or nonfinite")
         if not self.take_profit_pct > 0:
             raise ValueError("take_profit_pct must be > 0")
         if not 0 <= self.stop_loss_pct < 100:
@@ -271,10 +275,10 @@ class DcaRunResult:
         ]
 
 
-def _baseline_equity(closes: np.ndarray, initial_capital: float, costs: CostConfig) -> np.ndarray:
-    """Buy-and-hold on the same bars, paying entry costs once (same convention as gridsim)."""
-    c = (costs.fee_bps + costs.slippage_bps) / 10_000.0
-    return (initial_capital / (1.0 + c)) / closes[0] * closes.astype("float64")
+def _baseline_equity(closes: np.ndarray, initial_capital: float, costs: CostConfig, observed: np.ndarray | None = None) -> np.ndarray:
+    """Buy-and-hold enters on the first observed close, matching the grid baseline."""
+    from .gridsim import _baseline_equity as baseline
+    return baseline(closes, initial_capital, costs, observed)
 
 
 class _Deal:
@@ -334,6 +338,7 @@ def run_dca_backtest(
     ts, highs, lows, closes = (checked[name] for name in ("ts", "high", "low", "close"))
     opens = checked.get("open", closes)
     n = closes.size
+    observed = checked["observed"]
     fee = costs.fee_bps / 10_000.0
     slip = costs.slippage_bps / 10_000.0
 
@@ -414,7 +419,7 @@ def run_dca_backtest(
         bought_this_bar = False
 
         # -- 1. queued market order at this bar's open ----------------------
-        if not entries_paused and pending == "base" and pending_index < i:
+        if observed[j] and not entries_paused and pending == "base" and pending_index < i:
             pending = None
             if cash >= cfg.base_order_usd * (1 + fee) - 1e-9:
                 deal = _Deal(float(opens[j]), i)
@@ -426,14 +431,14 @@ def run_dca_backtest(
                     deal.safety.append((deal.base_price * (1 - dev / 100.0), usd, k, i))
             else:
                 skipped["base-order-insufficient-cash"] += 1
-        elif pending == "exit" and pending_index < i and deal is not None:
+        elif observed[j] and pending == "exit" and pending_index < i and deal is not None:
             pending = None
             sell_all(float(opens[j]), i, "dca_stop_loss")
             deals_stopped += 1
             cooldown_until = i + cfg.cooldown_bars
 
         # -- 2. safety orders against the low, highest (shallowest) first ----
-        if not entries_paused and deal is not None and deal.safety:
+        if observed[j] and not entries_paused and deal is not None and deal.safety:
             remaining = []
             for level, usd, k, planned in sorted(deal.safety, key=lambda o: -o[0]):
                 if planned < i and lows[j] <= level:
@@ -449,12 +454,12 @@ def run_dca_backtest(
             deal.safety = remaining
 
         # -- 3. take-profit against the high ---------------------------------
-        if (deal is not None and deal.tp_level is not None and not bought_this_bar
+        if (observed[j] and deal is not None and deal.tp_level is not None and not bought_this_bar
                 and deal.tp_planned_index < i and highs[j] >= deal.tp_level):
             sell_all(deal.tp_level, i, "dca_take_profit")
             deals_completed += 1
             cooldown_until = i + cfg.cooldown_bars
-        elif deal is not None and bought_this_bar and deal.tp_level is not None and highs[j] >= deal.tp_level:
+        elif observed[j] and deal is not None and bought_this_bar and deal.tp_level is not None and highs[j] >= deal.tp_level:
             skipped["take-profit-deferred-same-bar-buy"] += 1
 
         # -- 4. mark to market ----------------------------------------------
@@ -463,6 +468,8 @@ def run_dca_backtest(
         exposure[j] = held * closes[j] / equity[j] if equity[j] > 1e-12 else 0.0
 
         # -- 5. plan from this close ----------------------------------------
+        if not observed[j]:
+            continue
         if deal is not None:
             deal.tp_level = deal.avg_entry * (1 + cfg.take_profit_pct / 100.0)
             deal.tp_planned_index = i
@@ -479,14 +486,14 @@ def run_dca_backtest(
         open_deal = {"qty": deal.qty, "avg_entry": deal.avg_entry, "safety_filled": deal.safety_filled,
                      "cost_usd": deal.cost_usd, "bars_open": offset + n - 1 - deal.start_index,
                      "unrealized_usd": deal.qty * closes[-1] - deal.cost_usd}
-        if close_at_end:
+        if close_at_end and observed[-1]:
             forced_qty = sell_all(float(closes[-1]), offset + n - 1, "dca_forced_exit")
             equity[-1] = cash
             exposure[-1] = 0.0
 
     ppy = periods_per_year(interval)
     metrics = compute_metrics(equity, ts, trades, exposure, ppy, risk_free_rate, 0, initial_equity=capital)
-    baseline = _baseline_equity(closes, capital, costs)
+    baseline = _baseline_equity(closes, capital, costs, observed)
     baseline_metrics = compute_metrics(baseline, ts, [], np.ones(n, dtype="float64"), ppy,
                                        risk_free_rate, 0, initial_equity=capital)
     state = {

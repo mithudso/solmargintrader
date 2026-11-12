@@ -26,6 +26,7 @@ import math
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -235,28 +236,24 @@ def build_icns(target: Path, preview: bool = False) -> Path:
         raise RuntimeError("iconutil not found; this needs macOS")
 
     master = render(BASE)
-    iconset = target.with_suffix(".iconset")
-    if iconset.exists():
-        shutil.rmtree(iconset)
-    iconset.mkdir(parents=True)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="soltui-", suffix=".iconset", dir=target.parent) as staging:
+        iconset = Path(staging)
+        for size, name in ICONSET:
+            # Downscale the master; only this unique staging tree is ours.
+            master.resize((size, size), Image.LANCZOS).save(iconset / name)
 
-    for size, name in ICONSET:
-        # Downscale from the 1024 master rather than re-rendering: re-rendering
-        # at 16px would draw sub-pixel branches and produce a smear.
-        master.resize((size, size), Image.LANCZOS).save(iconset / name)
+        if preview:
+            preview_path = target.with_name(f"{target.stem}-preview.png")
+            master.resize((512, 512), Image.LANCZOS).save(preview_path)
+            print(f"preview → {preview_path}")
 
-    if preview:
-        preview_path = target.with_name(f"{target.stem}-preview.png")
-        master.resize((512, 512), Image.LANCZOS).save(preview_path)
-        print(f"preview → {preview_path}")
-
-    proc = subprocess.run(
-        ["iconutil", "-c", "icns", str(iconset), "-o", str(target)],
-        capture_output=True, text=True,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(f"iconutil failed: {proc.stderr.strip()}")
-    shutil.rmtree(iconset)
+        proc = subprocess.run(
+            ["iconutil", "-c", "icns", str(iconset), "-o", str(target)],
+            capture_output=True, text=True,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(f"iconutil failed: {proc.stderr.strip()}")
     print(f"icon → {target}")
     return target
 

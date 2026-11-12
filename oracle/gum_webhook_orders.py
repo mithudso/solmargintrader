@@ -308,8 +308,10 @@ def _resume(path, row, venue, state, *, now, started, enabled, allow_live):
         )
     if state.get("phase") != "awaiting_fill" or not state.get("legs"):
         return "blocked"
-    leg = state["legs"][-1]
     try:
+        if not isinstance(state["legs"], list) or not isinstance(state["legs"][-1], dict):
+            raise TypeError("invalid_durable_legs")
+        leg = state["legs"][-1]
         plan, client_id = leg["plan"], leg["client_order_id"]
         _identity(plan, row, venue)
         if client_id != client_order_id(

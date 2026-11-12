@@ -33,7 +33,7 @@ python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
 ## Current managed-suite candidate gates
 
 The coordinated candidate uses manager 0.7.2, research-runtime 0.4.0 and ecosystem
-0.4.4. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
+0.4.5. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
 and remaining evidence gates separate from the historical M4 0.5.0 release.
 
 Run the separate browser-owner paper gate from the repository root:
@@ -50,21 +50,64 @@ acceptance and final-head CI remain separate release gates.
 
 ## Existing component suites
 
+Oracle's forecast/archive/MCP and optional webhook boundaries use the installed
+canonical package environment described in [development](DEVELOPMENT.md). From the
+repository root, run its offline tests and Ruff gate with:
+
+```bash
+python3 -m unittest discover -s oracle/tests -t . -v
+ruff check oracle
+```
+
+The standalone executor keeps its own locked environment. After its documented
+dependency setup, run from the repository root:
+
+```bash
+(cd executor && .venv/bin/ruff check src tests)
+(cd executor && .venv/bin/ruff format --check src tests)
+(cd executor && .venv/bin/pytest -q)
+```
+
+Executor's default pytest configuration excludes the `network` marker. Explicit
+`-m network` is a separate live read/simulation gate and is not part of these offline
+commands. Neither offline fixtures nor live read-only checks establish order acceptance.
+
+The separate hosted website package has its own Node, Python adapter and public-export
+gates. Run from the repository root with the canonical backtester/Oracle packages installed:
+
+```bash
+(cd website && npm test && npm run check)
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
+```
+
+The Node fixtures exercise wallet challenges, tenant isolation, billing/entitlement
+refusals and inactive paper definitions. Python fixtures use synthetic bars and temporary
+archives. The export check binds generated public copies to their reviewed source hashes.
+These checks do not establish configured Stripe billing, deployed analysis freshness or
+live venue execution. See [website/README.md](../website/README.md).
+
+Raw-event capture has a separate durability/upload suite:
+`python3 -m unittest discover -s scripts -p test_capture_market.py -v`. It exercises
+temporary spools and injected transports. Its MongoDB integration case requires a
+disposable local server and otherwise skips; CI sets `MARKET_CAPTURE_REQUIRE_MONGO=1`
+to require that case. It must never target the owner's capture namespace.
+
 ```bash
 python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 437 tests
+(cd extension && npm test)                              # 437 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
 The full SolTUI suite is optional and is skipped by normal PR/push CI. Run it
 locally with the command above, or manually dispatch CI with the boolean
 `run_soltui_suite` enabled. The other CI jobs and test-discovery count check stay
-enabled. This delivery skips the full suite at the owner's explicit request;
-focused UI, accounting and installed acceptance checks are recorded separately.
+enabled. Record each delivery's actual full-suite result or explicit skip in its
+verification receipt; a historical delivery's skip does not describe later runs.
 
-2960 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2960 tests total in the four legacy count-gated suites: backtester, SolTUI, MongoDB and extension. This subtotal excludes the additional package and script suites described on this page. `liquidity/` has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -144,15 +187,15 @@ command-line extension loading); set `CHROME` for another build and `E2E_NO_SAND
 
 ## Verification commands
 
-```bash
-cd extension
+From the repository root:
 
-npm test                                              # unit + parity
-node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # a round trip must close positive
-npm run e2e                                           # real-browser load + dry-run checks (needs Chrome for Testing)
-node tools/dryrun.js --ticks 4 --walk 5 --offline 100 # trending case: bids fill, no exits
-node tools/verify-endpoints.js                        # live Jupiter reachability
-find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
+```bash
+(cd extension && npm test)                             # unit + parity
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100) # a round trip must close positive
+(cd extension && npm run e2e)                          # real-browser load + dry-run checks (needs Chrome for Testing)
+(cd extension && node tools/dryrun.js --ticks 4 --walk 5 --offline 100) # trending case: bids fill, no exits
+(cd extension && node tools/verify-endpoints.js)        # live Jupiter reachability
+(cd extension && find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check)
 ```
 
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
@@ -273,8 +316,12 @@ failure modes, state transitions and emitted logs. This repository does not conf
 numeric line-coverage threshold. A blanket 100% line target is not an existing CI gate.
 
 `.github/workflows/ci.yml` runs extension unit/parity/syntax/manifest/offline-dry-run
-checks, backtester tests/imports, soltui tests on macOS, MongoDB integration tests with
-a service container, documentation/index drift checks, and liquidity Ruff/format/pytest.
+and isolated real-browser checks, backtester/research tests, Oracle and installed paper
+ecosystem tests, manager lifecycle checks, bounded SolTUI checks on macOS, MongoDB and
+raw-capture integration tests with a service container, documentation/index drift checks,
+and executor/liquidity offline pytest and lint gates. The separate
+`.github/workflows/website.yml` runs Node tests/syntax, Python adapter tests and public
+research export freshness when its configured source paths change.
 The default liquidity pytest selection excludes the `network` marker. Public Jupiter
 reachability is informational and runs on workflow dispatch, not on each PR.
 

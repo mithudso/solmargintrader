@@ -64,7 +64,7 @@ if [ "$QUICK" -eq 0 ]; then
     run "extension suite" npm --prefix extension test
     # A round trip must still close positive; this is the integration gate that
     # loading the extension unpacked cannot be automated to replace.
-    run "extension dry run" node extension/tools/dryrun.js --ticks 8 --osc 6 --offline 100
+    run "extension dry run" node extension/tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics
   fi
 fi
 

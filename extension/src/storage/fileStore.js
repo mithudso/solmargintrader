@@ -13,9 +13,10 @@
  * POSIX, so a reader sees either the old file or the new one, never a partial.
  */
 
-import { readFile, writeFile, rename, mkdir } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { readFile, open, rename, mkdir, unlink, realpath } from 'node:fs/promises';
+import { dirname, join, resolve, basename } from 'node:path';
 import { homedir } from 'node:os';
+import { randomUUID } from 'node:crypto';
 
 export const DEFAULT_DATA_DIR = join(homedir(), '.solmargintrader');
 export const DEFAULT_STORE_PATH = join(DEFAULT_DATA_DIR, 'journal.json');
@@ -35,9 +36,35 @@ async function readJson(path, fallback) {
 
 async function writeJsonAtomic(path, value) {
   await mkdir(dirname(path), { recursive: true });
-  const tmp = `${path}.${process.pid}.tmp`;
-  await writeFile(tmp, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
-  await rename(tmp, path);
+  const tmp = `${path}.${process.pid}.${randomUUID()}.tmp`;
+  let file;
+  try {
+    file = await open(tmp, 'wx', 0o600);
+    await file.writeFile(`${JSON.stringify(value, null, 2)}\n`);
+    await file.sync();
+    await file.close(); file = null;
+    await rename(tmp, path);
+    const directory = await open(dirname(path), 'r');
+    try { await directory.sync(); } finally { await directory.close(); }
+  } finally {
+    await file?.close();
+    await unlink(tmp).catch(error => { if (error.code !== 'ENOENT') throw error; });
+  }
+}
+
+// A stale lock is deliberately a refusal: PID reuse or elapsed time cannot prove
+// that another journal owner is gone. Never discard a live writer's evidence.
+async function withFileLock(path, operation) {
+  await mkdir(dirname(path), { recursive: true });
+  let canonical;
+  try { canonical = await realpath(path); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; canonical = join(await realpath(dirname(path)), basename(path)); }
+  const lockPath = `${canonical}.lock`;
+  let lock;
+  try { lock = await open(lockPath, 'wx', 0o600); }
+  catch (error) { if (error.code === 'EEXIST') throw new Error('Store is busy or has an unresolved owner lock; review ownership before retrying.'); throw error; }
+  try { return await operation(); }
+  finally { await lock.close(); await unlink(lockPath); }
 }
 
 /**
@@ -56,8 +83,10 @@ export function createFileArea(path = DEFAULT_CONFIG_PATH) {
       return Object.fromEntries(list.map((k) => [k, all[k]]));
     },
     async set(obj) {
-      const all = await readJson(path, {});
-      await writeJsonAtomic(path, { ...all, ...obj });
+      return withFileLock(resolve(path), async () => {
+        const all = await readJson(path, {});
+        await writeJsonAtomic(path, { ...all, ...obj });
+      });
     },
   };
 }
@@ -79,10 +108,12 @@ export class FileStore {
   }
 
   async mutate(fn) {
-    const data = await this.read();
-    const result = fn(data);
-    await writeJsonAtomic(this.path, data);
-    return result;
+    return withFileLock(resolve(this.path), async () => {
+      const data = await this.read();
+      const result = fn(data);
+      await writeJsonAtomic(this.path, data);
+      return result;
+    });
   }
 
   async putIntent(intent) {
@@ -142,7 +173,8 @@ export class FileStore {
   }
 
   async recentEvents(limit = 100) {
-    return (await this.read()).events.slice(-limit).reverse();
+    if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('event limit must be a nonnegative integer');
+    return limit === 0 ? [] : (await this.read()).events.slice(-limit).reverse();
   }
 
   async clearAll() {

@@ -122,6 +122,8 @@ def pivots(log_prices, threshold):
     if threshold <= 0:
         raise ValueError("positive reversal threshold required")
     p = np.asarray(log_prices)
+    if p.size < 2:
+        return []
     high = low = p[0]
     ihigh = ilow = trend = 0
     out = []
@@ -286,6 +288,8 @@ def fit_forecast(train, test, seconds):
 
 
 def forecast_test(frame, interval, target):
+    if len(frame) < 2:
+        return [], []
     seconds = INTERVAL_SECONDS[interval]
     start = target - pd.Timedelta(days=6)
     end = min(
@@ -380,15 +384,15 @@ def run(input_dir, output, target_day="2026-11-10", replicates=1999):
         seconds = INTERVAL_SECONDS[interval]
         path = input_dir / f"ZEC_USD_{interval}.csv"
         raw = pd.read_csv(path).sort_values("timestamp").reset_index(drop=True)
-        frame = validate_bars(raw, interval, strict_gaps=False)
+        frame = validate_bars(raw, interval, strict_gaps=False) if len(raw) else raw.loc[:, ["timestamp", "open", "high", "low", "close", "volume"]]
         frame = frame.loc[frame.timestamp + seconds <= cutoff].reset_index(drop=True)
         refuse_reserved(frame, interval, reservations)
         manifest["inputs"][interval] = {
             "path": str(path),
             "sha256": sha(path),
             "bars": len(frame),
-            "first": int(frame.timestamp.iloc[0]),
-            "last": int(frame.timestamp.iloc[-1]),
+            "first": int(frame.timestamp.iloc[0]) if len(frame) else None,
+            "last": int(frame.timestamp.iloc[-1]) if len(frame) else None,
         }
         frame.to_csv(output / f"ZEC_USD_{interval}_bars.csv.gz", index=False)
         for index, (label, begin, end) in enumerate(windows):
@@ -407,7 +411,7 @@ def run(input_dir, output, target_day="2026-11-10", replicates=1999):
                     "bars": len(part),
                     "coverage": ratio,
                     "eligible": eligible,
-                    "max_gap_seconds": int(part.timestamp.diff().max()),
+                    "max_gap_seconds": int(part.timestamp.diff().max()) if len(part) > 1 else None,
                 }
             )
             if not eligible:
@@ -434,6 +438,8 @@ def run(input_dir, output, target_day="2026-11-10", replicates=1999):
         forecasts.extend(f)
         forecast_curves.extend(c)
     stats = pd.DataFrame(rows)
+    if stats.empty:
+        stats = pd.DataFrame(columns=["interval", "window", "series", "p_conservative"])
     stats["p_holm"] = holm(stats.p_conservative.to_numpy())
     stats.to_csv(output / "spectral_tests.csv", index=False)
     for filename, values in (
@@ -445,7 +451,7 @@ def run(input_dir, output, target_day="2026-11-10", replicates=1999):
         ("forecast_curves.csv", forecast_curves),
     ):
         pd.DataFrame(values).to_csv(output / filename, index=False)
-    manifest["status"] = "complete"
+    manifest["status"] = "complete" if len(stats) else "insufficient"
     manifest["tests"] = len(stats)
     manifest["artifacts"] = {
         p.name: sha(p) for p in sorted(output.iterdir()) if p.name != "manifest.json"

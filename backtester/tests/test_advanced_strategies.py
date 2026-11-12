@@ -10,6 +10,7 @@ easy; one that returns the right number for the right reason is not.
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 
@@ -113,6 +114,10 @@ class TestIchimokuDisplacement(unittest.TestCase):
     def test_the_cloud_used_is_the_one_computed_displacement_bars_ago(self) -> None:
         closes = trending(200)
         strat = IchimokuCloud()
+        # Place the current close between the old and current cloud boundaries.
+        _, _, old_a, old_b = ind.ichimoku(closes[:-26] * 1.01, closes[:-26] * .99, 9, 26, 52)
+        _, _, new_a, new_b = ind.ichimoku(closes * 1.01, closes * .99, 9, 26, 52)
+        closes[-1] = (max(old_a, old_b) + max(new_a, new_b)) / 2
         w = window(closes)
         cut = len(closes) - strat.displacement
         highs, lows = np.asarray(closes) * 1.01, np.asarray(closes) * 0.99
@@ -122,7 +127,7 @@ class TestIchimokuDisplacement(unittest.TestCase):
         # And the cloud computed from the FULL history differs, so the distinction
         # is real rather than incidental on this fixture.
         _, _, full_a, full_b = ind.ichimoku(highs, lows, 9, 26, 52)
-        self.assertNotAlmostEqual(max(span_a, span_b), max(full_a, full_b), places=6)
+        self.assertNotEqual(expected, float(closes[-1] > max(full_a, full_b)))
 
     def test_price_above_a_trailing_cloud_is_long(self) -> None:
         self.assertEqual(IchimokuCloud().on_bar(window(trending(200))), 1.0)
@@ -156,9 +161,9 @@ class TestOuHalfLifeReversion(unittest.TestCase):
     def test_the_hold_cap_forces_an_exit(self) -> None:
         strat = OuHalfLifeReversion(fit_window=250, hold_multiple=0.01, max_half_life_bars=999)
         closes = oscillating(400, amp=10.0, period=30.0)
-        seen = [strat.on_bar(window(closes[: i + 1])) for i in range(300, 400)]
-        # With a hold cap this tight, no position can persist across many bars.
-        self.assertIn(0.0, seen)
+        with patch.object(ind, "ou_half_life", return_value=10.), patch.object(ind, "zscore", return_value=-3.):
+            seen = [strat.on_bar(window(closes[: i + 1])) for i in range(300, 303)]
+        self.assertEqual(seen, [1., 0., 1.])
 
 
 class TestHurstRegimeSwitch(unittest.TestCase):

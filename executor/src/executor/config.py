@@ -123,8 +123,10 @@ def default_toml() -> str:
     )
 
 
-def _check_file_mode(path: Path) -> None:
-    st = path.stat()
+def _check_file_mode(path: Path, st: os.stat_result | None = None) -> None:
+    st = path.stat() if st is None else st
+    if not stat.S_ISREG(st.st_mode):
+        raise ExecutorError(f"config {path} is not a regular file")
     if st.st_uid != os.getuid():
         raise ExecutorError(f"config {path} is not owned by you")
     if st.st_mode & 0o022:
@@ -209,14 +211,25 @@ def load_config(path: Path | None = None, create: bool = True) -> Config:
         if not create:
             return validate(Config(path=path))
         path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-        with os.fdopen(fd, "w") as fh:
-            fh.write(default_toml())
-    _check_file_mode(path)
+        try:
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        except FileExistsError:
+            pass  # A concurrent loader created it; validate the file below.
+        else:
+            with os.fdopen(fd, "w") as fh:
+                fh.write(default_toml())
     try:
-        raw = tomllib.loads(path.read_text())
-    except (tomllib.TOMLDecodeError, OSError) as exc:
-        raise ExecutorError(f"config {path} is unreadable: {exc}") from None
+        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+        try:
+            _check_file_mode(path, os.fstat(fd))
+            with os.fdopen(fd, "r", encoding="utf-8") as fh:
+                fd = None
+                raw = tomllib.loads(fh.read())
+        finally:
+            if fd is not None:
+                os.close(fd)
+    except (tomllib.TOMLDecodeError, OSError, UnicodeError) as exc:
+        raise ExecutorError(f"config {path} is unreadable ({type(exc).__name__})") from None
     sections = {"rails": Rails, "gates": Gates, "validation": Validation, "bridge": Bridge}
     top = {k: v for k, v in raw.items() if k not in sections}
     cfg = _merge(Config, top, "top level")

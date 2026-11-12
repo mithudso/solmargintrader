@@ -39,6 +39,14 @@ Ten components with different risk profiles. Know which one you are in:
 | `executor/` (Python) | **Moves real money** on Solana: guarded spot swaps through Jupiter. It signs and sends. Its own venv and pytest. Read `executor/CLAUDE.md` first: rails, verifier, journal, and what is not built yet. |
 | `liquidity/` (Python) | **Moves real money** on Aero (Base). It manages, compounds and allocates LP positions. Its own venv and pytest. Read `liquidity/CLAUDE.md` first: it records the owner's live-operation authorization and its limits. |
 
+The separate `website/` package hosts the public wallet-account and research workspace
+on Cloudflare. Its tenant-owned bot definitions stay inactive and paper-only. D1 account
+storage, Stripe billing, the read-only Python analysis bridge and live execution have
+separate readiness gates. The website never inherits the local owner's credentials or
+trading authority. Read [website/README.md](website/README.md) before changes. Its Node
+tests and syntax checks run with `npm test` and `npm run check` from `website/`; its
+Python/export checks are listed in [docs/TESTING.md](docs/TESTING.md).
+
 ## Live on-chain actions (owner's standing authorization)
 
 **Liquidity archive, 2026-11-08:** The owner discontinued the liquidity manager and scout as unprofitable. Keep the Aero LP service disabled and the kill switch set unless the owner later requests reactivation. See `liquidity/CLAUDE.md`.
@@ -129,13 +137,13 @@ Ecosystem setup and control room use `python -m pip install ./backtester ./oracl
 python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
 python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
 python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 437 tests
-node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
-cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
-node tools/verify-endpoints.js                          # live Jupiter reachability
+(cd extension && npm test)                              # 437 tests
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must still close positive
+(cd extension && npm run e2e)                           # real Chrome for Testing: load, dry-run, rails (needs one; see below)
+(cd extension && node tools/verify-endpoints.js)         # live Jupiter reachability
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
-cd liquidity && .venv/bin/pytest -q                     # liquidity (own venv; -m network for live reads)
-cd executor && .venv/bin/pytest -q                      # executor (own venv; -m network for live read-only quotes and simulations)
+(cd liquidity && .venv/bin/pytest -q)                    # liquidity (own venv; -m network for live reads)
+(cd executor && .venv/bin/pytest -q)                     # executor (own venv; -m network for live read-only quotes and simulations)
 ```
 
 `npm run e2e` (`extension/tools/e2e.mjs`) loads the unpacked extension into Chrome for Testing over the

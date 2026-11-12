@@ -1,7 +1,8 @@
 # Security model
 
-This repository contains software that can move real money. Two assets matter: **signing keys** and
-the **Jupiter API key**.
+This repository contains software that can move real money. Key assets include **signing keys** and
+the **Jupiter API key**. The separate hosted website also handles wallet account
+identities, sessions, subscription data and server-side integration credentials.
 
 ## Threat model
 
@@ -76,8 +77,10 @@ It can arm the engine and place orders, so it is locked down by default:
 
 - **Loopback only.** Binds `127.0.0.1` unless `--host` is passed explicitly, and warns loudly when
   it is not loopback.
-- **Bearer token on every command route.** Generated at startup and printed, or pinned with
-  `SMT_API_TOKEN`. Compared with `timingSafeEqual` after a length check.
+- **Bearer token on every command route.** The caller must export a nonempty
+  `SMT_API_TOKEN` before startup; the server refuses a missing token and never prints
+  its value. It compares tokens with `timingSafeEqual` after a length check. See
+  [local API setup](INSTALLATION.md#optional-the-local-http-surface) for caller-side generation.
 - **Browser requests refused.** A token alone is insufficient because a page can post to localhost;
   `Origin` or `Sec-Fetch-Site` on a request means refusal.
 - **`GET` is read-only.** Nothing that changes state is reachable from a URL alone, so a link cannot
@@ -88,19 +91,49 @@ It can arm the engine and place orders, so it is locked down by default:
 Do not put this behind a tunnel or reverse proxy without adding transport security and access
 control of your own. It has no rate limiting, no audit log, and no multi-user concept.
 
+## Hosted wallet-account website
+
+`website/src/worker.js` is a separate public HTTP trust boundary. Wallet sign-in uses
+an expiring, origin-bound Ed25519 challenge consumed by an atomic single-use update.
+Session tokens are hashed in D1; cookies use Secure, HttpOnly and SameSite attributes.
+State-changing browser routes check the exact origin and reject cross-site metadata.
+Bot reads and writes are scoped to the authenticated user. These controls address
+spoofing, replay and cross-tenant access; connecting a wallet grants no order authority.
+
+The Worker applies CSP and other response headers. Request bodies and upstream replies
+are bounded. Stripe webhook HMAC verification and a canonical subscription fetch gate
+entitlement; a Checkout redirect never grants access. `STRIPE_SECRET_KEY`,
+`STRIPE_WEBHOOK_SECRET` and `ENGINE_TOKEN` belong in Worker secrets, not the browser,
+tracked configuration or bot definitions. The analysis bridge requires a bearer token,
+refuses browser Origin headers and exposes only named read-only analysis operations.
+
+Account deletion revokes its sessions and removes tenant-owned definitions. Preserve
+billing evidence and provider state when investigating an ambiguous payment outcome;
+source rollback does not undo an external subscription. The website's tests and
+[deployment limits](../website/README.md) do not certify configured billing, a fresh
+analysis engine or live per-user venue execution. Never tunnel the local owner API to
+implement those missing capabilities.
+
 ## Secrets and git
 
 `.gitignore` excludes `.solmargintrader/`, `journal.json`, `config.json`, `.env*` and the
-`jup.ag/` reference dump. Before committing, confirm no key material is staged:
+`jup.ag/` reference dump. Before committing, list the staged paths without printing
+their contents:
 
 ```bash
-git diff --cached | grep -iE 'BS58_PRIVATE_KEY|x-api-key|SMT_API_TOKEN|passphrase|seed'
+git diff --cached --name-only
 ```
+
+A path list does not prove absence of credentials. Review values privately or use a
+secret scanner that emits only a status and affected paths. Never print matching
+credential lines, staged secret values or full diffs into shared logs.
 
 ## Reporting
 
-This is personal tooling with no support commitment. If you find a defect that could lose funds, stop
-trading with it first (`node tools/cli.js kill`), then fix it.
+This is personal tooling with no support commitment. If you find a defect that could
+lose funds, stop the affected owner through its own control and preserve its journal.
+A CLI kill affects its selected local state, not the browser or another service.
+See [owner-scoped incident handling](OPERATIONS.md#stop-the-selected-owner).
 
 
 ## Manager, Oracle and managed control room

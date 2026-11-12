@@ -161,10 +161,15 @@ class ExperimentStore(ManagerEvidence):
         if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 10000:
             raise ExperimentError("run list limit must be in [1, 10000]")
         with self._connect() as db:
-            rows = db.execute("SELECT * FROM runs ORDER BY created_at DESC").fetchall()
-        return [r for row in rows if (r := self._run(row))
-                and (bot is None or r["spec"]["bot"] == bot)
-                and (source is None or r["spec"]["source"] == source)][:limit]
+            filters, parameters = [], []
+            for key, value in (("bot", bot), ("source", source)):
+                if value is not None:
+                    filters.append(f"json_extract(spec,'$.{key}')=?")
+                    parameters.append(value)
+            where = " WHERE " + " AND ".join(filters) if filters else ""
+            rows = db.execute("SELECT * FROM runs" + where + " ORDER BY created_at DESC LIMIT ?",
+                              (*parameters, limit)).fetchall()
+        return [self._run(row) for row in rows]
 
     def update_run(self, run_id: str, *, status: str | None = None, summary: Any = None,
                    error: Any = _UNSET, progress: Any = None) -> dict[str, Any]:
@@ -862,10 +867,11 @@ def compare_runs(store: ExperimentStore, left: str, right: str) -> dict[str, Any
                 reasons.append(f"{key}: differs")
         elif av != bv:
             reasons.append(f"{key}: differs")
-    def coverage(run: dict[str, Any], context: dict[str, Any]) -> set[tuple[str, float, float]]:
+    def coverage(run: dict[str, Any], context: dict[str, Any]) -> set[tuple[str, str, str, float, float]]:
         rows = store.cells(run["id"])
         if run["spec"]["source"] == "tradingview":
             rows = run["spec"].get("reported_rows", rows)
+        rows = [row for row in rows if row.get("status") == "completed" and _metric(row, "total_return") is not None]
         result = set()
         unbound = sum(not row.get("coin") or row.get("start") is None or row.get("end") is None for row in rows)
         if unbound:
@@ -882,7 +888,11 @@ def compare_runs(store: ExperimentStore, left: str, right: str) -> dict[str, Any
         for name, index in (("start", 1), ("end", 2)):
             if result and context.get(name) is not None and any(row[index] != _timestamp(context[name]) for row in result):
                 reasons.append(f"declared {name} conflicts with actual cell windows")
-        return result
+        # Candidate IDs and splits keep complementary failures from being
+        # disguised by another candidate's successful measurement.
+        return {(str(row.get("candidate_id")), row.get("split"), str(row["coin"]).upper(),
+                 _timestamp(row["start"]), _timestamp(row["end"])) for row in rows
+                if row.get("coin") and row.get("start") is not None and row.get("end") is not None}
     for label, run in (("left", a), ("right", b)):
         if not any(row["metrics"].get("total_return", {}).get("observations", 0)
                    for row in candidate_summary(store, run["id"])):

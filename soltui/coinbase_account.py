@@ -244,7 +244,7 @@ def sync_account(call: Callable[[list[str]], dict[str, Any]] = _cli) -> dict[str
             for row in rows:
                 if not isinstance(row, dict) or not isinstance(row.get('currency'), str):
                     raise ValueError('Coinbase returned an invalid balance row')
-                accounts.append({'portfolio_id': pid, 'portfolio_name': portfolio.get('name', ''), **row})
+                accounts.append({**row, 'portfolio_id': pid, 'portfolio_name': portfolio.get('name', '')})
             if not has_next:
                 break
             nxt = result.get('cursor')

@@ -14,9 +14,18 @@ be wrong somewhere else. The second list is the one that bites.
 | DefiLlama | `liquidity/src/aero_lp/providers.py` | Comparison-only yield/price inputs | Quoted rows are labelled; no non-Aero deployment is authorized |
 | MongoDB | `mongo/schema.py`, `mongo/load.py` | Derived research records | Rebuild selected collections from tracked evidence and local caches |
 | Jupiter Price v3 (`api.jup.ag`, `lite-api.jup.ag`) | `extension/src/jupiter/price.js`, `backtester/core/archive_price.py` | Live and snapshot prices | The extension cannot price a tick; it refuses rather than guessing |
-| Jupiter Trigger v2 (`api.jup.ag/trigger/v2`) | `extension/src/jupiter/trigger.js` | Placing, listing, cancelling real orders | The money path. Reconciliation depends on its response shape, which is **guessed** |
+| Jupiter Trigger v2 (`api.jup.ag/trigger/v2`) | `extension/src/jupiter/trigger.js` | Live-capable price-order adapter, currently blocked without a trusted transaction-intent verifier | Public-contract offline fixtures do not establish authenticated wallet responses, actual costs or live acceptance |
+| Oracle reference feeds | `oracle/feeds.py` `RecorderFeed`, `JupiterPriceFeed` | Exact-instrument local recorder reads or explicit Jupiter Price v3 GETs; no signing or order submission | Jupiter requires `JUPITER_API_KEY`, defaults to 5s with a 15s cap, bounds replies, refuses redirects and does not retry in the transport; missing/stale inputs remain unavailable |
+| Oracle stdio MCP | `oracle/server.py` | Eight read-only tools and three subscribable archive resources | Same-user local process/filesystem boundary, no network listener or remote auth; subscriptions invalidate snapshots rather than delivering every tick; standalone selected archive startup may initialize its schema |
+| Official Coinbase CLI | `oracle/coinbase_orders.py`, `oracle/webhook_orders.py` | Separately enabled TradingView worker's account/product/order reads and one committed spot-order create | Existing CLI authentication and exact portfolio binding; default 30s subprocess deadline, bounded captured output, fixed errors and no automatic submit retry; ambiguous outcomes retain journal holds |
+| GUM Beta (`api.gum.ag/perps`) | `oracle/gum_orders.py`, `oracle/gum_webhook_orders.py` | Owner-scoped health/market/account/history GETs and separately enabled signed ZEC order-Action POST | `X-PUBKEY` owner selection for reads; local owner-bound signature for writes, 15s transport deadline, 2MiB reply cap, no redirects or automatic POST retry; funding/deposits remain separate from order verification |
 | Chrome extension APIs (MV3) | `extension/src/bg/`, `src/storage/` | Service worker, alarms, `chrome.storage`, IndexedDB | MV3 timer and lifetime rules are load-bearing, not incidental |
 | launchd (macOS) | `soltui/soltui-service`, `liquidity/scripts/aero-lp-service` | Optional login services | `KeepAlive` overriding Quit is a launchd property, not a bug in the app |
+| Solana RPC, Jupiter Swap/Price and LI.FI | `executor/src/executor/rpc.py`, `jupiter.py`, `lifi.py` | Guarded spot quote/build/simulation/send; LI.FI is quote-only | Reads and sends have different retry semantics; unknown sends block new execution |
+| Cloudflare Workers, static assets and D1 | `website/src/worker.js`, `website/wrangler.jsonc` | Hosted wallet accounts, sessions and inactive paper definitions | Preserve tenant scope and single-use challenges; website definitions do not trade |
+| Stripe (`api.stripe.com`) | `website/src/worker.js` | Subscription Checkout, portal and verified entitlement | Signed webhook plus canonical subscription state, never a redirect, gates access |
+| Separate HTTPS analysis adapter | `website/engine/server.py`, Worker `engine` helper | Canonical backtests and read-only Oracle archive views | Missing cache, archive or credentials stays unavailable; no tunnel to local trading services |
+| Coinbase public WebSocket and dedicated MongoDB time series | `scripts/capture_market.py` | Bounded raw-event spool and independent upload | Preserve the persisted deadline and ambiguous-insert marker; never let the derived loader drop this namespace |
 
 Full per-call detail — timeouts, retries, what is logged — is in `docs/external-calls.md`.
 
@@ -94,7 +103,7 @@ numpy.
 | Node | 22 (`.nvmrc`) | 22, pinned | Must be 22+ for WebCrypto Ed25519 |
 | `data/` | Populated by hand | Absent — gitignored | Absent; refetch required |
 | Jupiter reachability | Available | Only on `workflow_dispatch`, `continue-on-error` | Needs a key for the non-`lite` host |
-| Chrome | Present, extension loadable | None — never loaded in CI | Needed for the extension |
+| Chrome | Separate installed profile acceptance | Chrome for Testing in temporary profiles, network-stubbed extension checks and isolated native paper-owner recovery | Needed for the extension; everyday-profile installation remains a separate gate |
 
 Offline unit suites must not require public network access or pre-existing cached CSVs.
 MongoDB integration tests use a service container in CI and skip locally if no server is
@@ -106,7 +115,7 @@ The installed app bundle and live services still need manual acceptance beyond C
 
 1. **A different data vendor.** `fetch.py` is Coinbase-shaped, including its row ordering.
 2. **A different venue.** `src/venues/` is the seam — `triggerVenue.js` is one
-   implementation — but `docs/known-issues.md` applies: the Trigger envelope is guessed, so
-   a second venue is also a chance to find out what the first one really returns.
+   implementation. `docs/known-issues.md` retains the difference between offline public-contract
+   fixtures and unresolved authenticated wallet, cost and live-execution acceptance.
 3. **Non-macOS soltui.** The menu-bar app, py2app and launchd are all macOS-specific. The
    TUI (`tui.py`) is not.

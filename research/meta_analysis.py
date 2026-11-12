@@ -10,6 +10,7 @@ import argparse
 import csv
 import gzip
 import hashlib
+import io
 import json
 import math
 from pathlib import Path
@@ -29,10 +30,12 @@ def clean(value):
     return value
 
 
-def load(path):
+def load(path, raw=None):
     path = Path(path)
-    opener = gzip.open if path.name.endswith(".gz") else open
-    with opener(path, "rt", encoding="utf-8-sig") as stream:
+    raw = path.read_bytes() if raw is None else raw
+    if path.name.endswith(".gz"):
+        raw = gzip.decompress(raw)
+    with io.StringIO(raw.decode("utf-8-sig")) as stream:
         if path.suffix in (".md", ".txt"):
             return "text_report", stream.read()
         if path.name.endswith((".csv", ".csv.gz")):
@@ -118,16 +121,17 @@ def consolidate(paths, exclusions=()):
     artifacts, payloads, aliases, errors = [], {}, [], []
     for path in paths:
         path = Path(path).resolve()
-        digest = sha(path)
-        if digest in payloads:
-            aliases.append({"path": str(path), "same_bytes_as": payloads[digest]["source_path"], "sha256": digest})
-            continue
         try:
-            kind, data = load(path)
+            raw = path.read_bytes()
+            digest = hashlib.sha256(raw).hexdigest()
+            if digest in payloads:
+                aliases.append({"path": str(path), "same_bytes_as": payloads[digest]["source_path"], "sha256": digest})
+                continue
+            kind, data = load(path, raw)
         except (ValueError, OSError) as exc:
             errors.append({"path": str(path), "error": str(exc)})
             continue
-        artifact = {"source_path": str(path), "sha256": digest, "bytes": path.stat().st_size, "family": family(path), "role": role(path), "format": kind, "top_level_rows": len(data) if isinstance(data, list) else None, "data": clean(data)}
+        artifact = {"source_path": str(path), "sha256": digest, "bytes": len(raw), "family": family(path), "role": role(path), "format": kind, "top_level_rows": len(data) if isinstance(data, list) else None, "data": clean(data)}
         payloads[digest] = artifact
         artifacts.append(artifact)
     return {"schema_version": 1, "interpretation": "A source-bound evidence consolidation, not an independent-study count or pooled-return estimate. CSV strings preserve original units and identifiers. Derived rows and nested summaries can overlap. Current source counts and historical report claims are distinct.", "artifacts": artifacts, "byte_identical_aliases": aliases, "excluded_or_missing": list(exclusions), "read_errors": errors}

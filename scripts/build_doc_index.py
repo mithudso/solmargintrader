@@ -31,7 +31,7 @@ OVERVIEW = REPO / "docs" / "codebase-overview.md"
 INDEX = REPO / "docs" / "high_signal_file_index.json"
 
 COMPONENTS = ("backtester", "research", "extension", "soltui", "mongo", "liquidity",
-              "executor", "botmanager", "oracle", "ecosystem")
+              "executor", "botmanager", "oracle", "ecosystem", "website")
 
 # `| `some/path` | description |` -- the table shape used throughout the overview.
 ROW = re.compile(r"^\| `([\w./-]+)` \| (.+?) \|$", re.MULTILINE)

@@ -20,6 +20,7 @@ half-sized", not "one quarter").
 
 from __future__ import annotations
 
+import math
 from typing import Any, Sequence
 
 from ..types import BarWindow
@@ -62,6 +63,8 @@ class Composite:
     def on_bar(self, history: BarWindow) -> float:
         """Combine member targets under the configured mode."""
         targets = [float(m.on_bar(history)) for m in self.members]
+        if not all(math.isfinite(target) for target in targets):
+            raise ValueError("composite member exposure must be finite")
         if self.mode == "all":
             return min(targets)
         if self.mode == "any":

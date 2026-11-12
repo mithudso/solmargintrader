@@ -29,8 +29,8 @@ export function validateSessionKeyInputs({ passphrase, confirmPassphrase, acknow
 }
 
 /** The exact registered command message. */
-export function buildCreateSessionKeyMessage(passphrase) {
-  return { type: 'createSessionKey', passphrase };
+export function buildCreateSessionKeyMessage(passphrase, replaceAcknowledged = false) {
+  return { type: 'createSessionKey', passphrase, ...(replaceAcknowledged === true ? { replaceAcknowledged: true } : {}) };
 }
 
 /**

@@ -31,6 +31,7 @@ from soltui.pricefeed import WebSocket
 VERSION = "1.0.1"
 DATABASE = "market_capture"
 CHANNELS = ["matches", "level2_batch", "heartbeat"]
+SUBSCRIPTION_ACK_TIMEOUT_S = 10.0
 
 
 class CaptureError(RuntimeError):
@@ -52,6 +53,11 @@ def atomic_json(path, value):
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(temporary, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
@@ -174,9 +180,13 @@ class Spool:
             payload = {}
         if not isinstance(payload, dict):
             payload = {}
+        event_type = control or payload.get("type", "unparsed")
+        if not isinstance(event_type, str) or not event_type:
+            event_type = "unparsed"
+        event_type = event_type[:128]
         row = {"run_id": self.cfg["run_id"], "seq": self.sequence,
                "received_ns": ns, "received_utc": utc(ns / 1e9),
-               "connection_id": connection_id, "type": control or payload.get("type", "unparsed"),
+               "connection_id": connection_id, "type": event_type,
                "exchange_time_raw": payload.get("time"), "exchange_sequence": payload.get("sequence"),
                "trade_id": payload.get("trade_id"), "raw": raw}
         self.handle.write(json.dumps(row, separators=(",", ":"), ensure_ascii=False) + "\n")
@@ -202,6 +212,9 @@ def capture(home, *, ws_factory=WebSocket):
         with lock(product_lock), lock(home / "capture.lock"):
             spool = Spool(home, cfg)
             reconnects = 0
+            acknowledged_connections = 0
+            unacknowledged_connections = 0
+            subscribed = False
             last_status = 0.0
             def status(state, error=None):
                 atomic_json(home / "capture-status.json", {
@@ -209,6 +222,9 @@ def capture(home, *, ws_factory=WebSocket):
                     "deadline_utc": cfg["deadline_utc"], "deadline_epoch": cfg["deadline_epoch"],
                     "records": spool.sequence, "types_this_process": dict(spool.types),
                     "reconnects_this_process": reconnects, "last_error_type": error,
+                    "subscription_confirmed": subscribed, "requested_channels": cfg["channels"],
+                    "acknowledged_connections": acknowledged_connections,
+                    "unacknowledged_connections": unacknowledged_connections,
                     "tail_bytes_repaired": spool.repaired_bytes, "updated_utc": utc(),
                     "pid": os.getpid()})
             try:
@@ -216,6 +232,7 @@ def capture(home, *, ws_factory=WebSocket):
                     if (home / "stop-requested").exists():
                         break
                     connection = uuid.uuid4().hex
+                    subscribed = False
                     ws = ws_factory()
                     try:
                         status("connecting")
@@ -225,11 +242,13 @@ def capture(home, *, ws_factory=WebSocket):
                         ws.send_text(json.dumps({"type": "subscribe", "product_ids": [cfg["product"]],
                                                  "channels": cfg["channels"]}))
                         last_message = time.monotonic()
-                        subscribed = False
+                        ack_deadline = last_message + SUBSCRIPTION_ACK_TIMEOUT_S
                         trade_high_water = None
                         while time.time() < cfg["deadline_epoch"] and not stopping[0]:
                             if (home / "stop-requested").exists():
                                 break
+                            if not subscribed and time.monotonic() >= ack_deadline:
+                                raise CaptureError("subscription acknowledgement deadline exceeded")
                             try:
                                 raw = ws.recv_text()
                             except TimeoutError:
@@ -250,12 +269,21 @@ def capture(home, *, ws_factory=WebSocket):
                                 trade_high_water = max(trade_id, trade_high_water or trade_id)
                             if row["type"] == "subscriptions":
                                 ack = json.loads(raw)
+                                channels = ack.get("channels")
+                                if not isinstance(channels, list) or not all(
+                                    isinstance(x, dict) and isinstance(x.get("name"), str)
+                                    and isinstance(x.get("product_ids"), list) for x in channels
+                                ):
+                                    raise CaptureError("invalid subscription acknowledgement")
                                 names = {"level2_batch" if x["name"] == "level2_50" else x["name"]
-                                         for x in ack.get("channels", [])
+                                         for x in channels
                                          if cfg["product"] in x.get("product_ids", [])}
+                                was_subscribed = subscribed
                                 subscribed = set(cfg["channels"]).issubset(names)
                                 if not subscribed:
                                     raise CaptureError("subscription coverage mismatch")
+                                if not was_subscribed:
+                                    acknowledged_connections += 1
                             if row["type"] == "error":
                                 raise CaptureError("feed rejected subscription")
                             if time.monotonic() - last_status >= 1:
@@ -270,10 +298,13 @@ def capture(home, *, ws_factory=WebSocket):
                         if remaining > 0 and not stopping[0]:
                             time.sleep(min(2.0, remaining))
                     finally:
+                        if not subscribed:
+                            unacknowledged_connections += 1
                         ws.close()
-                state = "completed" if time.time() >= cfg["deadline_epoch"] else "stopped_early" if (home / "stop-requested").exists() else "interrupted"
+                coverage_complete = acknowledged_connections > 0 and unacknowledged_connections == 0
+                state = ("completed" if coverage_complete else "incomplete") if time.time() >= cfg["deadline_epoch"] else "stopped_early" if (home / "stop-requested").exists() else "interrupted"
                 status(state)
-                return 1 if state == "interrupted" else 0
+                return 1 if state in {"interrupted", "incomplete"} else 0
             finally:
                 spool.close()
     finally:

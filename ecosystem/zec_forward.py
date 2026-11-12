@@ -414,9 +414,10 @@ def tick(home, *, now=None, fetcher=fetch_closed):
     return report(home, now=now)
 
 
-def report(home, *, now=None):
+def report(home, *, now=None, display_strategy=None):
     now = time.time() if now is None else now
     with connection(home) as db:
+        db.execute("BEGIN")
         metadata = {row[0]: row[1] for row in db.execute("SELECT key,value FROM metadata")}
         rows = [dict(row) for row in db.execute("SELECT * FROM candidates ORDER BY rank")]
         implementation_matches = metadata.get("implementation") == canonical(implementation())
@@ -439,7 +440,7 @@ def report(home, *, now=None):
                 "decision_close": close, "issued_at": last["issued"] if last else None,
                 "expires_at": close + INTERVALS[row["interval"]],
                 "reason": "study_implementation_changed" if not implementation_matches else row["reason"] if row["reason"] else None if available else "owner_or_candle_stale"})
-        winner = accounts[0]
+        winner = next((row for row in accounts if row["id"] == display_strategy), accounts[0])
         history = [dict(row) for row in db.execute("SELECT bar,issued,target,equity,exposure,price FROM forecasts WHERE id=? ORDER BY bar DESC LIMIT 240", (winner["id"],))]
     return {"schema_version": 1, "instrument": INSTRUMENT, "source": SOURCE,
             "mode": "paper", "tradable": False, "selection_hash": metadata["selection_hash"],
@@ -460,7 +461,7 @@ def publish(home, ui_home):
     return {"path": str(path), "instrument": INSTRUMENT, "selection_hash": snapshot["selection_hash"]}
 
 
-def publication(ui_home, instrument, *, now=None):
+def publication(ui_home, instrument, *, now=None, display_strategy=None):
     path = Path(ui_home).expanduser().absolute() / "zec-study.json"
     if not path.exists():
         return None
@@ -468,7 +469,7 @@ def publication(ui_home, instrument, *, now=None):
         if path.is_symlink():
             raise ValueError("unsafe_publication_path")
         pointer = json.loads(path.read_text())
-        snapshot = report(pointer["home"], now=now)
+        snapshot = report(pointer["home"], now=now, display_strategy=display_strategy)
         if pointer["selection_hash"] != snapshot["selection_hash"]:
             raise ValueError("publication_selection_changed")
         return {**snapshot, "selected": instrument == INSTRUMENT}

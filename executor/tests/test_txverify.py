@@ -409,4 +409,4 @@ def test_lookup_table_account_parse_roundtrip():
     tx, tables = real_tx_and_tables()
     facts = tv.inspect_tx(tx, tables)
     assert len(facts.keys) > len(facts.static_keys)
-    assert tv.message_hash(tx) == tv.message_hash(tx)
+    assert tv.message_hash(tx) == "ab8dfceb6c56c6addfcb973df01186cc395b6239dbf408a7d427174e6b4a426f"

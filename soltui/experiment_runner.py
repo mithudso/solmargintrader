@@ -24,7 +24,7 @@ from typing import Any
 
 import numpy as np
 
-from . import bots
+from . import bots, pricefeed
 from .config import Settings
 from .experiments import ExperimentError, ExperimentStore, preview_space
 from .research_admission import native_authority, optimizer_lease, participating
@@ -179,14 +179,23 @@ def _recorded_hours() -> Iterator[list[tuple[float, dict]]]:
 
 
 def _triangle_windows(count: int) -> tuple[list[dict], dict[str, str], dict[str, str], list[str]]:
-    products = bots._triangle_products()
-    triangles = bots.triangles_from_products(products)
+    latest = pricefeed.read_latest() or {}
+    metadata = latest.get("products")
+    products = [value for value in metadata if isinstance(value, str)] if isinstance(metadata, list) else []
+    recorded_products = set()
     hours = []
     for chunk in _recorded_hours():
+        recorded_products.update(product for _, quotes in chunk for product in quotes if isinstance(product, str))
         start = int(chunk[0][0] // bots.TRIANGLE_WINDOW_S) * bots.TRIANGLE_WINDOW_S
         hours.append({"start": start, "end": start + bots.TRIANGLE_WINDOW_S,
                       "snapshots": len(chunk), "data_fingerprint": _quotes_fingerprint(chunk)})
         hours = hours[-count:]
+    # Recorded quote keys are also frozen product metadata. A missing local
+    # universe must never trigger the recorder's live listing/cache fallback.
+    products = sorted(set(products) or recorded_products)
+    if not products:
+        return [], {"recorded": "recorded product metadata unavailable"}, {}, []
+    triangles = bots.triangles_from_products(products)
     if len(hours) < 2 or not triangles:
         return [], {"recorded": "fewer than two usable recorded hour windows or no recorded triangle"}, {}, products
     windows = []

@@ -49,6 +49,7 @@ accepts more is a parser nobody can predict.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
@@ -150,6 +151,8 @@ def _parse_scalar(raw: str, *, where: str) -> Any:
         return ""
     if len(text) >= 2 and text[0] == text[-1] and text[0] in "\"'":
         return text[1:-1]
+    if re.search(r"(?:^|\s)#", text):
+        raise CardError(f"{where}: trailing comments are unsupported")
     lowered = text.lower()
     if lowered in ("null", "~", "none"):
         return None
@@ -480,6 +483,10 @@ def load_card(path: str | Path, *, text: str | None = None) -> StrategyCard:
                 f"{path.name}: preset {horizon!r} sets undeclared param(s): "
                 f"{', '.join(sorted(unknown))}"
             )
+        for name, value in values.items():
+            declared_type = params[name].get("type")
+            if declared_type in TYPE_CHECKS and not TYPE_CHECKS[declared_type](value):
+                raise CardError(f"{path.name}: preset {horizon!r} violates type of {name!r}")
 
     runner = data.get("runner")
     if runner is not None and runner not in RUNNERS:

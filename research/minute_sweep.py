@@ -59,8 +59,12 @@ so the report always prints the window each asset actually used.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
 import sys
+import tempfile
 import time
+import zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -180,30 +184,51 @@ def slice_key(asset: str, bars: int | None, window: tuple[int, int] | None) -> s
 def build_slice(asset: str, bars: int | None, window: tuple[int, int] | None) -> Path:
     """Parse the CSV once in the parent and write the sliced arrays to .npz."""
     SLICES.mkdir(parents=True, exist_ok=True)
-    path = SLICES / f"{slice_key(asset, bars, window)}.npz"
+    source = minute_path(asset)
+    with source.open("rb") as handle:
+        source_sha = hashlib.file_digest(handle, "sha256").hexdigest()
+    path = SLICES / f"{slice_key(asset, bars, window)}_{source_sha}.npz"
     if path.exists():
-        return path
+        try:
+            with np.load(path) as archive:
+                for name in archive.files:
+                    archive[name]  # Force lazy ZIP/member validation before reuse.
+            return path
+        except (OSError, ValueError, EOFError, zipfile.BadZipFile):
+            pass
     df = load_minutes(asset)
+    with source.open("rb") as handle:
+        if hashlib.file_digest(handle, "sha256").hexdigest() != source_sha:
+            raise ValueError("minute source changed while preparing slice")
     if window is not None:
         lo, hi = window
         df = df[(df["timestamp"] >= lo) & (df["timestamp"] <= hi)]
     if bars is not None and len(df) > bars:
         df = df.tail(bars)
     df = df.reset_index(drop=True)
-    np.savez(path, **{c: df[c].to_numpy() for c in df.columns})
+    fd, temporary = tempfile.mkstemp(prefix=".slice-", suffix=".tmp", dir=SLICES)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            np.savez(handle, **{c: df[c].to_numpy() for c in df.columns})
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
     del df
     return path
 
 
-def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None):
+def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None, path=None):
     """The cached slice, loaded once per worker process.
 
     Loads the compact .npz the parent prepared rather than the CSV -- see SLICES above
     for why that distinction killed the first run.
     """
-    key = slice_key(asset, bars, window)
+    path = Path(path) if path is not None else build_slice(asset, bars, window)
+    key = str(path)
     if key not in _ARRAYS:
-        with np.load(SLICES / f"{key}.npz") as data:
+        with np.load(path) as data:
             frame = pd.DataFrame({c: data[c] for c in data.files})
         ts = frame["timestamp"].to_numpy(dtype="int64")
         _ARRAYS.clear()          # one asset-slice per worker; keep memory flat
@@ -213,11 +238,11 @@ def _arrays_for(asset: str, bars: int | None, window: tuple[int, int] | None):
 
 def run_cell(job: tuple[str, str, int, int | None, tuple[int, int] | None]) -> dict:
     """Backtest one (asset, strategy) pair. Returns a Cell as a dict."""
-    asset, strategy, scale, bars, window = job
+    asset, strategy, scale, bars, window, *prepared = job
     params = scaled_params(strategy, scale)
     started = time.time()
     try:
-        arrays, first, last = _arrays_for(asset, bars, window)
+        arrays, first, last = _arrays_for(asset, bars, window, prepared[0] if prepared else None)
         cfg = EngineConfig(
             interval="1m",
             fill_delay=1,
@@ -423,11 +448,13 @@ def main(argv: list[str] | None = None) -> int:
     # Parse each CSV once here, not once per cell in each worker.
     print(f"preparing {len(assets)} asset slices (parsed once, not per cell) …",
           file=sys.stderr)
+    prepared = {}
     for a in assets:
         path = build_slice(a, bars, window)
+        prepared[a] = str(path)
         print(f"  {a}: {path.stat().st_size / 1048576:.0f} MB slice", file=sys.stderr)
 
-    jobs = [(a, s, args.param_scale, bars, window) for a in assets for s in strategies]
+    jobs = [(a, s, args.param_scale, bars, window, prepared[a]) for a in assets for s in strategies]
     print(f"{len(jobs)} cells: {len(assets)} assets x {len(strategies)} strategies, "
           f"{args.workers} workers", file=sys.stderr)
     if args.all_bars:
@@ -473,7 +500,7 @@ def main(argv: list[str] | None = None) -> int:
     cells.to_csv(OUT / f"{stem}.csv", index=False)
     print(f"\nwrote {OUT}/{stem}.{{txt,csv}}  in {(time.time()-started)/60:.1f} min",
           file=sys.stderr)
-    return 0
+    return 0 if any(not row.get("error") for row in rows) else 1
 
 
 if __name__ == "__main__":

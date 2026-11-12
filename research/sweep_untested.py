@@ -38,6 +38,8 @@ def main() -> int:
     arrays, cfg = load_horizon(horizon)
     
     rows = []
+    parameters = {}
+    failures = 0
     
     # Test new configurations for existing strategies
     # Example: Kelly optimization testing
@@ -59,9 +61,11 @@ def main() -> int:
             from backtester.core.strategies import build
             full, ins, oos = walk_forward(lambda n=name, q=params: build(n, **q), arrays, cfg)
             
+            label = f"untested_{name}:" + __import__("json").dumps(params, sort_keys=True)
+            parameters[label] = dict(params)
             rows.append(
                 Row(
-                    label=f"untested_{name}",
+                    label=label,
                     kind="single",
                     horizon=horizon,
                     families="untested",
@@ -73,6 +77,7 @@ def main() -> int:
                 )
             )
         except Exception as e:
+            failures += 1
             print(f"Skipping {name} due to error: {e}")
             
     # 3. Output results
@@ -91,12 +96,13 @@ def main() -> int:
             import json
             reco_file.write_text(json.dumps({
                 "strategy": best.members[0],
+                "params": parameters[best.label],
                 "horizon": horizon,
                 "sharpe": best.oos_sharpe,
                 "max_drawdown": best.out_sample.max_drawdown if best.out_sample else 0
             }))
             
-    return 0
+    return 1 if not rows or failures == len(test_configs) else 0
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -99,6 +99,7 @@ async function refresh() {
   state.polling = true;
   $("refresh").disabled = true;
   const requestedRun = state.activeRun;
+  const requestedBot = state.selected;
   const requestedOracleView = oracleViewKey();
   try {
     const cursor = state.cursors[state.page];
@@ -108,11 +109,11 @@ async function refresh() {
       ["telemetry", telemetryPage()],
       ["control", get(scoped("/api/control"))],
       ["oracle", get(scoped(oracleDisplayPath()))],
-      ["analytics", state.selected ? get(scoped(`/api/analytics?bot_id=${encodeURIComponent(state.selected)}`)) : Promise.resolve(null)],
+      ["analytics", requestedBot ? get(scoped(`/api/analytics?bot_id=${encodeURIComponent(requestedBot)}`)) : Promise.resolve(null)],
     ];
     const results = await Promise.allSettled(requests.map(([, promise]) => promise));
     if (requestedRun !== state.activeRun) return;
-    requests.forEach(([key], index) => { state[key] = key === "oracle" && requestedOracleView !== oracleViewKey() ? null : results[index].status === "fulfilled" ? results[index].value : null; });
+    requests.forEach(([key], index) => { if (key === "analytics" && requestedBot !== state.selected) return; state[key] = key === "oracle" && requestedOracleView !== oracleViewKey() ? null : results[index].status === "fulfilled" ? results[index].value : null; });
     const publication = state.oracle?.selected_experiment;
     if (!state.oraclePublicationChosen && publication?.instrument) {
       state.oraclePublicationChosen = true;
@@ -720,7 +721,8 @@ function renderActionLedger() {
       announce(`${human(record.action)} ${human(record.state)}. Your unsaved choice is retained; inspect the action record.`);
     } else if (record?.state === "succeeded" && effect.run === state.activeRun) {
       const expected = record.result?.revision;
-      const actual = effect.kind === "recording" ? state.control?.recording?.revision : state.oracle?.selection?.revision;
+      const policyMatches = effect.kind === "recording" || (effect.instrument === state.oracleInstrument && effect.instrument === state.oracle?.instrument);
+      const actual = effect.kind === "recording" ? state.control?.recording?.revision : policyMatches ? state.oracle?.selection?.revision : undefined;
       if (Number.isSafeInteger(expected) && Number.isSafeInteger(actual) && actual >= expected) {
         if (effect.kind === "recording") state.recordingDirty = false;
         else state.voterDrafts.delete(voterKey(effect.instrument, effect.run));

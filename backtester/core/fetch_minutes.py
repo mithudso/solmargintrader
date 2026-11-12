@@ -54,6 +54,7 @@ asset so the next stage can refuse rather than average over the difference.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -185,6 +186,7 @@ class Coverage:
     windows_done: int = 0
     windows_total: int = 0
     hours_behind_live: float = 0.0
+    durable_windows: int = 0
 
     @property
     def complete_fetch(self) -> bool:
@@ -204,6 +206,7 @@ class Coverage:
         """
         return (self.windows_total > 0
                 and self.windows_done >= self.windows_total
+                and self.durable_windows >= self.windows_total
                 and self.bars > 0)
 
     def as_dict(self) -> dict:
@@ -346,24 +349,53 @@ def load_progress(asset: str) -> set[int]:
         return set()
 
 
-def save_progress(asset: str, done: set[int], planned_end: int | None = None) -> None:
+def load_window_receipts(asset: str) -> dict[int, dict]:
+    try:
+        payload = json.loads(progress_path(asset).read_text()).get("window_rows", {})
+        return {int(key): value for key, value in payload.items() if isinstance(value, dict)}
+    except (OSError, ValueError, TypeError, AttributeError):
+        return {}
+
+
+def observed_windows(frame: pd.DataFrame) -> dict[int, dict]:
+    """Bind the exact observed minute timestamps, including sparse windows."""
+    if frame.empty:
+        return {}
+    timestamps = frame["timestamp"].to_numpy(dtype="float64")
+    if (not np.isfinite(timestamps).all() or (timestamps != np.floor(timestamps)).any()
+            or (timestamps % MINUTE != 0).any()):
+        return {}
+    timestamps = np.unique(timestamps.astype("int64"))
+    buckets, starts, counts = np.unique(timestamps // WINDOW_SECONDS * WINDOW_SECONDS,
+                                        return_index=True, return_counts=True)
+    return {int(bucket): {"count": int(count),
+                         "timestamps_sha256": hashlib.sha256(timestamps[start:start + count].tobytes()).hexdigest()}
+            for bucket, start, count in zip(buckets, starts, counts)}
+
+
+def _empty_window() -> dict:
+    return {"count": 0, "timestamps_sha256": hashlib.sha256(b"").hexdigest()}
+
+
+def save_progress(asset: str, done: set[int], planned_end: int | None = None, *, receipts: dict | None = None) -> None:
     """Persist attempted windows without discarding the probe result or the plan end."""
     probe = load_probe(asset)
     _write_sidecar(asset, done, *(probe if probe is not None else (None, None)),
                    planned_end=planned_end if planned_end is not None
-                   else load_planned_end(asset))
+                   else load_planned_end(asset), receipts=receipts)
 
 
 def _write_sidecar(asset: str, done: set[int], listing_start: int | None,
                    probe_floor: int | None = None,
-                   planned_end: int | None = None) -> None:
+                   planned_end: int | None = None, receipts: dict | None = None) -> None:
     """Write the sidecar whole, then rename, so a crash cannot half-update it."""
     path = progress_path(asset)
     path.parent.mkdir(parents=True, exist_ok=True)
     # Per-process tmp name: two fetches of one asset would otherwise interleave their
     # write-then-rename and lose one another's windows.
     tmp = path.with_suffix(f".json.{os.getpid()}.tmp")
-    payload: dict = {"windows_done": sorted(done)}
+    payload: dict = {"windows_done": sorted(done),
+                     "window_rows": load_window_receipts(asset) if receipts is None else receipts}
     if listing_start is not None:
         payload["probe_method"] = "prefix-scan-v1"
         payload["listing_start"] = int(listing_start)
@@ -386,7 +418,7 @@ def load_minutes(asset: str) -> pd.DataFrame:
         raise FetchError(f"no 1m cache for {asset}: run fetch_minutes --asset {asset}")
     df = pd.read_csv(path)
     return (
-        df.drop_duplicates(subset="timestamp")
+        df.drop_duplicates(subset="timestamp", keep="last")
         .sort_values("timestamp")
         .reset_index(drop=True)
     )
@@ -407,7 +439,13 @@ def coverage(asset: str, df: pd.DataFrame, requested_years: float,
     if probe is not None and planned and probe[1] <= planned[0]:
         planned = [w for w in planned if w >= probe[0]]
     out.windows_total = len(planned)
-    out.windows_done = len({w for w in load_progress(asset) if w in set(planned)})
+    done = {w for w in load_progress(asset) if w in set(planned)}
+    out.windows_done = len(done)
+    receipts, observed = load_window_receipts(asset), observed_windows(df)
+    out.durable_windows = sum(
+        (receipts[w] == observed.get(w, _empty_window()) if w in receipts
+         else observed.get(w, {}).get("count") == MAX_CANDLES_PER_REQUEST)
+        for w in done)
     if df.empty:
         return out
     ts = df["timestamp"].to_numpy(dtype="int64")
@@ -485,7 +523,12 @@ def fetch_minutes(
     # against this plan rather than against a plan that has since grown (see
     # Coverage.complete_fetch).
     plan_end = (planned[-1] + WINDOW_SECONDS) if planned else None
-    done = load_progress(asset) if resume else set()
+    receipts = load_window_receipts(asset) if resume else {}
+    cached = load_minutes(asset) if path.exists() and path.stat().st_size else pd.DataFrame(columns=list(BAR_COLUMNS))
+    observed = observed_windows(cached)
+    done = {w for w in load_progress(asset)
+            if (receipts[w] == observed.get(w, _empty_window()) if w in receipts
+                else observed.get(w, {}).get("count") == MAX_CANDLES_PER_REQUEST)} if resume else set()
     todo = [w for w in planned if w not in done]
     if max_windows is not None:
         # Newest first when piloting: a partial run should hold recent data, which is
@@ -496,7 +539,7 @@ def fetch_minutes(
               f"{len(todo):,} to fetch", file=sys.stderr)
     if not todo:
         if plan_end is not None:
-            save_progress(asset, done, planned_end=plan_end)
+            save_progress(asset, done, planned_end=plan_end, receipts=receipts)
         return coverage(asset, load_minutes(asset) if path.exists()
                         else pd.DataFrame(columns=list(BAR_COLUMNS)), years)
 
@@ -551,11 +594,12 @@ def fetch_minutes(
                             handle.flush()
                             raise
                         header_needed = False
+                    receipts[window_start] = observed_windows(frame).get(window_start, _empty_window()) if frame is not None else _empty_window()
                     done.add(window_start)
                     completed += 1
                     if completed % 500 == 0:
                         handle.flush()
-                        save_progress(asset, done)
+                        save_progress(asset, done, receipts=receipts)
                         if verbose:
                             rate = completed / max(1e-9, time.time() - t0)
                             left = (len(todo) - completed) / max(1e-9, rate) / 60.0
@@ -567,7 +611,7 @@ def fetch_minutes(
                 # are already in the CSV; a ledger that omits them makes the next run
                 # refetch up to a full checkpoint interval for no reason.
                 handle.flush()
-                save_progress(asset, done, planned_end=plan_end)
+                save_progress(asset, done, planned_end=plan_end, receipts=receipts)
     finally:
         # Without cancel_futures every remaining window is still fetched before an
         # exception surfaces -- ~18 min of requests at 8,760 windows, against a venue that
@@ -593,8 +637,8 @@ def finalise(asset: str) -> pd.DataFrame:
     coverage report presents the stump as the venue's full history. There is no recovery
     path from that except deleting both files.
     """
-    df = load_minutes(asset)
     path = minute_path(asset)
+    df = load_minutes(asset) if path.exists() and path.stat().st_size else pd.DataFrame(columns=list(BAR_COLUMNS))
     tmp = path.with_suffix(".csv.tmp")
     df.to_csv(tmp, index=False)
     tmp.replace(path)

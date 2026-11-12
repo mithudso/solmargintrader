@@ -14,7 +14,10 @@ pytestmark = pytest.mark.network
 @pytest.fixture
 def live():
     cfg = load_config()
-    return cfg, Engine(cfg)
+    cfg.dry_run = True
+    engine = Engine(cfg)
+    engine.authority.register("100", [{"root": str(engine.root), "aware": True}], True)
+    return cfg, engine
 
 
 def test_live_quote_is_acceptable_and_has_a_second_price(live):

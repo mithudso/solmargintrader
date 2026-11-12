@@ -23,10 +23,9 @@ def check(asset: str, trials: list[dict], *, fetch=None, clock=time.time) -> dic
     start = int(breaks[-1] + 1) if len(breaks) else 0
     bars = validate_bar_arrays({key: value[start:] for key, value in raw.items()}, '1m')
     rows = []
-    defaults = forwardtest.load_defaults()
     for trial in trials:
         label = trial['label']
-        spec = forwardtest.saved_default(asset, label, 1, defaults) or trial['members']
+        spec = trial['members']
         try:
             prediction = forwardtest._predict(spec, trial.get('mode', 'all'), bars, allow_short=True)
             rows.append({'strategy': label, 'prediction': {1: 'UP', -1: 'DOWN', 0: 'FLAT'}.get(prediction, 'Warming up'),

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import io
 import json
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
@@ -50,15 +52,23 @@ def binding(root, symbol, phase):
 
 
 def read(root, symbol, interval):
-    frame = pd.read_csv(Path(root) / f"{symbol}_{interval}.csv")
+    raw = (Path(root) / f"{symbol}_{interval}.csv").read_bytes()
     evidence = json.loads((Path(root) / f"{symbol}_{interval}.json").read_text())
-    if sha(evidence["csv"]) != evidence["sha256"]:
+    if hashlib.sha256(raw).hexdigest() != evidence["sha256"]:
         raise ValueError("source checksum changed")
+    frame = pd.read_csv(io.BytesIO(raw))
     frame = frame[frame.timestamp < STUDY_END].reset_index(drop=True)
     if len(frame):
         reserved = protected_intervals(Path.home() / ".config/soltui/experiments/experiments.sqlite3", (symbol,))
         refuse_reserved(frame, interval, reserved)
     return frame
+
+
+def admit_inputs(root, symbol, phase):
+    # Reservation state can change independently of immutable file digests.
+    for asset in sorted({symbol, "BTC"}):
+        for interval in (("1h", "5m") if phase == "diagnostics" else ("15m",)):
+            read(root, asset, interval)
 
 
 def diagnostics(job):
@@ -71,6 +81,9 @@ def diagnostics(job):
         cached = json.loads(target.read_text())
         if cached.get("binding") != fingerprint:
             raise ValueError("diagnostics cache binding changed; use a fresh output directory")
+        if cached.get("replicates") != replicates:
+            raise ValueError("diagnostics cache replicates changed; use a fresh output directory")
+        admit_inputs(root, symbol, "diagnostics")
         return cached
     clock_rows, cycle_rows = [], []
     for interval, days in (("5m", 2), ("1h", 7)):
@@ -90,7 +103,7 @@ def diagnostics(job):
         for mode in ("raw", "market_calendar_residual"):
             result = cycle_summary([x for x in cycle_rows if x["interval"] == interval and x["mode"] == mode])
             summary.append(dict(result, symbol=symbol, interval=interval, mode=mode))
-    result = {"symbol": symbol, "clock": clock_rows, "cycles": cycle_rows, "cycle_summary": summary, "binding": fingerprint}
+    result = {"symbol": symbol, "clock": clock_rows, "cycles": cycle_rows, "cycle_summary": summary, "binding": fingerprint, "replicates": replicates}
     save(target, result)
     return result
 
@@ -107,6 +120,7 @@ def grid_coin(job):
             raise ValueError("grid cache binding changed; use a fresh output directory")
         if any(sha(path) != checksum for path, checksum in cached.get("outputs", {}).items()):
             raise ValueError("grid artifact checksum changed")
+        admit_inputs(root, symbol, "grid")
         return cached
     frame = read(root, symbol, "15m")
     end = STUDY_END
@@ -298,10 +312,14 @@ def main():
             diagnostics_result = json.loads((args.output / f"{asset['symbol']}_diagnostics.json").read_text())
             if diagnostics_result.get("binding") != binding(args.data, asset["symbol"], "diagnostics"):
                 raise ValueError("diagnostic source/input binding changed")
+            if diagnostics_result.get("replicates") != args.replicates:
+                raise ValueError("diagnostic replicate contract changed")
+            admit_inputs(args.data, asset["symbol"], "diagnostics")
         results = [json.loads((args.output / f"{a['symbol']}_grid.json").read_text()) for a in universe["assets"] if a["directional50"]]
         for result in results:
             if result.get("binding") != binding(args.data, result["symbol"], "grid"):
                 raise ValueError("aggregation source/input binding changed")
+            admit_inputs(args.data, result["symbol"], "grid")
             if any(sha(path) != checksum for path, checksum in result.get("outputs", {}).items()):
                 raise ValueError("aggregation artifact checksum changed")
         portfolios(args.output, universe["assets"], results)

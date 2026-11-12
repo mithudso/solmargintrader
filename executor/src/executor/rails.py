@@ -104,6 +104,8 @@ def check_trade(
     if exit_only:
         if not strategy:
             problems.append("--exit needs the strategy whose position it reduces")
+        if pos.qty_raw <= 0 or report.quote.in_raw > pos.qty_raw:
+            problems.append("--exit must reduce a tracked open quantity; wallet inventory alone is not a position")
     else:
         if report.in_usd > Decimal(str(r.max_trade_usd)):
             problems.append(f"trade value ${float(report.in_usd):.4f} exceeds max_trade_usd ${r.max_trade_usd:g}")

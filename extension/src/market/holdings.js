@@ -73,7 +73,10 @@ export async function readBase(deps, address, { rpcs = BASE.rpcs } = {}) {
   const raw = [{ token: BASE_TOKENS[0], value: hexToBigInt(out[1]) }];
   tokens.forEach((t, i) => raw.push({ token: t, value: uint(out[i + 2]) }));
   const missing = raw.filter((r) => r.value === null).map((r) => r.token.symbol);
-  if (missing.length) result.notes.push(`no answer for ${missing.join(', ')}; not listed`);
+  if (missing.length) {
+    result.notes.push(`no answer for ${missing.join(', ')}; not listed`);
+    result.errors.push(`base rpc: balance unavailable for ${missing.join(', ')}`);
+  }
 
   const held = raw.filter((r) => r.value !== null && r.value > 0n);
   let prices = {};
@@ -117,11 +120,17 @@ export async function readBase(deps, address, { rpcs = BASE.rpcs } = {}) {
  * The extension tries this first: api.mainnet-beta.solana.com answers 403 to a
  * request with a chrome-extension Origin, while this endpoint accepts it.
  */
+function balanceAmount(value) {
+  if (!(typeof value === 'number' || typeof value === 'string' && value.trim() !== '')) return null;
+  const amount = Number(value);
+  return Number.isFinite(amount) && amount >= 0 ? amount : null;
+}
+
 async function solanaFromJupiter(deps, address, result) {
   try {
     const body = await getJson(deps, ENDPOINTS.jupiterHoldings + address, { source: 'jupiter holdings' });
-    const sol = Number(body?.uiAmountString ?? body?.uiAmount);
-    if (!Number.isFinite(sol) || !body?.tokens || typeof body.tokens !== 'object') {
+    const sol = balanceAmount(body?.uiAmountString ?? body?.uiAmount);
+    if (sol === null || !body?.tokens || typeof body.tokens !== 'object' || Array.isArray(body.tokens)) {
       result.notes.push('jupiter holdings answered in an unexpected shape; read Solana RPC instead');
       return null;
     }
@@ -129,8 +138,11 @@ async function solanaFromJupiter(deps, address, result) {
     let empty = 0;
     for (const [mint, accounts] of Object.entries(body.tokens)) {
       // Mints go into a price query string and an explorer link: base58 only.
-      if (!isSolanaAddress(mint) || !Array.isArray(accounts)) continue;
-      const amount = accounts.reduce((s, a) => s + (Number(a?.uiAmountString ?? a?.uiAmount) || 0), 0);
+      if (!isSolanaAddress(mint) || !Array.isArray(accounts)) throw new Error('invalid Jupiter token balance shape');
+      const amounts = accounts.map(a => balanceAmount(a?.uiAmountString ?? a?.uiAmount));
+      if (amounts.some(a => a === null)) throw new Error('invalid Jupiter token balance amount');
+      const amount = amounts.reduce((s, a) => s + a, 0);
+      if (!Number.isFinite(amount)) throw new Error('invalid Jupiter aggregate balance');
       if (amount === 0) { empty += accounts.length; continue; }
       mints.set(mint, { mint, amount });
     }
@@ -146,7 +158,9 @@ async function solanaFromRpc(deps, address, rpcs, result) {
   let sol = null;
   try {
     const bal = await rpcCall(deps, rpcs, 'getBalance', [address], { source: 'solana getBalance' });
-    sol = Number(bal?.value ?? bal) / 1e9;
+    const amount = balanceAmount(bal?.value ?? bal);
+    if (amount === null) throw new Error('Solana native balance unavailable');
+    sol = amount / 1e9;
   } catch (err) {
     fail(result, err);
   }
@@ -155,11 +169,13 @@ async function solanaFromRpc(deps, address, rpcs, result) {
     try {
       const reply = await rpcCall(deps, rpcs, 'getTokenAccountsByOwner',
         [address, { programId: program }, { encoding: 'jsonParsed' }], { source: 'solana token accounts' });
-      for (const item of reply?.value ?? []) {
+      if (!Array.isArray(reply?.value)) throw new Error('Solana token balances unavailable');
+      for (const item of reply.value) {
         const info = item?.account?.data?.parsed?.info;
         const amt = info?.tokenAmount;
-        const ui = Number(amt?.uiAmountString ?? amt?.uiAmount);
-        if (!isSolanaAddress(info?.mint) || !Number.isFinite(ui)) continue;
+        const ui = balanceAmount(amt?.uiAmountString ?? amt?.uiAmount);
+        if (!isSolanaAddress(info?.mint)) continue;
+        if (ui === null) throw new Error('Solana token balance malformed');
         if (ui === 0) { empty += 1; continue; }
         const row = mints.get(info.mint) ?? { mint: info.mint, amount: 0 };
         row.amount += ui;
@@ -248,6 +264,8 @@ const STABLE_MINTS = new Set(['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'E
  * A chain with any error is `partial`; with no holdings and an error, `failed`.
  */
 export function finish(result) {
+  const measured = result.holdings;
+  result.stableUsd = measured.filter(h => h.included && h.stable && h.usd != null).reduce((sum, h) => sum + h.usd, 0);
   let dust = 0;
   result.holdings = result.holdings.filter((h) => {
     if (h.usd != null && h.usd < DUST_USD) { dust += 1; return false; }
@@ -257,7 +275,7 @@ export function finish(result) {
   result.holdings.sort((a, b) => (b.usd ?? -1) - (a.usd ?? -1));
   let total = 0;
   let complete = true;
-  for (const h of result.holdings) {
+  for (const h of measured) {
     if (!h.included) continue;
     if (h.usd == null) complete = false;
     else total += h.usd;
@@ -274,8 +292,7 @@ export function finish(result) {
  */
 export function summarise(chains, { atMs = Date.now() } = {}) {
   const read = chains.filter((c) => c.status !== 'skipped');
-  const stableUsd = read.flatMap((c) => c.holdings).filter((h) => h.included && h.stable && h.usd != null)
-    .reduce((s, h) => s + h.usd, 0);
+  const stableUsd = read.reduce((sum, c) => sum + (c.stableUsd ?? c.holdings.filter(h => h.included && h.stable && h.usd != null).reduce((s, h) => s + h.usd, 0)), 0);
   return {
     atMs,
     chains,

@@ -304,7 +304,7 @@ export const COMMANDS = {
       return {
         markPriceUsd: price,
         ...summarisePnl(pnl),
-        drawdown: maxDrawdown(curve),
+        drawdown: pnl.accountingComplete ? maxDrawdown(curve) : null,
         equityCurve: curve,
         roundTrips: pnl.roundTrips,
       };
@@ -690,10 +690,14 @@ export const COMMANDS = {
   createSessionKey: {
     describe:
       'Generate a dedicated full-auto signing key, encrypted under a passphrase. Fund it with grid capital only.',
-    params: [{ name: 'passphrase', type: TYPE.STRING, required: true }],
+    params: [{ name: 'passphrase', type: TYPE.STRING, required: true }, { name: 'replaceAcknowledged', type: TYPE.BOOL }],
     async handler({ deps, args }) {
       if (!args.passphrase || args.passphrase.length < 12) {
         throw new CommandError('passphrase must be at least 12 characters', 400);
+      }
+      const existing = await deps.configStore.get('sessionKeyVault', null);
+      if (existing !== null && args.replaceAcknowledged !== true) {
+        throw new CommandError('An existing session key requires explicit replacement acknowledgement.', 409);
       }
       const { pubkeyBs58, vault } = await createSessionKey({ passphrase: args.passphrase });
       await deps.configStore.set('sessionKeyVault', { pubkeyBs58, vault });
@@ -952,12 +956,14 @@ export async function runCommand({ name, args = {}, deps }) {
     if (DISARM_FIELDS.some((key) => Object.hasOwn(patch, key) && patch[key] !== current[key])) stopEngine(deps.store);
   }
   if (name === 'kill' || name === 'disarm' || (name === 'reset' && args.confirm === true)) stopEngine(deps.store);
-  if (['kill', 'disarm', 'arm', 'setConfig', 'reset'].includes(name)) {
-    const manager = await deps.configStore.get(MANAGER_KEY, null);
-    if (manager?.running) await deps.configStore.set(MANAGER_KEY, { ...manager, running: false, generation: manager.generation + 1 });
-  }
   const stopGeneration = engineStopGeneration(deps.store);
-  const operation = () => command.handler({ deps, args, stopGeneration });
+  const operation = async () => {
+    if (['kill', 'disarm', 'arm', 'setConfig', 'reset'].includes(name)) {
+      const manager = await deps.configStore.get(MANAGER_KEY, null);
+      if (manager?.running) await deps.configStore.set(MANAGER_KEY, { ...manager, running: false, generation: manager.generation + 1 });
+    }
+    return command.handler({ deps, args, stopGeneration });
+  };
   // Tick owns its per-iteration queue entry so lifecycle/limit changes can run
   // between ticks in a count=N command. Read-only commands never mutate state.
   return command.readOnly || command.unlocked || name === 'tick' ? operation() : withStoreLock(deps.store, operation);

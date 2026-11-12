@@ -2,10 +2,19 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const EXT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+
+export function saveScreenshot(data, scheme) {
+  if (!['light', 'dark'].includes(scheme)) throw new Error('Unknown screenshot scheme');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'signal-desk-acceptance-'));
+  const file = path.join(directory, `${scheme}.png`);
+  fs.writeFileSync(file, Buffer.from(data, 'base64'), { flag: 'wx', mode: 0o600 });
+  return file;
+}
 
 // This bootstrap runs only in the separate acceptance target, before production modules.
 // No synthetic payload or replacement transport is shipped into the production UI.
@@ -311,7 +320,7 @@ export async function verifySignalDesk(_page, browser) {
       const contrast = await ev(`(()=>{const linear=v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4};const rgb=s=>(s.match(/[\\d.]+/g)||[]).slice(0,3).map(Number);const lum=s=>{const c=rgb(s).map(linear);return .2126*c[0]+.7152*c[1]+.0722*c[2]};const out=[];for(const selector of ['body','.view-head p','.kpi .sub','.kpi .label','.sidebar .nav-link','.primary-nav[aria-current=page]','.desk-interpretation .eyebrow']){const el=document.querySelector(selector);const style=getComputedStyle(el);let bg=style.backgroundColor,node=el;while(bg==='rgba(0, 0, 0, 0)'&&node.parentElement){node=node.parentElement;bg=getComputedStyle(node).backgroundColor}const a=lum(style.color),b=lum(bg);out.push({selector,foreground:style.color,background:bg,ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)})}return out})()`);
       for (const item of contrast) assert.ok(item.ratio >= 4.5, `${scheme} text contrast ${item.selector}: ${item.ratio}`);
       const { data } = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }, sessionId);
-      const file = path.join('/tmp', `signal-desk-acceptance-${scheme}.png`); fs.writeFileSync(file, Buffer.from(data, 'base64')); shots[scheme] = file;
+      shots[scheme] = saveScreenshot(data, scheme);
       console.log(`PASS ${scheme} sampled text contrast >=4.5:1 ${JSON.stringify(contrast)}`);
     }
     await ev(`document.querySelector('#deskDensity').value='compact';document.querySelector('#deskDensity').dispatchEvent(new Event('change'))`);

@@ -217,6 +217,9 @@ COMBO_CANDIDATES = (
 # really a wrapper test and belongs in its own experiment.
 
 
+FAILED_EVALUATIONS: list[dict] = []
+
+
 @dataclass
 class Row:
     """One evaluated configuration."""
@@ -359,6 +362,7 @@ def sweep_singles(horizon: str) -> list[Row]:
         try:
             full, ins, oos = walk_forward(lambda n=name, q=p: build(n, **q), arrays, cfg)
         except ValueError as exc:
+            FAILED_EVALUATIONS.append({"horizon": horizon, "kind": "single", "label": name, "params": p, "error": str(exc)})
             print(f"  skip {name}: {exc}", file=sys.stderr)
             continue
         rows.append(
@@ -720,7 +724,8 @@ def sweep_combos(
                 full, ins, oos = walk_forward(
                     lambda s=specs, m=mode: build_composite(list(s), mode=m), arrays, cfg
                 )
-            except ValueError:
+            except ValueError as exc:
+                FAILED_EVALUATIONS.append({"horizon": horizon, "kind": "combination", "label": f"{mode}({'+'.join(combo)})", "error": str(exc)})
                 continue
             rows.append(
                 Row(
@@ -806,6 +811,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     horizons = args.horizon or list(HORIZONS)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    FAILED_EVALUATIONS.clear()
     all_rows: list[Row] = []
     counts: dict[str, int] = {}
 
@@ -840,7 +846,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                                 lambda s=specs, m=mode: build_composite(list(s), mode=m),
                                 arrays, cfg,
                             )
-                        except ValueError:
+                        except ValueError as exc:
+                            FAILED_EVALUATIONS.append({"horizon": h, "kind": "triple", "label": f"{mode}({'+'.join(combo)})", "error": str(exc)})
                             continue
                         rows.append(Row(
                             label=f"{mode}({'+'.join(combo)})", kind="triple", horizon=h,
@@ -853,7 +860,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     df = pd.DataFrame([r.to_dict() for r in all_rows])
     df.to_csv(OUT_DIR / "sweep_results.csv", index=False)
     (OUT_DIR / "configuration_counts.json").write_text(
-        json.dumps({**counts, "total": len(all_rows)}, indent=2, sort_keys=True) + "\n"
+        json.dumps({**counts, "total": len(all_rows) + len(FAILED_EVALUATIONS), "completed": len(all_rows), "failed": len(FAILED_EVALUATIONS), "failed_evaluations": FAILED_EVALUATIONS}, indent=2, sort_keys=True) + "\n"
     )
 
     # Markdown fragments, one per (horizon, kind), consumed by the documents.
@@ -870,7 +877,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
     (OUT_DIR / "tables.md").write_text("".join(frags))
 
-    print(f"\nTotal configurations evaluated: {len(all_rows)}", file=sys.stderr)
+    print(f"\nTotal configurations attempted: {len(all_rows) + len(FAILED_EVALUATIONS)} (completed {len(all_rows)}, failed {len(FAILED_EVALUATIONS)})", file=sys.stderr)
     for k in sorted(counts):
         print(f"  {k}: {counts[k]}", file=sys.stderr)
     print(f"Wrote {OUT_DIR}/sweep_results.csv, tables.md, configuration_counts.json",

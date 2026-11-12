@@ -37,7 +37,9 @@ def main(argv=None) -> int:
         if not python.is_file():
             print(json.dumps({"ok": False, "error": "ecosystem_not_installed"}))
             return 2
-        result = verify_environment(python, REPO)
+        # Stopping must remain available when an optional/startup dependency
+        # fails health verification. The installed CLI still owns its stop guard.
+        result = {"status": "complete"} if command == "stop" else verify_environment(python, REPO)
     if result.get("status") != "complete":
         print(json.dumps({"ok": False, "setup": result}, allow_nan=False))
         return 2

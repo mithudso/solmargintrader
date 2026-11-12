@@ -332,7 +332,7 @@ class ManagerEvidence:
             candidate not in [c["id"] for c in spec["candidates"]]
             or split not in ("train", "validation", "holdout")
             or type(block) is not int
-            or not 0 <= block < 1000
+            or not 0 <= block < 2 * len(spec["geometry"].get(split, []))
         ):
             raise ExperimentError("invalid manager trial")
         if split == "validation" and candidate not in (
@@ -440,7 +440,7 @@ class ManagerEvidence:
                     raise ExperimentError(
                         "blind packet differs from immutable trial evidence"
                     )
-            if len(candidate["cells"]) != len(spec["geometry"][split]):
+            if {cell["block"] for cell in candidate["cells"]} != set(range(len(spec["geometry"][split]))):
                 raise ExperimentError("blind packet omits chronological blocks")
 
     def manager_finalists(self, run_id, evidence):
@@ -753,11 +753,16 @@ class ManagerEvidence:
         with self._connect() as db:
             db.execute("BEGIN IMMEDIATE")
             old = db.execute(
-                "SELECT digest,attempts FROM manager_imports WHERE source=? AND record=?",
+                "SELECT digest,attempts,historical FROM manager_imports WHERE source=? AND record=?",
                 (source, record),
             ).fetchone()
             if old:
-                if old["digest"] != digest or old["attempts"] != attempts:
+                retained = [tuple(row) for row in db.execute(
+                    "SELECT coin,start,end FROM manager_exposures WHERE source=? AND record=? ORDER BY coin,start,end",
+                    (source, record),
+                )]
+                if (old["digest"] != digest or old["attempts"] != attempts
+                        or old["historical"] != int(historical) or retained != sorted(normalized)):
                     raise ExperimentError(
                         "import identity changed; new immutable receipt required"
                     )

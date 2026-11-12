@@ -172,6 +172,8 @@ export async function renderStrategyChart(el, explanations, { asset, follow = tr
     background: { color: style.getPropertyValue('--surface').trim() || '#ffffff' }, textColor: style.getPropertyValue('--fg').trim() || '#0f172a' },
     rightPriceScale: { borderVisible: false }, timeScale: { timeVisible: true, secondsVisible: false },
     localization: { timeFormatter: time => new Date(time * 1000).toISOString().slice(11, 16) + ' UTC' } });
+  charts.set(el, { chart, caption, fingerprint: null });
+  try {
   const candle = chart.addSeries(lib.CandlestickSeries, { upColor: '#239978', downColor: '#d05d63', borderVisible: false, wickUpColor: '#239978', wickDownColor: '#d05d63' });
   candle.setData(data.candles);
   const colors = ['#d8a43b', '#759bdf', '#ba89d2', '#e47d52'];
@@ -179,6 +181,7 @@ export async function renderStrategyChart(el, explanations, { asset, follow = tr
   lib.createSeriesMarkers(candle, data.markers.map(m => ({ time: m.time, position: m.direction === 'UP' ? 'belowBar' : 'aboveBar',
     shape: m.direction === 'UP' ? 'arrowUp' : m.direction === 'DOWN' ? 'arrowDown' : 'circle', color: m.direction === 'UP' ? '#239978' : m.direction === 'DOWN' ? '#d05d63' : '#82998f', text: m.text })));
   if (priorRange) chart.timeScale().setVisibleRange(priorRange); else chart.timeScale().fitContent();
+  } catch (error) { disposeChart(el); throw error; }
   charts.set(el, { chart, caption, fingerprint }); el.setAttribute('role', 'img'); el.setAttribute('aria-label', caption.textContent);
   return 'lightweight-charts';
 }

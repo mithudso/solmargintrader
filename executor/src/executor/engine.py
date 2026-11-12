@@ -17,7 +17,9 @@ Failure semantics:
 from __future__ import annotations
 
 import fcntl
+import logging
 import os
+import sys
 import time
 import uuid
 from contextlib import suppress
@@ -202,12 +204,23 @@ class Engine:
                     )
                     raise
                 finally:
-                    self.authority.save_anchor()
-                    self.cfg = original_cfg
-                    self._caller_request = None
-                    self._caller_reserved = None
-                    self._entry_admission = None
-                    self._reviewed_cfg = None
+                    primary = sys.exception()
+                    try:
+                        self.authority.save_anchor()
+                    except OSError as exc:
+                        logging.getLogger(__name__).error(
+                            "anchor_persist_failed", extra={"error_type": type(exc).__name__}
+                        )
+                        if primary is None:
+                            raise ExecutorError(
+                                "wallet anchor persistence failed; reconciliation is required"
+                            ) from None
+                    finally:
+                        self.cfg = original_cfg
+                        self._caller_request = None
+                        self._caller_reserved = None
+                        self._entry_admission = None
+                        self._reviewed_cfg = None
 
     def _check_entry_admission(self):
         if self._entry_admission is not None:

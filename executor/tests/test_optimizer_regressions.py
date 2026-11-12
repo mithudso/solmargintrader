@@ -310,7 +310,7 @@ def test_nonfinite_gate_write(tmp_path):
         gates.record_research_result(tmp_path, Config(), "s", "pass", "synthetic", now=float("nan"))
 
 
-def test_concurrent_research_writes(tmp_path, monkeypatch):
+def test_concurrent_research_writes(tmp_path, monkeypatch, gate_lock_barrier):
     original = gates._atomic_write
     ready, release, started, done = (threading.Event() for _ in range(4))
 
@@ -331,10 +331,13 @@ def test_concurrent_research_writes(tmp_path, monkeypatch):
     with ThreadPoolExecutor(max_workers=2) as pool:
         first = pool.submit(gates.record_research_result, tmp_path, Config(), "s", "pass", "old", now=1)
         assert ready.wait(3)
-        second = pool.submit(fail)
-        assert started.wait(3)
-        done.wait(0.15)
-        release.set()
+        try:
+            second = pool.submit(fail)
+            assert started.wait(3)
+            assert gate_lock_barrier.wait(3)
+            assert not done.is_set()
+        finally:
+            release.set()
         first.result(timeout=3)
         second.result(timeout=3)
     assert len(json.loads((tmp_path / "research-gate.json").read_text())["results"]) == 2

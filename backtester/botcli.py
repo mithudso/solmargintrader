@@ -19,6 +19,7 @@ import argparse
 import dataclasses
 import json
 import sys
+from pathlib import Path
 from typing import Sequence
 
 from .core.data import CsvLoader, SyntheticLoader, frame_to_arrays, resolve_data_dir
@@ -39,11 +40,19 @@ DISCLAIMER = (
 )
 
 
+def _boolean(value):
+    if value.lower() in ("1", "true", "yes"):
+        return True
+    if value.lower() in ("0", "false", "no"):
+        return False
+    raise argparse.ArgumentTypeError("expected true/false, yes/no, or 1/0")
+
+
 def _add_dataclass_args(group: argparse._ArgumentGroup, cls: type) -> None:
     for f in dataclasses.fields(cls):
         flag = "--" + f.name.replace("_", "-")
         if f.type in ("bool", bool):
-            group.add_argument(flag, type=lambda s: s.lower() in ("1", "true", "yes"), default=f.default)
+            group.add_argument(flag, type=_boolean, default=f.default)
         else:
             kind = int if f.type in ("int", int) else float
             group.add_argument(flag, type=kind, default=f.default)
@@ -124,7 +133,13 @@ def _triangle(args: argparse.Namespace) -> int:
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
+    if any(not Path(path).is_file() for path in args.snapshots):
+        print("error: every snapshot input must be an existing file", file=sys.stderr)
+        return 1
     snaps = read_snapshot_files(args.snapshots)
+    if not snaps:
+        print("error: no usable snapshots", file=sys.stderr)
+        return 1
     products = {p for _, quotes in snaps for p in quotes}
     tris = triangles_from_products(products)
     result = run_triangle_backtest(cfg, snaps, tris)

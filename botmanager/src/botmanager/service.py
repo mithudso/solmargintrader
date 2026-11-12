@@ -8,6 +8,7 @@ import plistlib
 import subprocess
 import sys
 from pathlib import Path
+from xml.parsers.expat import ExpatError
 
 from .domain import ManagerError
 from .store import data_home
@@ -212,7 +213,7 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
         }
     except ManagerError:
         raise
-    except (OSError, ValueError, TypeError) as exc:
+    except (OSError, ValueError, TypeError, ExpatError) as exc:
         raise ManagerError(
             "service_unavailable",
             "Service operation could not be confirmed; local state was retained where possible.",

@@ -5,9 +5,9 @@ import contextlib
 import hashlib
 import io
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 from unittest import mock
 
 from mongo import load, schema
@@ -25,13 +25,13 @@ class AnalysisLoaderRegressions(unittest.TestCase):
     def manifest(self):
         contents={'comparison.csv':'strategy,sharpe\ns,1\n','equity_s.csv':'timestamp,equity\n60,10000\n','trades_s.csv':'ts,side\n60,buy\n'}
         for name,body in contents.items(): (self.root/'results'/name).write_text(body)
-        manifest=dict(asset='SOL',interval='1d',mode='spot',strategies=['s'],artifact_sha256={n:hashlib.sha256(b.encode()).hexdigest() for n,b in contents.items()})
-        return manifest,dict(source_path='results/run_manifest.json',source_sha256='a'*64,loaded_at=load.LOADED_AT)
+        manifest={'asset': 'SOL','interval': '1d','mode': 'spot','strategies': ['s'],'artifact_sha256': {n:hashlib.sha256(b.encode()).hexdigest() for n,b in contents.items()}}
+        return manifest,{'source_path': 'results/run_manifest.json','source_sha256': 'a'*64,'loaded_at': load.LOADED_AT}
 
     def test_alt_venue_sidecar_identity_and_exact_bytes_follow_bars(self):
         (self.root/'data'/'TRX_1m.csv').write_text('timestamp,open,high,low,close,volume\n60,10,11,9,10,1\n')
         sidecar=self.root/'data'/'TRX_1m.source.json'
-        body=json.dumps(dict(asset='TRX',venue='okx',pair='TRX-USDT',quote='USDT'))
+        body=json.dumps({'asset': 'TRX','venue': 'okx','pair': 'TRX-USDT','quote': 'USDT'})
         sidecar.write_text(body)
         row=load.load_bars()[0]
         self.assertEqual(row['series']['source'],'okx')
@@ -72,7 +72,7 @@ class AnalysisLoaderRegressions(unittest.TestCase):
     def test_backtest_identity_and_results_match_bundled_query_contract(self):
         row=load.load_backtest_runs(run_snapshot=self.manifest())[0]
         for key,value in [('asset','SOL'),('interval','1d'),('mode','spot')]: self.assertEqual(row[key],value)
-        self.assertEqual(row['results'],[dict(strategy='s',sharpe=1)])
+        self.assertEqual(row['results'],[{'strategy': 's','sharpe': 1}])
         self.assertEqual(row['comparison'],row['results'])
         self.assertIsNotNone(row['comparison_provenance'])
 
@@ -96,7 +96,7 @@ class AnalysisLoaderRegressions(unittest.TestCase):
             def insert_many(self,rows,**kw): self.rows={('bad','bad'):rows}
         receipts=Receipts()
         db={'test_results':receipts}
-        row={'git_sha':'new','suite':'backtester','ok':True,'count':2}
+        row={'git_sha':'new','suite':'backtester','ok':True,'count':2,'recorded_at':load.LOADED_AT,'loaded_at':load.LOADED_AT,'source_path':'fixture','source_sha256':'fixture'}
         with mock.patch.object(load,'build_all',return_value={'test_results':[row]}),mock.patch.object(load,'connect',return_value={schema.DB_NAME:db}),mock.patch.object(load,'create') as create,contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(load.main(['--only','test_results','--run-tests','--skip-suite','soltui']),0)
         self.assertEqual(set(receipts.rows),{('old','backtester'),('new','soltui'),('new','backtester')})
@@ -150,8 +150,8 @@ class AdditionalLoaderRegressions(unittest.TestCase):
     def test_missing_artifacts_refuse_before_any_database_operation(self):
         context=self.manifest()
         (self.root/'results'/'equity_s.csv').unlink()
-        with mock.patch.object(load,'run_context',return_value=context),mock.patch.object(load,'connect') as connect,mock.patch.object(load,'create') as create:
-            with self.assertRaises(ValueError): load.main(['--only','equity_points'])
+        with mock.patch.object(load,'run_context',return_value=context),mock.patch.object(load,'connect') as connect,mock.patch.object(load,'create') as create, self.assertRaises(ValueError):
+            load.main(['--only','equity_points'])
         connect.assert_not_called()
         create.assert_not_called()
 
@@ -166,11 +166,11 @@ class AdditionalLoaderRegressions(unittest.TestCase):
         path.write_text('timestamp,open,high,low,close,volume\n60,10,11,9,10,1\n')
         source=path.with_suffix('.source.json')
         for venue,contract in VENUES.items():
-            metadata=dict(asset='SOL',venue=venue,pair=contract.pair('SOL'),quote='USDT')
+            metadata={'asset': 'SOL','venue': venue,'pair': contract.pair('SOL'),'quote': 'USDT'}
             raw=json.dumps(metadata).encode()
             source.write_bytes(raw)
             reader=Path.read_bytes
-            def mutate(p):
+            def mutate(p, reader=reader):
                 value=reader(p)
                 if p==source: p.write_bytes(b'{"asset":"FORGED"}')
                 return value

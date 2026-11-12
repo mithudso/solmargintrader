@@ -112,10 +112,14 @@ def bounded_process(argv, payload, *, cwd, env, timeout=15, limit=MAX_PACKET):
             # same deadline refusal boundary when its final wait times out.
             raise ValueError("process deadline exceeded") from None
         finally:
-            if process.poll() is None:
-                import signal
+            import signal
 
+            # A leader can exit while its descendants retain the pipes. The
+            # new-session process group is still ours until cleanup completes.
+            try:
                 os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
             process.wait()
             process.stdout.close()
             process.stderr.close()

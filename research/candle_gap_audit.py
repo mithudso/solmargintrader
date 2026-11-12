@@ -37,6 +37,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from backtester.core.data import validate_bars  # noqa: E402
+from backtester.core.fetch import default_cache_path
 from backtester.core.ticks import fetch_trades, trades_to_bars  # noqa: E402
 from backtester.core.types import BAR_COLUMNS, INTERVAL_SECONDS  # noqa: E402
 
@@ -69,6 +70,9 @@ def classify_run(
     first, last = run
     trades = _fetch_window(product, first, last + seconds, verbose=verbose)
     missing = list(range(first, last + seconds, seconds))
+    if trades is None or trades.attrs.get("truncated", False):
+        return {"start": pd.Timestamp(first, unit="s", tz="UTC"), "minutes": len(missing),
+                "trades": None, "volume": None, "verdict": "UNKNOWN (fetch incomplete)"}
     if trades is None or trades.empty:
         traded = 0
         volume = 0.0
@@ -122,7 +126,9 @@ def repair_window(
     w_start = first - PAD_BARS * seconds
     w_end = last + (PAD_BARS + 1) * seconds
     trades = _fetch_window(product, w_start, w_end, verbose=verbose)
-    if trades is None or trades.empty:
+    if trades is None or trades.attrs.get("truncated", False):
+        raise ValueError("cannot repair from incomplete tick evidence")
+    if trades.empty:
         return pd.DataFrame(columns=list(BAR_COLUMNS)), []
 
     interval = {v: k for k, v in INTERVAL_SECONDS.items()}[seconds]
@@ -185,7 +191,8 @@ def main(argv: list[str] | None = None) -> int:
     seconds = INTERVAL_SECONDS[args.interval]
     lines: list[str] = []
     for asset in [a.strip().upper() for a in args.assets.split(",") if a.strip()]:
-        path = Path(args.data_dir) / f"{asset}_{args.interval}{args.suffix}.csv"
+        cache = default_cache_path(asset, args.interval, args.quote.upper()).stem
+        path = Path(args.data_dir) / f"{cache}{args.suffix}.csv"
         if not path.exists():
             print(f"{asset}: no candle cache at {path}, skipping", file=sys.stderr)
             continue
@@ -200,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
             f"- {len(candles)} bars, **{len(runs)} gap runs**, {missing} missing bars\n"
         )
 
-        if args.sample:
+        if args.sample and runs:
             rng = random.Random(args.seed)
             chosen = runs if len(runs) <= args.sample else rng.sample(runs, args.sample)
             chosen = sorted(chosen)
@@ -208,14 +215,16 @@ def main(argv: list[str] | None = None) -> int:
             for run in chosen:
                 r = classify_run(product, run, seconds)
                 rows.append(r)
-                print(f"  {r['start']}  {r['minutes']}m  trades={r['trades']:>4}  "
+                print(f"  {r['start']}  {r['minutes']}m  trades={r['trades']!s:>4}  "
                       f"{r['verdict']}", file=sys.stderr)
             tbl = pd.DataFrame(rows)
             dropped = int((tbl["verdict"].str.startswith("DROPPED")).sum())
+            quiet = int((tbl["verdict"] == "quiet (no trades)").sum())
+            unknown = len(tbl) - dropped - quiet
             lines.append(
                 f"- sampled **{len(tbl)}** of {len(runs)} gap runs (seed {args.seed}): "
                 f"**{dropped} dropped** (the minute traded), "
-                f"{len(tbl) - dropped} genuinely quiet\n\n"
+                f"{quiet} genuinely quiet; {unknown} unknown\n\n"
             )
             lines.append(tbl.to_markdown(index=False) + "\n")
 

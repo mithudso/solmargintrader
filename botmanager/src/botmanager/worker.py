@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import fcntl
 import os
+import stat
 import threading
 from contextlib import contextmanager
 from pathlib import Path
@@ -29,10 +30,12 @@ def lifetime_lock(path: Path):
 
 def lock_held(path: Path) -> bool:
     try:
-        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     except FileNotFoundError:
         return False
     try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise OSError("Owner lock must be a regular file")
         try:
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:

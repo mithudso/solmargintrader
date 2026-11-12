@@ -199,7 +199,7 @@ test('finish drops dust and marks errors partial; summarise reports completeness
   assert.equal(chain.holdings.length, 1);
   assert.equal(chain.usdComplete, false);
   const s = summarise([chain, { chain: 'solana', status: 'skipped', holdings: [], errors: [], totalUsd: 0, usdComplete: true }], { atMs: 1 });
-  assert.equal(s.totalUsd, 5);
+  assert.equal(s.totalUsd, 5.001);
   assert.equal(s.stableUsd, 5);
   assert.equal(s.complete, false);
 });
@@ -284,6 +284,7 @@ function slipstreamRpc({ pools }) {
   return (_url, batch) => batch.map((req) => {
     const r = (result) => ({ jsonrpc: '2.0', id: req.id, result });
     if (req.method === 'eth_chainId') return r(BASE.chainIdHex);
+    if (req.method === 'eth_blockNumber') return r('0x2a');
     const { to, data } = req.params[0];
     if (to === BASE.clFactory && data === SELECTOR.tickSpacings) {
       const spacings = [1, 50, 100];
@@ -301,7 +302,7 @@ function slipstreamRpc({ pools }) {
   });
 }
 
-test('quoteBase picks the pool with the best output and hands off to the venue to sign', async () => {
+test('CDO-27afd5b542 quoteBase picks the pool with the best output and hands off to the venue to sign', async () => {
   const { fetch, calls } = stubFetch({
     'https://': slipstreamRpc({ pools: {
       50: { address: '0x00000000000000000000000000000000000000a1', sqrtPriceX96: MID75, tick: 75, liquidity: 10n ** 24n, fee: 500 },
@@ -314,7 +315,10 @@ test('quoteBase picks the pool with the best output and hands off to the venue t
   assert.ok(q.minOut < q.to.amount);
   assert.match(q.handoffUrl, /^https:\/\/aerodrome\.finance\/swap\?from=0x4200/);
   assert.equal(q.poolsChecked.length, 2);
-  for (const c of calls) for (const req of c.body) assert.match(req.method, /^eth_(chainId|call)$/);
+  for (const c of calls) for (const req of c.body) {
+    assert.match(req.method, /^eth_(chainId|blockNumber|call)$/);
+    if (req.method === 'eth_call') assert.equal(req.params[1], '0x2a');
+  }
 });
 
 test('quoteBase refuses when no pool can fill inside its active range, and rejects unknown tokens', async () => {
@@ -333,7 +337,7 @@ test('quoteSolana reads Jupiter and refuses a reply that does not match the requ
   const usdc = findToken('solana', 'usdc').address;
   const good = stubFetch({ 'https://lite-api.jup.ag/swap/v1/quote': (url) => {
     assert.match(url, /amount=500000000&slippageBps=50/);
-    return { inputMint: sol, outputMint: usdc, outAmount: '44751706', otherAmountThreshold: '44527948', priceImpactPct: '0.00002', routePlan: [{ swapInfo: { label: 'Orca' }, percent: 100 }] };
+    return { inputMint: sol, outputMint: usdc, inAmount: '500000000', swapMode: 'ExactIn', outAmount: '44751706', otherAmountThreshold: '44527948', priceImpactPct: '0.00002', routePlan: [{ swapInfo: { label: 'Orca' }, percent: 100 }] };
   } });
   const q = await quoteSolana({ fetch: good.fetch }, { from: 'SOL', to: 'USDC', amount: '0.5', slippageBps: 50 });
   assert.equal(q.to.amount, 44.751706);
@@ -351,7 +355,7 @@ test('readSolana reads Jupiter holdings first (the public RPC refuses extension 
   const routes = {
     'https://lite-api.jup.ag/ultra/v1/holdings/': () => ({
       amount: '2000000000', uiAmountString: '2',
-      tokens: { [usdcMint]: [{ uiAmountString: '7.5' }, { uiAmountString: '2.5' }], Empty1111111111111111111111111111111111111: [{ uiAmountString: '0' }] },
+      tokens: { [usdcMint]: [{ uiAmountString: '7.5' }, { uiAmountString: '2.5' }], ['1'.repeat(32)]: [{ uiAmountString: '0' }] },
     }),
     'https://sol': (_u, req) => { rpcHits.push(req.method); return { id: 1, result: { value: 0 } }; },
     'https://lite-api.jup.ag/price': () => ({ So11111111111111111111111111111111111111112: { usdPrice: 100 }, [usdcMint]: { usdPrice: 1 } }),

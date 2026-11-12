@@ -73,7 +73,7 @@ remains unqualified.
 ## Managed bot suite
 
 The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
-ecosystem 0.4.4, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
+ecosystem 0.4.5, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
 and extension source 0.6.6. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
@@ -135,10 +135,18 @@ node tools/cli.js tick --count 3
 node tools/cli.js pnl --json
 ```
 
+For the HTTP surface, from `extension/`, generate a token in the invoking shell
+without printing it. The server requires `SMT_API_TOKEN` and never prints its value:
+
 ```bash
-node tools/api-server.js --port 8787     # prints a bearer token
-curl -s -H "Authorization: Bearer $SMT_API_TOKEN" http://127.0.0.1:8787/v1/commands
+export SMT_API_TOKEN="$(openssl rand -hex 24)"
+node tools/api-server.js --port 8787
 ```
+
+An authorized caller must supply that same token in the `Authorization: Bearer`
+header. Keep it in the caller's environment; do not echo it or paste its value into
+logs. The server prints a URL and an example with the literal `$SMT_API_TOKEN` name,
+not a generated credential. See [local API setup](docs/INSTALLATION.md#optional-the-local-http-surface).
 
 Full reference: [docs/API.md](docs/API.md).
 

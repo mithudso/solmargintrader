@@ -27,7 +27,7 @@ class ResearchExportTests(unittest.TestCase):
         subprocess.run(["git", "add", source], cwd=self.repo, check=True)
 
     def test_full_article_source_and_published_hashes_with_private_path_transform(self):
-        text = "# A measured result\n\nA losing strategy is a valid research result.\n\nLocal receipt: /Users/owner/private/evidence.json\n"
+        text = "# A measured result\n\nA losing strategy is a valid research result.\n\nLocal receipt: /Users/owner/private/evidence.json\n\nCosts remain material.\n\nLimitation: historical evidence does not predict returns.\n"
         self.add("research/RESULT.md", text)
         files = export(self.repo)
         catalog = json.loads(files["catalog.json"])
@@ -36,6 +36,7 @@ class ResearchExportTests(unittest.TestCase):
         shard = json.loads(files[Path(article["bodyPath"]).name])
         body = shard["articles"][article["bodyKey"]]
         self.assertIn("losing strategy", body["body"])
+        self.assertEqual(body["body"], "# A measured result\n\nA losing strategy is a valid research result.\n\nLocal receipt: [local artifact not published]\n\nCosts remain material.\n\nLimitation: historical evidence does not predict returns.\n")
         self.assertNotIn("/Users/", body["body"])
         self.assertEqual(body["sourceSha256"], hashlib.sha256(text.encode()).hexdigest())
         self.assertEqual(body["publishedSha256"], hashlib.sha256(body["body"].encode()).hexdigest())
@@ -61,6 +62,22 @@ class ResearchExportTests(unittest.TestCase):
 
     def test_private_shell_home_path_redacted(self):
         self.assertNotIn("~/.ssh", public_body("Key storage ~/.ssh/wallet.private is private."))
+
+    def test_tracked_symlink_and_symlinked_ancestor_refuse_before_read(self):
+        outside = self.repo / "outside"
+        outside.mkdir()
+        canary = outside / "RESULT.md"
+        canary.write_text("# Unpublished canary")
+        link = self.repo / "research/RESULT.md"
+        link.symlink_to(canary)
+        subprocess.run(["git", "add", "research/RESULT.md"], cwd=self.repo, check=True)
+        with self.assertRaisesRegex(ValueError, "unsafe publication source"):
+            export(self.repo)
+        link.unlink()
+        link.parent.rmdir()
+        link.parent.symlink_to(outside, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "unsafe publication source"):
+            export(self.repo)
 
 
 if __name__ == "__main__":

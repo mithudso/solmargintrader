@@ -9,6 +9,24 @@ import numpy as np
 from ..types import BarWindow
 
 
+def _averages(closes: np.ndarray, period: int) -> tuple[float, float]:
+    deltas = np.diff(closes)
+    gains = np.maximum(deltas, 0.0)
+    losses = np.maximum(-deltas, 0.0)
+    avg_gain = float(np.mean(gains[:period]))
+    avg_loss = float(np.mean(losses[:period]))
+    for k in range(period, len(deltas)):
+        avg_gain = (avg_gain * (period - 1) + gains[k]) / period
+        avg_loss = (avg_loss * (period - 1) + losses[k]) / period
+    return avg_gain, avg_loss
+
+
+def _value(avg_gain, avg_loss):
+    if avg_loss <= 1e-15:
+        return 100.0 if avg_gain > 0 else 50.0
+    return float(100.0 - (100.0 / (1.0 + avg_gain / avg_loss)))
+
+
 def wilder_rsi(closes: np.ndarray, period: int) -> float:
     """Wilder's RSI over the trailing window, returned for the latest bar.
 
@@ -18,21 +36,7 @@ def wilder_rsi(closes: np.ndarray, period: int) -> float:
     """
     if len(closes) < period + 1:
         return 50.0
-    deltas = np.diff(closes)
-    gains = np.where(deltas > 0, deltas, 0.0)
-    losses = np.where(deltas < 0, -deltas, 0.0)
-
-    avg_gain = float(np.mean(gains[:period]))
-    avg_loss = float(np.mean(losses[:period]))
-    for k in range(period, len(deltas)):
-        avg_gain = (avg_gain * (period - 1) + gains[k]) / period
-        avg_loss = (avg_loss * (period - 1) + losses[k]) / period
-
-    if avg_loss <= 1e-15:
-        # No downside in the window: maximally overbought.
-        return 100.0 if avg_gain > 0 else 50.0
-    rs = avg_gain / avg_loss
-    return float(100.0 - (100.0 / (1.0 + rs)))
+    return _value(*_averages(closes, period))
 
 
 class RsiMeanReversion:
@@ -56,6 +60,8 @@ class RsiMeanReversion:
         self.oversold = oversold
         self.exit_level = exit_level
         self._holding = False
+        self._cursor = None
+        self._gain = self._loss = 0.0
         self.name = f"rsi_{period}_{int(oversold)}_{int(exit_level)}"
         self.params: dict[str, Any] = {
             "period": period,
@@ -69,7 +75,19 @@ class RsiMeanReversion:
 
     def on_bar(self, history: BarWindow) -> float:
         """Long when oversold; flat once RSI recovers past the exit level."""
-        rsi = wilder_rsi(history.closes, self.period)
+        current = history.bar()
+        if len(history) < self.period + 1:
+            rsi = 50.0
+        else:
+            previous = history.bar(1)
+            if self._cursor == (history.i - 1, previous.ts, previous.close):
+                delta = current.close - previous.close
+                self._gain = (self._gain * (self.period - 1) + max(delta, 0.0)) / self.period
+                self._loss = (self._loss * (self.period - 1) + max(-delta, 0.0)) / self.period
+            else:
+                self._gain, self._loss = _averages(history.closes, self.period)
+            self._cursor = (history.i, current.ts, current.close)
+            rsi = _value(self._gain, self._loss)
         if not self._holding and rsi < self.oversold:
             self._holding = True
         elif self._holding and rsi > self.exit_level:
