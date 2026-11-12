@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T08:58:07+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T22:18:54+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1817 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1818 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,7 +36,7 @@ Strongest files:
 - `research/TRADINGVIEW-SCRIPT-CARDS.md` (113 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1817`
+Full list: `python3 index/search.py --concept risk-rails -n 1818`
 
 ### Cost model
 
@@ -67,9 +67,9 @@ Strongest files:
 
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
-- `docs/FILES.md` (159 hits)
+- `docs/FILES.md` (157 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `memory.md` (119 hits)
+- `memory.md` (118 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
@@ -109,7 +109,7 @@ Strongest files:
 - `docs/FILES.md` (380 hits)
 - `FILES.md` (283 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `memory.md` (148 hits)
+- `memory.md` (149 hits)
 - `docs/archive/memory-2026-11-10.md` (141 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 796`
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept grid -n 791`
 
 ### Data integrity
 
-`data-integrity` · **699 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **702 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,7 +150,7 @@ Strongest files:
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 699`
+Full list: `python3 index/search.py --concept data-integrity -n 702`
 
 ### Buy-and-hold benchmark
 

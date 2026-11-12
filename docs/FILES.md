@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `5914d22` (2026-11-12T08:58:07+00:00). 3349 tracked files, 80.3 MB.
+**Generated** from `index/INDEX.json` at commit `e7194fe` (2026-11-12T22:18:54+00:00). 3354 tracked files, 80.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2816 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 540/634 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2820 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 543/637 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (227 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,13 +34,13 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 89 files
-- [`docs`](#docs) — 142 files
+- [`docs`](#docs) — 143 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1934 files
 - [`research`](#research) — 279 files
 - [`extension`](#extension) — 126 files
 - [`soltui`](#soltui) — 181 files
-- [`.github`](#github) — 10 files
+- [`.github`](#github) — 11 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.cdo`](#cdo) — 2 files
@@ -62,7 +62,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`oracle`](#oracle) — 43 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
-- [`scripts`](#scripts) — 26 files
+- [`scripts`](#scripts) — 29 files
 - [`skills`](#skills) — 67 files
 - [`superpowers`](#superpowers) — 12 files
 - [`tools`](#tools) — 3 files
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1276 lines · 239,085 B · description: **extracted**
+`doc` · 1295 lines · 244,950 B · description: **extracted**
 
-**Purpose.** Version: 477 Delta: v476 to v477; begin timestamped coin-news price-reaction study. Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
+**Purpose.** Version: 480 Delta: v479 to v480; diagnose duplicate manager ownership and establish Oraclebot operations task. Delta: v478 to v479; close Cloudflare forwarding with owner Google Workspace exception.
 
 **Use.** Read it.
 
@@ -703,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1990 lines · 119,682 B · description: **extracted**
+`doc` · 2011 lines · 120,392 B · description: **extracted**
 
-**Purpose.** Version: 225 Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request. Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
+**Purpose.** Version: 228 Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request. Delta: v226 to v227; preserve owner choice to retain Google Workspace.
 
 **Use.** Read it.
 
@@ -795,7 +795,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-142 files.
+143 files.
 
 #### `docs/API.md`
 
@@ -911,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32511 lines · 1,626,105 B · description: **extracted**
+`doc` · 32557 lines · 1,627,907 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1002,6 +1002,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 122 lines · 4,883 B · description: **extracted**
 
 **Purpose.** cd extension && node tools/cli.js kill cannot resume trading. In the extension, the popup's red KILL SWITCH button does the same thing. node tools/cli.js data --json # find venueOrderId values
+
+**Use.** Read it.
+
+#### `docs/ORACLEBOT-OPERATIONS.md`
+
+`doc` · 125 lines · 7,132 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports. The existing Solbot suite owns the manager and independent local control room.
 
 **Use.** Read it.
 
@@ -26915,7 +26923,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 CI. Runs the test suite and the figure verifier.
 
-10 files.
+11 files.
 
 #### `.github/CODEOWNERS`
 
@@ -26992,6 +27000,14 @@ CI. Runs the test suite and the figure verifier.
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
 **Use.** Runs on push. Reproduce locally with `python3 -m pytest backtester/tests -q` and `python3 research/verify_numbers.py`.
+
+#### `.github/workflows/oraclebot-operations.yml`
+
+`ci` · 45 lines · 1,664 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
 
 #### `.github/workflows/website.yml`
 
@@ -28693,7 +28709,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/README.md`
 
-`doc` · 56 lines · 3,464 B · description: **extracted**
+`doc` · 58 lines · 3,610 B · description: **extracted**
 
 **Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
 
@@ -31089,7 +31105,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-26 files.
+29 files.
 
 #### `scripts/bootstrap_ecosystem.py`
 
@@ -31201,6 +31217,26 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 scripts/mcp_remote_client.py --help`
 
+#### `scripts/oraclebot_ops.py`
+
+`code-python` · 526 lines · 19,804 B · description: **extracted**
+
+**Purpose.** Read-only Oraclebot operations observer; no trading or service repair commands. A separate launchd job samples the existing solbot owner. SQLite preserves incidents and delivery retries. Reports count observed samples, not uptime.
+
+**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe()`, `record()`, `class NoRedirect`, `ingest_token()` and 7 more.
+
+**Use.** `python3 scripts/oraclebot_ops.py --help`
+
+#### `scripts/oraclebot_watchdog.py`
+
+`code-python` · 150 lines · 5,985 B · description: **extracted**
+
+**Purpose.** Independent GitHub-hosted availability observer for the Oraclebot Mac service.
+
+**Contents.** Defines `MARKER`, `TITLE`, `assess()`, `api()`, `website_health()`, `reconcile()`, `main()`.
+
+**Use.** `python3 scripts/oraclebot_watchdog.py --help`
+
 #### `scripts/render_tradingview_script_cards.py`
 
 `code-python` · 814 lines · 34,651 B · description: **extracted**
@@ -31278,6 +31314,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `class CredentialBoundaryTests`.
 
 **Use.** `python3 -m pytest scripts/test_mcp_remote_client.py -q`
+
+#### `scripts/test_oraclebot_ops.py`
+
+`test` · 274 lines · 9,776 B · description: **extracted**
+
+**Purpose.** Synthetic observer transitions, retry delivery and independent outage checks.
+
+**Contents.** Defines `load()`, `health()`, `class OperationsTests`, `class IndependentWatchdogTests`.
+
+**Use.** `python3 -m pytest scripts/test_oraclebot_ops.py -q`
 
 #### `scripts/test_soltui_ci.py`
 
