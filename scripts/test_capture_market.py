@@ -100,6 +100,12 @@ class CaptureTests(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(m.CaptureError):
                 m.normalise_uri(f'mongodb://localhost/?{key}=true')
 
+    def test_unused_uri_database_does_not_override_dedicated_namespace(self):
+        uri = m.normalise_uri('mongodb://localhost/invalid%20default?authSource=%24external&tls=true')
+        self.assertEqual(urlsplit(uri).path, '/')
+        self.assertEqual(parse_qs(urlsplit(uri).query)['authSource'], ['$external'])
+        self.assertEqual(self.cfg['database'], 'market_capture')
+
     def test_second_role_owner_refused(self):
         with m.lock(self.home / 'test.lock'), self.assertRaises(m.CaptureError), m.lock(self.home / 'test.lock'):
             self.fail('second owner acquired the lock')

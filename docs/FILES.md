@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `dad17bf` (2026-11-12T04:48:44+00:00). 3338 tracked files, 79.7 MB.
+**Generated** from `index/INDEX.json` at commit `90c6eec` (2026-11-12T05:00:15+00:00). 3338 tracked files, 79.7 MB.
 
 Regenerate with:
 
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1251 lines · 232,287 B · description: **extracted**
+`doc` · 1254 lines · 233,369 B · description: **extracted**
 
-**Purpose.** Version: 474 Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics. Delta: v472 to v473; refresh local wiki dependency found by CI.
+**Purpose.** Version: 475 Delta: v474 to v475; record live collector and repair unused URI default database validation. Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics.
 
 **Use.** Read it.
 
@@ -911,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32371 lines · 1,617,840 B · description: **extracted**
+`doc` · 32407 lines · 1,619,326 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -951,9 +951,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/MARKET-EVENT-CAPTURE.md`
 
-`doc` · 81 lines · 4,618 B · description: **extracted**
+`doc` · 84 lines · 4,849 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Delta: initial independent collector, durable spool and native MongoDB time-series uploader. single Coinbase USD product. It does not sign, trade or alter the existing
+**Purpose.** Version: 1.0.1 Delta: ignore unused URI default database; retain explicit capture and X509 namespaces. single Coinbase USD product. It does not sign, trade or alter the existing
 
 **Use.** Read it.
 
@@ -31029,7 +31029,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/capture_market.py`
 
-`code-python` · 449 lines · 19,639 B · description: **extracted**
+`code-python` · 451 lines · 19,809 B · description: **extracted**
 
 **Purpose.** Bounded public market-event capture with durable spool and separate Mongo upload. No orders, private market subscriptions, sampling, or drop/rebuild operations. The capture and upload roles have separate locks and independent lifecycles.
 
@@ -31137,7 +31137,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_capture_market.py`
 
-`test` · 224 lines · 10,546 B · description: **extracted**
+`test` · 230 lines · 10,928 B · description: **extracted**
 
 **Purpose.** Durability, namespace and ambiguous-write regressions; no live network or DB.
 

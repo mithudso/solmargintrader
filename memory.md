@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 474
+Version: 475
+Delta: v474 to v475; record live collector and repair unused URI default database validation.
 Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics.
 Delta: v472 to v473; refresh local wiki dependency found by CI.
 Delta: v471 to v472; preserve integration and queued D1 lesson receipt.
@@ -1248,3 +1249,5 @@ Implement a separate durable raw-event spool and dedicated market_capture time-s
 Tracked incident: TASK-1499, with contract KNOW-1500. This checkpoint precedes implementation/tests/live acceptance. Preserve later final state in /Users/mitch/.local/state/solmargintrader/market-captures/zec-capture-delivery-20261112.json. No trading, arming, signing or promotion is part of this request.
 
 Implementation checkpoint: independent capture/upload CLI, durable fsynced raw spool, exact exchange timestamps and per-run sequence, dedicated TS namespace, restart deadline and ambiguous-insert stop markers are implemented. Sixteen offline tests pass; native Mongo integration is required in CI and skips locally because no local mongod is running. The initial8second live smoke caught Coinbase's acknowledgement alias level2_50; corrected alias fixture and source then captured122records with106l2updates,4matches,8heartbeats,initialsnapshot/lastmatch/subscription andconnectionopen,zero reconnects. No day-long capture is running yet. Dedicated Python3.14 environment installed pymongo4.19.0,python-dotenv1.2.4,dnspython2.9.2. Endor package-risk evidence is UNKNOWN because role/backend/CLI is unavailable; installed reviewer procedure applied inline, no safety certification claimed. Remaining: final metadata/docs checks, sourceCI/merge, stable supervisor install and independent actual running acceptance; MongoDB destination remains network-unreachable.
+
+Live deployment: PR230 merged90c6eec2344d9b4f458f3bb5956dbc48877b7cc6 with11CIpasses/2intendedskips. NativeMongo fixture passed17tests. Collector and uploader launched with stable source at /Users/mitch/.local/share/solmargintrader-market-capture/app. Run directory /Users/mitch/.local/state/solmargintrader/market-captures/zec-usd-20261112T045627Z has a persisted start2026-11-12T04:56:27.224912Z and deadline2026-11-13T04:56:27.224912Z. Collector records realZEC trades/book updates/heartbeats without reconnects at first acceptance. The actual uploader exposed InvalidURI: PyMongo rejected an invalid unused default database path that Node had not rejected. Version1.0.1 clears that default path in memory while explicitly retaining market_capture data DB and $external X509 auth. Preserve the collector process; replace/restart uploader only. The remote network remains unverified after this validation fix. Final runtime/source receipts remain at the deployment receipt path above.

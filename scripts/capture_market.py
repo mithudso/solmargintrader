@@ -28,7 +28,7 @@ if str(ROOT) not in sys.path:
 
 from soltui.pricefeed import WebSocket
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 DATABASE = "market_capture"
 CHANNELS = ["matches", "level2_batch", "heartbeat"]
 
@@ -324,7 +324,9 @@ def normalise_uri(uri):
         if key.lower() in {"tlsinsecure", "tlsallowinvalidcertificates", "tlsallowinvalidhostnames"} and value.lower() not in {"false", "0"}:
             raise CaptureError("insecure TLS options refused")
         query.append((key, value))
-    return urlunsplit(parts._replace(query=urlencode(query)))
+    # All data writes explicitly select DATABASE and X509 uses $external. The
+    # URI default database is unused and may contain an installation placeholder.
+    return urlunsplit(parts._replace(path="/", query=urlencode(query)))
 
 
 def mongo_client(cfg):

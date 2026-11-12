@@ -1,7 +1,7 @@
 # Bounded raw market-event capture
 
-Version: 1.0.0
-Delta: initial independent collector, durable spool and native MongoDB time-series uploader.
+Version: 1.0.1
+Delta: ignore unused URI default database; retain explicit capture and X509 namespaces.
 
 `scripts/capture_market.py` records each application message received from a
 single Coinbase USD product. It does not sign, trade or alter the existing
@@ -47,6 +47,9 @@ The uploader reads only the selected `MONGODB_URI2` value from the environment o
 the explicit dotenv file. It uses the owner-supplied X509 certificate with
 `MONGODB-X509` and `$external`. URI/certificate contents are never written to
 logs, command arguments or Git. Driver failures expose class names only.
+The URI's default database path is ignored: this writer explicitly selects
+`market_capture`, and authentication explicitly selects `$external`. This also
+prevents an unused placeholder database name from failing PyMongo URI validation.
 An obsolete nonexistent `tlsCAFile` reference is omitted in memory, so the TLS
 library uses its system trust store. An explicit valid CA path is preserved.
 Hostname/certificate verification stays enabled; insecure TLS flags are refused.
