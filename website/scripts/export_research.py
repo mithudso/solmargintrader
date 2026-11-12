@@ -50,6 +50,7 @@ def title_summary(source, text):
 
 
 def export(repo=ROOT):
+    repo = Path(repo).resolve()
     names = subprocess.check_output(["git", "ls-files", "-z", "research", "backtester/strategy_cards"], cwd=repo).decode().split("\0")
     articles, skipped, bodies = [], [], []
     for source in sorted(filter(None, names)):
@@ -58,7 +59,12 @@ def export(repo=ROOT):
         if any(word in source.lower() for word in EXCLUDE_WORDS) or Path(source).name in ("FILES.md",):
             skipped.append({"source": source, "reason": "workflow_or_review_artifact"})
             continue
-        original = (repo / source).read_bytes()
+        candidate = repo / source
+        # Git tracks symlinks, and an untracked parent can also redirect a tracked
+        # name. Refuse both before reading any content outside the publication tree.
+        if candidate.resolve() != candidate:
+            raise ValueError(f"symlink refused in {source}")
+        original = candidate.read_bytes()
         text = original.decode("utf-8")
         if SENSITIVE.search(text):
             raise ValueError(f"credential-like content refused in {source}")

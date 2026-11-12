@@ -345,3 +345,109 @@ test('a delayed old-subscription event cannot unlock a newer pending checkout', 
   assert.equal(env.sqlite.prepare('SELECT checkout_pending_at FROM users').get().checkout_pending_at, pendingAt);
   assert.equal((await call(env, '/api/me', { method: 'DELETE', cookie: logged.cookie })).data.error, 'checkout_pending');
 });
+
+test('concurrent bot creates cannot exceed the twenty-bot quota', async () => {
+  const env = environment(); const logged = await login(env); grant(env, logged.user);
+  for (let index = 0; index < 19; index++) {
+    assert.equal((await call(env, '/api/bots', { method: 'POST', cookie: logged.cookie, body: { ...bot, name: `Existing ${index}` } })).response.status, 201);
+  }
+  // Model two remote D1 count reads completing before either request writes.
+  const prepare = env.DB.prepare.bind(env.DB);
+  let counted = 0; let release;
+  const bothCounted = new Promise(resolve => { release = resolve; });
+  env.DB.prepare = sql => {
+    const statement = prepare(sql);
+    if (sql.startsWith('SELECT COUNT(*) AS n FROM bots')) {
+      const first = statement.first.bind(statement);
+      statement.first = async () => {
+        const result = await first();
+        if (++counted === 2) release();
+        await bothCounted;
+        return result;
+      };
+    }
+    return statement;
+  };
+  const results = await Promise.all([0, 1].map(index => call(env, '/api/bots', { method: 'POST', cookie: logged.cookie, body: { ...bot, name: `Concurrent ${index}` } })));
+  assert.equal(env.sqlite.prepare("SELECT COUNT(*) AS n FROM bots WHERE status != 'archived'").get().n, 20);
+  assert.deepEqual(results.map(result => result.response.status).sort(), [201, 409]);
+  assert.equal(results.find(result => result.response.status === 409).data.error, 'bot_limit');
+});
+
+test('same-second webhook races cannot restore a canceled subscription', async t => {
+  const env = { ...environment(), STRIPE_WEBHOOK_SECRET: 'test_webhook', STRIPE_SECRET_KEY: 'test_secret', STRIPE_PRICE_ID: 'price_server' };
+  const logged = await login(env);
+  env.sqlite.prepare('UPDATE users SET stripe_customer_id=? WHERE id=?').run('cus_test', logged.user.id);
+  let releaseOld; let signalOldStarted;
+  const oldStarted = new Promise(resolve => { signalOldStarted = resolve; });
+  const release = new Promise(resolve => { releaseOld = resolve; });
+  let calls = 0;
+  const active = { id: 'sub_test', customer: 'cus_test', status: 'active', created: 50, trial_start: null, trial_end: null, current_period_end: at() + 604800, items: { data: [{ price: { id: 'price_server' } }] }, metadata: { oraclebot_user: logged.user.id } };
+  let latest = { ...active, status: 'canceled' };
+  t.mock.method(globalThis, 'fetch', async () => {
+    if (++calls === 1) {
+      signalOldStarted(); await release;
+      return Response.json(active);
+    }
+    return Response.json(latest);
+  });
+  async function deliver(id, type, subscriptionId = 'sub_test') {
+    const signed = await signedEvent({ id, created: 300, type, data: { object: { id: subscriptionId } } }, env.STRIPE_WEBHOOK_SECRET);
+    return worker.fetch(new Request(`${ORIGIN}/api/billing/webhook`, { method: 'POST', headers: { 'Stripe-Signature': signed.header }, body: signed.raw }), env);
+  }
+  const olderInFlight = deliver('evt_active_race', 'customer.subscription.updated');
+  await oldStarted;
+  assert.equal((await deliver('evt_cancel_race', 'customer.subscription.deleted')).status, 200);
+  assert.equal(env.sqlite.prepare('SELECT status FROM subscriptions').get().status, 'canceled');
+  releaseOld(); assert.equal((await olderInFlight).status, 200);
+  const subscription = env.sqlite.prepare('SELECT * FROM subscriptions').get();
+  assert.equal(subscription.status, 'canceled');
+  assert.equal(hasEntitlement(subscription), false);
+  latest = { ...active, id: 'sub_replacement', created: 51 };
+  assert.equal((await deliver('evt_replacement', 'customer.subscription.created', latest.id)).status, 200);
+  const replacement = env.sqlite.prepare('SELECT * FROM subscriptions').get();
+  assert.equal(replacement.stripe_subscription_id, latest.id);
+  assert.equal(hasEntitlement(replacement), true);
+  // A terminal cancellation remains terminal even if its price no longer matches.
+  latest = { ...latest, status: 'canceled', items: { data: [{ price: { id: 'price_other' } }] } };
+  assert.equal((await deliver('evt_replacement_cancel', 'customer.subscription.deleted', latest.id)).status, 200);
+  assert.equal(env.sqlite.prepare('SELECT status FROM subscriptions').get().status, 'canceled');
+  latest = { ...active, id: replacement.stripe_subscription_id, created: 51 };
+  assert.equal((await deliver('evt_replacement_stale', 'customer.subscription.updated', latest.id)).status, 200);
+  assert.equal(hasEntitlement(env.sqlite.prepare('SELECT * FROM subscriptions').get()), false);
+});
+
+test('active bot remains visible after more than one hundred newer archived bots', async () => {
+  const env = environment(); const logged = await login(env);
+  const insert = env.sqlite.prepare('INSERT INTO bots (id,user_id,name,coin,strategy,venue,leverage,budget,mode,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
+  const activeId = crypto.randomUUID();
+  insert.run(activeId, logged.user.id, 'Retained active bot', 'SOL', 'rsi', 'coinbase', 1, 100, 'paper', 'configured', 1, 1);
+  for (let index = 0; index < 100; index++) insert.run(crypto.randomUUID(), logged.user.id, `Archived ${index}`, 'SOL', 'rsi', 'coinbase', 1, 100, 'paper', 'archived', index + 2, index + 2);
+  const result = await call(env, '/api/bots', { cookie: logged.cookie });
+  assert.equal(result.response.status, 200);
+  assert.ok(result.data.bots.some(item => item.id === activeId), 'the active account configuration must remain discoverable');
+});
+
+test('unexpected API failures emit structured diagnostics without raw errors or secrets', async t => {
+  const env = environment(); const logged = await login(env);
+  const emitted = []; const levels = [];
+  t.mock.method(console, 'error', (...args) => { levels.push('error'); emitted.push(args); });
+  t.mock.method(console, 'warn', (...args) => { levels.push('warn'); emitted.push(args); });
+  const canary = 'private-diagnostic-canary';
+  env.DB.prepare = () => { throw new Error(`database failure ${canary} ${logged.wallet} ${logged.cookie}`); };
+  const result = await call(env, `/api/me?token=${canary}`, { cookie: logged.cookie });
+  assert.equal(result.response.status, 503);
+  assert.equal((await call(env, `/api/${canary}?token=${canary}`, { cookie: logged.cookie })).response.status, 503);
+  const structured = emitted.flat().map(value => {
+    if (value && typeof value === 'object') return value;
+    try { return JSON.parse(value); } catch { return null; }
+  }).filter(value => value && typeof value === 'object');
+  assert.deepEqual(structured.map(({ operation, code, status }) => ({ operation, code, status })), [
+    { operation: 'GET /api/me', code: 'service_unavailable', status: 503 },
+    { operation: 'GET /api/unknown', code: 'service_unavailable', status: 503 },
+  ]);
+  assert.deepEqual(levels, ['error', 'error']);
+  const diagnosticText = JSON.stringify(emitted);
+  for (const secret of [canary, logged.wallet, logged.cookie]) assert.equal(diagnosticText.includes(secret), false);
+  assert.equal(JSON.stringify(result.data).includes(canary), false);
+});

@@ -13,16 +13,27 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-import jsonschema
-import mcp.server.stdio
-from mcp import types
-from mcp.server.lowlevel import NotificationOptions, Server
-from mcp.server.lowlevel.helper_types import ReadResourceContents
-from mcp.server.models import InitializationOptions
-from pydantic import AnyUrl
-
 from .feeds import validate_instrument
 from .guidance import guidance, readiness, veto
+
+_SDK_LOADED = False
+
+
+def _load_sdk() -> None:
+    """Defer optional protocol imports so CLI help works before environment setup."""
+    global _SDK_LOADED, jsonschema, mcp, types, NotificationOptions, Server
+    global ReadResourceContents, InitializationOptions, AnyUrl
+    if _SDK_LOADED:
+        return
+    import jsonschema
+    import mcp.server.stdio
+    from mcp import types
+    from mcp.server.lowlevel import NotificationOptions, Server
+    from mcp.server.lowlevel.helper_types import ReadResourceContents
+    from mcp.server.models import InitializationOptions
+    from pydantic import AnyUrl
+
+    _SDK_LOADED = True
 
 VERSION = "0.2.3"
 RESOURCE_NAMES = {
@@ -97,6 +108,7 @@ class SubscriptionHub:
     """Coalesce resource changes with no unbounded event queue or cross-session state."""
 
     def __init__(self, *, timeout: float = 2.0) -> None:
+        _load_sdk()
         self.timeout = timeout
         self._lock = asyncio.Lock()
         self._sessions: dict[Any, dict[str, str | None]] = {}
@@ -147,6 +159,7 @@ def build_server(
     poll_seconds: float = 0.5,
     prediction_view: Callable[[], dict] | None = None,
 ) -> tuple[Server, SubscriptionHub]:
+    _load_sdk()
     if not 0.1 <= poll_seconds <= 60:
         raise ValueError("invalid poll interval")
     hub = SubscriptionHub()
@@ -357,6 +370,7 @@ async def run(
     poll_seconds: float = 0.5,
     control_home: Path | None = None,
 ) -> None:
+    _load_sdk()
     from .engine import OracleEngine
 
     home = selection_home(archive, instrument, control_home)
@@ -392,6 +406,7 @@ async def run(
 
 class Parser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
         raise ValueError("invalid command arguments")
 
 
@@ -410,6 +425,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--poll-seconds", type=float, default=0.5)
     try:
         args = parser.parse_args(argv)
+        _load_sdk()
         asyncio.run(
             run(
                 args.archive,
@@ -420,6 +436,11 @@ def main(argv: list[str] | None = None) -> int:
                 control_home=args.control_home,
             )
         )
+    except ModuleNotFoundError as error:
+        from .cli import prerequisite_message
+
+        print(prerequisite_message(error), file=sys.stderr)
+        return 3
     except (Exception, KeyboardInterrupt):  # noqa: BLE001 -- CLI failure boundary suppresses dependency details.
         print("Oracle MCP server stopped or unavailable.", file=sys.stderr)
         return 2

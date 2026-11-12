@@ -10,9 +10,14 @@ Save requests in `prompts.md` and versioned continuation records in `memory.md`,
 
 | Component | Risk |
 | --- | --- |
+| `website/` (JavaScript/Python) | Public wallet-account and subscription workspace on Cloudflare; Stripe can charge members when configured. Trading definitions remain inactive paper configurations. The separate Python adapter only reads public-market analysis inputs. No owner keys or local control-room access. |
+| `oracle/` (Python) | Forecast/MCP reads are separate from the explicitly enabled TradingView venue worker |
+| `botmanager/` (Python) | Fenced paper lifecycle; no signing |
+| `ecosystem/` (Python) | Paper coordination and authenticated local controls; no order submission |
+| `executor/` (Python, own environment) | Guarded Jupiter spot execution, dry-run by default; read `executor/CLAUDE.md` |
 | `backtester/` (Python) | Simulation only. **Never add live-trading capability.** The danger is a dishonest backtest |
 | `research/` (Python) | Analysis on the backtester. The danger is overstating a result |
-| `soltui/` (Python) | Read-only macOS display. Places no orders |
+| `soltui/` (Python) | Research console with separately armed manual Coinbase controls; Jupiter V2 submission remains blocked |
 | `mongo/` (Python) | Derived local datastore plus a query reference. Rebuildable; nothing else imports it |
 | `extension/` (JavaScript) | **Can place real orders and move real money.** Treat every change as production software |
 | `liquidity/` (Python, own venv) | **Can move real money on Base.** Read `liquidity/CLAUDE.md` first |

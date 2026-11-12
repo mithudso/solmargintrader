@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 224
+Version: 225
+Delta: v224 to v225; capture ordered full audit, hook repairs and billing explanation.
 Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
 Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
@@ -1980,3 +1981,15 @@ I justnadded that Ip
 ```
 
 Verify that the existing supervised uploader resumes and validate stored ZEC records without restarting the collector or extending the persisted deadline.
+
+
+## 2026-11-12 — Full repository audit, hook approvals and billing explanation
+
+Fix all of these hook failures:  Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+
+And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.

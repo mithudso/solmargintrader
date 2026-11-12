@@ -149,6 +149,15 @@ class CoreTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "policy_mismatch"):
             OracleEngine(self.path, minimum_resolved=2)
 
+    def test_missing_policy_cannot_relabel_existing_observations(self):
+        self.engine.ingest(observation(0), now=1)
+        with self.engine.store.connection() as db:
+            db.execute("DELETE FROM metadata WHERE key='policy'")
+        before = self.path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "archive_policy_unavailable"):
+            OracleEngine(self.path, horizon_seconds=120, minimum_resolved=1)
+        self.assertEqual(self.path.read_bytes(), before)
+
     def test_raw_metadata_roundtrip_and_no_arbitrary_payload(self):
         item = observation(
             0,

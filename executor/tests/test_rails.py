@@ -5,8 +5,6 @@ from decimal import Decimal
 
 import pytest
 from conftest import PRICES, QUOTE_SOL_USDC
-
-from executor import gates, rails
 from executor.config import VALIDATION_STRATEGY, Config
 from executor.errors import Refused
 from executor.journal import Journal
@@ -14,12 +12,14 @@ from executor.jupiter import parse_quote
 from executor.quote import evaluate
 from executor.tokens import USDC_MINT, WSOL_MINT, resolve
 
+from executor import gates, rails
+
 SOL, USDC = resolve("SOL"), resolve("USDC")
 PRICE_MAP = {
     WSOL_MINT: Decimal(str(PRICES[WSOL_MINT]["usdPrice"])),
     USDC_MINT: Decimal(str(PRICES[USDC_MINT]["usdPrice"])),
 }
-NOW = time.time()
+NOW = 1_800_000_000.0  # Fixed daytime UTC fixture; subtracting 100 seconds must stay on the same day.
 
 
 def report(side="sell", usd=1.0, **over):

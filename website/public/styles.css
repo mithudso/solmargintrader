@@ -2,3 +2,5 @@
 
 .article-body { overflow-wrap: anywhere; }
 .article-body pre, .source-note { max-width: 100%; overflow-x: auto; }
+
+button[data-action="trial"]:disabled{cursor:not-allowed}

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -13,11 +14,17 @@ from textual.widgets import Button, DataTable
 
 
 def _plain(value: object) -> str:
-    return value.plain if isinstance(value, Text) else str(value) if value is not None else ""
+    text = value.plain if isinstance(value, Text) else str(value) if value is not None else ""
+    # CSV quoting cannot prevent spreadsheet formulas from untrusted display text.
+    # Preserve signed numbers, including grouped values and percentages.
+    numeric = r"[+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?%?"
+    if text.lstrip().startswith(("=", "+", "-", "@")) and not re.fullmatch(numeric, text.strip()):
+        return "'" + text
+    return text
 
 
 def export_table(table: DataTable, directory: Path | None = None) -> Path:
-    """Save the visible rows in their current order without overwriting a prior export."""
+    """Save ordered displayed rows, escaping formula-like text and preserving prior exports."""
     directory = directory or Path.home() / "Downloads"
     stem = (table.id or "table") + "-" + datetime.now().strftime("%Y%m%d-%H%M%S")
     for suffix in range(10000):
@@ -57,6 +64,7 @@ class ExportPanel(Vertical):
     def compose(self) -> ComposeResult:
         with Horizontal():
             button = Button("Export CSV", classes="export-csv")
+            button.tooltip = "Save the displayed table rows and columns to a new CSV file in Downloads. Formula-like text is escaped; existing files are preserved."
             button.styles.border = ("none", "transparent")
             yield button
         yield self.table

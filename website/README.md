@@ -55,7 +55,7 @@ itself provision live trading.
 
 ## Development and checks
 
-From `website/`, use Node 22 or newer:
+From `website/`, use Node 22.13 or newer:
 
 ```sh
 npm ci
@@ -70,7 +70,17 @@ and omits production custom-domain routes. Override it in the development
 configuration if you change the local port.
 Use HTTPS in a normal browser for wallet authentication and the secure session
 cookie. The automated tests exercise authentication without a wallet extension.
-There are no runtime npm dependencies. Wrangler is a pinned development tool.
+There are no runtime npm dependencies. Wrangler and Playwright are pinned
+development tools. The browser regression suite serves local fixtures and never
+contacts wallets, Stripe or trading venues:
+
+```sh
+npx playwright install chromium
+npm run test:browser
+```
+
+Set `CHROME` to an existing Chromium executable to use that browser instead.
+CI installs the matching Playwright Chromium and runs this suite.
 
 From the repository root, run the Python engine tests and exporter verification
 using an environment with the canonical packages installed:

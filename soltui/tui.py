@@ -3242,7 +3242,7 @@ class SolTuiApp(App):
 
     def _backtest_pane(self) -> ComposeResult:
         """Run a CPCV sweep over the roster (or one roster strategy) and show the distribution."""
-        with Vertical():
+        with VerticalScroll():
             yield Static(
                 "Pick what Run backtest tests: the whole roster, or one strategy from it. The roster is "
                 "the right-hand list on the Strategies tab (Add selected / Remove selected change it). "

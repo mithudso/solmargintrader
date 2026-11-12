@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import json
+import logging
 from typing import Any, Protocol
 
 import httpx
 
 from .errors import ExecutorError, HttpError
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Http(Protocol):
@@ -29,22 +33,39 @@ class HttpxHttp:
         except ValueError:
             body = None
         if resp.status_code >= 400:
-            detail = ""
-            if isinstance(body, dict):
-                detail = str(body.get("error") or body.get("message") or "")[:200]
-            raise HttpError(f"HTTP {resp.status_code} from {resp.request.url.host}: {detail}".strip(), resp.status_code)
+            raise HttpError(f"HTTP {resp.status_code} from remote service", resp.status_code)
         if body is None:
-            raise ExecutorError(f"non-JSON response from {resp.request.url.host}")
+            raise ExecutorError("non-JSON response from remote service")
         return body
 
-    def get_json(self, url, params=None, headers=None):
+    def _request(self, method, url, **kwargs):
+        LOGGER.info(json.dumps({"event": "executor_http_request", "method": method}))
+        status = None
         try:
-            return self._json(self._client.get(url, params=params, headers=headers))
-        except httpx.HTTPError as exc:
-            raise ExecutorError(f"network error: {type(exc).__name__}") from None
+            call = self._client.get if method == "GET" else self._client.post
+            response = call(url, **kwargs)
+            status = response.status_code
+            result = self._json(response)
+        except Exception as exc:  # Log only the class; a URL, body or exception message can contain credentials.
+            LOGGER.warning(
+                json.dumps(
+                    {
+                        "event": "executor_http_result",
+                        "method": method,
+                        "ok": False,
+                        "status": status,
+                        "error_type": type(exc).__name__,
+                    }
+                )
+            )
+            if isinstance(exc, httpx.HTTPError):
+                raise ExecutorError(f"network error: {type(exc).__name__}") from None
+            raise
+        LOGGER.info(json.dumps({"event": "executor_http_result", "method": method, "ok": True, "status": status}))
+        return result
+
+    def get_json(self, url, params=None, headers=None):
+        return self._request("GET", url, params=params, headers=headers)
 
     def post_json(self, url, body, headers=None):
-        try:
-            return self._json(self._client.post(url, json=body, headers=headers))
-        except httpx.HTTPError as exc:
-            raise ExecutorError(f"network error: {type(exc).__name__}") from None
+        return self._request("POST", url, json=body, headers=headers)

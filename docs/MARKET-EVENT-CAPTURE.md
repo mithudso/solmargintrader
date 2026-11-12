@@ -1,7 +1,7 @@
 # Bounded raw market-event capture
 
-Version: 1.0.1
-Delta: ignore unused URI default database; retain explicit capture and X509 namespaces.
+Version: 1.0.2
+Delta: preserve malformed event type labels as raw payloads while keeping status counters serializable.
 
 `scripts/capture_market.py` records each application message received from a
 single Coinbase USD product. It does not sign, trade or alter the existing
@@ -23,7 +23,10 @@ deadline. The collector holds a per-product singleton lock plus a run lock.
 Each event receives a per-run sequence, local nanosecond receipt timestamp,
 original exchange time/sequence/trade ID when present, connection ID, and exact
 raw text. Each complete JSONL line is flushed and fsynced before proceeding.
-Only an incomplete trailing line is removed during recovery.
+Only an incomplete trailing line is removed during recovery. A non-string or empty
+message type is counted as `unparsed`; its exact original message remains in the
+raw field. Malformed public labels cannot terminate the collector or break status
+serialization.
 
 The collector and uploader run independently. Database outages leave the durable
 raw stream recording. The uploader checkpoints acknowledged batches and reports

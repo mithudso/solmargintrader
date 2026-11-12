@@ -11,6 +11,7 @@ import hashlib
 import hmac
 import io
 import json
+import logging
 import math
 import os
 import threading
@@ -26,6 +27,8 @@ INTERVALS = ("1m", "5m", "15m", "1h", "6h", "1d")
 MAX_BARS = 6000
 MAX_CACHE_BYTES = 32 * 1024 * 1024
 MAX_BODY = 4096
+LOGGER = logging.getLogger(__name__)
+OPERATIONS = {"/v1/strategies": "strategies", "/v1/oracle": "oracle", "/v1/backtests": "backtests"}
 
 
 class RequestError(ValueError):
@@ -33,7 +36,12 @@ class RequestError(ValueError):
 
 
 def finite(value):
-    return type(value) in (int, float) and math.isfinite(value)
+    return type(value) is int or (type(value) is float and math.isfinite(value))
+
+
+def record_event(event, *, level=logging.INFO, **fields):
+    """Log fixed event metadata; callers must exclude raw inputs and exception text."""
+    LOGGER.log(level, json.dumps({"event": event, **fields}, separators=(",", ":")))
 
 
 def json_safe(value):
@@ -115,7 +123,9 @@ class Analysis:
         try:
             reader = ReadOnlyOracle(path, instrument=f"{coin}/{self.oracle_quote}")
             return choose_top(reader.predictions(now=now), coin)
-        except (ValueError, OSError):
+        except (ValueError, OSError) as exc:
+            record_event("analysis_oracle_unavailable", level=logging.WARNING,
+                         coin=coin, error_type=type(exc).__name__)
             return {"coin": coin, "status": "unavailable", "topStrategy": None, "strategies": [], "reason": "oracle_evidence_unavailable"}
 
     def backtest(self, body):
@@ -197,9 +207,13 @@ class Server(ThreadingHTTPServer):
     request_queue_size = 16
 
 
-def make_server(analysis, token, host="127.0.0.1", port=8790):
+def _validate_token(token):
     if not isinstance(token, str) or len(token) < 32:
         raise ValueError("ENGINE_TOKEN must contain at least 32 characters")
+
+
+def make_server(analysis, token, host="127.0.0.1", port=8790):
+    _validate_token(token)
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "OraclebotAnalysis/1"
@@ -210,10 +224,13 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
             self.connection.settimeout(5)
 
         def log_message(self, *args):
+            # Default access logs contain arbitrary URLs; respond() emits safe metadata.
             pass
 
         def respond(self, status, body):
             data = json.dumps(json_safe(body), allow_nan=False, separators=(",", ":")).encode()
+            record_event("analysis_http_response", level=logging.WARNING if status >= 400 else logging.INFO,
+                         operation=getattr(self, "operation", "unknown"), status=status)
             self.send_response(status)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(data)))
@@ -223,13 +240,15 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
             self.wfile.write(data)
 
         def handle_request(self):
+            self.operation = "unknown"
             if self.headers.get("Origin"):
                 return self.respond(403, {"error": "browser_origin_forbidden"})
             supplied = self.headers.get("Authorization", "")
             if not hmac.compare_digest(supplied.encode(), f"Bearer {token}".encode()):
                 return self.respond(401, {"error": "authentication_required"})
-            url = urlsplit(self.path)
             try:
+                url = urlsplit(self.path)
+                self.operation = OPERATIONS.get(url.path, "unknown")
                 if self.command == "GET" and url.path == "/v1/strategies" and not url.query:
                     return self.respond(200, catalogue())
                 if self.command == "GET" and url.path == "/v1/oracle":
@@ -252,7 +271,9 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
                 return self.respond(status, {"error": code})
             except (ValueError, json.JSONDecodeError):
                 return self.respond(400, {"error": "invalid_request"})
-            except Exception:  # noqa: BLE001 - public HTTP boundary must not disclose internal exceptions
+            except Exception as exc:  # noqa: BLE001 - public HTTP boundary must not disclose internal exceptions
+                record_event("analysis_request_failed", level=logging.ERROR,
+                             operation=self.operation, error_type=type(exc).__name__)
                 return self.respond(503, {"error": "analysis_unavailable"})
 
         do_GET = handle_request
@@ -262,16 +283,28 @@ def make_server(analysis, token, host="127.0.0.1", port=8790):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Set ENGINE_DATA_DIR, ENGINE_ORACLE_DIR and ENGINE_TOKEN first. "
+               "Example: python -m website.engine.server --host 127.0.0.1 --port 8790",
+    )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", default=8790, type=int)
     args = parser.parse_args()
+    if not 0 <= args.port <= 65535:
+        parser.error("--port must be between 0 and 65535")
     data = os.environ.get("ENGINE_DATA_DIR")
     archive = os.environ.get("ENGINE_ORACLE_DIR")
     if not data or not archive:
         parser.error("ENGINE_DATA_DIR and ENGINE_ORACLE_DIR must name dedicated public-analysis inputs")
-    analysis = Analysis(Path(data), Path(archive), oracle_quote=os.environ.get("ENGINE_ORACLE_QUOTE", "USD"))
-    server = make_server(analysis, os.environ.get("ENGINE_TOKEN", ""), args.host, args.port)
+    token = os.environ.get("ENGINE_TOKEN", "")
+    try:
+        _validate_token(token)
+        analysis = Analysis(Path(data), Path(archive), oracle_quote=os.environ.get("ENGINE_ORACLE_QUOTE", "USD"))
+    except ValueError as exc:
+        parser.error(str(exc))
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    server = make_server(analysis, token, args.host, args.port)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

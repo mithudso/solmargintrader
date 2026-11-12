@@ -43,7 +43,7 @@ os.environ.setdefault("LANG", "en_US.UTF-8")
 try:
     os.chdir(REPO)
 except OSError:
-    pass
+    pass  # Best effort: absolute configured paths still work if the source tree moved.
 
 from soltui.app import main  # noqa: E402 - must follow the sys.path insertion
 

@@ -8,10 +8,11 @@ trials, the research archive and the separate Python analysis adapter. Billing,
 analysis availability and live venue execution have independent readiness gates.
 Bot configurations in this release are inactive paper definitions.
 
-SOL trading research and execution tooling, in ten parts:
+Trading research, execution tooling and the hosted workspace, in eleven parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
+| [`website/`](website/README.md) | Cloudflare wallet accounts, optional Stripe billing, public research and a separate read-only canonical analysis adapter. Trading definitions remain inactive. | JavaScript ESM/Python |
 | [`ecosystem/`](ecosystem/README.md) | Paper bootstrap, shared Oracle/F5 coordination, external bot registrations and a local paper control room with delegated operations. | Python 3.13 |
 | [`oracle/`](oracle/README.md) | Source-labelled market observations, prospective strategy votes, durable history, read-only MCP subscriptions and explicitly enabled TradingView workers for Coinbase spot or Jupiter ZEC Beta perpetuals. | Python 3.13 |
 | [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance reference-paper supervisor for Grid, DCA, Trend and Momentum. Reuses the shared Oracle archive; Jupiter quote evidence stays separate. | Python 3.13 |

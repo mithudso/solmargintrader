@@ -15,7 +15,7 @@ def canonical(value: Any) -> str:
 
 
 class Store:
-    def __init__(self, path: str | Path) -> None:
+    def __init__(self, path: str | Path, *, expected_policy: str | None = None) -> None:
         self.path = Path(path).expanduser().absolute()
         self.path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         if self.path.is_symlink():
@@ -32,6 +32,18 @@ class Store:
                 raise ValueError("archive_schema_not_supported")
             if application not in (0, 0x4F52434C):
                 raise ValueError("archive_schema_not_supported")
+            if expected_policy is not None:
+                recorded = db.execute("SELECT body FROM metadata WHERE key='policy'").fetchone() if "metadata" in tables else None
+                if recorded is not None and recorded[0] != expected_policy:
+                    raise ValueError("archive_policy_mismatch_use_new_archive")
+                # Refuse before any DDL or persistent PRAGMA changes. An archive
+                # that lost its policy cannot acquire a new identity over history.
+                if recorded is None and any(
+                    db.execute(f"SELECT 1 FROM {table} LIMIT 1").fetchone() is not None
+                    for table in ("events", "observations", "forecasts", "resolutions", "graphdb_ticks", "graphdb_predictions")
+                    if table in tables
+                ):
+                    raise ValueError("archive_policy_unavailable_use_new_archive")
             schema = """
                 CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, body TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS events (

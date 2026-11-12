@@ -1323,24 +1323,43 @@ class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
 class TableTitleTests(unittest.IsolatedAsyncioTestCase):
     """Every table has a title line above it saying what it shows (owner, 2026-11-07)."""
 
-    async def test_every_table_has_a_title_above_it(self):
+    @staticmethod
+    def missing_titles(app):
         from textual.containers import Horizontal
+        from soltui.csv_table import ExportPanel
+
+        missing = []
+        for table in app.query(DataTable):
+            # ExportPanel adds controls inside the table's visual section. Its
+            # heading remains above the wrapper, or above a side-by-side pair.
+            anchor = table.parent if isinstance(table.parent, ExportPanel) else table
+            if isinstance(anchor.parent, Horizontal):
+                anchor = anchor.parent
+            siblings = list(anchor.parent.children)
+            before = []
+            for widget in reversed(siblings[:siblings.index(anchor)]):
+                if isinstance(widget, DataTable) or widget.query(DataTable):
+                    break
+                before.append(widget)
+            titled = [widget for widget in before[:4] if widget.has_class("table-title")]
+            if not titled or not any(str(widget.render()).strip() for widget in titled):
+                missing.append(table.id)
+        return missing
+
+    async def test_heading_guard_still_detects_a_removed_wrapped_table_title(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:
             await pilot.pause()
-            missing = []
-            for table in app.query(DataTable):
-                anchor = table.parent if isinstance(table.parent, Horizontal) else table
-                siblings = list(anchor.parent.children)
-                before = []
-                for w in reversed(siblings[:siblings.index(anchor)]):
-                    if isinstance(w, DataTable) or w.query(DataTable):
-                        break  # the title must belong to this table, not to the one above it
-                    before.append(w)
-                titled = [w for w in before[:4] if w.has_class("table-title")]
-                if not titled or not any(str(w.render()).strip() for w in titled):
-                    missing.append(table.id)
-            self.assertEqual(missing, [])
+            self.assertNotIn("results-table", self.missing_titles(app))
+            heading = app.query_one("#tab-backtest .table-title", Static)
+            heading.remove_class("table-title")
+            self.assertIn("results-table", self.missing_titles(app))
+
+    async def test_every_table_has_a_title_above_it(self):
+        app = SolTuiApp(make_settings())
+        async with app.run_test(size=TEST_SIZE) as pilot:
+            await pilot.pause()
+            self.assertEqual(self.missing_titles(app), [])
             app.query_one(TabbedContent).active = "tab-compound"
             await pilot.pause()
             self.assertIn("Metrics and gates for SOL", text_of(app, "#compound-table-title"))

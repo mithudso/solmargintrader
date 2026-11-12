@@ -19,7 +19,7 @@ Design notes, because the shape is the part worth arguing about:
     would contradict the distinction the code enforces, and `granularity` is a
     per-collection setting that cannot suit both 18k regular bars and one snapshot.
   * **Strategy cards keep their own vocabulary.** No invented `registered` boolean:
-    `registry_key` is null for the 20 cards that are not `Strategy` implementations,
+    `registry_key` is null for cards that are not `Strategy` implementations,
     and `status` ("measured" / "implemented" / "spec-only") plus `runner` carry the
     rest. The ladder grid is implemented and has no registry key because it is not a
     `Strategy` at all.
@@ -135,14 +135,14 @@ COLLECTIONS: dict[str, dict[str, Any]] = {
                 {
                     "name": "registry_key_unique",
                     "unique": True,
-                    # 20 cards carry no registry key, and a unique index would
+                    # Cards may carry no registry key, and a unique index would
                     # otherwise reject all but the first null.
                     "partialFilterExpression": {"registry_key": {"$type": "string"}},
                 },
             ),
             ([("data_available", 1), ("success_likelihood", 1)], {"name": "feasibility"}),
         ],
-        "comment": "One document per strategy card (45). Registry facts embedded for the 25 registered",
+        "comment": "One document per loaded strategy card; live registry facts embedded when available",
     },
     "signals": {
         "validator": _doc(
@@ -157,7 +157,7 @@ COLLECTIONS: dict[str, dict[str, Any]] = {
             ["_id", "rule"],
         ),
         "indexes": [([("tracks_strategy", 1)], {"name": "tracks_strategy"})],
-        "comment": "The 15 stateless one-bar rules in research/decide.py",
+        "comment": "Stateless one-bar rules from research/decide.py",
     },
     "indicators": {
         "validator": _doc(
@@ -177,7 +177,7 @@ COLLECTIONS: dict[str, dict[str, Any]] = {
             ["_id", "reported"],
         ),
         "indexes": [([("reported", 1)], {"name": "reported"})],
-        "comment": "16 reported indicator rows plus the 4 explicitly skip-listed functions",
+        "comment": "Reported indicator rows plus explicitly skip-listed functions",
     },
     "decisions": {
         "validator": _doc(
@@ -449,7 +449,8 @@ def describe() -> str:
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0],
+                                 epilog="Example: .venv/bin/python mongo/schema.py --describe")
     ap.add_argument("--create", action="store_true", help="rebuild derived collections; retain test receipts")
     ap.add_argument("--describe", action="store_true", help="print the layout and exit")
     ap.add_argument("--uri", default="mongodb://localhost:27017")
@@ -477,4 +478,9 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    from pathlib import Path
+    repo = Path(__file__).resolve().parents[1]
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    from mongo.cli import run_cli
+    raise SystemExit(run_cli(main, repo))

@@ -86,6 +86,47 @@ class SwapTests(unittest.TestCase):
             with self.subTest(value=list(value)), self.assertRaises(ValueError):
                 validate_cost_model(value)
 
+    @unittest.skipUnless(
+        shutil.which("node"), "Node is needed for response ordering checks"
+    )
+    def test_older_config_response_cannot_replace_latest_pair_or_error_state(self):
+        program = r"""
+const vm=require('node:vm'), fs=require('node:fs'), assert=require('node:assert/strict');
+const cfg=JSON.parse(fs.readFileSync(0,'utf8'));
+async function fixture(oldFails) {
+ const nodes=new Map(), requests=[], scripts=[];
+ const element=id=>{if(!nodes.has(id))nodes.set(id,{value:id==='referral-fee'?'50':'SOL',disabled:false,textContent:'',events:{},addEventListener(k,f){this.events[k]=f;}});return nodes.get(id);};
+ const context={Number,Error,URLSearchParams,AbortController,location:{search:'?asset=SOL'},window:{},setTimeout:()=>1,clearTimeout(){},fetch:url=>new Promise((resolve,reject)=>requests.push({url,resolve,reject})),document:{getElementById:element,head:{append:s=>scripts.push(s)}}};
+ vm.createContext(context);vm.runInContext(fs.readFileSync(process.argv[1],'utf8'),context);
+ element('swap-asset').value='USDC'; const pending=element('swap-asset').events.change();
+ const respond=(request,asset)=>request.resolve({ok:true,json:async()=>({schema_version:1,ok:true,data:{...cfg,asset}})});
+ respond(requests[1],'USDC');await pending;
+ assert.equal(element('swap-asset').value,'USDC');
+ if(oldFails) requests[0].reject(new Error('obsolete request failed'));else respond(requests[0],'SOL');
+ await new Promise(setImmediate);await new Promise(setImmediate);
+ assert.equal(element('swap-asset').value,'USDC');
+ assert.equal(vm.runInContext('settings.asset',context),'USDC');
+ assert.equal(element('load-jupiter').disabled,false);
+ assert.doesNotMatch(element('swap-state').textContent,/Unavailable/);
+ assert.equal(scripts.length,0);
+}
+(async()=>{await fixture(false);await fixture(true);})().catch(error=>{console.error(error);process.exitCode=1;});
+"""
+        result = subprocess.run(
+            [
+                shutil.which("node"),
+                "-e",
+                program,
+                str(Path(__file__).parents[1] / "web/swap.js"),
+            ],
+            input=json.dumps(config()),
+            text=True,
+            capture_output=True,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_browser_contract_default_and_bounds_require_a_manual_sdk_click(
         self,
     ):

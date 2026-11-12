@@ -26,6 +26,21 @@ const requireDB = env => { if (!env.DB) fail(503, 'storage_unavailable', 'Accoun
 const query = (env, sql, ...args) => requireDB(env).prepare(sql).bind(...args);
 const hash = async value => [...new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(value)))].map(x => x.toString(16).padStart(2, '0')).join('');
 
+function failureOperation(request) {
+  const path = new URL(request.url).pathname;
+  const known = ['/api/health', '/api/config', '/api/auth/challenge', '/api/auth/verify', '/api/me', '/api/auth/logout', '/api/billing/webhook', '/api/oracle', '/api/strategies', '/api/billing/checkout', '/api/billing/portal', '/api/bots', '/api/backtests'];
+  const route = known.includes(path) ? path : /^\/api\/bots\/[a-f0-9-]{36}$/.test(path) ? '/api/bots/:id' : '/api/unknown';
+  const method = ['GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'].includes(request.method) ? request.method : 'OTHER';
+  return `${method} ${route}`;
+}
+function reportFailure(request, response, code) {
+  // Operation names and codes are fixed vocabulary; raw URLs, errors and account
+  // data must never reach the runtime diagnostic sink.
+  const line = JSON.stringify({ event: 'oraclebot.request_failed', operation: failureOperation(request), code, status: response.status });
+  if (response.status >= 500) console.error(line);
+  else console.warn(line);
+}
+
 async function boundedText(request, limit = MAX_BODY) {
   if (Number(request.headers.get('Content-Length')) > limit) fail(413, 'request_too_large');
   const reader = request.body?.getReader();
@@ -200,16 +215,18 @@ async function webhook(request, env) {
   const object = event.data?.object;
   const subscriptionId = event.type.startsWith('customer.subscription.') ? object?.id : event.type === 'checkout.session.completed' ? object?.subscription : null;
   if (typeof subscriptionId === 'string' && /^sub_[A-Za-z0-9]+$/.test(subscriptionId)) {
-    // Read current Stripe state. Delivery order cannot restore a cancelled entitlement.
+    // Reconcile current Stripe state, then preserve terminal states for the same
+    // subscription. Equal-second or duplicate events can have stale in-flight reads.
     const current = await stripe(env, `subscriptions/${encodeURIComponent(subscriptionId)}`);
     const user = await query(env, 'SELECT * FROM users WHERE stripe_customer_id = ?', current.customer).first();
     if (user && current.metadata?.oraclebot_user === user.id) {
       const planMatches = current.items?.data?.length === 1 && current.items.data[0].price?.id === env.STRIPE_PRICE_ID;
-      const status = planMatches ? String(current.status) : 'plan_mismatch';
+      const terminal = ['canceled', 'incomplete_expired'].includes(current.status);
+      const status = terminal || planMatches ? String(current.status) : 'plan_mismatch';
       const periodEnd = Number(current.current_period_end || current.items?.data?.[0]?.current_period_end || 0);
       const trialEnd = Number(current.trial_end || 0);
       await requireDB(env).batch([
-        query(env, 'INSERT INTO subscriptions (user_id,stripe_subscription_id,status,period_end,trial_end,stripe_created,event_created,updated_at) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET stripe_subscription_id=excluded.stripe_subscription_id,status=excluded.status,period_end=excluded.period_end,trial_end=excluded.trial_end,stripe_created=excluded.stripe_created,event_created=excluded.event_created,updated_at=excluded.updated_at WHERE excluded.stripe_created > subscriptions.stripe_created OR (excluded.stripe_subscription_id = subscriptions.stripe_subscription_id AND excluded.event_created >= subscriptions.event_created)', user.id, current.id, status, periodEnd, trialEnd, Number(current.created || 0), Number(event.created || 0), now()),
+        query(env, 'INSERT INTO subscriptions (user_id,stripe_subscription_id,status,period_end,trial_end,stripe_created,event_created,updated_at) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET stripe_subscription_id=excluded.stripe_subscription_id,status=excluded.status,period_end=excluded.period_end,trial_end=excluded.trial_end,stripe_created=excluded.stripe_created,event_created=excluded.event_created,updated_at=excluded.updated_at WHERE (excluded.stripe_created > subscriptions.stripe_created OR (excluded.stripe_subscription_id = subscriptions.stripe_subscription_id AND excluded.event_created >= subscriptions.event_created)) AND NOT (excluded.stripe_subscription_id = subscriptions.stripe_subscription_id AND subscriptions.status IN (\'canceled\',\'incomplete_expired\') AND excluded.status NOT IN (\'canceled\',\'incomplete_expired\'))', user.id, current.id, status, periodEnd, trialEnd, Number(current.created || 0), Number(event.created || 0), now()),
         // Only completion of this exact checkout unlocks it. A delayed event
         // about an earlier subscription must not unlock a newer payable session.
         query(env, 'UPDATE users SET trial_used = MAX(trial_used, ?), checkout_pending_at = CASE WHEN ? = checkout_pending_at + ? THEN NULL ELSE checkout_pending_at END WHERE id = ?', current.trial_start || current.trial_end ? 1 : 0, event.type === 'checkout.session.completed' && object.customer === current.customer && object.metadata?.oraclebot_user === user.id ? Number(object.expires_at || 0) : -1, CHECKOUT_SECONDS, user.id),
@@ -291,16 +308,18 @@ async function route(request, env) {
     return json({ url: portal.url });
   }
   if (path === '/api/bots' && request.method === 'GET') {
-    const rows = await query(env, 'SELECT * FROM bots WHERE user_id = ? ORDER BY created_at DESC LIMIT 100', user.id).all();
+    // Active and paused configurations remain discoverable before archived history.
+    const rows = await query(env, "SELECT * FROM bots WHERE user_id = ? ORDER BY CASE WHEN status = 'archived' THEN 1 ELSE 0 END,created_at DESC,id DESC LIMIT 100", user.id).all();
     return json({ bots: rows.results.map(publicBot) });
   }
   if (path === '/api/bots' && request.method === 'POST') {
     await entitled(env, user);
     const bot = validateBot(await bodyJSON(request));
-    const count = await query(env, "SELECT COUNT(*) AS n FROM bots WHERE user_id = ? AND status != 'archived'", user.id).first();
-    if (count.n >= 20) fail(409, 'bot_limit');
     const id = crypto.randomUUID();
-    await query(env, 'INSERT INTO bots (id,user_id,name,coin,strategy,venue,leverage,budget,mode,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', id, user.id, bot.name, bot.coin, bot.strategy, bot.venue, bot.leverage, bot.budget, 'paper', 'configured', now(), now()).run();
+    // The quota and insertion share one D1 statement so concurrent requests cannot
+    // both reserve the final available slot.
+    const inserted = await query(env, "INSERT INTO bots (id,user_id,name,coin,strategy,venue,leverage,budget,mode,status,created_at,updated_at) SELECT ?,?,?,?,?,?,?,?,?,?,?,? WHERE (SELECT COUNT(*) FROM bots WHERE user_id = ? AND status != 'archived') < 20", id, user.id, bot.name, bot.coin, bot.strategy, bot.venue, bot.leverage, bot.budget, 'paper', 'configured', now(), now(), user.id).run();
+    if (inserted.meta.changes !== 1) fail(409, 'bot_limit');
     return json({ bot: publicBot(await query(env, 'SELECT * FROM bots WHERE id = ?', id).first()) }, 201);
   }
   if (/^\/api\/bots\/[a-f0-9-]{36}$/.test(path) && request.method === 'PATCH') {
@@ -325,9 +344,11 @@ export default {
     let response;
     try { response = await route(request, env); }
     catch (error) {
+      const code = error instanceof ApiError ? error.code : error?.name === 'TimeoutError' || error?.name === 'AbortError' ? 'upstream_timeout' : 'service_unavailable';
       if (error instanceof ApiError) response = json({ error: error.code, message: error.message }, error.status);
-      else if (error?.name === 'TimeoutError' || error?.name === 'AbortError') response = json({ error: 'upstream_timeout', message: 'The upstream service timed out. No result or execution is assumed.' }, 504);
-      else response = json({ error: 'service_unavailable', message: 'This service is temporarily unavailable.' }, 503);
+      else if (code === 'upstream_timeout') response = json({ error: code, message: 'The upstream service timed out. No result or execution is assumed.' }, 504);
+      else response = json({ error: code, message: 'This service is temporarily unavailable.' }, 503);
+      reportFailure(request, response, code);
     }
     const result = new Response(response.body, response);
     for (const [name, value] of Object.entries(securityHeaders)) result.headers.set(name, value);

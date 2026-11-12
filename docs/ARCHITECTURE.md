@@ -1,6 +1,6 @@
 # Architecture
 
-Ten components have explicit execution boundaries. Backtester, research, the Oracle
+Eleven components have explicit execution boundaries. Backtester, research, the Oracle
 forecast service, Bot Manager and ecosystem automation do not place orders. The
 separately enabled Oracle TradingView worker can submit Coinbase spot orders or
 GUM ZEC perpetual Actions. The extension and optional
@@ -227,3 +227,31 @@ Legacy evidence is fenced
 conservatively. Freshness covers recorded local optimization history, not unknown external use.
 Imported TradingView evidence preserves units and provenance, receives compatibility diagnostics,
 and has no native promotion path. See [the guide](optimization-workbench.md).
+
+## Hosted Oraclebot workspace
+
+The public website is an independent Cloudflare Worker and static application.
+D1 owns wallet accounts, one-use challenges, hashed sessions, subscriptions and
+per-account inactive paper bot definitions. The Worker applies the canonical
+origin check and keeps all account queries scoped to the authenticated user.
+
+```text
+Browser wallet --signed login message--> website/src/worker.js --> D1
+Browser        --membership request----> Worker --> Stripe Checkout / portal
+Stripe         --signed webhook--------> Worker --> verified entitlement in D1
+Browser        --analysis request------> Worker --server bearer--> Python adapter
+                                                              --> canonical engines
+                                                              --> dedicated public inputs
+```
+
+Stripe access and analysis availability are independent capabilities. The
+read-only adapter in `website/engine/server.py` uses canonical exposure
+strategies, cached completed bars and the Oracle archive reader. It does not
+start a market feed, expose the owner control room or sign orders. Separate
+ladder/pair/event runners are outside this adapter. See `website/engine/README.md`
+from the repository root for exact supported limits.
+
+The initial deployment has no per-user live execution worker. Creating a paper
+configuration persists a definition only. Public customers cannot inherit the
+owner’s local trading authorization or credentials. Cloudflare edge availability
+therefore establishes neither fresh analysis nor a functioning trading bot.

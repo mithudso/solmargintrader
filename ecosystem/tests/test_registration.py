@@ -174,6 +174,16 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(row["observed_state"], "stale_forward_evidence")
         self.assertFalse(row["live_ready"])
 
+    def test_future_observation_time_is_stale_instead_of_age_zero(self):
+        with patch("ecosystem.registration.time.time", return_value=1010):
+            self.sync()
+        with patch("ecosystem.registration.time.time", return_value=1000):
+            rows = read_registrations(self.home)["bots"]
+        self.assertTrue(rows)
+        for row in rows:
+            self.assertTrue(row["registration_observation_stale"])
+            self.assertIsNone(row["observation_age_seconds"])
+
 
 if __name__ == "__main__":
     unittest.main()

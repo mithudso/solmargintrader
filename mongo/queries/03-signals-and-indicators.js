@@ -2,12 +2,12 @@
 //
 //   mongosh solmargintrader mongo/queries/03-signals-and-indicators.js
 //
-// These are small reference collections (15 and 20 documents). They exist so a
+// These are small reference collections. They exist so a
 // reader can answer "what does this rule actually compare?" without opening
 // research/decide.py, and so the readouts in `decisions` can be joined to their
 // definitions.
 
-print("=== the 15 stateless one-bar rules ===");
+print("=== the stateless one-bar rules ===");
 db.signals
   .find({}, { _id: 1, rule: 1, tracks_strategy: 1 })
   .sort({ _id: 1 })

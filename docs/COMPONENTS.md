@@ -3,7 +3,7 @@
 What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md`
 is the flat file map; this page is the shape of the thing.
 
-The ten components have explicit ownership boundaries. `backtester/` supplies the
+The eleven components have explicit ownership boundaries. `backtester/` supplies the
 canonical simulation package to research and headless runtimes. Oracle supplies
 source-labelled observations and forecasts. Bot Manager owns specifications,
 account state and paper lifecycle; ecosystem coordinates existing research owners
@@ -292,3 +292,26 @@ Three constraints shape it:
   guessing.
 - **Every on-chain sequence goes through one `Rebalancer` with a `Runner`.** Dry-run therefore simulates with
   `eth_simulateV1` exactly what live mode would sign. soltui never imports any of it; it reads the state files.
+
+## `website/` — hosted accounts and public research
+
+The public 0.1 application has no runtime npm dependencies. Wrangler is pinned
+development tooling. Static files under `website/public/` provide the workspace,
+wallet sign-in, membership controls, inactive paper bot builder and research reader.
+
+| Path | API and ownership |
+| --- | --- |
+| `website/src/worker.js` | Cloudflare API: wallet accounts/sessions, tenant-owned configurations, verified Stripe membership and protected analysis proxy |
+| `website/migrations/` | Additive D1 account, challenge, session, subscription and bot schema |
+| `website/api/openapi.json` | Account and billing HTTP contract |
+| `website/engine/server.py` | Separate bearer-authenticated Python analysis service; canonical exposure backtests and read-only Oracle archive |
+| `website/scripts/export_research.py` | Deterministic tracked research/card publication with source hashes and bounded body shards |
+| `website/scripts/smoke.mjs` | Explicit deployed-wallet account creation and deletion acceptance |
+| `website/README.md` | Setup, storage, billing, deployment and outstanding activation boundaries |
+
+The engine accepts allow-listed market parameters, not arbitrary paths or code.
+It needs dedicated public data caches and an approved Oracle archive. The
+backtest response retains default model costs and limitations; it does not
+certify a customer’s venue fee tier, supported market or future profit. Local
+ladder, pair and event runners remain separate. Wallet identity, subscription
+entitlement, live data and venue execution are distinct capabilities.

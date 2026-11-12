@@ -304,3 +304,32 @@ recovery, health reads, helper failure semantics and disarmed defaults. The
 ordinary `extension/tools/e2e.mjs` gate retains its stronger no-start restrictions.
 CI runs both. These checks do not prove physical reboot or everyday-profile
 installation; actual installed acceptance is a separate recorded gate.
+
+## Hosted website source and deployment gates
+
+The website uses Node’s `node:test` runner with SQLite-backed account fixtures.
+Its tests cover Ed25519 signatures, one-use challenge expiry/replay, secure
+sessions, tenant isolation, subscription gating, signed Stripe webhooks,
+Checkout/deletion races and the D1 cascade-deletion return contract. The pure
+browser evidence helper withholds expired directions.
+
+```bash
+npm --prefix website test
+npm --prefix website run check
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
+ruff check website/engine website/scripts/export_research.py
+```
+
+The Python fixtures check canonical costed-engine parity, data gaps, bounds,
+read-only archive access and research-export provenance. They never acquire
+market history, run a trading worker or submit an order. Install the existing
+backtester/Oracle dependencies in an isolated Python environment first.
+`.github/workflows/website.yml` runs Node and Python source gates on relevant PRs.
+
+Deployed acceptance is separate: verify exact loaded asset bytes, desktop/mobile
+flows, actual wallet signature/session/deletion, Stripe Checkout and cancellation
+when configured, and hosted analysis with its real inputs. Running
+`node website/scripts/smoke.mjs https://oraclebot.io` explicitly creates and
+deletes a throwaway account. The smoke verifies authentication and unpaid-access
+denial; it does not prove a successful subscription, backtest or live trade.

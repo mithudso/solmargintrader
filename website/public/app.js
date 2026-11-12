@@ -2,7 +2,7 @@ import { freshStrategy } from './evidence.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
-const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, bots: [], articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, bots: [], botsUnavailable: false, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
 const coinSymbols = { SOL: '◎', BTC: '₿', ETH: 'Ξ', ZEC: 'Z' };
@@ -133,12 +133,18 @@ function oracleView() {
 }
 function botsView() {
   main.innerHTML = heading('IDEAS, GIVEN STRUCTURE', 'Build with intention.', 'Create a bot configuration for Coinbase spot or a leveraged Jupiter position. Start in paper mode.', '<button class="button button-dark" data-action="new-bot">Create a bot <span aria-hidden="true">＋</span></button>');
-  if (!state.bots.length) {
+  const visibleBots = state.bots.filter(item => item.status !== 'archived');
+  if (state.botsUnavailable) {
+    const failure = el('section', 'panel empty-state');
+    appendText(failure, 'h2', '', 'Your configurations could not be loaded.');
+    appendText(failure, 'p', '', 'This does not mean your workspace is empty. Try loading it again.');
+    const retry = el('button', 'button button-dark', 'Reload configurations'); retry.dataset.action = 'refresh-bots'; failure.append(retry); main.append(failure);
+  } else if (!visibleBots.length) {
     const empty = el('section', 'panel empty-state');
     empty.innerHTML = '<span class="empty-symbol" aria-hidden="true">⌘</span><h2>Great strategies start as ideas.</h2><p>Choose a market, set your budget and give your strategy a name. Your first configuration will appear here.</p><button class="button button-dark" data-action="new-bot">Create your first bot <span aria-hidden="true">↗</span></button>'; main.append(empty);
   } else {
     const list = el('div', 'bot-list');
-    for (const bot of state.bots.filter(item => item.status !== 'archived')) {
+    for (const bot of visibleBots) {
       const card = el('article', 'panel bot-card'); const top = el('div', 'bot-card-header');
       const detail = el('div'); appendText(detail, 'h3', '', bot.name); appendText(detail, 'small', '', `${bot.coin} · ${bot.venue === 'jupiter' ? 'Jupiter' : 'Coinbase'} · ${bot.status || 'configured'}`);
       top.append(el('span', 'coin-icon', coinSymbols[bot.coin] || '◎'), detail); card.append(top);
@@ -275,7 +281,7 @@ async function articleView(slug) {
 function pricingView() {
   main.innerHTML = heading('ROOM TO THINK. TOOLS TO TEST.', 'A more considered approach.', 'One membership for your research and strategy workspace. Start with a seven-day free trial when checkout opens.');
   main.insertAdjacentHTML('beforeend', '<div class="pricing-grid"><section class="pricing-card"><p class="eyebrow">ORACLEBOT MEMBERSHIP</p><h2>Make research<br>part of your routine.</h2><p>The oracle, backtest lab and your own bot workspace.</p><div class="pricing-big">7 days <small>free to explore</small></div><p>Your renewal price and billing terms appear in Stripe Checkout before you subscribe.</p><button class="button button-lime button-full" data-action="trial">Start your free trial <span aria-hidden="true">↗</span></button><p class="fine-print">Cancel through the billing portal. A trial does not grant permission to trade with your wallet.</p></section><section class="benefits"><h3>Built for the curious.</h3><div class="benefit"><span aria-hidden="true">✓</span><div><strong>A strategy perspective for your coin</strong><p>The leading eligible strategy, its outlook and the evidence behind it.</p></div></div><div class="benefit"><span aria-hidden="true">✓</span><div><strong>Backtests that count the costs</strong><p>The canonical research engine, with fees and borrowing costs kept in view.</p></div></div><div class="benefit"><span aria-hidden="true">✓</span><div><strong>A workspace for your strategies</strong><p>Paper configurations for Coinbase spot and Jupiter leveraged positions.</p></div></div><div class="benefit"><span aria-hidden="true">✓</span><div><strong>Research you can read for yourself</strong><p>The original studies, experiments, assumptions and limitations.</p></div></div></section></div>');
-  if (!state.config.billingConfigured) { const note = el('div', 'info-strip'); note.append(el('span', '', 'ⓘ'), el('span', '', 'Membership checkout is being configured. No payment is collected and no trial starts until you complete Stripe Checkout. The research journal is available to browse now.')); main.append(note); }
+  if (state.config.billingConfigured !== true) { const trial = $('[data-action="trial"]', main); trial.disabled = true; trial.textContent = 'Trial signup unavailable'; const note = el('div', 'info-strip'); note.append(el('span', '', 'ⓘ'), el('span', '', 'Membership checkout is being configured. No payment is collected and no trial starts until you complete Stripe Checkout. The research journal is available to browse now.')); main.append(note); }
 }
 function settingsView() {
   main.innerHTML = heading('YOUR WORKSPACE, YOUR TERMS', 'The details that matter.', 'Manage your account, membership and permissions. Keep your keys in your wallet.');
@@ -290,7 +296,7 @@ function settingsView() {
   const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never send Oraclebot your private key or seed phrase.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
   grid.append(account, billing, permissions, risk); main.append(grid);
 }
-function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.bots.filter(item => item.status !== 'archived').length; }
+function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
 function render() {
   const [rawView, ...rest] = location.hash.slice(1).split('/'); const view = views[rawView] ? rawView : 'overview'; state.view = view;
   $('#page-label').textContent = views[view];
@@ -310,7 +316,8 @@ async function loadOracle(coin = state.coin) {
 }
 async function refreshAccount() {
   const result = await api('/api/me'); state.user = result.user; state.subscription = result.subscription;
-  if (state.user) { try { state.bots = (await api('/api/bots')).bots || []; } catch { state.bots = []; } } else state.bots = [];
+  state.botsUnavailable = false;
+  if (state.user) { try { state.bots = (await api('/api/bots')).bots || []; } catch { state.bots = []; state.botsUnavailable = true; } } else state.bots = [];
   updateAccountUI();
 }
 function openWallet() { $('#wallet-message').textContent = ''; $('#wallet-dialog').showModal(); }
@@ -331,7 +338,7 @@ async function connectWallet(name, button) {
   finally { setBusy(button, false); }
 }
 async function billingAction(action, button) {
-  if (action === 'checkout' && !state.config.billingConfigured) { location.hash = 'pricing'; toast('Stripe Checkout is not available yet. No payment or trial has started.'); return; }
+  if (action === 'checkout' && state.config.billingConfigured !== true) { location.hash = 'pricing'; toast('Stripe Checkout is not available yet. No payment or trial has started.'); return; }
   if (!state.user) { openWallet(); toast('Connect your wallet first to manage your membership.'); return; }
   setBusy(button, true);
   try {
@@ -354,16 +361,17 @@ document.addEventListener('click', async event => {
   const action = actionButton.dataset.action;
   if (action === 'wallet') { if (state.user) location.hash = 'settings'; else openWallet(); }
   if (action === 'new-bot') openBot();
+  if (action === 'refresh-bots') { setBusy(actionButton, true); try { await refreshAccount(); render(); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
   if (action === 'trial') billingAction('checkout', actionButton);
   if (action === 'portal') billingAction('portal', actionButton);
   if (action === 'pricing') location.hash = 'pricing';
   if (action === 'delete-account') {
     if (!confirm('Delete your Oraclebot account and all saved configurations? This cannot be undone.')) return;
     setBusy(actionButton, true);
-    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; render(); toast('Your account and saved configurations were deleted.'); }
+    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; state.botsUnavailable = false; render(); toast('Your account and saved configurations were deleted.'); }
     catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); }
   }
-  if (action === 'logout') { setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
+  if (action === 'logout') { setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; state.botsUnavailable = false; render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
 });
 document.addEventListener('submit', async event => {
   if (!['bot-form', 'backtest-form'].includes(event.target.id)) return;
@@ -374,7 +382,7 @@ document.addEventListener('submit', async event => {
   setBusy(button, true);
   try {
     if (isBot) { await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }); await refreshAccount(); $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
-    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (state.view === 'backtest') renderBacktest(result); }
+    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (form.isConnected && $('#backtest-form') === form) renderBacktest(result); }
   } catch (error) { message.textContent = errorText(error); } finally { setBusy(button, false); }
 });
 document.addEventListener('input', event => { if (event.target.id === 'research-search') { state.search = event.target.value; filterResearch(); } });

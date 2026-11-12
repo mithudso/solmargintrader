@@ -99,7 +99,7 @@ def render(con: dict) -> str:
         "to decide that two signals measure the same thing (the combination sweep skips "
         "same-family pairs for exactly that reason).",
         "",
-        "The families also carry a measured finding. Of the 25 registered strategies run "
+        "The families also carry a historical measured finding. Of the study's 25 strategies run "
         "on five assets, the eight positive on all five are drawn from breakout, trend, "
         "momentum, regime-filter and volume-flow — and **not one is from a reversion "
         "family**. No reversion-family strategy clears all five. See "
@@ -121,8 +121,8 @@ def render(con: dict) -> str:
             "",
             "## Strategy-card axes",
             "",
-            "Facts already written in the 46 cards' frontmatter, inverted so a value "
-            "points back at its cards. Useful for questions the prose does not index — "
+            "Facts already written in indexed frontmatter, inverted so a value "
+            "points back at its source files. Useful for questions the prose does not index — "
             "\"which specs were never implemented\", \"which are rated very-low and why\".",
             "",
         ]

@@ -218,13 +218,23 @@ class SetupTests(unittest.TestCase):
     def test_source_fingerprint_binds_each_shipped_web_asset_type(self):
         web = self.repo / "ecosystem" / "web"
         web.mkdir()
-        for suffix in (".html", ".css", ".js", ".json"):
+        for suffix in (".html", ".css", ".js", ".mjs", ".json"):
             with self.subTest(suffix=suffix):
                 asset = web / f"dashboard{suffix}"
                 asset.write_text("original shipped content")
                 before = setup.source_fingerprint(self.repo)
                 asset.write_text("changed shipped content")
                 self.assertNotEqual(setup.source_fingerprint(self.repo), before)
+
+    def test_source_fingerprint_refuses_symlinked_code_directories(self):
+        external = self.root / "external-code"
+        external.mkdir()
+        (external / "module.py").write_text("UNBOUND_CODE = True\n")
+        (self.repo / "oracle" / "linked_code").symlink_to(
+            external, target_is_directory=True
+        )
+        with self.assertRaisesRegex(ValueError, "source_symlink_refused"):
+            setup.source_fingerprint(self.repo)
 
     def test_health_stdout_flood_is_bounded_before_child_finishes(self):
         started = time.monotonic()

@@ -11,9 +11,16 @@
     "executor",
     "botmanager",
     "oracle",
-    "ecosystem"
+    "ecosystem",
+    "website"
   ],
   "files": [
+    {
+      "path": "website",
+      "component": "website",
+      "kind": "directory",
+      "summary": "JavaScript ESM/Python | Stripe billing can charge members when configured; saved trading definitions remain inactive"
+    },
     {
       "path": "ecosystem",
       "component": "ecosystem",
@@ -107,7 +114,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Loopback control room and collector routes",
-      "lines": 555
+      "lines": 557
     },
     {
       "path": "ecosystem/ui_service.py",
@@ -191,14 +198,14 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Bounded authenticated TradingView ingress and durable deduplication",
-      "lines": 213
+      "lines": 242
     },
     {
       "path": "oracle/webhook_orders.py",
       "component": "oracle",
       "kind": "python",
       "summary": "Journal, one-shot Coinbase submission and read-only reconciliation",
-      "lines": 237
+      "lines": 246
     },
     {
       "path": "oracle/coinbase_orders.py",
@@ -584,6 +591,27 @@
       "lines": 71
     },
     {
+      "path": "research/meta_analysis.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Source-bound trial consolidation preserving original units, exclusions and explicit extra receipts",
+      "lines": 164
+    },
+    {
+      "path": "research/meta_followups.py",
+      "component": "research",
+      "kind": "python",
+      "summary": "Actual-fee canonical spot replays and fixed-slot concentration attribution",
+      "lines": 266
+    },
+    {
+      "path": "research/META-ANALYSIS.md",
+      "component": "research",
+      "kind": "markdown",
+      "summary": "Evidence synthesis, independent comparison, implemented followups and investment decision",
+      "lines": 400
+    },
+    {
       "path": "research/decide.py",
       "component": "research",
       "kind": "python",
@@ -838,7 +866,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 613
+      "lines": 623
     },
     {
       "path": "extension/src/bg/service-worker.js",
@@ -1041,7 +1069,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Grid, risk, P&L, reconciliation, tick guards",
-      "lines": 1554
+      "lines": 1556
     },
     {
       "path": "extension/test/surfaces.test.js",
@@ -1390,14 +1418,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 94
+      "lines": 111
     },
     {
       "path": ".github/workflows/ci.yml",
       "component": "repo",
       "kind": "yaml",
       "summary": "Extension, backtester, soltui, mongo, liquidity, executor and doc/index drift jobs",
-      "lines": 470
+      "lines": 478
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1901,6 +1929,125 @@
       "kind": "markdown",
       "summary": "UI workflows, persistence, provenance boundaries and use instructions.",
       "lines": 151
+    },
+    {
+      "path": "website/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Development, production setup and outstanding activation limits",
+      "lines": 127
+    },
+    {
+      "path": "website/src/worker.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Account, billing, configuration and protected analysis API",
+      "lines": 344
+    },
+    {
+      "path": "website/api/openapi.json",
+      "component": "website",
+      "kind": "json",
+      "summary": "Account and billing API contract",
+      "lines": 1794
+    },
+    {
+      "path": "website/public/index.html",
+      "component": "website",
+      "kind": "html",
+      "summary": "Accessible static application shell",
+      "lines": 46
+    },
+    {
+      "path": "website/public/app.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Wallet, workspace, membership and research UI",
+      "lines": 411
+    },
+    {
+      "path": "website/public/evidence.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Expiring-strategy display guard",
+      "lines": 6
+    },
+    {
+      "path": "website/public/styles.css",
+      "component": "website",
+      "kind": "css",
+      "summary": "Responsive workspace design",
+      "lines": 4
+    },
+    {
+      "path": "website/wrangler.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Production Worker, D1 and custom-domain configuration",
+      "lines": 44
+    },
+    {
+      "path": "website/wrangler.dev.jsonc",
+      "component": "website",
+      "kind": "other",
+      "summary": "Separate local origin and routing configuration",
+      "lines": 33
+    },
+    {
+      "path": "website/engine/server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Bounded read-only canonical analysis HTTP adapter",
+      "lines": 284
+    },
+    {
+      "path": "website/engine/README.md",
+      "component": "website",
+      "kind": "markdown",
+      "summary": "Analysis input, transport and provisioning contract",
+      "lines": 57
+    },
+    {
+      "path": "website/scripts/export_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Source-bound research/card publication exporter",
+      "lines": 117
+    },
+    {
+      "path": "website/scripts/smoke.mjs",
+      "component": "website",
+      "kind": "other",
+      "summary": "Explicit deployed wallet account creation/deletion acceptance",
+      "lines": 40
+    },
+    {
+      "path": "website/test/api.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "SQLite-backed account and Stripe failure-mode tests",
+      "lines": 347
+    },
+    {
+      "path": "website/test/evidence.test.js",
+      "component": "website",
+      "kind": "javascript",
+      "summary": "Expired forecast display regression test",
+      "lines": 11
+    },
+    {
+      "path": "website/engine/test_server.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Canonical analysis parity and HTTP boundary tests",
+      "lines": 165
+    },
+    {
+      "path": "website/engine/test_research.py",
+      "component": "website",
+      "kind": "python",
+      "summary": "Research export provenance and publication exclusions",
+      "lines": 67
     }
   ]
 }

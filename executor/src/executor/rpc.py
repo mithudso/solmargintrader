@@ -37,17 +37,18 @@ class Rpc:
                 if attempt < retries:
                     self._sleep(0.5 * (attempt + 1))
                     continue
-                raise RpcError(f"RPC {method} failed: {exc}") from None
+                raise RpcError(f"RPC {method} failed: {type(exc).__name__}") from None
             if not isinstance(resp, dict):
                 raise RpcError(f"RPC {method} returned a non-object")
             if resp.get("error"):
                 err = resp["error"]
-                msg = err.get("message") if isinstance(err, dict) else str(err)
-                raise RpcError(f"RPC {method} error: {str(msg)[:300]}")
+                code = err.get("code") if isinstance(err, dict) else None
+                detail = f" (code {code})" if type(code) is int and -(2**31) <= code < 2**31 else ""
+                raise RpcError(f"RPC {method} returned an error{detail}")
             if "result" not in resp:
                 raise RpcError(f"RPC {method} returned no result")
             return resp["result"]
-        raise RpcError(f"RPC {method} failed: {last}")
+        raise RpcError(f"RPC {method} failed: {type(last).__name__}")
 
     # -- reads ---------------------------------------------------------------------------------------------
 

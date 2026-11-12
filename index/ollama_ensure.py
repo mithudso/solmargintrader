@@ -62,8 +62,11 @@ def base_of(endpoint: str) -> str:
 
 
 def is_local(base: str) -> bool:
-    host = urllib.parse.urlparse(base).hostname or ""
-    return host in LOCAL_HOSTS or host.strip("[]") in LOCAL_HOSTS
+    try:
+        parsed = urllib.parse.urlparse(base)
+        return parsed.scheme in {"http", "https"} and parsed.hostname in LOCAL_HOSTS
+    except ValueError:
+        return False
 
 
 def _get_json(url: str, timeout: float) -> dict:
@@ -73,11 +76,18 @@ def _get_json(url: str, timeout: float) -> dict:
 
 def installed_models(base: str = OLLAMA_BASE, timeout: float = 3.0) -> list[str] | None:
     """Model names the server has, or None when it is unreachable."""
+    if not is_local(base):
+        return None
     try:
         data = _get_json(f"{base}/api/tags", timeout)
     except (urllib.error.URLError, OSError, ValueError):
         return None
-    return [str(m.get("name", "")) for m in data.get("models", [])]
+    if not isinstance(data, dict):
+        return None
+    models = data.get("models", [])
+    if not isinstance(models, list) or any(not isinstance(m, dict) or not isinstance(m.get("name"), str) for m in models):
+        return None
+    return [m["name"] for m in models]
 
 
 def reachable(base: str = OLLAMA_BASE, timeout: float = 3.0) -> bool:
@@ -104,12 +114,15 @@ def start_server(popen: Callable[..., object] = subprocess.Popen) -> str:
 
 
 def pull_model(model: str, base: str = OLLAMA_BASE, timeout: float = 3600.0) -> bool:
+    if not is_local(base):
+        return False
     body = json.dumps({"model": model, "stream": False}).encode()
     req = urllib.request.Request(f"{base}/api/pull", data=body,
                                  headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 - local only
-            return json.loads(r.read()).get("status") == "success"
+            result = json.loads(r.read())
+            return isinstance(result, dict) and result.get("status") == "success"
     except (urllib.error.URLError, OSError, ValueError):
         return False
 
@@ -121,11 +134,14 @@ def ensure(model: str = EMBED_MODEL, base: str = OLLAMA_BASE, *, start: bool = T
     """Reach ollama (starting it if allowed) and check the model is installed."""
     if not is_local(base):
         return Status(False, False, False, None,
-                      f"refusing {base}: this tooling only talks to a local ollama")
+                      "refusing endpoint: this tooling requires a local HTTP(S) ollama")
     started = False
     names = installed_models(base)
     if names is None and start:
-        how = start_server(popen)
+        try:
+            how = start_server(popen)
+        except OSError:
+            return Status(False, False, False, None, "ollama is unavailable; the local server could not be launched")
         if not how:
             return Status(False, False, False, None,
                           "ollama is not running and no Ollama app or `ollama` binary was found")

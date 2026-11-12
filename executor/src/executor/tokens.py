@@ -60,11 +60,25 @@ def ui_to_raw(amount: str, decimals: int) -> int:
         raise BadParams(f"amount {amount!r} is not a decimal number") from None
     if not d.is_finite() or d <= 0:
         raise BadParams("amount must be a positive finite number")
-    raw = d.scaleb(decimals)
-    if raw != raw.to_integral_value():
-        raise BadParams(f"amount {amount!r} has more than {decimals} decimal places")
-    return int(raw)
+    # Tuple arithmetic is exact even when another caller changes Decimal's context.
+    sign, digits, exponent = d.as_tuple()
+    shift = exponent + decimals
+    if shift < 0:
+        trim = -shift
+        if trim > len(digits) or any(digits[-trim:]):
+            raise BadParams(f"amount has more than {decimals} decimal places")
+        digits = digits[:-trim]
+        shift = 0
+    # Every supported Solana token amount is an unsigned 64-bit integer. Bound
+    # the exponent before constructing an int, including scientific notation.
+    if len(digits) + shift > 20:
+        raise BadParams("amount exceeds the Solana unsigned 64-bit limit")
+    raw = int(Decimal((sign, digits, shift)))
+    if not 0 < raw < 2**64:
+        raise BadParams("amount exceeds the Solana unsigned 64-bit limit")
+    return raw
 
 
 def raw_to_ui(raw: int, decimals: int) -> Decimal:
-    return Decimal(raw).scaleb(-decimals)
+    sign, digits, exponent = Decimal(raw).as_tuple()
+    return Decimal((sign, digits, exponent - decimals))

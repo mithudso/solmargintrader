@@ -25,12 +25,16 @@ def emit(value: dict) -> None:
 
 class Parser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
         print("Invalid ecosystem arguments.", file=sys.stderr)
         raise SystemExit(2)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = Parser(description=__doc__)
+    parser = Parser(
+        description=__doc__,
+        epilog="Example: solecosystem status (read-only; never starts owners).",
+    )
     parser.add_argument(
         "command",
         choices=("start", "status", "stop", "registrations", "telemetry", "supervise"),

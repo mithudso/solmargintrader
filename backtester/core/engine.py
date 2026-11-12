@@ -497,6 +497,8 @@ def run_backtest(
     """Run one strategy over one price series.
 
     See the module docstring for the per-bar ordering that prevents look-ahead.
+    Continued results describe only the newly supplied bars. Their metric baseline
+    is the retained account at its prior close; the checkpoint keeps lifetime totals.
     """
     config.validate()
     if type(close_at_end) is not bool or type(price_only) is not bool:
@@ -562,6 +564,19 @@ def run_backtest(
         if book.pos.is_open:
             book.pos.opened_index -= offset
         pending = {int(k) - offset: v for k, v in continuation["pending"].items()}
+
+    metric_initial_equity = gross_initial_equity = config.initial_capital
+    initial_liquidations = book.liquidations
+    if continuation is not None:
+        # A retained account can already contain gains, losses and entry costs.
+        # Those belong to earlier chunks, not the new result's observation window.
+        previous_close = float(cl[start - 1])
+        metric_initial_equity = book.equity(previous_close)
+        gross_initial_equity = book.gross_equity(previous_close)
+        # A wiped account has no positive return denominator; use the existing
+        # zero-curve convention rather than repeating its historical total loss.
+        metric_initial_equity = metric_initial_equity if metric_initial_equity > 0 else None
+        gross_initial_equity = gross_initial_equity if gross_initial_equity > 0 else None
 
     # Coverage of each coarse bar by each finer layer, computed once. A bar is
     # refined by the FIRST (finest) layer that covers it completely.
@@ -716,8 +731,8 @@ def run_backtest(
         exposure_curve,
         ppy,
         config.risk_free_rate,
-        book.liquidations,
-        initial_equity=config.initial_capital,
+        book.liquidations - initial_liquidations,
+        initial_equity=metric_initial_equity,
     )
     gross = compute_metrics(
         gross_curve,
@@ -727,7 +742,7 @@ def run_backtest(
         ppy,
         config.risk_free_rate,
         0,
-        initial_equity=config.initial_capital,
+        initial_equity=gross_initial_equity,
     )
 
     return BacktestResult(
@@ -740,7 +755,7 @@ def run_backtest(
         trades=book.trades,
         metrics=net,
         gross_metrics=gross,
-        liquidation_count=book.liquidations,
+        liquidation_count=book.liquidations - initial_liquidations,
         first_tradeable_index=first_tradeable,
         mode=str(config.mode),
         leverage=config.leverage,

@@ -10,6 +10,7 @@ import urllib.request
 from typing import Any
 
 from .jupiter_tokens import MINT
+from .market_diagnostics import market_operation
 
 SOL_MINT = 'So11111111111111111111111111111111111111112'
 
@@ -22,7 +23,7 @@ def _get(path: str, params: dict[str, str]) -> Any:
         headers['x-api-key'] = key
     req = urllib.request.Request(base + path + '?' + urllib.parse.urlencode(params), headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=12) as response:
+        with market_operation("jupiter.public_request"), urllib.request.urlopen(req, timeout=12) as response:
             return json.load(response)
     except Exception as exc:
         raise ValueError(f'Jupiter price request failed ({type(exc).__name__}); check Jupiter API access') from None

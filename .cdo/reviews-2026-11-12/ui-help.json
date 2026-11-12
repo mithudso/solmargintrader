@@ -1,0 +1,203 @@
+{
+  "created_at": "2026-11-12T09:23:19.840763+00:00",
+  "reviewer": "root",
+  "scope": "Full help.py, csv_table.py, test_help.py and test_csv_table.py only. tui.py and test_tui.py are bounded delta context, never full-source coverage.",
+  "full_read_ranges": {
+    "soltui/help.py": [
+      [
+        1,
+        50
+      ],
+      [
+        51,
+        170
+      ],
+      [
+        171,
+        285
+      ],
+      [
+        286,
+        450
+      ],
+      [
+        345,
+        401
+      ],
+      [
+        451,
+        510
+      ],
+      [
+        511,
+        605
+      ],
+      [
+        606,
+        700
+      ],
+      [
+        701,
+        825
+      ]
+    ],
+    "soltui/csv_table.py": [
+      [
+        1,
+        250
+      ]
+    ],
+    "soltui/tests/test_help.py": [
+      [
+        1,
+        120
+      ],
+      [
+        95,
+        145
+      ]
+    ],
+    "soltui/tests/test_csv_table.py": [
+      [
+        1,
+        160
+      ]
+    ]
+  },
+  "final_diff_review": "Authored changes and all new tests reviewed after full baseline/current reads",
+  "passes": {
+    "C1": "ran: glossary/control dispatch, parameterized row matching and CSV ordered output reviewed; row label whitespace and formula interpretation fixed",
+    "C2": "ran: existing help exports and ExportPanel constructor retained; CSV quotes/row order/no-overwrite and numeric formats preserved; header metadata grounded in actual UI labels",
+    "C3": "ran: original four UI failures reproduced qualifiedexit1; strengthened visible-cell assertion red; formula red; parameterizedrow red; final16UI cases+newpurecase green",
+    "S1": "ran: Stage0.5 no source reviewer instruction; CSV untrusted =,+,-,@ prefixes escaped afterleadingwhitespace, signednumeric values preserved; no signing/order authority added",
+    "S2": "ran: exclusive output file creation, with-close, boundedfilenamecollisionloop and OSError notification reviewed; no live userfile written by tests",
+    "S3": "ran: RichText converted to plaintext, CSV formula prevention applied to headers/cells; help resolves known names and never echoes raw cell data",
+    "S4": "ran: standard Python csv/re plus existing Textual/Rich environment; Context7 Textual mouse/cell metadata checked; actual headless UI and compilepass",
+    "S5": "ran: unchanged export actions report success/failure via UI notification; help is returned metadata, not an external-call boundary; new tests assert displayed hover and exported bytes",
+    "P1": "ran: fixed-size glossary lookup, bounded collision loop and streaming CSV rows; no measured performance regression or speculative optimization",
+    "P2": "ran: export runs on one UI event loop and exclusiveopen prevents concurrentoverwrite; immutablepostimport help lookups reviewed; no new process/thread behavior",
+    "M1": "ran: small event-free metadata additions and one shared simulation-help map; existing dictionary/export conventions retained",
+    "M2": "ran: shared help maps and plaintext/CSV helper reused; no new dependency or duplicate control handlers",
+    "M3": "repo scope parent",
+    "M4": "ran: missingtwoPanehelp and12headers plus controls repaired; distinction between paper/live and offline scoring/automaticmodelrebuild explicit; CSV docstring describes formula escaping",
+    "T1": "ran: existing full help/glossary coverage retained; titleguard has negative removedheading case; actualvisiblecell beforehover asserted; formula/numeric CSV bytes and parameterizedrow regressions meaningful",
+    "T2": "repo scope parent; no dependency added",
+    "T3": "repo scope parent; existing unittest/Textual harness used",
+    "T4": "N/A production; test cases use isolated temporarydirectories and headless event-loop pauses, no fixed sleeps or realmodel/network requests; original mutable fixture setup preserved",
+    "M5": "N/A library/UI modules; user-facing export controls retain notification and no-overwrite behavior"
+  },
+  "findings": [
+    {
+      "id": "H1",
+      "severity": "Medium",
+      "file": "soltui/help.py",
+      "finding": "New panes/columns/controls missing help; original coverage guard failed",
+      "status": "fixed, original guard retained and green"
+    },
+    {
+      "id": "H2",
+      "severity": "Medium",
+      "file": "soltui/tui.py",
+      "finding": "Non-scrolling Backtest pane clipped result table behind sharededitor on150x45screen; scroll_visible ineffective",
+      "status": "boundedfix VerticalScroll; actualvisiblecell andhover green"
+    },
+    {
+      "id": "H3",
+      "severity": "Medium",
+      "file": "soltui/csv_table.py",
+      "finding": "Untrusteddisplaystrings exported as active spreadsheet formulas",
+      "status": "red/green fixed; numericlosses/groupednumbers/percentages preserved"
+    },
+    {
+      "id": "H4",
+      "severity": "Low",
+      "file": "soltui/help.py",
+      "finding": "Parameterized strategy label with separating space lost row help",
+      "status": "red/green fixed"
+    },
+    {
+      "id": "H5",
+      "severity": "Low",
+      "file": "soltui/tests/test_tui.py",
+      "finding": "Titleguard assumed DataTable directlyunderlayout, predating ExportPanel wrappers; it incorrectlyreported46missingheadings",
+      "status": "boundedtestrepair recognizesactualwrapper; negativecase removingheading remainsdetected"
+    }
+  ],
+  "checks": [
+    {
+      "command": "qualified originalfour UI tests",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-qualified-ui-failures.log"
+    },
+    {
+      "command": "strengthened visiblecell hover beforefix",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-tui-hover-red.log"
+    },
+    {
+      "command": "formula CSV interface regression beforefix",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-csv-formula-red.log"
+    },
+    {
+      "command": "parameterizedrow regression beforefix",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-parameter-help-red.log"
+    },
+    {
+      "command": "qualified unittest test_help test_csv_table TableTitleTests TestHeaderGlossary",
+      "exit_code": 0,
+      "result": "16tests",
+      "log": "/tmp/oraclebot-qualified-ui-fixes.log"
+    },
+    {
+      "command": "qualified unittest parameterizedrow regression afterfix",
+      "exit_code": 0,
+      "result": "1test"
+    },
+    {
+      "command": "python -m py_compile sixchangedUI modules/testmodules",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "files": {
+    "soltui/help.py": {
+      "lines": 774,
+      "sha256": "73080a627baa8ef3e1dfad516032e17497ca4e916f67ca4109ff389521935ed8",
+      "blob": "202ae7cb942c7a06aa5cf9e67b47fd00ad99f284"
+    },
+    "soltui/csv_table.py": {
+      "lines": 80,
+      "sha256": "20565ec97fd9ce474a0dad50f8c724c620847536f162dd1407621d0afe0656a8",
+      "blob": "1b3353adbf755a327ff6f91c5a70ac24911b3cfc"
+    },
+    "soltui/tests/test_help.py": {
+      "lines": 138,
+      "sha256": "1ca41b76f5ba8f68a589405acce21e38002f0a1adcf745fddd6381594a2d0192",
+      "blob": "ffff9ede54b091048de3cec5a2086fb685b957d1"
+    },
+    "soltui/tests/test_csv_table.py": {
+      "lines": 81,
+      "sha256": "3a278f8d20374a8f3fe8327c6e711c909ca58ad935da949b1b28be3e803de753",
+      "blob": "4a1157d4497c9f4a06168f8d1c9f2ef6ed20aa00"
+    }
+  },
+  "partial_context": [
+    "soltui/tui.py",
+    "soltui/tests/test_tui.py"
+  ],
+  "snapshot": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-uihelp-review-20261112",
+  "outbox_ids": [
+    "a76b5b4b",
+    "dacb9fda"
+  ],
+  "remaining": [
+    "Full qualified SolTUI suite running parentowned",
+    "Independent acceptance and full tui.py/test_tui.py semantic review remain required",
+    "Offline generateddocs/index/wiki refresh remains pending final source/workflow records"
+  ]
+}

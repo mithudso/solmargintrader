@@ -186,3 +186,20 @@ missing history or partial close holds the next open; a public API acknowledgmen
 is not fill evidence. Account provisioning, GUM application-wallet funding and
 perps collateral deposits are separate operations and are not implemented by the
 order adapter. Coinbase portfolio transfers are not onchain withdrawals.
+
+## Hosted Oraclebot boundaries — reviewed 2026-11-12
+
+| ID | Caller | Target and effect | Bounds, retries and proof |
+| --- | --- | --- | --- |
+| WEB1 | `website/src/worker.js` `stripe` | Stripe customer, subscription, Checkout and portal HTTPS API | 10s timeout and bounded response; server credentials only; no automatic write retry; customer/Checkout idempotency and ambiguous-create lock; `website/test/api.test.js` |
+| WEB2 | `website/src/worker.js` `webhook` | Inbound Stripe subscription/Checkout events plus canonical subscription read through WEB1 | Raw-body HMAC and timestamp validation, durable processed-event identity and current-state reconciliation; no browser success entitlement |
+| WEB3 | `website/src/worker.js` `engine` | Operator-configured HTTPS public-analysis adapter | Fixed allow-listed paths, server bearer, 20s timeout, redirect rejection and bounded JSON; no signing or order endpoint |
+| WEB4 | `website/src/worker.js` `query`, account/bot routes | Cloudflare D1 account, challenge, session, billing and inactive configuration storage | Bound SQL, tenant predicates, atomic challenge consumption and conditional deletion; SQL behavior exercised through SQLite fixtures and deployed acceptance |
+| WEB5 | `website/public/app.js` `api`, wallet sign-in | Same-origin account/analysis API and injected Solana wallet message signing | Abort deadline; account message only, no transaction signing; safe DOM rendering and explicit unavailable states |
+| WEB6 | `website/engine/server.py` | Inbound bearer-authenticated public-analysis HTTP and dedicated local cache/archive reads | Bounded bodies/cache sizes, one calculation slot, symbolic errors; no browser Origin, feed acquisition, signing or order submission |
+
+These rows describe actual boundaries; they do not establish universal five-standard
+compliance or a provisioned analysis service. The website’s current package has
+no common persistent request/outcome/remediation sink. Retry policy must preserve
+the distinction between safe reads and an ambiguous side effect. Billing and
+analysis calls remain unavailable when their required server configuration is absent.

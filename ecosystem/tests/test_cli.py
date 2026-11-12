@@ -5,7 +5,7 @@ from __future__ import annotations
 import io
 import json
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 
@@ -13,6 +13,17 @@ from ecosystem import cli
 
 
 class CliTests(unittest.TestCase):
+    def test_invalid_arguments_show_usage_without_echoing_secret(self):
+        output = io.StringIO()
+        with redirect_stderr(output), self.assertRaises(SystemExit) as error:
+            cli.main(["status", "--unknown", "private-secret-value"])
+        self.assertEqual(error.exception.code, 2)
+        self.assertIn("usage:", output.getvalue())
+        self.assertNotIn("private-secret-value", output.getvalue())
+
+    def test_help_contains_safe_read_only_example(self):
+        self.assertIn("solecosystem status", cli.build_parser().format_help())
+
     def test_restart_preserves_frozen_provider_and_accounting_inputs(self):
         existing = {
             "research_capital": 2500,

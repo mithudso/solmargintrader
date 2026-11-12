@@ -408,11 +408,14 @@ def read_registrations(
                 or any(key in observation for key in identity)
             ):
                 raise ValueError
+            stamp = row["observed"]
             age = (
-                max(0, time.time() - row["observed"])
-                if row["observed"] is not None
+                time.time() - stamp
+                if type(stamp) in (int, float) and math.isfinite(stamp)
                 else None
             )
+            if age is not None and (not math.isfinite(age) or age < 0):
+                age = None
             bots.append(
                 {
                     **identity,

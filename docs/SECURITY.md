@@ -1,7 +1,9 @@
 # Security model
 
-This repository contains software that can move real money. Two assets matter: **signing keys** and
-the **Jupiter API key**.
+This repository contains software that can move real money. Protect signing keys
+and venue credentials. The public website also holds wallet-account identities,
+server session records and payment-provider references. Each component has its
+own authentication and execution boundary.
 
 ## Threat model
 
@@ -152,3 +154,28 @@ cryptographic signing is not permission to sign arbitrary server-built funding
 transactions. KILL, stale-signal and final account checks run before submission.
 Each leg is committed before one send; a timeout or absent history entry cannot
 authorize a retry. See [the ZEC execution contract](JUPITER-ZEC-WEBHOOK.md).
+
+## Hosted wallet accounts and subscription boundary
+
+The Cloudflare website is a separate multi-user boundary. Ed25519 authentication
+uses a server-stored, expiring, single-use message bound to the canonical origin.
+D1 stores a hash of the opaque session token; the browser gets a Secure,
+HttpOnly, SameSite cookie. Mutation routes require the exact Origin. Account and
+bot queries use the authenticated tenant, never a browser-supplied owner ID.
+
+The server owns the Stripe Price and customer binding. Webhook HMAC validation
+uses the exact raw body and a bounded timestamp. The handler reconciles current
+provider state before granting entitlement. Checkout expiry and its server lock
+align, and pending Checkout prevents account deletion. A redirect or client-side
+success flag cannot grant a trial. Deletion retains only the hashed trial-use
+record needed to prevent recycling a free trial.
+
+The Worker stores Stripe and analysis credentials as server secrets. It must not
+receive a customer’s wallet private key or reuse the owner’s local exchange
+credentials. Wallet login grants no spend permission. Saved configurations have
+no live execution path. The Python gateway exposes allow-listed public-analysis
+operations under a separate server bearer; it never tunnels the owner UI.
+
+`website/test/api.test.js` verifies account isolation and failure cases. Browser
+content and research text remain untrusted data. Source tests alone cannot prove
+a configured provider account, an authenticated payment or a verified trade.

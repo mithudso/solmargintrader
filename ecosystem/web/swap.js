@@ -7,6 +7,7 @@ let settings = null;
 let busy = false;
 let loaded = false;
 let feeEdited = false;
+let configGeneration = 0;
 
 function state(message) { $("swap-state").textContent = message; }
 function selectedFee() { return Number($("referral-fee").value); }
@@ -25,6 +26,7 @@ function updateFee(announce = true) {
   }
 }
 async function readConfig(asset) {
+  const generation = ++configGeneration;
   settings = null;
   $("load-jupiter").disabled = true;
   const controller = new AbortController();
@@ -32,6 +34,7 @@ async function readConfig(asset) {
   try {
     const response = await fetch(`/config?asset=${encodeURIComponent(asset)}`, { cache: "no-store", credentials: "omit", signal: controller.signal });
     const envelope = await response.json();
+    if (generation !== configGeneration) return;
     if (!response.ok || !envelope.ok || envelope.schema_version !== 1 || envelope.data?.provider !== "jupiter" || envelope.data.plugin_src !== SDK_SRC) throw new Error("public_config_unavailable");
     settings = envelope.data;
     if (!feeEdited) $("referral-fee").value = String(settings.default_referral_fee_bps);
@@ -41,6 +44,7 @@ async function readConfig(asset) {
     updateFee();
     if (settings.asset_mapping_status !== "available") state("Unavailable: initial token mapping requires an explicit selection.");
   } catch {
+    if (generation !== configGeneration) return;
     state("Unavailable: public swap configuration could not be read. No SDK or wallet request was started.");
   } finally { clearTimeout(timer); }
 }
