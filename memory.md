@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 475
+Version: 476
+Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
 Delta: v474 to v475; record live collector and repair unused URI default database validation.
 Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics.
 Delta: v472 to v473; refresh local wiki dependency found by CI.
@@ -1251,3 +1252,11 @@ Tracked incident: TASK-1499, with contract KNOW-1500. This checkpoint precedes i
 Implementation checkpoint: independent capture/upload CLI, durable fsynced raw spool, exact exchange timestamps and per-run sequence, dedicated TS namespace, restart deadline and ambiguous-insert stop markers are implemented. Sixteen offline tests pass; native Mongo integration is required in CI and skips locally because no local mongod is running. The initial8second live smoke caught Coinbase's acknowledgement alias level2_50; corrected alias fixture and source then captured122records with106l2updates,4matches,8heartbeats,initialsnapshot/lastmatch/subscription andconnectionopen,zero reconnects. No day-long capture is running yet. Dedicated Python3.14 environment installed pymongo4.19.0,python-dotenv1.2.4,dnspython2.9.2. Endor package-risk evidence is UNKNOWN because role/backend/CLI is unavailable; installed reviewer procedure applied inline, no safety certification claimed. Remaining: final metadata/docs checks, sourceCI/merge, stable supervisor install and independent actual running acceptance; MongoDB destination remains network-unreachable.
 
 Live deployment: PR230 merged90c6eec2344d9b4f458f3bb5956dbc48877b7cc6 with11CIpasses/2intendedskips. NativeMongo fixture passed17tests. Collector and uploader launched with stable source at /Users/mitch/.local/share/solmargintrader-market-capture/app. Run directory /Users/mitch/.local/state/solmargintrader/market-captures/zec-usd-20261112T045627Z has a persisted start2026-11-12T04:56:27.224912Z and deadline2026-11-13T04:56:27.224912Z. Collector records realZEC trades/book updates/heartbeats without reconnects at first acceptance. The actual uploader exposed InvalidURI: PyMongo rejected an invalid unused default database path that Node had not rejected. Version1.0.1 clears that default path in memory while explicitly retaining market_capture data DB and $external X509 auth. Preserve the collector process; replace/restart uploader only. The remote network remains unverified after this validation fix. Final runtime/source receipts remain at the deployment receipt path above.
+
+## 2026-11-12 — ZEC MongoDB network restored
+
+The owner reports adding the requested IP to Atlas Network Access. The existing uploader resumed automatically without a process restart. At 2026-11-12T05:17:40Z the unchanged collector PID78736 had20,067 raw records and zero reconnects; uploader PID88561 was uploading with13,400 acknowledged records. The original start and fixed deadline remain unchanged:2026-11-12T04:56:27.224912Z through2026-11-13T04:56:27.224912Z. No collector, service configuration, package or trading changes were required. Independent MongoDB time-series readback verification passed with exit0; its sanitized receipt is at /Users/mitch/.local/state/solmargintrader/market-captures/zec-mongo-network-restored-20261112.json.
+
+Remote acceptance observed21,546 actual records, a contiguous duplicate-free acknowledged prefix1–21,454, and four exact WAL-to-database sample matches. The upload checkpoint advanced21,454→21,533 over the check; observed backlog was25 records. Counts were sampled during active ingestion. Receipt SHA256:9be144afdddd02e7381cd97c595987170cda667940c9df1538a2deb408f82a8f. No writes or restarts were performed by the verifier.
+
+Documentation checks completed with exit0: scripts/check_docs.py and scripts/build_ecosystem_wiki.py --check. This follow-up changes workflow records only. Keep TASK-1499 in progress until capture reaches the fixed deadline and coverage/remote persistence are verified; an active capture is not a completed24hour dataset. The former IP-access question is resolved; do not ask for the coin or certificate again.
