@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T05:00:19+00:00",
+  "generatedAt": "2026-11-12T05:24:09+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -321,7 +321,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 114
+          "hits": 117
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -368,16 +368,16 @@
           "hits": 46
         },
         {
+          "path": "prompts.md",
+          "hits": 44
+        },
+        {
           "path": "research/META-ANALYSIS.md",
           "hits": 44
         },
         {
           "path": "backtester/tests/test_universe.py",
           "hits": 43
-        },
-        {
-          "path": "prompts.md",
-          "hits": 40
         },
         {
           "path": "backtester/core/universe.py",
