@@ -4,7 +4,7 @@ from unittest import mock
 
 from textual.widgets import Static, TabbedContent
 
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
@@ -13,6 +13,9 @@ def envelope(result):
 
 
 class BatchUiTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_start_status_stop_recover_and_fresh(self):
         app = SolTuiApp(make_settings())
         state = {"runs": [], "running": False}

@@ -5,7 +5,7 @@ from unittest import mock
 
 from textual.widgets import Button, Checkbox, Input, Select, TabbedContent
 
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
@@ -14,6 +14,9 @@ def env(result):
 
 
 class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_token_search_displays_full_mint_without_arming(self):
         from textual.widgets import Static
         app = SolTuiApp(make_settings())

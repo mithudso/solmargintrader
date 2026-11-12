@@ -12,6 +12,7 @@ signal that nothing is reaching a venue.
 from __future__ import annotations
 
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
@@ -38,6 +39,19 @@ def _queue_row(job_id: str, sharpe: float, trades: int) -> bgqueue.JobResult:
 # OutOfBounds for widgets outside the visible region, and the default 80x24 is
 # too small for these forms.
 TEST_SIZE = (180, 55)
+
+
+@contextmanager
+def offline_console_reads():
+    """Keep default headless mount reads inside deterministic test fixtures.
+
+    Tests of explicit recorder or LaunchAgent actions can replace these mocks
+    inside this context without weakening the transport or process guards.
+    """
+    with mock.patch('soltui.pricefeed.stream_products', return_value=['SOL-USD', 'BTC-USD', 'ETH-USD']), \
+            mock.patch('soltui.compound_agent.status', return_value={
+                'label': 'headless fixture', 'plist_exists': False, 'loaded': False}):
+        yield
 
 
 def text_of(app, selector: str) -> str:
