@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 226
+Version: 227
+Delta: v226 to v227; preserve owner choice to retain Google Workspace.
 Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
 Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
 Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
@@ -1993,4 +1994,10 @@ Can you do a lookback correlation of when major news articles came out about dif
 
 ```text
 for all of my domains in cloudflare make them forward email to my mitchphudson@gmail.com address.
+```
+
+## 2026-11-12 — Preserve Google Workspace
+
+```text
+Keep Google Workspace
 ```
