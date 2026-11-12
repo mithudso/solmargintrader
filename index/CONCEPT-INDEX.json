@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T21:55:56+00:00",
+  "generatedAt": "2026-11-12T22:20:20+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1817,
+      "matchingFiles": 1818,
       "shown": 30,
       "files": [
         {
@@ -122,16 +122,16 @@
           "hits": 37
         },
         {
+          "path": "memory.md",
+          "hits": 36
+        },
+        {
           "path": "archive/memory-2026-11-08.md",
           "hits": 35
         },
         {
           "path": "docs/archive/memory-2026-11-08.md",
           "hits": 35
-        },
-        {
-          "path": "memory.md",
-          "hits": 34
         },
         {
           "path": "research/strategy_experiment/FILES.md",
@@ -313,7 +313,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 159
+          "hits": 157
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 699,
+      "matchingFiles": 702,
       "shown": 30,
       "files": [
         {
