@@ -54,9 +54,14 @@ def api(path, payload=None, method=None):
 
 def website_health():
     try:
-        with urllib.request.urlopen(
-            "https://oraclebot.io/api/health", timeout=15
-        ) as response:
+        request = urllib.request.Request(
+            "https://oraclebot.io/api/health",
+            headers={
+                "User-Agent": "Oraclebot-Operations/1.0",
+                "Accept": "application/json",
+            },
+        )
+        with urllib.request.urlopen(request, timeout=15) as response:
             raw = response.read(16385)
             if response.status != 200 or len(raw) > 16384:
                 raise ValueError("invalid_website_health")
@@ -126,7 +131,9 @@ def main():
     if mode == "failure":
         healthy, reason = False, "synthetic_heartbeat_stale"
     if mode == "recovery" and not healthy:
-        raise ValueError("real_heartbeat_must_be_healthy_before_acceptance_recovery")
+        raise ValueError(
+            "real_heartbeat_and_website_must_be_healthy_before_acceptance_recovery"
+        )
     repo = os.environ["GITHUB_REPOSITORY"]
     run_url = f"https://github.com/{repo}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
     result = reconcile(repo, healthy, reason, run_url, acceptance=mode != "normal")

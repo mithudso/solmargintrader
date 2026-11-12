@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 480
+Version: 481
+Delta: v480 to v481; bind independent website health checks to an honest operational client identity.
 Delta: v479 to v480; diagnose duplicate manager ownership and establish Oraclebot operations task.
 Delta: v478 to v479; close Cloudflare forwarding with owner Google Workspace exception.
 Delta: v477 to v478; inventory seven Cloudflare domains and configure catch-all forwarding.
@@ -1292,3 +1293,5 @@ Installed read-only operations observer1.0.0: /Users/mitch/Library/LaunchAgents/
 Independent GitHub workflow checks the minimal credential-free heartbeat on a best-effort five-minute schedule and a weekday14:00UTC reporting schedule. It opens one dedicated owner-mentioned availability issue and resolves it after recovery, with isolated lifecycle acceptance modes. GitHub schedules and issue acceptance are not guaranteed inbox delivery. The existing Alertlane instance is dry-run with no active phones; it was preserved, and no phone delivery is claimed. Mac notification command success also does not prove a visible banner. Login/start and crash recovery do not establish physical reboot or power-loss acceptance.
 
 Latest and daily reports: /Users/mitch/.local/state/oraclebot-operations/reports. Operating guide: /Users/mitch/dev/solmargintrader/docs/ORACLEBOT-OPERATIONS.md. Final receipt, checks, actual independent issue lifecycle and delivery state will be in /Users/mitch/.local/state/oraclebot-operations-20261112/delivery.json and acceptance.json. Read those current receipts before resuming. Hosted oraclebot.io separately has no analysis engine connection; it must not expose the owner's control room. Surface clarification was asked; local manager's exact ecosystem_not_connected failure was found and repaired. Final required work: source delivery, external workflow lifecycle acceptance, final installed readback and task completion.
+
+External acceptance initially found Cloudflare error1010/HTTP403 for Python urllib's default User-Agent despite a fresh ready heartbeat. Run43319946321 failed exit1 and its isolated issue239 remained open. The follow-up adds User-Agent Oraclebot-Operations/1.0 and application/json without changing WAF policy; regression verifies identity and absence of authorization on the public probe. Current final delivery and acceptance receipts remain authoritative. Bare solbot status intentionally has no ecosystem home; the installed UI and explicit --ecosystem-home status report the existing registry available. Do not treat the unbound CLI's ecosystem_not_connected as a new runtime failure or resume stopped research to hide it.
