@@ -835,7 +835,8 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
             tid = _hex_int(raw_id)
             if tid is None:
                 continue
-            owned_ids.add(str(tid))
+            if proto == "Aero Slipstream":
+                owned_ids.add(str(tid))
             known = daemon_ids.get(str(tid)) if proto == "Aero Slipstream" else None
             scan.positions.append({
                 "protocol": proto, "manager": manager, "token_id": tid, "held_by": "wallet",
@@ -853,9 +854,9 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
             continue
         scan.positions.append({
             "protocol": "Aero Slipstream", "manager": POSITION_MANAGERS["Aero Slipstream"],
-            "token_id": p.get("token_id"), "held_by": "gauge (staked) or not in the wallet",
-            "pair": p.get("pair"), "value_usd": _num(p.get("value_usd")),
-            "value_source": "liquidity daemon state", "source": LABEL, "kind": "position-nft",
+            "token_id": p.get("token_id"), "held_by": "ownership unverified",
+            "pair": p.get("pair"), "value_usd": None,
+            "value_source": "daemon report without current ownership evidence", "source": LABEL, "kind": "position-nft",
             "link": f"{BASE_EXPLORER}/nft/{POSITION_MANAGERS['Aero Slipstream']}/{p.get('token_id')}"})
         scan.contracts.append({"holding": f"Aero position #{p.get('token_id')}", "kind": "position NFT",
                                "address": POSITION_MANAGERS["Aero Slipstream"],

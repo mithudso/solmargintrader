@@ -324,6 +324,34 @@ class QueryTests(unittest.TestCase):
         self.assertTrue(result.hits)
         self.assertLessEqual(len(result.hits), 5)
 
+    def test_keyword_mode_never_dispatches_an_automatic_semantic_rebuild(self):
+        with mock.patch.object(idle, "maybe_start", side_effect=AssertionError("semantic dispatch")) as start:
+            result = search.run_query("slippage", "keyword", 3)
+        start.assert_not_called()
+        self.assertEqual(result.mode_used, "keyword")
+        self.assertTrue(result.hits)
+
+    def test_hybrid_corrupt_dimension_and_nonfinite_artifacts_degrade_without_inference(self):
+        import numpy as np
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest = Path(tmp) / "manifest.json"
+            vectors = Path(tmp) / "vectors.npz"
+            for defect in ("corrupt", "dimension", "nonfinite"):
+                with self.subTest(defect=defect):
+                    search.unload(model=False)
+                    manifest.write_text(json.dumps({"model": oe.EMBED_MODEL, "dims": 3 if defect == "dimension" else 2,
+                                                    "chunkOwners": ["README.md"]}))
+                    if defect == "corrupt":
+                        vectors.write_bytes(b"not an npz archive")
+                    else:
+                        np.savez(vectors, embeddings=np.array([[float("nan") if defect == "nonfinite" else 1., 0.]]))
+                    with mock.patch.object(search, "semantic_pair", return_value=(manifest, vectors)), mock.patch.object(oe, "ensure", side_effect=AssertionError("inference readiness")) as ensure:
+                        result = search.run_query("slippage", "hybrid", 3, auto_index=False)
+                    ensure.assert_not_called()
+                    self.assertEqual(result.mode_used, "keyword")
+                    self.assertTrue(result.hits)
+                    self.assertTrue(result.notes)
+
     def test_hybrid_falls_back_to_keyword_with_the_reason_when_ollama_is_down(self):
         down = oe.Status(False, False, False, None, "ollama is not reachable")
         with tempfile.TemporaryDirectory() as tmp:
@@ -360,8 +388,9 @@ class QueryTests(unittest.TestCase):
             search.run_query("x", "fuzzy", auto_index=False)
 
     def test_the_auto_index_note_is_included_when_enabled(self):
-        with mock.patch.object(idle, "maybe_start", return_value="semantic index is fresh"):
-            result = search.run_query("fee", "keyword", 1)
+        with mock.patch.object(idle, "maybe_start", return_value="semantic index is fresh"), \
+                mock.patch.object(search, "semantic", return_value=None):
+            result = search.run_query("fee", "hybrid", 1)
         self.assertIn("semantic index is fresh", result.notes)
 
     def test_nothing_is_cached_until_the_first_query_and_unload_empties_it(self):

@@ -45,11 +45,11 @@ See [its guide](website/README.md) for independent billing, analysis and executi
 ## Before claiming a change works
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-(cd extension && npm test)                              # 437 tests
-(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100) # a round trip must close positive
+python3 -m unittest discover -s backtester/tests -t .   # 1081 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (full suite; optional in CI)
+python3 -m unittest discover -s mongo/tests -t .        # 62 tests
+(cd extension && npm test)                              # 509 tests
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must close positive
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
 ```
 

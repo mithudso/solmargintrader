@@ -134,10 +134,10 @@ Oracle uses its own installed environment: `python -m pip install ./backtester .
 Ecosystem setup and control room use `python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem`, then `python -m unittest discover -s ecosystem/tests -t . -v` and `ruff check ecosystem oracle scripts/bootstrap_ecosystem.py`. Verify the installed environment and actual loopback UI separately. See `docs/ECOSYSTEM-BOOTSTRAP.md`.
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-(cd extension && npm test)                              # 437 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1081 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (full suite; optional in CI)
+python3 -m unittest discover -s mongo/tests -t .        # 62 tests
+(cd extension && npm test)                              # 509 tests
 (cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must still close positive
 (cd extension && npm run e2e)                           # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 (cd extension && node tools/verify-endpoints.js)         # live Jupiter reachability
@@ -193,28 +193,36 @@ alone never proves absence. Manual Coinbase orders remain a separately armed pat
 <!-- llms-routing:start -->
 ## llms routing
 
-The repository's maintained family is the current navigation entry point. Its
-2026-11-11 refresh covers metadata and changed execution boundaries; it is a
-partial delta refresh, not a new whole-code audit. Source and manifests remain
-authoritative when a cached claim differs.
+The maintained family below captures 2026-11-12 static navigation. Its file cards
+are shallow; optimizer coverage, tests, installation and runtime acceptance retain
+separate receipts and limits. Source and parser definitions remain authoritative.
 
-| File | Absolute path | Purpose |
+| File | Repository path | Purpose |
 | --- | --- | --- |
-| llms.txt | /Users/mitch/dev/solmargintrader/llms.txt | Family index |
-| llms-small.txt | /Users/mitch/dev/solmargintrader/llms-small.txt | Budgeted navigation digest |
-| llms-facts.txt | /Users/mitch/dev/solmargintrader/llms-facts.txt | Source-tagged facts and corrected beliefs |
-| llms-full.txt | /Users/mitch/dev/solmargintrader/llms-full.txt | Operator reference and coverage limits |
-| llms-sitemap.txt | /Users/mitch/dev/solmargintrader/llms-sitemap.txt | Shallow file census and resources |
+| Index | [llms.txt](llms.txt) | Choose a reference |
+| Digest | [llms-small.txt](llms-small.txt) | Read before source changes |
+| Facts | [llms-facts.txt](llms-facts.txt) | Source-tagged claims and corrections |
+| Reference | [llms-full.txt](llms-full.txt) | Ownership and evidence limits |
+| File cards | [llms-filemap.txt](llms-filemap.txt) | All captured paths; shallow cards |
+| Executables | [llms-executable.txt](llms-executable.txt) | Static parser/config/env declarations and unknowns |
+| Indexes | [llms-indexes.txt](llms-indexes.txt) | Store declarations; no probes |
+| Infrastructure | [llms-infra.txt](llms-infra.txt) | CI, schedules, env names, unverified links |
+| History | [llms-history.txt](llms-history.txt) | 200-commit metadata window |
+| Sitemap | [llms-sitemap.txt](llms-sitemap.txt) | Compact path/role list |
 
-The refresh artifact and manifest are preserved at
-`/Users/mitch/.research/distillations/solmargintrader-health-20261111.repo/`.
-The earlier bootstrap-1256 dossier is historical and does not prove current
-source, installed packages or runtime state.
+Quick answers:
 
-Use the configured hub semantic tools first. For bounded offline retrieval, set
-`INDEX_NO_AUTO=1` and use `index/search.py --text "<query>"`. Build or verify only
-the deterministic metadata/text/concept artifacts during delivery; semantic
-embeddings and inference remain separate explicit operations.
+- Ten trading components plus the separate hosted website retain independent owners. [src: README.md; docs/COMPONENTS.md]
+- Misbelief: SolTUI is read-only and cannot move money. Actually: it retains a separately armed manual Coinbase path. [src: docs/repo-bootstrap-audit-2026-11-11.md; CLAUDE.md#what-this-is]
+- Misbelief: Jupiter has no public REST write API for leveraged orders. Actually: the separate GUM Beta API supports the optional Oracle ZEC order Action path; the extension Perps adapter remains read-only. [src: https://github.com/mithudso/solmargintrader/blob/5914d2268b770079e54078e4479d166e9c75c90e/llms-facts.txt; README.md#two-findings-that-shaped-the-extension; docs/JUPITER-ZEC-WEBHOOK.md]
+- Misbelief: Every repository search dispatches the idle semantic-index check. Actually: current keyword run_query skips idle dispatch; semantic and hybrid modes retain the guarded check. [src: https://github.com/mithudso/solmargintrader/blob/5914d2268b770079e54078e4479d166e9c75c90e/index/README.md#ollama-idle-indexing-and-the-docs-tab; index/search.py:311]
+
+Use the existing hub retrieval connector when available. For bounded local text
+retrieval, set `INDEX_NO_AUTO=1` and use `index/search.py --text "<query>"`.
+Semantic embeddings and inference remain separate explicit operations. See
+[index guidance](index/README.md), [testing](docs/TESTING.md) and the
+[bounded bootstrap report](docs/repo-bootstrap-audit-2026-11-12.md). Historical
+outside-repository dossiers do not prove current source or installed state.
 <!-- llms-routing:end -->
 
 ### Existing Solana margin family

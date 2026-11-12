@@ -75,7 +75,7 @@ Lightweight Charts, is vendored in `extension/vendor/lightweight-charts/`.
 ```bash
 cd extension
 npm test
-node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # round trip must close positive
+node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics  # round trip must close positive
 ```
 
 To load it in the browser: `chrome://extensions` → enable **Developer mode** → **Load

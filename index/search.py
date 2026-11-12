@@ -308,7 +308,7 @@ def run_query(query: str, mode: str = "hybrid", limit: int = 20, kind: str | Non
         raise ValueError(f"mode must be one of {', '.join(MODES)}")
     result = QueryResult()
     meta = _cached_json(INDEX_JSON, "the file metadata index")
-    if auto_index:
+    if auto_index and mode != "keyword":
         result.notes.append(idle.maybe_start(**({} if start_ollama else {"start_ollama": False})))
     tx: list[tuple[str, float]] = []
     if mode in ("keyword", "hybrid"):

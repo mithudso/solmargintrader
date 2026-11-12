@@ -5,9 +5,10 @@ import math
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest import mock
 
-from soltui import bgqueue, config, signals
+from soltui import bgqueue, bgworker, config, signals
 
 
 def result_row():
@@ -15,6 +16,17 @@ def result_row():
 
 
 class MeasurementBoundaryTests(unittest.TestCase):
+    def test_evaluator_nonfinite_measurements_are_explicitly_unevaluable(self):
+        job = bgqueue.Job('rsi','medium','SOL','1d',{})
+        for field in ('median_sharpe','spread','frac_positive','median_return','total_trades'):
+            value = dict(median_sharpe=1.,spread=.1,frac_positive=.7,median_return=.1,total_trades=50,insufficient=False,reason='')
+            value[field] = float('inf')
+            with self.subTest(field=field), mock.patch.object(bgworker,'run_cpcv',return_value=SimpleNamespace(**value)):
+                result=bgworker.evaluate(job,{},object(),config.Settings())
+            self.assertFalse(result.evaluable)
+            self.assertFalse(result.ranked_ok)
+            self.assertIn('invalid',result.reason)
+
     def test_nonfinite_or_missing_metrics_and_false_strings_are_not_rankable(self):
         for field in ('median_sharpe', 'iqr', 'frac_positive', 'median_return'):
             for value in (None, 'bad', float('inf'), float('-inf'), float('nan')):

@@ -94,10 +94,10 @@ disposable local server and otherwise skips; CI sets `MARKET_CAPTURE_REQUIRE_MON
 to require that case. It must never target the owner's capture namespace.
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-(cd extension && npm test)                              # 437 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1081 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1582 tests (full suite; optional in CI)
+python3 -m unittest discover -s mongo/tests -t .        # 62 tests
+(cd extension && npm test)                              # 509 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -107,14 +107,14 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. Record each delivery's actual full-suite result or explicit skip in its
 verification receipt; a historical delivery's skip does not describe later runs.
 
-2960 tests total in the four legacy count-gated suites: backtester, SolTUI, MongoDB and extension. This subtotal excludes the additional package and script suites described on this page. `liquidity/` has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+3234 tests total in the four legacy count-gated suites: backtester, SolTUI, MongoDB and extension. This subtotal excludes the additional package and script suites described on this page. `liquidity/` has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 437 tests cover
+## Extension — what the 509 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -144,9 +144,9 @@ resolved **without executing the handler** — no side effects, no network calls
 
 Read this before trusting anything with money.
 
-1. **No live order has ever been placed.** The write path (auth → vault → deposit craft → sign →
-   create) matches the documented shapes but has never executed. It needs an API key and a funded
-   wallet. Test with one rung at the $10 minimum.
+1. **Offline tests do not establish live order acceptance.** Synthetic fixtures exercise the write
+   path (auth → vault → deposit craft → sign → create). Installed venue acceptance remains a
+   separate owner-authorized gate; the maintenance suites do not fund, sign or submit an order.
 2. **The Trigger contract has offline fixtures, not live acceptance.** History pagination and
    cancellation were checked against current public documentation. Wallet-specific responses,
    execution USD valuation and semantic transaction verification still need verified fixtures.
@@ -191,7 +191,7 @@ From the repository root:
 
 ```bash
 (cd extension && npm test)                             # unit + parity
-(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100) # a round trip must close positive
+(cd extension && node tools/dryrun.js --ticks 8 --osc 6 --offline 100 --assert-economics) # a round trip must close positive
 (cd extension && npm run e2e)                          # real-browser load + dry-run checks (needs Chrome for Testing)
 (cd extension && node tools/dryrun.js --ticks 4 --walk 5 --offline 100) # trending case: bids fill, no exits
 (cd extension && node tools/verify-endpoints.js)        # live Jupiter reachability
@@ -201,7 +201,7 @@ From the repository root:
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1005 tests
+## Backtester — 1081 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -253,7 +253,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1472 tests
+## soltui — 1582 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
@@ -276,17 +276,18 @@ spent/explored temporal reservations, legacy fences, historical mutation, cooper
 process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
 Fixtures isolate configuration/data; tests stub the live order path and do not submit real orders.
 
-## mongo — 46 tests
+## mongo — 62 tests
 
-Split between pure helpers that need nothing and integration tests that **skip cleanly
-when no mongod is listening**, so a checkout without a database runs the suite green
-rather than red.
+Pure helpers need no server. Native integration tests **skip unless
+`SOLMARGINTRADER_MONGO_TEST_URI` is explicitly set to a bare loopback URI** for a
+disposable test server. They use unique database names and reject credentials, URI paths,
+queries and non-loopback hosts. An explicitly configured but unreachable server fails the
+test. An ordinary local MongoDB listener does not opt the suite in.
 
-The one that earns its keep asserts *idempotency*. `load.py` drops before it writes, and
-two consecutive loads must leave identical counts — a time series collection accepts no
-unique index, so nothing else would catch a second load silently doubling all 18,381
-bars. It runs over a three-collection subset to stay fast; the mechanism is the same for
-every collection.
+The load fixture asserts *idempotency*: two loads of its synthetic three-collection subset
+must leave identical counts. A time series collection accepts no unique index, so the
+assertion detects duplicate appends. The fixture uses a unique disposable database and
+removes only that database.
 
 The rest guard the store's honesty: every document carries provenance, the server refuses
 one that does not (strict validation, proven by an insert that must raise), NaN never
@@ -303,8 +304,8 @@ set on exactly 25, every key real.
   from `research/coinbase50-requirements.txt` and runs
   `python3 -m unittest research.tests.test_coinbase50_study -v`; CI runs that gate.
 - soltui: `soltui/tests/`, `unittest`.
-- mongo: `mongo/tests/`, `unittest`. Guard anything server-dependent with the module's
-  `needs_server` decorator so a checkout without mongod still passes.
+- mongo: `mongo/tests/`, `unittest`. Use the guarded disposable Mongo fixture for server-dependent tests;
+  never infer permission from a listening local MongoDB server.
 - A new command needs no new parity test — the registry-driven suite picks it up automatically. If it
   takes an argument that changes money, add a behavioural test for that argument.
 
