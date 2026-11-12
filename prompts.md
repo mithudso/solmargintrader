@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 227
+Version: 228
+Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
 Delta: v226 to v227; preserve owner status question during active full audit.
 Delta: v225 to v226; record explicit resume of the ordered full audit, hook repair and detailed setup explanation.
 Delta: v224 to v225; capture ordered full audit, hook repairs and billing explanation.
@@ -2010,4 +2011,24 @@ And then give me a more detailed explation of what you need. First though run a 
 
 ```text
 What are you doing right now? r
+```
+
+
+## 2026-11-12 — Repeated hook exit126 failure repair
+
+```text
+Fix these hook failures
+• Hook failed
+  └ hook exited with code 126
+
+• Explored
+  └ Read hub_sqlite.py
+
+• Hook failed
+  └ hook exited with code 126
+
+• Explored
+  └ Read git_corpus.py
+
+• Hook failed
 ```

@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 483
+Version: 485
+Delta: v484 to v485; repair exact eight reviewed hook approvals and verify52 natural native hook runs.
+Delta: v483 to v484; prioritize newly reported exit126 hook diagnosis while full audit reviewers continue.
 Delta: v482 to v483; checkpoint completed extension audit gates and preserve unfinished Bot Manager/source review.
 Delta: v481 to v482; preserve independently closed emergency-stop fixes, root extension audit receipt and current verification.
 Delta: v480 to v481; resume owner-ordered audit and preserve worker recovery, independent stop fixes and fresh-install regression.
@@ -1361,3 +1363,24 @@ Bot Manager initial372-test run exited1 because .venv site-packages held older i
 Root proved malformed nonobject backup manifest escaped as AttributeError, and bounded_process left a descendant alive when its direct parent had already exited while pipes stayed open. Qualified RED log /tmp/oraclebot-botmanager-backup-process-red-qualified.log; fixed object-only document parsing and cleanup of the owned new session regardless of direct-child state; focused32exit0. Report CSV formula text also RED thenGREEN, with typed numeric losses preserved. Log /tmp/oraclebot-botmanager-report-csv-green.log exit0. Bot Manager full-file review still incomplete; read slices are tracked in /tmp/oraclebot-botmanager-audit/reads.jsonl with current hashes. No actual owner processes/homes or keys were touched.
 
 Parent latest462/801 raw source reviews precedes its new backtester receipts; remaining338plus1changed was explicit then. Root/parent must refresh actual current census, final source bindings, package versions/pins, metadata/index/wiki and all required checks before final delivery. No hook approvals changed; exact8native approvals remain the next phase after full audit.
+
+
+## 2026-11-12 — New exit126 hook failures prioritized
+
+Version484. Owner reported repeated hook exited with code126 around reads of hub_sqlite.py and git_corpus.py. Root is diagnosing these now while the full repo audit continues in parallel; this does not cancel the audit or authorize unrelated runtime actions. Historical Architect Windows-only packaging was a prior cause but current helper preview exits0 with disabled0: all five Architect config flags are already false. Do not chmod/enable a Windows executable or call that prior fix current without evidence.
+
+Live current Codex daemon is0.167.2; CLI0.167.1. Existing managed daemon remains active. Raw app-server proxy stdio to both managed-control and live sockets timed out before initialize; no configuration changed or service restarted. Existing read-only WebSocket client is /Users/mitch/.codex/claude-migration/hook-repairs/20261110-readonly-plugin-trust-audit/live_rpc_readonly.py; it uses /rpc HTTPUpgrade framing, not plain NDJSON. Native live inventory request is active; preserve/read its result before proceeding. The initial eight changed-content approvals remain separately unmodified.
+
+Verified extension checkpoint5af7267 was pushed to draft https://github.com/mithudso/solmargintrader/pull/234 and its draft description updated; both commands exit0. No merge/deployment. Parent reports511/805 raw source rows complete,294pending,0changed before rootBotMcredit; fivecaptureddataexclusions separate. Backtester full1088tests had one expected committed-index freshness failure (8added/129changed), other1087passed; regenerateofflineindexes only after all source/docs/ledger settle and rerun.
+
+RootBotMfocused52tests exit0 for future-clock/absolute-rollover status fixes plus originalhealth/paper/continuation tests, /tmp/oraclebot-botmanager-status-green.log. RootBotMsourcefullyread through backup, adapters extension+soltui, blind, blind_judge, learning, machine_health, oracle_data remaining381-628, reports, research, status, walkthrough, suite andsuite_service. Currenthashreadranges in /tmp/oraclebot-botmanager-audit/reads.jsonl; changedfilefullbaseline+authoredfinaldiffs can be bound explicitly. Many BotMtestfiles remain unread. Ruff invocation .venv/bin/ruff exited127 because script absent; discover existing qualified ruff executable/module before running.
+
+## 2026-11-12 — Verified current hook approval repair
+
+Version485. Latest owner hook steering prioritized diagnosis while the full repo audit continued. Current five Architect Windows hooks are already disabled. Read-only native trace joined this existing thread without starting a new turn; actual ordinary commands reproduced three changed-content approval errors, no126. Generic thread/read does not subscribe to hook notifications. The existing verified native WebSocket client's thread/resume(excludeTurns=true) attaches an observer to this active thread without restarting it.
+
+Fresh native fingerprints exactly matched the previously reviewed manifests for AI Plugins2de00883bd2be8b8578b46ab09baf2c8731376de, Postman1fdd3f1e2736c7cb83780a221cb9f83641215ab7 and Rememberccd45061ee4b0dcf0a8245ca1d344ab61d4e110b. Every non-Git manifest file stayed unchanged and no extra bundle file appeared. Version-checked native config/batchWrite changed exactly eight trusted_content_hash fields in /Users/mitch/.codex/config.toml; parsed before/after equals only those intended replacements. Disabled hooks, trusted command hashes and all other settings preserved. Private0600 preimage/requests/results under /Users/mitch/.local/state/oraclebot-hook-approval-20261112/. No daemon restart or arbitrary hook execution.
+
+Actual after-repair native event receipt has104events:52matching starts/completions, all completed with0error entries. Configuration remained byte-identical during acceptance. Summary /Users/mitch/.local/state/oraclebot-hook-approval-20261112/verified-repair-summary.json. Public bounded evidence docs/HOOK-REPAIR-2026-11-12.md. Historical126source remains unproven; do not call it repaired by a permissions change, and do not claim lifecycle-event coverage. No Remembercapture/flush test was forced. Stele root tools recovered; KNOW-1929 records this lesson and links to TASK-1540 and preservationdecision KNOW-1211. Main task remains active.
+
+Root additionally fully read BotMtests test_machine_health261, test_walkthrough112, test_read_consistency287, test_store168; no new medium finding. Root testnotes /tmp/oraclebot-botmanager-audit/root-review-notes.jsonl hash-bind these reviews. Other BotMtests remain pending. Parent completed backtester121/121source+322targetedtests0, but final ZEC extremeweight normalization correction adds current tests pending qualified result. SolTUI worker found arbitrary WebSocket Origin accepted by installed textual-serve1.1.3 before app spawn; adding local Host/Origin+anti-frame gates offline, no installed/owner service change. Liquidity full46read/finaltests0, needs independent blind final diff. Draft PR234 at5af7267 remains incomplete/unmerged; root metadata/index/finalchecks still pending.
