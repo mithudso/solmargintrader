@@ -2636,7 +2636,7 @@
     "llms/jupsol-llms.txt": 13811,
     "logging.md": 572,
     "market-graph-geometry-prompt.md": 728,
-    "memory.md": 22816,
+    "memory.md": 22873,
     "mongo/README.md": 915,
     "mongo/__init__.py": 4,
     "mongo/load.py": 3358,
@@ -3335,7 +3335,7 @@
     "website/wrangler.dev.jsonc": 66,
     "website/wrangler.jsonc": 79
   },
-  "generatedAt": "2026-11-12T01:55:35+00:00",
+  "generatedAt": "2026-11-12T01:58:33+00:00",
   "postings": {
     "000": {
       "FILES.md": 1,
@@ -55735,6 +55735,9 @@
     "all25792characters": {
       "research/tradingview-script-profile-audits/shard-a.jsonl": 1
     },
+    "all27": {
+      "memory.md": 1
+    },
     "all28": {
       "docs/archive/memory-2026-11-10.md": 1
     },
@@ -83346,7 +83349,7 @@
       "backtester/strategy_research/tv_method_vertical_debit_spread.md": 1,
       "backtester/strategy_research/tv_method_volume_delta.md": 1,
       "backtester/strategy_research/tv_ygno2g1v_tick_chart.md": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "research/5minleveragestrategies.json": 13,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 8,
       "research/coin-intelligence/bnb-binance-coin.md": 1,
@@ -89143,7 +89146,7 @@
       "llms/defillama-llms.txt": 4,
       "llms/jupsol-llms.txt": 23,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 7,
+      "memory.md": 8,
       "mongo/README.md": 2,
       "mongo/load.py": 20,
       "mongo/queries/01-coins-and-bars.js": 8,
@@ -105898,7 +105901,7 @@
       "extension/tools/measure-recentre.js": 6,
       "extension/tools/verify-endpoints.js": 7,
       "logging.md": 2,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/server.py": 8,
       "oracle/tests/test_multi_instrument.py": 3,
       "oracle/tests/test_selected_server.py": 12,
@@ -107561,6 +107564,9 @@
     },
     "b06f89590ec3ea203214a4ff93fbbf72d06d9c282c89d99bdb12c43da7973048": {
       "research/tradingview-card-coverage.json": 1
+    },
+    "b07": {
+      "memory.md": 1
     },
     "b07167026fde3846d3ecc2630a0f32c4adea9f6fd32b3fbbfe0fae2abe9edc": {
       "research/tradingview-card-coverage.json": 1
@@ -167151,7 +167157,7 @@
       "llms-sitemap.txt": 4,
       "llms/basicmeory-llms.txt": 2,
       "llms/jupsol-llms.txt": 55,
-      "memory.md": 12,
+      "memory.md": 13,
       "mongo/README.md": 2,
       "mongo/load.py": 8,
       "mongo/queries/04-decisions.js": 2,
@@ -167381,7 +167387,7 @@
       "docs/superpowers/plans/2026-11-10-bot-manager-remaining.md": 2,
       "ecosystem/tests/test_wiki.py": 1,
       "llms-sitemap.txt": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "scripts/build_ecosystem_wiki.py": 1
     },
     "build_ensemble": {
@@ -173999,7 +174005,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 4,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/load.py": 6,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_analysis_regressions.py": 13,
@@ -181874,6 +181880,9 @@
       "research/strategy_experiment/results/manifest.json": 2,
       "research/strategy_experiment/snapshot.json": 1,
       "research/tradingview-script-understanding.json": 1
+    },
+    "c8e55f582e1c": {
+      "memory.md": 1
     },
     "c8e770cd93d3aed35e04e5a96af504cff150e385fd8fd32b12c4ed542db24266": {
       "research/tradingview-card-coverage.json": 1
@@ -213910,6 +213919,9 @@
       "research/tradingview-script-understanding.json": 2,
       "research/tradingview-strategy-understanding.json": 1
     },
+    "cf6a": {
+      "memory.md": 1
+    },
     "cf6abc1": {
       "botmanager/src/botmanager/walkthrough.py": 1
     },
@@ -217188,7 +217200,7 @@
       "llms/aero-lp-explained-2026-11-06.md": 2,
       "llms/basicmeory-llms.txt": 1,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 28,
+      "memory.md": 29,
       "mongo/tests/test_analysis_regressions.py": 1,
       "mongo/tests/test_load_audit.py": 2,
       "mongo/tests/test_snapshot_audit.py": 4,
@@ -222605,7 +222617,7 @@
       "llms/defillama-llms.txt": 1,
       "llms/jupsol-llms.txt": 15,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 54,
+      "memory.md": 55,
       "mongo/queries/03-signals-and-indicators.js": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_load.py": 1,
@@ -257002,6 +257014,9 @@
     "commit08bc398d78350a49ae047ecbdd3ffc6233c082d3": {
       "oracle/tests/test_gum_orders.py": 1
     },
+    "commit152bfb06bdd682ba7cc1cf2bfcd8489a7f4d9cf4": {
+      "memory.md": 1
+    },
     "commit17bcfb5b8453b72eeeec4f1c03c986f2c1de8811": {
       "docs/archive/memory-2026-11-10.md": 1
     },
@@ -271502,7 +271517,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "liquidity/tests/test_cdo_gates.py": 1,
       "liquidity/tests/test_executor.py": 1,
-      "memory.md": 36,
+      "memory.md": 35,
       "optimization-workbench-plan.md": 4,
       "optimization-workbench-run.md": 3,
       "prompts.md": 30,
@@ -286434,7 +286449,7 @@
       "llms-sitemap.txt": 2,
       "llms/basicmeory-llms.txt": 5,
       "llms/jupsol-llms.txt": 5,
-      "memory.md": 17,
+      "memory.md": 18,
       "optimization-workbench.md": 1,
       "oracle-optimized-prompt.md": 2,
       "oracle/README.md": 2,
@@ -316018,7 +316033,7 @@
       "llms/defillama-llms-free.txt": 6,
       "llms/defillama-llms.txt": 8,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 68,
+      "memory.md": 69,
       "mongo/README.md": 1,
       "mongo/queries/04-decisions.js": 1,
       "mongo/queries/05-backtests.js": 1,
@@ -357690,7 +357705,7 @@
       "docs/worktree-consolidation-2026-11-10.md": 2,
       "ecosystem/web.py": 1,
       "extension/tools/bot-manager-e2e.mjs": 1,
-      "memory.md": 155,
+      "memory.md": 154,
       "optimization-workbench-plan.md": 5,
       "optimization-workbench-run.md": 7,
       "oracle-optimized-prompt.md": 3,
@@ -359634,7 +359649,7 @@
       "index/make_files_doc.py": 2,
       "integrations-and-assumptions.md": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 10,
+      "memory.md": 12,
       "mongo/requirements.txt": 2,
       "optimization-workbench-run.md": 1,
       "oracle/server.py": 4,
@@ -360239,7 +360254,7 @@
       "liquidity/tests/test_daemon_audit.py": 5,
       "liquidity/tests/test_gates.py": 1,
       "liquidity/tests/test_metrics.py": 4,
-      "memory.md": 11,
+      "memory.md": 12,
       "prompts.md": 1,
       "research/GRID-REVIEW.md": 1,
       "research/META-ANALYSIS.md": 1,
@@ -391374,7 +391389,7 @@
       "llms/basicmeory-llms.txt": 92,
       "llms/jupsol-llms.txt": 266,
       "logging.md": 2,
-      "memory.md": 77,
+      "memory.md": 78,
       "mongo/README.md": 2,
       "mongo/load.py": 37,
       "mongo/queries/01-coins-and-bars.js": 1,
@@ -424639,7 +424654,7 @@
       "llms-sitemap.txt": 74,
       "llms-small.txt": 7,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 54,
+      "memory.md": 57,
       "oracle-optimized-prompt.md": 2,
       "oracle/README.md": 1,
       "oracle/server.py": 2,
@@ -530462,7 +530477,7 @@
       "llms/basicmeory-llms.txt": 2,
       "llms/jupsol-llms.txt": 4,
       "logging.md": 5,
-      "memory.md": 40,
+      "memory.md": 41,
       "mongo/README.md": 5,
       "mongo/load.py": 7,
       "mongo/queries/02-strategies-and-cards.js": 1,
@@ -533438,7 +533453,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "llms-sitemap.txt": 3,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 213,
+      "memory.md": 215,
       "mongo/queries/05-backtests.js": 1,
       "optimization-workbench-plan.md": 12,
       "optimization-workbench-run.md": 11,
@@ -557819,7 +557834,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms/defillama-llms-free.txt": 3,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 17,
+      "memory.md": 19,
       "mongo/load.py": 3,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
@@ -578671,7 +578686,7 @@
       "liquidity/tests/test_gates.py": 80,
       "liquidity/tests/test_safe_exit.py": 4,
       "llms-sitemap.txt": 4,
-      "memory.md": 33,
+      "memory.md": 34,
       "optimization-workbench-run.md": 1,
       "optimization-workbench.md": 1,
       "oracle/README.md": 1,
@@ -653548,6 +653563,9 @@
       "website/src/worker.js": 7,
       "website/test/api.test.js": 4
     },
+    "includes1": {
+      "memory.md": 1
+    },
     "includes100": {
       "research/tradingview-script-profile-audits/shard-b.jsonl": 1
     },
@@ -679973,7 +679991,7 @@
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-optimized.md": 1,
       "llms/jupsol-llms.txt": 15,
-      "memory.md": 11,
+      "memory.md": 10,
       "optimization-workbench-plan.md": 1,
       "prompts.md": 5,
       "research/tradingview-card-coverage.json": 1,
@@ -680453,7 +680471,7 @@
       "llms-sitemap.txt": 5,
       "llms/basicmeory-llms.txt": 2,
       "llms/jupsol-llms.txt": 30,
-      "memory.md": 37,
+      "memory.md": 38,
       "mongo/tests/test_load.py": 1,
       "onboarding.md": 2,
       "optimization-workbench-plan.md": 5,
@@ -707028,7 +707046,7 @@
       "llms/defillama-llms.txt": 2,
       "llms/jupsol-llms.txt": 11,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 91,
+      "memory.md": 93,
       "mongo/README.md": 3,
       "mongo/load.py": 12,
       "mongo/queries/02-strategies-and-cards.js": 2,
@@ -768025,7 +768043,7 @@
       "llms/basicmeory-llms.txt": 20,
       "llms/jupsol-llms.txt": 1,
       "logging.md": 1,
-      "memory.md": 145,
+      "memory.md": 147,
       "mongo/README.md": 3,
       "mongo/load.py": 2,
       "mongo/schema.py": 5,
@@ -793091,7 +793109,7 @@
       "llms-full.txt": 1,
       "llms-sitemap.txt": 15,
       "logging.md": 1,
-      "memory.md": 26,
+      "memory.md": 27,
       "mongo/README.md": 5,
       "mongo/load.py": 28,
       "mongo/queries/05-backtests.js": 12,
@@ -798192,7 +798210,7 @@
       "liquidity/tests/test_submission_audit.py": 9,
       "llms-sitemap.txt": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 11,
+      "memory.md": 12,
       "mongo/README.md": 2,
       "mongo/load.py": 7,
       "mongo/queries/01-coins-and-bars.js": 4,
@@ -812377,7 +812395,7 @@
       "index/build.py": 1,
       "llms-sitemap.txt": 9,
       "llms/basicmeory-llms.txt": 1,
-      "memory.md": 90,
+      "memory.md": 91,
       "optimization-workbench-run.md": 3,
       "prompts.md": 14,
       "repo-bootstrap-audit-2026-11-06.md": 1,
@@ -907462,7 +907480,7 @@
     "oraclebot": {
       "README.md": 3,
       "docs/FILES.md": 2,
-      "memory.md": 11,
+      "memory.md": 10,
       "prompts.md": 4,
       "website/README.md": 6,
       "website/api/openapi.json": 3,
@@ -927176,7 +927194,7 @@
       "llms-sitemap.txt": 1,
       "llms/basicmeory-llms.txt": 2,
       "llms/jupsol-llms.txt": 8,
-      "memory.md": 2,
+      "memory.md": 3,
       "oracle/coinbase_orders.py": 4,
       "oracle/quotes.py": 1,
       "oracle/tests/test_coinbase_orders.py": 13,
@@ -941166,7 +941184,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_gates.py": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 89,
+      "memory.md": 91,
       "optimization-workbench-run.md": 3,
       "postman/mocks/botmanager-jupiter-swap-v1/README.md": 1,
       "postman/simulations/botmanager-swap-v1/botmanager-swap-v1.context.yaml": 1,
@@ -977647,7 +977665,7 @@
       "memory.md": 2
     },
     "pr229": {
-      "memory.md": 2
+      "memory.md": 3
     },
     "pr2tvrj": {
       "design/bot-control-room/screens/fleet-desktop.png": 1,
@@ -1012076,7 +1012094,7 @@
       "llms-full.txt": 1,
       "llms/basicmeory-llms.txt": 1,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 26,
+      "memory.md": 27,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench.md": 1,
       "oracle/README.md": 5,
@@ -1051354,7 +1051372,7 @@
       "llms-full.txt": 5,
       "llms-sitemap.txt": 27,
       "llms-small.txt": 3,
-      "memory.md": 3,
+      "memory.md": 4,
       "mongo/README.md": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "onboarding.md": 2,
@@ -1056017,7 +1056035,7 @@
       "executor/src/executor/gates.py": 1,
       "index/README.md": 1,
       "index/make_files_doc.py": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "mongo/README.md": 1,
       "mongo/load.py": 5,
       "optimization-workbench-run.md": 2,
@@ -1071879,7 +1071897,7 @@
       "llms-small.txt": 2,
       "llms.txt": 2,
       "llms/jupsol-llms.txt": 12,
-      "memory.md": 22,
+      "memory.md": 24,
       "optimization-workbench-plan.md": 1,
       "oracle/tests/test_gum_orders.py": 1,
       "prompts.md": 3,
@@ -1110529,7 +1110547,7 @@
       "liquidity/tests/test_daemon.py": 3,
       "llms/defillama-llms-free.txt": 1,
       "llms/jupsol-llms.txt": 5,
-      "memory.md": 7,
+      "memory.md": 8,
       "optimization-workbench-run.md": 1,
       "oracle/README.md": 1,
       "oracle/gum_orders.py": 4,
@@ -1158895,7 +1158913,7 @@
       "llms-full.txt": 2,
       "llms-sitemap.txt": 33,
       "llms-small.txt": 1,
-      "memory.md": 17,
+      "memory.md": 18,
       "mongo/queries/08-provenance-and-health.js": 1,
       "onboarding.md": 1,
       "oracle/pyproject.toml": 1,
@@ -1186493,7 +1186511,7 @@
       "llms/jupsol-llms.txt": 9,
       "logging.md": 2,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 41,
+      "memory.md": 40,
       "mongo/README.md": 1,
       "mongo/schema.py": 1,
       "optimization-workbench-plan.md": 4,
@@ -1240485,7 +1240503,7 @@
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 1,
-      "memory.md": 19,
+      "memory.md": 20,
       "mongo/README.md": 2,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/04-decisions.js": 3,
@@ -1319167,6 +1319185,9 @@
     "tests104": {
       "memory.md": 1
     },
+    "tests236": {
+      "memory.md": 1
+    },
     "tests273pass20skip": {
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
@@ -1336551,6 +1336572,7 @@
       "ecosystem/web/index.html": 1,
       "llms-sitemap.txt": 1,
       "llms/jupsol-llms.txt": 5,
+      "memory.md": 1,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
       "prompts.md": 1,
@@ -1442282,13 +1442304,16 @@
     },
     "v470": {
       "docs/FILES.md": 2,
-      "memory.md": 3
+      "memory.md": 2
     },
     "v471": {
       "docs/FILES.md": 1,
-      "memory.md": 4
+      "memory.md": 3
     },
     "v472": {
+      "memory.md": 4
+    },
+    "v473": {
       "memory.md": 2
     },
     "v48": {
@@ -1455601,7 +1455626,7 @@
       "llms.txt": 3,
       "llms/jupsol-llms.txt": 3,
       "market-graph-geometry-prompt.md": 2,
-      "memory.md": 64,
+      "memory.md": 65,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 2,
       "oracle-optimized-prompt.md": 1,
@@ -1487007,7 +1487032,7 @@
       "llms-sitemap.txt": 7,
       "llms-small.txt": 6,
       "llms/basicmeory-llms.txt": 4,
-      "memory.md": 55,
+      "memory.md": 59,
       "prompts.md": 5,
       "research/coin-intelligence/hype-hyperliquid.md": 9,
       "research/five-minute-perps-suite/inherited-evidence-receipt.json": 1,
@@ -1487040,7 +1487065,7 @@
       "ecosystem/wiki.py": 1,
       "index/build.py": 2,
       "llms-sitemap.txt": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "scripts/build_ecosystem_wiki.py": 1
     },
     "wiki_page_not_found": {
@@ -1494531,6 +1494556,9 @@
     },
     "workerd": {
       "website/package-lock.json": 29
+    },
+    "workerdd5ceacb": {
+      "memory.md": 1
     },
     "workerownsmanager": {
       "docs/archive/memory-2026-11-10.md": 1
@@ -1534705,8 +1534733,8 @@
   "stats": {
     "avgDocLength": 1810.9,
     "documents": 3334,
-    "terms": 121361,
-    "termsBeforePrune": 121404,
-    "totalTokens": 6037478
+    "terms": 121370,
+    "termsBeforePrune": 121413,
+    "totalTokens": 6037535
   }
 }

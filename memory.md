@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 472
+Version: 473
+Delta: v472 to v473; refresh local wiki dependency found by CI.
 Delta: v471 to v472; preserve integration and queued D1 lesson receipt.
 Delta: v470 to v471; integrate Oraclebot website with concurrent shared research delivery.
 Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges.
@@ -1231,3 +1232,6 @@ Stele transport closed late in session. Exact activation follow-up create operat
 Website integration: preserve concurrent PR228 research records and pointer. Research archive now includes its new public pointer article (1,522 total). Full shared corpus remains private and is not copied into website. Regenerate public manifest and deterministic indexes after merge; redeploy exact assets and rerun acceptance before final PR229 merge.
 
 D1 cascade lesson exact graph write queued as outbox892eceb2 while transport remains closed. PR229 is https://github.com/mithudso/solmargintrader/pull/229 and initial source commit7bfee4125d01356c00049d679fa4708f30448b39. Integrating remote66f8b62 before final checks.
+
+
+PR229 final research integration is commit152bfb06bdd682ba7cc1cf2bfcd8489a7f4d9cf4. Deployed Workerdd5ceacb-cf6a-417c-8b07-c8e55f582e1c includes1,522 articles. All27 public asset files match source bytes. CI website and docs gates passed; ecosystem tests236 passed but scripts/build_ecosystem_wiki.py --check returned stale because README changed. Rebuilt ecosystem/wiki_content/manifest.json and pages.json and verified current. Await all final-tip CI before merge.
