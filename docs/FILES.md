@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `90c6eec` (2026-11-12T05:00:15+00:00). 3338 tracked files, 79.7 MB.
+**Generated** from `index/INDEX.json` at commit `5914d22` (2026-11-12T08:58:07+00:00). 3349 tracked files, 80.3 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2812 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 537/631 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (221 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2816 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 540/634 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (227 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -37,7 +37,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 142 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1934 files
-- [`research`](#research) — 268 files
+- [`research`](#research) — 279 files
 - [`extension`](#extension) — 126 files
 - [`soltui`](#soltui) — 181 files
 - [`.github`](#github) — 10 files
@@ -343,7 +343,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 217 lines · 14,121 B · description: **curated**
+`doc` · 224 lines · 14,470 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1254 lines · 233,369 B · description: **extracted**
+`doc` · 1276 lines · 239,085 B · description: **extracted**
 
-**Purpose.** Version: 475 Delta: v474 to v475; record live collector and repair unused URI default database validation. Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics.
+**Purpose.** Version: 477 Delta: v476 to v477; begin timestamped coin-news price-reaction study. Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
 
 **Use.** Read it.
 
@@ -703,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1974 lines · 119,046 B · description: **extracted**
+`doc` · 1990 lines · 119,682 B · description: **extracted**
 
-**Purpose.** Version: 223 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection. Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
+**Purpose.** Version: 225 Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request. Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 
 **Use.** Read it.
 
@@ -847,7 +847,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,520 B · description: **extracted**
+`doc` · 323 lines · 20,564 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -911,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32407 lines · 1,619,326 B · description: **extracted**
+`doc` · 32511 lines · 1,626,105 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -21389,7 +21389,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-268 files.
+279 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21476,6 +21476,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 107 lines · 10,780 B · description: **extracted**
 
 **Purpose.** Result: **blind_audit_dissent**. Full depth, write + report, standard profile, Medium floor, three-iteration cap. The final independent review retains one Medium finding. Do not claim convergence or publication readiness from this run. Target: /Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/research/META-ANALYSIS.md Snapshot started: 2026-11-11T17:23:54Z.
+
+**Use.** Read it.
+
+#### `research/NEWS-EVENT-STUDY.md`
+
+`doc` · 116 lines · 11,218 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial measured, outcome-blind publication-time event study. This exploratory study follows 61 reviewed coin/article events from August 14 through November 10, 2026 UTC (89 complete days). It measures subsequent Coinbase USD candle-open returns at 1, 5, 15, 60, 240 and 1,440 minutes. The primary horizon is one hour.
 
 **Use.** Read it.
 
@@ -21842,6 +21850,26 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `OUT`, `BAR_KEYS`, `FEE_BPS`, `SLIPPAGE_BPS`, `DEFAULT_BARS`, `MINUTE`, `SLICES`, `class Cell`, `scaled_params()` and 10 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/minute_sweep.py --help`
+
+#### `research/news_event_report.py`
+
+`code-python` · 337 lines · 18,424 B · description: **extracted**
+
+**Purpose.** Render the frozen coin-news event study without fetching or selecting events.
+
+**Contents.** Defines `PREFIX`, `number()`, `interval()`, `render()`, `_paired_latency()`, `_figure()`. Depends on `research`.
+
+**Use.** `python3 research/news_event_report.py --help`
+
+#### `research/news_event_study.py`
+
+`code-python` · 408 lines · 15,962 B · description: **extracted**
+
+**Purpose.** Exploratory publication-time event study on frozen local news and prices. The analysis never fetches, fills missing candles, or submits orders. A minute open is a bucket proxy; it is not the trade available at publication time.
+
+**Contents.** Defines `VERSION`, `SEED`, `COINS`, `HORIZONS`, `COIN_WORDS`, `EVENT_TYPES`, `COMMENTARY`, `epoch()`, `iso()`, `canonical_url()` and 12 more.
+
+**Use.** `python3 research/news_event_study.py --help`
 
 #### `research/perturb.py`
 
@@ -22759,6 +22787,72 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it; regenerate with the driver that produced it.
 
+#### `research/results/news_events_20261112_eligibility.csv`
+
+`result` · 105 lines · 36,186 B · description: **derived**
+
+**Purpose.** Generated data: 103 rows x 7 columns (coin, url, title, published_at, include, reason, corrected_event_type).
+
+**Contents.** Columns: `coin`, `url`, `title`, `published_at`, `include`, `reason`, `corrected_event_type`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_eligibility.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_event_returns.csv`
+
+`result` · 368 lines · 193,250 B · description: **derived**
+
+**Purpose.** Generated data: 366 rows x 21 columns (coin, url, title, source, timestamp_source, published_at, entry_utc, entry_delay_seconds...).
+
+**Contents.** Columns: `coin`, `url`, `title`, `source`, `timestamp_source`, `published_at`, `entry_utc`, `entry_delay_seconds`, `pre60_end_utc`, `event_type`, `horizon_minutes`, `return_pct`, `benchmark_pct`, `excess_pp`, `prior_week_return_pct`, `prior_week_benchmark_pct`, `prior_week_excess_pp`, `pre60_return_pct`, `pre60_excess_pp`, `paired_excess_delta_pp`, `paired_absolute_delta_pp`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_event_returns.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_latency5_paired.csv`
+
+`result` · 16 lines · 888 B · description: **derived**
+
+**Purpose.** Generated data: 14 rows x 6 columns (coin, horizon_minutes, metric, n, immediate_mean, delayed_mean).
+
+**Contents.** Columns: `coin`, `horizon_minutes`, `metric`, `n`, `immediate_mean`, `delayed_mean`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_latency5_paired.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_latency5_summary.csv`
+
+`result` · 30 lines · 15,062 B · description: **derived**
+
+**Purpose.** Generated data: 28 rows x 39 columns (coin, horizon_minutes, selected, n, up_fraction, median_return_pct, mean_return_pct, return_pct_n...).
+
+**Contents.** Columns: `coin`, `horizon_minutes`, `selected`, `n`, `up_fraction`, `median_return_pct`, `mean_return_pct`, `return_pct_n`, `return_pct_ci_low`, `return_pct_ci_high`, `seven_day_blocks`, `mean_benchmark_pct`, `benchmark_pct_n`, `benchmark_pct_ci_low`, `benchmark_pct_ci_high`, `mean_excess_pp`, `excess_pp_n`, `excess_pp_ci_low`, `excess_pp_ci_high`, `mean_pre60_return_pct`, `pre60_return_pct_n`, `pre60_return_pct_ci_low`, `pre60_return_pct_ci_high`, `mean_pre60_excess_pp`, `pre60_excess_pp_n`, `pre60_excess_pp_ci_low`, `pre60_excess_pp_ci_high`, `mean_prior_week_return_pct`, `prior_week_return_pct_n`, `prior_week_return_pct_ci_low`, `prior_week_return_pct_ci_high`, `mean_paired_excess_delta_pp`, `paired_excess_delta_pp_n`, `paired_excess_delta_pp_ci_low`, `paired_excess_delta_pp_ci_high`, `mean_paired_absolute_delta_pp`, `paired_absolute_delta_pp_n`, `paired_absolute_delta_pp_ci_low`, `paired_absolute_delta_pp_ci_high`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_latency5_summary.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_manifest.json`
+
+`result` · 3082 lines · 135,636 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (version, delta, study, selection, price_acquisition, analysis_source_provenance...).
+
+**Use.** `json.load(open('research/results/news_events_20261112_manifest.json'))`
+
+#### `research/results/news_events_20261112_reactions.png`
+
+`result` · 0 lines · 100,204 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/results/news_events_20261112_summary.csv`
+
+`result` · 44 lines · 22,371 B · description: **derived**
+
+**Purpose.** Generated data: 42 rows x 39 columns (coin, horizon_minutes, selected, n, up_fraction, median_return_pct, mean_return_pct, return_pct_n...).
+
+**Contents.** Columns: `coin`, `horizon_minutes`, `selected`, `n`, `up_fraction`, `median_return_pct`, `mean_return_pct`, `return_pct_n`, `return_pct_ci_low`, `return_pct_ci_high`, `seven_day_blocks`, `mean_benchmark_pct`, `benchmark_pct_n`, `benchmark_pct_ci_low`, `benchmark_pct_ci_high`, `mean_excess_pp`, `excess_pp_n`, `excess_pp_ci_low`, `excess_pp_ci_high`, `mean_pre60_return_pct`, `pre60_return_pct_n`, `pre60_return_pct_ci_low`, `pre60_return_pct_ci_high`, `mean_pre60_excess_pp`, `pre60_excess_pp_n`, `pre60_excess_pp_ci_low`, `pre60_excess_pp_ci_high`, `mean_prior_week_return_pct`, `prior_week_return_pct_n`, `prior_week_return_pct_ci_low`, `prior_week_return_pct_ci_high`, `mean_paired_excess_delta_pp`, `paired_excess_delta_pp_n`, `paired_excess_delta_pp_ci_low`, `paired_excess_delta_pp_ci_high`, `mean_paired_absolute_delta_pp`, `paired_absolute_delta_pp_n`, `paired_absolute_delta_pp_ci_low`, `paired_absolute_delta_pp_ci_high`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_summary.csv')` — regenerate with the driver that names it.
+
 #### `research/results/perturb_all_singles_long.csv`
 
 `result` · 27 lines · 3,018 B · description: **derived**
@@ -23660,6 +23754,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `bars()`, `class FollowupTests`. Depends on `backtester`, `research`.
 
 **Use.** `python3 -m pytest research/tests/test_meta_followups.py -q`
+
+#### `research/tests/test_news_event_study.py`
+
+`test` · 224 lines · 7,855 B · description: **extracted**
+
+**Purpose.** Protect timestamp alignment, selection independence and missing-data behavior.
+
+**Contents.** Defines `class NewsEvents`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_news_event_study.py -q`
 
 #### `research/tests/test_shape_study.py`
 
@@ -26883,7 +26987,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 479 lines · 20,860 B · description: **curated**
+`ci` · 479 lines · 20,902 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
