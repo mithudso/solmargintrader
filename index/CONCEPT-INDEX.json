@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T22:10:46+00:00",
+  "generatedAt": "2026-11-12T22:27:34+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1883,
+      "matchingFiles": 1889,
       "shown": 30,
       "files": [
         {
@@ -48,6 +48,10 @@
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 126
+        },
+        {
+          "path": ".cdo/reviews-2026-11-12/ecosystem-full-final.json",
+          "hits": 124
         },
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
@@ -79,7 +83,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 75
+          "hits": 76
         },
         {
           "path": ".cdo/reviews-2026-11-12/liquidity.json",
@@ -140,10 +144,6 @@
         {
           "path": ".cdo/reviews-2026-11-12/extension-root.json",
           "hits": 37
-        },
-        {
-          "path": "docs/archive/memory-2026-11-10.md",
-          "hits": 37
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1553,
+      "matchingFiles": 1554,
       "shown": 30,
       "files": [
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1546,
+      "matchingFiles": 1547,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 866,
+      "matchingFiles": 871,
       "shown": 30,
       "files": [
         {
@@ -595,7 +595,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 384
+          "hits": 385
         },
         {
           "path": "FILES.md",
@@ -611,7 +611,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 159
+          "hits": 161
         },
         {
           "path": "docs/archive/memory-2026-11-10.md",
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 832,
+      "matchingFiles": 834,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 736,
+      "matchingFiles": 737,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 490,
+      "matchingFiles": 491,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 422,
+      "matchingFiles": 423,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 241,
+      "matchingFiles": 243,
       "shown": 30,
       "files": [
         {
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 182,
+      "matchingFiles": 183,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 180,
+      "matchingFiles": 181,
       "shown": 30,
       "files": [
         {

@@ -6959,8 +6959,8 @@
     "T1",
     "T4"
    ],
-   "sha": "948679b0c0ee361f5a6d2d94732e8ebe4e306943",
-   "verdict": "CLEAN"
+   "sha": "599ce74d035d6cc5e8716af041470e912acec8ec",
+   "verdict": "REVIEWED-FIXED"
   },
   "executor/tests/test_optimizer_regressions.py": {
    "date": "2026-11-12",
@@ -7031,8 +7031,8 @@
     "T1",
     "T4"
    ],
-   "sha": "f0228beb8bab5b9c99b2abec9b1b3c7721b6cd12",
-   "verdict": "CLEAN"
+   "sha": "34cf93f1413e77df54bfe0d60a5decd6de680d1f",
+   "verdict": "REVIEWED-FIXED"
   },
   "executor/tests/test_surfaces.py": {
    "date": "2026-11-12",
@@ -7055,8 +7055,8 @@
     "T1",
     "T4"
    ],
-   "sha": "76a53328c22da279900d61de1abc18abe4003f1f",
-   "verdict": "CLEAN"
+   "sha": "e68840c2bbe859a933a55e5ed9e2ead0fb79ae3e",
+   "verdict": "REVIEWED-FIXED"
   },
   "executor/tests/test_tokens_config.py": {
    "date": "2026-11-12",
@@ -7079,8 +7079,8 @@
     "T1",
     "T4"
    ],
-   "sha": "de2d37f8100602c242ce2ac4198e4889fad2b961",
-   "verdict": "CLEAN"
+   "sha": "7078d65ed03b583ae7b9ae0285b34dcfb3972b2a",
+   "verdict": "REVIEWED-FIXED"
   },
   "executor/tests/test_txverify.py": {
    "date": "2026-11-12",
@@ -19520,6 +19520,100 @@
    "skipped_unchanged": 0,
    "started": "2026-11-12T22:05:00Z",
    "status": "FOUR_FIXTURE_DELTAS_REVIEWED_FULL_INTEGRATION_PENDING"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-12T22:25:12Z",
+   "id": "2026-11-12T22:21:43Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Exact four test import-only deltas preserve architecture; earlier repository M3 Medium settings/error/sink residuals remain PARTIAL.",
+     "state": "ran"
+    },
+    "M4": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 0,
+     "reason": "This delta contains only four existing pytest modules, no new user entrypoint. Existing41file M5 qualification limitations remain explicitly partial in remaining-source-dispositions.json.",
+     "state": "na"
+    },
+    "P1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 4,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Exact import multiset and all non-import AST preserved; dependencies/locks/advisory graph unchanged; inherit scoped prior T2 receipt and explicit limits.",
+     "state": "ran"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Root reproduced CI I001; four import groups corrected. Component Ruff0.17.4 check src/tests and format38files both completed0; full offline557passed/5networkdeselected exit0. Final remote CI remains separate.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 4,
+     "reason": "Global parallelism/setup-hoisting equivalence remains BLOCKED (ambiguous intent/equivalence). Four import-only deltas preserve test semantics and distinct assertions; no unsafe thread rewrite.",
+     "state": "blocked"
+    }
+   },
+   "reviewed": 4,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-12T22:21:43Z",
+   "status": "FULL_SOURCE_INSPECTION_SHORT_INTEGRATION_GREEN_SOLTUI_AND_DELIVERY_PENDING"
   }
  ],
  "version": 1

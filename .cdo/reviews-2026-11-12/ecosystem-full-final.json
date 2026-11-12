@@ -1,0 +1,3384 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "observed_at": "2026-11-12T22:15:31.023263+00:00",
+  "component": "ecosystem",
+  "stage": "complete_current_source_offline_integration_gate",
+  "status": "pass",
+  "run_id": "ecosystem-suite-f068757e35d948399d0cb2b7de13e21c",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "head": "d22bd2454a41ab54020f6363fe505901873891ef",
+  "git_head_query_exit": 0,
+  "git_status_query_exit": 0,
+  "git_status_porcelain": "",
+  "command": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+    "/tmp/oraclebot-final-ecosystem-20261112-yo6b013p/run_suite.py"
+  ],
+  "authorization": {
+    "ORACLEBOT_INDEX_CURRENT": "1",
+    "ORACLEBOT_MERGED_CURRENT": "1",
+    "source": "explicit parent START_FOUR_SHORT_GATES at clean HEADd22bd245"
+  },
+  "launch": "/tmp/oraclebot-final-three-gates-20261112/ecosystem-final-launch.json",
+  "log": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/output.log",
+  "completed_process_exit": 0,
+  "process_seconds": 30.552664832997834,
+  "suite_result": "/tmp/oraclebot-final-ecosystem-20261112-yo6b013p/runs/ecosystem-suite-f068757e35d948399d0cb2b7de13e21c/result.json",
+  "suite_seconds": 28.735605249996297,
+  "discovered": {
+    "count": 250,
+    "loader_errors": []
+  },
+  "tests": 250,
+  "failures": [],
+  "errors": [],
+  "skips": [],
+  "loader_errors": [],
+  "forbidden_events": [],
+  "guarded_python_pids": [
+    14522,
+    14555,
+    14557,
+    14560,
+    14563,
+    15124,
+    15130
+  ],
+  "constructed_children": [
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_cli.CliTests.test_current_server_and_paper_module_help_have_examples_without_owner_writes",
+      "child_pid": 14555,
+      "executable": "python",
+      "argv_sha256": "b49fe72209db3077b5c2f1923841b726b4a94ba3f03cfb3ea84798ca0d795988",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_cli.CliTests.test_current_server_and_paper_module_help_have_examples_without_owner_writes",
+      "child_pid": 14557,
+      "executable": "python",
+      "argv_sha256": "7e6fcc54cb08c194df46213747c2d079fd1ee3ba6ea86df05007d62dd86ad815",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_cli.CliTests.test_current_server_and_paper_module_help_have_examples_without_owner_writes",
+      "child_pid": 14560,
+      "executable": "python",
+      "argv_sha256": "5236a063a59c0975ee905b0f0e2f5294647f0a16d701a7361cb0315498dae238",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_cli.CliTests.test_current_server_and_paper_module_help_have_examples_without_owner_writes",
+      "child_pid": 14563,
+      "executable": "python",
+      "argv_sha256": "2602636f8f1292c9d7185d615805cd0acf4084f92b32a0ad39811ffc049786db",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_setup.SetupTests.test_health_stdout_flood_is_bounded_before_child_finishes",
+      "child_pid": 15124,
+      "executable": "python",
+      "argv_sha256": "75541725940c1f0c24ae8e3ebd62f53411a937a3d2d4df19cc881b559479290b",
+      "completed_returncode": -15,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_setup.SetupTests.test_subprocess_timeout_is_bounded_and_logs_are_not_returned",
+      "child_pid": 15130,
+      "executable": "python",
+      "argv_sha256": "d4e3aae28ebc0e970543b70be8bf5d2784def5ac953a90dcc84a694a2b6018f0",
+      "completed_returncode": -15,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_swaps.SwapTests.test_browser_contract_default_and_bounds_require_a_manual_sdk_click",
+      "child_pid": 15151,
+      "executable": "node",
+      "argv_sha256": "b02c4a58f58ac9c1f26f80e0b76c9b4eae818b70015b01e15b76590904128ce2",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_swaps.SwapTests.test_older_config_response_cannot_replace_latest_pair_or_error_state",
+      "child_pid": 15152,
+      "executable": "node",
+      "argv_sha256": "52cc74f5045fbe7f87311a06a83ab3278efa028fe246b35268aa68949ce2ca9b",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_tradingview_chart.TradingViewChartTests.test_external_chart_load_close_and_isolation",
+      "child_pid": 15155,
+      "executable": "node",
+      "argv_sha256": "7387df53188eeda131fc51b54d5447c35cb08fd7a6d1bf8edb35cf25aa55af84",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_ui_contract.UiContractTests.test_client_behavior_contract",
+      "child_pid": 15157,
+      "executable": "node",
+      "argv_sha256": "07ab409dc20368091b16c4b689111c4c264152ccdc024ec658b000b7ba41f4c5",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_ui_contract.UiContractTests.test_oracle_chart_refresh_preserves_hidden_overlay_and_single_instance",
+      "child_pid": 15158,
+      "executable": "node",
+      "argv_sha256": "344b68abd372670f222a8adb9cfd1598825d6aab03529437e4c060f212db5c18",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15230,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15234,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15240,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15251,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15252,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15254,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "child_pid": 15256,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15265,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15268,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15272,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15276,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15279,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15280,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15282,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15283,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15284,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15285,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15290,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15291,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "child_pid": 15293,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15300,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15315,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15319,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15329,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15332,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15333,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15334,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15335,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15336,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15337,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15338,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15340,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "child_pid": 15341,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15342,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15343,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15344,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15347,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15348,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15349,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "child_pid": 15350,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15351,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15352,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15353,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15358,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15363,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15366,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "child_pid": 15367,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15370,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15371,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15373,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15376,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15378,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15379,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "child_pid": 15380,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15386,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15387,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15389,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15394,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15395,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15397,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "child_pid": 15400,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15412,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15420,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15429,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15447,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15453,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15460,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "child_pid": 15467,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15485,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15495,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15497,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15500,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15501,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15502,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "child_pid": 15508,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15526,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15536,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15537,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15541,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15544,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15545,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15547,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15548,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15550,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15551,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15552,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15553,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15554,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15555,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15556,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15557,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15558,
+      "executable": "git",
+      "argv_sha256": "711be5f664f3f3b518675100919f18fc1d3de205b3391b24b55ee7bb2780d8f1",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15560,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15563,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15564,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15565,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15566,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15567,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15570,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "child_pid": 15574,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15576,
+      "executable": "git",
+      "argv_sha256": "2dbad063114d895086acab820d823535ee79116295962141b47450f4023ad5cc",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15579,
+      "executable": "git",
+      "argv_sha256": "88854b473d85515395ba0da59e3d4a9c528f80a1343e556ac2f7bf5e9f4eb31f",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15580,
+      "executable": "git",
+      "argv_sha256": "48229019bf847f0400b0f9af7413087f15169604b67d9664febc08648b0252b6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15584,
+      "executable": "git",
+      "argv_sha256": "b1a8b847ffb76adbb0fe67694adc3069538b68df86bf5a349fe3e9ffcc4c664c",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15585,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15586,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15587,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15588,
+      "executable": "git",
+      "argv_sha256": "d201e16d532f8572c03d34c7670ee799f5ee492ff78905d6442a3adb2de47a80",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15589,
+      "executable": "git",
+      "argv_sha256": "0d8c2c81e0e653deb0057aaf37d65494e94a61ba539fb9fac39025b828890b64",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14522,
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "child_pid": 15590,
+      "executable": "git",
+      "argv_sha256": "481787b01d4e7e118bf0e0224bb17c17545ead9b79ddb9ccf00499e5fe56c27a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    }
+  ],
+  "native_children": [
+    {
+      "child_pid": 15151,
+      "executable": "node",
+      "test": "ecosystem.tests.test_swaps.SwapTests.test_browser_contract_default_and_bounds_require_a_manual_sdk_click",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15152,
+      "executable": "node",
+      "test": "ecosystem.tests.test_swaps.SwapTests.test_older_config_response_cannot_replace_latest_pair_or_error_state",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15155,
+      "executable": "node",
+      "test": "ecosystem.tests.test_tradingview_chart.TradingViewChartTests.test_external_chart_load_close_and_isolation",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15157,
+      "executable": "node",
+      "test": "ecosystem.tests.test_ui_contract.UiContractTests.test_client_behavior_contract",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15158,
+      "executable": "node",
+      "test": "ecosystem.tests.test_ui_contract.UiContractTests.test_oracle_chart_refresh_preserves_hidden_overlay_and_single_instance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15230,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15234,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15240,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15251,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15252,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15254,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15256,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15265,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15268,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15272,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15276,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15279,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15280,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15282,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15283,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15284,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15285,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15290,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15291,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15293,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15300,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15315,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15319,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15329,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15332,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15333,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15334,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15335,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15336,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15337,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15338,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15340,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15341,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15342,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15343,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15344,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15347,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15348,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15349,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15350,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15351,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15352,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15353,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15358,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15363,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15366,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15367,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15370,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15371,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15373,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15376,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15378,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15379,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15380,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15386,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15387,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15389,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15394,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15395,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15397,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15400,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15412,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15420,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15429,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15447,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15453,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15460,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15467,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15485,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15495,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15497,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15500,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15501,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15502,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15508,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15526,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15536,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15537,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15541,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15544,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15545,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15547,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15548,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15550,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15551,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15552,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15553,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15554,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15555,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15556,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15557,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15558,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15560,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15563,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15564,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15565,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15566,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15567,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15570,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15574,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15576,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15579,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15580,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15584,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15585,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15586,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15587,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15588,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15589,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 15590,
+      "executable": "git",
+      "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+      "completed_returncode": 0
+    }
+  ],
+  "all_constructed_children_have_completed_wait_poll": true,
+  "os_after_exit": [
+    {
+      "pid": 14522,
+      "query": [
+        "ps",
+        "-p",
+        "14522",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14555,
+      "query": [
+        "ps",
+        "-p",
+        "14555",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14557,
+      "query": [
+        "ps",
+        "-p",
+        "14557",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14560,
+      "query": [
+        "ps",
+        "-p",
+        "14560",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14563,
+      "query": [
+        "ps",
+        "-p",
+        "14563",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15124,
+      "query": [
+        "ps",
+        "-p",
+        "15124",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15130,
+      "query": [
+        "ps",
+        "-p",
+        "15130",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15151,
+      "query": [
+        "ps",
+        "-p",
+        "15151",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15152,
+      "query": [
+        "ps",
+        "-p",
+        "15152",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15155,
+      "query": [
+        "ps",
+        "-p",
+        "15155",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15157,
+      "query": [
+        "ps",
+        "-p",
+        "15157",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15158,
+      "query": [
+        "ps",
+        "-p",
+        "15158",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15230,
+      "query": [
+        "ps",
+        "-p",
+        "15230",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15234,
+      "query": [
+        "ps",
+        "-p",
+        "15234",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15240,
+      "query": [
+        "ps",
+        "-p",
+        "15240",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15251,
+      "query": [
+        "ps",
+        "-p",
+        "15251",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15252,
+      "query": [
+        "ps",
+        "-p",
+        "15252",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15254,
+      "query": [
+        "ps",
+        "-p",
+        "15254",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15256,
+      "query": [
+        "ps",
+        "-p",
+        "15256",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15265,
+      "query": [
+        "ps",
+        "-p",
+        "15265",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15268,
+      "query": [
+        "ps",
+        "-p",
+        "15268",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15272,
+      "query": [
+        "ps",
+        "-p",
+        "15272",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15276,
+      "query": [
+        "ps",
+        "-p",
+        "15276",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15279,
+      "query": [
+        "ps",
+        "-p",
+        "15279",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15280,
+      "query": [
+        "ps",
+        "-p",
+        "15280",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15282,
+      "query": [
+        "ps",
+        "-p",
+        "15282",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15283,
+      "query": [
+        "ps",
+        "-p",
+        "15283",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15284,
+      "query": [
+        "ps",
+        "-p",
+        "15284",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15285,
+      "query": [
+        "ps",
+        "-p",
+        "15285",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15290,
+      "query": [
+        "ps",
+        "-p",
+        "15290",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15291,
+      "query": [
+        "ps",
+        "-p",
+        "15291",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15293,
+      "query": [
+        "ps",
+        "-p",
+        "15293",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15300,
+      "query": [
+        "ps",
+        "-p",
+        "15300",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15315,
+      "query": [
+        "ps",
+        "-p",
+        "15315",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15319,
+      "query": [
+        "ps",
+        "-p",
+        "15319",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15329,
+      "query": [
+        "ps",
+        "-p",
+        "15329",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15332,
+      "query": [
+        "ps",
+        "-p",
+        "15332",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15333,
+      "query": [
+        "ps",
+        "-p",
+        "15333",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15334,
+      "query": [
+        "ps",
+        "-p",
+        "15334",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15335,
+      "query": [
+        "ps",
+        "-p",
+        "15335",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15336,
+      "query": [
+        "ps",
+        "-p",
+        "15336",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15337,
+      "query": [
+        "ps",
+        "-p",
+        "15337",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15338,
+      "query": [
+        "ps",
+        "-p",
+        "15338",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15340,
+      "query": [
+        "ps",
+        "-p",
+        "15340",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15341,
+      "query": [
+        "ps",
+        "-p",
+        "15341",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15342,
+      "query": [
+        "ps",
+        "-p",
+        "15342",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15343,
+      "query": [
+        "ps",
+        "-p",
+        "15343",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15344,
+      "query": [
+        "ps",
+        "-p",
+        "15344",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15347,
+      "query": [
+        "ps",
+        "-p",
+        "15347",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15348,
+      "query": [
+        "ps",
+        "-p",
+        "15348",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15349,
+      "query": [
+        "ps",
+        "-p",
+        "15349",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15350,
+      "query": [
+        "ps",
+        "-p",
+        "15350",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15351,
+      "query": [
+        "ps",
+        "-p",
+        "15351",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15352,
+      "query": [
+        "ps",
+        "-p",
+        "15352",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15353,
+      "query": [
+        "ps",
+        "-p",
+        "15353",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15358,
+      "query": [
+        "ps",
+        "-p",
+        "15358",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15363,
+      "query": [
+        "ps",
+        "-p",
+        "15363",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15366,
+      "query": [
+        "ps",
+        "-p",
+        "15366",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15367,
+      "query": [
+        "ps",
+        "-p",
+        "15367",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15370,
+      "query": [
+        "ps",
+        "-p",
+        "15370",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15371,
+      "query": [
+        "ps",
+        "-p",
+        "15371",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15373,
+      "query": [
+        "ps",
+        "-p",
+        "15373",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15376,
+      "query": [
+        "ps",
+        "-p",
+        "15376",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15378,
+      "query": [
+        "ps",
+        "-p",
+        "15378",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15379,
+      "query": [
+        "ps",
+        "-p",
+        "15379",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15380,
+      "query": [
+        "ps",
+        "-p",
+        "15380",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15386,
+      "query": [
+        "ps",
+        "-p",
+        "15386",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15387,
+      "query": [
+        "ps",
+        "-p",
+        "15387",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15389,
+      "query": [
+        "ps",
+        "-p",
+        "15389",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15394,
+      "query": [
+        "ps",
+        "-p",
+        "15394",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15395,
+      "query": [
+        "ps",
+        "-p",
+        "15395",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15397,
+      "query": [
+        "ps",
+        "-p",
+        "15397",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15400,
+      "query": [
+        "ps",
+        "-p",
+        "15400",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15412,
+      "query": [
+        "ps",
+        "-p",
+        "15412",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15420,
+      "query": [
+        "ps",
+        "-p",
+        "15420",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15429,
+      "query": [
+        "ps",
+        "-p",
+        "15429",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15447,
+      "query": [
+        "ps",
+        "-p",
+        "15447",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15453,
+      "query": [
+        "ps",
+        "-p",
+        "15453",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15460,
+      "query": [
+        "ps",
+        "-p",
+        "15460",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15467,
+      "query": [
+        "ps",
+        "-p",
+        "15467",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15485,
+      "query": [
+        "ps",
+        "-p",
+        "15485",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15495,
+      "query": [
+        "ps",
+        "-p",
+        "15495",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15497,
+      "query": [
+        "ps",
+        "-p",
+        "15497",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15500,
+      "query": [
+        "ps",
+        "-p",
+        "15500",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15501,
+      "query": [
+        "ps",
+        "-p",
+        "15501",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15502,
+      "query": [
+        "ps",
+        "-p",
+        "15502",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15508,
+      "query": [
+        "ps",
+        "-p",
+        "15508",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15526,
+      "query": [
+        "ps",
+        "-p",
+        "15526",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15536,
+      "query": [
+        "ps",
+        "-p",
+        "15536",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15537,
+      "query": [
+        "ps",
+        "-p",
+        "15537",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15541,
+      "query": [
+        "ps",
+        "-p",
+        "15541",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15544,
+      "query": [
+        "ps",
+        "-p",
+        "15544",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15545,
+      "query": [
+        "ps",
+        "-p",
+        "15545",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15547,
+      "query": [
+        "ps",
+        "-p",
+        "15547",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15548,
+      "query": [
+        "ps",
+        "-p",
+        "15548",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15550,
+      "query": [
+        "ps",
+        "-p",
+        "15550",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15551,
+      "query": [
+        "ps",
+        "-p",
+        "15551",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15552,
+      "query": [
+        "ps",
+        "-p",
+        "15552",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15553,
+      "query": [
+        "ps",
+        "-p",
+        "15553",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15554,
+      "query": [
+        "ps",
+        "-p",
+        "15554",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15555,
+      "query": [
+        "ps",
+        "-p",
+        "15555",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15556,
+      "query": [
+        "ps",
+        "-p",
+        "15556",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15557,
+      "query": [
+        "ps",
+        "-p",
+        "15557",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15558,
+      "query": [
+        "ps",
+        "-p",
+        "15558",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15560,
+      "query": [
+        "ps",
+        "-p",
+        "15560",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15563,
+      "query": [
+        "ps",
+        "-p",
+        "15563",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15564,
+      "query": [
+        "ps",
+        "-p",
+        "15564",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15565,
+      "query": [
+        "ps",
+        "-p",
+        "15565",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15566,
+      "query": [
+        "ps",
+        "-p",
+        "15566",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15567,
+      "query": [
+        "ps",
+        "-p",
+        "15567",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15570,
+      "query": [
+        "ps",
+        "-p",
+        "15570",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15574,
+      "query": [
+        "ps",
+        "-p",
+        "15574",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15576,
+      "query": [
+        "ps",
+        "-p",
+        "15576",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15579,
+      "query": [
+        "ps",
+        "-p",
+        "15579",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15580,
+      "query": [
+        "ps",
+        "-p",
+        "15580",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15584,
+      "query": [
+        "ps",
+        "-p",
+        "15584",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15585,
+      "query": [
+        "ps",
+        "-p",
+        "15585",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15586,
+      "query": [
+        "ps",
+        "-p",
+        "15586",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15587,
+      "query": [
+        "ps",
+        "-p",
+        "15587",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15588,
+      "query": [
+        "ps",
+        "-p",
+        "15588",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15589,
+      "query": [
+        "ps",
+        "-p",
+        "15589",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15590,
+      "query": [
+        "ps",
+        "-p",
+        "15590",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    }
+  ],
+  "os_all_recorded_pids_absent": true,
+  "loaded_first_party": [
+    {
+      "pid": 14560,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    },
+    {
+      "pid": 14563,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    },
+    {
+      "pid": 14522,
+      "modules": {
+        "soltui": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/__init__.py",
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "botmanager": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/src/botmanager/__init__.py",
+        "oracle": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/__init__.py",
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    },
+    {
+      "pid": 14557,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py",
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    },
+    {
+      "pid": 14555,
+      "modules": {
+        "ecosystem": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py"
+      }
+    }
+  ],
+  "source_before": "/tmp/oraclebot-final-ecosystem-20261112-yo6b013p/runs/ecosystem-suite-f068757e35d948399d0cb2b7de13e21c/source-before.json",
+  "source_before_sha256": "7eef5f976214fb524cde10830d1b4af36b0b03d7849f7f1f9ee5f32fd0648a7b",
+  "source_after": "/tmp/oraclebot-final-ecosystem-20261112-yo6b013p/runs/ecosystem-suite-f068757e35d948399d0cb2b7de13e21c/source-after.json",
+  "source_after_sha256": "7eef5f976214fb524cde10830d1b4af36b0b03d7849f7f1f9ee5f32fd0648a7b",
+  "source_file_count": 682,
+  "source_stable": true,
+  "harness_before": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "cfe3debaca0f1db13b38304bd7f682c5b1a9cf736def052ddec5a32b82641544",
+    "run_suite.py": "0e45ce025645a7927f02ca2377d871994b42bfb6abb2a5071b3a6c82cc8a4dfd"
+  },
+  "harness_after": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "cfe3debaca0f1db13b38304bd7f682c5b1a9cf736def052ddec5a32b82641544",
+    "run_suite.py": "0e45ce025645a7927f02ca2377d871994b42bfb6abb2a5071b3a6c82cc8a4dfd"
+  },
+  "harness_current": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "cfe3debaca0f1db13b38304bd7f682c5b1a9cf736def052ddec5a32b82641544",
+    "run_suite.py": "0e45ce025645a7927f02ca2377d871994b42bfb6abb2a5071b3a6c82cc8a4dfd"
+  },
+  "harness_stable": true,
+  "admissions_sha256": "8475be8015be5d58e4dbdd7c6e806a2157a2e4ee96a3167c97abb89a4f53fa3d",
+  "home": "/Users/mitch",
+  "fresh_state_roots": {
+    "SOLTUI_CONFIG_DIR": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_config_dir",
+    "SOLTUI_LOG_DIR": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_log_dir",
+    "SOLTUI_SUPPORT_DIR": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_support_dir",
+    "SOLMARGINTRADER_STORAGE": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/solmargintrader_storage",
+    "SOLBOT_HOME": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/solbot_home",
+    "SOLBOT_ECOSYSTEM_HOME": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/solbot_ecosystem_home",
+    "AERO_LP_HOME": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/aero_lp_home",
+    "SOLMT_DATA_DIR": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/solmt_data_dir",
+    "SOLTUI_KEY_DIR": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_key_dir",
+    "SOLTUI_LAUNCHAGENTS_DIR": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_launchagents_dir",
+    "SOLTUI_JOURNAL": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_journal",
+    "SOLTUI_APP_SUPPORT_ROOT": "/tmp/oraclebot-ecosystem-suite-state-z4vyznqp/soltui_app_support_root"
+  },
+  "first_failed_attempt_receipt": "/tmp/oraclebot-initial-three-gates-20261112/initial-receipt.json",
+  "focused_remediation_receipt": "/tmp/oraclebot-component-compat-20261112/fixture-final-receipt.json",
+  "limits": [
+    "Only this component suite at exact frozen source/harness is qualified. No whole-repository CLEAN/convergence, profitability, installed/live deployment, billing or service readiness claim.",
+    "Native Node/Git children do not inherit Python hooks. Their exact source/test/payload/binary admissions and completed child accounting qualify only the reviewed fixture commands.",
+    "No source/docs/report/index/ledger/HEAD edits, install, research acquisition, parameter search, provider/model/service/live venue operation, signing or orders.",
+    "First failed full attempts remain failures; this is a separate fresh full run."
+  ]
+}

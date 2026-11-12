@@ -19,11 +19,11 @@ from conftest import (
     make_engine,
     tx_json,
 )
+
+from executor import api, cli, registry, txverify
 from executor.config import VALIDATION_STRATEGY
 from executor.errors import ExecutorError
 from executor.tokens import USDC_MINT, WSOL_MINT
-
-from executor import api, cli, registry, txverify
 
 AMOUNT, FEE, OUT = 10_000_000, 10_000, 900_000
 

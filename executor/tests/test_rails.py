@@ -5,14 +5,14 @@ from decimal import Decimal
 
 import pytest
 from conftest import PRICES, QUOTE_SOL_USDC
+
+from executor import gates, rails
 from executor.config import VALIDATION_STRATEGY, Config
 from executor.errors import Refused
 from executor.journal import Journal
 from executor.jupiter import parse_quote
 from executor.quote import evaluate
 from executor.tokens import USDC_MINT, WSOL_MINT, resolve
-
-from executor import gates, rails
 
 SOL, USDC = resolve("SOL"), resolve("USDC")
 PRICE_MAP = {

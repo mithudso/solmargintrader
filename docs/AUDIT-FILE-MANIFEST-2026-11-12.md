@@ -1,0 +1,531 @@
+# Repository delivery file manifest
+
+Version: 0.1.0
+Delta: initial full absolute-path inventory for audit delivery.
+
+This inventory names every repository path changed by the audit branch relative to
+default-branch commit e7194fe8ae4a9894bac8fa65690036c14dc7b4e1. It includes earlier
+task-owned checkpoints, the current source corrections and the supporting records.
+It does not certify optimizer convergence, deployed behavior or an uncompleted test.
+Host-private hook approvals and temporary diagnostic logs remain outside this repository.
+
+Canonical paths below become current after merge and safe default-branch synchronization.
+The implementation worktree is /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112.
+The delivery PR is https://github.com/mithudso/solmargintrader/pull/234
+
+Total repository paths: 514
+
+- /Users/mitch/dev/oraclebot.io/.cdo/ledger.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-boundaries-tools.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-cli-triangle.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-data-boundaries.iter1.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-data-boundaries.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-final-production.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-final-tests.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-full-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-independent-final-failed.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-independent-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-independent-initial.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-math-strategies.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-root-blind-fixes.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-simulators-launcher.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/botmanager-full-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/botmanager-root.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/coverage.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/data-exclusions.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/dependency-license-import-inventory.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/dependency-supplement.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/design-prototypes.iter1.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/design-prototypes.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ecosystem-full-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ecosystem.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/executor-ci-import-deltas.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/executor-independent-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/executor-remediation.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/executor.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/extension-independent-wrapper-recheck.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/extension-root.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/extension-tests-harness.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/final-nonfunctional-deltas.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/final-owned-integration.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/final-toolchain-fixes.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/index.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/initial-short-integration-attempts.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/integration-fixture-corrections.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/integration-fixture-current-rows.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/inventory-independent-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/inventory-independent-initial.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/jsonalias-notice-receipt.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-final-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-final-receipt.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-executor-imports-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-executor-imports-receipt.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-fixture-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ledger-post-fixture-receipt.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity-independent-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity-independent-iter1.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity-python-advisories.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity.iter1.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/liquidity.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/medium-files.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/mongo.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/news-event-current-rows.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/news-event-incoming.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/news-event-independent-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/operation-inventory-generator.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/oracle-full-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/oracle.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/owned-fixes.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/preserved-owner-bindings.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/python-advisories.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/recorded.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/remaining-source-dispositions.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/remaining.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/repo-scope-assessment.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/repo-scope-final-dispositions.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/research-scripts.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/runtime-source-supplement.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/runtime-supplement-coverage.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/runtime-supplement-health.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/scanner-shared-observability-closure.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/small-files.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-domain-work-log.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-domain.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-fullsuite-fixture-deltas.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-independent.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-owner-evidence.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-root-lifecycle-tests.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-root-tests.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-root-ui-tests.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/soltui-worker.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/source-epoch-timing.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/source-version-deltas.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/tool-launcher-live-help.iter1.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/tool-launcher-live-help.iter2.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/tool-launcher-live-help.iter3.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/tool-launcher-live-help.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/ui-help.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/vote-explanation-interval.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-engine.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-npm-advisories.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-ui.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-worker.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.env.example — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/.github/copilot-instructions.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/.github/dependabot.yml — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/.github/workflows/ci.yml — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/.github/workflows/javascript-quality.yml — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/.github/workflows/website.yml — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/AGENTS.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/CLAUDE.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/GEMINI.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/README.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/backtester/__init__.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/botcli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/cli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/archive_price.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/compound.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/continuation.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/cpcv.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/data.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/dcasim.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/deflated_sharpe.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/engine.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/fetch.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/fetch_minutes.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/fetch_minutes_alt.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/funding.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/gridsim.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/history_store.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/kucoin_history.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/market_diagnostics.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/pairs.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/run_archive.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/scorecard.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/strategies/composite.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/strategy_cards.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/ticks.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/trianglesim.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/universe.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/core/zec_ensemble.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/gridcli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/paircli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/run.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_alternate_fetch_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_archive_price_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_card_inputs_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_cli_boundaries_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_continuation_identity_regressions.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_continuation_metrics_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_cpcv.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_cross_asset_cpcv.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_dca_cpcv_blind_regressions.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_deflated_sharpe.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_ensemble_state_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_evidence_inputs_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_fetch_validation_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_index.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_index_runtime_guards.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_index_search_tooling.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_indicators.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_market_request_logging.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_minute_progress_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_operation_inventories.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_optional_tool_environment.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_pairs.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_scorecard_inputs_audit.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_tick_backfill.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_tool_launcher.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_triangle_input_guards.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/tests/test_volty_data_binding.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/backtester/voltycli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/README.md — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/__init__.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/adapters/executor.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/backup.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/blind.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/data.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/diagnostics_commands.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/health.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/input_commands.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/reports.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/research_owner.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/status.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/strategies/__init__.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/src/botmanager/transport.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/__init__.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_blind.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_cli.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_ecosystem_adapter.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_full_audit_regressions.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_learning_job.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_load.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_machine_health.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_read_consistency.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/botmanager/tests/test_status.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/design/soltui-v2/mockup.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/docs/ARCHITECTURE.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/AUDIT-FILE-MANIFEST-2026-11-12.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/COMPONENTS.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/CONCEPTS.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/DEVELOPMENT.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/FILES.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/HOOK-REPAIR-2026-11-12.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/INSTALLATION.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/MARKET-EVENT-CAPTURE.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/ORACLEBOT-LAUNCH-READINESS.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/REPO-HEALTH-2026-11-12.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/SECURITY.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/TESTING.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/THIRD-PARTY-NOTICES.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/audit-2026-11-12.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/audit-checkpoint-2026-11-12.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/audit-checkpoint-manifest-2026-11-12.json — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/bot-manager-0.6-operations.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/codebase-overview.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/design/soltui-v2/mockup.py — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/external-calls.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/high_signal_file_index.json — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/integrations-and-assumptions.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/logging.md — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/operations-registry.json — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/docs/tool-inventory.json — Project guidance or verification configuration
+- /Users/mitch/dev/oraclebot.io/ecosystem/README.md — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/__init__.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/backtests.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/cli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/installation.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/meta_forward.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/recovery.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/registration.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/telemetry.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/__init__.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_backtests.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_cli.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_control_http.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_machine_health_http.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_manager_editing.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_recovery.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_registration.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_setup.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_swap_web.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_swaps.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_telemetry.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_ui_contract.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_web.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/ecosystem/volty_forward.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/web.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/web/oracle-chart.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/web/swap.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ecosystem/wiki_content/manifest.json — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/ecosystem/wiki_content/pages.json — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/ecosystem/zec_forward.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/eslint.config.mjs — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/__init__.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/api.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/cli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/config.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/http.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/jupiter.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/registry.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/rpc.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/src/executor/tokens.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/executor/tests/test_http_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/executor/tests/test_network.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/executor/tests/test_optimizer_regressions.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/executor/tests/test_rails.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/executor/tests/test_surfaces.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/executor/tests/test_tokens_config.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/executor/uv.lock — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/README.md — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/e2e/lib/cdp.mjs — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/e2e/lib/signal-desk.mjs — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/e2e/lib/soltui-host.mjs — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/manifest.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/package.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/bg/service-worker.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/core/alerts.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/core/bot-manager.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/core/commands.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/core/control-room.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/core/engine.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/core/risk.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/jupiter/http.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/market/holdings.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/market/net.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/market/pools.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/market/quote.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/storage/fileStore.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/storage/store.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/ui/dashboard.html — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/ui/signal-desk.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/ui/view-trade.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/src/venues/triggerVenue.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/test/alerts.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/control-room.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/e2e-harness.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/engine-command-audit.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/file-store-safety.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/http-audit.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/market.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/persisted-safety-audit.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/swap-view.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/test/tool-help.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/extension/tools/api-server.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/tools/args.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/tools/cli.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/tools/dryrun.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/tools/measure-recentre.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/extension/tools/verify-endpoints.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/index/CONCEPT-INDEX.json — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/INDEX.json — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/README.md — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/TEXT-INDEX.json — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/build.py — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/idle.py — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/make_concepts_doc.py — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/make_files_doc.py — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/ollama_ensure.py — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/index/search.py — Retrieval or packaged documentation artifact
+- /Users/mitch/dev/oraclebot.io/liquidity/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/scripts/aero-lp-service — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/__init__.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/cli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/daemon.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/engine.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/executor.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/market.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/providers.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/providers_report.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/safe_exit.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/strategy.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/src/aero_lp/submissions.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/liquidity/tests/test_daemon.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/liquidity/tests/test_full_audit_regressions.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/liquidity/tests/test_market_state.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/liquidity/tests/test_providers.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/liquidity/uv.lock — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/memory.md — Versioned request and continuation record
+- /Users/mitch/dev/oraclebot.io/mongo/README.md — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/cli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/load.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/queries/02-strategies-and-cards.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/queries/03-signals-and-indicators.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/queries/04-decisions.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/queries/05-backtests.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/queries/08-provenance-and-health.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/schema.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/mongo/tests/test_load.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/mongo/tests/test_query_scripts.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/oracle/README.md — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/cli.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/engine.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/server.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/store.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/strategies.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/oracle/tests/test_cli.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/oracle/tests/test_core.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/oracle/tests/test_graphdb.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/oracle/tests/test_strategies.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/package-lock.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/package.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/postman/mocks/botmanager-jupiter-swap-v1/default.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/prompts.md — Versioned request and continuation record
+- /Users/mitch/dev/oraclebot.io/requirements.txt — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/candle_crosscheck.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/candle_gap_audit.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/coinbase50_study.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/cpcv_sweep.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/dso_audit.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/grid_holdout.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/meta_analysis.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/minute_sweep.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/news_event_report.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/news_event_study.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/perturb.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/ratio_rotation.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/run_backfill.sh — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/shape_study.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/strategy_aux_compare.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/strategy_config_sweep.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/sweep_untested.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/tests/test_audit_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/research/tests/test_news_event_study.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/research/tick_backfill.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/triggers.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/research/verify_numbers.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/ruff.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/build_doc_index.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/build_operation_inventories.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/capture_market.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/check_docs.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/html_to_markdown.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/render_tradingview_script_cards.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/scripts/test_capture_market.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/scripts/test_html_to_markdown.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/scripts/test_research_backfill.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/scripts/test_tradingview_script_profiles.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/analyze.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/api.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/app.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/backtest_log.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/bgqueue.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/bgworker.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/coin_fit.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/coinbase_account.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/coinbase_manual.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/commands.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/compound.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/csv_safety.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/csv_table.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/cumulative.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/current_signal.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/diagnostics.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/experiment_runner.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/experiment_screens.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/f5_batch.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/forwardtest.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/help.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/jupiter_manual.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/jupiter_tokens.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/liquidity.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/live_price.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/live_score.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/make_icon.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/manager_evidence.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/market_diagnostics.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/menubar_launcher.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/pnl.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/portfolio.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/pricefeed.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/pyproject.toml — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/requirements.txt — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/serve.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/shell.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/signals.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/soltui-service — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/source_epoch.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/spot_prices.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/tests/__init__.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_admission_activity_refresh.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_advanced_order_ui.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_batch_ui.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_bots.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_bots_manual_editor.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_bridge_surfaces.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_coin_fit_ui.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_coinbase_account.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_coinbase_manual.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_coinbase_manual_ui.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_compound.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_compound_pool_capture.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_csv_table.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_docs_search.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_domain_audit_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_dryrun_strategy.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_editor_backtest.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_experiment_source_epoch.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_forward_sort_refresh.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_forwardtest.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_health_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_help.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_jupiter_live_ui.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_jupiter_manual.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_liquidity.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_market_diagnostics.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_panes.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_paper_experiments.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_pnl.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_portfolio.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_prediction_controls.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_presets_netpct.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_pricefeed.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_remaining_audit_boundaries.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_shortcuts_everything.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_signal_live.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_status_console.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_strategies_tab_history.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_tui.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_tui_presets_pnl.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_v2_shell.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_vote_explanation.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_wallet.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_wallet_integration.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/tests/test_wallet_settings.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/soltui/top5.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/tui.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/utxo_scan.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/vote_explanation.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/wallet.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/soltui/wallet_activity.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/tools/install-hooks.sh — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/tsconfig.checkjs.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/README.md — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/engine/server.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/engine/test_research.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/website/engine/test_server.py — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/website/package-lock.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/package.json — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/public/app.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/public/evidence.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/public/index.html — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/public/research/bodies-15.json — Deterministic accepted research publication
+- /Users/mitch/dev/oraclebot.io/website/public/research/bodies-16.json — Deterministic accepted research publication
+- /Users/mitch/dev/oraclebot.io/website/public/research/catalog.json — Deterministic accepted research publication
+- /Users/mitch/dev/oraclebot.io/website/public/research/manifest.json — Deterministic accepted research publication
+- /Users/mitch/dev/oraclebot.io/website/public/styles.css — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/scripts/export_research.py — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/scripts/smoke.mjs — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/src/worker.js — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/test/api.test.js — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/website/test/ui-browser.mjs — Regression coverage or isolated test fixture
+- /Users/mitch/dev/oraclebot.io/website/typecheck/evidence-contract.ts — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/wrangler.dev.jsonc — Reviewed implementation or component metadata
+- /Users/mitch/dev/oraclebot.io/website/wrangler.jsonc — Reviewed implementation or component metadata

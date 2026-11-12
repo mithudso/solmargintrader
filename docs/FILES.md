@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `1908c3d1` (2026-11-12T22:10:36+00:00). 3500 tracked files, 87.9 MB.
+**Generated** from `index/INDEX.json` at commit `d22bd245` (2026-11-12T22:27:25+00:00). 3508 tracked files, 88.2 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2870 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 582/674 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (319 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2872 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 582/674 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (325 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 94 files
-- [`docs`](#docs) — 151 files
+- [`docs`](#docs) — 152 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1956 files
 - [`research`](#research) — 280 files
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 11 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 91 files
+- [`.cdo`](#cdo) — 98 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1600 lines · 334,050 B · description: **extracted**
+`doc` · 1616 lines · 340,001 B · description: **extracted**
 
-**Purpose.** Version: 499 Delta: v498 to v499; independently close the private stale-sentinel finding while retaining the required positive and full-suite gates. Delta: v497 to v498; preserve docs-only upstream Google Workspace decision and retain the final integration correction checkpoint.
+**Purpose.** Version: 501 Delta: v500 to v501; freeze final source/coverage metadata and the full delivery-path inventory before the long SolTUI gate. Delta: v499 to v500; qualify all four complete integration suites and resolve the executor CI import-order failure before the final long gate.
 
 **Use.** Read it.
 
@@ -835,7 +835,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-151 files.
+152 files.
 
 #### `docs/API.md`
 
@@ -850,6 +850,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 258 lines · 16,454 B · description: **extracted**
 
 **Purpose.** Eleven components have explicit execution boundaries. Backtester, research, the Oracle forecast service, Bot Manager and ecosystem automation do not place orders. The separately enabled Oracle TradingView worker can submit Coinbase spot orders or
+
+**Use.** Read it.
+
+#### `docs/AUDIT-FILE-MANIFEST-2026-11-12.md`
+
+`doc` · 532 lines · 59,723 B · description: **extracted**
+
+**Purpose.** Version: 0.1.0 Delta: initial full absolute-path inventory for audit delivery. This inventory names every repository path changed by the audit branch relative to
 
 **Use.** Read it.
 
@@ -951,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 33827 lines · 1,675,211 B · description: **extracted**
+`doc` · 33827 lines · 1,675,207 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1063,9 +1071,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 158 lines · 28,524 B · description: **extracted**
+`doc` · 160 lines · 30,402 B · description: **extracted**
 
-**Purpose.** Version: 0.1.6 Delta: Preserve the first four short full-suite failures and bind four permanent fixture corrections plus exact private harness controls; all fresh full reruns remain pending. The run used the default repository profile in full mode. It applied the repo-bootstrapper checklist and all 18 code-deep-optimizer pass dispositions, plus conditional tool ergonomics.
+**Purpose.** Version: 0.1.7 Delta: Bind completed guarded Backtester1120, Bot Manager378, Oracle193 and Ecosystem250 gates; preserve earlier failed attempts and add four import-only Executor CI corrections with full557-case offline acceptance. Final SolTUI and delivery remain pending. The run used the default repository profile in full mode.
 
 **Use.** Read it.
 
@@ -26285,7 +26293,7 @@ The separately armed Jupiter execution library and its fail-closed risk and reco
 
 #### `executor/tests/test_network.py`
 
-`test` · 66 lines · 2,627 B · description: **extracted**
+`test` · 67 lines · 2,628 B · description: **extracted**
 
 **Purpose.** Live, READ-ONLY checks (run with `pytest -m network`). They quote, build and simulate against mainnet; none signs or sends anything, and none needs the key. They use the owner's public address only to build a transaction.
 
@@ -26335,7 +26343,7 @@ The separately armed Jupiter execution library and its fail-closed risk and reco
 
 #### `executor/tests/test_tokens_config.py`
 
-`test` · 129 lines · 4,535 B · description: **none**
+`test` · 130 lines · 4,536 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -31007,11 +31015,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-91 files.
+98 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 19527 lines · 297,487 B · description: **derived**
+`config` · 19621 lines · 299,898 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31075,6 +31083,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/backtester-full-final.json`
+
+`config` · 253 lines · 9,405 B · description: **derived**
+
+**Purpose.** Generated JSON object, 50 keys (agent, definition_version, observed_at, component, stage, status...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/backtester-independent-final-failed.json`
 
 `config` · 575 lines · 18,282 B · description: **derived**
@@ -31123,6 +31139,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/botmanager-full-final.json`
+
+`config` · 808 lines · 15,223 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (agent, observed_at, status, head, command, process_exit...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json`
 
 `config` · 520 lines · 42,004 B · description: **derived**
@@ -31141,7 +31165,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7444 lines · 280,149 B · description: **derived**
+`config` · 7444 lines · 280,217 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -31187,11 +31211,27 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/ecosystem-full-final.json`
+
+`config` · 3385 lines · 100,023 B · description: **derived**
+
+**Purpose.** Generated JSON object, 50 keys (agent, definition_version, observed_at, component, stage, status...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/ecosystem.json`
 
 `config` · 7824 lines · 345,848 B · description: **derived**
 
 **Purpose.** Generated JSON object, 40 keys (component, status, coverage, files_reviewed_new, files_reused_prior, original_lines_new...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/executor-ci-import-deltas.json`
+
+`config` · 300 lines · 17,724 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema, observed_at, status, files, root_applied, executor_full_result...).
 
 **Use.** Configuration; nothing to run.
 
@@ -31347,6 +31387,22 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Read it.
 
+#### `.cdo/reviews-2026-11-12/ledger-post-executor-imports-plan.json`
+
+`config` · 21 lines · 390 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (observed_at, status, plans).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-executor-imports-receipt.md`
+
+`doc` · 30 lines · 1,614 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+0 conditional) Mode: incremental Status: FULL_SOURCE_INSPECTION_SHORT_INTEGRATION_GREEN_SOLTUI_AND_DELIVERY_PENDING Files reviewed this run: 4
+
+**Use.** Read it.
+
 #### `.cdo/reviews-2026-11-12/ledger-post-fixture-plan.json`
 
 `config` · 17 lines · 389 B · description: **derived**
@@ -31448,6 +31504,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 144 lines · 9,483 B · description: **derived**
 
 **Purpose.** Generated JSON object, 6 keys (schema, status, files, outputs, checks, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/oracle-full-final.json`
+
+`config` · 430 lines · 14,350 B · description: **derived**
+
+**Purpose.** Generated JSON object, 50 keys (agent, definition_version, observed_at, component, stage, status...).
 
 **Use.** Configuration; nothing to run.
 
