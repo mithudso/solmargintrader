@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `fa67952` (2026-11-12T01:25:49+00:00). 3307 tracked files, 79.4 MB.
+**Generated** from `index/INDEX.json` at commit `7bfee41` (2026-11-12T01:55:09+00:00). 3334 tracked files, 79.7 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2804 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 532/624 Python modules and 66/115 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (216 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2809 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 535/629 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (220 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -40,7 +40,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`research`](#research) — 268 files
 - [`extension`](#extension) — 126 files
 - [`soltui`](#soltui) — 181 files
-- [`.github`](#github) — 9 files
+- [`.github`](#github) — 10 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
 - [`.cdo`](#cdo) — 2 files
@@ -67,6 +67,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`superpowers`](#superpowers) — 12 files
 - [`tools`](#tools) — 3 files
 - [`tradingview`](#tradingview) — 26 files
+- [`website`](#website) — 26 files
 
 ---
 
@@ -342,7 +343,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 209 lines · 13,703 B · description: **curated**
+`doc` · 217 lines · 14,121 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, the three components, and the honest summary of what the research established.
 
@@ -638,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1190 lines · 220,623 B · description: **extracted**
+`doc` · 1231 lines · 228,128 B · description: **extracted**
 
-**Purpose.** Version: 470 Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges. Delta: v468 to v469; route complete bounded research to shared graph and immutable llms evidence.
+**Purpose.** Version: 471 Delta: v470 to v471; integrate Oraclebot website with concurrent shared research delivery. Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges.
 
 **Use.** Read it.
 
@@ -702,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1953 lines · 117,342 B · description: **extracted**
+`doc` · 1959 lines · 118,461 B · description: **extracted**
 
-**Purpose.** Version: 221 Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement. Delta: v219 to v220; record owner authorization to restore eight accidental reference deletions.
+**Purpose.** Version: 222 Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery. Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement.
 
 **Use.** Read it.
 
@@ -846,7 +847,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,519 B · description: **extracted**
+`doc` · 323 lines · 20,520 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -910,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32098 lines · 1,609,887 B · description: **extracted**
+`doc` · 32114 lines · 1,610,584 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1974,7 +1975,7 @@ The search layer over the repo itself. Generators plus three committed indexes; 
 
 #### `index/build.py`
 
-`code-python` · 903 lines · 38,668 B · description: **curated**
+`code-python` · 906 lines · 38,895 B · description: **curated**
 
 **Purpose.** Builds the four indexes over every tracked file: metadata, BM25 text, concepts, and the opt-in semantic embeddings. `--check` re-hashes the tree so a stale index fails loudly.
 
@@ -26802,7 +26803,7 @@ The macOS menu-bar app that surfaces state locally. Packaged with py2app and sup
 
 CI. Runs the test suite and the figure verifier.
 
-9 files.
+10 files.
 
 #### `.github/CODEOWNERS`
 
@@ -26879,6 +26880,14 @@ CI. Runs the test suite and the figure verifier.
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
 **Use.** Runs on push. Reproduce locally with `python3 -m pytest backtester/tests -q` and `python3 research/verify_numbers.py`.
+
+#### `.github/workflows/website.yml`
+
+`ci` · 30 lines · 1,071 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
 
 ---
 
@@ -32111,3 +32120,251 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Precondition: the original local bundle and documentation exist. Inspect `memory.md` and the existing external index manifest. Preserve other sessions and paused services. 1. Run `python3 /Users/mitch/.global-ai-hub/indexes/tradingviewinputoptimizer_v2-7/retrieval.py check` to compare current source hashes with the recorded corpus. 2.
 
 **Use.** Read it.
+
+---
+
+## website
+
+26 files.
+
+#### `website/.gitignore`
+
+`other` · 5 lines · 48 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/README.md`
+
+`doc` · 128 lines · 5,915 B · description: **extracted**
+
+**Purpose.** Cloudflare-hosted wallet account and research workspace. This is a separate web surface over the existing research tools. It never exposes the owner's control room, trading accounts, wallet keys or signing services.
+
+**Use.** Read it.
+
+#### `website/package-lock.json`
+
+`config` · 1605 lines · 50,378 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (name, version, lockfileVersion, requires, packages).
+
+**Use.** Configuration; nothing to run.
+
+#### `website/package.json`
+
+`config` · 21 lines · 609 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (name, private, version, type, engines, scripts...).
+
+**Use.** Configuration; nothing to run.
+
+#### `website/wrangler.dev.jsonc`
+
+`other` · 0 lines · 698 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/wrangler.jsonc`
+
+`other` · 0 lines · 918 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `website/api/`
+
+#### `website/api/openapi.json`
+
+`config` · 1795 lines · 48,414 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
+
+**Use.** Configuration; nothing to run.
+
+### `website/engine/`
+
+#### `website/engine/Dockerfile`
+
+`other` · 13 lines · 468 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/engine/README.md`
+
+`doc` · 58 lines · 3,764 B · description: **extracted**
+
+**Purpose.** This service exposes the canonical Python exposure-strategy backtester and inert Oracle archive reader. It cannot sign, submit orders, read account portfolios or control the owner's local services. The website Worker keeps its bearer token
+
+**Use.** Read it.
+
+#### `website/engine/__init__.py`
+
+`code-python` · 2 lines · 79 B · description: **extracted**
+
+**Purpose.** Read-only hosted market analysis bridge. No signing or order capability.
+
+**Use.** `import website.engine.__init__`
+
+#### `website/engine/server.py`
+
+`code-python` · 285 lines · 13,765 B · description: **extracted**
+
+**Purpose.** Bearer-authenticated adapter to canonical local research engines. Run behind an HTTPS private gateway. The edge website must never forward a browser-selected URL or expose the local control room through this service.
+
+**Contents.** Defines `COINS`, `INTERVALS`, `MAX_BARS`, `MAX_CACHE_BYTES`, `MAX_BODY`, `class RequestError`, `finite()`, `json_safe()`, `catalogue()`, `choose_top()` and 4 more. Depends on `backtester`.
+
+**Use.** `python3 website/engine/server.py --help`
+
+#### `website/engine/test_research.py`
+
+`test` · 68 lines · 2,947 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class ResearchExportTests`.
+
+**Use.** `python3 -m pytest website/engine/test_research.py -q`
+
+#### `website/engine/test_server.py`
+
+`test` · 166 lines · 7,706 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class AnalysisTests`, `class HttpTests`. Depends on `backtester`.
+
+**Use.** `python3 -m pytest website/engine/test_server.py -q`
+
+### `website/migrations/`
+
+#### `website/migrations/0001_accounts.sql`
+
+`other` · 0 lines · 2,105 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/migrations/0002_challenge_wallet_index.sql`
+
+`other` · 0 lines · 85 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `website/postman/`
+
+#### `website/postman/acceptance.collection.json`
+
+`config` · 91 lines · 2,166 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (info, variable, item).
+
+**Use.** Configuration; nothing to run.
+
+### `website/public/`
+
+#### `website/public/app.js`
+
+`code-js` · 412 lines · 45,740 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `api`, `appendText`, `articleView`, `backtestView`, `billingAction`, `botsView`, `coinTabs`, `connectWallet`, `currency`, `displayNumber` and 30 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `website/public/evidence.js`
+
+`code-js` · 7 lines · 377 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `freshStrategy`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `website/public/favicon.svg`
+
+`other` · 0 lines · 366 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/public/index.html`
+
+`code-web` · 47 lines · 6,266 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `website/public/styles.css`
+
+`code-web` · 5 lines · 23,342 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+### `website/scripts/`
+
+#### `website/scripts/export_research.py`
+
+`code-python` · 118 lines · 6,495 B · description: **extracted**
+
+**Purpose.** Export tracked public research into deterministic metadata and body shards. This is a publication transform, not another research verdict. Original source hashes and transformed-body hashes remain distinct. Never export private stores, local account state, workflows, credentials or the scraped jup.ag mirror.
+
+**Contents.** Defines `ROOT`, `OUTPUT`, `SHARD_BYTES`, `EXCLUDE_WORDS`, `SENSITIVE`, `encoded()`, `public_body()`, `title_summary()`, `export()`, `main()`.
+
+**Use.** `python3 website/scripts/export_research.py --help`
+
+#### `website/scripts/smoke.mjs`
+
+`code-js` · 41 lines · 2,794 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `request`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `website/src/`
+
+#### `website/src/worker.js`
+
+`code-js` · 345 lines · 26,234 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `BLOCKED`, `CHECKOUT_SECONDS`, `COINS`, `MAX_BODY`, `SESSION_SECONDS`, `account`, `billingConfigured`, `bodyJSON`, `boundedText`, `challenge` and 22 more.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+### `website/test/`
+
+#### `website/test/api.test.js`
+
+`code-js` · 348 lines · 26,014 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `ORIGIN`, `call`, `deliver`, `environment`, `grant`, `keypair`, `login`, `request`, `signedEvent`.
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
+
+#### `website/test/evidence.test.js`
+
+`code-js` · 12 lines · 723 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Loaded by the extension; see `extension/manifest.json` for entry points.

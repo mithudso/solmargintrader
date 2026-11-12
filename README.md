@@ -1,5 +1,13 @@
 # solmargintrader
 
+## oraclebot.io website
+
+The public research and wallet-account workspace is hosted at https://oraclebot.io
+See [the website guide](website/README.md) for account storage, Stripe seven-day
+trials, the research archive and the separate Python analysis adapter. Billing,
+analysis availability and live venue execution have independent readiness gates.
+Bot configurations in this release are inactive paper definitions.
+
 SOL trading research and execution tooling, in ten parts:
 
 | Path | What it is | Language |

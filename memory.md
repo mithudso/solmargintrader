@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 470
+Version: 473
+Delta: v472 to v473; refresh local wiki dependency found by CI.
+Delta: v471 to v472; preserve integration and queued D1 lesson receipt.
+Delta: v470 to v471; integrate Oraclebot website with concurrent shared research delivery.
 Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges.
 Delta: v468 to v469; route complete bounded research to shared graph and immutable llms evidence.
 Delta: v467 to v468; preserve accepted research and reviewed graph-reader source delivery.
@@ -1187,3 +1190,48 @@ Actual current completion beyond this source checkpoint is recorded in /Users/mi
 The original /Users/mitch/dev/solmargintrader directory disappeared during this task. Its linked worktree Git pointer became invalid. No cause is inferred. The three owned files were backed up with hashes under /Users/mitch/.global-ai-hub/research/.full-suite/ultra-short-macro-micro-20261111/root-checkpoint. An independent recovery audit matched the backup, old worktree and fresh clone. The pushed checkpoint fa679529ffeb4976cb351d4fba2290cbd367d7cf and PR 228 preserve the original branch.
 
 Recovery uses /Users/mitch/dev/worktrees/solmargintrader-ultra-short-recovery-20261112. Only the three verified task files were copied into it. The old task worktree and other worktrees were left untouched. Both shared canonical research artifacts remain intact. Finish PR 228 from the recovered clone, verify remote content, and restore the expected canonical path only from a clean verified checkout without overwriting any reappearing directory.
+
+
+## v460 — oraclebot.io website — TASK-1482 — 2026-11-11
+
+Target: deliver a Cloudflare-hosted subscription website with wallet accounts, seven-day Stripe trial, per-user bots, canonical backtesting/oracle integration and research blog. Branch feat/oraclebot-website; base 1e0501e. Origin remains mithudso/solmargintrader. Existing other worktrees are active and must be preserved.
+
+Decisions: vanilla ESM without runtime dependencies. Cloudflare Worker serves assets and account API; D1 stores accounts, single-use wallet challenges, hashed sessions, billing and tenant-owned bot definitions. Solana wallet signatures authenticate accounts. Wallet connection does not delegate trading. Keep local owner credentials and loopback controls private. Never fabricate a leading strategy when evidence is unavailable. Stripe signed webhooks establish entitlement. No chosen price or billing credentials are assumed. Canonical Python engines remain separate from the edge API.
+
+Completed: read repo instructions, overview and test guidance; semantic hub retrieval; Stele task claimed, KNOW-1483 and KNOW-1484 decisions saved. Confirmed Cloudflare CLI and GitHub access. Skills: frontend-ui, Cloudflare platform, Postman api-engineer. Postman CLI is signed out; remote Postman discovery unavailable. Stele search specialist failed because its fixed model is unsupported; direct graph reads used.
+
+In progress: backend, frontend and canonical engine/research bridge in separate owned paths. Root owns deployment configuration, integration, verification and delivery.
+
+Remaining: implement and test website; verify Cloudflare zone/domain and deployment; establish Stripe credentials and price only if available; verify deployed behavior; run scoped suites plus required docs/index checks; commit, push, PR, pass CI, merge. Live per-user Coinbase/Jupiter execution requires delegated credentials, independent execution verification and provisioned workers; never describe stored bot configurations as trading.
+
+
+## v461 — hosted candidate and verification — 2026-11-11
+
+Cloudflare D1 oraclebot-accounts 5526a15f-8063-4b5b-8a9d-b20babf0337d provisioned. Migrations 0001 and 0002 applied remotely. Website deployed to https://oraclebot.io and www redirects to canonical apex. Initial Worker version 70c274a4-39b5-4677-b5d9-a1ac795b36dc. Account, billing, bot and analysis readiness are separate flags. Current production storage=true, billing=false, engine=false, liveExecution=false. Stripe connector requires reauthentication; owner has not selected a renewal price. An asynchronous price question remains pending. No live Stripe payments, delegated execution or owner keys used.
+
+Implemented 34-strategy canonical exposure backtester adapter, fresh eligible Oracle reader, 1,521 full research/card articles with19 body shards and source/published hashes. Ten workflow/review files excluded. Separate ladder, pair and event runners remain outside this adapter; do not claim full local parity. Engine container and live venue workers are not provisioned. No existing local services restarted.
+
+Independent source review fixed duplicate Checkout session window and checkout/deletion race. Client now withholds leader on expiry even offline, names exact instrument quote, displays simulation cost assumptions, and marks incomplete cards. Local desktop/mobile acceptance passed principal navigation and research reading; long incomplete-card paragraph mobile overflow fixed. 31 backend tests plus1 freshness regression pass. Python adapter/export19 tests and Ruff pass. Docs drift check passes with PYTHONPATH=/Users/mitch/dev/oraclebot.io/botmanager/src and /Users/mitch/.venvs/solmargintrader-docs/bin/python. Default docs venv has stale installed manager otherwise.
+
+Production Postman local collection: four requests, seven assertions passed. Actual Ed25519 challenge/signin/session/replay/CSRF/entitlement checks passed until account deletion falsely returned409 after deleting due actual D1 cascade meta.changes. Fixing to DELETE RETURNING id; rerun full smoke after redeploy. No claim that the failed smoke passed.
+
+Wrangler custom-domain routes rewrite local request host. Use separate website/wrangler.dev.jsonc with no production routes and localhost:8799 APP_ORIGIN. Preserve unrelated service on8787. No Endor tooling available for package-specific risk evidence; wrangler4.160.1 pinned dev-only, npm audit in website reported zero vulnerabilities. No runtime npm dependencies.
+
+Remaining: complete production smoke and independent loaded acceptance; refresh deterministic repo indexes, pass required CI, commit/push/merge and verify remote content. Paid trading launch remains unfulfilled until Stripe reauthentication/price, provisioned analysis with feed/cache/archive, full local runner parity and verified per-user Coinbase/Jupiter execution.
+
+
+## v462 — accepted initial website release — 2026-11-11
+
+Final deployed Worker22cc03e8-fd66-445f-ab40-309870075f55 at https://oraclebot.io. Actual production smoke PASS: restrictive headers, unauthorized tenant denial, CSRF rejection, Ed25519 wallet challenge/signin, secure server session, replay rejection, unpaid access denial, account deletion and session revocation. D1 cascade mismatch fixed with DELETE RETURNING id; corrected test adapter reproduced red before green. Production four-request/seven-assertion Postman collection PASS. Production assets index.html, app.js, evidence.js, styles.css and research/catalog.json match local bytes. Independent live-acceptance-verifier confirmed desktop/mobile flows, full article reading, absence of overflow and runtime errors, plus isolated fixture checks on exact quote and expiry. Screenshots in /tmp/oraclebot-production-desktop.png and /tmp/oraclebot-production-mobile.png.32 Node tests,19 Python tests, syntax, Ruff, export freshness and documentation drift gates pass. Repository deterministic indexes refreshed; generated research duplicates are excluded and verified by their own hash-bound manifest.
+
+Initial release includes accounts/research and inactive paper bot configurations. It is not the full paid live-trading outcome. Remaining work is Stripe reauthentication and owner price decision, billing secrets/webhooks and live cancellation acceptance; provisioned analysis engine with dedicated cache/feed/archive; parity for local ladder/pair/event runners; per-user Coinbase authorization and Jupiter delegated execution plus risk, reconciliation and operational acceptance. No live order or payment occurred. User price question has no answer yet. Do not claim these features are activated.
+
+Stele transport closed late in session. Exact activation follow-up create operation queued as outbox11357031; no graph node ID exists yet. Graph delivery task updates must also use the outbox if still disconnected. Source delivery uses branch feat/oraclebot-website against mithudso/solmargintrader master. Locate its final PR/merge receipt by that branch/title; do not infer merge from deployment. Preserve all other active worktrees.
+
+
+Website integration: preserve concurrent PR228 research records and pointer. Research archive now includes its new public pointer article (1,522 total). Full shared corpus remains private and is not copied into website. Regenerate public manifest and deterministic indexes after merge; redeploy exact assets and rerun acceptance before final PR229 merge.
+
+D1 cascade lesson exact graph write queued as outbox892eceb2 while transport remains closed. PR229 is https://github.com/mithudso/solmargintrader/pull/229 and initial source commit7bfee4125d01356c00049d679fa4708f30448b39. Integrating remote66f8b62 before final checks.
+
+
+PR229 final research integration is commit152bfb06bdd682ba7cc1cf2bfcd8489a7f4d9cf4. Deployed Workerdd5ceacb-cf6a-417c-8b07-c8e55f582e1c includes1,522 articles. All27 public asset files match source bytes. CI website and docs gates passed; ecosystem tests236 passed but scripts/build_ecosystem_wiki.py --check returned stale because README changed. Rebuilt ecosystem/wiki_content/manifest.json and pages.json and verified current. Await all final-tip CI before merge.

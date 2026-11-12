@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 221
+Version: 222
+Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
 Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement.
 Delta: v219 to v220; record owner authorization to restore eight accidental reference deletions.
 Delta: v218 to v219; record one-minute macro-conditioned full-suite request.
@@ -1950,3 +1951,8 @@ Answer:
 ## 2026-11-11 — Shared research source of truth
 
 > This research should go directly into the graph db and as llms files, that should be the shared repo and source of truth.
+
+
+## v219 — oraclebot.io hosted subscription website — 2026-11-11
+
+This repo, create a website that allows a user to connect with their wallet and they can create a bot that trades against coinbase or they can create leveraged automated positions with Jupiter. They should have the same backtest and oracle capacity as on the local site, and the oracle should always have a strategy that is at the top for the chosen coin saying which direction that strategy thinks the coin is going to go. This is a subscription site with a 7 day free trial. So will need accounts, authentication, storage backend, I'd like to make all of the research done so far available via a blog section, though will certainly expand on each point more. the name of the site is oraclebot.io, can you host it on cloudflare? Does that have everything you'd need for the calls to work? Beyond that youy have complete creative freedom, use the ux/ui design skills to help make it better. Will use stripe for payments. Other than that just best practices
