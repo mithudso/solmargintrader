@@ -1,0 +1,16 @@
+{
+  "observed_at": "2026-11-12T22:06:19.194985+00:00",
+  "completed_exits": [
+    0,
+    0
+  ],
+  "identical": true,
+  "plan": {
+    "review": [],
+    "deferred": [],
+    "unchanged_skipped": 824,
+    "removed_from_disk": [],
+    "full": false
+  },
+  "note": "Four exact fixture deltas reviewed after initial full inspection;819semanticcode+5classifiedHTML rows,22supplements separate."
+}

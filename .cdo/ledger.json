@@ -1589,11 +1589,12 @@
     "S2",
     "S3",
     "S4",
+    "S5",
     "T1",
     "T4"
    ],
-   "sha": "2984b9a55524536858b4f414e53e516880dda5df",
-   "verdict": "CLEAN"
+   "sha": "fa4224936b305857d8afd9c0d020cfada3d6ca30",
+   "verdict": "REVIEWED-FIXED"
   },
   "backtester/tests/test_dca_cpcv_blind_regressions.py": {
    "date": "2026-11-12",
@@ -2440,7 +2441,7 @@
     "T4"
    ],
    "sha": "81a97bc1144846ce99cb050fd78f30ba4c51af04",
-   "verdict": "CLEAN"
+   "verdict": "CLEAN_IN_FILE_SCOPE"
   },
   "backtester/tests/test_signal_redundancy.py": {
    "date": "2026-11-12",
@@ -2510,7 +2511,7 @@
     "T4"
    ],
    "sha": "86966b0e426aefa7c56cb78a5843d7c6b3ede2ea",
-   "verdict": "CLEAN"
+   "verdict": "CLEAN_IN_FILE_SCOPE"
   },
   "backtester/tests/test_strategy_candidate.py": {
    "date": "2026-11-12",
@@ -4010,11 +4011,24 @@
    "findings": 0,
    "mode": "full",
    "passes": [
+    "C1",
+    "C2",
+    "C3",
     "M1",
-    "M4"
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
    ],
-   "sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
-   "verdict": "CLEAN"
+   "sha": "cbf774e78b16842a9072ad80a31e51ccd373df8e",
+   "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_accounting.py": {
    "date": "2026-11-12",
@@ -4133,7 +4147,7 @@
     "T1",
     "T4"
    ],
-   "sha": "88e4356715d489519ddb6bc9e42bcd1013566d11",
+   "sha": "8028990013bffdddd2799f604baa00ab5dd03e1f",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_config.py": {
@@ -4205,7 +4219,7 @@
     "T1",
     "T4"
    ],
-   "sha": "9f6820738c9f4d660fe5031b4ca6067100fe3974",
+   "sha": "e4dda9598a28f6912026b4440a74abec7487a3ea",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_editing.py": {
@@ -4397,7 +4411,7 @@
     "T1",
     "T4"
    ],
-   "sha": "5aabcdf914507f3b78430f39813ab675df743447",
+   "sha": "611a2306da841eb9be579b38cb9a1deb23a410f2",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_learning_reads.py": {
@@ -4469,7 +4483,7 @@
     "T1",
     "T4"
    ],
-   "sha": "8923aed745e747531ad7463d6723b18ec4113c97",
+   "sha": "95d1b8e6e538664347eeae0c160746fd340a5ae9",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_machine_health.py": {
@@ -4493,7 +4507,7 @@
     "T1",
     "T4"
    ],
-   "sha": "8ec606338acb6c071db6ea6711c4b8da099484df",
+   "sha": "1f174f8ed6a503de95a9a925f072c9b01f15f8bc",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_operations.py": {
@@ -4589,7 +4603,7 @@
     "T1",
     "T4"
    ],
-   "sha": "4ef8693268095f1a924feeaf4c75585bac22e8d1",
+   "sha": "83784132054e18a7a906c5de31c64355932b234c",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_receipts.py": {
@@ -4733,7 +4747,7 @@
     "T1",
     "T4"
    ],
-   "sha": "d9009047c9bf087572381435cf6e7fb1e5d8112a",
+   "sha": "e360508a6e29729885245d8d04ca75469fa003e5",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_store.py": {
@@ -5312,11 +5326,24 @@
    "findings": 0,
    "mode": "full",
    "passes": [
+    "C1",
+    "C2",
+    "C3",
     "M1",
-    "M4"
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
    ],
-   "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-   "verdict": "CLEAN"
+   "sha": "744f4192fc430eee7c711e8be9b264b82c957c7f",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/tests/test_backtests.py": {
    "date": "2026-11-12",
@@ -5483,8 +5510,8 @@
     "T1",
     "T4"
    ],
-   "sha": "04c26a7d8d79f0019b32d1641ced0bf832a3170c",
-   "verdict": "CLEAN"
+   "sha": "0f431e174d2f03b2413aefccac010e4fb78dc873",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/tests/test_meta_forward.py": {
    "date": "2026-11-12",
@@ -9083,7 +9110,7 @@
     "T4"
    ],
    "sha": "e95b90b9cd0e8d85583aeabafd9623c30b4ee4cd",
-   "verdict": "CLEAN"
+   "verdict": "REVIEWED-FIXED"
   },
   "extension/test/service-worker.test.js": {
    "date": "2026-11-12",
@@ -11511,10 +11538,14 @@
     "M2",
     "M4",
     "M5",
+    "P1",
+    "P2",
     "S1",
     "S2",
     "S3",
-    "S4"
+    "S4",
+    "S5",
+    "T1"
    ],
    "sha": "eb53e2f31b2f703ad32ef64b8a41faa3e7d18e08",
    "verdict": "CLEAN"
@@ -12952,6 +12983,56 @@
    "sha": "24990a8ea1dad7869385be639d2ce6a563999d8a",
    "verdict": "PARTIAL-M5"
   },
+  "research/news_event_report.py": {
+   "date": "2026-11-12",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "5e22f9c6b8772c36bc1555c5944d3d9a3e1fd7b5",
+   "verdict": "REVIEWED-FIXED"
+  },
+  "research/news_event_study.py": {
+   "date": "2026-11-12",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "8eca09bf05b2fdfa60514333a84b7756b9aa1f1e",
+   "verdict": "REVIEWED-FIXED"
+  },
   "research/perturb.py": {
    "date": "2026-11-12",
    "findings": 0,
@@ -13382,6 +13463,30 @@
    ],
    "sha": "22f4019a55678fa821c08ff74628a338a2864bc4",
    "verdict": "REVIEWED"
+  },
+  "research/tests/test_news_event_study.py": {
+   "date": "2026-11-12",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "8a2f9494ebd23a32e8b50bd2f1ecaff3fd5ddd29",
+   "verdict": "REVIEWED-FIXED"
   },
   "research/tests/test_shape_study.py": {
    "date": "2026-11-12",
@@ -14978,7 +15083,7 @@
     "T1"
    ],
    "sha": "843245c6bd3396626b815bdd3436339d9c0502f6",
-   "verdict": "PARTIAL-S5"
+   "verdict": "REVIEWED"
   },
   "soltui/evidence_identity.py": {
    "date": "2026-11-12",
@@ -18514,7 +18619,7 @@
     "T1"
    ],
    "sha": "fe1fe35e3a4601f2b8a43befc13d07cdd8ff4f7e",
-   "verdict": "PARTIAL-S5"
+   "verdict": "REVIEWED"
   },
   "soltui/vote_explanation.py": {
    "date": "2026-11-12",
@@ -19230,93 +19335,191 @@
   },
   {
    "deferred": 0,
-   "finished": null,
+   "finished": "2026-11-12T21:35:50Z",
    "id": "2026-11-12T08:20:47Z",
    "mode": "full",
    "passes": {
     "C1": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "C2": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "C3": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "M1": {
-     "files": 870,
+     "files": 886,
      "state": "ran"
     },
     "M2": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "M3": {
      "files": 0,
-     "reason": "Eleven-component architecture, source-layout package ownership and current configuration boundaries inspected. Operations/tool registries, universal safe sink and remediation/card architecture remain explicit backlog; no fabricated implementation.",
+     "reason": "Repository architecture assessed; Medium centralized settings and shared runtime operation/error/remediation/sink residuals remain. Full inspection does not imply convergence.",
      "state": "ran"
     },
     "M4": {
-     "files": 875,
+     "files": 891,
      "state": "ran"
     },
     "M5": {
-     "files": 166,
+     "files": 169,
+     "reason": "Conditional ergonomics assessed and bounded tools fixed;41 current per-file installed-environment/prerequisite qualification limits remain in remaining-source-dispositions.json. No universal CLEAN claim.",
      "state": "ran"
     },
     "P1": {
-     "files": 834,
+     "files": 850,
      "state": "ran"
     },
     "P2": {
-     "files": 800,
+     "files": 816,
      "state": "ran"
     },
     "S1": {
-     "files": 855,
+     "files": 871,
      "state": "ran"
     },
     "S2": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "S3": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "S4": {
-     "files": 850,
+     "files": 866,
      "state": "ran"
     },
     "S5": {
-     "files": 755,
+     "files": 771,
      "state": "ran"
     },
     "T1": {
-     "files": 837,
+     "files": 853,
      "state": "ran"
     },
     "T2": {
      "files": 0,
-     "reason": "Declared manifests and installed dependency set inspected; uv compatibility56/56 and pip-audit50 supported packages/no known vulnerabilities exit0. Six local distributions and optional native/private dependencies remain outside PyPI vulnerability verification; npm audit parent-owned0.",
+     "reason": "Current bounded advisory, pin, lock, import and notice evidence completed with explicit firstparty/private/native/transitive/legal limits; see final dispositions.",
      "state": "ran"
     },
     "T3": {
      "files": 0,
-     "reason": "Existing CI, custom git gates, per-package tests/Ruff/pyright and syntax/parity checks inspected. Added website browser CI/Dependabot coverage via bootstrap. Legacy broad lint findings and cross-language type/format coverage remain explicit limits; no invented full lint pass.",
+     "reason": "Pinned Python407-rule baseline and JavaScript lint/gradual strict interface tooling qualified locally; final CI remains distinct.",
      "state": "ran"
     },
     "T4": {
-     "files": 379,
-     "state": "ran"
+     "files": 392,
+     "reason": "Canonical BLOCKED ambiguous equivalence: no proven universal thread-parallel/setup-hoisting rewrite over global mocks, async state, actual child processes and leases. Existing separate-process shards retained.",
+     "state": "blocked"
     }
    },
-   "reviewed": 875,
+   "reviewed": 891,
+   "silent_drops": [],
    "skipped_unchanged": 0,
-   "started": "2026-11-12T08:20:47Z"
+   "started": "2026-11-12T08:20:47Z",
+   "status": "FULL_SOURCE_INSPECTION_PARTIAL_CONVERGENCE_INTEGRATION_PENDING"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-12T22:06:19Z",
+   "id": "2026-11-12T22:05:00Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Inherited full repository architecture assessment remains partial; four test-only fixture deltas add no production architecture change.",
+     "state": "ran"
+    },
+    "M4": {
+     "files": 4,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 0,
+     "reason": "Four test-only source deltas add no user tool. Prior full conditional assessment and41bound qualification limits remain unchanged.",
+     "state": "na"
+    },
+    "P1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 4,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 4,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 4,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Prior current advisory/pin/lock/notice assessment retained; four fixture deltas add stdlib helpers only and no dependency changes.",
+     "state": "ran"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Prior pinned tooling assessment retained. Current scoped Ruff/compile/diff gates completed with exact unchanged five historical Backtester style diagnostics explicitly retained.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 4,
+     "reason": "Universal parallelism/setup-hoisting equivalence remains canonical BLOCKED. Four scoped fixture corrections preserve all original assertions and real processes.",
+     "state": "blocked"
+    }
+   },
+   "reviewed": 4,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-12T22:05:00Z",
+   "status": "FOUR_FIXTURE_DELTAS_REVIEWED_FULL_INTEGRATION_PENDING"
   }
  ],
  "version": 1

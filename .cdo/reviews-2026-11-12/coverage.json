@@ -1,20 +1,21 @@
 {
   "summary": {
     "version": 1,
-    "status": "in_progress",
+    "status": "source_inspection_complete_integration_pending",
     "baseline_files": 773,
-    "current_files": 821,
-    "semantically_complete": 816,
-    "pending": 5,
+    "current_files": 824,
+    "semantically_complete": 819,
+    "pending": 0,
     "changed_after_review": 0,
-    "note": "Source census and mechanical checks never substitute for per-file semantic reads. Full requested review remains active; no scope cap or clean whole-repository certificate.",
-    "raw_helper_files": 821,
+    "note": "Full current application-source semantic inspection complete; M3/M5/T4 convergence and final integration/delivery remain explicitly partial. Five bound HTML captures are data classifications, not semantic code reviews.",
+    "raw_helper_files": 824,
     "bound_data_exclusions": 5,
-    "application_helper_files": 816,
-    "application_semantically_complete": 816,
+    "application_helper_files": 819,
+    "application_semantically_complete": 819,
     "application_still_unreviewed_or_changed": 0,
     "supplement_inventory_file": "runtime-source-supplement.json",
-    "supplement_note": "Static HTML/CSS and extensionless scripts are tracked separately; no credit from their census."
+    "supplement_note": "Static HTML/CSS and extensionless scripts are tracked separately; no credit from their census.",
+    "excluded_data": 5
   },
   "files": [
     {
@@ -658,10 +659,10 @@
     },
     {
       "path": "backtester/tests/test_cross_asset_cpcv.py",
-      "blob_sha": "2984b9a55524536858b4f414e53e516880dda5df",
-      "lines": 1197,
+      "blob_sha": "fa4224936b305857d8afd9c0d020cfada3d6ca30",
+      "lines": 1202,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/backtester-final-tests.json",
+      "evidence": ".cdo/reviews-2026-11-12/integration-fixture-current-rows.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1612,10 +1613,10 @@
     },
     {
       "path": "botmanager/tests/__init__.py",
-      "blob_sha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
-      "lines": 1,
+      "blob_sha": "cbf774e78b16842a9072ad80a31e51ccd373df8e",
+      "lines": 15,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/small-files.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1657,10 +1658,10 @@
     },
     {
       "path": "botmanager/tests/test_cli.py",
-      "blob_sha": "88e4356715d489519ddb6bc9e42bcd1013566d11",
-      "lines": 148,
+      "blob_sha": "8028990013bffdddd2799f604baa00ab5dd03e1f",
+      "lines": 162,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1684,10 +1685,10 @@
     },
     {
       "path": "botmanager/tests/test_ecosystem_adapter.py",
-      "blob_sha": "9f6820738c9f4d660fe5031b4ca6067100fe3974",
-      "lines": 107,
+      "blob_sha": "e4dda9598a28f6912026b4440a74abec7487a3ea",
+      "lines": 112,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1756,10 +1757,10 @@
     },
     {
       "path": "botmanager/tests/test_learning_job.py",
-      "blob_sha": "5aabcdf914507f3b78430f39813ab675df743447",
-      "lines": 320,
+      "blob_sha": "611a2306da841eb9be579b38cb9a1deb23a410f2",
+      "lines": 322,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1783,19 +1784,19 @@
     },
     {
       "path": "botmanager/tests/test_load.py",
-      "blob_sha": "8923aed745e747531ad7463d6723b18ec4113c97",
-      "lines": 626,
+      "blob_sha": "95d1b8e6e538664347eeae0c160746fd340a5ae9",
+      "lines": 630,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
     {
       "path": "botmanager/tests/test_machine_health.py",
-      "blob_sha": "8ec606338acb6c071db6ea6711c4b8da099484df",
-      "lines": 261,
+      "blob_sha": "1f174f8ed6a503de95a9a925f072c9b01f15f8bc",
+      "lines": 263,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/integration-fixture-current-rows.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1828,10 +1829,10 @@
     },
     {
       "path": "botmanager/tests/test_read_consistency.py",
-      "blob_sha": "4ef8693268095f1a924feeaf4c75585bac22e8d1",
-      "lines": 287,
+      "blob_sha": "83784132054e18a7a906c5de31c64355932b234c",
+      "lines": 289,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1882,10 +1883,10 @@
     },
     {
       "path": "botmanager/tests/test_status.py",
-      "blob_sha": "d9009047c9bf087572381435cf6e7fb1e5d8112a",
-      "lines": 375,
+      "blob_sha": "e360508a6e29729885245d8d04ca75469fa003e5",
+      "lines": 378,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2116,10 +2117,10 @@
     },
     {
       "path": "ecosystem/tests/__init__.py",
-      "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-      "lines": 0,
+      "blob_sha": "744f4192fc430eee7c711e8be9b264b82c957c7f",
+      "lines": 16,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/integration-fixture-current-rows.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2179,10 +2180,10 @@
     },
     {
       "path": "ecosystem/tests/test_manager_editing.py",
-      "blob_sha": "04c26a7d8d79f0019b32d1641ced0bf832a3170c",
-      "lines": 412,
+      "blob_sha": "0f431e174d2f03b2413aefccac010e4fb78dc873",
+      "lines": 432,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/integration-fixture-current-rows.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -5076,6 +5077,24 @@
       "unbound_js_syntax_check_observed": false
     },
     {
+      "path": "research/news_event_report.py",
+      "blob_sha": "5e22f9c6b8772c36bc1555c5944d3d9a3e1fd7b5",
+      "lines": 349,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/news-event-current-rows.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "research/news_event_study.py",
+      "blob_sha": "8eca09bf05b2fdfa60514333a84b7756b9aa1f1e",
+      "lines": 486,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/news-event-current-rows.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
       "path": "research/perturb.py",
       "blob_sha": "8276c5a347b87f09da62ee9f33e7c2bb2b15ed9e",
       "lines": 463,
@@ -5235,6 +5254,15 @@
       "semantic_review": "complete",
       "evidence": ".cdo/reviews-2026-11-12/research-scripts.json",
       "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "research/tests/test_news_event_study.py",
+      "blob_sha": "8a2f9494ebd23a32e8b50bd2f1ecaff3fd5ddd29",
+      "lines": 386,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/news-event-current-rows.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -5484,46 +5512,51 @@
       "path": "scripts/referral_scripts/claim-all-fees.ts",
       "blob_sha": "6fc04f28ddf7e8a3a0cbb13c47a36eefa3914dc6",
       "lines": 632,
-      "semantic_review": "pending",
-      "evidence": null,
+      "semantic_review": "excluded_data",
+      "evidence": "data-exclusions.json",
       "baseline_python_ast_covered": false,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "classification_only": true
     },
     {
       "path": "scripts/referral_scripts/create-referral-account.ts",
       "blob_sha": "650a918527d945e2a8654c4ceff216638e66aa26",
       "lines": 628,
-      "semantic_review": "pending",
-      "evidence": null,
+      "semantic_review": "excluded_data",
+      "evidence": "data-exclusions.json",
       "baseline_python_ast_covered": false,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "classification_only": true
     },
     {
       "path": "scripts/referral_scripts/create-referral-token-account.ts",
       "blob_sha": "cd33c0c853cdb6cff2f9fd812327c77cc0d3b0f1",
       "lines": 629,
-      "semantic_review": "pending",
-      "evidence": null,
+      "semantic_review": "excluded_data",
+      "evidence": "data-exclusions.json",
       "baseline_python_ast_covered": false,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "classification_only": true
     },
     {
       "path": "scripts/referral_scripts/get-referral-account.ts",
       "blob_sha": "16e0be8281e50560ea7c5eebc580126296805f11",
       "lines": 627,
-      "semantic_review": "pending",
-      "evidence": null,
+      "semantic_review": "excluded_data",
+      "evidence": "data-exclusions.json",
       "baseline_python_ast_covered": false,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "classification_only": true
     },
     {
       "path": "scripts/referral_scripts/get-referral-token-account.ts",
       "blob_sha": "cef2d14be54030100de48dfafe0cf4a9332e12f5",
       "lines": 627,
-      "semantic_review": "pending",
-      "evidence": null,
+      "semantic_review": "excluded_data",
+      "evidence": "data-exclusions.json",
       "baseline_python_ast_covered": false,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "classification_only": true
     },
     {
       "path": "scripts/render_tradingview_script_cards.py",
@@ -5872,7 +5905,7 @@
       "blob_sha": "843245c6bd3396626b815bdd3436339d9c0502f6",
       "lines": 98,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-domain.json",
+      "evidence": ".cdo/reviews-2026-11-12/scanner-shared-observability-closure.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -7213,7 +7246,7 @@
       "blob_sha": "fe1fe35e3a4601f2b8a43befc13d07cdd8ff4f7e",
       "lines": 233,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-domain.json",
+      "evidence": ".cdo/reviews-2026-11-12/scanner-shared-observability-closure.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },

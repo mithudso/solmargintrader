@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T21:04:23+00:00",
+  "generatedAt": "2026-11-12T22:08:08+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1876,
+      "matchingFiles": 1883,
       "shown": 30,
       "files": [
         {
@@ -39,7 +39,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 169
+          "hits": 170
         },
         {
           "path": "FILES.md",
@@ -79,7 +79,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 72
+          "hits": 74
         },
         {
           "path": ".cdo/reviews-2026-11-12/liquidity.json",
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1548,
+      "matchingFiles": 1553,
       "shown": 30,
       "files": [
         {
@@ -182,7 +182,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 123
+          "hits": 125
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1544,
+      "matchingFiles": 1546,
       "shown": 30,
       "files": [
         {
@@ -566,6 +566,145 @@
       "source": "curated-from-repo-vocabulary"
     },
     {
+      "id": "execution-onchain",
+      "label": "On-chain execution reality",
+      "why": "Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.",
+      "terms": [
+        "jupiter",
+        "jlp",
+        "oracle",
+        "priority",
+        "slippage",
+        "perps",
+        "solana"
+      ],
+      "matchingFiles": 866,
+      "shown": 30,
+      "files": [
+        {
+          "path": "research/strategy_experiment/results/results.json",
+          "hits": 544
+        },
+        {
+          "path": "llms/jupsol-llms.txt",
+          "hits": 427
+        },
+        {
+          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
+          "hits": 408
+        },
+        {
+          "path": "docs/FILES.md",
+          "hits": 384
+        },
+        {
+          "path": "FILES.md",
+          "hits": 283
+        },
+        {
+          "path": ".cdo/reviews-2026-11-12/oracle.json",
+          "hits": 271
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
+          "hits": 163
+        },
+        {
+          "path": "memory.md",
+          "hits": 158
+        },
+        {
+          "path": "docs/archive/memory-2026-11-10.md",
+          "hits": 141
+        },
+        {
+          "path": "soltui/tui.py",
+          "hits": 141
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
+          "hits": 127
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
+          "hits": 125
+        },
+        {
+          "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
+          "hits": 124
+        },
+        {
+          "path": "skills/trading-and-investing/SKILL.md",
+          "hits": 109
+        },
+        {
+          "path": "llms-sitemap.txt",
+          "hits": 108
+        },
+        {
+          "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
+          "hits": 105
+        },
+        {
+          "path": "pagesource",
+          "hits": 98
+        },
+        {
+          "path": ".cdo/reviews-2026-11-12/coverage.json",
+          "hits": 97
+        },
+        {
+          "path": "prompts.md",
+          "hits": 87
+        },
+        {
+          "path": "archive/memory-2026-11-08.md",
+          "hits": 81
+        },
+        {
+          "path": "docs/archive/memory-2026-11-08.md",
+          "hits": 81
+        },
+        {
+          "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
+          "hits": 80
+        },
+        {
+          "path": "docs/trading-signals-concept-family.md",
+          "hits": 79
+        },
+        {
+          "path": "trading-signals-concept-family.md",
+          "hits": 79
+        },
+        {
+          "path": "scripts/referral_scripts/create-referral-account.ts",
+          "hits": 78
+        },
+        {
+          "path": "scripts/referral_scripts/get-referral-account.ts",
+          "hits": 78
+        },
+        {
+          "path": "scripts/referral_scripts/get-referral-token-account.ts",
+          "hits": 78
+        },
+        {
+          "path": "scripts/referral_scripts/claim-all-fees.ts",
+          "hits": 76
+        },
+        {
+          "path": "scripts/referral_scripts/create-referral-token-account.ts",
+          "hits": 76
+        },
+        {
+          "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
+          "hits": 72
+        }
+      ],
+      "source": "curated-from-repo-vocabulary"
+    },
+    {
       "id": "family:trend",
       "label": "Strategy family: trend",
       "why": "A value of the FAMILY dict in backtester/core/strategies/__init__.py, which is the repo's own taxonomy rather than one imposed here.",
@@ -702,145 +841,6 @@
       "source": "backtester/core/strategies/__init__.py FAMILY"
     },
     {
-      "id": "execution-onchain",
-      "label": "On-chain execution reality",
-      "why": "Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.",
-      "terms": [
-        "jupiter",
-        "jlp",
-        "oracle",
-        "priority",
-        "slippage",
-        "perps",
-        "solana"
-      ],
-      "matchingFiles": 857,
-      "shown": 30,
-      "files": [
-        {
-          "path": "research/strategy_experiment/results/results.json",
-          "hits": 544
-        },
-        {
-          "path": "llms/jupsol-llms.txt",
-          "hits": 427
-        },
-        {
-          "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
-          "hits": 408
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 384
-        },
-        {
-          "path": "FILES.md",
-          "hits": 283
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/oracle.json",
-          "hits": 271
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
-          "hits": 163
-        },
-        {
-          "path": "memory.md",
-          "hits": 155
-        },
-        {
-          "path": "docs/archive/memory-2026-11-10.md",
-          "hits": 141
-        },
-        {
-          "path": "soltui/tui.py",
-          "hits": 141
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-swap-routing-and-orders.md",
-          "hits": 127
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-perps-trading.md",
-          "hits": 125
-        },
-        {
-          "path": "skills/trading-and-investing/references/jlp-risk-profile-and-anti-patterns.md",
-          "hits": 124
-        },
-        {
-          "path": "skills/trading-and-investing/SKILL.md",
-          "hits": 109
-        },
-        {
-          "path": "llms-sitemap.txt",
-          "hits": 108
-        },
-        {
-          "path": "soltui/JUPITER_ORDER_WIDGET_IMPLEMENTATION_GUIDE.md",
-          "hits": 105
-        },
-        {
-          "path": "pagesource",
-          "hits": 98
-        },
-        {
-          "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 97
-        },
-        {
-          "path": "prompts.md",
-          "hits": 87
-        },
-        {
-          "path": "archive/memory-2026-11-08.md",
-          "hits": 81
-        },
-        {
-          "path": "docs/archive/memory-2026-11-08.md",
-          "hits": 81
-        },
-        {
-          "path": "skills/trading-and-investing/references/solana-oracles-pyth-switchboard.md",
-          "hits": 80
-        },
-        {
-          "path": "docs/trading-signals-concept-family.md",
-          "hits": 79
-        },
-        {
-          "path": "trading-signals-concept-family.md",
-          "hits": 79
-        },
-        {
-          "path": "scripts/referral_scripts/create-referral-account.ts",
-          "hits": 78
-        },
-        {
-          "path": "scripts/referral_scripts/get-referral-account.ts",
-          "hits": 78
-        },
-        {
-          "path": "scripts/referral_scripts/get-referral-token-account.ts",
-          "hits": 78
-        },
-        {
-          "path": "scripts/referral_scripts/claim-all-fees.ts",
-          "hits": 76
-        },
-        {
-          "path": "scripts/referral_scripts/create-referral-token-account.ts",
-          "hits": 76
-        },
-        {
-          "path": "skills/trading-and-investing/references/jupiter-perps-leverage-and-liquidation.md",
-          "hits": 72
-        }
-      ],
-      "source": "curated-from-repo-vocabulary"
-    },
-    {
       "id": "grid",
       "label": "Grid trading",
       "why": "A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.",
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 828,
+      "matchingFiles": 832,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 733,
+      "matchingFiles": 736,
       "shown": 30,
       "files": [
         {
@@ -1260,12 +1260,12 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 476,
+      "matchingFiles": 490,
       "shown": 30,
       "files": [
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 823
+          "hits": 826
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -1274,6 +1274,10 @@
         {
           "path": "research/strategy_experiment/results/initial-gapped-run/results.json",
           "hits": 424
+        },
+        {
+          "path": "research/results/news_events_20261112_manifest.json",
+          "hits": 280
         },
         {
           "path": "research/strategy_experiment/audit_realism.json",
@@ -1288,16 +1292,16 @@
           "hits": 81
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 77
+        },
+        {
           "path": "research/strategy_experiment/results/auxiliary.json",
           "hits": 77
         },
         {
           "path": "research/tradingview-script-profiles/shard-a.jsonl",
           "hits": 68
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 67
         },
         {
           "path": "FILES.md",
@@ -1378,10 +1382,6 @@
         {
           "path": "research/TRADINGVIEW-SCRIPT-CARDS.md",
           "hits": 23
-        },
-        {
-          "path": "backtester/core/deflated_sharpe.py",
-          "hits": 21
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1529,12 +1529,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 416,
+      "matchingFiles": 422,
       "shown": 30,
       "files": [
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 823
+          "hits": 826
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 371,
+      "matchingFiles": 373,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 342,
+      "matchingFiles": 343,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 238,
+      "matchingFiles": 241,
       "shown": 30,
       "files": [
         {
@@ -2352,7 +2352,7 @@
         "sign_flips",
         "stability"
       ],
-      "matchingFiles": 179,
+      "matchingFiles": 180,
       "shown": 30,
       "files": [
         {

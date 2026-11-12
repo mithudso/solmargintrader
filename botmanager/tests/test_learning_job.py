@@ -19,11 +19,13 @@ from botmanager.registry import CommandContext, dispatch
 from botmanager.store import ManagerStore
 from botmanager.supervisor import Supervisor
 
+from tests import isolated_default_owner
 from tests.test_paper import grid, recording
 
 
 class DailyLearningJobTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(isolated_default_owner())
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.home = Path(self.temp.name).resolve()

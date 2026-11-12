@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7875535d` (2026-11-12T20:56:01+00:00). 3476 tracked files, 87.1 MB.
+**Generated** from `index/INDEX.json` at commit `d194d69d` (2026-11-12T22:07:59+00:00). 3500 tracked files, 87.9 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2862 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 577/671 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (302 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2870 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 582/674 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (319 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -37,7 +37,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 151 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1956 files
-- [`research`](#research) — 269 files
+- [`research`](#research) — 280 files
 - [`oracle`](#oracle) — 43 files
 - [`extension`](#extension) — 131 files
 - [`executor`](#executor) — 48 files
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 11 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 78 files
+- [`.cdo`](#cdo) — 91 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -343,7 +343,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 218 lines · 14,437 B · description: **curated**
+`doc` · 225 lines · 14,786 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1536 lines · 315,242 B · description: **extracted**
+`doc` · 1591 lines · 331,744 B · description: **extracted**
 
-**Purpose.** Version: 494 Delta: v493 to v494; independently close hook recurrence, repair all diagnostic source findings and prepare owned merge checkpoint. Delta: v492 to v493; prioritize fresh hook recurrence, qualify temporary fixture repairs and recover existing Cloudflare authorization.
+**Purpose.** Version: 497 Delta: v496 to v497; preserve four failed integration gates, bind scoped fixture and private harness corrections, and prepare fresh full reruns. Delta: v495 to v496; freeze merged source, all current semantic receipts and concrete final integration gates.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2048 lines · 121,245 B · description: **extracted**
+`doc` · 2069 lines · 122,222 B · description: **extracted**
 
-**Purpose.** Version: 229 Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit. Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
+**Purpose.** Version: 230 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration. Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
 
 **Use.** Read it.
 
@@ -887,7 +887,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,616 B · description: **extracted**
+`doc` · 323 lines · 20,618 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -951,7 +951,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 33567 lines · 1,662,303 B · description: **extracted**
+`doc` · 33785 lines · 1,673,521 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1055,7 +1055,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-LAUNCH-READINESS.md`
 
-`doc` · 165 lines · 9,465 B · description: **extracted**
+`doc` · 165 lines · 9,461 B · description: **extracted**
 
 **Purpose.** Version: 0.1.0 Delta: initial source and production capability inventory; separates owner decisions from engineering work. Verified: 2026-11-12. This document is a deployment snapshot, not a promise of live trading availability.
 
@@ -1063,9 +1063,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 150 lines · 23,720 B · description: **extracted**
+`doc` · 158 lines · 28,524 B · description: **extracted**
 
-**Purpose.** Version: 0.1.4 Delta: Bind completed premerge fixture/consumer remediation, the failed diagnostic totals, final architecture dispositions and current hook acceptance; final merged gates remain pending. The run used the default repository profile in full mode. It applied the repo-bootstrapper checklist and all 18 code-deep-optimizer pass dispositions, plus conditional tool ergonomics.
+**Purpose.** Version: 0.1.6 Delta: Preserve the first four short full-suite failures and bind four permanent fixture corrections plus exact private harness controls; all fresh full reruns remain pending. The run used the default repository profile in full mode. It applied the repo-bootstrapper checklist and all 18 code-deep-optimizer pass dispositions, plus conditional tool ergonomics.
 
 **Use.** Read it.
 
@@ -1375,7 +1375,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 2054 lines · 62,046 B · description: **derived**
+`doc` · 2054 lines · 62,047 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -21177,7 +21177,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 #### `backtester/tests/test_cross_asset_cpcv.py`
 
-`test` · 1198 lines · 58,911 B · description: **extracted**
+`test` · 1203 lines · 59,198 B · description: **extracted**
 
 **Purpose.** The cross-asset CPCV script's pure parts. No test here loads a price file, runs the engine, or writes anywhere under `research/results/`. That is not tidiness -- it is what makes these tests runnable at all, and safe to run: * `data/` is gitignored, so a test that opened `data/BTC_1d.csv` would pass on a development machine and fail in CI for a reason unrelated to the code.
 
@@ -21721,7 +21721,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-269 files.
+280 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21808,6 +21808,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 107 lines · 10,780 B · description: **extracted**
 
 **Purpose.** Result: **blind_audit_dissent**. Full depth, write + report, standard profile, Medium floor, three-iteration cap. The final independent review retains one Medium finding. Do not claim convergence or publication readiness from this run. Target: /Users/mitch/dev/solmargintrader-wt-01a1ca3c-meta/research/META-ANALYSIS.md Snapshot started: 2026-11-11T17:23:54Z.
+
+**Use.** Read it.
+
+#### `research/NEWS-EVENT-STUDY.md`
+
+`doc` · 116 lines · 11,218 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial measured, outcome-blind publication-time event study. This exploratory study follows 61 reviewed coin/article events from August 14 through November 10, 2026 UTC (89 complete days). It measures subsequent Coinbase USD candle-open returns at 1, 5, 15, 60, 240 and 1,440 minutes. The primary horizon is one hour.
 
 **Use.** Read it.
 
@@ -22174,6 +22182,26 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `REPO`, `OUT`, `BAR_KEYS`, `FEE_BPS`, `SLIPPAGE_BPS`, `DEFAULT_BARS`, `MINUTE`, `SLICES`, `class Cell`, `scaled_params()` and 11 more. Depends on `backtester`, `research`.
 
 **Use.** `python3 research/minute_sweep.py --help`
+
+#### `research/news_event_report.py`
+
+`code-python` · 350 lines · 18,816 B · description: **extracted**
+
+**Purpose.** Render the frozen coin-news event study without fetching or selecting events.
+
+**Contents.** Defines `PREFIX`, `number()`, `interval()`, `render()`, `_paired_latency()`, `_figure()`, `main()`. Depends on `research`.
+
+**Use.** `python3 research/news_event_report.py --help`
+
+#### `research/news_event_study.py`
+
+`code-python` · 487 lines · 18,746 B · description: **extracted**
+
+**Purpose.** Exploratory publication-time event study on frozen local news and prices. The analysis never fetches, fills missing candles, or submits orders. A minute open is a bucket proxy; it is not the trade available at publication time.
+
+**Contents.** Defines `VERSION`, `SEED`, `COINS`, `HORIZONS`, `COIN_WORDS`, `EVENT_TYPES`, `COMMENTARY`, `class NewsPrerequisiteError`, `_preflight()`, `_bootstrap_and_reexec()` and 17 more. Depends on `backtester`.
+
+**Use.** `python3 research/news_event_study.py --help`
 
 #### `research/perturb.py`
 
@@ -23091,6 +23119,72 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** Read it; regenerate with the driver that produced it.
 
+#### `research/results/news_events_20261112_eligibility.csv`
+
+`result` · 105 lines · 36,186 B · description: **derived**
+
+**Purpose.** Generated data: 103 rows x 7 columns (coin, url, title, published_at, include, reason, corrected_event_type).
+
+**Contents.** Columns: `coin`, `url`, `title`, `published_at`, `include`, `reason`, `corrected_event_type`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_eligibility.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_event_returns.csv`
+
+`result` · 368 lines · 193,250 B · description: **derived**
+
+**Purpose.** Generated data: 366 rows x 21 columns (coin, url, title, source, timestamp_source, published_at, entry_utc, entry_delay_seconds...).
+
+**Contents.** Columns: `coin`, `url`, `title`, `source`, `timestamp_source`, `published_at`, `entry_utc`, `entry_delay_seconds`, `pre60_end_utc`, `event_type`, `horizon_minutes`, `return_pct`, `benchmark_pct`, `excess_pp`, `prior_week_return_pct`, `prior_week_benchmark_pct`, `prior_week_excess_pp`, `pre60_return_pct`, `pre60_excess_pp`, `paired_excess_delta_pp`, `paired_absolute_delta_pp`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_event_returns.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_latency5_paired.csv`
+
+`result` · 16 lines · 888 B · description: **derived**
+
+**Purpose.** Generated data: 14 rows x 6 columns (coin, horizon_minutes, metric, n, immediate_mean, delayed_mean).
+
+**Contents.** Columns: `coin`, `horizon_minutes`, `metric`, `n`, `immediate_mean`, `delayed_mean`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_latency5_paired.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_latency5_summary.csv`
+
+`result` · 30 lines · 15,062 B · description: **derived**
+
+**Purpose.** Generated data: 28 rows x 39 columns (coin, horizon_minutes, selected, n, up_fraction, median_return_pct, mean_return_pct, return_pct_n...).
+
+**Contents.** Columns: `coin`, `horizon_minutes`, `selected`, `n`, `up_fraction`, `median_return_pct`, `mean_return_pct`, `return_pct_n`, `return_pct_ci_low`, `return_pct_ci_high`, `seven_day_blocks`, `mean_benchmark_pct`, `benchmark_pct_n`, `benchmark_pct_ci_low`, `benchmark_pct_ci_high`, `mean_excess_pp`, `excess_pp_n`, `excess_pp_ci_low`, `excess_pp_ci_high`, `mean_pre60_return_pct`, `pre60_return_pct_n`, `pre60_return_pct_ci_low`, `pre60_return_pct_ci_high`, `mean_pre60_excess_pp`, `pre60_excess_pp_n`, `pre60_excess_pp_ci_low`, `pre60_excess_pp_ci_high`, `mean_prior_week_return_pct`, `prior_week_return_pct_n`, `prior_week_return_pct_ci_low`, `prior_week_return_pct_ci_high`, `mean_paired_excess_delta_pp`, `paired_excess_delta_pp_n`, `paired_excess_delta_pp_ci_low`, `paired_excess_delta_pp_ci_high`, `mean_paired_absolute_delta_pp`, `paired_absolute_delta_pp_n`, `paired_absolute_delta_pp_ci_low`, `paired_absolute_delta_pp_ci_high`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_latency5_summary.csv')` — regenerate with the driver that names it.
+
+#### `research/results/news_events_20261112_manifest.json`
+
+`result` · 3082 lines · 135,636 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (version, delta, study, selection, price_acquisition, analysis_source_provenance...).
+
+**Use.** `json.load(open('research/results/news_events_20261112_manifest.json'))`
+
+#### `research/results/news_events_20261112_reactions.png`
+
+`result` · 0 lines · 100,204 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it; regenerate with the driver that produced it.
+
+#### `research/results/news_events_20261112_summary.csv`
+
+`result` · 44 lines · 22,371 B · description: **derived**
+
+**Purpose.** Generated data: 42 rows x 39 columns (coin, horizon_minutes, selected, n, up_fraction, median_return_pct, mean_return_pct, return_pct_n...).
+
+**Contents.** Columns: `coin`, `horizon_minutes`, `selected`, `n`, `up_fraction`, `median_return_pct`, `mean_return_pct`, `return_pct_n`, `return_pct_ci_low`, `return_pct_ci_high`, `seven_day_blocks`, `mean_benchmark_pct`, `benchmark_pct_n`, `benchmark_pct_ci_low`, `benchmark_pct_ci_high`, `mean_excess_pp`, `excess_pp_n`, `excess_pp_ci_low`, `excess_pp_ci_high`, `mean_pre60_return_pct`, `pre60_return_pct_n`, `pre60_return_pct_ci_low`, `pre60_return_pct_ci_high`, `mean_pre60_excess_pp`, `pre60_excess_pp_n`, `pre60_excess_pp_ci_low`, `pre60_excess_pp_ci_high`, `mean_prior_week_return_pct`, `prior_week_return_pct_n`, `prior_week_return_pct_ci_low`, `prior_week_return_pct_ci_high`, `mean_paired_excess_delta_pp`, `paired_excess_delta_pp_n`, `paired_excess_delta_pp_ci_low`, `paired_excess_delta_pp_ci_high`, `mean_paired_absolute_delta_pp`, `paired_absolute_delta_pp_n`, `paired_absolute_delta_pp_ci_low`, `paired_absolute_delta_pp_ci_high`.
+
+**Use.** `pandas.read_csv('research/results/news_events_20261112_summary.csv')` — regenerate with the driver that names it.
+
 #### `research/results/perturb_all_singles_long.csv`
 
 `result` · 27 lines · 3,018 B · description: **derived**
@@ -24002,6 +24096,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `bars()`, `class FollowupTests`. Depends on `backtester`, `research`.
 
 **Use.** `python3 -m pytest research/tests/test_meta_followups.py -q`
+
+#### `research/tests/test_news_event_study.py`
+
+`test` · 387 lines · 16,651 B · description: **extracted**
+
+**Purpose.** Protect timestamp alignment, selection independence and missing-data behavior.
+
+**Contents.** Defines `CLI_BLOCKER`, `class NewsEvents`, `class NewsPrerequisites`. Depends on `research`.
+
+**Use.** `python3 -m pytest research/tests/test_news_event_study.py -q`
 
 #### `research/tests/test_shape_study.py`
 
@@ -27437,9 +27541,11 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/__init__.py`
 
-`test` · 2 lines · 1 B · description: **none**
+`test` · 16 lines · 572 B · description: **extracted**
 
-**Purpose.** _No description available._
+**Purpose.** Scoped synthetic owner endpoints for Bot Manager tests.
+
+**Contents.** Defines `isolated_default_owner()`.
 
 **Use.** `python3 -m pytest botmanager/tests/__init__.py -q`
 
@@ -27485,7 +27591,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_cli.py`
 
-`test` · 149 lines · 6,029 B · description: **none**
+`test` · 163 lines · 6,688 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27515,7 +27621,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_ecosystem_adapter.py`
 
-`test` · 108 lines · 4,202 B · description: **none**
+`test` · 113 lines · 4,318 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27595,7 +27701,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_learning_job.py`
 
-`test` · 321 lines · 13,627 B · description: **extracted**
+`test` · 323 lines · 13,720 B · description: **extracted**
 
 **Purpose.** Nonblocking daily scheduling and owned helper lifecycle fixtures.
 
@@ -27625,7 +27731,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_load.py`
 
-`test` · 627 lines · 27,326 B · description: **extracted**
+`test` · 631 lines · 27,441 B · description: **extracted**
 
 **Purpose.** Real paper workers and a canonical optimizer over isolated numerical inputs.
 
@@ -27635,7 +27741,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_machine_health.py`
 
-`test` · 262 lines · 10,863 B · description: **extracted**
+`test` · 264 lines · 11,027 B · description: **extracted**
 
 **Purpose.** Collectors must measure observed owners without creating runtime state.
 
@@ -27675,7 +27781,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_read_consistency.py`
 
-`test` · 288 lines · 11,683 B · description: **none**
+`test` · 290 lines · 11,776 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27735,7 +27841,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_status.py`
 
-`test` · 376 lines · 15,924 B · description: **none**
+`test` · 379 lines · 16,018 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28049,9 +28155,11 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/__init__.py`
 
-`test` · 0 lines · 0 B · description: **none**
+`test` · 17 lines · 570 B · description: **extracted**
 
-**Purpose.** _No description available._
+**Purpose.** Scoped synthetic owner endpoints for ecosystem tests.
+
+**Contents.** Defines `isolated_default_owner()`.
 
 **Use.** `python3 -m pytest ecosystem/tests/__init__.py -q`
 
@@ -28117,11 +28225,11 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_manager_editing.py`
 
-`test` · 413 lines · 17,956 B · description: **none**
+`test` · 433 lines · 18,950 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `recording()`, `class ManagerEditingIntegrationTests`.
+**Contents.** Defines `recording()`, `class ManagerEditingIntegrationTests`, `class DefaultOwnerScopeTests`.
 
 **Use.** `python3 -m pytest ecosystem/tests/test_manager_editing.py -q`
 
@@ -30841,7 +30949,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 481 lines · 21,121 B · description: **curated**
+`ci` · 481 lines · 21,163 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -30899,11 +31007,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-78 files.
+91 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 19324 lines · 293,556 B · description: **derived**
+`config` · 19527 lines · 297,487 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31015,6 +31123,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/botmanager-owner-endpoint-fixtures.json`
+
+`config` · 520 lines · 42,004 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, observed_at, reviewer, status, files, canonical_gate...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/botmanager-root.json`
 
 `config` · 3672 lines · 355,778 B · description: **derived**
@@ -31025,7 +31141,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7411 lines · 278,446 B · description: **derived**
+`config` · 7444 lines · 280,149 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -31159,6 +31275,30 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/initial-short-integration-attempts.json`
+
+`config` · 804 lines · 44,568 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, head, status, rows, repo_or_guard_edits, classification...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/integration-fixture-corrections.json`
+
+`config` · 298 lines · 14,988 B · description: **derived**
+
+**Purpose.** Generated JSON object, 22 keys (agent, definition_version, version, delta, status, observed_at...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/integration-fixture-current-rows.json`
+
+`config` · 316 lines · 24,826 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (schema, observed_at, status, files, source_receipt, source_receipt_sha256...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/inventory-independent-final.json`
 
 `config` · 182 lines · 7,527 B · description: **derived**
@@ -31190,6 +31330,38 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Purpose.** Generated JSON object, 7 keys (path, sha256, license_text_exactly_preserved, license_sha256, dependency_constraints_changed, version...).
 
 **Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-final-plan.json`
+
+`config` · 23 lines · 721 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, command, first_exit, repeat_unchanged_exit, identical_repeat, plan...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-final-receipt.md`
+
+`doc` · 30 lines · 1,636 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+1 conditional) Mode: full Status: FULL_SOURCE_INSPECTION_PARTIAL_CONVERGENCE_INTEGRATION_PENDING Files reviewed this run: 891
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-fixture-plan.json`
+
+`config` · 17 lines · 389 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (observed_at, completed_exits, identical, plan, note).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-fixture-receipt.md`
+
+`doc` · 30 lines · 1,453 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+0 conditional) Mode: incremental Status: FOUR_FIXTURE_DELTAS_REVIEWED_FULL_INTEGRATION_PENDING Files reviewed this run: 4
+
+**Use.** Read it.
 
 #### `.cdo/reviews-2026-11-12/liquidity-independent-final.json`
 
@@ -31247,6 +31419,30 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/news-event-current-rows.json`
+
+`config` · 268 lines · 25,170 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (schema, source_receipt, source_receipt_sha256, status, files, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/news-event-incoming.json`
+
+`config` · 410 lines · 31,402 B · description: **derived**
+
+**Purpose.** Generated JSON object, 27 keys (agent, definition_version, version, delta, status, stage...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/news-event-independent-final.json`
+
+`config` · 58 lines · 3,010 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (reviewer, reviewed_at, scope, source_sha256, protected_artifacts_unchanged, protected_count...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/operation-inventory-generator.json`
 
 `config` · 144 lines · 9,483 B · description: **derived**
@@ -31289,9 +31485,17 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/recorded.json`
 
-`config` · 819 lines · 66,344 B · description: **derived**
+`config` · 822 lines · 66,590 B · description: **derived**
 
-**Purpose.** Generated JSON object, 816 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
+**Purpose.** Generated JSON object, 819 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/remaining-source-dispositions.json`
+
+`config` · 433 lines · 39,240 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, status, M5_partial_files, count, counts_by_component, scope_note...).
 
 **Use.** Configuration; nothing to run.
 
@@ -31348,6 +31552,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 212 lines · 17,332 B · description: **derived**
 
 **Purpose.** Generated JSON object, 7 keys (schema, reviewer, status, observed_at, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/scanner-shared-observability-closure.json`
+
+`config` · 134 lines · 8,898 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (schema, status, files, no_new_test_or_full_read_credit).
 
 **Use.** Configuration; nothing to run.
 

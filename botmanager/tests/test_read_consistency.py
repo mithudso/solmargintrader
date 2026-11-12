@@ -13,11 +13,13 @@ from botmanager.ledger import RuntimeLedger
 from botmanager.registry import CommandContext, dispatch
 from botmanager.store import ManagerStore
 
+from tests import isolated_default_owner
 from tests.test_paper import recording
 
 
 class ReadConsistencyTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(isolated_default_owner())
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)

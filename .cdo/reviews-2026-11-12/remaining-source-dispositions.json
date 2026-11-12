@@ -1,0 +1,432 @@
+{
+  "schema": "oraclebot-bound-source-residuals/v1",
+  "status": "FULL_SEMANTIC_INSPECTION_PARTIAL_CONVERGENCE",
+  "M5_partial_files": [
+    {
+      "path": "research/candle_crosscheck.py",
+      "sha256": "c9d54cd8bc4985f40f16b10027e7e4df20cad98470689a4ad2221fd9681d47fc",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/candle_gap_audit.py",
+      "sha256": "47635a2024bc95dc3ebeca0c151852a2534d463039fc63b114a7a266e4019041",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/coinbase50_data.py",
+      "sha256": "aacb6cb6d8daac923b168d933aef61dde69b5b854a5619363d78df04e3f5af8e",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/coinbase50_report.py",
+      "sha256": "45197bb3c02b358ff796d2f167ca79148bac8e9965acc1d1cefeee7e5e960fc9",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/coinbase50_study.py",
+      "sha256": "c1bf07898b28346358fab58551135361f7a2c286c3a009b60b3324cecd68772e",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/cpcv_sweep.py",
+      "sha256": "640a7cbbf4ad00e32179291c60998a7e4acfac9d8d9c5a5f760c393a64149600",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/cross_asset_cpcv.py",
+      "sha256": "388f46f8182259350889c5216945265a26bc2458d8787b4362e47a622cb00eeb",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/decide.py",
+      "sha256": "968c7f1a03b3f5edee0064938a36df3fa4b9da9d173768015eef19350212e97d",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/dso_audit.py",
+      "sha256": "74d6dd9b8db0d2028fdb0372280b04fcb9a22ed33eeaacaf44a1b3a82c3fabc3",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/fetch_zec_history.py",
+      "sha256": "6daced183a5dcc80c4e1f19b315e6c8a46897cf593e1e6133715be4f17104264",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/frontier_tune.py",
+      "sha256": "3f32d6b8935c40bccca0f0b847df24c6226d8fb1f8f562fbab41fba26481dd9b",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/full_suite.py",
+      "sha256": "e34f010eef41a95cc32632876289222371fc21a23602f2270771b8462c2c4161",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/geometry.py",
+      "sha256": "049814170bbcba57c25a3cd32d325521f2c110f70b2e566ab284d71b84bac0cd",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/grid_holdout.py",
+      "sha256": "f4aef0e4fdd00f2dc8c1466eba331124c85b3c7bbd5125884211ef56b2f4c264",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/leverage_economics.py",
+      "sha256": "7cfa38bb91b6f2f3b043cccb2b01039a7bae1ce62a076580df67e5302533d010",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/leverage_tiers.py",
+      "sha256": "c4a90185ac7343a95bbdce6f7bd79569a83d3d8037827f126f19b8a7e303d1df",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/meta_analysis.py",
+      "sha256": "a4d9a7aef5a7220a32f901bbe47a9b4a00175a46cae9e5c5c55330e228baa266",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/meta_followups.py",
+      "sha256": "c490ce0bb445bed882e1489038b6a010f89a3e4574b57e12ecc216bfa8ca9117",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/minute_sweep.py",
+      "sha256": "197e7658d8af6b1785d6b7bf979e96a556c19c8b90b0f4e16294d02e6aa3e001",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/perturb.py",
+      "sha256": "6fa97709f39f80d0571743dce635ded4c193f04d1b2b922cf6987fcc669d84ac",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/ratio_rotation.py",
+      "sha256": "a23f3aad5a8f77e707c029cbeb3ff9bf016f29259e30b202c8f692a202a5e7a0",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/shape_report.py",
+      "sha256": "e5db02133cc43aa716d1e79617b14e44909c84a8bad39b4e1e9a9d2ca30d7e6c",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/shape_study.py",
+      "sha256": "92dc89bb0817ac64ee80b044656a19803e71b6f0a6725844130f151f66a82c26",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/short_horizon_economics.py",
+      "sha256": "1a44f3ada6df8be12f3a206dbcfe658019d8d0aaa2e736d18ac54092a17bd66c",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/signal_redundancy.py",
+      "sha256": "a527ecd989d19d7fcb795a08057a7493de3a048a5d350cb68b0b6eecc8baf66a",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/strategy_aux_compare.py",
+      "sha256": "1a7acca1c4c4e2997ad575777335a4a9124e1e3f485884f0abaee7f5154c4727",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/strategy_compare.py",
+      "sha256": "9c907ae77d0aee5edaf995fd7564dc2561d95c396efb60c2adcc34f2fab88ea8",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/strategy_config_sweep.py",
+      "sha256": "c16309d0456b4d742c33f62d34e5aa6f76c87aacf2072007c0dc60d146eaa19a",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/sweep.py",
+      "sha256": "e25ed8cc637ddede64e56de20f596822befb3d9254ab471db3ea3c814f040ed0",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/sweep_untested.py",
+      "sha256": "f5e14e0278eec3ba4a755ea668b37fc1a2ad7389283afd9d647a52002827f87c",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/tick_backfill.py",
+      "sha256": "ea89a25a47a88bb45e3a1fd86881bb7c3b2009d838ad6b1b361e65498256e429",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/triggers.py",
+      "sha256": "98eb2dd1336c5dc57f7ad232c13c946936450912bf75757b3db129f7a8f58ffd",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/turnover_table.py",
+      "sha256": "4cd1f0582c763d8752b0e4d865b52ac00cf2236a1a4e08e78e6126c429ff6c15",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/verify_numbers.py",
+      "sha256": "d49033568416d27fbcd1430bdbdd2eec693b97e50e9a3c17f84fc0c2a501b580",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/volty_predictive_checks.py",
+      "sha256": "1fe9854a1b288af0d51835ab031bfb1beb53a7dc9d9ee0c82cc7d1c4ac7d9fff",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/zec_cycle_report.py",
+      "sha256": "4827f4f5a111c25e584bcc33c03cc83f122bff272e042b15f41071c7226a3a6d",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/zec_cycles.py",
+      "sha256": "b002e5f429c14ba041f3c8b8db97810d4a67e64f3ce373b1bbbe6b3b4743715e",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "research/zec_ensembles.py",
+      "sha256": "bd1bab4998e5b0d2ca8386a15fb05f7555989e15c163379d968f96e74f5fa427",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "Reviewed CLI/API, arguments, defaults and existing project-venv/requirements contract; dangerous help/ignored-flag paths fixed where found. Older research entrypoints still depend on the preinstalled project environment and do not all provide a friendly missing-dependency preflight. Shared public-interface/environment consolidation is report-only; no global pip or automatic research execution.",
+      "evidence": "research-scripts.json",
+      "severity": "Not assigned from this metadata reconciliation; original supported observations remain authoritative.",
+      "scope": "Semantic source review complete; stdlib-first direct-entrypoint/missing-prerequisite behavior not fully qualified."
+    },
+    {
+      "path": "soltui/coin_fit.py",
+      "sha256": "c24086d1b0889dc78b5e54a59a7b3884f582f4b5b04e89d6f0f49e5640fb4904",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "partial: runnable Python module requires installed SolTUI dependencies/own environment; shared canonical launcher contract reviewed separately",
+      "evidence": "soltui-domain.json",
+      "severity": "Not assigned from unqualified environment behavior.",
+      "scope": "Canonical installed-runtime/module interface; no universal bare-stdlib direct-entrypoint preflight qualification."
+    },
+    {
+      "path": "soltui/council.py",
+      "sha256": "e3aac3388f0232a6ecc10477d62b453d19a500c8dfb498fa4332ad58b4b4f009",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": "partial: runnable Python module requires installed SolTUI dependencies/own environment; shared canonical launcher contract reviewed separately",
+      "evidence": "soltui-domain.json",
+      "severity": "Not assigned from unqualified environment behavior.",
+      "scope": "Canonical installed-runtime/module interface; no universal bare-stdlib direct-entrypoint preflight qualification."
+    },
+    {
+      "path": "liquidity/src/aero_lp/cli.py",
+      "sha256": "e6a4a366c579969f52de1262d140f4fd013dd2166a7f02a7a32f21eee3fb0176",
+      "pass": "M5",
+      "status": "PARTIAL_INSTALLED_ENVIRONMENT_AND_PREREQUISITE_CONTRACT",
+      "reason": {
+        "state": "partial",
+        "reason": "CLI help and invalid arguments verified in isolated environment; source prerequisite messages inspected. Network/live/key/daemon subcommands intentionally not invoked; no installed/live service ergonomics qualification."
+      },
+      "evidence": "liquidity.json plus source-version-deltas.json exact version-only followup",
+      "severity": "Not assigned from unqualified prerequisite behavior.",
+      "scope": "Retired/disarmed service launcher and existing isolated-env help qualify their stated paths; no claim of generic bare-system-Python setup."
+    }
+  ],
+  "count": 41,
+  "counts_by_component": {
+    "research": 38,
+    "soltui": 2,
+    "liquidity": 1
+  },
+  "scope_note": "These are explicit preserved per-file qualification limits. They are not41 newly reproduced functional bugs or41 automatically inferred Medium findings. Do not label these rows CLEAN.",
+  "other_remaining": [
+    "M3 centralized settings and common runtime operation/error/remediation/sink architecture.",
+    "T4 global parallelism/setup-hoisting equivalence BLOCKED; existing separate-process shards retained."
+  ],
+  "resolved_deferred_observability": "scanner-shared-observability-closure.json",
+  "data_classification_limit": "Five captured HTML .ts rows keep historical S1/M4 classification fields because supported helper unions unchanged-SHA passes. They have no18-pass semantic code review credit and remain excluded from819application denominator."
+}
