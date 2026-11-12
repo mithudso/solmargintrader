@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 225
+Version: 226
+Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
 Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
 Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
@@ -1986,4 +1987,10 @@ Verify that the existing supervised uploader resumes and validate stored ZEC rec
 
 ```text
 Can you do a lookback correlation of when major news articles came out about different coins and what happened to their prices afterwards?
+```
+
+## 2026-11-12 — Cloudflare inbound forwarding
+
+```text
+for all of my domains in cloudflare make them forward email to my mitchphudson@gmail.com address.
 ```

@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 477
+Version: 478
+Delta: v477 to v478; inventory seven Cloudflare domains and configure catch-all forwarding.
 Delta: v476 to v477; begin timestamped coin-news price-reaction study.
 Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
 Delta: v474 to v475; record live collector and repair unused URI default database validation.
@@ -1273,3 +1274,7 @@ Independent raw-response audit reproduced366primary+244delayed rows,560meansand5
 Finaloutcomeauditpassedexit0:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112/final-outcome-audit-v3.json SHA c72e41ad6c27ded0ad3082bb420891909c941563e8b02a37d8da54c808d7dc83. It reproducesall366primary+244delayedrows,560meansand560CIs,14pairedcomparisons,sixexamples,sourceprovenanceandzeroheldpriceoverlap. AcceptedreportSHA d99f8620a58e8615574779b27ae944c8ad2cc5fdba27291a0410f70ab3ca5e59;reporterSHA c525758fae026b95ef8472449e807626a0f5d44b723231e24d58f09fa6d3699a;compactmanifestSHA8cbadbce840ecd03078f011d60c62649848cb9873301f4074c73d32d158c8d65. PublishedCSVLFnormalizationpreservesparsedrecordsandpreventsGit/indexhashdrift.
 
 Current source and shared-graph delivery state, PRs/merge commits, check exits and canonical paths are recorded in /Users/mitch/.local/share/solmargintrader/research/news-events-20261112/delivery-final.json. Read that receipt and SteleTASK-1539 before resuming; do not rerun the accepted study or expand its event sample merely to refresh a handoff. The independent24hourZEC capture remains a separate active task with its original deadline.
+
+## 2026-11-12 — Cloudflare inbound forwarding (TASK-1998)
+
+The owner requested catch-all forwarding to mitchphudson@gmail.com for all Cloudflare domains. The account has seven active zones. Gmail is already verified. Preserve web DNS and the existing MoreLube support rule. Two game domains already forward correctly. Four additional domains now have catch-all activation; all seven mutation requests exited 0. llms-explorer.com has Google Workspace MX smtp.google.com; owner choice is pending before replacing it. Private before/after evidence: /Users/mitch/.local/state/cloudflare-email-forwarding-20261112. Independent live acceptance passed on all six configured domains: verified destination, enabled/ready settings, exact catch-all target, three public authoritative MX records, SPF and DKIM; all original non-mail DNS records preserved. MoreLube support still forwards to the same Gmail. Receipt: /Users/mitch/.local/state/cloudflare-email-forwarding-20261112/acceptance.json. All cf/dig verification checks exited 0. No email was sent, so end-to-end delivery remains untested. Docs gate, wiki freshness and whitespace checks passed (exit 0). Postman account-dependent discovery was unavailable because CLI is signed out; Orbit search succeeded but integration returned HTTP 403. Current Cloudflare CLI schemas and Context7 official docs supplied the verified contract. Remaining: owner decision for Google Workspace on llms-explorer.com; preserve Google MX until answered.
