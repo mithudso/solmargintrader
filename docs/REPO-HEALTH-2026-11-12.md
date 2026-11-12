@@ -1,0 +1,149 @@
+# Oraclebot repository health audit — 2026-11-12
+
+Version: 0.1.4
+Delta: Bind completed premerge fixture/consumer remediation, the failed diagnostic totals, final architecture dispositions and current hook acceptance; final merged gates remain pending.
+
+## Result and scope
+
+**Full source inspection is complete. Repository convergence and delivery remain partial.** The current helper census contains 821 paths: 816 application source/test files have complete, current, hash-bound semantic review receipts; five captured GitHub HTML pages with `.ts` filenames are separately classified data. All 22 supplementary HTML/CSS/extensionless runtime assets also have bound semantic inspections. This is a full review, not a sampled or capped run. Hashes bind the inspected bytes; they do not substitute for the recorded reads.
+
+The run used the default repository profile in full mode. It applied the repo-bootstrapper checklist and all 18 code-deep-optimizer pass dispositions, plus conditional tool ergonomics. Repository-level M3/T2/T3 and test-specific T4 applicability are recorded separately. The requested Claude model was unavailable in this harness; reviewers used the inherited available model. Finite agent concurrency required bounded component/file batches. The per-file receipts distinguish complete original reads, reviewed final deltas, new authored source, explicit exclusions and inapplicable passes.
+
+This report does **not** claim a CLEAN or CONVERGED repository exit. M3 retains the Medium architecture findings below; T4 retains an explicit blocked equivalence assessment. The full guarded SolTUI diagnostic failed qualification. Its bounded fixture/consumer repairs pass focused gates; fresh merged-source integration remains pending. No final merge, production deployment, live trading activation or successful customer trial is claimed here.
+
+The821-path census describes the current premerge candidate. Incoming master commit `61b36738` adds three research Python source/test helpers with completed separate immutable-blob inspection and two Medium findings queued for postmerge remediation; their execution/result artifacts are not being regenerated. Final merged-source counts and gates must include that delta.
+
+The changes are isolated on `audit/oraclebot-health-hooks-20261112`. Recoverable checkpoints are in draft PR234:
+https://github.com/mithudso/solmargintrader/pull/234
+
+### Coverage and evidence
+
+| Evidence | What it establishes |
+| --- | --- |
+| [Per-file coverage](../.cdo/reviews-2026-11-12/coverage.json) | Current helper census, complete semantic rows and exact receipt links |
+| [Data exclusions](../.cdo/reviews-2026-11-12/data-exclusions.json) | Five captured HTML pages classified as data; no application-code review credit |
+| [Supplementary coverage](../.cdo/reviews-2026-11-12/runtime-supplement-coverage.json) | All22 supplementary runtime/asset inspections, separate from the helper denominator |
+| [Final owned integration](../.cdo/reviews-2026-11-12/final-owned-integration.json) | Final17 source/delta rows, meaningful failures before fixes, completed gates and limits |
+| [Repository-scope assessment](../.cdo/reviews-2026-11-12/repo-scope-assessment.json) and [final dispositions](../.cdo/reviews-2026-11-12/repo-scope-final-dispositions.json) | Original and reconciled M3/T2/T3/T4 rows; exact later fixes supersede resolved items while architecture and qualification limits remain |
+| [Toolchain fixes](../.cdo/reviews-2026-11-12/final-toolchain-fixes.json) | Reproducibility, requirements provenance and pinned lint fixes |
+| [JavaScript/fixture deltas](../.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json) | New quality tooling, AST-equivalent annotations and the corrected offline process-pool fixture |
+
+The repository ledger records are produced by the installed CDO helper. An unchanged-plan check and final ledger receipt remain delivery gates; historical run counters are not a substitute for the unique current-path coverage inventory.
+
+## Bootstrap and standards
+
+The bootstrap pass updated the existing documentation and navigation rather than creating a competing wiki. Architecture, components, installation, security, testing, logging, agent guidance, editor setup, dependency maintenance and the high-signal file index now include the hosted website. The documentation distinguishes current source capabilities from deployed readiness and from immutable historical paper cohorts.
+
+The two previously missing documentation inventories now exist:
+
+- [Operations registry](operations-registry.json): 221 declarations from the authoritative extension, SolTUI and Executor registries.
+- [Tool inventory](tool-inventory.json): 31 declared Python entrypoints, explicit source tools and npm scripts.
+
+Both are generated deterministically by [the standard-library generator](../scripts/build_operation_inventories.py). It binds28 input files, never imports an application or executes a handler, and has a read-only `--check` CI gate. Unsupported/expanded/duplicate metadata and duplicate tool IDs refuse. The inventories explicitly describe their coverage limits; they are not an exhaustive internal/external call graph or a new runtime error/remediation implementation. Independent acceptance verified six original refusal controls and11 permanent tests.
+
+Host-authenticated MCP configuration files remain outside repository publication. No credentials, private runtime state or invented machine configuration were added to satisfy a file-presence checklist.
+
+## Material fixes
+
+The following groups summarize source changes. Per-file receipts retain the precise findings, original and final bytes, applicable pass dispositions and checks; overlapping author/independent findings are not inflated into a fabricated total.
+
+| Area | Resulting behavior and relevant evidence |
+| --- | --- |
+| Extension execution and storage | File-backed mutation preserves shape and updates, cross-process execution has exclusive ownership, unknown intent states refuse, risk values fail closed, and a hard kill latches independently of a busy execution journal. Stop generations and final submission permission checks prevent stale work from clearing a newer kill. No ambiguous submit is automatically retried. See [extension review](../.cdo/reviews-2026-11-12/extension-root.json) and independent rechecks. |
+| Quotes and user interaction | Concentrated-liquidity quote rounding no longer invents output, Jupiter quote bindings validate the requested input/mode/threshold, and detached quote/backtest responses cannot replace newer UI state. Wallet/market projections retain unknown values. |
+| Website and engine boundary | Authentication/entitlement/request boundaries and safe observability were reviewed and corrected. Trial UI now honors a strict configured-billing signal, bot fetch failures are visible, and archived-only accounts show an empty state. This candidate is not evidence that deployed billing or live execution is active. See [website UI](../.cdo/reviews-2026-11-12/website-ui.json), Worker and engine receipts. |
+| Executor HTTP and money | Exact integer/decimal conversion remains protected. Provider URLs and raw error values no longer escape through HTTPX logging/public quote errors; response consumption is bounded. Independent rational/u64, one-attempt write and HTTP counterexamples pass. See [remediation](../.cdo/reviews-2026-11-12/executor-remediation.json). |
+| Backtester | Missing observed opens cannot become next-open DCA fills. PBO uses tied out-of-sample midranks rather than insertion order. Shared configuration identity binds actual intrabar contents rather than copied object addresses. Flat policy adoption uses the same binding. ZEC continuation retains its bounded member window, validates restored overlap and preserves the original source origin. Chunk/full account and equity controls pass. |
+| Oracle | Strategy-card bytes and parsed parameters share one snapshot; archive writer compatibility and missing-policy provenance refuse safely. CLI prerequisites, invalid arguments and FIFO secrets fail before unwanted listener setup. |
+| Bot Manager and evidence | Backup manifests validate shape; owned descendant cleanup works after the immediate parent exits; CSV output escapes formulas while preserving numeric losses. Rollover cursors use the full source count and future clocks remain unknown. Observed activity can refresh without weakening explicit/manual or ambiguous legacy owner fences. |
+| Liquidity | Strict missing/nonfinite values and exact ratio comparisons preserve unknown states. Known-unsent cancellation is distinct from ambiguous submission; unresolved/persistence failures still block unsafe repeats and emergency reduction remains available. Independent acceptance used mocks, never real RPC/orders. |
+| SolTUI lifecycle, transport and projections | Request framing, origin/authentication, body/time bounds and redacted failures were corrected. Finer interval identities and settlement histories remain distinct. Saved-vote explanations reconstruct the explicit one-minute identity; five-minute and interval-free legacy keys cannot assert minute features. Invalid clocks, incomplete balances and portfolio totals stay unknown. UI tables are reachable, tooltips/headings are meaningful, and CSV safety is shared. Unexpected private exceptions are not echoed by the workbench. |
+| Source admission | Supported fresh worker imports capture a prospective source manifest and refuse changed source/root before admitting or publishing evidence. This names the supported import epoch; it does not attest arbitrary preloaded modules, compiled byte identity or historical executions. |
+| Index and tools | Rebuild throttle state survives completed builds, malformed provider/cache shapes and corrupt semantic stores fall back safely, and vector cardinality must match owners. Optional tools provide stdlib argument parsing and marked private dependency setup without global pip. Icon conversion uses an owned temporary iconset and bounded conversion rather than deleting an unrelated sibling directory. |
+| Research/data capture | Source/window/product checkpoint bindings and nonprogress/truncation refusal were tightened. No paused collector was started, no economic parameter search was run, and no historical source identity was rewritten. |
+
+A previously suggested change to finite out-of-range target clamping was retracted after checking the documented contract. That behavior remains intentional; the retraction is preserved in the audit evidence.
+
+## Verification status
+
+Completed results below establish their stated source/scope only. Final integration remains distinct from earlier passing component suites and independent probes.
+
+| Gate | Actual result and limit |
+| --- | --- |
+| Extension full Node suite | 483 passed, exit0, at the reviewed extension implementation. Later JSDoc/cleanup annotations have AST-equivalence proofs. |
+| Actual Chrome extension acceptance | 26/26 passed at the reviewed implementation; dry-run only, no signing/live orders. |
+| Website source/UI |36 Node cases and browser regressions passed; current Cloudflare deployment is a separate surface. |
+| Executor full offline suite and independent acceptance | Completed exit0 in the bound receipts; metadata-only version and documented AST-equivalent annotation deltas are separate. |
+| Liquidity full offline suite |628 passed,6 network cases deselected, exit0; independent14 acceptance groups also passed without RPC/orders. |
+| Oracle | Earlier full193 cases exit0; final source-dependent integration after shared backtester changes remains pending. |
+| Bot Manager | Earlier full377 cases and70 final focused cases exit0; final shared-engine integration remains pending. |
+| Ecosystem | Earlier full249 cases exit0; final shared-engine integration remains pending. |
+| Backtester independent final acceptance | All four original findings and the introduced flat-rebind integration defect are verified resolved. Original17-probe final gate had16 passes/exit1; focused postremediation15/15 exited0. The actual6,513-bar retained boundary and6,570-bar whole/chunk control had zero equity difference and exact fills/book. See [accepted receipt](../.cdo/reviews-2026-11-12/backtester-independent-final.json). |
+| Backtester full suite | Historical1088-case run exited1 only for stale index data. Current discovered count is1120; run only after the final index-current signal. |
+| Final new boundary/epoch/activity tests |13 passed under private filesystem/network/process refusal, exit0, zero forbidden attempts. |
+| Optional tool bootstrap/launcher |14 mocked tests passed, exit0;11 actual bare-stdlib CLI cases returned expected0/2/3 without tracebacks. No actual dependency installation, UI screenshot or icon rendering was run. |
+| Inventory generator |11 permanent tests, six independent original refusal probes, current metadata/determinism/no-write controls and lint exit0. Initial failures remain preserved. |
+| Current root CI Python lint | Existing ecosystem/Oracle scope and the new generator/test scope pass with the exact407-rule Ruff0.17.4 policy. Broader historical style debt is not relabeled as a universal lint pass. |
+| Final inherited full SolTUI suite | Diagnostic process/finalizer both exited1:1562 cases in4384.550seconds,27 failures,0 errors,14 skips and53 refused boundary events. The harness stayed stable; an inventory regression test changed during that attempt. These are diagnostic findings, not27 product bugs: known fixture accesses and exact native/launcher admission gaps were distinguished. Eight fixture corrections have16+13+1 passing private pilot cases, the final23-case guard preflight passes, and the one unblocked product assertion (vote interval identity) now has10-case guarded GREEN/zero violations. A fresh postmerge full gate remains pending; one new case raises the expected count to1563 before incoming changes. A prior interrupted attempt exited130. Historical1477 cases completed in1440.157seconds but supply no per-case optimizer baseline. |
+
+The diagnostic harness uses inherited external-network, owner-filesystem, mutating-platform-process, signal and owned-loopback safeguards. It exposed unmocked default reads while refusing external contact. Exact deny-default native judge and inspected isolated fixture exceptions have separately qualified evidence; isolated children do not inherit Python audit hooks. The ordinary orphan-session proof remains private and pending independent acceptance before a complete Bot Manager gate. CPU-active optimizer cases took hundreds of seconds under those safeguards. A bounded current-source control measured exactly three manifest verifications in each process: about0.117seconds per verification normally and0.259seconds under the inherited guard (2.21times). The manifests covered1348 bound entries (Python files and strategy cards); this manifest size is separate from the semantic application-source audit denominator. This quantifies current verification/guard overhead, not a pre-change regression or complete case attribution. The prior per-case baseline remains unknown; no runtime source or evidence-admission fence was relaxed to improve timing.
+
+An earlier unguarded full-suite result cannot prove absence of owner lifecycle side effects. One portfolio fixture used a temporary plist directory but could still address a real global LaunchAgent label; its prior loaded state was not captured. Current fixtures/guards prevent that path. This audit does not claim a historical owner state was preserved or restored without evidence.
+
+## Hooks
+
+The changed-plugin approval failures were repaired on the local Codex host using native version-checked configuration updates for eight enabled content fingerprints. A backup and an exact eight-field delta were retained. Fifty-two natural hook completions and a six-completion independent window had no errors after the initial repair. Bundle Git metadata changed again while runtime source bytes remained identical, so the eight content approvals were refreshed through another native compare-and-set update. Final independent acceptance observed65 successful natural completions, including10 AI Plugins and five Remember handlers; a separate earlier117-completion window also had zero errors. These windows are reported separately rather than added as disjoint totals. The cache writer that caused the metadata change remains unproven.
+
+The five ArchitectWindows hooks remain disabled. The separately reported historical exit126 was not reproduced and has no established current source. Successful approval repair is evidence for the changed-content failures; it does not retroactively identify the cause of126. Host-private approval/config receipts are retained locally rather than published with credentials.
+
+## Dependencies and attribution
+
+- Current shared audit environment: pip-audit2.10.1 exited0 across85 installed distributions;79 public packages had no listed vulnerabilities and six first-party historical installed versions were explicitly outside PyPI verification.
+- Isolated liquidity audit environment:50 distributions,49 publicly auditable, no listed vulnerabilities, one first-party skip, exit0. This environment used declared ranges; it was not a lock-exact fresh installation.
+- Website npm audit:93 dependencies, zero reported vulnerabilities, exit0. Root quality-tooling audit:108 dependencies, zero reported vulnerabilities, exit0 in its separate receipt.
+- Extension has no runtime/dev/optional dependency graph. Its npm audit returned ENOLOCK/exit1; no fake empty lock was created to hide that result.
+- Both component uv locks now name their coordinated current first-party versions. Offline lock checks exit0; every third-party record/hash is unchanged. CI uses `--locked` to refuse stale manifests without re-resolution.
+- The native supervisor requirement names an immutable verified Git commit. No new installation or loaded native package qualification is claimed.
+- The root requirements file is explicitly a dated historical environment export, not the supported aggregate installer. Supported component constraints remain authoritative.
+- Direct dependency/import inspection supplied no justified removal. Bounded public release checks found newer MCP/Solders major versions outside deliberate supported constraints; they were not installed speculatively.
+
+[Third-party notices](THIRD-PARTY-NOTICES.md) preserves the exact upstream jsonalias MIT grant and immutable byte/source provenance. Its published0.1.1 artifact still omits the notice, and upstream copyright placeholders remain unchanged. This mitigation does not establish universal legal clearance or rewrite the installed dependency. See [dependency supplement](../.cdo/reviews-2026-11-12/dependency-supplement.json).
+
+## Remaining findings and canonical dispositions
+
+| Pass | Severity/status | Required distinction |
+| --- | --- | --- |
+| Incoming NEWS-1 UTC clustering | Medium; postmerge fix queued | Equivalent offset timestamps can enter different seven-day UTC blocks. Normalize publication epoch and add a synthetic offset-equivalence regression. No effect on frozen results has been established. |
+| Incoming NEWS-2 tool prerequisites | Medium; postmerge fix queued | NumPy imports precede help; report plotting dependencies are checked after CSV writes. Parse/preflight before output changes, with named safe prerequisite exit3. No real report or package installation is authorized by this test fix. |
+| M3 centralized settings | Medium; PARTIAL | Existing per-component settings cover many user controls, but public endpoints/read-tuning/default deployment parameters remain scattered. A typed settings/API/UI design remains incomplete. Immutable safety caps, financial invariants and evidence-source identities must not become freely mutable merely to satisfy centralization. |
+| M3 shared operation/error architecture | Medium; PARTIAL | Source-bound operation/tool documentation and drift checks now exist. A common runtime error schema, remediation metadata and universal safe sink remain architecture work. Generic retries on ambiguous financial writes would violate current contracts and must not be introduced. |
+| T2 reproducibility/advisories | Scoped verification; explicit limits | Current public advisory scopes pass and bounded pin/lock/notice fixes are applied. Frozen/private/native install graphs and every redistribution context are not universally qualified. |
+| T3 tooling | Scaffolded, bounded | Pinned Python lint and JavaScript correctness/type scaffolding exist; the checked JavaScript interface scope is deliberate. Local Node26 qualification is not proof of the pending Node22 CI environment or complete type coverage for all JavaScript. |
+| T4 suite parallelism/setup hoisting | BLOCKED (ambiguous intent/equivalence) | Global mocks/settings, asynchronous state and actual child-process/lease tests prevent a proven blind thread-parallel rewrite. Existing process-separated shards remain. No tests or distinct assertions were removed, and mutable setup was not hoisted. |
+| Integration/delivery | Pending | Complete current guarded gates, final docs/index/wiki/drift checks, immutable final ledger receipt and remote PR checks before merge/default-branch confirmation. |
+
+Full inspection and partial convergence are separate outcomes. No remaining architecture finding is hidden behind a CLEAN label or a count of files hashed.
+
+## Current source versions and preserved installations
+
+| Component | Candidate source version |
+| --- | --- |
+| Extension |0.6.7 |
+| Website |0.1.1 |
+| Backtester |0.2.1 |
+| Oracle |0.2.4 |
+| Bot Manager |0.7.3 |
+| Research runtime/SolTUI package |0.4.1 |
+| Ecosystem |0.4.6 |
+| Executor |0.2.1 |
+| Liquidity |0.1.1 |
+
+These are coordinated future source/package identities. Frozen installed paper cohorts, their virtual environments/cards/homes, historical ledgers and accepted archives retain their original identities. Read-only binding checks established their separate installed source copies; current repository edits do not requalify those past executions. Active ZEC recorder/uploader and paused research/indexing/model ownership were preserved. No real orders, funding, signatures or service restarts were performed for this audit.
+
+## Developer and activation checklist
+
+1. Preserve the failed diagnostic and focused repairs, integrate the incoming master commit without changing published research artifacts, remediate its two bounded source findings, then run fresh guarded SolTUI and source-dependent component checks. Inspect actual completed exits and all forbidden-event/child-source receipts.
+2. Regenerate/check documentation inventories, the high-signal map, packaged wiki and offline index against the final staged tree. Complete the current1120-case backtester suite after index consistency is established.
+3. Verify the final CDO current-source coverage/unchanged plan and record architecture/T4 residuals explicitly. Preserve the five data classifications and all failed/retracted evidence.
+4. Commit only owned source/docs/receipts, push the final branch tip, wait for required CI, merge only after passing gates, and verify the intended changes on the remote default branch. Installation/deployment requires its own loaded-state acceptance.
+5. For hosted activation, use [Oraclebot launch readiness](ORACLEBOT-LAUNCH-READINESS.md). Billing account/price/webhook configuration, durable engine hosting, per-user execution authority and actual hosted parity remain separate product work. No audit gate authorizes live financial execution or proves strategy profitability.

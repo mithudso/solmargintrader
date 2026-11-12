@@ -18,13 +18,16 @@ METHOD = "Equal strategy weights; mean of current horizon votes (UP +1, FLAT 0, 
 
 
 def _finite(value: Any) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+    try:
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+    except OverflowError:
+        return False
 
 
 def aggregate_predictions(rows: list[dict[str, Any]], *, now: float | None = None,
                           min_accuracy: float = 60.0, min_resolved: int = 20) -> dict[str, Any]:
     now = time.time() if now is None else now
-    valid_policy = (_finite(min_accuracy) and 0 <= min_accuracy <= 100 and _finite(min_resolved)
+    valid_policy = (_finite(now) and _finite(min_accuracy) and 0 <= min_accuracy <= 100 and _finite(min_resolved)
                     and min_resolved >= 1 and int(min_resolved) == min_resolved)
     strategies = []
     votes = 0
@@ -37,7 +40,8 @@ def aggregate_predictions(rows: list[dict[str, Any]], *, now: float | None = Non
             continue
         seen.add(label)
         if (not valid_policy or not _finite(row.get("accuracy")) or not min_accuracy <= row["accuracy"] <= 100
-                or not _finite(row.get("resolved")) or row["resolved"] < min_resolved):
+                or not _finite(row.get("resolved")) or row["resolved"] < min_resolved
+                or int(row["resolved"]) != row["resolved"]):
             continue
         directions = []
         for horizon in HORIZONS:
@@ -48,8 +52,7 @@ def aggregate_predictions(rows: list[dict[str, Any]], *, now: float | None = Non
                     or resolved < min_resolved or int(resolved) != resolved):
                 continue
             issued, expires = row.get(f"issued_{horizon}m"), row.get(f"expires_{horizon}m")
-            if direction is None or not all(isinstance(v, (int, float)) and not isinstance(v, bool)
-                                            and math.isfinite(v) for v in (issued, expires)):
+            if direction is None or not all(_finite(v) for v in (issued, expires)):
                 continue
             if not issued <= now < expires or expires <= issued:
                 continue

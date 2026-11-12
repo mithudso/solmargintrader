@@ -1,0 +1,258 @@
+{
+  "schema": "oraclebot-runtime-source-supplement/v1",
+  "status": "inventory_only",
+  "raw_helper_source_census": 794,
+  "captured_html_ts_exclusions_pending_binding": 5,
+  "supplement_candidates": 22,
+  "candidate_lines": 2317,
+  "kinds": {
+    "extensionless executable script": 5,
+    "html": 10,
+    "css": 7
+  },
+  "note": "Classification inventory only, no semantic coverage inferred. Known captured web pages and inert design artifacts require source/data disposition before final denominator. Installed CDO helper was not changed. Symlinks skipped and must be assessed through their intended target contract, not followed blindly.",
+  "files": [
+    {
+      "path": ".githooks/pre-commit",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.githooks/pre-commit",
+      "kind": "extensionless executable script",
+      "lines": 38,
+      "bytes": 1298,
+      "git_blob": "5114437958c62bf630f6fd6b08c92e63be4cacb0",
+      "sha256": "ca8fc3b8833638be79a84382baf49f6a74b44bef2ab59b02ac0e0d9d36274162",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": ".githooks/pre-merge-commit",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.githooks/pre-merge-commit",
+      "kind": "extensionless executable script",
+      "lines": 26,
+      "bytes": 944,
+      "git_blob": "573fe77c28dc4567c4596d4abde071dea88ef062",
+      "sha256": "baddec10427505d27ef488fa7d844d8d19e35d028163937d4b52ca485129e601",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "design/bot-control-room/index.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/design/bot-control-room/index.html",
+      "kind": "html",
+      "lines": 75,
+      "bytes": 21018,
+      "git_blob": "f5ef621c222e2763a22563de1d1e86484aa23102",
+      "sha256": "03e0f2f4c35ab4175f572e18b83242634bb44ebb71301bd9dc613134b154ca63",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "design/bot-control-room/mockup.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/design/bot-control-room/mockup.css",
+      "kind": "css",
+      "lines": 15,
+      "bytes": 25711,
+      "git_blob": "8d82e511e42776fab0b3cd361fffad397fd0c002",
+      "sha256": "fddb1efa7adb3a51f6feb7a679adba260f13bcd4b9a13e99560d36e0096f1cb1",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "design/chrome-workspace/prototype.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/design/chrome-workspace/prototype.html",
+      "kind": "html",
+      "lines": 66,
+      "bytes": 46017,
+      "git_blob": "de224207a0e27a719d90396d80efd22417ac0a4e",
+      "sha256": "4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "docs/design/bot-control-room/index.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/design/bot-control-room/index.html",
+      "kind": "html",
+      "lines": 75,
+      "bytes": 21018,
+      "git_blob": "f5ef621c222e2763a22563de1d1e86484aa23102",
+      "sha256": "03e0f2f4c35ab4175f572e18b83242634bb44ebb71301bd9dc613134b154ca63",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "docs/design/bot-control-room/mockup.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/design/bot-control-room/mockup.css",
+      "kind": "css",
+      "lines": 15,
+      "bytes": 25711,
+      "git_blob": "8d82e511e42776fab0b3cd361fffad397fd0c002",
+      "sha256": "fddb1efa7adb3a51f6feb7a679adba260f13bcd4b9a13e99560d36e0096f1cb1",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "docs/design/chrome-workspace/prototype.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/design/chrome-workspace/prototype.html",
+      "kind": "html",
+      "lines": 66,
+      "bytes": 46017,
+      "git_blob": "de224207a0e27a719d90396d80efd22417ac0a4e",
+      "sha256": "4cdcbc154e4a9c903174531e9c46bc8ba43bbda3a0d9234ba7c903653bed9855",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "ecosystem/web/index.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/web/index.html",
+      "kind": "html",
+      "lines": 89,
+      "bytes": 31895,
+      "git_blob": "58a2756f95e910ffab8f90cfdaf31a9b54f9a5f5",
+      "sha256": "fbfc17b06438f1012940846b06bb75f4003c49f8f6feb178ab4e757438f6f8db",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "ecosystem/web/styles.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/web/styles.css",
+      "kind": "css",
+      "lines": 34,
+      "bytes": 46135,
+      "git_blob": "088197048cc2dd22c4f72881e57a43502651de9b",
+      "sha256": "2f6670def5406e57b5b0503a9706a4c6b0ba802413646b5bae8b59c49de6dd63",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "ecosystem/web/swap.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/web/swap.html",
+      "kind": "html",
+      "lines": 41,
+      "bytes": 4865,
+      "git_blob": "875b46f58951cacbf7f2178043570e3721e3a35e",
+      "sha256": "e9aa8f934e53fdc90033d6efd6a550f0eab86ee284d17f8e31207faa176f6423",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "extension/src/ui/control-room.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/ui/control-room.css",
+      "kind": "css",
+      "lines": 22,
+      "bytes": 2044,
+      "git_blob": "25c98850b6e8b94d574b1e902861b27c3d3889cf",
+      "sha256": "eb7992d0459b0a99ac53bcb23ddcf85af9d44333bbf34c6809ae934621eadf6b",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "extension/src/ui/dashboard.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/ui/dashboard.html",
+      "kind": "html",
+      "lines": 611,
+      "bytes": 36953,
+      "git_blob": "9ba4099c3535e5eb99bc47f93d8518838be89753",
+      "sha256": "08db0aff0255bdd4d897b23e2ff7e483fe22305a6b95cf292231fc42e06d6ca4",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "extension/src/ui/live-window.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/ui/live-window.html",
+      "kind": "html",
+      "lines": 6,
+      "bytes": 689,
+      "git_blob": "86591cadd3637cacc959b24b78121d89b7532cd9",
+      "sha256": "899725f249daf2af016700b0f8b9cdbc61ce35753f0cc75130fa0e49cf84f849",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "extension/src/ui/popup.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/ui/popup.html",
+      "kind": "html",
+      "lines": 81,
+      "bytes": 5057,
+      "git_blob": "4975a49ad1b6166560de3fdcdb2cd14748c5690d",
+      "sha256": "9d91d5758dace8ebab5156ceec8f0fadbdf5744a82e9db8ac9c75cd891ca89c2",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "extension/src/ui/signal-desk.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/ui/signal-desk.css",
+      "kind": "css",
+      "lines": 193,
+      "bytes": 12606,
+      "git_blob": "bd5dada649801608937098632c8931b2ef4aa827",
+      "sha256": "0e916418e520a8bec5af57e9273beb88715ae72cf893b60e6da45921223f909e",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "extension/src/ui/ui.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/ui/ui.css",
+      "kind": "css",
+      "lines": 297,
+      "bytes": 14968,
+      "git_blob": "7863fedc887161d29cc99381f7ba60e06e0e26b3",
+      "sha256": "fb876231ce69ec254e974161e308d4c711e8d29187e0c8850516777ada041de1",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "liquidity/scripts/aero-lp-service",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/scripts/aero-lp-service",
+      "kind": "extensionless executable script",
+      "lines": 60,
+      "bytes": 2793,
+      "git_blob": "e9788ba371fe0a23ec0bcb6d18a70aff46cc850d",
+      "sha256": "ec4355ab571d79000d83268123e9a2c1b9985fdaad97bdbf8c23a241896ea996",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": true
+    },
+    {
+      "path": "soltui/bin/soltui",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/bin/soltui",
+      "kind": "extensionless executable script",
+      "lines": 51,
+      "bytes": 2293,
+      "git_blob": "213391d84514675950bd41f766dece74f090044c",
+      "sha256": "2e8640844a056424ada5bbe7cc5d62160eb2e650bb2f0985002b29a3fc103ae8",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": true
+    },
+    {
+      "path": "soltui/soltui-service",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/soltui-service",
+      "kind": "extensionless executable script",
+      "lines": 404,
+      "bytes": 16240,
+      "git_blob": "28ada016d7b52eb3e5116591f4992163bf97b889",
+      "sha256": "f6d2422f7a537f5514400264d9570d380546e8f477fbbb55d96902c1cad0217f",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": true
+    },
+    {
+      "path": "website/public/index.html",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/public/index.html",
+      "kind": "html",
+      "lines": 46,
+      "bytes": 6268,
+      "git_blob": "68b41ba797f78f27c818716b98c26bd8f5afcfc4",
+      "sha256": "95f3cdb74a6be8e3755123fcf3a0270391855ca5d39573b557af9819b133a689",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    },
+    {
+      "path": "website/public/styles.css",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/public/styles.css",
+      "kind": "css",
+      "lines": 6,
+      "bytes": 23400,
+      "git_blob": "fe89094228afb996dcd37e95228bcf734010a9fd",
+      "sha256": "b1576c1bc39e71ab94140df8814327eead44c4cca150fee21a9b0d06e3d37a55",
+      "semantic_review": "pending supplementary classification/full read",
+      "executable_bit": false
+    }
+  ]
+}

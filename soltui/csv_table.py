@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import csv
-import re
 from datetime import datetime
 from pathlib import Path
 
@@ -12,15 +11,12 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable
 
+from .csv_safety import spreadsheet_safe_text
+
 
 def _plain(value: object) -> str:
     text = value.plain if isinstance(value, Text) else str(value) if value is not None else ""
-    # CSV quoting cannot prevent spreadsheet formulas from untrusted display text.
-    # Preserve signed numbers, including grouped values and percentages.
-    numeric = r"[+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?%?"
-    if text.lstrip().startswith(("=", "+", "-", "@")) and not re.fullmatch(numeric, text.strip()):
-        return "'" + text
-    return text
+    return spreadsheet_safe_text(text)
 
 
 def export_table(table: DataTable, directory: Path | None = None) -> Path:

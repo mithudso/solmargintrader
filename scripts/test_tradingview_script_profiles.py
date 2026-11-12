@@ -36,6 +36,13 @@ class SourceReviewTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     catalog_link("example", Path("research"))
 
+    def test_publication_id_cannot_escape_card_directory(self) -> None:
+        for value in ("../../../../outside", "/absolute", "x\\y", "", None):
+            with self.subTest(publication_id=value), self.assertRaises(ValueError):
+                card_path({"publication_id": value, "name": "Example"}, {})
+        self.assertEqual(card_path({"publication_id": "Ab12_CD", "name": "Example"}, {}).name,
+                         "tv_ab12_cd_example.md")
+
     def setUp(self) -> None:
         self.profile = {
             "publication_id": "demo",

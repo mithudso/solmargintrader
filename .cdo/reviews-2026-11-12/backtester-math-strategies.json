@@ -1,0 +1,573 @@
+{
+  "schema": "oraclebot-complete-file-review/v1",
+  "reviewer": "full_repo_health",
+  "status": "IN_PROGRESS_FULL_REPOSITORY",
+  "files": [
+    {
+      "path": "backtester/core/cointegration.py",
+      "blob_sha": "b25e845d22d09e276164adcc6f985e31f18cdd10",
+      "sha256": "c2f65b2ce3ce0cadbe76e8a35ce8c35fd508f4586fdd4a3600a4821162a0d054",
+      "lines": 197,
+      "original_lines": 197,
+      "read_evidence": "1-197; Closed-form OLS, sample-dependent approximate critical table, ADF design/dof/singularity refusal and residual calculation inspected against known synthetic cases. Statistical approximation and economic premise were not independently qualified.",
+      "passes": {
+        "C1": "ran: Closed-form OLS, sample-dependent approximate critical table, ADF design/dof/singularity refusal and residual calculation inspected against known synthetic cases. Statistical approximation and economic premise were not independently qualified.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/perps.py",
+      "blob_sha": "9347397c55d1aa90df5e972c114c3f7cdad80694",
+      "sha256": "2627cb77bfeae9b03fed51bf98e1766c135a9a165f666b92056e4df8e9c37030",
+      "lines": 181,
+      "original_lines": 181,
+      "read_evidence": "1-181; Borrow sign/linear accrual, long/short side selection, maintenance formula domain flags and adverse wick semantics. Engine validates cost/price/account inputs before calling these numeric helpers; no venue/order API exists here.",
+      "passes": {
+        "C1": "ran: Borrow sign/linear accrual, long/short side selection, maintenance formula domain flags and adverse wick semantics. Engine validates cost/price/account inputs before calling these numeric helpers; no venue/order API exists here.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/leverage.py",
+      "blob_sha": "350e5d3a6316d92476e8f59301ef00f00dc73215",
+      "sha256": "47cf0c873fc6b8ba654ad9610539b263c2e4f4de76f626f93989700763cd90b9",
+      "lines": 88,
+      "original_lines": 88,
+      "read_evidence": "1-88; Tier parsing/config translation, copied cost assumptions and liquidation-distance display; EngineConfig owns final finite leverage/cost validation. Tier defaults are modeling choices, not current venue authority.",
+      "passes": {
+        "C1": "ran: Tier parsing/config translation, copied cost assumptions and liquidation-distance display; EngineConfig owns final finite leverage/cost validation. Tier defaults are modeling choices, not current venue authority.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/indicators.py",
+      "blob_sha": "576daf9f6d65d4d173318e4c26d382692981e058",
+      "sha256": "f234725172457e8811998674f742277c6e3668c3df740c375446c8b6626e6d1d",
+      "lines": 479,
+      "original_lines": 479,
+      "read_evidence": "1-240,241-479; Trailing scalar/slice arithmetic, EMA/Wilder seed/caps, flat/insufficient fallbacks, price/volume semantics, displaced Ichimoku and declared O(n) vector helper reviewed. Pure functions assume already validated visible arrays; no claimed strategy efficacy.",
+      "passes": {
+        "C1": "ran: Trailing scalar/slice arithmetic, EMA/Wilder seed/caps, flat/insufficient fallbacks, price/volume semantics, displaced Ichimoku and declared O(n) vector helper reviewed. Pure functions assume already validated visible arrays; no claimed strategy efficacy.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/pairs.py",
+      "blob_sha": "ced4b55ea95fd3642086aca1863c4b05840efea7",
+      "sha256": "5747e3b36e20abba8c5c50898a7fc7206dd58fea86c69e428d3e28c04799839a",
+      "lines": 187,
+      "original_lines": 172,
+      "read_evidence": "Original1-172; final validation delta reviewed; Peer timestamps now validate finite integral unique identity before conversion; peer closes require one-dimensional finite positive values. Valid unsorted peer data still reindexes. Fit windows only read visible prefix; unavailable/degenerate fits remain explicit flat fallback.",
+      "passes": {
+        "C1": "ran: Peer timestamps now validate finite integral unique identity before conversion; peer closes require one-dimensional finite positive values. Valid unsorted peer data still reindexes. Fit windows only read visible prefix; unavailable/degenerate fits remain explicit flat fallback.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "PEER-ALIGNMENT",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/core/deflated_sharpe.py",
+      "blob_sha": "38290be6d61a52007c20877cf55e84c47e0aff9c",
+      "sha256": "9b6beb05692d83f62f8768d02c3287f18642e778f1be49b33eaa77e4c6e25466",
+      "lines": 263,
+      "original_lines": 244,
+      "read_evidence": "Original1-220,221-244; final guards reviewed; Published formula anchors retained, per-observation units and coarse independence assumptions explicit. Invalid counts/finiteness and inverse-normal/score limits now use DeflatedSharpeError; zero dispersion returns declared mean. Python ints prevent numpy count-overflow.",
+      "passes": {
+        "C1": "ran: Published formula anchors retained, per-observation units and coarse independence assumptions explicit. Invalid counts/finiteness and inverse-normal/score limits now use DeflatedSharpeError; zero dispersion returns declared mean. Python ints prevent numpy count-overflow.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "SHARPE-NUMERIC-BOUNDARIES",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/core/strategies/__init__.py",
+      "blob_sha": "8d4fa953e577dd7c7a927f03fcaea2819511c325",
+      "sha256": "396ec5810d4cc7939f31b743abdb7c3c12cb3063b9eab6e6b4c9758181527607",
+      "lines": 180,
+      "original_lines": 180,
+      "read_evidence": "1-180; Fresh-instance factories, complete family mapping, explicit default subset and unknown-name refusal. Composite registry construction reviewed; no stateful global strategy instance. Historical measured taxonomy text remains context, not newly certified evidence.",
+      "passes": {
+        "C1": "ran: Fresh-instance factories, complete family mapping, explicit default subset and unknown-name refusal. Composite registry construction reviewed; no stateful global strategy instance. Historical measured taxonomy text remains context, not newly certified evidence.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/strategies/advanced.py",
+      "blob_sha": "7676c6d8ab9c77e195a1a8da42ff749e54d7891f",
+      "sha256": "65eb5d949bdd500a5388f0a2c77bf7cf5b2ac2aaa4d3b6ec630600635abe65dc",
+      "lines": 468,
+      "original_lines": 468,
+      "read_evidence": "1-240,241-468; Formation/skip indices, ADX/filter branches, trailing regime estimators, delayed cloud and risk sizing inspected against synthetic assertions. State remains per instance; class descriptions disclose simplified/non-stop model limits. No parameters changed.",
+      "passes": {
+        "C1": "ran: Formation/skip indices, ADX/filter branches, trailing regime estimators, delayed cloud and risk sizing inspected against synthetic assertions. State remains per instance; class descriptions disclose simplified/non-stop model limits. No parameters changed.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/strategies/composite.py",
+      "blob_sha": "6c4bd5f18ec75770b8c5af0eeca7b3a070b3ae24",
+      "sha256": "fad1e4ce7dfff28fe0275447601aee9986f620d8f985287182dec01e124bc2b2",
+      "lines": 77,
+      "original_lines": 71,
+      "read_evidence": "Original1-71; final finite-target/ordered-identity patch reviewed; All/any/vote/mean aggregate semantics and longest warmup retained. Nonfinite member cannot hide behind min/max/vote. Legacy name map retained with full ordered member_specs to distinguish repeated names and all parameters.",
+      "passes": {
+        "C1": "ran: All/any/vote/mean aggregate semantics and longest warmup retained. Nonfinite member cannot hide behind min/max/vote. Legacy name map retained with full ordered member_specs to distinguish repeated names and all parameters.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "COMPOSITE-NONFINITE+COMPOSITE-IDENTITY",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/core/strategies/signals.py",
+      "blob_sha": "fde648aaab47b9ef27748479ac9094e900aa41d7",
+      "sha256": "e4ac96837ef970a06058d7938c4bcb025d375ea691946dffda6c14038a5dc448",
+      "lines": 442,
+      "original_lines": 442,
+      "read_evidence": "1-220,221-442; Indicator wrapper thresholds, held-state transitions, named configuration, bounded target output and momentum checkpoint-state schema inspected. Reads only supplied visible windows; finite raw target clamping remains engine policy.",
+      "passes": {
+        "C1": "ran: Indicator wrapper thresholds, held-state transitions, named configuration, bounded target output and momentum checkpoint-state schema inspected. Reads only supplied visible windows; finite raw target clamping remains engine policy.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/strategies/rsi.py",
+      "blob_sha": "f22f239113ba8e07581c77aca64e8a49960ccc29",
+      "sha256": "36cbbdf12e98a01b1efa89c09624129a2797a605472696df9400d7fdebc46ac1",
+      "lines": 77,
+      "original_lines": 77,
+      "read_evidence": "1-77; Full-history Wilder seeding and recurrence, neutral/history handling, oversold/exit ordering and instance state inspected. Existing exact recurrence is retained; no silent substitution by the separate capped indicator approximation.",
+      "passes": {
+        "C1": "ran: Full-history Wilder seeding and recurrence, neutral/history handling, oversold/exit ordering and instance state inspected. Existing exact recurrence is retained; no silent substitution by the separate capped indicator approximation.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "N/A: pure signal/numeric library; owning run/CLI boundary provides operational events",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/tests/test_pairs.py",
+      "blob_sha": "3315bdf851ff1d740bf0052cf2d2d5915965d098",
+      "sha256": "4d9f03ebb6675f292e35be25cfc5b987106a29bc09a8b8bc3f1c7813ba5eda96",
+      "lines": 210,
+      "original_lines": 203,
+      "read_evidence": "Original1-203 plus authored guard tests and unused-import cleanup; Four known synthetic statistical cases, unsorted timestamp alignment, missing peer/length refusal, gated fit and state behavior. New fractional/duplicate/nonfinite/zero/shape cases fail before production fix.",
+      "passes": {
+        "C1": "ran: Four known synthetic statistical cases, unsorted timestamp alignment, missing peer/length refusal, gated fit and state behavior. New fractional/duplicate/nonfinite/zero/shape cases fail before production fix.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "ran: meaningful return/error/identity effects asserted; no secret-bearing fixtures",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: deterministic seeded fixtures, no real timer/network/model/search added, mutable strategy instances recreated per run",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "PEER-ALIGNMENT",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_deflated_sharpe.py",
+      "blob_sha": "8c5e83e4923c94dacaad12d9c7bc22e470b91080",
+      "sha256": "8c42d1158041bdef038c0474a828d644a514e08e66b3a742249dfb0a1b38ffb4",
+      "lines": 208,
+      "original_lines": 193,
+      "read_evidence": "Original1-220 (entire194line source); authored numeric guards reviewed; Worked-formula anchors, deterministic independent arithmetic, monotonic/scale properties and duplicate assumptions retained. New nonfinite/fractional/overflow cases require the public error type, including numpy sum overflow and Python float-limit counts.",
+      "passes": {
+        "C1": "ran: Worked-formula anchors, deterministic independent arithmetic, monotonic/scale properties and duplicate assumptions retained. New nonfinite/fractional/overflow cases require the public error type, including numpy sum overflow and Python float-limit counts.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "ran: meaningful return/error/identity effects asserted; no secret-bearing fixtures",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: deterministic seeded fixtures, no real timer/network/model/search added, mutable strategy instances recreated per run",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "SHARPE-NUMERIC-BOUNDARIES",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_indicators.py",
+      "blob_sha": "24574f34acb8670fa1095ad8f7134057d51b7df1",
+      "sha256": "f7fdab6e82dd64b3b4daedd1d147d7a1923a37dcb822d82c567abe4f5b6eba82",
+      "lines": 345,
+      "original_lines": 328,
+      "read_evidence": "Original1-220,221-328; final additions/docstring reviewed; Hand-computed indicator values, seeded determinism and registry bounded outputs; shared synthetic class fixture not mutated. New repeated-name identity and nonfinite aggregate cases preserve every existing combine mode assertion. Stale hardcoded strategy count removed.",
+      "passes": {
+        "C1": "ran: Hand-computed indicator values, seeded determinism and registry bounded outputs; shared synthetic class fixture not mutated. New repeated-name identity and nonfinite aggregate cases preserve every existing combine mode assertion. Stale hardcoded strategy count removed.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "ran: meaningful return/error/identity effects asserted; no secret-bearing fixtures",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: deterministic seeded fixtures, no real timer/network/model/search added, mutable strategy instances recreated per run",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "COMPOSITE-NONFINITE+COMPOSITE-IDENTITY",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_engine.py",
+      "blob_sha": "7dc002ca8f83c6922f45bacf6b6bab3f2c49822c",
+      "sha256": "c5c50d2b3beff94ac9b95f739aedd83dbb5db547e019e0347458788834f3abc3",
+      "lines": 605,
+      "original_lines": 605,
+      "read_evidence": "1-220,221-440,441-605; Known-answer cash/cost resizing, delayed fills, visible windows and cheating rejection, borrow-side/domain cases, wick/gap liquidation, malformed data and deterministic arrays. Synthetic fixtures only, no service/venue/economic search.",
+      "passes": {
+        "C1": "ran: Known-answer cash/cost resizing, delayed fills, visible windows and cheating rejection, borrow-side/domain cases, wick/gap liquidation, malformed data and deterministic arrays. Synthetic fixtures only, no service/venue/economic search.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "ran: meaningful return/error/identity effects asserted; no secret-bearing fixtures",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: deterministic seeded fixtures, no real timer/network/model/search added, mutable strategy instances recreated per run",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/tests/test_advanced_strategies.py",
+      "blob_sha": "4fe52e7e97cfdfd0b023223fe247c688516d61d7",
+      "sha256": "bd6fa630988f68d884ab2231e0cda8e3f2140c9edd73b5eef849bd038e89cbb4",
+      "lines": 284,
+      "original_lines": 284,
+      "read_evidence": "1-220,221-284; Mechanism-specific fixed synthetic cases, skip/displacement/fit gates, risk-size bounds and appended-future invariance. Tests exercise configured mechanisms, not fitted market performance.",
+      "passes": {
+        "C1": "ran: Mechanism-specific fixed synthetic cases, skip/displacement/fit gates, risk-size bounds and appended-future invariance. Tests exercise configured mechanisms, not fitted market performance.",
+        "C2": "ran: strategy protocol, returned scalar/result fields and caller-owned validation assumptions checked explicitly",
+        "C3": "ran: known-answer boundary and adversarial cases inspected; actual RED/GREEN added for confirmed alignment/numeric/composite defects",
+        "S1": "ran: source/comments/fixtures treated as data, no instruction execution or external credentials; no SQL/shell/HTTP authority in these pure modules",
+        "S2": "ran: finite/refusal/error-class paths and documented unavailable fallbacks inspected; pure calculations own no external resources",
+        "S3": "ran: peer identity and Sharpe count/precision guards fixed; remaining indicator/helpers are reached through validated bar/config callers",
+        "S4": "ran: supported Python/numpy contract, platform-independent array/math/statistics interfaces; no optional service imports",
+        "S5": "ran: meaningful return/error/identity effects asserted; no secret-bearing fixtures",
+        "P1": "ran: trailing-window allocations, existing capped recurrences and vectorized calculations inspected; no numerical approximation or threshold changed for speed",
+        "P2": "N/A: synchronous pure calculations and per-instance strategy state; no shared async writer or external lock",
+        "M1": "ran: named params/constants and self-contained modules reviewed; no style-only large refactor",
+        "M2": "ran: existing common indicators, cost config and registry factories reused; exact full-history RSI deliberately retained distinct from capped approximation",
+        "M3": "N/A: repo-scope architecture row separate",
+        "M4": "ran: model approximations, defaults, visible-window assumptions and valid-vs-invalid target policy cross-checked against code",
+        "T1": "ran: existing known-answer assertions and new failures prove actual output/refusal/parameter-identity behavior",
+        "T2": "N/A: repo-scope supply-chain row separate",
+        "T3": "N/A: repo-scope tooling row separate",
+        "T4": "ran: deterministic seeded fixtures, no real timer/network/model/search added, mutable strategy instances recreated per run",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    }
+  ],
+  "checks": [
+    {
+      "command": ".venv/bin/python -m unittest backtester.tests.test_engine backtester.tests.test_pairs backtester.tests.test_deflated_sharpe backtester.tests.test_indicators backtester.tests.test_advanced_strategies",
+      "exit_code": 0,
+      "tests": 158,
+      "seconds": 6.734,
+      "log": "/tmp/oraclebot-math-strategy-batch-final.log"
+    },
+    {
+      "command": "uvx ruff check --select F,E9 [all16receipt paths]",
+      "exit_code": 0,
+      "scope": [
+        "backtester/core/cointegration.py",
+        "backtester/core/perps.py",
+        "backtester/core/leverage.py",
+        "backtester/core/indicators.py",
+        "backtester/core/pairs.py",
+        "backtester/core/deflated_sharpe.py",
+        "backtester/core/strategies/__init__.py",
+        "backtester/core/strategies/advanced.py",
+        "backtester/core/strategies/composite.py",
+        "backtester/core/strategies/signals.py",
+        "backtester/core/strategies/rsi.py",
+        "backtester/tests/test_pairs.py",
+        "backtester/tests/test_deflated_sharpe.py",
+        "backtester/tests/test_indicators.py",
+        "backtester/tests/test_engine.py",
+        "backtester/tests/test_advanced_strategies.py"
+      ]
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "red_logs": [
+    "/tmp/oraclebot-numeric-boundaries-red.log",
+    "/tmp/oraclebot-sharpe-count-overflow-red.log",
+    "/tmp/oraclebot-composite-boundaries-red.log"
+  ],
+  "retracted_candidates": [
+    {
+      "candidate": "finite out-of-range Composite member must raise",
+      "status": "RETRACTED before production fix",
+      "evidence": "backtester/core/engine.py _resolve_target lines480-485 deliberately clamps finite raw exposures. Only nonfinite member refusal is introduced; finite clamping behavior stays unchanged."
+    }
+  ],
+  "snapshots": [
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-numeric-boundaries-20261112",
+    "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-composite-boundaries-20261112"
+  ],
+  "limits": [
+    "Synthetic structural correctness tests do not establish statistical calibration, profitability, live safety, or frozen research requalification.",
+    "No source/file-scope claim covers unlisted files or unread ranges.",
+    "All future source identities differ naturally; no legacy owner identity was relabeled."
+  ]
+}

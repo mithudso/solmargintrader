@@ -9,11 +9,14 @@ from unittest import mock
 from textual.widgets import Button, TabbedContent, TextArea
 
 from soltui import bgqueue
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
 class StatusConsoleTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_every_test_surface_has_a_status_button(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

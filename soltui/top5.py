@@ -36,6 +36,7 @@ tab then offers no roster shortcut for it rather than guessing.
 from __future__ import annotations
 
 import csv
+import math
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -135,21 +136,21 @@ def parse_members(label: str) -> tuple[tuple[str, ...], str]:
 
 
 def _f(row: dict[str, str], col: str) -> float | None:
-    """A float from the row, or None when absent/unparseable/NaN.
+    """A finite float from the row, or None when absent, invalid or nonfinite.
 
     Same policy as `cumulative._as_float`: NaN is what the engine writes for
     an insufficient row, and it must surface as "no value", never as 0.0.
     """
     try:
         v = float(row.get(col, ""))
-    except ValueError:
+    except (ValueError, TypeError, OverflowError):
         return None
-    return None if v != v else v
+    return v if math.isfinite(v) else None
 
 
 def _i(row: dict[str, str], col: str) -> int | None:
     v = _f(row, col)
-    return None if v is None else int(v)
+    return None if v is None or v < 0 or not v.is_integer() else int(v)
 
 
 def load_top5(csv_path: Path | None = None) -> list[Top5Config]:
@@ -170,7 +171,9 @@ def load_top5(csv_path: Path | None = None) -> list[Top5Config]:
             for row in csv.DictReader(fh):
                 try:
                     rank = int(row["rank"])
-                except (KeyError, ValueError):
+                except (KeyError, ValueError, TypeError):
+                    continue
+                if rank < 1:
                     continue
                 sharpe = _f(row, "median_sharpe")
                 if sharpe is None:
@@ -182,6 +185,8 @@ def load_top5(csv_path: Path | None = None) -> list[Top5Config]:
                     label=row.get("label", "(unnamed)"),
                     horizon=row.get("horizon", ""),
                 ))
+                if cfg.label != row.get("label", "(unnamed)") or cfg.horizon != row.get("horizon", ""):
+                    raise EvidenceUnavailable(f"{src.name} contains conflicting configuration identities for one rank")
                 q1, q3 = _f(row, "q1_sharpe"), _f(row, "q3_sharpe")
                 cfg.results.append(AssetResult(
                     asset=row.get("asset", ""),

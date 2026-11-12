@@ -1,4 +1,4 @@
-"""A retained account must not report earlier performance as a new chunk's gain."""
+"""Metric windows retain current performance and every modeled boundary cost."""
 from __future__ import annotations
 
 import unittest
@@ -70,3 +70,74 @@ class ContinuationMetricTests(unittest.TestCase):
             with self.subTest(field=field):
                 self.assertEqual(value, 0)
         self.assertEqual(current.trades, [])
+
+
+class CpcvCostBoundaryTests(unittest.TestCase):
+    def test_close_fill_paths_include_entry_and_exit_fees(self):
+        from backtester.core.cpcv import evaluate_block
+
+        class WarmHolding(Holding):
+            def warmup_bars(self):
+                return 2
+
+        for warmup, factory in ((0, Holding), (2, WarmHolding)):
+            for delay in (0, 1):
+                with self.subTest(warmup=warmup, fill_delay=delay):
+                    config = EngineConfig(initial_capital=100, fill_delay=delay,
+                                          costs=CostConfig(fee_bps=100, slippage_bps=0))
+                    block = evaluate_block(factory, bars([100] * 7), warmup, 7, config)
+                    self.assertTrue(block.usable)
+                    self.assertEqual(block.trades, 2)
+                    # One purchase reserves its1%fee, and the sale charges1%again.
+                    expected = .99 / 1.01 - 1
+                    observed = float(np.prod(1 + block.returns) - 1)
+                    self.assertAlmostEqual(observed, expected)
+
+
+class BotContinuationMetricTests(unittest.TestCase):
+    def test_legacy_checkpoint_without_valuation_boundary_refuses(self):
+        from backtester.core.dcasim import DcaConfig, run_dca_backtest
+        from backtester.core.gridsim import GridConfig, run_grid_backtest
+
+        cases = [(run_dca_backtest, DcaConfig(base_order_usd=20, max_safety_orders=0)),
+                 (run_grid_backtest, GridConfig(lower=80, upper=120, rungs=5, notional_per_rung_usd=20))]
+        kwargs = {"initial_capital": 100, "interval": "1d", "close_at_end": False}
+        for run, config in cases:
+            previous = run(config, bars([100, 100]), **kwargs)
+            for field in ("last_close", "baseline_units"):
+                checkpoint = {k: v for k, v in previous.continuation.items() if k != field}
+                with self.subTest(engine=run.__name__, missing=field), self.assertRaises(ValueError):
+                    run(config, bars([100], start=2), continuation=checkpoint, **kwargs)
+
+    def test_grid_new_flat_chunk_does_not_repeat_previous_return_or_rebuy_baseline(self):
+        from backtester.core.gridsim import GridConfig, run_grid_backtest
+
+        config = GridConfig(lower=80, upper=120, rungs=5, spacing="arith", notional_per_rung_usd=20)
+        kwargs = {"initial_capital": 100, "interval": "1d", "close_at_end": False}
+        previous = run_grid_backtest(config, bars([100, 90, 100]), **kwargs)
+        self.assertGreater(previous.metrics.total_return, 0)
+        current = run_grid_backtest(config, bars([100, 100], start=3), continuation=previous.continuation, **kwargs)
+        self.assertEqual(current.trades, [])
+        for label, value in (("net", current.metrics.total_return), ("baseline", current.baseline_metrics.total_return)):
+            with self.subTest(metric=label):
+                self.assertAlmostEqual(value, 0)
+        whole = run_grid_backtest(config, bars([100, 90, 100, 100, 100]), **kwargs)
+        self.assertEqual(current.continuation["book"], whole.continuation["book"])
+        np.testing.assert_allclose(np.concatenate([previous.baseline_equity, current.baseline_equity]), whole.baseline_equity)
+
+    def test_dca_new_flat_chunk_does_not_repeat_previous_return_or_rebuy_baseline(self):
+        from backtester.core.dcasim import DcaConfig, run_dca_backtest
+
+        config = DcaConfig(base_order_usd=20, max_safety_orders=0, take_profit_pct=5, cooldown_bars=10)
+        kwargs = {"initial_capital": 100, "interval": "1d", "close_at_end": False}
+        previous = run_dca_backtest(config, bars([100, 100, 110]), **kwargs)
+        self.assertGreater(previous.metrics.total_return, 0)
+        current = run_dca_backtest(config, bars([110, 110], start=3), continuation=previous.continuation, **kwargs)
+        self.assertEqual(current.trades, [])
+        for label, value in (("net", current.metrics.total_return), ("baseline", current.baseline_metrics.total_return)):
+            with self.subTest(metric=label):
+                self.assertAlmostEqual(value, 0)
+        whole = run_dca_backtest(config, bars([100, 100, 110, 110, 110]), **kwargs)
+        self.assertEqual(current.continuation["control"], whole.continuation["control"])
+        self.assertEqual(current.continuation["totals"], whole.continuation["totals"])
+        np.testing.assert_allclose(np.concatenate([previous.baseline_equity, current.baseline_equity]), whole.baseline_equity)

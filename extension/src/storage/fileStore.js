@@ -110,6 +110,7 @@ async function writeJsonAtomic(path, value, requestedPath = path) {
     await assertPath(requestedPath, path);
     await rename(tmp, path);
   } finally {
+    // eslint-disable-next-line no-unsafe-finally -- Refuse when private temporary data cannot be removed.
     try { await unlink(tmp); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
 }

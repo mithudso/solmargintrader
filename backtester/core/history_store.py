@@ -148,7 +148,10 @@ def read_history(archive: str | Path, snapshot_id: str, start: int, end: int) ->
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, epilog=(
+        "Example: python -m backtester.core.history_store history.db bars.csv "
+        "--instrument SOL-USD --venue coinbase-exchange --source operator-supplied --interval-seconds 60"
+    ))
     parser.add_argument("archive", type=Path)
     parser.add_argument("csv", type=Path)
     parser.add_argument("--instrument", required=True)

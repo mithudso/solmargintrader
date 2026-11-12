@@ -9,6 +9,8 @@ import argparse
 import hashlib
 import itertools
 import json
+import sys
+from io import BytesIO
 from dataclasses import asdict, replace
 from datetime import UTC, datetime
 from pathlib import Path
@@ -17,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from .core import volty
+from .core.data import describe_data_error, validate_bars
 from .core.volty import VoltyConfig, simulate, validate
 
 STEPS = {"1m": 60, "5m": 300, "10m": 600, "1h": 3600, "1d": 86400}
@@ -49,13 +52,15 @@ def prepare(data_dir, output, minute_days):
     frames, provenance = {}, {}
     for source_interval in ("1m", "1h"):
         path = data_dir / f"ZEC_{source_interval}.csv"
-        actual = digest(path)
+        raw = path.read_bytes()
+        actual = hashlib.sha256(raw).hexdigest()
         if actual != source_info[source_interval]["sha256"]:
             raise ValueError(f"source checksum mismatch: {path}")
-        frame = pd.read_csv(path)
+        frame = pd.read_csv(BytesIO(raw))
         step = STEPS[source_interval]
-        if frame.timestamp.duplicated().any() or np.any(np.diff(frame.timestamp) <= 0):
-            raise ValueError("duplicate or unordered source candles")
+        frame = validate_bars(frame, source_interval, strict_gaps=False)
+        if np.any(frame.timestamp.to_numpy() % step):
+            raise ValueError("source timestamps must align to their UTC interval grid")
         now = int(datetime.now(UTC).timestamp())
         frame = frame[frame.timestamp + step <= now].reset_index(drop=True)
         for interval in (("1m", "5m", "10m") if source_interval == "1m" else ("1h", "1d")):
@@ -151,7 +156,10 @@ def study(frames, output):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, epilog=(
+        "Example: python -m backtester.voltycli --data-dir observed-data --output new-study\n"
+        "This explicitly selected command performs an exploratory offline parameter sweep."
+    ))
     parser.add_argument("--data-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--minute-days", type=int, default=90)
@@ -163,7 +171,11 @@ def main(argv=None):
         parser.error("completed study exists; choose a fresh output directory")
     code_paths = (Path(__file__).resolve(), Path(volty.__file__).resolve())
     code_hashes = {str(p): digest(p) for p in code_paths}
-    frames, provenance = prepare(args.data_dir, args.output, args.minute_days)
+    try:
+        frames, provenance = prepare(args.data_dir, args.output, args.minute_days)
+    except (ValueError, OSError, KeyError) as exc:
+        print(f"error preparing Volty source data: {describe_data_error(exc)}", file=sys.stderr)
+        return 1
     results = study(frames, args.output)
     manifest = {"schema_version": 1, "created_at": datetime.now(UTC).isoformat(),
                 "strategy": "Volty Expan Close", "trials": 250, "configs_per_interval": 50,

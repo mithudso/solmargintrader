@@ -36,7 +36,7 @@ from web3 import Web3
 
 from . import abi, addresses
 from .chain import ZERO, AeroChain, Call, PoolState, Token
-from .market import STABLES, MarketData, vol_from_closes
+from .market import MarketData, vol_from_closes
 from .metrics import KNOWN_TOKENS, NO_DATA, PoolMetrics, ScoreDetail, economics_from, evaluate_pool_detail, score_pool
 from .state import atomic_write_json, home
 from .strategy import StrategyConfig, half_width_log, lvr_fraction_per_day
@@ -586,19 +586,20 @@ class Coins:
 
     def current(self, tokens: list[str]) -> dict[str, float]:
         toks = sorted({norm_token(t) for t in tokens})
-        need = [t for t in toks if t not in self._now and t not in STABLES]
+        need = [t for t in toks if t not in self._now]
         for i in range(0, len(need), 40):
             batch = need[i : i + 40]
             try:
                 r = self.http.get(f"{LLAMA_COINS}/prices/current/{self._coin_ids(batch)}", timeout=30)
                 r.raise_for_status()
                 for k, v in (r.json().get("coins") or {}).items():
-                    price = _f(v.get("price"))
-                    if price:
+                    raw_price = v.get("price")
+                    price = None if isinstance(raw_price, bool) else _f(raw_price)
+                    if price is not None and price > 0:
                         self._now[k.split(":", 1)[1].lower()] = price
             except (httpx.HTTPError, ValueError):
                 continue
-        return {t: (1.0 if t in STABLES else self._now[t]) for t in toks if t in STABLES or t in self._now}
+        return {t: self._now[t] for t in toks if t in self._now}
 
     def hourly(self, tokens: list[str], span: int = 168) -> None:
         """Fetch hourly prices for any token not fetched yet. Tokens DefiLlama has no chart for are remembered.
@@ -964,7 +965,10 @@ def read_v3_pool(chain: AeroChain, address: str, block: int | None = None) -> V3
     try:
         res = chain.multicall(calls(chain.w3.eth.contract(address=addr, abi=abi.V3_POOL)), block=bn)
     except Exception:  # noqa: BLE001 - Slipstream's slot0 has 6 outputs: the 7-output decode fails, so retry with theirs
-        res = chain.multicall(calls(chain.w3.eth.contract(address=addr, abi=abi.CL_POOL)), block=bn)
+        # Keep the optional factory ABI: allow_failure handles a contract revert, not a missing encoder entry.
+        slot0 = next(entry for entry in abi.CL_POOL if entry.get("name") == "slot0")
+        fallback_abi = [slot0 if entry.get("name") == "slot0" else entry for entry in abi.V3_POOL]
+        res = chain.multicall(calls(chain.w3.eth.contract(address=addr, abi=fallback_abi)), block=bn)
     s0, t0, t1, ts, fee, liq, fg0, fg1, factory, _ufee, _sliq, gauge = res
     ts_block = int(chain.w3.eth.get_block(bn)["timestamp"])
     state = PoolState(

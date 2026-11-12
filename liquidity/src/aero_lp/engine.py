@@ -191,6 +191,7 @@ class Engine:
             pool,
             journal=self.submission_journal(),
             accounting={"scope": "wallet"} if wallet else None,
+            before_send=self._gate,
         )
 
     def _gate(self) -> None:

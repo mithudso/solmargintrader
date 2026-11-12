@@ -46,6 +46,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from numbers import Integral
 from statistics import NormalDist
 from typing import Sequence
 
@@ -106,7 +107,7 @@ def deannualise(annual_sharpe: float, periods_per_year: float) -> float:
     """Convert an annualized Sharpe to the per-observation Sharpe the DSR needs."""
     if not math.isfinite(annual_sharpe):
         raise DeflatedSharpeError(f"annual_sharpe must be finite, got {annual_sharpe!r}")
-    if not periods_per_year > 0:
+    if not math.isfinite(periods_per_year) or not periods_per_year > 0:
         raise DeflatedSharpeError(f"periods_per_year must be > 0, got {periods_per_year!r}")
     return annual_sharpe / math.sqrt(periods_per_year)
 
@@ -132,10 +133,15 @@ def expected_max_sharpe(
         raise DeflatedSharpeError(f"trial_variance must be finite and >= 0, got {trial_variance!r}")
     if not math.isfinite(trial_mean):
         raise DeflatedSharpeError(f"trial_mean must be finite, got {trial_mean!r}")
+    if trial_variance == 0:
+        return float(trial_mean)
 
     g = EULER_MASCHERONI
-    hi = _NORMAL.inv_cdf(1.0 - 1.0 / n_trials)
-    lo = _NORMAL.inv_cdf(1.0 - 1.0 / (n_trials * math.e))
+    try:
+        hi = _NORMAL.inv_cdf(1.0 - 1.0 / n_trials)
+        lo = _NORMAL.inv_cdf(1.0 - 1.0 / (n_trials * math.e))
+    except ValueError as exc:
+        raise DeflatedSharpeError("trial count exceeds inverse-normal numeric precision") from exc
     return trial_mean + math.sqrt(trial_variance) * ((1.0 - g) * hi + g * lo)
 
 
@@ -155,22 +161,31 @@ def probabilistic_sharpe_ratio(
     With `skew=0, kurtosis=3` the denominator reduces to `sqrt(1 + SR²/2)`, which is
     Lo's (2002) standard error for the Sharpe ratio — a useful sanity anchor.
     """
-    if n_obs < 2:
+    if isinstance(n_obs, bool) or not isinstance(n_obs, Integral) or n_obs < 2:
         raise DeflatedSharpeError(f"n_obs must be >= 2 to estimate a standard error, got {n_obs}")
     for name, value in (("sharpe", sharpe), ("benchmark", benchmark), ("skew", skew),
                         ("kurtosis", kurtosis)):
         if not math.isfinite(value):
             raise DeflatedSharpeError(f"{name} must be finite, got {value!r}")
 
-    variance = 1.0 - skew * sharpe + ((kurtosis - 1.0) / 4.0) * sharpe**2
-    if variance <= 0:
+    try:
+        variance = 1.0 - skew * sharpe + ((kurtosis - 1.0) / 4.0) * sharpe**2
+    except OverflowError as exc:
+        raise DeflatedSharpeError("implied Sharpe variance exceeds numeric precision") from exc
+    if not math.isfinite(variance) or variance <= 0:
         # Possible with a strongly skewed, low-kurtosis input; refusing beats
         # returning a probability derived from a negative variance.
         raise DeflatedSharpeError(
             f"implied Sharpe variance is not positive ({variance:.6g}); "
             f"skew={skew!r}, kurtosis={kurtosis!r}, sharpe={sharpe!r} are jointly unusable"
         )
-    return _NORMAL.cdf((sharpe - benchmark) * math.sqrt(n_obs - 1) / math.sqrt(variance))
+    try:
+        score = (sharpe - benchmark) * math.sqrt(n_obs - 1) / math.sqrt(variance)
+    except OverflowError as exc:
+        raise DeflatedSharpeError("Sharpe probability score exceeds numeric precision") from exc
+    if not math.isfinite(score):
+        raise DeflatedSharpeError("Sharpe probability score must be finite")
+    return _NORMAL.cdf(score)
 
 
 def deflated_sharpe_ratio(
@@ -215,19 +230,23 @@ def effective_trials(n_configs: int, duplicate_groups: Sequence[int] = ()) -> fl
     pairwise correlation. Reporting a smaller N understates the haircut, so it is the
     conservative direction to leave un-modelled.
     """
-    if n_configs < 1:
+    if isinstance(n_configs, bool) or not isinstance(n_configs, Integral) or n_configs < 1:
         raise DeflatedSharpeError(f"n_configs must be >= 1, got {n_configs}")
+    n_configs = int(n_configs)
     removed = 0
     for k in duplicate_groups:
-        if k < 2:
+        if isinstance(k, bool) or not isinstance(k, Integral) or k < 2:
             raise DeflatedSharpeError(f"a duplicate group must contain >= 2 members, got {k}")
-        removed += k - 1
+        removed += int(k) - 1
     if removed >= n_configs:
         raise DeflatedSharpeError(
             f"duplicate groups remove {removed} of {n_configs} configurations, "
             "leaving nothing to correct"
         )
-    return float(n_configs - removed)
+    try:
+        return float(n_configs - removed)
+    except OverflowError as exc:
+        raise DeflatedSharpeError("effective trial count exceeds numeric precision") from exc
 
 
 def trial_sharpe_variance(sharpes: Sequence[float] | np.ndarray) -> float:

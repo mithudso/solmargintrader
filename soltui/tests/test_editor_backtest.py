@@ -8,12 +8,15 @@ from unittest.mock import patch
 
 from soltui.backtest_log import BacktestLog
 from soltui.commands import Context, Runtime, bots_backtest, compound_backtest
-from soltui.tests.test_tui import make_settings, TEST_SIZE
+from soltui.tests.test_tui import make_settings, offline_console_reads, TEST_SIZE
 from soltui.tui import SolTuiApp
 from textual.widgets import TextArea
 
 
 class EditorBacktestTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
+
     async def test_log_follows_new_bytes_and_does_not_steal_preview(self) -> None:
         app = SolTuiApp(make_settings())
         with tempfile.TemporaryDirectory() as d:

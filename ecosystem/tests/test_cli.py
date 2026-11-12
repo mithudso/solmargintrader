@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import io
 import json
+import os
+import subprocess
+import sys
+import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
@@ -23,6 +27,41 @@ class CliTests(unittest.TestCase):
 
     def test_help_contains_safe_read_only_example(self):
         self.assertIn("solecosystem status", cli.build_parser().format_help())
+
+    def test_current_server_and_paper_module_help_have_examples_without_owner_writes(
+        self,
+    ):
+        repo = Path(__file__).resolve().parents[2]
+        env = {
+            **os.environ,
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONPATH": os.pathsep.join(
+                str(p) for p in (repo / "botmanager/src", repo, repo / "executor/src")
+            ),
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary) / "owner-must-not-be-created"
+            for module in (
+                "ecosystem.web",
+                "ecosystem.zec_forward",
+                "ecosystem.meta_forward",
+                "ecosystem.volty_forward",
+            ):
+                with self.subTest(module=module):
+                    result = subprocess.run(
+                        [sys.executable, "-m", module, "--home", str(home), "--help"],
+                        cwd=repo,
+                        env=env,
+                        text=True,
+                        capture_output=True,
+                        timeout=10,
+                        check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertIn("usage:", result.stdout)
+                    self.assertIn("Example:", result.stdout)
+                    self.assertIn(f"python -m {module}", result.stdout)
+                    self.assertFalse(home.exists())
 
     def test_restart_preserves_frozen_provider_and_accounting_inputs(self):
         existing = {

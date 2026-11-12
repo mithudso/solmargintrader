@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solmargintrader-oracle"
-version = "0.2.3"
+version = "0.2.4"
 description = "Source-labelled prospective crypto signal archive and MCP service"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["solmargintrader-backtester==0.2.0", "mcp==1.30.0", "cryptography==50.0.2"]
+dependencies = ["solmargintrader-backtester==0.2.1", "mcp==1.30.0", "cryptography==50.0.2"]
 
 [project.scripts]
 soloracle = "oracle.cli:main"

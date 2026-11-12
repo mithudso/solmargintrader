@@ -8,6 +8,7 @@ import time
 import unittest
 from contextlib import closing
 from pathlib import Path
+from unittest.mock import patch
 from uuid import uuid4
 
 from ecosystem.web import make_server
@@ -21,7 +22,9 @@ class ControlHTTPTests(unittest.TestCase):
         self.server = make_server(
             self.home, manager_home=Path(self.temp.name) / "manager", port=0
         )
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread = threading.Thread(
+            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True
+        )
         self.thread.start()
         self.addCleanup(self.close)
         self.origin = f"http://127.0.0.1:{self.server.server_port}"
@@ -129,6 +132,28 @@ class ControlHTTPTests(unittest.TestCase):
         )
         self.assertEqual(conflict, 400)
         self.assertFalse(response["ok"])
+
+    def test_store_failure_logs_fixed_metadata_and_preserves_secret_boundary(self):
+        with (
+            patch.object(
+                self.server.controls,
+                "submit",
+                side_effect=OSError("private-store-canary"),
+            ),
+            self.assertLogs("ecosystem.web", level="WARNING") as logged,
+        ):
+            status, body = self.action()
+        self.assertEqual(status, 503)
+        self.assertEqual(body["error"], "control_store_unavailable")
+        record = json.loads(logged.records[0].getMessage())
+        self.assertEqual(record["event"], "ecosystem_owner_unavailable")
+        self.assertEqual(record["operation"], "submit_control_action")
+        self.assertEqual(record["error_type"], "OSError")
+        self.assertNotIn(
+            "private-store-canary", json.dumps(body) + " ".join(logged.output)
+        )
+        self.assertNotIn(self.nonce, " ".join(logged.output))
+        self.assertFalse((self.home / "control.sqlite3").exists())
 
     def test_unknown_order_paths_and_actions_are_not_available(self):
         status, data = self.request("/api/order", method="POST", body="{}")

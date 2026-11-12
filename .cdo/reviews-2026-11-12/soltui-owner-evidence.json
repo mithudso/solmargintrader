@@ -1,0 +1,376 @@
+{
+  "schema": 1,
+  "reviewer": "/root/full_repo_health",
+  "observed_at": "2026-11-12T18:04:49.388780+00:00",
+  "status": "full bounded assigned semantic reads complete; source/load identity boundary remains unqualified at repository architecture scope",
+  "files": [
+    {
+      "path": "soltui/learning_owner.py",
+      "blob_sha": "3d96f568cf1b4b3f3399655d3622446a88a573c4",
+      "sha256": "b80e5c596e275e39eed1115ac7a49caeb70059233b58c6a4967637a386bcd4c7",
+      "lines": 1059,
+      "original_sha256": "b80e5c596e275e39eed1115ac7a49caeb70059233b58c6a4967637a386bcd4c7",
+      "original_lines": 1059,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          660
+        ],
+        [
+          661,
+          880
+        ],
+        [
+          881,
+          1059
+        ]
+      ],
+      "final_delta_ranges": [],
+      "read_evidence": "Canonical scope quotas and UTC/day reservations; separate Oracle directional provenance remains ineligible; bounded read-only archives, source/runtime/pin identity and shadow confidence/calendar/reconciliation gates; promotion/rollback authorizations and local durable receipt reconciliation. Complete displayed original/source ranges plus exact reviewed authored final delta.",
+      "passes": {
+        "C1": "ran: Canonical scope quotas and UTC/day reservations; separate Oracle directional provenance remains ineligible; bounded read-only archives, source/runtime/pin identity and shadow confidence/calendar/reconciliation gates; promotion/rollback authorizations and local durable receipt reconciliation.",
+        "C2": "ran: actual imported experiment/manager contracts, schemas and call sites reviewed; shared authority and historical evidence kept separate",
+        "C3": "ran: failed/partial/malformed/stale/replay/duplicate/foreign owner and reservation paths inspected; concrete observed-active defect regression tested",
+        "S1": "ran: source data never treated as reviewer instruction; no signing/order/owner runtime activation or hidden reset",
+        "S2": "ran: SQLite snapshots/transactions, file locks/atomic writes and temporary fixture cleanup reviewed",
+        "S3": "ran: literal schema, exact typed IDs/booleans/finite bounds and evidence/config source fences inspected",
+        "S4": "ran: Python3.13 qualified current imports, SQLite/flock and numerical runtime expectations reviewed; local syntax/Ruff where changed",
+        "S5": "ran: durable status/receipts/refusal codes retain operation state; no external API in these imported owner/evidence modules",
+        "P1": "ran: explicit candidate/cell/archive byte/row budgets and bounded source/window iterations inspected; no empirical strategy tuning",
+        "P2": "ran: lock order, durable reservation-before-evaluation and idempotent immutable publication/adoption paths inspected; manual and legacy active fences preserved",
+        "M1": "ran: existing module structure retained, focused availability correction only; large modules remain documented review subjects",
+        "M2": "ran: canonical/fingerprint, shared temporal authority, existing data/metric/manager contracts reused",
+        "M3": "N/A: central repository architecture assessment separate",
+        "M4": "ran: public docstrings/comments match actual immutable evidence and pause/adoption semantics; disk-source fingerprint does not itself prove loaded-code identity",
+        "T1": "ran: corresponding7modules guarded144tests0 prior to small availability correction; new3 +manager10 focused13tests0 after correction",
+        "T2": "N/A: central dependency/supply-chain assessment separate",
+        "T3": "N/A: central tooling assessment separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library/test only"
+      },
+      "verdict": "REVIEWED",
+      "findings": []
+    },
+    {
+      "path": "soltui/research_admission.py",
+      "blob_sha": "48410aaf4b95851f749afde58d533ee08ff0a572",
+      "sha256": "4dd6c7690d593d818431a8d47d14c0ec37265e7bfd1e96fd371228c3df1bdc11",
+      "lines": 607,
+      "original_sha256": "4dd6c7690d593d818431a8d47d14c0ec37265e7bfd1e96fd371228c3df1bdc11",
+      "original_lines": 607,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          607
+        ]
+      ],
+      "final_delta_ranges": [],
+      "read_evidence": "Shared process optimizer lease and context-local reentry, explicit canonical authority/registration, conservative historical root scans and source hash interval imports, stable attempt accounting, unknown-owner gaps and fixed immutable namespace identity. Complete displayed original/source ranges plus exact reviewed authored final delta.",
+      "passes": {
+        "C1": "ran: Shared process optimizer lease and context-local reentry, explicit canonical authority/registration, conservative historical root scans and source hash interval imports, stable attempt accounting, unknown-owner gaps and fixed immutable namespace identity.",
+        "C2": "ran: actual imported experiment/manager contracts, schemas and call sites reviewed; shared authority and historical evidence kept separate",
+        "C3": "ran: failed/partial/malformed/stale/replay/duplicate/foreign owner and reservation paths inspected; concrete observed-active defect regression tested",
+        "S1": "ran: source data never treated as reviewer instruction; no signing/order/owner runtime activation or hidden reset",
+        "S2": "ran: SQLite snapshots/transactions, file locks/atomic writes and temporary fixture cleanup reviewed",
+        "S3": "ran: literal schema, exact typed IDs/booleans/finite bounds and evidence/config source fences inspected",
+        "S4": "ran: Python3.13 qualified current imports, SQLite/flock and numerical runtime expectations reviewed; local syntax/Ruff where changed",
+        "S5": "ran: durable status/receipts/refusal codes retain operation state; no external API in these imported owner/evidence modules",
+        "P1": "ran: explicit candidate/cell/archive byte/row budgets and bounded source/window iterations inspected; no empirical strategy tuning",
+        "P2": "ran: lock order, durable reservation-before-evaluation and idempotent immutable publication/adoption paths inspected; manual and legacy active fences preserved",
+        "M1": "ran: existing module structure retained, focused availability correction only; large modules remain documented review subjects",
+        "M2": "ran: canonical/fingerprint, shared temporal authority, existing data/metric/manager contracts reused",
+        "M3": "N/A: central repository architecture assessment separate",
+        "M4": "ran: public docstrings/comments match actual immutable evidence and pause/adoption semantics; disk-source fingerprint does not itself prove loaded-code identity",
+        "T1": "ran: corresponding7modules guarded144tests0 prior to small availability correction; new3 +manager10 focused13tests0 after correction",
+        "T2": "N/A: central dependency/supply-chain assessment separate",
+        "T3": "N/A: central tooling assessment separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library/test only"
+      },
+      "verdict": "REVIEWED",
+      "findings": []
+    },
+    {
+      "path": "soltui/manager_evidence.py",
+      "blob_sha": "89acd543eaf4b2891907966b06ea5762122e5ae5",
+      "sha256": "f5a5a77a9d0f21f7e8368d1fee5c971f10f2179e21e5c99873bd52c33b1e0888",
+      "lines": 834,
+      "original_sha256": "cb088c426a16af670f23d32381a5388b63162bad937950f18cb66e68d907ec4d",
+      "original_lines": 827,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          650
+        ],
+        [
+          651,
+          827
+        ]
+      ],
+      "final_delta_ranges": [
+        {
+          "tag": "replace",
+          "original": [
+            520,
+            520
+          ],
+          "final": [
+            520,
+            520
+          ]
+        },
+        {
+          "tag": "replace",
+          "original": [
+            523,
+            524
+          ],
+          "final": [
+            523,
+            530
+          ]
+        },
+        {
+          "tag": "insert",
+          "original": [
+            790,
+            789
+          ],
+          "final": [
+            796,
+            796
+          ]
+        }
+      ],
+      "read_evidence": "Protocol2 schema/frozen scopes/candidates/cost objectives and globalordinalbudget; immutable cells/artifacts, protected-date exposure/final spending, blind verdict binding and client coverage/legacy fences. Observed liveness now refreshes separately from explicit manual declarations. Complete displayed original/source ranges plus exact reviewed authored final delta.",
+      "passes": {
+        "C1": "ran: Protocol2 schema/frozen scopes/candidates/cost objectives and globalordinalbudget; immutable cells/artifacts, protected-date exposure/final spending, blind verdict binding and client coverage/legacy fences. Observed liveness now refreshes separately from explicit manual declarations.",
+        "C2": "ran: actual imported experiment/manager contracts, schemas and call sites reviewed; shared authority and historical evidence kept separate",
+        "C3": "ran: failed/partial/malformed/stale/replay/duplicate/foreign owner and reservation paths inspected; concrete observed-active defect regression tested",
+        "S1": "ran: source data never treated as reviewer instruction; no signing/order/owner runtime activation or hidden reset",
+        "S2": "ran: SQLite snapshots/transactions, file locks/atomic writes and temporary fixture cleanup reviewed",
+        "S3": "ran: literal schema, exact typed IDs/booleans/finite bounds and evidence/config source fences inspected",
+        "S4": "ran: Python3.13 qualified current imports, SQLite/flock and numerical runtime expectations reviewed; local syntax/Ruff where changed",
+        "S5": "ran: durable status/receipts/refusal codes retain operation state; no external API in these imported owner/evidence modules",
+        "P1": "ran: explicit candidate/cell/archive byte/row budgets and bounded source/window iterations inspected; no empirical strategy tuning",
+        "P2": "ran: lock order, durable reservation-before-evaluation and idempotent immutable publication/adoption paths inspected; manual and legacy active fences preserved",
+        "M1": "ran: existing module structure retained, focused availability correction only; large modules remain documented review subjects",
+        "M2": "ran: canonical/fingerprint, shared temporal authority, existing data/metric/manager contracts reused",
+        "M3": "N/A: central repository architecture assessment separate",
+        "M4": "ran: public docstrings/comments match actual immutable evidence and pause/adoption semantics; disk-source fingerprint does not itself prove loaded-code identity",
+        "T1": "ran: corresponding7modules guarded144tests0 prior to small availability correction; new3 +manager10 focused13tests0 after correction",
+        "T2": "N/A: central dependency/supply-chain assessment separate",
+        "T3": "N/A: central tooling assessment separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library/test only"
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": [
+        "SLA-01"
+      ]
+    },
+    {
+      "path": "soltui/experiment_runner.py",
+      "blob_sha": "830cf95fd19c0dde8249677718dfb4e92ab80ebe",
+      "sha256": "3ca1c065296dcc71441f9aabe4d9ae4f28250f6daca998595280dd34cdaf119d",
+      "lines": 728,
+      "original_sha256": "3ca1c065296dcc71441f9aabe4d9ae4f28250f6daca998595280dd34cdaf119d",
+      "original_lines": 728,
+      "original_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          440
+        ],
+        [
+          441,
+          660
+        ],
+        [
+          661,
+          728
+        ]
+      ],
+      "final_delta_ranges": [],
+      "read_evidence": "Frozen local candidate/window preparation, exact arrays/quote hashes and numerical runtime descriptor, durable pause/cancel/resume/finalization, pre-read/exposure/holdout reservations and baseline/history-token adoption; no actual optimization/evaluation run for this audit. Complete displayed original/source ranges plus exact reviewed authored final delta.",
+      "passes": {
+        "C1": "ran: Frozen local candidate/window preparation, exact arrays/quote hashes and numerical runtime descriptor, durable pause/cancel/resume/finalization, pre-read/exposure/holdout reservations and baseline/history-token adoption; no actual optimization/evaluation run for this audit.",
+        "C2": "ran: actual imported experiment/manager contracts, schemas and call sites reviewed; shared authority and historical evidence kept separate",
+        "C3": "ran: failed/partial/malformed/stale/replay/duplicate/foreign owner and reservation paths inspected; concrete observed-active defect regression tested",
+        "S1": "ran: source data never treated as reviewer instruction; no signing/order/owner runtime activation or hidden reset",
+        "S2": "ran: SQLite snapshots/transactions, file locks/atomic writes and temporary fixture cleanup reviewed",
+        "S3": "ran: literal schema, exact typed IDs/booleans/finite bounds and evidence/config source fences inspected",
+        "S4": "ran: Python3.13 qualified current imports, SQLite/flock and numerical runtime expectations reviewed; local syntax/Ruff where changed",
+        "S5": "ran: durable status/receipts/refusal codes retain operation state; no external API in these imported owner/evidence modules",
+        "P1": "ran: explicit candidate/cell/archive byte/row budgets and bounded source/window iterations inspected; no empirical strategy tuning",
+        "P2": "ran: lock order, durable reservation-before-evaluation and idempotent immutable publication/adoption paths inspected; manual and legacy active fences preserved",
+        "M1": "ran: existing module structure retained, focused availability correction only; large modules remain documented review subjects",
+        "M2": "ran: canonical/fingerprint, shared temporal authority, existing data/metric/manager contracts reused",
+        "M3": "N/A: central repository architecture assessment separate",
+        "M4": "ran: public docstrings/comments match actual immutable evidence and pause/adoption semantics; disk-source fingerprint does not itself prove loaded-code identity",
+        "T1": "ran: corresponding7modules guarded144tests0 prior to small availability correction; new3 +manager10 focused13tests0 after correction",
+        "T2": "N/A: central dependency/supply-chain assessment separate",
+        "T3": "N/A: central tooling assessment separate",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: imported library/test only"
+      },
+      "verdict": "REVIEWED",
+      "findings": []
+    },
+    {
+      "path": "soltui/tests/research_fixtures.py",
+      "blob_sha": "6980988aca72ae30bcfa52e049e962ae9a85c525",
+      "sha256": "53435da88bee1ff852cdc3409b0b4cc4ce31eae4fb0c6b71cb0e93e4c7ab6c06",
+      "lines": 84,
+      "original_sha256": "53435da88bee1ff852cdc3409b0b4cc4ce31eae4fb0c6b71cb0e93e4c7ab6c06",
+      "original_lines": 84,
+      "original_read_ranges": [
+        [
+          1,
+          84
+        ]
+      ],
+      "final_delta_ranges": [],
+      "read_evidence": "Small deterministic gzip public-quote recording and canonical spec/packet builders; only caller-owned temporary roots and immutable synthetic values. Complete displayed original/source ranges plus exact reviewed authored final delta.",
+      "passes": {
+        "C1": "ran: Small deterministic gzip public-quote recording and canonical spec/packet builders; only caller-owned temporary roots and immutable synthetic values.",
+        "C2": "ran: actual imported experiment/manager contracts, schemas and call sites reviewed; shared authority and historical evidence kept separate",
+        "C3": "ran: failed/partial/malformed/stale/replay/duplicate/foreign owner and reservation paths inspected; concrete observed-active defect regression tested",
+        "S1": "ran: source data never treated as reviewer instruction; no signing/order/owner runtime activation or hidden reset",
+        "S2": "ran: SQLite snapshots/transactions, file locks/atomic writes and temporary fixture cleanup reviewed",
+        "S3": "ran: literal schema, exact typed IDs/booleans/finite bounds and evidence/config source fences inspected",
+        "S4": "ran: Python3.13 qualified current imports, SQLite/flock and numerical runtime expectations reviewed; local syntax/Ruff where changed",
+        "S5": "ran: durable status/receipts/refusal codes retain operation state; no external API in these imported owner/evidence modules",
+        "P1": "ran: explicit candidate/cell/archive byte/row budgets and bounded source/window iterations inspected; no empirical strategy tuning",
+        "P2": "ran: lock order, durable reservation-before-evaluation and idempotent immutable publication/adoption paths inspected; manual and legacy active fences preserved",
+        "M1": "ran: existing module structure retained, focused availability correction only; large modules remain documented review subjects",
+        "M2": "ran: canonical/fingerprint, shared temporal authority, existing data/metric/manager contracts reused",
+        "M3": "N/A: central repository architecture assessment separate",
+        "M4": "ran: public docstrings/comments match actual immutable evidence and pause/adoption semantics; disk-source fingerprint does not itself prove loaded-code identity",
+        "T1": "ran: corresponding7modules guarded144tests0 prior to small availability correction; new3 +manager10 focused13tests0 after correction",
+        "T2": "N/A: central dependency/supply-chain assessment separate",
+        "T3": "N/A: central tooling assessment separate",
+        "T4": "ran: temporary immutable fixture data and test-owned SQL/mocks reviewed; no actual optimizer/owner job",
+        "M5": "N/A: imported library/test only"
+      },
+      "verdict": "REVIEWED",
+      "findings": []
+    },
+    {
+      "path": "soltui/tests/test_admission_activity_refresh.py",
+      "blob_sha": "f284c5607149ea31bfcbe392c6d8f4a0e65eff94",
+      "sha256": "6d89783b44897dc549b74c53ee0bd4fde0b18259c23c34fbad5e196df7db5eda",
+      "lines": 51,
+      "original_sha256": null,
+      "original_lines": 0,
+      "original_read_ranges": [],
+      "final_delta_ranges": [
+        {
+          "tag": "insert",
+          "original": [
+            1,
+            0
+          ],
+          "final": [
+            1,
+            51
+          ]
+        }
+      ],
+      "read_evidence": "Actual temporary ExperimentStore refresh through manager_unseal: observed active can clear, explicit/manual and ambiguous legacy active stay blocked; unchanged unprepared final-verdict gate still refuses. No operational state. Complete displayed original/source ranges plus exact reviewed authored final delta.",
+      "passes": {
+        "C1": "ran: Actual temporary ExperimentStore refresh through manager_unseal: observed active can clear, explicit/manual and ambiguous legacy active stay blocked; unchanged unprepared final-verdict gate still refuses. No operational state.",
+        "C2": "ran: actual imported experiment/manager contracts, schemas and call sites reviewed; shared authority and historical evidence kept separate",
+        "C3": "ran: failed/partial/malformed/stale/replay/duplicate/foreign owner and reservation paths inspected; concrete observed-active defect regression tested",
+        "S1": "ran: source data never treated as reviewer instruction; no signing/order/owner runtime activation or hidden reset",
+        "S2": "ran: SQLite snapshots/transactions, file locks/atomic writes and temporary fixture cleanup reviewed",
+        "S3": "ran: literal schema, exact typed IDs/booleans/finite bounds and evidence/config source fences inspected",
+        "S4": "ran: Python3.13 qualified current imports, SQLite/flock and numerical runtime expectations reviewed; local syntax/Ruff where changed",
+        "S5": "ran: durable status/receipts/refusal codes retain operation state; no external API in these imported owner/evidence modules",
+        "P1": "ran: explicit candidate/cell/archive byte/row budgets and bounded source/window iterations inspected; no empirical strategy tuning",
+        "P2": "ran: lock order, durable reservation-before-evaluation and idempotent immutable publication/adoption paths inspected; manual and legacy active fences preserved",
+        "M1": "ran: existing module structure retained, focused availability correction only; large modules remain documented review subjects",
+        "M2": "ran: canonical/fingerprint, shared temporal authority, existing data/metric/manager contracts reused",
+        "M3": "N/A: central repository architecture assessment separate",
+        "M4": "ran: public docstrings/comments match actual immutable evidence and pause/adoption semantics; disk-source fingerprint does not itself prove loaded-code identity",
+        "T1": "ran: corresponding7modules guarded144tests0 prior to small availability correction; new3 +manager10 focused13tests0 after correction",
+        "T2": "N/A: central dependency/supply-chain assessment separate",
+        "T3": "N/A: central tooling assessment separate",
+        "T4": "ran: temporary immutable fixture data and test-owned SQL/mocks reviewed; no actual optimizer/owner job",
+        "M5": "N/A: imported library/test only"
+      },
+      "verdict": "REVIEWED",
+      "findings": [
+        "SLA-01"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "SLA-01",
+      "severity": "Medium",
+      "state": "fixed",
+      "path": "soltui/manager_evidence.py",
+      "detail": "Separate declared_active from observed process liveness during automatic coverage refresh; legacy ambiguous and explicit manual activity remain conservatively blocked."
+    }
+  ],
+  "checks": [
+    {
+      "command": "first new activity fixture",
+      "exit_code": 1,
+      "tests": 3,
+      "errors": 3,
+      "reason": "Fixture omitted public run.status, not a product failure",
+      "log": "/tmp/oraclebot-admission-activity-red.log"
+    },
+    {
+      "command": "qualified activity counterexample",
+      "exit_code": 1,
+      "tests": 3,
+      "failures": 1,
+      "log": "/tmp/oraclebot-admission-activity-red-qualified.log"
+    },
+    {
+      "command": "new activity plus existing manager evidence",
+      "exit_code": 0,
+      "tests": 13,
+      "seconds": 0.81,
+      "log": "/tmp/oraclebot-admission-activity-green.log"
+    },
+    {
+      "command": "Ruff manager_evidence and new regression",
+      "exit_code": 0
+    }
+  ],
+  "remaining": [
+    "Disk source fingerprints in experiment_runner and related modules need a shared actual loaded-code binding or a truthful source-only contract; no existing accepted artifacts were relabeled.",
+    "Central M3/T2/T3/T4 and final integrated current-source suite remain parent stage work."
+  ]
+}

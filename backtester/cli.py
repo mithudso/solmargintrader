@@ -15,8 +15,8 @@ from typing import Sequence
 import numpy as np
 
 from .core import plotting, report
-from .core.data import CsvLoader, SnapshotLoader, SyntheticLoader, checksum_frame, frame_to_arrays
-from .core.engine import BacktestResult, EngineConfig, Strategy, run_backtest
+from .core.data import CsvLoader, SnapshotLoader, SyntheticLoader, checksum_frame, describe_data_error, frame_to_arrays
+from .core.engine import BacktestResult, EngineConfig, run_backtest
 from .core.metrics import compute_metrics
 from .core.report import SplitResult
 from .core.strategies import DEFAULT_SET, REGISTRY, build
@@ -33,6 +33,7 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog=(
+            "Example: python -m backtester.cli --synthetic 100 --start 2020-01-01 --strategy buy_and_hold --no-charts\n"
             "Fetch data first:\n"
             "  python -m backtester.core.fetch --asset SOL --interval 1d "
             "--start 2021-01-01\n"
@@ -80,7 +81,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     ap.add_argument("--risk-free-rate", type=float, default=0.0, help="annual, decimal")
     ap.add_argument("--allow-short", action="store_true", help="permit short exposure (perp only)")
-    ap.add_argument("--seed", type=int, default=0, help="seed recorded in the manifest")
+    ap.add_argument("--seed", type=int, default=None, help="seed recorded in the manifest; synthetic data defaults to 42 when omitted")
     ap.add_argument("--data", default=None, help="path to a cached CSV")
     ap.add_argument("--history-archive", default=None, help="SQLite history archive")
     ap.add_argument("--snapshot-id", default=None, help="verified history snapshot SHA-256")
@@ -197,6 +198,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         ap.print_help()
         return 0
     args = ap.parse_args(raw)
+    if args.synthetic is not None and args.synthetic < 1:
+        print("error: --synthetic must be at least 1", file=sys.stderr)
+        return 2
+    if args.data and args.synthetic is not None:
+        print("error: --data and --synthetic name different data sources; pass one", file=sys.stderr)
+        return 2
 
     mode = Mode(args.mode)
     if mode is Mode.SPOT and args.leverage != 1.0:
@@ -224,8 +231,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     if args.snapshot_id:
         loader = SnapshotLoader(args.history_archive, args.snapshot_id, quote=args.quote)
-    elif args.synthetic:
-        loader = SyntheticLoader(n_bars=args.synthetic, seed=args.seed or 42)
+    elif args.synthetic is not None:
+        loader = SyntheticLoader(n_bars=args.synthetic, seed=42 if args.seed is None else args.seed)
     else:
         path = Path(args.data) if args.data else Path("data") / f"{args.asset.upper()}_{args.interval}.csv"
         loader = CsvLoader(path, allow_gaps=args.allow_gaps)
@@ -236,7 +243,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     except Exception as exc:
-        print(f"error loading data: {exc}", file=sys.stderr)
+        print(f"error loading data: {describe_data_error(exc)}", file=sys.stderr)
         return 1
 
     arrays = frame_to_arrays(df)
@@ -262,7 +269,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             risk_free_rate=args.risk_free_rate,
             costs=costs,
             allow_short=args.allow_short,
-            seed=args.seed,
+            seed=0 if args.seed is None else args.seed,
         )
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
@@ -305,7 +312,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         leverage=args.leverage,
         initial_capital=args.capital,
         fill_delay=args.fill_delay,
-        seed=args.seed,
+        seed=cfg.seed,
         rebalance_threshold=args.rebalance_threshold,
         costs=vars(costs).copy(),
         strategies={s.full.strategy_name: s.full.params for s in splits},

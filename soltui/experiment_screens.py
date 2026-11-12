@@ -239,7 +239,7 @@ class ExperimentScreen(ModalScreen[None]):
             try:
                 env = self.call(name, params)
             except Exception as exc:  # noqa: BLE001 - registry boundary keeps unexpected errors visible in the modal
-                env = {"ok": False, "error": {"message": f"{type(exc).__name__}: {exc}"}}
+                env = {"ok": False, "error": {"message": f"{name} failed ({type(exc).__name__}); inspect local diagnostics"}}
             try:
                 self.app.call_from_thread(self._received, name, env, callback, quiet)
             except RuntimeError:

@@ -1,0 +1,3593 @@
+{
+  "agent": "soltui_independent_batch",
+  "definition_version": "2.0.0",
+  "status": "partial",
+  "review_status": "verified",
+  "profile": "default",
+  "mode": "full",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "observed_at": "2026-11-12T18:21:43.203285+00:00",
+  "source_coverage": {
+    "files_reviewed": 20,
+    "assigned_files": 20,
+    "original_lines_read": 5727,
+    "coverage": "full",
+    "cap": null
+  },
+  "files": [
+    {
+      "path": "soltui/pnl.py",
+      "sha256": "5a85afb2e0d2f6058675c74012d138c93a3b79815a22547ebaa63509abc679fb",
+      "lines": 687,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/pnl.py",
+      "read_ranges": [
+        [
+          1,
+          230
+        ],
+        [
+          231,
+          465
+        ],
+        [
+          466,
+          687
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pnl.py",
+      "original_read_ranges": [
+        [
+          1,
+          230
+        ],
+        [
+          231,
+          465
+        ],
+        [
+          466,
+          687
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Inclusive UTC windows; base/final equity; stable equal-timestamp observations; costs and realized/unrealized split; daily carry; independent dollar/percentage drawdown episodes; FIFO journal validation; historical ledger basis and input-row traversal; value-only wallet curves.",
+      "baseline_census_original_sha256": "5a85afb2e0d2f6058675c74012d138c93a3b79815a22547ebaa63509abc679fb",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "244cf121b50ebc1a5816986fb31d5086d70b8a1531648313d1181bb95e6bbe2f",
+      "final_lines": 731,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            199,
+            200
+          ],
+          "final_lines": [
+            199,
+            201
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            334,
+            334
+          ],
+          "final_lines": [
+            335,
+            337
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            341,
+            341
+          ],
+          "final_lines": [
+            344,
+            344
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            343,
+            342
+          ],
+          "final_lines": [
+            346,
+            346
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            347,
+            346
+          ],
+          "final_lines": [
+            351,
+            354
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            357,
+            356
+          ],
+          "final_lines": [
+            365,
+            377
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            358,
+            358
+          ],
+          "final_lines": [
+            379,
+            380
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            364,
+            363
+          ],
+          "final_lines": [
+            386,
+            386
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            552,
+            551
+          ],
+          "final_lines": [
+            575,
+            578
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            563,
+            563
+          ],
+          "final_lines": [
+            590,
+            590
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            585,
+            584
+          ],
+          "final_lines": [
+            612,
+            613
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            596,
+            596
+          ],
+          "final_lines": [
+            625,
+            625
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            598,
+            598
+          ],
+          "final_lines": [
+            627,
+            630
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            651,
+            658
+          ],
+          "final_lines": [
+            683,
+            702
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Complete source control-flow review; financial ordering/drawdown/journal defects and status-rendering defects have known-answer regressions."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Reviewed all public dataclasses, source labels, result shapes, navigation callbacks and existing callers. Drawdown retains dollar-episode fields and adds explicit percentage-episode fields."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Adversarial same-timestamp, divergent drawdown episodes, malformed containers, huge/nonfinite numeric values, false freshness, and fixture service boundaries were reproduced red then checked green."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "All assigned source treated as data. No reviewer directives found. Constant SQL reads and Rich Text plain append preserve data/code boundaries; no key/signing access added."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Failure paths reviewed; numeric/date conversion failures degrade to unavailable display and malformed journal sources do not crash the whole report."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "External journal and status numeric boundaries reject invalid sides, nonpositive prices, booleans, nonfinite/oversized values and unknown freshness evidence."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Parsed and tested with the qualified Python3.13 runtime; the retained Rich/Textual interfaces already exist in repository code."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Pure calculation/presentation paths perform no external writes. Missing evidence remains visible through absent figures or freshness warnings instead of raw debug output."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed loop costs. Historical ledger input rows are consumed once; deterministic row-visit regression rejects the previous quadratic rescans."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed mutation scope and asynchronous provider yields. Calculation state is local; SegmentBar renders synchronously and no new background tasks or listeners were added."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed naming, constants, branches and file organization. Large modules retain documented coherent math/adapters and shell/presentation sections; no speculative split."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Existing netpct helpers, shared numeric conversion and repository offline fixture helpers are reused; no new product framework."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Updated the drawdown contract to distinguish dollar and percentage maxima. Source labels and dry-run/live separation remain explicit."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Financial and presentation bugs have failing-before/passing-after known-answer cases plus ordinary positive controls; all original test assertions remain."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "na",
+          "reason": "Production module; test-suite performance disposition is recorded on assigned test files."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/shell.py",
+      "sha256": "b6bd35aa37abb9f1d96df4d4e324f368fc9d6f904b6a25c00d45c751f8a0919a",
+      "lines": 729,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/shell.py",
+      "read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          485
+        ],
+        [
+          486,
+          729
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/shell.py",
+      "original_read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          485
+        ],
+        [
+          486,
+          729
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Plain Rich text; bounded numeric bars; freshness evidence; navigation coverage and overflow layouts; SegmentBar cell click ranges; read-only Now tiles/activity; async palette provider callbacks; explanation rendering.",
+      "baseline_census_original_sha256": "b6bd35aa37abb9f1d96df4d4e324f368fc9d6f904b6a25c00d45c751f8a0919a",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "d4ddf5bf3de8653c62c433dc0ff902c2f92af52fe9636f3e3482c867b054d053",
+      "final_lines": 748,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "insert",
+          "original_lines": [
+            17,
+            16
+          ],
+          "final_lines": [
+            17,
+            17
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            113,
+            113
+          ],
+          "final_lines": [
+            114,
+            116
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            115,
+            115
+          ],
+          "final_lines": [
+            118,
+            118
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            127,
+            127
+          ],
+          "final_lines": [
+            130,
+            131
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            135,
+            134
+          ],
+          "final_lines": [
+            139,
+            139
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            147,
+            146
+          ],
+          "final_lines": [
+            152,
+            153
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            149,
+            149
+          ],
+          "final_lines": [
+            156,
+            156
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            151,
+            151
+          ],
+          "final_lines": [
+            158,
+            158
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            416,
+            415
+          ],
+          "final_lines": [
+            423,
+            424
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            512,
+            511
+          ],
+          "final_lines": [
+            521,
+            523
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            563,
+            565
+          ],
+          "final_lines": [
+            575,
+            579
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            618,
+            618
+          ],
+          "final_lines": [
+            632,
+            637
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Complete source control-flow review; financial ordering/drawdown/journal defects and status-rendering defects have known-answer regressions."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Reviewed all public dataclasses, source labels, result shapes, navigation callbacks and existing callers. Drawdown retains dollar-episode fields and adds explicit percentage-episode fields."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Adversarial same-timestamp, divergent drawdown episodes, malformed containers, huge/nonfinite numeric values, false freshness, and fixture service boundaries were reproduced red then checked green."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "All assigned source treated as data. No reviewer directives found. Constant SQL reads and Rich Text plain append preserve data/code boundaries; no key/signing access added."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Failure paths reviewed; numeric/date conversion failures degrade to unavailable display and malformed journal sources do not crash the whole report."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "External journal and status numeric boundaries reject invalid sides, nonpositive prices, booleans, nonfinite/oversized values and unknown freshness evidence."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Parsed and tested with the qualified Python3.13 runtime; the retained Rich/Textual interfaces already exist in repository code."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Pure calculation/presentation paths perform no external writes. Missing evidence remains visible through absent figures or freshness warnings instead of raw debug output."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed loop costs. Historical ledger input rows are consumed once; deterministic row-visit regression rejects the previous quadratic rescans."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed mutation scope and asynchronous provider yields. Calculation state is local; SegmentBar renders synchronously and no new background tasks or listeners were added."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed naming, constants, branches and file organization. Large modules retain documented coherent math/adapters and shell/presentation sections; no speculative split."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Existing netpct helpers, shared numeric conversion and repository offline fixture helpers are reused; no new product framework."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Updated the drawdown contract to distinguish dollar and percentage maxima. Source labels and dry-run/live separation remain explicit."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Financial and presentation bugs have failing-before/passing-after known-answer cases plus ordinary positive controls; all original test assertions remain."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "na",
+          "reason": "Production module; test-suite performance disposition is recorded on assigned test files."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_bots.py",
+      "sha256": "e41be59f7af8f8401ba19e5cadd8e482a47ad9101eddf2633e628964120aaaab",
+      "lines": 756,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_bots.py",
+      "read_ranges": [
+        [
+          1,
+          250
+        ],
+        [
+          251,
+          505
+        ],
+        [
+          480,
+          756
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_bots.py",
+      "original_read_ranges": [
+        [
+          1,
+          250
+        ],
+        [
+          251,
+          505
+        ],
+        [
+          480,
+          756
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Manual per-coin config/adoption scopes; hourly/minute resampling and gap handling; synthetic backtests; gzip member cursors; prospective replay cursor freeze; optimizer fake-score controls reviewed statically; BotsTab command routing and mocked scheduler.",
+      "baseline_census_original_sha256": "e41be59f7af8f8401ba19e5cadd8e482a47ad9101eddf2633e628964120aaaab",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "339bc7dd17a7996155c1d68c595fcaa51e039e1fbcc4bb7bc5e0a64f3bc70aac",
+      "final_lines": 758,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "insert",
+          "original_lines": [
+            583,
+            582
+          ],
+          "final_lines": [
+            583,
+            584
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_bots_manual_editor.py",
+      "sha256": "9bc95df938a4e6c2c7ea5b0723c7c10258ececbc58981fc0d6106ce5dfb82b1b",
+      "lines": 289,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_bots_manual_editor.py",
+      "read_ranges": [
+        [
+          1,
+          200
+        ],
+        [
+          201,
+          289
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_bots_manual_editor.py",
+      "original_read_ranges": [
+        [
+          1,
+          200
+        ],
+        [
+          201,
+          289
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Unsaved per-coin drafts, defaults, Apply/Cancel/inheritance, manual/auto modes, independent values, warning before other-coin draft loss and temporary-config real registry persistence.",
+      "baseline_census_original_sha256": "9bc95df938a4e6c2c7ea5b0723c7c10258ececbc58981fc0d6106ce5dfb82b1b",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "0ffee7175c0d03ac1ba1b81aa9e516c0d5f4c100078714744331c5027f55ada2",
+      "final_lines": 292,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            8,
+            8
+          ],
+          "final_lines": [
+            8,
+            8
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            17,
+            16
+          ],
+          "final_lines": [
+            17,
+            19
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_bot_scheduler.py",
+      "sha256": "6a15e659844d6ded56e071ce41468273b1cce8fa7743ccb135215c2de75a3f9c",
+      "lines": 147,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_bot_scheduler.py",
+      "read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_bot_scheduler.py",
+      "original_read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Mock optimizers, per-coin capability gates, failed/partial child results, stop/resume boundaries, lock liveness, mocked watchdog launchctl paths and failed-spawn recovery cleanup.",
+      "baseline_census_original_sha256": "6a15e659844d6ded56e071ce41468273b1cce8fa7743ccb135215c2de75a3f9c",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "6a15e659844d6ded56e071ce41468273b1cce8fa7743ccb135215c2de75a3f9c",
+      "final_lines": 147,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_docs_browser.py",
+      "sha256": "ce28b7d620c6fc9df7a50ddaed4a812508c0a2e51a3835800ab18e182aa1e813",
+      "lines": 147,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_docs_browser.py",
+      "read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_docs_browser.py",
+      "original_read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Catalogue membership, result-directory/type refusal, path escape refusal, revision-aware writes, maximum byte size, UTF-8 and real-text gating; every filesystem fixture uses a temporary repo.",
+      "baseline_census_original_sha256": "ce28b7d620c6fc9df7a50ddaed4a812508c0a2e51a3835800ab18e182aa1e813",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "ce28b7d620c6fc9df7a50ddaed4a812508c0a2e51a3835800ab18e182aa1e813",
+      "final_lines": 147,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_docs_search.py",
+      "sha256": "a902a04164787908a556b3c4c8bb318fe77b1a0f32480d2e1537fdef8716639b",
+      "lines": 147,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_docs_search.py",
+      "read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_docs_search.py",
+      "original_read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Lazy keyword/search-module load and cache unload; invalid request/kind filters; mocked idle indexer and unavailable Ollama; headless keyword results and default read boundary isolation.",
+      "baseline_census_original_sha256": "a902a04164787908a556b3c4c8bb318fe77b1a0f32480d2e1537fdef8716639b",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "0b5820a38007b695414f133caa7a89cab81b3b58a17827ab5073779c97f377c3",
+      "final_lines": 148,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            25,
+            25
+          ],
+          "final_lines": [
+            25,
+            25
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            99,
+            98
+          ],
+          "final_lines": [
+            99,
+            99
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_pnl.py",
+      "sha256": "be3d160de34b285143ad0ee90c3e452c454319b85be0e2128ec4dcd4fff8f089",
+      "lines": 405,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_pnl.py",
+      "read_ranges": [
+        [
+          1,
+          405
+        ],
+        [
+          309,
+          325
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_pnl.py",
+      "original_read_ranges": [
+        [
+          1,
+          405
+        ],
+        [
+          309,
+          325
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Known-answer UTC windows, fee/slippage/borrow and closed-fill statistics, daily carry, source separation, cumulative snapshots, constant ledger basis, fake-memory ledger row-visit bound and all new financial/schema counterexamples.",
+      "baseline_census_original_sha256": "be3d160de34b285143ad0ee90c3e452c454319b85be0e2128ec4dcd4fff8f089",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "d272bd0049aa32273af81965446eed90270a23a935f662427d9d2538ac1ecfb9",
+      "final_lines": 470,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "insert",
+          "original_lines": [
+            76,
+            75
+          ],
+          "final_lines": [
+            76,
+            85
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            167,
+            166
+          ],
+          "final_lines": [
+            177,
+            186
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            328,
+            327
+          ],
+          "final_lines": [
+            348,
+            370
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            366,
+            365
+          ],
+          "final_lines": [
+            409,
+            430
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_portfolio.py",
+      "sha256": "c0f155a50ba7d00ce995fae14ad64326406fc943ad8f0f503e3394b8d23a15ff",
+      "lines": 260,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_portfolio.py",
+      "read_ranges": [
+        [
+          1,
+          260
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_portfolio.py",
+      "original_read_ranges": [
+        [
+          1,
+          260
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Partial-chain/dust filtering; stable wallet sets and value-only curves; mode600/no-address persistence and notices; public test-vector fake network; mocked temporary install/uninstall including log path.",
+      "baseline_census_original_sha256": "c0f155a50ba7d00ce995fae14ad64326406fc943ad8f0f503e3394b8d23a15ff",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "b7f06e4dc8259735585634a9e5ed6696731534195b902885cf35ce767daab3d0",
+      "final_lines": 262,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            252,
+            252
+          ],
+          "final_lines": [
+            252,
+            253
+          ]
+        },
+        {
+          "operation": "replace",
+          "original_lines": [
+            254,
+            256
+          ],
+          "final_lines": [
+            255,
+            258
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_live_tools.py",
+      "sha256": "348d466fc30fee89d90167713e02d299675a3381eeb7dd5e0f886ad3c4f7503a",
+      "lines": 192,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_live_tools.py",
+      "read_ranges": [
+        [
+          1,
+          192
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_live_tools.py",
+      "original_read_ranges": [
+        [
+          1,
+          192
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Read-only polling, session-bound cached P&L, stale/gap coverage, parallel refresh coalescing via fake Popen, bounded JSON, full-voter expiry before display cap; detached lifecycle fixture read but excluded.",
+      "baseline_census_original_sha256": "348d466fc30fee89d90167713e02d299675a3381eeb7dd5e0f886ad3c4f7503a",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "348d466fc30fee89d90167713e02d299675a3381eeb7dd5e0f886ad3c4f7503a",
+      "final_lines": 192,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_paper_experiments.py",
+      "sha256": "b95c8ed7c66f78e6c7f6a8624301d87e21c97b3b089e763409ffcb7a1eb5b371",
+      "lines": 126,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_paper_experiments.py",
+      "read_ranges": [
+        [
+          1,
+          126
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_paper_experiments.py",
+      "original_read_ranges": [
+        [
+          1,
+          126
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Unique prospective contracts, trial-specific settled calls, source revision binding on resume, mock tick/clock cooperative stop, invalid-id refusal and paper-only pane controls.",
+      "baseline_census_original_sha256": "b95c8ed7c66f78e6c7f6a8624301d87e21c97b3b089e763409ffcb7a1eb5b371",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "7b56216b26047acf615c1ca3482ce83741dc2b68df512b7179569f071bece46d",
+      "final_lines": 130,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "insert",
+          "original_lines": [
+            114,
+            113
+          ],
+          "final_lines": [
+            114,
+            117
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_paper_workflow.py",
+      "sha256": "092f0178f37f6dce68d00908c20ceb9e15f8223805f401b25e8c66ea1b778b01",
+      "lines": 244,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_paper_workflow.py",
+      "read_ranges": [
+        [
+          1,
+          244
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_paper_workflow.py",
+      "original_read_ranges": [
+        [
+          1,
+          244
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Existing shared owner preservation, optimistic grid-creation race, frozen assessment proof reuse/data-change invalidation, cancellation at job boundary, fake duplicate coordinators and bounded batch progress; detached fixture excluded.",
+      "baseline_census_original_sha256": "092f0178f37f6dce68d00908c20ceb9e15f8223805f401b25e8c66ea1b778b01",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "092f0178f37f6dce68d00908c20ceb9e15f8223805f401b25e8c66ea1b778b01",
+      "final_lines": 244,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_status_roster.py",
+      "sha256": "c18245d59020e768b1862a3855f1ebacd9a99ee19503346222ed86cb9523ac55",
+      "lines": 423,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_status_roster.py",
+      "read_ranges": [
+        [
+          1,
+          230
+        ],
+        [
+          231,
+          423
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_status_roster.py",
+      "original_read_ranges": [
+        [
+          1,
+          230
+        ],
+        [
+          231,
+          423
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Source-labelled menu title and bounds; dry-run/disarmed configuration and acknowledgement; strategy/parameter validation and roster serialization; shared immutable synthetic paper result with cursor no-lookahead tests.",
+      "baseline_census_original_sha256": "c18245d59020e768b1862a3855f1ebacd9a99ee19503346222ed86cb9523ac55",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "c18245d59020e768b1862a3855f1ebacd9a99ee19503346222ed86cb9523ac55",
+      "final_lines": 423,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_status_console.py",
+      "sha256": "8755c67af1e5edab3da945c7c34d3328819c5acf49e85ec825f845c6d226a99b",
+      "lines": 100,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_status_console.py",
+      "read_ranges": [
+        [
+          1,
+          100
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_status_console.py",
+      "original_read_ranges": [
+        [
+          1,
+          100
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Status-button registry coverage, concurrent log reconnect, missing-worker-log refusal without starts, unsaved editor preservation and stopping old worker-log following before a new run.",
+      "baseline_census_original_sha256": "8755c67af1e5edab3da945c7c34d3328819c5acf49e85ec825f845c6d226a99b",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "e4b9a021ed867ffa99be75035a9cce9ef97dff96b1e53081eeaf71e2dc67a727",
+      "final_lines": 103,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            12,
+            12
+          ],
+          "final_lines": [
+            12,
+            12
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            17,
+            16
+          ],
+          "final_lines": [
+            17,
+            19
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_strategy_history.py",
+      "sha256": "82bb2f1e4b8a70130c136e5f417ac8e5f02b9e3e8c279bc0f74735477540cf66",
+      "lines": 233,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_strategy_history.py",
+      "read_ranges": [
+        [
+          1,
+          233
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_strategy_history.py",
+      "original_read_ranges": [
+        [
+          1,
+          233
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Newest-job deduplication, preset versus best-variation selection, asset filtering, thin/failed evidence classification, date fallback and explicit mocked selected/all/untested/undertested worker scopes.",
+      "baseline_census_original_sha256": "82bb2f1e4b8a70130c136e5f417ac8e5f02b9e3e8c279bc0f74735477540cf66",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "82bb2f1e4b8a70130c136e5f417ac8e5f02b9e3e8c279bc0f74735477540cf66",
+      "final_lines": 233,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_strategies_tab_history.py",
+      "sha256": "4cc32efd419960d63d27b51d11091c4d44ec93b23044081112e0f93ece39b819",
+      "lines": 104,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_strategies_tab_history.py",
+      "read_ranges": [
+        [
+          1,
+          104
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_strategies_tab_history.py",
+      "original_read_ranges": [
+        [
+          1,
+          104
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Headless test-history row rendering and refresh, selected/highlighted strategy identity, scope-specific mock worker starts and visible running-sweep refusal.",
+      "baseline_census_original_sha256": "4cc32efd419960d63d27b51d11091c4d44ec93b23044081112e0f93ece39b819",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "a56d8c86bcae44636467e176badee0a5704ebd3937a6b7e98b21c71a38d1869a",
+      "final_lines": 105,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            14,
+            14
+          ],
+          "final_lines": [
+            14,
+            14
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            26,
+            25
+          ],
+          "final_lines": [
+            26,
+            26
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_tradingstrategyresults_coverage.py",
+      "sha256": "478676c579be6b821db0191b2fad496f030de9ac69cb08cbc0fa22ec51f82496",
+      "lines": 153,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_tradingstrategyresults_coverage.py",
+      "read_ranges": [
+        [
+          1,
+          153
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_tradingstrategyresults_coverage.py",
+      "original_read_ranges": [
+        [
+          1,
+          153
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Buildable strategy/card parameter/registry/queue coverage, spec-only data requirements and exclusion, all-horizon availability and optional catalogue-map comparison; absent catalogue explicitly skips.",
+      "baseline_census_original_sha256": "478676c579be6b821db0191b2fad496f030de9ac69cb08cbc0fa22ec51f82496",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "478676c579be6b821db0191b2fad496f030de9ac69cb08cbc0fa22ec51f82496",
+      "final_lines": 153,
+      "authored_delta_line_ranges": [],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_shortcuts_everything.py",
+      "sha256": "91b65950197ce9e58f41b7f16de8f33063ab7e8514bda3e028a254c5ed63a49f",
+      "lines": 77,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_shortcuts_everything.py",
+      "read_ranges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_shortcuts_everything.py",
+      "original_read_ranges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "F8 copies selected queue/forward trial inputs and horizon into a paper draft, never calls paperexperiment.start, and refuses flattening an ensemble into one strategy.",
+      "baseline_census_original_sha256": "91b65950197ce9e58f41b7f16de8f33063ab7e8514bda3e028a254c5ed63a49f",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "59cbf2872ea2e11d65e26a54334f9fb65a5c39e4850d15827dbef193d06ee3a1",
+      "final_lines": 80,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            9,
+            9
+          ],
+          "final_lines": [
+            9,
+            9
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            14,
+            13
+          ],
+          "final_lines": [
+            14,
+            16
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_v2_shell.py",
+      "sha256": "3b3e2f929979d2fcc2ad78479218cb497ce7685ea22bcf412b70dff4bda3ad83",
+      "lines": 299,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_v2_shell.py",
+      "read_ranges": [
+        [
+          1,
+          299
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_v2_shell.py",
+      "original_read_ranges": [
+        [
+          1,
+          299
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Complete classic-pane reachability, narrow navigation and safety banner, read-only palette behavior, Explain/editor state, known-answer nonfinite/freshness cases and isolated default headless reads.",
+      "baseline_census_original_sha256": "3b3e2f929979d2fcc2ad78479218cb497ce7685ea22bcf412b70dff4bda3ad83",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "11bd474c8afee0150fb8ff2dc0621707856fda44d7e5cf662c958d8e6b45c9aa",
+      "final_lines": 333,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "insert",
+          "original_lines": [
+            20,
+            19
+          ],
+          "final_lines": [
+            20,
+            20
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            30,
+            29
+          ],
+          "final_lines": [
+            31,
+            62
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            146,
+            145
+          ],
+          "final_lines": [
+            179,
+            179
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_tui_presets_pnl.py",
+      "sha256": "1df5750f7ec769b61c52f9a7058200a2498d6ae829adfc33e1a37f57c4948225",
+      "lines": 209,
+      "snapshot": "/tmp/oraclebot-soltui-independent-batch-work-20261112/snapshots/soltui/tests/test_tui_presets_pnl.py",
+      "read_ranges": [
+        [
+          1,
+          209
+        ]
+      ],
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_tui_presets_pnl.py",
+      "original_read_ranges": [
+        [
+          1,
+          209
+        ]
+      ],
+      "original_read_coverage": "full",
+      "semantic_review_scope": "Five presets in three controls, actual paper start on synthetic arrays, missing evidence/cache explanations, P&L success/no-data/bad-date views and source wording for every populated percentage table.",
+      "baseline_census_original_sha256": "1df5750f7ec769b61c52f9a7058200a2498d6ae829adfc33e1a37f57c4948225",
+      "baseline_census_matches_snapshot": true,
+      "final_sha256": "29e4722ac9eb6b1fb361872bc656485f25c3d755d52d7eb34b6e2ed25573be74",
+      "final_lines": 210,
+      "authored_delta_line_ranges": [
+        {
+          "operation": "replace",
+          "original_lines": [
+            19,
+            19
+          ],
+          "final_lines": [
+            19,
+            19
+          ]
+        },
+        {
+          "operation": "insert",
+          "original_lines": [
+            29,
+            28
+          ],
+          "final_lines": [
+            29,
+            29
+          ]
+        }
+      ],
+      "authored_delta_reviewed": true,
+      "passes": [
+        {
+          "pass_id": "C1",
+          "state": "pass",
+          "reason": "Read every assertion, helper, setup and cleanup in this file; checked the behavior each fixture proves against the invoked API."
+        },
+        {
+          "pass_id": "C2",
+          "state": "pass",
+          "reason": "Checked registry/result/selection contracts and helper signatures. New setup mocks preserve inner explicit action mocks and actual command envelopes."
+        },
+        {
+          "pass_id": "C3",
+          "state": "pass",
+          "reason": "Reviewed refusal/error/causality/session-identity branches and negative controls. Added concrete red/green cases where this file owns a discovered defect."
+        },
+        {
+          "pass_id": "S1",
+          "state": "pass",
+          "reason": "Reviewed literals and operations as untrusted data; public wallet test vectors are synthetic. No real key loading, signatures or actual orders executed."
+        },
+        {
+          "pass_id": "S2",
+          "state": "pass",
+          "reason": "Reviewed temporary roots, addCleanup/context scopes, lock/thread teardown and exception assertions. Portfolio lifecycle/log-path leak is corrected."
+        },
+        {
+          "pass_id": "S3",
+          "state": "pass",
+          "reason": "Reviewed malformed-input expectations and fixture data domains; known-answer financial/numeric boundary tests now fail for the discovered bugs."
+        },
+        {
+          "pass_id": "S4",
+          "state": "pass",
+          "reason": "Qualified Python3.13 unittest/Textual harness used. OS-specific service boundaries remain mocks; no platform branch silently starts a service."
+        },
+        {
+          "pass_id": "S5",
+          "state": "pass",
+          "reason": "Assertions inspect returned status/error/visible UI evidence where meaningful. Process/network/owner-directory attempts are separately recorded by the audit runner."
+        },
+        {
+          "pass_id": "P1",
+          "state": "pass",
+          "reason": "Reviewed fixture sizes and expensive paths. Synthetic small-known-answer tests run; parameter-search classes and detached-worker tests are explicitly excluded from execution."
+        },
+        {
+          "pass_id": "P2",
+          "state": "pass",
+          "reason": "Reviewed thread/event ordering, context-managed app lifetimes and shared caches; owned tests retain their concurrency guards and bounded joins."
+        },
+        {
+          "pass_id": "M1",
+          "state": "pass",
+          "reason": "Reviewed assertion clarity and module organization; retained independent tests rather than merging assertions for coverage counts."
+        },
+        {
+          "pass_id": "M2",
+          "state": "pass",
+          "reason": "Shared test_tui offline_console_reads is reused for default headless external boundaries; test-specific explicit mocks remain scoped locally."
+        },
+        {
+          "pass_id": "M3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "M4",
+          "state": "pass",
+          "reason": "Test docstrings were checked against actual fixtures and operations; fixture changes make offline/no-live-service claims accurate for this reviewed run."
+        },
+        {
+          "pass_id": "T1",
+          "state": "pass",
+          "reason": "Reviewed positive/negative controls and every assertion. No tests removed or weakened; discovered safety/math gaps gain meaningful regression assertions."
+        },
+        {
+          "pass_id": "T2",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T3",
+          "state": "na",
+          "reason": "Repo-wide architecture/dependency/tooling checks are owned by the parent audit, not this exact20 source cohort."
+        },
+        {
+          "pass_id": "T4",
+          "state": "pass",
+          "reason": "Reviewed sleeps/pilot pauses, data construction, cache reset and teardown. Concurrent worker tests use bounded events/joins; detached integration and parameter searches were not executed. Headless waits retain UI/event semantics."
+        }
+      ],
+      "M5": {
+        "state": "na",
+        "reason": "Library/presentation module or unittest module, not a product CLI entrypoint."
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "SI-1",
+      "severity": "High",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pnl.py",
+      "original_line_range": [
+        198,
+        200
+      ],
+      "title": "Equal timestamps reorder equity by value",
+      "detail": "A same-tick equity sequence100\u219290 and two same-timestamp entry fees reported the earlier larger equity. Stable time sorting now preserves observation order.",
+      "regression_test": "test_equal_timestamp_points_keep_the_last_observed_equity",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-2",
+      "severity": "High",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pnl.py",
+      "original_line_range": [
+        329,
+        364
+      ],
+      "title": "Maximum relative drawdown was selected by dollar loss",
+      "detail": "100\u219250 then1000\u2192800 reported -20% instead of the actual -50% maximum. Dollar and percentage maxima now have coherent independent episode fields.",
+      "regression_test": "test_percentage_maximum_is_independent_of_dollar_maximum",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-3",
+      "severity": "High",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pnl.py",
+      "original_line_range": [
+        560,
+        579
+      ],
+      "title": "Invalid fill side or nonpositive price fabricated FIFO P&L",
+      "detail": "Every side other than buy was interpreted as a sale. Unknown sides and nonpositive prices now cannot create closed-trade profit.",
+      "regression_test": "test_invalid_side_and_nonpositive_prices_cannot_create_fifo_profit",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-4",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pnl.py",
+      "original_line_range": [
+        548,
+        554
+      ],
+      "title": "Malformed journal containers and oversized integers crashed the report",
+      "detail": "Scalar fills/carry and a1001-digit timestamp raised TypeError/OverflowError. Adapter validation now treats malformed evidence as unavailable.",
+      "regression_test": "test_malformed_fill_and_carry_containers_do_not_break_other_sources",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-5",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pnl.py",
+      "original_line_range": [
+        643,
+        662
+      ],
+      "title": "Every snapshot rescanned the full history",
+      "detail": "A100-snapshot known-answer fixture visited30301 input rows. Snapshot grouping and ordered flow/event consumption now keep input row visits below1000 while preserving final equity299 and capital basis100.",
+      "regression_test": "test_history_reads_rows_linearly_and_keeps_deposits_out_of_profit",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-6",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/shell.py",
+      "original_line_range": [
+        146,
+        151
+      ],
+      "title": "Nonfinite rendering inputs crashed presentation",
+      "detail": "Infinity, NaN, booleans, huge integers, invalid progress counts and out-of-range activity timestamps no longer crash or appear as valid financial figures. Valid .5 signals and3/10 progress still render.",
+      "regression_test": "test_nonfinite_numeric_inputs_do_not_crash_or_claim_valid_figures;test_invalid_progress_and_unrepresentable_activity_time_remain_renderable",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-7",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/shell.py",
+      "original_line_range": [
+        411,
+        419
+      ],
+      "title": "Missing freshness evidence appeared as a live price stream",
+      "detail": "Running=True with absent, invalid or negative snapshot age now warns that freshness is unavailable; observed age0 still reports healthy.",
+      "regression_test": "test_running_recorder_requires_valid_freshness_evidence",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-8",
+      "severity": "High",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_portfolio.py",
+      "original_line_range": [
+        248,
+        256
+      ],
+      "title": "Portfolio test escaped its service mock and owner log path",
+      "detail": "The uninstall called a real label-based launchctl bootout after its mock exited. Install also attempted mkdir on the owner log directory. Both service calls and log_path now stay inside temporary/mocked boundaries. Current guards stopped the red attempts before bootout/mkdir execution.",
+      "regression_test": "test_install_writes_the_plist_without_starting_it",
+      "status": "fixed"
+    },
+    {
+      "id": "SI-9",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_v2_shell.py",
+      "original_line_range": [
+        144,
+        150
+      ],
+      "title": "Headless default reads escaped offline fixtures",
+      "detail": "47 UI tests passed assertions while the guard blocked Coinbase product listing and compound-agent launchctl print calls. Assigned UI class fixtures now enter the shared offline_console_reads helper; explicit inner action mocks remain effective.",
+      "regression_test": "all assigned headless UI fixture classes",
+      "status": "fixed"
+    }
+  ],
+  "findings_by_severity": {
+    "critical": 0,
+    "high": 4,
+    "warning_medium": 5,
+    "remaining_medium_plus": 0
+  },
+  "checks": [
+    {
+      "source": "/tmp/oraclebot-soltui-independent-baseline-20261112.json",
+      "role": "baseline54 existing focused cases",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 54,
+      "pass": true,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-20261112.json",
+      "role": "five initial known-answer regression groups",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 5,
+      "pass": false,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-timestamp-20261112.json",
+      "role": "same-timestamp equity regression",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 1,
+      "pass": false,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-schema-performance-20261112.json",
+      "role": "schema and deterministic row-visit counterexamples",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 2,
+      "pass": false,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-huge-int-20261112.json",
+      "role": "oversized journal integer counterexample",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 1,
+      "pass": false,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-pure-20261112.json",
+      "role": "portfolio mock escape caught by process guard",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 239,
+      "pass": false,
+      "excluded": [
+        {
+          "test": "soltui.tests.test_live_tools.LiveRail.test_actual_read_model_survives_short_lived_client_and_stops_cooperatively",
+          "reason": "Starts an actual detached worker or real parameter search; outside synthetic check authorization."
+        },
+        {
+          "test": "soltui.tests.test_paper_workflow.PaperWorkflow.test_real_detached_coordinator_survives_caller_and_stops_at_job_boundary",
+          "reason": "Starts an actual detached worker or real parameter search; outside synthetic check authorization."
+        }
+      ],
+      "skipped": [
+        {
+          "test": "soltui.tests.test_tradingstrategyresults_coverage.TestCatalogueCoverage.test_the_map_matches_the_catalogue_file_when_it_is_present",
+          "reason": "tradingstrategyresults.json is not in this checkout"
+        }
+      ],
+      "forbidden_attempt_count": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-owner-log-20261112.json",
+      "role": "owner log directory creation caught by hardened mutation guard",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 1,
+      "pass": false,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-green-owner-log-20261112.json",
+      "role": "fixed mock/path lifetime under hardened guard",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 1,
+      "pass": true,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-ui-boundary-trace-20261112.json",
+      "role": "headless default external reads caught before DNS/Popen",
+      "actual_exit_code": 1,
+      "completed": true,
+      "tests_run": 1,
+      "pass": false,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 4
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-ui-boundary-green-20261112.json",
+      "role": "shared fixture single-case acceptance",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 1,
+      "pass": true,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-green-20261112.json",
+      "role": "latest focused financial/presentation tests",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 62,
+      "pass": true,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-pure-boundary-final-20261112.json",
+      "role": "latest broad synthetic cohort",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 241,
+      "pass": true,
+      "excluded": [
+        {
+          "test": "soltui.tests.test_live_tools.LiveRail.test_actual_read_model_survives_short_lived_client_and_stops_cooperatively",
+          "reason": "Starts an actual detached worker or real parameter search; outside synthetic check authorization."
+        },
+        {
+          "test": "soltui.tests.test_paper_workflow.PaperWorkflow.test_real_detached_coordinator_survives_caller_and_stops_at_job_boundary",
+          "reason": "Starts an actual detached worker or real parameter search; outside synthetic check authorization."
+        }
+      ],
+      "skipped": [
+        {
+          "test": "soltui.tests.test_tradingstrategyresults_coverage.TestCatalogueCoverage.test_the_map_matches_the_catalogue_file_when_it_is_present",
+          "reason": "tradingstrategyresults.json is not in this checkout"
+        }
+      ],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-pure-hardened-final-20261112.json",
+      "role": "final broad synthetic cohort with directory-mutation and DNS/process guards",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 241,
+      "pass": true,
+      "excluded": [
+        {
+          "test": "soltui.tests.test_live_tools.LiveRail.test_actual_read_model_survives_short_lived_client_and_stops_cooperatively",
+          "reason": "Starts an actual detached worker or real parameter search; outside synthetic check authorization."
+        },
+        {
+          "test": "soltui.tests.test_paper_workflow.PaperWorkflow.test_real_detached_coordinator_survives_caller_and_stops_at_job_boundary",
+          "reason": "Starts an actual detached worker or real parameter search; outside synthetic check authorization."
+        }
+      ],
+      "skipped": [
+        {
+          "test": "soltui.tests.test_tradingstrategyresults_coverage.TestCatalogueCoverage.test_the_map_matches_the_catalogue_file_when_it_is_present",
+          "reason": "tradingstrategyresults.json is not in this checkout"
+        }
+      ],
+      "forbidden_attempt_count": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-ui-green-20261112.json",
+      "role": "final headless UI cohort",
+      "actual_exit_code": 0,
+      "completed": true,
+      "tests_run": 47,
+      "pass": true,
+      "excluded": [],
+      "skipped": [],
+      "forbidden_attempt_count": 0
+    }
+  ],
+  "static_checks": [
+    {
+      "command": "/tmp/oraclebot-liquidity-audit-venv-20261112/bin/ruff check --no-cache --select E9,F63,F7,F82 <all20 assigned files>",
+      "actual_exit_code": 0,
+      "completed": true,
+      "result": "All checks passed."
+    },
+    {
+      "command": ".venv/bin/python ast.parse over all20 assigned final sources",
+      "actual_exit_code": 0,
+      "completed": true
+    },
+    {
+      "command": ".venv/bin/python -m ruff",
+      "actual_exit_code": 1,
+      "completed": true,
+      "result": "No module named ruff; static Ruff used from the previously qualified existing liquidity dev environment. Tests use root .venv Python3.13."
+    }
+  ],
+  "shared_dependencies": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_tui.py",
+      "symbol": "offline_console_reads",
+      "owner": "website_worker_review",
+      "reviewed_scope": "New helper only: mocks pricefeed.stream_products and compound_agent.status, preserving inner explicit mocks."
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tui.py",
+      "owner": "website_worker_review",
+      "contract": "Pair dollar-event percentage with percent_at_max_drawdown_usd; separately expose max_drawdown_pct and percentage episode when distinct.",
+      "integration": "Peer independently reports red\u2192green ConsoleFailureBoundaryTests.test_drawdown_display_pairs_dollars_with_the_corresponding_percentage; -$200 pairs with -20%, separate maximum relative drawdown -50%.",
+      "evidence": [
+        "/tmp/oraclebot-soltui-console-failures-red-20261112.log",
+        "/tmp/oraclebot-soltui-console-failures-green-20261112.log"
+      ]
+    }
+  ],
+  "remaining": [
+    "Parent owns full-suite integration, root docs/version/workflow records, global ledger and final commit/PR delivery."
+  ],
+  "limits": [
+    "Exact20 files were fully displayed and reviewed; no claim of source coverage for any other cohort.",
+    "No real HTTP/RPC connection, actual service child, signing, orders, model runtime, embeddings or parameter optimization was authorized or executed by this cohort. Earlier blocked attempts are preserved and not erased from evidence.",
+    "Initial guard covered owner opens but not directory mutation. Hardened guard subsequently detected and blocked the owner log mkdir path; the affected test now uses a temporary log path. Prior unguarded baseline service stop/directory effects cannot be established without original owner-state evidence. The temp LaunchAgents override prevents deletion of the real owner plist; label-based bootout could nevertheless stop a real loaded agent in an earlier unguarded baseline.",
+    "Two detached-worker integration tests and parameter-search classes are static-reviewed but excluded from execution. One optional catalogue test skips because its source catalogue is absent.",
+    "No commits/staging/pushes, root docs/version/prompt/memory edits or global ledger mutation by this child."
+  ],
+  "artifacts": {
+    "work": "/tmp/oraclebot-soltui-independent-batch-work-20261112",
+    "runner": "/tmp/oraclebot_soltui_independent_run_20261112.py",
+    "reader": "/tmp/oraclebot_soltui_independent_read_20261112.py",
+    "receipt_builder": "/tmp/oraclebot_soltui_independent_receipt_20261112.py"
+  },
+  "repos": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "findings_by_severity": {
+        "critical": 0,
+        "high": 4,
+        "warning_medium": 5,
+        "remaining_medium_plus": 0
+      },
+      "ledger_counts": {
+        "reviewed_this_run": 20,
+        "managed_by_parent": true
+      },
+      "coverage": "full within exact20 assigned-source scope",
+      "pr_url": null,
+      "merge_commit": null
+    }
+  ],
+  "evidence": [
+    {
+      "source": "/tmp/oraclebot-soltui-independent-baseline-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "baseline54 existing focused cases",
+      "actual_exit_code": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "five initial known-answer regression groups",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-timestamp-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "same-timestamp equity regression",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-schema-performance-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "schema and deterministic row-visit counterexamples",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-huge-int-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "oversized journal integer counterexample",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-pure-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "portfolio mock escape caught by process guard",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-red-owner-log-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "owner log directory creation caught by hardened mutation guard",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-green-owner-log-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "fixed mock/path lifetime under hardened guard",
+      "actual_exit_code": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-ui-boundary-trace-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "headless default external reads caught before DNS/Popen",
+      "actual_exit_code": 1
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-ui-boundary-green-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "shared fixture single-case acceptance",
+      "actual_exit_code": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-green-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "latest focused financial/presentation tests",
+      "actual_exit_code": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-pure-boundary-final-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "latest broad synthetic cohort",
+      "actual_exit_code": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-pure-hardened-final-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "final broad synthetic cohort with directory-mutation and DNS/process guards",
+      "actual_exit_code": 0
+    },
+    {
+      "source": "/tmp/oraclebot-soltui-independent-cohort-ui-green-20261112.json",
+      "observed_at": "2026-11-12T18:21:43.203285+00:00",
+      "supported_claim": "final headless UI cohort",
+      "actual_exit_code": 0
+    }
+  ],
+  "pass_accounting": {
+    "files": 20,
+    "fix_track_rows": 360,
+    "conditional_M5_rows": 20,
+    "repo_checks_delegated": [
+      "M3",
+      "T2",
+      "T3"
+    ]
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "full_repo_health",
+  "observed_at": "2026-11-12T20:42:37.416171+00:00",
+  "status": "BOUNDED_CONSUMER_REGRESSION_FIXED_FOCUSED_ACCEPTANCE_ONLY",
+  "files": [
+    {
+      "path": "soltui/vote_explanation.py",
+      "sha256": "b39447a19af7045fc86196e391ce519817e5e755b8636a7fe648cca1f47f2fad",
+      "blob_sha": "7acafe347cc3a6e000b81462670e26d0d1ba980d",
+      "lines": 164,
+      "verdict": "REVIEWED-FIXED",
+      "read_evidence": {
+        "method": "complete displayed original source plus reviewed authored delta",
+        "baseline_sha256": "4cbc7734b32406e86b6ef683f564ee7937f14dba5d2cf8ff5c74b210eea58671",
+        "ranges": [
+          [
+            1,
+            163
+          ]
+        ],
+        "delta": [
+          "--- soltui/vote_explanation.py\n",
+          "+++ soltui/vote_explanation.py\n",
+          "@@ -103,7 +103,8 @@\n",
+          "                 members, execution = [], None",
+          "             contract = False",
+          "             if seed:",
+          "-                identity = [forwardtest.revision(), asset, label, horizon, cost, mode, seed]",
+          "+                # Retained candles and feature reconstruction here are one-minute inputs.",
+          "+                identity = [forwardtest.revision(), asset, label, horizon, cost, mode, seed, \"1m\"]",
+          "                 if execution:",
+          "                     identity.append(execution)",
+          "                 contract = hashlib.sha256(forwardtest._json(identity).encode()).hexdigest() == key"
+        ],
+        "baseline_blob_sha": "233ddd36c06e29f3e72fba49aec57ee89299eb60"
+      },
+      "passes": {
+        "C1": "ran: traced producer tick identity through SQLite to explanation reconstruction. Added explicit 1m matching the only retained candle/indicator reconstruction interval; producer and existing identities remain unchanged.",
+        "C2": "ran: public saved call, feature availability, eligibility and chart contracts inspected. Unsupported intervals and interval-free legacy IDs remain inspectable but cannot assert minute features.",
+        "C3": "ran: fresh current producer fixture reproduced original false contract before fix. Exact hashes prove missing interval; ten focused cases pass after the fix, including explicit 5m/legacy negative controls.",
+        "S1": "ran: no command/network/signing authority introduced. All fixture data is synthetic, private SQLite; no saved owner evidence is changed.",
+        "S2": "ran: readonly connection scopes and fixture writer closing preserved. Guarded test roots stay temporary; zero blocked boundaries observed in the completed focused run.",
+        "S3": "ran: full producer identity comparison stays exact. No fallback accepts old identity or substitutes current 1m candles for a 5m producer contract.",
+        "S4": "ran: standard JSON/SHA and sqlite numeric identity serialization checked against actual producer-generated key; costs remain float16.0 in both producer and consumer.",
+        "S5": "ran: feature refusal retains precise explanation and literal historical marker. No secret/provider payload output introduced.",
+        "P1": "ran: constant-field hash reconstruction remains bounded. Existing trailing input query and chart limits are unchanged; ten-case gate19.004s is verification timing, not a speed claim.",
+        "P2": "ran: no new mutable production state/cache/thread. Each fixture owns a disposable database; ID mutation updates both linked table keys inside one transaction.",
+        "M1": "ran: one explicit interval plus a causal comment fixes consumer; no broad formatter/interface change. New regression uses subtests for two independently refused identities.",
+        "M2": "ran: existing forwardtest canonical JSON serialization reused. No second producer identity path or generic identity fallback introduced.",
+        "M3": "N/A per-file: repository centralized settings and common runtime operation/error-sink residuals are recorded separately; this bounded consumer fix does not close them.",
+        "M4": "ran: comment names the one-minute source contract and negative test names unsupported/legacy refusal. Saved-call chart and source explanations remain accurate.",
+        "T1": "ran: fresh original one-case RED exit1/zero blocked, then full module10tests19.004s GREEN exit0/zero blocked. Existing recorded-feature assertion unchanged. New5m and legacy subtests preserve markers but refuse verified features.",
+        "T2": "N/A: no external dependency introduced; current repo advisory/license checks are separate.",
+        "T3": "ran: pinned Ruff0.17.4 fatal rule check0, ASTparse0 and scoped git diffcheck0. Missing .venv ruff output was not treated as passing lint.",
+        "T4": "ran: fixtures use fresh temp state and synthetic201bar arrays, no market requests or strategy search. New negative subtests reuse one small fixture safely and cannot affect other cases.",
+        "M5": "N/A: imported explanation module and unittest module, no new standalone user tool."
+      },
+      "findings": [
+        {
+          "id": "VOTE-INTERVAL-CONSUMER",
+          "severity": "Medium",
+          "status": "FIXED",
+          "stele": "KNOW-1997"
+        }
+      ]
+    },
+    {
+      "path": "soltui/tests/test_vote_explanation.py",
+      "sha256": "2b228000948576cb3fbe112c03bea43889ee686aab67085830a041f586635ad1",
+      "blob_sha": "5167770085d97b2bbe16ac7ceb0548c39f62aa57",
+      "lines": 148,
+      "verdict": "REVIEWED-FIXED",
+      "read_evidence": {
+        "method": "complete displayed original source plus reviewed authored delta",
+        "baseline_sha256": "5639c1d23ca891369095564265b0ee8b1696abd21fb5838e5128cf7642643183",
+        "ranges": [
+          [
+            1,
+            125
+          ]
+        ],
+        "delta": [
+          "--- soltui/tests/test_vote_explanation.py\n",
+          "+++ soltui/tests/test_vote_explanation.py\n",
+          "@@ -1,6 +1,7 @@\n",
+          " \"\"\"Saved-call explanations preserve latest-trial eligibility and candle causality.\"\"\"",
+          " from __future__ import annotations",
+          " ",
+          "+import hashlib",
+          " import json",
+          " import sqlite3",
+          " import unittest",
+          "@@ -66,6 +67,28 @@\n",
+          "         self.assertEqual(current[\"calls\"][0][\"recorded_signal_basis\"], original[\"calls\"][0][\"recorded_signal_basis\"])",
+          "         self.assertLessEqual(max(c[\"time\"] for c in current[\"chart\"][\"candles\"]), current[\"calls\"][0][\"bar\"])",
+          " ",
+          "+    def test_other_interval_and_legacy_keys_cannot_verify_minute_features(self):",
+          "+        current_key = self.key",
+          "+        for interval in (\"5m\", None):",
+          "+            with self.subTest(interval=interval):",
+          "+                identity = [ft.revision(), \"SOL\", \"probe\", 1, 16., \"all\", self.members]",
+          "+                if interval is not None:",
+          "+                    identity.append(interval)",
+          "+                other_key = hashlib.sha256(ft._json(identity).encode()).hexdigest()",
+          "+                self.assertNotEqual(other_key, self.key)",
+          "+                with closing(sqlite3.connect(self.path)) as db, db:",
+          "+                    db.execute(\"UPDATE trial SET id=? WHERE id=?\", (other_key, current_key))",
+          "+                    db.execute(\"UPDATE call SET trial=? WHERE trial=?\", (other_key, current_key))",
+          "+                current_key = other_key",
+          "+                result = self.result()",
+          "+                self.assertTrue(result[\"available\"])",
+          "+                self.assertEqual(result[\"calls\"][0][\"trial_id\"], other_key)",
+          "+                basis = result[\"calls\"][0][\"recorded_signal_basis\"]",
+          "+                self.assertFalse(basis[\"contract_verified\"])",
+          "+                self.assertFalse(basis[\"features_available\"])",
+          "+                self.assertEqual(result[\"chart\"][\"series\"], [])",
+          "+                self.assertTrue(result[\"chart\"][\"markers\"])",
+          "+",
+          "     def test_expired_call_remains_inspectable_but_cannot_vote(self):",
+          "         result = self.result(now=BASE + 200)",
+          "         self.assertTrue(result[\"available\"])"
+        ],
+        "baseline_blob_sha": "659cbc2c184ed6084cf325cddeb6ef27f2748315"
+      },
+      "passes": {
+        "C1": "ran: traced producer tick identity through SQLite to explanation reconstruction. Added explicit 1m matching the only retained candle/indicator reconstruction interval; producer and existing identities remain unchanged.",
+        "C2": "ran: public saved call, feature availability, eligibility and chart contracts inspected. Unsupported intervals and interval-free legacy IDs remain inspectable but cannot assert minute features.",
+        "C3": "ran: fresh current producer fixture reproduced original false contract before fix. Exact hashes prove missing interval; ten focused cases pass after the fix, including explicit 5m/legacy negative controls.",
+        "S1": "ran: no command/network/signing authority introduced. All fixture data is synthetic, private SQLite; no saved owner evidence is changed.",
+        "S2": "ran: readonly connection scopes and fixture writer closing preserved. Guarded test roots stay temporary; zero blocked boundaries observed in the completed focused run.",
+        "S3": "ran: full producer identity comparison stays exact. No fallback accepts old identity or substitutes current 1m candles for a 5m producer contract.",
+        "S4": "ran: standard JSON/SHA and sqlite numeric identity serialization checked against actual producer-generated key; costs remain float16.0 in both producer and consumer.",
+        "S5": "ran: feature refusal retains precise explanation and literal historical marker. No secret/provider payload output introduced.",
+        "P1": "ran: constant-field hash reconstruction remains bounded. Existing trailing input query and chart limits are unchanged; ten-case gate19.004s is verification timing, not a speed claim.",
+        "P2": "ran: no new mutable production state/cache/thread. Each fixture owns a disposable database; ID mutation updates both linked table keys inside one transaction.",
+        "M1": "ran: one explicit interval plus a causal comment fixes consumer; no broad formatter/interface change. New regression uses subtests for two independently refused identities.",
+        "M2": "ran: existing forwardtest canonical JSON serialization reused. No second producer identity path or generic identity fallback introduced.",
+        "M3": "N/A per-file: repository centralized settings and common runtime operation/error-sink residuals are recorded separately; this bounded consumer fix does not close them.",
+        "M4": "ran: comment names the one-minute source contract and negative test names unsupported/legacy refusal. Saved-call chart and source explanations remain accurate.",
+        "T1": "ran: fresh original one-case RED exit1/zero blocked, then full module10tests19.004s GREEN exit0/zero blocked. Existing recorded-feature assertion unchanged. New5m and legacy subtests preserve markers but refuse verified features.",
+        "T2": "N/A: no external dependency introduced; current repo advisory/license checks are separate.",
+        "T3": "ran: pinned Ruff0.17.4 fatal rule check0, ASTparse0 and scoped git diffcheck0. Missing .venv ruff output was not treated as passing lint.",
+        "T4": "ran: fixtures use fresh temp state and synthetic201bar arrays, no market requests or strategy search. New negative subtests reuse one small fixture safely and cannot affect other cases.",
+        "M5": "N/A: imported explanation module and unittest module, no new standalone user tool."
+      },
+      "findings": [
+        {
+          "id": "VOTE-INTERVAL-CONSUMER",
+          "severity": "Medium",
+          "status": "FIXED",
+          "stele": "KNOW-1997"
+        }
+      ]
+    }
+  ],
+  "red": {
+    "exit": 1,
+    "state": "/tmp/oraclebot-vote-diagnose-is2fwbfy",
+    "run_id": "vote-diagnose-b1ae8a54dd0043c790d4517755c6e19e",
+    "blocked": []
+  },
+  "green": {
+    "exit": 0,
+    "state": "/tmp/oraclebot-vote-green-je72u5h9",
+    "run_id": "vote-green-67598656d48a4ffcbb59a67c36499a11",
+    "blocked": [],
+    "source_sha256": {
+      "soltui/vote_explanation.py": "b39447a19af7045fc86196e391ce519817e5e755b8636a7fe648cca1f47f2fad",
+      "soltui/tests/test_vote_explanation.py": "2b228000948576cb3fbe112c03bea43889ee686aab67085830a041f586635ad1"
+    }
+  },
+  "checks": [
+    {
+      "command": "uvx --offline ruff==0.17.4 check --select E9,F63,F7,F82 soltui/vote_explanation.py soltui/tests/test_vote_explanation.py",
+      "exit": 0
+    },
+    {
+      "command": "ast.parse on both current files",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check -- both scoped paths",
+      "exit": 0
+    }
+  ],
+  "limits": [
+    "No full-suite, installed-owner or hosted acceptance claimed.",
+    "Producer identity and owner evidence unchanged.",
+    "Initial .venv -m ruff was unavailable; its mixed shell sequence is not lint acceptance."
+  ],
+  "soltui_test_discovery_delta": {
+    "before": 1562,
+    "after": 1563,
+    "change": 1
+  }
+}

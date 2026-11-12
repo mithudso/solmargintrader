@@ -69,10 +69,13 @@ class ExportTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(list(csv.reader(handle)), [["column"], ["value"]])
 
     async def test_main_screen_wraps_every_table(self):
+        from unittest.mock import patch
         from textual.widgets import DataTable
+        from soltui import pricefeed
         from soltui.tests.test_tui import make_settings
         from soltui.tui import SolTuiApp
 
+        self.enterContext(patch.object(pricefeed, "stream_products", return_value=["SOL-USD"]))
         app = SolTuiApp(settings=make_settings(), stream_prices=False)
         async with app.run_test(size=(180, 55)) as pilot:
             await pilot.pause()

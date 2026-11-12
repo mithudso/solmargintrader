@@ -6,11 +6,14 @@ from unittest import mock
 from textual.widgets import DataTable, Input, Select, TabbedContent
 
 from soltui.roster import available_strategies
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
 class ShortcutTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_f8_copies_selected_ranked_row_without_starting_experiment(self):
         app = SolTuiApp(make_settings())
         async with app.run_test(size=TEST_SIZE) as pilot:

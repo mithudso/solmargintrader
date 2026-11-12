@@ -23,7 +23,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from backtester.core.ticks import _parse_trades  # noqa: E402
-from research.tick_backfill import MinuteAggregator, _write_ck  # noqa: E402
+from research.tick_backfill import MinuteAggregator, _checkpoint_binding, _write_ck  # noqa: E402
 
 BASE = "2026-07-06T00:00:"
 
@@ -117,8 +117,10 @@ class TestCheckpointRoundTrip(unittest.TestCase):
         first.add(_trades([(9, "50.0", 105.0, 1.0)]))
         with tempfile.TemporaryDirectory() as tmp:
             ck = Path(tmp) / "ck.json"
-            _write_ck(ck, first, cursor=9, pages=1, trades=1, done=False)
+            binding = _checkpoint_binding("SOL-USD", "1m", 0, 3600)
+            _write_ck(ck, first, cursor=9, pages=1, trades=1, done=False, binding=binding)
             self.assertTrue(ck.exists())
+            self.assertEqual(json.loads(ck.read_text())["binding"], binding)
             resumed = MinuteAggregator(60)
             resumed.load(json.loads(ck.read_text())["bars"])
 
@@ -136,9 +138,11 @@ class TestCheckpointRoundTrip(unittest.TestCase):
         agg.add(_trades([(1, "10.0", 100.0, 1.0)]))
         with tempfile.TemporaryDirectory() as tmp:
             ck = Path(tmp) / "ck.json"
-            _write_ck(ck, agg, cursor=1, pages=1, trades=1, done=True)
+            binding = _checkpoint_binding("SOL-USD", "1m", 0, 3600)
+            _write_ck(ck, agg, cursor=1, pages=1, trades=1, done=True, binding=binding)
             self.assertEqual([p.name for p in Path(tmp).iterdir()], ["ck.json"])
             self.assertTrue(json.loads(ck.read_text())["done"])
+            self.assertEqual(json.loads(ck.read_text())["binding"], binding)
 
 
 if __name__ == "__main__":

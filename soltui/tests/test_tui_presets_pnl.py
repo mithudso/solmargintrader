@@ -16,7 +16,7 @@ from textual.widgets import DataTable, Input, OptionList, Select, TabbedContent
 
 from soltui import analyze as analyze_mod
 from soltui import commands, presets
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads, text_of
 from soltui.tui import SolTuiApp
 
 SOURCE_WORDS = ("backtest", "paper", "dry-run", "live", "modelled", "reported", "wallet")
@@ -26,6 +26,7 @@ class Isolated(unittest.IsolatedAsyncioTestCase):
     """Temp state for everything the app reads outside the repo, and a synthetic price series."""
 
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         self.tmp = Path(tempfile.mkdtemp(prefix="soltui-tui-"))
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
         df = SyntheticLoader(n_bars=300, seed=4).load("SOL", None, None, "1d")

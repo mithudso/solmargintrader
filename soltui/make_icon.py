@@ -23,14 +23,49 @@ from __future__ import annotations
 
 import argparse
 import math
+import os
+import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter
-
 HERE = Path(__file__).resolve().parent
+
+
+def _arguments(argv=None):
+    parser = argparse.ArgumentParser(description="Generate the SolTUI .icns icon.",
+        epilog="Example: python3 soltui/make_icon.py --out ./SolTUI.icns --preview")
+    parser.add_argument("--out", default=str(HERE / "SolTUI.icns"))
+    parser.add_argument("--preview", action="store_true", help="also write a 512px PNG preview")
+    return parser.parse_args(argv)
+
+
+_CLI_ARGS = _arguments() if __name__ == "__main__" else None
+if _CLI_ARGS is not None and shutil.which("iconutil") is None:
+    print("iconutil is missing; generate this macOS .icns file on macOS with /usr/bin/iconutil", file=sys.stderr)
+    raise SystemExit(3)
+
+try:
+    from PIL import Image, ImageDraw, ImageFilter
+except ModuleNotFoundError as exc:
+    if __name__ != "__main__":
+        raise
+    if os.environ.get("TOOL_NO_VENV") != "1" and os.environ.get("ORACLEBOT_ICON_REEXEC") != str(Path(__file__).resolve()):
+        try:
+            if str(HERE.parent) not in sys.path:
+                sys.path.insert(0, str(HERE.parent))
+            from backtester.run import ensure_environment
+            python = ensure_environment(HERE, requirements=("Pillow",), required_modules=("PIL",),
+                owner="oraclebot-icon-generator/v1", entrypoint=Path(__file__).resolve())
+            os.execve(str(python), [str(python), str(Path(__file__).resolve()), *sys.argv[1:]],
+                      {**os.environ, "ORACLEBOT_ICON_REEXEC": str(Path(__file__).resolve())})
+        except Exception as setup_error:  # noqa: BLE001 -- safe CLI boundary; expose only failure type
+            print(f"Private icon environment setup failed ({type(setup_error).__name__})", file=sys.stderr)
+    repair = shlex.join(["uv", "run", "--no-project", "--with", "Pillow", "python", str(Path(__file__).resolve()), "--help"])
+    print(f"Missing optional Python module: {exc.name}. Isolated repair: {repair}", file=sys.stderr)
+    raise SystemExit(3) from None
 
 # Solana brand colours.
 PURPLE = (153, 69, 255)
@@ -230,48 +265,42 @@ def render(size: int) -> Image.Image:
 
 
 def build_icns(target: Path, preview: bool = False) -> Path:
-    """Render every required size and pack them with iconutil."""
+    """Convert using owned temporary files; preserve unrelated sibling iconsets."""
     if shutil.which("iconutil") is None:
         raise RuntimeError("iconutil not found; this needs macOS")
-
+    target = Path(target)
+    target.parent.mkdir(parents=True, exist_ok=True)
     master = render(BASE)
-    iconset = target.with_suffix(".iconset")
-    if iconset.exists():
-        shutil.rmtree(iconset)
-    iconset.mkdir(parents=True)
-
-    for size, name in ICONSET:
-        # Downscale from the 1024 master rather than re-rendering: re-rendering
-        # at 16px would draw sub-pixel branches and produce a smear.
-        master.resize((size, size), Image.LANCZOS).save(iconset / name)
-
-    if preview:
-        preview_path = target.with_name(f"{target.stem}-preview.png")
-        master.resize((512, 512), Image.LANCZOS).save(preview_path)
-        print(f"preview → {preview_path}")
-
-    proc = subprocess.run(
-        ["iconutil", "-c", "icns", str(iconset), "-o", str(target)],
-        capture_output=True, text=True,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(f"iconutil failed: {proc.stderr.strip()}")
-    shutil.rmtree(iconset)
+    with tempfile.TemporaryDirectory(prefix="soltui-icon-", dir=target.parent) as temporary:
+        iconset = Path(temporary) / "SolTUI.iconset"
+        iconset.mkdir()
+        for size, name in ICONSET:
+            master.resize((size, size), Image.LANCZOS).save(iconset / name)
+        if preview:
+            preview_path = target.with_name(f"{target.stem}-preview.png")
+            master.resize((512, 512), Image.LANCZOS).save(preview_path)
+            print(f"preview → {preview_path}")
+        try:
+            proc = subprocess.run(["iconutil", "-c", "icns", str(iconset), "-o", str(target)],
+                                  capture_output=True, text=True, timeout=60, check=False)
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError("iconutil conversion exceeded 60 seconds") from exc
+        if proc.returncode != 0:
+            raise RuntimeError(f"iconutil conversion failed (exit {proc.returncode})")
     print(f"icon → {target}")
     return target
 
 
 def main(argv: list[str] | None = None) -> int:
-    """CLI entry point."""
-    ap = argparse.ArgumentParser(description="Generate the SolTUI .icns icon.")
-    ap.add_argument("--out", default=str(HERE / "SolTUI.icns"))
-    ap.add_argument("--preview", action="store_true",
-                    help="also write a 512px PNG for eyeballing")
-    args = ap.parse_args(argv)
+    """Parse before optional dependencies; report fixed conversion failures."""
+    args = _arguments(argv) if argv is not None else (_CLI_ARGS or _arguments())
     try:
         build_icns(Path(args.out), preview=args.preview)
     except RuntimeError as exc:
         print(exc, file=sys.stderr)
+        return 1
+    except OSError as exc:
+        print(f"icon output failed ({type(exc).__name__})", file=sys.stderr)
         return 1
     return 0
 

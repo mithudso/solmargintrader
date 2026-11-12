@@ -30,6 +30,10 @@ from backtester.core.strategies import REGISTRY
 from . import bgqueue, bgworker, config, forwardtest
 from .runner import engine_config
 from .research_admission import admit_read, participating
+from .source_epoch import SourceEpoch, SourceEpochChanged
+
+_REPO = Path(__file__).resolve().parent.parent
+_SOURCE_EPOCH = SourceEpoch.capture(_REPO)
 
 INTERVAL_MINUTES = {"1m": 1, "5m": 5, "15m": 15, "1h": 60, "6h": 360, "1d": 1440}
 PHASES = {"planned", "backtesting", "stopped", "failed", "forward", "forward_partial"}
@@ -128,6 +132,7 @@ def create(settings: config.Settings, coins: Sequence[str] | None = None, *, roo
     This may create a large plan; callers must run it off the UI thread. `start`
     is a separate explicit action and `create` does not run any tests.
     """
+    _SOURCE_EPOCH.verify(_REPO)
     if coins is None:
         assets, universe = catalog_coins()
     else:
@@ -215,6 +220,7 @@ def _global_lock(root: Path | None = None) -> int | None:
 
 def start(run_id: str, *, root: Path | None = None) -> dict[str, Any]:
     """Start or resume exactly this batch; does not interact with other workers."""
+    _SOURCE_EPOCH.verify(_REPO)
     directory = _directory(run_id, root)
     if not (directory / "batch.sqlite3").is_file():
         raise ValueError("batch does not exist")
@@ -439,6 +445,7 @@ def _save_forward_check(db: sqlite3.Connection, asset: str, interval: str, recor
 
 def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Settings,
               cards: dict[str, Any], cancelled: Callable[[], bool]) -> None:
+    _SOURCE_EPOCH.verify(_REPO)
     from backtester.core.types import validate_bar_arrays
 
     cell_id, asset, interval, name, horizon = (row[k] for k in ("id", "asset", "interval", "strategy", "horizon"))
@@ -486,9 +493,13 @@ def _run_cell(db: sqlite3.Connection, row: sqlite3.Row, settings: config.Setting
         if prior:
             continue
         try:
+            _SOURCE_EPOCH.verify(_REPO)
             result = bgworker.evaluate(job, arrays, engine_config(settings, interval), settings)
+            _SOURCE_EPOCH.verify(_REPO)
             payload = dataclasses.asdict(result)
             attempt_state = "evaluated" if result.evaluable else "not_evaluable"
+        except SourceEpochChanged:
+            raise
         except Exception as exc:
             payload = {"reason": f"{type(exc).__name__}: {exc}"[:500], "params": dict(job.params)}
             attempt_state = "failed"
@@ -535,6 +546,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
         forward_cycles: int | None = None, tick: Callable[..., dict[str, Any]] | None = None,
         wait: Callable[[float], None] = time.sleep, token: str = "test") -> None:
     """Run or resume a batch under a caller-held lock; limits exist for deterministic tests."""
+    _SOURCE_EPOCH.verify(_REPO)
     from . import compound
 
     directory = _directory(run_id, root)
@@ -569,6 +581,8 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
             print(f"Backtest {row['asset']} {row['interval']} {row['strategy']} {row['horizon']}", flush=True)
             try:
                 _run_cell(db, row, settings, cards, cancel)
+            except SourceEpochChanged:
+                raise
             except sqlite3.Error:
                 raise  # A damaged or unwritable ledger is not an ordinary failed configuration.
             except Exception as exc:
@@ -598,6 +612,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
         cached: dict[str, Any] = {}
         signal_cache: dict[tuple[str, str, int], dict[str, Any]] = {}
         while not cancel():
+            _SOURCE_EPOCH.verify(_REPO)
             pairs = db.execute("SELECT DISTINCT asset,interval FROM cell WHERE selected IS NOT NULL ORDER BY asset,interval").fetchall()
             for pair in pairs:
                 if cancel():
@@ -652,6 +667,7 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
                                   db_path=directory / "forward.sqlite3", history=history, fetch=fetch, stop=stop_event,
                                   signal_interval=interval, signal_fetch=signal_fetch, expire_missing=False,
                                   execution=from_settings(settings).to_dict())
+                    _SOURCE_EPOCH.verify(_REPO)
                     recorded = int(result.get("recorded", 0))
                     wanted = {trial["label"] for trial in trials}
                     seen = {row["label"] for row in result.get("rows", [])
@@ -659,6 +675,8 @@ def run(run_id: str, *, root: Path | None = None, max_cells: int | None = None,
                             and row.get("last_issued") is not None}
                     _save_forward_check(db, asset, interval, recorded, "; ".join(member_errors),
                                         str(result.get("message", "")), len(selected), len(seen))
+                except SourceEpochChanged:
+                    raise
                 except Exception as exc:
                     _save_forward_check(db, asset, interval, 0, f"{type(exc).__name__}: {exc}",
                                         expected=len(selected))

@@ -1,6 +1,7 @@
 # Solbot 0.6 operations and evidence boundaries
 
-Version: 1.1.0
+Version: 1.2.0
+Delta: v1.1.0 to v1.2.0; add the current audit source candidate and preserve the historical 0.6 package matrix.
 Delta: v1.0.0 to v1.1.0; distinguish the current 0.6 candidate from the delivered historical M4 0.5 release and align the coordinated package matrix.
 Release status: check the versioned source, installed acceptance and delivery receipt linked from the handoff.
 
@@ -11,6 +12,26 @@ measured execution costs or profitable parameters. Real seven-day shadow evidenc
 and thirty completed comparable shadow trades cannot be supplied by a test clock.
 
 ## Release components
+
+The coordinated audit source candidate uses the versions below. These versions
+identify future source; they do not relabel existing installed environments or
+establish installed, browser, billing or live-trading acceptance.
+
+| Distribution | Source version |
+| --- | --- |
+| solbot-manager | 0.7.3 |
+| solmargintrader-backtester | 0.2.1 |
+| solmargintrader-research-runtime | 0.4.1 |
+| solmargintrader-oracle | 0.2.4 |
+| solmargintrader-ecosystem | 0.4.6 |
+| executor | 0.2.1 |
+| Chrome extension | 0.6.7 |
+| Archived aero-lp | 0.1.1; daemon remains disabled |
+
+### Historical 0.6 contract matrix
+
+The following versions describe the original broader 0.6 candidate. Retain them
+when interpreting its old evidence and installed receipts.
 
 | Distribution | Version | Changed contract |
 | --- | --- | --- |

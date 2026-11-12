@@ -63,7 +63,18 @@ def canonical_config(config: dict[str, Any]) -> dict[str, Any]:
             or sum(weights) <= 0
         ):
             raise ValueError("weights must be finite nonnegative and match members")
-        value["weights"] = [x / sum(weights) for x in weights]
+        scale = max(weights)
+        if scale <= 1 and math.isclose(math.fsum(weights), 1.0, rel_tol=0, abs_tol=4 * math.ulp(1.0)):
+            value["weights"] = list(weights)
+        else:
+            scaled = [x / scale for x in weights]
+            total = math.fsum(scaled)
+            normalized = [x / total for x in scaled]
+            # Put the final rounding residual on the largest member. Re-normalizing
+            # already canonical weights must not change a policy/checkpoint id.
+            largest = weights.index(scale)
+            normalized[largest] += 1.0 - math.fsum(normalized)
+            value["weights"] = normalized
     return value
 
 
@@ -266,10 +277,17 @@ class ZecEnsemble:
         }
         self.last_ts: int | None = None
         self.origin_ts: int | None = None
+        self._window_origin_ts: int | None = None
+        self._history = None
+        self._restored_history = None
         self.persistence = {"pending": False, "count": 0, "active": False, "last": 0.0}
 
     def warmup_bars(self) -> int:
         return max(m.strategy.warmup_bars() for m in self.members.values())
+
+    def continuation_history_bars(self) -> int:
+        """Keep every member's existing finite window plus its previous bar."""
+        return max(m.limit for m in self.members.values()) + 1
 
     def on_bar(self, history: BarWindow) -> float:
         end = history.i + 1
@@ -284,12 +302,25 @@ class ZecEnsemble:
                 history._volume,
             )
         ]
-        if self.origin_ts is not None and int(arrays[0][0]) != self.origin_ts:
+        if self._restored_history is not None:
+            saved = self._restored_history
+            stop = int(np.searchsorted(arrays[0], self.last_ts, side="right"))
+            count = len(saved[0])
+            if stop < count or any(
+                not np.array_equal(source[stop - count:stop], previous)
+                for source, previous in zip(arrays, saved)
+            ):
+                raise ValueError("ensemble restored history changed; replay full observed history")
+            self._window_origin_ts = int(arrays[0][0])
+            self._restored_history = None
+        expected_origin = self._window_origin_ts if self._window_origin_ts is not None else self.origin_ts
+        if expected_origin is not None and int(arrays[0][0]) != expected_origin:
             raise ValueError(
                 "ensemble history origin changed; replay full observed history"
             )
         if self.origin_ts is None:
             self.origin_ts = int(arrays[0][0])
+        self._history = arrays
         start = (
             0
             if self.last_ts is None
@@ -314,6 +345,9 @@ class ZecEnsemble:
             {
                 "last_ts": self.last_ts,
                 "origin_ts": self.origin_ts,
+                "history_tail": None if self._history is None else [
+                    source[-self.continuation_history_bars():].tolist() for source in self._history
+                ],
                 "persistence": self.persistence,
                 "members": {
                     k: {
@@ -330,12 +364,25 @@ class ZecEnsemble:
         )
 
     def restore_state(self, state: dict[str, Any]) -> None:
-        self.last_ts, self.origin_ts = state["last_ts"], state["origin_ts"]
-        self.persistence = copy.deepcopy(state["persistence"])
         if set(state["members"]) != set(self.members):
             raise ValueError("ensemble member state changed")
+        last_ts, origin_ts = state["last_ts"], state["origin_ts"]
+        persistence = copy.deepcopy(state["persistence"])
+        history_tail = state.get("history_tail")
+        restored_history = None
+        if history_tail is not None:
+            if not isinstance(history_tail, list) or len(history_tail) != 6:
+                raise ValueError("ensemble restored history is invalid")
+            restored_history = [np.array(source, copy=True) for source in history_tail]
+            if (any(source.ndim != 1 or source.dtype.kind not in "iuf" or not np.isfinite(source).all()
+                    for source in restored_history)
+                or not len(restored_history[0])
+                or any(len(source) != len(restored_history[0]) for source in restored_history)
+                or restored_history[0][-1] != last_ts):
+                raise ValueError("ensemble restored history is invalid")
+        members = copy.deepcopy(self.members)
         for key, saved in state["members"].items():
-            member = self.members[key]
+            member = members[key]
             member.strategy.__dict__.update(copy.deepcopy(saved["strategy"]))
             member.avg_gain, member.avg_loss = saved["avg_gain"], saved["avg_loss"]
             member.ewma_var, member.obv, member.obv_tail = (
@@ -343,6 +390,11 @@ class ZecEnsemble:
                 saved.get("obv", 0.0),
                 saved.get("obv_tail", []),
             )
+        self.last_ts, self.origin_ts = last_ts, origin_ts
+        self._window_origin_ts = None
+        self._restored_history = restored_history
+        self._history = restored_history
+        self.persistence, self.members = persistence, members
 
 
 def build_ensemble(config: dict[str, Any]) -> ZecEnsemble:

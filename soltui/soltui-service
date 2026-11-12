@@ -47,22 +47,23 @@ from __future__ import annotations
 import argparse
 import os
 import plistlib
+import shlex
 import shutil
 import subprocess
 import sys
 import sysconfig
+import tempfile
+import time
 from pathlib import Path
 
 try:
     from launchd_supervisor import ServiceSpec, atomic_write, render_plist
     from launchd_supervisor import manage as launchd_manage
     from launchd_supervisor.plist import plist_dict
-except ImportError:  # pragma: no cover - environment problem, not a code path
-    raise SystemExit(
-        "soltui-service needs macos-launchd-supervisor:\n"
-        "    pip install 'macos-launchd-supervisor @ "
-        "git+https://github.com/mithudso/macos-launchd-supervisor'"
-    ) from None
+    HAVE_SUPERVISOR = True
+except ImportError:
+    HAVE_SUPERVISOR = False
+    ServiceSpec = atomic_write = render_plist = launchd_manage = plist_dict = None
 
 LABEL = "com.mitchhudson.soltui"
 APP_NAME = "SolTUI"
@@ -77,6 +78,23 @@ AGENT = HOME / "Library" / "LaunchAgents" / f"{LABEL}.plist"
 SUPPORT = HOME / "Library" / "Application Support" / "soltui"
 FLAG = SUPPORT / "supervise.enabled"
 LOG = HOME / "Library" / "Logs" / "soltui.launchd.log"
+SUBPROCESS_TIMEOUT_S = 30
+UNLOAD_TIMEOUT_S = 5
+
+
+def _require_supervisor() -> None:
+    if HAVE_SUPERVISOR:
+        return
+    environment = Path.home() / ".venvs" / "soltui-app"
+    python = environment / "bin" / "python"
+    def quote(value: Path) -> str:
+        return shlex.quote(str(value))
+    raise ImportError(
+        "soltui-service needs macos-launchd-supervisor in its isolated environment:\n"
+        f"    uv venv {quote(environment)} --python /opt/homebrew/opt/python@3.13/bin/python3.13\n"
+        f"    uv pip install --python {quote(python)} -r {quote(REPO / 'backtester/requirements.txt')} "
+        f"-r {quote(REPO / 'soltui/requirements.txt')}"
+    )
 
 
 def uid() -> int:
@@ -87,7 +105,7 @@ def uid() -> int:
 def run(cmd: list[str], check: bool = False) -> subprocess.CompletedProcess:
     """Run a command, echoing it so the effect is auditable."""
     print("  $", " ".join(cmd))
-    return subprocess.run(cmd, check=check, capture_output=True, text=True)
+    return subprocess.run(cmd, check=check, capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_S)
 
 
 # py2app's launcher loads libpython from the paths in Info.plist PyRuntimeLocations, which it
@@ -165,6 +183,7 @@ def service_spec() -> ServiceSpec:
     default `lang` is the explicit LANG. tests/test_service_plist_parity.py pins
     the rendered plist to the one this script generated before the migration.
     """
+    _require_supervisor()
     return ServiceSpec(
         label=LABEL,
         program=str(BUNDLE_EXE),
@@ -180,6 +199,7 @@ def service_spec() -> ServiceSpec:
 
 def agent_plist() -> dict:
     """The LaunchAgent definition. See the module docstring for every choice."""
+    _require_supervisor()
     return plist_dict(service_spec())
 
 
@@ -188,6 +208,12 @@ def install() -> int:
     if not DIST_BUNDLE.exists():
         print(f"no bundle at {DIST_BUNDLE}. Run: soltui/soltui-service build",
               file=sys.stderr)
+        return 1
+
+    # An alias bundle still references its source. A linked worktree is
+    # transient regardless of its directory name, so refuse before replacement.
+    if (REPO / ".git").is_file():
+        print(f"refusing alias install from git worktree {REPO}; build and install from the main checkout", file=sys.stderr)
         return 1
 
     # Lesson 3: never install from, or point at, a worktree path.
@@ -209,11 +235,27 @@ def install() -> int:
         )
 
     APPS_DIR.mkdir(parents=True, exist_ok=True)
-    if BUNDLE.exists():
-        print(f"replacing existing {BUNDLE}")
-        shutil.rmtree(BUNDLE)
-    shutil.copytree(DIST_BUNDLE, BUNDLE, symlinks=True)
-    dereference_resources(BUNDLE)
+    stage = Path(tempfile.mkdtemp(prefix=".soltui-install-", dir=APPS_DIR))
+    candidate, previous = stage / "candidate.app", stage / "previous.app"
+    published = False
+    try:
+        shutil.copytree(DIST_BUNDLE, candidate, symlinks=True)
+        dereference_resources(candidate)
+        if BUNDLE.exists():
+            print(f"replacing existing {BUNDLE}")
+            BUNDLE.rename(previous)
+        try:
+            candidate.rename(BUNDLE)
+        except OSError:
+            if previous.exists():
+                previous.rename(BUNDLE)
+            raise
+        published = True
+    finally:
+        # Keep the only old copy if rollback itself failed; do not erase the
+        # recovery artifact while unwinding a failed installation.
+        if published or not previous.exists():
+            shutil.rmtree(stage, ignore_errors=True)
     print(f"installed → {BUNDLE}")
 
     SUPPORT.mkdir(parents=True, exist_ok=True)
@@ -270,6 +312,7 @@ def dereference_resources(bundle: Path) -> list[Path]:
 
 def is_loaded() -> bool:
     """Whether launchd currently knows about the agent."""
+    _require_supervisor()
     return launchd_manage.is_loaded(service_spec())
 
 
@@ -285,6 +328,7 @@ def reload_agent() -> bool:
     So: poll until the old job has really gone, then bootstrap, then poll until
     the new one is really there. Returns True only if the agent ends up loaded.
     """
+    _require_supervisor()
     if not launchd_manage.reload_agent(service_spec()):
         return False
     print("  agent loaded")
@@ -343,7 +387,10 @@ def stop() -> int:
         print(f"flag removed → {FLAG}")
     else:
         print("flag was already absent")
-    run(["launchctl", "kill", "SIGTERM", f"gui/{uid()}/{LABEL}"])
+    result = run(["launchctl", "kill", "SIGTERM", f"gui/{uid()}/{LABEL}"])
+    if result.returncode and is_loaded():
+        print("stop was not confirmed; supervision is disabled but the loaded job needs inspection", file=sys.stderr)
+        return 1
     print("stopped (will not start at login)")
     return 0
 
@@ -370,8 +417,18 @@ def status() -> int:
 
 def uninstall() -> int:
     """Remove the agent, the flag and the installed bundle."""
-    stop()
-    run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])
+    if stop() != 0:
+        return 1
+    result = run(["launchctl", "bootout", f"gui/{uid()}/{LABEL}"])
+    if result.returncode and is_loaded():
+        print("uninstall refused: bootout failed; agent and bundle retained", file=sys.stderr)
+        return 1
+    deadline = time.monotonic() + UNLOAD_TIMEOUT_S
+    while is_loaded():
+        if time.monotonic() >= deadline:
+            print("uninstall refused: job is still loaded; agent and bundle retained", file=sys.stderr)
+            return 1
+        time.sleep(0.1)
     for path in (AGENT, BUNDLE):
         if path.exists():
             shutil.rmtree(path) if path.is_dir() else path.unlink()
@@ -397,7 +454,16 @@ def main(argv: list[str] | None = None) -> int:
     if sys.platform != "darwin":
         print("macOS only.", file=sys.stderr)
         return 1
-    return COMMANDS[args.command]()
+    try:
+        if args.command != "build":
+            _require_supervisor()
+        return COMMANDS[args.command]()
+    except ImportError as exc:
+        print(str(exc), file=sys.stderr)
+        return 3
+    except (OSError, subprocess.SubprocessError) as exc:
+        print(f"service operation could not complete ({type(exc).__name__}); inspect status before retrying", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

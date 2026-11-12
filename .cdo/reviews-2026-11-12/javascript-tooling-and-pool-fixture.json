@@ -1,0 +1,303 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "root",
+  "status": "FILE_PASSES_AND_LOCAL_VERIFICATION_COMPLETED_IN_SCOPE",
+  "created_at": "2026-11-12T19:29:06.776258+00:00",
+  "files": [
+    {
+      "path": "eslint.config.mjs",
+      "sha256": "be4fd528212479fa9d6b77075fd5cac60d109652005577f69735d070bc3a8e28",
+      "blob_sha": "5c2ccdd7b71e00ccb5937ae87893f2dc07782915",
+      "lines": 54,
+      "read_evidence": {
+        "method": "full authored config/type-contract source"
+      },
+      "semantic_note": "Authored complete explicit correctness ruleset and shared supported runtime globals; only source JS/MJS/CJS selected, generated/node_modules excluded. Deterministic error rules catch undefined bindings/unsafe execution/control-flow mistakes, without formatting or unused-variable churn. Product modules continue to use their own existing module mode; root package intentionally has no type field.",
+      "passes": {
+        "C1": "ran: Authored complete explicit correctness ruleset and shared supported runtime globals; only source JS/MJS/CJS selected, generated/node_modules excluded. Deterministic error rules catch undefined bindings/unsafe execution/control-flow mistakes, without formatting or unused-variable churn. Product modules continue to use their own existing module mode; root package intentionally has no type field.",
+        "C2": "ran: checker/config/typedforecast/fixture contracts, return shape, null handling and existing runtime compatibility considered as described above.",
+        "C3": "ran: real negative static references and wrong-expiry types are rejected; existing forecast runtime and compound-pool failure boundaries remain. No broadened live authority.",
+        "S1": "ran: devtool manifests/configs do not execute untrusted input or grant signing authority. Dynamic-code lint rules are explicit; parent/child integration fixtures remain isolated.",
+        "S2": "ran: locked tools run as finite commands, TypeScript emits no code; compound child keeps bounded subprocess deadline and process-pool context cleanup. All owned descendants exited in its accepted gate.",
+        "S3": "ran: source expiry/direction contract is typed and runtime body unchanged; config and lock parse correctly. No ambiguous order is automatically retried.",
+        "S4": "ran: local Node26.13.0/ESLint9.39.5/TypeScript7.0.2 checks completed. Workflow pins Node22; that CI runtime gate is separate pending evidence. Python fixture acceptance uses actual local Python3.13/Textual.",
+        "S5": "ran: static diagnostics and exact compiler negative-error codes remain observable. No credentials/provider payloads exposed; inherited guard records boundary outcomes and child cleanup.",
+        "P1": "ran: bounded lint targets and explicit2file type-check input avoid compiling capturedHTML/.ts research data or generating code. No production hotpath changed.",
+        "P2": "ran: no concurrent production resource mutation introduced. Build/dev checks consume a locked local toolchain; actual temp-process fixture ownership remains per test.",
+        "M1": "ran: explicit readable config/types and a justified local cleanup-rule exception. No style reformat or behavior-changing lint autofix.",
+        "M2": "ran: official ESLint/TypeScript/globals packages and existing offline_console_reads helper reused. No duplicate trading or validation runtime created.",
+        "M3": "N/A per file: repository architecture/settings residuals are assessed separately; these tools do not implement a universal runtime error/retry layer.",
+        "M4": "ran: docs/TESTING.md states exact commands, strictcheckJs scope, dev-only role and intentional cleanup exception. No claim that everyJavaScriptfile is typed.",
+        "T1": "ran: locked clean install0; npmcheck0; intentional lint and type-invalid probes exit1 as expected; compound guarded1case5.348s exit0/zero violations. Runtime AST-equivalence preserves prior behavior evidence for comments.",
+        "T2": "ran: root newdevgraph108dependencies auditexit0/zero listedvulnerabilities. Initial latestESLint10 graph auditexit1/moderate minimatch issue retained; explicitpatched9.39.5 selected with no product/runtime dependency replacement.",
+        "T3": "ran: explicit pinned correctnesslint and gradualstrictcheckJs now configured and run; source annotation semantics proved. Workflow JSON/YAMLparse0; finalremoteCI is pending.",
+        "T4": "ran: compile-time positive/negative callers have no mutable runtime fixture; actual compound-pool/spawn acceptance remains intact. Fullsuite temporal equivalence/performance remains separate.",
+        "M5": "N/A: checker configuration/compile-only fixture/imported module; root npmcheckcommand uses documented project-local lockedtools. Compound test has normal unittest entrypoint."
+      }
+    },
+    {
+      "path": "website/typecheck/evidence-contract.ts",
+      "sha256": "bdb6c901400f3c2b378060cab4691a724983a29d67fbeee87863599e16e1b793",
+      "blob_sha": "da3ff6f759e73eb85665d5498082a6d08d9dcc24",
+      "lines": 25,
+      "read_evidence": {
+        "method": "full authored config/type-contract source"
+      },
+      "semantic_note": "Authored full compile-only positive consumers and expected negative type errors. Exact forecastdirection union, numeric expiry and numeric evaluationclock checked. No emitted code or runtime network/order action; expected errors are required, so removing interface checking does not produce a falsegreen.",
+      "passes": {
+        "C1": "ran: Authored full compile-only positive consumers and expected negative type errors. Exact forecastdirection union, numeric expiry and numeric evaluationclock checked. No emitted code or runtime network/order action; expected errors are required, so removing interface checking does not produce a falsegreen.",
+        "C2": "ran: checker/config/typedforecast/fixture contracts, return shape, null handling and existing runtime compatibility considered as described above.",
+        "C3": "ran: real negative static references and wrong-expiry types are rejected; existing forecast runtime and compound-pool failure boundaries remain. No broadened live authority.",
+        "S1": "ran: devtool manifests/configs do not execute untrusted input or grant signing authority. Dynamic-code lint rules are explicit; parent/child integration fixtures remain isolated.",
+        "S2": "ran: locked tools run as finite commands, TypeScript emits no code; compound child keeps bounded subprocess deadline and process-pool context cleanup. All owned descendants exited in its accepted gate.",
+        "S3": "ran: source expiry/direction contract is typed and runtime body unchanged; config and lock parse correctly. No ambiguous order is automatically retried.",
+        "S4": "ran: local Node26.13.0/ESLint9.39.5/TypeScript7.0.2 checks completed. Workflow pins Node22; that CI runtime gate is separate pending evidence. Python fixture acceptance uses actual local Python3.13/Textual.",
+        "S5": "ran: static diagnostics and exact compiler negative-error codes remain observable. No credentials/provider payloads exposed; inherited guard records boundary outcomes and child cleanup.",
+        "P1": "ran: bounded lint targets and explicit2file type-check input avoid compiling capturedHTML/.ts research data or generating code. No production hotpath changed.",
+        "P2": "ran: no concurrent production resource mutation introduced. Build/dev checks consume a locked local toolchain; actual temp-process fixture ownership remains per test.",
+        "M1": "ran: explicit readable config/types and a justified local cleanup-rule exception. No style reformat or behavior-changing lint autofix.",
+        "M2": "ran: official ESLint/TypeScript/globals packages and existing offline_console_reads helper reused. No duplicate trading or validation runtime created.",
+        "M3": "N/A per file: repository architecture/settings residuals are assessed separately; these tools do not implement a universal runtime error/retry layer.",
+        "M4": "ran: docs/TESTING.md states exact commands, strictcheckJs scope, dev-only role and intentional cleanup exception. No claim that everyJavaScriptfile is typed.",
+        "T1": "ran: locked clean install0; npmcheck0; intentional lint and type-invalid probes exit1 as expected; compound guarded1case5.348s exit0/zero violations. Runtime AST-equivalence preserves prior behavior evidence for comments.",
+        "T2": "ran: root newdevgraph108dependencies auditexit0/zero listedvulnerabilities. Initial latestESLint10 graph auditexit1/moderate minimatch issue retained; explicitpatched9.39.5 selected with no product/runtime dependency replacement.",
+        "T3": "ran: explicit pinned correctnesslint and gradualstrictcheckJs now configured and run; source annotation semantics proved. Workflow JSON/YAMLparse0; finalremoteCI is pending.",
+        "T4": "ran: compile-time positive/negative callers have no mutable runtime fixture; actual compound-pool/spawn acceptance remains intact. Fullsuite temporal equivalence/performance remains separate.",
+        "M5": "N/A: checker configuration/compile-only fixture/imported module; root npmcheckcommand uses documented project-local lockedtools. Compound test has normal unittest entrypoint."
+      }
+    },
+    {
+      "path": "website/public/evidence.js",
+      "sha256": "971e90750213ef5b71127f5f1ed9e799e3db443a16677890ae38905035a07a80",
+      "blob_sha": "0ab5264ec9112a7f0b81b9b8c23774e2e043b18e",
+      "lines": 16,
+      "read_evidence": {
+        "method": "prior full-source review plus current reviewed annotation-only delta",
+        "proof": {
+          "path": "website/public/evidence.js",
+          "before_sha256": "601aa5a159f2b7a163713cc50ed4485c266c8158242d082537c7cf62ec8e6496",
+          "after_sha256": "971e90750213ef5b71127f5f1ed9e799e3db443a16677890ae38905035a07a80",
+          "runtime_ast_equal": true
+        },
+        "prior_evidence": ".cdo/reviews-2026-11-12/website-ui.json"
+      },
+      "semantic_note": "Full6line runtimebaseline displayed; authored JSDoc describes existing nullable Oracle snapshot and forecast contract. Runtime AST equality proved by espree with locations/comments removed; no prediction/ranking/expiry algorithm changed. Strict checkJs checks this helper and its typed callers, not all product JavaScript.",
+      "passes": {
+        "C1": "ran: Full6line runtimebaseline displayed; authored JSDoc describes existing nullable Oracle snapshot and forecast contract. Runtime AST equality proved by espree with locations/comments removed; no prediction/ranking/expiry algorithm changed. Strict checkJs checks this helper and its typed callers, not all product JavaScript.",
+        "C2": "ran: checker/config/typedforecast/fixture contracts, return shape, null handling and existing runtime compatibility considered as described above.",
+        "C3": "ran: real negative static references and wrong-expiry types are rejected; existing forecast runtime and compound-pool failure boundaries remain. No broadened live authority.",
+        "S1": "ran: devtool manifests/configs do not execute untrusted input or grant signing authority. Dynamic-code lint rules are explicit; parent/child integration fixtures remain isolated.",
+        "S2": "ran: locked tools run as finite commands, TypeScript emits no code; compound child keeps bounded subprocess deadline and process-pool context cleanup. All owned descendants exited in its accepted gate.",
+        "S3": "ran: source expiry/direction contract is typed and runtime body unchanged; config and lock parse correctly. No ambiguous order is automatically retried.",
+        "S4": "ran: local Node26.13.0/ESLint9.39.5/TypeScript7.0.2 checks completed. Workflow pins Node22; that CI runtime gate is separate pending evidence. Python fixture acceptance uses actual local Python3.13/Textual.",
+        "S5": "ran: static diagnostics and exact compiler negative-error codes remain observable. No credentials/provider payloads exposed; inherited guard records boundary outcomes and child cleanup.",
+        "P1": "ran: bounded lint targets and explicit2file type-check input avoid compiling capturedHTML/.ts research data or generating code. No production hotpath changed.",
+        "P2": "ran: no concurrent production resource mutation introduced. Build/dev checks consume a locked local toolchain; actual temp-process fixture ownership remains per test.",
+        "M1": "ran: explicit readable config/types and a justified local cleanup-rule exception. No style reformat or behavior-changing lint autofix.",
+        "M2": "ran: official ESLint/TypeScript/globals packages and existing offline_console_reads helper reused. No duplicate trading or validation runtime created.",
+        "M3": "N/A per file: repository architecture/settings residuals are assessed separately; these tools do not implement a universal runtime error/retry layer.",
+        "M4": "ran: docs/TESTING.md states exact commands, strictcheckJs scope, dev-only role and intentional cleanup exception. No claim that everyJavaScriptfile is typed.",
+        "T1": "ran: locked clean install0; npmcheck0; intentional lint and type-invalid probes exit1 as expected; compound guarded1case5.348s exit0/zero violations. Runtime AST-equivalence preserves prior behavior evidence for comments.",
+        "T2": "ran: root newdevgraph108dependencies auditexit0/zero listedvulnerabilities. Initial latestESLint10 graph auditexit1/moderate minimatch issue retained; explicitpatched9.39.5 selected with no product/runtime dependency replacement.",
+        "T3": "ran: explicit pinned correctnesslint and gradualstrictcheckJs now configured and run; source annotation semantics proved. Workflow JSON/YAMLparse0; finalremoteCI is pending.",
+        "T4": "ran: compile-time positive/negative callers have no mutable runtime fixture; actual compound-pool/spawn acceptance remains intact. Fullsuite temporal equivalence/performance remains separate.",
+        "M5": "N/A: checker configuration/compile-only fixture/imported module; root npmcheckcommand uses documented project-local lockedtools. Compound test has normal unittest entrypoint."
+      }
+    },
+    {
+      "path": "extension/src/storage/fileStore.js",
+      "sha256": "66202ae5760e9f67f1ae497f51fcb4c934edc458cb9d7bfd5346adde27db2408",
+      "blob_sha": "cc78a52e587692e96f27546dfd2bcae38ca1e880",
+      "lines": 347,
+      "read_evidence": {
+        "method": "prior full-source review plus current reviewed annotation-only delta",
+        "proof": {
+          "path": "extension/src/storage/fileStore.js",
+          "before_sha256": "5ef26fa7ee37c5e44739fd3c29d18190a2c1d5eb8670561b49937afad7d40287",
+          "after_sha256": "66202ae5760e9f67f1ae497f51fcb4c934edc458cb9d7bfd5346adde27db2408",
+          "runtime_ast_equal": true
+        },
+        "prior_evidence": ".cdo/reviews-2026-11-12/extension-root.json"
+      },
+      "semantic_note": "Inherited346line fullread/semantic receipt from extension-root.json plus one reviewed lint-comment line. Documented local no-unsafe-finally exception keeps existing rejection when private temporary cleanup fails. Runtime AST equality proved; economic/lease/atomic path behavior and inherited483Node/26Chrome evidence remain unaltered, not freshly rerun by this annotation-only step.",
+      "passes": {
+        "C1": "ran: Inherited346line fullread/semantic receipt from extension-root.json plus one reviewed lint-comment line. Documented local no-unsafe-finally exception keeps existing rejection when private temporary cleanup fails. Runtime AST equality proved; economic/lease/atomic path behavior and inherited483Node/26Chrome evidence remain unaltered, not freshly rerun by this annotation-only step.",
+        "C2": "ran: checker/config/typedforecast/fixture contracts, return shape, null handling and existing runtime compatibility considered as described above.",
+        "C3": "ran: real negative static references and wrong-expiry types are rejected; existing forecast runtime and compound-pool failure boundaries remain. No broadened live authority.",
+        "S1": "ran: devtool manifests/configs do not execute untrusted input or grant signing authority. Dynamic-code lint rules are explicit; parent/child integration fixtures remain isolated.",
+        "S2": "ran: locked tools run as finite commands, TypeScript emits no code; compound child keeps bounded subprocess deadline and process-pool context cleanup. All owned descendants exited in its accepted gate.",
+        "S3": "ran: source expiry/direction contract is typed and runtime body unchanged; config and lock parse correctly. No ambiguous order is automatically retried.",
+        "S4": "ran: local Node26.13.0/ESLint9.39.5/TypeScript7.0.2 checks completed. Workflow pins Node22; that CI runtime gate is separate pending evidence. Python fixture acceptance uses actual local Python3.13/Textual.",
+        "S5": "ran: static diagnostics and exact compiler negative-error codes remain observable. No credentials/provider payloads exposed; inherited guard records boundary outcomes and child cleanup.",
+        "P1": "ran: bounded lint targets and explicit2file type-check input avoid compiling capturedHTML/.ts research data or generating code. No production hotpath changed.",
+        "P2": "ran: no concurrent production resource mutation introduced. Build/dev checks consume a locked local toolchain; actual temp-process fixture ownership remains per test.",
+        "M1": "ran: explicit readable config/types and a justified local cleanup-rule exception. No style reformat or behavior-changing lint autofix.",
+        "M2": "ran: official ESLint/TypeScript/globals packages and existing offline_console_reads helper reused. No duplicate trading or validation runtime created.",
+        "M3": "N/A per file: repository architecture/settings residuals are assessed separately; these tools do not implement a universal runtime error/retry layer.",
+        "M4": "ran: docs/TESTING.md states exact commands, strictcheckJs scope, dev-only role and intentional cleanup exception. No claim that everyJavaScriptfile is typed.",
+        "T1": "ran: locked clean install0; npmcheck0; intentional lint and type-invalid probes exit1 as expected; compound guarded1case5.348s exit0/zero violations. Runtime AST-equivalence preserves prior behavior evidence for comments.",
+        "T2": "ran: root newdevgraph108dependencies auditexit0/zero listedvulnerabilities. Initial latestESLint10 graph auditexit1/moderate minimatch issue retained; explicitpatched9.39.5 selected with no product/runtime dependency replacement.",
+        "T3": "ran: explicit pinned correctnesslint and gradualstrictcheckJs now configured and run; source annotation semantics proved. Workflow JSON/YAMLparse0; finalremoteCI is pending.",
+        "T4": "ran: compile-time positive/negative callers have no mutable runtime fixture; actual compound-pool/spawn acceptance remains intact. Fullsuite temporal equivalence/performance remains separate.",
+        "M5": "N/A: checker configuration/compile-only fixture/imported module; root npmcheckcommand uses documented project-local lockedtools. Compound test has normal unittest entrypoint."
+      }
+    },
+    {
+      "path": "soltui/tests/test_compound_pool_capture.py",
+      "sha256": "08ade87b9aa9eb1e4be757443818c392e0ca205c0e0f875b4d4226c65f0525dc",
+      "blob_sha": "259d283c4c46ddc85e96c01ab8fb6e7c06c40e2f",
+      "lines": 44,
+      "read_evidence": {
+        "method": "full42line displayed baseline plus exact fixture-only delta",
+        "baseline_sha256": "107b1ef82559ba92fb1c08bac8849878b79ccb6d0f63e605596886b8f05e3686",
+        "prior_evidence": ".cdo/reviews-2026-11-12/medium-files.json",
+        "inverse_matches_baseline": true,
+        "delta": [
+          "--- soltui/tests/test_compound_pool_capture.py",
+          "+++ soltui/tests/test_compound_pool_capture.py",
+          "@@ -17,6 +17,7 @@",
+          " import asyncio",
+          " from concurrent.futures import ProcessPoolExecutor",
+          " from pathlib import Path",
+          "+from soltui.tests.test_tui import offline_console_reads",
+          " from soltui import config",
+          " from soltui.config import Settings",
+          " from soltui.tui import SolTuiApp",
+          "@@ -30,7 +31,8 @@",
+          " async def main():",
+          "     async with app.run_test(size=(180, 55)):",
+          "         assert await asyncio.to_thread(run_pool) == [5, 9]",
+          "-asyncio.run(main())",
+          "+with offline_console_reads():",
+          "+    asyncio.run(main())",
+          " '''",
+          "         with tempfile.TemporaryDirectory() as tmp:",
+          "             result = subprocess.run([sys.executable, \"-c\", code, tmp], cwd=Path(__file__).resolve().parents[2],"
+        ]
+      },
+      "semantic_note": "Full42line baseline displayed, plus reviewed two-net-line shared offlinefixture inside actual child script. Actual full Textual capture and two-worker ProcessPoolExecutor remain; argv/tempdir/45sdeadline/returncode assertion unchanged. Strong inherited guard proves externalDNSRED then latest1case5.348sGREEN0/0blocked/4children/no leftovers. No test or financial threshold was removed.",
+      "passes": {
+        "C1": "ran: Full42line baseline displayed, plus reviewed two-net-line shared offlinefixture inside actual child script. Actual full Textual capture and two-worker ProcessPoolExecutor remain; argv/tempdir/45sdeadline/returncode assertion unchanged. Strong inherited guard proves externalDNSRED then latest1case5.348sGREEN0/0blocked/4children/no leftovers. No test or financial threshold was removed.",
+        "C2": "ran: checker/config/typedforecast/fixture contracts, return shape, null handling and existing runtime compatibility considered as described above.",
+        "C3": "ran: real negative static references and wrong-expiry types are rejected; existing forecast runtime and compound-pool failure boundaries remain. No broadened live authority.",
+        "S1": "ran: devtool manifests/configs do not execute untrusted input or grant signing authority. Dynamic-code lint rules are explicit; parent/child integration fixtures remain isolated.",
+        "S2": "ran: locked tools run as finite commands, TypeScript emits no code; compound child keeps bounded subprocess deadline and process-pool context cleanup. All owned descendants exited in its accepted gate.",
+        "S3": "ran: source expiry/direction contract is typed and runtime body unchanged; config and lock parse correctly. No ambiguous order is automatically retried.",
+        "S4": "ran: local Node26.13.0/ESLint9.39.5/TypeScript7.0.2 checks completed. Workflow pins Node22; that CI runtime gate is separate pending evidence. Python fixture acceptance uses actual local Python3.13/Textual.",
+        "S5": "ran: static diagnostics and exact compiler negative-error codes remain observable. No credentials/provider payloads exposed; inherited guard records boundary outcomes and child cleanup.",
+        "P1": "ran: bounded lint targets and explicit2file type-check input avoid compiling capturedHTML/.ts research data or generating code. No production hotpath changed.",
+        "P2": "ran: no concurrent production resource mutation introduced. Build/dev checks consume a locked local toolchain; actual temp-process fixture ownership remains per test.",
+        "M1": "ran: explicit readable config/types and a justified local cleanup-rule exception. No style reformat or behavior-changing lint autofix.",
+        "M2": "ran: official ESLint/TypeScript/globals packages and existing offline_console_reads helper reused. No duplicate trading or validation runtime created.",
+        "M3": "N/A per file: repository architecture/settings residuals are assessed separately; these tools do not implement a universal runtime error/retry layer.",
+        "M4": "ran: docs/TESTING.md states exact commands, strictcheckJs scope, dev-only role and intentional cleanup exception. No claim that everyJavaScriptfile is typed.",
+        "T1": "ran: locked clean install0; npmcheck0; intentional lint and type-invalid probes exit1 as expected; compound guarded1case5.348s exit0/zero violations. Runtime AST-equivalence preserves prior behavior evidence for comments.",
+        "T2": "ran: root newdevgraph108dependencies auditexit0/zero listedvulnerabilities. Initial latestESLint10 graph auditexit1/moderate minimatch issue retained; explicitpatched9.39.5 selected with no product/runtime dependency replacement.",
+        "T3": "ran: explicit pinned correctnesslint and gradualstrictcheckJs now configured and run; source annotation semantics proved. Workflow JSON/YAMLparse0; finalremoteCI is pending.",
+        "T4": "ran: compile-time positive/negative callers have no mutable runtime fixture; actual compound-pool/spawn acceptance remains intact. Fullsuite temporal equivalence/performance remains separate.",
+        "M5": "N/A: checker configuration/compile-only fixture/imported module; root npmcheckcommand uses documented project-local lockedtools. Compound test has normal unittest entrypoint."
+      }
+    }
+  ],
+  "metadata": [
+    {
+      "path": "package.json",
+      "sha256": "59275dedc85df665d7ec27fc47d7c42c3fa956342219e667a0a7a8b20cca8882",
+      "note": "generated lock/config/documentation metadata; not a source full-read substitute"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "c386d5dcc1a5dd144e9f41e302d90bac437071e350651180aaf09984bbc790f1",
+      "note": "generated lock/config/documentation metadata; not a source full-read substitute"
+    },
+    {
+      "path": "tsconfig.checkjs.json",
+      "sha256": "a146541027f053de4c29622738ae556ee93be3451731283d64ee225d4c498565",
+      "note": "generated lock/config/documentation metadata; not a source full-read substitute"
+    },
+    {
+      "path": ".github/workflows/javascript-quality.yml",
+      "sha256": "fe3467d4170b63e34c19321640ad30db74eec839a95c1a869e64cf435b4e3dd3",
+      "note": "generated lock/config/documentation metadata; not a source full-read substitute"
+    },
+    {
+      "path": "docs/TESTING.md",
+      "sha256": "395afda40f5bcc4ef53791b92b262bdd8ee714e1b4439d8b3ce21996230a9254",
+      "note": "generated lock/config/documentation metadata; not a source full-read substitute"
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund then npm run check:js",
+      "install_exit_code": 0,
+      "check_exit_code": 0,
+      "logs": [
+        "/tmp/oraclebot-final-delivery-20261112/javascript-quality/locked-install.log",
+        "/tmp/oraclebot-final-delivery-20261112/javascript-quality/locked-final-check.log"
+      ]
+    },
+    {
+      "command": "newroot npm audit --json",
+      "exit_code": 0,
+      "dependencies": 108,
+      "listed_vulnerabilities": 0,
+      "log": "/tmp/oraclebot-final-delivery-20261112/javascript-quality/npm-audit-patched.json"
+    },
+    {
+      "command": "negative undefinedbinding lint probe; wrong-expiry strictcheckJs probe",
+      "lint_exit_code": 1,
+      "typecheck_exit_code": 1,
+      "expected_rejections": true,
+      "logs": [
+        "/tmp/oraclebot-final-delivery-20261112/javascript-quality/negative-lint.log",
+        "/tmp/oraclebot-final-delivery-20261112/javascript-quality/negative-typecheck.log"
+      ]
+    },
+    {
+      "command": "two product JavaScript annotation/comment delta ASTequivalence",
+      "exit_code": 0,
+      "proof": "/tmp/oraclebot-final-delivery-20261112/javascript-quality/annotation-only-deltas.json"
+    },
+    {
+      "command": "metadataJSON and workflowYAMLparse using locked js-yaml",
+      "exit_code": 0
+    },
+    {
+      "command": "actual compound-pool inheritedguard latest strong subset",
+      "tests": 1,
+      "seconds": 5.348,
+      "exit_code": 0,
+      "blocked_boundaries": 0,
+      "inherited_children": 4,
+      "leftover_children": 0,
+      "receipt": "/tmp/oraclebot-final-soltui-20261112/runs/compound-pool-owned-listeners-green/final-receipt.json"
+    }
+  ],
+  "failed_attempts": [
+    {
+      "command": "initial newroot npm audit witheslint10.14.0",
+      "exit_code": 1,
+      "reason": "moderate minimatch globparts amplification advisory; patched supported ESLint9.39.5 resolves graph",
+      "log": "/tmp/oraclebot-final-delivery-20261112/javascript-quality/npm-audit.json",
+      "counted_as_passing": false
+    },
+    {
+      "command": "initialglobalpython metadataYAMLparser",
+      "exit_code": 1,
+      "reason": "optional yaml module absent in global Python; existing locked JavaScript YAMLparser used successfully instead",
+      "counted_as_passing": false
+    },
+    {
+      "command": "initiallintpolicycheck",
+      "exit_code": 1,
+      "reason": "intentional fail-closed temporaryfile cleanup throw flagged; one exact local waiver documented, runtime ASTunchanged",
+      "counted_as_passing": false
+    }
+  ],
+  "limits": [
+    "Type checking is explicitly incremental at the forecastinterface. Lint/syntax/static checks do not certify all runtime/platform behaviors.",
+    "LocalNode26 checks do not prove the workflowNode22 execution; required remoteCI remains pending.",
+    "The full guarded SolTUI suite is actively running with no exclusions. The accepted one-case poolgate is not its final result.",
+    "No real account, trading order/signature, owner service/runtime installation, embeddings/inference job or live marketdata was invoked by the new statictooling. Root developmentdependencies were installed locally with lifecycle scriptsdisabled."
+  ]
+}

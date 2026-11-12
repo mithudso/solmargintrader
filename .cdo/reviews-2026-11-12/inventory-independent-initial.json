@@ -1,0 +1,953 @@
+{
+  "agent": "inventory-independent-review",
+  "definition_version": "2.0.0",
+  "status": "partial",
+  "observed_at": "2026-11-12T19:21:27.996172+00:00",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": [
+    "scripts/build_operation_inventories.py",
+    "backtester/tests/test_operation_inventories.py",
+    "static authoritative command and manifest metadata"
+  ],
+  "coverage": {
+    "assigned_file_read_ranges": {
+      "scripts/build_operation_inventories.py": [
+        [
+          1,
+          255
+        ]
+      ],
+      "backtester/tests/test_operation_inventories.py": [
+        [
+          1,
+          102
+        ]
+      ]
+    },
+    "authoritative_manual_read_ranges": {
+      "extension/src/core/commands.js": [
+        [
+          1,
+          240
+        ],
+        [
+          573,
+          592
+        ],
+        [
+          690,
+          709
+        ],
+        [
+          839,
+          868
+        ],
+        [
+          990,
+          1004
+        ]
+      ],
+      "soltui/commands.py": [
+        [
+          126,
+          180
+        ]
+      ],
+      "executor/src/executor/registry.py": [
+        [
+          1,
+          160
+        ]
+      ]
+    },
+    "authoritative_filtered_metadata_reads": {
+      "extension/src/core/commands.js": "rg selected all command headers, describe/readOnly/destructive properties and describeCommands flags",
+      "soltui/commands.py": "all @command declarations, command decorator defaults and static AST literal metadata comparison",
+      "executor/src/executor/registry.py": "all @command declarations, command decorator defaults and static AST literal metadata comparison"
+    },
+    "python_decorator_ranges_checked_statically": {
+      "soltui/commands.py": [
+        [
+          525,
+          526
+        ],
+        [
+          531,
+          538
+        ],
+        [
+          579,
+          579
+        ],
+        [
+          584,
+          584
+        ],
+        [
+          616,
+          617
+        ],
+        [
+          637,
+          638
+        ],
+        [
+          655,
+          655
+        ],
+        [
+          660,
+          663
+        ],
+        [
+          673,
+          674
+        ],
+        [
+          681,
+          683
+        ],
+        [
+          704,
+          704
+        ],
+        [
+          855,
+          866
+        ],
+        [
+          959,
+          961
+        ],
+        [
+          988,
+          989
+        ],
+        [
+          1006,
+          1007
+        ],
+        [
+          1013,
+          1015
+        ],
+        [
+          1032,
+          1032
+        ],
+        [
+          1071,
+          1071
+        ],
+        [
+          1085,
+          1086
+        ],
+        [
+          1120,
+          1122
+        ],
+        [
+          1138,
+          1140
+        ],
+        [
+          1149,
+          1149
+        ],
+        [
+          1159,
+          1160
+        ],
+        [
+          1167,
+          1168
+        ],
+        [
+          1174,
+          1176
+        ],
+        [
+          1182,
+          1183
+        ],
+        [
+          1189,
+          1189
+        ],
+        [
+          1195,
+          1197
+        ],
+        [
+          1207,
+          1208
+        ],
+        [
+          1214,
+          1214
+        ],
+        [
+          1220,
+          1220
+        ],
+        [
+          1226,
+          1226
+        ],
+        [
+          1240,
+          1242
+        ],
+        [
+          1259,
+          1260
+        ],
+        [
+          1271,
+          1271
+        ],
+        [
+          1276,
+          1278
+        ],
+        [
+          1297,
+          1297
+        ],
+        [
+          1305,
+          1305
+        ],
+        [
+          1311,
+          1311
+        ],
+        [
+          1319,
+          1319
+        ],
+        [
+          1331,
+          1332
+        ],
+        [
+          1347,
+          1348
+        ],
+        [
+          1357,
+          1358
+        ],
+        [
+          1364,
+          1365
+        ],
+        [
+          1371,
+          1374
+        ],
+        [
+          1381,
+          1382
+        ],
+        [
+          1395,
+          1395
+        ],
+        [
+          1400,
+          1401
+        ],
+        [
+          1407,
+          1411
+        ],
+        [
+          1468,
+          1468
+        ],
+        [
+          1474,
+          1476
+        ],
+        [
+          1511,
+          1514
+        ],
+        [
+          1548,
+          1549
+        ],
+        [
+          1557,
+          1557
+        ],
+        [
+          1565,
+          1565
+        ],
+        [
+          1573,
+          1573
+        ],
+        [
+          1581,
+          1581
+        ],
+        [
+          1586,
+          1588
+        ],
+        [
+          1605,
+          1605
+        ],
+        [
+          1621,
+          1622
+        ],
+        [
+          1629,
+          1631
+        ],
+        [
+          1658,
+          1658
+        ],
+        [
+          1663,
+          1667
+        ],
+        [
+          1691,
+          1691
+        ],
+        [
+          1761,
+          1761
+        ],
+        [
+          1766,
+          1766
+        ],
+        [
+          1787,
+          1788
+        ],
+        [
+          1797,
+          1798
+        ],
+        [
+          1812,
+          1821
+        ],
+        [
+          1876,
+          1876
+        ],
+        [
+          1881,
+          1883
+        ],
+        [
+          1913,
+          1914
+        ],
+        [
+          1920,
+          1922
+        ],
+        [
+          1933,
+          1940
+        ],
+        [
+          1961,
+          1965
+        ],
+        [
+          1979,
+          1983
+        ],
+        [
+          1989,
+          1998
+        ],
+        [
+          2007,
+          2009
+        ],
+        [
+          2014,
+          2018
+        ],
+        [
+          2025,
+          2031
+        ],
+        [
+          2038,
+          2042
+        ],
+        [
+          2049,
+          2055
+        ],
+        [
+          2063,
+          2065
+        ],
+        [
+          2070,
+          2073
+        ],
+        [
+          2078,
+          2079
+        ],
+        [
+          2084,
+          2086
+        ],
+        [
+          2091,
+          2095
+        ],
+        [
+          2119,
+          2119
+        ],
+        [
+          2166,
+          2169
+        ],
+        [
+          2206,
+          2208
+        ],
+        [
+          2213,
+          2215
+        ],
+        [
+          2229,
+          2232
+        ],
+        [
+          2273,
+          2280
+        ],
+        [
+          2306,
+          2308
+        ],
+        [
+          2316,
+          2316
+        ],
+        [
+          2326,
+          2329
+        ],
+        [
+          2503,
+          2506
+        ],
+        [
+          2511,
+          2513
+        ],
+        [
+          2518,
+          2520
+        ],
+        [
+          2528,
+          2528
+        ],
+        [
+          2534,
+          2535
+        ],
+        [
+          2541,
+          2542
+        ],
+        [
+          2549,
+          2550
+        ],
+        [
+          2556,
+          2557
+        ],
+        [
+          2563,
+          2568
+        ],
+        [
+          2575,
+          2577
+        ],
+        [
+          2585,
+          2591
+        ],
+        [
+          2597,
+          2598
+        ],
+        [
+          2604,
+          2606
+        ],
+        [
+          2612,
+          2617
+        ],
+        [
+          2623,
+          2627
+        ],
+        [
+          2633,
+          2640
+        ],
+        [
+          2650,
+          2658
+        ],
+        [
+          2667,
+          2669
+        ],
+        [
+          2675,
+          2681
+        ],
+        [
+          2690,
+          2695
+        ],
+        [
+          2704,
+          2706
+        ],
+        [
+          2712,
+          2712
+        ],
+        [
+          2738,
+          2739
+        ],
+        [
+          2744,
+          2746
+        ],
+        [
+          2762,
+          2770
+        ],
+        [
+          2793,
+          2795
+        ],
+        [
+          2800,
+          2803
+        ],
+        [
+          2824,
+          2828
+        ],
+        [
+          2836,
+          2839
+        ],
+        [
+          2874,
+          2875
+        ],
+        [
+          2881,
+          2882
+        ],
+        [
+          2891,
+          2897
+        ],
+        [
+          2915,
+          2923
+        ],
+        [
+          3027,
+          3031
+        ],
+        [
+          3036,
+          3039
+        ],
+        [
+          3044,
+          3044
+        ],
+        [
+          3050,
+          3054
+        ],
+        [
+          3074,
+          3075
+        ],
+        [
+          3085,
+          3085
+        ],
+        [
+          3094,
+          3099
+        ],
+        [
+          3108,
+          3111
+        ],
+        [
+          3117,
+          3118
+        ],
+        [
+          3124,
+          3125
+        ],
+        [
+          3131,
+          3139
+        ],
+        [
+          3154,
+          3154
+        ],
+        [
+          3160,
+          3160
+        ],
+        [
+          3166,
+          3167
+        ],
+        [
+          3177,
+          3178
+        ],
+        [
+          3229,
+          3230
+        ],
+        [
+          3237,
+          3238
+        ],
+        [
+          3244,
+          3245
+        ],
+        [
+          3251,
+          3253
+        ],
+        [
+          3262,
+          3263
+        ],
+        [
+          3270,
+          3271
+        ],
+        [
+          3278,
+          3279
+        ],
+        [
+          3286,
+          3287
+        ],
+        [
+          3294,
+          3296
+        ],
+        [
+          3304,
+          3305
+        ],
+        [
+          3311,
+          3313
+        ],
+        [
+          3325,
+          3328
+        ],
+        [
+          3338,
+          3341
+        ],
+        [
+          3364,
+          3365
+        ],
+        [
+          3371,
+          3372
+        ],
+        [
+          3378,
+          3381
+        ],
+        [
+          3387,
+          3388
+        ],
+        [
+          3394,
+          3399
+        ],
+        [
+          3415,
+          3416
+        ],
+        [
+          3422,
+          3423
+        ],
+        [
+          3429,
+          3429
+        ],
+        [
+          3435,
+          3437
+        ]
+      ],
+      "executor/src/executor/registry.py": [
+        [
+          294,
+          305
+        ],
+        [
+          310,
+          331
+        ],
+        [
+          347,
+          349
+        ],
+        [
+          398,
+          402
+        ],
+        [
+          415,
+          420
+        ],
+        [
+          429,
+          435
+        ],
+        [
+          444,
+          448
+        ],
+        [
+          453,
+          463
+        ],
+        [
+          470,
+          474
+        ],
+        [
+          483,
+          483
+        ],
+        [
+          490,
+          499
+        ],
+        [
+          504,
+          508
+        ],
+        [
+          515,
+          521
+        ],
+        [
+          528,
+          532
+        ]
+      ]
+    },
+    "manifests": "all seven component pyproject.toml files read in full",
+    "limits": "No whole-repo or financial runtime correctness claim. Application registry modules were not imported."
+  },
+  "source_bindings": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/build_operation_inventories.py",
+      "sha256": "df95a2037a329a0d0cfa2dc69ffa721c56d654c8a8b9847761f7e3ba5df3359e",
+      "lines": 255
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/tests/test_operation_inventories.py",
+      "sha256": "6eecb898c20a9647fc58753290b60e7f3a7039f2113e6d95dd74f2b53e76be11",
+      "lines": 102
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/commands.js",
+      "sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107",
+      "lines": 1004
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/commands.py",
+      "sha256": "dc5220b287146966856f85e653472d5ac3290109d81333dddc37205935233b1d",
+      "lines": 3443
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py",
+      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c",
+      "lines": 534
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/pyproject.toml",
+      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4",
+      "lines": 20
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/pyproject.toml",
+      "sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec",
+      "lines": 19
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/pyproject.toml",
+      "sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6",
+      "lines": 17
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pyproject.toml",
+      "sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e",
+      "lines": 14
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pyproject.toml",
+      "sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2",
+      "lines": 22
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/pyproject.toml",
+      "sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5",
+      "lines": 39
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/pyproject.toml",
+      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47",
+      "lines": 37
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused_existing_tests",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest backtester.tests.test_operation_inventories -v",
+      "exit_code": 0,
+      "result": "7 tests passed"
+    },
+    {
+      "name": "actual_static_build_determinism_and_drift",
+      "command": "Python -B pure build(root) twice and materialize(root, check=True)",
+      "exit_code": 0,
+      "result": {
+        "equal_values": true,
+        "operations": 221,
+        "tools": 31,
+        "drift": []
+      }
+    },
+    {
+      "name": "current_python_metadata_contract",
+      "command": "Python -B ast.walk on both registry source strings; compare literal descriptions, names, defaults/overrides, symbols and lines",
+      "exit_code": 0,
+      "result": {
+        "soltui_commands": 166,
+        "executor_commands": 14,
+        "metadata_equal": true,
+        "application_registry_modules_imported": []
+      }
+    },
+    {
+      "name": "check_read_only_guard",
+      "command": "Python -B main([--check]) with Path.write_text/write_bytes/mkdir mocked to raise and output before/after SHA256 comparison",
+      "exit_code": 0,
+      "result": {
+        "main_exit": 0,
+        "output_hashes_unchanged": true,
+        "writes_attempted": false
+      }
+    },
+    {
+      "name": "unsupported_metadata_probes",
+      "command": "Python -B in-memory parser fixtures and temp-copy manifest collision fixture",
+      "exit_code": 0,
+      "result": "4 malformed/ambiguous metadata cases were accepted rather than refused; findings below"
+    }
+  ],
+  "findings": [
+    {
+      "id": "INV-1",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/build_operation_inventories.py",
+      "lines": [
+        59,
+        71
+      ],
+      "claim": "Python decorator expansion is ignored, so documented flags can disagree with actual declarations.",
+      "reproduction": "With read_only=True/requires_confirm=False defaults, @command(\"submit\", \"Guarded submission.\", **flags) and flags={\"read_only\":False,\"requires_confirm\":True} returns read_only:true/requires_confirm:false instead of refusing unsupported metadata.",
+      "recommendation": "Reject keyword.arg is None and unsupported/duplicate decorator metadata; explicitly validate the supported decorator shape."
+    },
+    {
+      "id": "INV-2",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/build_operation_inventories.py",
+      "lines": [
+        81,
+        103
+      ],
+      "claim": "JavaScript extraction accepts unsupported top-level spread entries and duplicate flag properties.",
+      "reproduction": "An entry with readOnly:true followed by readOnly:false emits read_only:true though JavaScript uses the last value. Adding ...dynamicCommands at the registry top level succeeds and omits the spread commands.",
+      "recommendation": "Validate all top-level entry syntax and require exactly one supported metadata property per key; refuse spread/computed/unparsed entry material."
+    },
+    {
+      "id": "INV-3",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/build_operation_inventories.py",
+      "lines": [
+        178,
+        193
+      ],
+      "claim": "Installed Python entrypoint identifiers are not checked for uniqueness across component manifests.",
+      "reproduction": "In a temporary copy of declared sources, rename oracle [project.scripts] soloracle to executor. build() accepts two rows with id python:executor, one pointing to oracle/cli.py and one to executor/src/executor/cli.py.",
+      "recommendation": "Validate global tool IDs and refuse duplicate entrypoint names across manifests before materializing output."
+    }
+  ],
+  "safety_observations": [
+    "Generator imports only Python standard library modules.",
+    "Registry discovery reads and parses text without executing decorators or handlers.",
+    "Current descriptions/read-only/confirmation metadata matched static Python declarations; extension missing booleans map to false consistently with describeCommands().",
+    "Output scope/limits explicitly disclaim exhaustive call graphs and runtime error/retry/remediation implementation.",
+    "Only this /tmp receipt was written by the reviewer; no repo files, services, production Python state, packages, network, signing or orders were changed."
+  ],
+  "remaining": [
+    "Implementation owner to harden supported metadata syntax and ID uniqueness, add regression tests, regenerate inventories and request re-review of the final hashes."
+  ]
+}

@@ -223,6 +223,48 @@ class UiContractTests(unittest.TestCase):
         self.assertNotIn("localStorage.clear", source)
 
     @unittest.skipUnless(
+        shutil.which("node"), "Node is needed for chart lifecycle checks"
+    )
+    def test_oracle_chart_refresh_preserves_hidden_overlay_and_single_instance(self):
+        program = r"""
+const vm=require('node:vm'), fs=require('node:fs'), assert=require('node:assert/strict');
+const nodes=new Map();
+class Element {
+ constructor(tag='div'){this.tagName=tag;this.children=[];this.events={};this.dataset={};this.classList={add(){}};}
+ append(...items){for(const item of items)this.children.push(...(item.tagName==='#fragment'?item.children:[item]));}
+ replaceChildren(...items){this.children=[];this.append(...items);}
+ addEventListener(name,listener){this.events[name]=listener;}
+}
+const element=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
+let created=0, markerRows=[];
+const library={LineSeries:{},createChart(){created++;return{addSeries:()=>({setData(){}}),timeScale:()=>({getVisibleLogicalRange:()=>null,fitContent(){}})};},createSeriesMarkers:()=>({setMarkers(rows){markerRows=rows;}})};
+const context={document:{getElementById:element,createElement:tag=>new Element(tag),createDocumentFragment:()=>new Element('#fragment')},window:{},fakeLibrary:library};
+// Replace only the module transport with a local fake, leaving render and DOM code intact.
+const source=fs.readFileSync(process.argv[1],'utf8');
+assert.equal(source.split('import("/lightweight-charts.mjs")').length,2);
+vm.runInNewContext(source.replace('import("/lightweight-charts.mjs")','Promise.resolve(fakeLibrary)'),context);
+const graph={status:'available',instrument:'SOL/USD',count:1,ticks:[{tick_id:'one',time:1000,price:10,strategies:[{strategy_id:'rsi',direction:1}],aggregate:null}]};
+(async()=>{
+ await Promise.all([context.window.OracleChart.render(graph),context.window.OracleChart.render(graph)]);
+ assert.equal(created,1,'overlapping renders created multiple chart instances');
+ const toggle=element('oracle-chart-legend').children[0].children[0];
+ assert.equal(toggle.checked,true);toggle.checked=false;toggle.events.change();
+ assert.equal(markerRows.length,0);
+ await context.window.OracleChart.render(graph);
+ assert.equal(element('oracle-chart-legend').children[0].children[0].checked,false,'polling reset the hidden overlay');
+ assert.equal(markerRows.length,0);
+})().catch(error=>{console.error(error);process.exitCode=1;});
+"""
+        result = subprocess.run(
+            [shutil.which("node"), "-e", program, str(WEB / "oracle-chart.js")],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    @unittest.skipUnless(
         shutil.which("node"), "Node is needed for the client behavior checks"
     )
     def test_client_behavior_contract(self):

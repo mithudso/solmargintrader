@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "tool": "fetch",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "fetch_minutes",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "fetch_minutes_alt",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "archive_price",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "history_store",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "run_archive",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "kucoin_history",
+      "exit_code": 0,
+      "example_present": true,
+      "cwd": "outside repository",
+      "mode": "help only"
+    },
+    {
+      "tool": "fetch",
+      "mode": "unknown argument only",
+      "exit_code": 2,
+      "usage_present": true
+    }
+  ],
+  "private_environment": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/.tools/.venv",
+  "marker": {
+    "owner": "oraclebot-backtester-tools/v1",
+    "project": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester",
+    "project_sha256": "56838fa06f95e37edb8db05fc9dfaa556f8915e5ddede5d6fc79d123f5939e31"
+  },
+  "no_fetch_or_service_started": true
+}

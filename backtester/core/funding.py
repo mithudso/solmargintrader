@@ -79,8 +79,10 @@ from pathlib import Path
 from typing import Any, Sequence
 
 import pandas as pd
+import numpy as np
 
 from .fetch import FetchError
+from .market_diagnostics import market_request
 
 HYPERLIQUID_URL = "https://api.hyperliquid.xyz/info"
 OKX_FUNDING_URL = "https://www.okx.com/api/v5/public/funding-rate-history"
@@ -157,22 +159,27 @@ def _post_json(payload: dict[str, Any], *, retries: int = 4, backoff: float = 1.
                     "Content-Type": "application/json",
                 },
             )
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                body = json.loads(resp.read().decode())
-            if isinstance(body, dict) and body.get("error"):
-                raise FundingFetchError(f"API error: {body['error']}")
+            with market_request("hyperliquid_funding"):
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    body = json.loads(resp.read().decode())
+                if isinstance(body, dict) and body.get("error"):
+                    raise FundingFetchError("Hyperliquid funding request refused by the provider")
             return body
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
             last = exc
             if attempt < retries - 1:
                 time.sleep(backoff ** (attempt + 1))
-    raise FundingFetchError(f"request failed after {retries} attempts: {last}")
+    raise FundingFetchError(f"funding request failed after {retries} attempts ({type(last).__name__})")
 
 
 def hyperliquid_universe() -> list[str]:
     """Coins the venue lists perps for."""
     meta = _post_json({"type": "meta"})
-    return [entry["name"] for entry in meta.get("universe", [])]
+    if not isinstance(meta, dict) or not isinstance(meta.get("universe"), list):
+        raise FundingFetchError("Hyperliquid universe response has an invalid schema")
+    if any(not isinstance(entry, dict) or not isinstance(entry.get("name"), str) for entry in meta["universe"]):
+        raise FundingFetchError("Hyperliquid universe entry has an invalid schema")
+    return [entry["name"] for entry in meta["universe"]]
 
 
 def validate_funding(frame: pd.DataFrame) -> pd.DataFrame:
@@ -189,7 +196,13 @@ def validate_funding(frame: pd.DataFrame) -> pd.DataFrame:
     if frame.empty:
         raise FundingFetchError("empty funding frame")
 
-    ts = frame["timestamp"].to_numpy()
+    try:
+        ts = frame["timestamp"].to_numpy(dtype=float)
+        rate = frame["funding_rate"].to_numpy(dtype=float)
+    except (ValueError, TypeError, OverflowError) as exc:
+        raise FundingFetchError("funding timestamp/rate must be numeric") from exc
+    if any(isinstance(value, (bool, np.bool_)) for value in frame["timestamp"]) or not np.isfinite(ts).all() or (ts < 0).any() or (ts != np.floor(ts)).any():
+        raise FundingFetchError("funding timestamps must be finite nonnegative whole epoch seconds")
     if not pd.Series(ts).is_monotonic_increasing:
         raise FundingFetchError("funding timestamps are not strictly ascending")
     if pd.Series(ts).duplicated().any():
@@ -197,8 +210,7 @@ def validate_funding(frame: pd.DataFrame) -> pd.DataFrame:
     if (ts > 1e10).any():
         raise FundingFetchError("timestamps look like milliseconds; expected epoch seconds")
 
-    rate = frame["funding_rate"].to_numpy(dtype=float)
-    if not pd.Series(rate).notna().all():
+    if any(isinstance(value, (bool, np.bool_)) for value in frame["funding_rate"]) or not np.isfinite(rate).all():
         raise FundingFetchError("non-finite funding rate")
     if (abs(rate) > MAX_PLAUSIBLE_HOURLY_RATE).any():
         worst = float(abs(rate).max())
@@ -228,6 +240,8 @@ def fetch_hyperliquid_funding(
     """
     start_ms = 0 if start is None else int(pd.Timestamp(start, tz="UTC").timestamp() * 1000)
     end_ms = None if end is None else int(pd.Timestamp(end, tz="UTC").timestamp() * 1000)
+    if end_ms is not None and end_ms <= start_ms:
+        raise FundingFetchError("funding end must be after start")
 
     rows: list[dict[str, Any]] = []
     cursor = start_ms
@@ -239,18 +253,28 @@ def fetch_hyperliquid_funding(
         if end_ms is not None:
             payload["endTime"] = end_ms
         page = _post_json(payload)
-        if not isinstance(page, list) or not page:
+        if not isinstance(page, list):
+            raise FundingFetchError("funding history response must be a list")
+        if not page:
             break
 
-        pages += 1
-        rows.extend(page)
-        newest = int(page[-1]["time"])
+        try:
+            timestamps = [int(row["time"]) for row in page]
+            if any(isinstance(row["time"], bool) or float(row["time"]) != stamp or stamp < 0 or stamp % 1000 for row, stamp in zip(page, timestamps)):
+                raise ValueError
+            if timestamps != sorted(timestamps):
+                raise ValueError
+        except (KeyError, TypeError, ValueError, OverflowError) as exc:
+            raise FundingFetchError("funding history has invalid or unordered millisecond timestamps") from exc
+        newest = timestamps[-1]
 
         # Stop on failure to advance, not merely on a short page. A venue that
         # keeps returning the same final row would otherwise spin forever.
         if newest_seen is not None and newest <= newest_seen:
-            break
+            raise FundingFetchError("funding pagination did not advance; history remains incomplete")
         newest_seen = newest
+        pages += 1
+        rows.extend(page)
 
         if verbose:
             stamp = pd.to_datetime(newest, unit="ms", utc=True).strftime("%Y-%m-%d %H:%M")
@@ -264,16 +288,17 @@ def fetch_hyperliquid_funding(
     if not rows:
         raise FundingFetchError(f"{coin}: venue returned no funding history")
 
-    frame = pd.DataFrame(
-        {
+    try:
+        frame = pd.DataFrame({
             "timestamp": [int(r["time"]) // 1000 for r in rows],
             "funding_rate": [float(r["fundingRate"]) for r in rows],
             "premium": [float(r.get("premium", "nan")) for r in rows],
-        }
-    )
+        })
+    except (KeyError, TypeError, ValueError, OverflowError) as exc:
+        raise FundingFetchError("funding history has invalid numeric fields") from exc
     # Pagination boundaries can repeat a row; drop exact duplicates before the
     # validator, which treats a duplicate timestamp as fatal.
-    frame = frame.drop_duplicates(subset="timestamp").sort_values("timestamp")
+    frame = frame.drop_duplicates().sort_values("timestamp")
     return validate_funding(frame)
 
 
@@ -289,22 +314,23 @@ def fetch_okx_funding(inst_id: str) -> pd.DataFrame:
     url = f"{OKX_FUNDING_URL}?instId={inst_id}&limit=100"
     req = urllib.request.Request(url, headers={"User-Agent": "sol-backtester/0.1 (research)"})
     try:
-        with urllib.request.urlopen(req, timeout=25) as resp:
-            body = json.loads(resp.read().decode())
-    except (urllib.error.URLError, TimeoutError, OSError) as exc:
-        raise FundingFetchError(f"OKX request failed: {exc}") from exc
-
-    if body.get("code") != "0" or not body.get("data"):
-        raise FundingFetchError(f"OKX: {body.get('msg') or 'no data'} for {inst_id}")
+        with market_request("okx_funding"):
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                body = json.loads(resp.read().decode())
+            if not isinstance(body, dict) or body.get("code") != "0" or not isinstance(body.get("data"), list) or not body["data"]:
+                raise FundingFetchError("OKX funding response was refused, empty or malformed")
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+        raise FundingFetchError(f"OKX funding request failed ({type(exc).__name__})") from exc
 
     data = body["data"]
-    frame = pd.DataFrame(
-        {
+    try:
+        frame = pd.DataFrame({
             "timestamp": [int(r["fundingTime"]) // 1000 for r in data],
             "funding_rate": [float(r["realizedRate"]) for r in data],
             "premium": [float("nan")] * len(data),
-        }
-    ).sort_values("timestamp")
+        }).sort_values("timestamp")
+    except (KeyError, ValueError, TypeError, OverflowError) as exc:
+        raise FundingFetchError("OKX funding data has invalid numeric fields") from exc
     return frame.reset_index(drop=True)
 
 
@@ -338,7 +364,11 @@ def fetch_funding_universe(
 
         out = (out_dir / f"{asset}_funding_1h.csv") if out_dir else default_funding_path(asset)
         if skip_existing and out.exists():
-            existing = pd.read_csv(out)
+            try:
+                existing = validate_funding(pd.read_csv(out))
+            except (ValueError, OSError, FundingFetchError) as exc:
+                results[asset] = FundingOutcome(asset, 0, None, "", f"cached funding is invalid ({type(exc).__name__})")
+                continue
             results[asset] = FundingOutcome(
                 asset, len(existing), out, _span(existing), "skipped (cached)"
             )
@@ -388,6 +418,7 @@ def summarise(frame: pd.DataFrame) -> dict[str, float]:
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Fetch realised funding-rate history into the local cache.",
+        epilog="Example: python -m backtester.core.funding --assets BTC --summary --out-dir data",
     )
     ap.add_argument("--assets", default="BTC,ETH,SOL,DOGE,ZEC")
     ap.add_argument("--start", default=None, help="UTC date; default is the venue's earliest")
@@ -405,6 +436,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     assets = [a.strip().upper() for a in args.assets.split(",") if a.strip()]
+    if not assets:
+        ap.error("at least one asset is required")
+    if args.summary:
+        rows = []
+        for asset in assets:
+            path = Path(args.out_dir) / f"{asset}_funding_1h.csv" if args.out_dir else default_funding_path(asset)
+            if not path.exists():
+                continue
+            try:
+                rows.append({"asset": asset, **summarise(validate_funding(pd.read_csv(path)))})
+            except (ValueError, OSError, FundingFetchError) as exc:
+                print(f"error: cached funding for {asset} is invalid ({type(exc).__name__})", file=sys.stderr)
+                return 1
+        if not rows:
+            print("no cached funding series; run without --summary first", file=sys.stderr)
+            return 1
+        print(pd.DataFrame(rows).to_string(index=False))
+        return 0
 
     for venue, why in REJECTED_VENUES.items():
         print(f"note: {venue} not used -- {why}", file=sys.stderr)
@@ -431,19 +480,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.plan_only:
         for asset in assets:
             print(f"  {'ok ' if asset in listed else '-- '}{asset}", file=sys.stderr)
-        return 0
-
-    if args.summary:
-        rows = []
-        for asset in assets:
-            path = default_funding_path(asset)
-            if not path.exists():
-                continue
-            rows.append({"asset": asset, **summarise(pd.read_csv(path))})
-        if not rows:
-            print("no cached funding series; run without --summary first", file=sys.stderr)
-            return 1
-        print(pd.DataFrame(rows).to_string(index=False))
         return 0
 
     results = fetch_funding_universe(

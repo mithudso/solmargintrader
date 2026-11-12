@@ -99,6 +99,7 @@ class TestSortKey(unittest.TestCase):
 
 
 class TestSortableTables(unittest.IsolatedAsyncioTestCase):
+
     """Clicking a column header sorts the table; clicking again flips it.
 
     Driven by posting `DataTable.HeaderSelected` from the table (what a real
@@ -106,6 +107,9 @@ class TestSortableTables(unittest.IsolatedAsyncioTestCase):
     `pilot.click` at a pixel coordinate, which would couple the test to
     column widths.
     """
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     @staticmethod
     def _column_values(table, column_index: int) -> list[str]:
@@ -152,7 +156,11 @@ class TestSortableTables(unittest.IsolatedAsyncioTestCase):
 
 
 class TestAppMounts(unittest.IsolatedAsyncioTestCase):
+
     """The app composes and every tab is reachable."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_mounts_and_has_five_tabs(self) -> None:
         """All five requested tabs exist."""
@@ -187,8 +195,12 @@ class TestAppMounts(unittest.IsolatedAsyncioTestCase):
 
 
 class TestQueueTab(unittest.IsolatedAsyncioTestCase):
+
     """The Queue tab reads files another process writes, so its tests point at
     the reading, not at a sweep."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     def _patch_paths(self, tmp: Path):
         """Point the pane at a scratch results/state pair, not the real one."""
@@ -339,7 +351,11 @@ class TestQueueTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestExecuteTabSafety(unittest.IsolatedAsyncioTestCase):
+
     """The Execute tab's mode must be unmistakable."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_execute_tab_declares_dry_run(self) -> None:
         """The banner is the user's only in-app signal that nothing reaches a venue."""
@@ -365,7 +381,11 @@ class TestExecuteTabSafety(unittest.IsolatedAsyncioTestCase):
 
 
 class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
+
     """Add/remove wiring."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_roster_table_starts_populated(self) -> None:
         """The default roster is visible on open."""
@@ -488,7 +508,11 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSignalsTab(unittest.IsolatedAsyncioTestCase):
+
     """The reference tables."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_signal_and_family_tables_are_populated(self) -> None:
         """Both reference tables render their full content."""
@@ -513,7 +537,11 @@ class TestSignalsTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSettingsTab(unittest.IsolatedAsyncioTestCase):
+
     """The settings form."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_form_is_prefilled_from_settings(self) -> None:
         """Open state reflects the loaded config."""
@@ -543,7 +571,11 @@ class TestSettingsTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
+
     """The Signals tab edits values, not just displays them."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_inputs_exist_for_every_tunable(self) -> None:
         """Every signal field must have an editable input."""
@@ -620,6 +652,7 @@ class TestSignalsTabEditable(unittest.IsolatedAsyncioTestCase):
 
 
 class TestDocsTab(unittest.IsolatedAsyncioTestCase):
+
     """The click-to-open bug: a row cursor move must load the viewer.
 
     `DataTable.RowSelected` (Enter) was previously the only wired event, and
@@ -628,6 +661,9 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
     `pilot.click` on a table cell because it is what a click, an arrow key,
     and the "o" binding all ultimately act on: the row cursor position.
     """
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_table_uses_row_cursor_not_cell(self) -> None:
         """Without this, a click never fires RowHighlighted at all."""
@@ -873,7 +909,11 @@ class TestDocsTab(unittest.IsolatedAsyncioTestCase):
 
 
 class TestHeaderGlossary(unittest.IsolatedAsyncioTestCase):
+
     """Hovering a column header explains the term (Sharpe, IQR, ...)."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_every_column_header_in_the_app_has_a_glossary_entry(self) -> None:
         """Pins coverage: a future table column without a definition fails
@@ -926,7 +966,11 @@ class TestHeaderGlossary(unittest.IsolatedAsyncioTestCase):
 
 
 class TestTop5Tab(unittest.IsolatedAsyncioTestCase):
+
     """The recommended-configurations tab: evidence shown, re-test wired."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def _open(self, app, pilot):
         from textual.widgets import TabbedContent
@@ -1030,7 +1074,11 @@ class _VimHarness(App):
 
 
 class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
+
     """The subset documented on `VimTextArea` itself."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_starts_in_normal_mode(self) -> None:
         from soltui.tui import VimTextArea
@@ -1232,7 +1280,11 @@ class TestVimTextArea(unittest.IsolatedAsyncioTestCase):
 
 
 class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
+
     """What Run backtest tests is visible and choosable; the untested button starts real work."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_picker_lists_the_roster_and_runs_only_the_pick(self):
         from textual.widgets import Select
@@ -1295,7 +1347,11 @@ class BacktestTabTests(unittest.IsolatedAsyncioTestCase):
 
 
 class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
+
     """After a restart the Wallet tab shows the last scan at once, then refreshes it."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     async def test_last_scan_is_shown_and_refreshed_at_start(self):
         import os
@@ -1335,7 +1391,11 @@ class WalletRestoreTests(unittest.IsolatedAsyncioTestCase):
 
 
 class TableTitleTests(unittest.IsolatedAsyncioTestCase):
+
     """Every table has a title line above it saying what it shows (owner, 2026-11-07)."""
+
+    def setUp(self):
+        self.enterContext(offline_console_reads())
 
     @staticmethod
     def missing_titles(app):

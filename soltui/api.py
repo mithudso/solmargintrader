@@ -38,6 +38,8 @@ from . import commands
 HOST = "127.0.0.1"
 DEFAULT_PORT = 8788
 MAX_BODY_BYTES = 1024 * 1024
+REJECT_DRAIN_TIMEOUT_S = 0.25
+REQUEST_READ_TIMEOUT_S = 10.0
 
 _ROUTE = re.compile(r"^/v1/([A-Za-z][A-Za-z0-9_.]*)$")
 _STATUS = {"bad_params": 400, "unknown_command": 404, "forbidden": 403, "failed": 500, "timeout": 504}
@@ -78,6 +80,10 @@ def make_handler(token: str):
     class Handler(BaseHTTPRequestHandler):
         server_version = "soltui-api"
         protocol_version = "HTTP/1.1"
+
+        def setup(self) -> None:
+            super().setup()
+            self.connection.settimeout(REQUEST_READ_TIMEOUT_S)
 
         def log_message(self, fmt: str, *args: Any) -> None:  # request lines carry query values
             pass
@@ -141,16 +147,42 @@ def make_handler(token: str):
             self._send(200 if env["ok"] else _STATUS.get(code, 500), commands.dumps(env))
 
         def _read_json(self) -> dict[str, Any]:
+            if self.headers.get("Transfer-Encoding"):
+                self.close_connection = True
+                raise commands.CommandError("bad_params", "Transfer-Encoding is not supported")
             try:
                 length = int(self.headers.get("Content-Length") or 0)
             except ValueError:
-                raise commands.CommandError("bad_params", "bad Content-Length") from None
-            if length > MAX_BODY_BYTES:
-                # Drain (bounded) so the client can read the 413 instead of hitting a broken pipe.
-                self.rfile.read(min(length, 4 * MAX_BODY_BYTES))
                 self.close_connection = True
+                raise commands.CommandError("bad_params", "bad Content-Length") from None
+            if length < 0:
+                self.close_connection = True
+                raise commands.CommandError("bad_params", "bad Content-Length")
+            if length > MAX_BODY_BYTES:
+                # Preserve a useful413 for clients already sending a body, but
+                # never wait indefinitely for attacker-declared bytes.
+                self.close_connection = True
+                old_timeout = self.connection.gettimeout()
+                try:
+                    self.connection.settimeout(REJECT_DRAIN_TIMEOUT_S)
+                    self.rfile.read(min(length, 4 * MAX_BODY_BYTES))
+                except OSError:
+                    pass  # Refused request: an incomplete/closed body is expected.
+                finally:
+                    try:
+                        self.connection.settimeout(old_timeout)
+                    except OSError:
+                        pass  # The peer may already have closed the refused connection.
                 raise commands.CommandError("bad_params", "request body too large")
-            raw = self.rfile.read(length).decode("utf-8", "replace").strip() if length else ""
+            try:
+                body = self.rfile.read(length) if length else b""
+            except OSError:
+                self.close_connection = True
+                raise commands.CommandError("bad_params", "request body unavailable") from None
+            if len(body) != length:
+                self.close_connection = True
+                raise commands.CommandError("bad_params", "incomplete request body")
+            raw = body.decode("utf-8", "replace").strip()
             if not raw:
                 return {}
             try:

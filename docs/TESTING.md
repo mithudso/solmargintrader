@@ -32,9 +32,19 @@ python -m unittest discover -s botmanager/tests -t botmanager -p test_blind.py
 
 ## Current managed-suite candidate gates
 
-The coordinated candidate uses manager 0.7.2, research-runtime 0.4.0 and ecosystem
-0.4.4. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
+The coordinated source candidate uses manager 0.7.3, research-runtime 0.4.1 and
+ecosystem 0.4.6. [Current operations](bot-manager-0.6-operations.md) keeps the package matrix
 and remaining evidence gates separate from the historical M4 0.5.0 release.
+
+New continuation states use a `config-v2` binding over configuration values and
+intrabar observations. They reject older `repr`-bound checkpoints. Keep frozen
+owner archives with their original pinned runtime; an audit candidate does not
+migrate those records or authorize an owner restart.
+
+Prospective research workers also refuse new evidence after their captured
+production source changes. Run final checks in a fresh process after source
+writers finish. A refusal during a concurrent edit does not establish a failed
+strategy or grant permission to rewrite its saved provenance.
 
 Run the separate browser-owner paper gate from the repository root:
 
@@ -51,10 +61,10 @@ acceptance and final-head CI remain separate release gates.
 ## Existing component suites
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1018 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1478 tests (TUI dependencies required)
+python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1563 tests (TUI dependencies required)
 python3 -m unittest discover -s mongo/tests -t .        # 57 tests
-cd extension && npm test                                # 437 tests
+cd extension && npm test                                # 483 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
 
@@ -64,14 +74,14 @@ locally with the command above, or manually dispatch CI with the boolean
 enabled. The full local suite was run during the 2026-11-12 audit. Its source
 binding and skipped tests are recorded in the audit report.
 
-2990 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+3223 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
 several commits — the docs claimed 250 backtester tests while the suite had grown to 454, and
 nothing caught it.
 
-## Extension — what the 437 tests cover
+## Extension — what the 483 tests cover
 
 | Area | Examples |
 | --- | --- |
@@ -158,7 +168,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1018 tests
+## Backtester — 1120 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -210,7 +220,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1478 tests
+## soltui — 1563 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
@@ -304,6 +314,29 @@ recovery, health reads, helper failure semantics and disarmed defaults. The
 ordinary `extension/tools/e2e.mjs` gate retains its stronger no-start restrictions.
 CI runs both. These checks do not prove physical reboot or everyday-profile
 installation; actual installed acceptance is a separate recorded gate.
+
+## JavaScript correctness and gradual type checking
+
+The root package defines a pinned development toolchain and a reproducible lockfile.
+Run its checks from the repository root:
+
+```bash
+npm ci --ignore-scripts
+npm run check:js
+```
+
+ESLint checks extension, website and ecosystem JavaScript for undefined bindings,
+unsafe execution, unreachable control flow and related correctness failures. Its
+configuration avoids a style rewrite. The atomic file-store cleanup has one
+documented local exception because it must reject when private temporary data
+cannot be removed.
+
+Strict `checkJs` currently covers the forecast-expiry helper and its public JSDoc
+contract. The compile-time callers include valid inputs and expected errors for
+invalid directions, expiry values and evaluation clocks. This is incremental
+checked-interface coverage; the rest of the JavaScript has behavioral and lint
+checks. Type checking emits no runtime files. The JavaScript quality workflow
+runs the same locked toolchain in CI.
 
 ## Hosted website source and deployment gates
 

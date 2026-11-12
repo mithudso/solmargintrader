@@ -21,7 +21,9 @@ class WebTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.home = Path(self.temp.name) / "absent"
         self.server = make_server(self.home, port=0)
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread = threading.Thread(
+            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True
+        )
         self.thread.start()
         self.addCleanup(self.close_server)
         self.host = f"127.0.0.1:{self.server.server_port}"
@@ -55,9 +57,16 @@ class WebTests(unittest.TestCase):
         self.assertEqual(body["data"]["scope"], "paper_controls")
         self.assertNotIn("Access-Control-Allow-Origin", headers)
         self.assertIn("frame-ancestors 'none'", headers["Content-Security-Policy"])
-        self.assertIn("style-src-attr 'unsafe-inline'", headers["Content-Security-Policy"])
-        self.assertIn("sha256-3pRED1tOXas1FXFoPb9TGCjmYe9XQsmO9OV23khV2nY=", headers["Content-Security-Policy"])
-        self.assertNotIn("script-src 'self' 'unsafe-inline'", headers["Content-Security-Policy"])
+        self.assertIn(
+            "style-src-attr 'unsafe-inline'", headers["Content-Security-Policy"]
+        )
+        self.assertIn(
+            "sha256-3pRED1tOXas1FXFoPb9TGCjmYe9XQsmO9OV23khV2nY=",
+            headers["Content-Security-Policy"],
+        )
+        self.assertNotIn(
+            "script-src 'self' 'unsafe-inline'", headers["Content-Security-Policy"]
+        )
         self.assertFalse(self.home.exists())
 
     def test_missing_owners_are_explicit_without_starting_anything(self):
@@ -104,7 +113,9 @@ class WebTests(unittest.TestCase):
         csp = headers["Content-Security-Policy"]
         self.assertIn("script-src 'self';", csp)
         self.assertIn("connect-src 'self';", csp)
-        self.assertIn("frame-src http://127.0.0.1:* https://www.tradingview-widget.com", csp)
+        self.assertIn(
+            "frame-src http://127.0.0.1:* https://www.tradingview-widget.com", csp
+        )
         self.assertNotIn("https://*.tradingview", csp)
         status, _, script = self.request("/tradingview-chart.js")
         self.assertEqual(status, 200)
@@ -177,9 +188,18 @@ class WebTests(unittest.TestCase):
                 self.assertEqual(self.body(target)[0], 400)
 
     def test_oracle_display_query_routes_only_to_readonly_report(self):
-        with patch("ecosystem.votes.report", return_value={"status": "unavailable"}) as owner:
-            self.assertEqual(self.body("/api/oracle?instrument=ZEC%2FUSDT&interval=1h&strategy=macd")[0], 200)
-            owner.assert_called_once_with(self.home, "ZEC/USDT", interval="1h", strategy="macd")
+        with patch(
+            "ecosystem.votes.report", return_value={"status": "unavailable"}
+        ) as owner:
+            self.assertEqual(
+                self.body(
+                    "/api/oracle?instrument=ZEC%2FUSDT&interval=1h&strategy=macd"
+                )[0],
+                200,
+            )
+            owner.assert_called_once_with(
+                self.home, "ZEC/USDT", interval="1h", strategy="macd"
+            )
         self.assertEqual(self.body("/api/oracle?interval=1m&interval=1h")[0], 400)
         self.assertEqual(self.body("/api/oracle?strategy=rsi&unknown=x")[0], 400)
 
@@ -210,12 +230,21 @@ class WebTests(unittest.TestCase):
         self.assertNotIn("test-secret-value", raw)
         self.assertNotIn("test-private-value", raw)
         self.assertEqual(body["data"]["strategy"], record["strategy"])
-        with patch(
-            "ecosystem.web.runner.status", side_effect=RuntimeError("secret error")
+        with (
+            patch(
+                "ecosystem.web.runner.status", side_effect=RuntimeError("secret error")
+            ),
+            self.assertLogs("ecosystem.web", level="WARNING") as logged,
         ):
             status, _, body = self.body("/api/status")
         self.assertEqual(status, 503)
         self.assertNotIn("secret error", json.dumps(body))
+        record = json.loads(logged.records[0].getMessage())
+        self.assertEqual(record["event"], "ecosystem_owner_unavailable")
+        self.assertEqual(record["operation"], "read_owner_data")
+        self.assertEqual(record["error_type"], "RuntimeError")
+        self.assertEqual(logged.records[0].levelname, "WARNING")
+        self.assertNotIn("secret error", " ".join(logged.output))
 
     def test_disconnect_head_and_restart(self):
         connection = socket.create_connection(("127.0.0.1", self.server.server_port))

@@ -34,6 +34,7 @@ CSV is wrong, and the fix is in the driver that produced it.
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from statistics import median
@@ -73,14 +74,14 @@ def _as_float(v: str | None) -> float | None:
         return None
     try:
         f = float(v)
-    except ValueError:
+    except (ValueError, TypeError, OverflowError):
         return None
-    return None if f != f else f  # NaN -> None; an insufficient row writes NaN
+    return f if math.isfinite(f) else None
 
 
 def _as_int(v: str | None) -> int | None:
     f = _as_float(v)
-    return None if f is None else int(f)
+    return None if f is None or f < 0 or not f.is_integer() else int(f)
 
 
 @dataclass(frozen=True)
@@ -101,12 +102,12 @@ class ResultRow:
     def rankable(self) -> bool:
         """Enough evidence to appear in a ranking.
 
-        Both conditions matter. A row with no paths was never evaluated; a row with
-        paths but too few trades was evaluated and refused. Treating them the same
-        is fine here — neither may be ranked — but conflating either with a valid
-        row is the defect this module exists to prevent.
+        A finite measured Sharpe, positive whole path count and sufficient whole
+        trade count are all required. Missing metrics and rejected evaluations
+        stay visible below the floor; they never become ranked zeroes.
         """
-        return (self.n_paths or 0) > 0 and (self.trades or 0) >= MIN_RANKABLE_TRADES
+        return (self.median_sharpe is not None and math.isfinite(self.median_sharpe)
+                and (self.n_paths or 0) > 0 and (self.trades or 0) >= MIN_RANKABLE_TRADES)
 
 
 @dataclass

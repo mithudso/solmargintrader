@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
-from .core.data import CsvLoader, SyntheticLoader, checksum_frame, frame_to_arrays
+from .core.data import CsvLoader, SyntheticLoader, checksum_frame, describe_data_error, frame_to_arrays
 from .core.gridsim import (
     SPACINGS,
     GridConfig,
@@ -70,6 +70,7 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog=(
+            "Example: python -m backtester.gridcli --lower 60 --upper 90 --levels\n"
             "Fetch data first:\n"
             "  python -m backtester.core.fetch --asset SOL --interval 1h "
             "--start 2024-01-01\n"
@@ -223,7 +224,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     except Exception as exc:
-        print(f"error loading data: {exc}", file=sys.stderr)
+        print(f"error loading data: {describe_data_error(exc)}", file=sys.stderr)
         return 1
 
     try:

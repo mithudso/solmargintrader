@@ -1,4 +1,4 @@
-# Paper ecosystem control room 0.4.4
+# Paper ecosystem control room 0.4.6
 
 The headless service coordinates the existing F5 Backtester, prospective forward
 trials, per-instrument Oracle archives and Bot Manager. Its independent local
@@ -12,6 +12,11 @@ from a clean source checkout, or use the installed `solecosystem` and
 `solecosystem-ui` commands. Setup verifies
 five installed packages, both strategy catalogs and actual MCP transport. Existing
 completed environments stay immutable; new releases use a new versioned environment.
+
+Forward owners bind their exact source fingerprints. A help-only source update
+therefore changes the identity of a future installation. Keep existing owners on
+their original installed modules and archive metadata; use a new environment and
+a separately initialized cohort for revised source.
 
 The ZEC study release uses ecosystem 0.4.4 with Bot Manager 0.7.2, Oracle 0.2.3,
 research runtime 0.4.0 and Backtester 0.2.0. Its dedicated paper owner uses

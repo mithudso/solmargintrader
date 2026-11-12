@@ -29,6 +29,8 @@ from soltui.tui import GlossaryTable, SolTuiApp
 
 class HelpTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self) -> None:
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
         self.tmp = TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.app = SolTuiApp(Settings(data_dir=self.tmp.name, poll_interval_seconds=60))

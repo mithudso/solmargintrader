@@ -1,4 +1,4 @@
-# Solbot manager 0.7.2
+# Solbot manager 0.7.3
 
 Run `solbot --help` for the complete ordered command walkthrough. `solbot ui open`
 starts the managed suite and opens its verified local control room. The
@@ -34,7 +34,7 @@ backup/recovery guidance, release evidence and remaining milestones, read
 ## Install and use
 
 Python 3.13 or newer is required. The manager uses the standard library and the
-exact local `solmargintrader-backtester==0.2.0` package, which declares NumPy and
+exact local `solmargintrader-backtester==0.2.1` package, which declares NumPy and
 Pandas. Building uses setuptools. Install the compatible local backtester, Oracle, headless research runtime and manager projects in a stable environment:
 
 ```sh
@@ -701,8 +701,8 @@ https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-
 
 `backtest` and `research` use the existing headless SolTUI `ExperimentStore` through
 its registered `research.protocol` action. The manager never opens the owner's
-SQLite database. The current reviewed installation must contain manager 0.7.2,
-research-runtime 0.4.0, backtester 0.2.0 and Oracle 0.2.3. Textual is unnecessary.
+SQLite database. The coordinated source candidate pins manager 0.7.3, research-runtime 0.4.1,
+backtester 0.2.1 and Oracle 0.2.4. Installed acceptance remains a separate check. Textual is unnecessary.
 The CLI launches the explicitly selected interpreter with `-I`, a clean environment,
 a 120-second deadline and 1 MiB limits on each transport stream.
 

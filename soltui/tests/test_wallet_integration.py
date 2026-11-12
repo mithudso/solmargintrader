@@ -18,7 +18,12 @@ from textual.widgets import DataTable, Input, Select, Static, TabbedContent
 
 from soltui import commands, config, pnl, portfolio, wallet
 from soltui.tests.bridge_support import World
-from soltui.tests.test_tui import TEST_SIZE, make_settings, text_of
+from soltui.tests.test_tui import (
+    TEST_SIZE,
+    make_settings,
+    offline_console_reads,
+    text_of,
+)
 from soltui.tests.test_wallet import BASE_ADDR, SOL_ADDR, Fake
 from soltui.tui import SolTuiApp
 
@@ -129,7 +134,7 @@ class ScanCommandTests(Env):
         home = Path(os.environ["AERO_LP_HOME"])
         home.mkdir(parents=True)
         (home / "status.json").write_text(json.dumps({
-            "schema": "aero-lp-status/1", "mode": "live", "generated_at": 1,
+            "schema": "aero-lp-status/1", "mode": "live", "owner": BASE_ADDR, "generated_at": 1,
             "wallet": {"tokens": []},
             "positions": [{"token_id": 777, "pair": "A/B", "value_usd": 12.5}]}))
         r = self.call("portfolio.scan", {"chain": "base", "record": False})["result"]
@@ -195,6 +200,7 @@ class PnlWalletSectionTests(Env):
 
 class WalletTabTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
+        self.enterContext(offline_console_reads())
         self.tmp = Path(tempfile.mkdtemp(prefix="soltui-wallet-"))
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
         (self.tmp / "keys").mkdir()

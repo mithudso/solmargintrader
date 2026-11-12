@@ -1,0 +1,364 @@
+{
+  "version": 1,
+  "reviewer": "full_repo_health",
+  "self_review": true,
+  "independent_acceptance": "pending",
+  "files": [
+    {
+      "path": "backtester/core/engine.py",
+      "blob_sha": "efd402e855479b1cfd4cdbb2b112d7926f81f3ac",
+      "sha256": "24a88843c0366bbd5797543024be191a9ace706b04e70150ad67b7f425c25705",
+      "lines": 973,
+      "original_lines": 958,
+      "read_evidence": "Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "C2": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "C3": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "S1": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "S2": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "S3": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "S4": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "S5": "N/A: pure simulation/numeric library; owning CLI/report supplies operational diagnostics",
+        "P1": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "P2": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "M1": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "M2": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "T1": "ran: Full original958lines read1-220,221-440,441-660,661-880,881-958; final metric-only diff reviewed. Next-open scheduling, old-position gap liquidation, incremental costed resizing, borrow chronology, isolated collateral and guarded prefix windows retained. Continuation metrics now use retained net/gross baselines and new liquidation counts; checkpoint lifetime state remains identical to uninterrupted replay.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "ENGINE-CONTINUATION",
+          "severity": "High",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/core/types.py",
+      "blob_sha": "f483cf9c43d71a26d4c8a1797ff7c3a8d59ed3b7",
+      "sha256": "dd68ad63564c0ac48276f2d357ba8bed313774ba391dd52c3e197f6000addedd",
+      "lines": 501,
+      "original_lines": 501,
+      "read_evidence": "Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "C2": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "C3": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "S1": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "S2": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "S3": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "S4": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "S5": "N/A: pure simulation/numeric library; owning CLI/report supplies operational diagnostics",
+        "P1": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "P2": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "M1": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "M2": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "T1": "ran: Full501lines read1-185,186-370,371-501. Market array dimensions/finiteness/cadence/OHLC domains, copied public visible windows, cost validation and fine-layer coverage reviewed. Private Python attributes are explicitly not a hostile sandbox; no false look-ahead finding is asserted.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/metrics.py",
+      "blob_sha": "cdae0863139b92cb0d2345cd09671211d851252a",
+      "sha256": "cf229ed2c31ab1fb2a2ae1a8235006451340f3a0b9b1faecdad580ef0bc0db4f",
+      "lines": 274,
+      "original_lines": 274,
+      "read_evidence": "Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "C2": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "C3": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "S1": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "S2": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "S3": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "S4": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "S5": "N/A: pure simulation/numeric library; owning CLI/report supplies operational diagnostics",
+        "P1": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "P2": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "M1": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "M2": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "T1": "ran: Full274lines read1-200,201-274. Boundary entry costs, finite equity, annualization convention, downside risk, drawdown peak/time and decided-trade accounting reviewed. Deliberately unbounded profit factor for no losses remains explicit, not misreported as a bug.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": []
+    },
+    {
+      "path": "backtester/core/cpcv.py",
+      "blob_sha": "c3afb2dc07bff2c5b78d0848c37bc11c3769bcf9",
+      "sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+      "lines": 352,
+      "original_lines": 333,
+      "read_evidence": "Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "C2": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "C3": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "S1": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "S2": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "S3": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "S4": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "S5": "N/A: pure simulation/numeric library; owning CLI/report supplies operational diagnostics",
+        "P1": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "P2": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "M1": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "M2": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "T1": "ran: Full333line original read1-190,191-333; final changes reviewed. Prior-only warmup/fresh blocks, chronological return concatenation and evidence insufficiency retained. Close fills now retain initial entry costs. Direct lexicographic combination unranking preserves the exact old fixed-stride sample positions without enumerating skipped combinations. No economic parameter/evidence threshold changed.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "CPCV-COST+PBO-CAP",
+          "severity": "High/Medium",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_cpcv.py",
+      "blob_sha": "75eb472be61394204cf06f3565fc44c583a89851",
+      "sha256": "d1e8660e5a66a0a836bcf1666f00253b9d341daa1349de159b603404a6e28011",
+      "lines": 298,
+      "original_lines": 278,
+      "read_evidence": "Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "C2": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "C3": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "S1": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "S2": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "S3": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "S4": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "S5": "ran: behavioral assertions include actual account/cost/timeout outcomes; no raw private fixture state",
+        "P1": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "P2": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "M1": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "M2": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "T1": "ran: Full original file read1-220,221-end and changed hunks reviewed. Known signal/noise anchors, determinism, warmup and invalid geometry retained. A5s subprocess rejects unbounded40-block/two-split traversal; all small unranked combinations match independent itertools reference. Two prior unused imports removed.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "ran: deterministic fixtures; capped subprocess has real5s deadline and gets reaped; immutable arrays can be shared only where no test mutates them",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "PBO-CAP",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "backtester/tests/test_continuation_metrics_audit.py",
+      "blob_sha": "b88166047e995b0ab3a77a9c2ca312088027cc23",
+      "sha256": "d0551865e71c46fe961a3085de34113f963b889c67f10b6add0000c3e6084cd8",
+      "lines": 94,
+      "original_lines": null,
+      "read_evidence": "New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "C2": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "C3": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "S1": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "S2": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "S3": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "S4": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "S5": "ran: behavioral assertions include actual account/cost/timeout outcomes; no raw private fixture state",
+        "P1": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "P2": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "M1": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "M2": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "T1": "ran: New file read in full. Spot/perp retained gains, zero-account losses/liquidations and entry costs cannot repeat in a new flat chunk. Retained account/book matches whole replay. Flat-market fee arithmetic is independent of strategy performance: one1%entry and1%exit must return .99/1.01-1 for both fill delays and warmup contexts.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "ran: deterministic fixtures; capped subprocess has real5s deadline and gets reaped; immutable arrays can be shared only where no test mutates them",
+        "M5": "N/A: library or test runner input"
+      },
+      "findings": [
+        {
+          "id": "ENGINE-CONTINUATION+CPCV-COST",
+          "severity": "High",
+          "status": "fixed and verified"
+        }
+      ]
+    },
+    {
+      "path": "tools/gate.sh",
+      "blob_sha": "4ecb1ab495d950d4743b452da4c005da5587e4f5",
+      "sha256": "d46674e1662740408a4c9e9fddddbd64b9610b3a7823b74cda0d3a02de395b37",
+      "lines": 80,
+      "original_lines": 80,
+      "read_evidence": "Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "C2": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "C3": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "S1": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "S2": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "S3": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "S4": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "S5": "ran: CLI operation outcomes/failure exits reviewed; no real auth/market/private-source values used",
+        "P1": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "P2": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "M1": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "M2": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "T1": "ran: Full source read. Local gate accumulates each selected failure and preserves failing exit. Network reachability requires explicit flag. all index command is verified lexical-only; semantic model operations are explicitly opt-in. It does not establish remote delivery.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: existing isolated repo runtime and one-command flags/help reviewed; Postman help/port refusals verified without listeners"
+      },
+      "findings": []
+    },
+    {
+      "path": "tools/land.sh",
+      "blob_sha": "1bf4d41a98d68fc08e79c1410611cf9997391337",
+      "sha256": "4217335c565e34156550b72a7b35fb5078a0b115e493a870d45db9de3f8ec5e6",
+      "lines": 91,
+      "original_lines": 91,
+      "read_evidence": "Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "C2": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "C3": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "S1": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "S2": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "S3": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "S4": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "S5": "ran: CLI operation outcomes/failure exits reviewed; no real auth/market/private-source values used",
+        "P1": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "P2": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "M1": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "M2": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "T1": "ran: Full source read. Requires clean master and true fast-forward, gates exact target in task-owned temporary worktree, never force-pushes or stashes, and cleans only its own temp tree. Local preflight remains separate from PR/CI delivery. No landing action performed by this audit.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: existing isolated repo runtime and one-command flags/help reviewed; Postman help/port refusals verified without listeners"
+      },
+      "findings": []
+    },
+    {
+      "path": "postman/mocks/botmanager-jupiter-swap-v1/default.js",
+      "blob_sha": "37d3cb4a97d7a4829a55240036c81bfbfd0815af",
+      "sha256": "4851a36959e27874092b5c1f4f377542aa13f0138b73ad69e9aeb24ab942f842",
+      "lines": 83,
+      "original_lines": 71,
+      "read_evidence": "Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+      "final_diff_review": true,
+      "semantic_review": "complete file scope",
+      "injection_gate": "source/fixtures treated as data; no hostile directive followed",
+      "passes": {
+        "C1": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "C2": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "C3": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "S1": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "S2": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "S3": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "S4": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "S5": "ran: CLI operation outcomes/failure exits reviewed; no real auth/market/private-source values used",
+        "P1": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "P2": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "M1": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "M2": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "M3": "N/A: repo-scope pass, separate aggregate row",
+        "M4": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "T1": "ran: Full71-line original and final patch read. Synthetic local provider mock supports fixed success/error/rate/mint fixtures only. Original omitted host bound all interfaces; now explicit127.0.0.1. Invalid port/args refuse before listen and help exits0. VM transport interception red\u2192green verifies no listener was started. Node22 official docs confirm omitted-host behavior.",
+        "T2": "N/A: repo-scope pass, separate aggregate row",
+        "T3": "N/A: repo-scope pass, separate aggregate row",
+        "T4": "N/A: non-test source",
+        "M5": "ran: existing isolated repo runtime and one-command flags/help reviewed; Postman help/port refusals verified without listeners"
+      },
+      "findings": [
+        {
+          "id": "MOCK-LOOPBACK+HELP",
+          "severity": "Medium",
+          "status": "fixed and verified"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:.:executor/src .venv/bin/python -m unittest backtester.tests.test_engine backtester.tests.test_engine_audit backtester.tests.test_intrabar_liquidation backtester.tests.test_open_prefix backtester.tests.test_cpcv backtester.tests.test_continuation_metrics_audit -v",
+      "exit_code": 0,
+      "tests": 101,
+      "log": "/tmp/oraclebot-backtester-engine-cpcv-final.log"
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:.:executor/src .venv/bin/python -m unittest discover -s botmanager/tests -t botmanager -p test_strategy_parity.py -v",
+      "exit_code": 0,
+      "tests": 3,
+      "log": "/tmp/oraclebot-manager-prefix-parity-final.log"
+    },
+    {
+      "command": "ruff check backtester/core/cpcv.py backtester/core/engine.py backtester/tests/test_cpcv.py backtester/tests/test_continuation_metrics_audit.py --select F,E9",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -m py_compile backtester/core/engine.py backtester/core/cpcv.py backtester/tests/test_cpcv.py backtester/tests/test_continuation_metrics_audit.py",
+      "exit_code": 0
+    }
+  ],
+  "red_receipts": [
+    "/tmp/oraclebot-continuation-metrics-red.log",
+    "/tmp/oraclebot-cpcv-cost-red.log",
+    "/tmp/oraclebot-pbo-cap-red.log"
+  ],
+  "snapshots": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-backtester-20261112",
+  "context7_node_source": "https://nodejs.org/docs/latest-v22.x/api/net.html"
+}

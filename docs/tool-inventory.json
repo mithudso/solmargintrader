@@ -1,0 +1,554 @@
+{
+  "schema_version": "1.0.0",
+  "version": "1.0.0",
+  "delta": "Initial source-bound docs-only inventory.",
+  "generator": "scripts/build_operation_inventories.py",
+  "scope": "Three authoritative command registries, declared Python entrypoints, explicit source tools and existing npm scripts.",
+  "limits": [
+    "Not an exhaustive list of every internal function, external call, research script or runtime operation.",
+    "No shared runtime error schema, generic retry or remediation implementation is claimed.",
+    "Source/help/gate references are navigation; they do not establish live signing, installation or production acceptance."
+  ],
+  "sources": [
+    {
+      "path": "backtester/pyproject.toml",
+      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4"
+    },
+    {
+      "path": "backtester/run.py",
+      "sha256": "6eccc72a0b3016859dfa17e32b0c2005f4aa85daaa75e02fede0e63a57765fd5"
+    },
+    {
+      "path": "botmanager/pyproject.toml",
+      "sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6"
+    },
+    {
+      "path": "botmanager/src/botmanager/cli.py",
+      "sha256": "9e5a1c7a3b1488fb5e0138cdba6b5d48f1544c395f0140d74e4021933a60ab8a"
+    },
+    {
+      "path": "design/soltui-v2/mockup.py",
+      "sha256": "1e204eb082df7563ee2ec3e1f79b8de4615e1c036c07ea6ad053608083036e37"
+    },
+    {
+      "path": "docs/design/soltui-v2/mockup.py",
+      "sha256": "1e204eb082df7563ee2ec3e1f79b8de4615e1c036c07ea6ad053608083036e37"
+    },
+    {
+      "path": "ecosystem/cli.py",
+      "sha256": "c6c58c16988b0a07accb8a8cf447f09e8f19ff86f84f208e416638e628932001"
+    },
+    {
+      "path": "ecosystem/pyproject.toml",
+      "sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2"
+    },
+    {
+      "path": "ecosystem/web.py",
+      "sha256": "df5168291f08d8f967e818b857cd077171a07805dbc647dccc00ead3a10dab7e"
+    },
+    {
+      "path": "executor/pyproject.toml",
+      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47"
+    },
+    {
+      "path": "executor/src/executor/cli.py",
+      "sha256": "f3db36751aa2d97f20d1c37ef9354fc9eeeb78d4ce22fc3d44e8c2f6ab07982c"
+    },
+    {
+      "path": "executor/src/executor/registry.py",
+      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c"
+    },
+    {
+      "path": "extension/package.json",
+      "sha256": "c55de8f707d8bd48a18a8c85d4904fde445c74cfab0ee87cce7472459e3933da"
+    },
+    {
+      "path": "extension/src/core/commands.js",
+      "sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107"
+    },
+    {
+      "path": "liquidity/pyproject.toml",
+      "sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5"
+    },
+    {
+      "path": "liquidity/scripts/aero-lp-service",
+      "sha256": "40143c8d9e1a541d7c2340e6f2fcf7bab27985c9033af2fbacef3610d0fab6f9"
+    },
+    {
+      "path": "liquidity/src/aero_lp/cli.py",
+      "sha256": "e6a4a366c579969f52de1262d140f4fd013dd2166a7f02a7a32f21eee3fb0176"
+    },
+    {
+      "path": "oracle/cli.py",
+      "sha256": "736e9d4d33f19f9ce58cd03689230dee489e10e9c1b762f0b1d6f97ec1187649"
+    },
+    {
+      "path": "oracle/pyproject.toml",
+      "sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec"
+    },
+    {
+      "path": "oracle/server.py",
+      "sha256": "79e75e6e7491473f72b0662f459ce5f690640a10481e7a5e409814e20c7d4503"
+    },
+    {
+      "path": "package.json",
+      "sha256": "59275dedc85df665d7ec27fc47d7c42c3fa956342219e667a0a7a8b20cca8882"
+    },
+    {
+      "path": "scripts/build_operation_inventories.py",
+      "sha256": "5594594c6f425718fcc3d971e8b93a7219cf43f8b5116a854d57159c0993c669"
+    },
+    {
+      "path": "soltui/bin/soltui",
+      "sha256": "2e8640844a056424ada5bbe7cc5d62160eb2e650bb2f0985002b29a3fc103ae8"
+    },
+    {
+      "path": "soltui/commands.py",
+      "sha256": "dc5220b287146966856f85e653472d5ac3290109d81333dddc37205935233b1d"
+    },
+    {
+      "path": "soltui/make_icon.py",
+      "sha256": "bd01611a6f49a85d5aa0dcacc4ccae68ca6db4bcb562f2292f7dc8e7a25c53bc"
+    },
+    {
+      "path": "soltui/pyproject.toml",
+      "sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e"
+    },
+    {
+      "path": "soltui/soltui-service",
+      "sha256": "3ed51a530bfd2f7ad2efadc98f8924313a11be28d565cfde2e41071ec313f798"
+    },
+    {
+      "path": "website/package.json",
+      "sha256": "0fa01da513c87021074bb34b8eba2ca43d491abd4656ba6ba1546cb61e387cd9"
+    }
+  ],
+  "tools": [
+    {
+      "id": "extension/package.json:api",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.api",
+      "declared_command": "node tools/api-server.js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:dryrun",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.dryrun",
+      "declared_command": "node tools/dryrun.js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:e2e",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.e2e",
+      "declared_command": "node tools/e2e.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:smt",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.smt",
+      "declared_command": "node tools/cli.js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:test",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.test",
+      "declared_command": "node --test",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "extension/package.json:verify:endpoints",
+      "kind": "npm-script",
+      "source": "extension/package.json",
+      "symbol": "scripts.verify:endpoints",
+      "declared_command": "node tools/verify-endpoints.js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "extension/package.json"
+      ]
+    },
+    {
+      "id": "package.json:check:js",
+      "kind": "npm-script",
+      "source": "package.json",
+      "symbol": "scripts.check:js",
+      "declared_command": "npm run lint:js && npm run typecheck:js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "package.json:lint:js",
+      "kind": "npm-script",
+      "source": "package.json",
+      "symbol": "scripts.lint:js",
+      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js ecosystem/web eslint.config.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "package.json:typecheck:js",
+      "kind": "npm-script",
+      "source": "package.json",
+      "symbol": "scripts.typecheck:js",
+      "declared_command": "tsc --project tsconfig.checkjs.json",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "python:aero-lp",
+      "kind": "installed-python-entrypoint",
+      "manifest": "liquidity/pyproject.toml",
+      "source": "liquidity/src/aero_lp/cli.py",
+      "symbol": "main",
+      "help_command": "aero-lp --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "liquidity/tests"
+      ]
+    },
+    {
+      "id": "python:executor",
+      "kind": "installed-python-entrypoint",
+      "manifest": "executor/pyproject.toml",
+      "source": "executor/src/executor/cli.py",
+      "symbol": "main",
+      "help_command": "executor --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "executor/tests"
+      ]
+    },
+    {
+      "id": "python:solbot",
+      "kind": "installed-python-entrypoint",
+      "manifest": "botmanager/pyproject.toml",
+      "source": "botmanager/src/botmanager/cli.py",
+      "symbol": "main",
+      "help_command": "solbot --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "botmanager/tests"
+      ]
+    },
+    {
+      "id": "python:solecosystem",
+      "kind": "installed-python-entrypoint",
+      "manifest": "ecosystem/pyproject.toml",
+      "source": "ecosystem/cli.py",
+      "symbol": "main",
+      "help_command": "solecosystem --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "ecosystem/tests"
+      ]
+    },
+    {
+      "id": "python:solecosystem-ui",
+      "kind": "installed-python-entrypoint",
+      "manifest": "ecosystem/pyproject.toml",
+      "source": "ecosystem/web.py",
+      "symbol": "main",
+      "help_command": "solecosystem-ui --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "ecosystem/tests"
+      ]
+    },
+    {
+      "id": "python:soloracle",
+      "kind": "installed-python-entrypoint",
+      "manifest": "oracle/pyproject.toml",
+      "source": "oracle/cli.py",
+      "symbol": "main",
+      "help_command": "soloracle --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "oracle/tests"
+      ]
+    },
+    {
+      "id": "python:soloracle-mcp",
+      "kind": "installed-python-entrypoint",
+      "manifest": "oracle/pyproject.toml",
+      "source": "oracle/server.py",
+      "symbol": "main",
+      "help_command": "soloracle-mcp --help",
+      "side_effects": "command-specific; help parsing does not authorize execution",
+      "signing": "not inferred; inspect guarded command registry/runtime",
+      "ambiguity": "no automatic financial-write retry",
+      "gate_refs": [
+        "oracle/tests"
+      ]
+    },
+    {
+      "id": "tool:aero-lp-service",
+      "kind": "explicit-source-tool",
+      "source": "liquidity/scripts/aero-lp-service",
+      "symbol": "main or documented script entry",
+      "help_command": "liquidity/scripts/aero-lp-service --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:backtester-tools",
+      "kind": "explicit-source-tool",
+      "source": "backtester/run.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 backtester/run.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:design-fixture",
+      "kind": "explicit-source-tool",
+      "source": "design/soltui-v2/mockup.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 design/soltui-v2/mockup.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:icon-generator",
+      "kind": "explicit-source-tool",
+      "source": "soltui/make_icon.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 soltui/make_icon.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:operation-inventories",
+      "kind": "explicit-source-tool",
+      "source": "scripts/build_operation_inventories.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 scripts/build_operation_inventories.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:published-design-fixture",
+      "kind": "explicit-source-tool",
+      "source": "docs/design/soltui-v2/mockup.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 docs/design/soltui-v2/mockup.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:soltui",
+      "kind": "explicit-source-tool",
+      "source": "soltui/bin/soltui",
+      "symbol": "main or documented script entry",
+      "help_command": "soltui/bin/soltui --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:soltui-service",
+      "kind": "explicit-source-tool",
+      "source": "soltui/soltui-service",
+      "symbol": "main or documented script entry",
+      "help_command": "soltui/soltui-service --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "website/package.json:check",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.check",
+      "declared_command": "node --check src/worker.js && node --check public/app.js && node --check public/evidence.js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    },
+    {
+      "id": "website/package.json:db:local",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.db:local",
+      "declared_command": "wrangler d1 migrations apply oraclebot-accounts --local",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    },
+    {
+      "id": "website/package.json:db:remote",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.db:remote",
+      "declared_command": "wrangler d1 migrations apply oraclebot-accounts --remote",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    },
+    {
+      "id": "website/package.json:deploy",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.deploy",
+      "declared_command": "wrangler deploy",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    },
+    {
+      "id": "website/package.json:dev",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.dev",
+      "declared_command": "wrangler dev --config wrangler.dev.jsonc --port 8799",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    },
+    {
+      "id": "website/package.json:test",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.test",
+      "declared_command": "node --test test/*.test.js",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    },
+    {
+      "id": "website/package.json:test:browser",
+      "kind": "npm-script",
+      "source": "website/package.json",
+      "symbol": "scripts.test:browser",
+      "declared_command": "node test/ui-browser.mjs",
+      "help_command": null,
+      "side_effects": "script-specific; inspect declared command before invoking",
+      "signing": "not inferred from npm metadata",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        "website/package.json"
+      ]
+    }
+  ]
+}

@@ -58,6 +58,7 @@ from typing import Any
 
 import numpy as np
 
+from .continuation import configuration_binding
 from .metrics import Metrics, compute_metrics
 from .types import (
     INTERVAL_SECONDS,
@@ -756,11 +757,15 @@ def run_grid_backtest(
     orders_cancelled = 0
     bars_above = 0
     bars_below = 0
+    metric_initial_equity = initial_capital
+    baseline = _baseline_equity(closes, initial_capital, costs)
+    baseline_units = float(baseline[0] / closes[0])
+    baseline_initial_equity = initial_capital
 
     offset = 0
     if continuation is not None:
         from dataclasses import asdict
-        if continuation["binding"] != repr((cfg.to_dict(), initial_capital, interval, asdict(costs), carry_bps_per_hour)):
+        if continuation["binding"] != configuration_binding(cfg.to_dict(), initial_capital, interval, costs, carry_bps_per_hour):
             raise ValueError("continuation configuration changed")
         offset = continuation["cursor"]
         if int(ts[0]) != continuation["last_ts"] + INTERVAL_SECONDS[interval]:
@@ -768,6 +773,14 @@ def run_grid_backtest(
         for key, value in continuation["book"].items():
             setattr(book, key, value)
         book.lots = [Lot(**x) for x in continuation["lots"]]
+        last_close = continuation.get("last_close")
+        baseline_units = continuation.get("baseline_units")
+        if any(isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value)
+               for value in (last_close, baseline_units)) or last_close <= 0 or baseline_units < 0:
+            raise ValueError("continuation is missing a valid valuation boundary")
+        metric_initial_equity = book.equity(last_close)
+        baseline_initial_equity = baseline_units * last_close
+        baseline = baseline_units * closes.astype("float64")
         resting = {k: RestingOrder(**v) for k, v in continuation["resting"].items()}
         skipped = Counter(continuation["skipped"])
         orders_placed, orders_cancelled, bars_above, bars_below = continuation["counts"]
@@ -869,17 +882,18 @@ def run_grid_backtest(
         exposure[-1] = 0.0
 
     ppy = periods_per_year(interval)
-    metrics = compute_metrics(equity, ts, book.trades, exposure, ppy, risk_free_rate, 0, initial_equity=initial_capital)
-    baseline = _baseline_equity(closes, initial_capital, costs)
+    metrics = compute_metrics(equity, ts, book.trades, exposure, ppy, risk_free_rate, 0,
+                              initial_equity=metric_initial_equity if metric_initial_equity > 0 else None)
     baseline_metrics = compute_metrics(
         baseline, ts, [], np.ones(n, dtype="float64"), ppy, risk_free_rate, 0,
-        initial_equity=initial_capital,
+        initial_equity=baseline_initial_equity if baseline_initial_equity > 0 else None,
     )
 
     from dataclasses import asdict
     state = {
         "schema_version": 1, "cursor": offset + n, "last_ts": int(ts[-1]),
-        "binding": repr((cfg.to_dict(), initial_capital, interval, asdict(costs), carry_bps_per_hour)),
+        "last_close": float(closes[-1]), "baseline_units": float(baseline_units),
+        "binding": configuration_binding(cfg.to_dict(), initial_capital, interval, costs, carry_bps_per_hour),
         "book": {k: v for k, v in vars(book).items() if k not in ("costs", "lots", "trades")},
         "lots": [asdict(x) for x in book.lots],
         "resting": {k: asdict(v) for k, v in resting.items()},
@@ -920,12 +934,11 @@ def run_grid_backtest(
 def rebind_grid_state(state, cfg, *, initial_capital, interval, costs, carry_bps_per_hour=0.0):
     """Replace a paused flat ladder's geometry without funding a new account."""
     import copy
-    from dataclasses import asdict
 
     if state.get("schema_version") != 1 or state["lots"]:
         raise ValueError("grid configuration adoption requires a flat canonical account")
     result = copy.deepcopy(state)
-    result["binding"] = repr((cfg.to_dict(), initial_capital, interval, asdict(costs), carry_bps_per_hour))
+    result["binding"] = configuration_binding(cfg.to_dict(), initial_capital, interval, costs, carry_bps_per_hour)
     # Old resting entries belong to the old geometry. The next observed close
     # plans the replacement ladder; no synthetic bar or fill is introduced.
     result["resting"] = {}

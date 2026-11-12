@@ -831,21 +831,21 @@
       "component": "extension",
       "kind": "markdown",
       "summary": "Includes the Verification status section; read it before extending",
-      "lines": 666
+      "lines": 698
     },
     {
       "path": "extension/src/core/commands.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The single registry. Every action lives here or the parity test fails",
-      "lines": 980
+      "lines": 1004
     },
     {
       "path": "extension/src/core/risk.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Every risk rail, as a gate an order must pass. Rails fail closed",
-      "lines": 292
+      "lines": 299
     },
     {
       "path": "extension/src/core/grid.js",
@@ -866,21 +866,21 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "The tick loop: reconcile, then plan",
-      "lines": 623
+      "lines": 660
     },
     {
       "path": "extension/src/bg/service-worker.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "MV3 service worker and its timer constraints",
-      "lines": 470
+      "lines": 471
     },
     {
       "path": "extension/src/jupiter/http.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The HTTP layer for every Jupiter call",
-      "lines": 165
+      "lines": 208
     },
     {
       "path": "extension/src/jupiter/trigger.js",
@@ -908,7 +908,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Venue adapter over the Trigger API",
-      "lines": 519
+      "lines": 517
     },
     {
       "path": "extension/src/venues/index.js",
@@ -936,14 +936,14 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Storage interface",
-      "lines": 257
+      "lines": 327
     },
     {
       "path": "extension/src/storage/fileStore.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Mode-0600 file store for secret material",
-      "lines": 156
+      "lines": 346
     },
     {
       "path": "extension/src/storage/memoryStore.js",
@@ -957,28 +957,28 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Pure alert rules: only fresh, gated scout figures may say \"act\", backtest says \"review\", quoted APY is only a lead",
-      "lines": 256
+      "lines": 257
     },
     {
       "path": "extension/src/market/holdings.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Read-only Base and Solana balances in USD; partial failures named, never zeroed",
-      "lines": 295
+      "lines": 313
     },
     {
       "path": "extension/src/market/quote.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Swap quotes only: Jupiter Metis, and Slipstream on-chain CL math that refuses past the active range",
-      "lines": 200
+      "lines": 207
     },
     {
       "path": "extension/src/market/pools.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "DefiLlama yields, ranked by 30-day mean; every APY labelled quoted",
-      "lines": 100
+      "lines": 102
     },
     {
       "path": "extension/src/market/net.js",
@@ -1013,7 +1013,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Backtest & strategies and Swap views",
-      "lines": 276
+      "lines": 286
     },
     {
       "path": "extension/src/ui/view-grid.js",
@@ -1041,21 +1041,21 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Local HTTP surface; reads SMT_API_PORT, SMT_API_TOKEN, SMT_PASSPHRASE",
-      "lines": 281
+      "lines": 276
     },
     {
       "path": "extension/tools/dryrun.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "The headless integration gate \u2014 a round trip must close positive",
-      "lines": 162
+      "lines": 156
     },
     {
       "path": "extension/tools/verify-endpoints.js",
       "component": "extension",
       "kind": "javascript",
       "summary": "Live Jupiter reachability; reads JUPITER_API_KEY",
-      "lines": 79
+      "lines": 84
     },
     {
       "path": "extension/tools/deps.js",
@@ -1900,7 +1900,7 @@
       "component": "extension",
       "kind": "javascript",
       "summary": "Real-data workflow composition, local run comparisons, pinned paper drafts, evidence dialogs and read-only refresh lifecycle.",
-      "lines": 333
+      "lines": 338
     },
     {
       "path": "extension/src/ui/desk-model.js",

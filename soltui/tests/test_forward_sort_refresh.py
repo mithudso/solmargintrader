@@ -18,6 +18,11 @@ def result(name, resolved):
 
 
 class ForwardSortRefreshTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
+
     @staticmethod
     def header(table, column_index):
         column = table.ordered_columns[column_index]

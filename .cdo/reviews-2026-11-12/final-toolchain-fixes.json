@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "completed bounded toolchain reproducibility fixes",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "db3ad82ad9bab8611ff248bbf5099cd5e2004f33934525cfc6a56f27458300f7",
+      "lines": 480,
+      "before_sha256": "524670cc0b044d72e3e79e0b2cbb6ca9bebb1c7ddd3f5b79073a9c9111929388",
+      "kind": "metadata/configuration; no Python production byte change",
+      "prior_reviewed_sha256": "ede9f0bc3a27bee6bfb32f27b3ac4ec53bcb670089c93efae8793fd78728a937",
+      "reviewed_followup_delta": "Add stdlib inventory --check after wiki check; include its source in the existing pinned Ruff CI command. YAML parse and expanded lint gate0."
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "e2ca6687ef1e90401901f5993efa58a7cb17b01f2f9de9e29f6a273b15a9682e",
+      "lines": 220,
+      "before_sha256": "585af085a3dc0e550f503549d656fead2e363b09ff7758eb1dd4021158100d82",
+      "kind": "metadata/configuration; no Python production byte change"
+    },
+    {
+      "path": "soltui/requirements.txt",
+      "sha256": "5773547bd1bcdccbfd75b134f99ae603c19e71da90e91797d97162142bedfb57",
+      "lines": 38,
+      "before_sha256": "3beae1365a0638d7be72ae94b53dcca0037456b97fc1be79ec087ba77358772a",
+      "kind": "metadata/configuration; no Python production byte change"
+    },
+    {
+      "path": "liquidity/uv.lock",
+      "sha256": "54de485130e6adac5fbf5572e84224bd95bd1a105f6dc8e3ab9ce84f0e909903",
+      "lines": 1700,
+      "before_sha256": "efda20a406518ba6aa426990def5bd9eff0d2b1e90587cececfae2437b8047cd",
+      "kind": "metadata/configuration; no Python production byte change"
+    },
+    {
+      "path": "executor/uv.lock",
+      "sha256": "ccd81b5d8d70300f2353d72724fd1ce924ca4f94bd7a995dbc3082aa2fa9f4f7",
+      "lines": 219,
+      "before_sha256": "f3beb180d83be1fa1060bdc98edbb7eb1d270d954a9d291a32fd1a9e9f7e873b",
+      "kind": "metadata/configuration; no Python production byte change"
+    },
+    {
+      "path": "ruff.toml",
+      "sha256": "67bdded7dc8514e6c2d65dedca5af629e95327284057b00c18e1228bbc91b6a0",
+      "lines": 53,
+      "before_sha256": null,
+      "kind": "metadata/configuration; no Python production byte change"
+    }
+  ],
+  "locks": [
+    {
+      "component": "executor",
+      "package_count": 17,
+      "only_change": "first-party project version",
+      "old": "0.2.0",
+      "new": "0.2.1",
+      "offline_lock_check_exit": 0,
+      "no_environment_sync_or_install": true
+    },
+    {
+      "component": "liquidity",
+      "package_count": 52,
+      "only_change": "first-party project version",
+      "old": "0.1.0",
+      "new": "0.1.1",
+      "offline_lock_check_exit": 0,
+      "no_environment_sync_or_install": true
+    }
+  ],
+  "checks": [
+    {
+      "command": "ruff check ecosystem oracle scripts/bootstrap_ecosystem.py scripts/build_ecosystem_wiki.py --output-format json",
+      "before_exit": 0,
+      "final_exit": 0,
+      "before_diagnostics": 0,
+      "final_diagnostics": 0,
+      "exact_enabled_rule_codes": 407
+    },
+    {
+      "command": "uv lock --check --offline --python 3.13 --project liquidity",
+      "exit": 0
+    },
+    {
+      "command": "uv lock --check --offline --python 3.13 --project executor",
+      "exit": 0
+    },
+    {
+      "command": "TOML/YAML parse and all-third-party-lock-record equality",
+      "exit": 0
+    }
+  ],
+  "failed_intermediate_attempts": [
+    "First generic E/F policy changed selected rules; discarded without source fixes.",
+    "Explicit baseline rule set initially used py313, which flagged a required old-Python prerequisite guard; restored actual py311 baseline and rechecked.",
+    "Prior stale locks correctly failed --check before version-only refresh."
+  ],
+  "supervisor_pin": {
+    "remote_head": "6379b2299cf01a17d57a01a9cdd5e3788ad2837e",
+    "git_ls_remote_exit": 0,
+    "github_commit_lookup_exit": 0,
+    "pyproject_fetch_exit": 0,
+    "pyproject_sha256": "c9a5b784c7449cc97c538ef8be9d3005f901c625b1cc28b70cba0d1e060c0e82",
+    "project_name": "macos-launchd-supervisor",
+    "version": "0.1.1",
+    "no_install": true,
+    "limit": "Immutable source reference verified; native loaded-package acceptance is not claimed."
+  },
+  "limits": [
+    "No native package install or loaded supervisor acceptance is claimed.",
+    "No source-only tests rerun because these changes alter requirements/CI/tooling metadata only.",
+    "Ruff stricter component-specific policies remain separate."
+  ]
+}
