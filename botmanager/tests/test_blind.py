@@ -183,3 +183,54 @@ class BlindTests(unittest.TestCase):
         self.assertTrue(child.stderr.closed)
         with self.assertRaises(ChildProcessError):
             os.waitpid(child.pid, os.WNOHANG)
+
+    def test_exited_parent_does_not_leave_its_descendant_running_after_timeout(self):
+        import os
+        import signal
+        import time
+        from unittest.mock import patch
+
+        started = []
+        popen = blind.subprocess.Popen
+
+        def start(*args, **kwargs):
+            child = popen(*args, **kwargs)
+            started.append(child)
+            return child
+
+        with tempfile.TemporaryDirectory() as directory:
+            heartbeat = Path(directory) / "heartbeat"
+            child_code = f"import time,pathlib\np=pathlib.Path({str(heartbeat)!r})\nwhile True:\n p.write_text(str(time.monotonic_ns()))\n time.sleep(0.01)"
+            parent_code = f'import subprocess,sys\nsubprocess.Popen([sys.executable,"-I","-S","-c",{child_code!r}])'
+            try:
+                with (
+                    patch.object(blind.subprocess, "Popen", side_effect=start),
+                    self.assertRaisesRegex(ValueError, "deadline"),
+                ):
+                    blind.bounded_process(
+                        [sys.executable, "-I", "-S", "-c", parent_code],
+                        b"",
+                        cwd=directory,
+                        env={},
+                        timeout=0.3,
+                    )
+                self.assertEqual(
+                    started[0].returncode,
+                    0,
+                    "direct child finished while its descendant held the pipes",
+                )
+                self.assertTrue(heartbeat.is_file())
+                time.sleep(0.05)
+                stopped_at = heartbeat.read_text()
+                time.sleep(0.08)
+                self.assertEqual(
+                    heartbeat.read_text(),
+                    stopped_at,
+                    "descendant must stop even when its parent already exited",
+                )
+            finally:
+                for child in started:
+                    try:
+                        os.killpg(child.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass

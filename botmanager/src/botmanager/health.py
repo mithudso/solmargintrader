@@ -15,10 +15,22 @@ from .store import data_home
 
 
 def _finite(value):
+    try:
+        return (
+            isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(value)
+        )
+    except OverflowError:
+        return False
+
+
+def clock_age(value, *, now):
+    """A missing, future or unusable timestamp has no measured nonnegative age."""
     return (
-        isinstance(value, (int, float))
-        and not isinstance(value, bool)
-        and math.isfinite(value)
+        now - value
+        if _finite(now) and now >= 0 and _finite(value) and 0 <= value <= now
+        else None
     )
 
 
@@ -30,7 +42,8 @@ def health_snapshot(runtime: Mapping[str, Any], *, now: float) -> dict[str, Any]
     data = runtime.get("input") or {}
     source = data.get("prospective")
     running = runtime.get("desired") == "running"
-    age = max(0.0, now - heartbeat) if _finite(heartbeat) else None
+    clock_valid = _finite(now) and now >= 0
+    age = clock_age(heartbeat, now=now)
     process = (
         "stopped"
         if not running
@@ -46,17 +59,30 @@ def health_snapshot(runtime: Mapping[str, Any], *, now: float) -> dict[str, Any]
         latest = source.get("latest_observed")
         input_state = source.get("health", "unavailable")
         max_age = data.get("descriptor", {}).get("max_source_age_s")
-        if not _finite(latest) or not _finite(max_age):
+        input_reason = "accepted_observation_clock"
+        if (
+            not clock_valid
+            or not _finite(latest)
+            or not _finite(max_age)
+            or max_age <= 0
+        ):
             input_state = "unavailable"
+            input_reason = "observation_clock_unavailable"
+        elif not 0 <= latest <= now:
+            input_state = "unavailable"
+            input_reason = "observation_clock_outside_current_time"
         elif now - latest > max_age:
             input_state = "source_stale"
-        input_reason = "accepted_observation_clock"
     tick = runtime.get("tick_started")
     evaluation = (
         "stalled"
-        if running and _finite(tick) and now - tick >= 15
+        if running
+        and clock_valid
+        and _finite(tick)
+        and 0 <= tick <= now
+        and now - tick >= 15
         else "completed"
-        if _finite(evaluated)
+        if clock_valid and _finite(evaluated) and 0 <= evaluated <= now
         else "unavailable"
     )
     pnl = cp.get("realized_net_pnl_quote")

@@ -116,13 +116,16 @@ class ExecutorAdapter:
             result = json.loads(output)
             if (
                 status not in (0, 1)
+                or not isinstance(result, dict)
                 or set(result) != {"ok", "command", "result", "error"}
                 or result["command"] != command
                 or type(result["ok"]) is not bool
             ):
                 raise ValueError
             if not result["ok"]:
-                code = (result.get("error") or {}).get("code")
+                if not isinstance(result["error"], dict):
+                    raise TypeError
+                code = result["error"].get("code")
                 raise ManagerError(
                     "executor_"
                     + (

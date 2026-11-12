@@ -81,7 +81,8 @@ def validate_checkpoint(
         expected = identity(spec, data)
         cursor = checkpoint["cursor"]
         if (
-            checkpoint["schema_version"] != 1
+            type(checkpoint["schema_version"]) is not int
+            or checkpoint["schema_version"] != 1
             or type(cursor) is not int
             or not data.get("bar_offset", 0)
             <= cursor
@@ -212,7 +213,19 @@ def rebind_checkpoint(spec, data, checkpoint, *, entries_paused):
             )
             new_identity = identity(spec, data)
     except (ValueError, KeyError, TypeError) as exc:
-        raise ManagerError("reconciliation_required", str(exc), 3) from exc
+        message = "Configuration adoption could not preserve the canonical account."
+        if (
+            type(exc) is ValueError
+            and str(exc) == "new signal warmup exceeds retained observed history"
+        ):
+            # Preserve this fixed actionable refusal without forwarding arbitrary
+            # dependency exception payloads into a public manager response.
+            message = "New signal warmup exceeds retained observed history."
+        raise ManagerError(
+            "reconciliation_required",
+            message,
+            3,
+        ) from exc
     result = copy.deepcopy(checkpoint)
     result.update(
         continuation=continuation,

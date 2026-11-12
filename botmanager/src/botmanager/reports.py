@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import re
 import sqlite3
 from collections.abc import Mapping
 from contextlib import contextmanager
@@ -384,6 +385,22 @@ def render_report(page, format="human"):
         output = io.StringIO(newline="")
         writer = csv.writer(output)
         writer.writerow(["field", "value"])
-        writer.writerows(rows)
+        # CSV quoting alone does not stop spreadsheet formulas in display text.
+        # Keep numeric losses numeric; protect both user-controlled field names
+        # and values without importing the Textual export layer into this CLI.
+        numeric = (
+            r"[+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?%?"
+        )
+
+        def cell(value):
+            if (
+                isinstance(value, str)
+                and value.lstrip().startswith(("=", "+", "-", "@"))
+                and not re.fullmatch(numeric, value.strip())
+            ):
+                return "'" + value
+            return value
+
+        writer.writerows((cell(field), cell(value)) for field, value in rows)
         return output.getvalue()
     raise ManagerError("invalid_input", "Report format must be human, json or csv.")
