@@ -139,8 +139,11 @@ def tracked_files() -> list[str]:
                        capture_output=True, text=True, check=True)
     # An unresolved merge reports one path per index stage. The catalog uses
     # paths as row keys, so repeated stages must never create repeated rows.
+    # The public research bundle duplicates canonical sources. Its own manifest
+    # binds every published shard and the exporter verifies all source hashes.
     return sorted({x for x in r.stdout.splitlines()
-                   if x.strip() and x not in SELF_EXCLUDED})
+                   if x.strip() and x not in SELF_EXCLUDED
+                   and not x.startswith("website/public/research/")})
 
 
 def sha1_of(p: Path) -> str:

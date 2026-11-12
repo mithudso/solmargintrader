@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import { base58Encode, bytesToBase64 } from '../../extension/src/wallet/solana.js';
+
+const base = new URL(process.argv[2] || 'http://localhost:8787').origin;
+const headers = { Origin: base, 'Content-Type': 'application/json' };
+async function request(path, init = {}) {
+  return fetch(`${base}${path}`, { ...init, headers: { ...headers, ...init.headers }, redirect: 'manual' });
+}
+const health = await request('/api/health');
+assert.equal(health.status, 200);
+assert.equal(health.headers.get('x-content-type-options'), 'nosniff');
+const capabilities = await health.json();
+assert.equal(capabilities.liveExecution, false);
+const denied = await request('/api/bots');
+assert.equal(denied.status, 401);
+const crossSite = await request('/api/auth/challenge', { method: 'POST', headers: { Origin: 'https://untrusted.invalid' }, body: '{}' });
+assert.equal(crossSite.status, 403);
+const key = await crypto.subtle.generateKey('Ed25519', true, ['sign', 'verify']);
+const wallet = base58Encode(new Uint8Array(await crypto.subtle.exportKey('raw', key.publicKey)));
+const challengeResponse = await request('/api/auth/challenge', { method: 'POST', body: JSON.stringify({ wallet }) });
+assert.equal(challengeResponse.status, 200);
+const { id, message } = await challengeResponse.json();
+assert.ok(message.includes(base));
+const signature = bytesToBase64(new Uint8Array(await crypto.subtle.sign('Ed25519', key.privateKey, new TextEncoder().encode(message))));
+const login = await request('/api/auth/verify', { method: 'POST', body: JSON.stringify({ id, signature }) });
+assert.equal(login.status, 200);
+const cookie = login.headers.get('set-cookie');
+assert.ok(cookie.includes('HttpOnly') && cookie.includes('Secure') && cookie.includes('SameSite=Lax'));
+const authHeaders = { Cookie: cookie.split(';')[0] };
+const me = await request('/api/me', { headers: authHeaders });
+assert.equal((await me.json()).user.wallet, wallet);
+const replay = await request('/api/auth/verify', { method: 'POST', body: JSON.stringify({ id, signature }) });
+assert.equal(replay.status, 401);
+const unpaid = await request('/api/bots', { method: 'POST', headers: authHeaders, body: JSON.stringify({ name: 'Smoke test', coin: 'SOL', venue: 'coinbase', strategy: 'ma_crossover', budget: 100, mode: 'paper' }) });
+assert.equal(unpaid.status, 402);
+const deletion = await request('/api/me', { method: 'DELETE', headers: authHeaders });
+assert.equal(deletion.status, 200);
+const after = await request('/api/me', { headers: authHeaders });
+assert.equal((await after.json()).user, null);
+console.log(JSON.stringify({ target: base, checks: 'security headers, anonymous isolation, CSRF, signed-wallet login, session, replay rejection, entitlement denial, account deletion', capabilities }, null, 2));

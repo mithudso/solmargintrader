@@ -1,0 +1,90 @@
+{
+  "info": {
+    "name": "Oraclebot public deployment acceptance",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://oraclebot.io"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('Trading remains disarmed',()=>pm.expect(pm.response.json().liveExecution).to.eql(false));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Configuration",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/config"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('Seven day trial',()=>pm.expect(pm.response.json().trialDays).to.eql(7));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Anonymous account",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('No account leaks',()=>pm.expect(pm.response.json().user).to.eql(null));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Private bots denied",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/bots"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401',()=>pm.response.to.have.status(401));",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

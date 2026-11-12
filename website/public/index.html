@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173f35">
+  <meta name="description" content="Research before execution. Explore strategies, test your ideas and build your trading workspace with Oraclebot.">
+  <title>Oraclebot — Research before execution.</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <aside class="sidebar" id="sidebar">
+    <a href="#overview" class="brand" aria-label="Oraclebot home"><img src="/favicon.svg" width="36" height="36" alt=""><span>oraclebot<span class="brand-dot">.</span></span></a>
+    <div class="workspace-label">YOUR WORKSPACE <span>01</span></div>
+    <nav aria-label="Workspace">
+      <a href="#overview" data-view="overview" class="nav-item active"><span class="nav-symbol" aria-hidden="true">◫</span> Overview <span class="nav-key">⌘ 1</span></a>
+      <a href="#oracle" data-view="oracle" class="nav-item"><span class="nav-symbol" aria-hidden="true">◎</span> The oracle</a>
+      <a href="#bots" data-view="bots" class="nav-item"><span class="nav-symbol" aria-hidden="true">⌘</span> My bots <span class="nav-count" id="nav-bot-count">0</span></a>
+      <a href="#backtest" data-view="backtest" class="nav-item"><span class="nav-symbol" aria-hidden="true">⌁</span> Backtest lab</a>
+      <div class="nav-divider"></div>
+      <a href="#research" data-view="research" class="nav-item"><span class="nav-symbol" aria-hidden="true">▤</span> Research journal <span class="new-label">READ</span></a>
+      <a href="#pricing" data-view="pricing" class="nav-item"><span class="nav-symbol" aria-hidden="true">◇</span> Membership</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="trial-note"><span class="small-star" aria-hidden="true">✳</span><h3>A little more conviction.</h3><p>Give your next idea a proper test. Explore membership with a 7-day free trial.</p><button class="button button-dark button-full" data-action="trial">Explore membership <span aria-hidden="true">↗</span></button></div>
+      <a href="#settings" data-view="settings" class="nav-item"><span class="nav-symbol" aria-hidden="true">⚙</span> Settings & account</a>
+      <div class="sidebar-foot"><span class="status-dot"></span> RESEARCH FIRST. ALWAYS.</div>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <button class="icon-button mobile-menu" id="menu-button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">☰</button>
+      <div class="breadcrumb">Workspace <span>/</span> <strong id="page-label">Overview</strong></div>
+      <div class="topbar-actions"><span class="paper-label"><span class="status-dot"></span> Paper by default</span><button class="button button-outline wallet-button" data-action="wallet"><span class="wallet-icon" aria-hidden="true">▱</span><span data-wallet-label>Connect wallet</span><span aria-hidden="true">↗</span></button></div>
+    </header>
+    <main id="main" tabindex="-1"></main>
+    <footer class="footer"><span>© <span id="year"></span> oraclebot.io</span><span>Built on evidence. Never a guarantee.</span><a href="#settings">Risk & privacy</a></footer>
+  </div>
+  <dialog id="wallet-dialog" aria-labelledby="wallet-title"><div class="dialog-head"><img src="/favicon.svg" width="38" height="38" alt=""><button class="icon-button" data-close-dialog aria-label="Close wallet connection">×</button></div><p class="eyebrow">YOUR KEYS. YOUR ACCOUNT.</p><h2 id="wallet-title">Connect your wallet.</h2><p>Sign a one-time message to create or access your account. This does not move funds or authorize trades.</p><div class="wallet-options"><button class="wallet-option" data-provider="phantom"><span class="provider-icon phantom">P</span><span><strong>Phantom</strong><small>Solana wallet</small></span><span aria-hidden="true">↗</span></button><button class="wallet-option" data-provider="solflare"><span class="provider-icon solflare">S</span><span><strong>Solflare</strong><small>Solana wallet</small></span><span aria-hidden="true">↗</span></button></div><p id="wallet-message" class="form-message" role="status"></p><p class="fine-print">Never share your seed phrase or private key. Oraclebot never asks for them.</p></dialog>
+  <dialog id="bot-dialog" aria-labelledby="bot-title"><div class="dialog-head"><p class="eyebrow">BUILD WITH INTENTION</p><button class="icon-button" data-close-dialog aria-label="Close bot builder">×</button></div><h2 id="bot-title">Your next trading idea.</h2><p>Save a paper configuration. Live trading remains unavailable until a dedicated account executor is verified.</p><form id="bot-form"><label>Bot name<input name="name" maxlength="80" required placeholder="e.g. SOL trend explorer"></label><div class="form-grid"><label>Venue<select name="venue"><option value="coinbase">Coinbase · spot</option><option value="jupiter">Jupiter · leveraged</option></select></label><label>Coin<select name="coin" data-coin-select></select></label></div><label>Strategy<select name="strategy" data-strategy-select><option value="ema_crossover">Moving average crossover</option><option value="rsi">RSI</option><option value="bb_reversion">Bollinger reversion</option><option value="grid">Grid</option></select></label><div class="form-grid"><label>Paper capital (USD)<input name="budget" type="number" min="10" max="1000000" step="0.01" value="1000" required></label><label>Leverage<select name="leverage"><option value="1">1× · no leverage</option><option value="2">2×</option><option value="3">3×</option><option value="5">5×</option></select></label></div><div class="inline-note">Paper only · No wallet funds are used. Leveraged positions can be liquidated.</div><p class="form-message" id="bot-message" role="status"></p><button class="button button-dark button-full" type="submit">Save paper configuration <span aria-hidden="true">↗</span></button></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
