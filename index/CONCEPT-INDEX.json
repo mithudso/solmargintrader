@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T01:58:33+00:00",
+  "generatedAt": "2026-11-12T04:48:48+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -300,7 +300,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1512,
+      "matchingFiles": 1515,
       "shown": 30,
       "files": [
         {
@@ -313,7 +313,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 157
+          "hits": 159
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -321,7 +321,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 107
+          "hits": 113
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -376,12 +376,12 @@
           "hits": 43
         },
         {
-          "path": "backtester/core/universe.py",
-          "hits": 39
+          "path": "prompts.md",
+          "hits": 40
         },
         {
-          "path": "prompts.md",
-          "hits": 36
+          "path": "backtester/core/universe.py",
+          "hits": 39
         },
         {
           "path": "research/tradingview-card-readiness.json",
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 696,
+      "matchingFiles": 699,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 328,
+      "matchingFiles": 329,
       "shown": 30,
       "files": [
         {

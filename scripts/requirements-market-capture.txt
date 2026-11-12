@@ -1,0 +1,3 @@
+# Isolated event recorder environment; no dependency added to the trading apps.
+pymongo>=4.19.0,<5
+python-dotenv>=1.0,<2

@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 473
+Version: 474
+Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics.
 Delta: v472 to v473; refresh local wiki dependency found by CI.
 Delta: v471 to v472; preserve integration and queued D1 lesson receipt.
 Delta: v470 to v471; integrate Oraclebot website with concurrent shared research delivery.
@@ -1235,3 +1236,15 @@ D1 cascade lesson exact graph write queued as outbox892eceb2 while transport rem
 
 
 PR229 final research integration is commit152bfb06bdd682ba7cc1cf2bfcd8489a7f4d9cf4. Deployed Workerdd5ceacb-cf6a-417c-8b07-c8e55f582e1c includes1,522 articles. All27 public asset files match source bytes. CI website and docs gates passed; ecosystem tests236 passed but scripts/build_ecosystem_wiki.py --check returned stale because README changed. Rebuilt ecosystem/wiki_content/manifest.json and pages.json and verified current. Await all final-tip CI before merge.
+
+## 2026-11-12 — ZEC raw-event capture
+
+The owner selected ZEC after requesting a24hour every-received-event capture into a new MongoDB time-series store. Use Coinbase ZEC-USD, public matches/level2_batch/heartbeat, original exchange timestamps and local nanosecond receipt times. Public book data is provider-batched50ms; do not claim every internal exchange event. A hypothetical24events/second sizing example was not a measured rate or a user-confirmed requirement.
+
+Use MONGODB_URI2 from /Users/mitch/.env and the owner-supplied /Users/mitch/.ssh/X509-cert-mdbtamcluster2496607525675013147.pem. The certificate exists, is current, belongs to the user and has0600 permissions. URI2 additionally names a missing CA file. Omitting only that stale CA reference in memory retains system trust/hostname verification and resolves localENOENT, but native MongoDB connections still time out. URI1 also times out. No database write or raw capture has occurred at this checkpoint. Atlas control-plane MCP is organization-disabled and cannot inspect access lists; exact network cause remains unconfirmed. Keep all secrets out of Git, logs and process command arguments.
+
+Implement a separate durable raw-event spool and dedicated market_capture time-series namespace outside mongo/load.py drop/rebuild ownership. Preserve the existing sampled recorder. A supervised collector must stop at a persisted24hour deadline; a separately supervised uploader may keep draining pending records. Connection failures before insertion may retry. Ambiguous insertion must stop automatic upload and retain an explicit reconciliation marker instead of risking duplicate time-series rows. Raw capture must continue independently of MongoDB availability. Distinguish capture running, MongoDB uploading and24hour dataset complete.
+
+Tracked incident: TASK-1499, with contract KNOW-1500. This checkpoint precedes implementation/tests/live acceptance. Preserve later final state in /Users/mitch/.local/state/solmargintrader/market-captures/zec-capture-delivery-20261112.json. No trading, arming, signing or promotion is part of this request.
+
+Implementation checkpoint: independent capture/upload CLI, durable fsynced raw spool, exact exchange timestamps and per-run sequence, dedicated TS namespace, restart deadline and ambiguous-insert stop markers are implemented. Sixteen offline tests pass; native Mongo integration is required in CI and skips locally because no local mongod is running. The initial8second live smoke caught Coinbase's acknowledgement alias level2_50; corrected alias fixture and source then captured122records with106l2updates,4matches,8heartbeats,initialsnapshot/lastmatch/subscription andconnectionopen,zero reconnects. No day-long capture is running yet. Dedicated Python3.14 environment installed pymongo4.19.0,python-dotenv1.2.4,dnspython2.9.2. Endor package-risk evidence is UNKNOWN because role/backend/CLI is unavailable; installed reviewer procedure applied inline, no safety certification claimed. Remaining: final metadata/docs checks, sourceCI/merge, stable supervisor install and independent actual running acceptance; MongoDB destination remains network-unreachable.

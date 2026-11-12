@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T01:55:09+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T04:48:44+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -59,7 +59,7 @@ Full list: `python3 index/search.py --concept costs -n 1523`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1512 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1515 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
@@ -69,12 +69,12 @@ Strongest files:
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
 - `docs/FILES.md` (157 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `memory.md` (107 hits)
+- `memory.md` (113 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1512`
+Full list: `python3 index/search.py --concept transfer -n 1515`
 
 ### Lookahead and fill timing
 
@@ -106,7 +106,7 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (379 hits)
+- `docs/FILES.md` (380 hits)
 - `FILES.md` (283 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `memory.md` (148 hits)
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept grid -n 790`
 
 ### Data integrity
 
-`data-integrity` · **696 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **699 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,7 +150,7 @@ Strongest files:
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 696`
+Full list: `python3 index/search.py --concept data-integrity -n 699`
 
 ### Buy-and-hold benchmark
 
@@ -173,7 +173,7 @@ Full list: `python3 index/search.py --concept benchmark -n 421`
 
 ### Evidence floor
 
-`evidence-floor` · **328 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **329 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 328`
+Full list: `python3 index/search.py --concept evidence-floor -n 329`
 
 ### Combinatorial purged cross-validation
 
