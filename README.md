@@ -71,6 +71,13 @@ runs ten separate accounts with durable future-only decisions. The tiny
 authenticated live round trip validates execution plumbing; prospective profit
 remains unqualified.
 
+## News publication and price study
+
+The [coin-news event study](research/NEWS-EVENT-STUDY.md) follows 61 reviewed
+publication events across six coins, with prepublication moves, market controls
+and delayed-observation checks. Its minute-bar proxies and selected historical
+sample do not establish a causal effect or a calibrated trading forecast.
+
 ## Managed bot suite
 
 The current coordinated source candidate is manager 0.7.3, research-runtime 0.4.1

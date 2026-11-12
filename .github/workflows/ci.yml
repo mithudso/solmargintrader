@@ -203,8 +203,8 @@ jobs:
       - name: Import check
         run: python3 -c "import backtester.cli; print('imports ok')"
 
-      - name: Causal shape, cycle and frozen Volty diagnostics
-        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks -v
+      - name: Causal shape, cycle, Volty and news-event diagnostics
+        run: python3 -m unittest research.tests.test_shape_study research.tests.test_zec_cycles research.tests.test_volty_zec research.tests.test_volty_predictive_checks research.tests.test_news_event_study -v
 
       - name: Meta evidence consolidation and actual-cost replay contracts
         run: python3 -m unittest research.tests.test_meta_analysis research.tests.test_meta_followups -v

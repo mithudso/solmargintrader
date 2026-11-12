@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 229
+Version: 230
+Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
 Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
 Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
 Delta: v226 to v227; preserve owner status question during active full audit.
@@ -2044,4 +2045,24 @@ fix these hook failures: • Hook failed
   └ plugin contents changed; hook approval required
 • Hook failed
   └ plugin contents changed; hook approval required
+```
+
+
+## 2026-11-12 — Imported accepted upstream workflow history
+
+Source: remote master 4ab6cddf31143e4738c08588ddda945af726d8d5, including news-event delivery 61b36738639e0f692a2e83a502f32b609353cd41. Existing prompt bodies and continuation results below are preserved from that committed source.
+
+Imported source Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
+Imported source Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
+
+## 2026-11-12 — Coin news publication and price lookback
+
+```text
+Can you do a lookback correlation of when major news articles came out about different coins and what happened to their prices afterwards?
+```
+
+## 2026-11-12 — Cloudflare inbound forwarding
+
+```text
+for all of my domains in cloudflare make them forward email to my mitchphudson@gmail.com address.
 ```

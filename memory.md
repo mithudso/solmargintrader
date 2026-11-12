@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 494
+Version: 495
+Delta: v494 to v495; preserve accepted upstream news and email workflow history during audit integration.
 Delta: v493 to v494; independently close hook recurrence, repair all diagnostic source findings and prepare owned merge checkpoint.
 Delta: v492 to v493; prioritize fresh hook recurrence, qualify temporary fixture repairs and recover existing Cloudflare authorization.
 Delta: v491 to v492; preserve incoming default-branch research, failed diagnostic fixture inventory and concrete launch-readiness plan.
@@ -1536,3 +1537,27 @@ Next root actions: stage only the explicit owned manifest plus declared new sour
 
 
 Late component qualification found a real Bot Manager test-fixture gap: default discovery attempted the owner's127.0.0.1:8788 endpoint. The guard refused it before connection. A private candidate uses a freshly owned closed ephemeral endpoint via existing SOLBOT_SOLTUI_ENDPOINT; explicit protocol fixtures still override. Its34-case cohort passes13.048seconds0/0blocked,54inherited processes,19fixed isolated helpers and one real orphan session, no leftovers. This is candidate evidence, not a final-source/full377gate. Parent will add a permanent scoped helper in botmanager/tests/__init__.py and affected classes after the incoming merge release; no production default endpoint or broad localhost exception is authorized. Preserve the new anchored lesson and exact source-delta receipts. Remaining source acceptance is still pending.
+
+
+## 2026-11-12 — Imported accepted upstream workflow history
+
+Source: remote master 4ab6cddf31143e4738c08588ddda945af726d8d5, including news-event delivery 61b36738639e0f692a2e83a502f32b609353cd41. Existing prompt bodies and continuation results below are preserved from that committed source.
+
+Imported source Delta: v477 to v478; inventory seven Cloudflare domains and configure catch-all forwarding.
+Imported source Delta: v476 to v477; begin timestamped coin-news price-reaction study.
+
+## 2026-11-12 — Coin news event study — TASK-1539
+
+Owner requests measured historical publication-to-price associations. Default exploratory scope is90days BTC ETH SOL XRP DOGE ZEC, with optional steering pending. Select major publishers and factual event eligibility before price outcomes; preserve original publication vs modification/retrieval time, deduplicate same stories and expose exclusions. Measure exact timestamp pre/post horizons, missing coverage, market controls and uncertainty; no causality or profitable one-minute prediction claim. KNOW-1542 preserves the contract. Existing research did not supply a verified catalyst dataset; no same-topic completed task was found. Do not touch currentZEC capture or protected holdouts. Phases: acquire reliable news and price evidence; compute/review bounded event study; publish shared llms/graph and deliver source. Private run home:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112.
+
+News-event measured checkpoint: acquired6603rows acrossfivepublishers forAug14–Nov10UTC (89complete days). Independentpre-outcomeaudit reviewed103keyword candidates andretained61withoutreplacements:BTC9,ETH14,SOL17,XRP8,ZEC12,DOGE1. All960boundedCoinbasequeries completedexit0/errors0 after08:39:46Zfinalfreeze. Core source, reportgenerator,14tests and compact event/summary/eligibility/latency/plot/manifest outputs are task-owned. Report:/Users/mitch/dev/solmargintrader/research/NEWS-EVENT-STUDY.md. Pooledonehourmarket-relative+0.006pp, interval[-0.065,+0.084];ZECmean-0.179%1h,+1.658%24h. Eachprimaryhorizonhasall61endpoints;delayedDOGE1hhasnone, sopairedsensitivitydisplaysN. Archivefirst_seenlag43selectedrowsmedian40.31min;18timesaredirectpublisherAPI. Noexact-first-public60secondor70%forecastclaim.
+
+Independent raw-response audit reproduced366primary+244delayed rows,560meansand560blockintervalsto8.88e-16;noreservedquery/returnedbaroverlap. The final frozen-selection sourcehash6dda1438 differs from executedanalysisa2f1ed56 only byaddedfrozencohortguard,CLIverbosityanddocclarification;13statistical/selectionfunctionASTsunchanged. Exactfrozenbytes/delta andbothhashes are preservedoutsideGit;historicalfreezemanifestunchanged. Privateinventory:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112/file-manifest.json. Remaining:bindfinalaudit,sharedllms/graphsave,requiredsourcechecks/mergesandremoteverification. Sharedhubpublicationusesisolatedworktree/Users/mitch/dev/worktrees/global-ai-hub-news-events-20261112;canonicaldirtyhubpreserved.
+
+Finaloutcomeauditpassedexit0:/Users/mitch/.local/share/solmargintrader/research/news-events-20261112/final-outcome-audit-v3.json SHA c72e41ad6c27ded0ad3082bb420891909c941563e8b02a37d8da54c808d7dc83. It reproducesall366primary+244delayedrows,560meansand560CIs,14pairedcomparisons,sixexamples,sourceprovenanceandzeroheldpriceoverlap. AcceptedreportSHA d99f8620a58e8615574779b27ae944c8ad2cc5fdba27291a0410f70ab3ca5e59;reporterSHA c525758fae026b95ef8472449e807626a0f5d44b723231e24d58f09fa6d3699a;compactmanifestSHA8cbadbce840ecd03078f011d60c62649848cb9873301f4074c73d32d158c8d65. PublishedCSVLFnormalizationpreservesparsedrecordsandpreventsGit/indexhashdrift.
+
+Current source and shared-graph delivery state, PRs/merge commits, check exits and canonical paths are recorded in /Users/mitch/.local/share/solmargintrader/research/news-events-20261112/delivery-final.json. Read that receipt and SteleTASK-1539 before resuming; do not rerun the accepted study or expand its event sample merely to refresh a handoff. The independent24hourZEC capture remains a separate active task with its original deadline.
+
+## 2026-11-12 — Cloudflare inbound forwarding (TASK-1998)
+
+The owner requested catch-all forwarding to mitchphudson@gmail.com for all Cloudflare domains. The account has seven active zones. Gmail is already verified. Preserve web DNS and the existing MoreLube support rule. Two game domains already forward correctly. Four additional domains now have catch-all activation; all seven mutation requests exited 0. llms-explorer.com has Google Workspace MX smtp.google.com; owner choice is pending before replacing it. Private before/after evidence: /Users/mitch/.local/state/cloudflare-email-forwarding-20261112. Independent live acceptance passed on all six configured domains: verified destination, enabled/ready settings, exact catch-all target, three public authoritative MX records, SPF and DKIM; all original non-mail DNS records preserved. MoreLube support still forwards to the same Gmail. Receipt: /Users/mitch/.local/state/cloudflare-email-forwarding-20261112/acceptance.json. All cf/dig verification checks exited 0. No email was sent, so end-to-end delivery remains untested. Docs gate, wiki freshness and whitespace checks passed (exit 0). Postman account-dependent discovery was unavailable because CLI is signed out; Orbit search succeeded but integration returned HTTP 403. Current Cloudflare CLI schemas and Context7 official docs supplied the verified contract. Remaining: owner decision for Google Workspace on llms-explorer.com; preserve Google MX until answered.
