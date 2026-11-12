@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 228
+Version: 229
+Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
 Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
 Delta: v226 to v227; preserve owner status question during active full audit.
 Delta: v225 to v226; record explicit resume of the ordered full audit, hook repair and detailed setup explanation.
@@ -2031,4 +2032,16 @@ Fix these hook failures
   └ Read git_corpus.py
 
 • Hook failed
+```
+
+
+## 2026-11-12 — Fresh native plugin approval failures
+
+```text
+fix these hook failures: • Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
 ```
