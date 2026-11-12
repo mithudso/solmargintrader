@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 223
+Version: 224
+Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
 Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
 Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement.
@@ -1971,3 +1972,11 @@ This repo, create a website that allows a user to connect with their wallet and 
 > The x509 pem file is ~/.ssh/X509-cert-mdbtamcluster2496607525675013147.pem
 
 > Do ZEC that seemed to have good results.
+
+## 2026-11-12 — ZEC MongoDB connectivity follow-up
+
+```text
+I justnadded that Ip
+```
+
+Verify that the existing supervised uploader resumes and validate stored ZEC records without restarting the collector or extending the persisted deadline.
