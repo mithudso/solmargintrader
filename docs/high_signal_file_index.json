@@ -86,7 +86,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Installed solecosystem command parser and dispatch",
-      "lines": 212
+      "lines": 216
     },
     {
       "path": "ecosystem/runner.py",
@@ -100,7 +100,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Existing-owner and interrupted-pipeline recovery",
-      "lines": 231
+      "lines": 234
     },
     {
       "path": "ecosystem/control.py",
@@ -149,7 +149,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Explicit source/archive CLI",
-      "lines": 327
+      "lines": 340
     },
     {
       "path": "oracle/engine.py",
@@ -163,7 +163,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Historical observation archive",
-      "lines": 129
+      "lines": 141
     },
     {
       "path": "oracle/reader.py",
@@ -177,7 +177,7 @@
       "component": "oracle",
       "kind": "python",
       "summary": "Read-only MCP tools and subscriptions",
-      "lines": 430
+      "lines": 451
     },
     {
       "path": "oracle/guidance.py",
@@ -364,7 +364,7 @@
       "component": "backtester",
       "kind": "python",
       "summary": "The bar loop. Owns the per-bar ordering that makes lookahead impossible",
-      "lines": 958
+      "lines": 973
     },
     {
       "path": "backtester/core/types.py",
@@ -1306,21 +1306,21 @@
       "component": "mongo",
       "kind": "markdown",
       "summary": "Entry point: setup, collection map, question -> query index",
-      "lines": 189
+      "lines": 207
     },
     {
       "path": "mongo/schema.py",
       "component": "mongo",
       "kind": "python",
       "summary": "Collection specs, $jsonSchema validators, indexes. --describe needs no server",
-      "lines": 480
+      "lines": 486
     },
     {
       "path": "mongo/load.py",
       "component": "mongo",
       "kind": "python",
       "summary": "The loader. Drops and rebuilds, stamping provenance on every document",
-      "lines": 859
+      "lines": 863
     },
     {
       "path": "mongo/requirements.txt",
@@ -1334,7 +1334,7 @@
       "component": "mongo",
       "kind": "python",
       "summary": "20 tests: idempotency, provenance, strict validation, card semantics",
-      "lines": 345
+      "lines": 360
     },
     {
       "path": "mongo/queries/01-coins-and-bars.js",
@@ -1348,7 +1348,7 @@
       "component": "mongo",
       "kind": "javascript",
       "summary": "The inventory, warm-up cost, what is buildable next",
-      "lines": 104
+      "lines": 108
     },
     {
       "path": "mongo/queries/03-signals-and-indicators.js",
@@ -1362,14 +1362,14 @@
       "component": "mongo",
       "kind": "javascript",
       "summary": "Per-bar readouts and where strategy families disagree",
-      "lines": 130
+      "lines": 134
     },
     {
       "path": "mongo/queries/05-backtests.js",
       "component": "mongo",
       "kind": "javascript",
       "summary": "Manifests, per-strategy metrics, drawdown, fills",
-      "lines": 118
+      "lines": 122
     },
     {
       "path": "mongo/queries/06-experiments-and-pbo.js",
@@ -1390,14 +1390,14 @@
       "component": "mongo",
       "kind": "javascript",
       "summary": "Trace a number to a file; check the store is sane",
-      "lines": 124
+      "lines": 126
     },
     {
       "path": "CLAUDE.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Agent instructions and the per-component non-negotiables",
-      "lines": 218
+      "lines": 240
     },
     {
       "path": "AGENTS.md",
@@ -1411,14 +1411,14 @@
       "component": "repo",
       "kind": "markdown",
       "summary": "Gemini CLI equivalent",
-      "lines": 63
+      "lines": 68
     },
     {
       "path": ".github/copilot-instructions.md",
       "component": "repo",
       "kind": "markdown",
       "summary": "Copilot CLI equivalent",
-      "lines": 111
+      "lines": 124
     },
     {
       "path": ".github/workflows/ci.yml",
@@ -1536,14 +1536,14 @@
       "component": "executor",
       "kind": "python",
       "summary": "~/.executor/config.toml (mode 600), rails and defaults, fail-closed validation",
-      "lines": 257
+      "lines": 260
     },
     {
       "path": "executor/src/executor/tokens.py",
       "component": "executor",
       "kind": "python",
       "summary": "Token table, exact amount conversion; unknown tokens are refused",
-      "lines": 70
+      "lines": 84
     },
     {
       "path": "executor/src/executor/jupiter.py",
@@ -1613,7 +1613,7 @@
       "component": "executor",
       "kind": "python",
       "summary": "Solana JSON-RPC client; a send is never retried",
-      "lines": 138
+      "lines": 139
     },
     {
       "path": "executor/src/executor/engine.py",
@@ -1627,21 +1627,21 @@
       "component": "executor",
       "kind": "python",
       "summary": "Command registry, response envelope, call log",
-      "lines": 536
+      "lines": 534
     },
     {
       "path": "executor/src/executor/cli.py",
       "component": "executor",
       "kind": "python",
       "summary": "executor command line",
-      "lines": 116
+      "lines": 120
     },
     {
       "path": "executor/src/executor/api.py",
       "component": "executor",
       "kind": "python",
       "summary": "Loopback HTTP API (bearer token, Origin refusal)",
-      "lines": 198
+      "lines": 235
     },
     {
       "path": "liquidity/README.md",
@@ -1935,14 +1935,14 @@
       "component": "website",
       "kind": "markdown",
       "summary": "Development, production setup and outstanding activation limits",
-      "lines": 127
+      "lines": 137
     },
     {
       "path": "website/src/worker.js",
       "component": "website",
       "kind": "javascript",
       "summary": "Account, billing, configuration and protected analysis API",
-      "lines": 344
+      "lines": 365
     },
     {
       "path": "website/api/openapi.json",
@@ -1963,7 +1963,7 @@
       "component": "website",
       "kind": "javascript",
       "summary": "Wallet, workspace, membership and research UI",
-      "lines": 411
+      "lines": 419
     },
     {
       "path": "website/public/evidence.js",
@@ -1977,7 +1977,7 @@
       "component": "website",
       "kind": "css",
       "summary": "Responsive workspace design",
-      "lines": 4
+      "lines": 6
     },
     {
       "path": "website/wrangler.jsonc",
@@ -1998,7 +1998,7 @@
       "component": "website",
       "kind": "python",
       "summary": "Bounded read-only canonical analysis HTTP adapter",
-      "lines": 284
+      "lines": 317
     },
     {
       "path": "website/engine/README.md",
@@ -2012,21 +2012,21 @@
       "component": "website",
       "kind": "python",
       "summary": "Source-bound research/card publication exporter",
-      "lines": 117
+      "lines": 123
     },
     {
       "path": "website/scripts/smoke.mjs",
       "component": "website",
       "kind": "other",
       "summary": "Explicit deployed wallet account creation/deletion acceptance",
-      "lines": 40
+      "lines": 60
     },
     {
       "path": "website/test/api.test.js",
       "component": "website",
       "kind": "javascript",
       "summary": "SQLite-backed account and Stripe failure-mode tests",
-      "lines": 347
+      "lines": 453
     },
     {
       "path": "website/test/evidence.test.js",
@@ -2040,14 +2040,14 @@
       "component": "website",
       "kind": "python",
       "summary": "Canonical analysis parity and HTTP boundary tests",
-      "lines": 165
+      "lines": 248
     },
     {
       "path": "website/engine/test_research.py",
       "component": "website",
       "kind": "python",
       "summary": "Research export provenance and publication exclusions",
-      "lines": 67
+      "lines": 88
     }
   ]
 }

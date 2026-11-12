@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 478
+Version: 479
+Delta: v478 to v479; preserve verified unfinished audit draft checkpoint and remaining independent findings.
 Delta: v477 to v478; checkpoint verified audit fixes and preserve exact unfinished full-review scope.
 Delta: v476 to v477; capture ordered full audit, hook repairs and billing explanation.
 Delta: v475 to v476; verify ZEC uploader resumed after owner Atlas IP update.
@@ -1293,3 +1294,14 @@ Read-only hook diagnosis found eight enabled plugin-hook content fingerprints ne
 Stele is intermittently disconnected. The existing TASK-1423 claim remains queued as66eee6eb after another Transport closed result. Root new lessons are queued as5d6c6450 (local endpoint guards), a76b5b4b (table wrappers/visibility), and dacb9fda (CSV formulas). Reuse existing queued writes rather than duplicate them. Full audit workers also maintain their own receipts/outbox IDs.
 
 Next: finish the bounded UI help/export regressions; continue actual full-source per-file review and all required checks; regenerate offline docs/index/wiki only after edits settle; obtain independent acceptance and deliver task-owned changes. Then repair the exact reviewed hook approvals and verify loaded trust. Finally explain the owner's Stripe account/renewal-price decisions separately from secure runtime configuration, hosted analysis provisioning and the still-unimplemented per-user live execution. Preserve paused inference/indexing, frozen paper cohorts, live ZEC collection and all trading arming state.
+
+
+## 2026-11-12 — Recoverable audit checkpoint, still unfinished
+
+Version 479. Selected-source snapshot e626103d118b1b54ee0ed3b8909583e7580352ed was created from the audit worktree without modifying its HEAD or worker edits. The selected manifest is docs/audit-checkpoint-manifest-2026-11-12.json. Four unfinished ecosystem paths were excluded. The draft checkpoint is not a complete audit, release or deployment. Continue work in /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112 and locate the current draft PR by branch audit/oraclebot-health-hooks-20261112; do not infer publication or merge from this note.
+
+The qualified full SolTUI suite completed: 1,477 tests, 14 skipped, exit 0. One additional pure help case is covered separately; current discovery counts 1,478. Selected snapshot website Node36, check, four actual-Chrome UI checks, Python27, index69, backtester1,018 (one skip), offline Mongo57 (eleven native-server skips), docs, wiki and research-export checks exited0 for this checkpoint. The global Python command lacked pandas and failed research export; rerunning with the qualified audit virtual environment succeeds. No live Stripe acceptance, model, embedding or trading operation occurred. Broad inherited index Ruff still has39 pre-existing style findings; fatal checks and changed test lint pass.
+
+Independent executor review /tmp/oraclebot-executor-independent-review.json found two High issues (HTTPX URL logging and raw Jupiter provider-error data) and one Medium issue (unbounded response reads). These are not included in this checkpoint and must be fixed and independently rechecked before delivery. Independent extension probes /tmp/oraclebot-extension-storage-probes.json prove parse-error leakage, invalid journal shape, lost file updates, shared temporary-file collisions and cross-process duplicate submission. Root owns extension engine integration; its worker owns FileStore and regression tests. The cross-process lease must span reconciliation through submission and lifecycle changes. No stale-lock takeover is authorized or qualified. These fixes are ongoing outside this selected snapshot. Stele task-log write after Transport closed is queued as b9b687cb.
+
+Remaining: continue the actual full per-file audit and findings repair, bind final source tests and receipts, regenerate offline metadata after final edits, complete independent acceptance, then merge delivered source. Only after that audit step, refresh and apply the exact eight reviewed enabled plugin approvals with native version preconditions and verify the busy daemon. Then explain the owner's unresolved Stripe account and renewal-price decisions separately from server-side billing setup, hosted engine provisioning and missing per-user execution engineering. Preserve all paused services, frozen owner installations and the live ZEC recorder.

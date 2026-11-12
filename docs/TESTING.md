@@ -51,9 +51,9 @@ acceptance and final-head CI remain separate release gates.
 ## Existing component suites
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1018 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1478 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 57 tests
 cd extension && npm test                                # 437 tests
 python3 scripts/check_docs.py                           # these counts, and the retrieval indexes
 ```
@@ -61,10 +61,10 @@ python3 scripts/check_docs.py                           # these counts, and the 
 The full SolTUI suite is optional and is skipped by normal PR/push CI. Run it
 locally with the command above, or manually dispatch CI with the boolean
 `run_soltui_suite` enabled. The other CI jobs and test-discovery count check stay
-enabled. This delivery skips the full suite at the owner's explicit request;
-focused UI, accounting and installed acceptance checks are recorded separately.
+enabled. The full local suite was run during the 2026-11-12 audit. Its source
+binding and skipped tests are recorded in the audit report.
 
-2960 tests total across the unittest and `node:test` suites. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
+2990 tests total in the four counted suites: backtester, soltui, mongo and extension. Additional component gates are listed below. `liquidity/` additionally has its own pytest suite in its own virtualenv; see `liquidity/README.md`.
 
 Every count on this page is checked by `scripts/check_docs.py`, which counts the suites by
 discovery and fails on a stale figure. That exists because these numbers were wrong for
@@ -158,7 +158,7 @@ find src tools test -name '*.js' -print0 | xargs -0 -n1 node --check
 The oscillating dry run is the meaningful one: it is the only check that closes a round trip and so
 the only one that can detect a zero-spread regression.
 
-## Backtester — 1005 tests
+## Backtester — 1018 tests
 
 Correctness of the simulation is the priority, so the suite concentrates on the things that silently
 inflate a result: **lookahead leaks**, cost application, and metric arithmetic. Any change touching
@@ -210,7 +210,7 @@ lie — a truncated-history test that fails if the replay is ever "optimised" in
 call on the last bar, and a constructed series where that shortcut gives the *opposite*
 answer, so the first test is known to be load-bearing rather than vacuously true.
 
-## soltui — 1472 tests
+## soltui — 1478 tests
 
 The suite includes real Textual render cycles, subprocess lifecycle checks and offline strategy integration.
 Run all tests with
@@ -233,7 +233,7 @@ spent/explored temporal reservations, legacy fences, historical mutation, cooper
 process termination/recovery, baseline comparison, adoption crash receipts and the headless UI.
 Fixtures isolate configuration/data; tests stub the live order path and do not submit real orders.
 
-## mongo — 46 tests
+## mongo — 57 tests
 
 Split between pure helpers that need nothing and integration tests that **skip cleanly
 when no mongod is listening**, so a checkout without a database runs the suite green

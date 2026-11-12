@@ -24,6 +24,10 @@ separately. Oracle193 tests and targeted continuation75/manager3 tests exit0.
 The additional inherited Ruff rule set on index code has39 pre-existing style
 findings, unchanged against HEAD; it is not reported as a clean full lint.
 
+A fresh independent executor review has since reproduced two High diagnostic
+exposure findings and one Medium unbounded-response finding. Their remediation
+and independent recheck remain open; the prior author review is not closure.
+
 Four ecosystem paths remain outside this selected snapshot: ecosystem/web.py,
 ecosystem/tests/test_web.py, ecosystem/tests/test_control_http.py and
 ecosystem/tests/test_ui_contract.py. Their unfinished follow-ups remain in the

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "unfinished_draft_checkpoint",
   "source_worktree": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
   "branch": "audit/oraclebot-health-hooks-20261112",
@@ -145,6 +145,17 @@
   ],
   "notes": [
     "No complete-audit or production-deployment claim",
-    "Generated offline docs/index/wiki checks run in the selected detached snapshot"
+    "Generated offline docs/index/wiki checks run in the selected detached snapshot",
+    "Source snapshot excludes later executor, extension, CPCV and ecosystem-chart work; recoverable draft only"
+  ],
+  "generated_paths": [
+    "docs/FILES.md",
+    "docs/CONCEPTS.md",
+    "docs/high_signal_file_index.json",
+    "index/INDEX.json",
+    "index/TEXT-INDEX.json",
+    "index/CONCEPT-INDEX.json",
+    "ecosystem/wiki_content/manifest.json",
+    "ecosystem/wiki_content/pages.json"
   ]
 }
