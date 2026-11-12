@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `740a49f` (2026-11-11T17:58:30+00:00). 3305 tracked files, 79.3 MB.
+**Generated** from `index/INDEX.json` at commit `fa67952` (2026-11-12T01:25:49+00:00). 3307 tracked files, 79.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2802 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 532/624 Python modules and 66/115 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2804 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 532/624 Python modules and 66/115 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (216 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,10 +34,10 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 89 files
-- [`docs`](#docs) — 140 files
+- [`docs`](#docs) — 141 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1934 files
-- [`research`](#research) — 267 files
+- [`research`](#research) — 268 files
 - [`extension`](#extension) — 126 files
 - [`soltui`](#soltui) — 181 files
 - [`.github`](#github) — 9 files
@@ -638,9 +638,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1062 lines · 201,839 B · description: **extracted**
+`doc` · 1190 lines · 220,623 B · description: **extracted**
 
-**Purpose.** Version: 455 Delta: v454 to v455; record accepted paper restart and final bound analysis before delivery. Delta: v453 to v454; record reviewed meta followups, actual canary, activated cohort and owner risk tolerance.
+**Purpose.** Version: 470 Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges. Delta: v468 to v469; route complete bounded research to shared graph and immutable llms evidence.
 
 **Use.** Read it.
 
@@ -702,9 +702,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1929 lines · 116,056 B · description: **extracted**
+`doc` · 1953 lines · 117,342 B · description: **extracted**
 
-**Purpose.** Version: 217 Delta: v216 to v217; record owner thirty percent drawdown planning tolerance. Delta: v215 to v216; capture comprehensive meta-analysis and prospective/live validation request.
+**Purpose.** Version: 221 Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement. Delta: v219 to v220; record owner authorization to restore eight accidental reference deletions.
 
 **Use.** Read it.
 
@@ -794,7 +794,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-140 files.
+141 files.
 
 #### `docs/API.md`
 
@@ -846,7 +846,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 321 lines · 20,665 B · description: **extracted**
+`doc` · 323 lines · 20,519 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -910,7 +910,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 30021 lines · 1,520,793 B · description: **extracted**
+`doc` · 32098 lines · 1,609,887 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1249,6 +1249,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 32 lines · 3,366 B · description: **extracted**
 
 **Purpose.** Version: 1.0.0 Delta: initial source-qualified research and reference-pack delivery record. The suite researched 15 monitoring concepts across four native evidence-gated cohorts. It retained 320 exact assertions: 257 source-supported statements and 63 non-factual summaries or questions. Three aggregate views and the organizational subject node receive no additional research credit.
+
+**Use.** Read it.
+
+#### `docs/extension-diagnostics-2026-11-11.md`
+
+`doc` · 39 lines · 2,516 B · description: **extracted**
+
+**Purpose.** Extension source version 0.6.6 bounds caught tick errors to the operation, an allowlisted error class and an integer HTTP status from 100 through 599. The returned `errors[].error`, diagnostic log strings and persisted `intent.error`
 
 **Use.** Read it.
 
@@ -21372,7 +21380,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-267 files.
+268 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21555,6 +21563,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 155 lines · 11,880 B · description: **extracted**
 
 **Purpose.** Version: 1.2.0. Delta: distinguish source disclosure from standalone coin-test qualification. The21 native-strategy descriptions were read in full (92,770 characters). Their accepted card contents remain unchanged. Ten disclose a principal calculation; eleven have partial computational definitions. All21 remain coin-test-incomplete.
+
+**Use.** Read it.
+
+#### `research/ULTRA-SHORT-MACRO-MICRO.md`
+
+`doc` · 37 lines · 1,951 B · description: **extracted**
+
+**Purpose.** Version: 2 Delta: route all thirteen accepted concepts to the owner-selected shared corpus. The canonical research and evidence live in the private Global AI Hub repository.
 
 **Use.** Read it.
 
@@ -23992,11 +24008,11 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/src/core/engine.js`
 
-`code-js` · 614 lines · 26,019 B · description: **extracted**
+`code-js` · 624 lines · 26,302 B · description: **extracted**
 
 **Purpose.** The tick. Order of operations is the whole design: RECONCILE before PLAN, always. A MV3 service worker can be killed at any moment, including between "write the intent" and "the venue accepted the order". So the venue's live order list — not our local records — is the source of truth at the top of every tick. Local state is a cache and a journal, nothing more.
 
-**Contents.** Defines `DIAGNOSTIC_KINDS`, `PRICE_MATCH_TOLERANCE`, `diagnosticError`, `enginePending`, `engineStopGeneration`, `ingestFills`, `ingestFillsUnlocked`, `keyForLiveOrder`, `matchIntent`, `occupiedIntentKeys` and 9 more.
+**Contents.** Defines `DIAGNOSTIC_KINDS`, `PRICE_MATCH_TOLERANCE`, `diagnosticError`, `diagnosticMessage`, `enginePending`, `engineStopGeneration`, `ingestFills`, `ingestFillsUnlocked`, `keyForLiveOrder`, `matchIntent` and 10 more.
 
 **Use.** Loaded by the extension; see `extension/manifest.json` for entry points.
 
@@ -24578,7 +24594,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/cdo-regressions.test.js`
 
-`code-js` · 206 lines · 10,469 B · description: **none**
+`code-js` · 277 lines · 14,383 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -24608,7 +24624,7 @@ The Chrome extension, and the only component that can place a real order. Dry-ru
 
 #### `extension/test/core.test.js`
 
-`code-js` · 1555 lines · 61,740 B · description: **curated**
+`code-js` · 1557 lines · 61,893 B · description: **curated**
 
 **Purpose.** Node test-runner suite for the pure core — grid maths, planner, reconciler. No `chrome.*`, so it runs headless.
 
