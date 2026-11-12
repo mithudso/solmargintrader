@@ -191,10 +191,8 @@ export class TriggerVenue {
     if (!this.capabilities.canPlaceLive) {
       throw new Error('live deposit requires an independent transaction intent verifier; raw signing is refused');
     }
-    // Wrapped so a rejected token re-authenticates and retries once. Re-running
-    // the whole sequence is safe: craftDeposit only BUILDS a transaction — the
-    // deposit does not land until the create call — so a discarded requestId
-    // costs nothing on chain.
+    // Authentication failures on this write are not retried: a provider reply
+    // can be ambiguous after submission. Reconciliation must decide its outcome.
     return this.#authed(() => this.#placeOrderOnce({ intent, slippageBps, ttlMs }), { retryAuth: false });
   }
 

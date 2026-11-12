@@ -38,9 +38,9 @@ export function assertReadMethod(method) {
   return method;
 }
 
-export async function getJson(deps, url, { source, timeoutMs = 15_000, maxAttempts = 3 } = {}) {
+export async function getJson(deps, url, { source, timeoutMs = 15_000, maxAttempts = 3, maxResponseBytes } = {}) {
   try {
-    return await request({ url, init: { method: 'GET' }, fetchImpl: fetchOf(deps), timeoutMs, maxAttempts, log: () => {} });
+    return await request({ url, init: { method: 'GET' }, fetchImpl: fetchOf(deps), timeoutMs, maxAttempts, maxResponseBytes, log: () => {} });
   } catch (err) {
     if (err instanceof MarketError) throw err;
     throw new MarketError(source ?? new URL(url).host, err?.message ?? 'request failed');

@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 225
+Version: 227
+Delta: v226 to v227; preserve owner status question during active full audit.
+Delta: v225 to v226; record explicit resume of the ordered full audit, hook repair and detailed setup explanation.
 Delta: v224 to v225; capture ordered full audit, hook repairs and billing explanation.
 Delta: v223 to v224; record owner IP access-list update and verify resumed ZEC uploads.
 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection.
@@ -1993,3 +1995,19 @@ Fix all of these hook failures:  Hook failed
   └ plugin contents changed; hook approval required
 
 And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.
+
+
+## 2026-11-12 — Resume full audit, hook failures and setup explanation
+
+```text
+Resume and fix these hook failures
+
+And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.
+```
+
+
+## 2026-11-12 — Active audit status question
+
+```text
+What are you doing right now? r
+```

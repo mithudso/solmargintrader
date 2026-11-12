@@ -204,17 +204,24 @@ function showBalance(state) {
 
 export function mountSwap(state) {
   const form = $('#swapForm');
+  let generation = 0;
+  // Form edits invalidate pending responses as well as the currently shown quote.
+  const stale = () => {
+    generation++;
+    $('#swapQuote').hidden = true;
+    form.elements.out.value = '';
+    $('#swapError').textContent = '';
+  };
   for (const b of form.querySelectorAll('[data-chain]')) {
     b.addEventListener('click', () => {
       swapChain = b.dataset.chain;
       for (const o of form.querySelectorAll('[data-chain]')) o.setAttribute('aria-pressed', String(o === b));
       fillTokenSelects();
       showBalance(state);
-      $('#swapQuote').hidden = true;
+      stale();
     });
   }
   // Any change to the request makes the shown quote (and its hand-off link) stale.
-  const stale = () => { $('#swapQuote').hidden = true; form.elements.out.value = ''; };
   form.elements.from.addEventListener('change', () => { stale(); showBalance(state); });
   form.elements.to.addEventListener('change', stale);
   form.elements.amount.addEventListener('input', stale);
@@ -228,6 +235,7 @@ export function mountSwap(state) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const f = form.elements;
+    const requestGeneration = ++generation;
     $('#swapError').textContent = '';
     $('#swapQuote').hidden = true;
     // The tolerance sets "minimum received": never substitute one the owner did not type.
@@ -242,6 +250,7 @@ export function mountSwap(state) {
         type: 'swapQuote', chain: swapChain, from: f.from.value, to: f.to.value,
         amount: f.amount.value.trim(), slippageBps,
       });
+      if (requestGeneration !== generation) return;
       f.out.value = amount(q.to.amount);
       $('#swapVenue').textContent = q.venue;
       const rows = [
@@ -261,6 +270,7 @@ export function mountSwap(state) {
       link.textContent = `Review and sign on ${q.chain === 'base' ? 'Aerodrome' : 'Jupiter'} ↗`;
       $('#swapQuote').hidden = false;
     } catch (err) {
+      if (requestGeneration !== generation) return;
       f.out.value = '';
       $('#swapError').textContent = err.message;
     }

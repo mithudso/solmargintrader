@@ -66,7 +66,10 @@ export function swapWithinRange({ amountIn, sqrtPriceX96, liquidity, feePips, ze
   let out;
   if (zeroForOne) {
     const num = liquidity << 96n;
-    next = (num * sqrtPriceX96) / (num + net * sqrtPriceX96);
+    const denominator = num + net * sqrtPriceX96;
+    // SqrtPriceMath rounds token0's next price up. Rounding down can promise
+    // output for a price movement the actual pool cannot make with this input.
+    next = (num * sqrtPriceX96 + denominator - 1n) / denominator;
     out = (liquidity * (sqrtPriceX96 - next)) / Q96;
   } else {
     next = sqrtPriceX96 + (net * Q96) / liquidity;
@@ -170,7 +173,11 @@ export async function quoteSolana(deps, { from, to, amount, slippageBps = 50 }) 
   const url = `${ENDPOINTS.jupiterQuote}?inputMint=${tin.address}&outputMint=${tout.address}`
     + `&amount=${raw}&slippageBps=${slippageBps}&swapMode=ExactIn`;
   const q = await getJson(deps, url, { source: 'jupiter quote' });
-  if (q?.inputMint !== tin.address || q?.outputMint !== tout.address || !/^\d+$/.test(String(q?.outAmount ?? ''))) {
+  const units = value => typeof value === 'string' && /^\d{1,20}$/.test(value) && BigInt(value) <= (1n << 64n) - 1n;
+  if (q?.inputMint !== tin.address || q?.outputMint !== tout.address || q.inAmount !== String(raw)
+      || q.swapMode !== 'ExactIn' || q.slippageBps !== slippageBps || !units(q.outAmount)
+      || BigInt(q.outAmount) <= 0n || !units(q.otherAmountThreshold)
+      || BigInt(q.otherAmountThreshold) > BigInt(q.outAmount) || !Array.isArray(q.routePlan)) {
     throw new MarketError('jupiter quote', 'response did not match the request');
   }
   const impact = Number(q.priceImpactPct);

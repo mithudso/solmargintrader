@@ -4,8 +4,8 @@
  *
  * Runs the real tick — real Jupiter price, real grid engine, real risk rails,
  * real journal — with simulated fills, in Node. This is the integration gate:
- * loading an unpacked extension cannot be automated (chrome://extensions needs
- * a human), so end-to-end verification happens here instead.
+ * real-browser loading is checked separately by tools/e2e.mjs. This gate checks
+ * the paper economics rather than browser installation or live execution.
  *
  *   node tools/dryrun.js                 # 3 ticks around the live SOL price
  *   node tools/dryrun.js --ticks 6       # more ticks
@@ -21,8 +21,9 @@ import { DEFAULT_LIMITS } from '../src/core/risk.js';
 import { snapshot } from '../src/core/pnl.js';
 import { capitalRequirement, gridLevels, rungWidthBps } from '../src/core/grid.js';
 import { NullSigner } from '../src/wallet/signer.js';
+import { toolArgs, toolFailure } from './args.js';
 
-const args = parseArgs(process.argv.slice(2));
+const USAGE = 'Usage: node tools/dryrun.js [--ticks COUNT] [--walk PERCENT] [--osc PERCENT] [--offline PRICE]\nDefault: three paper ticks using a public price read.\nExample: node tools/dryrun.js --ticks 8 --osc 6 --offline 100';
 
 /** A venue that reports a price we control, so a walk can force fills. */
 class ScriptedPriceVenue extends DryRunVenue {
@@ -41,6 +42,13 @@ class ScriptedPriceVenue extends DryRunVenue {
 }
 
 async function main() {
+  const args = toolArgs(process.argv.slice(2), { ticks: 3, walk: 0, osc: 0, offline: undefined }, { usage: USAGE });
+  if (args.help) { console.log(USAGE); return; }
+  if (!Number.isSafeInteger(Number(args.ticks)) || Number(args.ticks) < 1
+      || ![args.walk, args.osc].every(value => Number.isFinite(Number(value)))
+      || (args.offline !== undefined && !(Number.isFinite(Number(args.offline)) && Number(args.offline) > 0))) {
+    throw Object.assign(new Error(`ticks must be a positive integer; prices must be positive and all numbers finite\n${USAGE}`), { exitCode: 2 });
+  }
   const configStore = new ConfigStore(null); // in-memory: no chrome.storage in Node
   const store = new MemoryStore();
 
@@ -145,18 +153,4 @@ function round(n) {
   return Number(n.toFixed(4));
 }
 
-function parseArgs(argv) {
-  const out = {};
-  for (let i = 0; i < argv.length; i++) {
-    if (!argv[i].startsWith('--')) continue;
-    const key = argv[i].slice(2);
-    const next = argv[i + 1];
-    out[key] = next && !next.startsWith('--') ? next : true;
-  }
-  return out;
-}
-
-main().catch((err) => {
-  console.error('dry run failed:', err.message);
-  process.exitCode = 1;
-});
+main().catch(toolFailure);

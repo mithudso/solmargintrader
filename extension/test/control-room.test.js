@@ -120,3 +120,15 @@ test('component alerts require a measured failure after up, deduplicate, recover
   record = controlRoomTransitions(observed('degraded'), record.state, CONTROL_ROOM_ALERT_COOLDOWN_MS + 8000);
   assert.equal(record.alerts.length, 1);
 });
+
+
+test('malformed component records remain unknown without aborting availability or alerts', async () => {
+  for (const components of [[null, 42, { name: 'suite', state: 'up' }], { suite: null, manager: 'up' }, 'bad']) {
+    const answer = response(); answer.result.health.components = components;
+    const value = await controlRoomSnapshot(fixture(() => answer).deps);
+    assert.equal(value.components.find(x => x.name === 'market_data').state, 'unknown');
+    assert.doesNotThrow(() => controlRoomTransitions(value, null, 1));
+  }
+  assert.deepEqual(controlRoomTransitions({ helper: 'available', components: [null] }, null, 1).alerts, []);
+  assert.deepEqual(controlRoomTransitions({ helper: 'available', components: {} }, null, 1).alerts, []);
+});

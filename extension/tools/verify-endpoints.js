@@ -13,6 +13,10 @@
 import { parsePrices, PRICE_HOSTS } from '../src/jupiter/price.js';
 import { TRIGGER_BASE, TRIGGER_LIMITS } from '../src/jupiter/trigger.js';
 import { DEFAULT_CONFIG } from '../src/storage/store.js';
+import { toolArgs, toolFailure } from './args.js';
+import { request } from '../src/jupiter/http.js';
+
+const USAGE = 'Usage: node tools/verify-endpoints.js\nRead-only live endpoint checks; JUPITER_API_KEY optionally enables keyed checks.\nExample: node tools/verify-endpoints.js';
 
 const MINTS = [DEFAULT_CONFIG.baseMint, DEFAULT_CONFIG.quoteMint];
 const apiKey = process.env.JUPITER_API_KEY;
@@ -26,9 +30,7 @@ function report(name, ok, detail) {
 async function checkPrice(host, label, key) {
   const url = `${host}?ids=${MINTS.join(',')}`;
   try {
-    const res = await fetch(url, { headers: key ? { 'x-api-key': key } : {} });
-    if (!res.ok) return report(label, false, `HTTP ${res.status}`);
-    const body = await res.json();
+    const body = await request({ url, init: { headers: key ? { 'x-api-key': key } : {} }, maxAttempts: 1 });
     const prices = parsePrices(body, MINTS);
     const base = prices[DEFAULT_CONFIG.baseMint];
     const decimals = body?.[DEFAULT_CONFIG.baseMint]?.decimals;
@@ -48,26 +50,27 @@ async function checkPrice(host, label, key) {
  */
 async function checkTriggerReachable() {
   try {
-    const res = await fetch(`${TRIGGER_BASE}/auth/challenge`, {
+    const body = await request({ url: `${TRIGGER_BASE}/auth/challenge`, init: {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'x-api-key': apiKey } : {}) },
       body: JSON.stringify({ walletPubkey: DEFAULT_CONFIG.baseMint, type: 'message' }),
-    });
-    const routeExists = res.status !== 404;
-    report(
-      'trigger v2 auth/challenge route exists',
-      routeExists,
-      `HTTP ${res.status}${apiKey ? '' : ' (no API key: 401/403 expected)'}`,
-    );
-    if (apiKey && res.ok) {
-      const body = await res.json();
-      report('trigger v2 returns a challenge with a key', typeof body?.challenge === 'string');
+    }, maxAttempts: 1 });
+    report('trigger v2 auth/challenge route exists', true, 'successful JSON response');
+    if (apiKey) {
+      report('trigger v2 returns a challenge with a key', typeof body?.challenge === 'string' && body.challenge.length > 0);
     }
   } catch (err) {
+    if (!apiKey && [401, 403].includes(err.status)) {
+      report('trigger v2 auth/challenge route exists', true, `HTTP ${err.status} (no API key)`);
+      return;
+    }
     report('trigger v2 reachable', false, err.message);
   }
 }
 
+async function main() {
+const args = toolArgs(process.argv.slice(2), {}, { usage: USAGE });
+if (args.help) { console.log(USAGE); return; }
 console.log(`checking Jupiter endpoints (${new Date().toISOString()})\n`);
 await checkPrice(PRICE_HOSTS.lite, 'price v3 (keyless)', null);
 if (apiKey) await checkPrice(PRICE_HOSTS.keyed, 'price v3 (keyed)', apiKey);
@@ -77,3 +80,5 @@ await checkTriggerReachable();
 console.log(`\nvenue minimum order: $${TRIGGER_LIMITS.minOrderUsd}`);
 console.log(failures === 0 ? '\nall checks passed' : `\n${failures} check(s) failed`);
 process.exitCode = failures === 0 ? 0 : 1;
+}
+await main().catch(toolFailure);

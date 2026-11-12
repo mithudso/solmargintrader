@@ -33,19 +33,11 @@ import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
 import { runCommand, describeCommands, COMMANDS, CommandError } from '../src/core/commands.js';
 import { createNodeDeps } from './deps.js';
+import { toolArgs, toolFailure } from './args.js';
 
 const MAX_BODY_BYTES = 256 * 1024;
 
-function parseArgs(argv) {
-  const out = {};
-  for (let i = 0; i < argv.length; i++) {
-    if (!argv[i].startsWith('--')) continue;
-    const key = argv[i].slice(2);
-    const next = argv[i + 1];
-    out[key] = next && !next.startsWith('--') ? next : true;
-  }
-  return out;
-}
+const USAGE = 'Usage: node tools/api-server.js [--port PORT] [--host HOST] [--ephemeral] [--store-path PATH] [--config-path PATH] [--passphrase VALUE]\nRequires SMT_API_TOKEN in the service environment.\nExample: node tools/api-server.js --port 8787';
 
 export function tokenMatches(provided, token) {
   if (typeof token !== 'string' || !token.trim() || typeof provided !== 'string' || !provided) return false;
@@ -229,12 +221,15 @@ function logApiEvent(event) {
 }
 
 async function main() {
-  const args = parseArgs(process.argv.slice(2));
+  const args = toolArgs(process.argv.slice(2), { port: undefined, host: undefined, ephemeral: false,
+    'store-path': undefined, 'config-path': undefined, passphrase: undefined }, { booleans: ['ephemeral'], usage: USAGE });
+  if (args.help) { console.log(USAGE); return; }
   const port = Number(args.port ?? process.env.SMT_API_PORT ?? 8787);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) throw Object.assign(new Error(`port must be an integer from 1 to 65535\n${USAGE}`), { exitCode: 2 });
   const host = typeof args.host === 'string' ? args.host : '127.0.0.1';
   const token = process.env.SMT_API_TOKEN;
   if (typeof token !== 'string' || !token.trim()) {
-    throw new Error('SMT_API_TOKEN must be set before starting the API; credentials are never printed');
+    throw Object.assign(new Error('SMT_API_TOKEN must be set in the service environment before starting the API; credentials are never printed'), { exitCode: 3 });
   }
 
   const deps = await createNodeDeps({
@@ -277,5 +272,5 @@ function ranDirectly() {
   } catch { return false; } // eval/import callers need not have a file entrypoint.
 }
 if (ranDirectly()) {
-  await main();
+  await main().catch(toolFailure);
 }
