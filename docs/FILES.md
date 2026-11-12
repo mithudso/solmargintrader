@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7bfee41` (2026-11-12T01:55:09+00:00). 3334 tracked files, 79.7 MB.
+**Generated** from `index/INDEX.json` at commit `dad17bf` (2026-11-12T04:48:44+00:00). 3338 tracked files, 79.7 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2809 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 535/629 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (220 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2812 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 537/631 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (221 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 89 files
-- [`docs`](#docs) — 141 files
+- [`docs`](#docs) — 142 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1934 files
 - [`research`](#research) — 268 files
@@ -62,7 +62,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`oracle`](#oracle) — 43 files
 - [`postman`](#postman) — 8 files
 - [`runbooks`](#runbooks) — 3 files
-- [`scripts`](#scripts) — 23 files
+- [`scripts`](#scripts) — 26 files
 - [`skills`](#skills) — 67 files
 - [`superpowers`](#superpowers) — 12 files
 - [`tools`](#tools) — 3 files
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1231 lines · 228,128 B · description: **extracted**
+`doc` · 1251 lines · 232,287 B · description: **extracted**
 
-**Purpose.** Version: 471 Delta: v470 to v471; integrate Oraclebot website with concurrent shared research delivery. Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges.
+**Purpose.** Version: 474 Delta: v473 to v474; preserve authorized ZEC raw-event capture contract and secure connection diagnostics. Delta: v472 to v473; refresh local wiki dependency found by CI.
 
 **Use.** Read it.
 
@@ -703,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 1959 lines · 118,461 B · description: **extracted**
+`doc` · 1974 lines · 119,046 B · description: **extracted**
 
-**Purpose.** Version: 222 Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery. Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement.
+**Purpose.** Version: 223 Delta: v222 to v223; preserve one-day raw market capture, URI2 certificate and ZEC selection. Delta: v221 to v222; integrate Oraclebot website with concurrent shared research delivery.
 
 **Use.** Read it.
 
@@ -795,7 +795,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-141 files.
+142 files.
 
 #### `docs/API.md`
 
@@ -911,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32114 lines · 1,610,584 B · description: **extracted**
+`doc` · 32371 lines · 1,617,840 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -946,6 +946,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 `doc` · 73 lines · 4,815 B · description: **extracted**
 
 **Purpose.** The Signal Live page in SolTUI and the extension dashboard show the same aggregate score above the live price view and the forward-prediction table. It measures directional agreement among eligible forward-test predictions. It is not an estimated probability or an order instruction.
+
+**Use.** Read it.
+
+#### `docs/MARKET-EVENT-CAPTURE.md`
+
+`doc` · 81 lines · 4,618 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: initial independent collector, durable spool and native MongoDB time-series uploader. single Coinbase USD product. It does not sign, trade or alter the existing
 
 **Use.** Read it.
 
@@ -26875,7 +26883,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 474 lines · 20,655 B · description: **curated**
+`ci` · 479 lines · 20,860 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 
@@ -30977,7 +30985,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## scripts
 
-23 files.
+26 files.
 
 #### `scripts/bootstrap_ecosystem.py`
 
@@ -31018,6 +31026,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `ROOT`, `CACHE`, `WORK`, `CLASSES`, `FIELDS`, `dump()`, `prepare()`, `inputs()`, `validate_record()`, `records()` and 1 more.
 
 **Use.** `python3 scripts/build_tradingview_script_profiles.py --help`
+
+#### `scripts/capture_market.py`
+
+`code-python` · 449 lines · 19,639 B · description: **extracted**
+
+**Purpose.** Bounded public market-event capture with durable spool and separate Mongo upload. No orders, private market subscriptions, sampling, or drop/rebuild operations. The capture and upload roles have separate locks and independent lifecycles.
+
+**Contents.** Defines `ROOT`, `VERSION`, `DATABASE`, `CHANNELS`, `class CaptureError`, `utc()`, `atomic_json()`, `read_json()`, `lock()`, `prepare()` and 13 more. Depends on `soltui`.
+
+**Use.** `python3 scripts/capture_market.py --help`
 
 #### `scripts/check_docs.py`
 
@@ -31089,6 +31107,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `python3 scripts/render_tradingview_script_cards.py --help`
 
+#### `scripts/requirements-market-capture.txt`
+
+`data` · 4 lines · 121 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # Isolated event recorder environment; no dependency added to the trading apps. / pymongo>=4.19.0,<5
+
+**Use.** Read it.
+
 #### `scripts/rotate-workflow-logs.mjs`
 
 `code-js` · 193 lines · 6,810 B · description: **extracted**
@@ -31108,6 +31134,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `selected_modules()`, `SMOKE`, `DEPENDENCIES`, `targeted_modules()`, `flatten()`, `class TimedResult`, `_run()`, `main()`.
 
 **Use.** `python3 scripts/soltui_ci.py --help`
+
+#### `scripts/test_capture_market.py`
+
+`test` · 224 lines · 10,546 B · description: **extracted**
+
+**Purpose.** Durability, namespace and ambiguous-write regressions; no live network or DB.
+
+**Contents.** Defines `SPEC`, `class CaptureTests`, `class NativeMongoTests`.
+
+**Use.** `python3 -m pytest scripts/test_capture_market.py -q`
 
 #### `scripts/test_card_readiness.py`
 

@@ -348,6 +348,11 @@ jobs:
       - name: Unit and integration tests
         run: python3 -m unittest discover -s mongo/tests -t .
 
+      - name: Raw event capture durability and upload boundaries
+        env:
+          MARKET_CAPTURE_REQUIRE_MONGO: '1'
+        run: python3 -m unittest discover -s scripts -p test_capture_market.py -v
+
   # Documentation drift is a build failure, not a nit: the docs claimed 250
   # backtester tests for several commits while the suite had grown to 454, and
   # nothing caught it. Counts come from unittest discovery rather than from
