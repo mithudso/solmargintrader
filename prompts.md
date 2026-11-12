@@ -1,6 +1,8 @@
 # Prompt history
 
-Version: 219
+Version: 221
+Delta: v220 to v221; capture owner graph database and shared llms source-of-truth requirement.
+Delta: v219 to v220; record owner authorization to restore eight accidental reference deletions.
 Delta: v218 to v219; record one-minute macro-conditioned full-suite request.
 Delta: v217 to v218; record all-component deep code optimizer request and immediate diagnostic repair.
 Delta: v216 to v217; record owner thirty percent drawdown planning tolerance.
@@ -1936,3 +1938,15 @@ The question specified a USD10,000 simulated account and venue-minimum live vali
 ## 2026-11-11 — Ultra-short macro-conditioned forecasts (TASK-1462)
 
 > run the full-suite skill on ultra-short trades, micro-graph predictions based on macro trends, under what conditions can you be more certain the next 1 min will go up or down?
+
+## 2026-11-11 — Canonical reference restoration decision
+
+Question: Eight tracked reference files are deleted from /Users/mitch/.claude/skills/trading-and-investing/references/, blocking installation. Were these deletions accidental, so I should restore exactly those eight committed files, or should I preserve them?
+
+Answer:
+
+> Accidental — restore the eight files
+
+## 2026-11-11 — Shared research source of truth
+
+> This research should go directly into the graph db and as llms files, that should be the shared repo and source of truth.

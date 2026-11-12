@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-11T17:58:30+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T01:25:49+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -29,7 +29,7 @@ Strongest files:
 
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
-- `docs/FILES.md` (160 hits)
+- `docs/FILES.md` (165 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
@@ -67,12 +67,12 @@ Strongest files:
 
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
+- `docs/FILES.md` (157 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
 - `memory.md` (107 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
-- `docs/FILES.md` (78 hits)
 
 Full list: `python3 index/search.py --concept transfer -n 1508`
 
@@ -106,8 +106,8 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (800 hits)
 - `research/results/coinbase50_20261111_summary.json` (530 hits)
 - `research/tradingview-script-understanding.json` (256 hits)
+- `docs/FILES.md` (192 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
-- `docs/FILES.md` (177 hits)
 - `FILES.md` (176 hits)
 - `backtester/tests/test_gridsim.py` (167 hits)
 - `ecosystem/web/styles.css` (129 hits)
@@ -125,7 +125,7 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (311 hits)
+- `docs/FILES.md` (379 hits)
 - `FILES.md` (283 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `memory.md` (142 hits)
@@ -135,7 +135,7 @@ Full list: `python3 index/search.py --concept execution-onchain -n 776`
 
 ### Data integrity
 
-`data-integrity` · **692 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **693 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -146,11 +146,11 @@ Strongest files:
 - `research/tradingview-script-understanding.json` (144 hits)
 - `ecosystem/web/styles.css` (108 hits)
 - `research/tradingview-card-readiness.json` (106 hits)
+- `docs/FILES.md` (78 hits)
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
-- `docs/FILES.md` (75 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 692`
+Full list: `python3 index/search.py --concept data-integrity -n 693`
 
 ### Buy-and-hold benchmark
 
@@ -166,7 +166,7 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (112 hits)
 - `research/strategy_experiment/results/auxiliary.json` (77 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (68 hits)
-- `docs/FILES.md` (62 hits)
+- `docs/FILES.md` (65 hits)
 - `FILES.md` (61 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 420`
@@ -198,8 +198,8 @@ The repo's primary evaluation method: 8 blocks, k=2, up to 28 paths. Replaced th
 
 Strongest files:
 
+- `docs/FILES.md` (78 hits)
 - `FILES.md` (77 hits)
-- `docs/FILES.md` (77 hits)
 - `research/cpcv_sweep.py` (68 hits)
 - `research/verify_numbers.py` (63 hits)
 - `backtester/core/cpcv.py` (60 hits)
@@ -217,8 +217,8 @@ Second independent axis beside CPCV: nudge each parameter +/-10% and re-run. A p
 
 Strongest files:
 
+- `docs/FILES.md` (101 hits)
 - `FILES.md` (100 hits)
-- `docs/FILES.md` (100 hits)
 - `research/perturb.py` (54 hits)
 - `llms-sitemap.txt` (32 hits)
 - `research/verify_numbers.py` (31 hits)

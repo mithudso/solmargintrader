@@ -1,6 +1,14 @@
 # Work continuation
 
-Version: 462
+Version: 470
+Delta: v469 to v470; preserve independently verified fresh-clone recovery and shared-source merges.
+Delta: v468 to v469; route complete bounded research to shared graph and immutable llms evidence.
+Delta: v467 to v468; preserve accepted research and reviewed graph-reader source delivery.
+Delta: v466 to v467; prioritize verified Neo4j expertise and shared canonical llms delivery.
+Delta: v465 to v466; verify approved reference restoration and remove High prerequisite blocker.
+Delta: v464 to v465; record owner-approved exact eight-file prerequisite restoration.
+Delta: v463 to v464; preserve publication ownership decision and partial semantic gate.
+Delta: v462 to v463; preserve independent planning correction and recoverable draft receipt.
 Delta: v461 to v462; record scored map, v4 initialization and running research.
 Delta: v460 to v461; preserve verified prior-suite limits and narrow retired-store guard interpretation.
 Delta: v459 to v460; start one-minute full-suite with isolated research ownership.
@@ -1113,3 +1121,69 @@ The existing canonical parent resolves to “Trading and Investing — Active Tr
 Local documentation check passed exit0 in the existing SolTUI environment with src-layout manager path configured: 2960 discovered tests, docs agreed. No code tests or market backtest were run for this research-only request.
 
 Task-map lifecycle writes queued while Stele is disconnected:55076957 (map completion),bb31365d (research claim),c4a9e903 (refresh stale TASK-832 handoff). Other existing outbox IDs remain recorded above. Research/compile, independent audit and delivery remain pending.
+
+## 2026-11-11 — One-minute runner corrections independently checked
+
+Checkpoint commit fa67952 is pushed in draft PR228. It preserves the original prompt and continuation with passing documentation/index checks; it is not completed research.
+
+Independent planning audit caught the runner defaulting untyped financial concepts to software authority (one organization), generic event-time seed collisions, ten provisional coverage labels, and alias parent. The task runner was stopped exit143 before accepted claims existed; six acquired sources were preserved. Supported per-run locked manifest updates set all eight concepts scientific, canonical parent and three-independent-primary-financial-group scopes. All16 regenerated briefs were checked before research restart. Shared runtime and skills were unchanged.
+
+Independent correction audit passed:24HAVE navigation bindings,1scoredSKIP,8pending gaps; canonical CVS check9rows0; exact existing canonical parent;16corrected briefs. The nine exact60-second CQs still require final evidence or explicit gaps. Generic causal-inference coverage datedMay30 is not newly verified current evidence.
+
+The runner-domain lesson is queued as Stele outbox ac51b631. Research, all-claims gates, compilation and final audit remain in progress. No accuracy, profitability, saturation or publication is established yet.
+
+## 2026-11-11 — Partial gate and publication ownership
+
+Four of eight concept research outputs are written. The first partial paid semantic gate ended exit1:54SUPPORTED,9NO-FACTUAL-ASSERTION,5UNVERIFIED auxiliary statements. All46structured claims passed. The five failed items were repaired without repeating the63accepted bindings; a four-concept bound gate is running. This is not a full-corpus pass.
+
+The prerequisite parity audit found all eight missing hub references are unstaged tracked deletions in the dirty canonical skills checkout. Their committed blobs exist and match the separate clone exactly. Deletion owner/intent is unknown; restore would risk undoing concurrent work. No source file was restored or synced. SixMedium and oneLow hub findings also remain.
+
+A concise asynchronous user decision is pending: restore exactly the eight committed reference files if the deletions were accidental, or preserve intentional deletions. Silence is not approval. Continue research and reversible compilation while this answer is pending. TASK-1410 already owns the older hub repair; do not duplicate or force-claim it.
+
+No final installation, full-suite saturation, profitable rule or exact next-minute success rate has been established.
+
+## 2026-11-11 — Owner resolved prerequisite ownership
+
+The owner answered “Accidental — restore the eight files.” Restore only the eight verified committed reference files identified by the prerequisite audit. Guarded-artifact-writer owns that exact restoration, fresh hash/status preconditions, read-back and structural gate. Preserve all other canonical dirty/staged/deleted work. No broad sync or unrelated repair is authorized by this narrow answer.
+
+Research has six of eight concept outputs written; complete-corpus semantic gate and final publication remain pending.
+
+## 2026-11-11 — Exact restoration verified
+
+Guarded restoration completed:all eight restored reference SHA256 values match the pinned committed bodies. CanonicalHEAD45903ec remains unchanged. Every other porcelain status record and index entry remains unchanged. Hub meta-validate now exits0 with0High,6Medium,1Low. The eight-reference blocker is resolved; a CLEAN full hub optimizer is not claimed. Research may reconsider supported installation after its complete evidence gate.
+
+Owner authorization context is queued as Stele outbox642e8432. The prerequisite-gap snapshot is outbox47e80a10 and is historical; the later comment updates the actual restoration. Other outbox IDs are preserved above.
+
+## 2026-11-11 — Owner-directed graph and llms delivery
+
+The owner directs research into the graph database and llms files as the shared source of truth. Verified live target:research-expertise Neo4j projection,corpus hub-concepts,root /Users/mitch/.global-ai-hub/llms-concepts; dedicatedCPU BGE-smallONNX384dimensions,ready2318documents/45786passages/vectors. Canonical files/evidence remain authoritative; imported graph qualification startsunreviewed independently of upstream v4gates.
+
+The shared canonical repository is private mithudso/global-ai-hub,defaultmain. Its current checkout is dirty with extensive unrelated work and behindupstream. Use an isolated publicationworktree; copy/commit only this task accepted packs, canonical artifact and exact gate receipts. Do not sweep other pending research or resume pausedOllama/bulk pipelines. The dedicated expertise graph ingestion is explicitly requested for this research.
+
+All eight concepts now have completed research outputs,initial cohortexit0. Final deterministic preflight passes264assertions(183structured+81auxiliary); final bound semantic gate is running, with125accepted pairs reused. Compile real bound LCApacks and rollup after finalgate. Skill-card optimization is secondary to shared graph/llms delivery under this steering.
+
+## 2026-11-12 — Accepted research and graph reader source
+
+Initial8 full semantic gate exit0:264selectedassertions,202SUPPORTED+62NO-FACTUAL-ASSERTION, research-gate/v4. Immutableartifact c6fbdd4c69d24a4b08b1c72e1a4619fd7a493b0d85237660602c6d9ed1ce208f. Portablebundle independently verifies183canonicalstatements,40sourcerecords,1099exactspans. Reused261judgments trace to unchangedvalidatedbindings. Independentinitial8researchauditpasses; nineCQstatuses andfinalpacks/frontier/publication still needfinalreceipt.
+
+Research-expertise0.2.2 readerfix PR341 merged04a0fcf1275390eea982a23991eea1d23f7ebfb0. All13CIcheckspass,1promotionjobskip; local133passed1skip,21focusedcorpuspassed. Source8ownedfilesmatchremotemain. Supportedinstallerfromcleanisolatedmergedsourceworktree isrunning; no--schedule. Do not edit the olddivergent shared llms-explorer checkout.
+
+Privatehub sourceworktree contains acceptedbundle; its validator passesaftercopy. Fullhubtests firstfailedcollectionbecauseexistinghubvenvlacksTextual; properisolatedmanifest-derivedcheckenv thenpassed1329tests42skipsin50seconds; Ruff/compilepass. Endordependency-reviewerbackendunavailable: exactTextual8.2.8package-riskUNKNOWN,EndorCLI127; nosecuritycertificationclaimed. No productiontradingenvironmentchanged.
+
+## 2026-11-12 — Complete bounded research and delivery receipts
+
+All thirteen concepts passed independent v4 gates: 406 unique assertions, comprising 320 SUPPORTED and 86 nonfactual statements. Both portable bundles verify 276 structured statements, 74 source records, 72 distinct source-body hashes, and 1,824 exact quote spans. The immutable artifact IDs are c6fbdd4c69d24a4b08b1c72e1a4619fd7a493b0d85237660602c6d9ed1ce208f and 21939f9c93000492ff85e2eb161de7067b7b319ece3917865705a062f1a360fd.
+
+The suite ends SATURATION-DISSENT at its three-round limit. Liquidity replenishment and resiliency remains a manual-only gap, CVS 4.30. No fourth round or ready research job was created. No current calibrated one-minute directional probability or profitable trading strategy is established. The historical HMM evidence retains its 2010 learning and 2011 evaluation scope.
+
+The shared source of truth is the private Global AI Hub corpus, entered through /Users/mitch/.global-ai-hub/llms-concepts/ultra-short-trading-sixty-second-full-suite-20261111.llms/llms.txt. Twenty-one source documents expose all 406 IDs and exact statements through twenty explicit navigation edges. Duplicate guidance views are references, not independent findings.
+
+Shared PR 159 merged c649b5214e8d453818254eb114e7adf148bb24f8. Shared PR 160 merged 06b54df87e8b204c9bb7bc171c97335c24b4e7ad. Source and portable evidence audits pass. Initial Neo4j acceptance independently verified 2,359 documents, 50,395 vectors, nine research documents and eight family links. All 2,318 previous document identities and 45,786 previous vectors were preserved. The complete source supplement requires its final stable installation and graph refresh/readback.
+
+Actual current completion beyond this source checkpoint is recorded in /Users/mitch/.global-ai-hub/research/.full-suite/ultra-short-macro-micro-20261111/audit/delivery-final.json and /Users/mitch/.global-ai-hub/research/.full-suite/ultra-short-macro-micro-20261111/audit/live-acceptance-final.json. Inspect those receipts before claiming complete installed delivery. Root changes remain workflow records, a shared-research pointer and required generated indexes. No trading code, strategy, configuration or orders changed.
+
+## 2026-11-12 — Original checkout recovery
+
+The original /Users/mitch/dev/solmargintrader directory disappeared during this task. Its linked worktree Git pointer became invalid. No cause is inferred. The three owned files were backed up with hashes under /Users/mitch/.global-ai-hub/research/.full-suite/ultra-short-macro-micro-20261111/root-checkpoint. An independent recovery audit matched the backup, old worktree and fresh clone. The pushed checkpoint fa679529ffeb4976cb351d4fba2290cbd367d7cf and PR 228 preserve the original branch.
+
+Recovery uses /Users/mitch/dev/worktrees/solmargintrader-ultra-short-recovery-20261112. Only the three verified task files were copied into it. The old task worktree and other worktrees were left untouched. Both shared canonical research artifacts remain intact. Finish PR 228 from the recovered clone, verify remote content, and restore the expected canonical path only from a clean verified checkout without overwriting any reappearing directory.
