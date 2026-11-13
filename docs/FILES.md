@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `0ccfdfb` (2026-11-13T08:49:32+00:00). 3598 tracked files, 90.7 MB.
+**Generated** from `index/INDEX.json` at commit `e19b692b` (2026-11-13T16:54:31+00:00). 3614 tracked files, 92.8 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2890 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 590/683 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (384 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2893 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 592/685 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (396 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -37,7 +37,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 155 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1956 files
-- [`research`](#research) — 280 files
+- [`research`](#research) — 296 files
 - [`oracle`](#oracle) — 43 files
 - [`extension`](#extension) — 131 files
 - [`executor`](#executor) — 48 files
@@ -95,7 +95,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.gitattributes`
 
-`other` · 28 lines · 744 B · description: **curated**
+`other` · 31 lines · 893 B · description: **curated**
 
 **Purpose.** Per-path git behaviour: line-ending normalisation, and which files are treated as binary or excluded from diffs and archives. Keeps a CSV or a generated artifact from producing noise in review.
 
@@ -343,7 +343,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 225 lines · 14,786 B · description: **curated**
+`doc` · 225 lines · 14,787 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -623,7 +623,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms.txt`
 
-`data` · 20 lines · 1,320 B · description: **derived**
+`data` · 24 lines · 1,632 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1970 lines · 428,739 B · description: **extracted**
+`doc` · 2077 lines · 438,728 B · description: **extracted**
 
-**Purpose.** Version: 519 Delta: v518 to v519; finish the fixed24hour ZEC capture and full MongoDB persistence audit. Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction.
+**Purpose.** Version: 525 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity. Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2181 lines · 127,900 B · description: **extracted**
+`doc` · 2195 lines · 128,401 B · description: **extracted**
 
-**Purpose.** Version: 236 Delta: v235 to v236; preserve both full user prompt histories while combining authenticated MCP and continuous forecast work. Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration.
+**Purpose.** Version: 238 Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests. Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34657 lines · 1,705,322 B · description: **extracted**
+`doc` · 34793 lines · 1,710,595 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1071,9 +1071,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-LAUNCH-READINESS.md`
 
-`doc` · 202 lines · 12,162 B · description: **extracted**
+`doc` · 230 lines · 13,780 B · description: **extracted**
 
-**Purpose.** Version: 0.1.3 Delta: Bind the combined website0.3.0 source, implemented finite preauthorization, completed fixture gates and remaining launch requirements. Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
+**Purpose.** Version: 0.1.4 Delta: Verify the dedicated live merchant and provisioned billing bindings; retain closed launch gates and explicit provider lifecycle gaps. Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
 
 **Use.** Read it.
 
@@ -21753,7 +21753,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-280 files.
+296 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21968,6 +21968,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 107 lines · 7,062 B · description: **extracted**
 
 **Purpose.** Version: 1 Delta: initial runnable catalog and preregistered selection method. The supplied `/Users/mitch/Downloads/Strategy Ensembles.md` is a hypothesis guide.
+
+**Use.** Read it.
+
+#### `research/ZEC-GRANULAR-BACKTESTS.md`
+
+`doc` · 79 lines · 10,162 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 The full finite matrix finished on 2026-11-13: **10,576 rows**, including 4,878 completed strategy/benchmark rows, 5,670 insufficient-warm-up rows and 28 explicit exclusions. Results describe one captured day; they do not establish a durable edge or 70% next-minute accuracy. At a 60 bps fee per fill, every active 1m spot policy lost money.
 
 **Use.** Read it.
 
@@ -22556,6 +22564,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Contents.** Defines `ROOT`, `VERSION`, `GUIDE`, `COSTS`, `sha()`, `atomic_json()`, `spec()`, `catalog()`, `component_specs()`, `_init_worker()` and 12 more. Depends on `backtester`.
 
 **Use.** `python3 research/zec_ensembles.py --help`
+
+#### `research/zec_granular.py`
+
+`code-python` · 572 lines · 27,336 B · description: **extracted**
+
+**Purpose.** Offline, receive-time ZEC tape replay. No network or live execution path. The book is sampled at the first received update in each UTC second. Orders wait at least one second after a closed-bar decision (or observed stop trigger), then use the first sampled book at/after eligibility. This is deliberately not an exchange matching-engine or queue-position simulation.
+
+**Contents.** Defines `VERSION`, `STEPS`, `NS`, `CAPTURE_HASH`, `CAPTURE_START`, `CAPTURE_END`, `DEPTH`, `LATENCY_NS`, `MAX_WAIT_NS`, `digest()` and 15 more. Depends on `backtester`, `research`.
+
+**Use.** `python3 research/zec_granular.py --help`
 
 ### `research/coin-intelligence/`
 
@@ -24199,6 +24217,16 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 
 **Use.** `python3 -m pytest research/tests/test_zec_ensembles.py -q`
 
+#### `research/tests/test_zec_granular.py`
+
+`test` · 226 lines · 10,940 B · description: **extracted**
+
+**Purpose.** Causal execution, coverage and book-capacity regression gates.
+
+**Contents.** Defines `fixture_tape()`, `class GranularReplay`. Depends on `backtester`, `research`.
+
+**Use.** `python3 -m pytest research/tests/test_zec_granular.py -q`
+
 ### `research/tradingview-script-profile-audits/`
 
 #### `research/tradingview-script-profile-audits/shard-a.jsonl`
@@ -24250,6 +24278,114 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** _No description available._
 
 **Use.** Read it.
+
+### `research/zec-granular-20261113.llms/`
+
+#### `research/zec-granular-20261113.llms/archive-manifest.json`
+
+`config` · 20 lines · 1,233 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (artifacts, attempt, report_sha256, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/audit-ledger.json`
+
+`config` · 22 lines · 593 B · description: **derived**
+
+**Purpose.** Generated JSON object, 13 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/audit-raw-book.json`
+
+`config` · 18 lines · 547 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (attempt, original_wal_sha256, records_verified, all_trade_rows_verified, book_samples_independently_sorted_from_raw, connection_ids...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/audit.json`
+
+`config` · 88 lines · 5,207 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/coverage.json`
+
+`config` · 35 lines · 810 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/identity.json`
+
+`config` · 61 lines · 5,662 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/llms-full.txt`
+
+`data` · 79 lines · 10,162 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/llms.txt`
+
+`data` · 16 lines · 1,021 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC captured-event backtests / Version: 1.0.1
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/manifest.json`
+
+`config` · 85 lines · 7,116 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/mongo-artifacts.json`
+
+`config` · 72 lines · 2,813 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (version, run_id, run_revision, mode, result_csv_sha256, result_csv_bytes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-granular-20261113.llms/plan.json.gz`
+
+`other` · 0 lines · 20,018 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/results.csv`
+
+`data` · 10578 lines · 1,904,716 B · description: **derived**
+
+**Purpose.** Generated data: 10576 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
+
+**Use.** Read it.
+
+#### `research/zec-granular-20261113.llms/summary.json`
+
+`config` · 879 lines · 29,411 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (attempt, capture_sha256, costs, coverage, matrix_rows, statuses...).
+
+**Use.** Configuration; nothing to run.
 
 ---
 
@@ -27049,9 +27185,9 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/README.md`
 
-`doc` · 819 lines · 52,471 B · description: **extracted**
+`doc` · 824 lines · 52,744 B · description: **extracted**
 
-**Purpose.** Run `solbot --help` for the complete ordered command walkthrough. `solbot ui open` starts the managed suite and opens its verified local control room. The component health and alerts, Chrome recovery, and macOS/Linux/Windows support.
+**Purpose.** The supervisor detects a frozen SQLite reader as well as a frozen writer. It defers only transient stopped-peer journal contention so its owned-process watchdog can recover without admitting another worker or losing checkpoint state.
 
 **Use.** Read it.
 
@@ -27413,7 +27549,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/src/botmanager/supervisor.py`
 
-`code-python` · 348 lines · 13,954 B · description: **extracted**
+`code-python` · 363 lines · 14,787 B · description: **extracted**
 
 **Purpose.** Explicit foreground daemon, four process slots, no unbounded tick queue.
 
@@ -27763,7 +27899,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_load.py`
 
-`test` · 631 lines · 27,441 B · description: **extracted**
+`test` · 715 lines · 31,729 B · description: **extracted**
 
 **Purpose.** Real paper workers and a canonical optimizer over isolated numerical inputs.
 
@@ -27951,9 +28087,9 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/README.md`
 
-`doc` · 92 lines · 5,921 B · description: **extracted**
+`doc` · 95 lines · 6,078 B · description: **extracted**
 
-**Purpose.** The Oracle also runs an independent selected-strategy price projection. It defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds beside the forecast to set a per-coin horizon/cadence from 5 through 300 seconds.
+**Purpose.** This source version pins Bot Manager0.7.4 for frozen SQLite reader recovery. The metadata update does not promote or restart an existing owner environment. The Oracle also runs an independent selected-strategy price projection. It
 
 **Use.** Read it.
 
@@ -30713,7 +30849,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/README.md`
 
-`doc` · 265 lines · 15,326 B · description: **extracted**
+`doc` · 270 lines · 15,703 B · description: **extracted**
 
 **Purpose.** Cloudflare-hosted wallet account and research workspace. This is a separate web surface over the existing research tools. It never exposes the owner's control room, trading accounts, wallet keys or signing services.
 
@@ -31179,7 +31315,7 @@ CI. Runs the test suite and the figure verifier.
 
 #### `.github/workflows/ci.yml`
 
-`ci` · 481 lines · 21,163 B · description: **curated**
+`ci` · 481 lines · 21,196 B · description: **curated**
 
 **Purpose.** The gate. Runs the Python suite and `research/verify_numbers.py`, so a documented figure that no longer matches its result file fails the build rather than surviving in prose.
 

@@ -226,8 +226,13 @@ Nonsecret bindings:
 | `LIVE_EXECUTION_ENABLED` | Exact string `true` is required with a qualified customer executor; defaults to `false` |
 | `USER_TRADE_EXECUTOR` | Optional private Worker service binding; no customer signer is currently provisioned |
 
-Set `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `ENGINE_TOKEN` as Worker
-secrets through Wrangler. Never put values in the repository, browser, D1 bot
+The production Worker now has the three live Price IDs, explicit live portal,
+`STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` bound through Wrangler. The IDs
+use encrypted bindings too, although the identifiers themselves are not secrets.
+Both launch flags remain `false`; the hosted engine and customer executor are
+still missing. See `docs/ORACLEBOT-LAUNCH-READINESS.md` for the current boundaries.
+
+Set private credentials and `ENGINE_TOKEN` as Worker secrets through Wrangler. Never put values in the repository, browser, D1 bot
 configuration, logs or chat. Use test mode until signed Checkout, subscription,
 cancellation and entitlement behavior have been verified end to end.
 

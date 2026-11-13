@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 522
+Version: 525
+Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
+Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
+Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
+Parallel billing delta: v519 to v520; verify dedicated live Stripe merchant, configure provider objects and bind Worker while preserving closed launch gates.
 Delta: v521 to v522; bind full Mongo artifact readback and local delivery gates.
 Delta: v520 to v521; record completed, independently audited ZEC captured-event matrix.
 Delta: v519 to v520; start isolated captured-event ZEC simulation and preserve the fixed source.
@@ -1971,6 +1975,51 @@ The exactnewshutdowncase reproducesoldNoMatches withactualRED1/finalizer1 andzer
 - Combined Oraclebot local promotion TASK-2093 is complete independently, from PR234 merge0ccfdfb into /Users/mitch/.venvs/oraclebot-combined-ui-0.4.12, source fingerprint3cf126afad3f20412e829e6199c4681d6b07953f08b884a8edb551f9f3f42760. ActualUI http://127.0.0.1:50028; control88231/forecast88247/observer88391, observer1.2.1. Acceptance /Users/mitch/.local/state/oraclebot-combined-promotion-20261113/acceptance.json SHA744c0a4b0c9583e1899f3ae1fa1eabdea6d88ab427bf09e52a5d36dbb4ca6317 passes20gates including installedTUI shutdown. Originalpipeline56618/0.4.8 andrecorder1673/settings preserved. These process IDs are snapshots. This capture-doc update changes no packaged runtime source.
 - Final documentation source delivery is pending this checkpoint; read /Users/mitch/.local/state/solmargintrader/market-captures/zec-final-audit-20261113/delivery.json for actual merge/CI/default and cleanup. Do not infer delivery from the pre-merge continuation.
 
+## 2026-11-13 — Live Stripe setup, public launch still gated
+
+Target: the owner supplied a replacement live STRIPE_ORACLEBOT_SEC_KEY in
+/Users/mitch/.env. The file remains0600; no credential value entered the repo.
+Stele tasks: live provider setup TASK-2105, Worker binding TASK-2107 and delivery
+TASK-2108. Broader hosted engine/customer execution work remains unfinished.
+
+Verified live merchant registered to https://oraclebot.io with charges/payouts
+enabled, card_payments active and no currently due requirements. Reused the
+owner's three exact live monthly999/2999/4999USD Prices. Created a dedicated live
+portal and four-event lifecycle webhook pinned2026-10-28.endive. Provider IDs
+and sanitized readbacks live outside Git under
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/. The signing secret is
+private0600; the live API key remains only in the owner's original file.
+
+Stripe rejects a same-product portal with three duplicate monthly intervals.
+Only the exact owned unused candidate product/three Prices were archived; the
+original catalog was preserved. The accepted three-product portal requests
+period-end lower-price changes and preserves trials, but actual downgrade timing
+remains unverified and must pass before launch. No customers, subscriptions,
+invoices, charges, Checkout sessions or trades were created.
+
+Wrangler secret bulk exited0 and deployed version
+07171eac-6e7b-4424-875b-140f80fe2d59 at100 percent. Its six Stripe bindings are
+secret_text. Both launch/execution flags stayfalse; no engine/executor binding
+was added. Source remains website0.3.0. Local129website tests and syntax checks
+exited0. Independent loaded-state acceptance passed73/73checks (exit0), including
+exact live object readbacks, unchanged Worker code/runtime/prior bindings, source
+asset matches and no-write correct/incorrect webhook signature refusals. Receipt:
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/acceptance/receipt.json
+SHA2560f8b9e6ffdf8ea1a64a51edb2cce9f37c2b328a08e8a81bd15c766db60566881.
+The initial documentation gate exited1 because the UI-only environment omitted
+executor/solders imports. Reusing the archived full dependency environment with
+explicit current executor/src and repository PYTHONPATH passed the unchanged
+gate (exit0), discovering3224cases; none of those suites was rerun by discovery.
+No dependency was installed or running environment modified. PR delivery and final
+CI/merge receipts are recorded externally in the same state directory. Postman1.87.0 is initialized but signed out and
+reports behind skill assets; no cloud Postman resources were provisioned. Orbit
+public discovery returned HTTPError; provider documentation/Stripe connector
+search and Context7 supplied the API contract.
+
+Remaining: verify provider delivery and complete test trial/renewal/plan-change/
+cancellation lifecycle; build and qualify hosted canonical analysis and actual
+customer-owned execution/delegation. Keep public billing off meanwhile.
+
 ## 2026-11-13 — Captured ZEC matrix in progress
 
 MILE-2097 owns preparation TASK-2098, execution TASK-2099, independent audit TASK-2100 and publication TASK-2101. Source master81e3dba is preserved. Worktree /Users/mitch/dev/solmargintrader-zec-granular-20261113. Inputs: fixed capture50dbd4f31de24c36a30d8c3786495ad5, 1459542 records, SHA256 eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31. Interpret intervals as closed UTC receive-time signal bars. Use trade events and displayed depth with explicit costs/latency. Preserve gaps and insufficient warmup as exclusions. No live orders, capture extension, runtime promotion or embedding/inference. Enumerate full registry plus finite ensemble and Volty catalogs before reporting. Remaining: implement causal adapter, tests, run matrix, independent audit, publish source/report and Mongo/graph artifacts.
@@ -1982,3 +2031,46 @@ Attempt03 completed exit0 in /Users/mitch/.local/state/solmargintrader/zec-granu
 ## ZEC final delivery checkpoint
 
 All14Mongo artifacts persisted through revision18. Reassembled all8compressedCSVparts from server and compared1904716bytes exactly, SHA2560cf84609dce34714c29730709bb717032c795cec5b3acd075dd433545db809b3. Final reportv1.0.1, frozen plan, audit, summary and runmanifest independently readback byte-identical. Public14-filefamily has archive-manifest.json; resultsCSVpreservesauditedCRLFbytes via specific.gitattributes rule. Required local targeted39tests,ruff,check_docs and deterministic index verification all exit0. Canonical literature concepts untouched; no paidresearch or embedding. Final task publication remains open only until push/PR/requiredCI/merge/contentreadback/ownworktreecleanup finish. Delivery receipt and exact mergedcommit belong in /Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/delivery.json and graph TASK-2101/MILE-2097.
+
+The first combined final CI at7df22b53failed website public research export and
+ecosystem packaged wiki freshness; ecosystem291tests themselves passed. The
+concurrent merged ZEC report and changed readiness/website documentation require
+deterministic derivative refreshes. Refresh the public research bundle, packaged
+wiki/operation inventories and offline indexes using existing builders; preserve
+failed CI receipts. These are compiled public content, not new research or an
+engine/execution change. Publish the refreshed public assets only after final
+passing checks; then repeat bounded independent loaded-state acceptance.
+
+Required macOS CI7df22b53also failed test_load forced-linux numerical fixture:
+Ledger.connection db.commit raised sqlite3.OperationalError database is locked
+through Supervisor.step -> ledger.stopped. The unchanged0.7.3 watchdog probes
+BEGIN IMMEDIATE, which permits SHARED readers, so an arbitrarily SIGSTOPped
+worker can block commit while evading that probe. Its precise SQLite lock state
+was not logged in CI. TASK-2110 owns a deterministic reader-lock regression and
+bounded recovery fix; manager source advances0.7.4 and its dependent ecosystem
+package advances0.4.13 with the matching exact manager pin. Installed owner
+environments remain untouched;0.4.12 acceptance remains historical to that prefix. Do not weaken existing load
+timing/state assertions or promote owner services as part of the repair.
+Stele transport closed during release/link writes; exact operations are queued
+as outbox a8a5dc73 and68ccd1fb. Final correction verification and delivery evidence
+are retained under /Users/mitch/.local/state/oraclebot-live-billing-20261113/.
+
+The deterministic real-process reader regression reproduced the old commit-lock
+boundary (exit1/1.260s) and passes the corrected source (exit0/14.238s). Full
+test_load passes8/8(exit0/73.266s), including original macOS/forced-Linux loads,
+reserved/exclusive writers, shutdown and nontransient error propagation. Existing
+15second/state assertions remain intact. Independent source-hash-bound review
+found no material issue. Worker receipt and14artifact manifest:
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/watchdog-fix/receipt.json
+and /Users/mitch/.local/state/oraclebot-live-billing-20261113/watchdog-fix/files.json.
+Owned observed subprocesses are gone. The e19pre-fix required CI passed14checks
+with2intentional skips, but does not certify the subsequent watchdog correction.
+
+Adjacent supervisor/recovery39tests pass exit0 from a file-based guarded spawn
+entrypoint. The earlier stdin runner failed1 with6FileNotFoundError/<stdin>
+spawn failures; that harness error was corrected without changing source/tests.
+Both logs are retained under watchdog-fix. SQLite current transaction docs confirm
+COMMIT can return BUSY with an open reader; EXCLUSIVE detects that reader outside
+WAL, while IMMEDIATE/EXCLUSIVE coincide under WAL.
+
+The verified reader-lock lesson is queued through Stele outbox 686aa42d.

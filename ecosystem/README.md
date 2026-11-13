@@ -1,4 +1,7 @@
-# Paper ecosystem control room 0.4.12
+# Paper ecosystem control room 0.4.13
+
+This source version pins Bot Manager0.7.4 for frozen SQLite reader recovery.
+The metadata update does not promote or restart an existing owner environment.
 
 The Oracle also runs an independent selected-strategy price projection. It
 defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds

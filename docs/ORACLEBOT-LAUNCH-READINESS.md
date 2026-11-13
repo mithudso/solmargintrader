@@ -1,16 +1,15 @@
 # Oraclebot launch readiness
 
-Version: 0.1.3
-Delta: Bind the combined website0.3.0 source, implemented finite preauthorization, completed fixture gates and remaining launch requirements.
+Version: 0.1.4
+Delta: Verify the dedicated live merchant and provisioned billing bindings; retain closed launch gates and explicit provider lifecycle gaps.
 Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
 
 ## Why the free trial did not start
 
-The last recorded public health observation reports website `0.1.0`, storage
-configured, and billing, analysis engine and live execution unavailable. It is
-historical evidence, not a fresh observation of the pending release. A connected
-Stripe assistant does not provision credentials in the deployed Worker. Binding
-flags also do not prove a database operation, engine job or subscription lifecycle.
+The deployed website is `0.3.0`. Accounts and storage are configured. New
+Checkout remains deliberately disabled because the hosted analysis engine and
+customer execution service are unfinished. The new live Stripe key resolves the
+billing credential gap; it does not start a trial or qualify those services.
 
 The owner has now chosen all three USD monthly plans. Do not ask for pricing
 again:
@@ -22,43 +21,72 @@ again:
 | Unlimited | $49.99 | Unlimited | Unlimited |
 
 The first eligible subscription receives seven free days. Configured paper
-records reserve slots; paused and archived records release them. The pending
+records reserve slots; paused and archived records release them. The deployed
 website `0.3.0` implementation enforces these policies atomically, keeps one
 backtest in flight per account, and keeps Checkout explicitly disabled until the
 promised hosted service qualifies. Unlimited counts do not remove resource or
 risk limits. Creating a paper definition does not start an execution worker.
 
-Dedicated local credentials can read the owner's exact three existing Prices
-and portal, all in **test mode**. The supplied account number differs from the
-key's account response; Connect scoping was refused. Access to those exact test
-objects is verified, but live merchant ownership is not inferred from it. Test
-account readiness flags do not establish live activation or KYC status.
+On 2026-11-13 a private Stripe account read verified the replacement dedicated
+**live** secret key against the merchant registered to `https://oraclebot.io`.
+Card payments, charges and payouts are enabled; Stripe reports no currently due
+requirements. The original three live USD monthly Prices were reused. The
+publishable key is not required by this server-side Checkout redirect flow.
 
-The exact test portal now allows the three plans, preserves the remaining trial,
-disables quantity changes, invoices prorated upgrades and schedules lower-price
-downgrades at period end. Cancellation and payment updates were preserved. No
-customer, subscription, invoice or charge was created by this configuration.
-Its test identifiers and credentials are not production billing configuration.
+A dedicated live portal and four-event webhook were created. All six billing
+bindings were provisioned together through Wrangler: three Price IDs, the portal
+configuration, secret key and webhook signing secret. Provider IDs and credentials
+remain in private operational configuration; no real customer, subscription,
+invoice or charge was created by this setup.
+
+The live portal permits price-only changes, preserves the remaining trial,
+requests immediately invoiced prorations and period-end lower-price changes,
+and enables period-end cancellation, payment updates and invoice history.
+These are accepted configuration values, not demonstrated subscription outcomes.
+Stripe's guide restricts scheduled downgrades to the same product, while the API
+rejects duplicate monthly intervals within one product's portal price list.
+The original three-product catalog was preserved. Only the unused candidate
+product and its three Prices created during this setup were archived. Verify
+actual cross-product plan-change timing in test mode before paid activation;
+implement a server-owned schedule if the portal cannot honor the policy.
+
+The live webhook is pinned to API version `2026-10-28.endive` and receives only
+`checkout.session.completed` and `customer.subscription.created`, `.updated`
+and `.deleted`. Independent acceptance passed73bounded checks, including correct/incorrect
+webhook signing-secret refusals using missing-id payloads that stop before
+database operations. These checks do not prove a delivery from
+Stripe or a complete trial, renewal, upgrade, downgrade or cancellation lifecycle.
+
+The billing-only Cloudflare version is
+`07171eac-6e7b-4424-875b-140f80fe2d59`; its source remains website `0.3.0`.
+Both launch flags remain `false`. Independent acceptance and sanitized setup
+receipts are recorded separately under:
+
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/
 
 ## Current capability boundaries
 
 | Capability | Implemented | Still required |
 | --- | --- | --- |
-| Website and research journal | Cloudflare Worker, responsive workspace, deterministic public research archive and combined website0.3.0 source | Final source delivery, deployment acceptance and evidence-backed article expansion |
-| Accounts | Solana wallet challenge, signature verification, hashed server session, tenant D1 records and fenced browser account transitions | Verify the final deployed wallet, isolation and cleanup round trip |
-| Membership | Seven-day trial, three plan policies, atomic usage limits, canonical signed webhook handling and configured portal | Matching live merchant credentials/objects, webhook delivery and complete billing lifecycle acceptance |
+| Website and research journal | Delivered Cloudflare Worker0.3.0, responsive workspace and deterministic public research archive | Evidence-backed article expansion |
+| Accounts | Solana wallet challenge, signature verification, hashed server session, tenant D1 records and fenced browser account transitions | Real customer wallet-extension acceptance; synthetic hosted isolation/cleanup already passed |
+| Membership | Seven-day trial, three plan policies, atomic usage limits, canonical signed webhook handling and configured portal | Actual webhook delivery, complete test billing lifecycle and plan-change timing acceptance |
 | Backtests | Read-only CPython adapter, canonical exposure strategies and cached bars with costs/provenance | Hosted runtime, maintained public data, durable jobs/resource limits and remaining local runner parity |
 | Hosted Oracle | Read-only per-coin archive adapter, eligibility ranking and freshness refusal | Dedicated feed/Oracle writers, durable archives, restart ownership and actual fresh hosted acceptance |
 | Coinbase bots | Tenant-owned inert paper definitions | Customer-specific venue connection, execution, risk enforcement, reconciliation and recovery |
 | Jupiter leveraged positions | Configuration surface | Supported perpetual-position integration, the customer's actual delegated signing authority and verified economics |
-| Agent MCP | Wallet-bound OAuth PKCE S256, scoped MCP status and trade intents, separately signed finite preauthorization, atomic budget reservations and immediate grant revocation | Final deployed authentication/isolation acceptance and the actual customer execution/delegation path |
+| Agent MCP | Wallet-bound OAuth PKCE S256, scoped MCP status and trade intents, separately signed finite preauthorization, atomic budget reservations and immediate grant revocation | Actual customer execution/delegation path; synthetic deployed authentication/isolation already passed |
 
-Local control-room `0.4.9` repair evidence remains historical. The separately
-accepted immutable forecast environment is `0.4.11`; the combined audited source
-is ecosystem `0.4.12`, Oracle `0.2.4` and observer `1.2.1`. Its promotion requires
-independent installed acceptance. The active local pipeline remains on its
-original `0.4.8` bundle and cohort. Local control-room and forecast improvements
-do not connect the public hosted engine.
+The combined local control-room environment ecosystem `0.4.12`, Oracle `0.2.4`
+and observer `1.2.1` completed independent installed acceptance with twenty
+passing gates. Earlier `0.4.9` and `0.4.11` evidence remains historical. The active
+local pipeline retains its original `0.4.8` bundle and cohort. Local control-room
+and forecast improvements do not connect the public hosted engine.
+
+This follow-up also repairs a required-CI frozen SQLite reader recovery case in
+manager source `0.7.4`; ecosystem source `0.4.13` pins that manager version.
+The accepted installed `0.4.12` owner prefix was not modified or restarted.
+Source regression/CI checks are separate from a future owner runtime promotion.
 
 The combined website source passes129Node cases,28actualChrome groups,
 JavaScript quality, syntax and Worker dry-run checks. Successful executor
@@ -109,12 +137,12 @@ customer boundary.
 
 ## Inputs needed from the owner
 
-Pricing and the intended test portal are resolved. The remaining Stripe input
-is a dedicated **live secret key for the intended merchant**, once that account
-is activated. Keep it in private local configuration; do not paste it into chat.
-The agent can create matching live Products, Prices, portal configuration and
-webhook, then provision Worker secrets and verify them. The owner need not
-manually recreate the three plans or supply a webhook secret in advance.
+Pricing, the intended live merchant and the dedicated live key are resolved.
+The three existing live Prices, new live portal and webhook are configured in
+the Worker. No additional Stripe credential is required for this implementation.
+Keep credentials in private local configuration; do not paste them into chat.
+Actual provider delivery and billing lifecycle acceptance remain engineering
+work before activation, together with the unfinished hosted services.
 
 A card collected at signup, seven free days for an eligible first subscription,
 then the disclosed renewal and self-service cancellation remain the billing

@@ -80,8 +80,8 @@ sample do not establish a causal effect or a calibrated trading forecast.
 
 ## Managed bot suite
 
-The current coordinated source candidate is manager 0.7.3, research-runtime 0.4.1
-and ecosystem 0.4.6, with backtester 0.2.1, Oracle 0.2.4, optional executor 0.2.1
+The current coordinated source candidate is manager 0.7.4, research-runtime 0.4.1
+and ecosystem 0.4.13, with backtester 0.2.1, Oracle 0.2.4, optional executor 0.2.1
 and extension source 0.6.7. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
