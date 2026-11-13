@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 240
+Version: 241
+Delta: integration to v241; preserve concurrent local repair and expanded ZEC user requests.
+Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
+
 Delta: v239 to v240; preserve both concurrent local repairs and fee research requests.
 Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
 
@@ -2214,3 +2217,7 @@ Can you fix those issues?
 Owner clarification:
 
 > .25% and .15%
+
+## 2026-11-13 — Expanded ZEC strategies, shapes and frequency
+
+> Backtest all of the other strategies against ZEC in the same timeframes. Then do it again with the trading shapes as was done looking for macro graph patterns. And again looking for the frequency

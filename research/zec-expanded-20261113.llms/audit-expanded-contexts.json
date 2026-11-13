@@ -1,0 +1,15 @@
+{
+  "contexts_independently_checked": 4,
+  "fit_windows_independently_derived": 100,
+  "harmonic_selection_and_coefficients": "all100_direct_OLS",
+  "shape_contexts": "all_saved_labels_zones_positions_match_pinned_causal_detector",
+  "candidate_history_masks_checked": 81936,
+  "null_rows_checked": 200,
+  "null_replicates": 4999,
+  "full_null_models_reproduced": 3,
+  "holm_independently_verified": true,
+  "min_conservative_p": 0.0042,
+  "min_holm_p": 0.84,
+  "holm_significant_tests": 0,
+  "run_os_exit_code": null
+}

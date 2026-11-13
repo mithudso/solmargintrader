@@ -1,0 +1,11 @@
+{
+  "accepted_manifest": "/Users/mitch/dev/solmargintrader-zec-expanded-20261113/research/zec-granular-20261113.llms/manifest.json",
+  "hashes": {
+    "capture.json": "89502534e0f80f17475c3212a98f01ed24a4b4c5ac00c52a5bf488e036325e88",
+    "manifest.json": "fc78e47ac211bf55b47c21229b50c9e39bd3460a38be353330a92445d7eab106",
+    "tape.npz": "21db6ff5a1b6fdd12f887ef506f654ff634af3c355ca898d2f0838de09fd6f4c"
+  },
+  "parent": "/Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/attempt-03",
+  "prior_run": "run:55f2cb71690fb0115c42324012967ff835eb3137e4a7f3cd6a80522a335123d0",
+  "wal_sha256": "eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31"
+}

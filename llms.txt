@@ -25,3 +25,7 @@
 ## Confirmed lower-fee ZEC rerun
 - [0.25% and0.15% per-fill comparison](research/ZEC-GRANULAR-FEE-SENSITIVITY.md): unchanged data/strategy matrix, conditional maker-rate sensitivity.
 - [Complete empirical archive](research/zec-fee-sensitivity-20261113.llms/llms.txt): full results, parameters, independent audit and Mongo handles.
+
+## Expanded ZEC strategies, shapes and cycles
+- [Expanded comparison](research/ZEC-EXPANDED-STRATEGIES.md): 85,312 rows, both confirmed fees, matched controls and search-aware cycle tests.
+- [Complete empirical archive](research/zec-expanded-20261113.llms/llms.txt): finite executable census, results, audit and Mongo bindings.
