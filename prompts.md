@@ -1,8 +1,11 @@
 # Prompt history
 
-Version: 234
+Version: 235
+Delta: v234 to v235; preserve corrected MCP/preauthorization and parallel audit/dashboard prompts together.
 Delta: v233 to v234; add authenticated wallet-bound MCP and preserve corrected preauthorization preference.
 Delta: v232 to v233; preserve owner Stripe credential locations and three subscription tiers.
+Parallel audit delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Parallel audit delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
@@ -2081,6 +2084,35 @@ Keep Google Workspace
 ```text
 For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
 ```
+
+
+## Preserved parallel audit continuation
+
+
+## Imported upstream pipeline workflow from 93312fd7
+
+The following original-owner continuation/request is preserved verbatim. Its versions belong to that concurrent history; actual installed acceptance is in its private delivery receipt.
+
+## 2026-11-12 — Runtime recovery screenshot
+
+```text
+[Image #1]
+```
+
+The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.
+
+
+## Imported UI workflow from merged349d660f
+
+This exact source-stage history is preserved from concurrent dashboard delivery. Its pending-install statements describe the earlier source stage; the following current continuation supersedes status where noted.
+
+## 2026-11-12 — Unavailable dashboard values
+
+```text
+Everything is still showing as unavailable: [Image #1]
+```
+
+Screenshot supplied in conversation: `/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/C857DC45-1D2C-4900-8910-93132590C618-742-0000022FDE03BBDA/pasted-image-20261112-193001-CA3C900E-3B33-45FA-A0C5-654CCB9D80E3.png`. It shows one SOL RSI registration, no selected bot, unavailable Oracle votes, manager paper capital and manager paper P&L.
 
 ## 2026-11-12 — Oraclebot Stripe credential locations
 

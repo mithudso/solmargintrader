@@ -161,15 +161,32 @@ class OperationsTests(unittest.TestCase):
 
     def test_reports_do_not_claim_full_window_uptime(self):
         now = time.time()
-        ops.record(self.db, health(), now)
+        full = health()
+        full["components"].update(
+            {
+                key: {"ready": True, "state": "up", "reason": "available"}
+                for key in ops.RUNTIME_COMPONENTS
+            }
+        )
+        ops.record(self.db, full, now)
         with patch.object(ops, "notify"):
-            ops.reports(self.db, self.home, health(), {"pending": 0}, now)
+            ops.reports(self.db, self.home, full, {"pending": 0}, now)
         report = json.loads((self.home / "reports/latest.json").read_text())
         self.assertEqual(report["observed_checks"], 1)
         self.assertEqual(report["ready_checks"], 1)
         self.assertIsNone(report["max_gap_seconds"])
         self.assertNotIn("uptime_percent", report)
         self.assertIn("not continuous uptime", report["limits"][0])
+
+    def test_legacy_ui_only_samples_are_not_counted_as_runtime_success(self):
+        now = time.time()
+        ops.record(self.db, health(), now)
+        with patch.object(ops, "notify"):
+            ops.reports(self.db, self.home, health(), {"pending": 0}, now)
+        report = json.loads((self.home / "reports/latest.json").read_text())
+        self.assertEqual(report["observed_checks"], 0)
+        self.assertEqual(report["ready_checks"], 0)
+        self.assertEqual(report["excluded_legacy_availability_checks"], 1)
 
     def test_secret_file_requires_private_permissions(self):
         credential = self.home / "service.env"
@@ -197,6 +214,76 @@ class OperationsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unsafe_monitor_file"):
             ops.database(self.home)
         self.assertEqual(other.read_text(), "untouched")
+
+
+class RuntimeCoverageTests(unittest.TestCase):
+    def data(self):
+        return {
+            "phase": "forward_partial",
+            "supervisor_running": True,
+            "heartbeat_at": 1000,
+            "batch": {"phase": "forward_partial", "running": True},
+            "runtime_controls_observed": {
+                "oracle_enabled": True,
+                "batch_enabled": True,
+            },
+            "oracle": {"SOL": {"market": "available", "received_at": 999}},
+        }
+
+    def test_failed_workers_are_not_masked_by_running_control_server(self):
+        data = self.data()
+        data["supervisor_running"] = False
+        data["phase"] = "failed"
+        data["batch"].update(phase="failed", running=False)
+        rows = ops.runtime_health(data, 1001)
+        self.assertFalse(any(rows[key]["ready"] for key in ops.RUNTIME_COMPONENTS[:3]))
+
+    def test_live_pipeline_worker_oracle_and_market_are_required(self):
+        data = self.data()
+        rows = ops.runtime_health(data, 1001)
+        self.assertTrue(all(row["ready"] for row in rows.values()))
+        data["batch"]["running"] = False
+        self.assertFalse(ops.runtime_health(data, 1001)["backtest_worker"]["ready"])
+        data["heartbeat_at"] = 900
+        self.assertFalse(ops.runtime_health(data, 1001)["paper_pipeline"]["ready"])
+
+    def test_explicit_pause_does_not_page_or_claim_process_running(self):
+        data = self.data()
+        data.update(phase="stopped", supervisor_running=False)
+        rows = ops.runtime_health(data, 1001)
+        self.assertTrue(all(row["ready"] for row in rows.values()))
+        self.assertTrue(all(row["state"] == "paused" for row in rows.values()))
+
+    def test_missing_runtime_configuration_fails_closed(self):
+        rows = ops.probe_runtime({}, 1001)
+        self.assertFalse(any(row["ready"] for row in rows.values()))
+
+    def test_probe_uses_return_time_for_fresh_runtime_heartbeat(self):
+        data = {
+            "phase": "forward",
+            "supervisor_running": True,
+            "heartbeat_at": 1009,
+            "runtime_controls_observed": {
+                "batch_enabled": True,
+                "oracle_enabled": True,
+            },
+            "batch": {"running": True, "phase": "forward"},
+            "oracle": {"SOL": {"market": "available", "received_at": 1009}},
+        }
+        with (
+            patch.object(
+                ops, "probe_output", return_value=json.dumps({"ok": True, "data": data})
+            ),
+            patch.object(ops.time, "time", return_value=1010),
+        ):
+            rows = ops.probe_runtime(
+                {
+                    "pipeline_python": "/synthetic/python",
+                    "pipeline_home": "/synthetic/home",
+                },
+                1000,
+            )
+        self.assertTrue(rows["paper_pipeline"]["ready"], rows)
 
 
 class IndependentWatchdogTests(unittest.TestCase):

@@ -86,14 +86,14 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Installed solecosystem command parser and dispatch",
-      "lines": 216
+      "lines": 235
     },
     {
       "path": "ecosystem/runner.py",
       "component": "ecosystem",
       "kind": "python",
       "summary": "Resumable paper pipeline coordination",
-      "lines": 662
+      "lines": 731
     },
     {
       "path": "ecosystem/recovery.py",
@@ -107,7 +107,7 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Scoped paper actions and durable action receipts",
-      "lines": 924
+      "lines": 932
     },
     {
       "path": "ecosystem/web.py",

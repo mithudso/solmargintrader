@@ -481,7 +481,7 @@ class TestStrategiesTab(unittest.IsolatedAsyncioTestCase):
         async with app.run_test(size=TEST_SIZE) as pilot:
             await pilot.pause()
             app._open_strategy_file("not_a_real_strategy")
-            await pilot.pause()
+            # This method reports synchronously; a later Docs row event is unrelated navigation.
             self.assertIn("not in the Docs catalogue",
                           text_of(app, "#docs-view-status"))
 

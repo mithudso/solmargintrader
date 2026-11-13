@@ -177,12 +177,18 @@
     },
     {
       "path": "ecosystem/web/index.html",
-      "sha256": "fbfc17b06438f1012940846b06bb75f4003c49f8f6feb178ab4e757438f6f8db",
+      "sha256": "cef2c76ae9d894cc5984255eaf25fb65fc09c1fa3129821fa95d083be99ccdc6",
       "lines": 89,
-      "receipt": "runtime-supplement-health.json",
+      "receipt": "pipeline-ui-supplement-delta.json",
       "semantic_coverage": "complete source/asset inspection recorded in bound receipt",
       "read_evidence": {
-        "read_evidence": "bytes0-16000 and16000-31895 (all89lines); All placeholder/capability/owner/control IDs, named labels, disabled unavailable controls, escaped constant URLs/rel, explicit external chart/widget loading and separate paper/advisory versus manual wallet authority."
+        "prior_receipt": "runtime-supplement-health.json",
+        "baseline_sha256": "fbfc17b06438f1012940846b06bb75f4003c49f8f6feb178ab4e757438f6f8db",
+        "prior_full_read": {
+          "read_evidence": "bytes0-16000 and16000-31895 (all89lines); All placeholder/capability/owner/control IDs, named labels, disabled unavailable controls, escaped constant URLs/rel, explicit external chart/widget loading and separate paper/advisory versus manual wallet authority."
+        },
+        "complete_reviewed_HTML_delta": "pipeline-ui-supplement-delta.json",
+        "semantic_focus": "Reviewed all8HTML delta lines: unique shadow-leader inert text target initially hidden, visible summary names tied to selected independent trial, retained labels/semantic section, no new remote script/authorization/order capability. Full mocked DOM suite and root actualChrome acceptance are separate evidence."
       },
       "classification": "html"
     },

@@ -1,4 +1,4 @@
-# Paper ecosystem control room 0.4.6
+# Paper ecosystem control room 0.4.10
 
 The headless service coordinates the existing F5 Backtester, prospective forward
 trials, per-instrument Oracle archives and Bot Manager. Its independent local
@@ -28,9 +28,31 @@ See [the measured ZEC study](../docs/ZEC-ENSEMBLE-STUDY.md) and
 see [managed operations](../docs/bot-manager-managed-suite.md).
 Persistent supervision, independent heartbeat alerts and daily reports are documented in
 [Oraclebot operations](../docs/ORACLEBOT-OPERATIONS.md).
-The primary home remains `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`.
+The operational primary home is `/Users/mitch/.local/share/solmargintrader/ecosystem-operational-20261112`.
+The older `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2` remains an archived cohort with its original code and Oracle policy guards.
 Existing 0.2.1/V1 research owners and their environments remain frozen. The new
 runtime must not resume a frozen F5 plan or relabel its Oracle policy.
+
+The fleet selects a sole research registration automatically. Its summary then
+shows that identity's configured capital per independent trial and costed paper
+result. A pending first outcome says **Awaiting first settlement**, with the
+recorded target time; that target does not guarantee settlement. Missing economic
+fields, recording gaps, expired outcomes, stale reports and identity mismatches
+remain explicit. The summary does not aggregate independent research notionals
+or substitute unrelated manager-account financials. Selecting a manager
+configuration retains the manager summary.
+
+The Oracle keeps its qualification rules. When no selected strategy qualifies,
+the dashboard explains the accuracy, resolved-evidence and warmup blockers. A
+separate current shadow leader shows an actual unexpired strategy direction,
+ranked by observed directional hit rate, then resolved count and strategy ID.
+It is labelled unqualified when excluded from the aggregate. Neither that rank
+nor the direction is a profit probability. Stale, wrong-instrument, mismatched
+strategy-version or unavailable source evidence withholds the shadow leader.
+
+This UI release can run in a separate installed control-room environment. Keep
+an already running paper pipeline on its original immutable package bundle and
+cohort. A dashboard update does not authorize changing its evaluation policy.
 
 All automated research and manager controls remain paper/disarmed. Oracle has no
 order path. Forward P&L uses source-resolved, non-overlapping virtual trials with

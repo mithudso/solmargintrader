@@ -360,6 +360,52 @@ class SupervisorTests(unittest.TestCase):
                 process.kill()
                 process.wait(5)
 
+    def test_legacy_service_refuses_an_installed_managed_suite(self):
+        import hashlib
+
+        from botmanager.service import service
+
+        agents = self.home / "agents"
+        agents.mkdir()
+        suffix = hashlib.sha256(str(self.home).encode()).hexdigest()[:12]
+        (agents / ("com.solmargintrader.suite." + suffix + ".plist")).write_text(
+            "owned fixture"
+        )
+        with (
+            patch("botmanager.service.sys.platform", "darwin"),
+            patch("botmanager.service.subprocess.run") as launch,
+        ):
+            status = service("status", self.home, agents_dir=agents)
+            self.assertTrue(status["managed_by_suite"])
+            self.assertFalse(status["definition_present"])
+            with self.assertRaisesRegex(ManagerError, "managed suite owns"):
+                service("install", self.home, agents_dir=agents)
+            launch.assert_not_called()
+        self.assertFalse(
+            (agents / ("com.solmargintrader.solbot." + suffix + ".plist")).exists()
+        )
+
+    def test_legacy_service_refuses_a_foreground_suite_without_a_plist(self):
+        import fcntl
+        import os
+
+        from botmanager.service import service
+
+        directory = self.home / ".suite"
+        directory.mkdir()
+        fd = os.open(directory / "owner.lock", os.O_CREAT | os.O_RDWR, 0o600)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            with (
+                patch("botmanager.service.sys.platform", "darwin"),
+                patch("botmanager.service.subprocess.run") as launch,
+            ):
+                with self.assertRaisesRegex(ManagerError, "managed suite owns"):
+                    service("install", self.home, agents_dir=self.home / "agents")
+                launch.assert_not_called()
+        finally:
+            os.close(fd)
+
     def test_explicit_service_install_uninstall_in_isolated_directory(self):
         import plistlib
 

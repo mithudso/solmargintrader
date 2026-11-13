@@ -37,12 +37,12 @@
         <div class="page-heading"><div><p class="page-kicker">The whole picture</p><h1 id="fleet-title">Your bots, in motion.</h1><p class="lede">Real registration and owner evidence. No live order controls.</p></div><button class="button secondary" id="refresh" type="button">Refresh now</button></div>
         <div class="workspace-run"><label for="active-run">Observed research run<select id="active-run"><option value="">Primary pipeline</option></select></label><span id="active-run-note">Primary pipeline · controls act on this run</span></div>
         <section class="aggregate-banner" aria-labelledby="aggregate-heading">
-          <div class="aggregate-copy"><p class="page-kicker">Oracle · selected strategy votes</p><h2 id="aggregate-heading">The aggregate, at a glance.</h2><p id="aggregate-reason">Waiting for fresh market and resolved strategy evidence.</p><a href="#oracle">Choose voters and inspect the evidence →</a></div>
+          <div class="aggregate-copy"><p class="page-kicker">Oracle · selected strategy votes</p><h2 id="aggregate-heading">The aggregate, at a glance.</h2><p id="aggregate-reason">Waiting for fresh market and resolved strategy evidence.</p><p id="oracle-shadow-leader" hidden></p><a href="#oracle">Choose voters and inspect the evidence →</a></div>
           <div class="aggregate-reading"><label for="oracle-instrument">Instrument</label><select id="oracle-instrument"><option value="SOL/USD">SOL/USD</option></select><strong id="aggregate-signal">Unavailable</strong><span id="aggregate-balance">No current vote balance</span><meter id="aggregate-meter" min="0" max="100" value="0" aria-label="Magnitude of signed weighted vote balance" hidden></meter><small id="aggregate-freshness">No prediction received</small></div>
         </section>
-        <div class="summary-strip" aria-label="Measured paper portfolio summary">
-          <div><span>Configured paper capital</span><strong id="paper-capital">Unavailable</strong><small id="capital-note">Waiting for Bot Manager</small></div>
-          <div><span>Manager paper P&amp;L</span><strong id="paper-pnl">Unavailable</strong><small id="pnl-note">No measured result received</small></div>
+        <div class="summary-strip" aria-label="Selected paper evidence and research coverage">
+          <div><span id="paper-capital-title">Selected trial capital</span><strong id="paper-capital">Unavailable</strong><small id="capital-note">Waiting for attributable owner evidence</small></div>
+          <div><span id="paper-pnl-title">Selected trial paper P&amp;L</span><strong id="paper-pnl">Unavailable</strong><small id="pnl-note">No measured result received</small></div>
           <div><span>Backtest coverage</span><strong id="backtest-coverage">Unavailable</strong><small id="backtest-note">Waiting for Backtester</small></div>
           <div><span>Registered bots</span><strong id="fleet-summary">Unavailable</strong><small id="fleet-note">Waiting for registration evidence</small></div>
         </div>

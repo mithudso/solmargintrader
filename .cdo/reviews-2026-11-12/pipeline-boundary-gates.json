@@ -1,0 +1,188 @@
+{
+  "schema": "bounded-runtime-gates-v1",
+  "observed_at": "2026-11-13T01:30:15.344366+00:00",
+  "status": "OWNED_TEMP_MOCK_BOUNDARY_GATES_GREEN",
+  "gates": {
+    "combined50": {
+      "source_receipt": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-7tukwlvc/result.json",
+      "source_receipt_sha256": "5a48574c477127bdfdf3fec2ff40d2f45fceb93ec90fa33c21d6c0e5444f6c4f",
+      "result": {
+        "status": "pass",
+        "tests": 50,
+        "discovered": 50,
+        "seconds": 1.833305249994737,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0,
+        "forbidden_events": [],
+        "negative_controls": [
+          {
+            "event": "open",
+            "detail": "/Users/mitch/.ssh/synthetic-guard-control"
+          },
+          {
+            "event": "subprocess.Popen",
+            "detail": "process/signal operation"
+          },
+          {
+            "event": "socket.connect",
+            "detail": "('127.0.0.1', 8788)"
+          },
+          {
+            "event": "socket.connect",
+            "detail": "('8.8.8.8', 443)"
+          },
+          {
+            "event": "os.kill",
+            "detail": "process/signal operation"
+          }
+        ],
+        "negative_controls_count": 5,
+        "owned_loopback_listeners": [
+          {
+            "port": 56955,
+            "object": 4463835328
+          }
+        ],
+        "subprocesses_admitted": 0,
+        "source_before": {
+          "scripts/oraclebot_ops.py": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6",
+          "scripts/oraclebot_watchdog.py": "555d3783e1c6ce455abdef2f62bfe6111bc3b9826f2464516efd67d4d635f168",
+          "scripts/test_oraclebot_ops.py": "c0aa9079a60a626273a1c711bfb0fdb0f74fbe5df1af497a497dad0ca1ae9e24",
+          "ecosystem/runner.py": "a5e51323e122d21fafac985a494bd897122e65157b8bc16d56f6557a38f53a17",
+          "ecosystem/pipeline_service.py": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da",
+          "ecosystem/tests/test_runner.py": "30190ff54408ced6cf34b7b8b6887322b1eb28ab1ea8fdbf938b34e64f0fff99"
+        },
+        "source_after": {
+          "scripts/oraclebot_ops.py": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6",
+          "scripts/oraclebot_watchdog.py": "555d3783e1c6ce455abdef2f62bfe6111bc3b9826f2464516efd67d4d635f168",
+          "scripts/test_oraclebot_ops.py": "c0aa9079a60a626273a1c711bfb0fdb0f74fbe5df1af497a497dad0ca1ae9e24",
+          "ecosystem/runner.py": "a5e51323e122d21fafac985a494bd897122e65157b8bc16d56f6557a38f53a17",
+          "ecosystem/pipeline_service.py": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da",
+          "ecosystem/tests/test_runner.py": "30190ff54408ced6cf34b7b8b6887322b1eb28ab1ea8fdbf938b34e64f0fff99"
+        },
+        "source_stable": true,
+        "temporary_state": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-7tukwlvc",
+        "limits": [
+          "Process-local audit hook and threads; no subprocess was admitted.",
+          "Loopback listener is the original test-owned synthetic HTTP server, using a fake temporary credential.",
+          "No provider/GitHub/Alertlane-owner endpoint or installed observer/service execution."
+        ]
+      }
+    },
+    "manager_service5": {
+      "source_receipt": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-ukt6plwv/result.json",
+      "source_receipt_sha256": "2cd6301feb2e1a76d42c1b403ee63b859d0608b0922be081b293de579298775f",
+      "result": {
+        "status": "pass",
+        "tests": 5,
+        "discovered": 5,
+        "seconds": 0.10728524999285582,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0,
+        "forbidden_events": [],
+        "negative_controls": [
+          {
+            "event": "open",
+            "detail": "/Users/mitch/.ssh/synthetic-guard-control"
+          },
+          {
+            "event": "subprocess.Popen",
+            "detail": "process/signal operation"
+          },
+          {
+            "event": "socket.connect",
+            "detail": "('127.0.0.1', 8788)"
+          },
+          {
+            "event": "socket.connect",
+            "detail": "('8.8.8.8', 443)"
+          },
+          {
+            "event": "os.kill",
+            "detail": "process/signal operation"
+          }
+        ],
+        "negative_controls_count": 5,
+        "owned_loopback_listeners": [],
+        "subprocesses_admitted": 0,
+        "source_before": {
+          "botmanager/src/botmanager/service.py": "069ea39313919cc0ad120ab2934de23eae92e0f8c03fa0651e7ec55a7779458a",
+          "botmanager/tests/test_supervisor.py": "d4348af6f6fef6a844cead4fd7848d1e1536684fb5d92e653ff0805a40d8e361"
+        },
+        "source_after": {
+          "botmanager/src/botmanager/service.py": "069ea39313919cc0ad120ab2934de23eae92e0f8c03fa0651e7ec55a7779458a",
+          "botmanager/tests/test_supervisor.py": "d4348af6f6fef6a844cead4fd7848d1e1536684fb5d92e653ff0805a40d8e361"
+        },
+        "source_stable": true,
+        "temporary_state": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-ukt6plwv",
+        "limits": [
+          "Process-local audit hook and threads; no subprocess was admitted.",
+          "Loopback listener is the original test-owned synthetic HTTP server, using a fake temporary credential.",
+          "No provider/GitHub/Alertlane-owner endpoint or installed observer/service execution."
+        ]
+      }
+    },
+    "inventory11": {
+      "source_receipt": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-0x_o5a1j/result.json",
+      "source_receipt_sha256": "f725006cae7f6d5e7ee49cb651741d989dea60c4c486db1f149edca4c1fa1fbe",
+      "result": {
+        "status": "pass",
+        "tests": 11,
+        "discovered": 11,
+        "seconds": 0.03804445901187137,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0,
+        "forbidden_events": [],
+        "negative_controls": [
+          {
+            "event": "open",
+            "detail": "/Users/mitch/.ssh/synthetic-guard-control"
+          },
+          {
+            "event": "subprocess.Popen",
+            "detail": "process/signal operation"
+          },
+          {
+            "event": "socket.connect",
+            "detail": "('127.0.0.1', 8788)"
+          },
+          {
+            "event": "socket.connect",
+            "detail": "('8.8.8.8', 443)"
+          },
+          {
+            "event": "os.kill",
+            "detail": "process/signal operation"
+          }
+        ],
+        "negative_controls_count": 5,
+        "owned_loopback_listeners": [],
+        "subprocesses_admitted": 0,
+        "source_before": {
+          "scripts/build_operation_inventories.py": "8556ba35492dcdaf5e9ca49c422782af46a0639a41a00401b9e183420e2d9cd6",
+          "backtester/tests/test_operation_inventories.py": "0b8da9d4f13cd7b8a3ca0890940fa067c02f050d2ae5284d69e5d31973a57ec7"
+        },
+        "source_after": {
+          "scripts/build_operation_inventories.py": "8556ba35492dcdaf5e9ca49c422782af46a0639a41a00401b9e183420e2d9cd6",
+          "backtester/tests/test_operation_inventories.py": "0b8da9d4f13cd7b8a3ca0890940fa067c02f050d2ae5284d69e5d31973a57ec7"
+        },
+        "source_stable": true,
+        "harness_sha256": "8b294f391c2b1622cda132948b066f76006f24aeb18a0c3cec974dfb086d5bf6",
+        "temporary_state": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-0x_o5a1j",
+        "limits": [
+          "Process-local audit hook and threads; no subprocess was admitted.",
+          "Loopback listener is the original test-owned synthetic HTTP server, using a fake temporary credential.",
+          "No provider/GitHub/Alertlane-owner endpoint or installed observer/service execution."
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Owned temporary files/SQLite/concurrency and original owned-loopback fixture only. All actual service/subprocess/notification/provider/owner operations refused; native calls mocked.",
+    "Installed manager/pipeline/observer unchanged by this audit portion. These bounded gates are separate from independently accepted installed UI behavior and complete combined255suite.",
+    "Initial private native Popen/native guard/URI preparation failures remain historical failed harness attempts; the exact final canonical counts are not promoted from those failures."
+  ]
+}
