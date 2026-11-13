@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 518
+Version: 519
+Delta: v518 to v519; finish the fixed24hour ZEC capture and full MongoDB persistence audit.
 Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction.
 Delta: v516 to v517; preserve final f7e8 macOS CI failure and narrow Textual shutdown correction before renewed delivery.
 Delta: v515 to v516; freeze the combined846-path source candidate and concrete final delivery checks.
@@ -1955,3 +1956,14 @@ The privateCloudflarebridge emptyoutput was WRANGLER_LOG=info suppressing logger
 
 
 The exactnewshutdowncase reproducesoldNoMatches withactualRED1/finalizer1 andzeroassertionfailures/forbiddeneffects/source drift. Currentfour-line is_runningguard passesGREEN0/finalizer0 andentire10-caseadvanced-order module0/85.679s, withzero forbidden/drift/leftovers. Independentbyte+ASTinverses restorebothfullf7filebaselines. Existingeconomicassertionsremainunchanged. ActualCI is_runningflagwasnotlogged, so noobservedflagisinvented. Public .cdo/reviews-2026-11-13/tab-activation-lifecycle.json bindsallsource/framework/review/gates. LegacyTUIRuff remains38identicaldiagnostics(old1/new1);testfileRuff0 andzeronewdiagnostics. Helper846/841+5 remains0review/0deferred. Canonicaldiscovery1564/four-suite3224doesnotreplacehistoricalfulla5051563proof. NewfinalCIstillrequired. Websiteandpublictreesremainexactf7reviewedbytes; no repeat129/28checksclaimednecessaryforthisPython-onlydelta.
+
+
+## TASK-1499 final24hour ZEC capture verified (v519)
+
+- Original Coinbase ZEC-USD window2026-11-12T04:56:27.224912Z–2026-11-13T04:56:27.224912Z completed without extension. Collector/uploader both completed and successfully exited0. Raw WAL1,561,825,045bytes contains1,459,542contiguous records, sequence1..N exactly once.
+- Read-only final audit compared ALL1,459,542MongoDB documents to full canonical uploader projections of corresponding WAL records, excluding only generated_id. Every parsed payload/exchange field/original nanosecond/run metadata/BSON millisecond timestamp matches. Exact native time-series namespace market_capture.events_zec_usd_857db4e0787d4d17bc41e5a3e34ecbec, received_at/meta/seconds, noexpiry. Upload offset equals full WAL bytes and no inflight. Actual audit process exit0; no data/service/checkpoint writes.
+- Counts:1,238,392l2update;134,746match;86,370heartbeat;7eachsnapshot/last_match/subscriptions/connection_open;6connection_gap. Preserve7segments,6reconnects,8observed public receipt gaps>2seconds(max17.307175s),54unobserved trade-ID candidates. Provider public book batches50ms; no uninterrupted/internalexchange completeness or predictive/profitability claim.
+- Evidence /Users/mitch/.local/state/solmargintrader/market-captures/zec-final-audit-20261113/final-audit.json SHA8d8808e35fec78a633037b426d114e58d57dd20c79538590a66576d0b7d7a26d; independent acceptance.json SHA549d4aab72394b36800c7ff9b5e0e11315ea9d9a5c57135b3571d1658c4ed9ed,16/16checks/nativecount/nine independent full-record samples/lifecycle. Full raw WAL SHAeea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31.
+- Original capture runtime/apps/certificate/URI2 configuration, data, sampled recorder and financial state unchanged. Frozen upload source remained1.0.1; this audit did not apply later source changes retroactively. Original user prompt remains preserved in prompts.md; this is its final continuation rather than a new commissioned study.
+- Combined Oraclebot local promotion TASK-2093 is complete independently, from PR234 merge0ccfdfb into /Users/mitch/.venvs/oraclebot-combined-ui-0.4.12, source fingerprint3cf126afad3f20412e829e6199c4681d6b07953f08b884a8edb551f9f3f42760. ActualUI http://127.0.0.1:50028; control88231/forecast88247/observer88391, observer1.2.1. Acceptance /Users/mitch/.local/state/oraclebot-combined-promotion-20261113/acceptance.json SHA744c0a4b0c9583e1899f3ae1fa1eabdea6d88ab427bf09e52a5d36dbb4ca6317 passes20gates including installedTUI shutdown. Originalpipeline56618/0.4.8 andrecorder1673/settings preserved. These process IDs are snapshots. This capture-doc update changes no packaged runtime source.
+- Final documentation source delivery is pending this checkpoint; read /Users/mitch/.local/state/solmargintrader/market-captures/zec-final-audit-20261113/delivery.json for actual merge/CI/default and cleanup. Do not infer delivery from the pre-merge continuation.

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `f7e8f79e` (2026-11-13T07:26:04+00:00). 3598 tracked files, 90.7 MB.
+**Generated** from `index/INDEX.json` at commit `0ccfdfb` (2026-11-13T08:49:32+00:00). 3598 tracked files, 90.7 MB.
 
 Regenerate with:
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1958 lines · 425,719 B · description: **extracted**
+`doc` · 1970 lines · 428,739 B · description: **extracted**
 
-**Purpose.** Version: 518 Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction. Delta: v516 to v517; preserve final f7e8 macOS CI failure and narrow Textual shutdown correction before renewed delivery.
+**Purpose.** Version: 519 Delta: v518 to v519; finish the fixed24hour ZEC capture and full MongoDB persistence audit. Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34649 lines · 1,705,028 B · description: **extracted**
+`doc` · 34657 lines · 1,705,322 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1007,9 +1007,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/MARKET-EVENT-CAPTURE.md`
 
-`doc` · 87 lines · 5,065 B · description: **extracted**
+`doc` · 153 lines · 8,611 B · description: **extracted**
 
-**Purpose.** Version: 1.0.2 Delta: preserve malformed event type labels as raw payloads while keeping status counters serializable. single Coinbase USD product. It does not sign, trade or alter the existing
+**Purpose.** Version: 1.0.3 Delta: record the completed 24 hour ZEC window and full MongoDB readback. Previous delta: preserve malformed event type labels as raw payloads while keeping status counters serializable.
 
 **Use.** Read it.
 
