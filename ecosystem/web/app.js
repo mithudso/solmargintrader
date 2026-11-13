@@ -686,7 +686,7 @@ function renderControl() {
     [["Owner", server.owner], ["Running", server.running === true ? "Yes" : server.running === false ? "No" : "Unavailable"], ["Process ID", server.pid], ["Heartbeat", timestamp(server.heartbeat_at)]].forEach(([name, value]) => {
       const group = node("div"); group.append(node("dt", name), node("dd", value)); facts.append(group);
     });
-    [["Snapshot age", finite(server.snapshot_age_s) ? `${server.snapshot_age_s.toFixed(1)} seconds` : undefined], ["Messages", server.messages], ["Snapshots", server.snapshots], ["Reconnects", server.reconnects], ["Recorded days", server.recorded_days], ["Live connection", typeof server.live === "boolean" ? server.live ? "Connected" : "Disconnected" : undefined], ["Service definition", typeof server.service?.definition_present === "boolean" ? server.service.definition_present ? "Installed" : "Absent" : undefined]].filter(([, value]) => value !== undefined).forEach(([name, value]) => {
+    [["Snapshot age", finite(server.snapshot_age_s) ? `${server.snapshot_age_s.toFixed(1)} seconds` : undefined], ["Messages", server.messages], ["Snapshots", server.snapshots], ["Reconnects", server.reconnects], ["Recorded days", server.recorded_days], ["Live connection", typeof server.live === "boolean" ? server.live ? "Connected" : "Disconnected" : undefined], ["Service definition", server.service?.managed_by_suite ? "Managed suite" : typeof server.service?.definition_present === "boolean" ? server.service.definition_present ? "Installed" : "Absent" : undefined]].filter(([, value]) => value !== undefined).forEach(([name, value]) => {
       const group = node("div"); group.append(node("dt", name), node("dd", value)); facts.append(group);
     });
     card.append(facts); servers.append(card);

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `e7194fe` (2026-11-12T22:18:54+00:00). 3354 tracked files, 80.4 MB.
+**Generated** from `index/INDEX.json` at commit `240e617` (2026-11-13T00:10:33+00:00). 3355 tracked files, 80.4 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2820 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 543/637 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2821 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 544/638 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (227 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -54,7 +54,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`coin-fit`](#coin-fit) — 6 files
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
-- [`ecosystem`](#ecosystem) — 61 files
+- [`ecosystem`](#ecosystem) — 62 files
 - [`executor`](#executor) — 47 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 5 files
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1295 lines · 244,950 B · description: **extracted**
+`doc` · 1326 lines · 253,777 B · description: **extracted**
 
-**Purpose.** Version: 480 Delta: v479 to v480; diagnose duplicate manager ownership and establish Oraclebot operations task. Delta: v478 to v479; close Cloudflare forwarding with owner Google Workspace exception.
+**Purpose.** Version: 484 Delta: v483 to v484; correct foreground diagnostic PID exposed by independent crash acceptance. Delta: v482 to v483; verify full runtime recovery, persistent ownership and managed-suite conflict guard.
 
 **Use.** Read it.
 
@@ -703,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2011 lines · 120,392 B · description: **extracted**
+`doc` · 2020 lines · 120,791 B · description: **extracted**
 
-**Purpose.** Version: 228 Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request. Delta: v226 to v227; preserve owner choice to retain Google Workspace.
+**Purpose.** Version: 229 Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts. Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request.
 
 **Use.** Read it.
 
@@ -911,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32557 lines · 1,627,907 B · description: **extracted**
+`doc` · 32567 lines · 1,628,585 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1007,9 +1007,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-OPERATIONS.md`
 
-`doc` · 125 lines · 7,132 B · description: **extracted**
+`doc` · 165 lines · 9,844 B · description: **extracted**
 
-**Purpose.** Version: 1.0.0 Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports. The existing Solbot suite owns the manager and independent local control room.
+**Purpose.** Version: 1.1.0 Delta: Supervise the actual paper pipeline, F5 worker and Oracle; preserve the failed historical cohort and require full runtime health. Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports.
 
 **Use.** Read it.
 
@@ -27773,7 +27773,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/src/botmanager/service.py`
 
-`code-python` · 221 lines · 8,103 B · description: **extracted**
+`code-python` · 237 lines · 8,838 B · description: **extracted**
 
 **Purpose.** Explicit per-home launchd installation from a stable installed environment.
 
@@ -28321,7 +28321,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `botmanager/tests/test_supervisor.py`
 
-`test` · 702 lines · 28,089 B · description: **none**
+`test` · 748 lines · 29,933 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28705,11 +28705,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## ecosystem
 
-61 files.
+62 files.
 
 #### `ecosystem/README.md`
 
-`doc` · 58 lines · 3,610 B · description: **extracted**
+`doc` · 59 lines · 3,778 B · description: **extracted**
 
 **Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
 
@@ -28735,7 +28735,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/cli.py`
 
-`code-python` · 213 lines · 8,279 B · description: **extracted**
+`code-python` · 232 lines · 8,794 B · description: **extracted**
 
 **Purpose.** Installable control surface for the paper ecosystem supervisor.
 
@@ -28745,7 +28745,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/control.py`
 
-`code-python` · 925 lines · 36,189 B · description: **extracted**
+`code-python` · 933 lines · 36,627 B · description: **extracted**
 
 **Purpose.** Durable, paper-only controls delegated to the established component owners.
 
@@ -28803,6 +28803,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** `import ecosystem.performance`
 
+#### `ecosystem/pipeline_service.py`
+
+`code-python` · 140 lines · 4,531 B · description: **extracted**
+
+**Purpose.** Install only the planned paper pipeline's foreground launchd owner.
+
+**Contents.** Defines `label()`, `definition()`, `registered()`, `operate()`, `main()`.
+
+**Use.** `python3 ecosystem/pipeline_service.py --help`
+
 #### `ecosystem/pyproject.toml`
 
 `config` · 23 lines · 728 B · description: **none**
@@ -28833,11 +28843,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/runner.py`
 
-`code-python` · 663 lines · 25,307 B · description: **extracted**
+`code-python` · 699 lines · 26,583 B · description: **extracted**
 
 **Purpose.** Durable paper-only supervisor over the existing F5 worker and recorder.
 
-**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `running()`, `plan()`, `status()`, `start()`, `stop()` and 3 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `running()`, `plan()`, `status()`, `start()`, `prepare_foreground()` and 4 more. Depends on `backtester`, `soltui`.
 
 **Use.** `import ecosystem.runner`
 
@@ -29073,7 +29083,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_runner.py`
 
-`test` · 182 lines · 7,379 B · description: **none**
+`test` · 220 lines · 9,161 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29215,7 +29225,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/app.js`
 
-`code-js` · 1125 lines · 90,307 B · description: **none**
+`code-js` · 1125 lines · 90,360 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -31219,17 +31229,17 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/oraclebot_ops.py`
 
-`code-python` · 526 lines · 19,804 B · description: **extracted**
+`code-python` · 738 lines · 27,677 B · description: **extracted**
 
 **Purpose.** Read-only Oraclebot operations observer; no trading or service repair commands. A separate launchd job samples the existing solbot owner. SQLite preserves incidents and delivery retries. Reports count observed samples, not uptime.
 
-**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe()`, `record()`, `class NoRedirect`, `ingest_token()` and 7 more.
+**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `RUNTIME_COMPONENTS`, `runtime_health()` and 12 more.
 
 **Use.** `python3 scripts/oraclebot_ops.py --help`
 
 #### `scripts/oraclebot_watchdog.py`
 
-`code-python` · 150 lines · 5,985 B · description: **extracted**
+`code-python` · 180 lines · 7,189 B · description: **extracted**
 
 **Purpose.** Independent GitHub-hosted availability observer for the Oraclebot Mac service.
 
@@ -31317,11 +31327,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_oraclebot_ops.py`
 
-`test` · 274 lines · 9,776 B · description: **extracted**
+`test` · 845 lines · 31,931 B · description: **extracted**
 
 **Purpose.** Synthetic observer transitions, retry delivery and independent outage checks.
 
-**Contents.** Defines `load()`, `health()`, `class OperationsTests`, `class IndependentWatchdogTests`.
+**Contents.** Defines `load()`, `health()`, `class OperationsTests`, `class RuntimeCoverageTests`, `class IndependentWatchdogTests`, `class ObserverBoundaryTests`, `class ObserverPositiveControls`, `class _WatchdogBoundaryResponse`, `class IndependentWatchdogBoundaryTests`, `class RemoteOrderTests`.
 
 **Use.** `python3 -m pytest scripts/test_oraclebot_ops.py -q`
 

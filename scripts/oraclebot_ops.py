@@ -15,9 +15,11 @@ import json
 import os
 import plistlib
 import re
+import selectors
 import shlex
 import signal
 import sqlite3
+import stat
 import subprocess
 import sys
 import threading
@@ -29,7 +31,7 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlsplit
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 LABEL = "com.mitchhudson.oraclebot-operations"
 COMPONENTS = ("suite", "manager", "control_room", "market_data")
 STOP = threading.Event()
@@ -64,19 +66,50 @@ def database(home):
     return connection
 
 
+def probe_output(solbot, limit=131072, timeout=15, *, arguments=None):
+    """Read both child pipes under one byte/deadline budget; never buffer a flood."""
+    command = arguments if arguments is not None else [str(solbot), "health-check"]
+    with subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env={**os.environ, "INDEX_NO_AUTO": "1"},
+    ) as child:
+        output = bytearray()
+        consumed = 0
+        deadline = time.monotonic() + timeout
+        try:
+            with selectors.DefaultSelector() as poller:
+                for name, pipe in (("stdout", child.stdout), ("stderr", child.stderr)):
+                    os.set_blocking(pipe.fileno(), False)
+                    poller.register(pipe, selectors.EVENT_READ, name)
+                while poller.get_map():
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise ValueError("probe_timeout")
+                    for key, _ in poller.select(min(remaining, 0.1)):
+                        chunk = os.read(key.fd, min(65536, limit + 1 - consumed))
+                        if not chunk:
+                            poller.unregister(key.fd)
+                            continue
+                        consumed += len(chunk)
+                        if consumed > limit:
+                            raise ValueError("probe_output_limit")
+                        if key.data == "stdout":
+                            output.extend(chunk)
+            remaining = deadline - time.monotonic()
+            if remaining <= 0 or child.wait(timeout=remaining):
+                raise ValueError("probe_failed")
+            return output.decode("utf-8")
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.wait(timeout=1)
+
+
 def probe(solbot):
     try:
-        result = subprocess.run(
-            [str(solbot), "health-check"],
-            capture_output=True,
-            check=False,
-            text=True,
-            timeout=15,
-            env={**os.environ, "INDEX_NO_AUTO": "1"},
-        )
-        if result.returncode or len(result.stdout) > 131072:
-            raise ValueError("probe_failed")
-        value = json.loads(result.stdout)
+        value = json.loads(probe_output(solbot))
         data = value.get("data")
         if value.get("ok") is not True or not isinstance(data, dict):
             raise ValueError("invalid_health")
@@ -101,7 +134,14 @@ def probe(solbot):
                 for key in COMPONENTS
             },
         }
-    except (OSError, subprocess.SubprocessError, ValueError, TypeError, AttributeError):
+    except (
+        OSError,
+        subprocess.SubprocessError,
+        ValueError,
+        TypeError,
+        AttributeError,
+        OverflowError,
+    ):
         return {
             "ready": False,
             "overall": "unknown",
@@ -109,6 +149,97 @@ def probe(solbot):
                 key: {"ready": False, "state": "unknown", "reason": "probe_unavailable"}
                 for key in COMPONENTS
             },
+        }
+
+
+RUNTIME_COMPONENTS = (
+    "paper_pipeline",
+    "backtest_worker",
+    "oracle_forecasts",
+    "oracle_market_data",
+)
+
+
+def runtime_health(data, now):
+    """Observe actual pipeline/worker/Oracle owners, separately from UI liveness."""
+    heartbeat_at = data.get("heartbeat_at")
+    fresh = type(heartbeat_at) in (int, float) and -5 <= now - heartbeat_at <= 30
+    active = data.get("supervisor_running") is True and fresh
+    paused = data.get("phase") == "stopped" and not data.get("supervisor_running")
+    controls = data.get("runtime_controls_observed", {})
+    batch = data.get("batch", {})
+    oracle_rows = data.get("oracle", {})
+    desired = {
+        "paper_pipeline": not paused,
+        "backtest_worker": not paused and controls.get("batch_enabled") is not False,
+        "oracle_forecasts": not paused and controls.get("oracle_enabled") is not False,
+        "oracle_market_data": not paused
+        and controls.get("oracle_enabled") is not False,
+    }
+    observed = {
+        "paper_pipeline": active,
+        "backtest_worker": active
+        and batch.get("running") is True
+        and batch.get("phase") not in ("failed", "stopped"),
+        "oracle_forecasts": active and controls.get("oracle_enabled") is True,
+    }
+    observed["oracle_market_data"] = (
+        bool(oracle_rows)
+        and active
+        and all(
+            isinstance(row, dict)
+            and row.get("market") == "available"
+            and type(row.get("received_at")) in (int, float)
+            and -5 <= now - row["received_at"] <= 15
+            for row in oracle_rows.values()
+        )
+    )
+    return {
+        key: {
+            "ready": bool(observed[key] or not desired[key]),
+            "state": "paused"
+            if not desired[key]
+            else "up"
+            if observed[key]
+            else "down",
+            "reason": "operator_paused"
+            if not desired[key]
+            else "available"
+            if observed[key]
+            else key + "_unavailable",
+        }
+        for key in RUNTIME_COMPONENTS
+    }
+
+
+def probe_runtime(config, now):
+    try:
+        python, home = config["pipeline_python"], config["pipeline_home"]
+        raw = probe_output(
+            python,
+            limit=524288,
+            arguments=[python, "-I", "-m", "ecosystem.cli", "status", "--home", home],
+        )
+        value = json.loads(raw)
+        if value.get("ok") is not True or not isinstance(value.get("data"), dict):
+            raise ValueError("pipeline_probe_failed")
+        return runtime_health(value["data"], now)
+    except (
+        OSError,
+        subprocess.SubprocessError,
+        ValueError,
+        TypeError,
+        AttributeError,
+        KeyError,
+        OverflowError,
+    ):
+        return {
+            key: {
+                "ready": False,
+                "state": "unknown",
+                "reason": "pipeline_probe_unavailable",
+            }
+            for key in RUNTIME_COMPONENTS
         }
 
 
@@ -135,7 +266,9 @@ def record(db, health, now, threshold=2):
                     "action": "trigger" if bad else "resolve",
                     "title": f"Oraclebot {component.replace('_', ' ')} {'unavailable' if bad else 'recovered'}",
                     "body": str(state.get("reason") or "unknown")[:120],
-                    "severity": "warning" if component == "market_data" else "critical",
+                    "severity": "warning"
+                    if component in {"market_data", "oracle_market_data"}
+                    else "critical",
                 }
                 db.execute(
                     "INSERT OR IGNORE INTO outbox(id,payload) VALUES(?,?)",
@@ -148,7 +281,8 @@ def record(db, health, now, threshold=2):
             )
         db.execute("DELETE FROM samples WHERE at < ?", (now - 90 * 86400,))
         db.execute(
-            "DELETE FROM outbox WHERE delivered=1 "
+            "DELETE FROM outbox WHERE (delivered=1 OR EXISTS "
+            "(SELECT 1 FROM metadata WHERE key='remote_superseded:' || outbox.id)) "
             "AND EXISTS (SELECT 1 FROM metadata WHERE key='notified:' || outbox.id) "
             "AND rowid NOT IN (SELECT rowid FROM outbox ORDER BY rowid DESC LIMIT 1000)"
         )
@@ -161,13 +295,34 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 def ingest_token(path):
     """Read only a static ingest credential from the existing private env file."""
+    limit = 65536
+    info = path.lstat()
     if (
-        path.is_symlink()
-        or path.stat().st_uid != os.getuid()
-        or path.stat().st_mode & 0o077
+        not stat.S_ISREG(info.st_mode)
+        or info.st_uid != os.getuid()
+        or info.st_mode & 0o077
+        or info.st_size > limit
     ):
         raise ValueError("private_credential_file_required")
-    for line in path.read_text().splitlines():
+    descriptor = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+    try:
+        info = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(info.st_mode)
+            or info.st_uid != os.getuid()
+            or info.st_mode & 0o077
+            or info.st_size > limit
+        ):
+            raise ValueError("private_credential_file_required")
+        with os.fdopen(descriptor, "rb") as stream:
+            descriptor = None
+            content = stream.read(limit + 1)
+        if len(content) > limit:
+            raise ValueError("private_credential_file_required")
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    for line in content.decode("utf-8").splitlines():
         key, sep, value = line.partition("=")
         if sep and key.strip() == "ALERTLANE_INGEST_TOKEN":
             values = shlex.split(value, comments=True)
@@ -207,7 +362,11 @@ def send_alert(url, token, identifier, payload):
             request, timeout=5
         ) as response:
             body = json.loads(response.read(8192))
-            if response.status != 202 or body.get("accepted") is not True:
+            if (
+                response.status != 202
+                or not isinstance(body, dict)
+                or body.get("accepted") is not True
+            ):
                 raise ValueError("alert_not_accepted")
     except urllib.error.HTTPError as error:
         error.close()
@@ -243,8 +402,10 @@ def deliver(db, config):
         )
     }
     for identifier, raw, remote_done in db.execute("""
-        SELECT id,payload,delivered FROM outbox WHERE delivered=0 OR NOT EXISTS
-        (SELECT 1 FROM metadata WHERE key='notified:' || outbox.id)
+        SELECT id,payload,delivered FROM outbox WHERE
+        (delivered=0 AND NOT EXISTS
+        (SELECT 1 FROM metadata WHERE key='remote_superseded:' || outbox.id))
+        OR NOT EXISTS (SELECT 1 FROM metadata WHERE key='notified:' || outbox.id)
         ORDER BY delivered, rowid LIMIT 20
     """).fetchall():
         payload = json.loads(raw)
@@ -257,6 +418,14 @@ def deliver(db, config):
                     "INSERT OR REPLACE INTO metadata VALUES(?,?)",
                     (local_key, "superseded"),
                 )
+                if not remote_done:
+                    db.execute(
+                        "INSERT OR REPLACE INTO metadata VALUES(?,?)",
+                        ("remote_superseded:" + identifier, "superseded"),
+                    )
+            # Never let an older component generation reopen a newer recovery.
+            # Superseded is distinct from remote acceptance: delivered stays0.
+            continue
         if not db.execute(
             "SELECT 1 FROM metadata WHERE key=?", (local_key,)
         ).fetchone() and notify(payload["title"], payload["body"]):
@@ -285,7 +454,8 @@ def deliver(db, config):
             db.execute("UPDATE outbox SET delivered=1 WHERE id=?", (identifier,))
         result["alertlane_accepted"] += 1
     result["alertlane_pending"] = db.execute(
-        "SELECT count(*) FROM outbox WHERE delivered=0"
+        "SELECT count(*) FROM outbox WHERE delivered=0 AND NOT EXISTS "
+        "(SELECT 1 FROM metadata WHERE key='remote_superseded:' || outbox.id)"
     ).fetchone()[0]
     result["notification_pending"] = db.execute("""
         SELECT count(*) FROM outbox WHERE NOT EXISTS
@@ -353,12 +523,17 @@ def reports(db, home, health, delivery, now):
     if local.hour >= 9 and not (folder / (previous_day + ".json")).exists():
         periods.append((previous_day, day_start, day_end))
     for name, start, end in periods:
-        samples = [
+        all_samples = [
             (at, json.loads(raw))
             for at, raw in db.execute(
                 "SELECT at,health FROM samples WHERE at>=? AND at<=? ORDER BY at",
                 (start, end),
             )
+        ]
+        samples = [
+            (at, value)
+            for at, value in all_samples
+            if all(key in value.get("components", {}) for key in RUNTIME_COMPONENTS)
         ]
         report = {
             "version": VERSION,
@@ -366,6 +541,7 @@ def reports(db, home, health, delivery, now):
             "period_start": start,
             "period_end": end,
             "observed_checks": len(samples),
+            "excluded_legacy_availability_checks": len(all_samples) - len(samples),
             "ready_checks": sum(row["ready"] for _, row in samples),
             "max_gap_seconds": max(
                 (b[0] - a[0] for a, b in pairwise(samples)), default=None
@@ -408,6 +584,17 @@ def reports(db, home, health, delivery, now):
 def tick(home, config, db):
     now = time.time()
     health = probe(config["solbot"])
+    health["components"].update(probe_runtime(config, now))
+    health["ready"] = health["ready"] and all(
+        health["components"][key]["ready"] for key in RUNTIME_COMPONENTS[:3]
+    )
+    health["overall"] = (
+        "down"
+        if not health["ready"]
+        else "degraded"
+        if any(not row["ready"] for row in health["components"].values())
+        else "up"
+    )
     record(db, health, now)
     delivery = deliver(db, config)
     delivery["external_heartbeat_accepted"] = heartbeat(config, health, now)
@@ -424,7 +611,7 @@ def tick(home, config, db):
     return result
 
 
-def main(argv=None):
+def _main(argv=None):
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("run", "once", "status", "install"))
@@ -434,32 +621,45 @@ def main(argv=None):
     parser.add_argument("--alertlane-url")
     parser.add_argument("--gh", type=Path)
     parser.add_argument("--github-repository", default="mithudso/solmargintrader")
+    parser.add_argument("--pipeline-python", type=Path)
+    parser.add_argument("--pipeline-home", type=Path)
     args = parser.parse_args(argv)
+    if args.action == "install" and not all(
+        (
+            args.solbot,
+            args.alertlane_env,
+            args.gh,
+            args.alertlane_url,
+            args.pipeline_python,
+            args.pipeline_home,
+        )
+    ):
+        parser.error(
+            "install requires --solbot, --alertlane-env, --alertlane-url, --gh, --pipeline-python and --pipeline-home"
+        )
     home = args.home.expanduser().absolute()
     if args.action == "status":
         result = json.loads((home / "status.json").read_text())
         result["fresh"] = -5 <= time.time() - result["observed_at"] <= 150
         print(json.dumps(result))
         return 0 if result["fresh"] else 1
+    config = None
+    if args.action != "install":
+        config = json.loads((home / "config.json").read_text())
+        if not isinstance(config, dict):
+            raise ValueError("invalid_monitor_configuration")
     db = database(home)
     if args.action == "install":
-        if (
-            not args.solbot
-            or not args.alertlane_env
-            or not args.gh
-            or not args.alertlane_url
-        ):
-            parser.error(
-                "install requires --solbot, --alertlane-env, --alertlane-url and --gh"
-            )
         config = {
             "solbot": str(args.solbot.absolute()),
             "alertlane_env": str(args.alertlane_env.absolute()),
             "alertlane_url": args.alertlane_url,
             "gh": str(args.gh.absolute()),
             "github_repository": args.github_repository,
+            "pipeline_python": str(args.pipeline_python.absolute()),
+            "pipeline_home": str(args.pipeline_home.absolute()),
         }
-        for executable in (args.solbot, args.gh):
+        for executable in (args.solbot, args.gh, args.pipeline_python):
             if not executable.is_file() or not os.access(executable, os.X_OK):
                 raise ValueError("installed_executable_required")
         ingest_token(args.alertlane_env)  # Validate without printing/copying it.
@@ -507,7 +707,6 @@ def main(argv=None):
             raise ValueError("monitor_registration_unknown")
         print(json.dumps({"installed": True, "plist": str(path), "app": str(app)}))
         return 0
-    config = json.loads((home / "config.json").read_text())
     with (home / "owner.lock").open("a+") as owner:
         fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
         if args.action == "once":
@@ -519,6 +718,19 @@ def main(argv=None):
             tick(home, config, db)
             STOP.wait(60)
     return 0
+
+
+def main(argv=None):
+    try:
+        return _main(argv)
+    except (OSError, ValueError, TypeError, KeyError, OverflowError, sqlite3.Error):
+        print(
+            "Oraclebot operations prerequisite unavailable. Verify --home, the installed "
+            "configuration/status, private credential file and declared executables; "
+            "see docs/ORACLEBOT-OPERATIONS.md before an explicit install or migration.",
+            file=sys.stderr,
+        )
+        return 3
 
 
 if __name__ == "__main__":

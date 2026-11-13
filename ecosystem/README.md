@@ -1,4 +1,4 @@
-# Paper ecosystem control room 0.4.4
+# Paper ecosystem control room 0.4.8
 
 The headless service coordinates the existing F5 Backtester, prospective forward
 trials, per-instrument Oracle archives and Bot Manager. Its independent local
@@ -23,7 +23,8 @@ See [the measured ZEC study](../docs/ZEC-ENSEMBLE-STUDY.md) and
 see [managed operations](../docs/bot-manager-managed-suite.md).
 Persistent supervision, independent heartbeat alerts and daily reports are documented in
 [Oraclebot operations](../docs/ORACLEBOT-OPERATIONS.md).
-The primary home remains `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2`.
+The operational primary home is `/Users/mitch/.local/share/solmargintrader/ecosystem-operational-20261112`.
+The older `/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2` remains an archived cohort with its original code and Oracle policy guards.
 Existing 0.2.1/V1 research owners and their environments remain frozen. The new
 runtime must not resume a frozen F5 plan or relabel its Oracle policy.
 

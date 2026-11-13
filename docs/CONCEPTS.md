@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-12T22:18:54+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T00:10:33+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1818 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1820 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -29,14 +29,14 @@ Strongest files:
 
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
-- `docs/FILES.md` (164 hits)
+- `docs/FILES.md` (165 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 - `research/TRADINGVIEW-SCRIPT-CARDS.md` (113 hits)
 - `research/tradingview-script-profiles/shard-b.jsonl` (100 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1818`
+Full list: `python3 index/search.py --concept risk-rails -n 1820`
 
 ### Cost model
 
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept lookahead -n 1456`
 
 ### On-chain execution reality
 
-`execution-onchain` · **796 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **799 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -106,13 +106,13 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (380 hits)
+- `docs/FILES.md` (381 hits)
 - `FILES.md` (283 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `memory.md` (149 hits)
+- `memory.md` (159 hits)
 - `docs/archive/memory-2026-11-10.md` (141 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 796`
+Full list: `python3 index/search.py --concept execution-onchain -n 799`
 
 ### Grid trading
 
@@ -173,7 +173,7 @@ Full list: `python3 index/search.py --concept benchmark -n 429`
 
 ### Evidence floor
 
-`evidence-floor` · **329 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **330 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 329`
+Full list: `python3 index/search.py --concept evidence-floor -n 330`
 
 ### Combinatorial purged cross-validation
 
@@ -258,7 +258,7 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 | Family | Files | Matched on |
 |---|---|---|
 | `trend` | 843 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 519 | `rsi`, `stochastic`, `oscillator` |
+| `oscillator-reversion` | 521 | `rsi`, `stochastic`, `oscillator` |
 | `momentum` | 432 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 370 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `baseline` | 363 | `buy_and_hold`, `baseline` |

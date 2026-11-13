@@ -786,7 +786,9 @@ class ControlPlane:
             {
                 "id": "manager",
                 "label": "Bot Manager",
-                "owner": "botmanager.service",
+                "owner": "botmanager.suite"
+                if service.get("suite_owner_lock_held")
+                else "botmanager.service",
                 "state": "running"
                 if service.get("supervisor_lock_held")
                 else "stopped",
@@ -796,8 +798,11 @@ class ControlPlane:
                     {
                         "action": "manager.service",
                         "label": "Install / start manager",
-                        "enabled": service.get("platform") == "darwin",
-                        "reason": None
+                        "enabled": service.get("platform") == "darwin"
+                        and not service.get("managed_by_suite"),
+                        "reason": "managed_by_suite"
+                        if service.get("managed_by_suite")
+                        else None
                         if service.get("platform") == "darwin"
                         else "macos_service_required",
                         "params": {"action": "install"},
@@ -805,8 +810,11 @@ class ControlPlane:
                     {
                         "action": "manager.service",
                         "label": "Uninstall / stop manager",
-                        "enabled": bool(service.get("definition_present")),
-                        "reason": None
+                        "enabled": bool(service.get("definition_present"))
+                        and not service.get("managed_by_suite"),
+                        "reason": "managed_by_suite"
+                        if service.get("managed_by_suite")
+                        else None
                         if service.get("definition_present")
                         else "service_not_installed",
                         "params": {"action": "uninstall"},

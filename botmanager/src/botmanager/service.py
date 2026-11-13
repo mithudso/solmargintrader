@@ -82,6 +82,13 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
         else Path.home() / "Library" / "LaunchAgents"
     )
     path = directory / (label + ".plist")
+    suite_label = (
+        "com.solmargintrader.suite."
+        + hashlib.sha256(str(home).encode()).hexdigest()[:12]
+    )
+    suite_definition = directory / (suite_label + ".plist")
+    suite_running = lock_held(home / ".suite/owner.lock")
+    managed_by_suite = suite_definition.is_file() or suite_running
     if action == "status":
         return {
             "platform": sys.platform,
@@ -89,6 +96,9 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
             "plist_path": str(path),
             "installed": path.is_file(),
             "definition_present": path.is_file(),
+            "managed_by_suite": managed_by_suite,
+            "suite_definition_present": suite_definition.is_file(),
+            "suite_owner_lock_held": suite_running,
             "registered": None,
             "registration_reason": "launchd_registration_not_queried",
             "supervisor_lock_held": lock_held(home / "supervisor.lock"),
@@ -100,6 +110,12 @@ def service(action: str, home: Path | None = None, *, agents_dir: Path | None = 
         raise ManagerError(
             "capability_unavailable",
             "Only explicit macOS launchd installation is supported.",
+            3,
+        )
+    if action == "install" and managed_by_suite:
+        raise ManagerError(
+            "suite_owner_conflict",
+            "The managed suite owns this manager; use its stack controls instead of installing a competing daemon.",
             3,
         )
     target = f"gui/{os.getuid()}"
