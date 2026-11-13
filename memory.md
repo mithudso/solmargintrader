@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 490
+Version: 491
+Delta: v490 to v491; record final installed acceptance and agreed independent feature publication.
 Delta: v489 to v490; accept installed preview and correct variable-interval API metadata.
 Delta: v488 to v489; pass editable forecast gates and promote an independently bound preview.
 Delta: v487 to v488; implement editable per-coin forecast horizon and cadence with evidence traces.
@@ -1382,3 +1383,13 @@ AuditPR234/frozenhead92c75a58468fccc0802c2945b7a4a282639ce764 mustmergefirst; cu
 - Source commit 0d7d8c9 is pushed in recoverable draft https://github.com/mithudso/solmargintrader/pull/244. Initial CI eleven success, targeted macOS pending. No merge is claimed.
 - After preview acceptance, corrected only display API metadata to report the requested seconds and supported 5–300 range rather than an obsolete fixed-ten-second field. Existing native-frequency read-only test now checks 17-second metadata. Forecast model, policy, traces and preference implementation remain identical to accepted preview.
 - Final source checks and immutable production bundle are in progress. Asked concurrent audit owner whether feature-first publication can safely avoid blocking this independent feature on its fresh roughly 41-minute frozen full suite. Until agreement, preserve the earlier audit-first source merge order. Do not alter or interrupt audit jobs.
+
+
+## TASK-2064 final installed build and publication contract (v491)
+
+- The concurrent audit owner approved publishing PR 244 first after this feature passes its own final checks. Its frozen full gate continues unchanged and does not certify the new forecast implementation. The later combined audit bundle reserves ecosystem 0.4.12 / Oracle 0.2.4; its separate task owns integration and later promotion. This replaces the earlier audit-first merge dependency for this feature.
+- Final immutable feature environment: /Users/mitch/.venvs/oraclebot-forecast-0.4.11. Ecosystem 0.4.11, Oracle 0.2.3; source fingerprint d9b9a6a5f352511c9e7173e3346adc58eb5074b01ba69bf3475e085da2ca3b0b. Actual final control room http://127.0.0.1:51241. The suite, default CLI, native helper, forecast service and observer forecast interpreter all use this final prefix. Old preview environments remain immutable and inactive.
+- Final independent installed checks verify loaded forecast/preferences/service/JS/HTML and corrected votes metadata, saved SOL 10 revision 2, supported 5–300 seconds, four fresh frames with gaps 9.726351/10.275933/9.752542 seconds and exact ten-second scheduled deadlines. Observed final forecast issuer and owner PID 72462. Observer reports all nine components up and an accepted external heartbeat.
+- Existing pipeline /Users/mitch/.venvs/oraclebot-pipeline-0.4.8/bin/python remains PID 56618, with the same configuration/run/batch/plist. Existing recorder remains PID 1673. No historical cohort, qualification threshold, account capital or signing state was changed.
+- Evidence: /Users/mitch/.local/state/oraclebot-forecast-10s-20261112/acceptance-final.json, final-installation.json, final-promotion.json, final-monitor-installation.json, final-gates.json, actual-cas-actions.json and actual-forecast-crash.json. Each source gate completed exit 0. Repo workflow record changes do not alter the packaged source fingerprint.
+- Publication: https://github.com/mithudso/solmargintrader/pull/244. At this checkpoint, final CI and merge remain in progress. Read /Users/mitch/.local/state/oraclebot-forecast-10s-20261112/delivery.json for the actual final PR state, merged commit, remote-default content verification and cleanup outcome; that receipt is updated after delivery. Do not infer a merge from this pre-merge continuation.
