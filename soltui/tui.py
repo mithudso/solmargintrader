@@ -5312,6 +5312,10 @@ class SolTuiApp(App):
         Repeat activations are cheap — Docs filters in memory, and Cumulative has
         an explicit Reload button for when results change underneath it.
         """
+        # Shutdown removes widgets before on_unmount; queued tab activations
+        # must not query removed controls or start another background read.
+        if not self.is_running:
+            return
         pane = event.pane.id if event.pane else ""
         if pane == "tab-cumulative" and not self._cumulative_loaded:
             self._cumulative_loaded = True

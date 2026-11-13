@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T06:19:48+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T07:26:04+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1925 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1926 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,7 +36,7 @@ Strongest files:
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1925`
+Full list: `python3 index/search.py --concept risk-rails -n 1926`
 
 ### Cross-asset and cross-timeframe transfer
 
@@ -154,7 +154,7 @@ Full list: `python3 index/search.py --concept data-integrity -n 759`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **518 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **519 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
@@ -169,7 +169,7 @@ Strongest files:
 - `docs/FILES.md` (85 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 518`
+Full list: `python3 index/search.py --concept benchmark -n 519`
 
 ### Evidence floor
 
@@ -259,7 +259,7 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 |---|---|---|
 | `trend` | 865 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 540 | `rsi`, `stochastic`, `oscillator` |
-| `baseline` | 450 | `buy_and_hold`, `baseline` |
+| `baseline` | 451 | `buy_and_hold`, `baseline` |
 | `momentum` | 438 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 373 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 287 | `breakout`, `bb_breakout`, `keltner` |

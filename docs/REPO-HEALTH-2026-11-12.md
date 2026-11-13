@@ -1,7 +1,7 @@
 # Oraclebot repository health audit — 2026-11-12
 
-Version: 0.1.12
-Delta: Combine complete audit, forecast and wallet-preauthorization source qualification; final CI/merge/deployment still require separate receipts.
+Version: 0.1.13
+Delta: preserve the failed final CI, prove the Textual shutdown counterexample, and track the new source-bound repair gates.
 
 This is a source-qualification checkpoint. Historical attempts below retain their exact source bindings. Current delivery and deployment state will be recorded in `/Users/mitch/.local/state/oraclebot-final-delivery-20261113/delivery.json`; its eventual receipt supersedes pre-publication pending statements here.
 
@@ -198,3 +198,10 @@ The source candidate combines all three monthly tiers, seven-day Stripe trial el
 The minimum Node declaration now matches the SQLite fixture API:22.16+ on the22LTS line or24+, with no dependency-version change. Official Node documentation records StatementSync.columns() added22.16.0. Runtime and lock metadata agree. The currently tested cached Node26 is supported; no claim of testing every supported minor version.
 
 The canonical combined source is ecosystem0.4.12/Oracle0.2.4/observer1.2.1/website0.3.0. Old installed0.4.11 and pipeline0.4.8 remain distinct until independently accepted promotion. The code audit remains globally partial for the recorded M3/M5/T4 limits. Current final CI, actual merge/default-content proof, Cloudflare migrations/deployment and installed/hosted acceptance will be recorded in the external final delivery receipt named above.
+
+
+## Final macOS lifecycle correction
+
+Final f7e8 CI completed14successful/3intentionallyskipped checks andonefailed targetedmacOS gate. Its877cases finished withoneerror: a queued advanced-order TabActivated event queried a removed wallet checkbox during run_test shutdown. The failedcandidate was notmerged, deployed or installed. A deterministic real-shutdown regression reproduces the exactNoMatches on oldsource with exit1, zeroassertionfailures/forbiddeneffects/source drift. The newcase raises the canonicalSolTUI census1563→1564 andfour-suitecount3223→3224; these are discoverycounts, not a freshfullsuitepass. The narrow lifecycle admission fix must pass its focused/module/sourcechecks and renewed final-headCI before delivery. Prior a505 full1563andall failed evidence retain their original identities.
+
+The matching shutdown regression nowpasses0 with the four-line is_running guard; the complete10-case advanced-order module passes0. Both byte/AST inverses restore the prior complete-reviewed source. No original economic assertions changed. Source review and final-headCI remain distinct; the failed CI did not log is_running, so the matching deterministic boundary is not invented as a recordedCI flag. The original38legacyTUI Ruff diagnostics remain unchanged, and test-fileRuff passes. See .cdo/reviews-2026-11-13/tab-activation-lifecycle.json for exactsource, review, RED/GREEN/module andqualification bindings.

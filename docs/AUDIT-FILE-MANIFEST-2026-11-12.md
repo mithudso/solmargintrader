@@ -1,7 +1,7 @@
 # Repository delivery file manifest
 
-Version: 0.1.4
-Delta: include combined continuous-forecast safeguards, website0.3.0 preauthorization, subscription schemas and bound review receipts.
+Version: 0.1.5
+Delta: include the deterministic Textual shutdown correction and bound final failure/repair evidence.
 
 This inventory names every repository path changed in the combined audit release relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints, independently delivered pipeline/UI/forecast changes, and the integrated website feature. The snapshot includes staged and unstaged tracked changes plus the task-owned new CDO receipt; ignored caches, credentials and private diagnostic artifacts stay outside the repository.
 
@@ -11,7 +11,7 @@ Implementation worktree: /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261
 Delivery PR: https://github.com/mithudso/solmargintrader/pull/234
 External final delivery receipt: /Users/mitch/.local/state/oraclebot-final-delivery-20261113/delivery.json
 
-Total repository paths: 619
+Total repository paths: 620
 
 - /Users/mitch/dev/oraclebot.io/.cdo/ledger.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-boundaries-tools.json — Source review and verification evidence
@@ -159,6 +159,7 @@ Total repository paths: 619
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-full-a505-completion.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-full-a505-independent.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/tab-activation-lifecycle.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-mcp-independent.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-preauthorization-cdo.json — Source review and verification evidence

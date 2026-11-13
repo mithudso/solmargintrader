@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `8e0942e3` (2026-11-13T06:19:48+00:00). 3597 tracked files, 90.8 MB.
+**Generated** from `index/INDEX.json` at commit `f7e8f79e` (2026-11-13T07:26:04+00:00). 3598 tracked files, 90.7 MB.
 
 Regenerate with:
 
@@ -16,7 +16,7 @@ Every entry marks where its description came from, because a generated one-liner
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
 - **extracted** (2890 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 590/683 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (383 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **derived** (384 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 160 files
+- [`.cdo`](#cdo) — 161 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1944 lines · 422,911 B · description: **extracted**
+`doc` · 1958 lines · 425,719 B · description: **extracted**
 
-**Purpose.** Version: 516 Delta: v515 to v516; freeze the combined846-path source candidate and concrete final delivery checks. Delta: v514 to v515; correct the documented Node SQLite floor without changing dependencies.
+**Purpose.** Version: 518 Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction. Delta: v516 to v517; preserve final f7e8 macOS CI failure and narrow Textual shutdown correction before renewed delivery.
 
 **Use.** Read it.
 
@@ -855,9 +855,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/AUDIT-FILE-MANIFEST-2026-11-12.md`
 
-`doc` · 635 lines · 70,654 B · description: **extracted**
+`doc` · 636 lines · 70,751 B · description: **extracted**
 
-**Purpose.** Version: 0.1.4 Delta: include combined continuous-forecast safeguards, website0.3.0 preauthorization, subscription schemas and bound review receipts. This inventory names every repository path changed in the combined audit release relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a.
+**Purpose.** Version: 0.1.5 Delta: include the deterministic Textual shutdown correction and bound final failure/repair evidence. This inventory names every repository path changed in the combined audit release relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34383 lines · 1,695,769 B · description: **extracted**
+`doc` · 34649 lines · 1,705,028 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1095,9 +1095,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 201 lines · 44,083 B · description: **extracted**
+`doc` · 208 lines · 45,493 B · description: **extracted**
 
-**Purpose.** Version: 0.1.12 Delta: Combine complete audit, forecast and wallet-preauthorization source qualification; final CI/merge/deployment still require separate receipts. This is a source-qualification checkpoint. Historical attempts below retain their exact source bindings.
+**Purpose.** Version: 0.1.13 Delta: preserve the failed final CI, prove the Textual shutdown counterexample, and track the new source-bound repair gates. This is a source-qualification checkpoint. Historical attempts below retain their exact source bindings.
 
 **Use.** Read it.
 
@@ -29431,7 +29431,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tui.py`
 
-`code-python` · 8296 lines · 453,670 B · description: **extracted**
+`code-python` · 8300 lines · 453,874 B · description: **extracted**
 
 **Purpose.** Textual TUI: the console over the backtester. python3 -m soltui.tui The panes (Settings, Strategies, Signals, Compound 5m, Backtest, Execute, ... Docs, and Now) are grouped by `shell.py` into six destinations; `--classic` shows the original tab bar. All decisions live in the pure modules (`config`, `roster`, `runner`, `paper`, `status`); this file is presentation and wiring.
 
@@ -29533,7 +29533,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_advanced_order_ui.py`
 
-`test` · 353 lines · 19,812 B · description: **extracted**
+`test` · 398 lines · 22,459 B · description: **extracted**
 
 **Purpose.** Advanced order ticket: fail closed and dispatch only mocked Coinbase requests.
 
@@ -31245,11 +31245,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-160 files.
+161 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 20657 lines · 393,751 B · description: **derived**
+`config` · 20530 lines · 317,530 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31403,7 +31403,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7645 lines · 288,424 B · description: **derived**
+`config` · 7645 lines · 288,439 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -32424,6 +32424,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 81 lines · 4,663 B · description: **derived**
 
 **Purpose.** Generated JSON object, 14 keys (agent, definition_version, status, scope, observed_at, source_identity_observed...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/tab-activation-lifecycle.json`
+
+`config` · 359 lines · 20,825 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (version, observed_at, status, source_delta, independent_review, lint_baseline_comparison...).
 
 **Use.** Configuration; nothing to run.
 

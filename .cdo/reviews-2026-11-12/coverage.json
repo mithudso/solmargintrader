@@ -6451,10 +6451,10 @@
     },
     {
       "path": "soltui/tests/test_advanced_order_ui.py",
-      "blob_sha": "9ba03ef9892554956fa4f8ddf8b14b2781153f6b",
-      "lines": 352,
+      "blob_sha": "2f8a8f2b28c9961bf274ccc57ebe13b55052c992",
+      "lines": 397,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
+      "evidence": ".cdo/reviews-2026-11-13/tab-activation-lifecycle.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -7318,10 +7318,10 @@
     },
     {
       "path": "soltui/tui.py",
-      "blob_sha": "713c68567ed335f1fc0974957a27694f652e3a4a",
-      "lines": 8295,
+      "blob_sha": "08189ff6be744d8a032ba83dc6d0f9a6ae7f7e34",
+      "lines": 8299,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+      "evidence": ".cdo/reviews-2026-11-13/tab-activation-lifecycle.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },

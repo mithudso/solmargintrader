@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 516
+Version: 518
+Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction.
+Delta: v516 to v517; preserve final f7e8 macOS CI failure and narrow Textual shutdown correction before renewed delivery.
 Delta: v515 to v516; freeze the combined846-path source candidate and concrete final delivery checks.
 Delta: v514 to v515; correct the documented Node SQLite floor without changing dependencies.
 Delta: v513 to v514; preserve both complete audit and preauthorization histories in the combined delivery candidate.
@@ -1941,3 +1943,15 @@ During combined integration, official Context7 Node22docs confirmed StatementSyn
 All846helper paths now reconcile to841semantic reviews plus five bound data exclusions. Both complete workflow histories and per-file receipts survive the in-progress002b4f66feature merge into audit8e0942e3. Root's current combined129Node/28Chrome/JSquality/syntax/Worker dryrun allcompleted0; no source changes followed them. Existing final291core/43observer/8CLI source bindings remain final. Staticruntimefloor metadata changed onlyownpackage/lock declarations; no dependencies installed. Final helper plan must remain0review/0deferred. Final inventories/wiki/index, sourcepathmanifest and stockdocs gate must pass before finalcommit/push.
 
 Final external receipt is /Users/mitch/.local/state/oraclebot-final-delivery-20261113/delivery.json. It must be updated after actual CI/merge/default verification, local0.4.12/observer1.2.1 promotion, Cloudflare migrations/deploy and hostedMCP/ownD1cleanup acceptance. This source checkpoint intentionally cannot contain its eventual squashmergeSHA. Read the external receipt for actual completion; never infer queuedmerge/deployment/realtrading from source tests. Root must close superseded draft243 only after its reviewed content reaches finalPR234, then clean onlyowned mergedworktrees/branches. Website-source manifest must refresh for the twoengine-metadata file changes relative to002; public28asset manifest remains unchanged. No public billing/live activation is authorized by a bare successful sourcegate. MissingLIVEmerchantkey and customerexecution/delegation/hosted-engine engineering remain realopen work.
+
+
+## Final CI refusal and bounded repair
+
+Final f7e8f79ef25b3babc2ae913e8f30bbeb51eb7031 CI completed14success/3intentional skips/onefailure. The877-case targetedmacOS suite ran2749.736s withoneerror andnoassertionfailures: test_timestamped_context_uses_matching_prices_and_recorded_ranked_forecasts propagated NoMatches coinbase-order-armed from _populate_on_first_view→_coinbase_order_state_start during run_test exit. Preserve exact /tmp/oraclebot-final-delivery-20261112/ci-f7e8-final-failed-131729163543.log and failure-summary.json; nevercallthis candidatepassed. Root has notmerged, migrated, deployed orpromoted it.
+
+The lifecycle specialist verified V2 doesnotrecompose panes and installedTextual sets is_runningfalse before _close_all removeswidgets; on_unmount istoo late. A narrow handler admission guard and deterministic shutdown-boundary regression are beingprepared in existingtui.py/test_advanced_order_ui.py. Root must prove oldsourceRED/newsourceGREEN underqualifiedofflineguard, exactinverse source review inheritance, newcanonicaltestcounts, derived/stockchecks, finalcommit/CI andactualdelivery. Website/public bytesremainunchanged;129/28source gatesstillbindtheirunchangedtree. Public/liveflags remainfalse.
+
+The privateCloudflarebridge emptyoutput was WRANGLER_LOG=info suppressing logger.log, notremoteauth proof. Privatecorrection tolog producesactualexpectedaccount andexactpending0003/0004/0005migrationoutput. No remotechangeshaveoccurred. Hostedpreparation binds websiteTree5c5d56fade0ec81e335dfb2a20a9492327ac362a/publicTree4ee957d9072b7f86a4fa65b1d172f95ba0703fbe, sourceSHA b0cc11ee2b577a2450e3396f4f5bb60028f1bb0c6f1a2d127e98652a06102fab.
+
+
+The exactnewshutdowncase reproducesoldNoMatches withactualRED1/finalizer1 andzeroassertionfailures/forbiddeneffects/source drift. Currentfour-line is_runningguard passesGREEN0/finalizer0 andentire10-caseadvanced-order module0/85.679s, withzero forbidden/drift/leftovers. Independentbyte+ASTinverses restorebothfullf7filebaselines. Existingeconomicassertionsremainunchanged. ActualCI is_runningflagwasnotlogged, so noobservedflagisinvented. Public .cdo/reviews-2026-11-13/tab-activation-lifecycle.json bindsallsource/framework/review/gates. LegacyTUIRuff remains38identicaldiagnostics(old1/new1);testfileRuff0 andzeronewdiagnostics. Helper846/841+5 remains0review/0deferred. Canonicaldiscovery1564/four-suite3224doesnotreplacehistoricalfulla5051563proof. NewfinalCIstillrequired. Websiteandpublictreesremainexactf7reviewedbytes; no repeat129/28checksclaimednecessaryforthisPython-onlydelta.

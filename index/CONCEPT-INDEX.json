@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T06:19:58+00:00",
+  "generatedAt": "2026-11-13T07:26:13+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1925,
+      "matchingFiles": 1926,
       "shown": 30,
       "files": [
         {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 92
+          "hits": 93
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 518,
+      "matchingFiles": 519,
       "shown": 30,
       "files": [
         {
@@ -1289,7 +1289,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 85
+          "hits": 86
         },
         {
           "path": ".cdo/reviews-2026-11-12/research-scripts.json",
@@ -1344,6 +1344,10 @@
           "hits": 32
         },
         {
+          "path": ".cdo/reviews-2026-11-13/tab-activation-lifecycle.json",
+          "hits": 31
+        },
+        {
           "path": "research/perturb.py",
           "hits": 31
         },
@@ -1378,10 +1382,6 @@
         {
           "path": "research/results/coinbase50_20261111_summary.json",
           "hits": 24
-        },
-        {
-          "path": "archive/memory-2026-11-08.md",
-          "hits": 23
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 450,
+      "matchingFiles": 451,
       "shown": 30,
       "files": [
         {
@@ -1419,7 +1419,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 61
+          "hits": 62
         },
         {
           "path": ".cdo/reviews-2026-11-12/final-owned-integration.json",
@@ -1447,6 +1447,10 @@
         },
         {
           "path": "research/tradingview-card-coverage.json",
+          "hits": 31
+        },
+        {
+          "path": ".cdo/reviews-2026-11-13/tab-activation-lifecycle.json",
           "hits": 31
         },
         {
@@ -1512,10 +1516,6 @@
         {
           "path": "research/tradingview-script-profiles/shard-c.jsonl",
           "hits": 19
-        },
-        {
-          "path": ".cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json",
-          "hits": 17
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
