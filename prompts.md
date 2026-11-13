@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 241
+Version: 242
+Delta: v241 to v242; implement read-only streaming ZEC winning-strategy display.
 Delta: integration to v241; preserve concurrent local repair and expanded ZEC user requests.
 Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
 
@@ -2221,3 +2222,7 @@ Owner clarification:
 ## 2026-11-13 — Expanded ZEC strategies, shapes and frequency
 
 > Backtest all of the other strategies against ZEC in the same timeframes. Then do it again with the trading shapes as was done looking for macro graph patterns. And again looking for the frequency
+
+## 2026-11-13 — Streaming winning ZEC strategies
+
+Write a script that displays the oracle up/down/flat prediction for all of the winning short term strategies using streaming real time data, include the graph shape if it's available.
