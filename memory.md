@@ -1,6 +1,10 @@
 # Work continuation
 
-Version: 535
+Version: 539
+Delta: v538 to v539; compact complete keyword index to satisfy remote size limit.
+Delta: v537 to v538; freeze live cycle fits across revised input candles.
+Delta: v536 to v537; verify streaming implementation and causal recovery regressions.
+Delta: v535 to v536; implement read-only streaming ZEC winning-strategy display.
 Delta: v534 to v535; bound the regression fixture output before its mocked producer wait.
 Delta: v533 to v534; qualify all386BotManager tests after environment correction.
 Delta: v532 to v533; repair macOS zombie-group cleanup found by final CI.
@@ -2222,3 +2226,19 @@ The full386-test BotManager suite now passes0 in the existing qualified interpre
 PR253 merged733d24e29f9067e03b23bc9b289bf9f0c4a39a64 with14CIpasses/2skips; all43changed bytes matched reviewedb9ad03e and canonical research21testspassed0. Canonicalblindacceptance exposed a test-only flaw: the new exited-childEPERM mock waited before draining a10000byteproducer; pipe saturation caused subprocess.TimeoutExpired and a ResourceWarning. Productioncleanup and allZECresults are unchanged. PID58895 was absent when checked; no stale process was signalled.
 
 TASK-2142 reopened for a focused follow-up on fix/zec-cleanup-fixture-20261113. Only the newfixture nowprints201bytes (>limit100,<POSIXminimumPIPE_BUF) and immediately registers direct-child boundedkill/reap/pipeclose cleanup. The original10000bytelimit case remains. Both soltuidev and qualifiedOracle interpreters pass13tests with ResourceWarning aserror; five focused repeats/Ruff/format/diffchecks pass0. KNOW-2151 records the producer-wait lesson. Sourceownerroot handles follow-upCI/merge/canonicalacceptance. No numerical rerun, packagechange, servicechange or newresearch is needed. FinalMongoDBprose/manifests remain blocked pendingresearchMCPserving-hostaccess.
+
+## 2026-11-13 — Winning ZEC stream implementation
+
+Task TASK-2157. Select all positive completed nonzero-fill rows from accepted expanded CSV and frozen plan; retain all mode/fee/timeframe identities, including controls. Reuse shared recorder for exact ZEC/USD live midpoint and public Coinbase completed trade OHLCV for exact stateful strategy replay and causal48bar shapes. No fabricated volume or DOWN from long/flat exits; unsupported grid/DCA/Volty direction stays unavailable. Source histories and new live observations differ from the original immutable one-day selection evidence. Preserve all existing services and native-publication blocker TASK-2152. Pending: implementation, causal/freshness tests, read-only live acceptance, full delivery.
+
+## Winning-strategy stream verified locally
+
+Selection1566winning fee rows collapses only25/15bps labels to908config/timeframe/mode groups. All6modes and4intervals remain visible; exactCSV/plan hashes are pinned.17focused tests and111combined research tests passed (actual0), Ruffcheck/format0, qualified docscheck0 and publicresearch-export check0. Firstfive-frame live smoke exited0: fresh changing ZEC recorder quotes,833ready/59unsupported lifecycle direction/16real-gap warmups, shapesall4intervals. Original recorder remained in use; no services, orders, archives or originalstudy outputs changed. IndependentOracle review fixed a48bar slice bug (seed569: range becameV_rebound when precedingreturn discarded) and late omittedcandles notbeingrequestedagain; full contiguoussuffix, boundedoverlap and same-boundary missinglatest retries nowhave regressions. Prior docscheck without botmanager/src failed3imports; corrected onlyPYTHONPATH, no packageschanged. Standalone exportdirectscript invocation lackedrootPYTHONPATH; moduleinvocationpassed. PostmanCLI signedout, ownerresource search skipped; Orbit discoveryHTTPerror, officialproviderdocs viaContext7 and realHTTP tests/live source verifiedcontract. SteleMCP transportclosed: exact knowledge/task transitionsqueued tooutbox instead ofprose-onlyTODO. Pending: independentfinal liveacceptance, CI/merge/canonical sourceverification and trackercompletion.
+
+## Streaming implementation final checks
+
+Added a per-interval frozen cycle fit keyed to each16-bar decision boundary, including unavailable models; late provider corrections cannot retrospectively refit its period/phase mid-block. Exact training hash and coefficients accompany output.19focused tests pass0, including revision/no-fitfreeze. First independent source revision passed25liveacceptance gates with recorderPID1673unchanged; final canonical cycle-cache revision still needs its scheduled acceptance. Task-owned source and workflow files are isolated on feat/zec-winner-stream-20261113, not installed into any service. All original study and source service states preserved.
+
+## Final research gate and keyword index transport
+
+The completed combinedresearch suite is113tests, allpassed0 (the prior115estimate was incorrect). Finaldocscheck0 with explicitbotmanager/src. Requiredkeywordindex rebuild produced104857845bytes,245overGitHub100MiBhardlimit. Textwriter nowusescompactJSON withthesameschema/allpostings; noentry/tokencoverageisremoved. This necessarydeliveryfix is format-only. VerifyparsedJSONequivalenceandrerunofflineindexgate plus existingindex tests beforecommit. Semanticembeddingsremainpaused. Finalnativeprosepublicationblocker TASK-2152isunchanged.

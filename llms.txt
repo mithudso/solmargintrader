@@ -29,3 +29,7 @@
 ## Expanded ZEC strategies, shapes and cycles
 - [Expanded comparison](research/ZEC-EXPANDED-STRATEGIES.md): 85,312 rows, both confirmed fees, matched controls and search-aware cycle tests.
 - [Complete empirical archive](research/zec-expanded-20261113.llms/llms.txt): finite executable census, results, audit and Mongo bindings.
+
+## Live winning-strategy display
+- [Read-only ZEC stream](docs/ORACLE-WINNING-STRATEGY-STREAM.md): every positive expanded-study configuration, current exposure hypothesis, causal graph shape, original fee evidence and explicit unavailable states.
+- [Foreground script](scripts/oracle_winners.py): shared-recorder quotes and completed public trade candles; no order or service changes.
