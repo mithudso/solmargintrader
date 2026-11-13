@@ -1,10 +1,13 @@
 # Prompt history
 
-Version: 243
+Version: 244
+Delta: v243 to v244; preserve hosted provider-confirmation replies and the streaming winning-ZEC strategy request verbatim.
 Delta: v242 to v243; record owner confirmation of Sandbox credentials and Workers Paid activation.
 Delta: v241 to v242; preserve the complete hosted-ecosystem request and concurrent expanded ZEC strategy, shape and frequency request verbatim.
 Delta: v240 to v241; record explicit authorization to complete the hosted ecosystem.
 
+
+Delta: v241 to v242; implement read-only streaming ZEC winning-strategy display.
 Delta: integration to v241; preserve concurrent local repair and expanded ZEC user requests.
 Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
 
@@ -2251,3 +2254,7 @@ Done
 ```text
 Done
 ```
+
+## 2026-11-13 — Streaming winning ZEC strategies
+
+Write a script that displays the oracle up/down/flat prediction for all of the winning short term strategies using streaming real time data, include the graph shape if it's available.

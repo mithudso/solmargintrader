@@ -71,6 +71,7 @@ and an epoch/sequence-fenced manifest. The published manifest commits a state;
 ephemeral container disk and a shutdown handler do not establish durability.
 Dependencies are pinned in `constraints.txt`, and the image installs this
 package before isolated-mode startup.
+The MCP SDK pin follows the canonical Oracle package: `mcp==2.3.0`.
 
 Historical1m closes initialize feature context only after their candles are
 closed. They retain their actual candle bucket-start index and the explicit

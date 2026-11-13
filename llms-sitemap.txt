@@ -1,9 +1,9 @@
 # solmargintrader — source sitemap
-> Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 58c05f0e + hosted ecosystem delta
+> Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 7c5f0dc8 + hosted ecosystem delta
 > Refreshed: 2026-11-13; deterministic tracked-path census only
 > Coverage: current tracked paths and suffix labels; no body review, semantic indexing or inference
 
-> Kind: repo · Entries: 3735
+> Kind: repo · Entries: 3739
 
 ## Files
 
@@ -2406,6 +2406,7 @@
 - design/soltui-v2/screens/07-command-palette.svg — artifact [src: git]
 
 ### docs
+
 - docs/API.md — docs [src: git]
 - docs/ARCHITECTURE.md — docs [src: git]
 - docs/AUDIT-FILE-MANIFEST-2026-11-12.md — docs [src: git]
@@ -2435,6 +2436,7 @@
 - docs/MOBILE-ALERTS-DESIGN.md — docs [src: git]
 - docs/OPERATIONS.md — docs [src: git]
 - docs/ORACLE-LIVE-FORECAST.md — docs [src: git]
+- docs/ORACLE-WINNING-STRATEGY-STREAM.md — docs [src: git]
 - docs/ORACLEBOT-LAUNCH-READINESS.md — docs [src: git]
 - docs/ORACLEBOT-MCP-DELIVERY-2026-11-13.md — docs [src: git]
 - docs/ORACLEBOT-OPERATIONS.md — docs [src: git]
@@ -3028,6 +3030,7 @@
 - requirements.txt — artifact [src: git]
 
 ### research
+
 - research/5minleveragestrategies.json — config [src: git]
 - research/CANDLE-GAP-AUDIT.md — docs [src: git]
 - research/COINBASE50-GRID-CYCLES.md — docs [src: git]
@@ -3286,6 +3289,7 @@
 - research/tests/test_zec_ensembles.py — code [src: git]
 - research/tests/test_zec_expanded.py — code [src: git]
 - research/tests/test_zec_granular.py — code [src: git]
+- research/tests/test_zec_live.py — code [src: git]
 - research/tick_backfill.py — code [src: git]
 - research/tradingstrategyresults.json — config [src: git]
 - research/tradingview-card-coverage.json — config [src: git]
@@ -3368,6 +3372,7 @@
 - research/zec_expanded.py — code [src: git]
 - research/zec_granular.py — code [src: git]
 - research/zec_lifecycle.py — code [src: git]
+- research/zec_live.py — code [src: git]
 
 ### Repository root
 - ruff.toml — config [src: git]
@@ -3382,6 +3387,7 @@
 - script-profile-orchestration.md — docs [src: git]
 
 ### scripts
+
 - scripts/bootstrap_ecosystem.py — code [src: git]
 - scripts/build_doc_index.py — code [src: git]
 - scripts/build_ecosystem_wiki.py — code [src: git]
@@ -3394,6 +3400,7 @@
 - scripts/coin_strategy_fit.py — code [src: git]
 - scripts/html_to_markdown.py — code [src: git]
 - scripts/mcp_remote_client.py — code [src: git]
+- scripts/oracle_winners.py — code [src: git]
 - scripts/oraclebot_ops.py — code [src: git]
 - scripts/oraclebot_watchdog.py — code [src: git]
 - scripts/referral_scripts/claim-all-fees.ts — code [src: git]

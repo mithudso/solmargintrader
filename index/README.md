@@ -46,6 +46,10 @@ subsumes the other, and both are checked in CI.
 | `semantic-embeddings.npz` | which files *mean* something like this | **no** | `build.py semantic` |
 | `SEMANTIC-MANIFEST.json` | what the embedding index was | yes | `build.py semantic` |
 
+`TEXT-INDEX.json` uses compact JSON to keep the complete posting list below
+GitHub's file-size limit. Formatting does not remove terms, documents or scores;
+readers use the same JSON schema.
+
 ## Three retrieval modes, because they fail differently
 
 - **text** (BM25) is exact and explainable. It finds `fee_bps`; it cannot find

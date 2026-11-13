@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T23:30:32+00:00",
+  "generatedAt": "2026-11-13T23:57:54+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1941,
+      "matchingFiles": 1942,
       "shown": 30,
       "files": [
         {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1651,
+      "matchingFiles": 1655,
       "shown": 30,
       "files": [
         {
@@ -178,7 +178,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 171
+          "hits": 179
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -186,7 +186,7 @@
         },
         {
           "path": "llms-sitemap.txt",
-          "hits": 111
+          "hits": 113
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -210,7 +210,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 55
+          "hits": 58
         },
         {
           "path": "research/results/minute_sweep_x1_common.txt",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1571,
+      "matchingFiles": 1573,
       "shown": 30,
       "files": [
         {
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1502,
+      "matchingFiles": 1504,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 948,
+      "matchingFiles": 953,
       "shown": 30,
       "files": [
         {
@@ -607,7 +607,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 193
+          "hits": 197
         },
         {
           "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
@@ -643,7 +643,7 @@
         },
         {
           "path": "llms-sitemap.txt",
-          "hits": 112
+          "hits": 114
         },
         {
           "path": "skills/trading-and-investing/SKILL.md",
@@ -671,7 +671,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 95
+          "hits": 96
         },
         {
           "path": ".cdo/reviews-2026-11-13/forecast-supplement-delta.json",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 883,
+      "matchingFiles": 884,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 869,
+      "matchingFiles": 870,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 774,
+      "matchingFiles": 775,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 567,
+      "matchingFiles": 568,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 549,
+      "matchingFiles": 551,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 477,
+      "matchingFiles": 479,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 378,
+      "matchingFiles": 380,
       "shown": 30,
       "files": [
         {

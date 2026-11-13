@@ -15,6 +15,11 @@ and times. The page identifies that hold. It does not relabel an old forecast
 as the newly requested horizon. Invalid input and revision conflicts preserve
 the unsaved choice and do not overwrite a newer setting.
 
+The separate [winning-strategy streaming script](ORACLE-WINNING-STRATEGY-STREAM.md)
+displays every profitable configuration from the expanded ZEC study, preserving
+its actual 1m/5m/10m/1h bars, fee evidence and graph-shape context. It does not
+change this page's 14-card catalog, cadence, policy or qualification.
+
 ## Projection and ranking
 
 The evaluator reads the existing Coinbase recorder; it does not start another
