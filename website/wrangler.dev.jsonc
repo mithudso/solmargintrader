@@ -19,9 +19,10 @@
   ],
   "vars": {
     "APP_ORIGIN": "http://localhost:8799",
-    "RELEASE": "website-0.2.0",
-    "APP_VERSION": "0.2.0",
-    "BILLING_LAUNCH_ENABLED": "false"
+    "RELEASE": "website-0.3.0",
+    "APP_VERSION": "0.3.0",
+    "BILLING_LAUNCH_ENABLED": "false",
+    "LIVE_EXECUTION_ENABLED": "false"
   },
   "observability": {
     "enabled": true

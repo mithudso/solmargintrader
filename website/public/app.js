@@ -1,8 +1,10 @@
 import { freshStrategy } from './evidence.js';
+import { createAgentAccess } from './agent-access.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
 const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const agentAccess = createAgentAccess({ api, getUser: () => state.accountTransition ? null : state.user, isSettings: () => state.view === 'settings', openWallet, toast });
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
 const coinSymbols = { SOL: '◎', BTC: '₿', ETH: 'Ξ', ZEC: 'Z' };
@@ -337,10 +339,12 @@ function settingsView() {
   const permissions = el('section', 'panel'); permissions.innerHTML = '<h3>Wallet & execution permissions</h3><p>Your sign-in signature only proves ownership of your wallet. It does not approve a transaction or grant spending permissions.</p><p>Bot configurations start in paper mode. Live Coinbase trading and Jupiter leveraged execution require separately provisioned, verified account connections.</p>';
   const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never send Oraclebot your private key or seed phrase.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
   grid.append(account, billing, permissions, risk); main.append(grid);
+  const agents = el('div', 'agent-settings'); main.append(agents); agentAccess.mount(agents);
   const current = usagePanel(); if (current) main.append(current);
 }
 function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
 function render() {
+  agentAccess.invalidate();
   const [rawView, ...rest] = location.hash.slice(1).split('/'); const view = views[rawView] ? rawView : 'overview'; state.view = view;
   $('#page-label').textContent = views[view];
   for (const link of $$('[data-view]')) { const active = link.dataset.view === view; link.classList.toggle('active', active); if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); }
@@ -365,8 +369,10 @@ async function refreshAccount() {
 }
 function openWallet() { $('#wallet-message').textContent = ''; $('#wallet-dialog').showModal(); }
 async function connectWallet(name, button) {
+  if (state.accountTransition) return;
   const provider = name === 'phantom' ? window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null) : window.solflare;
   if (!provider) { $('#wallet-message').textContent = `No ${name === 'phantom' ? 'Phantom' : 'Solflare'} wallet was detected. Open this site in that wallet’s browser or install its browser extension, then try again.`; return; }
+  agentAccess.invalidate(); state.accountTransition = true;
   setBusy(button, true); $('#wallet-message').textContent = 'Waiting for your wallet…';
   try {
     const connection = await provider.connect(); const wallet = (connection?.publicKey || provider.publicKey)?.toString();
@@ -376,9 +382,9 @@ async function connectWallet(name, button) {
     const signed = await provider.signMessage(new TextEncoder().encode(challenge.message), 'utf8');
     const bytes = signed.signature || signed; const signature = btoa(String.fromCharCode(...new Uint8Array(bytes)));
     await api('/api/auth/verify', { method: 'POST', body: JSON.stringify({ id: challenge.id, signature }) });
-    await refreshAccount(); $('#wallet-dialog').close(); render(); toast('Wallet verified. Welcome to your workspace.');
+    await refreshAccount(); state.accountTransition = false; $('#wallet-dialog').close(); render(); toast('Wallet verified. Welcome to your workspace.');
   } catch (error) { $('#wallet-message').textContent = error.code === 4001 || /reject|cancel/i.test(error.message) ? 'Connection cancelled. You can try again whenever you are ready.' : errorText(error); }
-  finally { setBusy(button, false); }
+  finally { if (state.accountTransition) { state.accountTransition = false; render(); } setBusy(button, false); }
 }
 async function billingAction(action, button) {
   if (action === 'checkout' && state.config.billingConfigured !== true) { location.hash = 'pricing'; toast('Stripe Checkout is not available yet. No payment or trial has started.'); return; }
@@ -421,12 +427,14 @@ document.addEventListener('click', async event => {
   if (action === 'portal') billingAction('portal', actionButton);
   if (action === 'pricing') location.hash = 'pricing';
   if (action === 'delete-account') {
+    if (state.accountTransition) { toast('An account request is already in progress. Finish or cancel that request first.'); return; }
     if (!confirm('Delete your Oraclebot account and all saved configurations? This cannot be undone.')) return;
+    agentAccess.invalidate(); state.accountTransition = true;
     setBusy(actionButton, true);
-    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; render(); toast('Your account and saved configurations were deleted.'); }
-    catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); }
+    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; state.accountTransition = false; render(); toast('Your account and saved configurations were deleted.'); }
+    catch (error) { state.accountTransition = false; render(); toast(errorText(error)); } finally { setBusy(actionButton, false); }
   }
-  if (action === 'logout') { setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
+  if (action === 'logout') { if (state.accountTransition) { toast('An account request is already in progress. Finish or cancel that request first.'); return; } agentAccess.invalidate(); state.accountTransition = true; setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; state.accountTransition = false; render(); toast('You are signed out.'); } catch (error) { state.accountTransition = false; render(); toast(errorText(error)); } finally { setBusy(actionButton, false); } }
 });
 document.addEventListener('submit', async event => {
   if (!['bot-form', 'backtest-form'].includes(event.target.id)) return;

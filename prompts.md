@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 233
+Version: 234
+Delta: v233 to v234; add authenticated wallet-bound MCP and preserve corrected preauthorization preference.
 Delta: v232 to v233; preserve owner Stripe credential locations and three subscription tiers.
 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
@@ -2093,4 +2094,17 @@ STRIPE_ORACLEBOT_SEC_KEY
 
 ```text
 I added the subscriptions to stripe, 9.99 for up to 3 bots and 10x backtests/day , 29.99 for unlimited backtests and 10x active bots, and 49.99 for unlimited everything. Also the portal ID for customers to be able to edit or stop their subscription is here: bpc_1Ub7dzQ3DZ8H91BKkxAaTqj9
+```
+
+
+## 2026-11-12 — Authenticated MCP with the user wallet
+
+```text
+Add authenticated mcp support so a user can ask their agent to either make a trade, or get the status, but it always uses their wallet.
+```
+
+The owner briefly selected the per-trade approval option, then explicitly corrected that selection. The correction below is authoritative; do not implement a per-trade approval requirement.
+
+```text
+No I didn't mean to press that button, I want preauthorization so I don't have to approve every time
 ```

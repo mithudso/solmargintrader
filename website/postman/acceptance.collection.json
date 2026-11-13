@@ -87,6 +87,91 @@
           }
         }
       ]
+    },
+    {
+      "name": "MCP resource discovery",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/.well-known/oauth-protected-resource/mcp"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP200',()=>pm.response.to.have.status(200));",
+              "pm.test('Exact resource',()=>pm.expect(pm.response.json().resource).to.eql(pm.variables.get('baseUrl')+'/mcp'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PKCE server discovery",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/.well-known/oauth-authorization-server"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP200',()=>pm.response.to.have.status(200));",
+              "pm.test('S256 required',()=>pm.expect(pm.response.json().code_challenge_methods_supported).to.deep.eql(['S256']));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Anonymous MCP denied",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/mcp",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"method\": \"ping\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP401',()=>pm.response.to.have.status(401));",
+              "pm.test('Bearer discovery',()=>pm.expect(pm.response.headers.get('WWW-Authenticate')).to.include('resource_metadata'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Private agent grants denied",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/agent/grants"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP401',()=>pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

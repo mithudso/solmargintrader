@@ -9,7 +9,7 @@ const ORIGIN = 'https://oraclebot.example';
 const at = () => Math.floor(Date.now() / 1000);
 function environment() {
   const sqlite = new DatabaseSync(':memory:');
-  for (const migration of ['0001_accounts.sql', '0002_challenge_wallet_index.sql', '0003_subscription_tiers.sql']) sqlite.exec(readFileSync(new URL(`../migrations/${migration}`, import.meta.url), 'utf8'));
+  for (const migration of ['0001_accounts.sql', '0002_challenge_wallet_index.sql', '0003_subscription_tiers.sql', '0004_agent_access.sql', '0005_agent_trades.sql']) sqlite.exec(readFileSync(new URL(`../migrations/${migration}`, import.meta.url), 'utf8'));
   const batches = [];
   const DB = {
     prepare(sql) {

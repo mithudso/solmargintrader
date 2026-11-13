@@ -17,6 +17,10 @@ room, trading accounts, wallet keys or signing services.
   subscription, signed webhooks, verified subscription entitlement and customer
   portal access. No checkout redirect grants access. The server controls prices.
 - Public research archive with source provenance and original limitations.
+- Authenticated MCP at `https://oraclebot.io/mcp`, using OAuth public-client
+  authorization-code PKCE S256 and the explicit MCP2025-11-25 JSON HTTP profile.
+  Status always uses the bearer owner's wallet. Trading consent is a separate
+  signed, finite preauthorization; it does not prompt for every trade.
 - A separate read-only Python engine adapter reusing the canonical strategy,
   backtest and Oracle packages. Missing cached inputs or eligible Oracle evidence
   produce an unavailable state. There is no synthetic market-data fallback.
@@ -24,7 +28,7 @@ room, trading accounts, wallet keys or signing services.
 ## Current deployment limits
 
 The website can be deployed independently. Checkout stays disabled by default, including when test Prices are configured.
-Opening it needs an explicit owner launch decision and the bindings below,
+Opening it needs verified promised capabilities and the bindings below,
 including a configured cancellation portal. Analysis needs a provisioned Python
 engine with a public-market cache and a read-only Oracle archive. Live automated
 Coinbase and Jupiter accounts need a separate implementation of per-user venue
@@ -34,7 +38,7 @@ signing. The website does not inherit the owner's existing trading authority.
 Do not describe this release as a working paid live-trading service. The UI and
 health API report these capabilities independently.
 
-## Membership policies (website 0.2.0)
+## Membership policies (website 0.3.0)
 
 The Worker owns the policies and exposes them through `/api/config`. The browser
 sends only `plan: starter`, `advanced` or `unlimited` to Checkout. It cannot choose
@@ -97,6 +101,48 @@ or bearer credentials are committed. Both Wrangler configurations set
 customer execution boundaries and billing acceptance are verified. Cancellation
 and signed webhook processing remain independent of that launch gate.
 
+## Agent access and preauthorized trading
+
+Add `https://oraclebot.io/mcp` as a remote MCP server in a client that supports
+OAuth authorization-code PKCE and MCP2025-11-25. Discovery points the agent to
+public client registration and wallet sign-in. Settings shows the agent's name,
+registered callback, requested scopes and the account wallet before approval.
+Read access needs explicit consent. Trading also needs one separately signed
+policy message with allowed venues/assets, maximum USD per trade, maximum
+committed USD for the grant, and an expiry within thirty days. Login signatures
+cannot approve that policy. There is no wallet prompt for each subsequent trade.
+The agent cannot supply an alternative wallet, account, signer or endpoint.
+
+Settings lists grants and can revoke one immediately. Access credentials expire
+after fifteen minutes; rotating refresh credentials cannot extend the signed
+grant. Replaying a used refresh credential revokes its grant. Only credential
+hashes are stored. Cookie sign-in never substitutes for an MCP bearer token.
+
+The tools are `oraclebot_get_status`, `oraclebot_request_trade`,
+`oraclebot_get_trade_status` and `oraclebot_submit_trade`. Preparation and
+submission are separate calls so the agent can inspect the exact costed intent;
+both run within the original preauthorization. Neither call needs a new wallet
+approval. Limits reserve atomically and include explicit fees. Every financial
+write rechecks current grant and known-plan entitlement. Concurrent duplicate
+submissions cannot call the adapter twice. An ambiguous submission remains
+`unknown`, keeps its budget commitment and cannot automatically resubmit.
+Status never interprets a provider submission acknowledgement as a fill.
+
+The customer execution adapter is not implemented or bound in this release.
+`LIVE_EXECUTION_ENABLED` defaults to the string `false`; even `true` alone cannot
+enable orders. A future `USER_TRADE_EXECUTOR` service binding must implement the
+wallet-bound connection, delegated signer, fresh quote, venue reconciliation
+and exact intent/receipt contract in `website/src/trades.js`. It must enforce
+the same policy before signing. MCP consent grants platform access; it cannot
+create on-chain spending authority. Missing execution refuses before reserving
+a trade. Successful adapter tests use explicit fixtures, never real orders.
+Accounts with submitting, submitted or unknown intents cannot delete the
+records before reconciliation. Cleanup expires only unsubmitted preparations.
+
+The transport uses stateless JSON POST. GET, DELETE and browser MCP CORS
+preflights are unsupported. OAuth discovery/token endpoints have their own
+public CORS contract. The distinct MCP2026 discovery profile is not advertised.
+
 ## Cloudflare layout
 
 `website/wrangler.jsonc` defines one Worker, static assets, the account D1 binding,
@@ -145,6 +191,10 @@ npm run test:browser
 
 Set `CHROME` to an existing Chromium executable to use that browser instead.
 CI installs the matching Playwright Chromium and runs this suite.
+The browser command also tests agent consent, policy signatures, wallet
+mismatch, revocation and held-response session boundaries with synthetic
+fixtures. Run `node --test test/mcp-integration.test.js` for the complete Worker
+login/signature/PKCE/status path without external accounts.
 
 From the repository root, run the Python engine tests and exporter verification
 using an environment with the canonical packages installed:
@@ -173,6 +223,8 @@ Nonsecret bindings:
 | `STRIPE_UNLIMITED_PRICE_ID` | Server-only allowlisted Unlimited recurring USD monthly Price |
 | `STRIPE_PORTAL_CONFIGURATION_ID` | Explicit cancellation/payment-management portal configuration (`bpc_…`) |
 | `ENGINE_URL` | HTTPS base URL of the read-only analysis adapter |
+| `LIVE_EXECUTION_ENABLED` | Exact string `true` is required with a qualified customer executor; defaults to `false` |
+| `USER_TRADE_EXECUTOR` | Optional private Worker service binding; no customer signer is currently provisioned |
 
 Set `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `ENGINE_TOKEN` as Worker
 secrets through Wrangler. Never put values in the repository, browser, D1 bot
@@ -204,4 +256,5 @@ external payments, fresh Oracle inputs or live orders.
 
 Deploy the previous Worker version using Cloudflare version rollback. Preserve
 D1 data; this initial schema is additive. Bot definitions cannot place orders,
-so rolling back this website cannot require cancelling venue orders.
+and no live executor is configured. Preserve the agent intent ledger during
+rollback; a future active executor can leave unresolved venue submissions.

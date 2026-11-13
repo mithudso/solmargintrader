@@ -6,7 +6,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "lint:js": "eslint extension website/src website/public/app.js website/public/evidence.js ecosystem/web eslint.config.mjs",
+    "lint:js": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js ecosystem/web eslint.config.mjs",
     "typecheck:js": "tsc --project tsconfig.checkjs.json",
     "check:js": "npm run lint:js && npm run typecheck:js"
   },

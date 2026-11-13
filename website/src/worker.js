@@ -1,4 +1,7 @@
 import { base58Decode, bytesToBase64 } from '../../extension/src/wallet/solana.js';
+import { authenticateAgent, cleanupAgentAccess, handleOAuth, OAuthError } from './oauth.js';
+import { handleMcp, MCP_PROTOCOL_VERSION } from './mcp.js';
+import { executionAvailable } from './trades.js';
 
 export const COINS = ['SOL', 'BTC', 'ETH', 'ZEC'];
 // Null removes a subscription count cap. Resource and risk bounds remain separate.
@@ -321,6 +324,13 @@ async function engine(env, path, payload = null) {
   if (path === '/v1/backtests' && (value.status !== 'complete' || !value.metrics || typeof value.metrics !== 'object' || Array.isArray(value.metrics))) fail(502, 'engine_invalid_response');
   return json(value);
 }
+async function agentStatus(env, user) {
+  const sub = await subscription(env, user);
+  const rows = await query(env, 'SELECT * FROM bots WHERE user_id = ? ORDER BY created_at DESC,id DESC LIMIT 101', user.id).all();
+  return { user: publicUser(user), subscription: publicSubscription(sub), usage: await usage(env, user, sub),
+    bots: rows.results.slice(0, 100).map(publicBot), moreBotsAvailable: rows.results.length > 100,
+    engineConfigured: Boolean(env.ENGINE_URL && env.ENGINE_TOKEN), configurationsExecute: false };
+}
 async function route(request, env) {
   const url = new URL(request.url);
   if (env.APP_ORIGIN) {
@@ -331,11 +341,20 @@ async function route(request, env) {
     }
   }
   const path = url.pathname;
+  // Protocol routes must run before the single-page asset fallback. They use
+  // bearer/PKCE authority, while cookie-based consent keeps its own CSRF gate.
+  if (path === '/mcp' || path.startsWith('/oauth/') || path.startsWith('/.well-known/') || path.startsWith('/api/agent/')) {
+    originOf(request, env);
+    const oauth = await handleOAuth(request, env, { account, json, bodyJSON, fail, sameOrigin });
+    if (oauth) return oauth;
+    if (path === '/mcp') return handleMcp(request, env, { authenticateAgent, getStatus: user => agentStatus(env, user), requireEntitlement: user => entitled(env, user) });
+    fail(404, 'endpoint_not_found');
+  }
   if (!path.startsWith('/api/')) return env.ASSETS ? env.ASSETS.fetch(request) : new Response('Not found', { status: 404 });
   originOf(request, env);
   if (request.method !== 'GET' && request.method !== 'HEAD' && path !== '/api/billing/webhook') sameOrigin(request, env);
-  if (path === '/api/health' && request.method === 'GET') return json({ status: env.DB ? 'ok' : 'setup_required', version: env.APP_VERSION || '1.0.0', storage: Boolean(env.DB), engine: Boolean(env.ENGINE_URL && env.ENGINE_TOKEN), billing: checkoutEnabled(env), liveExecution: false });
-  if (path === '/api/config' && request.method === 'GET') return json({ coins: COINS, trialDays: 7, billingConfigured: checkoutEnabled(env), plans: Object.values(PLANS), botSlotStatuses: ['configured'], concurrentBacktests: BACKTEST_CONCURRENCY, engineConfigured: Boolean(env.ENGINE_URL && env.ENGINE_TOKEN), liveExecution: false, walletNetwork: 'solana:mainnet' });
+  if (path === '/api/health' && request.method === 'GET') return json({ status: env.DB ? 'ok' : 'setup_required', version: env.APP_VERSION || '1.0.0', storage: Boolean(env.DB), engine: Boolean(env.ENGINE_URL && env.ENGINE_TOKEN), billing: checkoutEnabled(env), liveExecution: false, mcp: { protocolVersion: MCP_PROTOCOL_VERSION, authentication: 'oauth-pkce', executionAdapterConfigured: executionAvailable(env) } });
+  if (path === '/api/config' && request.method === 'GET') return json({ coins: COINS, trialDays: 7, billingConfigured: checkoutEnabled(env), plans: Object.values(PLANS), botSlotStatuses: ['configured'], concurrentBacktests: BACKTEST_CONCURRENCY, engineConfigured: Boolean(env.ENGINE_URL && env.ENGINE_TOKEN), liveExecution: false, walletNetwork: 'solana:mainnet', mcp: { endpoint: `${originOf(request, env)}/mcp`, protocolVersion: MCP_PROTOCOL_VERSION, authorizationMode: 'preauthorized', executionAdapterConfigured: executionAvailable(env) } });
   if (path === '/api/auth/challenge' && request.method === 'POST') return challenge(request, env);
   if (path === '/api/auth/verify' && request.method === 'POST') return verify(request, env);
   if (path === '/api/me' && request.method === 'GET') {
@@ -353,6 +372,7 @@ async function route(request, env) {
   if (path === '/api/strategies' && request.method === 'GET') return engine(env, '/v1/strategies');
   const user = await account(request, env);
   if (path === '/api/me' && request.method === 'DELETE') {
+    if (await query(env, "SELECT id FROM agent_trade_intents WHERE user_id = ? AND state IN ('submitting','submitted','unknown') LIMIT 1", user.id).first()) fail(409, 'trade_reconciliation_required', 'A submitted or unresolved trade must be reconciled before account deletion.');
     if (user.checkout_pending_at && user.checkout_pending_at >= now() - CHECKOUT_SECONDS) fail(409, 'checkout_pending', 'Finish the pending Checkout session or wait until its 35-minute expiration before deleting your account.');
     const sub = await subscription(env, user);
     let usedTrial = Boolean(user.trial_used);
@@ -364,11 +384,14 @@ async function route(request, env) {
       usedTrial ||= prior.data.some(s => s.trial_start || s.trial_end);
     }
     const deleted = await requireDB(env).batch([
-      query(env, 'DELETE FROM users WHERE id = ? AND (checkout_pending_at IS NULL OR checkout_pending_at < ?) RETURNING id', user.id, now() - CHECKOUT_SECONDS),
+      query(env, "DELETE FROM users WHERE id = ? AND (checkout_pending_at IS NULL OR checkout_pending_at < ?) AND NOT EXISTS (SELECT 1 FROM agent_trade_intents WHERE user_id = users.id AND state IN ('submitting','submitted','unknown')) RETURNING id", user.id, now() - CHECKOUT_SECONDS),
       ...(usedTrial ? [query(env, 'INSERT OR IGNORE INTO trial_history (wallet_hash,used_at) SELECT ?,? WHERE NOT EXISTS (SELECT id FROM users WHERE id = ?)', await hash(user.wallet), now(), user.id)] : []),
       query(env, 'DELETE FROM challenges WHERE wallet = ? AND NOT EXISTS (SELECT id FROM users WHERE id = ?)', user.wallet, user.id),
     ]);
-    if (deleted[0].results?.length !== 1 || deleted[0].results[0].id !== user.id) fail(409, 'checkout_pending', 'A Checkout session began while deletion was being checked. Finish it or wait until its expiration.');
+    if (deleted[0].results?.length !== 1 || deleted[0].results[0].id !== user.id) {
+      if (await query(env, "SELECT id FROM agent_trade_intents WHERE user_id = ? AND state IN ('submitting','submitted','unknown') LIMIT 1", user.id).first()) fail(409, 'trade_reconciliation_required', 'A trade began while deletion was being checked. Reconcile it before deleting your account.');
+      fail(409, 'checkout_pending', 'A Checkout session began while deletion was being checked. Finish it or wait until its expiration.');
+    }
     return json({ deleted: true }, 200, { 'Set-Cookie': cookie('', 0) });
   }
   if (path === '/api/billing/checkout' && request.method === 'POST') return checkout(request, env, user);
@@ -432,8 +455,9 @@ export default {
     let response;
     try { response = await route(request, env); }
     catch (error) {
-      const code = error instanceof ApiError ? error.code : error?.name === 'TimeoutError' || error?.name === 'AbortError' ? 'upstream_timeout' : 'service_unavailable';
-      if (error instanceof ApiError) response = json({ error: error.code, message: error.message }, error.status);
+      const code = error instanceof ApiError || error instanceof OAuthError ? error.code : error?.name === 'TimeoutError' || error?.name === 'AbortError' ? 'upstream_timeout' : 'service_unavailable';
+      if (error instanceof OAuthError) response = json({ error: error.code }, error.status, error.headers);
+      else if (error instanceof ApiError) response = json({ error: error.code, message: error.message }, error.status);
       else if (code === 'upstream_timeout') response = json({ error: code, message: 'The upstream service timed out. No result or execution is assumed.' }, 504);
       else response = json({ error: code, message: 'This service is temporarily unavailable.' }, 503);
       reportFailure(request, response, code);
@@ -450,6 +474,8 @@ export default {
       query(env, 'DELETE FROM stripe_events WHERE handled_at < ?', now() - 90 * 86400),
       query(env, "DELETE FROM backtest_usage WHERE (state = 'reserved' AND expires_at < ?) OR day < ?", now(), utcDay(now() - 86400)),
       query(env, 'DELETE FROM subscription_webhook_leases WHERE expires_at <= unixepoch()'),
+      query(env, "UPDATE agent_trade_intents SET state = 'expired',updated_at = ? WHERE state IN ('preparing','prepared') AND expires_at <= ?", now(), now()),
     ]);
+    await cleanupAgentAccess(env);
   },
 };
