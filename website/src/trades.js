@@ -132,7 +132,7 @@ async function adapter(env, operation, payload) {
   let response;
   try {
     response = await env.USER_TRADE_EXECUTOR.fetch(new Request(`https://customer-trade.internal/v1/trades/${operation}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', ...(typeof env.EXECUTOR_TOKEN === 'string' ? { Authorization: `Bearer ${env.EXECUTOR_TOKEN}` } : {}) }, body: JSON.stringify(payload), signal: AbortSignal.timeout(10_000),
+      method: 'POST', headers: { 'Content-Type': 'application/json', ...(typeof env.EXECUTOR_TOKEN === 'string' ? { Authorization: `Bearer ${env.EXECUTOR_TOKEN}` } : {}) }, body: JSON.stringify(payload), signal: AbortSignal.timeout(10_000), redirect: 'manual',
     }));
   } catch (error) { throw transportFailure(error); }
   if (!response.ok || !response.headers.get('Content-Type')?.toLowerCase().startsWith('application/json')) throw new ExecutionFailure('response');

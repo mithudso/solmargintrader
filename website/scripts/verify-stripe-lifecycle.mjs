@@ -541,11 +541,21 @@ async function successfulLifecycle(client, env, prices) {
     const sub = await paid(client, scenario, 999, 'recurring_renewal_actual_payment');
     check(ref(sub.latest_invoice) !== boundary.invoiceId, 'renewal_must_have_new_invoice');
     await cancelFlag(client, env, scenario, true, 'cancel-first');
-    check((await subscription(client, scenario)).cancel_at_period_end === true, 'cancel_flag_missing');
+    const scheduled = await subscription(client, scenario);
+    check((scheduled.cancel_at_period_end === true || scheduled.cancel_at === periodEnd(scheduled)) &&
+      (scheduled.cancel_at == null || scheduled.cancel_at === periodEnd(scheduled)), 'cancellation_schedule_missing');
     await cancelFlag(client, env, scenario, false, 'undo-cancel');
     const undone = await subscription(client, scenario);
-    client.store.verify('cancel_undo_before_boundary', undone.status === 'active' && undone.cancel_at_period_end === false,
+    client.store.verify('cancel_undo_before_boundary', undone.status === 'active' && undone.cancel_at_period_end === false && undone.cancel_at === null,
       { subscriptionId: undone.id });
+    await client.fixture(`subscriptions/${scenario.subscriptionId}`, { cancel_at: String(periodEnd(undone)), proration_behavior: 'none' }, 'set-explicit-date-cancel');
+    const dated = await subscription(client, scenario);
+    check(dated.cancel_at === periodEnd(undone) && dated.cancel_at_period_end === false, 'explicit_cancellation_fixture_unverified');
+    await cancelFlag(client, env, scenario, false, 'undo-explicit-date-cancel');
+    const reactivated = await subscription(client, scenario);
+    client.store.verify('explicit_cancellation_date_undo_clears_both_fields', reactivated.status === 'active' &&
+      reactivated.cancel_at === null && reactivated.cancel_at_period_end === false && reactivated.trial_end === undone.trial_end,
+    { subscriptionId: reactivated.id });
     await cancelFlag(client, env, scenario, true, 'cancel-final');
     return { end: periodEnd(undone), lastInvoiceId: ref(undone.latest_invoice) };
   });

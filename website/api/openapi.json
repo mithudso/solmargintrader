@@ -4022,7 +4022,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/BillingPlanChangeQuote"
                 }
               }
             }
@@ -5856,6 +5856,92 @@
           "challengeId",
           "signature"
         ],
+        "additionalProperties": false
+      },
+      "BillingPlanChangeQuote": {
+        "type": "object",
+        "required": [
+          "quoteId",
+          "currentPlan",
+          "targetPlan",
+          "kind",
+          "amountDueNowCents",
+          "renewalAmountCents",
+          "currency",
+          "effectiveAt",
+          "trialEnd",
+          "expiresAt",
+          "renewalAmountExcludesTax",
+          "automaticTaxEnabled",
+          "managedPaymentsEnabled"
+        ],
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          },
+          "currentPlan": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "advanced",
+              "unlimited"
+            ]
+          },
+          "targetPlan": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "advanced",
+              "unlimited"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "upgrade",
+              "downgrade"
+            ]
+          },
+          "amountDueNowCents": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Exact gross amount from the verified Stripe invoice preview, including any tax in that quote."
+          },
+          "renewalAmountCents": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Monthly base price. This is not a guaranteed future tax-inclusive invoice total."
+          },
+          "currency": {
+            "type": "string",
+            "const": "usd"
+          },
+          "effectiveAt": {
+            "type": "integer",
+            "description": "Unix seconds."
+          },
+          "trialEnd": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Original trial end in Unix seconds; plan changes do not extend it."
+          },
+          "expiresAt": {
+            "type": "integer",
+            "description": "Quote expiry in Unix seconds."
+          },
+          "renewalAmountExcludesTax": {
+            "type": "boolean",
+            "description": "True when applicable automatic tax is added to the monthly base price."
+          },
+          "automaticTaxEnabled": {
+            "type": "boolean"
+          },
+          "managedPaymentsEnabled": {
+            "type": "boolean"
+          }
+        },
         "additionalProperties": false
       }
     },

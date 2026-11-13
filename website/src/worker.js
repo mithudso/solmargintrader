@@ -270,7 +270,7 @@ async function stripe(env, path, fields = null, idempotencyKey = null) {
       headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`, 'Stripe-Version': '2026-10-28.endive', ...(fields ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}), ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}) },
       body: fields ? new URLSearchParams(fields) : undefined,
       signal: AbortSignal.timeout(10000),
-      redirect: 'error',
+      redirect: 'manual',
     });
     recordStatus(response.status);
     if (!response.ok) fail(502, 'billing_provider_error', 'Stripe could not complete this request. No access was granted.');
@@ -380,7 +380,7 @@ async function webhook(request, env) {
 async function engineValue(env, path, payload = null) {
   const base = requireEngine(env);
   return observeUpstream(engineOperation(path), async recordStatus => {
-    const options = { method: payload ? 'POST' : 'GET', headers: { Authorization: `Bearer ${env.ENGINE_TOKEN}`, ...(payload ? { 'Content-Type': 'application/json' } : {}) }, body: payload ? JSON.stringify(payload) : undefined, signal: AbortSignal.timeout(20000), redirect: 'error' };
+    const options = { method: payload ? 'POST' : 'GET', headers: { Authorization: `Bearer ${env.ENGINE_TOKEN}`, ...(payload ? { 'Content-Type': 'application/json' } : {}) }, body: payload ? JSON.stringify(payload) : undefined, signal: AbortSignal.timeout(20000), redirect: 'manual' };
     const response = typeof env.ENGINE_SERVICE?.fetch === 'function'
       ? await env.ENGINE_SERVICE.fetch(new Request(new URL(path, base), options)) : await fetch(new URL(path, base), options);
     recordStatus(response.status);
@@ -423,7 +423,7 @@ async function executionRequest(env, path, user, input = null) {
   const payload = path === '/health' ? null : { userId: user.id, wallet: user.wallet, ...input };
   const response = await env.USER_TRADE_EXECUTOR.fetch(new Request(`https://customer-trade.internal${path}`, {
     method: payload ? 'POST' : 'GET', headers: { Authorization: `Bearer ${env.EXECUTOR_TOKEN}`, ...(payload ? { 'Content-Type': 'application/json' } : {}) },
-    body: payload ? JSON.stringify(payload) : undefined, signal: AbortSignal.timeout(15000), redirect: 'error',
+    body: payload ? JSON.stringify(payload) : undefined, signal: AbortSignal.timeout(15000), redirect: 'manual',
   }));
   let value;
   try { value = JSON.parse(await boundedText(response, 65536)); } catch { fail(502, 'execution_response_unverified'); }

@@ -1,0 +1,54 @@
+{
+  "10m": {
+    "complete_bars": 143,
+    "frequency_fits": 1,
+    "frequency_known": 15,
+    "shape_counts": {
+      "range": 14,
+      "unknown": 129
+    },
+    "shape_known": 14,
+    "valid_bars": 135
+  },
+  "1h": {
+    "complete_bars": 23,
+    "frequency_fits": 0,
+    "frequency_known": 0,
+    "shape_counts": {
+      "unknown": 23
+    },
+    "shape_known": 0,
+    "valid_bars": 17
+  },
+  "1m": {
+    "complete_bars": 1439,
+    "frequency_fits": 86,
+    "frequency_known": 1368,
+    "shape_counts": {
+      "bowl": 9,
+      "cap": 23,
+      "compression": 9,
+      "inverted_v": 138,
+      "range": 691,
+      "trend_down": 23,
+      "trend_up": 14,
+      "unknown": 410,
+      "v_rebound": 122
+    },
+    "shape_known": 1029,
+    "valid_bars": 1431
+  },
+  "5m": {
+    "complete_bars": 287,
+    "frequency_fits": 13,
+    "frequency_known": 200,
+    "shape_counts": {
+      "inverted_v": 2,
+      "range": 72,
+      "unknown": 212,
+      "v_rebound": 1
+    },
+    "shape_known": 75,
+    "valid_bars": 279
+  }
+}

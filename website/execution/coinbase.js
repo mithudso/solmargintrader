@@ -50,7 +50,7 @@ export class Coinbase {
     if (!path.startsWith(`${PREFIX}/`) || !['GET', 'POST'].includes(method)) refuse('provider_route_invalid');
     const url = new URL(path, ORIGIN);
     if (url.origin !== ORIGIN || url.username || url.password || url.hash) refuse('provider_route_invalid');
-    return new Request(url, { method, headers: { Authorization: `Bearer ${await jwt(this.credentials, method, url.pathname)}`, Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, redirect: 'error', signal: AbortSignal.timeout(8000) });
+    return new Request(url, { method, headers: { Authorization: `Bearer ${await jwt(this.credentials, method, url.pathname)}`, Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined, redirect: 'manual', signal: AbortSignal.timeout(8000) });
   }
   async response(request) {
     let response; try { response = await this.transport(request); } catch { refuse('provider_outcome_unknown', 503); }

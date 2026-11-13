@@ -47,7 +47,7 @@ export default {
       if (!env.CUSTOMER_EXECUTORS?.getByName) refuse('executor_unconfigured', 503);
       // One persistent owner per authenticated account serializes admission and revocation.
       const instance = env.CUSTOMER_EXECUTORS.getByName(await digest(principal.userId));
-      return instance.fetch(new Request(`https://executor-owner.internal${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }));
+      return instance.fetch(new Request(`https://executor-owner.internal${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), redirect: 'manual' }));
     } catch (error) { return publicError(error); }
   },
 };

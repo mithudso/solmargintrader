@@ -1,9 +1,9 @@
 # solmargintrader — source sitemap
-> Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 722839798e22 + hosted ecosystem delta
+> Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 58c05f0e + hosted ecosystem delta
 > Refreshed: 2026-11-13; deterministic tracked-path census only
 > Coverage: current tracked paths and suffix labels; no body review, semantic indexing or inference
 
-> Kind: repo · Entries: 3704
+> Kind: repo · Entries: 3735
 
 ## Files
 
@@ -3055,6 +3055,7 @@
 - research/ULTRA-SHORT-MACRO-MICRO.md — docs [src: git]
 - research/ZEC-CYCLE-VALIDATION.md — docs [src: git]
 - research/ZEC-ENSEMBLE-HYPOTHESES.md — docs [src: git]
+- research/ZEC-EXPANDED-STRATEGIES.md — docs [src: git]
 - research/ZEC-GRANULAR-BACKTESTS.md — docs [src: git]
 - research/ZEC-GRANULAR-FEE-SENSITIVITY.md — docs [src: git]
 - research/candle_crosscheck.py — code [src: git]
@@ -3283,6 +3284,7 @@
 - research/tests/test_volty_zec.py — code [src: git]
 - research/tests/test_zec_cycles.py — code [src: git]
 - research/tests/test_zec_ensembles.py — code [src: git]
+- research/tests/test_zec_expanded.py — code [src: git]
 - research/tests/test_zec_granular.py — code [src: git]
 - research/tick_backfill.py — code [src: git]
 - research/tradingstrategyresults.json — config [src: git]
@@ -3308,6 +3310,32 @@
 - research/turnover_table.py — code [src: git]
 - research/verify_numbers.py — code [src: git]
 - research/volty_predictive_checks.py — code [src: git]
+- research/zec-expanded-20261113.llms/archive-manifest.json — config [src: git]
+- research/zec-expanded-20261113.llms/audit-expanded-contexts.json — config [src: git]
+- research/zec-expanded-20261113.llms/audit-expanded-direct-controls.json — config [src: git]
+- research/zec-expanded-20261113.llms/audit-expanded-ledger.json — config [src: git]
+- research/zec-expanded-20261113.llms/audit-expanded-lifecycle-nulls.json — config [src: git]
+- research/zec-expanded-20261113.llms/audit-expanded-receipt.json — config [src: git]
+- research/zec-expanded-20261113.llms/coverage.json — config [src: git]
+- research/zec-expanded-20261113.llms/cycle-null-tests.json — config [src: git]
+- research/zec-expanded-20261113.llms/frequency-fits-10m.json — config [src: git]
+- research/zec-expanded-20261113.llms/frequency-fits-1h.json — config [src: git]
+- research/zec-expanded-20261113.llms/frequency-fits-1m.json — config [src: git]
+- research/zec-expanded-20261113.llms/frequency-fits-5m.json — config [src: git]
+- research/zec-expanded-20261113.llms/identity.json — config [src: git]
+- research/zec-expanded-20261113.llms/input-provenance.json — config [src: git]
+- research/zec-expanded-20261113.llms/integration-source-proof.json — config [src: git]
+- research/zec-expanded-20261113.llms/llms.txt — artifact [src: git]
+- research/zec-expanded-20261113.llms/manifest.json — config [src: git]
+- research/zec-expanded-20261113.llms/mongo-artifacts.json — config [src: git]
+- research/zec-expanded-20261113.llms/mongo-readback-receipt.json — config [src: git]
+- research/zec-expanded-20261113.llms/paired-comparisons.json — config [src: git]
+- research/zec-expanded-20261113.llms/plan.json.gz — artifact [src: git]
+- research/zec-expanded-20261113.llms/results.csv — artifact [src: git]
+- research/zec-expanded-20261113.llms/simulation-source.zip — artifact [src: git]
+- research/zec-expanded-20261113.llms/special-runner-summary.json — config [src: git]
+- research/zec-expanded-20261113.llms/summary-statistics.json — config [src: git]
+- research/zec-expanded-20261113.llms/summary.json — config [src: git]
 - research/zec-fee-sensitivity-20261113.llms/archive-manifest.json — config [src: git]
 - research/zec-fee-sensitivity-20261113.llms/audit-ledger.json — config [src: git]
 - research/zec-fee-sensitivity-20261113.llms/audit.json — config [src: git]
@@ -3337,7 +3365,9 @@
 - research/zec_cycle_report.py — code [src: git]
 - research/zec_cycles.py — code [src: git]
 - research/zec_ensembles.py — code [src: git]
+- research/zec_expanded.py — code [src: git]
 - research/zec_granular.py — code [src: git]
+- research/zec_lifecycle.py — code [src: git]
 
 ### Repository root
 - ruff.toml — config [src: git]
@@ -3817,6 +3847,7 @@
 - website/test/stripe-lifecycle-runner.test.js — code [src: git]
 - website/test/trades.test.js — code [src: git]
 - website/test/ui-browser.mjs — code [src: git]
+- website/test/workers-transport.test.js — code [src: git]
 - website/typecheck/evidence-contract.ts — code [src: git]
 - website/wrangler.dev.jsonc — config [src: git]
 - website/wrangler.jsonc — config [src: git]

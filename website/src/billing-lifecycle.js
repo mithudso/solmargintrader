@@ -39,12 +39,52 @@ function checkedPrice(price, plan, { requireActive = false } = {}) {
       price.type !== 'recurring' || price.recurring?.interval !== 'month' || price.recurring?.interval_count !== 1 ||
       (requireActive && price.active !== true) || price.recurring?.usage_type === 'metered') fail('price_mismatch', 503);
 }
+function taxSettings(value, managed = false) {
+  if (value == null) return { enabled: false, liability: null };
+  if (typeof value.enabled !== 'boolean' || value.disabled_reason != null) fail('subscription_settings_unsupported', 409);
+  const liability = value.liability == null ? null : { type: value.liability.type };
+  if (value.liability && (Object.keys(value.liability).some(key => key !== 'type') ||
+      !['self', 'stripe'].includes(value.liability.type))) fail('subscription_settings_unsupported', 409);
+  if ((value.enabled && (!liability || liability.type !== (managed ? 'stripe' : 'self'))) ||
+      (!value.enabled && liability)) fail('subscription_settings_unsupported', 409);
+  return { enabled: value.enabled, liability };
+}
+function billingSettings(subscription) {
+  const managed = subscription.managed_payments?.enabled ?? false;
+  if (typeof managed !== 'boolean') fail('subscription_settings_unsupported', 409);
+  const automaticTax = taxSettings(subscription.automatic_tax, managed);
+  if (managed && !automaticTax.enabled) fail('subscription_settings_unsupported', 409);
+  const type = subscription.billing_mode?.type || 'classic';
+  if (!['classic', 'flexible'].includes(type)) fail('subscription_settings_unsupported', 409);
+  const discounts = type === 'flexible' ? subscription.billing_mode?.flexible?.proration_discounts : null;
+  if (type === 'flexible' && !['included', 'itemized'].includes(discounts)) fail('subscription_settings_unsupported', 409);
+  return { automaticTax, managedPayments: managed, billingMode: { type, prorationDiscounts: discounts } };
+}
+const sorted = value => Array.isArray(value) ? value.map(sorted) : value && typeof value === 'object' ?
+  Object.fromEntries(Object.keys(value).sort().map(key => [key, sorted(value[key])])) : value;
+const same = (one, two) => JSON.stringify(sorted(one)) === JSON.stringify(sorted(two));
+function quoteBinding(quote) {
+  try {
+    const value = JSON.parse(quote.subscription_fingerprint);
+    if (value.version === 2 && typeof value.hash === 'string' && value.billing) return value;
+  } catch { /* Earlier quotes cannot prove the newer tax and cancellation binding. */ }
+  return null;
+}
+function billingMatches(subscription, quote) {
+  const binding = quoteBinding(quote);
+  return !!binding && same(billingSettings(subscription), binding.billing);
+}
+const hasCancellation = sub => sub.raw.cancel_at_period_end || sub.cancelAt !== null;
+const cancellationAt = sub => sub.cancelAt ?? (sub.raw.cancel_at_period_end ? sub.end : null);
+const cancellationMatches = (sub, requested) => requested ? hasCancellation(sub) && cancellationAt(sub) === sub.end : !hasCancellation(sub);
 function noComplexSettings(subscription) {
-  // The app creates one ordinary monthly item, with no tax/coupon/Connect logic.
-  // Refuse externally altered settings rather than unset them during a schedule.
+  // Checkout may enable Stripe-managed tax. Preserve its authority and mode;
+  // manual tax, discounts and Connect settings still require billing support.
+  billingSettings(subscription);
   if ((subscription.discounts?.length || 0) || subscription.discount || (subscription.default_tax_rates?.length || 0) ||
-      subscription.automatic_tax?.enabled || subscription.pause_collection || subscription.transfer_data ||
+      subscription.pause_collection || subscription.transfer_data ||
       subscription.on_behalf_of || subscription.application_fee_percent != null || subscription.billing_thresholds ||
+      subscription.invoice_settings?.issuer?.type === 'account' || (subscription.invoice_settings?.account_tax_ids?.length || 0) ||
       subscription.pending_invoice_item_interval || (subscription.collection_method && subscription.collection_method !== 'charge_automatically')) {
     fail('subscription_settings_unsupported', 409, 'This subscription has custom billing settings. Use billing support to change its plan safely.');
   }
@@ -62,9 +102,11 @@ function canonical(subscription, user, local, ctx) {
   const start = item.current_period_start ?? subscription.current_period_start;
   const end = item.current_period_end ?? subscription.current_period_end;
   const trialEnd = subscription.trial_end ?? null;
+  const cancelAt = subscription.cancel_at ?? null;
   if (!integer(start) || !integer(end) || end <= start || (trialEnd !== null && !integer(trialEnd)) ||
+      (cancelAt !== null && (!integer(cancelAt) || cancelAt === 0)) ||
       typeof subscription.status !== 'string' || typeof subscription.cancel_at_period_end !== 'boolean') fail('subscription_response_unverified', 502);
-  return { raw: subscription, item, plan, start, end, trialEnd, schedule: ref(subscription.schedule) || null };
+  return { raw: subscription, item, plan, start, end, trialEnd, cancelAt, schedule: ref(subscription.schedule) || null };
 }
 async function identity(env, inputUser) {
   if (!text(inputUser?.id)) fail('authentication_required', 401);
@@ -87,12 +129,15 @@ async function ownedSubscription(env, inputUser, ctx) {
 async function fingerprint(sub) {
   return digest({ id: sub.raw.id, customer: ref(sub.raw.customer), item: sub.item.id, price: ref(sub.item.price), quantity: sub.item.quantity,
     status: sub.raw.status, start: sub.start, end: sub.end, trialEnd: sub.trialEnd, schedule: sub.schedule,
-    cancel: sub.raw.cancel_at_period_end, pending: sub.raw.pending_update || null });
+    cancel: sub.raw.cancel_at_period_end, cancelAt: sub.cancelAt, billing: billingSettings(sub.raw), pending: sub.raw.pending_update || null });
 }
 function publicQuote(row) {
+  const billing = quoteBinding(row)?.billing;
   return { quoteId: row.id, currentPlan: row.current_plan, targetPlan: row.target_plan, kind: row.kind,
     amountDueNowCents: row.amount_due_now_cents, renewalAmountCents: row.renewal_amount_cents, currency: 'usd',
-    effectiveAt: row.effective_at, trialEnd: row.trial_end, expiresAt: row.expires_at };
+    effectiveAt: row.effective_at, trialEnd: row.trial_end, expiresAt: row.expires_at,
+    renewalAmountExcludesTax: billing?.automaticTax.enabled === true, automaticTaxEnabled: billing?.automaticTax.enabled === true,
+    managedPaymentsEnabled: billing?.managedPayments === true };
 }
 function publicOperation(row) {
   return { changeId: row.id, status: row.state, kind: row.kind, currentPlan: row.current_plan,
@@ -105,16 +150,21 @@ function previewFields(sub, targetPrice, at) {
   const trial = sub.raw.status === 'trialing' && sub.trialEnd > at;
   const fields = { customer: ref(sub.raw.customer), subscription: sub.raw.id,
     'subscription_details[items][0][id]': sub.item.id, 'subscription_details[items][0][price]': targetPrice,
-    'subscription_details[items][0][quantity]': '1', 'subscription_details[proration_date]': String(at),
+    'subscription_details[items][0][quantity]': '1',
     'subscription_details[proration_behavior]': trial ? 'none' : 'always_invoice',
     'subscription_details[billing_cycle_anchor][type]': 'unchanged' };
   if (trial) fields['subscription_details[trial_end]'] = String(sub.trialEnd);
+  else fields['subscription_details[proration_date]'] = String(at);
   return fields;
 }
 async function preview(ctx, sub, targetPrice, at) {
   const value = await ctx.stripe('invoices/create_preview', previewFields(sub, targetPrice, at));
   if (!value || ref(value.customer) !== ref(sub.raw.customer) || value.currency !== 'usd' ||
       !integer(value.amount_due)) fail('invoice_preview_unverified', 502);
+  const settings = billingSettings(sub.raw);
+  if (!same(taxSettings(value.automatic_tax, settings.managedPayments), settings.automaticTax) ||
+      (settings.automaticTax.enabled && value.automatic_tax?.status !== 'complete') ||
+      (value.managed_payments != null && value.managed_payments.enabled !== settings.managedPayments)) fail('invoice_tax_unverified', 502);
   // Keeping the exact original trial and using no proration charges zero now.
   // The provider preview can describe the first invoice at the future trial end.
   return sub.raw.status === 'trialing' && sub.trialEnd > ctx.now() ? 0 : value.amount_due;
@@ -143,7 +193,7 @@ export async function preparePlanChange(env, inputUser, input, services) {
   if (sub.start > ctx.now()) fail('billing_clock_mismatch', 503, 'The billing clock does not match this subscription period. Refresh billing before changing plans.');
   noComplexSettings(sub.raw);
   if (sub.plan === input.plan) fail('plan_unchanged', 409);
-  if (sub.raw.pending_update || sub.schedule || sub.raw.cancel_at_period_end) fail('subscription_change_pending', 409);
+  if (sub.raw.pending_update || sub.schedule || hasCancellation(sub)) fail('subscription_change_pending', 409);
   if (await db(env, 'SELECT operation_id FROM billing_lifecycle_locks WHERE subscription_id=?', sub.raw.id).first()) fail('billing_operation_pending', 409);
   const targetPrice = await ctx.stripe(`prices/${ctx.prices[input.plan]}`);
   if (targetPrice?.id !== ctx.prices[input.plan]) fail('price_mismatch', 503);
@@ -152,7 +202,7 @@ export async function preparePlanChange(env, inputUser, input, services) {
   const amount = kind === 'upgrade' ? await preview(ctx, sub, targetPrice.id, at) : 0;
   const quote = { id: ctx.uuid(), user_id: user.id, subscription_id: sub.raw.id, customer_id: user.stripe_customer_id,
     subscription_item_id: sub.item.id, current_plan: sub.plan, target_plan: input.plan, current_price_id: ref(sub.item.price),
-    target_price_id: targetPrice.id, kind, subscription_fingerprint: await fingerprint(sub), period_start: sub.start,
+    target_price_id: targetPrice.id, kind, subscription_fingerprint: JSON.stringify({ version: 2, hash: await fingerprint(sub), billing: billingSettings(sub.raw) }), period_start: sub.start,
     period_end: sub.end, trial_end: sub.trialEnd, proration_date: at, amount_due_now_cents: amount,
     renewal_amount_cents: PLAN_AMOUNTS[input.plan], effective_at: kind === 'upgrade' ? at : sub.end,
     created_at: at, expires_at: Math.min(at + QUOTE_SECONDS, sub.end) };
@@ -237,7 +287,8 @@ function boundToOperation(owner, row) {
   if (owner.sub.raw.id !== row.subscription_id || owner.user.stripe_customer_id !== row.customer_id) fail('subscription_changed', 409);
 }
 function confirmUpgrade(sub, row, quote) {
-  if (sub.trialEnd !== quote.trial_end || sub.end !== quote.period_end || sub.start !== quote.period_start) fail('subscription_response_unverified', 502);
+  if (sub.trialEnd !== quote.trial_end || sub.end !== quote.period_end || sub.start !== quote.period_start ||
+      !billingMatches(sub.raw, quote) || hasCancellation(sub)) fail('subscription_response_unverified', 502);
   if (sub.raw.pending_update) {
     if (sub.plan !== quote.current_plan || !pendingUpgradeMatches(sub, row, quote)) fail('subscription_response_unverified', 502);
     return { state: 'pending_payment', stage: 'subscription_updated', pending_expires_at: sub.raw.pending_update.expires_at };
@@ -261,9 +312,21 @@ function scheduleIdentity(value, row, sub) {
       !integer(value.current_phase?.start_date) || !integer(value.current_phase?.end_date) ||
       value.current_phase.start_date !== sub.start || value.current_phase.end_date !== sub.end) fail('schedule_response_unverified', 502);
 }
+function scheduleTax(value, expected) {
+  const defaults = taxSettings(value.default_settings?.automatic_tax, expected.managedPayments);
+  if (!same(defaults, expected.automaticTax)) return false;
+  if (value.managed_payments != null && value.managed_payments.enabled !== expected.managedPayments) return false;
+  if (value.default_settings?.managed_payments != null && value.default_settings.managed_payments.enabled !== expected.managedPayments) return false;
+  return value.phases.every(phase => {
+    const tax = phase.automatic_tax == null ? defaults : taxSettings({ ...phase.automatic_tax,
+      liability: phase.automatic_tax.enabled ? (phase.automatic_tax.liability ?? defaults.liability) : null }, expected.managedPayments);
+    return same(tax, expected.automaticTax);
+  });
+}
 function scheduleConfigured(value, row, quote) {
   if (value.id !== row.provider_schedule_id || value.metadata?.oraclebot_change_id !== row.id || value.metadata?.oraclebot_user !== row.user_id ||
-      value.end_behavior !== 'release' || value.phases.length !== 2) return false;
+      value.end_behavior !== 'release' || value.phases.length !== 2 || !quoteBinding(quote) ||
+      !scheduleTax(value, quoteBinding(quote).billing)) return false;
   const [current, next] = value.phases;
   return current.start_date === quote.period_start && current.end_date === quote.period_end &&
     current.items?.length === 1 && ref(current.items[0].price) === quote.current_price_id && current.items[0].quantity === 1 &&
@@ -272,9 +335,19 @@ function scheduleConfigured(value, row, quote) {
 }
 function scheduleFields(created, row, quote) {
   const phase = created.phases[0];
+  const expected = quoteBinding(quote)?.billing;
+  if (!expected || !scheduleTax(created, expected)) fail('schedule_tax_unverified', 502);
+  const defaults = created.default_settings;
+  if (defaults && ((defaults.default_tax_rates?.length || 0) || (defaults.discounts?.length || 0) ||
+      defaults.application_fee_percent != null || defaults.transfer_data || defaults.on_behalf_of || defaults.billing_thresholds ||
+      (defaults.collection_method && defaults.collection_method !== 'charge_automatically') ||
+      defaults.invoice_settings?.days_until_due != null || defaults.invoice_settings?.issuer?.type === 'account' ||
+      (defaults.invoice_settings?.account_tax_ids?.length || 0))) fail('subscription_settings_unsupported', 409);
   if (phase.items?.length !== 1 || ref(phase.items[0].price) !== quote.current_price_id || phase.items[0].quantity !== 1 ||
       (phase.discounts?.length || 0) || (phase.default_tax_rates?.length || 0) || (phase.add_invoice_items?.length || 0) ||
-      phase.automatic_tax?.enabled || phase.application_fee_percent != null || phase.transfer_data || phase.on_behalf_of ||
+      phase.application_fee_percent != null || phase.transfer_data || phase.on_behalf_of || phase.billing_thresholds ||
+      (phase.collection_method && phase.collection_method !== 'charge_automatically') || phase.invoice_settings?.days_until_due != null ||
+      (phase.invoice_settings?.account_tax_ids?.length || 0) ||
       (phase.items[0].discounts?.length || 0) || (phase.items[0].tax_rates?.length || 0)) fail('subscription_settings_unsupported', 409);
   const fields = { end_behavior: 'release', proration_behavior: 'none', 'metadata[oraclebot_change_id]': row.id,
     'metadata[oraclebot_user]': row.user_id, 'phases[0][start_date]': String(quote.period_start),
@@ -285,6 +358,20 @@ function scheduleFields(created, row, quote) {
     'phases[1][items][0][quantity]': '1', 'phases[1][proration_behavior]': 'none',
     'phases[1][metadata][oraclebot_user]': row.user_id, 'phases[1][metadata][oraclebot_change_id]': row.id };
   if (quote.trial_end > quote.proration_date) fields['phases[0][trial_end]'] = String(quote.trial_end);
+  // Both phases inherit the already verified default liability. Stripe owns the
+  // 'stripe' liability value for Managed Payments; never replace it with 'self'.
+  if (expected.automaticTax.enabled) {
+    fields['phases[0][automatic_tax][enabled]'] = 'true';
+    fields['phases[1][automatic_tax][enabled]'] = 'true';
+  }
+  if (phase.default_payment_method) {
+    if (!/^pm_[A-Za-z0-9_]+$/.test(ref(phase.default_payment_method) || '')) fail('subscription_settings_unsupported', 409);
+    fields['phases[0][default_payment_method]'] = ref(phase.default_payment_method);
+    fields['phases[1][default_payment_method]'] = ref(phase.default_payment_method);
+  }
+  if (phase.invoice_settings?.issuer != null && !same(phase.invoice_settings.issuer, created.default_settings?.invoice_settings?.issuer)) {
+    fail('subscription_settings_unsupported', 409);
+  }
   if (phase.metadata && typeof phase.metadata === 'object' && !Array.isArray(phase.metadata)) {
     for (const [key, value] of Object.entries(phase.metadata)) {
       if (!/^[A-Za-z0-9_-]{1,40}$/.test(key) || typeof value !== 'string' || value.length > 500) fail('subscription_settings_unsupported', 409);
@@ -311,15 +398,16 @@ export async function commitPlanChange(env, inputUser, input, services) {
   try {
     const owner = await ownedSubscription(env, user, ctx); boundToOperation(owner, row);
     noComplexSettings(owner.sub.raw);
-    if (quote.expires_at <= ctx.now() || await fingerprint(owner.sub) !== quote.subscription_fingerprint) fail('subscription_changed', 409);
+    if (quote.expires_at <= ctx.now() || await fingerprint(owner.sub) !== quoteBinding(quote)?.hash) fail('subscription_changed', 409);
     if (quote.kind === 'upgrade') {
       if (await preview(ctx, owner.sub, quote.target_price_id, quote.proration_date) !== quote.amount_due_now_cents) fail('invoice_preview_changed', 409);
       if (quote.expires_at <= ctx.now()) fail('quote_expired', 409);
       const trial = owner.sub.raw.status === 'trialing' && quote.trial_end > ctx.now();
       const fields = { 'items[0][id]': quote.subscription_item_id, 'items[0][price]': quote.target_price_id, 'items[0][quantity]': '1',
         payment_behavior: 'pending_if_incomplete', proration_behavior: trial ? 'none' : 'always_invoice',
-        proration_date: String(quote.proration_date), 'billing_cycle_anchor[type]': 'unchanged', 'metadata[oraclebot_change_id]': row.id };
+        'billing_cycle_anchor[type]': 'unchanged', 'metadata[oraclebot_change_id]': row.id };
       if (trial) fields.trial_end = String(quote.trial_end);
+      else fields.proration_date = String(quote.proration_date);
       mutationStarted = true;
       const value = await providerWrite(env, row, ctx, `subscriptions/${row.subscription_id}`, fields, 'upgrade');
       const updated = canonical(value, user, owner.local, ctx);
@@ -338,7 +426,11 @@ export async function commitPlanChange(env, inputUser, input, services) {
       if (quote.expires_at <= ctx.now()) fail('quote_expired', 409);
       const configured = await providerWrite(env, row, ctx, `subscription_schedules/${created.id}`, fields, 'schedule-configure');
       scheduleIdentity(configured, row, owner.sub);
-      if (!scheduleConfigured(configured, row, quote)) fail('schedule_response_unverified', 502);
+      if (!scheduleConfigured(configured, row, quote) || !same(configured.default_settings, created.default_settings)) fail('schedule_response_unverified', 502);
+      const after = await ownedSubscription(env, user, ctx);
+      if (!billingMatches(after.sub.raw, quote) || hasCancellation(after.sub) || after.sub.plan !== quote.current_plan ||
+          after.sub.schedule !== created.id || after.sub.start !== quote.period_start || after.sub.end !== quote.period_end ||
+          after.sub.trialEnd !== quote.trial_end) fail('subscription_response_unverified', 502);
       row = await advance(env, row, ctx, { state: 'scheduled', stage: 'reconciled', last_error: null }, { release: true });
     }
   } catch (error) {
@@ -373,7 +465,7 @@ async function reconcile(env, user, row, ctx) {
     const quote = await db(env, 'SELECT * FROM billing_plan_quotes WHERE id=? AND user_id=?', row.quote_id, user.id).first();
     if (!quote) return row;
     if (quote.kind === 'upgrade') {
-      if (sub.plan === quote.current_plan && pendingUpgradeMatches(sub, row, quote)) {
+      if (sub.plan === quote.current_plan && billingMatches(sub.raw, quote) && pendingUpgradeMatches(sub, row, quote)) {
         return advance(env, row, ctx, { state: 'pending_payment', stage: 'subscription_updated', pending_expires_at: sub.raw.pending_update.expires_at, last_error: null }, { release: true });
       }
       if (row.state === 'pending_payment' && row.pending_expires_at <= ctx.now() && !sub.raw.pending_update && sub.plan === quote.current_plan) {
@@ -382,20 +474,21 @@ async function reconcile(env, user, row, ctx) {
       if (sub.raw.metadata?.oraclebot_change_id !== row.id) return row;
       // The operation can have applied before a later cancellation or delinquent
       // renewal. Its historical outcome never grants present entitlement.
-      if (sub.plan === quote.target_plan && !sub.raw.pending_update && sub.trialEnd === quote.trial_end) {
+      if (sub.plan === quote.target_plan && !sub.raw.pending_update && sub.trialEnd === quote.trial_end && billingMatches(sub.raw, quote)) {
         return advance(env, row, ctx, { state: 'applied', stage: 'reconciled', current_plan: sub.plan, last_error: null }, { release: true });
       }
     } else if (row.provider_schedule_id) {
       const schedule = await ctx.stripe(`subscription_schedules/${row.provider_schedule_id}`);
       if (schedule.id !== row.provider_schedule_id || schedule.metadata?.oraclebot_change_id !== row.id || schedule.metadata?.oraclebot_user !== user.id ||
           ref(schedule.customer) !== row.customer_id || ![ref(schedule.subscription), ref(schedule.released_subscription)].includes(row.subscription_id)) return row;
-      if (sub.plan === quote.target_plan && ctx.now() >= quote.period_end && !sub.raw.pending_update) {
+      if (sub.plan === quote.target_plan && ctx.now() >= quote.period_end && !sub.raw.pending_update && billingMatches(sub.raw, quote)) {
         return advance(env, row, ctx, { state: 'applied', stage: 'reconciled', current_plan: sub.plan, last_error: null }, { release: true });
       }
       if (schedule.status === 'released' && ref(schedule.released_subscription) === row.subscription_id) {
         return advance(env, row, ctx, { state: 'canceled', stage: 'reconciled', target_plan: null, last_error: null }, { release: true });
       }
-      if (schedule.status === 'active' && ref(schedule.subscription) === row.subscription_id && sub.schedule === schedule.id && scheduleConfigured(schedule, row, quote)) {
+      if (schedule.status === 'active' && ref(schedule.subscription) === row.subscription_id && sub.schedule === schedule.id &&
+          billingMatches(sub.raw, quote) && scheduleConfigured(schedule, row, quote)) {
         return advance(env, row, ctx, { state: 'scheduled', stage: 'reconciled', last_error: null }, { release: true });
       }
     }
@@ -408,8 +501,8 @@ async function reconcile(env, user, row, ctx) {
       return advance(env, row, ctx, { state: 'applied', stage: 'reconciled', target_plan: null, last_error: null }, { release: true });
     }
   } else if (sub.raw.metadata?.oraclebot_cancel_id === row.id &&
-      ((row.requested_cancel === 1 && (sub.raw.cancel_at_period_end || TERMINAL.has(sub.raw.status))) ||
-       (row.requested_cancel === 0 && !sub.raw.cancel_at_period_end && !TERMINAL.has(sub.raw.status) && sub.end > ctx.now()))) {
+      ((row.requested_cancel === 1 && (cancellationMatches(sub, true) || TERMINAL.has(sub.raw.status))) ||
+       (row.requested_cancel === 0 && cancellationMatches(sub, false) && !TERMINAL.has(sub.raw.status) && sub.end > ctx.now()))) {
     return advance(env, row, ctx, { state: 'applied', stage: 'reconciled', last_error: null }, { release: true });
   }
   return row;
@@ -439,10 +532,13 @@ async function ownedSchedule(env, user, parent, owner, ctx) {
 }
 async function releaseSchedule(env, user, row, parent, owner, ctx) {
   await ownedSchedule(env, user, parent, owner, ctx);
+  const before = billingSettings(owner.sub.raw);
   const released = await providerWrite(env, row, ctx, `subscription_schedules/${parent.provider_schedule_id}/release`, {}, 'schedule-release');
   if (released?.id !== parent.provider_schedule_id || released.status !== 'released' || ref(released.customer) !== user.stripe_customer_id ||
       ref(released.released_subscription) !== row.subscription_id || released.metadata?.oraclebot_change_id !== parent.id ||
       released.metadata?.oraclebot_user !== user.id) fail('schedule_release_unverified', 502);
+  const after = await ownedSubscription(env, user, ctx);
+  if (after.sub.schedule || !same(billingSettings(after.sub.raw), before)) fail('schedule_release_unverified', 502);
   await advance(env, parent, ctx, { state: 'canceled', stage: 'reconciled', target_plan: null, last_error: null });
   return advance(env, row, ctx, { stage: 'schedule_released' });
 }
@@ -500,16 +596,29 @@ export async function setPeriodEndCancellation(env, inputUser, input, services) 
       owner = await ownedSubscription(env, user, ctx); boundToOperation(owner, row);
       if (TERMINAL.has(owner.sub.raw.status) || owner.sub.end <= ctx.now() || owner.sub.schedule) fail('subscription_changed', 409);
     }
-    if (owner.sub.raw.cancel_at_period_end === input.cancelAtPeriodEnd) {
-      row = await advance(env, row, ctx, { state: 'applied', stage: 'reconciled', last_error: null }, { release: true });
+    if (input.cancelAtPeriodEnd && owner.sub.cancelAt !== null && owner.sub.cancelAt !== owner.sub.end) {
+      fail('subscription_cancellation_date_unsupported', 409);
+    }
+    if (cancellationMatches(owner.sub, input.cancelAtPeriodEnd)) {
+      row = await advance(env, row, ctx, { state: 'applied', stage: 'reconciled',
+        effective_at: input.cancelAtPeriodEnd ? cancellationAt(owner.sub) : ctx.now(), last_error: null }, { release: true });
     } else {
+      const fields = { 'metadata[oraclebot_cancel_id]': row.id };
+      if (!input.cancelAtPeriodEnd) {
+        // A flexible-mode portal cancellation has cancel_at set while the flag
+        // is already false. Stripe rejects sending both cancellation parameters.
+        // Clear the active representation, then verify both canonical fields.
+        if (owner.sub.cancelAt !== null && !owner.sub.raw.cancel_at_period_end) fields.cancel_at = '';
+        else fields.cancel_at_period_end = 'false';
+      } else if (owner.sub.raw.billing_mode?.type === 'flexible') fields.cancel_at = String(owner.sub.end);
+      else fields.cancel_at_period_end = 'true';
       mutationStarted = true;
-      const value = await providerWrite(env, row, ctx, `subscriptions/${row.subscription_id}`, {
-        cancel_at_period_end: String(input.cancelAtPeriodEnd), 'metadata[oraclebot_cancel_id]': row.id,
-      }, 'cancel-flag');
+      const value = await providerWrite(env, row, ctx, `subscriptions/${row.subscription_id}`, fields, 'cancel-flag');
       const sub = canonical(value, user, owner.local, ctx);
-      if (TERMINAL.has(sub.raw.status) || sub.end <= ctx.now() || sub.raw.metadata?.oraclebot_cancel_id !== row.id || sub.raw.cancel_at_period_end !== input.cancelAtPeriodEnd) fail('cancellation_response_unverified', 502);
-      row = await advance(env, row, ctx, { state: 'applied', stage: 'reconciled', effective_at: input.cancelAtPeriodEnd ? sub.end : ctx.now(), last_error: null }, { release: true });
+      if (TERMINAL.has(sub.raw.status) || sub.end <= ctx.now() || sub.raw.metadata?.oraclebot_cancel_id !== row.id ||
+          !cancellationMatches(sub, input.cancelAtPeriodEnd)) fail('cancellation_response_unverified', 502);
+      row = await advance(env, row, ctx, { state: 'applied', stage: 'reconciled',
+        effective_at: input.cancelAtPeriodEnd ? cancellationAt(sub) : ctx.now(), last_error: null }, { release: true });
     }
   } catch (error) {
     if (mutationStarted) row = await unknown(env, row, ctx);

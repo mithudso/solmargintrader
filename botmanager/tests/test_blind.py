@@ -184,6 +184,204 @@ class BlindTests(unittest.TestCase):
         with self.assertRaises(ChildProcessError):
             os.waitpid(child.pid, os.WNOHANG)
 
+    def test_exited_child_group_signal_denial_preserves_output_refusal(self):
+        import os
+        from unittest.mock import patch
+
+        children = []
+        popen = blind.subprocess.Popen
+        killpg = os.killpg
+
+        def cleanup(child):
+            try:
+                child.kill()
+            finally:
+                try:
+                    child.wait(timeout=1)
+                finally:
+                    child.stdout.close()
+                    child.stderr.close()
+
+        def start(*args, **kwargs):
+            child = popen(*args, **kwargs)
+            children.append(child)
+            self.addCleanup(cleanup, child)
+            return child
+
+        def signal_group(pid, sig):
+            if group_signal.call_count == 1:
+                # Force the hosted-macOS exit race: no live child remains to
+                # signal, but killpg reports EPERM rather than ESRCH.
+                children[0].wait(timeout=1)
+                raise PermissionError("exited group")
+            return killpg(pid, sig)
+
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch.object(blind.subprocess, "Popen", side_effect=start),
+            patch.object(blind.os, "killpg", side_effect=signal_group) as group_signal,
+            self.assertRaisesRegex(ValueError, "^process output limit exceeded$"),
+        ):
+            blind.bounded_process(
+                # Exceed the reader's limit without filling even a minimum
+                # POSIX pipe, so the child can exit before the mocked wait.
+                [sys.executable, "-I", "-S", "-c", 'print("x"*200)'],
+                b"",
+                cwd=directory,
+                env={},
+                limit=100,
+            )
+        child = children[0]
+        self.assertEqual(group_signal.call_count, 2)
+        self.assertEqual(group_signal.call_args.args, (child.pid, 0))
+        self.assertEqual(child.returncode, 0)
+        self.assertTrue(child.stdout.closed)
+        self.assertTrue(child.stderr.closed)
+        with self.assertRaises(ChildProcessError):
+            os.waitpid(child.pid, os.WNOHANG)
+
+    def test_denied_live_group_still_reaps_child_and_preserves_deadline(self):
+        import os
+        import signal
+        from unittest.mock import patch
+
+        children = []
+        popen = blind.subprocess.Popen
+        killpg = os.killpg
+
+        def start(*args, **kwargs):
+            child = popen(*args, **kwargs)
+            children.append(child)
+            return child
+
+        def signal_group(pid, sig):
+            if group_signal.call_count == 1:
+                self.assertIsNone(children[0].poll())
+                raise PermissionError("group signal denied")
+            return killpg(pid, sig)
+
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch.object(blind.subprocess, "Popen", side_effect=start),
+            patch.object(blind.os, "killpg", side_effect=signal_group) as group_signal,
+            self.assertRaisesRegex(ValueError, "^process deadline exceeded$"),
+        ):
+            blind.bounded_process(
+                [sys.executable, "-I", "-S", "-c", "import time; time.sleep(10)"],
+                b"",
+                cwd=directory,
+                env={},
+                timeout=0.1,
+            )
+        child = children[0]
+        self.assertEqual(child.returncode, -signal.SIGKILL)
+        self.assertEqual(group_signal.call_args.args, (child.pid, 0))
+        self.assertTrue(child.stdout.closed)
+        self.assertTrue(child.stderr.closed)
+        with self.assertRaises(ChildProcessError):
+            os.waitpid(child.pid, os.WNOHANG)
+
+    def test_group_still_present_after_denied_signal_never_reports_success(self):
+        import os
+        import signal
+        from unittest.mock import patch
+
+        children = []
+        popen = blind.subprocess.Popen
+
+        def start(*args, **kwargs):
+            child = popen(*args, **kwargs)
+            children.append(child)
+            return child
+
+        for probe_error in (None, PermissionError("group probe denied")):
+            with (
+                self.subTest(probe_error=probe_error),
+                tempfile.TemporaryDirectory() as directory,
+                patch.object(blind.subprocess, "Popen", side_effect=start),
+                patch.object(
+                    blind.os,
+                    "killpg",
+                    side_effect=[PermissionError("group signal denied"), probe_error],
+                ) as group_signal,
+                self.assertRaises(PermissionError),
+            ):
+                blind.bounded_process(
+                    [sys.executable, "-I", "-S", "-c", "print('done')"],
+                    b"",
+                    cwd=directory,
+                    env={},
+                )
+            child = children[-1]
+            self.assertEqual(
+                group_signal.call_args_list[0].args, (child.pid, signal.SIGKILL)
+            )
+            self.assertEqual(group_signal.call_args.args, (child.pid, 0))
+            self.assertEqual(child.returncode, 0)
+            self.assertTrue(child.stdout.closed)
+            self.assertTrue(child.stderr.closed)
+            with self.assertRaises(ChildProcessError):
+                os.waitpid(child.pid, os.WNOHANG)
+
+    def test_denied_descendant_group_is_refused_and_fixture_cleans_it_up(self):
+        import os
+        import signal
+        import time
+        from unittest.mock import patch
+
+        children = []
+        popen = blind.subprocess.Popen
+        killpg = os.killpg
+
+        def start(*args, **kwargs):
+            child = popen(*args, **kwargs)
+            children.append(child)
+            return child
+
+        def signal_group(pid, sig):
+            if group_signal.call_count == 1:
+                raise PermissionError("group signal denied")
+            return killpg(pid, sig)
+
+        with tempfile.TemporaryDirectory() as directory:
+            heartbeat = Path(directory) / "heartbeat"
+            child_code = f"import time,pathlib\np=pathlib.Path({str(heartbeat)!r})\nwhile True:\n p.write_text(str(time.monotonic_ns()))\n time.sleep(0.01)"
+            parent_code = f'import subprocess,sys\nsubprocess.Popen([sys.executable,"-I","-S","-c",{child_code!r}])'
+            try:
+                with (
+                    patch.object(blind.subprocess, "Popen", side_effect=start),
+                    patch.object(
+                        blind.os, "killpg", side_effect=signal_group
+                    ) as group_signal,
+                    self.assertRaisesRegex(PermissionError, "group signal denied"),
+                ):
+                    blind.bounded_process(
+                        [sys.executable, "-I", "-S", "-c", parent_code],
+                        b"",
+                        cwd=directory,
+                        env={},
+                        timeout=0.3,
+                    )
+                child = children[0]
+                self.assertEqual(child.returncode, 0)
+                self.assertTrue(child.stdout.closed)
+                self.assertTrue(child.stderr.closed)
+                self.assertEqual(group_signal.call_count, 2)
+                self.assertEqual(group_signal.call_args.args, (child.pid, 0))
+                self.assertTrue(heartbeat.is_file())
+                with self.assertRaises(ChildProcessError):
+                    os.waitpid(child.pid, os.WNOHANG)
+            finally:
+                for child in children:
+                    try:
+                        killpg(child.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+            time.sleep(0.05)
+            stopped_at = heartbeat.read_text()
+            time.sleep(0.08)
+            self.assertEqual(heartbeat.read_text(), stopped_at)
+
     def test_exited_parent_does_not_leave_its_descendant_running_after_timeout(self):
         import os
         import signal

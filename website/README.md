@@ -28,7 +28,7 @@ Solana wallet sign-in uses a domain-bound, expiring, single-use message. D1
 stores account records and hashes of session credentials. Signing in grants
 account access. Trading requires its own finite wallet-signed authorization.
 
-| Plan | Monthly renewal, USD | Configured bot slots | Backtests per UTC day |
+| Plan | Monthly base rate, USD before applicable tax | Configured bot slots | Backtests per UTC day |
 | --- | ---: | ---: | ---: |
 | Starter | 9.99 | 3 | 10 |
 | Advanced | 29.99 | 10 | Unlimited |
@@ -47,6 +47,12 @@ terminated subscription. Durable operations retain unknown outcomes for
 reconciliation, including when the browser loses the response. The dedicated
 portal supports payment methods, invoices and cancellation; portal plan changes
 must remain disabled while the application owns those lifecycle semantics.
+
+Plan quotes distinguish the monthly base price from the gross amount due now.
+Automatic tax and Stripe Managed Payments settings remain bound to the quote
+and survive scheduled changes. A changed tax calculation requires a new quote.
+Cancellation supports Stripe's period-end flag and explicit cancellation date;
+undo verifies that both representations have cleared before reporting success.
 
 Configured definitions reserve slots. Pausing and archiving free slots. Creation
 and activation enforce slot capacity atomically. After a downgrade below current
@@ -186,12 +192,22 @@ merchant/key and a private source-bound resumable run directory. The runner
 refuses live credentials before HTTP and cannot self-certify genuine webhook
 delivery or the Checkout browser path.
 
-Cloudflare rejected the attempted Workers Paid upgrade with403/code10000. The
-current operational token can manage Workers/R2/D1; enabling the paid plan needs
-the account owner's dashboard session. The base Workers plan is USD5/month plus
-usage; Containers and storage have their own usage charges. The intended
-merchant sandbox key is `STRIPE_ORACLEBOT_TEST_SEC_KEY` in the owner's private
-environment file. Never commit any key or copy the live key into a test variable.
+The owner enabled Workers Paid on2026-11-13 after the operational token's billing
+upgrade request returned403/code10000. A fresh subscription read confirms the
+entitlement. The base Workers plan is USD5/month plus usage; Containers and
+storage have their own usage charges. The intended merchant sandbox key is
+`STRIPE_ORACLEBOT_TEST_SEC_KEY` in the owner's private environment file; a
+separate `STRIPE_ORACLEBOT_TEST_ACCTNUM` binds the verified Sandbox account.
+Actual source-bound test clocks passed20lifecycle checks, including explicit
+cancellation-date undo. Genuine Checkout, signed delivery and Managed Payments
+acceptance are separate gates. Never commit a key or copy a live key into a test
+variable.
+
+An account-level Cloudflare Access rule can also protect all Workers. A narrowly
+scoped Worker-level exception is needed for the public site and authenticated
+runtime checkpoint callbacks. Preserve other applications and policies. Wallet
+authentication, private service credentials and Stripe signature checks remain
+enforced by each application.
 
 Deploy in this order: back up D1, apply numbered migrations, deploy the private
 executor with distinct execution/vault secrets, deploy the analysis Container

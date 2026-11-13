@@ -1,0 +1,28 @@
+{
+  "attempt": "attempt-01",
+  "rows": 85312,
+  "status_counts": {
+    "completed": 38664,
+    "insufficient_contiguous_history": 46648
+  },
+  "artifact_hashes": 20,
+  "code_and_card_hashes": 1535,
+  "input_provenance_matches": true,
+  "exact_baseline_alias_rows": 7032,
+  "unique_replay_ids": 18550,
+  "fills_checked": 1563853,
+  "limit_guarded_fills_checked": 2334,
+  "emergency_delayed_exits": 0,
+  "fill_counts_by_family": {
+    "existing-ensemble-catalog": 406597,
+    "card-preset-parameter-perturbation": 806908,
+    "volty-stop": 334072,
+    "ladder_grid_reference": 1700,
+    "dca_safety_reference": 14560,
+    "benchmark": 16
+  },
+  "max_cash_error_usd": 9.754330676514655e-11,
+  "max_execution_price_error": 7.958078640513122e-13,
+  "open_position_replays": 0,
+  "run_os_exit_code": null
+}

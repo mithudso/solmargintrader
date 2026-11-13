@@ -1,7 +1,13 @@
 # Prompt history
 
-Version: 241
+Version: 243
+Delta: v242 to v243; record owner confirmation of Sandbox credentials and Workers Paid activation.
+Delta: v241 to v242; preserve the complete hosted-ecosystem request and concurrent expanded ZEC strategy, shape and frequency request verbatim.
 Delta: v240 to v241; record explicit authorization to complete the hosted ecosystem.
+
+Delta: integration to v241; preserve concurrent local repair and expanded ZEC user requests.
+Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
+
 Delta: v239 to v240; preserve both concurrent local repairs and fee research requests.
 Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
 
@@ -2221,4 +2227,27 @@ Owner clarification:
 
 ```text
 Complete the hosted ecosystem  as stated: The complete hosted ecosystem is still unfinished. ZEC needs native Oracle history; the public site needs its dedicated analysis runtime and customer-wallet executor. Stripe configuration is present, but subscription lifecycle verification remains, so public trials and live trading remain disabled. Resolve those issues
+```
+
+## 2026-11-13 — Expanded ZEC strategies, shapes and frequency
+
+> Backtest all of the other strategies against ZEC in the same timeframes. Then do it again with the trading shapes as was done looking for macro graph patterns. And again looking for the frequency
+
+
+## 2026-11-13 — Hosted provider prerequisites confirmed
+
+The owner replied to the request to save STRIPE_ORACLEBOT_TEST_SEC_KEY in /Users/mitch/.env:
+
+```text
+It is saved.
+```
+
+The owner replied to both pending Cloudflare Workers Paid activation requests:
+
+```text
+Done
+```
+
+```text
+Done
 ```

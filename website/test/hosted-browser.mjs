@@ -206,13 +206,16 @@ try {
   await group('billing quote and keep-current collect no charge; confirm and scheduled undo are explicit', async f => {
     let quotes = 0;
     f.onApi = async (route, entry) => {
-      if (entry.path.endsWith('/plan-change/quote')) { quotes++; assert.equal(entry.account, wallets[0].user.id); await f.json(route, { quoteId: `quote_fixture_${quotes}`, targetPlan: 'advanced', kind: 'upgrade', currency: 'usd', amountDueNowCents: 1234, renewalAmountCents: 2999, effectiveAt: time() }); return true; }
+      if (entry.path.endsWith('/plan-change/quote')) { quotes++; assert.equal(entry.account, wallets[0].user.id); await f.json(route, { quoteId: `quote_fixture_${quotes}`, targetPlan: 'advanced', kind: 'upgrade', currency: 'usd', amountDueNowCents: 1234, renewalAmountCents: 2999, renewalAmountExcludesTax: true, automaticTaxEnabled: true, managedPaymentsEnabled: true, effectiveAt: time() }); return true; }
       if (entry.path.endsWith('/plan-change/commit')) { assert.equal(entry.body.quoteId, 'quote_fixture_2'); assert.equal(entry.account, wallets[0].user.id); await f.json(route, { status: 'applied' }); return true; }
       if (entry.path.endsWith('/cancel') && entry.path.includes('/plan-changes/')) { assert.equal(entry.account, wallets[0].user.id); await f.json(route, { status: 'applied' }); return true; }
       return false;
     };
     await f.go('pricing'); await f.page.locator('main [data-plan="advanced"] button').click();
-    await f.page.waitForSelector('#plan-change-dialog'); assert.match(await f.page.locator('#plan-change-dialog').innerText(), /\$12\.34/);
+    await f.page.waitForSelector('#plan-change-dialog');
+    const quoteText = await f.page.locator('#plan-change-dialog').innerText();
+    assert.match(quoteText, /\$29\.99 USD per month \+ applicable tax/);
+    assert.match(quoteText, /Due now: \$12\.34 USD, including any tax in this quote/);
     assert.equal(writes(f, '/plan-change/commit').length, 0);
     await f.page.getByRole('button', { name: 'Keep current plan' }).click(); assert.equal(writes(f, '/plan-change/commit').length, 0);
     await f.page.locator('main [data-plan="advanced"] button').click(); await f.page.getByRole('button', { name: 'Confirm this change' }).click();

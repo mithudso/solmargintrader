@@ -425,7 +425,7 @@ function pricingView() {
     const card = el('section', 'pricing-card'); card.dataset.plan = plan.id;
     appendText(card, 'p', 'eyebrow', 'ORACLEBOT MEMBERSHIP');
     const title = appendText(card, 'h2', '', plan.name); title.id = `plan-${plan.id}`; card.setAttribute('aria-labelledby', title.id);
-    const price = appendText(card, 'div', 'pricing-big', currency(plan.monthlyUsd)); price.append(el('small', '', ' USD / month'));
+    const price = appendText(card, 'div', 'pricing-big', currency(plan.monthlyUsd)); price.append(el('small', '', ' USD / month before applicable tax'));
     const features = el('ul', 'plan-features');
     features.append(el('li', '', plan.botLimit === null ? 'Unlimited bot slots' : `Up to ${plan.botLimit} configured bot slots`), el('li', '', plan.backtestsPerDay === null ? 'Unlimited backtests' : `${plan.backtestsPerDay} backtests per day (UTC)`), el('li', '', 'Research journal and strategy workspace'));
     card.append(features);
@@ -437,7 +437,7 @@ function pricingView() {
     button.dataset.action = canChange && !samePlan ? 'change-plan' : subscribed ? 'portal' : 'trial'; button.dataset.plan = plan.id;
     button.disabled = samePlan || (!subscribed && state.config.billingConfigured !== true);
     button.setAttribute('aria-label', `${button.textContent} — ${plan.name}`); card.append(button);
-    appendText(card, 'p', 'fine-print', 'Seven-day trial for eligible first subscriptions. Review renewal terms in Stripe Checkout. Cancel through the billing portal.');
+    appendText(card, 'p', 'fine-print', 'Seven-day trial for eligible first subscriptions. Stripe shows applicable taxes and renewal terms before confirmation. Cancel through the billing portal.');
     grid.append(card);
   }
   if (!plans.length) appendText(grid, 'p', '', 'Membership plans are unavailable. Please try again later.');
@@ -481,8 +481,8 @@ async function reviewPlanChange(button) {
     $('#plan-change-dialog')?.remove();
     const dialog = el('dialog', 'plan-change-dialog'); dialog.id = 'plan-change-dialog';
     const content = el('div', 'panel'); content.append(el('h2', '', `Review ${quote.kind}`));
-    appendText(content, 'p', '', `${quote.targetPlan}: ${currency(quote.renewalAmountCents / 100)} USD per month.`);
-    appendText(content, 'p', '', `Due now: ${currency(quote.amountDueNowCents / 100)} USD.`);
+    appendText(content, 'p', '', `${quote.targetPlan} base rate: ${currency(quote.renewalAmountCents / 100)} USD per month${quote.renewalAmountExcludesTax === true ? ' + applicable tax' : ''}. Stripe confirms the renewal total.`);
+    appendText(content, 'p', '', `Due now: ${currency(quote.amountDueNowCents / 100)} USD, including any tax in this quote.`);
     appendText(content, 'p', '', quote.kind === 'downgrade' ? `Your current plan continues until ${new Date(quote.effectiveAt * 1000).toLocaleString()}. The lower rate starts then.` : 'The change takes effect after any required payment is confirmed. Your original trial end does not move.');
     const message = el('p', 'form-message'); message.setAttribute('role', 'status');
     const confirm = el('button', 'button button-dark', 'Confirm this change'); confirm.type = 'button';

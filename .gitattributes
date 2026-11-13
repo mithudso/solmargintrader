@@ -29,3 +29,4 @@ docs/high_signal_file_index.json linguist-generated
 # Preserve the audited CSV bytes bound by the immutable replay manifest.
 research/zec-granular-20261113.llms/results.csv -text whitespace=cr-at-eol
 research/zec-fee-sensitivity-20261113.llms/results.csv -text whitespace=cr-at-eol
+research/zec-expanded-20261113.llms/results.csv -text whitespace=cr-at-eol

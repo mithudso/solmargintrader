@@ -30,7 +30,8 @@ async function fixture(t, { plan = 'starter', trial = false } = {}) {
     if (path === '/v1/invoices/create_preview' && method === 'POST') {
       assert.equal(form['subscription_details[billing_cycle_anchor][type]'], 'unchanged');
       assert.equal(Object.hasOwn(form, 'subscription_details[billing_cycle_anchor]'), false);
-      return { id: 'upcoming_fixture', customer: 'cus_owner', currency: 'usd', amount_due: state.amountDue };
+      return { id: 'upcoming_fixture', customer: 'cus_owner', currency: 'usd', amount_due: state.amountDue,
+        ...(state.sub.automatic_tax ? { automatic_tax: { ...copy(state.sub.automatic_tax), status: 'complete', ...(state.previewTax || {}) } } : {}) };
     }
     if (path === '/v1/subscriptions/sub_owner' && method === 'POST') {
       const staged = {};
@@ -45,7 +46,11 @@ async function fixture(t, { plan = 'starter', trial = false } = {}) {
         else state.sub.items.data[0].price = price(form['items[0][price]'].split('price_')[1]);
       }
       if (!(form['items[0][price]'] && state.pending)) Object.assign(state.sub.metadata, staged);
-      if (form.cancel_at_period_end !== undefined) state.sub.cancel_at_period_end = form.cancel_at_period_end === 'true';
+      if (form.cancel_at_period_end !== undefined) {
+        if (state.sub.cancel_at_period_end && form.cancel_at_period_end === 'false') state.sub.cancel_at = null;
+        state.sub.cancel_at_period_end = form.cancel_at_period_end === 'true';
+      }
+      if (form.cancel_at !== undefined && !state.ignoreCancelDateClear) state.sub.cancel_at = form.cancel_at === '' ? null : Number(form.cancel_at);
       if (form.trial_end !== undefined) state.sub.trial_end = Number(form.trial_end);
       return copy(state.sub);
     }
@@ -55,9 +60,11 @@ async function fixture(t, { plan = 'starter', trial = false } = {}) {
       const item = state.sub.items.data[0];
       state.sub.schedule = 'sub_sched_fixture';
       state.schedule = { id: 'sub_sched_fixture', customer: 'cus_owner', subscription: 'sub_owner', status: 'active', metadata: {}, end_behavior: 'release',
+        default_settings: { automatic_tax: copy(state.sub.automatic_tax || null) },
         current_phase: { start_date: item.current_period_start, end_date: item.current_period_end },
         phases: [{ start_date: item.current_period_start, end_date: item.current_period_end,
-          items: [{ price: copy(item.price), quantity: 1 }], trial_end: state.sub.status === 'trialing' ? state.sub.trial_end : null }] };
+          items: [{ price: copy(item.price), quantity: 1 }], automatic_tax: null,
+          trial_end: state.sub.status === 'trialing' ? state.sub.trial_end : null }] };
       return copy(state.schedule);
     }
     if (path === '/v1/subscription_schedules/sub_sched_fixture' && method === 'GET') return copy(state.schedule);
@@ -66,6 +73,8 @@ async function fixture(t, { plan = 'starter', trial = false } = {}) {
       state.schedule.phases = [0, 1].map(index => ({ start_date: Number(form[`phases[${index}][start_date]`]),
         end_date: index === 0 ? Number(form['phases[0][end_date]']) : Number(form['phases[1][start_date]']) + 31 * 86400,
         items: [{ price: form[`phases[${index}][items][0][price]`], quantity: Number(form[`phases[${index}][items][0][quantity]`]) }],
+        automatic_tax: form[`phases[${index}][automatic_tax][enabled]`] === undefined ? null :
+          { enabled: form[`phases[${index}][automatic_tax][enabled]`] === 'true', liability: null },
         trial_end: form[`phases[${index}][trial_end]`] === undefined ? null : Number(form[`phases[${index}][trial_end]`]) }));
       state.schedule.end_behavior = form.end_behavior;
       return copy(state.schedule);
@@ -82,6 +91,15 @@ async function fixture(t, { plan = 'starter', trial = false } = {}) {
     const entry = { method: request.method, path: request.url, form: Object.fromEntries(new URLSearchParams(raw)), key: request.headers['idempotency-key'] || null };
     state.requests.push(entry);
     try {
+      if (Object.hasOwn(entry.form, 'cancel_at') && Object.hasOwn(entry.form, 'cancel_at_period_end')) {
+        response.writeHead(400, { 'Content-Type': 'application/json' }); response.end('{"error":{"param":"cancel_at","type":"invalid_request_error"}}'); return;
+      }
+      // The real Endive API rejects a proration date when prorations are disabled.
+      if ((entry.path === '/v1/invoices/create_preview' && entry.form['subscription_details[proration_behavior]'] === 'none' &&
+          Object.hasOwn(entry.form, 'subscription_details[proration_date]')) ||
+          (entry.path === '/v1/subscriptions/sub_owner' && entry.form.proration_behavior === 'none' && Object.hasOwn(entry.form, 'proration_date'))) {
+        response.writeHead(400, { 'Content-Type': 'application/json' }); response.end('{"error":{"param":"proration_date","type":"invalid_request_error"}}'); return;
+      }
       const before = await state.before?.(entry);
       if (before === 'fail') { response.writeHead(503, { 'Content-Type': 'application/json' }); response.end('{"error":"fixture_unavailable"}'); return; }
       const value = apply(entry.path, entry.method, entry.form);
@@ -107,6 +125,11 @@ async function rejectsCode(run, code, status) {
   await assert.rejects(run, error => error instanceof BillingLifecycleError && error.code === code && (!status || error.status === status));
 }
 const commit = (f, quote, key = 'change-request-0001') => commitPlanChange(f.env, f.user, { quoteId: quote.quoteId, idempotencyKey: key }, f.services);
+function managedPayments(f) {
+  f.state.sub.automatic_tax = { disabled_reason: null, enabled: true, liability: { type: 'stripe' } };
+  f.state.sub.managed_payments = { enabled: true };
+  f.state.sub.billing_mode = { type: 'flexible', flexible: { proration_discounts: 'included' }, updated_at: f.clock.at };
+}
 
 test('active upgrade binds a canonical invoice preview and idempotent transport mutation without granting local entitlement', async t => {
   const f = await fixture(t);
@@ -118,6 +141,8 @@ test('active upgrade binds a canonical invoice preview and idempotent transport 
   const call = f.mutations()[0];
   assert.equal(call.form.payment_behavior, 'pending_if_incomplete'); assert.equal(call.form.proration_behavior, 'always_invoice');
   assert.equal(call.form.proration_date, String(quote.effectiveAt)); assert.equal(call.form['billing_cycle_anchor[type]'], 'unchanged');
+  assert.ok(f.state.requests.filter(entry => entry.path === '/v1/invoices/create_preview')
+    .every(entry => entry.form['subscription_details[proration_date]'] === String(quote.effectiveAt)));
   assert.equal(call.form['items[0][id]'], 'si_owner'); assert.equal(call.form['items[0][quantity]'], '1'); assert.match(call.key, /^oraclebot-billing-/);
   assert.deepEqual(await commit(f, quote), result); assert.equal(f.mutations().length, 1);
   assert.equal(f.sqlite.prepare('SELECT plan_id FROM subscriptions').get().plan_id, 'starter');
@@ -132,7 +157,191 @@ test('trial upgrade charges zero now, preserves the original trial boundary and 
   assert.equal(quote.amountDueNowCents, 0); assert.equal(quote.trialEnd, originalTrial); assert.equal(quote.renewalAmountCents, 4999);
   assert.equal((await commit(f, quote)).status, 'applied');
   const call = f.mutations()[0]; assert.equal(call.form.trial_end, String(originalTrial)); assert.equal(call.form.proration_behavior, 'none');
+  assert.equal(Object.hasOwn(call.form, 'proration_date'), false);
+  assert.ok(f.state.requests.filter(entry => entry.path === '/v1/invoices/create_preview')
+    .every(entry => !Object.hasOwn(entry.form, 'subscription_details[proration_date]')));
   assert.equal(f.state.sub.trial_end, originalTrial); assert.equal(f.state.sub.status, 'trialing');
+});
+
+test('Managed Payments trial upgrade preserves Stripe tax liability, flexible mode and original trial without tax overrides', async t => {
+  const f = await fixture(t, { trial: true }); managedPayments(f);
+  const before = copy(f.state.sub); const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+  assert.equal(quote.amountDueNowCents, 0); assert.equal(quote.renewalAmountCents, 2999);
+  assert.equal(quote.renewalAmountExcludesTax, true); assert.equal(quote.automaticTaxEnabled, true); assert.equal(quote.managedPaymentsEnabled, true);
+  assert.equal((await commit(f, quote)).status, 'applied');
+  assert.deepEqual(f.state.sub.automatic_tax, before.automatic_tax); assert.deepEqual(f.state.sub.managed_payments, before.managed_payments);
+  assert.deepEqual(f.state.sub.billing_mode, before.billing_mode); assert.equal(f.state.sub.trial_end, before.trial_end);
+  assert.ok(f.state.requests.filter(entry => entry.method === 'POST').every(entry => !Object.keys(entry.form).some(key => /automatic_tax|managed_payments/.test(key))));
+});
+
+test('Managed Payments paid upgrade quotes and re-previews the gross tax-inclusive amount while renewal base excludes tax', async t => {
+  const f = await fixture(t); managedPayments(f); f.state.amountDue = 2177;
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+  assert.equal(quote.amountDueNowCents, 2177); assert.equal(quote.renewalAmountExcludesTax, true);
+  const result = await commit(f, quote); assert.equal(result.status, 'applied'); assert.equal(result.amountDueNowCents, 2177);
+  assert.equal(f.state.requests.filter(entry => entry.path === '/v1/invoices/create_preview').length, 2);
+  assert.equal(f.sqlite.prepare('SELECT amount_due_now_cents FROM billing_plan_quotes').get().amount_due_now_cents, 2177);
+  assert.deepEqual(f.state.sub.automatic_tax.liability, { type: 'stripe' });
+});
+
+test('ordinary self-liable automatic tax is preserved without adopting Managed Payments or Connect', async t => {
+  const f = await fixture(t);
+  f.state.sub.automatic_tax = { enabled: true, liability: { type: 'self' }, disabled_reason: null };
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+  assert.equal(quote.automaticTaxEnabled, true); assert.equal(quote.managedPaymentsEnabled, false);
+  assert.equal((await commit(f, quote)).status, 'applied'); assert.deepEqual(f.state.sub.automatic_tax.liability, { type: 'self' });
+});
+
+test('changed tax, Managed Payments or flexible billing context invalidates an outstanding quote before a provider mutation', async t => {
+  for (const change of ['tax-mode', 'managed-mode', 'billing-mode']) {
+    const f = await fixture(t); managedPayments(f);
+    const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+    if (change === 'tax-mode') { f.state.sub.managed_payments.enabled = false; f.state.sub.automatic_tax = { enabled: false, liability: null }; }
+    if (change === 'managed-mode') { f.state.sub.managed_payments.enabled = false; f.state.sub.automatic_tax.liability.type = 'self'; }
+    if (change === 'billing-mode') f.state.sub.billing_mode.flexible.proration_discounts = 'itemized';
+    await rejectsCode(() => commit(f, quote), 'subscription_changed'); assert.equal(f.mutations().length, 0);
+  }
+});
+
+test('tax-inclusive invoice amount changes cannot silently increase the committed charge', async t => {
+  const f = await fixture(t); managedPayments(f); f.state.amountDue = 2177;
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+  f.state.amountDue = 2300;
+  await rejectsCode(() => commit(f, quote), 'invoice_preview_changed'); assert.equal(f.mutations().length, 0);
+});
+
+test('incomplete tax calculations and preview liability changes fail before issuing a quote', async t => {
+  const f = await fixture(t); managedPayments(f);
+  f.state.previewTax = { status: 'requires_location_inputs' };
+  await rejectsCode(() => preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services), 'invoice_tax_unverified');
+  f.state.previewTax = { liability: { type: 'self' } };
+  await rejectsCode(() => preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services), 'subscription_settings_unsupported');
+  assert.equal(f.mutations().length, 0);
+});
+
+test('Managed Payments does not permit coupons, manual tax, Connect or unsupported liability', async t => {
+  for (const change of ['discount', 'manual-tax', 'connect', 'account-liability', 'stripe-without-managed']) {
+    const f = await fixture(t); managedPayments(f);
+    if (change === 'discount') f.state.sub.discounts = [{ id: 'di_custom' }];
+    if (change === 'manual-tax') f.state.sub.default_tax_rates = ['txr_custom'];
+    if (change === 'connect') f.state.sub.transfer_data = { destination: 'acct_custom' };
+    if (change === 'account-liability') f.state.sub.automatic_tax.liability = { type: 'account', account: 'acct_custom' };
+    if (change === 'stripe-without-managed') f.state.sub.managed_payments.enabled = false;
+    await rejectsCode(() => preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services), 'subscription_settings_unsupported');
+    assert.equal(f.mutations().length, 0);
+  }
+});
+
+test('Managed Payments downgrade preserves default tax authority, enables both phases and undo releases without changing tax', async t => {
+  const f = await fixture(t, { plan: 'unlimited' }); managedPayments(f); const before = copy(f.state.sub.automatic_tax);
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'starter' }, f.services);
+  const result = await commit(f, quote); assert.equal(result.status, 'scheduled');
+  const configured = f.mutations().find(entry => entry.path === '/v1/subscription_schedules/sub_sched_fixture');
+  assert.equal(configured.form['phases[0][automatic_tax][enabled]'], 'true');
+  assert.equal(configured.form['phases[1][automatic_tax][enabled]'], 'true');
+  assert.ok(!Object.keys(configured.form).some(key => /liability/.test(key)));
+  assert.deepEqual(f.state.schedule.default_settings.automatic_tax, before); assert.deepEqual(f.state.sub.automatic_tax, before);
+  const undone = await cancelPlanChange(f.env, f.user, { changeId: result.changeId, idempotencyKey: 'managed-release-0001' }, f.services);
+  assert.equal(undone.status, 'applied'); assert.equal(f.state.sub.schedule, null); assert.deepEqual(f.state.sub.automatic_tax, before);
+});
+
+test('a schedule that drops inherited tax liability remains unknown without configuring a disabling phase', async t => {
+  const f = await fixture(t, { plan: 'unlimited' }); managedPayments(f);
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'starter' }, f.services);
+  f.state.after = (entry, value) => {
+    if (entry.path === '/v1/subscription_schedules') value.default_settings.automatic_tax = { enabled: false, liability: null };
+  };
+  const result = await commit(f, quote); assert.equal(result.status, 'unknown');
+  assert.equal(f.mutations().filter(entry => entry.path === '/v1/subscription_schedules/sub_sched_fixture').length, 0);
+  assert.deepEqual(f.state.sub.automatic_tax.liability, { type: 'stripe' });
+  assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM billing_lifecycle_locks').get().n, 1);
+});
+
+test('schedule readback cannot claim success after the provider changes the subscription tax context', async t => {
+  const f = await fixture(t, { plan: 'unlimited' }); managedPayments(f);
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'starter' }, f.services);
+  f.state.after = entry => {
+    if (entry.method === 'POST' && entry.path === '/v1/subscription_schedules/sub_sched_fixture') {
+      f.state.sub.managed_payments.enabled = false; f.state.sub.automatic_tax = { enabled: false, liability: null };
+    }
+  };
+  const result = await commit(f, quote); assert.equal(result.status, 'unknown');
+  assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM billing_lifecycle_locks').get().n, 1);
+});
+
+test('an explicit portal cancellation blocks plan changes and API undo clears its date even when the flag is already false', async t => {
+  for (const trial of [false, true]) {
+    const f = await fixture(t, { trial }); managedPayments(f); const originalTrial = f.state.sub.trial_end;
+    f.state.sub.cancel_at = f.state.sub.items.data[0].current_period_end; f.state.sub.canceled_at = f.clock.at;
+    await rejectsCode(() => preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services), 'subscription_change_pending');
+    const alreadyCanceled = await setPeriodEndCancellation(f.env, f.user, { cancelAtPeriodEnd: true, idempotencyKey: 'portal-already-canceled' }, f.services);
+    assert.equal(alreadyCanceled.status, 'applied'); assert.equal(alreadyCanceled.effectiveAt, f.state.sub.cancel_at); assert.equal(f.mutations().length, 0);
+    const result = await setPeriodEndCancellation(f.env, f.user, { cancelAtPeriodEnd: false, idempotencyKey: 'portal-date-undo-0001' }, f.services);
+    assert.equal(result.status, 'applied'); assert.equal(f.state.sub.cancel_at, null); assert.equal(f.state.sub.cancel_at_period_end, false);
+    assert.equal(f.state.sub.trial_end, originalTrial); assert.equal(f.state.sub.status, trial ? 'trialing' : 'active');
+    const call = f.mutations()[0]; assert.equal(call.form.cancel_at, ''); assert.equal(Object.hasOwn(call.form, 'cancel_at_period_end'), false);
+    assert.deepEqual(f.state.sub.automatic_tax.liability, { type: 'stripe' });
+  }
+});
+
+test('HTTP provider rejects combined cancellation parameters; source clears the active representation with one parameter', async t => {
+  const f = await fixture(t); managedPayments(f);
+  f.state.sub.cancel_at = f.state.sub.items.data[0].current_period_end;
+  await assert.rejects(f.services.stripe('subscriptions/sub_owner', { cancel_at: '', cancel_at_period_end: 'false' }, 'rejected-combined-clear'), /fixture_provider_unavailable/);
+  assert.ok(f.state.sub.cancel_at); assert.equal(f.state.sub.cancel_at_period_end, false);
+  const result = await setPeriodEndCancellation(f.env, f.user, { cancelAtPeriodEnd: false, idempotencyKey: 'single-date-clear-01' }, f.services);
+  assert.equal(result.status, 'applied'); assert.equal(f.state.sub.cancel_at, null); assert.equal(f.state.sub.cancel_at_period_end, false);
+  const accepted = f.mutations().find(entry => entry.key !== 'rejected-combined-clear');
+  assert.equal(accepted.form.cancel_at, ''); assert.equal(Object.hasOwn(accepted.form, 'cancel_at_period_end'), false);
+});
+
+test('flexible API cancellation uses the verified item period end and recognizes the provider date representation', async t => {
+  const f = await fixture(t); managedPayments(f);
+  const result = await setPeriodEndCancellation(f.env, f.user, { cancelAtPeriodEnd: true, idempotencyKey: 'flexible-date-cancel-01' }, f.services);
+  assert.equal(result.status, 'applied'); assert.equal(result.effectiveAt, f.state.sub.items.data[0].current_period_end);
+  assert.equal(f.state.sub.cancel_at_period_end, false); assert.equal(f.state.sub.cancel_at, result.effectiveAt);
+  assert.equal(f.mutations()[0].form.cancel_at, String(result.effectiveAt));
+});
+
+test('an explicit cancellation inserted after a quote invalidates commit before changing a plan', async t => {
+  const f = await fixture(t); const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+  f.state.sub.cancel_at = f.state.sub.items.data[0].current_period_end;
+  await rejectsCode(() => commit(f, quote), 'subscription_changed'); assert.equal(f.mutations().length, 0);
+});
+
+test('undo cannot report applied or reconcile a false flag while the explicit cancellation date remains', async t => {
+  const f = await fixture(t); managedPayments(f);
+  f.state.sub.cancel_at = f.state.sub.items.data[0].current_period_end; f.state.ignoreCancelDateClear = true;
+  const result = await setPeriodEndCancellation(f.env, f.user, { cancelAtPeriodEnd: false, idempotencyKey: 'ignored-date-clear-01' }, f.services);
+  assert.equal(result.status, 'unknown'); assert.equal(f.state.sub.cancel_at_period_end, false); assert.ok(f.state.sub.cancel_at);
+  assert.equal((await getPlanChange(f.env, f.user, result.changeId, f.services)).status, 'unknown');
+  assert.equal(f.mutations().length, 1); assert.equal(f.sqlite.prepare('SELECT count(*) AS n FROM billing_lifecycle_locks').get().n, 1);
+});
+
+test('lost explicit cancellation-undo response reconciles only after both date and flag are cleared', async t => {
+  const f = await fixture(t); managedPayments(f); f.state.sub.cancel_at = f.state.sub.items.data[0].current_period_end;
+  f.state.after = entry => entry.method === 'POST' && entry.path === '/v1/subscriptions/sub_owner' ? 'disconnect' : null;
+  const result = await setPeriodEndCancellation(f.env, f.user, { cancelAtPeriodEnd: false, idempotencyKey: 'lost-date-clear-0001' }, f.services);
+  assert.equal(result.status, 'unknown'); assert.equal(f.state.sub.cancel_at, null); assert.equal(f.state.sub.cancel_at_period_end, false);
+  assert.equal((await getPlanChange(f.env, f.user, result.changeId, f.services)).status, 'applied'); assert.equal(f.mutations().length, 1);
+});
+
+test('HTTP provider rejects the former trial proration-date combination while source omits it and keeps the same trial end', async t => {
+  const f = await fixture(t, { trial: true }); const originalTrial = f.state.sub.trial_end;
+  await assert.rejects(f.services.stripe('invoices/create_preview', {
+    'subscription_details[proration_behavior]': 'none', 'subscription_details[proration_date]': String(f.clock.at),
+  }), /fixture_provider_unavailable/);
+  await assert.rejects(f.services.stripe('subscriptions/sub_owner', {
+    proration_behavior: 'none', proration_date: String(f.clock.at), trial_end: String(originalTrial),
+  }, 'former-trial-update'), /fixture_provider_unavailable/);
+  assert.equal(f.state.sub.trial_end, originalTrial); assert.equal(f.state.sub.items.data[0].price.id, 'price_starter');
+  const quote = await preparePlanChange(f.env, f.user, { plan: 'advanced' }, f.services);
+  const result = await commit(f, quote, 'corrected-trial-update');
+  assert.equal(result.status, 'applied'); assert.equal(quote.amountDueNowCents, 0);
+  assert.equal(f.state.sub.trial_end, originalTrial); assert.equal(f.state.sub.status, 'trialing');
+  const actual = f.state.requests.filter(entry => entry.path === '/v1/subscriptions/sub_owner' && entry.key !== 'former-trial-update' && entry.method === 'POST');
+  assert.equal(actual.length, 1); assert.equal(Object.hasOwn(actual[0].form, 'proration_date'), false);
+  assert.equal(actual[0].form.trial_end, String(originalTrial));
 });
 
 test('downgrade retains current item until the exact boundary and undo releases the owned schedule', async t => {
