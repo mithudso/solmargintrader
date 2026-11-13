@@ -1,0 +1,23 @@
+{
+  "audit": "independent ledger and direct SMA/buy-hold replay",
+  "attempt": "attempt-01",
+  "artifact_hashes_verified": 13,
+  "rows": 7060,
+  "statuses": {
+    "completed": 3252,
+    "insufficient_contiguous_warmup": 3780,
+    "unsupported_inputs_or_execution": 28
+  },
+  "exact_catalog_census": true,
+  "fills_independently_checked": 217445,
+  "full_direct_math_cases": 14,
+  "max_cash_error_usd": 9.367795428261161e-11,
+  "max_execution_price_error": 7.958078640513122e-13,
+  "source_changed_since_run": [],
+  "exact_25bps_baseline_rows": 3516,
+  "tape_capture_wal_and_runtime_match_accepted_baseline": true,
+  "open_position_rows": 0,
+  "terminal_mark_age_seconds": [
+    0.220432
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "artifacts": {
+    "audit-ledger.json": "8e659b51f530089b5b4d21308b13715be799cc8d9adfc65a14dc6b3a8847b53a",
+    "audit.json": "d804c02d3a07111f6beac16adcfecbe010a82d9b711918f85024a029ebc4ed54",
+    "coverage.json": "fdd1d29de23f8d4de8c0b94ec3eab354a82217b302df79fbbf1d5cd5b9f9e0ee",
+    "identity.json": "94fd3b470e03a3b6d8effd0b3eaf210f8e38f65409dbcf12a08142a85cf0df38",
+    "llms-full.txt": "2a3f18704c85275ab721c5d5f02e482ebb0e6f2ee8e6f54c524b0a99131d2d72",
+    "llms.txt": "2f7417655fb586ba36e4fe5d95fc2023ede0b4ac1c9bd0fcb8905294fdadfcef",
+    "manifest.json": "15d798562031d402ac26fa4078668193bd6c54c7dee47b0d3677a386430f1e7a",
+    "mongo-artifacts.json": "294fb537c9d8316b51fddcdf4832bc1866b07cef20590fdfa3b5ab7c78fa386e",
+    "plan.json.gz": "eb9f3458473da8d86d9ec869a3c97ea7a614355b9a4db63da0c5ccfc8aa5722c",
+    "rerun-provenance.json": "e805490aedabd8b4361da5e996714554ecf7c999d60708c2852f99cb89ee573a",
+    "results.csv": "c8b4ba0dfd8dbb7f18fe4fe542f4bb0e095dedfdf6efec416f2dfbf81b539405",
+    "summary.json": "84a0a3d053d0f66f4449b7ec58ac64e67d72ebf4ca8e5951ec4c43e6706cfba0"
+  },
+  "report_sha256": "2a3f18704c85275ab721c5d5f02e482ebb0e6f2ee8e6f54c524b0a99131d2d72"
+}
