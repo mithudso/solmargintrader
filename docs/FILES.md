@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `e1f2af22` (2026-11-13T18:13:43+00:00). 3616 tracked files, 92.9 MB.
+**Generated** from `index/INDEX.json` at commit `7b57ba2c` (2026-11-13T18:18:23+00:00). 3630 tracked files, 94.2 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2895 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 594/687 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (396 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2896 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 594/687 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (408 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -37,7 +37,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`docs`](#docs) — 155 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1956 files
-- [`research`](#research) — 296 files
+- [`research`](#research) — 310 files
 - [`oracle`](#oracle) — 43 files
 - [`extension`](#extension) — 131 files
 - [`executor`](#executor) — 48 files
@@ -95,7 +95,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `.gitattributes`
 
-`other` · 31 lines · 893 B · description: **curated**
+`other` · 32 lines · 975 B · description: **curated**
 
 **Purpose.** Per-path git behaviour: line-ending normalisation, and which files are treated as binary or excluded from diffs and archives. Keeps a CSV or a generated artifact from producing noise in review.
 
@@ -623,7 +623,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `llms.txt`
 
-`data` · 24 lines · 1,632 B · description: **derived**
+`data` · 28 lines · 1,964 B · description: **derived**
 
 **Purpose.** Generated report. Opens: # solmargintrader — family index / > Source: /Users/mitch/dev/oraclebot.io · https://github.com/mithudso/solmargintrader @ 1d49d5f7 + documentation delta
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2137 lines · 443,055 B · description: **extracted**
+`doc` · 2149 lines · 445,282 B · description: **extracted**
 
-**Purpose.** Version: 526 Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence. Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
+**Purpose.** Version: 528 Delta: v527 to v528; preserve both concurrent research and local repair records during integration. Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2206 lines · 128,722 B · description: **extracted**
+`doc` · 2217 lines · 129,056 B · description: **extracted**
 
-**Purpose.** Version: 239 Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs. Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
+**Purpose.** Version: 240 Delta: v239 to v240; preserve both concurrent local repairs and fee research requests. Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
 
 **Use.** Read it.
 
@@ -21753,7 +21753,7 @@ The simulation engine and everything that supports it. Never gains live-trading 
 
 Drivers that produce the numbers, and the write-ups that quote them. Everything here is reproducible from a committed script — the two occasions that was not true both produced a wrong published figure.
 
-296 files.
+310 files.
 
 #### `research/5minleveragestrategies.json`
 
@@ -21976,6 +21976,14 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 `doc` · 79 lines · 10,162 B · description: **extracted**
 
 **Purpose.** Version: 1.0.1 The full finite matrix finished on 2026-11-13: **10,576 rows**, including 4,878 completed strategy/benchmark rows, 5,670 insufficient-warm-up rows and 28 explicit exclusions. Results describe one captured day; they do not establish a durable edge or 70% next-minute accuracy. At a 60 bps fee per fill, every active 1m spot policy lost money.
+
+**Use.** Read it.
+
+#### `research/ZEC-GRANULAR-FEE-SENSITIVITY.md`
+
+`doc` · 58 lines · 6,057 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 The owner clarified the requested fees as **0.25% and 0.15%**, equivalent to **25 and 15 basis points per fill**. Both entries and exits pay that scenario rate. This reruns the complete prior captured-event matrix, changing fees only. Best *active* spot return in each interval, after all modelled costs:
 
 **Use.** Read it.
 
@@ -24278,6 +24286,114 @@ Drivers that produce the numbers, and the write-ups that quote them. Everything 
 **Purpose.** _No description available._
 
 **Use.** Read it.
+
+### `research/zec-fee-sensitivity-20261113.llms/`
+
+#### `research/zec-fee-sensitivity-20261113.llms/archive-manifest.json`
+
+`config` · 19 lines · 1,208 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (version, artifacts, report_sha256).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/audit-ledger.json`
+
+`config` · 24 lines · 693 B · description: **derived**
+
+**Purpose.** Generated JSON object, 15 keys (audit, attempt, artifact_hashes_verified, rows, statuses, exact_catalog_census...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/audit.json`
+
+`config` · 170 lines · 8,171 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (agent, definition_version, status, evidence, changes, remaining...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/coverage.json`
+
+`config` · 35 lines · 810 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (10m, 1h, 1m, 5m).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/identity.json`
+
+`config` · 61 lines · 5,662 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (code, executable, numpy, pandas, python).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/llms-full.txt`
+
+`data` · 58 lines · 6,057 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC fee sensitivity at 0.25% and 0.15% per fill / Version: 1.0.0
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/llms.txt`
+
+`data` · 18 lines · 976 B · description: **derived**
+
+**Purpose.** Generated report. Opens: # ZEC25/15bps fee sensitivity / Version: 1.0.0
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/manifest.json`
+
+`config` · 86 lines · 7,212 B · description: **derived**
+
+**Purpose.** Generated JSON object, 6 keys (artifacts, capture_sha256, identity, rows, statuses, version).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/mongo-artifacts.json`
+
+`config` · 75 lines · 2,584 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (status, artifacts, csv_bytes, csv_sha256, full_csv_readback, other_readbacks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/plan.json.gz`
+
+`other` · 0 lines · 20,015 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/rerun-provenance.json`
+
+`config` · 17 lines · 831 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (clarification, driver, driver_sha256, execution_model, fee_bps, other_changes...).
+
+**Use.** Configuration; nothing to run.
+
+#### `research/zec-fee-sensitivity-20261113.llms/results.csv`
+
+`data` · 7062 lines · 1,271,529 B · description: **derived**
+
+**Purpose.** Generated data: 7060 rows x 21 columns (interval, candidate_id, family, fee_bps, eligible_signal_bars, market, status, return_pct...).
+
+**Contents.** Columns: `interval`, `candidate_id`, `family`, `fee_bps`, `eligible_signal_bars`, `market`, `status`, `return_pct`, `end_equity`, `fees_usd`, `turnover_usd`, `residual_slippage_usd`, `carry_usd`, `fills`, `decision_fill_drawdown_pct`, `rejections`, `open_units`, `terminal_mark_ns`, `terminal_mark_age_seconds`, `terminal_state`, `reason`.
+
+**Use.** Read it.
+
+#### `research/zec-fee-sensitivity-20261113.llms/summary.json`
+
+`config` · 788 lines · 26,797 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (coverage, fee_bps, fee_percent, mongo_run_id, original_source_sha256, parent_run_id...).
+
+**Use.** Configuration; nothing to run.
 
 ### `research/zec-granular-20261113.llms/`
 

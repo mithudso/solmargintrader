@@ -1,7 +1,11 @@
 # Work continuation
 
-Version: 526
+Version: 528
+Delta: v527 to v528; preserve both concurrent research and local repair records during integration.
 Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence.
+
+Delta: v526 to v527; bind verified25/15bps results, independent audit and Mongo readback.
+Delta: v525 to v526; freeze the owner-confirmed25/15bps ZEC fee-only rerun.
 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
 Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
 Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
@@ -2134,3 +2138,11 @@ suites. All source filepaths/actualexitlogs collectedinprivateevidencemanifest.
 
 Afterthecodecommit,newtimingtestmoduleenterscanonicalcensus:1582SolTUIcases/3242four-suite
 discoveries(expected,notfullrun). Finalcountsandderivedartifactsverifiedbeforepush.
+
+## ZEC fee sensitivity in progress
+
+MILE-2113 owns the confirmed0.25percent/0.15percent fee rerun. Use25/15bps perfill for bothentriesandexits, never literal.25/.15bps. Preserve original attempt03 and827spot/50Volty catalog at1m5m10m1h. Reuse verified immutable tape, alter fees only; no new maker-fill claim because executions stillcross recorded depth. Isolatedworktree /Users/mitch/dev/solmargintrader-zec-fees25-15-20261113. No runtime/data/source-simulator changes planned. Remaining: run both scenarios, independently compare25bps toacceptedbaseline and audit15bps, persist complete evidence toMongo/sharedllms, thenverify/merge/cleanup.
+
+## ZEC25/15bps results verified
+
+Freshattempt01 at /Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01 completed0:7060rows,3252complete/3780insufficient/28unsupported,allpositionsclosed.39targetedtests/Ruff0. Bestactivespot25bps:1m-.336329%,5m+1.082212%,10m+1.822955%,1h-.821624%;15bps:+.630761%,+1.893912%,+2.026802%,-.702009%.Only1of786active1mspottemplates positiveat15bps,18fills;noneat25bps. Independentauditorverifiedall217445fills,14directmathcases,all3516new25bpsrows exactlymatchprioracceptedbaseline,andoriginaltape/WAL/runtimehashes. Conditionalmaker-ratefees only: fillsstillcrossbook,spread/slippage/latencyunchanged,nomakerqueueproof.13immutableMongoartifacts run:80719ee0ab3841dcabf1d0723c982e16f8385d3b082f988d4641d55c97df0bfa revision16;full1271529byteCSVreadbacksha c8b4ba0dfd8dbb7f18fe4fe542f4bb0e095dedfdf6efec416f2dfbf81b539405 andall7otherartifacts byteequal. Sharedreport research/ZEC-GRANULAR-FEE-SENSITIVITY.md andfamily research/zec-fee-sensitivity-20261113.llms. KNOW-2126holdsresults. Remainingdelivery: generatedpublicresearch/index consistency,docs/CIchecks,merge,remotecontentreadbackandownedcleanup;finalstatusin /Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/delivery.json andMILE-2113. Priorbaselineisimmutableandnotreplaced.

@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "artifacts": [
+    {
+      "name": "results.csv.gz.b64.part-1-of-6",
+      "id": "art:59862ab04c69fb47ab43bfaee2b3d452f8f7fa1c17eda31571e8e631486f23ec"
+    },
+    {
+      "name": "results.csv.gz.b64.part-2-of-6",
+      "id": "art:29b69e6ba1d72f9fff21ed0dc992ae3c88bd0a1dd1ab0eee9ec2f93539dd2a4d"
+    },
+    {
+      "name": "results.csv.gz.b64.part-3-of-6",
+      "id": "art:ce801556332c358dffeaa1aa3c0615770bb2866dcfd9323f80c2969ce4072609"
+    },
+    {
+      "name": "results.csv.gz.b64.part-4-of-6",
+      "id": "art:508fc682aca64363fac81ba0ea641eb81cf161d43d5ccffe14f87fa0b005cb6a"
+    },
+    {
+      "name": "results.csv.gz.b64.part-5-of-6",
+      "id": "art:224de031b57bca8a1e33133ace48c7f4f2fd5e627a80fe100038ba42baef3bc7"
+    },
+    {
+      "name": "results.csv.gz.b64.part-6-of-6",
+      "id": "art:858759db5a5bb1b79627fb3e92f3e94caf64a1506c87337157c3a1a1769c5d25"
+    },
+    {
+      "name": "ZEC-GRANULAR-FEE-SENSITIVITY.md",
+      "id": "art:50520c926832470cf147c194e695b8f99cbe398da9ef4d8b58ca6e95c73703f3"
+    },
+    {
+      "name": "frozen-plan.json.gz.base64",
+      "id": "art:fed209a0d3e476b5215df29c6fb11461fc54d5b6455fc5c51f5bcd644d0b7659"
+    },
+    {
+      "name": "independent-audit.json",
+      "id": "art:b11773e632b812d625f7a1f46b3bcccc90c37120ae088d335846436845c49d1d"
+    },
+    {
+      "name": "independent-ledger.json",
+      "id": "art:c786b234e15fbe073e2301f18838fcaa54e2e08a46619e1d387a21fcb95c1c75"
+    },
+    {
+      "name": "summary.json",
+      "id": "art:9f312e57e2679e70ab2bc0cec6620fcbf41c6d2c4bd6a73acd927fa40ad3b95d"
+    },
+    {
+      "name": "run-manifest.json",
+      "id": "art:e81a8b5d8bc4f8b3dc5b687904f7a488ef03f93977eb7ad7765c6a4fbbeb7ad0"
+    },
+    {
+      "name": "rerun-provenance.json",
+      "id": "art:49ccfec500b3f7c7a9460e514443c6dab91265837dffd2946825c5c93a50f0f4"
+    }
+  ],
+  "csv_bytes": 1271529,
+  "csv_sha256": "c8b4ba0dfd8dbb7f18fe4fe542f4bb0e095dedfdf6efec416f2dfbf81b539405",
+  "full_csv_readback": true,
+  "other_readbacks": [
+    "ZEC-GRANULAR-FEE-SENSITIVITY.md",
+    "frozen-plan.json.gz.base64",
+    "independent-audit.json",
+    "independent-ledger.json",
+    "summary.json",
+    "run-manifest.json",
+    "rerun-provenance.json"
+  ],
+  "version": "1.0.0",
+  "run_id": "run:80719ee0ab3841dcabf1d0723c982e16f8385d3b082f988d4641d55c97df0bfa",
+  "artifact_revision": 16,
+  "encoding": "Concatenate ordered CSV part texts, base64 decode, gzip decompress",
+  "qualification": "Conditional fee-only crossing-book simulation; persistence is not trusted literature or maker-fill qualification"
+}

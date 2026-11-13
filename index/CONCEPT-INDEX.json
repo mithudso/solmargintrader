@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T18:13:43+00:00",
+  "generatedAt": "2026-11-13T18:18:23+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -161,7 +161,7 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1587,
+      "matchingFiles": 1601,
       "shown": 30,
       "files": [
         {
@@ -177,12 +177,12 @@
           "hits": 181
         },
         {
-          "path": "research/coin-intelligence/doge-dogecoin.md",
-          "hits": 147
+          "path": "memory.md",
+          "hits": 152
         },
         {
-          "path": "memory.md",
-          "hits": 145
+          "path": "research/coin-intelligence/doge-dogecoin.md",
+          "hits": 147
         },
         {
           "path": "research/results/shape_spot_20261111_manifest.json",
@@ -226,7 +226,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 47
+          "hits": 48
         },
         {
           "path": "research/five-minute-perps-suite/inherited-evidence-receipt.json",
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1554,
+      "matchingFiles": 1559,
       "shown": 30,
       "files": [
         {
@@ -353,6 +353,10 @@
         },
         {
           "path": "docs/FILES.md",
+          "hits": 50
+        },
+        {
+          "path": "research/zec-fee-sensitivity-20261113.llms/summary.json",
           "hits": 50
         },
         {
@@ -418,10 +422,6 @@
         {
           "path": "ecosystem/web/app.js",
           "hits": 24
-        },
-        {
-          "path": "research/results/volty_predictive_20261111.json",
-          "hits": 24
         }
       ],
       "source": "curated-from-repo-vocabulary"
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1490,
+      "matchingFiles": 1494,
       "shown": 30,
       "files": [
         {
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 914,
+      "matchingFiles": 921,
       "shown": 30,
       "files": [
         {
@@ -606,11 +606,11 @@
           "hits": 271
         },
         {
-          "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
-          "hits": 187
+          "path": "memory.md",
+          "hits": 188
         },
         {
-          "path": "memory.md",
+          "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
           "hits": 187
         },
         {
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 872,
+      "matchingFiles": 876,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 851,
+      "matchingFiles": 855,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 763,
+      "matchingFiles": 765,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 548,
+      "matchingFiles": 553,
       "shown": 30,
       "files": [
         {
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 526,
+      "matchingFiles": 534,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 455,
+      "matchingFiles": 462,
       "shown": 30,
       "files": [
         {
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 377,
+      "matchingFiles": 379,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 360,
+      "matchingFiles": 366,
       "shown": 30,
       "files": [
         {
@@ -1904,12 +1904,12 @@
           "hits": 14
         },
         {
-          "path": "research/decide.py",
+          "path": "memory.md",
           "hits": 13
         },
         {
-          "path": "memory.md",
-          "hits": 12
+          "path": "research/decide.py",
+          "hits": 13
         },
         {
           "path": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 289,
+      "matchingFiles": 291,
       "shown": 30,
       "files": [
         {
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 246,
+      "matchingFiles": 248,
       "shown": 30,
       "files": [
         {
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 186,
+      "matchingFiles": 188,
       "shown": 30,
       "files": [
         {
@@ -2486,7 +2486,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 161,
+      "matchingFiles": 162,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 146,
+      "matchingFiles": 147,
       "shown": 30,
       "files": [
         {

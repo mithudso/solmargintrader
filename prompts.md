@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 239
+Version: 240
+Delta: v239 to v240; preserve both concurrent local repairs and fee research requests.
 Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
+
+Delta: v238 to v239; preserve corrected percent units for the ZEC fee rerun.
 Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
 Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
 
@@ -2203,3 +2206,11 @@ Is the entire ecosystem up, live, running, oracle producing predictions, forward
 ```text
 Can you fix those issues?
 ```
+
+## 2026-11-13 — ZEC maker-rate fee sensitivity
+
+> Rerun  the analysis with .25bps maker fee and a .15bps maker fee for trades.
+
+Owner clarification:
+
+> .25% and .15%
