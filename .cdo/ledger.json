@@ -18602,7 +18602,7 @@
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_wallet_integration.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -18616,13 +18616,11 @@
     "P2",
     "S1",
     "S2",
-    "S3",
     "S4",
-    "S5",
     "T1",
     "T4"
    ],
-   "sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
+   "sha": "aed3c3777a5c940738f7ae60cbd5504327a10a22",
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_wallet_settings.py": {
@@ -19923,6 +19921,69 @@
    "skipped_unchanged": 0,
    "started": "2026-11-13T01:29:08Z",
    "status": "FULL_SOURCE_INSPECTION_PIPELINE_UI_BOUNDARIES_GREEN_SOLTUI_SHARDS_AND_DELIVERY_PENDING"
+  },
+  {
+   "deferred": 0,
+   "finished": null,
+   "id": "2026-11-13T03:22:58Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M4": {
+     "files": 1,
+     "state": "ran"
+    },
+    "P1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 1,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "T4": {
+     "files": 1,
+     "state": "ran"
+    }
+   },
+   "reviewed": 1,
+   "skipped_unchanged": 0,
+   "started": "2026-11-13T03:22:58Z"
   }
  ],
  "version": 1

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T02:00:36+00:00",
+  "generatedAt": "2026-11-13T03:24:11+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1902,
+      "matchingFiles": 1903,
       "shown": 30,
       "files": [
         {
@@ -79,7 +79,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 81
+          "hits": 82
         },
         {
           "path": "research/tradingview-card-readiness.json",

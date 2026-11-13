@@ -1,7 +1,8 @@
 # Oraclebot repository health audit — 2026-11-12
 
-Version: 0.1.9
-Delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures. Complete combined Ecosystem255 and four fresh CLI parsing gates pass. Final SolTUI shards, pushed CI and delivery remain pending.
+Version: 0.1.10
+Delta: Preserve failed full/CI attempts, qualify private spawn-safe launcher and wallet-render readiness. Fresh full1563/final-headCI remain pending.
+Previous delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures. Complete combined Ecosystem255 and four fresh CLI parsing gates pass. Final SolTUI shards, pushed CI and delivery remain pending.
 
 ## Result and scope
 
@@ -172,3 +173,9 @@ These are coordinated future source/package identities. Frozen installed paper c
 3. Preserve the completed823-source inspection ledger/unchanged plans,22supplements,41M5qualification limits, architecture/T4 residuals, five data classifications and all failed/retracted evidence. Any later code change requires a newly bound delta and relevant checks.
 4. Commit only owned source/docs/receipts, push the final branch tip, wait for required CI, merge only after passing gates, and verify the intended changes on the remote default branch. Installation/deployment requires its own loaded-state acceptance.
 5. For hosted activation, use [Oraclebot launch readiness](ORACLEBOT-LAUNCH-READINESS.md). Billing account/price/webhook configuration, durable engine hosting, per-user execution authority and actual hosted parity remain separate product work. No audit gate authorizes live financial execution or proves strategy profitability.
+
+## Final render and spawn-launcher qualification
+
+Full1563on92c75 failed with1548successes/14canonicalskips/oneprivate-harnesserror. Unguarded entry dispatch exited during multiprocessing.spawn re-import; the parent queue timed out. All children were accounted, source/harness fixed and no forbidden boundary occurred. This remains failed evidence. The corrected private launcher passed actualspawnpositive/negative andcleanup qualification in allfour namespaces; see [qualification](../.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json). It is not a fresh full pass.
+
+Separate877caseCI failed walletPnL summary after a fixed two-second pause. The corrected test awaits the actual renderer with a ten-second deadline and unchanged wallet/economic/table assertions. A three-second hold before the real registry call fails the old test and passes the correction. Final23casewalletmodule/Ruff pass0. [Independent reviewed delta](../.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json) binds source, originalfullread and explicitmethodNAs. Coverage823semantic andglobalM3/M5/T4limits remain. Finalcleanpushedcandidate, completefresh1563gate, final-headCI andactualmerge arestillrequired.

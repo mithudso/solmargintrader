@@ -795,7 +795,7 @@
   "soltui/tests/test_vote_explanation.py": "5167770085d97b2bbe16ac7ceb0548c39f62aa57",
   "soltui/tests/test_wallet.py": "31e2d30b761225d622c526fa05f4117be6d9a486",
   "soltui/tests/test_wallet_activity.py": "7d9527489bf47adf03855dc558aaa121ee8b3be3",
-  "soltui/tests/test_wallet_integration.py": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
+  "soltui/tests/test_wallet_integration.py": "aed3c3777a5c940738f7ae60cbd5504327a10a22",
   "soltui/tests/test_wallet_settings.py": "fbffe54760cb906a3c4974d89e1952fffcc075ec",
   "soltui/top5.py": "a4518355e74e5cdd16678486abaf9580edbcd2ec",
   "soltui/trend.py": "b5dd55d6e75639de861372a65fe5aa36112b45a1",

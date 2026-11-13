@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T02:00:21+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T03:24:01+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1902 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1903 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -30,13 +30,13 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
 - `docs/operations-registry.json` (210 hits)
-- `docs/FILES.md` (170 hits)
+- `docs/FILES.md` (172 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1902`
+Full list: `python3 index/search.py --concept risk-rails -n 1903`
 
 ### Cross-asset and cross-timeframe transfer
 

@@ -7234,12 +7234,15 @@
     },
     {
       "path": "soltui/tests/test_wallet_integration.py",
-      "blob_sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
-      "lines": 292,
+      "blob_sha": "aed3c3777a5c940738f7ae60cbd5504327a10a22",
+      "lines": 304,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+      "evidence": ".cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json",
       "baseline_python_ast_covered": true,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "original_blob_sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
+      "original_evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+      "review_kind": "complete original read plus independently reviewed final delta"
     },
     {
       "path": "soltui/tests/test_wallet_settings.py",

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `0716a636` (2026-11-13T02:00:21+00:00). 3532 tracked files, 89.1 MB.
+**Generated** from `index/INDEX.json` at commit `92c75a58` (2026-11-13T03:24:01+00:00). 3535 tracked files, 89.2 MB.
 
 Regenerate with:
 
@@ -16,7 +16,7 @@ Every entry marks where its description came from, because a generated one-liner
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
 - **extracted** (2879 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (341 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **derived** (344 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 116 files
+- [`.cdo`](#cdo) — 119 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1739 lines · 375,217 B · description: **extracted**
+`doc` · 1750 lines · 378,336 B · description: **extracted**
 
-**Purpose.** Version: 507 Delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery. Delta: v505 to v506; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+**Purpose.** Version: 508 Delta: v507 to v508; preserve failed full/CI gates and qualified spawn/render-readiness corrections before the next frozen candidate. Delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery.
 
 **Use.** Read it.
 
@@ -855,9 +855,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/AUDIT-FILE-MANIFEST-2026-11-12.md`
 
-`doc` · 560 lines · 61,122 B · description: **extracted**
+`doc` · 563 lines · 61,534 B · description: **extracted**
 
-**Purpose.** Version: 0.1.2 Delta: include the combined pipeline, UI, readiness corrections and final current evidence. This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
+**Purpose.** Version: 0.1.3 Delta: include the wallet-render readiness correction and qualified private spawn-entry evidence. This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
 
 **Use.** Read it.
 
@@ -895,7 +895,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/CONCEPTS.md`
 
-`doc` · 323 lines · 20,593 B · description: **extracted**
+`doc` · 323 lines · 20,592 B · description: **extracted**
 
 **Purpose.** python3 index/build.py all # refresh python3 index/make_concepts_doc.py # rewrite this file python3 index/search.py --concepts # list them
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34001 lines · 1,681,770 B · description: **extracted**
+`doc` · 34091 lines · 1,685,291 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1079,9 +1079,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 175 lines · 39,242 B · description: **extracted**
+`doc` · 182 lines · 40,602 B · description: **extracted**
 
-**Purpose.** Version: 0.1.9 Delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures. Complete combined Ecosystem255 and four fresh CLI parsing gates pass. Final SolTUI shards, pushed CI and delivery remain pending.
+**Purpose.** Version: 0.1.10 Delta: Preserve failed full/CI attempts, qualify private spawn-safe launcher and wallet-render readiness. Fresh full1563/final-headCI remain pending. Previous delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures.
 
 **Use.** Read it.
 
@@ -30387,7 +30387,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_wallet_integration.py`
 
-`test` · 293 lines · 15,039 B · description: **extracted**
+`test` · 305 lines · 15,527 B · description: **extracted**
 
 **Purpose.** Wallet discovery wired into the console: Settings addresses, the key-source row, `portfolio.scan`, the Wallet tab, and the separate `wallet (live)` section of the P&L tab. The network is replaced by the recorded-fixture `Fake` from test_wallet; nothing here reads a key file.
 
@@ -31041,11 +31041,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-116 files.
+119 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 19930 lines · 307,159 B · description: **derived**
+`config` · 19991 lines · 308,076 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31199,7 +31199,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7480 lines · 281,732 B · description: **derived**
+`config` · 7483 lines · 281,977 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -31970,6 +31970,32 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 390 lines · 14,799 B · description: **derived**
 
 **Purpose.** Generated JSON object, 22 keys (file, lines_read, related_tests, reviewer_skills, findings, passes...).
+
+**Use.** Configuration; nothing to run.
+
+### `.cdo/reviews-2026-11-13/`
+
+#### `.cdo/reviews-2026-11-13/ledger-after-wallet-render-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json`
+
+`config` · 81 lines · 4,663 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (agent, definition_version, status, scope, observed_at, source_identity_observed...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json`
+
+`config` · 73 lines · 2,071 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (version, path, blob_sha, sha256, scope, original_blob_sha...).
 
 **Use.** Configuration; nothing to run.
 

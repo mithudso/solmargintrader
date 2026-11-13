@@ -6,6 +6,7 @@ The network is replaced by the recorded-fixture `Fake` from test_wallet; nothing
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import shutil
@@ -14,7 +15,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from textual.widgets import DataTable, Input, Select, Static, TabbedContent
+from textual.widgets import DataTable, Input, Select, TabbedContent
 
 from soltui import commands, config, pnl, portfolio, wallet
 from soltui.tests.bridge_support import World
@@ -277,15 +278,26 @@ class WalletTabTests(unittest.IsolatedAsyncioTestCase):
         wallet.record_scan({"ts": pnl.parse_moment("2026-11-02"), "total_usd": 55.0,
                             "chains": {}, "partial": False})
         app = SolTuiApp(make_settings())
-        async with app.run_test(size=TEST_SIZE) as pilot:
-            app.query_one("#pnl-window", Select).value = "all"
-            app.query_one("#pnl-source", Select).value = "wallet (live)"
-            app.query_one(TabbedContent).active = "tab-pnl"
-            await pilot.pause(2.0)
-            summary = text_of(app, "#pnl-summary")
-            self.assertIn("wallet (live) (real)", summary)
-            self.assertIn("wallet (live) net +10.0%", summary)
-            self.assertEqual(app.query_one("#pnl-strategies", DataTable).row_count, 1)
+        rendered = asyncio.Event()
+        original_render = app._render_pnl
+
+        def render_complete(envs):
+            original_render(envs)
+            rendered.set()
+
+        # Tab activation queues loading before a worker may even be registered.
+        # Observe the real render callback, including its final table updates.
+        with mock.patch.object(app, "_render_pnl", render_complete):
+            async with app.run_test(size=TEST_SIZE):
+                app.query_one("#pnl-window", Select).value = "all"
+                app.query_one("#pnl-source", Select).value = "wallet (live)"
+                app.query_one(TabbedContent).active = "tab-pnl"
+                async with asyncio.timeout(10):
+                    await rendered.wait()
+                summary = text_of(app, "#pnl-summary")
+                self.assertIn("wallet (live) (real)", summary)
+                self.assertIn("wallet (live) net +10.0%", summary)
+                self.assertEqual(app.query_one("#pnl-strategies", DataTable).row_count, 1)
 
 
 if __name__ == "__main__":

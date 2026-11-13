@@ -1,7 +1,7 @@
 # Repository delivery file manifest
 
-Version: 0.1.2
-Delta: include the combined pipeline, UI, readiness corrections and final current evidence.
+Version: 0.1.3
+Delta: include the wallet-render readiness correction and qualified private spawn-entry evidence.
 
 This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
 
@@ -11,7 +11,7 @@ Canonical paths below become current after merge and safe default-branch synchro
 Implementation worktree: /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112
 Delivery PR: https://github.com/mithudso/solmargintrader/pull/234
 
-Total repository paths: 544
+Total repository paths: 547
 
 - /Users/mitch/dev/oraclebot.io/.cdo/ledger.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-boundaries-tools.json — Source review and verification evidence
@@ -128,6 +128,9 @@ Total repository paths: 544
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-npm-advisories.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-ui.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-worker.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/ledger-after-wallet-render-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.env.example — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/.github/copilot-instructions.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/.github/dependabot.yml — Source, tests or workflow documentation
