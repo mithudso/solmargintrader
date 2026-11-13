@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T03:26:54+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T03:36:34+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -108,7 +108,7 @@ Strongest files:
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
 - `docs/FILES.md` (383 hits)
 - `FILES.md` (283 hits)
-- `memory.md` (164 hits)
+- `memory.md` (166 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
 - `docs/archive/memory-2026-11-10.md` (141 hits)
 

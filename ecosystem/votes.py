@@ -397,7 +397,7 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
                "publication_instrument": study.get("instrument") if study else None,
                "published_strategy": study.get("accounts", [{}])[0].get("id") if selected_study else "published",
                "scope": "read_only_ensemble_and_independent_live_projection",
-               "live_forecast_horizons": ["10s", "1m"], "live_refresh_seconds": 10}
+               "live_forecast_seconds_range": [5, 300]}
     if explicit and requested not in {row["id"] for row in strategies}:
         view = _unavailable_display(view, "requested_strategy_unavailable_for_instrument")
     elif interval is not None and interval != "10s" and native != interval:
@@ -416,8 +416,10 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
     from .forecast import report as forecast_report
     from .forecast_preferences import settings as forecast_settings
 
+    seconds = int(interval[:-1]) if interval and interval.endswith("s") else 60 if interval == "1m" else forecast_settings(forecast_home or home, instrument)["seconds"]
+    display["live_refresh_seconds"] = seconds
     view["live_forecast"] = forecast_report(
-        forecast_home or home, instrument, horizon=int(interval[:-1]) if interval and interval.endswith("s") else 60 if interval == "1m" else forecast_settings(forecast_home or home, instrument)["seconds"],
+        forecast_home or home, instrument, horizon=seconds,
         strategy=requested, now=now,
     )
     return view

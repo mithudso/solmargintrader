@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `349d660` (2026-11-13T03:26:54+00:00). 3360 tracked files, 80.5 MB.
+**Generated** from `index/INDEX.json` at commit `0d7d8c9` (2026-11-13T03:36:34+00:00). 3360 tracked files, 80.5 MB.
 
 Regenerate with:
 
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1363 lines · 263,176 B · description: **extracted**
+`doc` · 1375 lines · 265,655 B · description: **extracted**
 
-**Purpose.** Version: 488 Delta: v487 to v488; implement editable per-coin forecast horizon and cadence with evidence traces. Delta: v486 to v487; start TASK-2064 continuous ten-second selected-strategy display.
+**Purpose.** Version: 489 Delta: v488 to v489; pass editable forecast gates and promote an independently bound preview. Delta: v487 to v488; implement editable per-coin forecast horizon and cadence with evidence traces.
 
 **Use.** Read it.
 
@@ -28941,7 +28941,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/votes.py`
 
-`code-python` · 424 lines · 18,097 B · description: **extracted**
+`code-python` · 426 lines · 18,137 B · description: **extracted**
 
 **Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
 
@@ -29221,7 +29221,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_votes.py`
 
-`test` · 218 lines · 10,051 B · description: **none**
+`test` · 221 lines · 10,289 B · description: **none**
 
 **Purpose.** _No description available._
 

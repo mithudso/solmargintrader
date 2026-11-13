@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 489
+Version: 490
+Delta: v489 to v490; accept installed preview and correct variable-interval API metadata.
 Delta: v488 to v489; pass editable forecast gates and promote an independently bound preview.
 Delta: v487 to v488; implement editable per-coin forecast horizon and cadence with evidence traces.
 Delta: v486 to v487; start TASK-2064 continuous ten-second selected-strategy display.
@@ -1372,3 +1373,12 @@ AuditPR234/frozenhead92c75a58468fccc0802c2945b7a4a282639ce764 mustmergefirst; cu
 - Existing pipeline remains /Users/mitch/.venvs/oraclebot-pipeline-0.4.8/bin/python PID 56618 with identical plan, run 31ce61f0c33c479a870c82d082efa8dc and batch 4f306fefe0914badbbb64887da9c81c9; recorder PID 1673 unchanged. First suite stop exited 4 because launchd release was asynchronous; separately confirmed registration 113 and released ownership before exact uninstall/install succeeded. No pipeline stop was performed.
 - Private receipts and complete source-file manifest: /Users/mitch/.local/state/oraclebot-forecast-10s-20261112. Independent verifier /root/oraclebot_operations_acceptance is running read-only actual browser/numerical/cadence acceptance; root owns actual preference changes and forecast-only recovery.
 - Remaining: installed browser/CAS/recovery acceptance; checkpoint draft; preserve audit-first merge order with PR 234, integrate its Oracle 0.2.4/ecosystem 0.4.10 fixes before final 0.4.11 source publication, rebuild a new final immutable bundle, run final acceptance, pass CI, merge and verify default. Audit owner is repairing its private full-gate spawn launcher; this task must not overwrite its changes or restart its jobs.
+
+
+## TASK-2064 installed acceptance and final candidate (v490)
+
+- Independent installed-preview acceptance completed: /Users/mitch/.local/state/oraclebot-forecast-10s-20261112/acceptance.json SHA256 39e5e3c36d0ad856f3c79b0b048fa97c07d61d14253872391df6eb331bc89de9. Five live default frames and three 17-second frames, exact input-trace/canonical strategy replay, multiple coin/strategy contexts, byte-identical installed/served assets, both editable DOM fields and all nine monitored components passed.
+- Actual authenticated HTTP actions set SOL 17 seconds at revision 1; stale revision and four-second updates failed without changes. ZEC remained 10 at revision 0. Restored SOL to 10 at revision 2. Actual projection-only SIGKILL recovered PID 53645 to 63360 in 6.378 seconds. Original pipeline 56618 and recorder 1673 remained alive with original config/run/batch.
+- Source commit 0d7d8c9 is pushed in recoverable draft https://github.com/mithudso/solmargintrader/pull/244. Initial CI eleven success, targeted macOS pending. No merge is claimed.
+- After preview acceptance, corrected only display API metadata to report the requested seconds and supported 5–300 range rather than an obsolete fixed-ten-second field. Existing native-frequency read-only test now checks 17-second metadata. Forecast model, policy, traces and preference implementation remain identical to accepted preview.
+- Final source checks and immutable production bundle are in progress. Asked concurrent audit owner whether feature-first publication can safely avoid blocking this independent feature on its fresh roughly 41-minute frozen full suite. Until agreement, preserve the earlier audit-first source merge order. Do not alter or interrupt audit jobs.
