@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7df22b53` (2026-11-13T16:39:50+00:00). 3614 tracked files, 92.8 MB.
+**Generated** from `index/INDEX.json` at commit `e19b692b` (2026-11-13T16:54:31+00:00). 3614 tracked files, 92.8 MB.
 
 Regenerate with:
 
@@ -343,7 +343,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `README.md`
 
-`doc` · 225 lines · 14,786 B · description: **curated**
+`doc` · 225 lines · 14,787 B · description: **curated**
 
 **Purpose.** Entry point: what the project is, its components, and the honest summary of what the research established.
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2042 lines · 436,231 B · description: **extracted**
+`doc` · 2077 lines · 438,728 B · description: **extracted**
 
-**Purpose.** Version: 524 Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI. Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
+**Purpose.** Version: 525 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity. Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34793 lines · 1,710,632 B · description: **extracted**
+`doc` · 34793 lines · 1,710,595 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1071,7 +1071,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-LAUNCH-READINESS.md`
 
-`doc` · 225 lines · 13,466 B · description: **extracted**
+`doc` · 230 lines · 13,780 B · description: **extracted**
 
 **Purpose.** Version: 0.1.4 Delta: Verify the dedicated live merchant and provisioned billing bindings; retain closed launch gates and explicit provider lifecycle gaps. Updated: 2026-11-13. Source verification and recorded deployment observations are separate below.
 
@@ -27185,9 +27185,9 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/README.md`
 
-`doc` · 819 lines · 52,471 B · description: **extracted**
+`doc` · 824 lines · 52,744 B · description: **extracted**
 
-**Purpose.** Run `solbot --help` for the complete ordered command walkthrough. `solbot ui open` starts the managed suite and opens its verified local control room. The component health and alerts, Chrome recovery, and macOS/Linux/Windows support.
+**Purpose.** The supervisor detects a frozen SQLite reader as well as a frozen writer. It defers only transient stopped-peer journal contention so its owned-process watchdog can recover without admitting another worker or losing checkpoint state.
 
 **Use.** Read it.
 
@@ -27549,7 +27549,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/src/botmanager/supervisor.py`
 
-`code-python` · 348 lines · 13,954 B · description: **extracted**
+`code-python` · 363 lines · 14,787 B · description: **extracted**
 
 **Purpose.** Explicit foreground daemon, four process slots, no unbounded tick queue.
 
@@ -27899,7 +27899,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_load.py`
 
-`test` · 631 lines · 27,441 B · description: **extracted**
+`test` · 715 lines · 31,729 B · description: **extracted**
 
 **Purpose.** Real paper workers and a canonical optimizer over isolated numerical inputs.
 
@@ -28087,9 +28087,9 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/README.md`
 
-`doc` · 92 lines · 5,921 B · description: **extracted**
+`doc` · 95 lines · 6,078 B · description: **extracted**
 
-**Purpose.** The Oracle also runs an independent selected-strategy price projection. It defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds beside the forecast to set a per-coin horizon/cadence from 5 through 300 seconds.
+**Purpose.** This source version pins Bot Manager0.7.4 for frozen SQLite reader recovery. The metadata update does not promote or restart an existing owner environment. The Oracle also runs an independent selected-strategy price projection. It
 
 **Use.** Read it.
 

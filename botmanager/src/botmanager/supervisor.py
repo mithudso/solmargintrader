@@ -98,14 +98,15 @@ class Supervisor:
 
     def _journal_blocked(self):
         try:
-            # Reserve without the normal one-second timeout. An immediate
-            # rollback changes no rows and detects both reserved and exclusive
-            # locks held by frozen writers. mode=rw never creates a store.
+            # Probe commit availability without the normal one-second timeout.
+            # A frozen reader permits BEGIN IMMEDIATE but blocks its commit.
+            # An exclusive probe detects readers and writers; rollback changes
+            # no rows. mode=rw never creates a store.
             db = sqlite3.connect(
                 self.ledger.path.as_uri() + "?mode=rw", uri=True, timeout=0
             )
             try:
-                db.execute("BEGIN IMMEDIATE")
+                db.execute("BEGIN EXCLUSIVE")
                 db.rollback()
             finally:
                 db.close()
@@ -214,7 +215,21 @@ class Supervisor:
                 if child and self._terminate(child[0]):
                     self.children.pop(bot_id)
                 if not lock_held(self.home / "locks" / (bot_id + ".lock")):
-                    self.ledger.stopped(bot_id)
+                    try:
+                        self.ledger.stopped(bot_id)
+                    except ManagerError as exc:
+                        cause = exc.__cause__
+                        if (
+                            exc.code != "store_unavailable"
+                            or not isinstance(cause, sqlite3.OperationalError)
+                            or (getattr(cause, "sqlite_errorcode", 0) & 0xFF)
+                            not in (sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED)
+                        ):
+                            raise
+                        # A frozen owner can block a stopped peer's commit.
+                        # Defer that write, with no admission, so the next step
+                        # reaches the cached owned-process watchdog first.
+                        return
                 continue
             if child:
                 process, generation = child

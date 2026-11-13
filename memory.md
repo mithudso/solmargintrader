@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 524
+Version: 525
+Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
 Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
 Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
 Parallel billing delta: v519 to v520; verify dedicated live Stripe merchant, configure provider objects and bind Worker while preserving closed launch gates.
@@ -2039,3 +2040,37 @@ wiki/operation inventories and offline indexes using existing builders; preserve
 failed CI receipts. These are compiled public content, not new research or an
 engine/execution change. Publish the refreshed public assets only after final
 passing checks; then repeat bounded independent loaded-state acceptance.
+
+Required macOS CI7df22b53also failed test_load forced-linux numerical fixture:
+Ledger.connection db.commit raised sqlite3.OperationalError database is locked
+through Supervisor.step -> ledger.stopped. The unchanged0.7.3 watchdog probes
+BEGIN IMMEDIATE, which permits SHARED readers, so an arbitrarily SIGSTOPped
+worker can block commit while evading that probe. Its precise SQLite lock state
+was not logged in CI. TASK-2110 owns a deterministic reader-lock regression and
+bounded recovery fix; manager source advances0.7.4 and its dependent ecosystem
+package advances0.4.13 with the matching exact manager pin. Installed owner
+environments remain untouched;0.4.12 acceptance remains historical to that prefix. Do not weaken existing load
+timing/state assertions or promote owner services as part of the repair.
+Stele transport closed during release/link writes; exact operations are queued
+as outbox a8a5dc73 and68ccd1fb. Final correction verification and delivery evidence
+are retained under /Users/mitch/.local/state/oraclebot-live-billing-20261113/.
+
+The deterministic real-process reader regression reproduced the old commit-lock
+boundary (exit1/1.260s) and passes the corrected source (exit0/14.238s). Full
+test_load passes8/8(exit0/73.266s), including original macOS/forced-Linux loads,
+reserved/exclusive writers, shutdown and nontransient error propagation. Existing
+15second/state assertions remain intact. Independent source-hash-bound review
+found no material issue. Worker receipt and14artifact manifest:
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/watchdog-fix/receipt.json
+and /Users/mitch/.local/state/oraclebot-live-billing-20261113/watchdog-fix/files.json.
+Owned observed subprocesses are gone. The e19pre-fix required CI passed14checks
+with2intentional skips, but does not certify the subsequent watchdog correction.
+
+Adjacent supervisor/recovery39tests pass exit0 from a file-based guarded spawn
+entrypoint. The earlier stdin runner failed1 with6FileNotFoundError/<stdin>
+spawn failures; that harness error was corrected without changing source/tests.
+Both logs are retained under watchdog-fix. SQLite current transaction docs confirm
+COMMIT can return BUSY with an open reader; EXCLUSIVE detects that reader outside
+WAL, while IMMEDIATE/EXCLUSIVE coincide under WAL.
+
+The verified reader-lock lesson is queued through Stele outbox 686aa42d.

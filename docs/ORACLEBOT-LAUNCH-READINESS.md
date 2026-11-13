@@ -83,6 +83,11 @@ passing gates. Earlier `0.4.9` and `0.4.11` evidence remains historical. The act
 local pipeline retains its original `0.4.8` bundle and cohort. Local control-room
 and forecast improvements do not connect the public hosted engine.
 
+This follow-up also repairs a required-CI frozen SQLite reader recovery case in
+manager source `0.7.4`; ecosystem source `0.4.13` pins that manager version.
+The accepted installed `0.4.12` owner prefix was not modified or restarted.
+Source regression/CI checks are separate from a future owner runtime promotion.
+
 The combined website source passes129Node cases,28actualChrome groups,
 JavaScript quality, syntax and Worker dry-run checks. Successful executor
 fixtures use mocks. These checks do not establish deployed authentication,

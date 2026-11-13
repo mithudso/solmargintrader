@@ -469,7 +469,7 @@ class LoadTests(unittest.TestCase):
 
 
 def journal_lock_worker(home, bot_id, generation, parent_pid):
-    """Expose an owned heartbeat, then freeze with an uncommitted journal write."""
+    """Expose an owned heartbeat, then retain a requested journal transaction."""
     from botmanager.worker import lifetime_lock
 
     home = Path(home)
@@ -480,19 +480,34 @@ def journal_lock_worker(home, bot_id, generation, parent_pid):
         while not (home / "hold-journal").exists():
             time.sleep(0.01)
         with closing(sqlite3.connect(ledger.path)) as db:
-            db.execute("BEGIN " + (home / "hold-journal").read_text())
-            db.execute("UPDATE runs SET cursor=cursor+1000 WHERE bot_id=?", (bot_id,))
+            mode = (home / "hold-journal").read_text()
+            if mode == "READ":
+                db.execute("BEGIN")
+                db.execute("SELECT cursor FROM runs WHERE bot_id=?", (bot_id,)).fetchone()
+            else:
+                db.execute("BEGIN " + mode)
+                db.execute("UPDATE runs SET cursor=cursor+1000 WHERE bot_id=?", (bot_id,))
             (home / "journal-held").touch()
             while True:
                 time.sleep(0.01)
 
 
 class LockedJournalWatchdogTests(unittest.TestCase):
-    def frozen_owner(self, home, mode):
+    def setUp(self):
+        self.enterContext(isolated_default_owner())
+
+    def frozen_owner(self, home, mode, *, stopped_peer=False):
         spec = grid("locked-journal")
         store, ledger = ManagerStore(home), RuntimeLedger(home)
-        store.create_spec(spec)
-        ledger.register(spec, load_recording(recording(home)))
+        specs = [spec]
+        if stopped_peer:
+            # Reconciliation must hit the stopped peer before the live owner.
+            specs = sorted([spec, grid("stopped-peer")], key=lambda item: item.bot_id)
+            spec = specs[-1]
+        data = load_recording(recording(home))
+        for registered in specs:
+            store.create_spec(registered)
+            ledger.register(registered, data)
         ledger.control(spec, "start", str(uuid4()))
         supervisor = Supervisor(home, worker_target=journal_lock_worker).open()
         self.addCleanup(supervisor.close)
@@ -512,6 +527,75 @@ class LockedJournalWatchdogTests(unittest.TestCase):
             time.sleep(0.01)
         os.kill(process.pid, signal.SIGSTOP)
         return supervisor, ledger, spec, process, before
+
+    def test_frozen_shared_reader_does_not_abort_stopped_peer_reconciliation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            supervisor, ledger, spec, process, before = self.frozen_owner(
+                home, "READ", stopped_peer=True
+            )
+            try:
+                peer = next(bot for bot in ledger.ids() if bot != spec.bot_id)
+                self.assertEqual(ledger.ids()[0], peer)
+                peer_before = ledger.get(peer)
+                self.assertEqual(peer_before["desired"], "stopped")
+                # Prove the child holds only a shared reader: reserving a write
+                # succeeds, but it cannot obtain the lock needed by commit.
+                with closing(sqlite3.connect(ledger.path, timeout=0)) as probe:
+                    probe.execute("BEGIN IMMEDIATE")
+                    probe.rollback()
+                    with self.assertRaises(sqlite3.OperationalError):
+                        probe.execute("BEGIN EXCLUSIVE")
+                started = time.monotonic()
+                supervisor.step()
+                self.assertLess(time.monotonic() - started, 2)
+                self.assertEqual(ledger.get(peer), peer_before)
+                deadline = started + 17
+                while time.monotonic() < deadline:
+                    supervisor.step()
+                    current = supervisor.children.get(spec.bot_id)
+                    if current is None or current[0] is not process:
+                        break
+                    time.sleep(0.02)
+                self.assertLess(time.monotonic() - started, 15)
+                self.assertLess(time.time() - before["heartbeat"], 15)
+                self.assertNotIn(spec.bot_id, supervisor.children)
+                self.assertFalse(lock_held(home / "locks" / (spec.bot_id + ".lock")))
+                after = ledger.get(spec.bot_id)
+                for field in ("cursor", "checkpoint", "input", "runtime_id"):
+                    self.assertEqual(after[field], before[field])
+                self.assertEqual(after["observed"], "recovering")
+                self.assertEqual(after["reason"], "heartbeat_stale")
+                self.assertEqual(after["generation"], before["generation"] + 1)
+                self.assertEqual(ledger.get(peer)["observed"], "stopped")
+            finally:
+                supervisor.close()
+
+    def test_stopped_reconciliation_preserves_nontransient_errors(self):
+        from botmanager.domain import ManagerError
+
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            spec = grid("stopped-error-propagation")
+            ledger = RuntimeLedger(home)
+            ManagerStore(home).create_spec(spec)
+            ledger.register(spec, load_recording(recording(home)))
+            supervisor = Supervisor(home).open()
+            try:
+                before = ledger.get(spec.bot_id)
+                corrupt = ManagerError("store_unavailable", "fixture", 4)
+                corrupt.__cause__ = sqlite3.DatabaseError("malformed database fixture")
+                for error in (ManagerError("invalid_spec", "fixture", 4), corrupt):
+                    with (
+                        self.subTest(code=error.code),
+                        patch.object(supervisor.ledger, "stopped", side_effect=error),
+                        self.assertRaises(ManagerError) as caught,
+                    ):
+                        supervisor.step()
+                    self.assertIs(caught.exception, error)
+                    self.assertEqual(ledger.get(spec.bot_id), before)
+            finally:
+                supervisor.close()
 
     def test_frozen_reserved_and_exclusive_writers_meet_watchdog_without_lost_state(self):
         from botmanager.health import HealthStore

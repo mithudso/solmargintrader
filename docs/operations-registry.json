@@ -20,7 +20,7 @@
     },
     {
       "path": "botmanager/pyproject.toml",
-      "sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6"
+      "sha256": "5ad8770fb2cd54f44842d5e0624fd23f0b57f314fff9cb0c23fdcd93703e0938"
     },
     {
       "path": "botmanager/src/botmanager/cli.py",
@@ -52,7 +52,7 @@
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "f6ffe4ab3fee2741c61a9bd36a77019679b67c5651e332317c092779355bea51"
+      "sha256": "2c9e3bfcc7329c6dde8beb9546999316701cc9faa0607fd4d488b7ed2f7daa8b"
     },
     {
       "path": "ecosystem/web.py",
