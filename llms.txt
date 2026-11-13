@@ -17,3 +17,7 @@
 ## Hosted workspace
 - [Website](website/README.md): plans, trials, setup and deployment limits.
 - [Agent access](website/docs/MCP-DESIGN.md): wallet-bound preauthorization and unprovisioned execution boundary.
+
+## Captured ZEC backtests
+- [2026-11-13 replay report](research/ZEC-GRANULAR-BACKTESTS.md): complete finite1m/5m/10m/1h matrix, costs and one-day limitations.
+- [Shared empirical archive](research/zec-granular-20261113.llms/llms.txt): all result rows, frozen plan, independent audit and Mongo artifact handles.

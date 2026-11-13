@@ -1,0 +1,878 @@
+{
+  "attempt": "attempt-03",
+  "capture_sha256": "eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31",
+  "costs": {
+    "10": {
+      "10m": {
+        "best_active_spot": {
+          "candidate_id": "1b60f67f4c3b3759b50b1a33",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.2216054059905002,
+          "eligible_signal_bars": 11,
+          "end_equity": 10212.88785589179,
+          "family": "2-member-vote",
+          "fee_bps": 10,
+          "fees_usd": 20.213120956868643,
+          "fills": 2,
+          "interval": "10m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 4.042633677117018,
+          "return_pct": 2.1288785589179016,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 20213.120956868643
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "swing_confluence"
+            },
+            {
+              "params": {},
+              "strategy": "rsi"
+            }
+          ],
+          "mode": "any",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-1-1.25",
+          "carry_usd": 1.2971155851549516,
+          "decision_fill_drawdown_pct": -9.28163311571163,
+          "eligible_signal_bars": 125,
+          "end_equity": 9071.836688428837,
+          "family": "volty-stop",
+          "fee_bps": 10,
+          "fees_usd": 209.548749283508,
+          "fills": 15,
+          "interval": "10m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 41.90972284038803,
+          "return_pct": -9.28163311571163,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 209548.74928350796
+        },
+        "spot_active": 117,
+        "spot_completed": 189,
+        "spot_positive": 33,
+        "volty_active": 50,
+        "volty_completed": 50
+      },
+      "1h": {
+        "best_active_spot": {
+          "candidate_id": "9f40e634e530c01d75d12fb1",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -0.7056018002304154,
+          "eligible_signal_bars": 17,
+          "end_equity": 9935.784725777521,
+          "family": "canonical-single",
+          "fee_bps": 10,
+          "fees_usd": 12.002489662855986,
+          "fills": 22,
+          "interval": "1h",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 2.4004959400791104,
+          "return_pct": -0.6421527422247886,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 12002.489662855987
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "dca"
+            }
+          ],
+          "mode": "single",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-4-1.25",
+          "carry_usd": 0.3588083919148135,
+          "decision_fill_drawdown_pct": -0.17273794908875262,
+          "eligible_signal_bars": 6,
+          "end_equity": 10054.529090151158,
+          "family": "volty-stop",
+          "fee_bps": 10,
+          "fees_usd": 19.910639310177032,
+          "fills": 2,
+          "interval": "1h",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 3.982131013262049,
+          "return_pct": 0.5452909015115859,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 19910.63931017703
+        },
+        "spot_active": 2,
+        "spot_completed": 3,
+        "spot_positive": 0,
+        "volty_active": 42,
+        "volty_completed": 45
+      },
+      "1m": {
+        "best_active_spot": {
+          "candidate_id": "747d4ac6565683c939535bcf",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.79039486782262,
+          "eligible_signal_bars": 1251,
+          "end_equity": 10153.922222055864,
+          "family": "guide-and-family-committee",
+          "fee_bps": 10,
+          "fees_usd": 179.83679264064045,
+          "fills": 18,
+          "interval": "1m",
+          "market": "coinbase_spot_reference",
+          "open_units": -1.7763568394002505e-15,
+          "rejections": {},
+          "residual_slippage_usd": 35.96737331717871,
+          "return_pct": 1.5392222205586448,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 179836.79264064043
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "rsi"
+            },
+            {
+              "params": {},
+              "strategy": "zscore"
+            },
+            {
+              "params": {},
+              "strategy": "bb_reversion"
+            }
+          ],
+          "mode": "all",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-3-1.25",
+          "carry_usd": 1.820266671625396,
+          "decision_fill_drawdown_pct": -38.332352191707876,
+          "eligible_signal_bars": 1403,
+          "end_equity": 6172.674238360455,
+          "family": "volty-stop",
+          "fee_bps": 10,
+          "fees_usd": 2246.85776548191,
+          "fills": 149,
+          "interval": "1m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 8.881784197001252e-16,
+          "rejections": {},
+          "residual_slippage_usd": 449.37150792528564,
+          "return_pct": -38.27325761639545,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 2246857.7654819107
+        },
+        "spot_active": 786,
+        "spot_completed": 827,
+        "spot_positive": 2,
+        "volty_active": 50,
+        "volty_completed": 50
+      },
+      "5m": {
+        "best_active_spot": {
+          "candidate_id": "45597a372b39b37adfed9ded",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.7383066410157522,
+          "eligible_signal_bars": 72,
+          "end_equity": 10230.220109578573,
+          "family": "regime-routes-trend-or-reversion",
+          "fee_bps": 10,
+          "fees_usd": 80.95316340424833,
+          "fills": 8,
+          "interval": "5m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 16.190645775404654,
+          "return_pct": 2.3022010957857386,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 80953.16340424832
+        },
+        "best_active_spot_config": {
+          "fallback": {
+            "params": {},
+            "strategy": "bb_reversion"
+          },
+          "gate": {
+            "params": {},
+            "strategy": "adx_trend"
+          },
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "swing_confluence"
+            }
+          ],
+          "mode": "switch",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-9-1.0",
+          "carry_usd": 1.3812046306459727,
+          "decision_fill_drawdown_pct": -10.58938488491834,
+          "eligible_signal_bars": 202,
+          "end_equity": 8941.061511508165,
+          "family": "volty-stop",
+          "fee_bps": 10,
+          "fees_usd": 540.0718012845961,
+          "fills": 33,
+          "interval": "5m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 3.552713678800501e-15,
+          "rejections": {},
+          "residual_slippage_usd": 108.01434387806093,
+          "return_pct": -10.58938488491834,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 540071.801284596
+        },
+        "spot_active": 336,
+        "spot_completed": 404,
+        "spot_positive": 63,
+        "volty_active": 50,
+        "volty_completed": 50
+      }
+    },
+    "25": {
+      "10m": {
+        "best_active_spot": {
+          "candidate_id": "1b60f67f4c3b3759b50b1a33",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.2216054059905002,
+          "eligible_signal_bars": 11,
+          "end_equity": 10182.295545598425,
+          "family": "2-member-vote",
+          "fee_bps": 25,
+          "fees_usd": 50.457193568615864,
+          "fills": 2,
+          "interval": "10m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 4.036584957062618,
+          "return_pct": 1.8229554559842542,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 20182.877427446347
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "swing_confluence"
+            },
+            {
+              "params": {},
+              "strategy": "rsi"
+            }
+          ],
+          "mode": "any",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-1-1.25",
+          "carry_usd": 1.2806278618008755,
+          "decision_fill_drawdown_pct": -12.264478161294878,
+          "eligible_signal_bars": 125,
+          "end_equity": 8773.552183870512,
+          "family": "volty-stop",
+          "fee_bps": 25,
+          "fees_usd": 516.6136786045985,
+          "fills": 15,
+          "interval": "10m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 41.32906759938745,
+          "return_pct": -12.264478161294878,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 206645.47144183936
+        },
+        "spot_active": 117,
+        "spot_completed": 189,
+        "spot_positive": 32,
+        "volty_active": 50,
+        "volty_completed": 50
+      },
+      "1h": {
+        "best_active_spot": {
+          "candidate_id": "9f40e634e530c01d75d12fb1",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -0.8699716207802521,
+          "eligible_signal_bars": 17,
+          "end_equity": 9917.837599389819,
+          "family": "canonical-single",
+          "fee_bps": 25,
+          "fees_usd": 29.982141429770735,
+          "fills": 22,
+          "interval": "1h",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 2.398569323113671,
+          "return_pct": -0.8216240061018065,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 11992.856571908293
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "dca"
+            }
+          ],
+          "mode": "single",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-4-1.25",
+          "carry_usd": 0.3588083919148135,
+          "decision_fill_drawdown_pct": -0.32262873294895966,
+          "eligible_signal_bars": 6,
+          "end_equity": 10024.663131185895,
+          "family": "volty-stop",
+          "fee_bps": 25,
+          "fees_usd": 49.77659827544258,
+          "fills": 2,
+          "interval": "1h",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 3.982131013262049,
+          "return_pct": 0.24663131185893583,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 19910.63931017703
+        },
+        "spot_active": 2,
+        "spot_completed": 3,
+        "spot_positive": 0,
+        "volty_active": 42,
+        "volty_completed": 45
+      },
+      "1m": {
+        "best_active_spot": {
+          "candidate_id": "d827700f49973baa9d7be1ab",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -0.336328644647399,
+          "eligible_signal_bars": 366,
+          "end_equity": 9966.36713553526,
+          "family": "hierarchical-permission",
+          "fee_bps": 25,
+          "fees_usd": 49.916019608557804,
+          "fills": 2,
+          "interval": "1m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 3.993282379741453,
+          "return_pct": -0.336328644647399,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 19966.407843423123
+        },
+        "best_active_spot_config": {
+          "gate": {
+            "params": {
+              "calm_quantile": 0.25
+            },
+            "strategy": "vol_regime"
+          },
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "obv_trend"
+            }
+          ],
+          "mode": "gate",
+          "persistence": 2,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-10-1.25",
+          "carry_usd": 1.4863280514875814,
+          "decision_fill_drawdown_pct": -58.14979950212904,
+          "eligible_signal_bars": 1340,
+          "end_equity": 4185.0200497870965,
+          "family": "volty-stop",
+          "fee_bps": 25,
+          "fees_usd": 4242.737677579119,
+          "fills": 133,
+          "interval": "1m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 339.4189649528133,
+          "return_pct": -58.14979950212904,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 1697095.0710316477
+        },
+        "spot_active": 786,
+        "spot_completed": 827,
+        "spot_positive": 0,
+        "volty_active": 50,
+        "volty_completed": 50
+      },
+      "5m": {
+        "best_active_spot": {
+          "candidate_id": "45597a372b39b37adfed9ded",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.8853235288312953,
+          "eligible_signal_bars": 72,
+          "end_equity": 10108.221168400427,
+          "family": "regime-routes-trend-or-reversion",
+          "fee_bps": 25,
+          "fees_usd": 201.1704825504386,
+          "fills": 8,
+          "interval": "5m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 16.093651623445542,
+          "return_pct": 1.082211684004264,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 80468.19302017544
+        },
+        "best_active_spot_config": {
+          "fallback": {
+            "params": {},
+            "strategy": "bb_reversion"
+          },
+          "gate": {
+            "params": {},
+            "strategy": "adx_trend"
+          },
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "swing_confluence"
+            }
+          ],
+          "mode": "switch",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-9-1.0",
+          "carry_usd": 1.3408372321976463,
+          "decision_fill_drawdown_pct": -17.828807053825624,
+          "eligible_signal_bars": 202,
+          "end_equity": 8217.119294617438,
+          "family": "volty-stop",
+          "fee_bps": 25,
+          "fees_usd": 1298.9529658058716,
+          "fills": 33,
+          "interval": "5m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 1.7763568394002505e-15,
+          "rejections": {},
+          "residual_slippage_usd": 103.91622211762405,
+          "return_pct": -17.828807053825624,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 519581.1863223488
+        },
+        "spot_active": 336,
+        "spot_completed": 404,
+        "spot_positive": 53,
+        "volty_active": 50,
+        "volty_completed": 50
+      }
+    },
+    "60": {
+      "10m": {
+        "best_active_spot": {
+          "candidate_id": "1b60f67f4c3b3759b50b1a33",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.2216054059905113,
+          "eligible_signal_bars": 11,
+          "end_equity": 10111.268263545016,
+          "family": "2-member-vote",
+          "fee_bps": 60,
+          "fees_usd": 120.67595957330234,
+          "fills": 2,
+          "interval": "10m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 4.022541424446523,
+          "return_pct": 1.1126826354501684,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 20112.659928883724
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "swing_confluence"
+            },
+            {
+              "params": {},
+              "strategy": "rsi"
+            }
+          ],
+          "mode": "any",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-1-1.25",
+          "carry_usd": 1.2431013625275353,
+          "decision_fill_drawdown_pct": -18.904414347344932,
+          "eligible_signal_bars": 125,
+          "end_equity": 8109.558565265506,
+          "family": "volty-stop",
+          "fee_bps": 60,
+          "fees_usd": 1200.2786204922836,
+          "fills": 15,
+          "interval": "10m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 40.00926139332057,
+          "return_pct": -18.904414347344932,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 200046.43674871392
+        },
+        "spot_active": 117,
+        "spot_completed": 189,
+        "spot_positive": 11,
+        "volty_active": 50,
+        "volty_completed": 50
+      },
+      "1h": {
+        "best_active_spot": {
+          "candidate_id": "9f40e634e530c01d75d12fb1",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.2525572638096283,
+          "eligible_signal_bars": 17,
+          "end_equity": 9876.072986437872,
+          "family": "canonical-single",
+          "fee_bps": 60,
+          "fees_usd": 71.82248552462111,
+          "fills": 22,
+          "interval": "1h",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 2.3940808624025873,
+          "return_pct": -1.2392701356212843,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 11970.41425410352
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "dca"
+            }
+          ],
+          "mode": "single",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-4-1.25",
+          "carry_usd": 0.3588083919148135,
+          "decision_fill_drawdown_pct": -0.6723738952894798,
+          "eligible_signal_bars": 6,
+          "end_equity": 9954.975893600276,
+          "family": "volty-stop",
+          "fee_bps": 60,
+          "fees_usd": 119.46383586106218,
+          "fills": 2,
+          "interval": "1h",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 3.982131013262049,
+          "return_pct": -0.4502410639972365,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 19910.63931017703
+        },
+        "spot_active": 2,
+        "spot_completed": 3,
+        "spot_positive": 0,
+        "volty_active": 42,
+        "volty_completed": 45
+      },
+      "1m": {
+        "best_active_spot": {
+          "candidate_id": "d827700f49973baa9d7be1ab",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -1.031518202340287,
+          "eligible_signal_bars": 366,
+          "end_equity": 9896.848179765972,
+          "family": "hierarchical-permission",
+          "fee_bps": 60,
+          "fees_usd": 119.3816733533081,
+          "fills": 2,
+          "interval": "1m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 3.979389920146852,
+          "return_pct": -1.031518202340287,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 19896.945558884683
+        },
+        "best_active_spot_config": {
+          "gate": {
+            "params": {
+              "calm_quantile": 0.25
+            },
+            "strategy": "vol_regime"
+          },
+          "interval": "1m",
+          "members": [
+            {
+              "params": {},
+              "strategy": "obv_trend"
+            }
+          ],
+          "mode": "gate",
+          "persistence": 2,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-10-1.25",
+          "carry_usd": 1.0810366725541865,
+          "decision_fill_drawdown_pct": -82.53661974233837,
+          "eligible_signal_bars": 1340,
+          "end_equity": 1746.3380257661624,
+          "family": "volty-stop",
+          "fee_bps": 60,
+          "fees_usd": 7221.115552803437,
+          "fills": 133,
+          "interval": "1m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 240.70382012962813,
+          "return_pct": -82.53661974233837,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 1203519.2588005732
+        },
+        "spot_active": 786,
+        "spot_completed": 827,
+        "spot_positive": 0,
+        "volty_active": 50,
+        "volty_completed": 50
+      },
+      "5m": {
+        "best_active_spot": {
+          "candidate_id": "3a8e6ca9d3483d62d0809cfe",
+          "carry_usd": 0.0,
+          "decision_fill_drawdown_pct": -2.0090110431462582,
+          "eligible_signal_bars": 97,
+          "end_equity": 10020.218102228306,
+          "family": "parameter-sensitivity",
+          "fee_bps": 60,
+          "fees_usd": 120.12636101404658,
+          "fills": 2,
+          "interval": "5m",
+          "market": "coinbase_spot_reference",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 4.004217807748704,
+          "return_pct": 0.20218102228306556,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 20021.060169007764
+        },
+        "best_active_spot_config": {
+          "interval": "1m",
+          "members": [
+            {
+              "params": {
+                "oversold": 35,
+                "period": 28
+              },
+              "strategy": "rsi"
+            }
+          ],
+          "mode": "single",
+          "persistence": 1,
+          "rebalance_threshold": 0.0,
+          "schema_version": 1
+        },
+        "best_active_volty": {
+          "candidate_id": "volty-7-1.25",
+          "carry_usd": 1.1620848132484394,
+          "decision_fill_drawdown_pct": -29.47621410055842,
+          "eligible_signal_bars": 216,
+          "end_equity": 7052.378589944158,
+          "family": "volty-stop",
+          "fee_bps": 60,
+          "fees_usd": 2176.236966410533,
+          "fills": 25,
+          "interval": "5m",
+          "market": "synthetic_1x_long_short_on_spot_tape",
+          "open_units": 0.0,
+          "rejections": {},
+          "residual_slippage_usd": 72.54120430643275,
+          "return_pct": -29.47621410055842,
+          "status": "completed",
+          "terminal_mark_age_seconds": 0.220432,
+          "terminal_mark_ns": 1794545787004480000,
+          "terminal_state": "closed",
+          "turnover_usd": 362706.1610684222
+        },
+        "spot_active": 336,
+        "spot_completed": 404,
+        "spot_positive": 1,
+        "volty_active": 50,
+        "volty_completed": 50
+      }
+    }
+  },
+  "coverage": {
+    "10m": {
+      "complete_utc_bars": 143,
+      "decisions_with_fresh_book": 143,
+      "excluded_bars": 8,
+      "longest_valid_segment": 61,
+      "trades_in_complete_bars": 133896,
+      "valid_bars": 135
+    },
+    "1h": {
+      "complete_utc_bars": 23,
+      "decisions_with_fresh_book": 23,
+      "excluded_bars": 6,
+      "longest_valid_segment": 10,
+      "trades_in_complete_bars": 122164,
+      "valid_bars": 17
+    },
+    "1m": {
+      "complete_utc_bars": 1439,
+      "decisions_with_fresh_book": 1439,
+      "excluded_bars": 8,
+      "longest_valid_segment": 617,
+      "trades_in_complete_bars": 134719,
+      "valid_bars": 1431
+    },
+    "5m": {
+      "complete_utc_bars": 287,
+      "decisions_with_fresh_book": 287,
+      "excluded_bars": 8,
+      "longest_valid_segment": 122,
+      "trades_in_complete_bars": 134420,
+      "valid_bars": 279
+    }
+  },
+  "matrix_rows": 10576,
+  "statuses": {
+    "completed": 4878,
+    "insufficient_contiguous_warmup": 5670,
+    "unsupported_inputs_or_execution": 28
+  },
+  "version": "1.0.1",
+  "warnings": [
+    "One captured day; no holdout or validated future accuracy.",
+    "Descriptive best-of827spottemplates and50syntheticVoltyconfigs per interval; dependent policies are not independent discoveries.",
+    "1m/5m/10m/1h are actual signal-bar durations; inherited catalog candidate IDs identify parameter templates, not interval-qualified canonical Oracle policies.",
+    "Actual perp wrappers, resting ladder execution, BTC-dependent compound and pairs are explicitly excluded, not silently treated as tested."
+  ]
+}
