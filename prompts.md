@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 240
+Version: 241
+Delta: v240 to v241; record explicit authorization to complete the hosted ecosystem.
 Delta: v239 to v240; preserve both concurrent local repairs and fee research requests.
 Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
 
@@ -2214,3 +2215,10 @@ Can you fix those issues?
 Owner clarification:
 
 > .25% and .15%
+
+
+## 2026-11-13 — Complete hosted ecosystem
+
+```text
+Complete the hosted ecosystem  as stated: The complete hosted ecosystem is still unfinished. ZEC needs native Oracle history; the public site needs its dedicated analysis runtime and customer-wallet executor. Stripe configuration is present, but subscription lifecycle verification remains, so public trials and live trading remain disabled. Resolve those issues
+```

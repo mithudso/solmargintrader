@@ -13,13 +13,29 @@ const date = seconds => new Date(seconds * 1000).toLocaleString();
 const money = value => new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(value);
 const busy = (form, value) => {
   for (const control of form.querySelectorAll('button,input,select,textarea')) control.disabled = value;
+  const leverage = form.elements.namedItem('maxLeverage');
+  if (leverage) leverage.disabled = value || !form.querySelector('input[name="products"][value="perpetual"]')?.checked;
   form.setAttribute('aria-busy', String(value));
 };
 const localDate = seconds => {
   const instant = new Date(seconds * 1000);
   return new Date(instant.getTime() - instant.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 };
-const policyKey = policy => JSON.stringify({ venues: [...policy.venues].sort(), assets: [...policy.assets].sort(), maxTradeUsd: policy.maxTradeUsd, maxTotalUsd: policy.maxTotalUsd, expiresAt: policy.expiresAt });
+const policyKey = policy => {
+  const legacy = ['venues', 'assets', 'maxTradeUsd', 'maxTotalUsd', 'expiresAt'];
+  const keys = policy?.version === 2 ? ['version', 'venues', 'assets', 'products', 'maxLeverage', 'maxTradeUsd', 'maxTotalUsd', 'expiresAt'] : legacy;
+  if (!policy || typeof policy !== 'object' || Array.isArray(policy) || Object.keys(policy).length !== keys.length ||
+      keys.some(key => !Object.hasOwn(policy, key)) || !Array.isArray(policy.venues) || !Array.isArray(policy.assets)) throw new ConsentError('The authorization limits changed. Review this request again.');
+  const base = { venues: [...policy.venues].sort(), assets: [...policy.assets].sort(), maxTradeUsd: policy.maxTradeUsd, maxTotalUsd: policy.maxTotalUsd, expiresAt: policy.expiresAt };
+  if (policy.version === 2) {
+    if (!Array.isArray(policy.products) || !policy.products.length || policy.products.some(product => !['spot', 'perpetual'].includes(product)) ||
+        new Set(policy.products).size !== policy.products.length || !Number.isInteger(policy.maxLeverage) || policy.maxLeverage < 1 || policy.maxLeverage > 5) throw new ConsentError('The authorization limits changed. Review this request again.');
+    return JSON.stringify({ version: 2, venues: base.venues, assets: base.assets, products: [...policy.products].sort(), maxLeverage: policy.maxLeverage,
+      maxTradeUsd: base.maxTradeUsd, maxTotalUsd: base.maxTotalUsd, expiresAt: base.expiresAt });
+  }
+  return JSON.stringify(base);
+};
+const messageHash = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(byte => byte.toString(16).padStart(2, '0')).join('');
 
 function labelControl(label, input) {
   const wrapper = element('label', label);
@@ -37,11 +53,15 @@ function choices(legend, name, options, selected) {
 }
 function readPolicy(form) {
   const selected = name => [...form.querySelectorAll(`input[name="${name}"]:checked`)].map(input => input.value);
-  const policy = { venues: selected('venues'), assets: selected('assets'), maxTradeUsd: Number(form.elements.namedItem('maxTradeUsd').value), maxTotalUsd: Number(form.elements.namedItem('maxTotalUsd').value), expiresAt: Math.floor(new Date(form.elements.namedItem('expiresAt').value).getTime() / 1000) };
+  const policy = { version: 2, venues: selected('venues'), assets: selected('assets'), products: selected('products'), maxLeverage: Number(form.elements.namedItem('maxLeverage').value),
+    maxTradeUsd: Number(form.elements.namedItem('maxTradeUsd').value), maxTotalUsd: Number(form.elements.namedItem('maxTotalUsd').value), expiresAt: Math.floor(new Date(form.elements.namedItem('expiresAt').value).getTime() / 1000) };
   if (!policy.venues.length || !policy.assets.length) throw new ConsentError('Choose at least one venue and one asset.');
+  if (!policy.products.length || policy.products.some(product => !['spot', 'perpetual'].includes(product)) ||
+      new Set(policy.products).size !== policy.products.length || !Number.isInteger(policy.maxLeverage) || policy.maxLeverage < 1 || policy.maxLeverage > 5 ||
+      (!policy.products.includes('perpetual') && policy.maxLeverage !== 1)) throw new ConsentError('Choose the allowed products and a leverage limit from 1x to 5x. Spot trades remain 1x.');
   if (![policy.maxTradeUsd, policy.maxTotalUsd].every(value => Number.isFinite(value) && value > 0 && value <= 1000000 && /^(\d+)(?:\.(\d{1,2}))?$/.test(String(value))) || policy.maxTotalUsd < policy.maxTradeUsd) throw new ConsentError('Enter positive USD limits with up to two decimal places. The total must cover at least one trade.');
   if (!Number.isSafeInteger(policy.expiresAt) || policy.expiresAt <= now() + 60 || policy.expiresAt > now() + 30 * 86400) throw new ConsentError('Choose an expiry between one minute and thirty days from now.');
-  return policy;
+  return Object.freeze({ ...policy, venues: Object.freeze([...policy.venues]), assets: Object.freeze([...policy.assets]), products: Object.freeze([...policy.products]) });
 }
 
 // The browser only follows the server's response to the registered URI it
@@ -106,10 +126,20 @@ export function createAgentAccess({ api, getUser, isSettings, openWallet, toast 
       const form = element('form'); form.id = 'agent-consent-form';
       if (trading) {
         form.append(element('p', 'Set the limits this agent may use. Your wallet will sign this policy once, separately from your sign-in.'));
-        form.append(choices('Allowed venues', 'venues', [['coinbase', 'Coinbase spot'], ['jupiter', 'Jupiter leveraged positions']], 'coinbase'));
+        form.append(choices('Allowed venues', 'venues', [['coinbase', 'Coinbase spot'], ['jupiter', 'Jupiter']], 'coinbase'));
         form.append(choices('Allowed assets', 'assets', [['SOL', 'SOL'], ['BTC', 'BTC'], ['ETH', 'ETH'], ['ZEC', 'ZEC']], 'SOL'));
+        const products = choices('Allowed products', 'products', [['spot', 'Spot (1x)'], ['perpetual', 'Perpetuals']], 'spot');
+        form.append(products);
+        const leverage = element('select'); leverage.name = 'maxLeverage';
+        for (let value = 1; value <= 5; value++) { const option = element('option', `${value}x`); option.value = String(value); leverage.append(option); }
+        leverage.value = '1'; leverage.disabled = true;
+        products.querySelector('input[value="perpetual"]').addEventListener('change', event => {
+          if (!event.target.checked) leverage.value = '1';
+          leverage.disabled = !event.target.checked || form.getAttribute('aria-busy') === 'true';
+        });
+        form.append(labelControl('Maximum position leverage (spot remains 1x)', leverage));
         const grid = element('div', undefined, 'form-grid');
-        for (const [name, text, value] of [['maxTradeUsd', 'Maximum per trade (USD)', '100'], ['maxTotalUsd', 'Maximum total (USD)', '1000']]) {
+        for (const [name, text, value] of [['maxTradeUsd', 'Maximum per trade (USD notional + fees)', '100'], ['maxTotalUsd', 'Maximum total (USD notional + fees)', '1000']]) {
           const input = element('input'); Object.assign(input, { type: 'number', name, min: '0.01', max: '1000000', step: '0.01', value, required: true }); grid.append(labelControl(text, input));
         }
         form.append(grid);
@@ -117,7 +147,7 @@ export function createAgentAccess({ api, getUser, isSettings, openWallet, toast 
         const wallet = element('select'); wallet.name = 'walletProvider';
         for (const [value, text] of [['phantom', 'Phantom'], ['solflare', 'Solflare']]) { const option = element('option', text); option.value = value; wallet.append(option); }
         form.append(labelControl('Wallet to sign this authorization', wallet));
-        form.append(element('p', 'These limits reserve the maximum spend, including quoted fees. Unknown submissions continue to use the total until resolved. This policy cannot grant authority over another wallet.', 'fine-print'));
+        form.append(element('p', 'USD limits cover fee-inclusive notional exposure: position notional plus quoted fees, not collateral. A $100 limit at 5x still caps position notional plus fees at $100; it does not permit a $500 position. Unknown submissions continue to use the total until resolved. This policy cannot grant authority over another wallet.', 'fine-print'));
       } else form.append(element('p', 'This request can read status only. It cannot prepare or submit trades. Access expires in seven days unless you revoke it sooner.'));
       const message = element('p', '', 'form-message'); message.setAttribute('role', 'status'); form.append(message);
       const actions = element('div', undefined, 'agent-actions');
@@ -134,20 +164,37 @@ export function createAgentAccess({ api, getUser, isSettings, openWallet, toast 
           const body = { requestId, approve: allow };
           if (allow && trading) {
             const policy = readPolicy(form);
+            const frozenPolicyKey = policyKey(policy);
             const providerName = form.elements.namedItem('walletProvider').value;
+            if (!['phantom', 'solflare'].includes(providerName)) throw new ConsentError('Choose a supported wallet to sign this authorization.');
+            const unchanged = () => {
+              let matches = false;
+              try { matches = form.elements.namedItem('walletProvider').value === providerName && policyKey(readPolicy(form)) === frozenPolicyKey; } catch { /* A now-invalid control also changes the frozen authorization. */ }
+              if (!matches) throw new ConsentError('The authorization limits changed. Review this request again.');
+            };
             const provider = providerName === 'phantom' ? window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null) : window.solflare;
             if (!provider?.connect || !provider?.signMessage) throw new ConsentError('Open the selected wallet’s browser or install its extension, then try again.');
             message.textContent = 'Connect the wallet shown above, then sign the limits in its authorization message.';
             const connection = await provider.connect();
             if (!current()) return;
+            unchanged();
             const address = (connection?.publicKey || provider.publicKey)?.toString();
             if (address !== user.wallet || provider.publicKey?.toString() !== user.wallet) throw new ConsentError('The selected wallet does not match your signed-in account. Switch to the wallet shown above.');
             const challenge = await api('/api/agent/authorization/challenge', { method: 'POST', body: JSON.stringify({ requestId, policy }) });
             if (!current()) return;
+            unchanged();
             if (!challenge.policy || policyKey(challenge.policy) !== policyKey(policy) || typeof challenge.message !== 'string' || challenge.message.length > 8192 || challenge.expiresAt <= now()) throw new ConsentError('The authorization limits changed. Review this request again.');
             if (provider.publicKey?.toString() !== user.wallet) throw new ConsentError('Your connected wallet changed. Review this request again.');
-            const signed = await provider.signMessage(new TextEncoder().encode(challenge.message), 'utf8');
+            const signBytes = new TextEncoder().encode(challenge.message);
+            const signedMessageHash = await messageHash(signBytes);
             if (!current()) return;
+            unchanged();
+            const signed = await provider.signMessage(signBytes, 'utf8');
+            if (!current()) return;
+            unchanged();
+            if (await messageHash(signBytes) !== signedMessageHash) throw new ConsentError('The wallet authorization message changed. Review this request again.');
+            if (!current()) return;
+            unchanged();
             if (provider.publicKey?.toString() !== user.wallet) throw new ConsentError('Your connected wallet changed. Review this request again.');
             const bytes = new Uint8Array(signed.signature || signed);
             if (bytes.length !== 64) throw new ConsentError('The wallet did not return a valid authorization signature.');
@@ -180,7 +227,10 @@ export function createAgentAccess({ api, getUser, isSettings, openWallet, toast 
         const card = element('article', undefined, 'agent-grant'); card.dataset.grantId = grant.id;
         card.append(element('h4', grant.clientName), element('p', grant.revokedAt ? `Revoked ${date(grant.revokedAt)}` : `${active ? 'Authorized until' : 'Expired'} ${date(grant.expiresAt)}`, 'agent-grant-status'));
         const scopes = element('ul', undefined, 'agent-scopes'); for (const scope of grant.scopes || []) scopes.append(element('li', SCOPE_LABELS[scope] || 'Unrecognized permission')); card.append(scopes);
-        if (grant.policy) card.append(element('p', `${grant.policy.venues.join(', ')} · ${grant.policy.assets.join(', ')} · ${money(grant.policy.maxTradeUsd)} per trade · ${money(grant.policy.maxTotalUsd)} total`, 'agent-policy-summary'));
+        if (grant.policy) {
+          const scope = grant.policy.version === 2 ? `${Array.isArray(grant.policy.products) ? grant.policy.products.join(', ') : 'unrecognized products'} · up to ${grant.policy.maxLeverage}x` : 'spot · 1x (legacy policy)';
+          card.append(element('p', `${grant.policy.venues.join(', ')} · ${grant.policy.assets.join(', ')} · ${scope} · ${money(grant.policy.maxTradeUsd)} per trade · ${money(grant.policy.maxTotalUsd)} total (fee-inclusive notional)`, 'agent-policy-summary'));
+        }
         if (active) {
           const revoke = element('button', 'Revoke access', 'button button-outline'); revoke.type = 'button'; card.append(revoke);
           revoke.addEventListener('click', async () => {

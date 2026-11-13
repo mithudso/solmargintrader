@@ -1,0 +1,14 @@
+{
+  "name": "oraclebot-customer-execution",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-13",
+  "account_id": "b41ba4dc457dce7653c93af955ecc462",
+  "workers_dev": false,
+  "preview_urls": false,
+  "durable_objects": { "bindings": [{ "name": "CUSTOMER_EXECUTORS", "class_name": "CustomerExecutor" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CustomerExecutor"] }],
+  "d1_databases": [{ "binding": "DB", "database_name": "oraclebot-accounts", "database_id": "5526a15f-8063-4b5b-8a9d-b20babf0337d" }],
+  "vars": { "APP_ORIGIN": "https://oraclebot.io", "COINBASE_EXECUTION_ENABLED": "false", "EXECUTOR_VAULT_KEY_ID": "v1" },
+  "observability": { "enabled": true },
+  "limits": { "cpu_ms": 30000 }
+}

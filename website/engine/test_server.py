@@ -23,8 +23,8 @@ from website.engine.server import (
     RequestError,
     catalogue,
     choose_top,
-    make_server,
     main,
+    make_server,
 )
 
 

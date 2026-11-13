@@ -36,7 +36,7 @@ function errorText(error) {
 async function api(path, options = {}, expectedAccountId = state.user?.id) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMING.requestTimeoutMs);
-  const privatePath = /^\/api\/(?:me(?:[/?]|$)|bots(?:[/?]|$)|backtests(?:[/?]|$)|billing\/|agent\/|auth\/logout(?:[/?]|$))/.test(path);
+  const privatePath = /^\/api\/(?:me(?:[/?]|$)|bots(?:[/?]|$)|backtest-jobs(?:[/?]|$)|backtests(?:[/?]|$)|connections(?:[/?]|$)|execution(?:[/?]|$)|billing\/|agent\/|auth\/logout(?:[/?]|$))/.test(path);
   try {
     const response = await fetch(path, { credentials: 'same-origin', ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers, ...(privatePath && expectedAccountId ? { 'X-Oraclebot-Account': expectedAccountId } : {}) }, signal: controller.signal });
     const body = await response.json().catch(() => ({}));
@@ -66,7 +66,7 @@ function displayNumber(value, digits = 2) { return typeof value === 'number' && 
 function setBusy(button, busy) { if (button) { button.disabled = busy; button.setAttribute('aria-busy', String(busy)); } }
 function accountContext() { return { epoch: state.accountEpoch, userId: state.user?.id ?? null }; }
 function currentAccount(context) { return !state.accountTransition && state.accountStatus === 'ready' && state.accountEpoch === context.epoch && (state.user?.id ?? null) === context.userId; }
-function clearAccount() { Object.assign(state, { user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false }); }
+function clearAccount() { for (const dialog of $$('.automation-dialog')) dialog.remove(); Object.assign(state, { user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false }); }
 function beginAccountTransition() {
   const context = accountContext();
   state.accountEpoch++; state.accountRequest++; state.accountTransition = true; state.accountStatus = 'loading';
@@ -177,10 +177,12 @@ function botsView() {
       const detail = el('div'); appendText(detail, 'h3', '', bot.name); appendText(detail, 'small', '', `${bot.coin} · ${bot.venue === 'jupiter' ? 'Jupiter' : 'Coinbase'} · ${bot.status || 'configured'}`);
       top.append(el('span', 'coin-icon', coinSymbols[bot.coin] || '◎'), detail); card.append(top);
       const grid = el('div', 'metric-grid');
-      for (const [name, value] of [['Paper capital', currency(bot.budget ?? bot.capital)], ['Leverage', `${bot.leverage || 1}×`], ['Mode', 'Paper']]) { const metric = el('div', 'metric'); metric.append(el('small', '', name), el('strong', '', value)); grid.append(metric); }
+      for (const [name, value] of [['Paper capital', currency(bot.budget ?? bot.capital)], ['Leverage', `${bot.leverage || 1}×`], ['Mode', bot.automation?.enabled ? 'Automated spot' : 'Paper']]) { const metric = el('div', 'metric'); metric.append(el('small', '', name), el('strong', '', value)); grid.append(metric); }
       card.append(grid); appendText(card, 'p', '', bot.blockedReason || bot.blocked_reason || 'Saved configuration. A verified per-account executor is required before this bot can run.');
       const actions = el('div', 'bot-card-actions');
-      for (const [label, status] of [['Pause', 'paused'], ['Archive', 'archived']]) { const button = el('button', 'button button-outline', label); button.dataset.botId = bot.id; button.dataset.botStatus = status; actions.append(button); } card.append(actions); list.append(card);
+      for (const [label, status] of [['Pause', 'paused'], ['Archive', 'archived']]) { const button = el('button', 'button button-outline', label); button.dataset.botId = bot.id; button.dataset.botStatus = status; actions.append(button); }
+      if (bot.venue === 'coinbase') { const automation = el('button', 'button button-outline', 'Automation & authorization'); automation.type = 'button'; automation.addEventListener('click', () => openAutomation(bot)); actions.append(automation); }
+      card.append(actions); list.append(card);
     }
     main.append(list);
   }
@@ -199,12 +201,104 @@ function populateSelects(root = document) {
     if ([...select.options].some(option => option.value === chosen)) select.value = chosen;
   }
 }
+async function openAutomation(bot) {
+  if (!accountActionReady() || !state.user) return;
+  const context = accountContext(); const navigation = state.navigationEpoch;
+  const wallet = state.user.wallet;
+  const dialog = el('dialog', 'automation-dialog'); dialog.setAttribute('aria-label', 'Managed bot authorization');
+  const close = el('button', 'icon-button', '×'); close.type = 'button'; close.setAttribute('aria-label', 'Close automation'); close.addEventListener('click', () => dialog.close());
+  dialog.append(close, el('h2', '', `${bot.name} automation`));
+  appendText(dialog, 'p', '', 'Approve a limited trading session once. This bot uses your verified Coinbase connection and sells only inventory recorded from its own fills.');
+  const status = appendText(dialog, 'p', 'form-message', 'Checking authorization…');
+  const form = el('form');
+  form.innerHTML = '<label>Coinbase connection<select name="connectionId" required></select></label><label>Closed bar interval<select name="interval"><option value="1m">1 minute</option><option value="5m">5 minutes</option><option value="15m">15 minutes</option><option value="1h" selected>1 hour</option><option value="6h">6 hours</option><option value="1d">1 day</option></select></label><label>Maximum per trade, USD<input name="maxTradeUsd" type="number" min="0.01" max="1000000" step="0.01" required></label><label>Maximum cumulative trading, USD<input name="maxTotalUsd" type="number" min="0.01" max="1000000" step="0.01" required></label><label>Authorization duration<select name="days"><option value="1">1 day</option><option value="7" selected>7 days</option><option value="30">30 days</option></select></label><label>Signing wallet<select name="provider"><option value="phantom">Phantom</option><option value="solflare">Solflare</option></select></label>';
+  $('[name="maxTradeUsd"]', form).value = String(bot.budget);
+  $('[name="maxTotalUsd"]', form).value = String(Math.min(1000000, bot.budget * 10));
+  const submit = el('button', 'button button-dark', 'Authorize and start'); submit.type = 'submit'; submit.disabled = true;
+  form.append(submit); dialog.append(form);
+  appendText(dialog, 'p', 'fine-print', 'Limits include fees and count buys and sells. Expiry or exhausted authority can prevent an exit. Pausing revokes authorization and does not close positions. Your wallet will show the exact strategy revision, connection, limits and expiry.');
+  document.body.append(dialog); dialog.showModal();
+  dialog.addEventListener('close', () => dialog.remove(), { once: true });
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && dialog.isConnected && dialog.open;
+  const snapshot = () => JSON.stringify(Object.fromEntries(new FormData(form)));
+  try {
+    const automation = await api(`/api/bots/${bot.id}/automation`, {}, context.userId);
+    if (!current()) return;
+    status.textContent = automation.configured ? `${automation.enabled ? 'Enabled' : 'Paused or expired'} · bot-owned ${automation.allocationQuantity} ${bot.coin} · ${automation.reason}${automation.pendingIntentId ? ' · reconciliation pending' : ''}` : 'No trading authority has been granted.';
+    if (!state.config.managedAutomationConfigured) { status.textContent += ' Automated trading is awaiting hosted launch verification.'; return; }
+    const connections = await api('/api/connections', {}, context.userId); if (!current()) return;
+    for (const connection of connections.connections || []) if (connection.status === 'verified') { const option = el('option', '', `Coinbase · ${connection.portfolioId}`); option.value = connection.id; $('[name="connectionId"]', form).append(option); }
+    submit.disabled = !$('[name="connectionId"]', form).value;
+    if (submit.disabled) status.textContent += ' Connect Coinbase in Settings first.';
+  } catch (error) { if (current()) status.textContent = errorText(error); }
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); if (!current() || submit.disabled) return;
+    const values = Object.fromEntries(new FormData(form)); const frozen = snapshot();
+    const provider = values.provider === 'phantom' ? window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null) : window.solflare;
+    if (!provider?.signMessage || provider.publicKey?.toString() !== wallet) { status.textContent = 'Unlock the signing wallet for your signed-in account before authorizing this bot.'; return; }
+    setBusy(submit, true);
+    try {
+      const policy = { version: 2, venues: ['coinbase'], assets: [bot.coin], products: ['spot'], maxLeverage: 1, maxTradeUsd: Number(values.maxTradeUsd), maxTotalUsd: Number(values.maxTotalUsd), expiresAt: Math.floor(Date.now() / 1000) + Number(values.days) * 86400 };
+      const challenge = await api(`/api/bots/${bot.id}/automation/challenge`, { method: 'POST', body: JSON.stringify({ connectionId: values.connectionId, interval: values.interval, policy }) }, context.userId);
+      if (!current() || snapshot() !== frozen || provider.publicKey?.toString() !== wallet) return;
+      const expected = policy;
+      if (JSON.stringify(challenge.policy) !== JSON.stringify(expected) || challenge.config?.asset !== bot.coin || challenge.config.strategyId !== bot.strategy || challenge.config.budgetUsd !== bot.budget || !/^[a-f0-9]{64}$/.test(challenge.config.strategyRevision || '') || typeof challenge.message !== 'string' || !challenge.message.includes(`Wallet: ${wallet}\n`) || !challenge.message.includes(`Customer connection: ${values.connectionId}\n`)) throw new Error('The authorization does not match the selected bot and limits.');
+      status.textContent = 'Review and sign the limited bot authorization in your wallet.';
+      const signed = await provider.signMessage(new TextEncoder().encode(challenge.message), 'utf8');
+      if (!current() || snapshot() !== frozen || provider.publicKey?.toString() !== wallet) return;
+      const signature = btoa(String.fromCharCode(...new Uint8Array(signed.signature || signed)));
+      const result = await api(`/api/bots/${bot.id}/automation`, { method: 'POST', body: JSON.stringify({ challengeId: challenge.challengeId, signature }) }, context.userId);
+      if (current()) status.textContent = result.enabled ? 'Authorization saved. The bot will evaluate fresh, closed strategy bars.' : 'Authorization saved; check status before assuming the bot is running.';
+    } catch (error) { if (current()) status.textContent = errorText(error); }
+    finally { if (current()) setBusy(submit, false); }
+  });
+}
 function backtestView() {
   main.innerHTML = heading('THE LAB, BEFORE THE MARKET', 'Let the evidence speak.', 'Run a historical simulation with the same canonical engine used by the local research tools. Costs stay in the calculation.');
   const grid = el('div', 'backtest-grid');
   grid.innerHTML = '<section class="panel form-panel"><h3>Design your experiment.</h3><form id="backtest-form"><div class="form-grid"><label>Coin<select name="coin" data-coin-select></select></label><label>Bar interval<select name="interval"><option value="1h">1 hour</option><option value="1d">1 day</option><option value="1m">1 minute</option></select></label></div><label>Strategy<select name="strategy" data-strategy-select><option value="ema_crossover">Moving average crossover</option><option value="rsi">RSI</option><option value="bb_reversion">Bollinger reversion</option><option value="grid">Grid</option></select></label><div class="form-grid"><label>Starting capital (USD)<input type="number" name="capital" min="10" max="1000000" step="0.01" value="1000" required></label><label>Leverage<select name="leverage"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="5">5×</option></select></label></div><div class="inline-note">Historical, cached bars only. Fees, slippage and perpetual borrowing costs remain part of the engine model.</div><p id="backtest-message" class="form-message" role="status"></p><button type="submit" class="button button-dark button-full">Run backtest <span aria-hidden="true">↗</span></button></form></section><section class="panel backtest-output" id="backtest-output" aria-live="polite"><div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌁</span><h2>Every hypothesis deserves a test.</h2><p>Your costed simulation, performance metrics and available equity history will appear here. We never fill gaps with estimated results.</p><span class="tiny-label">SIMULATION ONLY</span></div></section>';
   main.append(grid); populateSelects(grid);
   const current = usagePanel(); if (current) main.append(current);
+  if (state.config.durableBacktests && state.user) recentBacktests(accountContext(), state.navigationEpoch);
+}
+async function followBacktest(job, context, current, message) {
+  for (let attempt = 0; attempt < 120 && current(); attempt += 1) {
+    if (job.status === 'complete') return job.result;
+    if (job.status === 'failed') throw new Error('This calculation could not complete. Its daily credit was released.');
+    message.textContent = job.status === 'running' ? 'Calculation running. You can leave this page; the job is saved.' : 'Your calculation is queued and saved.';
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    if (!current()) return null;
+    job = await api(`/api/backtest-jobs/${job.id}`, {}, context.userId);
+  }
+  if (current()) message.textContent = 'Your job is saved. Use Recent calculations to check it again.';
+  return null;
+}
+async function recentBacktests(context, navigation) {
+  const panel = el('section', 'panel'); appendText(panel, 'h3', '', 'Recent calculations');
+  const message = appendText(panel, 'p', 'muted', 'Loading saved jobs…'); main.append(panel);
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && panel.isConnected;
+  try {
+    const response = await api('/api/backtest-jobs', {}, context.userId);
+    if (!current()) return;
+    message.textContent = response.jobs.length ? 'Saved calculations continue when you leave this page.' : 'Your saved calculations will appear here.';
+    for (const job of response.jobs.slice(0, 20)) {
+      const row = el('div', 'info-strip');
+      const label = el('span', '', `${job.request.coin} · ${job.request.strategy.replaceAll('_', ' ')} · ${job.request.interval} · ${job.status}`);
+      const button = el('button', 'button button-outline', job.status === 'complete' ? 'View result' : job.status === 'failed' ? 'View status' : 'Check progress');
+      button.type = 'button';
+      button.addEventListener('click', async () => {
+        if (!current()) return; setBusy(button, true);
+        try {
+          const latest = await api(`/api/backtest-jobs/${job.id}`, {}, context.userId);
+          if (!current()) return;
+          const result = await followBacktest(latest, context, current, label);
+          if (result && current()) renderBacktest(result);
+        } catch (error) { if (current()) label.textContent = errorText(error); }
+        finally { setBusy(button, false); }
+      });
+      row.append(label, button); panel.append(row);
+    }
+  } catch (error) { if (current()) message.textContent = errorText(error); }
 }
 function renderBacktest(result) {
   const output = $('#backtest-output'); if (!output) return;
@@ -336,8 +430,12 @@ function pricingView() {
     features.append(el('li', '', plan.botLimit === null ? 'Unlimited bot slots' : `Up to ${plan.botLimit} configured bot slots`), el('li', '', plan.backtestsPerDay === null ? 'Unlimited backtests' : `${plan.backtestsPerDay} backtests per day (UTC)`), el('li', '', 'Research journal and strategy workspace'));
     card.append(features);
     appendText(card, 'p', '', 'Configured bots reserve slots; live execution is unavailable.');
-    const button = el('button', 'button button-lime button-full', state.config.billingConfigured === true ? 'Start your free trial' : 'Trial signup unavailable');
-    button.dataset.action = 'trial'; button.dataset.plan = plan.id; button.disabled = state.config.billingConfigured !== true;
+    const subscribed = state.subscription && !['canceled', 'incomplete_expired'].includes(state.subscription.status);
+    const samePlan = subscribed && state.subscription.plan?.id === plan.id;
+    const canChange = subscribed && state.subscription.entitled && state.config.billingPlanChanges;
+    const button = el('button', 'button button-lime button-full', samePlan ? 'Current plan' : canChange ? 'Review plan change' : subscribed ? 'Manage membership' : state.config.billingConfigured === true ? (state.subscription ? 'Continue to Checkout' : 'Start your free trial') : 'Trial signup unavailable');
+    button.dataset.action = canChange && !samePlan ? 'change-plan' : subscribed ? 'portal' : 'trial'; button.dataset.plan = plan.id;
+    button.disabled = samePlan || (!subscribed && state.config.billingConfigured !== true);
     button.setAttribute('aria-label', `${button.textContent} — ${plan.name}`); card.append(button);
     appendText(card, 'p', 'fine-print', 'Seven-day trial for eligible first subscriptions. Review renewal terms in Stripe Checkout. Cancel through the billing portal.');
     grid.append(card);
@@ -361,12 +459,143 @@ function settingsView() {
   const canManage = state.portalAvailable || state.subscription?.status;
   const billingButton = el('button', 'button button-outline', canManage ? 'Manage or cancel membership' : 'Explore membership'); billingButton.dataset.action = canManage ? 'portal' : 'pricing'; billing.append(billingButton);
   const permissions = el('section', 'panel'); permissions.innerHTML = '<h3>Wallet & execution permissions</h3><p>Your sign-in signature only proves ownership of your wallet. It does not approve a transaction or grant spending permissions.</p><p>Bot configurations start in paper mode. Live Coinbase trading and Jupiter leveraged execution require separately provisioned, verified account connections.</p>';
-  const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never send Oraclebot your private key or seed phrase.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
+  const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never enter a wallet private key or seed phrase. Dedicated Coinbase trade-only API credentials use the account connection form.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
   grid.append(account, billing, permissions, risk); main.append(grid);
+  if (state.user && state.config.billingPlanChanges) membershipChanges(billing);
+  if (state.user && state.accountStatus === 'ready') connectionSettings(permissions);
   const agents = el('div', 'agent-settings'); main.append(agents);
   if (state.accountStatus === 'ready' || state.accountTransition) agentAccess.mount(agents);
   else appendText(agents, 'p', 'fine-print', 'Agent access becomes available after your account is checked.');
   const current = usagePanel(); if (current) main.append(current);
+}
+async function reviewPlanChange(button) {
+  if (!accountActionReady() || !state.user || !state.config.billingPlanChanges) return;
+  const context = accountContext(); const navigation = state.navigationEpoch;
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && button.isConnected;
+  setBusy(button, true);
+  try {
+    const quote = await api('/api/billing/plan-change/quote', { method: 'POST', body: JSON.stringify({ plan: button.dataset.plan }) }, context.userId);
+    if (!current()) return;
+    if (quote.targetPlan !== button.dataset.plan || !['upgrade', 'downgrade'].includes(quote.kind) || quote.currency !== 'usd' ||
+        !Number.isSafeInteger(quote.amountDueNowCents) || quote.amountDueNowCents < 0 || !Number.isSafeInteger(quote.renewalAmountCents) || quote.renewalAmountCents <= 0 || !Number.isSafeInteger(quote.effectiveAt) || typeof quote.quoteId !== 'string') throw new Error('The billing quote could not be verified.');
+    $('#plan-change-dialog')?.remove();
+    const dialog = el('dialog', 'plan-change-dialog'); dialog.id = 'plan-change-dialog';
+    const content = el('div', 'panel'); content.append(el('h2', '', `Review ${quote.kind}`));
+    appendText(content, 'p', '', `${quote.targetPlan}: ${currency(quote.renewalAmountCents / 100)} USD per month.`);
+    appendText(content, 'p', '', `Due now: ${currency(quote.amountDueNowCents / 100)} USD.`);
+    appendText(content, 'p', '', quote.kind === 'downgrade' ? `Your current plan continues until ${new Date(quote.effectiveAt * 1000).toLocaleString()}. The lower rate starts then.` : 'The change takes effect after any required payment is confirmed. Your original trial end does not move.');
+    const message = el('p', 'form-message'); message.setAttribute('role', 'status');
+    const confirm = el('button', 'button button-dark', 'Confirm this change'); confirm.type = 'button';
+    const cancel = el('button', 'button button-outline', 'Keep current plan'); cancel.type = 'button'; cancel.addEventListener('click', () => dialog.remove());
+    const usable = () => current() && dialog.isConnected;
+    confirm.addEventListener('click', async () => {
+      if (!usable()) return; setBusy(confirm, true); cancel.disabled = true;
+      try {
+        const operation = await api('/api/billing/plan-change/commit', { method: 'POST', body: JSON.stringify({ quoteId: quote.quoteId, idempotencyKey: crypto.randomUUID() }) }, context.userId);
+        if (!usable()) return;
+        dialog.remove();
+        toast(operation.status === 'scheduled' ? 'Downgrade scheduled for the next billing period.' : operation.status === 'applied' ? 'Plan change verified. Membership access follows Stripe confirmation.' : 'Your change is saved and awaiting provider verification. Check it in Settings.');
+        if (await refreshAccount() && currentAccount(context)) { location.hash = 'settings'; render(); }
+      } catch (error) { if (usable()) message.textContent = `${errorText(error)} If the response was interrupted, check saved changes in Settings before trying again.`; }
+      finally { setBusy(confirm, false); cancel.disabled = false; }
+    });
+    content.append(message, confirm, cancel); dialog.append(content); main.append(dialog); dialog.showModal();
+  } catch (error) { if (current()) toast(errorText(error)); }
+  finally { setBusy(button, false); }
+}
+async function membershipChanges(panel) {
+  const context = accountContext(); const navigation = state.navigationEpoch;
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && panel.isConnected;
+  const section = el('div', 'membership-changes'); section.append(el('h4', '', 'Saved membership changes')); panel.append(section);
+  const message = appendText(section, 'p', 'fine-print', 'Loading saved changes…');
+  try {
+    const result = await api('/api/billing/plan-changes', {}, context.userId); if (!current()) return;
+    message.textContent = result.changes.length ? 'A saved operation is reconciled before another provider write.' : 'No pending changes.';
+    for (const change of result.changes.slice(0, 10)) {
+      const row = el('div', 'info-strip'); const label = el('span', '', `${change.kind.replaceAll('_', ' ')} · ${change.status}`); row.append(label);
+      const refresh = el('button', 'button button-outline', 'Check status'); refresh.type = 'button';
+      refresh.addEventListener('click', async () => {
+        if (!current()) return; setBusy(refresh, true);
+        try {
+          const value = await api(`/api/billing/plan-changes/${change.changeId}`, {}, context.userId);
+          if (current()) { label.textContent = `${value.kind.replaceAll('_', ' ')} · ${value.status}${value.requiresPayment ? ' · payment required in the billing portal' : ''}`; await refreshAccount(); }
+        } catch (error) { if (current()) label.textContent = errorText(error); }
+        finally { setBusy(refresh, false); }
+      }); row.append(refresh);
+      if (change.status === 'scheduled' && change.kind === 'plan_change') {
+        const undo = el('button', 'button button-outline', 'Cancel scheduled downgrade'); undo.type = 'button';
+        undo.addEventListener('click', async () => {
+          if (!current()) return; setBusy(undo, true);
+          try {
+            const value = await api(`/api/billing/plan-changes/${change.changeId}/cancel`, { method: 'POST', body: JSON.stringify({ idempotencyKey: crypto.randomUUID() }) }, context.userId);
+            if (current()) { label.textContent = `Downgrade undo · ${value.status}`; undo.remove(); }
+          } catch (error) { if (current()) label.textContent = errorText(error); }
+          finally { setBusy(undo, false); }
+        }); row.append(undo);
+      }
+      section.append(row);
+    }
+  } catch (error) { if (current()) message.textContent = errorText(error); }
+}
+function connectionSettings(panel) {
+  const context = accountContext(); const navigation = state.navigationEpoch;
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && panel.isConnected;
+  appendText(panel, 'h4', '', 'Connect a Coinbase portfolio');
+  appendText(panel, 'p', '', 'Import a dedicated Coinbase API key with View and Trade permissions only. Transfer permission is refused. Connecting an account does not start a bot or approve an agent policy.');
+  const form = el('form', 'connection-form');
+  const fileLabel = el('label', '', 'Coinbase API key JSON'); const fileInput = el('input');
+  fileInput.type = 'file'; fileInput.accept = '.json,application/json'; fileInput.required = true; fileInput.name = 'coinbase-key-file'; fileLabel.append(fileInput);
+  const portfolioLabel = el('label', '', 'Dedicated portfolio ID (optional)'); const portfolio = el('input'); portfolio.name = 'portfolio'; portfolio.autocomplete = 'off'; portfolioLabel.append(portfolio);
+  const submit = el('button', 'button button-outline', 'Verify and connect'); submit.type = 'submit';
+  submit.disabled = !state.config.customerConnectionsConfigured;
+  fileInput.disabled = submit.disabled; portfolio.disabled = submit.disabled;
+  const message = el('p', 'form-message'); message.setAttribute('role', 'status');
+  if (submit.disabled) message.textContent = 'Customer account connections are not available yet.';
+  form.append(fileLabel, portfolioLabel, submit, message); panel.append(form);
+  appendText(panel, 'p', 'fine-print', 'Never import a wallet seed phrase or primary wallet private key. API credentials are encrypted on the server and are never shown on this page. Use Coinbase itself to revoke the API key at the venue.');
+  const list = el('div', 'connections-list'); panel.append(list);
+  async function load(cursor = null) {
+    if (!state.config.customerConnectionsConfigured || !current()) return;
+    const result = await api(`/api/connections${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`, {}, context.userId); if (!current()) return;
+    if (!cursor) list.replaceChildren();
+    $('.connection-more', list)?.remove();
+    for (const connection of result.connections || []) {
+      const row = el('div', 'info-strip');
+      row.append(el('span', '', `Coinbase · ${connection.portfolioId} · ${connection.status}`));
+      if (connection.status === 'verified') {
+        const revoke = el('button', 'button button-outline', 'Revoke platform access'); revoke.type = 'button';
+        revoke.addEventListener('click', async () => {
+          if (!current()) return; setBusy(revoke, true);
+          try {
+            await api(`/api/connections/${connection.id}/revoke`, { method: 'POST', body: '{}' }, context.userId);
+            if (current()) { message.textContent = 'Platform access revoked. Pending orders retain read-only reconciliation.'; await load(); }
+          } catch (error) { if (current()) message.textContent = errorText(error); }
+          finally { setBusy(revoke, false); }
+        }); row.append(revoke);
+      }
+      list.append(row);
+    }
+    if (typeof result.nextCursor === 'string' && result.nextCursor && result.nextCursor !== cursor) {
+      const more = el('button', 'button button-outline connection-more', 'Load more connection history'); more.type = 'button';
+      more.addEventListener('click', async () => { if (!current()) return; setBusy(more,true); try { await load(result.nextCursor); } catch { if (current()) message.textContent='Connection history could not be loaded. Try again.'; } finally { setBusy(more,false); } }); list.append(more);
+    }
+  }
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); if (!current() || submit.disabled) return;
+    const file = fileInput.files?.[0]; if (!file || file.size > 8192) { message.textContent = 'Choose the exported Coinbase API key JSON file (up to 8 KB).'; return; }
+    setBusy(submit, true); let key = null;
+    try {
+      try { key = JSON.parse(await file.text()); } catch { throw new Error('This file is not a valid Coinbase API key JSON export.'); }
+      if (!current()) return;
+      if (!key || typeof key.name !== 'string' || typeof key.privateKey !== 'string' || !key.privateKey.includes('PRIVATE KEY')) throw new Error('This is not a Coinbase API key export.');
+      const input = { venue: 'coinbase', apiKeyName: key.name, privateKey: key.privateKey, idempotencyKey: crypto.randomUUID() };
+      if (portfolio.value.trim()) input.portfolioId = portfolio.value.trim();
+      await api('/api/connections', { method: 'POST', body: JSON.stringify(input) }, context.userId);
+      if (current()) { message.textContent = 'Trade-only portfolio verified. A separate finite agent authorization is required before trading.'; await load(); }
+    } catch { if (current()) message.textContent = 'The Coinbase connection could not be verified. Check that the key has View and Trade permissions and no Transfer permission.'; }
+    finally { if (key && typeof key === 'object') key.privateKey = ''; key = null; fileInput.value = ''; setBusy(submit, false); }
+  });
+  load().catch(error => { if (current()) message.textContent = errorText(error); });
 }
 function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = state.accountStatus !== 'ready' ? 'Account unchecked' : shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.accountStatus !== 'ready' || state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
 function render() {
@@ -403,7 +632,7 @@ async function refreshAccount({ allowTransition = false } = {}) {
     }
     if (!current()) return false;
     const identityEnded = Boolean(context.userId && !result.user);
-    if (identityEnded) { state.accountEpoch++; agentAccess.invalidate(); }
+    if (identityEnded) { state.accountEpoch++; agentAccess.invalidate(); clearAccount(); }
     Object.assign(state, { user: result.user, subscription: result.subscription, usage: result.usage || null, portalAvailable: result.portalAvailable === true, bots, botsNextPage, botsUnavailable, accountStatus: 'ready' });
     updateAccountUI(); if (!allowTransition && (identityEnded || previousStatus !== 'ready')) render(); return true;
   } catch {
@@ -498,6 +727,7 @@ document.addEventListener('click', async event => {
   }
   if (action === 'trial') billingAction('checkout', actionButton);
   if (action === 'portal') billingAction('portal', actionButton);
+  if (action === 'change-plan') reviewPlanChange(actionButton);
   if (action === 'pricing') location.hash = 'pricing';
   if (action === 'delete-account') {
     if (!accountActionReady() || !state.user) return;
@@ -529,9 +759,11 @@ document.addEventListener('submit', async event => {
       await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }, context.userId);
       if (currentAccount(context) && await refreshAccount() && current()) { $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
     } else {
-      const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }, context.userId);
+      const result = state.config.durableBacktests
+        ? await followBacktest(await api('/api/backtest-jobs', { method: 'POST', body: JSON.stringify({ idempotencyKey: crypto.randomUUID(), request: values }) }, context.userId), context, current, message)
+        : await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }, context.userId);
       if (!currentAccount(context)) return;
-      if (current()) renderBacktest(result);
+      if (current() && result) renderBacktest(result);
       const account = await api('/api/me', {}, context.userId).catch(() => null);
       if (currentAccount(context) && account?.user?.id === context.userId) state.usage = account.usage || null;
     }
@@ -545,7 +777,7 @@ document.addEventListener('change', event => {
 $('#menu-button').addEventListener('click', () => { const open = $('#sidebar').classList.toggle('open'); $('#menu-button').setAttribute('aria-expanded', String(open)); $('#menu-button').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') { $('#sidebar').classList.remove('open'); $('#menu-button').setAttribute('aria-expanded', 'false'); } });
 for (const dialog of $$('dialog')) dialog.addEventListener('click', event => { if (event.target !== dialog) return; const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); });
-window.addEventListener('hashchange', () => { state.navigationEpoch++; render(); main.focus({ preventScroll: true }); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { state.navigationEpoch++; for (const dialog of $$('.automation-dialog')) dialog.remove(); render(); main.focus({ preventScroll: true }); window.scrollTo(0, 0); });
 $('#year').textContent = new Date().getFullYear();
 render();
 async function initialize() {

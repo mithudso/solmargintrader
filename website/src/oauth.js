@@ -1,4 +1,5 @@
 import { base58Decode } from '../../extension/src/wallet/solana.js';
+import { validPolicyScope } from './policy-scope.js';
 
 const SCOPES = ['status:read', 'trade:prepare', 'trade:submit'];
 const MAX_BODY = 16384;
@@ -135,8 +136,7 @@ async function pending(env, id, user) {
 }
 
 export function validateAgentPolicy(value, at = now()) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) fail(400, 'invalid_policy');
-  if (Object.keys(value).sort().join(',') !== 'assets,expiresAt,maxTotalUsd,maxTradeUsd,venues') fail(400, 'invalid_policy');
+  if (!validPolicyScope(value)) fail(400, 'invalid_policy');
   const collection = (items, allowed) => {
     if (!Array.isArray(items) || !items.length || items.length > allowed.length || items.some(item => !allowed.includes(item)) || new Set(items).size !== items.length) fail(400, 'invalid_policy');
     return [...items].sort();
@@ -151,10 +151,30 @@ export function validateAgentPolicy(value, at = now()) {
   };
   const policy = { venues: collection(value.venues, ['coinbase', 'jupiter']), assets: collection(value.assets, ['BTC', 'ETH', 'SOL', 'ZEC']), maxTradeUsd: money(value.maxTradeUsd), maxTotalUsd: money(value.maxTotalUsd), expiresAt: value.expiresAt };
   if (policy.maxTradeUsd > policy.maxTotalUsd || !Number.isSafeInteger(policy.expiresAt) || policy.expiresAt <= at + 60 || policy.expiresAt > at + MAX_GRANT_TTL) fail(400, 'invalid_policy');
+  if (value.version === 2) return { version: 2, venues: policy.venues, assets: policy.assets,
+    products: collection(value.products, ['spot', 'perpetual']), maxLeverage: value.maxLeverage,
+    maxTradeUsd: policy.maxTradeUsd, maxTotalUsd: policy.maxTotalUsd, expiresAt: policy.expiresAt };
   return policy;
 }
 
 function consentMessage(row, user, registered, policy, policyHash, nonce, issued, expires) {
+  if (policy.version === 2) return [
+    'Oraclebot agent trading preauthorization',
+    'Policy version: 2',
+    'Purpose: authorize this agent to trade within the limits below without asking for each trade.',
+    'This is a trading authorization, separate from signing in to Oraclebot.',
+    `Wallet: ${user.wallet}`, `Agent: ${registered.name}`, `Client ID: ${registered.id}`,
+    `Agent redirect origin: ${new URL(row.redirect_uri).origin}`, `Resource: ${row.resource}`, `Scopes: ${row.scope}`,
+    `Venues: ${policy.venues.join(', ')}`, `Assets: ${policy.assets.join(', ')}`,
+    `Allowed products: ${policy.products.join(', ')}`, `Maximum leverage: ${policy.maxLeverage}x (spot trades remain 1x)`,
+    'USD limits are fee-inclusive notional exposure (position notional plus quoted fees), not collateral limits.',
+    `Maximum per trade (fee-inclusive notional): USD ${policy.maxTradeUsd.toFixed(2)}`,
+    `Maximum total (fee-inclusive notional): USD ${policy.maxTotalUsd.toFixed(2)}`,
+    `Trading authorization expires: ${new Date(policy.expiresAt * 1000).toISOString()}`,
+    `Policy SHA-256: ${policyHash}`, `Nonce: ${nonce}`,
+    `Issued: ${new Date(issued * 1000).toISOString()}`, `Sign before: ${new Date(expires * 1000).toISOString()}`,
+    'Revoke this authorization at any time in Oraclebot Settings.',
+  ].join('\n');
   return [
     'Oraclebot agent trading preauthorization',
     'Purpose: authorize this agent to trade within the limits below without asking for each trade.',
@@ -249,7 +269,7 @@ export async function authenticateAgent(request, env) {
     try {
       if (!row.policy_json || await hash(row.policy_json) !== row.policy_hash) fail(401, 'invalid_token', headers);
       const policy = JSON.parse(row.policy_json);
-      if (!Number.isSafeInteger(policy.expiresAt) || policy.expiresAt !== row.expires_at || policy.expiresAt <= now()) fail(401, 'invalid_token', headers);
+      if (!validPolicyScope(policy) || !Number.isSafeInteger(policy.expiresAt) || policy.expiresAt !== row.expires_at || policy.expiresAt <= now()) fail(401, 'invalid_token', headers);
     } catch { fail(401, 'invalid_token', headers); }
   }
   const { id, user_id, client_id, scope, policy_json, policy_hash, created_at, expires_at, revoked_at } = row;
