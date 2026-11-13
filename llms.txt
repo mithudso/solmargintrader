@@ -21,3 +21,7 @@
 ## Captured ZEC backtests
 - [2026-11-13 replay report](research/ZEC-GRANULAR-BACKTESTS.md): complete finite1m/5m/10m/1h matrix, costs and one-day limitations.
 - [Shared empirical archive](research/zec-granular-20261113.llms/llms.txt): all result rows, frozen plan, independent audit and Mongo artifact handles.
+
+## Confirmed lower-fee ZEC rerun
+- [0.25% and0.15% per-fill comparison](research/ZEC-GRANULAR-FEE-SENSITIVITY.md): unchanged data/strategy matrix, conditional maker-rate sensitivity.
+- [Complete empirical archive](research/zec-fee-sensitivity-20261113.llms/llms.txt): full results, parameters, independent audit and Mongo handles.

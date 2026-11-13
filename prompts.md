@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 238
+Version: 239
+Delta: v238 to v239; preserve corrected percent units for the ZEC fee rerun.
 Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
 Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
 
@@ -2192,3 +2193,11 @@ I stored the new live key as STRIPE_ORACLEBOT_SEC_KEY in ~/.env
 ## 2026-11-13 — ZEC granular backtests
 
 > Run all of the backtests for ZEC using 1m 5m 10m and 1hr times against the more granular records recorded.
+
+## 2026-11-13 — ZEC maker-rate fee sensitivity
+
+> Rerun  the analysis with .25bps maker fee and a .15bps maker fee for trades.
+
+Owner clarification:
+
+> .25% and .15%
