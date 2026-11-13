@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-13T20:41:43+00:00",
+  "generatedAt": "2026-11-13T21:08:13+00:00",
   "schemaVersion": 1,
   "repoRoot": "~/dev/solmargintrader",
-  "commit": "38aafed",
+  "commit": "733d24e",
   "counts": {
     "files": 3660,
-    "bytes": 117058010,
+    "bytes": 117059738,
     "byKind": {
       "strategy-card": 1478,
       "doc": 791,
@@ -71041,9 +71041,9 @@
       "title": "test_blind",
       "summary": "",
       "summarySource": "none",
-      "bytes": 16051,
-      "lines": 422,
-      "sha1": "0f02af5aafaa1d99c8cba32601f9a792d32f88d5",
+      "bytes": 16510,
+      "lines": 435,
+      "sha1": "869907934be1dd7068a53fc1946e3861f24abc08",
       "symbols": [
         "packet()",
         "class BlindTests"
@@ -86558,11 +86558,11 @@
       "ext": ".md",
       "kind": "doc",
       "title": "Work continuation",
-      "summary": "Version: 534 Delta: v533 to v534; qualify all386BotManager tests after environment correction. Delta: v532 to v533; repair macOS zombie-group cleanup found by final CI.",
+      "summary": "Version: 535 Delta: v534 to v535; bound the regression fixture output before its mocked producer wait. Delta: v533 to v534; qualify all386BotManager tests after environment correction.",
       "summarySource": "opening-prose",
-      "bytes": 456689,
-      "lines": 2218,
-      "sha1": "260fc9dd1cab9ffbb71a46d0a133f311f8a15dec",
+      "bytes": 457958,
+      "lines": 2225,
+      "sha1": "595a88cb293f6557b1c2464838c9a818347ab044",
       "symbols": [],
       "imports": [],
       "internalImports": [],

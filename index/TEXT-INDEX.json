@@ -2278,7 +2278,7 @@
     "botmanager/tests/__init__.py": 70,
     "botmanager/tests/test_accounting.py": 678,
     "botmanager/tests/test_backup.py": 1348,
-    "botmanager/tests/test_blind.py": 1203,
+    "botmanager/tests/test_blind.py": 1235,
     "botmanager/tests/test_browser_surfaces.py": 314,
     "botmanager/tests/test_cli.py": 587,
     "botmanager/tests/test_config.py": 943,
@@ -2849,7 +2849,7 @@
     "llms/jupsol-llms.txt": 13811,
     "logging.md": 572,
     "market-graph-geometry-prompt.md": 728,
-    "memory.md": 45864,
+    "memory.md": 45975,
     "mongo/README.md": 1059,
     "mongo/__init__.py": 4,
     "mongo/cli.py": 189,
@@ -3661,7 +3661,7 @@
     "website/wrangler.dev.jsonc": 74,
     "website/wrangler.jsonc": 87
   },
-  "generatedAt": "2026-11-13T20:41:43+00:00",
+  "generatedAt": "2026-11-13T21:08:13+00:00",
   "postings": {
     "000": {
       "FILES.md": 1,
@@ -14957,6 +14957,9 @@
     },
     "a100": {
       ".cdo/reviews-2026-11-12/soltui-independent.json": 1
+    },
+    "a10000byteproducer": {
+      "memory.md": 1
     },
     "a1001": {
       ".cdo/reviews-2026-11-12/soltui-independent.json": 1
@@ -29188,7 +29191,7 @@
       "liquidity/src/aero_lp/providers.py": 1,
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
-      "memory.md": 15,
+      "memory.md": 16,
       "mongo/tests/test_load.py": 1,
       "optimization-workbench-plan.md": 1,
       "oracle/quotes.py": 1,
@@ -44975,6 +44978,7 @@
       "backtester/tests/test_sweep_pair_gate.py": 3,
       "backtester/tests/test_triggers.py": 1,
       "botmanager/tests/test_backup.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_extension_adapter.py": 1,
@@ -64146,6 +64150,9 @@
       "docs/archive/memory-2026-11-10.md": 1,
       "docs/bot-manager-milestone-1.md": 1
     },
+    "all43changed": {
+      "memory.md": 1
+    },
     "all46structured": {
       "memory.md": 1
     },
@@ -66720,6 +66727,9 @@
     },
     "ally": {
       "skills/trading-and-investing/references/investing-vs-trading.md": 1
+    },
+    "allzecresults": {
+      "memory.md": 1
     },
     "alm": {
       "design/bot-control-room/screens/fleet-mobile.png": 1,
@@ -96309,7 +96319,7 @@
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
     },
     "aserror": {
-      "memory.md": 1
+      "memory.md": 2
     },
     "asev0vxd": {
       "FILES.md": 2,
@@ -173428,7 +173438,7 @@
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 3,
       "logging.md": 1,
-      "memory.md": 21,
+      "memory.md": 22,
       "mongo/README.md": 1,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/04-decisions.js": 1,
@@ -181614,7 +181624,7 @@
       "llms-full.txt": 2,
       "llms-small.txt": 1,
       "llms.txt": 1,
-      "memory.md": 49,
+      "memory.md": 51,
       "optimization-workbench-run.md": 1,
       "oracle/README.md": 1,
       "oracle/engine.py": 2,
@@ -184623,6 +184633,9 @@
     "boundedit": {
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
+    },
+    "boundedkill": {
+      "memory.md": 1
     },
     "boundedreadranges": {
       ".cdo/reviews-2026-11-13/website-test-api.json": 1
@@ -192443,6 +192456,7 @@
     "buf": {
       "executor/tests/test_surfaces.py": 3,
       "extension/e2e/lib/cdp.mjs": 3,
+      "memory.md": 1,
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1,
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1,
@@ -200698,7 +200712,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms-sitemap.txt": 4,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 21,
+      "memory.md": 22,
       "mongo/load.py": 6,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/tests/test_analysis_regressions.py": 13,
@@ -226319,7 +226333,7 @@
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 2,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 60,
+      "memory.md": 61,
       "mongo/load.py": 2,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
@@ -226673,6 +226687,12 @@
       ".cdo/reviews-2026-11-12/backtester-independent-final-failed.json": 1,
       ".cdo/reviews-2026-11-12/backtester-independent-final.json": 1,
       ".cdo/reviews-2026-11-12/backtester-independent-initial.json": 1
+    },
+    "canonicalacceptance": {
+      "memory.md": 1
+    },
+    "canonicalblindacceptance": {
+      "memory.md": 1
     },
     "canonicalbytes": {
       ".cdo/reviews-2026-11-12/operations-watchdog-remediation.json": 1
@@ -236413,7 +236433,7 @@
       "liquidity/src/aero_lp/ledger.py": 2,
       "liquidity/src/aero_lp/providers.py": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 16,
+      "memory.md": 17,
       "mongo/tests/test_load.py": 1,
       "mongo/tests/test_query_scripts.py": 3,
       "onboarding.md": 1,
@@ -239149,6 +239169,7 @@
       "docs/archive/memory-2026-11-08.md": 3,
       "docs/archive/memory-2026-11-10.md": 2,
       "docs/optimization-workbench-run.md": 1,
+      "memory.md": 1,
       "optimization-workbench-run.md": 1,
       "research/COINBASE50-GRID-CYCLES.md": 1,
       "research/NEWS-EVENT-STUDY.md": 1,
@@ -260492,7 +260513,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "liquidity/tests/test_full_audit_regressions.py": 2,
       "llms/aero-lp-explained-2026-11-06.md": 1,
-      "memory.md": 10,
+      "memory.md": 11,
       "mongo/queries/02-strategies-and-cards.js": 1,
       "mongo/queries/07-documents-and-search.js": 2,
       "mongo/tests/test_load.py": 1,
@@ -262418,7 +262439,7 @@
       "botmanager/src/botmanager/suite.py": 15,
       "botmanager/src/botmanager/supervisor.py": 16,
       "botmanager/src/botmanager/worker.py": 1,
-      "botmanager/tests/test_blind.py": 58,
+      "botmanager/tests/test_blind.py": 65,
       "botmanager/tests/test_load.py": 1,
       "botmanager/tests/test_machine_health.py": 1,
       "botmanager/tests/test_suite.py": 15,
@@ -262470,7 +262491,7 @@
       "extension/tools/e2e.mjs": 1,
       "extension/tools/soltui-transport.js": 11,
       "external-calls.md": 2,
-      "memory.md": 28,
+      "memory.md": 29,
       "prompts.md": 1,
       "research/NONLINEAR-LEAD-LAG-CHILDREN.md": 1,
       "research/ULTRA-SHORT-MACRO-MICRO.md": 1,
@@ -262570,6 +262591,9 @@
       "research/five-minute-perps-suite/inventory.json": 13
     },
     "childenv": {
+      "memory.md": 1
+    },
+    "childeperm": {
       "memory.md": 1
     },
     "childexit": {
@@ -276135,6 +276159,7 @@
       "bot-manager-milestone-2.md": 1,
       "botmanager/README.md": 1,
       "botmanager/tests/test_backup.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_editing.py": 1,
       "botmanager/tests/test_extension_adapter.py": 1,
@@ -276188,7 +276213,7 @@
       "ecosystem/tests/test_web.py": 1,
       "ecosystem/tests/test_wiki.py": 1,
       "ecosystem/tests/test_zec_forward.py": 1,
-      "memory.md": 47,
+      "memory.md": 48,
       "mongo/tests/test_load_audit.py": 1,
       "mongo/tests/test_query_scripts.py": 3,
       "mongo/tests/test_snapshot_audit.py": 1,
@@ -279534,7 +279559,7 @@
       "botmanager/src/botmanager/transport.py": 3,
       "botmanager/src/botmanager/worker.py": 2,
       "botmanager/tests/test_accounting.py": 1,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_continuation.py": 23,
       "botmanager/tests/test_entry_controls.py": 2,
       "botmanager/tests/test_health.py": 1,
@@ -343519,7 +343544,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "docs/trading-signals-concept-family.md": 1,
       "extension/src/core/grid.js": 1,
-      "memory.md": 37,
+      "memory.md": 38,
       "optimization-workbench-run.md": 2,
       "prompts.md": 5,
       "research/COINBASE50-GRID-CYCLES.md": 2,
@@ -415403,7 +415428,7 @@
       "llms-small.txt": 5,
       "llms.txt": 6,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 373,
+      "memory.md": 374,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 2,
       "oracle/tests/test_quotes.py": 2,
@@ -434828,7 +434853,8 @@
       "memory.md": 1
     },
     "diffchecks": {
-      "docs/archive/memory-2026-11-10.md": 1
+      "docs/archive/memory-2026-11-10.md": 1,
+      "memory.md": 1
     },
     "diffchecks0": {
       "memory.md": 1
@@ -438918,7 +438944,7 @@
       "liquidity/tests/test_full_audit_regressions.py": 1,
       "liquidity/tests/test_safe_exit.py": 5,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 19,
+      "memory.md": 20,
       "oracle/gum_orders.py": 4,
       "oracle/quotes.py": 2,
       "oracle/tests/test_gum_orders.py": 4,
@@ -464669,7 +464695,7 @@
     "draining": {
       ".cdo/reviews-2026-11-13/website-test-ui-browser.json": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 1
+      "memory.md": 2
     },
     "drains": {
       ".cdo/reviews-2026-11-12/ecosystem.json": 14,
@@ -548117,6 +548143,7 @@
       "backtester/tests/test_decide.py": 1,
       "backtester/tests/test_strategy_duplication.py": 1,
       "backtester/tests/test_sweep_pair_gate.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "code-deep-optimizer-2026-11-08.md": 1,
       "design/bot-control-room/REVIEW.md": 1,
       "design/bot-control-room/index.html": 1,
@@ -562382,7 +562409,7 @@
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/supervisor.py": 1,
       "botmanager/src/botmanager/worker.py": 2,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_entry_controls.py": 5,
       "botmanager/tests/test_executor_adapter.py": 4,
       "botmanager/tests/test_load.py": 1,
@@ -563114,7 +563141,7 @@
       "extension/tools/soltui-transport.js": 1,
       "liquidity/src/aero_lp/safe_exit.py": 3,
       "liquidity/tests/test_safe_exit.py": 3,
-      "memory.md": 11,
+      "memory.md": 12,
       "prompts.md": 2,
       "repository-review-2026-11-08.md": 1,
       "research/META-ANALYSIS.md": 2,
@@ -572358,7 +572385,7 @@
       "extension/tools/e2e.mjs": 1,
       "liquidity/src/aero_lp/executor.py": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 9,
+      "memory.md": 10,
       "oracle/reader.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
       "research/coin-intelligence/eth-ethereum.md": 1,
@@ -616161,6 +616188,7 @@
       "backtester/strategy_research/tv_43000599876_greedy_strategy.md": 1,
       "backtester/tests/test_dca_cpcv_blind_regressions.py": 1,
       "backtester/tests/test_pairs.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "docs/ARCHITECTURE.md": 2,
       "docs/COMPONENTS.md": 1,
       "docs/FILES.md": 2,
@@ -618121,7 +618149,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "llms-sitemap.txt": 3,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 521,
+      "memory.md": 520,
       "mongo/queries/05-backtests.js": 1,
       "mongo/tests/test_query_scripts.py": 2,
       "optimization-workbench-plan.md": 12,
@@ -619178,7 +619206,7 @@
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/supervisor.py": 2,
       "botmanager/src/botmanager/worker.py": 3,
-      "botmanager/tests/test_blind.py": 2,
+      "botmanager/tests/test_blind.py": 4,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_entry_controls.py": 1,
       "botmanager/tests/test_health.py": 1,
@@ -619390,6 +619418,9 @@
       "docs/archive/memory-2026-11-08.md": 1
     },
     "finalmetadata": {
+      "memory.md": 1
+    },
+    "finalmongodbprose": {
       "memory.md": 1
     },
     "finalofflinegeneration": {
@@ -628260,7 +628291,7 @@
       "index/make_files_doc.py": 1,
       "llms-sitemap.txt": 16,
       "logging.md": 1,
-      "memory.md": 44,
+      "memory.md": 45,
       "optimization-workbench-run.md": 1,
       "oracle/README.md": 2,
       "oracle/guidance.py": 1,
@@ -628594,7 +628625,7 @@
       "liquidity/src/aero_lp/wallet.py": 2,
       "llms/basicmeory-llms.txt": 1,
       "logging.md": 1,
-      "memory.md": 35,
+      "memory.md": 36,
       "mongo/tests/test_query_scripts.py": 1,
       "optimization-workbench-run.md": 1,
       "prompts.md": 11,
@@ -629940,7 +629971,7 @@
       "liquidity/tests/test_providers.py": 6,
       "liquidity/tests/test_providers_network.py": 1,
       "liquidity/tests/test_submission_audit.py": 6,
-      "memory.md": 58,
+      "memory.md": 62,
       "mongo/README.md": 1,
       "mongo/tests/test_load.py": 2,
       "mongo/tests/test_query_scripts.py": 14,
@@ -633243,6 +633274,7 @@
     },
     "flaw": {
       ".cdo/reviews-2026-11-12/botmanager-root.json": 2,
+      "memory.md": 1,
       "research/NEWS-EVENT-STUDY.md": 2,
       "research/tradingview-card-coverage.json": 1,
       "skills/trading-and-investing/references/technical-analysis-breadth-frameworks-and-evidence.md": 1,
@@ -636967,7 +636999,7 @@
       "extension/src/bg/live-windows.js": 1,
       "extension/src/ui/signal-desk.css": 3,
       "extension/src/ui/signal-desk.js": 2,
-      "memory.md": 43,
+      "memory.md": 45,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 3,
       "repo-bootstrap-audit-2026-11-06.md": 1,
@@ -637629,7 +637661,7 @@
       "llms/basicmeory-llms.txt": 2,
       "llms/jupsol-llms.txt": 4,
       "logging.md": 2,
-      "memory.md": 18,
+      "memory.md": 20,
       "mongo/load.py": 1,
       "mongo/tests/test_analysis_regressions.py": 1,
       "optimization-workbench-plan.md": 1,
@@ -641654,7 +641686,7 @@
       "liquidity/tests/test_safe_exit.py": 2,
       "llms/basicmeory-llms.txt": 3,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 9,
+      "memory.md": 10,
       "oracle/cli.py": 1,
       "oracle/coinbase_orders.py": 2,
       "oracle/gum_orders.py": 1,
@@ -646292,7 +646324,7 @@
       "liquidity/tests/test_submission_audit.py": 1,
       "llms/defillama-llms-free.txt": 3,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 40,
+      "memory.md": 39,
       "mongo/load.py": 3,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
@@ -689995,7 +690027,7 @@
       "liquidity/tests/test_submission_audit.py": 2,
       "llms-sitemap.txt": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 7,
+      "memory.md": 6,
       "mongo/README.md": 1,
       "mongo/load.py": 2,
       "mongo/queries/01-coins-and-bars.js": 4,
@@ -700188,7 +700220,7 @@
       "liquidity/tests/test_providers.py": 1,
       "llms.txt": 2,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 7,
+      "memory.md": 8,
       "research/RANKED_LISTS.md": 1,
       "research/STRATEGIES.md": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 1,
@@ -729112,6 +729144,9 @@
     "host_values": {
       "ecosystem/web.py": 4
     },
+    "hostaccess": {
+      "memory.md": 1
+    },
     "hostchangesyet": {
       "memory.md": 1
     },
@@ -750777,7 +750812,7 @@
       "index/idle.py": 1,
       "liquidity/src/aero_lp/engine.py": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "optimization-workbench.md": 1,
       "profitable-crypto-strategies-analysis.md": 1,
       "prompts.md": 4,
@@ -794261,7 +794296,8 @@
       ".cdo/reviews-2026-11-12/pipeline-cli-combined-final.json": 1,
       ".cdo/reviews-2026-11-13/fresh-cli-forecast-final.json": 1,
       ".cdo/reviews-2026-11-13/fresh-cli-forecast-ops1.2.1-final.json": 1,
-      "docs/bot-manager-handoff.md": 1
+      "docs/bot-manager-handoff.md": 1,
+      "memory.md": 1
     },
     "interpreting": {
       ".cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json": 1,
@@ -832562,6 +832598,7 @@
       "botmanager/src/botmanager/status.py": 2,
       "botmanager/src/botmanager/suite.py": 1,
       "botmanager/src/botmanager/supervisor.py": 3,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_extension_adapter.py": 1,
       "botmanager/tests/test_health.py": 1,
       "botmanager/tests/test_load.py": 4,
@@ -837450,7 +837487,7 @@
       "liquidity/tests/test_gates.py": 3,
       "liquidity/tests/test_providers_network.py": 1,
       "llms-sitemap.txt": 2,
-      "memory.md": 57,
+      "memory.md": 58,
       "onboarding.md": 1,
       "prompts.md": 10,
       "research/5minleveragestrategies.json": 7,
@@ -866277,7 +866314,7 @@
       "docs/code-deep-optimizer-2026-11-06.md": 1,
       "docs/code-deep-optimizer-2026-11-10-bootstrap.md": 3,
       "docs/onboarding.md": 1,
-      "memory.md": 13,
+      "memory.md": 14,
       "onboarding.md": 1,
       "research/RANKED_LISTS.md": 4,
       "research/TOP_COINS.md": 1,
@@ -874889,7 +874926,7 @@
       "botmanager/src/botmanager/suite.py": 8,
       "botmanager/src/botmanager/transport.py": 3,
       "botmanager/src/botmanager/walkthrough.py": 9,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 5,
       "botmanager/tests/test_continuation.py": 7,
       "botmanager/tests/test_editing.py": 2,
       "botmanager/tests/test_executor_adapter.py": 1,
@@ -875236,7 +875273,8 @@
       "website/test/ui-browser.mjs": 2
     },
     "limit100": {
-      ".cdo/reviews-2026-11-12/website-worker.json": 1
+      ".cdo/reviews-2026-11-12/website-worker.json": 1,
+      "memory.md": 1
     },
     "limit4999": {
       "backtester/strategy_cards/incomplete/publication-profiles/tv_if0jgsn1_p_square_estimation_of_the_nth_percentile_of_a_series.md": 1,
@@ -911333,7 +911371,7 @@
       "llms-facts.txt": 1,
       "llms-full.txt": 1,
       "llms-small.txt": 1,
-      "memory.md": 22,
+      "memory.md": 21,
       "onboarding.md": 1,
       "prompts.md": 1,
       "repo-bootstrap-audit-2026-11-06.md": 3,
@@ -919219,7 +919257,7 @@
       "ecosystem/installation.py": 4,
       "extension/e2e/lib/soltui-host.mjs": 2,
       "high_signal_file_index.json": 1,
-      "memory.md": 5,
+      "memory.md": 6,
       "mongo/queries/05-backtests.js": 2,
       "repo-bootstrap-audit-2026-11-06.md": 1,
       "research/strategy_experiment/README.md": 1,
@@ -927061,7 +927099,7 @@
       "index/search.py": 1,
       "llms.txt": 1,
       "llms/jupsol-llms.txt": 4,
-      "memory.md": 13,
+      "memory.md": 14,
       "optimization-workbench.md": 1,
       "research/COINBASE50-GRID-CYCLES.md": 1,
       "research/CROSS-ASSET-TRANSFER.md": 1,
@@ -944594,7 +944632,7 @@
       "index/build.py": 1,
       "llms-sitemap.txt": 9,
       "llms/basicmeory-llms.txt": 1,
-      "memory.md": 163,
+      "memory.md": 165,
       "optimization-workbench-run.md": 3,
       "package-lock.json": 4,
       "prompts.md": 14,
@@ -944839,6 +944877,9 @@
     "merged5765c8d755322292b6076d116a7b8e3a4526567b": {
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
+    },
+    "merged733d24e29f9067e03b23bc9b289bf9f0c4a39a64": {
+      "memory.md": 1
     },
     "merged90c6eec2344d9b4f458f3bb5956dbc48877b7cc6": {
       "memory.md": 1
@@ -953850,7 +953891,7 @@
       "botmanager/src/botmanager/research.py": 3,
       "botmanager/src/botmanager/strategies/arbitrage.py": 4,
       "botmanager/src/botmanager/strategies/base.py": 2,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 2,
       "botmanager/tests/test_load.py": 1,
       "botmanager/tests/test_research.py": 4,
       "botmanager/tests/test_solana_cycles.py": 4,
@@ -960604,7 +960645,7 @@
       "extension/tools/e2e.mjs": 1,
       "liquidity/tests/test_cdo_execution.py": 2,
       "liquidity/tests/test_full_audit_regressions.py": 2,
-      "memory.md": 6,
+      "memory.md": 7,
       "mongo/tests/test_analysis_regressions.py": 20,
       "mongo/tests/test_load.py": 5,
       "mongo/tests/test_load_audit.py": 1,
@@ -960805,6 +960846,7 @@
       "backtester/tests/test_index_search_tooling.py": 1,
       "backtester/tests/test_research_regressions.py": 2,
       "botmanager/README.md": 1,
+      "botmanager/tests/test_blind.py": 1,
       "code-deep-optimizer-2026-11-08.md": 6,
       "code-optimizer-scope-2026-11-08.json": 3,
       "design/bot-control-room/DESIGN.md": 1,
@@ -960817,7 +960859,7 @@
       "docs/code-optimizer-scope-2026-11-08.json": 3,
       "docs/design/bot-control-room/DESIGN.md": 1,
       "docs/repository-review-2026-11-08.md": 1,
-      "memory.md": 5,
+      "memory.md": 7,
       "repository-review-2026-11-08.md": 1,
       "research/tradingview-card-coverage.json": 1,
       "scripts/test_oraclebot_ops.py": 1,
@@ -991205,7 +991247,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 3,
-      "memory.md": 11,
+      "memory.md": 12,
       "mongo/README.md": 2,
       "mongo/requirements.txt": 2,
       "onboarding.md": 1,
@@ -998786,7 +998828,7 @@
       "llms.txt": 1,
       "llms/basicmeory-llms.txt": 9,
       "llms/jupsol-llms.txt": 18,
-      "memory.md": 145,
+      "memory.md": 146,
       "mongo/README.md": 1,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/tests/test_analysis_regressions.py": 5,
@@ -999743,6 +999785,9 @@
     "newfinalcistillrequired": {
       "memory.md": 1
     },
+    "newfixture": {
+      "memory.md": 1
+    },
     "newfound": {
       "skills/trading-and-investing/references/strategy-failure-modes-and-synergy.md": 1
     },
@@ -1000059,6 +1000104,9 @@
     },
     "newpurecase": {
       ".cdo/reviews-2026-11-12/ui-help.json": 1
+    },
+    "newresearch": {
+      "memory.md": 1
     },
     "newroot": {
       ".cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json": 2,
@@ -1013980,6 +1014028,9 @@
     "nowpinsmanager0": {
       "docs/archive/memory-2026-11-10.md": 1
     },
+    "nowprints201bytes": {
+      "memory.md": 1
+    },
     "nowprompt47": {
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
@@ -1019444,7 +1019495,7 @@
       "docs/bot-manager-managed-suite.md": 1,
       "docs/codebase-overview.md": 1,
       "docs/high_signal_file_index.json": 1,
-      "memory.md": 8,
+      "memory.md": 9,
       "research/COINBASE50-GRID-CYCLES.md": 1,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/META-ANALYSIS.md": 2,
@@ -1056195,6 +1056246,9 @@
     "original1": {
       ".cdo/reviews-2026-11-12/backtester-math-strategies.json": 6
     },
+    "original10000bytelimit": {
+      "memory.md": 1
+    },
     "original101lines": {
       ".cdo/reviews-2026-11-12/backtester-simulators-launcher.json": 1
     },
@@ -1062380,7 +1062434,7 @@
       "llms/jupsol-llms.txt": 8,
       "logging.md": 4,
       "market-graph-geometry-prompt.md": 6,
-      "memory.md": 18,
+      "memory.md": 20,
       "mongo/README.md": 1,
       "mongo/load.py": 3,
       "mongo/queries/01-coins-and-bars.js": 2,
@@ -1074930,6 +1074984,9 @@
     },
     "package_version_mismatch": {
       "ecosystem/installation.py": 1
+    },
+    "packagechange": {
+      "memory.md": 1
     },
     "packaged": {
       ".cdo/reviews-2026-11-12/ecosystem.json": 7,
@@ -1089558,12 +1089615,15 @@
       ".cdo/reviews-2026-11-12/backtester-root-blind-fixes.json": 3,
       ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json": 12,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
-      "memory.md": 12
+      "memory.md": 13
     },
     "pass0fail": {
       ".cdo/reviews-2026-11-12/website-ui.json": 1
     },
     "pass1": {
+      "memory.md": 1
+    },
+    "pass13tests": {
       "memory.md": 1
     },
     "pass14": {
@@ -1100195,6 +1100255,9 @@
       ".cdo/reviews-2026-11-13/forecast-integration-cdo.json": 1,
       "ecosystem/web/app.js": 9
     },
+    "pendingresearchmcpserving": {
+      "memory.md": 1
+    },
     "pendingsignatures": {
       "extension/src/wallet/signer.js": 1,
       "extension/test/wallet-audit.test.js": 1
@@ -1110171,6 +1110234,9 @@
     "pid53949": {
       "memory.md": 2
     },
+    "pid58895": {
+      "memory.md": 1
+    },
     "pid6": {
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1
@@ -1112311,6 +1112377,7 @@
       "backtester/strategy_cards/incomplete/publication-profiles/tv_jz2cehpf_be_indicator_aggregator_toolkit.md": 1,
       "botmanager/src/botmanager/blind.py": 2,
       "botmanager/src/botmanager/learning_job.py": 2,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_editing.py": 4,
       "botmanager/tests/test_learning_job.py": 1,
       "docs/FILES.md": 5,
@@ -1112324,13 +1112391,16 @@
       "extension/test/soltui-bridge.test.js": 2,
       "extension/tools/e2e.mjs": 2,
       "extension/tools/soltui-transport.js": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "oracle/tests/test_webhook.py": 2,
       "research/tradingview-script-profiles/shard-c.jsonl": 1,
       "scripts/oraclebot_ops.py": 5,
       "scripts/test_oraclebot_ops.py": 2,
       "soltui/app.py": 1,
       "soltui/tests/test_experiment_runner.py": 2
+    },
+    "pipeclose": {
+      "memory.md": 1
     },
     "pipefail": {
       ".githooks/pre-commit": 1,
@@ -1130325,6 +1130395,7 @@
       ".cdo/reviews-2026-11-13/forecast-integration-cdo.json": 3,
       ".superpowers/sdd/suite-2026-11-10/cli-report.md": 1,
       "TRADINGVIEW-REFERENCE.md": 3,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_walkthrough.py": 1,
       "code-deep-optimizer-2026-11-08.md": 1,
@@ -1130341,6 +1130412,12 @@
       "scripts/test_card_readiness.py": 3,
       "soltui/docs_browser.py": 2,
       "soltui/native_host.py": 1
+    },
+    "posixminimumpipe": {
+      "memory.md": 1
+    },
+    "posixminimumpipe_buf": {
+      "memory.md": 1
     },
     "posixpath": {
       "scripts/render_tradingview_script_cards.py": 2
@@ -1130904,7 +1130981,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms/jupsol-llms.txt": 86,
-      "memory.md": 21,
+      "memory.md": 22,
       "oracle/gum_orders.py": 4,
       "oracle/gum_webhook_orders.py": 1,
       "oracle/tests/test_gum_orders.py": 11,
@@ -1133016,7 +1133093,7 @@
       "memory.md": 1
     },
     "pr253": {
-      "memory.md": 1
+      "memory.md": 2
     },
     "pr2tvrj": {
       "design/bot-control-room/screens/fleet-desktop.png": 1,
@@ -1154489,7 +1154566,7 @@
       "liquidity/tests/test_engine.py": 2,
       "llms-sitemap.txt": 2,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 53,
+      "memory.md": 54,
       "mongo/tests/test_query_scripts.py": 3,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 1,
@@ -1156537,7 +1156614,7 @@
       "extension/src/ui/signal-desk.js": 2,
       "extension/test/prediction-recovery.test.js": 2,
       "known-issues.md": 1,
-      "memory.md": 15,
+      "memory.md": 18,
       "oracle/quotes.py": 1,
       "oracle/reader.py": 1,
       "research/TRADINGVIEW-SCRIPT-CARDS.md": 2,
@@ -1157382,6 +1157459,9 @@
     },
     "productioncertification": {
       ".superpowers/sdd/remaining-2026-11-10/progress.md": 1
+    },
+    "productioncleanup": {
+      "memory.md": 1
     },
     "productionhome": {
       "memory.md": 1
@@ -1190004,6 +1190084,9 @@
     "qualifiedexit1": {
       ".cdo/reviews-2026-11-12/ui-help.json": 1
     },
+    "qualifiedoracle": {
+      "memory.md": 1
+    },
     "qualifiedred1": {
       "memory.md": 1
     },
@@ -1215041,6 +1215124,7 @@
       "botmanager/README.md": 2,
       "botmanager/src/botmanager/learning.py": 2,
       "botmanager/src/botmanager/supervisor.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_full_audit_regressions.py": 1,
       "botmanager/tests/test_load.py": 2,
       "botmanager/tests/test_machine_health.py": 9,
@@ -1220261,7 +1220345,7 @@
       "docs/FILES.md": 3,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
       "docs/external-calls.md": 1,
-      "memory.md": 8,
+      "memory.md": 9,
       "research/tradingview-card-coverage.json": 1,
       "soltui/experiment_jobs.py": 4,
       "soltui/f5_batch.py": 2,
@@ -1232080,7 +1232164,7 @@
       "llms/jupsol-llms.txt": 3,
       "logging.md": 5,
       "market-graph-geometry-prompt.md": 1,
-      "memory.md": 105,
+      "memory.md": 106,
       "mongo/load.py": 1,
       "mongo/queries/08-provenance-and-health.js": 1,
       "mongo/schema.py": 1,
@@ -1242872,7 +1242956,7 @@
       "dso-skill/README.md": 1,
       "extension/test/service-worker.test.js": 1,
       "extension/test/soltui-parity.test.js": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "superpowers/specs/2026-11-09-bot-manager-design.md": 1
     },
     "registrant": {
@@ -1245411,7 +1245495,7 @@
       "extension/tools/e2e.mjs": 1,
       "high_signal_file_index.json": 1,
       "llms-sitemap.txt": 45,
-      "memory.md": 38,
+      "memory.md": 40,
       "onboarding.md": 1,
       "optimization-workbench-plan.md": 3,
       "optimization-workbench-run.md": 1,
@@ -1252918,7 +1253002,7 @@
       "llms-small.txt": 2,
       "llms/jupsol-llms.txt": 2,
       "logging.md": 2,
-      "memory.md": 187,
+      "memory.md": 188,
       "optimization-workbench-plan.md": 2,
       "optimization-workbench-run.md": 2,
       "optimization-workbench.md": 4,
@@ -1254171,7 +1254255,7 @@
       "llms-facts.txt": 3,
       "llms-full.txt": 3,
       "llms-small.txt": 2,
-      "memory.md": 159,
+      "memory.md": 160,
       "optimization-workbench.md": 4,
       "oracle-optimized-prompt.md": 1,
       "oracle/README.md": 6,
@@ -1257169,7 +1257253,7 @@
     "reopened": {
       "docs/MOBILE-ALERTS-DESIGN.md": 1,
       "extension/src/ui/dashboard.html": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "scripts/referral_scripts/claim-all-fees.ts": 2,
       "scripts/referral_scripts/create-referral-account.ts": 2,
       "scripts/referral_scripts/create-referral-token-account.ts": 2,
@@ -1258659,7 +1258743,7 @@
       "docs/superpowers/specs/2026-11-09-bot-manager-design.md": 1,
       "ecosystem/README.md": 1,
       "extension/src/ui/control-room.js": 1,
-      "memory.md": 83,
+      "memory.md": 82,
       "oracle-optimized-prompt.md": 2,
       "oracle/README.md": 1,
       "prompts.md": 11,
@@ -1259352,7 +1259436,7 @@
       "docs/TRADINGVIEW-CARD-READINESS.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/design/bot-control-room/DESIGN.md": 2,
-      "memory.md": 1,
+      "memory.md": 2,
       "research/RATIO-ROTATION.md": 1,
       "research/ZEC-CYCLE-VALIDATION.md": 1,
       "research/ZEC-EXPANDED-STRATEGIES.md": 1,
@@ -1271231,7 +1271315,7 @@
       "llms-full.txt": 1,
       "llms-small.txt": 1,
       "llms.txt": 1,
-      "memory.md": 36,
+      "memory.md": 37,
       "optimization-workbench-run.md": 1,
       "oracle-optimized-prompt.md": 1,
       "prompts.md": 3,
@@ -1271633,6 +1271717,9 @@
     "research0": {
       "memory.md": 1,
       "script-profile-orchestration.md": 1
+    },
+    "research21testspassed0": {
+      "memory.md": 1
     },
     "research52": {
       "memory.md": 1
@@ -1276045,7 +1276132,7 @@
     "resourcewarning": {
       ".cdo/reviews-2026-11-12/oracle.json": 6,
       "docs/repo-bootstrap-audit-2026-11-11.md": 1,
-      "memory.md": 1,
+      "memory.md": 3,
       "mongo/tests/test_load.py": 1
     },
     "resourcewarnings": {
@@ -1292578,6 +1292665,9 @@
     "reviewed_with_m5_gap": {
       ".cdo/reviews-2026-11-12/backtester-data-boundaries.iter1.json": 7
     },
+    "reviewedb9ad03e": {
+      "memory.md": 1
+    },
     "reviewedbytes": {
       ".cdo/reviews-2026-11-12/pipeline-pr241-incoming-review.json": 1
     },
@@ -1308666,7 +1308756,7 @@
       "liquidity/CLAUDE.md": 1,
       "liquidity/pyproject.toml": 3,
       "liquidity/uv.lock": 21,
-      "memory.md": 61,
+      "memory.md": 62,
       "optimization-workbench-run.md": 1,
       "oracle/README.md": 1,
       "prompts.md": 1,
@@ -1327886,7 +1327976,7 @@
       "docs/archive/memory-2026-11-08.md": 6,
       "docs/archive/memory-2026-11-10.md": 3,
       "docs/crypto-bot-monitor-full-suite-20261109.md": 2,
-      "memory.md": 4,
+      "memory.md": 5,
       "oracle/tests/test_webhook.py": 2,
       "research/FIVE-MINUTE-PERPS.md": 1,
       "research/NEWS-EVENT-STUDY.md": 1,
@@ -1360673,6 +1360763,9 @@
       "archive/memory-2026-11-08.md": 1,
       "docs/archive/memory-2026-11-08.md": 1
     },
+    "servicechange": {
+      "memory.md": 1
+    },
     "servicecom": {
       "memory.md": 1
     },
@@ -1382549,7 +1382642,7 @@
       "docs/TRADINGVIEW-REFERENCE.md": 1,
       "docs/archive/memory-2026-11-08.md": 1,
       "docs/code-deep-optimizer-2026-11-06.md": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "scripts/test_research_backfill.py": 1,
       "soltui/bot_scheduler.py": 1,
       "soltui/tests/test_bgcontrol_identity.py": 1
@@ -1395268,7 +1395361,7 @@
       "liquidity/src/aero_lp/engine.py": 1,
       "liquidity/tests/test_executor.py": 2,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 25,
+      "memory.md": 26,
       "optimization-workbench-run.md": 2,
       "repo-bootstrap-audit-2026-11-06.md": 1,
       "research/cross_asset_cpcv.py": 2,
@@ -1409751,6 +1409844,9 @@
       "extension/src/ui/soltui-panel.js": 1,
       "extension/test/soltui-panel.test.js": 1
     },
+    "soltuidev": {
+      "memory.md": 1
+    },
     "soltuieditor": {
       "extension/e2e/lib/dashboard-workspace.mjs": 16,
       "extension/src/ui/dashboard.html": 1,
@@ -1413194,6 +1413290,9 @@
       "website/package-lock.json": 4
     },
     "sourceorharnessdrift": {
+      "memory.md": 1
+    },
+    "sourceownerroot": {
       "memory.md": 1
     },
     "sourcepathmanifest": {
@@ -1431487,7 +1431586,7 @@
       "liquidity/tests/test_executor.py": 1,
       "liquidity/tests/test_submission_audit.py": 1,
       "llms-full.txt": 1,
-      "memory.md": 45,
+      "memory.md": 46,
       "mongo/README.md": 2,
       "mongo/queries/01-coins-and-bars.js": 1,
       "mongo/queries/04-decisions.js": 3,
@@ -1442129,7 +1442228,7 @@
       "botmanager/src/botmanager/learning_job.py": 12,
       "botmanager/src/botmanager/suite.py": 5,
       "botmanager/src/botmanager/suite_service.py": 1,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 6,
       "botmanager/tests/test_cli.py": 7,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 7,
@@ -1442645,7 +1442744,7 @@
       "botmanager/src/botmanager/learning_job.py": 3,
       "botmanager/src/botmanager/suite.py": 2,
       "botmanager/src/botmanager/suite_service.py": 2,
-      "botmanager/tests/test_blind.py": 5,
+      "botmanager/tests/test_blind.py": 6,
       "botmanager/tests/test_cli.py": 13,
       "botmanager/tests/test_ecosystem_adapter.py": 2,
       "botmanager/tests/test_editing.py": 9,
@@ -1459787,7 +1459886,7 @@
       "liquidity/src/aero_lp/wallet.py": 3,
       "liquidity/tests/test_full_audit_regressions.py": 4,
       "logging.md": 1,
-      "memory.md": 3,
+      "memory.md": 4,
       "mongo/load.py": 4,
       "mongo/tests/test_query_scripts.py": 6,
       "oracle/coinbase_orders.py": 3,
@@ -1494417,7 +1494516,7 @@
       "external-calls.md": 1,
       "llms-sitemap.txt": 24,
       "llms/basicmeory-llms.txt": 2,
-      "memory.md": 246,
+      "memory.md": 247,
       "optimization-workbench-run.md": 11,
       "oracle-optimized-prompt.md": 3,
       "oracle/server.py": 4,
@@ -1541927,7 +1542026,7 @@
       "botmanager/src/botmanager/suite.py": 3,
       "botmanager/src/botmanager/suite_service.py": 1,
       "botmanager/src/botmanager/supervisor.py": 6,
-      "botmanager/tests/test_blind.py": 7,
+      "botmanager/tests/test_blind.py": 8,
       "botmanager/tests/test_cli.py": 4,
       "botmanager/tests/test_ecosystem_adapter.py": 1,
       "botmanager/tests/test_editing.py": 3,
@@ -1542216,6 +1542315,7 @@
       "botmanager/tests/test_suite.py": 1,
       "ecosystem/installation.py": 3,
       "liquidity/src/aero_lp/wallet.py": 1,
+      "memory.md": 1,
       "oracle/tests/test_coinbase_orders.py": 1,
       "research/tick_backfill.py": 1,
       "soltui/coinbase_account.py": 1,
@@ -1578896,7 +1578996,7 @@
       "botmanager/src/botmanager/supervisor.py": 17,
       "botmanager/src/botmanager/transport.py": 4,
       "botmanager/src/botmanager/worker.py": 6,
-      "botmanager/tests/test_blind.py": 4,
+      "botmanager/tests/test_blind.py": 6,
       "botmanager/tests/test_continuation.py": 1,
       "botmanager/tests/test_entry_controls.py": 1,
       "botmanager/tests/test_health.py": 1,
@@ -1633096,7 +1633196,7 @@
       "liquidity/tests/test_daemon.py": 1,
       "llms.txt": 1,
       "llms/jupsol-llms.txt": 1,
-      "memory.md": 77,
+      "memory.md": 78,
       "mongo/cli.py": 2,
       "optimization-workbench-plan.md": 1,
       "optimization-workbench-run.md": 1,
@@ -1646180,6 +1646280,9 @@
       "research/strategy_experiment/candidate.zip": 1,
       "research/strategy_experiment/original.zip": 1,
       "research/zec-expanded-20261113.llms/simulation-source.zip": 1
+    },
+    "upci": {
+      "memory.md": 1
     },
     "upco": {
       "research/strategy_experiment/candidate.zip": 1,
@@ -1664659,12 +1664762,15 @@
       "memory.md": 2
     },
     "v532": {
-      "memory.md": 3
+      "memory.md": 2
     },
     "v533": {
-      "memory.md": 4
+      "memory.md": 3
     },
     "v534": {
+      "memory.md": 4
+    },
+    "v535": {
       "memory.md": 2
     },
     "v53t": {
@@ -1700315,7 +1700421,7 @@
       "botmanager/src/botmanager/suite.py": 4,
       "botmanager/src/botmanager/walkthrough.py": 1,
       "botmanager/src/botmanager/worker.py": 4,
-      "botmanager/tests/test_blind.py": 1,
+      "botmanager/tests/test_blind.py": 3,
       "botmanager/tests/test_load.py": 2,
       "botmanager/tests/test_operations.py": 1,
       "botmanager/tests/test_recovery.py": 1,
@@ -1700375,7 +1700481,7 @@
       "liquidity/tests/test_strategy.py": 3,
       "liquidity/tests/test_submission_audit.py": 3,
       "llms/jupsol-llms.txt": 2,
-      "memory.md": 18,
+      "memory.md": 21,
       "oracle/cli.py": 1,
       "oracle/gum_orders.py": 1,
       "oracle/server.py": 1,
@@ -1700552,7 +1700658,7 @@
       "design/chrome-workspace/acceptance.md": 1,
       "docs/REPO-HEALTH-2026-11-12.md": 1,
       "docs/design/chrome-workspace/acceptance.md": 1,
-      "memory.md": 1,
+      "memory.md": 2,
       "research/tradingview-card-coverage.json": 3
     },
     "waiter": {
@@ -1719195,6 +1719301,9 @@
     "with14bar": {
       "research/tradingview-script-profile-audits/shard-c.jsonl": 1
     },
+    "with14cipasses": {
+      "memory.md": 1
+    },
     "with1548successes": {
       "docs/REPO-HEALTH-2026-11-12.md": 1
     },
@@ -1720862,6 +1720971,7 @@
       "botmanager/src/botmanager/supervisor.py": 1,
       "botmanager/src/botmanager/walkthrough.py": 2,
       "botmanager/tests/test_backup.py": 1,
+      "botmanager/tests/test_blind.py": 1,
       "botmanager/tests/test_cli.py": 1,
       "botmanager/tests/test_config.py": 1,
       "botmanager/tests/test_continuation.py": 1,
@@ -1760527,7 +1760637,7 @@
       "llms-sitemap.txt": 38,
       "llms-small.txt": 5,
       "llms.txt": 9,
-      "memory.md": 144,
+      "memory.md": 145,
       "oracle/README.md": 3,
       "oracle/cli.py": 2,
       "oracle/gum_orders.py": 29,
@@ -1766820,7 +1766930,7 @@
       "botmanager/src/botmanager/blind.py": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
       "docs/superpowers/prompts/2026-11-09-bot-manager-original.txt": 1,
-      "memory.md": 3,
+      "memory.md": 2,
       "prompts.md": 1,
       "research/tradingview-card-coverage.json": 4,
       "superpowers/prompts/2026-11-09-bot-manager-audit.md": 1,
@@ -1771024,8 +1771134,8 @@
   "stats": {
     "avgDocLength": 1954.9,
     "documents": 3660,
-    "terms": 136466,
-    "termsBeforePrune": 136492,
-    "totalTokens": 7154852
+    "terms": 136497,
+    "termsBeforePrune": 136523,
+    "totalTokens": 7154995
   }
 }

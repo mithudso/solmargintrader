@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 534
+Version: 535
+Delta: v534 to v535; bound the regression fixture output before its mocked producer wait.
 Delta: v533 to v534; qualify all386BotManager tests after environment correction.
 Delta: v532 to v533; repair macOS zombie-group cleanup found by final CI.
 Delta: v531 to v532; verify integrated145-test gate and preserve native-publication blocker.
@@ -2215,3 +2216,9 @@ PR253 head38aafed passed every required check except targetedmacOS judge isolati
 The initial fullBotManager suite in /Users/mitch/.venvs/soltui ran386tests with1environment error: importlib.metadata.PackageNotFoundError for solmargintrader-research-runtime. No numeric/process assertion failed. The required fullsuite is rerunning with the existing read-only /Users/mitch/.venvs/oraclebot-local-repair-0.4.14 interpreter (runtime0.4.2/manager0.7.5metadata present), while PYTHONPATH loads the task-owned newsource. No packages or services were changed. HostedresearchMCP nowalso returnsHTTP502 on research_run_list; the source host remains unknown afterread-onlyCloudflare/SSH diagnostics. Final nativepublication cannot be represented as complete.
 
 The full386-test BotManager suite now passes0 in the existing qualified interpreter with current tasksource on PYTHONPATH. No installation/service mutation occurred. Root wholecomponent/research Ruff and diffcheck pass0. Specialist13OS/process tests alreadypass0. Required finalhead hostedCI is next; sourcefix neverchanges judge sandboxpolicy, numericalengines or acceptedZEC outputs. ResearchMCP HTTP502 and unavailable serving-host SSH remain the separate post-integration publication blocker.
+
+## Post-merge fixture correction
+
+PR253 merged733d24e29f9067e03b23bc9b289bf9f0c4a39a64 with14CIpasses/2skips; all43changed bytes matched reviewedb9ad03e and canonical research21testspassed0. Canonicalblindacceptance exposed a test-only flaw: the new exited-childEPERM mock waited before draining a10000byteproducer; pipe saturation caused subprocess.TimeoutExpired and a ResourceWarning. Productioncleanup and allZECresults are unchanged. PID58895 was absent when checked; no stale process was signalled.
+
+TASK-2142 reopened for a focused follow-up on fix/zec-cleanup-fixture-20261113. Only the newfixture nowprints201bytes (>limit100,<POSIXminimumPIPE_BUF) and immediately registers direct-child boundedkill/reap/pipeclose cleanup. The original10000bytelimit case remains. Both soltuidev and qualifiedOracle interpreters pass13tests with ResourceWarning aserror; five focused repeats/Ruff/format/diffchecks pass0. KNOW-2151 records the producer-wait lesson. Sourceownerroot handles follow-upCI/merge/canonicalacceptance. No numerical rerun, packagechange, servicechange or newresearch is needed. FinalMongoDBprose/manifests remain blocked pendingresearchMCPserving-hostaccess.

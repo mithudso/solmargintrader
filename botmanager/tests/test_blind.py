@@ -192,9 +192,20 @@ class BlindTests(unittest.TestCase):
         popen = blind.subprocess.Popen
         killpg = os.killpg
 
+        def cleanup(child):
+            try:
+                child.kill()
+            finally:
+                try:
+                    child.wait(timeout=1)
+                finally:
+                    child.stdout.close()
+                    child.stderr.close()
+
         def start(*args, **kwargs):
             child = popen(*args, **kwargs)
             children.append(child)
+            self.addCleanup(cleanup, child)
             return child
 
         def signal_group(pid, sig):
@@ -212,7 +223,9 @@ class BlindTests(unittest.TestCase):
             self.assertRaisesRegex(ValueError, "^process output limit exceeded$"),
         ):
             blind.bounded_process(
-                [sys.executable, "-I", "-S", "-c", 'print("x"*10000)'],
+                # Exceed the reader's limit without filling even a minimum
+                # POSIX pipe, so the child can exit before the mocked wait.
+                [sys.executable, "-I", "-S", "-c", 'print("x"*200)'],
                 b"",
                 cwd=directory,
                 env={},
