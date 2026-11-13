@@ -12,7 +12,7 @@ function savedOracleDisplay() {
 const oracleSaved = savedOracleDisplay();
 const state = { status: null, registrations: null, telemetry: null, selected: null,
   cursors: [""], page: 0, next: null, polling: false, eventCursor: 0,
-  events: [], droppedEvents: 0, receivedAt: null, control: null, analytics: null,
+  events: [], droppedEvents: 0, receivedAt: null, control: null, analytics: null, analyticsError: null, selectionRevision: 0,
   oracle: null, oracleInstrument: oracleSaved?.instrument || "SOL/USD", oracleInterval: oracleSaved?.interval || "published", oracleStrategy: oracleSaved?.strategy || "published", oraclePublicationChosen: Boolean(oracleSaved), oracleStudyInstrument: null, oracleDisplayOptions: null, selectedRecord: null, session: null,
   busy: new Set(), localActions: new Map(), voterDrafts: new Map(), managerDrafts: new Map(), managerInputModes: new Map(), pendingPrefs: new Map(),
   wikiCatalog: null, wikiPage: null, wikiKnownPages: new Map(), wikiRequest: 0, wikiPageRequest: 0,
@@ -63,6 +63,54 @@ function aggregate(metricReader) {
   const values = bots.map(metricReader);
   return values.every(finite) ? values.reduce((sum, value) => sum + value, 0) : null;
 }
+function selectedBot() {
+  return state.registrations?.bots?.find((row) => row.bot_id === state.selected) || state.selectedRecord;
+}
+function recent(value, seconds = 30) {
+  const now = Date.now() / 1000;
+  return finite(value) && value <= now && now - value <= seconds;
+}
+function selectedResearchEvidence() {
+  const bot = selectedBot();
+  if (bot?.source !== "f5_batch") return null;
+  const report = state.analytics;
+  let reason = null;
+  if (bot.registration_observation_stale || !recent(bot.observed_at)) reason = "Registration evidence is stale";
+  else if (!bot.batch_id || state.status?.batch_id !== bot.batch_id) reason = "Selected research batch is not the observed batch";
+  else if (!report) reason = state.analyticsError || "Loading selected trial evidence";
+  else if (report.status !== "available" || report.source?.status !== "available") reason = "Research source unavailable";
+  else if (report.batch_id !== bot.batch_id) reason = "Research batch identity changed";
+  else if (!recent(report.as_of)) reason = "Research evidence is stale";
+  const coin = !reason ? array(report.coins).find((row) => row.bot_id === bot.bot_id && row.asset === bot.asset && row.strategy_id === bot.strategy_id && row.interval === bot.interval && row.horizon === bot.preset_horizon) : null;
+  if (!reason && (!coin || !bot.forward?.trial_id || coin.forward?.trial_id !== bot.forward.trial_id)) reason = "No attributable trial evidence";
+  return { bot, coin: reason ? null : coin, reason };
+}
+function trialCapital(forward) {
+  return forward?.capital_semantics === "frozen_independent_virtual_trial_basis_not_shared_allocated_cash" && forward.quote_currency === "USD" && finite(forward.paper_capital_usd) && forward.paper_capital_usd > 0 ? forward.paper_capital_usd : null;
+}
+function trialResult(forward, bot) {
+  if (!forward) return { label: "Evidence unavailable", note: "No attributable trial evidence" };
+  if (forward.excluded > 0) return { label: "Recording gaps", note: "Excluded recording periods prevent a complete paper result." };
+  if (forward.missing_economics > 0) return { label: "Missing economics", note: "Resolved outcomes lack the required costed economics." };
+  if (forward.expired > 0) return { label: "Expired outcomes", note: "Expired outcomes prevent a complete paper result." };
+  const pnl = forwardPnl(forward);
+  if (finite(pnl)) return { label: money(pnl), note: "Recorded independent trial net result · costs included" };
+  if (forward.profit_assessment === "unknown_no_resolved_economics" && forward.resolved === 0 && Number.isSafeInteger(forward.pending) && forward.pending > 0 && forward.recorded >= forward.pending) {
+    const target = bot?.forward?.last_target;
+    return { label: "Awaiting first settlement", note: `${forward.pending} pending call${forward.pending === 1 ? "" : "s"}${finite(target) ? ` · latest recorded target ${timestamp(target)}; not a guaranteed settlement time` : " · settlement needs the owner's price evidence"}.` };
+  }
+  return { label: forward.calls === 0 ? "Awaiting first call" : "Economic result unavailable", note: human(forward.profit_assessment || "no_recorded_resolved_economic_result") };
+}
+function researchWorkerLiveness(bot) {
+  const status = state.status;
+  return bot?.source === "f5_batch" && !bot.registration_observation_stale && recent(bot.observed_at) && status?.batch_id === bot.batch_id && status.batch?.run_id === bot.batch_id && status.supervisor_running === true && recent(status.heartbeat_at) && status.batch.running === true ? "Running · research batch owner" : human(bot?.runtime_reason || "owner_liveness_not_observed");
+}
+function selectSoleResearchBot() {
+  const registrations = state.registrations;
+  if (state.selected !== null || state.page !== 0 || registrations?.status !== "available" || registrations.total !== 1 || registrations.next_after || registrations.bots?.length !== 1) return null;
+  const bot = registrations.bots[0];
+  return bot.source === "f5_batch" && typeof bot.bot_id === "string" ? selectBot(bot) : null;
+}
 async function get(path) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 5000);
@@ -99,6 +147,8 @@ async function refresh() {
   state.polling = true;
   $("refresh").disabled = true;
   const requestedRun = state.activeRun;
+  const requestedBot = state.selected;
+  const requestedSelection = state.selectionRevision;
   const requestedOracleView = oracleViewKey();
   try {
     const cursor = state.cursors[state.page];
@@ -108,11 +158,15 @@ async function refresh() {
       ["telemetry", telemetryPage()],
       ["control", get(scoped("/api/control"))],
       ["oracle", get(scoped(oracleDisplayPath()))],
-      ["analytics", state.selected ? get(scoped(`/api/analytics?bot_id=${encodeURIComponent(state.selected)}`)) : Promise.resolve(null)],
+      ["analytics", requestedBot ? get(scoped(`/api/analytics?bot_id=${encodeURIComponent(requestedBot)}`)) : Promise.resolve(null)],
     ];
     const results = await Promise.allSettled(requests.map(([, promise]) => promise));
     if (requestedRun !== state.activeRun) return;
-    requests.forEach(([key], index) => { state[key] = key === "oracle" && requestedOracleView !== oracleViewKey() ? null : results[index].status === "fulfilled" ? results[index].value : null; });
+    requests.forEach(([key], index) => {
+      if (key === "analytics" && (requestedBot !== state.selected || requestedSelection !== state.selectionRevision)) return;
+      if (key === "analytics") state.analyticsError = results[index].status === "rejected" ? "Research owner unavailable" : null;
+      state[key] = key === "oracle" && requestedOracleView !== oracleViewKey() ? null : results[index].status === "fulfilled" ? results[index].value : null;
+    });
     const publication = state.oracle?.selected_experiment;
     if (!state.oraclePublicationChosen && publication?.instrument) {
       state.oraclePublicationChosen = true;
@@ -121,6 +175,7 @@ async function refresh() {
     }
     state.receivedAt = Date.now();
     render();
+    void selectSoleResearchBot();
     const unavailable = results.filter((result) => result.status === "rejected").length;
     text("connection-state", unavailable ? `${unavailable} owner interface${unavailable === 1 ? " is" : "s are"} unavailable · stale values withheld` : "Connected to local owners · refreshing every 2 seconds");
     text("last-refresh", `Observed ${new Date(state.receivedAt).toISOString().replace("T", " ").replace(/\.\d+Z$/, " UTC")}`);
@@ -138,17 +193,21 @@ function renderSummary() {
   const counts = batch?.counts || {};
   const total = batch?.total;
   const finished = terminal.reduce((sum, key) => sum + (finite(counts[key]) ? counts[key] : 0), 0);
-  text("paper-capital", money(aggregate((bot) => bot.configured_virtual_capital?.value)));
-  text("capital-note", "Configured virtual capital · not reserved funds");
-  text("paper-pnl", money(aggregate(botPnl)));
-  text("pnl-note", "Bot Manager paper results · all metrics required");
+  const evidence = selectedResearchEvidence();
+  const result = evidence?.reason ? { label: "Evidence unavailable", note: evidence.reason } : trialResult(evidence?.coin?.forward, evidence?.bot);
+  text("paper-capital-title", evidence ? "Selected trial capital" : "Manager virtual capital");
+  text("paper-capital", money(evidence ? trialCapital(evidence.coin?.forward) : aggregate((bot) => bot.configured_virtual_capital?.value)));
+  text("capital-note", evidence ? evidence.reason || "Independent virtual trial · not reserved or shared portfolio funds" : "Bot Manager configured virtual capital · not reserved funds");
+  text("paper-pnl-title", evidence ? "Selected trial paper P&L" : "Manager paper P&L");
+  text("paper-pnl", evidence ? result.label : money(aggregate(botPnl)));
+  text("pnl-note", evidence ? result.note : "Bot Manager paper results · all metrics required");
   text("backtest-coverage", finite(total) && total > 0 ? `${finished} / ${total}` : "Unavailable");
   text("backtest-note", finite(total) ? `${(counts.completed || 0) + (counts.partial || 0)} with selected evidence · ${(counts.missing || 0) + (counts.unsupported || 0) + (counts.failed || 0)} blocked` : "No frozen matrix evidence");
   text("fleet-summary", registrations?.status === "available" ? registrations.total : "Unavailable");
   const observed = state.status?.registration?.observed_states;
   text("fleet-note", observed ? Object.entries(observed).map(([key, value]) => `${value} ${human(key)}`).join(" · ") : "Registration is not proof of a running worker");
   text("nav-count", registrations?.status === "available" ? registrations.total : "—");
-  text("telemetry-status", human(state.telemetry?.manager?.status));
+  text("telemetry-status", evidence ? evidence.reason ? "Evidence unavailable" : "Research trial" : human(state.telemetry?.manager?.status));
   text("equity-reason", state.telemetry?.manager?.truncated ? "Bot Manager's bounded status is incomplete; portfolio totals are withheld." : "No measured equity series is exposed by this owner interface. Forecast hits do not establish trading P&L.");
   text("pipeline-title", `Pipeline: ${human(state.status?.phase)}`);
   text("pipeline-detail", state.status ? `Supervisor ${state.status.supervisor_running ? "lock observed" : "not running"} · Backtester ${batch ? (batch.running ? "running" : "not running") : "unavailable"} · Last heartbeat ${timestamp(state.status.heartbeat_at)}` : "Owner state unavailable. Process health and data freshness have not been established.");
@@ -156,6 +215,7 @@ function renderSummary() {
 }
 function renderFleet() {
   const registrations = state.registrations;
+  const researchEvidence = selectedResearchEvidence();
   const bots = registrations?.status === "available" && Array.isArray(registrations.bots) ? registrations.bots : [];
   const query = $("bot-search").value.trim().toLowerCase();
   const filter = $("status-filter").value;
@@ -175,11 +235,11 @@ function renderFleet() {
     nameCell.append(button);
     const statusCell = node("td");
     statusCell.append(node("span", bot.registration_observation_stale ? "Stale registration" : human(bot.observed_state), "status"), node("small", human(bot.reason)));
-    const measured = state.analytics?.coins?.find((row) => row.bot_id === bot.bot_id);
+    const measured = researchEvidence && !researchEvidence.reason ? state.analytics?.coins?.find((row) => row.bot_id === bot.bot_id) : null;
     const measuredPnl = forwardPnl(measured?.forward);
-    const ownerPnl = botPnl(managerBot(bot.bot_id));
-    const pnl = node("td", money(finite(measuredPnl) ? measuredPnl : ownerPnl), "pnl-cell");
-    pnl.append(node("small", measured ? "Recorded forward paper result" : finite(ownerPnl) ? "Bot Manager measured result" : "Select to inspect forward P&L"));
+    const ownerPnl = bot.source === "f5_batch" ? null : botPnl(managerBot(bot.bot_id));
+    const pnl = node("td", measured ? trialResult(measured.forward, bot).label : money(ownerPnl), "pnl-cell");
+    pnl.append(node("small", measured ? finite(measuredPnl) ? "Recorded independent trial result" : "Inspect the pending or withheld economic evidence" : finite(ownerPnl) ? "Bot Manager measured result" : "Select to inspect forward P&L"));
     const evidence = node("td", bot.forward?.calls === null ? "No forward evidence" : `${label(bot.forward?.calls)} forecasts`, "decision-cell");
     evidence.append(node("small", timestamp(bot.forward?.last_issued)));
     row.append(nameCell, statusCell, pnl, evidence);
@@ -199,7 +259,7 @@ function renderFleet() {
   $("next-page").disabled = !state.next;
 }
 function renderInspector() {
-  const bot = state.registrations?.bots?.find((row) => row.bot_id === state.selected) || state.selectedRecord;
+  const bot = selectedBot();
   text("selected-name", bot ? bot.asset ? `${bot.asset} · ${bot.strategy_id}` : bot.display_name || human(bot.strategy_id) : "Choose a bot");
   text("selected-subtitle", bot ? bot.asset ? `${bot.asset}/${bot.quote_currency} · ${bot.interval} · ${bot.preset_horizon} · ${bot.owner}` : `${human(bot.strategy_id)} · revision ${label(bot.config_revision)} · ${label(bot.owner)}` : "Its owner evidence will appear here.");
   text("selected-status", bot?.registration_observation_stale ? "Stale registration" : human(bot?.observed_state));
@@ -208,9 +268,12 @@ function renderInspector() {
   text("selected-reason", human(bot?.reason));
   text("selected-heartbeat", `Observed ${timestamp(bot?.observed_at)}`);
   const manager = managerBot(bot?.bot_id);
+  const evidence = selectedResearchEvidence();
+  const result = evidence?.reason ? { label: "Evidence unavailable" } : trialResult(evidence?.coin?.forward, bot);
   fields("overview-fields", [
-    ["Lifecycle", human(bot?.lifecycle)], ["Worker liveness", bot?.runtime_running === true ? "Running" : bot?.runtime_running === false ? "Not running" : human(bot?.runtime_reason)],
-    ["Net paper P&L", money(botPnl(manager))], ["Allocated capital", money(metric(manager, "allocated_capital_usd"))],
+    ["Lifecycle", human(bot?.lifecycle)], ["Worker liveness", evidence ? researchWorkerLiveness(bot) : bot?.runtime_running === true ? "Running" : bot?.runtime_running === false ? "Not running" : human(bot?.runtime_reason)],
+    ["Net paper P&L", evidence ? result.label : money(botPnl(manager))], [evidence ? "Independent trial capital" : "Allocated capital", money(evidence ? trialCapital(evidence.coin?.forward) : metric(manager, "allocated_capital_usd"))],
+    ...(evidence ? [["Latest recorded target", finite(bot.forward?.last_target) ? `${timestamp(bot.forward.last_target)} · settlement needs source evidence` : "No forecast target recorded"]] : []),
     ["Live readiness", bot?.live_ready === true ? "Owner reports ready" : "Not established"], ["Bot ID", bot?.bot_id],
   ]);
   const forward = bot?.forward;
@@ -429,15 +492,23 @@ async function submitAction(action, params = {}, button = null) {
   }
 }
 async function selectBot(bot) {
+  const requestedRun = state.activeRun;
+  const requestedSelection = ++state.selectionRevision;
   state.selected = bot.bot_id;
   state.selectedRecord = bot;
-  state.analytics = null;
-  renderFleet(); renderInspector(); renderAnalytics();
+  state.analytics = null; state.analyticsError = null;
+  renderSummary(); renderFleet(); renderInspector(); renderAnalytics();
   try {
     const identity = state.selected;
     const value = await get(scoped(`/api/analytics?bot_id=${encodeURIComponent(identity)}`));
-    if (state.selected === identity) { state.analytics = value; renderAnalytics(); renderFleet(); }
-  } catch { renderAnalytics(); }
+    if (state.activeRun === requestedRun && state.selected === identity && state.selectionRevision === requestedSelection) {
+      state.analytics = value; state.analyticsError = null; renderSummary(); renderInspector(); renderAnalytics(); renderFleet();
+    }
+  } catch {
+    if (state.activeRun === requestedRun && state.selectionRevision === requestedSelection) {
+      state.analyticsError = "Research owner unavailable"; renderSummary(); renderInspector(); renderAnalytics();
+    }
+  }
 }
 function actionButton(action, caption, params = {}, enabled = true, reason = null) {
   const wrap = node("div", undefined, "action-control");
@@ -609,9 +680,10 @@ function renderManagerConfigs() {
     identity.append(node("h3", config.display_name), node("p", `${human(config.strategy_id)} · saved revision ${label(config.config_revision)} · ${human(observed?.observed_state)}`));
     const inspect = node("button", "Inspect configuration", "button secondary small"); inspect.type = "button"; inspect.dataset.controlKey = `manager-inspect:${config.bot_id}`;
     inspect.addEventListener("click", () => {
+      state.selectionRevision += 1;
       state.selected = config.bot_id;
       state.selectedRecord = { ...config, lifecycle: observed?.lifecycle, observed_state: observed?.observed_state, reason: observed?.reason };
-      state.analytics = null; location.hash = "fleet"; renderInspector(); renderAnalytics();
+      state.analytics = null; state.analyticsError = null; location.hash = "fleet"; renderSummary(); renderInspector(); renderAnalytics();
     });
     heading.append(identity, inspect); card.append(heading);
     const details = node("details"); details.append(node("summary", "Saved settings and explicit edit delta"));
@@ -746,8 +818,9 @@ function forwardPnl(forward) {
   return forward && forward.status === "available" && forward.resolved > 0 && forward.recorded > 0 && finite(forward.realized_pnl_usd) ? forward.realized_pnl_usd : null;
 }
 function renderAnalytics() {
-  const data = state.analytics; const coins = array(data?.coins);
-  text("analytics-status", human(data?.status));
+  const evidence = selectedResearchEvidence();
+  const data = evidence?.reason ? null : state.analytics; const coins = array(data?.coins);
+  text("analytics-status", evidence?.reason ? evidence.reason : human(data?.status));
   text("coin-performance-note", state.selected ? `Selected strategy ${human(state.selectedRecord?.strategy_id)} · all attributable coin results from the research owner.` : "Select a bot to compare historical and forward evidence across coins.");
   const fragment = document.createDocumentFragment();
   let calls = 0; let resolved = 0; let recorded = 0; let measured = 0; let positive = 0; let negative = 0; let singlePnl = null;
@@ -765,19 +838,21 @@ function renderAnalytics() {
     }
     const prospective = node("td", `${label(forward.calls)} / ${label(forward.resolved)}`);
     prospective.append(node("small", `${label(forward.pending)} pending · ${label(forward.recorded)} recorded · ${label(forward.excluded)} excluded`));
-    const economic = node("td", money(pnl), finite(pnl) ? pnl > 0 ? "positive" : pnl < 0 ? "negative" : "" : "");
-    economic.append(node("small", finite(pnl) && finite(forward.realized_return_percent) ? `${forward.realized_return_percent.toFixed(2)}% on stated paper notional` : human(forward.status || "no_recorded_resolved_economic_result")), node("small", `${finite(forward.paper_capital_usd) ? money(forward.paper_capital_usd) : finite(forward.paper_capital_reference) && forward.quote_currency ? `${forward.paper_capital_reference.toFixed(2)} ${forward.quote_currency}` : "Unavailable"} capital per independent trial`));
+    const economic = node("td", finite(pnl) ? money(pnl) : trialResult(forward, coin.bot_id === state.selected ? evidence?.bot : null).label, finite(pnl) ? pnl > 0 ? "positive" : pnl < 0 ? "negative" : "" : "");
+    const result = trialResult(forward, coin.bot_id === state.selected ? evidence?.bot : null);
+    economic.append(node("small", finite(pnl) && finite(forward.realized_return_percent) ? `${forward.realized_return_percent.toFixed(2)}% on stated paper notional` : result.note), node("small", `${finite(forward.paper_capital_usd) ? money(forward.paper_capital_usd) : finite(forward.paper_capital_reference) && forward.quote_currency ? `${forward.paper_capital_reference.toFixed(2)} ${forward.quote_currency}` : "Unavailable"} capital per independent trial`));
     const assessment = node("td", human(forward.profit_assessment || "profit_unknown"));
     const costs = [ ["fees", forward.fees_bps], ["slippage", forward.slippage_bps], ["borrow", forward.borrow_bps] ].map(([name, value]) => `${name} ${finite(value) ? value.toFixed(2) : "unavailable"} bps`).join(" · ");
-    assessment.append(node("small", costs)); row.append(market, historical, prospective, economic, assessment); fragment.append(row);
+    assessment.append(node("small", result.label === "Awaiting first settlement" ? "Fees, slippage and borrow costs are reported with the settled outcome." : costs)); row.append(market, historical, prospective, economic, assessment); fragment.append(row);
   });
   $("coin-rows").replaceChildren(fragment); $("coin-empty").hidden = coins.length > 0;
   text("coin-empty", state.selected ? "No attributable per-coin evidence is currently available for this identity." : "No bot selected.");
   text("coin-policy", `Source: existing historical and forward ledgers. ${data?.recording?.enabled === false ? "New P&L recording is disabled; prior records are retained. " : ""}Paper returns describe independent trial notionals and can overlap. They are not a compounded portfolio or live profit. Unresolved or excluded calls cannot establish profit.`);
   const stages = data?.stages || state.control?.runs?.find((run) => run.id === state.selectedRecord?.run_id || run.batch_id === state.selectedRecord?.batch_id)?.stages || inferredSelectedStages(coins);
   renderStages("selected-stages", stages);
-  text("equity-message", measured ? measured === 1 ? `${money(singlePnl)} recorded trial net result` : `${positive} profitable · ${negative} losing / ${measured} measured trials` : state.selected ? "Profit is not established yet" : "Select a bot to inspect paper results");
-  text("equity-reason", state.selected ? `${human(state.selectedRecord?.strategy_id)} · ${calls} prospective calls · ${resolved} resolved · ${recorded} included in accounting · ${measured} coins with measured P&L. Independent trial comparisons; costs included. No shared portfolio total is inferred.` : "Choose a fleet row. Recorded paper economics and directional accuracy are reported separately.");
+  const result = evidence?.reason ? { label: "Evidence unavailable", note: evidence.reason } : trialResult(evidence?.coin?.forward, evidence?.bot);
+  text("equity-message", measured ? measured === 1 ? `${money(singlePnl)} recorded trial net result` : `${positive} profitable · ${negative} losing / ${measured} measured trials` : evidence ? result.label : state.selected ? "Profit is not established yet" : "Select a bot to inspect paper results");
+  text("equity-reason", evidence?.reason ? evidence.reason : state.selected ? `${human(state.selectedRecord?.strategy_id)} · ${calls} prospective calls · ${resolved} resolved · ${recorded} included in accounting · ${measured} coins with measured P&L. ${evidence && !measured ? `${result.note} ` : ""}Independent trial comparisons; costs included. No shared portfolio total is inferred.` : "Choose a fleet row. Recorded paper economics and directional accuracy are reported separately.");
 }
 function currentVoterDraft() {
   if (state.oracle?.selected_experiment?.selected || state.oracleStrategy !== "published") return null;
@@ -790,6 +865,30 @@ function currentVoterDraft() {
   }
   return draft;
 }
+function qualificationSummary(value, fresh) {
+  if (!fresh || value?.instrument !== state.oracleInstrument || !recent(value.as_of) || value.selection?.instrument !== value.instrument || value.selected_experiment?.selected || state.oracleStrategy !== "published") return null;
+  const selected = new Set(array(value.selection?.selected_ids));
+  if (!selected.size) return "No strategies selected for this instrument.";
+  const included = array(value.aggregate?.included).filter((row) => selected.has(row.strategy_id));
+  const excluded = array(value.aggregate?.excluded).filter((row) => selected.has(row.strategy_id));
+  const reasons = [["accuracy_at_or_below_threshold", "at or below the accuracy threshold"], ["insufficient_evidence", "need more resolved outcomes"], ["warmup_required", "warming up"]];
+  return [`${included.length} of ${selected.size} selected strategies qualify`, ...reasons.map(([reason, caption]) => {
+    const count = excluded.filter((row) => row.reason === reason).length;
+    return count ? `${count} ${caption}` : null;
+  }).filter(Boolean)].join(" · ") + ". Qualification does not establish profitability.";
+}
+function renderShadowLeader(value, fresh) {
+  const selected = new Set(array(value?.selection?.selected_ids));
+  const observation = value?.market?.observation;
+  const now = Date.now() / 1000;
+  const eligible = fresh && recent(value?.as_of) && value.instrument === state.oracleInstrument && value.selection?.instrument === value.instrument && !value.selected_experiment?.selected && state.oracleStrategy === "published";
+  const candidates = eligible ? array(value.strategies).filter((row) => selected.has(row.strategy_id) && row.instrument === value.instrument && row.source === observation?.source && row.kind === observation?.kind && row.version === array(value.catalog).find((card) => card.strategy_id === row.strategy_id)?.version && typeof row.version === "string" && [-1, 0, 1].includes(row.direction) && finite(row.issued_at) && row.issued_at <= now && finite(row.expires_at) && row.expires_at > now && row.horizon_seconds === value.horizon_seconds && Number.isSafeInteger(row.hits) && Number.isSafeInteger(row.resolved) && row.resolved > 0 && row.hits >= 0 && row.hits <= row.resolved) : [];
+  candidates.sort((a, b) => b.hits / b.resolved - a.hits / a.resolved || b.resolved - a.resolved || a.strategy_id.localeCompare(b.strategy_id));
+  const leader = candidates[0];
+  const panel = $("oracle-shadow-leader"); panel.hidden = !leader;
+  const qualified = leader && array(value.aggregate?.included).some((row) => row.strategy_id === leader.strategy_id);
+  panel.textContent = leader ? `${qualified ? "Current shadow leader" : "Unqualified shadow leader"}: ${human(leader.strategy_id)} · ${leader.direction > 0 ? "UP" : leader.direction < 0 ? "DOWN" : "FLAT"} · ${leader.hits}/${leader.resolved} resolved calls (${(100 * leader.hits / leader.resolved).toFixed(2)}% historical directional accuracy). ${qualified ? "Individual strategy direction" : "Excluded from the aggregate"}; not a profit probability. Expires ${timestamp(leader.expires_at)}.` : "";
+}
 function renderSelectedAggregate() {
   const value = state.oracle; const market = value?.market; const observation = market?.observation;
   const now = Date.now() / 1000;
@@ -800,11 +899,13 @@ function renderSelectedAggregate() {
   const available = value?.instrument === state.oracleInstrument && (studySelected ? studyFresh : fresh) && value?.status === "available" && finite(expiry) && expiry > now && finite(value?.aggregate?.balance_percent) && finite(value?.as_of) && value.as_of <= now && now - value.as_of <= 30;
   const signal = available ? value.signal : "Unavailable";
   const balance = available ? value.aggregate.balance_percent : null;
-  const reason = studySelected ? (available ? value.selected_experiment.publication.historical_warmup ? `Historical warmup reference · latest closed ${value.selected_experiment.publication.interval} candles · paper accounts await their first post-start close; no prospective credit.` : `Selected rank ${value.selected_experiment.publication.rank} configuration · ${value.horizon_seconds} second native candles · paper long-or-flat target, not a probability.` : human(value?.reason || "selected_study_unavailable")) : available ? `${array(value.aggregate.included).length} contributing votes · ${array(value.aggregate.excluded).length} excluded. Directional vote balance, not profit probability.` : human(value?.aggregate?.reason || market?.reason || (!fresh ? "fresh_market_evidence_unavailable" : "insufficient_or_expired_forecast_evidence"));
+  const qualification = qualificationSummary(value, fresh);
+  const reason = studySelected ? (available ? value.selected_experiment.publication.historical_warmup ? `Historical warmup reference · latest closed ${value.selected_experiment.publication.interval} candles · paper accounts await their first post-start close; no prospective credit.` : `Selected rank ${value.selected_experiment.publication.rank} configuration · ${value.horizon_seconds} second native candles · paper long-or-flat target, not a probability.` : human(value?.reason || "selected_study_unavailable")) : available ? `${array(value.aggregate.included).length} contributing votes · ${array(value.aggregate.excluded).length} excluded. Directional vote balance, not profit probability.` : qualification || human(value?.aggregate?.reason || market?.reason || (!fresh ? "fresh_market_evidence_unavailable" : "insufficient_or_expired_forecast_evidence"));
   ["aggregate-signal", "oracle-signal"].forEach((id) => text(id, signal));
   ["aggregate-balance", "oracle-balance"].forEach((id) => text(id, available ? studySelected ? `${balance.toFixed(2)}% target exposure · ${value.selected_experiment.publication.interval}` : `${balance > 0 ? "+" : ""}${balance.toFixed(2)}% signed weighted vote balance` : "No current vote balance"));
   ["aggregate-reason", "oracle-reason"].forEach((id) => text(id, reason));
-  text("aggregate-freshness", value ? `${value.instrument} · ${label(value.horizon_seconds)} second horizon · expires ${timestamp(expiry)}` : "No current Oracle response");
+  renderShadowLeader(value, fresh);
+  text("aggregate-freshness", value ? `${value.instrument} · ${label(value.horizon_seconds)} second horizon · ${finite(expiry) ? `expires ${timestamp(expiry)}` : "no qualified aggregate expiry"}` : "No current Oracle response");
   const meter = $("aggregate-meter"); meter.hidden = !available; meter.value = available ? Math.abs(balance) : 0;
   const reading = meter.closest(".aggregate-reading"); reading.dataset.direction = !available ? "unavailable" : balance > 0 ? "buy" : balance < 0 ? "sell" : "flat";
   $("oracle-signal").className = available ? balance > 0 ? "positive" : balance < 0 ? "negative" : "" : "";
@@ -1045,7 +1146,8 @@ function setActiveRun(id) {
   if (id === state.activeRun) return;
   const run = array(state.control?.runs).find((item) => item.id === id);
   state.activeRun = id; state.page = 0; state.cursors = [""]; state.next = null;
-  state.selected = null; state.selectedRecord = null; state.analytics = null;
+  state.selectionRevision += 1;
+  state.selected = null; state.selectedRecord = null; state.analytics = null; state.analyticsError = null;
   state.status = null; state.registrations = null; state.oracle = null; state.control = null;
   state.recordingDirty = false;
   text("logs-status", "Research run changed. Load the current run’s source logs."); $("logs-content").replaceChildren();

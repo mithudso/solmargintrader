@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T00:10:37+00:00",
+  "generatedAt": "2026-11-13T00:54:25+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -35,7 +35,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 165
+          "hits": 164
         },
         {
           "path": "FILES.md",
@@ -269,6 +269,10 @@
           "hits": 28
         },
         {
+          "path": "ecosystem/web/app.js",
+          "hits": 24
+        },
+        {
           "path": "research/results/volty_predictive_20261111.json",
           "hits": 24
         },
@@ -278,10 +282,6 @@
         },
         {
           "path": "research/zec_ensembles.py",
-          "hits": 24
-        },
-        {
-          "path": "soltui/council.py",
           "hits": 24
         }
       ],
@@ -439,7 +439,7 @@
         "centred",
         "shift"
       ],
-      "matchingFiles": 1456,
+      "matchingFiles": 1458,
       "shown": 30,
       "files": [
         {
@@ -743,7 +743,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 159
+          "hits": 161
         },
         {
           "path": "docs/archive/memory-2026-11-10.md",
@@ -783,7 +783,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 88
+          "hits": 89
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 330,
+      "matchingFiles": 331,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 142,
+      "matchingFiles": 143,
       "shown": 30,
       "files": [
         {
