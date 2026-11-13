@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `05da066f` (2026-11-12T23:06:20+00:00). 3521 tracked files, 88.4 MB.
+**Generated** from `index/INDEX.json` at commit `0716a636` (2026-11-13T02:00:21+00:00). 3532 tracked files, 89.1 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2877 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 585/677 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (332 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2879 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (341 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -43,14 +43,14 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 91 files
-- [`ecosystem`](#ecosystem) — 61 files
+- [`ecosystem`](#ecosystem) — 62 files
 - [`soltui`](#soltui) — 191 files
 - [`mongo`](#mongo) — 20 files
 - [`website`](#website) — 28 files
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 106 files
+- [`.cdo`](#cdo) — 116 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1657 lines · 353,193 B · description: **extracted**
+`doc` · 1739 lines · 375,217 B · description: **extracted**
 
-**Purpose.** Version: 504 Delta: v503 to v504; freeze all822current semantic rows and incoming operations metadata before final derived artifacts and the new long-run candidate. Delta: v502 to v503; independently qualify incoming monitoring robustness corrections and exact fresh CLI startup before refreezing the final candidate.
+**Purpose.** Version: 507 Delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery. Delta: v505 to v506; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2082 lines · 122,691 B · description: **extracted**
+`doc` · 2110 lines · 124,161 B · description: **extracted**
 
-**Purpose.** Version: 232 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request. Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
+**Purpose.** Version: 234 Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification. Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
 
 **Use.** Read it.
 
@@ -855,9 +855,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/AUDIT-FILE-MANIFEST-2026-11-12.md`
 
-`doc` · 545 lines · 61,338 B · description: **extracted**
+`doc` · 560 lines · 61,122 B · description: **extracted**
 
-**Purpose.** Version: 0.1.1 Delta: include the reviewed incoming operations corrections and final evidence. This inventory names every repository path changed by the audit branch relative to
+**Purpose.** Version: 0.1.2 Delta: include the combined pipeline, UI, readiness corrections and final current evidence. This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
 
 **Use.** Read it.
 
@@ -1063,25 +1063,25 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-LAUNCH-READINESS.md`
 
-`doc` · 170 lines · 9,768 B · description: **extracted**
+`doc` · 177 lines · 10,436 B · description: **extracted**
 
-**Purpose.** Version: 0.1.1 Delta: clarify that public trial activation depends on delivering the promised hosted service. Verified: 2026-11-12. This document is a deployment snapshot, not a promise of live trading availability.
+**Purpose.** Version: 0.1.2 Delta: Record the three chosen plans, verified test portal, local dashboard repair and wallet-bound preauthorization requirement. Verified: 2026-11-13. This is a deployment snapshot and implementation plan.
 
 **Use.** Read it.
 
 #### `docs/ORACLEBOT-OPERATIONS.md`
 
-`doc` · 130 lines · 7,405 B · description: **extracted**
+`doc` · 169 lines · 10,263 B · description: **extracted**
 
-**Purpose.** Version: 1.0.1 Delta: distinguish the audited repository observer from the separately installed runtime. The existing Solbot suite owns the manager and independent local control room.
+**Purpose.** Version: 1.1.1 Delta: Evaluate monitored runtime freshness after the bounded probe returns. Delta: Preserve audited bounded input/output and prerequisite fixes in the separately installed full-runtime observer.
 
 **Use.** Read it.
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 166 lines · 34,328 B · description: **extracted**
+`doc` · 175 lines · 39,242 B · description: **extracted**
 
-**Purpose.** Version: 0.1.8 Delta: Extend complete inspection to three incoming operations helpers, preserve PR240 health-client identity, correct observer/watchdog boundaries and stale remote alert ordering, and bind31 guarded tests plus four fresh CLI parsing gates. Final SolTUI and delivery remain pending. The run used the default repository profile in full mode.
+**Purpose.** Version: 0.1.9 Delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures. Complete combined Ecosystem255 and four fresh CLI parsing gates pass. Final SolTUI shards, pushed CI and delivery remain pending.
 
 **Use.** Read it.
 
@@ -1439,7 +1439,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/operations-registry.json`
 
-`doc` · 4516 lines · 222,749 B · description: **derived**
+`doc` · 4520 lines · 222,892 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -1551,7 +1551,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/tool-inventory.json`
 
-`doc` · 589 lines · 21,935 B · description: **derived**
+`doc` · 606 lines · 22,652 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -27347,7 +27347,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/src/botmanager/service.py`
 
-`code-python` · 221 lines · 8,103 B · description: **extracted**
+`code-python` · 237 lines · 8,838 B · description: **extracted**
 
 **Purpose.** Explicit per-home launchd installation from a stable installed environment.
 
@@ -27907,7 +27907,7 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 #### `botmanager/tests/test_supervisor.py`
 
-`test` · 702 lines · 28,089 B · description: **none**
+`test` · 748 lines · 29,933 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -27931,11 +27931,11 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 The local control room, pipeline supervision, telemetry and embedded documentation.
 
-61 files.
+62 files.
 
 #### `ecosystem/README.md`
 
-`doc` · 63 lines · 3,904 B · description: **extracted**
+`doc` · 85 lines · 5,451 B · description: **extracted**
 
 **Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
 
@@ -27943,7 +27943,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/__init__.py`
 
-`code-python` · 4 lines · 96 B · description: **extracted**
+`code-python` · 4 lines · 97 B · description: **extracted**
 
 **Purpose.** Resumable installation and paper-research lifecycle orchestration.
 
@@ -27961,7 +27961,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/cli.py`
 
-`code-python` · 217 lines · 8,412 B · description: **extracted**
+`code-python` · 236 lines · 8,927 B · description: **extracted**
 
 **Purpose.** Installable control surface for the paper ecosystem supervisor.
 
@@ -27971,7 +27971,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/control.py`
 
-`code-python` · 925 lines · 36,189 B · description: **extracted**
+`code-python` · 933 lines · 36,627 B · description: **extracted**
 
 **Purpose.** Durable, paper-only controls delegated to the established component owners.
 
@@ -28029,9 +28029,19 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 **Use.** `import ecosystem.performance`
 
+#### `ecosystem/pipeline_service.py`
+
+`code-python` · 151 lines · 4,946 B · description: **extracted**
+
+**Purpose.** Install only the planned paper pipeline's foreground launchd owner.
+
+**Contents.** Defines `label()`, `definition()`, `registered()`, `operate()`, `main()`.
+
+**Use.** `python3 ecosystem/pipeline_service.py --help`
+
 #### `ecosystem/pyproject.toml`
 
-`config` · 23 lines · 728 B · description: **none**
+`config` · 23 lines · 729 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28059,11 +28069,11 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/runner.py`
 
-`code-python` · 663 lines · 25,307 B · description: **extracted**
+`code-python` · 732 lines · 27,709 B · description: **extracted**
 
 **Purpose.** Durable paper-only supervisor over the existing F5 worker and recorder.
 
-**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `running()`, `plan()`, `status()`, `start()`, `stop()` and 3 more. Depends on `backtester`, `soltui`.
+**Contents.** Defines `save()`, `PHASES`, `validate_config()`, `load()`, `lock()`, `_generation_guard()`, `running()`, `plan()`, `status()`, `start()` and 5 more. Depends on `backtester`, `soltui`.
 
 **Use.** `import ecosystem.runner`
 
@@ -28301,7 +28311,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_runner.py`
 
-`test` · 182 lines · 7,379 B · description: **none**
+`test` · 382 lines · 15,991 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28361,7 +28371,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_ui_contract.py`
 
-`test` · 279 lines · 18,708 B · description: **extracted**
+`test` · 424 lines · 31,901 B · description: **extracted**
 
 **Purpose.** Client safety checks; a VM DOM does not replace installed browser acceptance.
 
@@ -28443,7 +28453,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web/app.js`
 
-`code-js` · 1125 lines · 90,307 B · description: **none**
+`code-js` · 1227 lines · 100,726 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28453,7 +28463,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web/index.html`
 
-`code-web` · 90 lines · 31,895 B · description: **none**
+`code-web` · 90 lines · 32,015 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29487,11 +29497,11 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_batch_ui.py`
 
-`test` · 151 lines · 7,829 B · description: **extracted**
+`test` · 163 lines · 8,347 B · description: **extracted**
 
 **Purpose.** F5 UI orchestration uses mocked batches and never launches a real sweep.
 
-**Contents.** Defines `envelope()`, `class BatchUiTests`, `class BatchRegistryTests`. Depends on `soltui`.
+**Contents.** Defines `envelope()`, `settle_batch()`, `class BatchUiTests`, `class BatchRegistryTests`. Depends on `soltui`.
 
 **Use.** `python3 -m pytest soltui/tests/test_batch_ui.py -q`
 
@@ -30307,7 +30317,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_tui.py`
 
-`test` · 1473 lines · 64,899 B · description: **extracted**
+`test` · 1473 lines · 64,964 B · description: **extracted**
 
 **Purpose.** Smoke tests for the Textual app, driven through Textual's own test harness. An app that imports cleanly but explodes on mount is not working, so these actually mount it, click things, and assert on widget state. `run_test()` runs a headless terminal, so no TTY is required and this is safe in CI.
 
@@ -30317,7 +30327,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_tui_presets_pnl.py`
 
-`test` · 211 lines · 10,540 B · description: **extracted**
+`test` · 215 lines · 10,780 B · description: **extracted**
 
 **Purpose.** The Top 5 presets in three tabs, the P&L tab, and the "every percentage names its source" rule across every table in the app. Driven through Textual's headless harness.
 
@@ -31031,11 +31041,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-106 files.
+116 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 19789 lines · 303,544 B · description: **derived**
+`config` · 19930 lines · 307,159 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31179,9 +31189,17 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/ci-ui-readiness-final.json`
+
+`config` · 336 lines · 22,664 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, observed_at, status, files, ci_failed_checkpoint, full_failed_checkpoint...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7471 lines · 281,257 B · description: **derived**
+`config` · 7480 lines · 281,732 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -31224,6 +31242,14 @@ Session handoff notes, newest first. Prose, not machine-read.
 `config` · 752 lines · 37,909 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema, reviewer, observed_at, status, files, findings...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json`
+
+`config` · 3611 lines · 222,395 B · description: **derived**
+
+**Purpose.** Generated JSON object, 33 keys (agent, observed_at, status, component, command, launch...).
 
 **Use.** Configuration; nothing to run.
 
@@ -31451,6 +31477,22 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Read it.
 
+#### `.cdo/reviews-2026-11-12/ledger-post-pipeline-plan.json`
+
+`config` · 31 lines · 650 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (observed_at, status, command, plans).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/ledger-post-pipeline-receipt.md`
+
+`doc` · 30 lines · 2,199 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 17 of 18 (+1 conditional) Mode: incremental Status: FULL_SOURCE_INSPECTION_PIPELINE_UI_BOUNDARIES_GREEN_SOLTUI_SHARDS_AND_DELIVERY_PENDING Files reviewed this run: 18
+
+**Use.** Read it.
+
 #### `.cdo/reviews-2026-11-12/liquidity-independent-final.json`
 
 `config` · 311 lines · 11,121 B · description: **derived**
@@ -31611,6 +31653,54 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 **Use.** Configuration; nothing to run.
 
+#### `.cdo/reviews-2026-11-12/pipeline-boundary-gates.json`
+
+`config` · 189 lines · 8,421 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (schema, observed_at, status, gates, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-cli-combined-final.json`
+
+`config` · 121 lines · 6,885 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, status, cases, guard_sha256, manifest, manifest_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-pr241-incoming-review.json`
+
+`config` · 1255 lines · 98,436 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (schema, observed_at, status, incoming_commit, files, new_application_source_count...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json`
+
+`config` · 3236 lines · 294,765 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (schema, observed_at, status, incoming_commits, application_source_denominator, raw_helper_denominator...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-three-boundaries-independent.json`
+
+`config` · 39 lines · 2,681 B · description: **derived**
+
+**Purpose.** Generated JSON object, 12 keys (agent, definition_version, status, observed_at, scope, source_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-12/pipeline-ui-supplement-delta.json`
+
+`config` · 45 lines · 4,840 B · description: **derived**
+
+**Purpose.** Generated JSON object, 4 keys (schema, observed_at, files, limits).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-12/preserved-owner-bindings.json`
 
 `config` · 71 lines · 3,372 B · description: **derived**
@@ -31629,9 +31719,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/recorded.json`
 
-`config` · 825 lines · 66,822 B · description: **derived**
+`config` · 826 lines · 66,901 B · description: **derived**
 
-**Purpose.** Generated JSON object, 822 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
+**Purpose.** Generated JSON object, 823 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
 
 **Use.** Configuration; nothing to run.
 
@@ -31661,9 +31751,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/repo-scope-final-dispositions.json`
 
-`config` · 864 lines · 55,590 B · description: **derived**
+`config` · 880 lines · 56,580 B · description: **derived**
 
-**Purpose.** Generated JSON object, 16 keys (agent, definition_version, schema_version, observed_at, repository, stage...).
+**Purpose.** Generated JSON object, 17 keys (agent, definition_version, schema_version, observed_at, repository, stage...).
 
 **Use.** Configuration; nothing to run.
 
@@ -31685,7 +31775,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/runtime-supplement-coverage.json`
 
-`config` · 358 lines · 16,933 B · description: **derived**
+`config` · 364 lines · 17,548 B · description: **derived**
 
 **Purpose.** Generated JSON object, 6 keys (status, original_inventory_candidates, complete, raw_helper_coverage_separate, note, files).
 
@@ -32811,7 +32901,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/build_operation_inventories.py`
 
-`code-python` · 324 lines · 17,817 B · description: **extracted**
+`code-python` · 325 lines · 17,934 B · description: **extracted**
 
 **Purpose.** Generate docs-only operation/tool inventories from authoritative source metadata. Run ``python3 scripts/build_operation_inventories.py --check`` in CI. This stdlib-only tool parses source; it never imports an application, executes a handler, starts a service, signs an order or installs a dependency.
 
@@ -32901,11 +32991,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/oraclebot_ops.py`
 
-`code-python` · 617 lines · 23,509 B · description: **extracted**
+`code-python` · 738 lines · 27,685 B · description: **extracted**
 
 **Purpose.** Read-only Oraclebot operations observer; no trading or service repair commands. A separate launchd job samples the existing solbot owner. SQLite preserves incidents and delivery retries. Reports count observed samples, not uptime.
 
-**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `record()`, `class NoRedirect` and 9 more.
+**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `RUNTIME_COMPONENTS`, `runtime_health()` and 12 more.
 
 **Use.** `python3 scripts/oraclebot_ops.py --help`
 
@@ -32999,11 +33089,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_oraclebot_ops.py`
 
-`test` · 785 lines · 29,334 B · description: **extracted**
+`test` · 872 lines · 32,919 B · description: **extracted**
 
 **Purpose.** Synthetic observer transitions, retry delivery and independent outage checks.
 
-**Contents.** Defines `load()`, `health()`, `class OperationsTests`, `class IndependentWatchdogTests`, `class ObserverBoundaryTests`, `class ObserverPositiveControls`, `class _WatchdogBoundaryResponse`, `class IndependentWatchdogBoundaryTests`, `class RemoteOrderTests`.
+**Contents.** Defines `load()`, `health()`, `class OperationsTests`, `class RuntimeCoverageTests`, `class IndependentWatchdogTests`, `class ObserverBoundaryTests`, `class ObserverPositiveControls`, `class _WatchdogBoundaryResponse`, `class IndependentWatchdogBoundaryTests`, `class RemoteOrderTests`.
 
 **Use.** `python3 -m pytest scripts/test_oraclebot_ops.py -q`
 

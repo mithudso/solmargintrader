@@ -2859,15 +2859,27 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/src/botmanager/__init__.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
+    "C1",
+    "C2",
+    "C3",
     "M1",
-    "M4"
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
    ],
    "sha": "65e761defdf7bfe174a015d2a044d2a6f534a453",
-   "verdict": "CLEAN"
+   "verdict": "REVIEWED"
   },
   "botmanager/src/botmanager/__main__.py": {
    "date": "2026-11-12",
@@ -3650,7 +3662,7 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/src/botmanager/service.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -3669,7 +3681,7 @@
     "S5",
     "T1"
    ],
-   "sha": "056ac13d5a309caed3d1437e9a5b9cec0b1ed02e",
+   "sha": "05ad5913b9859ded0bfb3503bf4db6b4bfb64b24",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/src/botmanager/status.py": {
@@ -4847,7 +4859,7 @@
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_supervisor.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -4867,7 +4879,7 @@
     "T1",
     "T4"
    ],
-   "sha": "2dc0ee6cb19305d81a6f6f06d26a26589b9ef656",
+   "sha": "6d7940b23d7dc4c83f5a14371d6a4589230a1b38",
    "verdict": "REVIEWED-FIXED"
   },
   "botmanager/tests/test_walkthrough.py": {
@@ -4987,15 +4999,27 @@
    "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/__init__.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
+    "C1",
+    "C2",
+    "C3",
     "M1",
-    "M4"
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
    ],
-   "sha": "aeb0195fdb6cdc2bcc551d5757702ab96c588e6c",
-   "verdict": "CLEAN"
+   "sha": "e263f60a6f9e0caf1c80b25c9d928cde41fbdd84",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/backtests.py": {
    "date": "2026-11-12",
@@ -5021,7 +5045,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/cli.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5041,11 +5065,11 @@
     "S5",
     "T1"
    ],
-   "sha": "550c3fca4b353b6d40bfce8a45dacae155f88690",
-   "verdict": "CLEAN"
+   "sha": "a8ca6ff00c5435926268251588d84c54532d5e43",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/control.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5064,8 +5088,8 @@
     "S5",
     "T1"
    ],
-   "sha": "dfea0429a74c5622f24738defd6f72dca833ceef",
-   "verdict": "CLEAN"
+   "sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/data.py": {
    "date": "2026-11-12",
@@ -5183,6 +5207,30 @@
    "sha": "42436249a409d9610387286de0415e1016b93442",
    "verdict": "CLEAN"
   },
+  "ecosystem/pipeline_service.py": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "86a02c4d907b52d18ae9b54698e34c29f4cc0f36",
+   "verdict": "REVIEWED-FIXED"
+  },
   "ecosystem/recovery.py": {
    "date": "2026-11-12",
    "findings": 0,
@@ -5230,7 +5278,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/runner.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5249,8 +5297,8 @@
     "S5",
     "T1"
    ],
-   "sha": "dc20c7d6d196f850aa780a148119bb4f2aac433c",
-   "verdict": "CLEAN"
+   "sha": "83697b2f2186c21fdbd1bada2a5918a66980ef0c",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/swap_web.py": {
    "date": "2026-11-12",
@@ -5634,7 +5682,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/tests/test_runner.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5654,8 +5702,8 @@
     "T1",
     "T4"
    ],
-   "sha": "715852f3133fa8395b6069c008949d4fb07d3cdb",
-   "verdict": "CLEAN"
+   "sha": "4ba1f14d53edbdec639d0d49f65ba1f0e6301df1",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/tests/test_setup.py": {
    "date": "2026-11-12",
@@ -5778,7 +5826,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/tests/test_ui_contract.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5798,8 +5846,8 @@
     "T1",
     "T4"
    ],
-   "sha": "10f956e72fb91e773e8d18d1e0854beb749fc85d",
-   "verdict": "CLEAN"
+   "sha": "5c4a33044626a09c7f9d7a676072496c1131a403",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/tests/test_ui_service.py": {
    "date": "2026-11-12",
@@ -6064,7 +6112,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/web/app.js": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -6083,8 +6131,8 @@
     "S5",
     "T1"
    ],
-   "sha": "53fdf415c19191ebd7c47a00a1fb3326323ea824",
-   "verdict": "CLEAN"
+   "sha": "177e01d57ee183358e9b1bd5900d71cd88c1fe02",
+   "verdict": "REVIEWED-FIXED"
   },
   "ecosystem/web/oracle-chart.js": {
    "date": "2026-11-12",
@@ -13920,7 +13968,7 @@
    "verdict": "REVIEWED"
   },
   "scripts/build_operation_inventories.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -13939,7 +13987,7 @@
     "S5",
     "T1"
    ],
-   "sha": "d03c75675cb553e57aada546232c771824debc5c",
+   "sha": "c17e61f6d6a4912460b6dcf50c5276875a24133a",
    "verdict": "REVIEWED-FIXED"
   },
   "scripts/build_tradingview_script_profiles.py": {
@@ -14131,7 +14179,7 @@
    "verdict": "REVIEWED"
   },
   "scripts/oraclebot_ops.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -14149,14 +14197,13 @@
     "S3",
     "S4",
     "S5",
-    "T1",
-    "T4"
+    "T1"
    ],
-   "sha": "4d14cd155a33ccac5d7125e1504241c6872ac91f",
+   "sha": "b4ea7f6227e117cb242444abbe2f2185ff0166e4",
    "verdict": "REVIEWED-FIXED"
   },
   "scripts/oraclebot_watchdog.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -14178,7 +14225,7 @@
     "T4"
    ],
    "sha": "6c63d0bcf28fe2bc4747d06aef1c1cce1c125e12",
-   "verdict": "REVIEWED-FIXED"
+   "verdict": "REVIEWED"
   },
   "scripts/referral_scripts/claim-all-fees.ts": {
    "date": "2026-11-12",
@@ -14403,7 +14450,7 @@
    "verdict": "REVIEWED"
   },
   "scripts/test_oraclebot_ops.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -14423,7 +14470,7 @@
     "T1",
     "T4"
    ],
-   "sha": "4a9a5a34ec979d949060253c4ebb2a118b0a77bf",
+   "sha": "88067daa55e788cbbacab5a9a44ed17a757b7b57",
    "verdict": "REVIEWED-FIXED"
   },
   "scripts/test_research_backfill.py": {
@@ -16419,7 +16466,7 @@
    "verdict": "CLEAN"
   },
   "soltui/tests/test_batch_ui.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -16439,7 +16486,7 @@
     "T1",
     "T4"
    ],
-   "sha": "59bea3b4da876967e0124344c29a1b8bf6dfa055",
+   "sha": "4b23910606ce5ae85a73034945b9cdefa4a99ba7",
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_bg_fresh_results.py": {
@@ -18387,7 +18434,7 @@
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_tui.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -18407,11 +18454,11 @@
     "T1",
     "T4"
    ],
-   "sha": "8e032825ed7e829f57675e25d6e3d43722628a1d",
-   "verdict": "REVIEWED"
+   "sha": "704c6cfd54c1a34a41f9a454c81996c4bf8aa0b2",
+   "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_tui_presets_pnl.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -18431,7 +18478,7 @@
     "T1",
     "T4"
    ],
-   "sha": "1e68ff90cc1abbd80e57df7d0fc901b972c0b31f",
+   "sha": "283c8b2ae2b8e9dd171f2d233e76a2f68f040958",
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_utxo_scan.py": {
@@ -19782,6 +19829,100 @@
    "skipped_unchanged": 0,
    "started": "2026-11-12T22:56:31Z",
    "status": "FULL_SOURCE_INSPECTION_INCOMING_OPERATIONS_GREEN_SOLTUI_AND_DELIVERY_PENDING"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-13T01:30:30Z",
+   "id": "2026-11-13T01:29:08Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 18,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 18,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 18,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 18,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 18,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Full incoming pipeline/runtime/UI deltas reviewed and source-bound static tool inventory extended; Medium centralized settings and shared runtime error/remediation/sink architecture remain PARTIAL. No generic retry on ambiguous financial writes.",
+     "state": "ran"
+    },
+    "M4": {
+     "files": 18,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 5,
+     "reason": "Current source-pinned pipeline and observer CLIs each pass actual fresh-interpreter --help0/unknownflag2 under ownerFS/network/process/database refusal after final0.4.10/1.1.1 version merge. Actual native/installed service actions not run. Existing41source M5qualification limits remain explicitly PARTIAL.",
+     "state": "ran"
+    },
+    "P1": {
+     "files": 18,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 18,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 18,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 18,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 18,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 18,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 18,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Incoming code uses stdlib and existing dependencies. Highest coherent candidate ecosystem0.4.10/newer audit pins retained; installed pipeline0.4.8/UI0.4.9/observer1.1.0 identities distinct. Existing scoped advisory/license limits remain; no new dependency installation or native whole-graph qualification.",
+     "state": "ran"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Bounded current runtime/test Ruff0.17.4 check/format and compile passed; complete guarded255Ecosystem,50boundary,5manager,11inventory,7UIreadiness and fresh4CLI gates0. Historical CI/full failures preserved; final pushed CI/fullshards remain separate pending gates.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 7,
+     "reason": "Universal thread-parallel/setup-hoisting equivalence remains BLOCKED (ambiguous intent/equivalence). Existing process-separated shards remain; all original assertions retained. Three readiness fixtures await actual workers/synchronous output under bounded10s deadlines; no economic/timing assertion weakened.",
+     "state": "blocked"
+    }
+   },
+   "reviewed": 18,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-13T01:29:08Z",
+   "status": "FULL_SOURCE_INSPECTION_PIPELINE_UI_BOUNDARIES_GREEN_SOLTUI_SHARDS_AND_DELIVERY_PENDING"
   }
  ],
  "version": 1

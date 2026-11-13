@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 233
+Version: 234
+Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
 Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
@@ -2093,3 +2094,16 @@ The following original-owner continuation/request is preserved verbatim. Its ver
 ```
 
 The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.
+
+
+## Imported UI workflow from merged349d660f
+
+This exact source-stage history is preserved from concurrent dashboard delivery. Its pending-install statements describe the earlier source stage; the following current continuation supersedes status where noted.
+
+## 2026-11-12 — Unavailable dashboard values
+
+```text
+Everything is still showing as unavailable: [Image #1]
+```
+
+Screenshot supplied in conversation: `/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/C857DC45-1D2C-4900-8910-93132590C618-742-0000022FDE03BBDA/pasted-image-20261112-193001-CA3C900E-3B33-45FA-A0C5-654CCB9D80E3.png`. It shows one SOL RSI registration, no selected bot, unavailable Oracle votes, manager paper capital and manager paper P&L.

@@ -1,9 +1,12 @@
 # Oraclebot persistent operations
 
-Version: 1.1.0
+Version: 1.1.1
+Delta: Evaluate monitored runtime freshness after the bounded probe returns.
 Delta: Preserve audited bounded input/output and prerequisite fixes in the separately installed full-runtime observer.
 Delta: Supervise the actual paper pipeline, F5 worker and Oracle; preserve the failed historical cohort and require full runtime health.
 Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports.
+
+The repository observer source is `1.1.1`. The independently installed observer remains its accepted `1.1.0` immutable snapshot. Source checks do not establish a monitor upgrade; this audit does not restart that observer.
 
 The existing Solbot suite owns the manager and independent local control room.
 Its LaunchAgent has `RunAtLoad` and `KeepAlive`; it starts at user login and

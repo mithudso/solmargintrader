@@ -3,15 +3,15 @@
     "version": 1,
     "status": "source_inspection_complete_integration_pending",
     "baseline_files": 773,
-    "current_files": 827,
-    "semantically_complete": 822,
+    "current_files": 828,
+    "semantically_complete": 823,
     "pending": 0,
     "changed_after_review": 0,
     "note": "Full current application-source semantic inspection complete; M3/M5/T4 convergence and final integration/delivery remain explicitly partial. Five bound HTML captures are data classifications, not semantic code reviews.",
-    "raw_helper_files": 827,
+    "raw_helper_files": 828,
     "bound_data_exclusions": 5,
-    "application_helper_files": 822,
-    "application_semantically_complete": 822,
+    "application_helper_files": 823,
+    "application_semantically_complete": 823,
     "application_still_unreviewed_or_changed": 0,
     "supplement_inventory_file": "runtime-source-supplement.json",
     "supplement_note": "Static HTML/CSS and extensionless scripts are tracked separately; no credit from their census.",
@@ -1157,7 +1157,7 @@
       "blob_sha": "65e761defdf7bfe174a015d2a044d2a6f534a453",
       "lines": 5,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/source-version-deltas.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1469,10 +1469,10 @@
     },
     {
       "path": "botmanager/src/botmanager/service.py",
-      "blob_sha": "056ac13d5a309caed3d1437e9a5b9cec0b1ed02e",
-      "lines": 220,
+      "blob_sha": "05ad5913b9859ded0bfb3503bf4db6b4bfb64b24",
+      "lines": 236,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1928,10 +1928,10 @@
     },
     {
       "path": "botmanager/tests/test_supervisor.py",
-      "blob_sha": "2dc0ee6cb19305d81a6f6f06d26a26589b9ef656",
-      "lines": 701,
+      "blob_sha": "6d7940b23d7dc4c83f5a14371d6a4589230a1b38",
+      "lines": 747,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/botmanager-root.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -1982,10 +1982,10 @@
     },
     {
       "path": "ecosystem/__init__.py",
-      "blob_sha": "aeb0195fdb6cdc2bcc551d5757702ab96c588e6c",
+      "blob_sha": "e263f60a6f9e0caf1c80b25c9d928cde41fbdd84",
       "lines": 3,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/source-version-deltas.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2000,19 +2000,19 @@
     },
     {
       "path": "ecosystem/cli.py",
-      "blob_sha": "550c3fca4b353b6d40bfce8a45dacae155f88690",
-      "lines": 216,
+      "blob_sha": "a8ca6ff00c5435926268251588d84c54532d5e43",
+      "lines": 235,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
     {
       "path": "ecosystem/control.py",
-      "blob_sha": "dfea0429a74c5622f24738defd6f72dca833ceef",
-      "lines": 924,
+      "blob_sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
+      "lines": 932,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2062,6 +2062,15 @@
       "unbound_js_syntax_check_observed": false
     },
     {
+      "path": "ecosystem/pipeline_service.py",
+      "blob_sha": "86a02c4d907b52d18ae9b54698e34c29f4cc0f36",
+      "lines": 150,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
       "path": "ecosystem/recovery.py",
       "blob_sha": "522252ce1f48725718ff926da130fefe5e0eb9f4",
       "lines": 234,
@@ -2081,10 +2090,10 @@
     },
     {
       "path": "ecosystem/runner.py",
-      "blob_sha": "dc20c7d6d196f850aa780a148119bb4f2aac433c",
-      "lines": 662,
+      "blob_sha": "83697b2f2186c21fdbd1bada2a5918a66980ef0c",
+      "lines": 731,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2234,10 +2243,10 @@
     },
     {
       "path": "ecosystem/tests/test_runner.py",
-      "blob_sha": "715852f3133fa8395b6069c008949d4fb07d3cdb",
-      "lines": 181,
+      "blob_sha": "4ba1f14d53edbdec639d0d49f65ba1f0e6301df1",
+      "lines": 381,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2288,10 +2297,10 @@
     },
     {
       "path": "ecosystem/tests/test_ui_contract.py",
-      "blob_sha": "10f956e72fb91e773e8d18d1e0854beb749fc85d",
-      "lines": 278,
+      "blob_sha": "5c4a33044626a09c7f9d7a676072496c1131a403",
+      "lines": 423,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -2396,10 +2405,10 @@
     },
     {
       "path": "ecosystem/web/app.js",
-      "blob_sha": "53fdf415c19191ebd7c47a00a1fb3326323ea824",
-      "lines": 1124,
+      "blob_sha": "177e01d57ee183358e9b1bd5900d71cd88c1fe02",
+      "lines": 1226,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": true
     },
@@ -5429,10 +5438,10 @@
     },
     {
       "path": "scripts/build_operation_inventories.py",
-      "blob_sha": "d03c75675cb553e57aada546232c771824debc5c",
-      "lines": 323,
+      "blob_sha": "c17e61f6d6a4912460b6dcf50c5276875a24133a",
+      "lines": 324,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -5510,10 +5519,10 @@
     },
     {
       "path": "scripts/oraclebot_ops.py",
-      "blob_sha": "4d14cd155a33ccac5d7125e1504241c6872ac91f",
-      "lines": 616,
+      "blob_sha": "b4ea7f6227e117cb242444abbe2f2185ff0166e4",
+      "lines": 737,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -5522,7 +5531,7 @@
       "blob_sha": "6c63d0bcf28fe2bc4747d06aef1c1cce1c125e12",
       "lines": 179,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -5641,10 +5650,10 @@
     },
     {
       "path": "scripts/test_oraclebot_ops.py",
-      "blob_sha": "4a9a5a34ec979d949060253c4ebb2a118b0a77bf",
-      "lines": 784,
+      "blob_sha": "88067daa55e788cbbacab5a9a44ed17a757b7b57",
+      "lines": 871,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/operations-incoming-current.json",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -6424,10 +6433,10 @@
     },
     {
       "path": "soltui/tests/test_batch_ui.py",
-      "blob_sha": "59bea3b4da876967e0124344c29a1b8bf6dfa055",
-      "lines": 150,
+      "blob_sha": "4b23910606ce5ae85a73034945b9cdefa4a99ba7",
+      "lines": 162,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-root-ui-tests.json",
+      "evidence": ".cdo/reviews-2026-11-12/ci-ui-readiness-final.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
@@ -7162,19 +7171,19 @@
     },
     {
       "path": "soltui/tests/test_tui.py",
-      "blob_sha": "8e032825ed7e829f57675e25d6e3d43722628a1d",
+      "blob_sha": "704c6cfd54c1a34a41f9a454c81996c4bf8aa0b2",
       "lines": 1472,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+      "evidence": ".cdo/reviews-2026-11-12/ci-ui-readiness-final.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },
     {
       "path": "soltui/tests/test_tui_presets_pnl.py",
-      "blob_sha": "1e68ff90cc1abbd80e57df7d0fc901b972c0b31f",
-      "lines": 210,
+      "blob_sha": "283c8b2ae2b8e9dd171f2d233e76a2f68f040958",
+      "lines": 214,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-independent.json",
+      "evidence": ".cdo/reviews-2026-11-12/ci-ui-readiness-final.json",
       "baseline_python_ast_covered": true,
       "unbound_js_syntax_check_observed": false
     },

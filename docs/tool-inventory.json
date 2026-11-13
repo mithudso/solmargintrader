@@ -36,11 +36,15 @@
     },
     {
       "path": "ecosystem/cli.py",
-      "sha256": "c6c58c16988b0a07accb8a8cf447f09e8f19ff86f84f208e416638e628932001"
+      "sha256": "c3ba6af0b972ab64698f85a823f5c6b7041b33dd6163276c89f419e83947b867"
+    },
+    {
+      "path": "ecosystem/pipeline_service.py",
+      "sha256": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da"
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2"
+      "sha256": "b96fdca25bb65ad3d8accf432c6d4e0d35b6034eb92c32e9de3889e35919c11b"
     },
     {
       "path": "ecosystem/web.py",
@@ -96,11 +100,11 @@
     },
     {
       "path": "scripts/build_operation_inventories.py",
-      "sha256": "e2cd07e0916c323efc794bd158bdec204304c91b572bf64ef19fa2b29ba3ee78"
+      "sha256": "8556ba35492dcdaf5e9ca49c422782af46a0639a41a00401b9e183420e2d9cd6"
     },
     {
       "path": "scripts/oraclebot_ops.py",
-      "sha256": "384b98a0917453ce6d1325c8c52008c54a0f2d8548ddff549388f549349fa984"
+      "sha256": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6"
     },
     {
       "path": "scripts/oraclebot_watchdog.py",
@@ -388,6 +392,19 @@
       "source": "design/soltui-v2/mockup.py",
       "symbol": "main or documented script entry",
       "help_command": "python3 design/soltui-v2/mockup.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:ecosystem-pipeline-service",
+      "kind": "explicit-source-tool",
+      "source": "ecosystem/pipeline_service.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 -m ecosystem.pipeline_service --help",
       "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
       "signing": "not inferred; this inventory never invokes the tool",
       "ambiguity": "no financial retry inferred",

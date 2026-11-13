@@ -1,0 +1,120 @@
+{
+  "observed_at": "2026-11-13T01:24:29.814239+00:00",
+  "status": "FOUR_FRESH_COMBINED_0_4_10_PIPELINE_1_1_1_OBSERVER_PARSE_GATES_GREEN",
+  "cases": [
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "-m",
+        "ecosystem.pipeline_service",
+        "--help"
+      ],
+      "exit": 0,
+      "expected": 0,
+      "state": "/tmp/oraclebot-combined-cli-67it0r6r",
+      "guard": {
+        "pid": 48853,
+        "script": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pipeline_service.py",
+        "argv": [
+          "-m",
+          "ecosystem.pipeline_service",
+          "--help"
+        ],
+        "source_sha256": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da",
+        "source_stable": true,
+        "negative_controls": 5,
+        "forbidden_events": [],
+        "subprocesses_admitted": 0
+      },
+      "stdout": "usage: pipeline_service.py [-h] --home HOME {install,status,uninstall}\n\nInstall only the planned paper pipeline's foreground launchd owner.\n\npositional arguments:\n  {install,status,uninstall}\n\noptions:\n  -h, --help            show this help message and exit\n  --home HOME\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "-m",
+        "ecosystem.pipeline_service",
+        "--oraclebot-audit-unknown"
+      ],
+      "exit": 2,
+      "expected": 2,
+      "state": "/tmp/oraclebot-combined-cli-l46lrf6s",
+      "guard": {
+        "pid": 48854,
+        "script": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pipeline_service.py",
+        "argv": [
+          "-m",
+          "ecosystem.pipeline_service",
+          "--oraclebot-audit-unknown"
+        ],
+        "source_sha256": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da",
+        "source_stable": true,
+        "negative_controls": 5,
+        "forbidden_events": [],
+        "subprocesses_admitted": 0
+      },
+      "stdout": "",
+      "stderr": "usage: pipeline_service.py [-h] --home HOME {install,status,uninstall}\npipeline_service.py: error: the following arguments are required: action, --home\n"
+    },
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+        "--help"
+      ],
+      "exit": 0,
+      "expected": 0,
+      "state": "/tmp/oraclebot-combined-cli-qtomxdby",
+      "guard": {
+        "pid": 48855,
+        "script": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+        "argv": [
+          "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+          "--help"
+        ],
+        "source_sha256": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6",
+        "source_stable": true,
+        "negative_controls": 5,
+        "forbidden_events": [],
+        "subprocesses_admitted": 0
+      },
+      "stdout": "usage: oraclebot_ops.py [-h] --home HOME [--solbot SOLBOT]\n                        [--alertlane-env ALERTLANE_ENV]\n                        [--alertlane-url ALERTLANE_URL] [--gh GH]\n                        [--github-repository GITHUB_REPOSITORY]\n                        [--pipeline-python PIPELINE_PYTHON]\n                        [--pipeline-home PIPELINE_HOME]\n                        {run,once,status,install}\n\nRead-only Oraclebot operations observer; no trading or service repair\ncommands. A separate launchd job samples the existing solbot owner. SQLite\npreserves incidents and delivery retries. Reports count observed samples, not\nuptime.\n\npositional arguments:\n  {run,once,status,install}\n\noptions:\n  -h, --help            show this help message and exit\n  --home HOME\n  --solbot SOLBOT\n  --alertlane-env ALERTLANE_ENV\n  --alertlane-url ALERTLANE_URL\n  --gh GH\n  --github-repository GITHUB_REPOSITORY\n  --pipeline-python PIPELINE_PYTHON\n  --pipeline-home PIPELINE_HOME\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+        "--oraclebot-audit-unknown"
+      ],
+      "exit": 2,
+      "expected": 2,
+      "state": "/tmp/oraclebot-combined-cli-b209peiu",
+      "guard": {
+        "pid": 48865,
+        "script": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+        "argv": [
+          "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+          "--oraclebot-audit-unknown"
+        ],
+        "source_sha256": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6",
+        "source_stable": true,
+        "negative_controls": 5,
+        "forbidden_events": [],
+        "subprocesses_admitted": 0
+      },
+      "stdout": "",
+      "stderr": "usage: oraclebot_ops.py [-h] --home HOME [--solbot SOLBOT]\n                        [--alertlane-env ALERTLANE_ENV]\n                        [--alertlane-url ALERTLANE_URL] [--gh GH]\n                        [--github-repository GITHUB_REPOSITORY]\n                        [--pipeline-python PIPELINE_PYTHON]\n                        [--pipeline-home PIPELINE_HOME]\n                        {run,once,status,install}\noraclebot_ops.py: error: the following arguments are required: action, --home\n"
+    }
+  ],
+  "guard_sha256": "da7d236fd3845ec76d6b9c0842be984f408ce1864505a2faa135316050168de2",
+  "manifest": {
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pipeline_service.py": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/runner.py": "a5e51323e122d21fafac985a494bd897122e65157b8bc16d56f6557a38f53a17",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py": "b7a4ae76cbaeb2ac073d99258bec51ab029911b8abba6c061ec15c2ce9fedf57",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pyproject.toml": "b96fdca25bb65ad3d8accf432c6d4e0d35b6034eb92c32e9de3889e35919c11b",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6"
+  },
+  "manifest_sha256": "5268eae7e684b0213d1c5bba149c84840ed29f4ef6a94a80af3717f94473e1b1",
+  "scope": "Fresh interpreters parse only --help/one unknown flag with inherited owner filesystem/all network/listeners/process/signal/database refusal. Every original5negativecontrol passes. No install/status/tick/watchdog/monitor operation, optional Mongo/provider/native service acceptance or live runtime claim."
+}

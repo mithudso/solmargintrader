@@ -1,169 +1,176 @@
 # Oraclebot launch readiness
 
-Version: 0.1.1
-Delta: clarify that public trial activation depends on delivering the promised hosted service.
-Verified: 2026-11-12. This document is a deployment snapshot, not a promise of live trading availability.
+Version: 0.1.2
+Delta: Record the three chosen plans, verified test portal, local dashboard repair and wallet-bound preauthorization requirement.
+Verified: 2026-11-13. This is a deployment snapshot and implementation plan.
 
 ## Why the free trial did not start
 
-The production health endpoint currently reports website version `0.1.0`,
-`storage: true`, `billing: false`, `engine: false` and `liveExecution: false`.
-These capability flags describe configured bindings. They do not establish a
-successful database operation, engine job or Stripe subscription lifecycle.
-The Stripe connection in the assistant is working. That connection does not
-install Stripe credentials or a recurring subscription Price in the deployed
-Cloudflare Worker.
+The latest public health read still reports website `0.1.0`, storage configured,
+and billing, analysis engine and live execution unavailable. A connected Stripe
+assistant does not provision credentials in the deployed Worker. Binding flags
+also do not prove a database operation, engine job or subscription lifecycle.
 
-The server requires `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID` and
-`STRIPE_WEBHOOK_SECRET` before it creates Checkout sessions. An eligible first
-subscription receives `subscription_data[trial_period_days]=7`. The present
-failure occurs before that trial can be created.
+The owner has now chosen all three USD monthly plans. Do not ask for pricing
+again:
 
-The pending website `0.1.1` change disables the trial call to action when billing
-is unavailable and explains the unavailable state. Source tests passing do not
-mean that this version has been deployed or that a real trial has succeeded.
+| Plan | Monthly renewal | Bot limit | Backtests per UTC day |
+| --- | ---: | ---: | ---: |
+| Starter | $9.99 | 3 | 10 |
+| Advanced | $29.99 | 10 active slots | Unlimited |
+| Unlimited | $49.99 | Unlimited | Unlimited |
 
-## What exists and what still needs implementation
+The first eligible subscription receives seven free days. Configured paper
+records reserve slots; paused and archived records release them. The pending
+website `0.2.0` implementation enforces these policies atomically, keeps one
+backtest in flight per account, and keeps Checkout explicitly disabled until the
+promised hosted service qualifies. Unlimited counts do not remove resource or
+risk limits. Creating a paper definition does not start an execution worker.
 
-| Capability | Current state | Required for the requested service |
+Dedicated local credentials can read the owner's exact three existing Prices
+and portal, all in **test mode**. The supplied account number differs from the
+key's account response; Connect scoping was refused. Access to those exact test
+objects is verified, but live merchant ownership is not inferred from it. Test
+account readiness flags do not establish live activation or KYC status.
+
+The exact test portal now allows the three plans, preserves the remaining trial,
+disables quantity changes, invoices prorated upgrades and schedules lower-price
+downgrades at period end. Cancellation and payment updates were preserved. No
+customer, subscription, invoice or charge was created by this configuration.
+Its test identifiers and credentials are not production billing configuration.
+
+## Current capability boundaries
+
+| Capability | Implemented | Still required |
 | --- | --- | --- |
-| Public website and responsive workspace | Deployed initial release | Deploy and verify the audited release |
-| Accounts and authentication | Solana wallet challenge, signature verification, server session and tenant account storage implemented | Verify a real deployed wallet round trip; decide any later email recovery feature separately |
-| Persistent account data | Cloudflare D1 stores users, sessions, paper definitions and billing records | Exercise tenant isolation and account lifecycle in the deployed environment |
-| Seven-day subscription trial | Checkout, signed webhook entitlement and customer portal code implemented; production billing unavailable | Choose merchant and renewal price, provision secrets, configure webhook and portal, then verify test-mode lifecycle before live activation |
-| Backtests | Read-only Python adapter exists | Host the Python runtime, public-market cache and bounded job queue; complete the remaining local-runner parity matrix |
-| Per-coin Oracle | Evidence-aware UI and adapter exist | Host fresh public-market inputs and the read-only Oracle archive; maintain eligible strategy ranking and freshness |
-| Coinbase bot creation | Tenant-owned inactive paper definitions exist | Implement customer venue authorization, isolated execution workers, risk checks, reconciliation and actual acceptance |
-| Jupiter leveraged positions | Configuration surface exists; no hosted customer execution | Implement the current supported perpetual-position integration and customer-specific authorization/signing lifecycle |
-| Research blog | Deterministic public research archive exists | Expand individual articles editorially; preserve their original evidence and limitations |
+| Website and research journal | Initial Cloudflare Worker, responsive workspace and deterministic public research archive | Deliver the audited and tier releases; expand articles editorially with their evidence |
+| Accounts | Solana wallet challenge, signature verification, hashed server session and tenant D1 records | Verify the final deployed wallet, isolation and cleanup round trip |
+| Membership | Seven-day trial, three plan policies, atomic usage limits, canonical signed webhook handling and configured portal | Matching live merchant credentials/objects, webhook delivery and complete billing lifecycle acceptance |
+| Backtests | Read-only CPython adapter, canonical exposure strategies and cached bars with costs/provenance | Hosted runtime, maintained public data, durable jobs/resource limits and remaining local runner parity |
+| Hosted Oracle | Read-only per-coin archive adapter, eligibility ranking and freshness refusal | Dedicated feed/Oracle writers, durable archives, restart ownership and actual fresh hosted acceptance |
+| Coinbase bots | Tenant-owned inert paper definitions | Customer-specific venue connection, execution, risk enforcement, reconciliation and recovery |
+| Jupiter leveraged positions | Configuration surface | Supported perpetual-position integration, the customer's actual delegated signing authority and verified economics |
+| Agent MCP | Wallet-bound OAuth and bounded preauthorization are commissioned separately | Protocol/authentication implementation, tenant isolation, revocation and the same verified customer execution path |
 
-The adapter currently exposes a bounded strategy subset. It is not the complete
-local grid, DCA, pair and event runner surface. Full parity needs an explicit
-operation/strategy inventory, identical input and cost conventions, and shared
-known-answer checks. Infrastructure credentials alone cannot finish this work.
+Local control-room release `0.4.9` is separately delivered and installed. It now
+selects the sole research bot, shows its actual independent trial capital and
+pending settlement, and explains Oracle eligibility. The active local pipeline
+remains on its original `0.4.8` bundle and cohort. This local repair does not
+connect the public hosted engine.
 
-## Cloudflare can host the service
+The current adapter takes strategy defaults and the latest bounded contiguous
+cached bars. It is not the complete local grid, DCA, pair, event or experiment
+configuration surface. Full parity needs an operation/strategy inventory,
+identical input/cost conventions and shared known-answer checks. Those are code
+requirements, not requests for the owner to provide code or run setup commands.
 
-Use the existing Worker for static assets, HTTP API, wallet authentication,
-Stripe calls and account storage. Workers can make HTTPS requests to Coinbase,
-Jupiter and Stripe, subject to each provider's own authentication and limits.
-Use D1 for application records and durable job coordination for queued analysis
-and execution work.
+## Cloudflare hosting
 
-The canonical engines use CPython with NumPy and pandas. Run them in Cloudflare
-Containers or another container service, with an authenticated internal API,
-bounded resources and public-market data storage. An ordinary Worker request
-does not provide a persistent Python trading process. Workers' request CPU and
-post-response lifetime limits must not become the scheduler for a trading bot.
+The existing Worker can host the website, HTTP API, authentication, Stripe calls
+and D1 account records. Workers can make HTTPS calls to Coinbase, Jupiter and
+Stripe using the appropriate customer or service authority.
 
-Containers also require an explicit lifecycle. Persist job ownership and progress
-outside process memory, renew required activity, detect restarts, reconcile with
-the venue before planning, and refuse ambiguous submissions. A container being
-available does not prove that an uninterrupted execution service exists.
+The canonical engines use CPython, NumPy and pandas. Cloudflare Containers can
+host that runtime and require Workers Paid. An ordinary Worker request does not
+provide a persistent Python trading process. Containers need explicit lifecycle
+and activity handling, and their disks are ephemeral. Persist jobs, ownership
+and archives outside process memory/container disk, with durable storage such
+as D1/R2 and a tested snapshot/restore design. A warm container is not proof of
+an uninterrupted bot or a recovered SQLite archive.
 
-The recommended deployment boundary is:
+The current Wrangler configuration has assets, D1, routes and cleanup cron. It
+does not yet configure Containers, Durable Objects, Queues or R2 for this engine.
+The repository Docker image starts the read-only adapter; it does not start a
+feed, recorder, Oracle writer or historical acquisition service.
 
-1. The browser authenticates with a wallet and calls the Worker.
-2. The Worker checks the account, subscription, tenant ownership and operation.
-3. A bounded job service runs canonical analysis against versioned public data.
-4. A separate customer execution worker uses only that customer's explicit venue
-   authority and risk policy. Analysis does not acquire trading authority.
-5. Durable receipts drive account status, reconciliation and audit history.
+Keep analysis and execution separate. The Worker checks tenant and entitlement;
+bounded jobs use versioned public data; customer execution uses only that
+customer's authority and risk policy. Persist receipts and reconcile with the
+venue before planning. Never automatically retry an ambiguous order submission.
+The owner's local control room, keys and paper cohorts stay outside this hosted
+customer boundary.
 
-Keep the owner's local control room, wallet keys and existing paper cohorts
-outside this hosted tenant boundary. A wallet login signature authorizes a
-session; it does not authorize spending or orders. A Jupiter Swap quote does not
-establish a leveraged perpetual position.
+## Inputs needed from the owner
 
-## The decisions needed from the owner
+Pricing and the intended test portal are resolved. The remaining Stripe input
+is a dedicated **live secret key for the intended merchant**, once that account
+is activated. Keep it in private local configuration; do not paste it into chat.
+The agent can create matching live Products, Prices, portal configuration and
+webhook, then provision Worker secrets and verify them. The owner need not
+manually recreate the three plans or supply a webhook secret in advance.
 
-**Choose the Stripe merchant account and the renewal amount and interval.** No
-Oraclebot merchant or recurring Price has been selected. The connected-account
-inventory remains private. Do not infer the correct merchant from another
-site's name or copy its existing Price.
+A card collected at signup, seven free days for an eligible first subscription,
+then the disclosed renewal and self-service cancellation remain the billing
+contract. The hosted features must work before starting a customer's trial.
 
-The working billing default is a card collected at signup, seven free days for
-an eligible first subscription, then the disclosed recurring charge, with
-self-service cancellation. The code already asks for a payment method by
-Stripe's default subscription behavior. No amount has been selected. Cardless
-trials would require an explicit missing-payment-method policy and additional
-lifecycle tests.
+The owner explicitly corrected an accidental per-trade approval selection:
+**use preauthorized agent sessions**. Initial consent binds the actual wallet,
+agent, allowed venues/assets, finite per-trade and cumulative limits, expiry and
+revocation. No prompt is required for every trade inside that authorization.
+Login-only signatures and MCP OAuth tokens do not themselves supply blockchain
+signing authority. The customer's connected venue or wallet must support the
+actual delegation, and the execution service must enforce the same limits.
+Never substitute the operator's wallet or permit a model-supplied wallet override.
 
-After the merchant and price are fixed, credentials must be provisioned through
-private platform configuration. Do not paste API keys or webhook secrets into
-chat. The assistant's Stripe connector and the deployed Worker's secret store
-are separate authorization surfaces. Complete any platform login only when an
-actual deployment step requires it.
+The remaining engine, parity, customer connections, signing, MCP and lifecycle
+work belongs to implementation. Request an owner-only platform login or service
+permission only when a concrete provisioning step actually requires it.
 
-The remaining hosted engine, strategy parity, customer execution and lifecycle
-work belongs to implementation. These are not requests for the owner to supply
-code or run ordinary setup commands.
-
-## Exact hosted bindings
+## Target hosted billing bindings for website 0.2.0
 
 | Binding | Meaning |
 | --- | --- |
-| `DB` | Existing account D1 binding |
-| `ASSETS` | Public site assets |
-| `APP_ORIGIN` | `https://oraclebot.io`, the wallet challenge origin |
-| `APP_VERSION` / `RELEASE` | Deployed source release identifiers |
-| `STRIPE_PRICE_ID` | Chosen recurring Price in the chosen Stripe account |
-| `PRICE_LABEL` | The same disclosed renewal amount and interval |
-| `STRIPE_SECRET_KEY` | Private server credential for that Stripe account |
+| `DB`, `ASSETS` | Existing D1 account database and public assets |
+| `APP_ORIGIN` | Canonical HTTPS wallet challenge origin |
+| `APP_VERSION`, `RELEASE` | Deployed source identity |
+| `BILLING_LAUNCH_ENABLED` | Exact `true` opens new Checkout; default is `false` |
+| `STRIPE_STARTER_PRICE_ID` | Allowlisted Starter recurring Price |
+| `STRIPE_ADVANCED_PRICE_ID` | Allowlisted Advanced recurring Price |
+| `STRIPE_UNLIMITED_PRICE_ID` | Allowlisted Unlimited recurring Price |
+| `STRIPE_PORTAL_CONFIGURATION_ID` | Explicit matching customer portal |
+| `STRIPE_SECRET_KEY` | Private credential for the same Stripe account/mode |
 | `STRIPE_WEBHOOK_SECRET` | Secret for this site's exact webhook endpoint |
-| `ENGINE_URL` | Provisioned authenticated analysis service |
-| `ENGINE_TOKEN` | Private Worker-to-engine credential |
+| `ENGINE_URL`, `ENGINE_TOKEN` | Authenticated hosted analysis service |
 
 Configure Checkout and subscription lifecycle events at:
 
 https://oraclebot.io/api/billing/webhook
 
-The webhook verifies the raw-body signature and fetches the canonical
-subscription before granting access. A success redirect never grants entitlement.
-The customer portal needs cancellation and payment-method management enabled.
+The webhook verifies the raw-body signature, reconciles canonical Stripe state,
+serializes nonterminal plan updates and preserves terminal cancellation. A
+success redirect does not grant access. Existing customers retain portal access
+while new Checkout is disabled.
 
-## Oracle behavior required for launch
+## Acceptance before paid activation
 
-For the selected coin and horizon, put the highest-ranked eligible strategy at
-the top. Show its current direction, evidence date, forecast expiry, cost-aware
-out-of-sample results and reasons for its rank. Keep the forecast distinct from
-an order instruction. Show a neutral direction when that is the strategy's
-actual signal.
+Verify final deployed wallet login, tenant isolation and own-account cleanup;
+seven-day test Checkout; actual signed webhooks/replay; trial expiry, plan changes
+and cancellation; and portal behavior. Verify hosted backtests and fresh per-coin
+Oracle results against canonical engines, including the local parity matrix.
+Inspect deployed source/version bindings separately from source tests.
 
-If no strategy has eligible fresh evidence, show a clear unavailable state and
-the missing requirement. Do not invent a winner, reuse expired forecasts or
-guarantee a direction merely to fill the top card. A profitable historical
-backtest does not establish predictive reliability.
+For the chosen coin and horizon, put the highest-ranked eligible current strategy
+at the top with its direction, evidence, rank and expiry. If none qualifies,
+explain the missing evidence. A separately labelled unqualified shadow direction
+must not replace a qualified aggregate or imply profit probability. Do not invent
+a winner or reuse an expired forecast to fill the card.
 
-## Acceptance before enabling a paid service
-
-Keep public Checkout unavailable until the promised hosted features pass their
-acceptance checks. Reconnecting Stripe or selecting a Price alone must not start
-a customer's seven-day trial while the hosted engine is unavailable. Test-mode
-billing qualification can proceed while the remaining implementation continues.
-
-Verify a deployed wallet login and tenant isolation; a seven-day test-mode
-Checkout; signed webhook delivery, replay handling, cancellation and trial
-expiry; and correct portal behavior. Verify authenticated hosted backtests and
-fresh per-coin Oracle ranking against the canonical engines. Inspect the loaded
-release and actual capability flags after deployment.
-
-Verify each execution integration separately with customer-scoped test
-authority, deterministic risk refusals, restart recovery, reconciliation and
-ambiguous-submit handling. Keep live execution unavailable until those checks
-pass. Existing source tests and local paper results do not establish hosted
-orders or subscription settlement.
+Verify each customer execution integration with scoped authority, deterministic
+risk refusals, budget concurrency, revocation, restart recovery and ambiguous-
+submit handling. A mock executor or a local paper result does not establish a
+hosted order. Keep paid Checkout and live execution unavailable until their
+respective acceptance gates pass.
 
 ## References
 
 https://oraclebot.io/api/health
 
-https://developers.cloudflare.com/workers/platform/limits/
+https://developers.cloudflare.com/containers/get-started/
+
+https://developers.cloudflare.com/containers/faq/
 
 https://developers.cloudflare.com/containers/api/durable-object-container/
 
 https://docs.stripe.com/billing/subscriptions/trials/free-trials
 
-The repository's website README documents the current build, migration,
-deployment and rollback commands. The full repository audit report records
-source checks and their remaining limits separately from this launch plan.
+https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
