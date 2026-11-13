@@ -1,19 +1,19 @@
 {
   "name": "oraclebot-website",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.3.0",
   "type": "module",
   "engines": {
-    "node": ">=22.13.0"
+    "node": "^22.16.0 || >=24.0.0"
   },
   "scripts": {
     "dev": "wrangler dev --config wrangler.dev.jsonc --port 8799",
     "test": "node --test test/*.test.js",
-    "check": "node --check src/worker.js && node --check public/app.js && node --check public/evidence.js",
+    "check": "node --check src/worker.js && node --check src/oauth.js && node --check src/mcp.js && node --check src/trades.js && node --check public/app.js && node --check public/evidence.js && node --check public/agent-access.js",
     "deploy": "wrangler deploy",
     "db:local": "wrangler d1 migrations apply oraclebot-accounts --local",
     "db:remote": "wrangler d1 migrations apply oraclebot-accounts --remote",
-    "test:browser": "node test/ui-browser.mjs"
+    "test:browser": "node test/ui-browser.mjs && node test/agent-browser.mjs"
   },
   "devDependencies": {
     "playwright": "1.65.0",

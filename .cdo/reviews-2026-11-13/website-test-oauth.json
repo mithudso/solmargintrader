@@ -1,0 +1,183 @@
+{
+  "review_type": "per-file full CDO read-only",
+  "status": "reviewed_no_medium_plus",
+  "scope": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/oauth.test.js",
+  "file": "website/test/oauth.test.js",
+  "sha256": "00c2ac6a36e249cb982206aeb926e7a94ceb45d3601f35708a33b08015ea9d8b",
+  "git_blob": "821302e55abbe4938710e20f76ee425ffc01d216",
+  "computed_git_blob": "821302e55abbe4938710e20f76ee425ffc01d216",
+  "line_count": 446,
+  "byte_count": 37246,
+  "read_ranges": [
+    [
+      1,
+      240
+    ],
+    [
+      241,
+      446
+    ]
+  ],
+  "coverage_complete": true,
+  "stage_0_5": {
+    "state": "reviewed",
+    "finding_count": 0,
+    "reason": "All target content treated as untrusted data; normal fixture/sign-in strings are not reviewer directives."
+  },
+  "activated_skills": [
+    "code-deep-optimizer",
+    "lang-js-ts (javascript-nodejs and nodejs-concurrency-internals references)",
+    "security-review (security-reviewer reference)",
+    "software-engineering-patterns (code-reviewer, coding-standards, and general testing discipline references)"
+  ],
+  "memory_central": {
+    "lessons_consulted": 2,
+    "conventions_consulted": 10,
+    "applicable_oauth_regression_lessons": 0,
+    "reason": "Historical trading/extension rows do not change this bounded OAuth test review; current repository CLAUDE.md governs."
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "reviewed",
+      "reason": "Traced helpers and success/failure tests; assertions await responses, inspect statuses/errors, and verify database/principal effects. No concrete logic error found."
+    },
+    {
+      "id": "C2",
+      "state": "reviewed",
+      "reason": "Checked call/register/authorization/approve/exchange/session result shapes against OAuth exports and fixture APIs. Exceptional non-OAuth errors propagate and failures surface as assertions."
+    },
+    {
+      "id": "C3",
+      "state": "reviewed",
+      "reason": "Adversarially checked invalid PKCE/client/resource/redirect attempts, wrong wallet signatures, request/policy substitution, duplicate parameters, expiry, concurrent claims, and replay state transitions. No concrete Medium+ counterexample identified statically."
+    },
+    {
+      "id": "S1",
+      "state": "reviewed",
+      "reason": "Completed injection gate across all 446 lines; no reviewer-directed or hostile directives. Fixture credentials are generated Ed25519/session/protocol values. Assertion checks cover hashed storage, wallet isolation, consent separation, and revoked principals."
+    },
+    {
+      "id": "S2",
+      "state": "reviewed",
+      "reason": "All asynchronous assertion flows are awaited; call rethrows unexpected errors. globalThis.fetch and env.DB.prepare overrides restore in finally; console mocks are test-context-owned. Finite in-memory SQLite fixtures create no external service or network dependency."
+    },
+    {
+      "id": "S3",
+      "state": "reviewed",
+      "reason": "Negative assertions cover exact redirect matching including query changes, resource/audience variants, PKCE shape and method, bounded registration/body/rate limits, finite explicit policy values, and parameter pollution."
+    },
+    {
+      "id": "S4",
+      "state": "reviewed",
+      "reason": "ESM imports include extensions; Node builtins, Web Crypto Ed25519, Request/Response, base64url Buffer encoding, and node:sqlite fixtures align with package Node >=22.13.0. No portability defect established in target."
+    },
+    {
+      "id": "S5",
+      "state": "reviewed",
+      "reason": "Tests assert exact structured operation/outcome/reason/level events for issuance, denial, replay/conflict, and revocation; assertRedacted rejects unexpected fields and known sensitive values. Throwing diagnostic sinks must not interrupt issuance or revocation."
+    },
+    {
+      "id": "P1",
+      "state": "reviewed",
+      "reason": "Fixtures and bounded loops are small and purposeful (including 100 inactive grants for pagination). No needless I/O, unbounded allocation, or algorithmic regression found in target."
+    },
+    {
+      "id": "P2",
+      "state": "reviewed",
+      "reason": "Promise.all intentionally races two approvals/exchanges/refreshes. Separate injected claim-conflict tests deterministically change state after read before claim. Default serial top-level tests preserve console/fetch mock ownership."
+    },
+    {
+      "id": "M1",
+      "state": "reviewed",
+      "reason": "Named helpers centralize protocol setup and expectations; test names describe behavior. Literal attack values, caps, expiries, and quantities are purposeful assertions rather than product configuration. No Medium+ clarity defect found."
+    },
+    {
+      "id": "M2",
+      "state": "reviewed",
+      "reason": "Registration/authorization/signing/approval/exchange/session and diagnostic checks are reused. Remaining repetition preserves independent security cases and does not justify extracting another test library."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository architecture/configuration pass belongs to root; assigned scope is one test file."
+    },
+    {
+      "id": "M4",
+      "state": "reviewed",
+      "reason": "Checked behavioral test names and explanatory race comments against actual assertions and supporting source. No misleading contract claim found; these fixtures do not claim hosted D1/provider acceptance."
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "reason": "Conditional tool-ergonomics pass does not engage: target is an imported node:test module, not a user-facing runnable tool entrypoint."
+    },
+    {
+      "id": "T1",
+      "state": "reviewed",
+      "reason": "Meaningful assertions cover PKCE and exact resource/client/redirect binding; immutable signed policy; consumed challenge/request/code; refresh scope narrowing and rotation; replay revocation; privacy-safe diagnostics; CSRF/owner isolation; and active-grant visibility behind inactive history. No assertion-free or swallowed-failure case found."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repository dependency/supply-chain pass belongs to root; no dependency mutation or audit in this per-file task."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repository tooling-gap pass belongs to root; package scripts were inspected only for compatibility/context."
+    },
+    {
+      "id": "T4",
+      "state": "reviewed",
+      "reason": "No real sleeps/timers to replace. Per-test databases are mutated and must not be hoisted. Console/fetch mutable globals block casually enabling same-file concurrency. No statically equivalent optimization identified; all distinct tests and assertions retained."
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    "Static read-only review; no tests or syntax checks run by this subagent, per assignment.",
+    "Parent reports all 129 Node tests completed successfully; this receipt does not independently certify that execution.",
+    "SQLite in-memory fixtures do not establish hosted Cloudflare D1 concurrency, deployed OAuth behavior, or provider execution.",
+    "Repository loop, architecture/dependency/tooling passes, all edits, Git delivery, and final acceptance belong to parent."
+  ],
+  "supporting_reads": [
+    {
+      "file": "website/test/helpers/d1.js",
+      "ranges": [
+        [
+          1,
+          79
+        ]
+      ]
+    },
+    {
+      "file": "website/src/oauth.js",
+      "ranges": [
+        [
+          183,
+          260
+        ],
+        [
+          345,
+          406
+        ]
+      ],
+      "additional_symbol_search": true
+    },
+    {
+      "file": "website/migrations/0004_agent_access.sql",
+      "symbol_search_only": true
+    },
+    {
+      "file": "website/package.json",
+      "complete": true
+    },
+    {
+      "file": "CLAUDE.md",
+      "complete": true
+    }
+  ],
+  "writes": [
+    "/tmp/oraclebot-mcp-release-20261113/cdo-test-oauth.json"
+  ]
+}

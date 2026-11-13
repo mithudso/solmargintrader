@@ -1,9 +1,15 @@
 # Prompt history
 
-Version: 235
+Version: 236
+Delta: v235 to v236; preserve both full user prompt histories while combining authenticated MCP and continuous forecast work.
 Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration.
 Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
 Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+Delta: v234 to v235; preserve corrected MCP/preauthorization and parallel audit/dashboard prompts together.
+Delta: v233 to v234; add authenticated wallet-bound MCP and preserve corrected preauthorization preference.
+Delta: v232 to v233; preserve owner Stripe credential locations and three subscription tiers.
+Parallel audit delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Parallel audit delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
@@ -2093,6 +2099,9 @@ For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that a
 ```
 
 
+## Preserved parallel audit continuation
+
+
 ## Imported upstream pipeline workflow from 93312fd7
 
 The following original-owner continuation/request is preserved verbatim. Its versions belong to that concurrent history; actual installed acceptance is in its private delivery receipt.
@@ -2142,3 +2151,30 @@ Have that numbert be variable, and can be changed on the site next to it.
 ```
 
 The number is the seconds-ahead forecast target, default10. One adjacent editable control sets both the target horizon and evaluation cadence, remembers the per-coin setting, and retains the prior correctly labelled forecast while an update is applied.
+
+## 2026-11-12 — Oraclebot Stripe credential locations
+
+```text
+I stored the api keys and account num info in ~/.env as STRIPE_ORACLEBOT_ACCTNUM
+STRIPE_ORACLEBOT_PUB_KEY
+STRIPE_ORACLEBOT_SEC_KEY
+```
+
+## 2026-11-12 — Oraclebot three subscription tiers and portal
+
+```text
+I added the subscriptions to stripe, 9.99 for up to 3 bots and 10x backtests/day , 29.99 for unlimited backtests and 10x active bots, and 49.99 for unlimited everything. Also the portal ID for customers to be able to edit or stop their subscription is here: bpc_1Ub7dzQ3DZ8H91BKkxAaTqj9
+```
+
+
+## 2026-11-12 — Authenticated MCP with the user wallet
+
+```text
+Add authenticated mcp support so a user can ask their agent to either make a trade, or get the status, but it always uses their wallet.
+```
+
+The owner briefly selected the per-trade approval option, then explicitly corrected that selection. The correction below is authoritative; do not implement a per-trade approval requirement.
+
+```text
+No I didn't mean to press that button, I want preauthorization so I don't have to approve every time
+```

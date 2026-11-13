@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "reviewMode": "full per-file static read-only; no target edits; no execution",
+  "status": "NO_MEDIUM_FOUND_STATIC",
+  "target": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/api.test.js",
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1"
+  },
+  "fileSHA256": "489e077cd4bfb2cc99a6ed9191ebc2cf8d169cf4832340faf2ddd843e857249f",
+  "computedGitblob": "6dc31a726199ab050fac38bcb83d1fcd377d8069",
+  "fileBytes": 77536,
+  "lineCount": 958,
+  "boundedReadRanges": [
+    [
+      1,
+      180
+    ],
+    [
+      181,
+      360
+    ],
+    [
+      361,
+      540
+    ],
+    [
+      541,
+      720
+    ],
+    [
+      721,
+      900
+    ],
+    [
+      901,
+      958
+    ]
+  ],
+  "completeReadCoverage": true,
+  "injectionGate": {
+    "state": "pass",
+    "findingCount": 0,
+    "halted": false
+  },
+  "activePerFilePassCount": 15,
+  "passes": [
+    {
+      "id": "C1",
+      "state": "pass",
+      "reason": "Read assertion control flow, request/login/signing/grant helpers and SQLite fixture (1-63). Tests assert response and durable state together on deletion, checkout locks, entitlement, capacity and lease fencing; no concrete Medium+ logic defect identified statically."
+    },
+    {
+      "id": "C2",
+      "state": "pass",
+      "reason": "Reviewed Request/Response and mock D1 result contracts, including RETURNING results versus cascade-inclusive change counts (14-44,208-220). Positive and negative account-header cases include absent-header compatibility (936-958). Actual D1 behavior is not established by this SQLite fixture."
+    },
+    {
+      "id": "C3",
+      "state": "pass",
+      "reason": "Reviewed adversarial malformed wallets, replay/expiry, forged HMAC, spoofed plans, quota races, subscription cancellation/downgrade races, stale lease completion in both orders, trial deletion/login races and cross-account header rejection. No additional reproducible Medium+ counterexample was established within this file-only static scope."
+    },
+    {
+      "id": "S1",
+      "state": "pass",
+      "reason": "Injection gate applied to the entire target. No reviewer-directed or hostile directive found. Credentials are explicit fake fixtures; Ed25519 keys are generated locally. Redaction tests assert canaries, wallets, cookies and provider tokens are absent from diagnostics. No real secrets or production account access used."
+    },
+    {
+      "id": "S2",
+      "state": "pass",
+      "reason": "The fixture propagates database errors and rolls back failed batches (31-35). Tests await important pending operations and assert lease release/retryability for HTTP, timeout and identity failures (699-779), failed credit release (556-598), and sink-failure response preservation (918-934). No Medium+ error/resource defect established; process-local in-memory SQLite lifetime is not production D1 evidence."
+    },
+    {
+      "id": "S3",
+      "state": "pass",
+      "reason": "Reviewed invalid-key, cross-origin, unexpected-host, oversized body, malicious plan/prototype-name, malformed risk-value, tenant isolation and expected-account boundary tests. Dynamic test SQL table names come from fixed literal allowlists; client fixtures remain data."
+    },
+    {
+      "id": "S4",
+      "state": "pass",
+      "reason": "Imports and tests use Node built-ins, ESM-relative fixture paths, Fetch/WebCrypto, node:test mocks and node:sqlite. This is intentionally a Node test fixture, not an edge runtime implementation. Runtime/package-version compatibility is a root verification concern; no empirical compatibility claim made."
+    },
+    {
+      "id": "S5",
+      "state": "pass",
+      "reason": "Unexpected API errors assert structured operation/code/status plus error level and secret exclusion (432-454). OAuth diagnostics assert exact sanitized payload (781-788). Upstream tests assert ordered starts/outcomes, bounded public fields, durations and credential exclusion (881-916). Deletion logging checks post-delete state and sink failures (918-934). No concrete Medium+ observability defect established within this file."
+    },
+    {
+      "id": "P1",
+      "state": "pass",
+      "reason": "Reviewed fixture/migration work and boundary loops. Loop counts implement meaningful policy or pagination limits (ten credits, plan slots, 105 records); no measured or statically evident Medium+ performance defect warrants changing them."
+    },
+    {
+      "id": "P2",
+      "state": "pass",
+      "reason": "Reviewed explicit promise barriers and awaited pending requests in quota, subscription, lease and deletion/login race tests. State is local to each environment, mocks are test-scoped, and nested completion-order subtests are awaited (736-763). Shared global mocks mean concurrent execution within this file is not proven safe and was not proposed."
+    },
+    {
+      "id": "M1",
+      "state": "pass",
+      "reason": "Helpers name their roles and fixture constants express the asserted policy values. Tests separate auth, billing, quota, tenancy, fencing and diagnostic behaviors. No concrete Medium+ clarity or configurable-production-setting defect identified in test literals."
+    },
+    {
+      "id": "M2",
+      "state": "pass",
+      "reason": "environment/request/call/login/grant/signedEvent/deliverSubscription/canonicalPlan helpers consolidate recurring behavior. Repeated explicit fixture billing objects are static test input, not a demonstrated divergent production setting. No additional reusable production library is shipped by this test file."
+    },
+    {
+      "id": "M4",
+      "state": "pass",
+      "reason": "Reviewed test names and comments against their assertions, including the comment about fixture change counts and assertions using direct RETURNING rows. Comments contain no reviewer instructions. Tests remain fixture evidence; nothing in this review certifies real D1 or Stripe behavior."
+    },
+    {
+      "id": "T1",
+      "state": "pass",
+      "reason": "Reviewed all 62 top-level test declarations, assertion strength, error paths and current risky regressions. New fencing, trial-history, sink failure, redaction and expected-account tests assert observable results and durable state. Exact coverage percentage, real provider/D1 behavior and passing executions remain unverified by this read-only audit."
+    },
+    {
+      "id": "T4",
+      "state": "pass",
+      "reason": "No real sleeps or polling delays are used. Promise barriers deterministically schedule races; Date.now is test-scoped for UTC quota rollover. Fixtures are mutated by their tests, so hoisting setup or enabling same-file parallelism would not preserve statically provable equivalence. Retain behavior and boundaries; no unconditional sleep or setup optimization proposed."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "N/A at per-file dispatch boundary; repo-scope responsibility explicitly retained by root TASK2079. This receipt does not certify the root pass."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "N/A at per-file dispatch boundary; repo-scope responsibility explicitly retained by root TASK2079. This receipt does not certify the root pass."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "N/A at per-file dispatch boundary; repo-scope responsibility explicitly retained by root TASK2079. This receipt does not certify the root pass."
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "reason": "Conditional N/A: target is a node:test suite consumed by the project test runner; it ships no independent end-user CLI/tool entrypoint. Root owns package invocation and prerequisite verification."
+    }
+  ],
+  "findings": [],
+  "severityCounts": {
+    "Critical": 0,
+    "High": 0,
+    "Medium": 0
+  },
+  "activatedSkills": [
+    "lang-js-ts",
+    "software-engineering-patterns (code-reviewer, coding-standards, testing reference)",
+    "security-review (security-reviewer)",
+    "devops-observability (nodejs-observability)"
+  ],
+  "memoryCentral": "No oraclebot.io lessons/conventions files at the documented paths. No relevant Codex MEMORY.md hit used.",
+  "verification": {
+    "state": "not run",
+    "reason": "Parent assignment forbids test execution, services, network, inference, installs and Git mutation. Root owns all verify gates and final convergence."
+  },
+  "qualifications": [
+    "SQLite D1-shaped fixture and mocked Stripe/engine upstream only; no real D1, Stripe, engine or production runtime verification.",
+    "Read-only file assessment; not an independent whole-repo CLEAN or blind re-audit result.",
+    "No source, peer file, Git, service or production state modified."
+  ],
+  "receiptPath": "/tmp/oraclebot-mcp-release-20261113/cdo-test-api.json"
+}

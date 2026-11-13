@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-13T04:36:25.006087+00:00",
+  "root_task": "TASK-2079",
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1"
+  },
+  "scope": [
+    "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/agent-browser.mjs"
+  ],
+  "mode": "full per-file static CDO, followed by root-authorized test-only coverage hardening and one targeted browser run",
+  "source_identity": {
+    "bytes": 20209,
+    "lines": 239,
+    "sha256": "b033b8d4ebc754cecf6d0cd1222b9a22e14b83d21d920197927949c2afb98586",
+    "git_blob_sha1": "69d7643c6d30a7ebbc8685258110688d5a08c20a",
+    "blob_method": "Computed Git blob SHA-1 from file bytes; no Git mutation."
+  },
+  "coverage": {
+    "complete": true,
+    "bounded_read_ranges": [
+      [
+        1,
+        80
+      ],
+      [
+        81,
+        160
+      ],
+      [
+        161,
+        239
+      ]
+    ],
+    "truncated_or_unread_ranges": []
+  },
+  "stage_0": {
+    "language": "JavaScript ESM",
+    "surface": "Node HTTP fixture plus Playwright real-Chrome tests",
+    "activated_skills": [
+      "lang-js-ts",
+      "security-review",
+      "software-engineering-patterns: code-reviewer and coding-standards"
+    ],
+    "memory_central": {
+      "project": "solmargintrader",
+      "lessons_consulted": 2,
+      "conventions_consulted": 10,
+      "matching_regression_checks": 0,
+      "effect": "No matching target-specific lesson or changed review direction."
+    }
+  },
+  "stage_0_5": {
+    "completed": true,
+    "hostile_directives": [],
+    "test_data_note": "hostileName is an XSS probe, never treated as instruction."
+  },
+  "findings": [
+    {
+      "id": "T1-wallet-call-counts",
+      "pass": "T1",
+      "severity": "Medium",
+      "initial_anchor": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/agent-browser.mjs:107",
+      "final_anchors": [
+        "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/agent-browser.mjs:66",
+        "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/agent-browser.mjs:111",
+        "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/agent-browser.mjs:121"
+      ],
+      "finding": "The original positive consent test claimed signs once but checked challenge/approval counts and signature shape, not actual provider invocation counts. Status-only also lacked zero-provider-invocation evidence. Callback navigation resets window-only counters.",
+      "impact": "A duplicate-signing or unnecessary status-only provider call regression could pass the browser fixture suite. This is coverage hardening, not evidence of a product defect.",
+      "resolution": "Added an allowlisted persistent Node recorder via page.exposeFunction; provider stubs record connect/sign call kinds only. Assert exact [connect, sign] for trading and [] for status-only after callback navigation.",
+      "state": "applied_and_verified"
+    }
+  ],
+  "passes": [
+    {
+      "id": "C1",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed fixture dispatch, per-navigation reset, provider gates, submission assertions, revocation, and teardown. The persistent Node call recorder is awaited before provider continuation and only records kind; no residual Medium+ correctness issue found."
+    },
+    {
+      "id": "C2",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed injected provider return shapes, synthetic 64-byte signature serialization, DOM readiness contracts, response consumption records, and exposeFunction call contract. Exact [connect, sign] and [] assertions now survive callback navigation."
+    },
+    {
+      "id": "C3",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed adversarial XSS name, fractional policy limits, tampered policy, mismatched/switched wallet, duplicate submit, null/undefined throws, held connect/sign/logout/approval/grants responses, and stale redirect/history negatives. Counterexample of duplicate signing was a meaningful T1 assertion gap and is fixed."
+    },
+    {
+      "id": "S1",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Injection gate ran before review and after the edit. The hostileName string is an intentional XSS test datum, not an instruction to a reviewer. No hostile reviewer directives or real credentials found. Fixture routes reject other origins and bind loopback."
+    },
+    {
+      "id": "S2",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed JSON/body errors, pageerror and unhandledrejection capture, held HTTP gate release, browser closure, and server closure. Authorized browser run completed with exit 0, establishing normal-path teardown. No additional concrete Medium+ issue established."
+    },
+    {
+      "id": "S3",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed URL construction and publicRoot containment, fixture-only API dispatch, deterministic wallet/request/grant identifiers, allowlisted recorder call kinds, and zero-payload recording. No additional Medium+ trust-boundary issue found in assigned file."
+    },
+    {
+      "id": "S4",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed ESM/top-level await, Node URL conversion, TextEncoder/TextDecoder/browser APIs, environment-selected Playwright/Chrome, and mobile viewport probe. Existing local Chrome executed successfully; cross-browser/provider acceptance is outside this receipt."
+    },
+    {
+      "id": "S5",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Every one of 14 groups emits a distinct PASS line after meaningful assertions. Page errors and null/undefined provider rejection failures are checked. Recorded call kinds contain no signed bytes, message payload, signature, or key material."
+    },
+    {
+      "id": "P1",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "One server and one browser/page are reused; each scenario resets only fixture state and navigates. No expensive repeated external calls or unbounded hot-path computation occurs in intended fixture use."
+    },
+    {
+      "id": "P2",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed closure capture of active fixture, gate completion ordering, double requestAnimationFrame checkpoints, response.finished plus JSON-read waits, and exposed recorder await sequencing. The exact persistent call assertions and all held-gate groups passed without timing sleeps."
+    },
+    {
+      "id": "M1",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed names, fixture constants, helper boundaries, per-scenario reset, and limited change footprint. No behavior-significant readability/configuration defect warrants another change."
+    },
+    {
+      "id": "M2",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Reviewed repeated waits and assertion patterns within this file. Repetition describes distinct security/state transitions; extracting it would not fix an established Medium+ defect. Recorder is one shared helper rather than duplicated bookkeeping."
+    },
+    {
+      "id": "M4",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "The opening fixture-boundary statement and PASS claims match the assertions after hardening. The signs-once and no-wallet-signature claims now have exact persistent provider-call evidence. No external/provider acceptance claim is made."
+    },
+    {
+      "id": "T1",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Applied the established Medium coverage gap: positive trading requires exactly one connect and one sign; status-only requires zero provider invocations. All existing 14 groups retained, including four null/undefined rejection combinations and held-response negatives. Expiry enforcement is not exercised by this file and must not be certified from it."
+    },
+    {
+      "id": "T4",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "The fixture reuses setup while resetting mutated state per navigation. Browser work/HTTP response completion gates provide causal waits without real sleeps; fake timers or parallelizing shared-fixture scenarios would weaken or alter the tested behavior."
+    },
+    {
+      "id": "M5",
+      "state": "complete",
+      "verdict": "no_remaining_medium_plus",
+      "reason": "Conditional entrypoint review ran: this browser fixture is directly runnable by one Node command with existing Chrome selection and automatically allocated loopback port. The accepted invocation completed with exit 0. It is a test entrypoint without a subcommand interface; missing-install UX and repository documentation remain root-scope checks."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository architecture/configuration pass owned by root; single assigned file review."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repository dependency/supply-chain pass owned by root; no dependency mutations in this assignment."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repository tooling-gap pass owned by root; no tooling/configuration mutations in this assignment."
+    }
+  ],
+  "verification": {
+    "command": "CHROME='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node website/test/agent-browser.mjs",
+    "cwd": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113",
+    "exit_code": 0,
+    "pass_groups": 14,
+    "log": "/tmp/oraclebot-mcp-release-20261113/agent-browser-call-counts.log",
+    "log_sha256": "47feda0465f4404cd73c6a8cec4a96e756c31bfb28da99a438eee55100b7a235",
+    "run_count": 1,
+    "external_provider_or_real_key_calls": false
+  },
+  "remaining_medium_plus": [],
+  "limits": [
+    "Local HTTP/wallet fixtures only; not deployed/provider acceptance.",
+    "Expiry values are future-dated fixture data; this file does not prove expiry enforcement.",
+    "Root owns repository passes, convergence/blind audit, workflow records, and Git delivery.",
+    "No production code or Git state modified by this assignment."
+  ],
+  "result": "qualified_none_remaining_in_assigned_file_after_verified_coverage_fix"
+}

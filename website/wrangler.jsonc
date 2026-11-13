@@ -20,8 +20,10 @@
   ],
   "vars": {
     "APP_ORIGIN": "https://oraclebot.io",
-    "RELEASE": "website-0.1.1",
-    "APP_VERSION": "0.1.1"
+    "RELEASE": "website-0.3.0",
+    "APP_VERSION": "0.3.0",
+    "BILLING_LAUNCH_ENABLED": "false",
+    "LIVE_EXECUTION_ENABLED": "false"
   },
   "routes": [
     {

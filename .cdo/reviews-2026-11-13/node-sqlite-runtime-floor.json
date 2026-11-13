@@ -1,0 +1,9 @@
+{
+  "version": "1.0.1",
+  "finding": "Declared Node22.13.0 floor predates node:sqlite StatementSync.columns() used by website fixtures.",
+  "source": "https://nodejs.org/docs/latest-v22.x/api/sqlite.html#statementcolumns",
+  "documentation_lookup": "Context7 official Node22documentation: Added in v22.16.0.",
+  "change": "Own root/website engines and own lockfile metadata now support ^22.16.0 || >=24.0.0. Dependency versions and .nvmrc major22 remain unchanged.",
+  "verification": "Final combined129Node cases,28Chrome groups, JavaScriptquality, syntax and Worker dry-run all exited0. Cached Node26 is supported. No dependency install or claim of executing minimum22.16.0.",
+  "scope": "Development/test runtime metadata; production Cloudflare Worker code unchanged."
+}

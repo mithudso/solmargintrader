@@ -104,7 +104,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "59275dedc85df665d7ec27fc47d7c42c3fa956342219e667a0a7a8b20cca8882"
+      "sha256": "5e2112e957d708bbb1fd4a3f127da8de4e06c9be8805e5173647dbbd9e7737e5"
     },
     {
       "path": "scripts/build_operation_inventories.py",
@@ -140,7 +140,7 @@
     },
     {
       "path": "website/package.json",
-      "sha256": "0fa01da513c87021074bb34b8eba2ca43d491abd4656ba6ba1546cb61e387cd9"
+      "sha256": "6a2a8006fcc46fd18ff28fb75a0c211da3f249f2c47a4459d7ff7d44e6a0bb55"
     }
   ],
   "tools": [
@@ -247,7 +247,7 @@
       "kind": "npm-script",
       "source": "package.json",
       "symbol": "scripts.lint:js",
-      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js ecosystem/web eslint.config.mjs",
+      "declared_command": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js ecosystem/web eslint.config.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",
@@ -542,7 +542,7 @@
       "kind": "npm-script",
       "source": "website/package.json",
       "symbol": "scripts.check",
-      "declared_command": "node --check src/worker.js && node --check public/app.js && node --check public/evidence.js",
+      "declared_command": "node --check src/worker.js && node --check src/oauth.js && node --check src/mcp.js && node --check src/trades.js && node --check public/app.js && node --check public/evidence.js && node --check public/agent-access.js",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",
@@ -626,7 +626,7 @@
       "kind": "npm-script",
       "source": "website/package.json",
       "symbol": "scripts.test:browser",
-      "declared_command": "node test/ui-browser.mjs",
+      "declared_command": "node test/ui-browser.mjs && node test/agent-browser.mjs",
       "help_command": null,
       "side_effects": "script-specific; inspect declared command before invoking",
       "signing": "not inferred from npm metadata",

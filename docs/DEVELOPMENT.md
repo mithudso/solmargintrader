@@ -7,7 +7,7 @@ Setup, the commands you will actually use, and the environment each component ne
 | Need | Version | Why that one |
 | --- | --- | --- |
 | Python | 3.13 | The codebase uses `enum.StrEnum` and 3.13-era typing; CI pins 3.13 |
-| Node | 22 | Ed25519 in WebCrypto and `node:test`'s current output both need a recent runtime; `.nvmrc` pins it |
+| Node | 22.16+ on the 22 LTS line, or 24+ | Website SQLite fixtures use `StatementSync.columns()`, added in 22.16.0. `.nvmrc` selects the latest 22 LTS patch. |
 | macOS | Any recent | Only for `soltui/` — the menu-bar app and launchd agent are macOS-only |
 
 Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual

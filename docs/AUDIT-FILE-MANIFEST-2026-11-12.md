@@ -1,17 +1,17 @@
 # Repository delivery file manifest
 
-Version: 0.1.3
-Delta: include the wallet-render readiness correction and qualified private spawn-entry evidence.
+Version: 0.1.4
+Delta: include combined continuous-forecast safeguards, website0.3.0 preauthorization, subscription schemas and bound review receipts.
 
-This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
+This inventory names every repository path changed in the combined audit release relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints, independently delivered pipeline/UI/forecast changes, and the integrated website feature. The snapshot includes staged and unstaged tracked changes plus the task-owned new CDO receipt; ignored caches, credentials and private diagnostic artifacts stay outside the repository.
 
-This path inventory does not certify optimizer convergence, a deployment or a test that has not completed. Host-private hooks, credentials and diagnostic artifacts stay outside the repository.
+This path inventory does not certify optimizer convergence, a deployment or a test that has not completed. The wider audit retains its M3/M5/T4 qualifications. Canonical paths below become current only after actual merge and safe default-branch synchronization.
 
-Canonical paths below become current after merge and safe default-branch synchronization.
 Implementation worktree: /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112
 Delivery PR: https://github.com/mithudso/solmargintrader/pull/234
+External final delivery receipt: /Users/mitch/.local/state/oraclebot-final-delivery-20261113/delivery.json
 
-Total repository paths: 547
+Total repository paths: 619
 
 - /Users/mitch/dev/oraclebot.io/.cdo/ledger.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/backtester-boundaries-tools.json — Source review and verification evidence
@@ -128,9 +128,50 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-npm-advisories.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-ui.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-12/website-worker.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-app-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-control-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-inventory-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-main-closure.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-main.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-ops-tests-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-preferences-closure.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-preferences.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-service-tests.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-service.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-tests.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-version.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/cdo-forecast-web-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/ci-a505-completed.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/combined-final-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-after-review-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-integrated-0.4.12-ops1.2.1-gates.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-integrated-final-gates.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-integration-cdo.initial.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-integration-cdo.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-pass-receipt.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/forecast-supplement-delta.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/fresh-cli-forecast-final.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/fresh-cli-forecast-ops1.2.1-final.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/ledger-after-wallet-render-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/node-sqlite-runtime-floor.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-full-a505-completion.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-full-a505-independent.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-mcp-independent.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-preauthorization-cdo.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-preauthorization-pass-receipt.md — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-preauthorization-plan.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-agent-browser.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-api.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-d1.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-integration.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-mcp.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-oauth.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-trades.json — Source review and verification evidence
+- /Users/mitch/dev/oraclebot.io/.cdo/reviews-2026-11-13/website-test-ui-browser.json — Source review and verification evidence
 - /Users/mitch/dev/oraclebot.io/.env.example — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/.github/copilot-instructions.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/.github/dependabot.yml — Source, tests or workflow documentation
@@ -238,7 +279,9 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/docs/HOOK-REPAIR-2026-11-12.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/docs/INSTALLATION.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/docs/MARKET-EVENT-CAPTURE.md — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/docs/ORACLE-LIVE-FORECAST.md — Architecture, capability and delivery documentation
 - /Users/mitch/dev/oraclebot.io/docs/ORACLEBOT-LAUNCH-READINESS.md — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/docs/ORACLEBOT-MCP-DELIVERY-2026-11-13.md — Architecture, capability and delivery documentation
 - /Users/mitch/dev/oraclebot.io/docs/ORACLEBOT-OPERATIONS.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/docs/REPO-HEALTH-2026-11-12.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/docs/SECURITY.md — Source, tests or workflow documentation
@@ -261,6 +304,9 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/ecosystem/backtests.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/cli.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/control.py — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/ecosystem/forecast.py — Continuous paper forecast and readiness safeguards
+- /Users/mitch/dev/oraclebot.io/ecosystem/forecast_preferences.py — Continuous paper forecast and readiness safeguards
+- /Users/mitch/dev/oraclebot.io/ecosystem/forecast_service.py — Continuous paper forecast and readiness safeguards
 - /Users/mitch/dev/oraclebot.io/ecosystem/installation.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/meta_forward.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/pipeline_service.py — Source, tests or workflow documentation
@@ -273,6 +319,8 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_backtests.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_cli.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_control_http.py — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_forecast.py — Regression fixtures and boundary verification
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_forecast_service_audit.py — Regression fixtures and boundary verification
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_machine_health_http.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_manager_editing.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_recovery.py — Source, tests or workflow documentation
@@ -283,12 +331,15 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_swaps.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_telemetry.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_ui_contract.py — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_votes.py — Regression fixtures and boundary verification
 - /Users/mitch/dev/oraclebot.io/ecosystem/tests/test_web.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/volty_forward.py — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/ecosystem/votes.py — Continuous paper forecast and readiness safeguards
 - /Users/mitch/dev/oraclebot.io/ecosystem/web.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/web/app.js — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/web/index.html — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/web/oracle-chart.js — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/ecosystem/web/styles.css — Continuous paper forecast and readiness safeguards
 - /Users/mitch/dev/oraclebot.io/ecosystem/web/swap.js — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/ecosystem/wiki_content/manifest.json — Derived documentation or retrieval metadata
 - /Users/mitch/dev/oraclebot.io/ecosystem/wiki_content/pages.json — Derived documentation or retrieval metadata
@@ -379,6 +430,11 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/liquidity/tests/test_market_state.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/liquidity/tests/test_providers.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/liquidity/uv.lock — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/llms-facts.txt — Maintained repository retrieval inventory
+- /Users/mitch/dev/oraclebot.io/llms-full.txt — Maintained repository retrieval inventory
+- /Users/mitch/dev/oraclebot.io/llms-sitemap.txt — Maintained repository retrieval inventory
+- /Users/mitch/dev/oraclebot.io/llms-small.txt — Maintained repository retrieval inventory
+- /Users/mitch/dev/oraclebot.io/llms.txt — Maintained repository retrieval inventory
 - /Users/mitch/dev/oraclebot.io/memory.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/mongo/README.md — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/mongo/cli.py — Source, tests or workflow documentation
@@ -539,11 +595,18 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/tools/install-hooks.sh — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/tsconfig.checkjs.json — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/README.md — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/website/api/openapi.json — Authenticated API contract and acceptance collection
+- /Users/mitch/dev/oraclebot.io/website/docs/MCP-DESIGN.md — Wallet preauthorization design and execution limits
 - /Users/mitch/dev/oraclebot.io/website/engine/server.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/engine/test_research.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/engine/test_server.py — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/website/migrations/0003_subscription_tiers.sql — Additive account, grant and trade schema
+- /Users/mitch/dev/oraclebot.io/website/migrations/0004_agent_access.sql — Additive account, grant and trade schema
+- /Users/mitch/dev/oraclebot.io/website/migrations/0005_agent_trades.sql — Additive account, grant and trade schema
 - /Users/mitch/dev/oraclebot.io/website/package-lock.json — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/package.json — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/website/postman/acceptance.collection.json — Authenticated API contract and acceptance collection
+- /Users/mitch/dev/oraclebot.io/website/public/agent-access.js — Account settings and finite policy consent
 - /Users/mitch/dev/oraclebot.io/website/public/app.js — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/public/evidence.js — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/public/index.html — Source, tests or workflow documentation
@@ -554,8 +617,17 @@ Total repository paths: 547
 - /Users/mitch/dev/oraclebot.io/website/public/styles.css — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/scripts/export_research.py — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/scripts/smoke.mjs — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/website/src/mcp.js — Wallet-bound authentication and trade intent safeguards
+- /Users/mitch/dev/oraclebot.io/website/src/oauth.js — Wallet-bound authentication and trade intent safeguards
+- /Users/mitch/dev/oraclebot.io/website/src/trades.js — Wallet-bound authentication and trade intent safeguards
 - /Users/mitch/dev/oraclebot.io/website/src/worker.js — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/website/test/agent-browser.mjs — Regression fixtures and boundary verification
 - /Users/mitch/dev/oraclebot.io/website/test/api.test.js — Source, tests or workflow documentation
+- /Users/mitch/dev/oraclebot.io/website/test/helpers/d1.js — Regression fixtures and boundary verification
+- /Users/mitch/dev/oraclebot.io/website/test/mcp-integration.test.js — Regression fixtures and boundary verification
+- /Users/mitch/dev/oraclebot.io/website/test/mcp.test.js — Regression fixtures and boundary verification
+- /Users/mitch/dev/oraclebot.io/website/test/oauth.test.js — Regression fixtures and boundary verification
+- /Users/mitch/dev/oraclebot.io/website/test/trades.test.js — Regression fixtures and boundary verification
 - /Users/mitch/dev/oraclebot.io/website/test/ui-browser.mjs — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/typecheck/evidence-contract.ts — Source, tests or workflow documentation
 - /Users/mitch/dev/oraclebot.io/website/wrangler.dev.jsonc — Source, tests or workflow documentation

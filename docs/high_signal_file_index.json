@@ -107,14 +107,14 @@
       "component": "ecosystem",
       "kind": "python",
       "summary": "Scoped paper actions and durable action receipts",
-      "lines": 932
+      "lines": 939
     },
     {
       "path": "ecosystem/web.py",
       "component": "ecosystem",
       "kind": "python",
       "summary": "Loopback control room and collector routes",
-      "lines": 585
+      "lines": 586
     },
     {
       "path": "ecosystem/ui_service.py",
