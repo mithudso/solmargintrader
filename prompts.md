@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 228
+Version: 229
+Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts.
 Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request.
 Delta: v226 to v227; preserve owner choice to retain Google Workspace.
 Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
@@ -2008,3 +2009,11 @@ Keep Google Workspace
 ```text
 For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
 ```
+
+## 2026-11-12 — Runtime recovery screenshot
+
+```text
+[Image #1]
+```
+
+The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.

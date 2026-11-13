@@ -369,6 +369,40 @@ def start(home: Path) -> dict:
     }
 
 
+def prepare_foreground(home: Path) -> str | None:
+    """Claim a new generation for an OS-supervised foreground process.
+
+    An explicit stop belongs to its generation and remains stopped across login.
+    A crash has no matching stop request and can be recovered. Historical batch
+    and Oracle policy guards remain unchanged.
+    """
+    try:
+        with lock(home):
+            state = load(home)
+            if state["phase"] == "not_initialized":
+                raise ValueError("bootstrap_not_planned")
+            previous = state.get("supervisor_token")
+            if previous and (home / ("stop-" + previous)).exists():
+                return None
+            if (
+                state["phase"] == "starting"
+                and 0 <= time.time() - state.get("supervisor_started_at", 0) < 10
+            ):
+                return None
+            token = uuid.uuid4().hex
+            state.update(
+                supervisor_token=token,
+                supervisor_pid=os.getpid(),
+                phase="starting",
+                supervisor_started_at=time.time(),
+            )
+            state.pop("error", None)
+            save(home / "state.json", state)
+            return token
+    except BlockingIOError:
+        return None
+
+
 def stop(home: Path) -> dict:
     state = load(home)
     token = state.get("supervisor_token")
@@ -436,7 +470,9 @@ def supervise(home: Path, token: str, *, max_cycles: int | None = None) -> int:
         from .ui_service import status as ui_status
 
         state["ui_url"] = (
-            ui_status(home, manager_home).get("url") if cfg.get("embedded_ui", True) else None
+            ui_status(home, manager_home).get("url")
+            if cfg.get("embedded_ui", True)
+            else None
         )
         save(home / "state.json", state)
         update_telemetry(state, home, manager_home)

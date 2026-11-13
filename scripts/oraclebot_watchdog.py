@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import os
 import re
+import sys
 import time
 import urllib.request
 
@@ -31,7 +33,7 @@ def assess(raw, now=None):
             "available" if value["ready"] else "ecosystem_not_ready",
             value,
         )
-    except (ValueError, TypeError, KeyError):
+    except (ValueError, TypeError, KeyError, OverflowError):
         return False, "heartbeat_unavailable", {}
 
 
@@ -87,8 +89,10 @@ def reconcile(repo, healthy, reason, run_url, request=api, acceptance=False):
         owned.extend(
             row
             for row in rows
-            if row.get("title") == title
-            and row.get("body", "").startswith(marker)
+            if isinstance(row, dict)
+            and row.get("title") == title
+            and isinstance(row.get("body"), str)
+            and row["body"].startswith(marker)
             and not row.get("pull_request")
         )
         if len(rows) < 100:
@@ -120,21 +124,40 @@ def reconcile(repo, healthy, reason, run_url, request=api, acceptance=False):
     return {"action": "unchanged", "issues": [row["number"] for row in owned]}
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Example: python scripts/oraclebot_watchdog.py --help. "
+        "Run without arguments inside the Oraclebot operations workflow.",
+    )
+    parser.parse_args(argv)
+    required = ("GH_TOKEN", "GITHUB_REPOSITORY", "GITHUB_RUN_ID", "GITHUB_STEP_SUMMARY")
+    missing = [name for name in required if not os.environ.get(name)]
+    if missing:
+        print(
+            "Missing GitHub Actions environment: "
+            + ", ".join(missing)
+            + ". Run through the configured workflow: "
+            "gh workflow run oraclebot-operations.yml",
+            file=sys.stderr,
+        )
+        return 3
+    repo = os.environ["GITHUB_REPOSITORY"]
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
+        parser.error("GITHUB_REPOSITORY must be owner/repository")
+    mode = os.environ.get("ACCEPTANCE_MODE", "normal")
+    if mode not in ("normal", "failure", "recovery"):
+        parser.error("ACCEPTANCE_MODE must be normal, failure or recovery")
     healthy, reason, heartbeat = assess(os.environ.get("ORACLEBOT_HEARTBEAT", ""))
     website = website_health()
     if website["status"] != "ok":
         healthy, reason = False, "website_unavailable"
-    mode = os.environ.get("ACCEPTANCE_MODE", "normal")
-    if mode not in ("normal", "failure", "recovery"):
-        raise ValueError("invalid_acceptance_mode")
     if mode == "failure":
         healthy, reason = False, "synthetic_heartbeat_stale"
     if mode == "recovery" and not healthy:
         raise ValueError(
             "real_heartbeat_and_website_must_be_healthy_before_acceptance_recovery"
         )
-    repo = os.environ["GITHUB_REPOSITORY"]
     run_url = f"https://github.com/{repo}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
     result = reconcile(repo, healthy, reason, run_url, acceptance=mode != "normal")
     summary = (

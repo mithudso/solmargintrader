@@ -24,6 +24,44 @@ class RunnerTests(unittest.TestCase):
             manager_home=str(home / "manager"),
         )
 
+    def test_foreground_recovers_failed_generation_without_rewriting_batch(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            state = self.plan(home)
+            state.update(
+                phase="failed",
+                error="supervisor_failed",
+                batch_id="a" * 32,
+                supervisor_pid=1234,
+            )
+            runner.save(home / "state.json", state)
+            with patch("ecosystem.runner.os.getpid", return_value=5678):
+                token = runner.prepare_foreground(home)
+            self.assertEqual(len(token), 32)
+            current = runner.load(home)
+            self.assertEqual(current["batch_id"], "a" * 32)
+            self.assertEqual(current["config"], state["config"])
+            self.assertEqual(current["phase"], "starting")
+            self.assertEqual(current["supervisor_pid"], 5678)
+            self.assertNotIn("error", current)
+
+    def test_foreground_honors_explicit_stop_and_live_owner(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            state = self.plan(home)
+            state.update(phase="stopped", supervisor_token="b" * 32)
+            runner.save(home / "state.json", state)
+            marker = home / ("stop-" + "b" * 32)
+            marker.touch()
+            before = (home / "state.json").read_bytes()
+            self.assertIsNone(runner.prepare_foreground(home))
+            self.assertEqual((home / "state.json").read_bytes(), before)
+            marker.unlink()
+            with runner.lock(home):
+                self.assertIsNone(runner.prepare_foreground(home))
+            self.assertIsNotNone(runner.prepare_foreground(home))
+            self.assertIsNone(runner.prepare_foreground(home))
+
     def test_resume_preserves_frozen_matrix_and_rejects_changes(self):
         with tempfile.TemporaryDirectory() as root:
             home = Path(root)

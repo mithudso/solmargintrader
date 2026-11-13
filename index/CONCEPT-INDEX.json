@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T22:28:50+00:00",
+  "generatedAt": "2026-11-13T00:10:37+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1818,
+      "matchingFiles": 1820,
       "shown": 30,
       "files": [
         {
@@ -35,7 +35,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 164
+          "hits": 165
         },
         {
           "path": "FILES.md",
@@ -110,6 +110,10 @@
           "hits": 44
         },
         {
+          "path": "memory.md",
+          "hits": 38
+        },
+        {
           "path": "skills/trading-and-investing/references/options-trading-and-strategies.md",
           "hits": 38
         },
@@ -120,10 +124,6 @@
         {
           "path": "research/strategy_experiment/results/auxiliary.json",
           "hits": 37
-        },
-        {
-          "path": "memory.md",
-          "hits": 36
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -714,7 +714,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 796,
+      "matchingFiles": 799,
       "shown": 30,
       "files": [
         {
@@ -731,7 +731,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 380
+          "hits": 381
         },
         {
           "path": "FILES.md",
@@ -743,7 +743,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 149
+          "hits": 159
         },
         {
           "path": "docs/archive/memory-2026-11-10.md",
@@ -783,7 +783,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 87
+          "hits": 88
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 519,
+      "matchingFiles": 521,
       "shown": 30,
       "files": [
         {
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 329,
+      "matchingFiles": 330,
       "shown": 30,
       "files": [
         {
@@ -1912,16 +1912,16 @@
           "hits": 10
         },
         {
+          "path": "memory.md",
+          "hits": 10
+        },
+        {
           "path": "soltui/tests/test_panes.py",
           "hits": 10
         },
         {
           "path": "research/candle_gap_audit.py",
           "hits": 10
-        },
-        {
-          "path": "memory.md",
-          "hits": 9
         },
         {
           "path": "research/geometry.py",
