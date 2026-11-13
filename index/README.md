@@ -28,7 +28,7 @@ this one:
 
 | | `docs/high_signal_file_index.json` | `index/` (here) |
 |---|---|---|
-| Coverage | **104** curated high-signal files | **every** tracked file |
+| Coverage | Curated high-signal files (count in its JSON) | **every** tracked file |
 | Purpose | a short list for an LLM to read first | lookup and search |
 | Retrieval | none — it is a list | BM25, embeddings, concepts |
 | Drift check | `scripts/check_docs.py` prunes dead paths | `build.py --check` re-hashes |

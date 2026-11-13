@@ -1,0 +1,18 @@
+{
+  "name": "oraclebot-repository-tools",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": "^22.16.0 || >=24.0.0"
+  },
+  "scripts": {
+    "lint:js": "eslint extension website/src website/public/app.js website/public/evidence.js website/public/agent-access.js ecosystem/web eslint.config.mjs",
+    "typecheck:js": "tsc --project tsconfig.checkjs.json",
+    "check:js": "npm run lint:js && npm run typecheck:js"
+  },
+  "devDependencies": {
+    "eslint": "9.39.5",
+    "globals": "17.14.0",
+    "typescript": "7.0.2"
+  }
+}

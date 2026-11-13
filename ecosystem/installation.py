@@ -111,6 +111,8 @@ def source_fingerprint(repo: Path) -> str:
                 for part in relative.parts
             ):
                 continue
+            if path.is_symlink():
+                raise ValueError("source_symlink_refused")
             if path.is_file() and path.suffix in (
                 ".py",
                 ".toml",
@@ -119,10 +121,9 @@ def source_fingerprint(repo: Path) -> str:
                 ".html",
                 ".css",
                 ".js",
+                ".mjs",
                 ".json",
             ):
-                if path.is_symlink():
-                    raise ValueError("source_symlink_refused")
                 digest.update(f"{name}/{relative}".encode())
                 digest.update(b"\0")
                 digest.update(path.read_bytes())

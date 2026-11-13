@@ -1,0 +1,270 @@
+{
+  "reviewer": "root",
+  "created_at": "2026-11-12T08:59:47.316320+00:00",
+  "scope": "six index Python sources plus test_index.py and new runtime guards; not whole repo",
+  "baseline_read_ranges": {
+    "index/build.py": [
+      [
+        1,
+        220
+      ],
+      [
+        221,
+        460
+      ],
+      [
+        461,
+        700
+      ],
+      [
+        701,
+        905
+      ]
+    ],
+    "index/idle.py": [
+      [
+        1,
+        305
+      ]
+    ],
+    "index/ollama_ensure.py": [
+      [
+        1,
+        165
+      ]
+    ],
+    "index/search.py": [
+      [
+        1,
+        426
+      ]
+    ],
+    "index/make_files_doc.py": [
+      [
+        1,
+        175
+      ],
+      [
+        176,
+        380
+      ],
+      [
+        380,
+        505
+      ],
+      [
+        506,
+        537
+      ]
+    ],
+    "index/make_concepts_doc.py": [
+      [
+        1,
+        159
+      ]
+    ],
+    "backtester/tests/test_index.py": [
+      [
+        1,
+        65
+      ],
+      [
+        65,
+        200
+      ],
+      [
+        200,
+        266
+      ]
+    ]
+  },
+  "final_review": "All task diff hunks and authored tests reviewed; full baseline source reads plus verified differential changes",
+  "passes": {
+    "C1": "ran: full control-flow and data-shape review; I1,I2,I3,I4,I7 fixed",
+    "C2": "ran: exported callable/default/result contracts reviewed against search, idle and existing fixtures; local readiness/fallback contracts retained",
+    "C3": "ran: 9 original regression tests red exit1 (4fails/10subtesterrors), two direct-remote helper guards separately red exit1; combined final52tests exit0",
+    "S1": "ran: Stage0.5 source instruction gate found no reviewer directive; data-only indexing, no pickle and local-only model operations reviewed; I5,I6 fixed",
+    "S2": "ran: malformed cache/provider shapes and startup errors now unavailable/stale/fallback; NPZ archive closed by context manager; timeout/lock/finally ownership reviewed",
+    "S3": "ran: shape, cardinality, finite/nonzero embedding vectors, dimension match, model and endpoint types and JSON object shape validated; I2-I7 fixed",
+    "S4": "ran: stdlib CLI plus opt-in NumPy package; macOS/Linux fcntl/launchd schedule scope documented; six help commands exit0; Pythoncompile0",
+    "S5": "ran: no raw transport/array exception details emitted on changed paths; search library notes remain structured return state, CLI diagnostic text retained; no model/network activity in regressions",
+    "P1": "ran: postings/hash/chunk construction and cache reuse reviewed; no measured optimization justified; generated artifacts remain excluded from own staleness hash",
+    "P2": "ran: lock descriptor cleanup, background owner and throttle state reviewed; I1 fixed and deterministic tests cover retention; concurrent semantic file replacement remains derived-artifact boundary",
+    "M1": "ran: small helpers and existing source conventions retained; broadRuff39 pre-existing low-style findings unchanged, exactbaselinecomparison recorded; no new lint finding",
+    "M2": "ran: locality guard reused at each I/O boundary; timestamp normalization shared; no extra dependency introduced",
+    "M3": "repo scope parent",
+    "M4": "ran: generated website runner, component descriptions, historical study labels and indexedfrontmatter scope corrected; frozen104count removed; keyword scoring vsauto_index distinction clarified",
+    "T1": "ran: eleven meaningful offline regressions plus41existing fixtures pass; structural import allowlist extends only exact new index regression file; no assertion weakened",
+    "T2": "repo scope parent; no dependency added to index",
+    "T3": "repo scope parent; stdlib unittest remains existing convention",
+    "T4": "N/A production modules; reviewed tests mutate shared module globals so sequential mocks/isolatedtempfixtures retained; no real sleeps/network/models in newtests",
+    "M5": "ran conditional six CLIentrypoints: --help usage all0; existing Python/NumPy documentation and missingartifact preflight retained; actualmodelstartup is outsideauthorizedverification"
+  },
+  "findings": [
+    {
+      "id": "I1",
+      "severity": "Medium",
+      "file": "index/idle.py",
+      "finding": "run_build overwrote last_build_at and defeated hourly busy throttle",
+      "regression": "test_finished_rebuild_preserves_the_hourly_throttle",
+      "status": "fixed"
+    },
+    {
+      "id": "I2",
+      "severity": "Medium",
+      "file": "index/ollama_ensure.py",
+      "finding": "Malformed model payloads and process launch PermissionError escaped readiness fallback",
+      "regression": "test_malformed_model_lists_do_not_raise_or_claim_readiness; test_server_launch_failure_returns_unavailable_without_exception_details",
+      "status": "fixed"
+    },
+    {
+      "id": "I3",
+      "severity": "Medium",
+      "file": "index/search.py",
+      "finding": "Corrupt manifests/arrays or incompatible vectors escaped keyword fallback",
+      "regression": "test_corrupt_semantic_artifacts_degrade_without_raw_exception_details; test_dimension_mismatch_degrades_to_keyword",
+      "status": "fixed"
+    },
+    {
+      "id": "I4",
+      "severity": "Medium",
+      "file": "index/build.py",
+      "finding": "Partial provider embeddings could publish an inconsistent vector/owner pair",
+      "regression": "test_partial_embedding_response_never_publishes_an_invalid_pair",
+      "status": "fixed"
+    },
+    {
+      "id": "I5",
+      "severity": "Medium",
+      "file": "index/search.py",
+      "finding": "Non-HTTP manifest endpoint bypassed base_of locality check before transport",
+      "regression": "test_non_http_semantic_endpoint_is_refused_before_any_probe",
+      "status": "fixed"
+    },
+    {
+      "id": "I6",
+      "severity": "Medium",
+      "file": "index/ollama_ensure.py",
+      "finding": "Direct model-list/pull helpers did not enforce their local-only I/O contract",
+      "regression": "test_model_list_helper_refuses_remote_hosts_before_io; test_model_pull_helper_refuses_remote_hosts_before_io",
+      "status": "fixed"
+    },
+    {
+      "id": "I7",
+      "severity": "Medium",
+      "file": "index/idle.py",
+      "finding": "Syntactically valid scalar cache state/manifest raised instead of becoming stale/unavailable",
+      "regression": "test_scalar_idle_state_and_manifest_are_unavailable_not_exceptions",
+      "status": "fixed"
+    },
+    {
+      "id": "I8",
+      "severity": "Low",
+      "file": "index/make_files_doc.py",
+      "finding": "Website test classification and usage described extension runner; component prose/counts were stale",
+      "regression": "test_website_tests_and_modules_have_their_actual_runner",
+      "status": "fixed"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python -m unittest backtester.tests.test_index_runtime_guards (initial)",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-index-guards-red.log"
+    },
+    {
+      "command": "python -m unittest two directremotehelper tests (before guards)",
+      "exit_code": 1,
+      "log": "/tmp/oraclebot-index-remote-guards-red.log"
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 python -m unittest backtester.tests.test_index_runtime_guards backtester.tests.test_index_search_tooling",
+      "exit_code": 0,
+      "result": "52tests0fail",
+      "log": "/tmp/oraclebot-index-guards-green.log"
+    },
+    {
+      "command": "six index scripts --help",
+      "exit_code": 0
+    },
+    {
+      "command": "python -m py_compile six index scripts and newtests",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff check backtester/tests/test_index_runtime_guards.py",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff check --select E9,F63,F7,F82 index backtester/tests/test_index_runtime_guards.py backtester/tests/test_index.py",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff check full inheritedrules for index andtests",
+      "exit_code": 1,
+      "result": "39pre-existingstylefindings;0newagainstHEAD",
+      "comparison": "/tmp/oraclebot-index-ruff-comparison.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "files": {
+    "index/build.py": {
+      "lines": 914,
+      "sha256": "5dc1243f4accc99c10f353b6e87ee292a1a51a895e52427df11b9bd81942c987",
+      "blob": "1a6ceb885fda7e831f105917c73a2fe45769212a"
+    },
+    "index/idle.py": {
+      "lines": 321,
+      "sha256": "5d6e726e35f08ef7cc5ef02c20c4775b6e5ac2e7feb921e15152fc0cf695dc73",
+      "blob": "a63c813828e66cddc6b66e3a1a9d866ce14a2676"
+    },
+    "index/ollama_ensure.py": {
+      "lines": 181,
+      "sha256": "4cc05e0b23901847b3e1efed85be7ff770ffd56377d75e6acae7234b42bcf3da",
+      "blob": "ef45b5575c618c025ae4afc0e81f0313e04501b8"
+    },
+    "index/search.py": {
+      "lines": 439,
+      "sha256": "f886b50aced5e914afe357c56e55f8095334da7f55dff9f6a6ae50904b07be0b",
+      "blob": "5c11c203d80d2e12bc6bad026cfdd432319bcadc"
+    },
+    "index/make_files_doc.py": {
+      "lines": 549,
+      "sha256": "e0d889e2b1731b5777d559c180de019b6083bfc53e65cbfecad086308bf2f5ef",
+      "blob": "38176cfdc687bbebbbbd35283cc2e2b25d5bf67f"
+    },
+    "index/make_concepts_doc.py": {
+      "lines": 159,
+      "sha256": "27021e158091e463607ed2ddec32f31a3675b897fcf716417465d9525c99f695",
+      "blob": "2806a3e8725d50a4b70152c40c751111385e62a8"
+    },
+    "backtester/tests/test_index.py": {
+      "lines": 266,
+      "sha256": "185bd9e66c5bc0772204140efa495c590bff9b29bc14ba074fdcc7fa6623fbbf",
+      "blob": "c55fcc7b6a5d552dfdd44f77cf6d34f52bed8cf3"
+    },
+    "backtester/tests/test_index_runtime_guards.py": {
+      "lines": 137,
+      "sha256": "83320929b542d0794ab8a76202b0504abf9fcfb1d63ec735ab01a46a251ef7a5",
+      "blob": "bd35ef7a752de8a91df2fc9d892067f77f11c80f"
+    }
+  },
+  "snapshot": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-index-review-20261112",
+  "stele": [
+    "KNOW-1619",
+    "KNOW-1622",
+    "KNOW-1623",
+    "KNOW-1624"
+  ],
+  "outbox_ids": [
+    "5d6c6450"
+  ],
+  "remaining": [
+    "Final offline index/doc regeneration after all source/workflow edits settle",
+    "Canonical fullsuite/CI and independent acceptance remain parent-owned",
+    "No real semantic embedding rebuild, process launch or model query performed"
+  ]
+}

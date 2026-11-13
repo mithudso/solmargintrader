@@ -1,0 +1,80 @@
+{
+  "agent": "/root/guarded_soltui_final",
+  "definition_version": "1.0.0",
+  "status": "private-qualification-complete-full-held",
+  "scope": "Spawn-safe private candidate qualification and failure preservation only",
+  "observed_at": "2026-11-13T03:04:43.146866+00:00",
+  "source_identity_observed": {
+    "head": "92c75a58468fccc0802c2945b7a4a282639ce764",
+    "porcelain": ""
+  },
+  "new_full_gate": "HOLD until final root HEAD plus GO; no full run under new candidate",
+  "old_failed_full": {
+    "completion": "/tmp/oraclebot-full-shards-20261113/groups/full-92c75a58468f/completion.json",
+    "aggregate_sha256": "31725bb4fe40987a253f4f4db350319d64306e47278ea0bb2d632cbab7f5fb7c",
+    "actual_launcher_exit": 1,
+    "tests": 1563,
+    "outcomes": {
+      "success": 1548,
+      "skips": 14,
+      "errors": 1
+    },
+    "cause": "Private entry dispatch lacked __main__ guard; multiprocessing.spawn re-import with trimmed argv exited before queue target.",
+    "old_code_and_receipts_preserved": true
+  },
+  "changes": [
+    "Conventional guarded main() for entry mode dispatch and Result binding.",
+    "New private BASE namespaces preserve all original guard/native/selector/finalizer policy bytes modulo BASE only.",
+    "Actual spawn positive and negative controls now exercise entry re-import, guard inheritance and cleanup."
+  ],
+  "evidence": [
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/entry-main-guard.patch",
+      "observed_at": "2026-11-13T03:04:43.167742+00:00",
+      "supported_claim": "Only entry lifecycle dispatch moved under conventional main guard; no product test/assertion/timing/economic change."
+    },
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/four-process-smoke-spawnfix-v1/aggregate.json",
+      "observed_at": "2026-11-13T02:59:38.353549+00:00",
+      "supported_claim": "28synthetic cases/4private skips; actual launcher0,all4test/finalizer0,exact observed union and disjoint12roots,16inherited+4native children accounted,native exits0,zero forbidden/leftovers/drift."
+    },
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/controls/negative-post-exit.json",
+      "observed_at": "2026-11-13T03:00:47.141320+00:00",
+      "supported_claim": "All4negative parents/actualspawnchildren0; oldbadimportRED reproduced,new__mp_main__/ordinary import inert,directinvalidmoderefused,7selectornegatives retained,5actualchildrefusals each;13expected totalrefusals pernamespace retained,zero startupfailures/leftovers/signals."
+    },
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/aggregate-controls-result.json",
+      "observed_at": "2026-11-13T03:04:43.167759+00:00",
+      "supported_claim": "11disposable receipt corruptions refused,actualcontrol0."
+    },
+    {
+      "source": "/tmp/oraclebot-full-shards-20261113/spawnfix/ready-seal.json",
+      "observed_at": "2026-11-13T03:04:43.167763+00:00",
+      "supported_claim": "Namespace/launcher/native/interpreter hashes read back; oldseal unchanged; full authorization false pending final root release."
+    }
+  ],
+  "remaining": [
+    "Root resolves separate targetedmacOS CI failure and supplies final clean HEAD+explicit fullGO.",
+    "Run complete fresh four-shard discovery; private qualification and three successful old shards do not substitute."
+  ],
+  "details": {
+    "entrypoint": "/tmp/oraclebot-full-shards-20261113/spawnfix/launch.py",
+    "lifecycle_map": "Entry import is inert; primary dispatch under __main__; actual spawn children load __mp_main__ then execute their target; current-test/stable-ID evidence and native admission retained.",
+    "terminal_states": [
+      "qualified private candidate",
+      "oldfullfailed and reaped",
+      "newfullheld"
+    ],
+    "log_paths": [
+      "/tmp/oraclebot-full-shards-20261113/spawnfix/groups/four-process-smoke-spawnfix-v1",
+      "/tmp/oraclebot-full-shards-20261113/spawnfix/controls"
+    ],
+    "cancellation_evidence": "No new cancellation probe or signal. All new controls exited/reaped normally; inherited/native finalizer proofs complete. Global launcher deadline cleanup remains original reviewed implementation.",
+    "watcher_teardown": "No watcher/service started. No owned children remain.",
+    "tests": "Synthetic qualification plus historical failed complete full1563,not a new full pass.",
+    "installed_acceptance": "None; installed owner services untouched."
+  },
+  "artifact_manifest": "/tmp/oraclebot-full-shards-20261113/spawnfix/artifacts-manifest.json",
+  "note": "Qualification observed prior92c75; next full must bind final clean newHEAD. Synthetic controls are not a full source pass."
+}

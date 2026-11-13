@@ -1,0 +1,181 @@
+{
+  "agent": "inventory-independent-review",
+  "definition_version": "2.0.0",
+  "status": "complete",
+  "verdict": "accepted within bounded scope",
+  "round": "one final acceptance round after initial findings",
+  "observed_at": "2026-11-12T19:35:22.539927+00:00",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "scope": {
+    "assigned_files": [
+      "scripts/build_operation_inventories.py",
+      "backtester/tests/test_operation_inventories.py"
+    ],
+    "read_ranges": {
+      "scripts/build_operation_inventories.py": [
+        [
+          1,
+          321
+        ]
+      ],
+      "backtester/tests/test_operation_inventories.py": [
+        [
+          1,
+          132
+        ]
+      ],
+      "extension/src/core/commands.js": [
+        [
+          540,
+          550
+        ],
+        [
+          708,
+          718
+        ],
+        [
+          990,
+          1004
+        ]
+      ]
+    },
+    "authoritative_static_metadata": "166 SolTUI and 14 executor declarations independently compared through AST literals/defaults; 41 extension commands; seven manifests unchanged from initial review"
+  },
+  "source_bindings": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/build_operation_inventories.py",
+      "sha256": "5594594c6f425718fcc3d971e8b93a7219cf43f8b5116a854d57159c0993c669"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/tests/test_operation_inventories.py",
+      "sha256": "0b8da9d4f13cd7b8a3ca0890940fa067c02f050d2ae5284d69e5d31973a57ec7"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/commands.js",
+      "sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/commands.py",
+      "sha256": "dc5220b287146966856f85e653472d5ac3290109d81333dddc37205935233b1d"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py",
+      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/pyproject.toml",
+      "sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/pyproject.toml",
+      "sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/pyproject.toml",
+      "sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pyproject.toml",
+      "sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pyproject.toml",
+      "sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/pyproject.toml",
+      "sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/pyproject.toml",
+      "sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47"
+    }
+  ],
+  "checks": [
+    {
+      "name": "immutable_original_refusal_controls",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B /tmp/oraclebot-inventory-independent-probes-20261112.py /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+      "exit_code": 0,
+      "tests": 6,
+      "passed": 6,
+      "initial_exit_code": 1,
+      "initial_failures": 6
+    },
+    {
+      "name": "permanent_focused_tests",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest backtester.tests.test_operation_inventories -v",
+      "exit_code": 0,
+      "tests": 11,
+      "passed": 11
+    },
+    {
+      "name": "independent_positive_static_controls",
+      "command": "Python -B in-memory nested-field fixture, current source metadata checks, repeated build, guarded materialize/main --check, source/output hash comparisons",
+      "exit_code": 0,
+      "result": {
+        "operations": 221,
+        "tools": 31,
+        "deterministic": true,
+        "all_source_bindings_current": true,
+        "global_tool_ids_unique": true,
+        "controlRoomStatus_read_only": true,
+        "browserManagerSnapshot_read_only": true,
+        "nested_parameters_and_handler_objects_cannot_override_flags": true,
+        "check_main_exit": 0,
+        "check_attempted_no_writes": true,
+        "output_hashes_unchanged": true,
+        "source_unchanged_during_checks": true,
+        "application_registry_modules_imported": []
+      }
+    },
+    {
+      "name": "initial_evidence_integrity",
+      "exit_code": 0,
+      "result": "All frozen initial receipt/probe/log SHA256 values still match the immutable initial evidence supplement."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "INV-1",
+      "resolution": "Python expanded, unknown and duplicate metadata keywords refuse; supported positional shape is constrained."
+    },
+    {
+      "id": "INV-2",
+      "resolution": "JavaScript literal object-property extraction rejects unsupported entry syntax and duplicates, reads inline booleans, and keeps nested values opaque."
+    },
+    {
+      "id": "INV-3",
+      "resolution": "build refuses duplicate global tool IDs across manifests/explicit tools."
+    }
+  ],
+  "corroborated_medium_or_higher_residual": [],
+  "artifacts": [
+    {
+      "path": "/tmp/oraclebot-inventory-independent-positive-controls-final-20261112.json",
+      "sha256": "f4a92b6cda43bf3f43e66bfe175fa20cb935dbce8b9829c8f26aa66c5a871878"
+    },
+    {
+      "path": "/tmp/oraclebot-inventory-independent-probes-final-20261112.log",
+      "sha256": "f16a3c8458918c9355e7b502cfda39cc0186a0b9b4bd7d73b2ea7aecb433277d"
+    },
+    {
+      "path": "/tmp/oraclebot-inventory-permanent-tests-final-20261112.log",
+      "sha256": "56254125299daa07f01c8f44f35afa5eb5b6fc8b0a1e5ff72890e1003da05a94"
+    },
+    {
+      "path": "/tmp/oraclebot-inventory-independent-initial-evidence-20261112.json",
+      "sha256": "26a6fcd6c51d00b52ed081097d079cf26168f1d72fca2d501c4809a8300da7d5"
+    }
+  ],
+  "output_bindings": {
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/operations-registry.json": "b245a4ad4b804e26f4cc5ab42c7d6a033fa2812d663345128681c87b79ba1a1e",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/tool-inventory.json": "72fcd179917665a80d9167caae4d44b2a5e39214f389647a28dbc63c782bbaaa"
+  },
+  "limits": [
+    "This accepts only the assigned docs-only generator, tests and corroborated metadata/parser fixes at the bound hashes.",
+    "This is not a whole-repository code audit, installed/live acceptance, handler execution test, signing/order test or exhaustive external-call inventory proof.",
+    "The constrained JavaScript reader intentionally supports the repository literal-registry format; it is not a general JavaScript parser.",
+    "No application registry was imported; no package was installed; no external network, service, owner home, financial action or repository write occurred in this review."
+  ],
+  "remaining": []
+}

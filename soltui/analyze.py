@@ -245,7 +245,7 @@ def analyse(asset: str, interval: str = "1d", as_of: datetime | None = None,
         bars_used=int(len(sliced["close"])),
         close=float(sliced["close"][-1]),
         decisions=decisions, tally=family_tally(decisions),
-        truncated=truncated, first_close=_first_close(asset, interval, data_dir),
+        truncated=truncated, first_close=float(sliced["close"][0]),
     )
 
 

@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import fcntl
 import json
+import math
 import os
 import plistlib
 import subprocess
@@ -81,6 +82,10 @@ def semantic_status() -> tuple[str, str]:
         manifest = json.loads(pair[0].read_text())
     except (OSError, ValueError):
         return "stale", f"{pair[0].name} is unreadable"
+    if not isinstance(manifest, dict) or not isinstance(manifest.get("sourceSha1", {}), dict):
+        return "stale", f"{pair[0].name} has an invalid manifest"
+    if manifest.get("model") is not None and not isinstance(manifest["model"], str):
+        return "stale", f"{pair[0].name} has an invalid model"
     if manifest.get("model") and not ollama_ensure.model_matches(
             [manifest["model"]], ollama_ensure.EMBED_MODEL):
         return "stale", f"built with {manifest['model']}, current model is {ollama_ensure.EMBED_MODEL}"
@@ -122,12 +127,21 @@ def force_interval() -> float:
 def sweep_due(state: dict, now: float) -> bool:
     """True when the hourly sweep applies: enabled, and an hour since a rebuild last started."""
     interval = force_interval()
-    return interval > 0 and now - float(state.get("last_build_at", 0)) >= interval
+    return interval > 0 and now - _timestamp(state.get("last_build_at", 0)) >= interval
+
+
+def _timestamp(value) -> float:
+    try:
+        number = float(value)
+        return number if math.isfinite(number) else 0.0
+    except (ValueError, TypeError):
+        return 0.0
 
 
 def _read_state() -> dict:
     try:
-        return json.loads(STATE_FILE.read_text())
+        state = json.loads(STATE_FILE.read_text())
+        return state if isinstance(state, dict) else {}
     except (OSError, ValueError):
         return {}
 
@@ -159,7 +173,7 @@ def maybe_start(*, force: bool = False, now: float | None = None) -> str:
         return "auto-indexing disabled (INDEX_NO_AUTO=1)"
     clock = time.time() if now is None else now
     state = _read_state()
-    if not force and clock - float(state.get("checked_at", 0)) < MIN_INTERVAL:
+    if not force and clock - _timestamp(state.get("checked_at", 0)) < MIN_INTERVAL:
         return state.get("last", "checked recently")
     status, why = semantic_status()
     if status == "fresh":
@@ -204,7 +218,9 @@ def run_build() -> int:
         started = time.time()
         code = build.build_semantic(build.build_meta(), local=True)
         print(f"rebuild finished in {time.time() - started:.0f}s with code {code}", flush=True)
-        _write_state({"checked_at": time.time(),
+        state = _read_state()
+        _write_state({**state, "checked_at": time.time(),
+                      "last_build_at": state.get("last_build_at", started),
                       "last": "rebuild finished" if code == 0 else "rebuild failed"})
         return code
     finally:

@@ -101,7 +101,7 @@ class PresetTests(unittest.TestCase):
         single = presets.build_strategy(self.presets[1])
         combo = presets.build_strategy(self.presets[0])
         self.assertTrue(single.name.startswith("obv_trend"))
-        self.assertEqual(len(combo.strategies) if hasattr(combo, "strategies") else 2, 2)
+        self.assertEqual(len(combo.members), 2)
         self.assertGreater(combo.warmup_bars(), 0)
 
     def test_find_preset_names_the_ranks_that_exist(self) -> None:

@@ -208,11 +208,13 @@ class LiveRunner:
         *,
         journal: SubmissionJournal | None = None,
         accounting: dict[str, str] | None = None,
+        before_send: Callable[[], None] | None = None,
     ):
         self.chain, self.acct, self.tokens, self.cfg, self.pool = chain, account, tokens, cfg, pool
         self.w3 = chain.w3
         self.journal = journal
         self.accounting = accounting
+        self.before_send = before_send
         self.group = uuid.uuid4().hex
         self._uncertain = False
         self._lease = None
@@ -302,6 +304,8 @@ class LiveRunner:
         hashes: list[str] = []
         block: int | str = "latest"
         for tx in txs:
+            if self.before_send is not None:
+                self.before_send()
             if self.journal is None:
                 raise RuntimeError("a durable submission journal is required before live writes")
             if self.journal.owner.lower() != self.acct.address.lower():
@@ -323,6 +327,8 @@ class LiveRunner:
                 "type": 2,
             }
             req["gas"] = int(self._estimate_gas(req) * 1.25)  # reverts here if the tx would fail
+            if self.before_send is not None:
+                self.before_send()  # An RPC wait may have outlived the permission checked above.
             signed = self.acct.sign_transaction(req)
             h = HexBytes(signed.hash)
             # Recorded before broadcasting: the RPC layer retries transport errors, so a send that raises may
@@ -337,9 +343,17 @@ class LiveRunner:
                 self.tokens,
                 accounting=self.accounting,
             )
+            try:
+                if self.before_send is not None:
+                    self.before_send()  # Persistence may have outlived the last permission check.
+            except BaseException:
+                # Only this synchronous refusal proves no send was attempted. A crash or any exception
+                # after entering send_raw_transaction must keep the intent unresolved instead.
+                self.journal.cancel_before_broadcast(_hex(h), self.group)
+                self._uncertain = False
+                raise
             self._next_nonce = req["nonce"] + 1
             self.sent_hashes.append(_hex(h))
-            self._uncertain = True
             try:
                 self.w3.eth.send_raw_transaction(signed.raw_transaction)
             except Exception:

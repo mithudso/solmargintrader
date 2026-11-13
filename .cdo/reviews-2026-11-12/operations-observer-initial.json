@@ -1,0 +1,166 @@
+{
+  "agent": "full_repo_health",
+  "observed_at": "2026-11-12T22:34:06.231699+00:00",
+  "status": "READ_ONLY_FULL_INCOMING_INSPECTION_RUNTIME_QUALIFICATION_PENDING",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "incoming_commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+  "files": [
+    {
+      "path": "scripts/oraclebot_ops.py",
+      "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+      "sha256": "82d077ee89c554133e9e27bde0d61f1b165ac912dc053ea1e4fe6c3502487b0c",
+      "git_blob": "ba92e379c55e575f909c50c0789a9e8beba449de",
+      "lines": 525,
+      "read_ranges": [
+        [
+          1,
+          525
+        ]
+      ],
+      "read_evidence": "Complete immutable git show output read in full; observer anchors displayed with nl afterwards. Hashes bind reads rather than substitute for them."
+    },
+    {
+      "path": ".github/workflows/oraclebot-operations.yml",
+      "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+      "sha256": "f04f3dabcb3214643ac6877c270673d1c1a79a7c2f661772330233540e467fdb",
+      "git_blob": "f3e8d9b97d63b0b9034fa4a07aaf862c22e44cfa",
+      "lines": 44,
+      "read_ranges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "read_evidence": "Complete immutable git show output read in full; observer anchors displayed with nl afterwards. Hashes bind reads rather than substitute for them."
+    },
+    {
+      "path": "docs/ORACLEBOT-OPERATIONS.md",
+      "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+      "sha256": "d462471e0f11378ff59ed9f1188503b3de56ff7fbcbcce302eea6e37d0a06563",
+      "git_blob": "44cff68c8dbc871ec18333ae066e020843a9462f",
+      "lines": 124,
+      "read_ranges": [
+        [
+          1,
+          124
+        ]
+      ],
+      "read_evidence": "Complete immutable git show output read in full; observer anchors displayed with nl afterwards. Hashes bind reads rather than substitute for them."
+    }
+  ],
+  "per_file": [
+    {
+      "path": "scripts/oraclebot_ops.py",
+      "commit": "d2706c337a24be1d92753f5fdb62cdc15e170882",
+      "sha256": "82d077ee89c554133e9e27bde0d61f1b165ac912dc053ea1e4fe6c3502487b0c",
+      "git_blob": "ba92e379c55e575f909c50c0789a9e8beba449de",
+      "lines": 525,
+      "read_ranges": [
+        [
+          1,
+          525
+        ]
+      ],
+      "read_evidence": "Complete immutable git show output read in full; observer anchors displayed with nl afterwards. Hashes bind reads rather than substitute for them.",
+      "passes": {
+        "C1": "Complete525-line semantic read: shape/retry/state/report/CLI behavior traced.202nonobject response can escape intended delivery-error path.",
+        "C2": "Reviewed caller contracts for probe,record,deliver,heartbeat,reports,tick,main. Durable transitions and accepted-vs-delivered distinctions explicit; no production trading handler.",
+        "C3": "Debounce initial/recovery transitions and persisted episode/idempotency flows inspected. Runtime checks deferred until root postmerge authorization.",
+        "S1": "Explicit static ingest credential never copied into configuration/status; HTTPS/default loopback restrictions and redirect refusal inspected. Credential file misses regular-file/size admission.",
+        "S2": "Flock single owner and subprocess/HTTP timeouts inspected. capture_output bounds only elapsed time;131072postcapture threshold does not bound stdout/stderr allocation. Native installer subprocesses also lacktimeout.",
+        "S3": "Probe timestamp/bool/component guards inspected; malformed deliveryJSON object assumption remains unhandled. Owned-home symlink checks do not cover every report/temp/config leaf.",
+        "S4": "Pinned checkout and scheduled/manual workflow conditions reviewed; source depends only stdlib plus existing explicit solbot/gh/macOS observer installs.",
+        "S5": "Structured status safe error codes, notification argv, no token echo, and acceptance limits inspected. Whole-tick unhandled errors prevent fresh status without a local structured exception boundary.",
+        "P1": "SQLite sample retention and bounded delivery20rows inspected. All-outbox scan/latest_by_key and postcapture stdout/stderr remain resource limits to qualify.",
+        "P2": "Separate monitor owner.lock prevents concurrent run/once. Writes from install are not under same owner lease, but config disagreement and source-hash copies refuse migrations.",
+        "M1": "525lines is slightly above500guide; single stdlib observer module keeps related state/install/CLI contracts together. Flagged rather than automatic split.",
+        "M2": "No new dependency/runtime dispatch duplication. DurableSQLite state centralizes retry/debounce instead of in-memory-only alerts.",
+        "M3": "Per-file settings are explicit config/CLI; prior global M3 architecture residuals remain. No retry change to financial writes; these retries only deliver observation events.",
+        "M4": "Reviewed124-line operations doc and44-line workflow. Installed-service/rootrepair/phone-readiness facts are incoming historical claims, not independently requalified here; doc separates uptime/phone/banner/publicengine facts.",
+        "T1": "291-line incoming testmodule assigned separate full reviewer. Existing assertions and postmerge synthetic gaps to be bound independently; no test execution during freeze.",
+        "T2": "No thirdparty dependency. stdlibpairwise requiresPython3.10+; macOSfcntl/plist/launchd installer andLinuxCItests separate applicability. Existing declared project graph unchanged.",
+        "T3": "ASTparse observer completed0 using immutable private snapshot. No lint/test/installer/watchdog/provider/network commands executed.",
+        "T4": "No blindparallelism/setuphoist change. Parent full suite remains frozen/stopped separately; exact private mocked gates only after authorization.",
+        "M5": "argparsehelp/unknownargs stdlib-only. Required install-specific args checked after database(home), so invalidinstallhasIO; missing/corruptstatus/config raises uncaught traceback. Friendlypreflight qualification remains open."
+      },
+      "verdict": "FINDINGS_OPEN"
+    }
+  ],
+  "findings": [
+    {
+      "id": "OPS1",
+      "severity": "Medium",
+      "path": "scripts/oraclebot_ops.py",
+      "lines": [
+        209,
+        211
+      ],
+      "symbols": [
+        "send_alert",
+        "deliver",
+        "tick"
+      ],
+      "condition": "A202response body is validJSON array/null/number rather thanobject.",
+      "effect": "body.get raisesAttributeError, not caught by deliver(OSError,ValueError); tick exits before heartbeat/report/status and retry restarts repeatedly.",
+      "qualification": "Static concrete path; mockshape regression pending root authorization."
+    },
+    {
+      "id": "OPS2",
+      "severity": "Medium",
+      "path": "scripts/oraclebot_ops.py",
+      "lines": [
+        162,
+        170
+      ],
+      "symbols": [
+        "ingest_token"
+      ],
+      "condition": "Credential path is an owned0600FIFO/device or unboundedregularfile.",
+      "effect": "Ownership/mode/symlink checks pass; read_text canblockforever orallocateunboundedbytes in monitor/install.",
+      "qualification": "Static concrete path; lstat/neveropenFIFO andsize mockregressions pending."
+    },
+    {
+      "id": "OPS3",
+      "severity": "Medium",
+      "path": "scripts/oraclebot_ops.py",
+      "lines": [
+        67,
+        77
+      ],
+      "symbols": [
+        "probe"
+      ],
+      "condition": "health-check floods stdout orstderr inside15seconds.",
+      "effect": "subprocess.run(capture_output=True) buffersallbytes before131072stdout check; no stderrbytecap.",
+      "qualification": "Static resource boundary; bounded synthetic mock/subprocess test only after authorization."
+    },
+    {
+      "id": "OPS4",
+      "severity": "Medium",
+      "path": "scripts/oraclebot_ops.py",
+      "lines": [
+        437,
+        454
+      ],
+      "symbols": [
+        "main"
+      ],
+      "condition": "installselectedwithoutrequiredinstallarguments, orrun/once/statusselectedbeforeconfigurationexists.",
+      "effect": "Invalidinstallcreatesdatabase/home beforeusageerror; missingprerequisite/statuscorruptions produce uncaughttracebacks.",
+      "qualification": "M5conditionalspecific CLIpreflight; exact mock/temp checks pending."
+    }
+  ],
+  "checks": [
+    {
+      "name": "immutable observer ast.parse",
+      "exit": 0,
+      "scope": "parse only; no application import or execution"
+    }
+  ],
+  "limits": [
+    "No checkout or repository mutation.",
+    "No installer, observer once/run, watchdog, native service, notifications, ghAPI, provider or research execution.",
+    "Installed incoming operation-service claims not live requalified.",
+    "Final global inspection/convergence remains819original+3incoming until merge/delta integration."
+  ]
+}

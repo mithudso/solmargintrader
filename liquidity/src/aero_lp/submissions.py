@@ -217,6 +217,19 @@ class SubmissionJournal:
         with self._edit() as doc:
             doc["transactions"][tx_hash]["receipt"] = metadata
 
+    def cancel_before_broadcast(self, tx_hash: str, group: str) -> None:
+        """Retire one known-unsent intent while retaining its public hash and decoded metadata.
+
+        Only the active runner's synchronous final-gate refusal before its first send attempt may call
+        this. A missing receipt, a crash or a failed/ambiguous send does not prove cancellation.
+        """
+        with self._edit() as doc:
+            record = doc["transactions"].get(tx_hash)
+            if record is None or record["group"] != group or record["receipt"] is not None or record["processed"]:
+                raise PendingSubmission("cannot cancel an intent outside its active pre-broadcast operation")
+            record["cancelled_before_broadcast"] = True
+            record["processed"] = True
+
     def reconcile(self, chain: Any, apply: Callable[[dict[str, Any], list[dict[str, Any]]], None]) -> None:
         if not any(not r["processed"] for r in self.records()):
             return
@@ -241,7 +254,7 @@ class SubmissionJournal:
             if record["processed"]:
                 continue
             chain.min_block = max(getattr(chain, "min_block", None) or 0, record["receipt"]["blockNumber"])
-            group = [r for r in records if r["group"] == record["group"]]
+            group = [r for r in records if r["group"] == record["group"] and not r.get("cancelled_before_broadcast")]
             apply(record, group)
             with self._edit() as doc:
                 doc["transactions"][record["hash"]]["processed"] = True

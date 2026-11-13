@@ -217,6 +217,49 @@ function seedResearch(context, selected = true) {
     assert.equal(posts,1);assert.equal(posted.params.run_id,undefined);assert.equal(posted.params.mode,'prospective');
   }
   {
+    const {context,element} = await fixture(); const posts = [];
+    context.fetch=async(url,options)=>{if(url==='/api/actions'&&options?.method==='POST'){const posted=JSON.parse(options.body);posts.push(posted);return {ok:true,status:202,json:async()=>({schema_version:1,ok:true,data:{id:posted.request_id,action:posted.action,state:'queued'}})}}throw new Error('offline');};
+    read(context,"state.polling=true;state.activeRun='legacy-v1';state.session={csrf_nonce:'fixture'};state.control={read_only_source:true,mutation_allowed:false,catalog:{}};state.oracle={instrument:'SOL/USD',live_forecast:{settings:{instrument:'SOL/USD',seconds:10,revision:3}}};renderSelectedAggregate()");
+    element('forecast-seconds').value='17';element('forecast-seconds').dispatch('input');
+    assert.equal(element('forecast-seconds-save').disabled,false);
+    await read(context,"saveForecastSeconds(Number(document.getElementById('forecast-seconds').value),document.getElementById('forecast-seconds-save'))");
+    assert.equal(posts.length,1,'a forecast preference remains editable from a legacy research view');
+    assert.equal(posts[0].action,'oracle.forecast.set');assert.equal(posts[0].params.run_id,'legacy-v1');
+    assert.equal(posts[0].params.instrument,'SOL/USD');assert.equal(posts[0].params.seconds,17);assert.equal(posts[0].params.expected_revision,3);
+    assert.equal(read(context,'state.oracleInterval'),'17s');
+    for(const action of ['pipeline.start','backtest.stop','oracle.restart','recorder.start']) {
+      context.blockedAction=action;
+      assert.equal(read(context,"actionBlocked(blockedAction,{})"),true);
+      await read(context,"submitAction(blockedAction,{})");
+    }
+    assert.equal(posts.length,1,'forecast preferences do not permit legacy owner actions');
+    assert.equal(read(context,"actionBlocked('oracle.voters.set',{})"),false);
+  }
+  {
+    const {context,element} = await fixture(); const now=Date.now()/1000;
+    context.live={instrument:'SOL/USD',status:'unavailable',live_forecast:{instrument:'SOL/USD',status:'fresh',horizon_seconds:10,refresh_seconds:10,input_bar_seconds:10,source:'coinbase_recorder',kind:'stream_snapshot_mid',issued_at:now-1,observed_at:now-1,target_at:now+9,reference_price:100,settings:{instrument:'SOL/USD',seconds:10,revision:0},selected:{strategy_id:'ma_crossover',version:'a'.repeat(64),direction:1,predicted_price:100.125,resolved:0,hits:0,ranking_basis:'warm_start_catalog_order'}}};
+    context.fetch=async(url,options)=>{if(url==='/api/actions'&&options?.method==='POST')return {ok:true,status:202,json:async()=>({schema_version:1,ok:true,data:{id:'applied-before-frame',action:'oracle.forecast.set',state:'queued'}})};throw new Error('offline');};
+    read(context,"state.polling=true;state.session={csrf_nonce:'fixture'};state.oracle=live;renderSelectedAggregate()");
+    const issued=read(context,'timestamp(live.live_forecast.issued_at)'), target=read(context,'timestamp(live.live_forecast.target_at)');
+    await read(context,"saveForecastSeconds(17,document.getElementById('forecast-seconds-save'))");
+    context.waiting={instrument:'SOL/USD',status:'unavailable',live_forecast:{instrument:'SOL/USD',status:'waiting',horizon_seconds:17,refresh_seconds:17,settings:{instrument:'SOL/USD',seconds:17,revision:1}}};
+    read(context,"state.oracle=waiting;state.localActions.set('applied-before-frame',{id:'applied-before-frame',action:'oracle.forecast.set',state:'succeeded',result:{revision:1}});renderActionLedger();renderSelectedAggregate()");
+    assert.equal(read(context,"preferencePending('forecast',state.oracleInstrument)"),false);
+    assert.match(element('aggregate-signal').textContent,/UP.*100.125/,'the prior forecast survives preference completion while the new frame is unavailable');
+    assert.match(element('aggregate-balance').textContent,/10-second price projection/);
+    assert.match(element('aggregate-reason').textContent,/Waiting for 17s.*previous 10s/);
+    assert(element('aggregate-freshness').textContent.includes(`Evaluated ${issued}`));
+    assert(element('aggregate-freshness').textContent.includes(`target ${target}`));
+    assert.match(element('aggregate-freshness').textContent,/recalculates every 10s/);
+    assert.doesNotMatch(element('aggregate-reason').textContent,/Provisional live forecast/);
+    context.ready=JSON.parse(JSON.stringify(context.live));Object.assign(context.ready.live_forecast,{horizon_seconds:17,refresh_seconds:17,issued_at:now,observed_at:now,target_at:now+17,settings:{instrument:'SOL/USD',seconds:17,revision:1}});context.ready.live_forecast.selected.predicted_price=100.25;
+    read(context,'state.oracle=ready;renderSelectedAggregate()');
+    assert.match(element('aggregate-signal').textContent,/UP.*100.25/);
+    assert.match(element('aggregate-balance').textContent,/17-second price projection/);
+    assert.match(element('aggregate-reason').textContent,/Provisional live forecast/);
+    assert.equal(read(context,'state.forecastHolding'),null);
+  }
+  {
     const {context,element} = await fixture(); let posted;
     context.fetch=async(url,options)=>{if(options?.method==='POST'){posted=JSON.parse(options.body);return {ok:true,status:202,json:async()=>({schema_version:1,ok:true,data:{id:posted.request_id,action:posted.action,state:'queued'}})}}throw new Error('offline');};
     read(context,"state.session={csrf_nonce:'fixture'};state.control={configs:[{bot_id:'native',display_name:'Native',strategy_id:'trend',source:'manager',config_revision:1}],statuses:{bots:[{bot_id:'native',action_capabilities:{}}]},catalog:{manager_schema:{strategies:{trend:{}}}}};renderManagerConfigs()");
@@ -421,6 +464,48 @@ class UiContractTests(unittest.TestCase):
         self.assertEqual(source.count("localStorage."), 2)
         self.assertEqual(source.count('"solmargintrader.oracle.display.v2"'), 2)
         self.assertNotIn("localStorage.clear", source)
+
+    @unittest.skipUnless(
+        shutil.which("node"), "Node is needed for chart lifecycle checks"
+    )
+    def test_oracle_chart_refresh_preserves_hidden_overlay_and_single_instance(self):
+        program = r"""
+const vm=require('node:vm'), fs=require('node:fs'), assert=require('node:assert/strict');
+const nodes=new Map();
+class Element {
+ constructor(tag='div'){this.tagName=tag;this.children=[];this.events={};this.dataset={};this.classList={add(){}};}
+ append(...items){for(const item of items)this.children.push(...(item.tagName==='#fragment'?item.children:[item]));}
+ replaceChildren(...items){this.children=[];this.append(...items);}
+ addEventListener(name,listener){this.events[name]=listener;}
+}
+const element=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
+let created=0, markerRows=[];
+const library={LineSeries:{},createChart(){created++;return{addSeries:()=>({setData(){}}),timeScale:()=>({getVisibleLogicalRange:()=>null,fitContent(){}})};},createSeriesMarkers:()=>({setMarkers(rows){markerRows=rows;}})};
+const context={document:{getElementById:element,createElement:tag=>new Element(tag),createDocumentFragment:()=>new Element('#fragment')},window:{},fakeLibrary:library};
+// Replace only the module transport with a local fake, leaving render and DOM code intact.
+const source=fs.readFileSync(process.argv[1],'utf8');
+assert.equal(source.split('import("/lightweight-charts.mjs")').length,2);
+vm.runInNewContext(source.replace('import("/lightweight-charts.mjs")','Promise.resolve(fakeLibrary)'),context);
+const graph={status:'available',instrument:'SOL/USD',count:1,ticks:[{tick_id:'one',time:1000,price:10,strategies:[{strategy_id:'rsi',direction:1}],aggregate:null}]};
+(async()=>{
+ await Promise.all([context.window.OracleChart.render(graph),context.window.OracleChart.render(graph)]);
+ assert.equal(created,1,'overlapping renders created multiple chart instances');
+ const toggle=element('oracle-chart-legend').children[0].children[0];
+ assert.equal(toggle.checked,true);toggle.checked=false;toggle.events.change();
+ assert.equal(markerRows.length,0);
+ await context.window.OracleChart.render(graph);
+ assert.equal(element('oracle-chart-legend').children[0].children[0].checked,false,'polling reset the hidden overlay');
+ assert.equal(markerRows.length,0);
+})().catch(error=>{console.error(error);process.exitCode=1;});
+"""
+        result = subprocess.run(
+            [shutil.which("node"), "-e", program, str(WEB / "oracle-chart.js")],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     @unittest.skipUnless(
         shutil.which("node"), "Node is needed for the client behavior checks"

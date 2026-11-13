@@ -3,7 +3,7 @@
 What each module is for, what it exposes, and what it depends on. `docs/codebase-overview.md`
 is the flat file map; this page is the shape of the thing.
 
-The ten components have explicit ownership boundaries. `backtester/` supplies the
+The eleven components have explicit ownership boundaries. `backtester/` supplies the
 canonical simulation package to research and headless runtimes. Oracle supplies
 source-labelled observations and forecasts. Bot Manager owns specifications,
 account state and paper lifecycle; ecosystem coordinates existing research owners
@@ -292,3 +292,44 @@ Three constraints shape it:
   guessing.
 - **Every on-chain sequence goes through one `Rebalancer` with a `Runner`.** Dry-run therefore simulates with
   `eth_simulateV1` exactly what live mode would sign. soltui never imports any of it; it reads the state files.
+
+## `website/` — hosted accounts and public research
+
+The website 0.3.0 source has no runtime npm dependencies. Wrangler is pinned
+development tooling. Static files under `website/public/` provide the workspace,
+wallet sign-in, membership controls, inactive paper bot builder, research reader
+and agent consent/revocation settings. Source version does not prove deployment.
+
+| Path | API and ownership |
+| --- | --- |
+| `website/src/worker.js` | Cloudflare API: wallet accounts/sessions, tenant-owned configurations, verified Stripe membership and protected analysis proxy |
+| `website/src/oauth.js` | Public-client PKCE S256, exact resource/redirect binding, separately wallet-signed trading policy, scoped credentials and revocation |
+| `website/src/mcp.js` | Stateless authenticated MCP 2025-11-25 JSON POST; status and trade tools always derive the wallet from the bearer grant |
+| `website/src/trades.js` | Atomic policy/entitlement reservations, owned intent preparation/submission and ambiguous-outcome retention; customer executor remains unprovisioned |
+| `website/public/agent-access.js` | Explicit agent consent, finite preauthorization and grant revocation; no per-trade approval prompt |
+| `website/migrations/` | Additive D1 account, subscription/usage, OAuth grant/token and trade-intent schema |
+| `website/api/openapi.json` | Account, billing, OAuth and MCP HTTP contracts |
+| `website/engine/server.py` | Separate bearer-authenticated Python analysis service; canonical exposure backtests and read-only Oracle archive |
+| `website/scripts/export_research.py` | Deterministic tracked research/card publication with source hashes and bounded body shards |
+| `website/scripts/smoke.mjs` | Explicit deployed-wallet account creation and deletion acceptance |
+| `website/README.md` | Setup, storage, billing, deployment and outstanding activation boundaries |
+| `website/docs/MCP-DESIGN.md` | Wallet-bound preauthorization, supported protocol and customer execution qualification limits |
+
+Starter renews at $9.99/month for three configured slots and ten backtests per
+UTC day. Advanced is $29.99/month for ten slots and unlimited backtests.
+Unlimited is $49.99/month without subscription count caps. The first eligible
+subscription has a seven-day trial. Risk and resource bounds remain on every
+plan. Checkout defaults closed until its launch gates qualify.
+
+Agent trading consent signs one finite policy with venues, assets, USD caps and
+expiry; subsequent trade calls do not ask for wallet approval again. Consent
+cannot create delegated signing authority. `LIVE_EXECUTION_ENABLED` defaults
+to `false`, and no `USER_TRADE_EXECUTOR` is provisioned. Successful adapter
+fixtures do not establish a real connection, signer, venue reconciliation or order.
+
+The engine accepts allow-listed market parameters, not arbitrary paths or code.
+It needs dedicated public data caches and an approved Oracle archive. The
+backtest response retains default model costs and limitations; it does not
+certify a customer’s venue fee tier, supported market or future profit. Local
+ladder, pair and event runners remain separate. Wallet identity, subscription
+entitlement, live data and venue execution are distinct capabilities.

@@ -1,6 +1,23 @@
 # Prompt history
 
-Version: 233
+Version: 236
+Delta: v235 to v236; preserve both full user prompt histories while combining authenticated MCP and continuous forecast work.
+Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration.
+Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+Delta: v234 to v235; preserve corrected MCP/preauthorization and parallel audit/dashboard prompts together.
+Delta: v233 to v234; add authenticated wallet-bound MCP and preserve corrected preauthorization preference.
+Delta: v232 to v233; preserve owner Stripe credential locations and three subscription tiers.
+Parallel audit delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Parallel audit delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
+Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
+Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
+Delta: v228 to v229; capture fresh changed-plugin hook approval recurrence during final audit.
+Delta: v227 to v228; preserve newly reported repeated hook exit126 failures.
+Delta: v226 to v227; preserve owner status question during active full audit.
+Delta: v225 to v226; record explicit resume of the ordered full audit, hook repair and detailed setup explanation.
+Delta: v224 to v225; capture ordered full audit, hook repairs and billing explanation.
 Delta: v232 to v233; add editable forecast seconds beside the prediction.
 Delta: v231 to v232; preserve owner confirmation that the forecast target is the next ten seconds.
 Delta: v230 to v231; record continuous ten-second selected-strategy Oracle forecast request.
@@ -1990,6 +2007,74 @@ I justnadded that Ip
 
 Verify that the existing supervised uploader resumes and validate stored ZEC records without restarting the collector or extending the persisted deadline.
 
+
+## 2026-11-12 — Full repository audit, hook approvals and billing explanation
+
+Fix all of these hook failures:  Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+
+And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.
+
+
+## 2026-11-12 — Resume full audit, hook failures and setup explanation
+
+```text
+Resume and fix these hook failures
+
+And then give me a more detailed explation of what you need. First though run a full repo-bootstrapper and code deep optimizer on this repo.
+```
+
+
+## 2026-11-12 — Active audit status question
+
+```text
+What are you doing right now? r
+```
+
+
+## 2026-11-12 — Repeated hook exit126 failure repair
+
+```text
+Fix these hook failures
+• Hook failed
+  └ hook exited with code 126
+
+• Explored
+  └ Read hub_sqlite.py
+
+• Hook failed
+  └ hook exited with code 126
+
+• Explored
+  └ Read git_corpus.py
+
+• Hook failed
+```
+
+
+## 2026-11-12 — Fresh native plugin approval failures
+
+```text
+fix these hook failures: • Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+• Hook failed
+  └ plugin contents changed; hook approval required
+```
+
+
+## 2026-11-12 — Imported accepted upstream workflow history
+
+Source: remote master 4ab6cddf31143e4738c08588ddda945af726d8d5, including news-event delivery 61b36738639e0f692a2e83a502f32b609353cd41. Existing prompt bodies and continuation results below are preserved from that committed source.
+
+Imported source Delta: v225 to v226; capture all-domain Cloudflare email forwarding request.
+Imported source Delta: v224 to v225; capture historical coin-news and subsequent-price event-study request.
+
 ## 2026-11-12 — Coin news publication and price lookback
 
 ```text
@@ -2007,12 +2092,19 @@ for all of my domains in cloudflare make them forward email to my mitchphudson@g
 ```text
 Keep Google Workspace
 ```
-
 ## 2026-11-12 — Oraclebot persistent operations
 
 ```text
 For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
 ```
+
+
+## Preserved parallel audit continuation
+
+
+## Imported upstream pipeline workflow from 93312fd7
+
+The following original-owner continuation/request is preserved verbatim. Its versions belong to that concurrent history; actual installed acceptance is in its private delivery receipt.
 
 ## 2026-11-12 — Runtime recovery screenshot
 
@@ -2022,6 +2114,10 @@ For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that a
 
 The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.
 
+
+## Imported UI workflow from merged349d660f
+
+This exact source-stage history is preserved from concurrent dashboard delivery. Its pending-install statements describe the earlier source stage; the following current continuation supersedes status where noted.
 
 ## 2026-11-12 — Unavailable dashboard values
 
@@ -2055,3 +2151,30 @@ Have that numbert be variable, and can be changed on the site next to it.
 ```
 
 The number is the seconds-ahead forecast target, default10. One adjacent editable control sets both the target horizon and evaluation cadence, remembers the per-coin setting, and retains the prior correctly labelled forecast while an update is applied.
+
+## 2026-11-12 — Oraclebot Stripe credential locations
+
+```text
+I stored the api keys and account num info in ~/.env as STRIPE_ORACLEBOT_ACCTNUM
+STRIPE_ORACLEBOT_PUB_KEY
+STRIPE_ORACLEBOT_SEC_KEY
+```
+
+## 2026-11-12 — Oraclebot three subscription tiers and portal
+
+```text
+I added the subscriptions to stripe, 9.99 for up to 3 bots and 10x backtests/day , 29.99 for unlimited backtests and 10x active bots, and 49.99 for unlimited everything. Also the portal ID for customers to be able to edit or stop their subscription is here: bpc_1Ub7dzQ3DZ8H91BKkxAaTqj9
+```
+
+
+## 2026-11-12 — Authenticated MCP with the user wallet
+
+```text
+Add authenticated mcp support so a user can ask their agent to either make a trade, or get the status, but it always uses their wallet.
+```
+
+The owner briefly selected the per-trade approval option, then explicitly corrected that selection. The correction below is authoritative; do not implement a per-trade approval requirement.
+
+```text
+No I didn't mean to press that button, I want preauthorization so I don't have to approve every time
+```

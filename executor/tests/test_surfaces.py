@@ -8,6 +8,8 @@ import os
 import stat
 import threading
 from contextlib import redirect_stdout
+from email.message import Message
+from unittest import mock
 
 import pytest
 from conftest import (
@@ -20,6 +22,7 @@ from conftest import (
 
 from executor import api, cli, registry, txverify
 from executor.config import VALIDATION_STRATEGY
+from executor.errors import ExecutorError
 from executor.tokens import USDC_MINT, WSOL_MINT
 
 AMOUNT, FEE, OUT = 10_000_000, 10_000, 900_000
@@ -111,6 +114,7 @@ def test_envelope_shape_ok_and_error(wired):
         ("quote", {"from": "SOL", "to": "USDC", "amount": 1.5}, "bad_params"),
         ("quote", {"from": "SOL", "to": "BONK", "amount": "1"}, "refused"),
         ("journal", {"limit": 0}, "bad_params"),
+        ("journal", {"limit": 10**1000}, "bad_params"),
         ("resume", {}, "forbidden"),
         ("resume", {"confirm": "yes"}, "bad_params"),
         ("resume", {"confirm": False}, "forbidden"),
@@ -228,6 +232,35 @@ def test_cli_gates_record_research_uses_the_registry(wired):
     assert json.loads(out)["result"]["research_ok"] is True
 
 
+def test_cli_preserves_an_explicit_ephemeral_api_port(monkeypatch):
+    main = mock.Mock(return_value=0)
+    monkeypatch.setattr(api, "main", main)
+    assert cli.main(["api", "--port", "0"]) == 0
+    main.assert_called_once_with(["--port", "0"])
+
+
+@pytest.mark.parametrize(
+    "value,arguments", [("not-a-port", []), ("8789", ["--port", "-1"]), ("8789", ["--port", "65536"])]
+)
+def test_api_cli_invalid_port_reports_usage_before_binding(monkeypatch, capsys, value, arguments):
+    monkeypatch.setenv("EXECUTOR_API_PORT", value)
+    create = mock.Mock()
+    monkeypatch.setattr(api, "create_server", create)
+    with pytest.raises(SystemExit) as error:
+        api.main(arguments)
+    assert error.value.code == 2
+    assert "--port" in capsys.readouterr().err
+    create.assert_not_called()
+
+
+def test_entrypoint_help_gives_a_safe_example(capsys):
+    assert "Example:" in cli._parser().format_help()
+    with pytest.raises(SystemExit) as error:
+        api.main(["--help"])
+    assert error.value.code == 0
+    assert "Example:" in capsys.readouterr().out
+
+
 # -- HTTP access model -----------------------------------------------------------------------------------------
 
 
@@ -240,10 +273,15 @@ def test_health_needs_no_token(server):
     assert status == 200 and json.loads(body)["service"] == "executor"
 
 
-def test_missing_and_wrong_bearer_are_refused(server):
-    for h in ({"Authorization": ""}, {"Authorization": "Bearer wrong"}, {"Authorization": "Basic t0ken"}):
-        status, body = request(server, "GET", "/v1/status", headers=h)
-        assert status == 401 and json.loads(body)["error"]["code"] == "forbidden"
+def test_missing_and_wrong_bearer_are_refused(server, caplog):
+    with caplog.at_level("INFO", logger="executor.api"):
+        for h in ({"Authorization": ""}, {"Authorization": "Bearer wrong"}, {"Authorization": "Basic t0ken"}):
+            status, body = request(server, "GET", "/v1/status", headers=h)
+            assert status == 401 and json.loads(body)["error"]["code"] == "forbidden"
+    events = [json.loads(record.message) for record in caplog.records if record.name == "executor.api"]
+    assert len(events) == 3 and all(event["status"] == 401 for event in events)
+    assert all(event["event"] == "executor_api_response" for event in events)
+    assert "t0ken" not in caplog.text and "wrong" not in caplog.text
 
 
 @pytest.mark.parametrize("header", [{"Origin": "https://evil.example"}, {"Sec-Fetch-Site": "cross-site"}])
@@ -273,6 +311,55 @@ def test_bad_bodies(server):
     conn = http.client.HTTPConnection("127.0.0.1", server.server_address[1], timeout=10)
     conn.request("POST", "/v1/quote", body="{nope", headers={"Authorization": "Bearer t0ken"})
     assert conn.getresponse().status == 400
+
+
+@pytest.mark.parametrize("length", ["-1", str(api.MAX_BODY_BYTES + 1)])
+def test_invalid_body_length_is_rejected_without_reading(length):
+    handler = object.__new__(api.make_handler("test"))
+    handler.headers = Message()
+    handler.headers["Content-Length"] = length
+    handler.rfile = mock.Mock()
+    with pytest.raises(ExecutorError):
+        handler._read_json()
+    handler.rfile.read.assert_not_called()
+    assert handler.close_connection is True
+
+
+@pytest.mark.parametrize(
+    "headers", [[("Transfer-Encoding", "chunked")], [("Content-Length", "0"), ("Content-Length", "1")]]
+)
+def test_ambiguous_body_framing_is_refused_before_reading(headers):
+    handler = object.__new__(api.make_handler("test"))
+    handler.headers = Message()
+    for key, value in headers:
+        handler.headers[key] = value
+    handler.rfile = mock.Mock()
+    with pytest.raises(ExecutorError):
+        handler._read_json()
+    handler.rfile.read.assert_not_called()
+    assert handler.close_connection is True
+
+
+def test_malformed_http_target_returns_a_bounded_error(server):
+    conn = http.client.HTTPConnection("127.0.0.1", server.server_address[1], timeout=5)
+    try:
+        conn.putrequest("GET", "http://[broken", skip_host=True)
+        conn.putheader("Authorization", "Bearer t0ken")
+        conn.endheaders()
+        response = conn.getresponse()
+        assert response.status == 400
+        assert json.loads(response.read())["error"]["code"] == "bad_params"
+    finally:
+        conn.close()
+
+
+def test_http_connection_has_a_read_deadline(monkeypatch):
+    handler_type = api.make_handler("test")
+    handler = object.__new__(handler_type)
+    handler.connection = mock.Mock()
+    monkeypatch.setattr(api.BaseHTTPRequestHandler, "setup", lambda self: None)
+    handler.setup()
+    handler.connection.settimeout.assert_called_once_with(5)
 
 
 def test_no_cors_headers_are_ever_sent(server):

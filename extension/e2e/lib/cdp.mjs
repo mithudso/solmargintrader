@@ -163,16 +163,16 @@ export async function launch({ chrome, extension, noSandbox = false, headless = 
     }
   };
 
-  let extensionId;
+  let extensionId, version;
   try {
     await call('Browser.getVersion');
     ({ id: extensionId } = await call('Extensions.loadUnpacked', { path: path.resolve(extension) }));
+    version = (await call('Browser.getVersion')).product;
   } catch (e) {
     await close();
     throw e;
   }
 
-  const version = (await call('Browser.getVersion')).product;
   const on = (fn) => (listeners.add(fn), () => listeners.delete(fn));
   const targets = async () => (await call('Target.getTargets')).targetInfos;
 

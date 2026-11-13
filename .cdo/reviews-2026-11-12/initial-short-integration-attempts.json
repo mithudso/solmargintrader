@@ -1,0 +1,803 @@
+{
+  "observed_at": "2026-11-12T21:52:46.020544+00:00",
+  "head": "d194d69dacfb4672c544729a25f3371dddd6468e",
+  "status": "all_initial_attempts_failed_no_final_pass",
+  "rows": [
+    {
+      "component": "backtester",
+      "run_id": "backtester-suite-f7a2e1dfd9e142378b26e844269c8b68",
+      "launch": "/tmp/oraclebot-initial-three-gates-20261112/backtester-first-launch.json",
+      "log": "/tmp/oraclebot-backtester-suite-state-tk7r2lsu/output.log",
+      "completed_exit": 1,
+      "discovered": {
+        "count": 1120,
+        "loader_errors": []
+      },
+      "result": "/tmp/oraclebot-final-backtester-20261112-vvknugpa/runs/backtester-suite-f7a2e1dfd9e142378b26e844269c8b68/result.json",
+      "executed_tests": 1120,
+      "failures": 1,
+      "errors": 0,
+      "skips": 0,
+      "guard_events": 17,
+      "guard_refusals": [],
+      "source_stable": true,
+      "harness_stable": true,
+      "inherited_python_pids": [
+        66249,
+        66278,
+        66475,
+        67004
+      ],
+      "after_exit_pid_queries": [
+        {
+          "pid": 66249,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 66278,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 66475,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 67004,
+          "identity_query_exit": 1,
+          "current_state": ""
+        }
+      ],
+      "admissions_sha256": "e07c1c4634b56512a35337c1d7c22d5fed4dea6726b1b445b8705b5a803c0c81",
+      "harness_sha256": {
+        "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+        "guard.py": "6528737e7bd6190291a41f706164549b58f06de0538aad2384571445626ec9d6",
+        "run_suite.py": "361a853b20f325a0036edb07a1e2a09cac84a3712c53a5c4bdd39da8cfafd916"
+      },
+      "native_policy_events": [
+        {
+          "test": "backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree",
+          "executable": "git",
+          "policy": "exact read-only index tracked-file enumeration"
+        },
+        {
+          "test": "backtester.tests.test_analysis_regressions.AnalysisRegressions.test_grid_full_plan_matches_extension_when_slippage_crosses_midpoint",
+          "executable": "node",
+          "policy": "exact reviewed pure-grid Node payload with pinned import"
+        }
+      ],
+      "limits": "Original guard records native admission but does not retain each native child PID at exit. Completed subprocess calls establish their wait exits; no surviving native-process absence inferred from missing PID record."
+    },
+    {
+      "component": "oracle",
+      "run_id": "oracle-suite-38eab15bde6044e2ba68d229e94dbef1",
+      "launch": "/tmp/oraclebot-initial-three-gates-20261112/oracle-first-launch.json",
+      "log": "/tmp/oraclebot-oracle-suite-state-5c0iccll/output.log",
+      "completed_exit": 1,
+      "discovered": {
+        "count": 184,
+        "loader_errors": [
+          "Failed to import test module: oracle.tests.test_multi_instrument\nTraceback (most recent call last):\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py\", line 403, in _find_test_path\n    module = self._get_module_from_name(name)\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py\", line 346, in _get_module_from_name\n    __import__(name)\n    ~~~~~~~~~~^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/tests/test_multi_instrument.py\", line 28, in <module>\n    from mcp import ClientSession, StdioServerParameters\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/__init__.py\", line 2, in <module>\n    from .client.session_group import ClientSessionGroup\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/client/session_group.py\", line 28, in <module>\n    from mcp.client.stdio import StdioServerParameters\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/client/stdio/__init__.py\", line 17, in <module>\n    from mcp.os.win32.utilities import (\n    ...<4 lines>...\n    )\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/os/win32/utilities.py\", line 68, in <module>\n    class FallbackProcess:\n    ...<59 lines>...\n            return self.popen.pid\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/os/win32/utilities.py\", line 78, in FallbackProcess\n    def __init__(self, popen_obj: subprocess.Popen[bytes]):\n                                  ~~~~~~~~~~~~~~~~^^^^^^^\nTypeError: 'function' object is not subscriptable\n",
+          "Failed to import test module: oracle.tests.test_selected_server\nTraceback (most recent call last):\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py\", line 403, in _find_test_path\n    module = self._get_module_from_name(name)\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py\", line 346, in _get_module_from_name\n    __import__(name)\n    ~~~~~~~~~~^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/tests/test_selected_server.py\", line 21, in <module>\n    from mcp import ClientSession, StdioServerParameters, types\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/__init__.py\", line 2, in <module>\n    from .client.session_group import ClientSessionGroup\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/client/session_group.py\", line 28, in <module>\n    from mcp.client.stdio import StdioServerParameters\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/client/stdio/__init__.py\", line 17, in <module>\n    from mcp.os.win32.utilities import (\n    ...<4 lines>...\n    )\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/os/win32/utilities.py\", line 68, in <module>\n    class FallbackProcess:\n    ...<59 lines>...\n            return self.popen.pid\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/os/win32/utilities.py\", line 78, in FallbackProcess\n    def __init__(self, popen_obj: subprocess.Popen[bytes]):\n                                  ~~~~~~~~~~~~~~~~^^^^^^^\nTypeError: 'function' object is not subscriptable\n",
+          "Failed to import test module: oracle.tests.test_server\nTraceback (most recent call last):\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py\", line 403, in _find_test_path\n    module = self._get_module_from_name(name)\n  File \"/opt/homebrew/Cellar/python@3.13/3.13.18/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py\", line 346, in _get_module_from_name\n    __import__(name)\n    ~~~~~~~~~~^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/tests/test_server.py\", line 14, in <module>\n    from mcp import ClientSession, StdioServerParameters, types\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/__init__.py\", line 2, in <module>\n    from .client.session_group import ClientSessionGroup\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/client/session_group.py\", line 28, in <module>\n    from mcp.client.stdio import StdioServerParameters\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/client/stdio/__init__.py\", line 17, in <module>\n    from mcp.os.win32.utilities import (\n    ...<4 lines>...\n    )\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/os/win32/utilities.py\", line 68, in <module>\n    class FallbackProcess:\n    ...<59 lines>...\n            return self.popen.pid\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/lib/python3.13/site-packages/mcp/os/win32/utilities.py\", line 78, in FallbackProcess\n    def __init__(self, popen_obj: subprocess.Popen[bytes]):\n                                  ~~~~~~~~~~~~~~~~^^^^^^^\nTypeError: 'function' object is not subscriptable\n"
+        ]
+      },
+      "result": null,
+      "executed_tests": 0,
+      "failures": null,
+      "errors": null,
+      "skips": null,
+      "guard_events": 3,
+      "guard_refusals": [],
+      "source_stable": null,
+      "harness_stable": null,
+      "inherited_python_pids": [
+        66251
+      ],
+      "after_exit_pid_queries": [
+        {
+          "pid": 66251,
+          "identity_query_exit": 1,
+          "current_state": ""
+        }
+      ],
+      "admissions_sha256": "830bf497d9d2f0e693b4eb01d1d4724b34610f9d6c619a1a89f5b654adadf3f7",
+      "harness_sha256": {
+        "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+        "guard.py": "a52ae4a91b442f6184820032b82e58fa1c55a08d474677eb4b582c9606361f96",
+        "run_suite.py": "0f8ab753730c6d489df7a45cbe4b0429f76d14cad178c7871107217a6da7affe"
+      },
+      "native_policy_events": [],
+      "limits": "Original guard records native admission but does not retain each native child PID at exit. Completed subprocess calls establish their wait exits; no surviving native-process absence inferred from missing PID record."
+    },
+    {
+      "component": "ecosystem",
+      "run_id": "ecosystem-suite-2c584a1164874457b2d96ab975c96b9f",
+      "launch": "/tmp/oraclebot-initial-three-gates-20261112/ecosystem-first-launch.json",
+      "log": "/tmp/oraclebot-ecosystem-suite-state-iv3jbwvd/output.log",
+      "completed_exit": 1,
+      "discovered": {
+        "count": 249,
+        "loader_errors": []
+      },
+      "result": "/tmp/oraclebot-final-ecosystem-20261112-yo6b013p/runs/ecosystem-suite-2c584a1164874457b2d96ab975c96b9f/result.json",
+      "executed_tests": 249,
+      "failures": 2,
+      "errors": 0,
+      "skips": 0,
+      "guard_events": 143,
+      "guard_refusals": [
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_ambiguous_existing_mirror_cursor_is_never_reset_by_migration",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_schema3_import_preserves_archive_requests_and_legacy_provenance",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_schema3_marker_survives_unambiguous_upgrade_without_relabeling_mirror",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_schema3_marker_survives_unambiguous_upgrade_without_relabeling_mirror",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_schemas_and_pagination_survive_two_adoptions",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_two_bot_stable_first_event_cannot_hide_reused_legacy_sequence",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_manager_editing.ManagerEditingIntegrationTests.test_two_bot_stable_first_event_cannot_hide_reused_legacy_sequence",
+          "event": "socket.connect",
+          "reason": "loopback listener not created by this guard run"
+        },
+        {
+          "test": "ecosystem.tests.test_setup.SetupTests.test_health_stdout_flood_is_bounded_before_child_finishes",
+          "event": "subprocess.Popen",
+          "reason": "component child outside candidate cwd"
+        },
+        {
+          "test": "ecosystem.tests.test_setup.SetupTests.test_subprocess_timeout_is_bounded_and_logs_are_not_returned",
+          "event": "subprocess.Popen",
+          "reason": "component child outside candidate cwd"
+        }
+      ],
+      "source_stable": true,
+      "harness_stable": true,
+      "inherited_python_pids": [
+        66250,
+        66269,
+        66271,
+        66273,
+        66276
+      ],
+      "after_exit_pid_queries": [
+        {
+          "pid": 66250,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 66269,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 66271,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 66273,
+          "identity_query_exit": 1,
+          "current_state": ""
+        },
+        {
+          "pid": 66276,
+          "identity_query_exit": 1,
+          "current_state": ""
+        }
+      ],
+      "admissions_sha256": "23ae7196a08c13293b5f2d548470bf8e1e170fef5577d1c0e67476352bee0ea8",
+      "harness_sha256": {
+        "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+        "guard.py": "22e72fca483d17e0b270691ee21c7d96fecdcd7bc56e887819fe236bd2069335",
+        "run_suite.py": "d7f8bb0e0031a59b8881fddc227d64d71730f8f5d9104c54f5d89aedbb7b06ee"
+      },
+      "native_policy_events": [
+        {
+          "test": "ecosystem.tests.test_swaps.SwapTests.test_browser_contract_default_and_bounds_require_a_manual_sdk_click",
+          "executable": "node",
+          "policy": "exact ecosystem mocked-DOM Node fixture with pinned source"
+        },
+        {
+          "test": "ecosystem.tests.test_swaps.SwapTests.test_older_config_response_cannot_replace_latest_pair_or_error_state",
+          "executable": "node",
+          "policy": "exact ecosystem mocked-DOM Node fixture with pinned source"
+        },
+        {
+          "test": "ecosystem.tests.test_tradingview_chart.TradingViewChartTests.test_external_chart_load_close_and_isolation",
+          "executable": "node",
+          "policy": "exact ecosystem mocked-DOM Node fixture with pinned source"
+        },
+        {
+          "test": "ecosystem.tests.test_ui_contract.UiContractTests.test_client_behavior_contract",
+          "executable": "node",
+          "policy": "exact ecosystem mocked-DOM Node fixture with pinned source"
+        },
+        {
+          "test": "ecosystem.tests.test_ui_contract.UiContractTests.test_oracle_chart_refresh_preserves_hidden_overlay_and_single_instance",
+          "executable": "node",
+          "policy": "exact ecosystem mocked-DOM Node fixture with pinned source"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_adversarial_markdown_is_returned_as_inert_content",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_build_check_detects_source_changes_without_writing",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_changed_bundle_and_forged_metadata_fail_closed",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_full_text_search_and_pagination_cover_documents_beyond_title",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_incomplete_cards_and_plans_never_claim_execution_evidence",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_invalid_queries_and_path_ids_are_rejected",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_missing_snapshot_is_explicitly_unavailable",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_only_tracked_allowlisted_documents_are_compiled",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_page_preserves_exact_text_hash_and_commit_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_snapshot_is_deterministic_and_keeps_truthful_build_provenance",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        },
+        {
+          "test": "ecosystem.tests.test_wiki.WikiTests.test_source_symlinks_are_not_copied_and_runtime_symlinks_are_refused",
+          "executable": "git",
+          "policy": "exact disposable wiki Git fixture with owner configuration disabled"
+        }
+      ],
+      "limits": "Original guard records native admission but does not retain each native child PID at exit. Completed subprocess calls establish their wait exits; no surviving native-process absence inferred from missing PID record."
+    }
+  ],
+  "repo_or_guard_edits": false,
+  "classification": "Harness/environment/fixture qualification gaps; no product finding inferred from these first attempts.",
+  "boundary_policy": "All original owner/network/process/signal/owned-loopback fences preserved; owner8788 refused; no install/study/research acquisition/model/live operations."
+}

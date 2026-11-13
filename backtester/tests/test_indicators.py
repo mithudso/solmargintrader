@@ -171,7 +171,7 @@ class TestIndicatorArithmetic(unittest.TestCase):
 
 
 class TestEveryRegisteredStrategy(unittest.TestCase):
-    """Contract tests applied to all 16 registered strategies."""
+    """Contract tests applied to every registered strategy."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -272,6 +272,23 @@ class TestComposite(unittest.TestCase):
         """'all' requires agreement, so the weakest member governs."""
         c = Composite([self._Const(1.0), self._Const(0.0)], mode="all")
         self.assertAlmostEqual(c.on_bar(self._window()), 0.0, places=12)
+
+    def test_every_member_target_must_satisfy_the_engine_contract(self) -> None:
+        for mode in COMBINE_MODES:
+            for invalid in (float("nan"), float("inf")):
+                with self.subTest(mode=mode, invalid=invalid), self.assertRaises(ValueError):
+                    Composite([self._Const(0.0), self._Const(invalid)], mode=mode).on_bar(self._window())
+
+    def test_repeated_member_names_cannot_collapse_parameter_identity(self) -> None:
+        def composite(values):
+            members = [self._Const(value) for value in values]
+            for member in members:
+                member.name = "shared-name"
+            return Composite(members, mode="mean")
+        first = composite([0.0, 1.0])
+        second = composite([1.0, 1.0])
+        self.assertNotEqual(first.on_bar(self._window()), second.on_bar(self._window()))
+        self.assertNotEqual(first.params, second.params)
 
     def test_any_mode_takes_the_maximum(self) -> None:
         """'any' lets a single member trigger."""

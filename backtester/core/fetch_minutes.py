@@ -55,6 +55,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 import threading
@@ -69,6 +70,7 @@ import numpy as np
 import pandas as pd
 
 from .fetch import COINBASE_BASE, COINBASE_ROW, MAX_CANDLES_PER_REQUEST, FetchError
+from .market_diagnostics import market_request
 from .types import BAR_COLUMNS
 
 MINUTE = 60
@@ -117,7 +119,9 @@ def _retry_after(exc: urllib.error.HTTPError, attempt: int) -> float:
     header = exc.headers.get("Retry-After") if exc.headers else None
     if header:
         try:
-            return min(30.0, float(header))
+            delay = float(header)
+            if math.isfinite(delay) and delay >= 0:
+                return min(30.0, delay)
         except (TypeError, ValueError):
             pass
     return min(8.0, 0.5 * 2 ** attempt)
@@ -138,7 +142,7 @@ def get_candles(url: str, limiter: RateLimiter | None = None) -> list:
             request = urllib.request.Request(
                 url, headers={"User-Agent": "solmargintrader-research/1.0"}
             )
-            with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            with market_request("coinbase_minutes"), urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
                 payload = json.load(response)
             if isinstance(payload, dict):
                 # The venue reports errors as a JSON object, not an HTTP status.
@@ -298,7 +302,7 @@ def load_probe(asset: str) -> tuple[int, int] | None:
     if not path.exists():
         return None
     try:
-        data = json.loads(path.read_text())
+        data = _progress_document(path)
         start, floor = data.get("listing_start"), data.get("probe_floor")
         if start is None or floor is None or data.get("probe_method") != "prefix-scan-v1":
             return None
@@ -313,7 +317,7 @@ def load_planned_end(asset: str) -> int | None:
     if not path.exists():
         return None
     try:
-        value = json.loads(path.read_text()).get("planned_end")
+        value = _progress_document(path).get("planned_end")
         return int(value) if value is not None else None
     except (json.JSONDecodeError, ValueError, TypeError):
         return None
@@ -337,13 +341,20 @@ def load_progress(asset: str) -> set[int]:
     if not path.exists():
         return set()
     try:
-        return {int(x) for x in json.loads(path.read_text()).get("windows_done", [])}
+        return {int(x) for x in _progress_document(path).get("windows_done", [])}
     except (json.JSONDecodeError, ValueError, TypeError):
         # A truncated sidecar must not abort the run; refetching is merely slower,
         # whereas crashing on it would strand a job that is otherwise fine.
         print(f"  {asset}: unreadable progress sidecar, refetching all windows",
               file=sys.stderr)
         return set()
+
+
+def _progress_document(path: Path) -> dict:
+    data = json.loads(path.read_text())
+    if not isinstance(data, dict):
+        raise ValueError("progress sidecar must be an object")
+    return data
 
 
 def save_progress(asset: str, done: set[int], planned_end: int | None = None) -> None:
@@ -407,7 +418,8 @@ def coverage(asset: str, df: pd.DataFrame, requested_years: float,
     if probe is not None and planned and probe[1] <= planned[0]:
         planned = [w for w in planned if w >= probe[0]]
     out.windows_total = len(planned)
-    out.windows_done = len({w for w in load_progress(asset) if w in set(planned)})
+    planned_set = set(planned)
+    out.windows_done = len({w for w in load_progress(asset) if w in planned_set})
     if df.empty:
         return out
     ts = df["timestamp"].to_numpy(dtype="int64")
@@ -674,7 +686,8 @@ def render_coverage(covs: list[Coverage]) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
-    ap = argparse.ArgumentParser(description="Resumable parallel 1-minute candle fetch.")
+    ap = argparse.ArgumentParser(description="Resumable parallel 1-minute candle fetch.",
+                                 epilog="Example: python -m backtester.core.fetch_minutes --asset BTC --years 1 --max-windows 1")
     ap.add_argument("--asset", action="append", default=[],
                     help="asset symbol; repeatable")
     ap.add_argument("--all", action="store_true", help=f"fetch {', '.join(MINUTE_ASSETS)}")

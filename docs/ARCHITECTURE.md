@@ -1,6 +1,6 @@
 # Architecture
 
-Ten components have explicit execution boundaries. Backtester, research, the Oracle
+Eleven components have explicit execution boundaries. Backtester, research, the Oracle
 forecast service, Bot Manager and ecosystem automation do not place orders. The
 separately enabled Oracle TradingView worker can submit Coinbase spot orders or
 GUM ZEC perpetual Actions. The extension and optional
@@ -168,7 +168,7 @@ backtest and the live strategy agree on what a round trip earns. Keeping them se
 folding the ladder into the exposure engine would imply the two are comparable on the same axis.
 
 Its correctness priorities — no lookahead, costs always applied, honest reporting of a losing
-strategy — are documented in `backtester/README.md` and enforced by 1005 tests.
+strategy — are documented in `backtester/README.md` and enforced by 1120 tests.
 
 
 ## Companion components
@@ -227,3 +227,53 @@ Legacy evidence is fenced
 conservatively. Freshness covers recorded local optimization history, not unknown external use.
 Imported TradingView evidence preserves units and provenance, receives compatibility diagnostics,
 and has no native promotion path. See [the guide](optimization-workbench.md).
+
+## Hosted Oraclebot workspace
+
+The public website is an independent Cloudflare Worker and static application.
+D1 owns wallet accounts, one-use challenges, hashed sessions, subscriptions and
+per-account inactive paper bot definitions. It also owns scoped agent grants,
+hashed OAuth credentials and trade-intent reservations. Cookie mutations use
+canonical-origin checks. MCP derives the user and wallet from a resource-bound
+bearer grant; it never accepts a caller-supplied owner or wallet.
+
+```text
+Browser wallet --signed login message--> website/src/worker.js --> D1
+Browser        --membership request----> Worker --> Stripe Checkout / portal
+Stripe         --signed webhook--------> Worker --> verified entitlement in D1
+Browser        --analysis request------> Worker --server bearer--> Python adapter
+                                                              --> canonical engines
+                                                              --> dedicated public inputs
+Agent          --OAuth PKCE S256-------> Worker --> wallet-backed consent / D1
+Agent          --bearer MCP POST-------> Worker --> owned status / guarded intents
+                                                   --> customer executor (unprovisioned)
+```
+
+Stripe access and analysis availability are independent capabilities. The
+read-only adapter in `website/engine/server.py` uses canonical exposure
+strategies, cached completed bars and the Oracle archive reader. It does not
+start a market feed, expose the owner control room or sign orders. Separate
+ladder/pair/event runners are outside this adapter. See `website/engine/README.md`
+from the repository root for exact supported limits.
+
+Website 0.3.0 implements stateless MCP 2025-11-25 JSON POST before the asset
+fallback. It advertises neither the distinct 2026 discovery profile nor browser
+MCP preflight support. OAuth discovery/token endpoints have a separate CORS
+contract. Read consent and trading authority remain separate. One wallet-signed
+trading preauthorization binds the agent, wallet, scopes, finite venues/assets,
+per-trade/cumulative USD caps and expiry. Trades within that grant require no
+new wallet prompt. Settings can revoke the grant immediately.
+
+Preparation reserves the current grant budget and known-plan entitlement in
+one D1 write. Submission atomically claims the unchanged, fresh intent. Unknown
+submissions retain budget and cannot retry automatically. Cleanup expires only
+unsubmitted preparations; account deletion cannot erase unresolved submissions.
+
+The source has no provisioned per-user live execution worker. Creating a paper
+configuration persists a definition only. Public customers cannot inherit the
+owner’s local trading authorization or credentials. Cloudflare edge availability
+therefore establishes neither fresh analysis nor a functioning trading bot.
+`USER_TRADE_EXECUTOR` must separately qualify a customer-owned connection,
+delegated signer, fresh quote and venue reconciliation before orders can run.
+The default `LIVE_EXECUTION_ENABLED=false` and mocked adapter successes do not
+establish that authority. See `website/docs/MCP-DESIGN.md` for the exact boundary.

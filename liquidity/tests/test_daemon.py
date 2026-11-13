@@ -255,7 +255,7 @@ def make_daemon(tmp_path, monkeypatch):
         constructed.append(("sim", chain_, owner, tokens, pool))
         return ("sim", (chain_, owner, tokens, pool))
 
-    def live(chain_, signer, tokens, cfg, pool=None, *, journal=None, accounting=None):
+    def live(chain_, signer, tokens, cfg, pool=None, *, journal=None, accounting=None, before_send=None):
         constructed.append(("live", chain_, signer, tokens, pool))
         return ("live", (chain_, signer, tokens, pool))
 

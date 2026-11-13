@@ -15,7 +15,9 @@ from ecosystem.swap_web import make_server
 class SwapWebTests(unittest.TestCase):
     def setUp(self):
         self.server = make_server(port=0)
-        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread = threading.Thread(
+            target=lambda: self.server.serve_forever(poll_interval=0.01), daemon=True
+        )
         self.thread.start()
         self.addCleanup(self.close_server)
         self.origin = f"http://127.0.0.1:{self.server.server_port}"

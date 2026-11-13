@@ -1,0 +1,260 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "root",
+  "status": "FILE_PASSES_AND_LOCAL_VERIFICATION_COMPLETED_IN_SCOPE",
+  "created_at": "2026-11-12T18:41:15.491239+00:00",
+  "files": [
+    {
+      "path": "backtester/core/dcasim.py",
+      "sha256": "47d35a1c7ab329cf96524e9201eb4d8ec96c93e6b7fef16eeabeeb1043211c87",
+      "blob_sha": "1a1626bcb4c985d6ab3d672d4441e5812d48dbc0",
+      "lines": 552,
+      "read_evidence": {
+        "method": "full displayed baseline plus reviewed authored deltas",
+        "ranges": [
+          {
+            "sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+            "start": 1,
+            "end": 280,
+            "lines": 551
+          },
+          {
+            "sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+            "start": 281,
+            "end": 551,
+            "lines": 551
+          }
+        ],
+        "baseline_sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+        "delta": [
+          "--- backtester/core/dcasim.py",
+          "+++ backtester/core/dcasim.py",
+          "@@ -56,6 +56,7 @@",
+          " ",
+          " import numpy as np",
+          " ",
+          "+from .continuation import configuration_binding",
+          " from .metrics import Metrics, compute_metrics",
+          " from .types import (",
+          "     INTERVAL_SECONDS,",
+          "@@ -331,8 +332,10 @@",
+          "     _finite(\"risk_free_rate\", risk_free_rate)",
+          " ",
+          "     checked = validate_bar_arrays(arrays, interval, require_open_volume=False)",
+          "+    if \"open\" not in checked:",
+          "+        raise ValueError(\"open prices are required for DCA next-open fills\")",
+          "     ts, highs, lows, closes = (checked[name] for name in (\"ts\", \"high\", \"low\", \"close\"))",
+          "-    opens = checked.get(\"open\", closes)",
+          "+    opens = checked[\"open\"]",
+          "     n = closes.size",
+          "     fee = costs.fee_bps / 10_000.0",
+          "     slip = costs.slippage_bps / 10_000.0",
+          "@@ -353,14 +356,13 @@",
+          "     equity = np.empty(n, dtype=\"float64\")",
+          "     exposure = np.zeros(n, dtype=\"float64\")",
+          " ",
+          "-    from dataclasses import asdict",
+          "     offset = 0",
+          "     length_sum = length_count = 0",
+          "     metric_initial_equity = capital",
+          "     baseline = _baseline_equity(closes, capital, costs)",
+          "     baseline_units = float(baseline[0] / closes[0])",
+          "     baseline_initial_equity = capital",
+          "-    binding = repr((cfg.to_dict(), capital, interval, asdict(costs)))",
+          "+    binding = configuration_binding(cfg.to_dict(), capital, interval, costs)",
+          "     if continuation is not None:",
+          "         if continuation[\"binding\"] != binding:",
+          "             raise ValueError(\"continuation configuration changed\")",
+          "@@ -540,12 +542,11 @@",
+          " def rebind_dca_state(state, cfg, *, initial_capital, interval, costs):",
+          "     \"\"\"Replace a paused flat deal constructor while preserving its cash book.\"\"\"",
+          "     import copy",
+          "-    from dataclasses import asdict",
+          " ",
+          "     if (state.get(\"schema_version\") != 1 or state[\"deal\"] is not None",
+          "             or state[\"control\"][1] is not None):",
+          "         raise ValueError(\"DCA configuration adoption requires a flat account without pending intent\")",
+          "     result = copy.deepcopy(state)",
+          "-    result[\"binding\"] = repr((cfg.to_dict(), initial_capital, interval, asdict(costs)))",
+          "+    result[\"binding\"] = configuration_binding(cfg.to_dict(), initial_capital, interval, costs)",
+          "     result[\"first_plan\"] = None",
+          "     return result"
+        ]
+      },
+      "semantic_note": "Full551line baseline plus reviewed require-observed-open and stable-binding deltas. Bar sequencing remains close-plan/next-open market, then conservative safety/TP ordering; fee/slippage and cash sufficiency remain in all fills. Missingopen now refuses rather than substitutes samebarfutureclose; volume remains optional. Shared versioned configuration_binding replaces repr/asdict in both producer and flat-state rebind. Prior repr-bound archived checkpoints retain old identities and correctly refuse this new candidate source.",
+      "passes": {
+        "C1": "ran: Full551line baseline plus reviewed require-observed-open and stable-binding deltas. Bar sequencing remains close-plan/next-open market, then conservative safety/TP ordering; fee/slippage and cash sufficiency remain in all fills. Missingopen now refuses rather than substitutes samebarfutureclose; volume remains optional. Shared versioned configuration_binding replaces repr/asdict in both producer and flat-state rebind. Prior repr-bound archived checkpoints retain old identities and correctly refuse this new candidate source.",
+        "C2": "ran: public simulation/result/state/score contracts and error shapes inspected. Volume permissiveness, strict belowmedian meaning and deterministic split inventory remain unchanged.",
+        "C3": "ran: independently grounded missing-price and score-tie failures have meaningful RED/GREEN and positive controls. No new live action or unrelated strategy retuning performed.",
+        "S1": "ran: pure local numeric execution has no command/network/signing authority. Caller data stays numeric, costs remain charged, and missing next-open prices fail closed.",
+        "S2": "ran: no owned socket/file/thread resources in production math. New tests use bounded in-memory fixtures. Existing cap subprocess is fixed-source with5sdeadline and its exactargv was separately admitted by the private guard.",
+        "S3": "ran: finite input/config and continuation boundary validation inspected; stable configuration content binds state instead of deep-copied object repr addresses. Public validators remain authoritative.",
+        "S4": "ran: current Python3.13/NumPy behavior, ndarray slicing and deterministic float comparisons inspected. Local synthetic gate does not certify an installed owner process.",
+        "S5": "ran: refusal messages name missing open input, result/evidence labels preserve simulation origin, and no credential/provider payload logging exists in these changes.",
+        "P1": "ran: DCA remains linear in bars times bounded safety orders; PBO rank now uses linear counts instead of sorting per split. Direct capped combination lookup remains intact and its68billion-space control passes.",
+        "P2": "ran: pure per-call state and cached blocks remain isolated. Rebind deep-copies state; configuration change and source gap refuse before advancing the account.",
+        "M1": "ran: bounded fixes and mathematical tie semantics documented in place. No broad algorithm rewrite or formatter churn introduced.",
+        "M2": "ran: common validate_bar_arrays, metrics, CostConfig and new shared configuration_binding reused. No duplicate simulator or fingerprint implementation added.",
+        "M3": "N/A per file: repository architecture/settings owned by full_repo_health; prospective source-epoch handling remains separately assessed.",
+        "M4": "ran: DCA next-open contract now agrees with missing-input behavior. PBO doc states exact tie policy and does not treat identical-score zeroPBO as performance advantage.",
+        "T1": "ran: seven new synthetic cases have qualified REDexit1 then GREENexit0; focused DCA/CPCV/crossasset/new suite121tests0.778s exits0,0skips,0blockedboundaries. Initial invalidfield and overlystrictprivateguard attempts are recorded separately.",
+        "T2": "N/A per file: no new external dependency; global pinned supply-chain assessment belongs to repository review.",
+        "T3": "ran: all three bound files ASTparse and fatal Ruff E9,F63,F7,F82 pass0. Root diffcheck exits0; global CI remains a separate final gate.",
+        "T4": "ran: test inputs are tiny shared immutable return-block vectors or fresh3bar arrays; all label permutations run deterministically. Production rows are non-test source.",
+        "M5": "N/A: imported library math/test modules, no standalone application entrypoint."
+      }
+    },
+    {
+      "path": "backtester/core/cpcv.py",
+      "sha256": "b9a35a17e9a64de812ae14ffd9a0a86e46851b9402227ae0ab3bdb66b5f0231f",
+      "blob_sha": "55edf443fdc1f4ebe0fa92cade8f282d88bb6ed3",
+      "lines": 358,
+      "read_evidence": {
+        "method": "full displayed baseline plus reviewed authored deltas",
+        "ranges": [
+          {
+            "sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+            "start": 201,
+            "end": 352,
+            "lines": 352
+          },
+          {
+            "sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+            "start": 1,
+            "end": 200,
+            "lines": 352
+          }
+        ],
+        "baseline_sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+        "delta": [
+          "--- backtester/core/cpcv.py",
+          "+++ backtester/core/cpcv.py",
+          "@@ -291,6 +291,10 @@",
+          "     among all configurations on TEST. **PBO is the fraction of splits where the",
+          "     train-winner lands below the median out-of-sample.**",
+          " ",
+          "+    Equal test scores share their average ordinal rank. A tie at the median",
+          "+    does not count as below it; zero PBO for identical scores establishes no",
+          "+    performance advantage.",
+          "+",
+          "     Interpretation: PBO near 0 means in-sample winners generalise. PBO at or",
+          "     above 0.5 means selecting on in-sample performance is no better than",
+          "     choosing at random, i.e. the \"best\" backtest is an overfit artifact.",
+          "@@ -339,8 +343,10 @@",
+          "         if len(valid) < 2:",
+          "             continue",
+          "         winner = max(valid, key=lambda l: train_s[l])",
+          "-        ranked = sorted(valid, key=lambda l: test_s[l])",
+          "-        rank = ranked.index(winner) / (len(ranked) - 1)",
+          "+        winner_score = test_s[winner]",
+          "+        lower = sum(test_s[label] < winner_score for label in valid)",
+          "+        tied = sum(test_s[label] == winner_score for label in valid)",
+          "+        rank = (lower + (tied - 1) / 2) / (len(valid) - 1)",
+          "         if rank < 0.5:",
+          "             below_median += 1",
+          "         splits += 1"
+        ]
+      },
+      "semantic_note": "Full352line baseline plus reviewed six-net-line tie-rank/doc delta. Warmup precedes measured blocks, chronological per-bar returns and actual first measured boundary costs remain. Existing direct lexicographic-combination lookup and deterministic stride cap are untouched. PBO test-score ties receive average ordinal position; strictbelowmedian excludes exactmedian ties. Existing in-sample winner selection is unchanged and no test outcome selects training winners.",
+      "passes": {
+        "C1": "ran: Full352line baseline plus reviewed six-net-line tie-rank/doc delta. Warmup precedes measured blocks, chronological per-bar returns and actual first measured boundary costs remain. Existing direct lexicographic-combination lookup and deterministic stride cap are untouched. PBO test-score ties receive average ordinal position; strictbelowmedian excludes exactmedian ties. Existing in-sample winner selection is unchanged and no test outcome selects training winners.",
+        "C2": "ran: public simulation/result/state/score contracts and error shapes inspected. Volume permissiveness, strict belowmedian meaning and deterministic split inventory remain unchanged.",
+        "C3": "ran: independently grounded missing-price and score-tie failures have meaningful RED/GREEN and positive controls. No new live action or unrelated strategy retuning performed.",
+        "S1": "ran: pure local numeric execution has no command/network/signing authority. Caller data stays numeric, costs remain charged, and missing next-open prices fail closed.",
+        "S2": "ran: no owned socket/file/thread resources in production math. New tests use bounded in-memory fixtures. Existing cap subprocess is fixed-source with5sdeadline and its exactargv was separately admitted by the private guard.",
+        "S3": "ran: finite input/config and continuation boundary validation inspected; stable configuration content binds state instead of deep-copied object repr addresses. Public validators remain authoritative.",
+        "S4": "ran: current Python3.13/NumPy behavior, ndarray slicing and deterministic float comparisons inspected. Local synthetic gate does not certify an installed owner process.",
+        "S5": "ran: refusal messages name missing open input, result/evidence labels preserve simulation origin, and no credential/provider payload logging exists in these changes.",
+        "P1": "ran: DCA remains linear in bars times bounded safety orders; PBO rank now uses linear counts instead of sorting per split. Direct capped combination lookup remains intact and its68billion-space control passes.",
+        "P2": "ran: pure per-call state and cached blocks remain isolated. Rebind deep-copies state; configuration change and source gap refuse before advancing the account.",
+        "M1": "ran: bounded fixes and mathematical tie semantics documented in place. No broad algorithm rewrite or formatter churn introduced.",
+        "M2": "ran: common validate_bar_arrays, metrics, CostConfig and new shared configuration_binding reused. No duplicate simulator or fingerprint implementation added.",
+        "M3": "N/A per file: repository architecture/settings owned by full_repo_health; prospective source-epoch handling remains separately assessed.",
+        "M4": "ran: DCA next-open contract now agrees with missing-input behavior. PBO doc states exact tie policy and does not treat identical-score zeroPBO as performance advantage.",
+        "T1": "ran: seven new synthetic cases have qualified REDexit1 then GREENexit0; focused DCA/CPCV/crossasset/new suite121tests0.778s exits0,0skips,0blockedboundaries. Initial invalidfield and overlystrictprivateguard attempts are recorded separately.",
+        "T2": "N/A per file: no new external dependency; global pinned supply-chain assessment belongs to repository review.",
+        "T3": "ran: all three bound files ASTparse and fatal Ruff E9,F63,F7,F82 pass0. Root diffcheck exits0; global CI remains a separate final gate.",
+        "T4": "ran: test inputs are tiny shared immutable return-block vectors or fresh3bar arrays; all label permutations run deterministically. Production rows are non-test source.",
+        "M5": "N/A: imported library math/test modules, no standalone application entrypoint."
+      }
+    },
+    {
+      "path": "backtester/tests/test_dca_cpcv_blind_regressions.py",
+      "sha256": "bfbbc0247cee9887d4c210fdab5a729cfa9a77228808f3ca8bc836c99ed76f7c",
+      "blob_sha": "1b38e8a6daf4c874ca1d633c4f5550f6ebef6053",
+      "lines": 99,
+      "read_evidence": {
+        "method": "full authored new test source",
+        "authored_source_sha256": "bfbbc0247cee9887d4c210fdab5a729cfa9a77228808f3ca8bc836c99ed76f7c",
+        "authored_lines": 99
+      },
+      "semantic_note": "Full99lines of authored synthetic tests. Four DCA cases prove missing-open refusal, observed next-open price/fee/time, futureclose independence and unused volume optionality. Three PBO cases check all six insertion-order permutations of exactties, genuinely losing complements and a genuinely generalizing distinct winner. Initial erroneous Trade.qty assertion was corrected to public Trade.units before the qualified RED gate; that invalid initial attempt is not counted.",
+      "passes": {
+        "C1": "ran: Full99lines of authored synthetic tests. Four DCA cases prove missing-open refusal, observed next-open price/fee/time, futureclose independence and unused volume optionality. Three PBO cases check all six insertion-order permutations of exactties, genuinely losing complements and a genuinely generalizing distinct winner. Initial erroneous Trade.qty assertion was corrected to public Trade.units before the qualified RED gate; that invalid initial attempt is not counted.",
+        "C2": "ran: public simulation/result/state/score contracts and error shapes inspected. Volume permissiveness, strict belowmedian meaning and deterministic split inventory remain unchanged.",
+        "C3": "ran: independently grounded missing-price and score-tie failures have meaningful RED/GREEN and positive controls. No new live action or unrelated strategy retuning performed.",
+        "S1": "ran: pure local numeric execution has no command/network/signing authority. Caller data stays numeric, costs remain charged, and missing next-open prices fail closed.",
+        "S2": "ran: no owned socket/file/thread resources in production math. New tests use bounded in-memory fixtures. Existing cap subprocess is fixed-source with5sdeadline and its exactargv was separately admitted by the private guard.",
+        "S3": "ran: finite input/config and continuation boundary validation inspected; stable configuration content binds state instead of deep-copied object repr addresses. Public validators remain authoritative.",
+        "S4": "ran: current Python3.13/NumPy behavior, ndarray slicing and deterministic float comparisons inspected. Local synthetic gate does not certify an installed owner process.",
+        "S5": "ran: refusal messages name missing open input, result/evidence labels preserve simulation origin, and no credential/provider payload logging exists in these changes.",
+        "P1": "ran: DCA remains linear in bars times bounded safety orders; PBO rank now uses linear counts instead of sorting per split. Direct capped combination lookup remains intact and its68billion-space control passes.",
+        "P2": "ran: pure per-call state and cached blocks remain isolated. Rebind deep-copies state; configuration change and source gap refuse before advancing the account.",
+        "M1": "ran: bounded fixes and mathematical tie semantics documented in place. No broad algorithm rewrite or formatter churn introduced.",
+        "M2": "ran: common validate_bar_arrays, metrics, CostConfig and new shared configuration_binding reused. No duplicate simulator or fingerprint implementation added.",
+        "M3": "N/A per file: repository architecture/settings owned by full_repo_health; prospective source-epoch handling remains separately assessed.",
+        "M4": "ran: DCA next-open contract now agrees with missing-input behavior. PBO doc states exact tie policy and does not treat identical-score zeroPBO as performance advantage.",
+        "T1": "ran: seven new synthetic cases have qualified REDexit1 then GREENexit0; focused DCA/CPCV/crossasset/new suite121tests0.778s exits0,0skips,0blockedboundaries. Initial invalidfield and overlystrictprivateguard attempts are recorded separately.",
+        "T2": "N/A per file: no new external dependency; global pinned supply-chain assessment belongs to repository review.",
+        "T3": "ran: all three bound files ASTparse and fatal Ruff E9,F63,F7,F82 pass0. Root diffcheck exits0; global CI remains a separate final gate.",
+        "T4": "ran: test inputs are tiny shared immutable return-block vectors or fresh3bar arrays; all label permutations run deterministically. Production rows are non-test source.",
+        "M5": "N/A: imported library math/test modules, no standalone application entrypoint."
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "7newknownanswerregressions qualified RED then GREEN",
+      "red_exit_code": 1,
+      "green_exit_code": 0,
+      "logs": [
+        "/tmp/oraclebot-dca-cpcv-blind-red.log",
+        "/tmp/oraclebot-dca-cpcv-blind-green.log"
+      ]
+    },
+    {
+      "command": "4explicit DCA/CPCV/crossasset/new test modules with network/defaultdenyprocessguard",
+      "tests": 121,
+      "seconds": 0.778,
+      "exit_code": 0,
+      "skips": 0,
+      "blocked_attempts": 0,
+      "allowed_children": "one exact fixed-source Python cap control with5sdeadline",
+      "log": "/tmp/oraclebot-dca-cpcv-focused-final.log"
+    },
+    {
+      "command": "fatalRuff,ASTparse,diffcheck for3currentfiles",
+      "exit_code": 0
+    }
+  ],
+  "failed_attempts": [
+    {
+      "log": "/tmp/oraclebot-dca-cpcv-blind-initial-invalid-test.log",
+      "exit_code": 1,
+      "reason": "author initially used nonexistent Trade.qty; corrected to public units before qualified RED",
+      "counted_as_passing": false
+    },
+    {
+      "log": "/tmp/oraclebot-dca-cpcv-focused-guard-control.log",
+      "exit_code": 1,
+      "reason": "private defaultdeny guard refused the reviewed existing Python combination-cap fixture; exactsource allowlist then admitted it",
+      "counted_as_passing": false
+    }
+  ],
+  "limits": [
+    "Independent first blind review produced BA-1/BA-2; final independent recheck remains owned by full_repo_health and is not claimed by this author receipt.",
+    "Versioned continuation binding intentionally refuses legacy repr checkpoints; actual frozen archives/owner processes were not rewritten/restarted.",
+    "Synthetic short-series CAGR overflow warning remains observed; no claim is made that these cases certify long-horizon profitability or eliminate all numerical limitations.",
+    "Final fresh-process full repository gates still required after all production source writers freeze."
+  ]
+}

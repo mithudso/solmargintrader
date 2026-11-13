@@ -121,6 +121,12 @@ class EnsureTests(unittest.TestCase):
 
 class IdleTests(unittest.TestCase):
     def setUp(self):
+        # Exercise mocked rebuild decisions independently of the operator's pause or schedule.
+        environment = mock.patch.dict(idle.os.environ, {
+            "INDEX_NO_AUTO": "0", "INDEX_FORCE_INTERVAL": str(idle.FORCE_INTERVAL),
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         out = Path(tmp.name)

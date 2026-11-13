@@ -110,3 +110,22 @@ The installed app bundle and live services still need manual acceptance beyond C
    a second venue is also a chance to find out what the first one really returns.
 3. **Non-macOS soltui.** The menu-bar app, py2app and launchd are all macOS-specific. The
    TUI (`tui.py`) is not.
+
+## Hosted website integrations and activation assumptions
+
+The website Worker uses Cloudflare D1 for accounts and tenant-owned inactive
+configurations, Stripe for membership Checkout/portal and verified subscriptions,
+and an independently provisioned HTTPS Python service for canonical analysis.
+Each capability is reported independently by `/api/health` and `/api/config`.
+
+Stripe connector access in an agent session does not create the deployed
+`STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID` or `STRIPE_WEBHOOK_SECRET` bindings. The
+owner must select the merchant account and renewal price; server configuration
+and actual Checkout/cancellation acceptance follow. Do not infer entitlement
+from a success redirect. Missing billing configuration prevents trial creation.
+
+`ENGINE_URL` and `ENGINE_TOKEN` connect only the read-only analysis adapter.
+Dedicated caches and the exact Oracle quote instrument must be supplied; no
+synthetic forecast is substituted. Separate ladder, pair and event runners and
+per-user Coinbase/Jupiter live execution are not implemented by that adapter.
+`website/README.md` and `website/engine/README.md` are the owning contracts.

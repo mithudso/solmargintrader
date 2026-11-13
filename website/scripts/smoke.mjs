@@ -1,10 +1,30 @@
 import assert from 'node:assert/strict';
 import { base58Encode, bytesToBase64 } from '../../extension/src/wallet/solana.js';
 
-const base = new URL(process.argv[2] || 'http://localhost:8787').origin;
+const usage = 'Usage: node website/scripts/smoke.mjs [http(s)://host]\nRequires a running Oraclebot worker. Local: npm --prefix website run dev';
+const args = process.argv.slice(2);
+if (args.length === 1 && ['--help', '-h'].includes(args[0])) {
+  console.log(usage);
+  process.exit(0);
+}
+let target;
+try {
+  if (args.length > 1) throw new Error();
+  target = new URL(args[0] || 'http://localhost:8787');
+  if (!['http:', 'https:'].includes(target.protocol) || target.username || target.password) throw new Error();
+} catch {
+  console.error(usage);
+  process.exit(2);
+}
+const base = target.origin;
 const headers = { Origin: base, 'Content-Type': 'application/json' };
 async function request(path, init = {}) {
-  return fetch(`${base}${path}`, { ...init, headers: { ...headers, ...init.headers }, redirect: 'manual' });
+  try {
+    return await fetch(`${base}${path}`, { ...init, headers: { ...headers, ...init.headers }, redirect: 'manual', signal: AbortSignal.timeout(15_000) });
+  } catch {
+    console.error('Oraclebot worker is unavailable or timed out. Start the local worker with: npm --prefix website run dev');
+    process.exit(3);
+  }
 }
 const health = await request('/api/health');
 assert.equal(health.status, 200);

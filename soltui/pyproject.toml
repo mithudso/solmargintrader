@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solmargintrader-research-runtime"
-version = "0.4.0"
+version = "0.4.1"
 description = "Headless SolTUI backtest and prospective paper trial runtime"
 requires-python = ">=3.13"
-dependencies = ["solmargintrader-backtester==0.2.0"]
+dependencies = ["solmargintrader-backtester==0.2.1"]
 
 [tool.setuptools]
 packages = ["soltui"]

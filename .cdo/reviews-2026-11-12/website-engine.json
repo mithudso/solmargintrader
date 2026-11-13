@@ -1,0 +1,255 @@
+{
+  "scope": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/engine/server.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/engine/test_server.py"
+  ],
+  "status": "ready_for_parent_independent_acceptance",
+  "coverage": "full_owned_files",
+  "read_ranges": {
+    "server_original": [
+      [
+        1,
+        155
+      ],
+      [
+        156,
+        284
+      ]
+    ],
+    "server_final": [
+      [
+        1,
+        175
+      ],
+      [
+        176,
+        317
+      ]
+    ],
+    "tests_original": [
+      [
+        1,
+        165
+      ]
+    ],
+    "tests_final": [
+      [
+        1,
+        140
+      ],
+      [
+        141,
+        248
+      ]
+    ]
+  },
+  "original_blobs": {
+    "server.py": "40b8aaf3000658151f6505326d2e4c0bd6ff8f5b",
+    "test_server.py": "2b28cc06b34a67de5ad1c63b5e57f70e7a19e7ea"
+  },
+  "final_blobs": {
+    "server.py": "05b993b468cc15741a2a22267f300ed77c15adf0",
+    "test_server.py": "1b929af6fea6ae9999cceaaaf9f0a3367a77e3e4"
+  },
+  "findings_fixed": [
+    {
+      "severity": "Medium",
+      "pass": "C1/S3",
+      "anchor": "website/engine/server.py:38",
+      "detail": "Huge integers caused OverflowError instead of invalid_capital_or_leverage."
+    },
+    {
+      "severity": "Medium",
+      "pass": "S2/C3",
+      "anchor": "website/engine/server.py:249",
+      "detail": "Malformed request target escaped public HTTP exception boundary and dropped connection."
+    },
+    {
+      "severity": "Medium",
+      "pass": "S5",
+      "anchor": "website/engine/server.py:42",
+      "detail": "Authentication/request failures and caught archive errors lacked safe diagnostic events."
+    },
+    {
+      "severity": "Medium",
+      "pass": "M5",
+      "anchor": "website/engine/server.py:285",
+      "detail": "Invalid token/quote/port did not reliably yield usage before startup; help omitted environment and example."
+    }
+  ],
+  "verify": [
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server -v",
+      "phase": "original baseline",
+      "exit_code": 0,
+      "tests": 14
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server -v",
+      "phase": "new regressions before source fix",
+      "exit_code": 1,
+      "tests": 19,
+      "note": "Malformed target initially failed in client parser; corrected raw-request regression separately confirmed server ValueError and RemoteDisconnected."
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server.HttpTests.test_malformed_request_target_has_a_symbolic_error -v",
+      "phase": "corrected raw-request red",
+      "exit_code": 1
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server.AnalysisTests.test_missing_and_wrong_instrument_archive_unavailable -v",
+      "phase": "archive logging red",
+      "exit_code": 1
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server.HttpTests.test_cli_invalid_configuration_reports_usage_without_starting -v",
+      "phase": "quote/port red",
+      "exit_code": 1
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server.HttpTests.test_cli_help_explains_environment_and_gives_an_example -v",
+      "phase": "help red",
+      "exit_code": 1
+    },
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=botmanager/src:. .venv/bin/python -m unittest website.engine.test_server website.engine.test_research -v",
+      "phase": "final current-tree combined suite",
+      "exit_code": 0,
+      "tests": 27,
+      "log": "/tmp/oraclebot-engine-final-20261112.log"
+    },
+    {
+      "command": ".venv/bin/python -m py_compile website/engine/server.py website/engine/test_server.py",
+      "phase": "final syntax",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check -- website/engine/server.py website/engine/test_server.py",
+      "phase": "final whitespace",
+      "exit_code": 0
+    }
+  ],
+  "passes": [
+    {
+      "id": "C1",
+      "server_state": "fixed",
+      "tests_state": "pass",
+      "detail": "Arbitrary-size integer validation no longer overflows; request result assertions checked."
+    },
+    {
+      "id": "C2",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "HTTP and Analysis signatures, symbolic errors and canonical result shape remain compatible."
+    },
+    {
+      "id": "C3",
+      "server_state": "fixed",
+      "tests_state": "pass",
+      "detail": "Genuine red reproductions for huge integers, malformed raw request target, silent failures and CLI configuration."
+    },
+    {
+      "id": "S1",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Constant-time bearer validation, browser-origin refusal, route allowlist and log redaction checked; no reviewer directives."
+    },
+    {
+      "id": "S2",
+      "server_state": "fixed",
+      "tests_state": "pass",
+      "detail": "URL parsing moved inside exception boundary; HTTP test connections now close in finally."
+    },
+    {
+      "id": "S3",
+      "server_state": "fixed",
+      "tests_state": "pass",
+      "detail": "Numeric bounds, extra request fields, body limit, coin/interval/strategy allowlists and no-execution route checked."
+    },
+    {
+      "id": "S4",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Existing Python 3.13/container conventions preserved; no new third-party APIs."
+    },
+    {
+      "id": "S5",
+      "server_state": "fixed",
+      "tests_state": "pass",
+      "detail": "JSON response/security/failure/archive diagnostics assert fixed metadata and exclude bearer tokens, URLs and exception text."
+    },
+    {
+      "id": "P1",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Existing 4KB body, 32MB cache, 6000-bar deque and chart downsampling bounds retained."
+    },
+    {
+      "id": "P2",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Nonblocking single backtest semaphore releases in finally; independent thread handlers keep operation on instance."
+    },
+    {
+      "id": "M1",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Small named logging/token helpers and explicit CLI guards; no formatting-only rewrite."
+    },
+    {
+      "id": "M2",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Shared token validator avoids CLI/server duplication; logger helper centralizes safe event serialization."
+    },
+    {
+      "id": "M3",
+      "server_state": "na",
+      "tests_state": "na",
+      "detail": "Repository-scope architecture/configuration pass remains parent-owned."
+    },
+    {
+      "id": "M4",
+      "server_state": "pass",
+      "tests_state": "pass",
+      "detail": "Public bridge README and CLI reviewed against implemented cached-analysis and archive-read-only contracts."
+    },
+    {
+      "id": "T1",
+      "server_state": "fixed",
+      "tests_state": "pass",
+      "detail": "Meaningful regression, redaction, body-limit and CLI usage assertions; no removed assertions."
+    },
+    {
+      "id": "T2",
+      "server_state": "na",
+      "tests_state": "na",
+      "detail": "Repository-scope dependency/supply-chain pass remains parent-owned; no dependency added."
+    },
+    {
+      "id": "T3",
+      "server_state": "na",
+      "tests_state": "na",
+      "detail": "Repository-scope tooling pass remains parent-owned; existing unittest/container toolchain used."
+    },
+    {
+      "id": "T4",
+      "server_state": "na",
+      "tests_state": "pass",
+      "detail": "Production source is not a test; tests retain mutable per-test data and class-scoped loopback fixture, no arbitrary sleeps removed."
+    },
+    {
+      "id": "M5",
+      "server_state": "fixed",
+      "tests_state": "na",
+      "detail": "Runnable server: token/quote/port errors now give usage before binding; help names prerequisites and command example. Test module uses standard unittest runner."
+    }
+  ],
+  "snapshot": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-analysis-server-20261112-0920",
+  "empirical_mode": "not applicable: fixture regressions are must-pass verification, no held-out candidate evaluation surface",
+  "remaining": [
+    "Parent independent blind acceptance and canonical ledger/report integration.",
+    "Parent reconcile docs/logging.md to name tested engine JSON events while retaining broader sink limitations."
+  ],
+  "constraints": "No commit/push, persistent service, live order, inference, embedding, indexing or production reset. Only test-owned loopback fixture ran."
+}

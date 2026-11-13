@@ -8,6 +8,7 @@ only coverage rather than claiming an exhaustive token-account index.
 from __future__ import annotations
 
 import json
+import logging
 import math
 import os
 import re
@@ -18,6 +19,7 @@ import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+from functools import wraps
 from typing import Any, Callable
 
 from . import wallet
@@ -26,6 +28,25 @@ HASH = re.compile(r"0x[0-9a-fA-F]{64}\Z")
 SIGNATURE = re.compile(r"[1-9A-HJ-NP-Za-km-z]{80,96}\Z")
 WINDOW_DAYS = 14
 BUDGET_SECONDS = 15
+logger = logging.getLogger(__name__)
+
+
+def _observed(operation):
+    """Observe fixed operation names without exposing addresses, URLs or payloads."""
+    def decorate(function):
+        @wraps(function)
+        def wrapped(*args, **kwargs):
+            logger.debug("wallet_history.request", extra={"operation": operation, "phase": "request"})
+            try:
+                result = function(*args, **kwargs)
+            except Exception as exc:
+                logger.warning("wallet_history.failure", extra={"operation": operation,
+                    "phase": "failure", "error_kind": type(exc).__name__})
+                raise
+            logger.debug("wallet_history.success", extra={"operation": operation, "phase": "success"})
+            return result
+        return wrapped
+    return decorate
 
 
 def _timestamp(value: Any) -> float | None:
@@ -44,6 +65,7 @@ def _timestamp(value: Any) -> float | None:
     return None
 
 
+@_observed("cdp_history")
 def _cdp_query(sql: str, timeout: float) -> list[dict]:
     executable = shutil.which("cdp") or next((p for p in (
         "/opt/homebrew/bin/cdp", "/usr/local/bin/cdp") if os.path.isfile(p) and os.access(p, os.X_OK)), None)
@@ -66,6 +88,7 @@ def _cdp_query(sql: str, timeout: float) -> list[dict]:
     return rows
 
 
+@_observed("solana_history")
 def _rpc(method: str, params: list, timeout: float) -> Any:
     if method not in {"getSignaturesForAddress", "getTransaction"}:
         raise ValueError("Wallet activity accepts only history reads")

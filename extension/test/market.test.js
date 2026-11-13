@@ -40,6 +40,17 @@ const OWNER = '0x901a89cEC0608eB5435A915f006b45bD46405314';
 const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const SOL_OWNER = 'EMTK62aecgScjEuZqbqeGquk8cBoQF9Z4DnxQZxn8myV';
 
+test('exact-input token0 quote rounds the next sqrt price up as the pool does', () => {
+  const sqrtPriceX96 = (1n << 96n) * 101n / 100n;
+  const result = swapWithinRange({ amountIn: 1n, sqrtPriceX96, liquidity: 10n ** 30n,
+    feePips: 0, zeroForOne: true, tick: 199, tickSpacing: 1000 });
+  assert.equal(result.ok, true);
+  // One raw input unit cannot move this pool by one Q96 unit. Rounding down
+  // invents twelve output units; SqrtPriceMath's required round-up returns zero.
+  assert.equal(result.sqrtNextX96, sqrtPriceX96);
+  assert.equal(result.amountOut, 0n);
+});
+
 /** A Base JSON-RPC batch handler: chain id, ETH balance and per-token balanceOf. */
 function baseRpc({ chainId = BASE.chainIdHex, eth = 10n ** 17n, balances = {} } = {}) {
   return (_url, batch) => batch.map((req) => {
@@ -333,7 +344,7 @@ test('quoteSolana reads Jupiter and refuses a reply that does not match the requ
   const usdc = findToken('solana', 'usdc').address;
   const good = stubFetch({ 'https://lite-api.jup.ag/swap/v1/quote': (url) => {
     assert.match(url, /amount=500000000&slippageBps=50/);
-    return { inputMint: sol, outputMint: usdc, outAmount: '44751706', otherAmountThreshold: '44527948', priceImpactPct: '0.00002', routePlan: [{ swapInfo: { label: 'Orca' }, percent: 100 }] };
+    return { inputMint: sol, outputMint: usdc, inAmount: '500000000', swapMode: 'ExactIn', slippageBps: 50, outAmount: '44751706', otherAmountThreshold: '44527948', priceImpactPct: '0.00002', routePlan: [{ swapInfo: { label: 'Orca' }, percent: 100 }] };
   } });
   const q = await quoteSolana({ fetch: good.fetch }, { from: 'SOL', to: 'USDC', amount: '0.5', slippageBps: 50 });
   assert.equal(q.to.amount, 44.751706);
@@ -343,6 +354,16 @@ test('quoteSolana reads Jupiter and refuses a reply that does not match the requ
 
   const bad = stubFetch({ 'https://lite-api.jup.ag/swap/v1/quote': () => ({ inputMint: usdc, outputMint: sol, outAmount: '1' }) });
   await assert.rejects(() => quoteSolana({ fetch: bad.fetch }, { from: 'SOL', to: 'USDC', amount: '0.5' }), /did not match/);
+});
+
+test('Jupiter quote output is bound to the requested input amount, mode and tolerance', async () => {
+  const body = { inputMint: findToken('solana', 'SOL').address, outputMint: findToken('solana', 'USDC').address,
+    inAmount: '500000000', outAmount: '44751706', otherAmountThreshold: '44527948', swapMode: 'ExactIn', slippageBps: 50, routePlan: [] };
+  for (const patch of [{ inAmount: '1' }, { inAmount: undefined }, { swapMode: 'ExactOut' },
+    { slippageBps: 100 }, { outAmount: '0' }, { otherAmountThreshold: '44751707' }, { routePlan: {} }]) {
+    const stub = stubFetch({ 'https://lite-api.jup.ag/swap/v1/quote': () => ({ ...body, ...patch }) });
+    await assert.rejects(() => quoteSolana({ fetch: stub.fetch }, { from: 'SOL', to: 'USDC', amount: '0.5', slippageBps: 50 }), /did not match/);
+  }
 });
 
 test('readSolana reads Jupiter holdings first (the public RPC refuses extension origins) and falls back to RPC', async () => {
@@ -373,4 +394,47 @@ test('readSolana reads Jupiter holdings first (the public RPC refuses extension 
   assert.equal(r2.totalUsd, 200);
   assert.ok(r2.notes.some((n) => /jupiter holdings unavailable/.test(n)));
   assert.ok(r2.notes.some((n) => /Solana JSON-RPC/.test(n)));
+});
+
+
+test('the large pools feed has a bounded opt-in while ordinary requests keep their smaller cap', async () => {
+  const { fetchPools } = await import('../src/market/pools.js');
+  const { request } = await import('../src/jupiter/http.js');
+  const body = JSON.stringify({ data: [{ chain: 'Base', pool: 'synthetic-pool', apy: 5, tvlUsd: 1000000 }],
+    padding: 'x'.repeat(11 * 1024 * 1024) });
+  const fetch = async () => new Response(body);
+  const pools = await fetchPools({ fetch });
+  assert.equal(pools.length, 1); assert.equal(pools[0].id, 'synthetic-pool');
+  await assert.rejects(request({ url: 'https://unit.invalid/ordinary', fetchImpl: fetch, log: () => {} }),
+    error => error.status === 413);
+});
+
+
+test('unavailable known Base balances make the reported lower bound incomplete', async () => {
+  const { fetch } = stubFetch({ 'https://rpc': baseRpc({ eth: 0n, balances: { [USDC.toLowerCase()]: 'error' } }) });
+  const result = await readBase({ fetch }, OWNER, { rpcs: ['https://rpc'] });
+  assert.equal(result.usdComplete, false);
+  assert.notEqual(result.status, 'ok');
+  assert.ok(result.errors.length);
+});
+
+test('invalid Solana balances remain unavailable instead of becoming a complete zero portfolio', async () => {
+  for (const invalid of [null, undefined, '', -1, 'NaN']) {
+    const { fetch } = stubFetch({
+      'https://lite-api.jup.ag/ultra': () => ({ uiAmount: invalid, tokens: {} }),
+      'https://sol': (_u, req) => ({ id: 1, result: req.method === 'getBalance' ? { value: invalid } : { value: [] } }),
+      'https://lite-api.jup.ag/price': () => ({}),
+    });
+    const result = await readSolana({ fetch }, SOL_OWNER, { rpcs: ['https://sol'] });
+    assert.equal(result.usdComplete, false, String(invalid));
+    assert.notEqual(result.status, 'ok');
+  }
+});
+
+test('a malformed pools envelope refuses instead of replacing discovery with an empty successful read', async () => {
+  const { fetchPools } = await import('../src/market/pools.js');
+  for (const body of [null, {}, { data: null }, { data: 'bad' }]) {
+    await assert.rejects(fetchPools({ fetch: async () => reply(body) }), /unusable|invalid|unexpected/);
+  }
+  assert.deepEqual(await fetchPools({ fetch: async () => reply({ data: [] }) }), []);
 });

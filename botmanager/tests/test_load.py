@@ -24,6 +24,7 @@ from botmanager.store import ManagerStore
 from botmanager.supervisor import Supervisor
 from botmanager.worker import lock_held
 
+from tests import isolated_default_owner
 from tests.test_paper import grid, recording
 
 
@@ -192,6 +193,9 @@ def optimizer_pressure(root, ready, stop, fixture_platform=None):
 
 
 class LoadTests(unittest.TestCase):
+    def setUp(self):
+        self.enterContext(isolated_default_owner())
+
     def test_ten_paper_bots_four_workers_with_one_optimizer_fixture(self):
         self.run_load_fixture()
 

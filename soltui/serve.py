@@ -20,24 +20,19 @@ the Terminal detour. `textual-serve` removes it: the same `App` runs behind a lo
 HTTP server and renders in a browser window, so there is a real window with the
 existing controls and no TTY anywhere in the path.
 
-## What this does not change
-
-The app. `SolTuiApp` is untouched, its pure modules are untouched, and the 95 tests
-still cover the logic without driving a terminal *or* a browser. This module is a
-transport.
-
 ## Safety
 
-Binds **127.0.0.1** only. `textual-serve` runs the app as a subprocess and streams
-its output to the browser, which means anything that can reach the port can drive
-the console; on a shared machine a wider bind would hand over the Execute tab. That
-tab is dry-run only (see `paper.py`) so the exposure is bounded, but loopback is
-still the right default and there is no flag to widen it.
+Binds **127.0.0.1** only and accepts browser WebSockets only from that exact local
+origin. The console includes separately armed manual Coinbase controls. Browser
+framing is disabled, and a wider bind is unavailable. Other local processes can
+still reach the loopback endpoint; the console belongs on a trusted local account.
 """
 
 from __future__ import annotations
 
 import argparse
+import inspect
+import shlex
 import socket
 import sys
 import webbrowser
@@ -52,7 +47,7 @@ HOST = "127.0.0.1"
 # explicit `-m` so it does not depend on the parent's cwd or PATH -- a menu-bar
 # process inherits neither reliably.
 def app_command() -> str:
-    return f"{sys.executable} -m soltui.tui"
+    return shlex.join([sys.executable, "-m", "soltui.tui"])
 
 
 def port_is_free(port: int, host: str = HOST) -> bool:
@@ -86,16 +81,31 @@ def serve(port: int | None = None, open_browser: bool = True) -> int:
     this detached and a traceback would go nowhere a user can read.
     """
     try:
+        from aiohttp import web
         from textual_serve.server import Server
     except ImportError:
+        interpreter = shlex.quote(str(REPO / ".venv" / "bin" / "python"))
         print(
             "textual-serve is not installed, so the browser window is unavailable.\n"
-            "  python3 -m pip install textual-serve\n"
+            f"  uv venv {shlex.quote(str(REPO / '.venv'))}\n"
+            f"  uv pip install --python {interpreter} "
+            f"-r {shlex.quote(str(REPO / 'soltui' / 'requirements.txt'))}\n"
             "Alternatively run the console in a terminal:\n"
-            "  python3 -m soltui.tui",
+            f"  {shlex.quote(sys.executable)} -m soltui.tui",
             file=sys.stderr,
         )
         return 2
+
+    # This factory is the integration boundary where the guard must be installed
+    # before any app process or WebSocket starts. Refuse incompatible SDKs.
+    if not inspect.iscoroutinefunction(getattr(Server, "_make_app", None)):
+        print("textual-serve lacks the guarded application factory; browser console unavailable.",
+              file=sys.stderr)
+        return 2
+
+    if port is not None and not 1 <= port <= 65535:
+        print("Port must be between 1 and 65535.", file=sys.stderr)
+        return 3
 
     chosen = port if port is not None else find_port()
     if chosen is None:
@@ -107,11 +117,37 @@ def serve(port: int | None = None, open_browser: bool = True) -> int:
         return 4
 
     target = url_for(chosen)
+    allowed_hosts = {f"{HOST}:{chosen}"}
+    allowed_origins = {target}
+    if chosen == 80:
+        allowed_hosts.add(HOST)
+        allowed_origins.add(f"http://{HOST}")
+
+    @web.middleware
+    async def local_browser_only(request, handler):
+        origin = request.headers.get("Origin")
+        if (request.headers.get("Host") not in allowed_hosts
+                or (origin is not None and origin not in allowed_origins)
+                or (request.path == "/ws" and origin not in allowed_origins)):
+            raise web.HTTPForbidden(text="Local console origin required.")
+        response = await handler(request)
+        response.headers["X-Frame-Options"] = "DENY"
+        # An additional CSP intersects with an existing SDK policy.
+        response.headers.add("Content-Security-Policy", "frame-ancestors 'none'")
+        return response
+
+    class LocalServer(Server):
+        async def _make_app(self):
+            application = await super()._make_app()
+            application.middlewares.insert(0, local_browser_only)
+            return application
+
     print(f"soltui console -> {target}   (Ctrl-C to stop)")
     if open_browser:
         webbrowser.open(target)
 
-    server = Server(app_command(), host=HOST, port=chosen, title="soltui console")
+    server = LocalServer(app_command(), host=HOST, port=chosen, title="soltui console",
+                         public_url=target)
     try:
         server.serve()
     except KeyboardInterrupt:

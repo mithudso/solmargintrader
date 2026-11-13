@@ -32,9 +32,10 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlsplit
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 LABEL = "com.mitchhudson.oraclebot-operations"
 COMPONENTS = ("suite", "manager", "control_room", "market_data")
+FORECAST_SOURCE_MAX_AGE = 15
 STOP = threading.Event()
 
 
@@ -225,7 +226,7 @@ def probe_runtime(config, now):
         value = json.loads(raw)
         if value.get("ok") is not True or not isinstance(value.get("data"), dict):
             raise ValueError("pipeline_probe_failed")
-        return runtime_health(value["data"], now)
+        return runtime_health(value["data"], time.time())
     except (
         OSError,
         subprocess.SubprocessError,
@@ -265,6 +266,7 @@ def probe_forecast(config, now):
         frame = value["data"]
         selected = frame.get("selected", {})
         seconds = frame.get("settings", {}).get("seconds")
+        now = time.time()
         ready = (
             value.get("ok") is True
             and frame.get("status") == "fresh"
@@ -273,6 +275,15 @@ def probe_forecast(config, now):
             and frame.get("refresh_seconds") == seconds
             and frame.get("horizon_seconds") == seconds
             and frame.get("source_current") is True
+            and all(
+                type(stamp) in (int, float)
+                and math.isfinite(stamp)
+                and 0 <= now - stamp <= FORECAST_SOURCE_MAX_AGE
+                for stamp in (
+                    frame.get("source_observed_at"),
+                    frame.get("source_sampled_at"),
+                )
+            )
             and frame.get("instrument") == "SOL/USD"
             and type(selected.get("direction")) is int
             and selected.get("direction") in (-1, 0, 1)

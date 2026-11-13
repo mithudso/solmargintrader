@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-11-12",
+  "source": "read-only preserved owner binding inspection",
+  "owners": [
+    {
+      "home": "/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v1",
+      "state_phase": "forward_partial",
+      "recorded_supervisor_pid": 98998,
+      "recorded_supervisor_process_present": false,
+      "preserved": true
+    },
+    {
+      "home": "/Users/mitch/.local/share/solmargintrader/ecosystem-paper-v2",
+      "state_phase": "failed",
+      "recorded_supervisor_pid": 18736,
+      "recorded_supervisor_process_present": false,
+      "preserved": true
+    }
+  ],
+  "environments": [
+    {
+      "environment": "/Users/mitch/.venvs/solecosystem-0.1.1",
+      "module": "backtester/core/engine.py",
+      "origin": "/Users/mitch/.venvs/solecosystem-0.1.1/lib/python3.13/site-packages/backtester/core/engine.py",
+      "resolved_origin": "/Users/mitch/.venvs/solecosystem-0.1.1/lib/python3.13/site-packages/backtester/core/engine.py",
+      "is_symlink": false,
+      "sha256": "f89b1a30129628d7d2e936c0274bf16c6e9a3ad36ec69496c5e689f79e798ced"
+    },
+    {
+      "environment": "/Users/mitch/.venvs/solecosystem-0.1.1",
+      "module": "oracle/strategies.py",
+      "origin": "/Users/mitch/.venvs/solecosystem-0.1.1/lib/python3.13/site-packages/oracle/strategies.py",
+      "resolved_origin": "/Users/mitch/.venvs/solecosystem-0.1.1/lib/python3.13/site-packages/oracle/strategies.py",
+      "is_symlink": false,
+      "sha256": "34a9c7aa1a3130c7ce0ead7dd45e9b33dc260168b67c3f0b0d8cac200952d4c3"
+    },
+    {
+      "environment": "/Users/mitch/.venvs/solecosystem-0.2.0",
+      "module": "backtester/core/engine.py",
+      "origin": "/Users/mitch/.venvs/solecosystem-0.2.0/lib/python3.13/site-packages/backtester/core/engine.py",
+      "resolved_origin": "/Users/mitch/.venvs/solecosystem-0.2.0/lib/python3.13/site-packages/backtester/core/engine.py",
+      "is_symlink": false,
+      "sha256": "0eb81ae1645075641c8fa4d11a53782e58597ecea9d979f1a94b6be5ca036a1a"
+    },
+    {
+      "environment": "/Users/mitch/.venvs/solecosystem-0.2.0",
+      "module": "oracle/strategies.py",
+      "origin": "/Users/mitch/.venvs/solecosystem-0.2.0/lib/python3.13/site-packages/oracle/strategies.py",
+      "resolved_origin": "/Users/mitch/.venvs/solecosystem-0.2.0/lib/python3.13/site-packages/oracle/strategies.py",
+      "is_symlink": false,
+      "sha256": "34a9c7aa1a3130c7ce0ead7dd45e9b33dc260168b67c3f0b0d8cac200952d4c3"
+    },
+    {
+      "environment": "/Users/mitch/.venvs/solecosystem-0.2.1",
+      "module": "backtester/core/engine.py",
+      "origin": "/Users/mitch/.venvs/solecosystem-0.2.1/lib/python3.13/site-packages/backtester/core/engine.py",
+      "resolved_origin": "/Users/mitch/.venvs/solecosystem-0.2.1/lib/python3.13/site-packages/backtester/core/engine.py",
+      "is_symlink": false,
+      "sha256": "0eb81ae1645075641c8fa4d11a53782e58597ecea9d979f1a94b6be5ca036a1a"
+    },
+    {
+      "environment": "/Users/mitch/.venvs/solecosystem-0.2.1",
+      "module": "oracle/strategies.py",
+      "origin": "/Users/mitch/.venvs/solecosystem-0.2.1/lib/python3.13/site-packages/oracle/strategies.py",
+      "resolved_origin": "/Users/mitch/.venvs/solecosystem-0.2.1/lib/python3.13/site-packages/oracle/strategies.py",
+      "is_symlink": false,
+      "sha256": "34a9c7aa1a3130c7ce0ead7dd45e9b33dc260168b67c3f0b0d8cac200952d4c3"
+    }
+  ]
+}

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import io
 import json
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
@@ -50,10 +52,11 @@ def binding(root, symbol, phase):
 
 
 def read(root, symbol, interval):
-    frame = pd.read_csv(Path(root) / f"{symbol}_{interval}.csv")
+    raw = (Path(root) / f"{symbol}_{interval}.csv").read_bytes()
     evidence = json.loads((Path(root) / f"{symbol}_{interval}.json").read_text())
-    if sha(evidence["csv"]) != evidence["sha256"]:
+    if hashlib.sha256(raw).hexdigest() != evidence["sha256"]:
         raise ValueError("source checksum changed")
+    frame = pd.read_csv(io.BytesIO(raw))
     frame = frame[frame.timestamp < STUDY_END].reset_index(drop=True)
     if len(frame):
         reserved = protected_intervals(Path.home() / ".config/soltui/experiments/experiments.sqlite3", (symbol,))

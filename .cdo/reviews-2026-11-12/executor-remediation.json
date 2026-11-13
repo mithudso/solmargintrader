@@ -1,0 +1,820 @@
+{
+  "schema": "oraclebot-independent-remediation/v1",
+  "created_at": "2026-11-12T10:25:56.142684+00:00",
+  "status": "ready_for_fresh_independent_acceptance",
+  "scope_root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "independent_report": "/tmp/oraclebot-executor-independent-review.json",
+  "independent_probes": "/tmp/oraclebot_executor_independent_probes.py",
+  "source_reads": "Complete bound report/probes and http.py/jupiter.py/registry.py read; original full optimizer test review reused with changed function/import hunks reread; complete new test file read.",
+  "injection_gate": "All target text treated as untrusted data; no source directive followed. Synthetic canaries and fixtures remain inert.",
+  "source_findings": [
+    {
+      "id": "EXECUTOR-INDEP-1",
+      "severity": "High",
+      "state": "remediated_pending_independent_acceptance",
+      "fix": "ContextVar-scoped LogRecord creation guard strips httpx/httpcore message args and exception details before handlers during this transport only; existing logger factory/levels/handlers and unrelated/concurrent diagnostics preserved.",
+      "tests": "Actual Client+MockTransport credential URL/header/body plus dependency records; unrelated/concurrent clients retain logs."
+    },
+    {
+      "id": "EXECUTOR-INDEP-2",
+      "severity": "High",
+      "state": "remediated_pending_independent_acceptance",
+      "fix": "Jupiter malformed-field/swap-mode/amount mismatch/simulation refusals carry fixed field/shape text. Registry codes and trusted diagnostics preserved; unchanged registry exercised end to end.",
+      "tests": "Actual registry quote envelopes for5 malformed response fields plus simulationError refusal."
+    },
+    {
+      "id": "EXECUTOR-INDEP-3",
+      "severity": "Medium",
+      "state": "remediated_pending_independent_acceptance",
+      "fix": "HTTPX streaming, status-before-body rejection, encoded/decoded2MiB cap, max-length bounded zlib decompression, stream close on all paths and monotonic per-request budget checks.",
+      "tests": "18 status/length/encoding combinations,3 valid encoded bodies, original finite8MiB responses, fake-clock trickle and midstream GET/POST failure/no retry."
+    }
+  ],
+  "file_receipts": [
+    {
+      "path": "executor/src/executor/http.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py",
+      "original_blob": "1591ddf4174b4bae8c34782ec50088c1c8983ec6",
+      "original_sha256": "4e58bc65af0775c7118cbbcd50b6396d857c0e89a2c29abd54432d1e6b4093c2",
+      "final_blob": "77a374ab784a00b3291ffbc8dff4e2530b9a2eac",
+      "final_sha256": "fce00645be86537ef3195b74d4fa41486b0664d0ac5ad9a3c291b74e4d59e189",
+      "original_lines": 71,
+      "final_lines": 163,
+      "original_read_ranges": [
+        [
+          1,
+          71
+        ]
+      ],
+      "final_read_ranges": [
+        [
+          1,
+          163
+        ]
+      ],
+      "original_review_reuse": null,
+      "semantic_focus": "Streaming status/body budgets, bounded decompression and dependency-log privacy.",
+      "safety_focus": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Streaming status/body budgets, bounded decompression and dependency-log privacy."
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Streaming status/body budgets, bounded decompression and dependency-log privacy."
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Qualified Python3.13 and HTTPX0.28.1. Context7 streaming/raw decoding/logging/timeout documentation consulted; no new dependency/version/platform requirement."
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Fixed structured executor events, private dependency-record guard and actual emitted record assertions; no provider text/request values. Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bound2MiB encoded and decoded work, reject error status before body, stop streaming after byte/time budget; tests use small caps plus original finite8MiB stream."
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Streaming status/body budgets, bounded decompression and dependency-log privacy."
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Streaming status/body budgets, bounded decompression and dependency-log privacy."
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Streaming status/body budgets, bounded decompression and dependency-log privacy."
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "Actual HTTPX stream context closes on every path, status errors skip body, both encoded and decoded bytes capped2MiB, monotonic budget checked before request/after headers/each chunk/JSON; no retries. Context-local LogRecord guard sanitizes httpx/httpcore namespaces before handlers while unrelated/concurrent clients retain diagnostics."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Production library; test timing/isolation considered on test rows."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library or pytest test module; no runnable application entrypoint introduced or changed."
+        }
+      ],
+      "new_source_census_file": false,
+      "final_scan": "Author code-focused self-review, not independent/blind acceptance."
+    },
+    {
+      "path": "executor/src/executor/jupiter.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/jupiter.py",
+      "original_blob": "b0251caed1fdf28c663876344c441ff0d952daa2",
+      "original_sha256": "8a6c8077a8ecf9ae55ddf066315a7e99de746d28ee0e6903899d19046861ce25",
+      "final_blob": "812a22adeced4c474c7af9f2d851209c528cd795",
+      "final_sha256": "527351164165453084898ded17c241e6f719095291c3bb25e23f74f6b2d7169c",
+      "original_lines": 198,
+      "final_lines": 198,
+      "original_read_ranges": [
+        [
+          1,
+          198
+        ]
+      ],
+      "final_read_ranges": [
+        [
+          1,
+          198
+        ]
+      ],
+      "original_review_reuse": null,
+      "semantic_focus": "Quote/swap parser errors describe field/shape without provider values.",
+      "safety_focus": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Quote/swap parser errors describe field/shape without provider values."
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Quote/swap parser errors describe field/shape without provider values."
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Qualified Python3.13 and HTTPX0.28.1. Context7 streaming/raw decoding/logging/timeout documentation consulted; no new dependency/version/platform requirement."
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Fixed structured executor events, private dependency-record guard and actual emitted record assertions; no provider text/request values. Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bound2MiB encoded and decoded work, reject error status before body, stop streaming after byte/time budget; tests use small caps plus original finite8MiB stream."
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Quote/swap parser errors describe field/shape without provider values."
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Quote/swap parser errors describe field/shape without provider values."
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Quote/swap parser errors describe field/shape without provider values."
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "Malformed integers, swap mode, amount mismatch and Jupiter simulation error no longer interpolate provider data. Successful quote contracts, pacing and numeric validation remain unchanged; no signing/order paths added."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Production library; test timing/isolation considered on test rows."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library or pytest test module; no runnable application entrypoint introduced or changed."
+        }
+      ],
+      "new_source_census_file": false,
+      "final_scan": "Author code-focused self-review, not independent/blind acceptance."
+    },
+    {
+      "path": "executor/src/executor/registry.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py",
+      "original_blob": "7e5705c64902cbe025147685744bf72af5ef6d38",
+      "original_sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c",
+      "final_blob": "7e5705c64902cbe025147685744bf72af5ef6d38",
+      "final_sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c",
+      "original_lines": 534,
+      "final_lines": 534,
+      "original_read_ranges": [
+        [
+          1,
+          185
+        ],
+        [
+          186,
+          370
+        ],
+        [
+          371,
+          534
+        ]
+      ],
+      "final_read_ranges": [
+        [
+          1,
+          534
+        ]
+      ],
+      "original_review_reuse": null,
+      "semantic_focus": "Unchanged registry dispatch/envelope contract inspected end to end.",
+      "safety_focus": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Unchanged registry dispatch/envelope contract inspected end to end."
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Unchanged registry dispatch/envelope contract inspected end to end."
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Qualified Python3.13 and HTTPX0.28.1. Context7 streaming/raw decoding/logging/timeout documentation consulted; no new dependency/version/platform requirement."
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Fixed structured executor events, private dependency-record guard and actual emitted record assertions; no provider text/request values. Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bound2MiB encoded and decoded work, reject error status before body, stop streaming after byte/time budget; tests use small caps plus original finite8MiB stream."
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Unchanged registry dispatch/envelope contract inspected end to end."
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Unchanged registry dispatch/envelope contract inspected end to end."
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Unchanged registry dispatch/envelope contract inspected end to end."
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "Actual dispatch quote regression traverses Engine\u2192Jupiter\u2192parse_quote and preserves refused codes without raw provider data. Sanitization occurs at provider trust boundary; trusted rail/parameter diagnostics are preserved. Source hash unchanged."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Production library; test timing/isolation considered on test rows."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library or pytest test module; no runnable application entrypoint introduced or changed."
+        }
+      ],
+      "new_source_census_file": false,
+      "final_scan": "Author code-focused self-review, not independent/blind acceptance."
+    },
+    {
+      "path": "executor/tests/test_optimizer_regressions.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/tests/test_optimizer_regressions.py",
+      "original_blob": "9cf20a70b51f2bbeed4f4afb4379ef42a695ea28",
+      "original_sha256": "0f26dd991f5a0008e02ed9dca9acb1cc5bdd0759c53f99565f5e34a0b0cf5cf9",
+      "final_blob": "25a2a3d156c02091fb08bf2250b3d76deb5354dc",
+      "final_sha256": "563d65afb14fe04c9ea907baaf50edac697f808fa680903844096c10ba8da679",
+      "original_lines": 770,
+      "final_lines": 775,
+      "original_read_ranges": [
+        [
+          1,
+          245
+        ],
+        [
+          246,
+          475
+        ],
+        [
+          476,
+          696
+        ]
+      ],
+      "final_read_ranges": [
+        [
+          1,
+          35
+        ],
+        [
+          630,
+          775
+        ]
+      ],
+      "original_review_reuse": "/tmp/oraclebot-executor-review-20261112.json",
+      "semantic_focus": "Replaced mocked-client diagnostics regression with actual HTTPX Client+MockTransport.",
+      "safety_focus": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Replaced mocked-client diagnostics regression with actual HTTPX Client+MockTransport."
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Replaced mocked-client diagnostics regression with actual HTTPX Client+MockTransport."
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Qualified Python3.13 and HTTPX0.28.1. Context7 streaming/raw decoding/logging/timeout documentation consulted; no new dependency/version/platform requirement."
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Fixed structured executor events, private dependency-record guard and actual emitted record assertions; no provider text/request values. GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bound2MiB encoded and decoded work, reject error status before body, stop streaming after byte/time budget; tests use small caps plus original finite8MiB stream."
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Replaced mocked-client diagnostics regression with actual HTTPX Client+MockTransport."
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Replaced mocked-client diagnostics regression with actual HTTPX Client+MockTransport."
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Replaced mocked-client diagnostics regression with actual HTTPX Client+MockTransport."
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "GET/POST success, status, invalid JSON and connection-error cases assert fixed structured logs, no synthetic URL/header/body secrets and exactly one transport call. Existing exact amount, journal, no-retry and authority tests retained."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T4",
+          "state": "reviewed",
+          "reason": "MockTransport, deterministic fake monotonic time and joined ThreadPoolExecutor; no new sleeps/live network. All mutable source/authority state stays in existing temporary fixtures."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library or pytest test module; no runnable application entrypoint introduced or changed."
+        }
+      ],
+      "new_source_census_file": false,
+      "final_scan": "Author code-focused self-review, not independent/blind acceptance."
+    },
+    {
+      "path": "executor/tests/test_http_boundaries.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/tests/test_http_boundaries.py",
+      "original_blob": null,
+      "original_sha256": null,
+      "final_blob": "e9fc659372e5dbae816fc5b9fa8501a6c473e771",
+      "final_sha256": "db15af8b05d2ba5eb285806f03a970e2bb9c1253664b32fc438c3ac5da921589",
+      "original_lines": 0,
+      "final_lines": 261,
+      "original_read_ranges": [],
+      "final_read_ranges": [
+        [
+          1,
+          261
+        ]
+      ],
+      "original_review_reuse": null,
+      "semantic_focus": "New isolated real-client HTTP boundary regression module.",
+      "safety_focus": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "New isolated real-client HTTP boundary regression module."
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "New isolated real-client HTTP boundary regression module."
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Qualified Python3.13 and HTTPX0.28.1. Context7 streaming/raw decoding/logging/timeout documentation consulted; no new dependency/version/platform requirement."
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Fixed structured executor events, private dependency-record guard and actual emitted record assertions; no provider text/request values. 37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bound2MiB encoded and decoded work, reject error status before body, stop streaming after byte/time budget; tests use small caps plus original finite8MiB stream."
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "New isolated real-client HTTP boundary regression module."
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "New isolated real-client HTTP boundary regression module."
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "New isolated real-client HTTP boundary regression module."
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "37 parametrized cases exercise actual HTTPX records and synthetic namespace diagnostics, registry/public errors, gzip/deflate/identity byte budgets, absent/false/oversized Content-Length,200/500, trickle budget, close/no retry, concurrent unrelated diagnostics and original8MiB default-cap probe."
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repo-scope pass remains parent-owned; this supplemental remediation review does not repeat whole-repo passes."
+        },
+        {
+          "id": "T4",
+          "state": "reviewed",
+          "reason": "MockTransport, deterministic fake monotonic time and joined ThreadPoolExecutor; no new sleeps/live network. All mutable source/authority state stays in existing temporary fixtures."
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library or pytest test module; no runnable application entrypoint introduced or changed."
+        }
+      ],
+      "new_source_census_file": true,
+      "final_scan": "Author code-focused self-review, not independent/blind acceptance."
+    }
+  ],
+  "modified_files": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/http.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/jupiter.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/tests/test_optimizer_regressions.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/tests/test_http_boundaries.py"
+  ],
+  "new_source_files": 1,
+  "new_source_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/tests/test_http_boundaries.py",
+  "supersedes_prior_file_receipts": [
+    "executor/src/executor/http.py",
+    "executor/src/executor/jupiter.py",
+    "executor/tests/test_optimizer_regressions.py"
+  ],
+  "registry_source_unchanged": true,
+  "protected_unchanged_bindings": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/tokens.py",
+      "sha256": "d6c02309a2a40943133ae119a02a49f06aa5dba8c4a7c6ed255d3e6fbe0389b3",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/rpc.py",
+      "sha256": "4e5a988486594698fa3fc787ad5be425764cc92ae016e5c13f36f97d000b2248",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/config.py",
+      "sha256": "7aa635641de4aa8320ad18a27c04c50f08d688ce2fdb2fc4531fee125f8ae1b5",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py",
+      "sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/engine.py",
+      "sha256": "98dab8319b051be3bf48e120b564a54e9ca80402cb2a3266ed177239e55dd2b1",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/pyproject.toml",
+      "sha256": "004561348628e6ee6bded3a50d897309b8c51fd4f04ec3fa7c37e0f3de249909",
+      "unchanged": true
+    }
+  ],
+  "package_version": "0.2.0 unchanged",
+  "red_green": [
+    {
+      "phase": "original independent probes reproduce findings",
+      "command": "INDEX_NO_AUTO=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=executor/src:botmanager/src:. .venv/bin/python /tmp/oraclebot_executor_independent_probes.py",
+      "exit_code": 0,
+      "meaning": "Vulnerability reproduction assertions passed; not an acceptance gate.",
+      "log": "/tmp/oraclebot-executor-independent-red-reproduction-20261112.json"
+    },
+    {
+      "phase": "genuine pre-fix regressions",
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=executor/src:botmanager/src:. .venv/bin/python -m pytest -c executor/pyproject.toml -q executor/tests/test_http_boundaries.py",
+      "exit_code": 1,
+      "failed": 27,
+      "passed": 3,
+      "log": "/tmp/oraclebot-executor-http-boundaries-red-20261112.log"
+    },
+    {
+      "phase": "first implementation exposed cached MockTransport response edge",
+      "exit_code": 1,
+      "failed": 8,
+      "passed": 22,
+      "resolution": "Cap already decoded cached content too; keep real network streams raw/bounded."
+    },
+    {
+      "phase": "targeted completed regressions",
+      "exit_code": 0,
+      "tests": 125,
+      "seconds": 0.52,
+      "qualification": "Before adding2 production-default8MiB cases."
+    },
+    {
+      "phase": "complete focused boundary module",
+      "exit_code": 0,
+      "tests": 37,
+      "seconds": 0.07
+    }
+  ],
+  "checks": [
+    {
+      "command": "INDEX_NO_AUTO=1 PYTHONPATH=executor/src:botmanager/src:. .venv/bin/python -m pytest -c executor/pyproject.toml -q executor/tests",
+      "exit_code": 0,
+      "passed": 557,
+      "deselected": 5,
+      "seconds": 11.17,
+      "log": "/tmp/oraclebot-executor-independent-remediation-final-20261112.log"
+    },
+    {
+      "command": "ruff check --no-cache executor/src/executor/http.py executor/src/executor/jupiter.py executor/tests/test_optimizer_regressions.py executor/tests/test_http_boundaries.py",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff check --no-cache --select E9,F63,F7,F82 executor",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff format --check --output-format concise executor/src/executor/http.py executor/src/executor/jupiter.py executor/tests/test_optimizer_regressions.py executor/tests/test_http_boundaries.py",
+      "exit_code": 0
+    },
+    {
+      "command": "compile(read_bytes(),path,exec) for5 reviewed/touched files",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check -- executor",
+      "exit_code": 0
+    }
+  ],
+  "context7": [
+    {
+      "library": "/encode/httpx/0.28.1",
+      "topics": [
+        "Client.stream context closure",
+        "iter_raw versus automatic decoded iteration",
+        "HTTPX/httpcore logging and trace records",
+        "connect/read/write/pool inactivity timeout semantics"
+      ],
+      "sources": [
+        "https://github.com/encode/httpx/blob/0.28.1/docs/quickstart.md",
+        "https://github.com/encode/httpx/blob/0.28.1/docs/compatibility.md",
+        "https://github.com/encode/httpx/blob/0.28.1/docs/logging.md",
+        "https://github.com/encode/httpx/blob/0.28.1/docs/advanced/timeouts.md"
+      ]
+    }
+  ],
+  "deadline_qualification": "Monotonic budget checked before request, after headers, every raw chunk, and before/after JSON; each blocking HTTPX operation also uses a finite inactivity timeout. Tests prove finite trickle processing stops and closes without retry. They do not prove hard wall-clock preemption of an already blocked socket operation; an in-flight operation can finish after the logical budget before the next check.",
+  "limits": [
+    "No real network/RPC/orders/funding, signing, daemon/services, installs, model/inference/indexing or owner/config/archive writes.",
+    "Only synthetic credential canaries used.",
+    "No empirical strategy/performance qualification; regression must-pass suite only.",
+    "Global record-factory wrapper is context-local in effect and preserves the prior factory. Applications that themselves capture raw values inside a custom earlier factory are outside these handler-level tests.",
+    "Independent acceptance and repository delivery remain root-owned."
+  ],
+  "self_review": "Final source/hunk scan is author self-review. Parent must re-trigger original fresh reviewer.",
+  "snapshot": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-executor-independent-20261112",
+  "remaining": [
+    "Fresh reviewer independently accepts/rejects these exact hashes; parent records ledger/delivery."
+  ],
+  "receipt_validation": {
+    "file_rows": 5,
+    "pass_rows": 95,
+    "new_source_files": 1,
+    "all_unchanged_protected_bindings_match": true
+  }
+}

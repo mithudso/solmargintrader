@@ -176,28 +176,30 @@ export function normaliseState(state = {}) {
  * The mirror of `normaliseState`: every rail compares against a limit, and a
  * comparison against NaN, undefined or a string is false, so a bad limit would
  * silently switch its rail off. An unusable value falls back to the DEFAULT_LIMITS
- * value (never to Infinity) and is reported. The kill switch is the one limit
- * where "unclear" must mean ENGAGED: any truthy non-boolean engages it.
+ * value for diagnostics (never to Infinity) and is reported. Admission blocks
+ * while a stored limit is invalid. An unclear kill switch means ENGAGED.
  *
  * Does not tighten or loosen anything for valid input.
  */
 export function normaliseLimits(limits = {}) {
   const problems = [];
+  if (!limits || typeof limits !== 'object' || Array.isArray(limits)) {
+    problems.push('limits must be an object; admission refused');
+    limits = {};
+  }
   const merged = { ...DEFAULT_LIMITS, ...limits };
   for (const key of Object.keys(DEFAULT_LIMITS)) {
     if (key === 'killSwitch') continue;
     const v = merged[key];
     if (typeof v !== 'number' || !Number.isFinite(v) || v < 0 ||
         (['maxConcurrentOrders', 'maxOrdersPerTick'].includes(key) && !Number.isSafeInteger(v))) {
-      problems.push(`${key} was ${JSON.stringify(v) ?? 'undefined'}; fell back to default ${DEFAULT_LIMITS[key]}`);
+      problems.push(`${key} was invalid; diagnostic default ${DEFAULT_LIMITS[key]} applied`);
       merged[key] = DEFAULT_LIMITS[key];
     }
   }
   if (typeof merged.killSwitch !== 'boolean') {
-    if (merged.killSwitch) {
-      problems.push(`killSwitch was ${JSON.stringify(merged.killSwitch)}; treated as engaged`);
-    }
-    merged.killSwitch = Boolean(merged.killSwitch);
+    problems.push('killSwitch was invalid; treated as engaged');
+    merged.killSwitch = true;
   }
   return { ...merged, problems };
 }
@@ -214,6 +216,11 @@ export function evaluate({ order, state, limits = DEFAULT_LIMITS, openLots = [] 
   const safeState = normaliseState(state);
   const blockedBy = [];
   const reasons = [];
+
+  if (limitProblems.length) {
+    blockedBy.push('unusable-limits');
+    reasons.push(...limitProblems);
+  }
 
   // An order whose own numbers are unusable cannot be risk-checked at all.
   if (!Number.isFinite(order?.notionalUsd) || order.notionalUsd <= 0 ||
@@ -271,7 +278,7 @@ export function admitBatch({ intents, state, limits = DEFAULT_LIMITS, slippageBp
     const order = { ...intent, slippageBps };
     // Keep the original invalid fields visible to evaluate; normalization alone
     // cannot turn missing exposure or P&L into proof that an order is safe.
-    const result = evaluate({ order, state: running.problems.length ? state : running, limits: merged, openLots: remainingLots(unreserved) });
+    const result = evaluate({ order, state: running.problems.length ? state : running, limits, openLots: remainingLots(unreserved) });
     if (result.verdict === VERDICT.ALLOW) {
       admitted.push(intent);
       running.openNotionalUsd += result.capitalIncreaseUsd;

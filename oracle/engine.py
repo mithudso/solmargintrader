@@ -81,7 +81,7 @@ class OracleEngine:
             ],
         }
         self.policy_hash = hashlib.sha256(canonical(self.policy).encode()).hexdigest()
-        self.store = Store(path)
+        self.store = Store(path, expected_policy=canonical(self.policy))
         with self.store.connection() as db:
             db.execute("BEGIN IMMEDIATE")
             existing = db.execute(

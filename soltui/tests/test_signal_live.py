@@ -56,6 +56,9 @@ class SignalLiveUITests(unittest.IsolatedAsyncioTestCase):
         patch = mock.patch("soltui.config.CONFIG_DIR", Path(temporary.name))
         patch.start()
         self.addCleanup(patch.stop)
+        # Headless startup still loads the available product catalogue. Keep
+        # rendering tests independent of the public exchange metadata endpoint.
+        self.enterContext(mock.patch.object(pricefeed, "stream_products", return_value=["SOL-USD"]))
 
     async def wait_predictions(self, app: SolTuiApp, pilot) -> None:
         for _ in range(100):

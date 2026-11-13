@@ -436,7 +436,7 @@ function sourceReadOnly(run = state.activeRun) {
   return observed?.read_only_source === true || observed?.mutation_allowed === false;
 }
 function actionBlocked(action, params = {}) {
-  return action !== "oracle.voters.set" && /^(pipeline|backtest|oracle|recorder)\./.test(action) && sourceReadOnly(actionRun(action, params));
+  return !["oracle.voters.set", "oracle.forecast.set"].includes(action) && /^(pipeline|backtest|oracle|recorder)\./.test(action) && sourceReadOnly(actionRun(action, params));
 }
 function actionKey(action, params) { return `${actionRun(action, params) || "primary"}:${action}:${params.identity || params.instrument || "owner"}`; }
 function voterKey(instrument = state.oracleInstrument, run = state.activeRun) { return `${run || "primary"}:${instrument}`; }
@@ -886,7 +886,7 @@ function renderLiveForecast(value) {
   const cached = state.liveForecasts.get(key);
   if (valid && (!cached || incoming.issued_at >= cached.issued_at)) state.liveForecasts.set(key, incoming);
   const holding = state.forecastHolding;
-  const held = holding?.scope === JSON.stringify([state.activeRun,state.oracleInstrument,state.oracleStrategy]) && preferencePending("forecast", state.oracleInstrument) ? holding.frame : null;
+  const held = holding?.scope === JSON.stringify([state.activeRun,state.oracleInstrument,state.oracleStrategy]) ? holding.frame : null;
   const frame = state.liveForecasts.get(key) || held;
   if (!frame) return;
   if (valid) state.forecastHolding = null;
@@ -900,7 +900,7 @@ function renderLiveForecast(value) {
   const title = `${direction} · ${price(chosen.predicted_price)}`;
   ["aggregate-signal", "oracle-signal"].forEach((id) => text(id, title));
   ["aggregate-balance", "oracle-balance"].forEach((id) => text(id, `${human(chosen.strategy_id)} · ${horizon}-second price projection`));
-  const reason = `${held && !valid ? `Applying ${requestedSeconds}s · showing the previous ${horizon}s forecast` : fresh ? "Provisional live forecast" : "Last forecast retained · update delayed"} · ${ranking}. ${qualificationSummary(value, true) || "Qualified ensemble evidence is reported separately."}`;
+  const reason = `${held && !valid ? `${preferencePending("forecast", state.oracleInstrument) ? "Applying" : "Waiting for"} ${requestedSeconds}s · showing the previous ${horizon}s forecast` : fresh ? "Provisional live forecast" : "Last forecast retained · update delayed"} · ${ranking}. ${qualificationSummary(value, true) || "Qualified ensemble evidence is reported separately."}`;
   ["aggregate-reason", "oracle-reason"].forEach((id) => text(id, reason));
   text("aggregate-freshness", `Evaluated ${timestamp(frame.issued_at)} · target ${timestamp(frame.target_at)} · age ${age.toFixed(0)}s · recalculates every ${horizon}s`);
   text("oracle-explanation", `Observed ${price(frame.reference_price)} from ${frame.instrument} Coinbase recorder at ${timestamp(frame.observed_at)}. Direction comes from the chosen strategy on 10-second bars. Target distance uses recent median absolute moves at this horizon; it is an indicative projection, not a fitted expected return, executable quote or probability of profit.`);

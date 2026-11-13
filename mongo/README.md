@@ -3,7 +3,8 @@
 A read-mostly MongoDB copy of everything this repo has measured: price history,
 strategies and their cards, the signal and indicator layers, per-bar readouts,
 backtest runs, CPCV and sweep results, the coin write-ups, and the test-suite
-results. ~29,000 documents in the `solmargintrader` database on `localhost:27017`.
+results. The derived `solmargintrader` database defaults to `localhost:27017`;
+its document count depends on the source artifacts available when loading.
 
 The files on disk stay the source of truth. This is a derived store, which is why
 the loader can drop and rebuild it without asking.
@@ -15,21 +16,35 @@ the loader can drop and rebuild it without asking.
 ## Setup
 
 ```bash
-pip install -r mongo/requirements.txt        # pymongo only
-brew services start mongodb-community        # if it is not already listening
+uv venv .venv --python 3.13                 # first setup only; reuse an existing .venv
+uv pip install --python .venv/bin/python -r mongo/requirements.txt -e ./backtester
 
-python3 mongo/schema.py --describe           # the layout, no server needed
-python3 mongo/load.py --dry-run              # what would load, writes nothing
-python3 mongo/load.py                        # ~35s
-python3 mongo/load.py --run-tests            # ~2min, also records real suite results
+.venv/bin/python mongo/schema.py --describe  # the layout, no server needed
+.venv/bin/python mongo/load.py --dry-run     # counts only; no MongoDB connection
 ```
 
-Verify:
+The commands run from the repository root. The MongoDB driver and backtester
+dependencies stay inside `.venv`; activation is optional because each invocation
+names the interpreter. The CLI reports a known missing package with exit code 3
+and an exact isolated-environment installation command. It does not install
+packages or start MongoDB. `python-dotenv` is needed by the separate market-capture
+tool, not by the MongoDB research loader.
+
+To rebuild the local derived store, ensure your configured MongoDB service is
+already available, then run `.venv/bin/python mongo/load.py`. Add `--run-tests`
+only when you intend to execute the configured research suites and record their
+observed results; those suites require their own documented dependencies.
+
+Verify the component:
 
 ```bash
-python3 -m unittest discover -s mongo/tests -t .          # 20 tests
+.venv/bin/python -m unittest discover -s mongo/tests -t .
 mongosh solmargintrader mongo/queries/08-provenance-and-health.js
 ```
+
+Native integration tests use a generated `solmargintrader_test_<uuid>` database,
+seed tracked reference fixtures, and clean up only that database. They skip when
+MongoDB is unavailable. The remaining tests use mocks and temporary files.
 
 ## The loader drops before it writes
 
@@ -47,21 +62,23 @@ alone.
 
 ## Collections
 
-| Collection | Documents | Shape |
-| --- | --- | --- |
-| `bars` | 18,381 | **Time series.** `ts` + `series` meta `{asset, interval, source, frame_checksum}` |
-| `spot_prices` | 1 | **Time series.** The JLP snapshot — not OHLCV, see below |
-| `equity_points` | 7,500 | **Time series.** `ts` + `curve` meta `{run_id, strategy}` |
-| `strategies` | 49 | One per strategy card, with live registry facts embedded for the 29 registered |
-| `signals` | 15 | The stateless one-bar rules from `research/decide.py` |
-| `indicators` | 20 | 16 reported rows + 4 explicitly skip-listed functions |
-| `decisions` | 6 | One per readout, exactly as `decide.build_report()` emits it |
-| `backtest_runs` | 1 | Manifest + per-strategy metrics |
-| `trades` | 114 | One per fill |
-| `experiments` | 25 | One per result file: kind, columns, object sidecar |
-| `experiment_rows` | 2,736 | One per result row. `section` is `result` or `summary` |
-| `documents` | 78 | Markdown: coin spokes, research prose, component docs |
-| `test_results` | 3 | A suite count + outcome per commit, from a real run |
+Run `.venv/bin/python mongo/load.py --dry-run` for the current artifact counts.
+
+| Collection | Shape |
+| --- | --- |
+| `bars` | **Time series.** `ts` + `series` meta `{asset, interval, source, frame_checksum}` |
+| `spot_prices` | **Time series.** The JLP snapshot — not OHLCV, see below |
+| `equity_points` | **Time series.** `ts` + `curve` meta `{run_id, strategy}` |
+| `strategies` | One per loaded strategy card, with live registry facts when a registry key is present |
+| `signals` | The stateless one-bar rules from `research/decide.py` |
+| `indicators` | Reported rows and explicitly skip-listed functions |
+| `decisions` | One per readout, exactly as `decide.build_report()` emits it |
+| `backtest_runs` | Manifest + per-strategy metrics |
+| `trades` | One per fill |
+| `experiments` | One per result file: kind, columns, object sidecar |
+| `experiment_rows` | One per result row. `section` is `result` or `summary` |
+| `documents` | Markdown: coin spokes, research prose, component docs |
+| `test_results` | A suite count + outcome per commit, from a real run |
 
 ### Four design decisions you will run into
 
@@ -70,16 +87,15 @@ range; MongoDB maintains the meta+time index itself and there are no user indexe
 to add. Provenance lives on the metaField, where it is stored once per bucket
 rather than once per bar.
 
-**`spot_prices` is separate, with one document.** `data/JLP_spot.csv` is a Jupiter
+**`spot_prices` is separate.** `data/JLP_spot.csv` is a Jupiter
 price snapshot with columns `timestamp,iso,mint,usd_price,source` — no OHLCV at
 all. `research/decide.py` refuses to read it as bars, and merging the two here
 would contradict the distinction the code enforces.
 
 **Strategy cards keep their own vocabulary.** There is no `registered` boolean.
-`registry_key` is a string for the 25 registered `Strategy` implementations and
-`null` for the other 20 — but null does *not* mean unimplemented: the ladder grid
-is `status: "implemented"` with no key because it is not a `Strategy` at all. Use
-`status` (`measured` / `implemented` / `spec-only`) and `runner` for the rest.
+`registry_key` is a string when a card maps to a registered `Strategy` implementation and
+`null` otherwise. A null key alone does not mean unimplemented. Use `status`
+(`measured` / `implemented` / `spec-only`) and `runner` to interpret the card.
 
 **List-shaped sidecars became rows, not blobs.** `cpcv_pbo.json` and the
 `geometry_*_k2.json` files hold a *list* — one PBO per horizon, or per block count.
@@ -169,8 +185,10 @@ the selected collections. Empty/unknown selectors refuse.
 | --- | --- |
 | `mongo/schema.py` | Collection specs, `$jsonSchema` validators, indexes. `--describe` needs no server |
 | `mongo/load.py` | The loader. Drops, rebuilds, stamps provenance |
+| `mongo/cli.py` | Shared CLI prerequisite messages; library imports keep their normal behavior |
 | `mongo/queries/` | Eight runnable, commented query files |
-| `mongo/tests/test_load.py` | 20 tests: idempotency, provenance, validation, card semantics |
+| `mongo/tests/test_load.py` | Isolated native fixtures, provenance, validation, card semantics |
+| `mongo/tests/test_query_scripts.py` | Inert mongosh examples, fixture isolation, interpreter and CLI regressions |
 | `mongo/requirements.txt` | `pymongo`, kept out of `backtester/requirements.txt` on purpose |
 
 ## Scope

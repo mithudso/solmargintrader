@@ -8,10 +8,11 @@ trials, the research archive and the separate Python analysis adapter. Billing,
 analysis availability and live venue execution have independent readiness gates.
 Bot configurations in this release are inactive paper definitions.
 
-SOL trading research and execution tooling, in ten parts:
+Trading research, execution tooling and the hosted workspace, in eleven parts:
 
 | Path | What it is | Language |
 | --- | --- | --- |
+| [`website/`](website/README.md) | Cloudflare wallet accounts, optional Stripe billing, public research and a separate read-only canonical analysis adapter. Trading definitions remain inactive. | JavaScript ESM/Python |
 | [`ecosystem/`](ecosystem/README.md) | Paper bootstrap, shared Oracle/F5 coordination, external bot registrations and a local paper control room with delegated operations. | Python 3.13 |
 | [`oracle/`](oracle/README.md) | Source-labelled market observations, prospective strategy votes, durable history, read-only MCP subscriptions and explicitly enabled TradingView workers for Coinbase spot or Jupiter ZEC Beta perpetuals. | Python 3.13 |
 | [`botmanager/`](botmanager/README.md) | Standalone `solbot` CLI: pinned bot specifications, legacy discovery/control and an explicit multi-instance reference-paper supervisor for Grid, DCA, Trend and Momentum. Reuses the shared Oracle archive; Jupiter quote evidence stays separate. | Python 3.13 |
@@ -79,9 +80,9 @@ sample do not establish a causal effect or a calibrated trading forecast.
 
 ## Managed bot suite
 
-The current coordinated candidate is manager 0.7.2, research-runtime 0.4.0 and
-ecosystem 0.4.4, with backtester 0.2.0, Oracle 0.2.3, optional executor 0.2.0
-and extension source 0.6.6. It retains paper/disarmed defaults and separates source
+The current coordinated source candidate is manager 0.7.3, research-runtime 0.4.1
+and ecosystem 0.4.6, with backtester 0.2.1, Oracle 0.2.4, optional executor 0.2.1
+and extension source 0.6.7. Archived liquidity source is 0.1.1 and remains disabled. It retains paper/disarmed defaults and separates source
 checks from installed acceptance and final delivery. Run `solbot --help` for the ordered
 walkthrough, `solbot ui open` for the verified control room, and `solbot health-check`
 for collector measurements. The [managed suite guide](docs/bot-manager-managed-suite.md)
@@ -106,7 +107,7 @@ python3 -m backtester.cli --asset SOL --strategy all --split 0.7 --out results/
 
 # Extension — no install step, no dependencies
 cd extension
-npm test                                               # 437 tests
+npm test                                               # 483 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100   # end-to-end tick loop
 node tools/cli.js                                      # every available command
 ```
@@ -117,10 +118,10 @@ Load the extension: `chrome://extensions` → Developer mode → **Load unpacked
 ## Tests
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 437 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1564 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 57 tests
+cd extension && npm test                                # 483 tests
 ```
 
 Counts are asserted by CI, so a stale number here fails the build rather than

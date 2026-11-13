@@ -35,6 +35,7 @@ Every figure is labelled `wallet (live)`: it is a read of real money at the time
 from __future__ import annotations
 
 import json
+import logging
 import math
 import os
 import re
@@ -112,6 +113,16 @@ MIN_LIQUIDITY_USD = 5_000.0
 DUST_USD = 0.0001
 NATIVE_EVM = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 MAX_TOKEN_PAGES = 25
+MAX_HTTP_BYTES = 8 * 1024 * 1024
+_LOG = logging.getLogger(__name__)
+
+
+def _transport_event(operation: str, phase: str, *, error_kind: str = "", status: int = 0,
+                     attempt: int = 0) -> None:
+    """Fixed operation metadata only; provider text and request contents stay private."""
+    emit = _LOG.warning if phase == "failure" else _LOG.debug
+    emit(f"{operation}.{phase}", extra={"operation": operation, "phase": phase,
+         "error_kind": error_kind, "status": status, "attempt": attempt})
 
 _B58 = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 _EVM = re.compile(r"^0x[0-9a-fA-F]{40}$")
@@ -165,18 +176,27 @@ class HttpFetcher:
         for attempt in range(self.retries + 1):
             now = self._clock()
             if now > self._deadline:
+                _transport_event("wallet_http", "failure", error_kind="budget", attempt=attempt)
                 raise WalletHttpError(0, "scan time budget used up")
             wait = self._last.get(host, 0.0) + self.min_gap - now
             if wait > 0:
                 self._sleep(min(wait, 2.0))
             self._last[host] = self._clock()
             req = urllib.request.Request(url, data=data, headers=headers)
+            _transport_event("wallet_http", "request", attempt=attempt)
             try:
                 remaining = self._deadline - self._clock()
                 if remaining <= 0:
+                    _transport_event("wallet_http", "failure", error_kind="budget", attempt=attempt)
                     raise WalletHttpError(0, "scan time budget used up")
                 with urllib.request.urlopen(req, timeout=min(self.timeout, remaining)) as resp:
-                    return json.loads(resp.read().decode("utf-8"))
+                    payload = resp.read(MAX_HTTP_BYTES + 1)
+                    if len(payload) > MAX_HTTP_BYTES:
+                        _transport_event("wallet_http", "failure", error_kind="response_size", attempt=attempt)
+                        raise WalletHttpError(0, "wallet response exceeds the size limit")
+                    result = json.loads(payload.decode("utf-8"))
+                    _transport_event("wallet_http", "success", attempt=attempt)
+                    return result
             except urllib.error.HTTPError as exc:
                 if exc.code in (429, 500, 502, 503, 504) and attempt < self.retries:
                     retry_after = exc.headers.get("Retry-After") if exc.headers else None
@@ -184,17 +204,24 @@ class HttpFetcher:
                         pause = float(retry_after) if retry_after else 0.8 * (attempt + 1)
                     except ValueError:
                         pause = 0.8 * (attempt + 1)
-                    self._sleep(min(pause, 4.0))
+                    if not math.isfinite(pause) or pause < 0:
+                        pause = 0.8 * (attempt + 1)
+                    _transport_event("wallet_http", "retry", error_kind="http", status=exc.code, attempt=attempt)
+                    self._sleep(min(pause, 4.0, max(0., self._deadline - self._clock())))
                     continue
-                raise WalletHttpError(exc.code, f"HTTP {exc.code} from {host}") from None
-            except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                _transport_event("wallet_http", "failure", error_kind="http", status=exc.code, attempt=attempt)
+                raise WalletHttpError(exc.code, f"HTTP {exc.code} from wallet provider") from None
+            except (urllib.error.URLError, TimeoutError, OSError):
                 if attempt < self.retries:
+                    _transport_event("wallet_http", "retry", error_kind="network", attempt=attempt)
                     self._sleep(0.5 * (attempt + 1))
                     continue
-                raise WalletHttpError(0, f"{host}: {getattr(exc, 'reason', exc)}") from None
-            except ValueError as exc:
-                raise WalletHttpError(0, f"{host} sent something that is not JSON: {exc}") from None
-        raise WalletHttpError(0, f"{host}: gave up")
+                _transport_event("wallet_http", "failure", error_kind="network", attempt=attempt)
+                raise WalletHttpError(0, "wallet provider request failed") from None
+            except ValueError:
+                _transport_event("wallet_http", "failure", error_kind="json", attempt=attempt)
+                raise WalletHttpError(0, "wallet provider response is not JSON") from None
+        raise WalletHttpError(0, "wallet provider retry limit reached")
 
     def base_token_balances(self, address: str, page_token: str | None = None) -> Any:
         """Read one indexed page through the optional, independently configured CDP CLI.
@@ -203,6 +230,7 @@ class HttpFetcher:
         a signing command. Fixed argv and closed stdin prevent shell expansion and login prompts.
         """
         if not valid_evm_address(address):
+            _transport_event("wallet_cdp", "failure", error_kind="invalid_address")
             raise WalletHttpError(0, "invalid Base address")
         executable = shutil.which("cdp")
         if executable is None:
@@ -210,25 +238,33 @@ class HttpFetcher:
             executable = next((p for p in ("/opt/homebrew/bin/cdp", "/usr/local/bin/cdp")
                                if os.path.isfile(p) and os.access(p, os.X_OK)), None)
         if executable is None:
+            _transport_event("wallet_cdp", "failure", error_kind="unavailable")
             raise WalletHttpError(0, "CDP CLI unavailable; install and configure cdp for indexed discovery")
         remaining = self._deadline - self._clock()
         if remaining <= 0:
+            _transport_event("wallet_cdp", "failure", error_kind="budget")
             raise WalletHttpError(0, "scan time budget used up")
         argv = [executable, "data", "evm", "token-balances", "base", address, "pageSize==100"]
         if page_token:
             argv.append("pageToken==" + page_token)
+        _transport_event("wallet_cdp", "request")
         try:
             result = subprocess.run(argv, stdin=subprocess.DEVNULL, capture_output=True, text=True,
                                     timeout=min(self.timeout, remaining), check=False)
         except (OSError, subprocess.TimeoutExpired):
+            _transport_event("wallet_cdp", "failure", error_kind="subprocess")
             raise WalletHttpError(0, "CDP balance request could not finish") from None
         if result.returncode:
+            _transport_event("wallet_cdp", "failure", error_kind="subprocess")
             # CLI errors may contain authentication details; expose only the remedy.
             raise WalletHttpError(0, "CDP balance request failed; check cdp environment and API access")
         try:
-            return json.loads(result.stdout)
+            value = json.loads(result.stdout)
         except ValueError:
+            _transport_event("wallet_cdp", "failure", error_kind="json")
             raise WalletHttpError(0, "CDP balance reply was not JSON") from None
+        _transport_event("wallet_cdp", "success")
+        return value
 
 
 # -- result shapes ------------------------------------------------------------------------------------
@@ -265,6 +301,8 @@ class ChainScan:
         # reader cannot take the total for the whole value.
         unpriced = [r["symbol"] for r in ([self.native] if self.native else []) + [h for h in self.holdings if h["included"]]
                     + self.stakes if r.get("usd") is None and (r.get("amount") or 0) > 0]
+        unpriced.extend(f"{p.get('protocol', 'unknown')} position #{p.get('token_id', '?')}"
+                        for p in self.positions if p.get("value_usd") is None)
         flagged = [h for h in self.holdings if h["airdrop"]]
         got_any = bool(self.native or self.holdings or self.stakes or self.positions)
         status = "ok" if not self.errors else ("partial" if got_any else "error")
@@ -319,8 +357,7 @@ def _rpc(fetch: Fetch, url: str, method: str, params: list, ident: int = 1) -> A
     if not isinstance(reply, dict):
         raise WalletHttpError(0, f"{method}: unexpected reply")
     if reply.get("error"):
-        err = reply["error"]
-        raise WalletHttpError(0, f"{method}: {err.get('message') if isinstance(err, dict) else err}")
+        raise WalletHttpError(0, f"{method}: RPC provider refused the read")
     return reply.get("result")
 
 
@@ -336,7 +373,10 @@ def scan_solana(address: str, fetch: Fetch, rpc: str = SOLANA_RPC) -> ChainScan:
     try:
         lamports = _rpc(fetch, rpc, "getBalance", [address])
         value = lamports.get("value") if isinstance(lamports, dict) else lamports
-        sol = (_num(value) or 0.0) / LAMPORTS
+        amount = _num(value)
+        if amount is None or amount < 0:
+            raise WalletHttpError(0, "invalid SOL balance reply")
+        sol = amount / LAMPORTS
         scan.native = {"symbol": "SOL", "name": "Solana", "amount": sol, "price_usd": None, "usd": None,
                        "source": LABEL, "kind": "native"}
     except WalletHttpError as exc:
@@ -524,7 +564,9 @@ def daemon_context(status: dict[str, Any] | None, ledger_tokens: list[str] | Non
         if valid_evm_address(addr):
             tokens.setdefault(addr.lower(), "")
     positions = [p for p in ((status or {}).get("positions") or []) if isinstance(p, dict)]
-    return {"tokens": tokens, "positions": positions, "mode": (status or {}).get("mode")}
+    owner = (status or {}).get("owner")
+    return {"tokens": tokens, "positions": positions, "mode": (status or {}).get("mode"),
+            "owner": owner if isinstance(owner, str) and valid_evm_address(owner) else None}
 
 
 def _raw_token_amount(value: Any, decimals: Any) -> tuple[int, int]:
@@ -620,6 +662,10 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
               daemon: dict[str, Any] | None = None, extra_tokens: list[str] | None = None) -> ChainScan:
     scan = ChainScan("base", address)
     daemon = daemon or {"tokens": {}, "positions": [], "mode": None}
+    daemon_owner = daemon.get("owner")
+    daemon_valuation_matches = (daemon.get("mode") == "live" and isinstance(daemon_owner, str)
+                                and valid_evm_address(daemon_owner)
+                                and daemon_owner.lower() == address.lower())
 
     def call_rpc(label: str, fn: Callable[[str], Any]) -> Any:
         """Try each public RPC in turn; the error names the last one if all fail."""
@@ -810,8 +856,10 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
             known = daemon_ids.get(str(tid)) if proto == "Aero Slipstream" else None
             scan.positions.append({
                 "protocol": proto, "manager": manager, "token_id": tid, "held_by": "wallet",
-                "pair": (known or {}).get("pair"), "value_usd": _num((known or {}).get("value_usd")),
-                "value_source": "liquidity daemon state" if known else "not valued (no source)",
+                "pair": (known or {}).get("pair"),
+                "value_usd": _num((known or {}).get("value_usd")) if daemon_valuation_matches else None,
+                "value_source": ("liquidity daemon state" if daemon_valuation_matches
+                                 else "not valued (daemon owner or mode unverified)") if known else "not valued (no source)",
                 "source": LABEL, "kind": "position-nft",
                 "link": f"{BASE_EXPLORER}/nft/{manager}/{tid}"})
             scan.contracts.append({"holding": f"{proto} position #{tid}", "kind": "position NFT",
@@ -824,9 +872,11 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
             continue
         scan.positions.append({
             "protocol": "Aero Slipstream", "manager": POSITION_MANAGERS["Aero Slipstream"],
-            "token_id": p.get("token_id"), "held_by": "gauge (staked) or not in the wallet",
-            "pair": p.get("pair"), "value_usd": _num(p.get("value_usd")),
-            "value_source": "liquidity daemon state", "source": LABEL, "kind": "position-nft",
+            "token_id": p.get("token_id"), "held_by": ("gauge (staked) or not in the wallet"
+                if daemon_valuation_matches else "unverified daemon observation"),
+            "pair": p.get("pair"), "value_usd": _num(p.get("value_usd")) if daemon_valuation_matches else None,
+            "value_source": "liquidity daemon state" if daemon_valuation_matches else "not valued (daemon owner or mode unverified)",
+            "source": LABEL, "kind": "position-nft",
             "link": f"{BASE_EXPLORER}/nft/{POSITION_MANAGERS['Aero Slipstream']}/{p.get('token_id')}"})
         scan.contracts.append({"holding": f"Aero position #{p.get('token_id')}", "kind": "position NFT",
                                "address": POSITION_MANAGERS["Aero Slipstream"],
@@ -834,6 +884,8 @@ def scan_base(address: str, fetch: Fetch, rpcs: tuple[str, ...] = BASE_RPCS, *,
                                "link": f"{BASE_EXPLORER}/nft/{POSITION_MANAGERS['Aero Slipstream']}/{p.get('token_id')}"})
     if daemon["positions"] and daemon.get("mode") != "live":
         scan.notes.append(f"daemon mode is {daemon.get('mode')!r}: its position values are not live")
+    elif daemon["positions"] and not daemon_valuation_matches:
+        scan.notes.append("Daemon position ownership is unverified for this wallet; its values are not counted")
     return scan
 
 

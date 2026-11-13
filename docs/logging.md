@@ -13,11 +13,12 @@ currently record nothing.
 | Local HTTP API | Structured, secret-free security/error events on stderr | Only when the operator captures stderr |
 | `backtester/` | The run manifest and report (`core/report.py`), written per run | Yes, as output files |
 | `research/` | stdout, plus written result files | Output files only |
-| `soltui/` | App stdout/stderr plus detached sweep/fetch logs | Yes, via launchd or worker files |
+| `soltui/` | App stdout/stderr, detached sweep/fetch logs and safe `soltui.market` read events | Captured app/worker streams; no common persistent request sink |
 | `mongo/` | Loader counts, subprocess output and provenance stored in derived documents | Console/output records; no common JSONL error sink |
 | `liquidity/` | `Daemon.log` writes SQLite ledger events and stdout; stage results retain transaction hashes | Ledger, state files and service `daemon.log` |
 | `botmanager/` | Owner journals, `health.sqlite3`, and the suite's private `.suite/alerts.json` plus stdout/stderr | Yes; bounded derived alerts are distinct from financial/evidence journals |
 | `ecosystem/` | Pipeline `supervisor.log`, control-room `control-room.log`, `control.sqlite3` action receipts and sanitized `telemetry.sqlite3` mirror | Yes; original manager evidence remains with its owner |
+| `website/` | Worker fixed request-failure events; Python engine fixed HTTP/analysis events | Cloudflare runtime logs or captured engine stderr; no common persistent sink |
 | `oracle/` | Selected archive events/forecasts; separate webhook SQLite signals, per-leg intents, sanitized results and public fill evidence | Durable journals; fixed CLI/MCP/HTTP failures are not a universal transport-attempt log |
 
 The extension's real log is **not the console**. `src/storage/store.js` defines four
@@ -121,6 +122,19 @@ and dependency errors. Protocol stdout belongs to JSON/MCP frames. These existin
 records do not provide the common per-request JSONL error sink, remediation maps
 or generated call cards required by the complete five-standard contract.
 
+## Read-only market diagnostics
+
+`soltui/market_diagnostics.py` emits `market.operation` through the
+`soltui.market` logger. Wrapped operations in `live_price.py`, `spot_prices.py`
+and `current_signal.py` record a fixed operation name and started/completed,
+unavailable or failed outcome. Failures include the exception class, never its
+message, raw URL, token, symbol or provider body. An expected HTTP 404 uses info
+level; other failures use warning and still propagate to the caller.
+
+The installed application's logging handlers own collection. These tested read
+boundaries do not supply a persistent event sink for every market or transport
+call in the repository.
+
 ## Testing a log
 
 Assert on the event, not on the fact that a line ran. `src/storage/memoryStore.js`
@@ -143,3 +157,26 @@ requests are excluded. The worker failure boundary stops the receiver and expose
 not a complete shared per-request error sink. Tests are in
 `oracle/tests/test_webhook.py`, `test_webhook_orders.py`, `test_gum_orders.py` and
 `test_gum_webhook_orders.py` under `oracle/tests/`.
+
+## Hosted website diagnostic boundary
+
+The website’s account/session/subscription tables and processed Stripe-event
+identities are operational state, not a complete per-request audit log.
+`website/src/worker.js` emits `oraclebot.request_failed` with a fixed operation,
+code and HTTP status. Server failures use error level; refused requests use warn.
+It excludes raw URLs, query strings, request bodies, wallet signatures, cookies,
+Stripe headers and provider response text. Regression tests assert the fields,
+levels and redaction.
+
+`website/engine/server.py` suppresses HTTP access logs. Its structured response
+and failure events use fixed operation/status metadata and exception class names.
+They exclude arbitrary request targets, credentials, bodies and exception text.
+The CLI configures these JSON events on stderr. Cloudflare observability captures
+Worker events when enabled in `website/wrangler.jsonc`; engine stderr still needs
+an operator-owned collector. These tested boundaries do not establish a common
+persistent request/outcome sink across the repository.
+
+A universal safe transport/security event sink remains an implementation gap
+unless the code-optimizer report records a tested repair. Adding one must retain
+redaction and tenant boundaries. Never treat the presence of a subscription row,
+a successful HTTP response or platform request log as proof of an executed order.

@@ -37,6 +37,19 @@ from .cointegration import engle_granger
 from .types import BarWindow
 
 
+def _aligned_timestamps(values: np.ndarray, label: str) -> np.ndarray:
+    raw = np.asarray(values)
+    if raw.ndim != 1 or raw.dtype.kind == "b":
+        raise ValueError(f"{label} timestamps must be a one-dimensional integer series")
+    stamps = np.asarray(values, dtype="float64")
+    if not np.isfinite(stamps).all() or np.any(np.abs(stamps) > 10_000_000_000) or np.any(stamps != np.floor(stamps)):
+        raise ValueError(f"{label} timestamps must be finite integral epoch seconds")
+    stamps = stamps.astype("int64")
+    if np.unique(stamps).size != stamps.size:
+        raise ValueError(f"{label} timestamps must be unique")
+    return stamps
+
+
 def align_peer(
     base_ts: np.ndarray, peer_ts: np.ndarray, peer_closes: np.ndarray
 ) -> np.ndarray:
@@ -46,11 +59,13 @@ def align_peer(
     spread look calmer than it was, which flatters every reversion statistic
     computed from it. The caller can drop bars deliberately if it wants to.
     """
-    base_ts = np.asarray(base_ts, dtype="int64")
-    peer_ts = np.asarray(peer_ts, dtype="int64")
+    base_ts = _aligned_timestamps(base_ts, "base")
+    peer_ts = _aligned_timestamps(peer_ts, "peer")
     peer_closes = np.asarray(peer_closes, dtype="float64")
-    if peer_ts.size != peer_closes.size:
+    if peer_closes.ndim != 1 or peer_ts.size != peer_closes.size:
         raise ValueError("peer timestamps and closes differ in length")
+    if not np.isfinite(peer_closes).all() or np.any(peer_closes <= 0):
+        raise ValueError("peer closes must be finite and positive")
 
     lookup = dict(zip(peer_ts.tolist(), peer_closes.tolist()))
     missing = [int(t) for t in base_ts if int(t) not in lookup]

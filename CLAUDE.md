@@ -24,10 +24,11 @@ The existing maintained wiki is documented in `docs/ECOSYSTEM-WIKI.md`.
 
 ## What this is
 
-Ten components with different risk profiles. Know which one you are in:
+Eleven components with different risk profiles. Know which one you are in:
 
 | Component | Risk |
 | --- | --- |
+| `website/` (JavaScript/Python) | Public wallet-account and subscription workspace on Cloudflare; Stripe can charge members when configured. Trading definitions remain inactive paper configurations. The separate Python adapter only reads public-market analysis inputs. No owner keys or local control-room access. |
 | `ecosystem/` (Python) | Paper-only setup, durable F5 coordination, external bot registrations, sanitized manager telemetry and a local paper control room with authenticated, durable owner actions. Reuses existing workers and recorder. Never arms or submits orders. |
 | `oracle/` (Python) | Source-labelled shadow forecasts and a historical event archive with read-only MCP subscriptions. Forecasts never sign or submit orders; the optional explicitly enabled TradingView worker submits Coinbase spot orders or owner-configured Jupiter ZEC Beta perpetual orders through GUM. Reference agreement is not profit probability; unavailable inputs fail closed. See `docs/JUPITER-ZEC-WEBHOOK.md` for the separate leveraged signing and account boundary. |
 | `botmanager/` (Python) | Standalone `solbot` lifecycle and evidence application. Default paper/disarmed. Legacy adapters preserve the existing owner; missing data, credentials or execution capability fail closed. Never silently seize a bot or create a duplicate recorder/optimizer. |
@@ -126,10 +127,10 @@ Oracle uses its own installed environment: `python -m pip install ./backtester .
 Ecosystem setup and control room use `python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem`, then `python -m unittest discover -s ecosystem/tests -t . -v` and `ruff check ecosystem oracle scripts/bootstrap_ecosystem.py`. Verify the installed environment and actual loopback UI separately. See `docs/ECOSYSTEM-BOOTSTRAP.md`.
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 437 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1564 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 57 tests
+cd extension && npm test                                # 483 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must still close positive
 cd extension && npm run e2e                             # real Chrome for Testing: load, dry-run, rails (needs one; see below)
 node tools/verify-endpoints.js                          # live Jupiter reachability
@@ -192,11 +193,11 @@ authoritative when a cached claim differs.
 
 | File | Absolute path | Purpose |
 | --- | --- | --- |
-| llms.txt | /Users/mitch/dev/solmargintrader/llms.txt | Family index |
-| llms-small.txt | /Users/mitch/dev/solmargintrader/llms-small.txt | Budgeted navigation digest |
-| llms-facts.txt | /Users/mitch/dev/solmargintrader/llms-facts.txt | Source-tagged facts and corrected beliefs |
-| llms-full.txt | /Users/mitch/dev/solmargintrader/llms-full.txt | Operator reference and coverage limits |
-| llms-sitemap.txt | /Users/mitch/dev/solmargintrader/llms-sitemap.txt | Shallow file census and resources |
+| llms.txt | /Users/mitch/dev/oraclebot.io/llms.txt | Family index |
+| llms-small.txt | /Users/mitch/dev/oraclebot.io/llms-small.txt | Budgeted navigation digest |
+| llms-facts.txt | /Users/mitch/dev/oraclebot.io/llms-facts.txt | Source-tagged facts and corrected beliefs |
+| llms-full.txt | /Users/mitch/dev/oraclebot.io/llms-full.txt | Operator reference and coverage limits |
+| llms-sitemap.txt | /Users/mitch/dev/oraclebot.io/llms-sitemap.txt | Shallow file census and resources |
 
 The refresh artifact and manifest are preserved at
 `/Users/mitch/.research/distillations/solmargintrader-health-20261111.repo/`.
@@ -216,3 +217,24 @@ The earlier broad family remains available alongside the five-minute suite. Its 
 | File | Path | Holds | Ask it for |
 |---|---|---|---|
 | llms.txt | ~/.global-ai-hub/llms-concepts/solana-margin-trading-defi.family/llms.txt | Twelve concept packs for building Solana-first lending, looping, perp-short and fast-signal tooling with EVM comparisons. Every unit in the -v4 packs passed the research-gate/v4 evidence gate on 2026-11-06 (708 claims kept of about 5,000 researched; the rest could not be bound to exact source quotes or were not judged SUPPORTED). Educational, not financial advice; leverage can lose more than the stake; private reading aid. | Members, Shared, Facts, Optional |
+
+## Website verification and activation boundaries
+
+The hosted application is separate from the local owner control room. Read
+`website/README.md` and `website/engine/README.md` before editing its boundaries.
+Wallet sign-in grants no trading permission. Only verified Stripe subscription
+state grants membership; missing billing or analysis configuration fails closed.
+Never reuse the owner’s wallet keys or exchange credentials for public accounts.
+
+```bash
+npm --prefix website test
+npm --prefix website run check
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
+```
+
+The website CI job runs those source gates. Production acceptance also needs the
+actual deployed wallet/session round trip and content identity. A configured
+binding, a paid redirect, or a saved bot does not establish analysis availability
+or trading execution. `website/scripts/smoke.mjs` performs an explicit account
+creation/deletion test; it is not a read-only health probe.

@@ -276,7 +276,14 @@ def conversion_plan(source: Path, output: Path) -> list[tuple[Path, Path]]:
             path = Path(directory) / name
             if path.suffix.lower() not in {".html", ".htm"} or path.is_symlink():
                 continue
-            target = output / path.relative_to(source).with_suffix(".md")
+            relative = path.relative_to(source).with_suffix(".md")
+            # A mirrored child directory must remain inside the requested root.
+            # Refuse pre-existing output links before publishing any page.
+            for depth in range(1, len(relative.parts)):
+                parent = output.joinpath(*relative.parts[:depth])
+                if parent.is_symlink():
+                    raise ValueError(f"Refusing output directory symlink: {parent}")
+            target = output / relative
             if target in owners:
                 raise ValueError(
                     f"Output collision: {owners[target]} and {path} -> {target}"

@@ -66,6 +66,42 @@ function defaultRequestLog(event) {
 
 /** A hung request must not outlive the tick that started it. */
 export const DEFAULT_TIMEOUT_MS = 15_000;
+export const DEFAULT_RESPONSE_BYTES = 4 * 1024 * 1024;
+export const MAX_RESPONSE_BYTES = 32 * 1024 * 1024;
+
+async function boundedText(response, maxBytes, url) {
+  const tooLarge = () => new JupiterHttpError('response exceeds size limit', { status: 413, body: null, url });
+  const declared = Number(response.headers?.get?.('content-length'));
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    try { response.body?.cancel().catch(() => {}); } catch { /* Preserve the size refusal. */ }
+    throw tooLarge();
+  }
+  // Native fetch in Node and Chrome provides a byte stream. Text-only injected
+  // adapters retain compatibility, but their result still must fit the cap.
+  if (!response.body?.getReader) {
+    const text = await response.text();
+    if (new TextEncoder().encode(text).byteLength > maxBytes) throw tooLarge();
+    return text;
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let size = 0;
+  let text = '';
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) return text + decoder.decode();
+      size += value.byteLength;
+      if (size > maxBytes) {
+        try { reader.cancel().catch(() => {}); } catch { /* Preserve the size refusal. */ }
+        throw tooLarge();
+      }
+      text += decoder.decode(value, { stream: true });
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
 
 /**
  * @param {object} opts
@@ -74,6 +110,7 @@ export const DEFAULT_TIMEOUT_MS = 15_000;
  * @param {RequestBudget} [opts.budget]
  * @param {number} [opts.maxAttempts]
  * @param {number} [opts.timeoutMs]      per-attempt timeout
+ * @param {number} [opts.maxResponseBytes] hard byte cap, at most MAX_RESPONSE_BYTES
  * @param {function} [opts.fetchImpl]    injectable for tests
  */
 export async function request({
@@ -82,13 +119,15 @@ export async function request({
   budget,
   maxAttempts = 4,
   timeoutMs = DEFAULT_TIMEOUT_MS,
+  maxResponseBytes = DEFAULT_RESPONSE_BYTES,
   fetchImpl = globalThis.fetch,
   sleepImpl = sleep,
   log = defaultRequestLog,
 }) {
   if (!Number.isSafeInteger(maxAttempts) || maxAttempts < 1 ||
-      !Number.isFinite(timeoutMs) || timeoutMs <= 0) {
-    throw new RangeError('HTTP attempts and timeout must be positive finite values');
+      !Number.isFinite(timeoutMs) || timeoutMs <= 0 || !Number.isSafeInteger(maxResponseBytes)
+      || maxResponseBytes < 1 || maxResponseBytes > MAX_RESPONSE_BYTES) {
+    throw new RangeError('HTTP attempts, timeout and response cap must be positive bounded values');
   }
   // A lost write response does not prove the server rejected the operation.
   // Only read requests can be replayed without creating a second order/deposit.
@@ -114,8 +153,12 @@ export async function request({
     try {
       res = await fetchImpl(url, { ...init, signal: controller.signal });
       // Keep the deadline active until the body is read, not just the headers.
-      text = await res.text();
+      text = await boundedText(res, maxResponseBytes, url);
     } catch (err) {
+      if (err instanceof JupiterHttpError && err.status === 413) {
+        emit({ level: 'error', msg: 'response exceeds size limit', status: 413, attempt: attempt + 1 });
+        throw err;
+      }
       const timedOut = err?.name === 'AbortError';
       lastError = new JupiterHttpError(
         timedOut ? `request timed out after ${timeoutMs}ms` : 'network request failed',

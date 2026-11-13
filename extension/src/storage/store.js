@@ -204,6 +204,22 @@ export const DEFAULT_CONFIG = Object.freeze({
 });
 
 /** chrome.storage.local wrapper that works headless (Node) for tests. */
+const runtimeQueues = new WeakMap();
+const validStopGeneration = value => Number.isSafeInteger(value) && value >= 0;
+const runtimeDefaults = { armed: false, killSwitch: false, stopGeneration: 0,
+  lastTickMs: null, lastTickDeltaMs: null, dayKey: null, realizedPnlUsdToday: 0 };
+
+function runtimeValue(stored) {
+  if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return { ...runtimeDefaults, killSwitch: true };
+  // Older records predate this counter. Explicit malformed counters cannot
+  // become a fresh epoch or authorize an arm/clear after a stop.
+  const generation = Object.hasOwn(stored, 'stopGeneration') ? stored.stopGeneration : 0;
+  const valid = validStopGeneration(generation);
+  return { ...runtimeDefaults, ...stored, stopGeneration: valid ? generation : null,
+    armed: valid && stored.armed === true,
+    killSwitch: !valid || (Object.hasOwn(stored, 'killSwitch') ? stored.killSwitch !== false : false) };
+}
+
 export class ConfigStore {
   constructor(area = globalThis.chrome?.storage?.local) {
     this.area = area;
@@ -213,7 +229,7 @@ export class ConfigStore {
   async get(key, fallback) {
     if (!this.area) return this.memory.has(key) ? this.memory.get(key) : fallback;
     const res = await this.area.get(key);
-    return res?.[key] ?? fallback;
+    return res && Object.hasOwn(res, key) && res[key] !== undefined ? res[key] : fallback;
   }
 
   async set(key, value) {
@@ -239,19 +255,73 @@ export class ConfigStore {
   }
 
   async getRuntime() {
-    return this.get(RUNTIME_KEY, {
-      armed: false,
-      killSwitch: false,
-      lastTickMs: null,
-      lastTickDeltaMs: null,
-      dayKey: null,
-      realizedPnlUsdToday: 0,
+    return runtimeValue(await this.get(RUNTIME_KEY, {}));
+  }
+
+  async updateRuntime(update) {
+    if (typeof this.area?.update === 'function') {
+      return this.area.update(RUNTIME_KEY, stored => update(runtimeValue(stored === undefined ? {} : stored)));
+    }
+    const identity = this.area ?? this;
+    const result = (runtimeQueues.get(identity) ?? Promise.resolve()).then(async () => {
+      const next = update(await this.getRuntime());
+      await this.set(RUNTIME_KEY, next);
+      return next;
+    });
+    const tail = result.catch(() => {});
+    runtimeQueues.set(identity, tail);
+    tail.then(() => { if (runtimeQueues.get(identity) === tail) runtimeQueues.delete(identity); });
+    return result;
+  }
+
+  async setRuntime(patch, options = {}) {
+    return this.updateRuntime(current => {
+      if (Object.hasOwn(options, 'expectedStopGeneration') && (!validStopGeneration(options.expectedStopGeneration)
+          || current.stopGeneration !== options.expectedStopGeneration)) {
+        throw Object.assign(new Error('A newer or unusable stop prevents this runtime change'), { code: 'RUNTIME_STOP_CHANGED' });
+      }
+      if (patch.armed === true && current.killSwitch) throw new Error('Kill switch is engaged');
+      const next = { ...current, ...patch };
+      // Initialization and metadata writers cannot clear an emergency latch.
+      // Explicit clear and fresh-install reset supply a checked stop generation.
+      if (current.killSwitch && patch.killSwitch === false && !Object.hasOwn(options, 'expectedStopGeneration')) next.killSwitch = true;
+      return next;
     });
   }
 
-  async setRuntime(patch) {
-    const next = { ...(await this.getRuntime()), ...patch };
-    await this.set(RUNTIME_KEY, next);
-    return next;
+  async killRuntime() {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await this.updateRuntime(current => ({ ...current, armed: false, killSwitch: true,
+          stopGeneration: validStopGeneration(current.stopGeneration) && current.stopGeneration < Number.MAX_SAFE_INTEGER
+            ? current.stopGeneration + 1 : null }));
+      } catch (error) {
+        // BUSY means the config lease was never acquired: no write occurred.
+        // A stale/foreign config lease also blocks the active owner's reads.
+        if (error.code !== 'FILE_STORE_BUSY' || attempt >= 20) throw error;
+        await new Promise(resolve => setTimeout(resolve, 5));
+      }
+    }
+  }
+
+  async withExecutionPermission(invoke, permitted = () => true, options = {}) {
+    let permission;
+    // Serialize the last permission check and synchronous venue invocation with
+    // emergency updates. Return a wrapped promise so the config lease releases
+    // before waiting for the venue's response, which may be ambiguous or slow.
+    await this.updateRuntime(current => {
+      const epochMatches = !Object.hasOwn(options, 'expectedStopGeneration')
+        || (validStopGeneration(options.expectedStopGeneration) && current.stopGeneration === options.expectedStopGeneration);
+      if ((current.armed !== true && options.paperGrant !== true) || current.killSwitch !== false
+          || !epochMatches || permitted() !== true) {
+        permission = { allowed: false };
+      } else {
+        const pending = Promise.resolve(invoke());
+        pending.catch(() => {}); // The caller awaits it after the lease releases.
+        permission = { allowed: true, pending };
+      }
+      return current;
+    });
+    return permission;
   }
 }

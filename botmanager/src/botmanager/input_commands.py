@@ -17,7 +17,10 @@ def read_document(path, limit=65536):
             raw = stream.read(limit + 1)
         if len(raw) > limit:
             raise ValueError
-        return json.loads(raw)
+        body = json.loads(raw)
+        if not isinstance(body, dict):
+            raise TypeError
+        return body
     except (ValueError, TypeError, OSError) as exc:
         raise ManagerError(
             "input_unavailable", "Input document is missing or invalid.", 3

@@ -379,12 +379,29 @@ def cmd_pnl(a: argparse.Namespace) -> int:
 
 
 def cmd_run(a: argparse.Namespace) -> int:
+    from .daemon import KillSwitchEngaged
+    from .state import home
+
     cfg = load(a.config)
+    root = home()
+
+    def require_running() -> None:
+        if (root / "KILL").exists():
+            raise KillSwitchEngaged("kill switch engaged: no on-chain action")
+
+    if a.live:
+        try:
+            require_running()
+        except KillSwitchEngaged as error:
+            print(f"refusing live mode: {error}", file=sys.stderr)
+            return 3
     # Engine construction reads the chain. Refuse from the same loaded config
     # before any RPC or signer access, as the daemon entry point does.
     if a.live and not _live_gate(cfg):
         return 3
     eng = Engine(cfg)
+    if a.live:
+        eng.gate = require_running
     signer = None
     if a.live:
         from .wallet import load_signer

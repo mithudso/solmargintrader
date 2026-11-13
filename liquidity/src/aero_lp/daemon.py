@@ -219,6 +219,7 @@ class Daemon:
                 pool,
                 journal=self.journal,
                 accounting=accounting,
+                before_send=self.assert_acting,
             )
         return SimRunner(self.chain, self.cfg.owner, tokens, pool)
 

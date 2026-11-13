@@ -28,6 +28,12 @@ export const DUST_USD = 0.01;
 /** An unknown token whose market is thinner than this is not counted (soltui/wallet.py). */
 export const MIN_LIQUIDITY_USD = 5_000;
 
+function balanceNumber(value) {
+  if (!['number', 'string'].includes(typeof value) || (typeof value === 'string' && !value.trim())) return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
 function chainResult(chain, address) {
   return { chain, address, status: 'ok', holdings: [], errors: [], notes: [], totalUsd: 0, usdComplete: true };
 }
@@ -73,7 +79,10 @@ export async function readBase(deps, address, { rpcs = BASE.rpcs } = {}) {
   const raw = [{ token: BASE_TOKENS[0], value: hexToBigInt(out[1]) }];
   tokens.forEach((t, i) => raw.push({ token: t, value: uint(out[i + 2]) }));
   const missing = raw.filter((r) => r.value === null).map((r) => r.token.symbol);
-  if (missing.length) result.notes.push(`no answer for ${missing.join(', ')}; not listed`);
+  if (missing.length) {
+    result.notes.push(`no answer for ${missing.join(', ')}; not listed`);
+    result.errors.push('base rpc: some known balances are unavailable');
+  }
 
   const held = raw.filter((r) => r.value !== null && r.value > 0n);
   let prices = {};
@@ -120,8 +129,8 @@ export async function readBase(deps, address, { rpcs = BASE.rpcs } = {}) {
 async function solanaFromJupiter(deps, address, result) {
   try {
     const body = await getJson(deps, ENDPOINTS.jupiterHoldings + address, { source: 'jupiter holdings' });
-    const sol = Number(body?.uiAmountString ?? body?.uiAmount);
-    if (!Number.isFinite(sol) || !body?.tokens || typeof body.tokens !== 'object') {
+    const sol = balanceNumber(body?.uiAmountString ?? body?.uiAmount);
+    if (sol === null || !body?.tokens || typeof body.tokens !== 'object' || Array.isArray(body.tokens)) {
       result.notes.push('jupiter holdings answered in an unexpected shape; read Solana RPC instead');
       return null;
     }
@@ -130,7 +139,11 @@ async function solanaFromJupiter(deps, address, result) {
     for (const [mint, accounts] of Object.entries(body.tokens)) {
       // Mints go into a price query string and an explorer link: base58 only.
       if (!isSolanaAddress(mint) || !Array.isArray(accounts)) continue;
-      const amount = accounts.reduce((s, a) => s + (Number(a?.uiAmountString ?? a?.uiAmount) || 0), 0);
+      const amount = accounts.reduce((sum, account) => {
+        const quantity = balanceNumber(account?.uiAmountString ?? account?.uiAmount);
+        if (quantity === null || !Number.isFinite(sum + quantity)) throw new MarketError('jupiter holdings', 'token balance unavailable');
+        return sum + quantity;
+      }, 0);
       if (amount === 0) { empty += accounts.length; continue; }
       mints.set(mint, { mint, amount });
     }
@@ -146,7 +159,9 @@ async function solanaFromRpc(deps, address, rpcs, result) {
   let sol = null;
   try {
     const bal = await rpcCall(deps, rpcs, 'getBalance', [address], { source: 'solana getBalance' });
-    sol = Number(bal?.value ?? bal) / 1e9;
+    const lamports = balanceNumber(bal?.value ?? bal);
+    if (lamports === null) throw new MarketError('solana getBalance', 'native balance unavailable');
+    sol = lamports / 1e9;
   } catch (err) {
     fail(result, err);
   }
@@ -155,11 +170,13 @@ async function solanaFromRpc(deps, address, rpcs, result) {
     try {
       const reply = await rpcCall(deps, rpcs, 'getTokenAccountsByOwner',
         [address, { programId: program }, { encoding: 'jsonParsed' }], { source: 'solana token accounts' });
-      for (const item of reply?.value ?? []) {
+      if (!Array.isArray(reply?.value)) throw new MarketError('solana token accounts', 'token account list unavailable');
+      for (const item of reply.value) {
         const info = item?.account?.data?.parsed?.info;
         const amt = info?.tokenAmount;
-        const ui = Number(amt?.uiAmountString ?? amt?.uiAmount);
-        if (!isSolanaAddress(info?.mint) || !Number.isFinite(ui)) continue;
+        if (!isSolanaAddress(info?.mint)) continue;
+        const ui = balanceNumber(amt?.uiAmountString ?? amt?.uiAmount);
+        if (ui === null) throw new MarketError('solana token accounts', 'token balance unavailable');
         if (ui === 0) { empty += 1; continue; }
         const row = mints.get(info.mint) ?? { mint: info.mint, amount: 0 };
         row.amount += ui;
@@ -250,6 +267,7 @@ const STABLE_MINTS = new Set(['EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'E
 export function finish(result) {
   let dust = 0;
   result.holdings = result.holdings.filter((h) => {
+    if (h.usd != null && (!Number.isFinite(h.usd) || h.usd < 0)) h.usd = null;
     if (h.usd != null && h.usd < DUST_USD) { dust += 1; return false; }
     return true;
   });

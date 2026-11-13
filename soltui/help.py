@@ -286,6 +286,7 @@ TAB_HELP = {
     "tab-bots": "Prices record automatically (a LaunchAgent keeps the recorder on). Three trading bots, all simulated: the grid bot (the resting ladder the extension trades), the triangle arbitrage bot (three-leg USD cycles through Coinbase cross pairs) and the DCA bot (base order, deeper safety orders, one take-profit). Backtest starts a bot at a past moment and shows what it set and what it made; Forward test runs it in dry-run on the live recorded price stream from now on; Auto-optimize tests a fixed grid of settings on every coin and adopts a new one only if it reliably beats the current one out of sample. No order is ever placed.",
     "bots-sec-backtest": "The latest backtest of the selected bot: what it set at its start (the ladder, the safety orders, or the watched triangles) and the result, beside buy-and-hold of the same capital. One backtest is one path through history, not evidence that the bot is profitable.",
     "bots-sec-fit": "Coin suitability uses the selected grid or DCA bot's saved settings and the cached universe. Quick ranking is a provisional heuristic screen, not a profitability forecast. Select a row for its reasons and full-account equity, then audit that coin across chronological windows and stressed costs. Error and insufficient-data rows remain visible. No settings are adopted and no orders are placed.",
+    "bots-sec-council": "A prospective paper account driven by eligible strategy votes. Configure its accuracy/sample floors and execution assumptions, then start or stop its recorder. Stopping retains any open paper position; no live order is placed.",
     "bots-sec-forward": "The selected bot's dry-run forward test: everything the price recorder captured since it started, replayed through the bot as it arrives, with the same fill rules and costs as the backtest. A recorder gap longer than two minutes ends the coverage there, because what the market did unseen is unknown.",
     "bots-sec-optimize": "The latest auto-optimize report. Grid and DCA use separate searches for each coin. A tentative improvement may be saved with three matched holdouts, at least 80% coverage, a positive median and more wins than losses; it is not statistically confirmed. A stronger result requires ten decisions and sign-test p < 0.05. Manual mode blocks adoption.",
     "bots-sec-prices": "The newest bid and ask of every streamed Coinbase market, from the recorder's level-2 books (ticker quotes for any market without a synced book). Quote age is seconds since that quote was last confirmed; a stale leg cannot be used by the triangle bot.",
@@ -303,8 +304,10 @@ TAB_HELP = {
     "tab-liquidity": "Liquidity reports the separate Aero bot's files, including real or simulated LP positions and modelled pool estimates. APR is an annual rate, not total profit. Kill pauses the bot without closing positions; Resume can allow it to act on real funds.",
     "tab-pnl": "P&L means profit and loss. Compare net results after costs and include open losses. Each source has its own section: simulated results and real money are never summed. Wallet value changes include transfers and are not trading profit.",
     "tab-wallet": "Wallet scans public addresses and extended public keys for balances and estimated USD values. Partial means something could not be read; unpriced means a value is unknown. Deposits, withdrawals and price moves all change wallet value.",
+    "tab-advanced-order": "Review or submit a separately armed Coinbase spot order. Quick mode can submit immediately; conditional orders can remain open. The ticket shares the Coinbase safety lock. Jupiter, leverage and short execution remain unavailable here.",
     "tab-research": "Research explains which question each analysis script answers and what its dated experiment established. A statistical test can disprove a claim without finding a profitable replacement. Saved research is evidence about its data period.",
     "cmp-call": "The live call and every metric that makes it: switch metrics on or off, edit their numbers, score the latest closed 5m bar.",
+    "cmp-live": "Current direction predictions for the selected coin, their measured accuracy and sample sizes. Choose the displayed price source and inspect each strategy's settings. Predictions are paper evidence; this view does not place orders.",
     "cmp-backtest": "Backtests of this coin: the compound, each metric alone and the frontier (strongest readings held longer), out-of-sample, after costs, beside buy-and-hold.",
     "cmp-forward": "The forward (paper) test: one call per closed 5m bar, resolved when the next bar closes. Unattended training keeps it running without the console.",
     "cmp-coins": "Every coin at a glance, and the switches that start or stop training on all of them.",
@@ -313,6 +316,10 @@ TAB_HELP = {
 }
 
 SETTING_HELP = {
+    "borrow_long_bps_hour": "Long-position borrowing cost scenario in basis points per hour. It applies to the simulation, not a promise of the venue's future borrow rate.",
+    "borrow_short_bps_hour": "Short-position borrowing cost scenario in basis points per hour. Actual venue rates can change; a zero scenario does not establish free borrowing.",
+    "leverage": "Default paper leverage multiplier. It magnifies simulated gains, losses and costs; it does not improve a signal's accuracy.",
+    "min_confidence": "Default paper entry-confidence threshold from 0 to 1. The historical score is not a calibrated probability; zero disables this gate.",
     "asset": "Coin to simulate, for example SOL. This chooses the cached price series, not a token to buy. A different coin is a different experiment.",
     "start": "First historical date included, in UTC YYYY-MM-DD form. Testing only after a large crash can change the apparent result, so choose the period before comparing strategies.",
     "end": "Last historical date included, in UTC YYYY-MM-DD form. Blank uses all available cached history; it does not fetch prices up to today.",
@@ -505,8 +512,8 @@ CONTROL_HELP = {
     "liq-resume": "Remove the liquidity bot's kill switch, allowing it to act under its own mode and limits, potentially with real funds. Press twice within 10 seconds to confirm. This does not change its risk caps.",
     "docs-filter": "Filter the repository file list by path or summary. For example, grid finds grid-related code and explanations. This searches the catalogue; it does not edit or execute a file.",
     "docs-search": "Search the repository index by meaning or by words, then press Enter. Keyword finds exact terms such as fee_bps; semantic finds related ideas even with different words; hybrid combines both. Results are ranked leads, not proof, and are as current as the last index build.",
-    "docs-search-mode": "keyword: exact terms, works offline. semantic: similar meaning using the local mxbai-embed-large model, which starts the local Ollama server if needed. hybrid: both, falling back to keyword when semantic is unavailable.",
-    "docs-search-run": "Run the search. The first search loads the index into memory; a semantic or hybrid search may start Ollama and load a model of roughly 670 MB. An empty box restores the plain file list.",
+    "docs-search-mode": "Keyword scores exact terms locally. Semantic uses the local mxbai-embed-large model; hybrid combines both and can fall back to keywords. The optional automatic index check can start a background rebuild in any mode unless INDEX_NO_AUTO=1.",
+    "docs-search-run": "Run the search. The first search loads the index into memory; semantic search or automatic rebuilding may start Ollama and load its embedding model. INDEX_NO_AUTO=1 suppresses the automatic rebuild. An empty box restores the plain file list.",
     "docs-search-free": "Drop the loaded search index from memory and ask Ollama to unload the embedding model now, instead of waiting for its short idle timeout. The next search loads them again.",
     "docs-kind": "Narrow the file catalogue to code, documents, results or another indexed kind. This kind describes a file; wallet contract kinds on the Wallet tab mean something different.",
     "docs-save": "Save the currently opened editable source file. Generated research results stay read-only. The editor checks for changes on disk so it cannot silently overwrite another writer's edits.",
@@ -586,6 +593,15 @@ for _name, _leverage in (("lev_low", 2), ("lev_medium", 5), ("lev_high", 20)):
 
 
 HEADER_GLOSSARY.update({
+    "rank": "Position in the table's current ordering. Rank can change with sorting, the selected coin or new outcomes; it is not a probability of profit.",
+    "win rate": "Winning or correct resolved outcomes divided by the measured sample. In the live-prediction table this is direction accuracy, not profitable trades. Check sample size and net results separately.",
+    **{f"{minutes}m pred": f"Latest recorded direction prediction for the {minutes}-minute horizon. UP, DOWN and FLAT describe a paper forecast, not an executed trade." for minutes in (1, 5, 10, 30)},
+    "horizon accuracy": "Correct resolved direction calls at each displayed horizon. Each horizon has its own sample; classification accuracy does not establish trading profit.",
+    "settings": "Strategy names and parameter values recorded for this row. These identify the tested rule; they do not grant trading authority.",
+    "trade": "Whether this paper record generated a simulated trade under its execution rules. No live order is implied.",
+    "net %": "Reported simulated net return after the model's trading costs over the recorded period. This is not wallet profit or a future-return forecast.",
+    "liquidations": "Simulated forced position closures when the model's collateral requirement was breached. Real liquidation behavior also depends on venue conditions.",
+    "execution": "Paper execution assumptions: leverage, short permission and minimum confidence. These settings do not arm a live account.",
     "forecast utc": "UTC time at which the forecast was recorded.",
     "starts utc": "UTC time at which the prediction's measurement period begins.",
     "prediction": "The recorded direction predicted for this forecast.",
@@ -646,6 +662,26 @@ TAB_HELP["tab-paper-experiments"] = (
 )
 
 CONTROL_HELP.update({
+    "btn-goto-signal-live": "Open the selected coin's live paper predictions and their recorded evidence.",
+    "council-asset": "Coin watched by this prospective paper Council account.",
+    "council-capital": "Initial simulated account equity in dollars; no wallet funds are deposited.",
+    "council-accuracy": "Minimum measured direction accuracy, expressed as a percentage, for eligible Council votes.",
+    "council-samples": "Minimum resolved sample for a strategy to qualify for Council votes. Pending predictions do not count.",
+    "council-shorts": "Allow short positions in this paper simulation. This does not enable live shorting.",
+    "council-leveraged": "Apply the Council's configured leverage to paper positions, including modeled costs and liquidation risk.",
+    "council-leverage": "Leverage multiplier used when paper leverage is enabled; this is not a trading permission.",
+    "council-confidence": "Paper-entry confidence threshold from 0 to 1. The score requires prospective outcomes and is not a calibrated probability.",
+    "council-save": "Save the selected Council's paper-account settings. A running account locks settings.",
+    "council-start": "Start recording and simulating the configured Council paper account. No live order is placed.",
+    "council-stop": "Stop the Council recorder while retaining its open paper position and history.",
+    "council-refresh": "Read the Council's saved account state and latest simulated fills.",
+    "advanced-token-query": "Public Jupiter token symbol or mint address to look up. Search does not submit an order.",
+    "advanced-token-search": "Read Jupiter token metadata and show full mint addresses. Jupiter execution remains unavailable in this ticket.",
+    "signal-live-vote-min-score": "Minimum measured accuracy required for a strategy to vote. Raising this historical screen does not guarantee future accuracy.",
+    "signal-live-vote-min-resolved": "Minimum resolved sample for a strategy and horizon to qualify for a vote. Pending forecasts do not count.",
+    "signal-live-price-source": "Choose the displayed reference price feed. Saved prediction outcomes use Coinbase candles.",
+    "signal-live-forward-link": "Open the paper forward-testing view to inspect prospective trials and outcomes.",
+    "signal-live-predictions-start": "Start the configured prediction recorder. It records paper forecasts and outcomes, without placing orders.",
     "advanced-venue": "Select a venue. Jupiter is unavailable in the advanced ticket; Coinbase spot orders are supported.",
     "advanced-type": "Choose market, GTC limit, GTC stop-limit, or SELL-only take-profit / stop bracket. Conditional fills and stops are not guaranteed.",
     "advanced-side": "Buy or sell the base asset. Market buys accept quote or coin units; sells accept coin units.",
@@ -702,6 +738,14 @@ CONTROL_HELP.update({
 })
 
 
+SIMULATION_HELP = {
+    "use-leverage": "Apply leveraged exposure to the paper simulation, including its modeled costs and liquidation rules. This does not arm live trading.",
+    "leverage": "Paper leverage multiplier from 1 to 250. Leverage magnifies gains, losses and costs without improving prediction accuracy.",
+    "allow-short": "Simulate short positions for DOWN signals. No live short order is authorized.",
+    "min-confidence": "Paper entry threshold from 0 to 1 using resolved direction calls. This is not a calibrated probability; zero disables the gate.",
+}
+
+
 def control_help(widget_id: str | None) -> str | None:
     if not widget_id:
         return None
@@ -709,6 +753,10 @@ def control_help(widget_id: str | None) -> str | None:
         return SETTING_HELP.get(widget_id[4:])
     if widget_id.startswith("sig-"):
         return SIGNAL_HELP.get(widget_id[4:])
+    if widget_id.startswith(("backtest-", "forward-")):
+        simulation = SIMULATION_HELP.get(widget_id.split("-", 1)[1])
+        if simulation:
+            return simulation
     if widget_id.startswith("preset-"):
         return "Select a dated Top 5 research preset to fill this tab's strategy choices. The return shown is a historical backtest result, not your account's profit. Reusing a preset on new history can produce different results."
     return CONTROL_HELP.get(widget_id) or TAB_HELP.get(widget_id)
@@ -716,7 +764,7 @@ def control_help(widget_id: str | None) -> str | None:
 
 def row_help(value: str) -> str | None:
     """Explain recognised indicator/strategy names without echoing cell data."""
-    name = value.strip().casefold().split("(")[0]
+    name = value.strip().casefold().split("(")[0].strip()
     for term, explanation in TERMS.items():
         if name == term.casefold():
             return explanation

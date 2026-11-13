@@ -7,7 +7,7 @@ Setup, the commands you will actually use, and the environment each component ne
 | Need | Version | Why that one |
 | --- | --- | --- |
 | Python | 3.13 | The codebase uses `enum.StrEnum` and 3.13-era typing; CI pins 3.13 |
-| Node | 22 | Ed25519 in WebCrypto and `node:test`'s current output both need a recent runtime; `.nvmrc` pins it |
+| Node | 22.16+ on the 22 LTS line, or 24+ | Website SQLite fixtures use `StatementSync.columns()`, added in 22.16.0. `.nvmrc` selects the latest 22 LTS patch. |
 | macOS | Any recent | Only for `soltui/` — the menu-bar app and launchd agent are macOS-only |
 
 Backtester and research use NumPy and pandas; mongo uses pymongo; soltui uses Textual
@@ -99,7 +99,7 @@ document that quotes a number.
 
 ```bash
 cd extension
-npm test                                              # 437 tests
+npm test                                              # 483 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100  # the integration gate
 node tools/cli.js                                     # lists every command in the registry
 node tools/api-server.js                              # local HTTP surface; requires SMT_API_TOKEN
@@ -155,10 +155,10 @@ This component has its own dependencies and lockfile. Offline pytest excludes th
 Run all of these before claiming a change works:
 
 ```bash
-python3 -m unittest discover -s backtester/tests -t .   # 1005 tests
-python3 -m unittest discover -s soltui/tests -t .       # 1472 tests (~840s, optional)
-python3 -m unittest discover -s mongo/tests -t .        # 46 tests
-cd extension && npm test                                # 437 tests
+python3 -m unittest discover -s backtester/tests -t .   # 1120 tests
+python3 -m unittest discover -s soltui/tests -t .       # 1564 tests (TUI dependencies required)
+python3 -m unittest discover -s mongo/tests -t .        # 57 tests
+cd extension && npm test                                # 483 tests
 node tools/dryrun.js --ticks 8 --osc 6 --offline 100    # a round trip must close POSITIVE
 cd extension && npm run e2e                             # real-browser load + dry-run (needs Chrome for Testing)
 python3 scripts/check_docs.py                           # doc counts and retrieval indexes
@@ -217,3 +217,29 @@ row ordering if you touch the fetch path.
 | soltui bundle broken after moving the repo | It is an **alias** py2app build that references this checkout. `soltui-service build` |
 | SolTUI.app: "A Python runtime not could be located" | The bundle's `PyRuntimeLocations` point at a Python framework that no longer exists, or it was built from a non-framework Python. Rebuild from `~/.venvs/soltui-app` (Homebrew python@3.13); `soltui-service status` shows the runtime check |
 | Dry run closes a round trip flat or negative | A real regression: the exit must rest one rung above the entry. See `expectedRoundTripUsd` |
+
+## Hosted website development
+
+The independent `website/` package uses Node 22 or newer and pinned Wrangler
+development tooling. It has no runtime npm dependencies. From the repository root:
+
+```bash
+npm --prefix website ci
+npm --prefix website run db:local
+npm --prefix website run dev
+npm --prefix website test
+npm --prefix website run check
+python3 -m unittest website.engine.test_server website.engine.test_research
+python3 -m website.scripts.export_research --check
+```
+
+The development configuration binds `http://localhost:8799` and omits production
+custom-domain routes. Reusing the production routes in local Wrangler rewrites
+request hosts and can cause `unexpected_host`. Use HTTPS for a normal wallet
+session. Dedicated Python cache/archive inputs belong to the separate analysis
+service; development does not install a live feed or execution worker.
+
+Production variables and secret names are documented in `website/README.md`.
+Reconnecting a conversational Stripe app does not install a Worker secret or
+choose a merchant account and subscription price. Never put real credentials in
+tracked examples or public browser state.

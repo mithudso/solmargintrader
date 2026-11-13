@@ -1,0 +1,36 @@
+{
+  "files": [
+    {
+      "path": "backtester/core/gridsim.py",
+      "before_sha256": "868aca15de0d3f47719b498282e93e7e5d9a84631c8645ea853c908b01126c09",
+      "after_sha256": "3df5ba3528493a67912ffd17450e8bfe07289af6ef81bed71dd16d237ace41eb",
+      "before": "    from dataclasses import asdict\n\n    if state.get(\"schema_version\")",
+      "after": "\n    if state.get(\"schema_version\")",
+      "proof": "AST identical after removal of the one unused import; no references to imported name in its function",
+      "preimage": "/tmp/oraclebot-nonfunctional-preimage-backtester-core-gridsim.py",
+      "independent_semantic_acceptance": "inherited over proven nonfunctional delta; no fresh probe claim"
+    },
+    {
+      "path": "design/soltui-v2/mockup.py",
+      "before_sha256": "2e096c570c8b573eef0652f4efa672bf828169f291258d1abefd57c00f9be277",
+      "after_sha256": "1e204eb082df7563ee2ec3e1f79b8de4615e1c036c07ea6ad053608083036e37",
+      "before": "        except Exception as setup_error:\n",
+      "after": "        except Exception as setup_error:  # noqa: BLE001 -- safe CLI boundary; expose failure type only\n",
+      "proof": "AST exactly identical",
+      "preimage": "/tmp/oraclebot-nonfunctional-preimage-design-soltui-v2-mockup.py",
+      "independent_semantic_acceptance": "inherited over proven nonfunctional delta; no fresh probe claim"
+    },
+    {
+      "path": "docs/design/soltui-v2/mockup.py",
+      "before_sha256": "2e096c570c8b573eef0652f4efa672bf828169f291258d1abefd57c00f9be277",
+      "after_sha256": "1e204eb082df7563ee2ec3e1f79b8de4615e1c036c07ea6ad053608083036e37",
+      "before": "        except Exception as setup_error:\n",
+      "after": "        except Exception as setup_error:  # noqa: BLE001 -- safe CLI boundary; expose failure type only\n",
+      "proof": "AST exactly identical",
+      "preimage": "/tmp/oraclebot-nonfunctional-preimage-docs-design-soltui-v2-mockup.py",
+      "independent_semantic_acceptance": "inherited over proven nonfunctional delta; no fresh probe claim"
+    }
+  ],
+  "root_authorized": true,
+  "status": "verified bounded lint-only changes"
+}

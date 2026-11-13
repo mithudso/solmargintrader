@@ -1,10 +1,11 @@
 """F5 UI orchestration uses mocked batches and never launches a real sweep."""
+import asyncio
 import unittest
 from unittest import mock
 
 from textual.widgets import Static, TabbedContent
 
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
@@ -12,7 +13,21 @@ def envelope(result):
     return {"ok": True, "result": result, "error": None}
 
 
+async def settle_batch(app, pilot):
+    """Wait for the requested batch worker and its UI completion callback."""
+    async with asyncio.timeout(10):
+        await pilot.pause()
+        while True:
+            workers = [worker for worker in app.workers if worker.group == "all-market-batch"]
+            if not workers:
+                return
+            for worker in workers:
+                await worker.wait()
+
 class BatchUiTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_start_status_stop_recover_and_fresh(self):
         app = SolTuiApp(make_settings())
         state = {"runs": [], "running": False}
@@ -46,9 +61,9 @@ class BatchUiTests(unittest.IsolatedAsyncioTestCase):
                              "forward_backlog": {"pending": 2}, "log": "/tmp/mock-batch-worker.log"})
         with mock.patch.object(app, "_call", side_effect=call):
             async with app.run_test(size=TEST_SIZE) as pilot:
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 await pilot.press("f5")
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 self.assertEqual(app._batch_id, "run-1")
                 self.assertEqual(sum(n == "batch.create" for n, _ in calls), 1)
                 self.assertEqual(sum(n == "batch.start" for n, _ in calls), 1)
@@ -59,23 +74,23 @@ class BatchUiTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn("failed: ETH", logs)
                 self.assertIn("feed unavailable", logs)
                 app._batch_request("fresh")
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 self.assertEqual(sum(n == "batch.create" for n, _ in calls), 1)
                 app.query_one(TabbedContent).active = "tab-backtest"
                 await pilot.pause()
                 app._batch_status_pressed()
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 self.assertIn("run-1", app._test_logs[app._batch_log_key]["text"])
                 app._batch_stop_pressed()
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 self.assertIn(("batch.stop", {"run_id": "run-1"}), calls)
                 app._batch_resume_pressed()
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 self.assertTrue(state["running"])
                 app._batch_stop_pressed()
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 app._batch_fresh_pressed()
-                await pilot.pause(.4)
+                await settle_batch(app, pilot)
                 self.assertEqual(app._batch_id, "run-2")
                 self.assertEqual(state["runs"], ["run-2", "run-1"])
         # A new UI instance finds an existing worker without creating or starting one.
@@ -83,7 +98,7 @@ class BatchUiTests(unittest.IsolatedAsyncioTestCase):
         before = len(calls)
         with mock.patch.object(recovered, "_call", side_effect=call):
             async with recovered.run_test(size=TEST_SIZE) as pilot:
-                await pilot.pause(.5)
+                await settle_batch(recovered, pilot)
                 self.assertEqual(recovered._batch_id, "run-2")
                 self.assertFalse(any(n in ("batch.create", "batch.start") for n, _ in calls[before:]))
 

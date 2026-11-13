@@ -5,7 +5,7 @@ from unittest import mock
 
 from textual.widgets import Button, Checkbox, Input, Select, TabbedContent
 
-from soltui.tests.test_tui import TEST_SIZE, make_settings
+from soltui.tests.test_tui import TEST_SIZE, make_settings, offline_console_reads
 from soltui.tui import SolTuiApp
 
 
@@ -14,6 +14,9 @@ def env(result):
 
 
 class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_token_search_displays_full_mint_without_arming(self):
         from textual.widgets import Static
         app = SolTuiApp(make_settings())
@@ -110,6 +113,51 @@ class AdvancedOrderUiTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual([x[0] for x in calls].count("coinbase.order_quick"), 1)
                 self.assertEqual(calls[-1][1]["size_currency"], "base")
                 self.assertEqual(calls[-1][1]["skip_confirm"], True)
+
+    async def test_queued_tab_activation_during_shutdown_starts_no_work(self):
+        app = SolTuiApp(make_settings())
+        original_close_all = app._close_all
+        activation = cumulative_activation = None
+        shutdown_checked = False
+
+        async def close_all():
+            nonlocal shutdown_checked
+            try:
+                # Textual stops the app before removing its widgets. Replay a
+                # queued activation after the wallet ticket has been removed.
+                self.assertFalse(app.is_running)
+                self.assertIsNotNone(activation)
+                await app.query_one("#coinbase-order-armed", Checkbox).remove()
+                before = (app._coinbase_order_generation, app._advanced_generation,
+                          app._coinbase_order_preview_data, app._advanced_preview_data)
+                with mock.patch.object(app, "_coinbase_order_worker") as worker, \
+                        mock.patch.object(app, "_jupiter_order_state_start") as jupiter, \
+                        mock.patch.object(app, "_refresh_cumulative") as cumulative:
+                    app._populate_on_first_view(activation)
+                    app._populate_on_first_view(cumulative_activation)
+                    worker.assert_not_called()
+                    jupiter.assert_not_called()
+                    cumulative.assert_not_called()
+                self.assertEqual(before, (app._coinbase_order_generation, app._advanced_generation,
+                                         app._coinbase_order_preview_data, app._advanced_preview_data))
+                self.assertFalse(app._cumulative_loaded)
+                shutdown_checked = True
+            finally:
+                await original_close_all()
+
+        with mock.patch.object(app, "_close_all", new=close_all):
+            async with app.run_test(size=TEST_SIZE):
+                tabs = app.query_one("#main-tabs", TabbedContent)
+                activation = TabbedContent.TabActivated(tabs, tabs.get_tab("tab-advanced-order"))
+                cumulative_activation = TabbedContent.TabActivated(tabs, tabs.get_tab("tab-cumulative"))
+                self.assertTrue(app.is_running)
+                # The same event still initializes both venues while running.
+                with mock.patch.object(app, "_coinbase_order_state_start") as coinbase, \
+                        mock.patch.object(app, "_jupiter_order_state_start") as jupiter:
+                    app._populate_on_first_view(activation)
+                    coinbase.assert_called_once_with()
+                    jupiter.assert_called_once_with()
+        self.assertTrue(shutdown_checked)
 
     async def test_timestamped_context_uses_matching_prices_and_recorded_ranked_forecasts(self):
         from textual.widgets import Sparkline, Static

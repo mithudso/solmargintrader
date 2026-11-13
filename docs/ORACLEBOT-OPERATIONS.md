@@ -2,8 +2,12 @@
 
 Version: 1.2.0
 Delta: Monitor the separate continuous price forecast at its saved per-coin interval.
+Delta: Evaluate monitored runtime and forecast freshness after each bounded probe returns.
+Delta: Preserve audited bounded input/output and prerequisite fixes in the separately installed full-runtime observer.
 Delta: Supervise the actual paper pipeline, F5 worker and Oracle; preserve the failed historical cohort and require full runtime health.
 Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports.
+
+The repository observer source is `1.2.0`. The independently installed observer remains its accepted `1.1.0` immutable snapshot. Source checks do not establish a monitor upgrade; this audit does not restart that observer.
 
 The existing Solbot suite owns the manager and independent local control room.
 Its LaunchAgent has `RunAtLoad` and `KeepAlive`; it starts at user login and
@@ -131,7 +135,9 @@ fields. `external_heartbeat_accepted` and pending delivery counts expose broken
 publisher or notification paths independently.
 
 Installation creates a source-hashed immutable script copy and a private
-configuration under the observer state home. Run from the accepted source:
+configuration under the observer state home. The command below records the
+existing 1.1.0 installation. A 1.2.0 migration also requires the verified
+`--forecast-python` bundle described below:
 
 ```sh
 /Users/mitch/.venvs/soltui/bin/python /Users/mitch/dev/solmargintrader/scripts/oraclebot_ops.py install --home /Users/mitch/.local/state/oraclebot-operations --solbot /Users/mitch/.local/bin/solbot --gh /opt/homebrew/bin/gh --alertlane-env '/Users/mitch/Library/Application Support/Alertlane/service.env' --alertlane-url https://m5.tail0781b8.ts.net:8443 --pipeline-python /Users/mitch/.venvs/oraclebot-pipeline-0.4.8/bin/python --pipeline-home /Users/mitch/.local/share/solmargintrader/ecosystem-operational-20261112
@@ -169,22 +175,22 @@ remain separate evidence.
 
 The separate live-forecast owner keeps a chosen-strategy price projection visible
 even when the historical ensemble has no qualified votes. The seconds control
-beside it sets both horizon and cadence (default10; whole numbers5–300), with
+beside it sets both horizon and cadence (default 10; whole numbers 5–300), with
 revisioned per-instrument display preferences. It never changes an account or
 historical research policy. See docs/ORACLE-LIVE-FORECAST.md for exact input
 trace bindings and the provisional method.
 
-Observer1.2.0 requires live_price_forecast as a ninth component. It reads the
+Observer 1.2.0 requires `live_price_forecast` as a ninth component. It reads the
 forecast from its immutable installed interpreter, checks the saved primary
 instrument interval and source heartbeat, and refuses retained/absent numeric
-projections as current readiness. A valid300-second prediction is not stale
-merely because15seconds elapsed. Earlier samples lacking this new coverage are
+projections as current readiness. A valid 300-second prediction is not stale
+merely because 15 seconds elapsed. Earlier samples lacking this new coverage are
 excluded from current full-runtime report counts; historical reports remain
 version-labelled. The existing pipeline interpreter can remain separately
 pinned while the control room and forecast evaluator use a newer bundle.
 
-Installer configuration now additionally requires --forecast-python pointing
-at the immutable forecast bundle's bin/python. The original --pipeline-python
-and --pipeline-home continue to identify the existing worker being observed.
+Installer configuration now additionally requires `--forecast-python` pointing
+at the immutable forecast bundle's `bin/python`. The original `--pipeline-python`
+and `--pipeline-home` continue to identify the existing worker being observed.
 Preserve incident/outbox state and verify exact launchd release before replacing
 an installed observer definition.

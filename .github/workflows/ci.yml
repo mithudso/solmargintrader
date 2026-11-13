@@ -32,11 +32,13 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install all headless owners
-        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem ruff
+        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ./ecosystem ruff==0.17.4
       - name: Bootstrap, telemetry, control room and owner contracts
         run: python -m unittest discover -s ecosystem/tests -t . -v
       - name: Packaged wiki matches tracked source documentation
         run: python scripts/build_ecosystem_wiki.py --check
+      - name: Operation and tool inventories match authoritative registries
+        run: python scripts/build_operation_inventories.py --check
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: "22"
@@ -51,7 +53,7 @@ jobs:
           solecosystem --help
           solecosystem-ui --help
       - name: Lint
-        run: ruff check ecosystem oracle scripts/bootstrap_ecosystem.py scripts/build_ecosystem_wiki.py
+        run: ruff check ecosystem oracle scripts/bootstrap_ecosystem.py scripts/build_ecosystem_wiki.py scripts/build_operation_inventories.py
 
   oracle:
     name: oracle (python)
@@ -62,7 +64,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install Oracle and canonical strategies
-        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ruff
+        run: python -m pip install ./backtester ./oracle ./botmanager ./soltui ruff==0.17.4
       - name: Oracle lifecycle, archive and MCP contracts
         run: python -m unittest discover -s oracle/tests -t . -v
       - name: Oracle lint
@@ -455,10 +457,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-      - run: uv sync --extra dev -p 3.13
-      - run: uv run ruff check src tests
-      - run: uv run ruff format --check src tests
-      - run: uv run pytest -q
+      - run: uv sync --extra dev -p 3.13 --locked
+      - run: uv run --locked ruff check src tests
+      - run: uv run --locked ruff format --check src tests
+      - run: uv run --locked pytest -q
 
   # executor/ signs and sends real Jupiter swaps on Solana. It has its own pyproject + lock (solders lives only
   # here), so it gets its own job, like liquidity. Network tests (-m network) are excluded by default: they
@@ -472,7 +474,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-      - run: uv sync --extra dev -p 3.13 --frozen
-      - run: uv run ruff check src tests
-      - run: uv run ruff format --check src tests
-      - run: uv run pytest -q
+      - run: uv sync --extra dev -p 3.13 --locked
+      - run: uv run --locked ruff check src tests
+      - run: uv run --locked ruff format --check src tests
+      - run: uv run --locked pytest -q

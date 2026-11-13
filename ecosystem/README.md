@@ -1,8 +1,8 @@
-# Paper ecosystem control room 0.4.11
+# Paper ecosystem control room 0.4.12
 
 The Oracle also runs an independent selected-strategy price projection. It
 defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds
-beside the forecast to set a per-coin horizon/cadence from5through300seconds.
+beside the forecast to set a per-coin horizon/cadence from 5 through 300 seconds.
 The last matching forecast stays visible with its age during source outages.
 See [continuous Oracle forecasts](../docs/ORACLE-LIVE-FORECAST.md) for the
 provisional method, exact input traces, preferences and separate service owner.
@@ -19,6 +19,11 @@ from a clean source checkout, or use the installed `solecosystem` and
 `solecosystem-ui` commands. Setup verifies
 five installed packages, both strategy catalogs and actual MCP transport. Existing
 completed environments stay immutable; new releases use a new versioned environment.
+
+Forward owners bind their exact source fingerprints. A help-only source update
+therefore changes the identity of a future installation. Keep existing owners on
+their original installed modules and archive metadata; use a new environment and
+a separately initialized cohort for revised source.
 
 The ZEC study release uses ecosystem 0.4.4 with Bot Manager 0.7.2, Oracle 0.2.3,
 research runtime 0.4.0 and Backtester 0.2.0. Its dedicated paper owner uses

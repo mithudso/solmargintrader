@@ -240,7 +240,12 @@ test('an earlier queued arm cannot revoke a later immediate kill request', async
   const queuedTick = drive(ctx);
   const laterKill = runCommand({ name: 'kill', deps: ctx.deps });
   release();
-  await Promise.all([active, earlierArm, queuedTick, laterKill]);
+  const outcomes = await Promise.allSettled([active, earlierArm, queuedTick, laterKill]);
+  assert.equal(outcomes[0].status, 'fulfilled');
+  assert.equal(outcomes[1].status, 'rejected', 'the obsolete arm must report its refusal');
+  assert.ok(outcomes[1].reason.status === 409 || outcomes[1].reason.code === 'RUNTIME_STOP_CHANGED');
+  assert.equal(outcomes[2].status, 'fulfilled');
+  assert.equal(outcomes[3].status, 'fulfilled');
   assert.equal(submits, 0);
   assert.equal((await ctx.configStore.getRuntime()).killSwitch, true);
 });

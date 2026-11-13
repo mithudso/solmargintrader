@@ -1,0 +1,252 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "observed_at": "2026-11-12T22:15:30.701581+00:00",
+  "component": "backtester",
+  "stage": "complete_current_source_offline_integration_gate",
+  "status": "pass",
+  "run_id": "backtester-suite-b414ebcecba747dfa06d6970a66902a0",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "head": "d22bd2454a41ab54020f6363fe505901873891ef",
+  "git_head_query_exit": 0,
+  "git_status_query_exit": 0,
+  "git_status_porcelain": "",
+  "command": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.venv/bin/python",
+    "/tmp/oraclebot-final-backtester-20261112-vvknugpa/run_suite.py"
+  ],
+  "authorization": {
+    "ORACLEBOT_INDEX_CURRENT": "1",
+    "ORACLEBOT_MERGED_CURRENT": "1",
+    "source": "explicit parent START_FOUR_SHORT_GATES at clean HEADd22bd245"
+  },
+  "launch": "/tmp/oraclebot-final-three-gates-20261112/backtester-final-launch.json",
+  "log": "/tmp/oraclebot-backtester-suite-state-09urocqq/output.log",
+  "completed_process_exit": 0,
+  "process_seconds": 34.359612915999605,
+  "suite_result": "/tmp/oraclebot-final-backtester-20261112-vvknugpa/runs/backtester-suite-b414ebcecba747dfa06d6970a66902a0/result.json",
+  "suite_seconds": 32.09996916700038,
+  "discovered": {
+    "count": 1120,
+    "loader_errors": []
+  },
+  "tests": 1120,
+  "failures": [],
+  "errors": [],
+  "skips": [],
+  "loader_errors": [],
+  "forbidden_events": [],
+  "guarded_python_pids": [
+    14521,
+    14569,
+    14872,
+    15423
+  ],
+  "constructed_children": [
+    {
+      "parent_pid": 14521,
+      "test": "backtester.tests.test_analysis_regressions.AnalysisRegressions.test_grid_full_plan_matches_extension_when_slippage_crosses_midpoint",
+      "child_pid": 14553,
+      "executable": "node",
+      "argv_sha256": "1842af4e35b84464afb795c07267a1ba48b9d1ee6887d4d677425a14bce43baa",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    },
+    {
+      "parent_pid": 14521,
+      "test": "backtester.tests.test_cpcv.TestPboCscv.test_large_combination_space_finishes_under_the_split_cap",
+      "child_pid": 14569,
+      "executable": "python",
+      "argv_sha256": "80d9073c4f1bb1ebf0da06ada9b26deb01ff3aec890cadd1d7b70879a4b4f50a",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14521,
+      "test": "backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree",
+      "child_pid": 14872,
+      "executable": "python",
+      "argv_sha256": "f00092eb1bb8e2f38f18336fd34b3f36e07f6b1743b3958f1a16bdb7175834da",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14521,
+      "test": "backtester.tests.test_minute_progress_boundaries.ProgressBoundariesTests.test_large_plan_coverage_does_not_rehash_all_windows_per_row",
+      "child_pid": 15423,
+      "executable": "python",
+      "argv_sha256": "1cf71c56c48052b6dd8ee8a0781fd230858830495ea708a8a970329ecd1c2ae6",
+      "completed_returncode": 0,
+      "inherited_guard_seen": true
+    },
+    {
+      "parent_pid": 14872,
+      "test": "backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree",
+      "child_pid": 14874,
+      "executable": "git",
+      "argv_sha256": "03421039cf07591ab9e213b646e835d4ddbb4c108eb76fc54b1b293b75c82b86",
+      "completed_returncode": 0,
+      "inherited_guard_seen": false
+    }
+  ],
+  "native_children": [
+    {
+      "child_pid": 14553,
+      "executable": "node",
+      "test": "backtester.tests.test_analysis_regressions.AnalysisRegressions.test_grid_full_plan_matches_extension_when_slippage_crosses_midpoint",
+      "completed_returncode": 0
+    },
+    {
+      "child_pid": 14874,
+      "executable": "git",
+      "test": "backtester.tests.test_index.StalenessGateTests.test_the_committed_index_matches_the_tree",
+      "completed_returncode": 0
+    }
+  ],
+  "all_constructed_children_have_completed_wait_poll": true,
+  "os_after_exit": [
+    {
+      "pid": 14521,
+      "query": [
+        "ps",
+        "-p",
+        "14521",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14553,
+      "query": [
+        "ps",
+        "-p",
+        "14553",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14569,
+      "query": [
+        "ps",
+        "-p",
+        "14569",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14872,
+      "query": [
+        "ps",
+        "-p",
+        "14872",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 14874,
+      "query": [
+        "ps",
+        "-p",
+        "14874",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    },
+    {
+      "pid": 15423,
+      "query": [
+        "ps",
+        "-p",
+        "15423",
+        "-o",
+        "pid=,ppid=,pgid=,stat=,lstart="
+      ],
+      "completed_exit": 1,
+      "state": ""
+    }
+  ],
+  "os_all_recorded_pids_absent": true,
+  "loaded_first_party": [
+    {
+      "pid": 15423,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py"
+      }
+    },
+    {
+      "pid": 14521,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py"
+      }
+    },
+    {
+      "pid": 14872,
+      "modules": {}
+    },
+    {
+      "pid": 14569,
+      "modules": {
+        "backtester": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/__init__.py"
+      }
+    }
+  ],
+  "source_before": "/tmp/oraclebot-final-backtester-20261112-vvknugpa/runs/backtester-suite-b414ebcecba747dfa06d6970a66902a0/source-before.json",
+  "source_before_sha256": "436fd490a045dfab88bd7efbce7be18b6b231aa81f0ad1959a3a40cd0120691c",
+  "source_after": "/tmp/oraclebot-final-backtester-20261112-vvknugpa/runs/backtester-suite-b414ebcecba747dfa06d6970a66902a0/source-after.json",
+  "source_after_sha256": "436fd490a045dfab88bd7efbce7be18b6b231aa81f0ad1959a3a40cd0120691c",
+  "source_file_count": 840,
+  "source_stable": true,
+  "harness_before": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "be1c8428a3d390ca39052eb57addd0bfaac1644b675a57cf19f20808545e834a",
+    "run_suite.py": "361a853b20f325a0036edb07a1e2a09cac84a3712c53a5c4bdd39da8cfafd916"
+  },
+  "harness_after": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "be1c8428a3d390ca39052eb57addd0bfaac1644b675a57cf19f20808545e834a",
+    "run_suite.py": "361a853b20f325a0036edb07a1e2a09cac84a3712c53a5c4bdd39da8cfafd916"
+  },
+  "harness_current": {
+    "sitecustomize.py": "8ac6272adb2fbab773bccdb20dddbd36b481459fd45144c2c01fc0e04726689b",
+    "guard.py": "be1c8428a3d390ca39052eb57addd0bfaac1644b675a57cf19f20808545e834a",
+    "run_suite.py": "361a853b20f325a0036edb07a1e2a09cac84a3712c53a5c4bdd39da8cfafd916"
+  },
+  "harness_stable": true,
+  "admissions_sha256": "e07c1c4634b56512a35337c1d7c22d5fed4dea6726b1b445b8705b5a803c0c81",
+  "home": "/Users/mitch",
+  "fresh_state_roots": {
+    "SOLTUI_CONFIG_DIR": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_config_dir",
+    "SOLTUI_LOG_DIR": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_log_dir",
+    "SOLTUI_SUPPORT_DIR": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_support_dir",
+    "SOLMARGINTRADER_STORAGE": "/tmp/oraclebot-backtester-suite-state-09urocqq/solmargintrader_storage",
+    "SOLBOT_HOME": "/tmp/oraclebot-backtester-suite-state-09urocqq/solbot_home",
+    "SOLBOT_ECOSYSTEM_HOME": "/tmp/oraclebot-backtester-suite-state-09urocqq/solbot_ecosystem_home",
+    "AERO_LP_HOME": "/tmp/oraclebot-backtester-suite-state-09urocqq/aero_lp_home",
+    "SOLMT_DATA_DIR": "/tmp/oraclebot-backtester-suite-state-09urocqq/solmt_data_dir",
+    "SOLTUI_KEY_DIR": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_key_dir",
+    "SOLTUI_LAUNCHAGENTS_DIR": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_launchagents_dir",
+    "SOLTUI_JOURNAL": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_journal",
+    "SOLTUI_APP_SUPPORT_ROOT": "/tmp/oraclebot-backtester-suite-state-09urocqq/soltui_app_support_root"
+  },
+  "first_failed_attempt_receipt": "/tmp/oraclebot-initial-three-gates-20261112/initial-receipt.json",
+  "focused_remediation_receipt": "/tmp/oraclebot-component-compat-20261112/fixture-final-receipt.json",
+  "limits": [
+    "Only this component suite at exact frozen source/harness is qualified. No whole-repository CLEAN/convergence, profitability, installed/live deployment, billing or service readiness claim.",
+    "Native Node/Git children do not inherit Python hooks. Their exact source/test/payload/binary admissions and completed child accounting qualify only the reviewed fixture commands.",
+    "No source/docs/report/index/ledger/HEAD edits, install, research acquisition, parameter search, provider/model/service/live venue operation, signing or orders.",
+    "First failed full attempts remain failures; this is a separate fresh full run."
+  ]
+}

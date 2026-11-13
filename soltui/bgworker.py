@@ -78,6 +78,11 @@ from .bgqueue import (  # noqa: E402
 from .config import Settings, load_settings  # noqa: E402
 from .research_admission import admit_read, participating
 from .runner import engine_config, run_cpcv  # noqa: E402
+from .source_epoch import SourceEpoch, SourceEpochChanged
+
+# Admission for future fresh workers only. This does not attest compiled code
+# or bless modules that another caller imported before this capture.
+_SOURCE_EPOCH = SourceEpoch.capture(REPO)
 
 # The nicest a process can ask to be. Set unconditionally at startup rather than
 # relying on the launcher, so a hand-run worker is polite too. Note this is only
@@ -381,6 +386,7 @@ def run(
     Returns the final state, which is also the last thing written to disk.
     """
     _validate_limit(limit)
+    _SOURCE_EPOCH.verify(REPO)
     settings = settings or load_settings()
     stop = stop or _Stop()
     ensure_dir(state_path.parent)
@@ -444,8 +450,10 @@ def run(
             if job.interval not in checked_intervals:
                 _check_price_input(proof, job, settings)
                 checked_intervals.add(job.interval)
+            _SOURCE_EPOCH.verify(REPO)
             result = evaluate(job, arrays, engine_config(settings, job.interval), settings)
-        except EvaluationContextChanged:
+            _SOURCE_EPOCH.verify(REPO)
+        except (EvaluationContextChanged, SourceEpochChanged):
             raise
         except FileNotFoundError as exc:
             # Not this job's fault, and it will hit every job at this interval --

@@ -313,3 +313,13 @@ test('swapTokens lists both chains and swapQuote refuses bad input with a 400', 
   await assert.rejects(() => runCommand({ name: 'swapQuote', args: { chain: 'base', from: 'WETH', to: 'USDC', amount: '1.0000000000000000001' }, deps: d }),
     (err) => err.status === 400 && /decimal places/.test(err.message));
 });
+
+
+test('unknown or invalid break-even capital cannot justify an idle-capital action', () => {
+  for (const breakEven of [null, undefined, NaN, Infinity, -1, '5']) {
+    const liquidity = { scout: scout([scoutPool({ break_even_deposit_usd: breakEven })]), positions: [] };
+    assert.deepEqual(computeAlerts({ holdings: baseHoldings(100), liquidity, prefs: {}, nowMs: NOW }), []);
+  }
+  const liquidity = { scout: scout([scoutPool({ break_even_deposit_usd: 0 })]), positions: [] };
+  assert.equal(computeAlerts({ holdings: baseHoldings(100), liquidity, prefs: {}, nowMs: NOW })[0].severity, SEVERITY.ACTION);
+});

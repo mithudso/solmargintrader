@@ -1,0 +1,675 @@
+{
+  "schema": "cdo-source-delta-v1",
+  "version": "1.0.1",
+  "status": "SCOPED_SOURCE_AND_FIXTURE_REVIEW_COMPLETE_VERIFICATION_GREEN_DELIVERY_PENDING",
+  "source_base_commit": "772a5cac8982d2c3bae5ba75baedff78c6472b7e",
+  "files": [
+    {
+      "path": "website/src/oauth.js",
+      "sha256": "340fa7f81fa3b480214d259f844cb6f48a7d605d3ddf8f44222e60b695238c98",
+      "blob_sha": "e1c264d4ff961f01c541ca575876f3ae75920af5",
+      "lines": 446,
+      "review_method": "Assigned per-file original source review plus complete corrective delta review; root independently inspected authored changes.",
+      "reviewer": "cdo_mcp_oauth",
+      "semantic_focus": "OAuth exact PKCE/client/redirect/resource/scopes, separate policy signature, immutable principal, one-use credentials, refresh replay/revocation; fixed closed security diagnostics and non-authoritative sinks.",
+      "passes": {
+        "C1": "reviewed in the scoped per-file review",
+        "C2": "reviewed in the scoped per-file review",
+        "C3": "reviewed in the scoped per-file review",
+        "S1": "reviewed in the scoped per-file review",
+        "S2": "reviewed in the scoped per-file review",
+        "S3": "reviewed in the scoped per-file review",
+        "S4": "reviewed in the scoped per-file review",
+        "S5": "reviewed in the scoped per-file review",
+        "P1": "reviewed in the scoped per-file review",
+        "P2": "reviewed in the scoped per-file review",
+        "M1": "reviewed in the scoped per-file review",
+        "M2": "reviewed in the scoped per-file review",
+        "M4": "reviewed in the scoped per-file review",
+        "T1": "reviewed in the scoped per-file review"
+      },
+      "not_applicable": {
+        "M3": "parent repository architecture remains partial",
+        "T2": "parent supply-chain pass",
+        "T3": "parent tooling pass",
+        "T4": "non-test source",
+        "M5": "request/browser module, no separate runnable CLI"
+      },
+      "read_evidence_qualification": "Per-file conclusions are recovered from the ongoing conversation; original exact slice transcripts are not reproduced in this receipt. Hashes identify reviewed bytes and do not substitute for reads."
+    },
+    {
+      "path": "website/src/mcp.js",
+      "sha256": "3f6b479e410028dc8a045625f71ddba65c1a97067400e2b92fdf096144ed78b8",
+      "blob_sha": "85f6cf39dd3d8dc89d4e8183cd79f86e83852d8e",
+      "lines": 183,
+      "review_method": "Assigned per-file original source review plus complete corrective delta review; root independently inspected authored changes.",
+      "reviewer": "cdo_mcp_transport",
+      "semantic_focus": "Bearer-only tenant principal and stateless2025-11-25 transport, strict argument schemas/no identity overrides, exact cents and authentication-outage classification; fixed private diagnostics.",
+      "passes": {
+        "C1": "reviewed in the scoped per-file review",
+        "C2": "reviewed in the scoped per-file review",
+        "C3": "reviewed in the scoped per-file review",
+        "S1": "reviewed in the scoped per-file review",
+        "S2": "reviewed in the scoped per-file review",
+        "S3": "reviewed in the scoped per-file review",
+        "S4": "reviewed in the scoped per-file review",
+        "S5": "reviewed in the scoped per-file review",
+        "P1": "reviewed in the scoped per-file review",
+        "P2": "reviewed in the scoped per-file review",
+        "M1": "reviewed in the scoped per-file review",
+        "M2": "reviewed in the scoped per-file review",
+        "M4": "reviewed in the scoped per-file review",
+        "T1": "reviewed in the scoped per-file review"
+      },
+      "not_applicable": {
+        "M3": "parent repository architecture remains partial",
+        "T2": "parent supply-chain pass",
+        "T3": "parent tooling pass",
+        "T4": "non-test source",
+        "M5": "request/browser module, no separate runnable CLI"
+      },
+      "read_evidence_qualification": "Per-file conclusions are recovered from the ongoing conversation; original exact slice transcripts are not reproduced in this receipt. Hashes identify reviewed bytes and do not substitute for reads."
+    },
+    {
+      "path": "website/src/trades.js",
+      "sha256": "092703c5fe33c3c6dc385bc00ca789289a34438ba3158df6f957eb082fce9718",
+      "blob_sha": "abe59873176ca6f463a45c2c195df80c8aa14e48",
+      "lines": 297,
+      "review_method": "Assigned per-file original source review plus complete corrective delta review; root independently inspected authored changes.",
+      "reviewer": "cdo_mcp_trades",
+      "semantic_focus": "Atomic policy/plan/grant/idempotency/budget/state fences, fresh explicit fee-inclusive quote and exact delegation/receipt binding, unknown no-retry retention; fixed subcent normalization and private executor diagnostics.",
+      "passes": {
+        "C1": "reviewed in the scoped per-file review",
+        "C2": "reviewed in the scoped per-file review",
+        "C3": "reviewed in the scoped per-file review",
+        "S1": "reviewed in the scoped per-file review",
+        "S2": "reviewed in the scoped per-file review",
+        "S3": "reviewed in the scoped per-file review",
+        "S4": "reviewed in the scoped per-file review",
+        "S5": "reviewed in the scoped per-file review",
+        "P1": "reviewed in the scoped per-file review",
+        "P2": "reviewed in the scoped per-file review",
+        "M1": "reviewed in the scoped per-file review",
+        "M2": "reviewed in the scoped per-file review",
+        "M4": "reviewed in the scoped per-file review",
+        "T1": "reviewed in the scoped per-file review"
+      },
+      "not_applicable": {
+        "M3": "parent repository architecture remains partial",
+        "T2": "parent supply-chain pass",
+        "T3": "parent tooling pass",
+        "T4": "non-test source",
+        "M5": "request/browser module, no separate runnable CLI"
+      },
+      "read_evidence_qualification": "Per-file conclusions are recovered from the ongoing conversation; original exact slice transcripts are not reproduced in this receipt. Hashes identify reviewed bytes and do not substitute for reads."
+    },
+    {
+      "path": "website/src/worker.js",
+      "sha256": "733af98c3581329b9b84e90217776f749293e2acd273bb91729acd81990388b9",
+      "blob_sha": "d039abb5784a51ca5936c450cbe7c28817d6de62",
+      "lines": 527,
+      "review_method": "Assigned per-file original source review plus complete corrective delta review; root independently inspected authored changes.",
+      "reviewer": "cdo_mcp_worker",
+      "semantic_focus": "Account authentication, atomic repeat-trial history and deletion/current-subscription fences, opaque upstream operations/outcomes and expected-account header; root reviewed final routing/header deltas.",
+      "passes": {
+        "C1": "reviewed in the scoped per-file review",
+        "C2": "reviewed in the scoped per-file review",
+        "C3": "reviewed in the scoped per-file review",
+        "S1": "reviewed in the scoped per-file review",
+        "S2": "reviewed in the scoped per-file review",
+        "S3": "reviewed in the scoped per-file review",
+        "S4": "reviewed in the scoped per-file review",
+        "S5": "reviewed in the scoped per-file review",
+        "P1": "reviewed in the scoped per-file review",
+        "P2": "reviewed in the scoped per-file review",
+        "M1": "reviewed in the scoped per-file review",
+        "M2": "reviewed in the scoped per-file review",
+        "M4": "reviewed in the scoped per-file review",
+        "T1": "reviewed in the scoped per-file review"
+      },
+      "not_applicable": {
+        "M3": "parent repository architecture remains partial",
+        "T2": "parent supply-chain pass",
+        "T3": "parent tooling pass",
+        "T4": "non-test source",
+        "M5": "request/browser module, no separate runnable CLI"
+      },
+      "read_evidence_qualification": "Per-file conclusions are recovered from the ongoing conversation; original exact slice transcripts are not reproduced in this receipt. Hashes identify reviewed bytes and do not substitute for reads."
+    },
+    {
+      "path": "website/public/app.js",
+      "sha256": "cf097f512920c426680783c267bd7b89ccc0a0b497dcf3c2e658e300cddc318b",
+      "blob_sha": "22e279384d7d40169259c90fdf59a22750338061",
+      "lines": 576,
+      "review_method": "Assigned per-file original source review plus complete corrective delta review; root independently inspected authored changes.",
+      "reviewer": "cdo_web_app",
+      "semantic_focus": "Account generation/request/identity fences, account-transition invalidation, stale billing/navigation/action refusal, unknown identity retry, confirmed expiry clear, timing constants and null-safe wallet rejection.",
+      "passes": {
+        "C1": "reviewed in the scoped per-file review",
+        "C2": "reviewed in the scoped per-file review",
+        "C3": "reviewed in the scoped per-file review",
+        "S1": "reviewed in the scoped per-file review",
+        "S2": "reviewed in the scoped per-file review",
+        "S3": "reviewed in the scoped per-file review",
+        "S4": "reviewed in the scoped per-file review",
+        "S5": "reviewed in the scoped per-file review",
+        "P1": "reviewed in the scoped per-file review",
+        "P2": "reviewed in the scoped per-file review",
+        "M1": "reviewed in the scoped per-file review",
+        "M2": "reviewed in the scoped per-file review",
+        "M4": "reviewed in the scoped per-file review",
+        "T1": "reviewed in the scoped per-file review"
+      },
+      "not_applicable": {
+        "M3": "parent repository architecture remains partial",
+        "T2": "parent supply-chain pass",
+        "T3": "parent tooling pass",
+        "T4": "non-test source",
+        "M5": "request/browser module, no separate runnable CLI"
+      },
+      "read_evidence_qualification": "Per-file conclusions are recovered from the ongoing conversation; original exact slice transcripts are not reproduced in this receipt. Hashes identify reviewed bytes and do not substitute for reads."
+    },
+    {
+      "path": "website/public/agent-access.js",
+      "sha256": "f636c667440aa70090a679416367a7fb6aab72df9e4191be82ff3d9981ca128b",
+      "blob_sha": "51acef30b2a1dfb60aa127b3a3f3f022c70b0a32",
+      "lines": 201,
+      "review_method": "Assigned per-file original source review plus complete corrective delta review; root independently inspected authored changes.",
+      "reviewer": "cdo_agent_consent",
+      "semantic_focus": "Wallet/client/resource/scopes/digest/nonce/expiry consent, finite revocable preauthorization, frozen controls, transition invalidation, inert client text and nullish wallet rejection.",
+      "passes": {
+        "C1": "reviewed in the scoped per-file review",
+        "C2": "reviewed in the scoped per-file review",
+        "C3": "reviewed in the scoped per-file review",
+        "S1": "reviewed in the scoped per-file review",
+        "S2": "reviewed in the scoped per-file review",
+        "S3": "reviewed in the scoped per-file review",
+        "S4": "reviewed in the scoped per-file review",
+        "S5": "reviewed in the scoped per-file review",
+        "P1": "reviewed in the scoped per-file review",
+        "P2": "reviewed in the scoped per-file review",
+        "M1": "reviewed in the scoped per-file review",
+        "M2": "reviewed in the scoped per-file review",
+        "M4": "reviewed in the scoped per-file review",
+        "T1": "reviewed in the scoped per-file review"
+      },
+      "not_applicable": {
+        "M3": "parent repository architecture remains partial",
+        "T2": "parent supply-chain pass",
+        "T3": "parent tooling pass",
+        "T4": "non-test source",
+        "M5": "request/browser module, no separate runnable CLI"
+      },
+      "read_evidence_qualification": "Per-file conclusions are recovered from the ongoing conversation; original exact slice transcripts are not reproduced in this receipt. Hashes identify reviewed bytes and do not substitute for reads."
+    },
+    {
+      "path": "website/test/api.test.js",
+      "sha256": "489e6cb3ee947d575b5da95e9157a759caf08fa4220cb837d63a34a7ca104845",
+      "blob_sha": "351c5daebe9dbd7659b7710b15ce4cc007ea45cc",
+      "lines": 967,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-api.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      },
+      "root_final_delta": {
+        "prior_complete_ranges": [
+          [
+            1,
+            180
+          ],
+          [
+            181,
+            360
+          ],
+          [
+            361,
+            540
+          ],
+          [
+            541,
+            720
+          ],
+          [
+            721,
+            900
+          ],
+          [
+            901,
+            958
+          ]
+        ],
+        "prior_sha256": "489e077cd4bfb2cc99a6ed9191ebc2cf8d169cf4832340faf2ddd843e857249f",
+        "method": "Root reviewed the complete small delta: original-method snapshots, explicit restore identity assertions, and replacement of nested mocks with existing mock implementations. All previous assertions remain.",
+        "red": {
+          "exit_code": 1,
+          "failed_cases": 2,
+          "log": "/tmp/oraclebot-mcp-release-20261113/api-mock-restore-red.log"
+        },
+        "green": {
+          "exit_code": 0,
+          "tests": 64,
+          "log": "/tmp/oraclebot-mcp-release-20261113/api-mock-restore-green.log"
+        },
+        "qualification": "The original independent receipt remains immutable and binds its pre-closure bytes; the final delta is root-authored/reviewed, not a second independent full-file review."
+      }
+    },
+    {
+      "path": "website/test/oauth.test.js",
+      "sha256": "00c2ac6a36e249cb982206aeb926e7a94ceb45d3601f35708a33b08015ea9d8b",
+      "blob_sha": "821302e55abbe4938710e20f76ee425ffc01d216",
+      "lines": 446,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-oauth.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/test/mcp.test.js",
+      "sha256": "41ade79a2f746f0f467a91de327dbcc2911d206776605ced1821b2306f8ad57e",
+      "blob_sha": "ca311529b24f94e62ebb6f67465f2813db369843",
+      "lines": 255,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-mcp.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/test/trades.test.js",
+      "sha256": "fe5a99736e3803af36fa90f955dfb61b9b398ca8e27b465bf6b1c952055b7656",
+      "blob_sha": "2699140c7f899be8237f42f8a9d3c264779400e1",
+      "lines": 326,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-trades.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/test/helpers/d1.js",
+      "sha256": "19c49c95ce0d8dd0ab97daada8123a995d68d5df6633e38dee3f8c5e186aad6b",
+      "blob_sha": "653516dc8123fedd469ee92eb73002e427758cd2",
+      "lines": 79,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-d1.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/test/mcp-integration.test.js",
+      "sha256": "5ef5cec23839d104a546620e1949c0d8bea77317d789e4352804d26292aecd63",
+      "blob_sha": "bb97e329b827f0a434c9c68930c04674329f4346",
+      "lines": 147,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-integration.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/test/ui-browser.mjs",
+      "sha256": "bc4a5049ffb7d6a4749c858668256ac3f19119b71afcd10c41c190593aff5777",
+      "blob_sha": "bcb8e9d23197e8d66091ef84fc46e6cb21ebb95d",
+      "lines": 369,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-ui-browser.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/test/agent-browser.mjs",
+      "sha256": "b033b8d4ebc754cecf6d0cd1222b9a22e14b83d21d920197927949c2afb98586",
+      "blob_sha": "69d7643c6d30a7ebbc8685258110688d5a08c20a",
+      "lines": 239,
+      "review_method": "Complete bounded per-file static review; authored test closures are separately marked in the linked receipt.",
+      "evidence": ".cdo/reviews-2026-11-13/website-test-agent-browser.json",
+      "passes": {
+        "C1": "reviewed; see exact pass-specific receipt",
+        "C2": "reviewed; see exact pass-specific receipt",
+        "C3": "reviewed; see exact pass-specific receipt",
+        "S1": "reviewed; see exact pass-specific receipt",
+        "S2": "reviewed; see exact pass-specific receipt",
+        "S3": "reviewed; see exact pass-specific receipt",
+        "S4": "reviewed; see exact pass-specific receipt",
+        "S5": "reviewed; see exact pass-specific receipt",
+        "P1": "reviewed; see exact pass-specific receipt",
+        "P2": "reviewed; see exact pass-specific receipt",
+        "M1": "reviewed; see exact pass-specific receipt",
+        "M2": "reviewed; see exact pass-specific receipt",
+        "M4": "reviewed; see exact pass-specific receipt",
+        "T1": "reviewed; see exact pass-specific receipt",
+        "T4": "reviewed; see exact pass-specific receipt"
+      },
+      "not_applicable": {
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "M5": "internal test fixture, parent owning package supplies runner"
+      }
+    },
+    {
+      "path": "website/migrations/0003_subscription_tiers.sql",
+      "sha256": "17f611885213d293d1a3f20df773b5e06876ef003c93bdb90ab15a0db9427408",
+      "blob_sha": "80390ed220739fc45b94f5b74285d94cf67a0eb9",
+      "lines": 18,
+      "reviewer": "cdo_tier_migration",
+      "review_method": "Complete bounded static schema review and supporting usage/assertion inspection",
+      "read_ranges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "passes": {
+        "C1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "C2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "C3": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S3": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S4": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "P1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "P2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M4": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "T1": "reviewed statically; Node SQLite fixtures apply the migrations"
+      },
+      "not_applicable": {
+        "S2": "declarative DDL",
+        "S5": "no runtime logging paths",
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "T4": "non-test SQL",
+        "M5": "no runnable entrypoint"
+      },
+      "qualification": "Remote Cloudflare D1 migration/application remains unverified at this checkpoint."
+    },
+    {
+      "path": "website/migrations/0004_agent_access.sql",
+      "sha256": "2c15f42bbb4d83fa9795362c00afce9b59a70aeefc1415e4428a49ce65af3855",
+      "blob_sha": "a09e934048c86ec77aabc4282b198ced3277bdd9",
+      "lines": 89,
+      "reviewer": "cdo_tier_migration",
+      "review_method": "Complete bounded static schema review and supporting usage/assertion inspection",
+      "read_ranges": [
+        [
+          1,
+          89
+        ]
+      ],
+      "passes": {
+        "C1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "C2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "C3": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S3": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S4": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "P1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "P2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M4": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "T1": "reviewed statically; Node SQLite fixtures apply the migrations"
+      },
+      "not_applicable": {
+        "S2": "declarative DDL",
+        "S5": "no runtime logging paths",
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "T4": "non-test SQL",
+        "M5": "no runnable entrypoint"
+      },
+      "qualification": "Remote Cloudflare D1 migration/application remains unverified at this checkpoint."
+    },
+    {
+      "path": "website/migrations/0005_agent_trades.sql",
+      "sha256": "5f6a362b3a2224550790e136b89058010582b6a2cf0cc90563cbf7fdc58e4263",
+      "blob_sha": "5d7eee2e3742f721180fa54454eff08794e6c724",
+      "lines": 27,
+      "reviewer": "cdo_tier_migration",
+      "review_method": "Complete bounded static schema review and supporting usage/assertion inspection",
+      "read_ranges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "passes": {
+        "C1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "C2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "C3": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S3": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "S4": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "P1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "P2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M1": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M2": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "M4": "reviewed statically; Node SQLite fixtures apply the migrations",
+        "T1": "reviewed statically; Node SQLite fixtures apply the migrations"
+      },
+      "not_applicable": {
+        "S2": "declarative DDL",
+        "S5": "no runtime logging paths",
+        "M3": "parent repository pass",
+        "T2": "parent repository pass",
+        "T3": "parent repository pass",
+        "T4": "non-test SQL",
+        "M5": "no runnable entrypoint"
+      },
+      "qualification": "Remote Cloudflare D1 migration/application remains unverified at this checkpoint."
+    }
+  ],
+  "checks": [
+    {
+      "scope": "complete website Node",
+      "tests": 129,
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mcp-release-20261113/reviewed-final-node.log"
+    },
+    {
+      "scope": "actual Chrome groups",
+      "tests": 28,
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mcp-release-20261113/reviewed-final-browser.log"
+    },
+    {
+      "scope": "JS quality",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mcp-release-20261113/reviewed-final-quality.log"
+    },
+    {
+      "scope": "syntax",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mcp-release-20261113/final-syntax.log"
+    },
+    {
+      "scope": "Worker dry-run from owning website directory",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-mcp-release-20261113/final-dry-run-corrected.log"
+    }
+  ],
+  "qualifications": [
+    "Original independent security receipt remains separately bound to59140531; no historical proof rewritten.",
+    "Mocked execution success establishes no real customer signing/venue behavior. Executor binding and billing/live flags remain unavailable/off.",
+    "Current full-repository M3 architecture,41M5 qualification limits and T4 equivalence remain partial; this17-file delta is not a whole-repository CLEAN verdict.",
+    "Production additive migrations/deployment and independent hosted wallet/PKCE/preauthorization/status/refusal/revocation acceptance remain pending.",
+    "Exact original source slice logs are not recreated or inferred from hashes."
+  ],
+  "combined_gates": [
+    {
+      "kind": "node",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-final-delivery-20261112/combined-final-node.log",
+      "tests": 129
+    },
+    {
+      "kind": "browser",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-final-delivery-20261112/combined-final-browser.log",
+      "groups": 28
+    },
+    {
+      "kind": "quality",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-final-delivery-20261112/combined-final-quality.log"
+    },
+    {
+      "kind": "syntax",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-final-delivery-20261112/combined-final-syntax.log"
+    },
+    {
+      "kind": "dry-run",
+      "exit_code": 0,
+      "log": "/tmp/oraclebot-final-delivery-20261112/combined-final-dry-run.log"
+    }
+  ],
+  "delta": "Repeat required website gates in the final combined source after correcting runtime-floor metadata."
+}

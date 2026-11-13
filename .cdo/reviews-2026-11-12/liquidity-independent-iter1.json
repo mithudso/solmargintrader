@@ -1,0 +1,486 @@
+{
+  "agent": "liquidity_blind_acceptance",
+  "definition_version": "2.0.0",
+  "status": "partial",
+  "review_status": "changes_required",
+  "profile": "default",
+  "mode": "report",
+  "repo": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "baseline_HEAD": "05be6fbe076d2733b76ffa632793dad052641e42",
+  "observed_at": "2026-11-12T17:29:15.207733+00:00",
+  "independence": "Started from public root/component contracts, current source/diff and HEAD baseline. Did not read author reports, author tests, red logs or ledger reviews.",
+  "scope": "Independent changed-boundaries acceptance, not full-component coverage or CDO CLEAN. No author-test/source edits.",
+  "findings": [
+    {
+      "id": "LB-1",
+      "severity": "High",
+      "introduced_by_current_diff": true,
+      "title": "Known-unsent kill cancellation poisons the durable submission journal",
+      "sources": [
+        {
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/executor.py",
+          "lines": [
+            337,
+            350
+          ]
+        },
+        {
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/submissions.py",
+          "lines": [
+            220,
+            238
+          ]
+        },
+        {
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/engine.py",
+          "lines": [
+            481,
+            487
+          ]
+        }
+      ],
+      "trigger": "KILL becomes engaged during SubmissionJournal.before_submit fsync. The new third before_send check raises after the intent is durably stored, before send_raw_transaction is called.",
+      "observed": "Fake signing count 1, broadcast attempts 0, one receipt-less processed=False durable record. Two reconciliations refuse receipt not available. Engine.withdraw reconciles first and would encounter this same permanent block.",
+      "positive_controls": [
+        "Checks 1 and 2 refuse before signing and create no record.",
+        "Allowed send signs and sends exactly once, preserving confirmed receipt hash.",
+        "An actual ambiguous send attempt remains blocked and is never retried."
+      ],
+      "fix_requirement": "Record a narrowly proven pre-broadcast cancellation/tombstone when a synchronous gate refusal occurs before the first send attempt. Retain the public hash/intent identity. A crash or any actual/ambiguous broadcast attempt must remain unresolved until venue evidence resolves it.",
+      "probe": "/tmp/oraclebot_liquidity_independent_probe_20261112.py --red-cancellation",
+      "log": "/tmp/oraclebot-liquidity-independent-red-cancellation-20261112.log",
+      "actual_exit_code": 1
+    },
+    {
+      "id": "LB-2",
+      "severity": "Medium",
+      "introduced_by_current_diff": false,
+      "title": "Finite individual prices can overflow the conversion USD comparison and bypass refusal",
+      "sources": [
+        {
+          "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/safe_exit.py",
+          "lines": [
+            128,
+            148
+          ]
+        }
+      ],
+      "trigger": "For two 18-decimal tokens, amount_raw=10**24, pool raw_price=1, fee=.003, input USD price=1e308 and output USD price=1e306 are individually finite. Both calculated USD notionals overflow to infinity.",
+      "observed": "The comparison inf < inf is false. plan_conversion returns an accepted route even though output market value/input market value is .00997, below the required .98 ratio.",
+      "positive_controls": [
+        "Same pool and amount with prices100:100 produces an allowed route.",
+        "Prices100:1 refuse the uneconomic route without overflow.",
+        "The strategy decision code separately refuses overflow economics."
+      ],
+      "fix_requirement": "Refuse nonfinite derived notionals or compare a safely normalized ratio. Also return unknown for overflowed display valuations. This is a pre-existing gap at the numerical boundary modified by the current patch.",
+      "probe": "/tmp/oraclebot_liquidity_independent_probe_20261112.py --red-conversion",
+      "log": "/tmp/oraclebot-liquidity-independent-red-conversion-20261112.log",
+      "actual_exit_code": 1
+    }
+  ],
+  "source_bindings": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/CLAUDE.md",
+      "sha256": "8e452da11b9deb0248532da06a66b156d7ab41b831f0137af1b32e25d96b780e",
+      "baseline_HEAD_sha256": "8e452da11b9deb0248532da06a66b156d7ab41b831f0137af1b32e25d96b780e",
+      "read_line_ranges": [
+        [
+          1,
+          99
+        ],
+        [
+          169,
+          220
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/README.md",
+      "sha256": "5f411ce89fa1feeaa2378bcb3645c505be805297c5bc8a81200eeb100e2cbdb5",
+      "baseline_HEAD_sha256": "5f411ce89fa1feeaa2378bcb3645c505be805297c5bc8a81200eeb100e2cbdb5",
+      "read_line_ranges": [
+        [
+          1,
+          115
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/CLAUDE.md",
+      "sha256": "45eec7bafb5e55bbc59717abce7deb27beada87bf3217d53264d87a147dce949",
+      "baseline_HEAD_sha256": "45eec7bafb5e55bbc59717abce7deb27beada87bf3217d53264d87a147dce949",
+      "read_line_ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/README.md",
+      "sha256": "267011708c70e9de2574dc0bee4d0b13b8377db03e54167e5208d8ccb24326dd",
+      "baseline_HEAD_sha256": "267011708c70e9de2574dc0bee4d0b13b8377db03e54167e5208d8ccb24326dd",
+      "read_line_ranges": [
+        [
+          1,
+          199
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/scripts/aero-lp-service",
+      "sha256": "40143c8d9e1a541d7c2340e6f2fcf7bab27985c9033af2fbacef3610d0fab6f9",
+      "baseline_HEAD_sha256": "ec4355ab571d79000d83268123e9a2c1b9985fdaad97bdbf8c23a241896ea996",
+      "read_line_ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/cli.py",
+      "sha256": "e6a4a366c579969f52de1262d140f4fd013dd2166a7f02a7a32f21eee3fb0176",
+      "baseline_HEAD_sha256": "bfff8b025bab5bd2e8098872b53d0e7e46fa08eecd73837717fd7e62241556bf",
+      "read_line_ranges": [
+        [
+          190,
+          480
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/daemon.py",
+      "sha256": "df2e9027e5dcfc5208179c2358cbc021bb0fdac4fe585b3efaff585524741d9e",
+      "baseline_HEAD_sha256": "31a0f96d91e98b958e6ad738b84dfd6acc9f2d21d7193a113b311d3ee05ea09a",
+      "read_line_ranges": [
+        [
+          1,
+          265
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/engine.py",
+      "sha256": "f06c9d4f8e960edaa90e04297e362aac4110ec5ec9adf299233ff529fa86a46e",
+      "baseline_HEAD_sha256": "3fd065e37e5762dbd2f64881cbdee3ff7d6dd989cb1eced3e14605683c4fe470",
+      "read_line_ranges": [
+        [
+          1,
+          255
+        ],
+        [
+          400,
+          666
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/executor.py",
+      "sha256": "6237cd3724be8bf156785942155f0b8cc04259084635890afff1d922d871448d",
+      "baseline_HEAD_sha256": "b9911fa7d710b93e159fd72539591343fc6281379e79019625fda678392fc259",
+      "read_line_ranges": [
+        [
+          1,
+          520
+        ],
+        [
+          1135,
+          1179
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/market.py",
+      "sha256": "621a851916357128e26c5ef94911a43ca2b1924fb12bbe77216f36d0fc0ad1c4",
+      "baseline_HEAD_sha256": "862be7838ecf8c634c252684f0964d1ebe362606ae5c1027476bd118cb24ff3c",
+      "read_line_ranges": [
+        [
+          1,
+          205
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/providers.py",
+      "sha256": "53f9b90810524dbc0159808db2c66fadd92d82b3e88c268933994e7ab0e8b217",
+      "baseline_HEAD_sha256": "1384a22e6b6762985fcfe4d39035e1162f607b192933d5eea17509b071bdc22b",
+      "read_line_ranges": [
+        [
+          1,
+          100
+        ],
+        [
+          200,
+          245
+        ],
+        [
+          535,
+          685
+        ],
+        [
+          920,
+          1015
+        ],
+        [
+          1330,
+          1425
+        ],
+        [
+          1540,
+          1628
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/providers_report.py",
+      "sha256": "d7c6128caf2f1cc324e2d00c946e63fbc0f55070b9db6963c98b2c6c692ee7d1",
+      "baseline_HEAD_sha256": "14d11ac52f44bd1387538137ffb50e4bef33179e2ced8e00ad68d56f6c1f6e06",
+      "read_line_ranges": [
+        [
+          1,
+          298
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/safe_exit.py",
+      "sha256": "386e5dce7114e79ba365fdd5e39ec37d649c71ab4314ea06defed746987913b7",
+      "baseline_HEAD_sha256": "3f242df6bc7b892d51e416c7581a3218934fad9e7880c939bddc203c6c9d754d",
+      "read_line_ranges": [
+        [
+          1,
+          364
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/strategy.py",
+      "sha256": "308158eae8ade4075621dc047c83b6976aca4435141aeba81f6b73eb016312a2",
+      "baseline_HEAD_sha256": "534a55d6c0ff793a7c82dc019fe5e3cecf871446b01486afba7bdbcccfd79f71",
+      "read_line_ranges": [
+        [
+          1,
+          375
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/submissions.py",
+      "sha256": "d0353f54d360a4b0df6fd76fe6b65fe71fc66de31fe50e5266ecae3572236b87",
+      "baseline_HEAD_sha256": "d0353f54d360a4b0df6fd76fe6b65fe71fc66de31fe50e5266ecae3572236b87",
+      "read_line_ranges": [
+        [
+          1,
+          247
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/config.py",
+      "sha256": "be9940fcf481b59ff3757a8e97649fdfbf9702524f6e176235d4f050b3963187",
+      "baseline_HEAD_sha256": "be9940fcf481b59ff3757a8e97649fdfbf9702524f6e176235d4f050b3963187",
+      "read_line_ranges": [
+        [
+          1,
+          242
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/validation.py",
+      "sha256": "b3284debc4f3fd2ab9a3ece761d77b37dc04359dacc82fa2dde4dcb1ba5ea7e7",
+      "baseline_HEAD_sha256": "b3284debc4f3fd2ab9a3ece761d77b37dc04359dacc82fa2dde4dcb1ba5ea7e7",
+      "read_line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/src/aero_lp/chain.py",
+      "sha256": "1eeedcb418884208e527ff46c76bcfe5638956589cee462fb02eca67f1080638",
+      "baseline_HEAD_sha256": "1eeedcb418884208e527ff46c76bcfe5638956589cee462fb02eca67f1080638",
+      "read_line_ranges": [
+        [
+          50,
+          172
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/pyproject.toml",
+      "sha256": "6434018f905d2b152910d48bc63c2b676d80ef2d050752ae4f46c90dbfdbf174",
+      "baseline_HEAD_sha256": "6434018f905d2b152910d48bc63c2b676d80ef2d050752ae4f46c90dbfdbf174",
+      "read_line_ranges": [
+        [
+          1,
+          39
+        ]
+      ],
+      "coverage": "bounded_relevant_functions_and_callers",
+      "observed_at": "2026-11-12T17:29:15.207733+00:00"
+    }
+  ],
+  "verification": {
+    "interpreter": "/tmp/oraclebot-liquidity-audit-venv-20261112/bin/python",
+    "positive_and_counterexample_observation_exit_code": 0,
+    "red_cancellation_exit_code": 1,
+    "red_conversion_exit_code": 1,
+    "observations": [
+      {
+        "name": "kill_before_sign_and_allowed_send_control",
+        "pass": true,
+        "detail": {
+          "stopped_before_sign_at_checks": [
+            1,
+            2
+          ],
+          "positive_control_sends": 1
+        }
+      },
+      {
+        "name": "ambiguous_send_no_retry",
+        "pass": true,
+        "detail": {
+          "sends": 1,
+          "journal_hash": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      {
+        "name": "emergency_engine_has_no_daemon_kill_gate",
+        "pass": true,
+        "detail": {
+          "emergency_engine_callback_succeeds_with_task_KILL": true
+        }
+      },
+      {
+        "name": "cli_KILL_precedes_engine_and_signer",
+        "pass": true,
+        "detail": {
+          "return_code": 3,
+          "engine_and_signer_accesses": 0
+        }
+      },
+      {
+        "name": "stablecoin_observed_quotes_and_invalid_omission",
+        "pass": true,
+        "detail": {
+          "gecko_depeg": 0.81,
+          "llama_depeg": 0.73,
+          "invalid_quotes_omitted": true,
+          "missing_stable_is_unavailable": true
+        }
+      },
+      {
+        "name": "strategy_invalid_and_overflow_refusal",
+        "pass": true,
+        "detail": {
+          "invalid_constructor_cases": 10,
+          "overflow_refused": true,
+          "positive_decision": "rebalance"
+        }
+      },
+      {
+        "name": "slipstream_fallback_optional_ABI",
+        "pass": true,
+        "detail": {
+          "fallback_call_count": 2,
+          "all_optional_functions_encodable": true,
+          "block_preserved": 9
+        }
+      },
+      {
+        "name": "configured_report_bar",
+        "pass": true,
+        "detail": {
+          "reported_bar": "12.5%"
+        }
+      },
+      {
+        "name": "counterexample_cancel_after_journal_before_broadcast",
+        "pass": true,
+        "detail": {
+          "signs": 1,
+          "broadcast_attempts": 0,
+          "receiptless_record": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reconcile_blocked_repeatedly": true,
+          "same_journal_blocks_emergency_exit": true,
+          "error": "unresolved submitted outcome: 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa; receipt not available"
+        }
+      },
+      {
+        "name": "counterexample_conversion_notionals_overflow",
+        "pass": true,
+        "detail": {
+          "finite_quotes": [
+            1e+308,
+            1e+306
+          ],
+          "amount_raw": 1000000000000000000000000,
+          "actual_market_output_to_input_ratio": 0.00997,
+          "both_usd_notionals_overflow": true,
+          "unsafe_route_accepted": true,
+          "positive_control_accepted": true,
+          "nonoverflow_bad_route_refused": true
+        }
+      }
+    ],
+    "network_attempts": []
+  },
+  "limits": [
+    "No live venue/RPC/HTTP qualification.",
+    "Fake signer returned fixed fake bytes and never used real key material.",
+    "No owner state/config/PID reads, daemon/service/collector runs, transactions, signatures with real keys, inference/indexing, staging, commits, pushes or merges.",
+    "Existing full test suite not run by this acceptance reviewer; independent offline counterexamples and positive controls only.",
+    "Only the explicitly listed source ranges were inspected; hashes bind identity and do not prove full-file coverage."
+  ],
+  "remaining": [
+    "Author must fix LB-1 and LB-2 and run regression checks.",
+    "Independent recheck must bind final changed source and rerun original counterexamples/positive controls."
+  ],
+  "files_created": [
+    "/tmp/oraclebot_liquidity_independent_probe_20261112.py",
+    "/tmp/oraclebot-liquidity-independent-probes-20261112.json",
+    "/tmp/oraclebot-liquidity-independent-red-cancellation-20261112.log",
+    "/tmp/oraclebot-liquidity-independent-red-conversion-20261112.log",
+    "/tmp/oraclebot-liquidity-independent-review-20261112.json"
+  ]
+}

@@ -49,6 +49,15 @@ class DataValidationError(ValueError):
     """Raised when a loaded series violates the bar contract."""
 
 
+def describe_data_error(error: Exception) -> str:
+    """Keep owned validation guidance without echoing arbitrary CSV cell text."""
+    if isinstance(error, DataValidationError):
+        return str(error)
+    if isinstance(error, FileNotFoundError) and error.filename:
+        return f"required data file is missing: {error.filename}"
+    return f"{type(error).__name__}; check CSV columns, numeric OHLCV values and the UTC date range"
+
+
 @runtime_checkable
 class DataLoader(Protocol):
     """Anything that can produce a validated OHLCV frame."""
@@ -183,7 +192,7 @@ def _slice_dates(df: pd.DataFrame, start: str | None, end: str | None) -> pd.Dat
     if end:
         # End date is inclusive of the whole day when given as a bare date.
         end_ts = pd.Timestamp(end, tz="UTC")
-        if end_ts.normalize() == end_ts:
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", end):
             end_ts = end_ts + pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
         out = out[out["timestamp"] <= int(end_ts.timestamp())]
     return out.reset_index(drop=True)

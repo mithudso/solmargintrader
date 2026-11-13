@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import logging
 import math
 import os
 import subprocess
@@ -449,7 +450,15 @@ def coerce_pairs(name: str, pairs: dict[str, str]) -> dict[str, Any]:
 
 # -- dispatch ------------------------------------------------------------------------------------
 
-_DOMAIN_ERRORS = (ValueError, RuntimeError, OSError)
+_DOMAIN_ERRORS = (ValueError, RuntimeError)
+_LOGGER = logging.getLogger(__name__)
+
+
+def _unexpected_failure(name: str, error: Exception) -> dict[str, Any]:
+    """Report fixed diagnostics; exception text may contain provider credentials."""
+    _LOGGER.warning("command failed", extra={"operation": name, "phase": "failure",
+                                             "error_kind": type(error).__name__})
+    return error_envelope(name, "failed", f"Operation unavailable ({type(error).__name__}); retry after checking prerequisites")
 
 
 def describe_commands() -> list[dict[str, Any]]:
@@ -478,7 +487,7 @@ def _execute(name: str, params: Any, ctx: Context | None) -> dict[str, Any]:
     except _DOMAIN_ERRORS as exc:
         return error_envelope(name, "failed", str(exc))
     except Exception as exc:  # noqa: BLE001 - a surface must always get an envelope back
-        return error_envelope(name, "failed", f"{type(exc).__name__}: {exc}")
+        return _unexpected_failure(name, exc)
 
 
 def dispatch(name: str, params: dict[str, Any] | None = None, surface: str = "api",

@@ -6,6 +6,8 @@ from pathlib import Path
 
 from botmanager.adapters.ecosystem import discover_ecosystem
 
+from tests import isolated_default_owner
+
 
 class EcosystemAdapterTests(unittest.TestCase):
     def test_absent_configuration_is_explicit_and_inert(self):
@@ -28,6 +30,9 @@ if __name__ == "__main__":
 
 
 class EcosystemEditingCliTests(unittest.TestCase):
+    def setUp(self):
+        self.enterContext(isolated_default_owner())
+
     def test_explicit_ecosystem_flag_coexists_with_editing_commands(self):
         import json
         import os

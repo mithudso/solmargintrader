@@ -1,0 +1,272 @@
+{
+  "schema": "oraclebot-cdo-bounded-file-delta-review/v1",
+  "observed_at": "2026-11-13T05:07:42.451886+00:00",
+  "task": "TASK-1540 root-owned convergence/delivery",
+  "status": "REVIEWED_MEDIUM_FOUND_TESTS_AUTHORED_PENDING_ROOT_RED_GREEN",
+  "path": "scripts/test_oraclebot_ops.py",
+  "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py",
+  "scope": "Bound full file-level CDO DELTA HEAD a5053e9c859505a895935702a51180830b69b89f to frozen incoming40Ops; authored remediation tests only after root authorization. No root/global CLEAN claim.",
+  "baseline": {
+    "commit": "a5053e9c859505a895935702a51180830b69b89f",
+    "sha256": "c0aa9079a60a626273a1c711bfb0fdb0f74fbe5df1af497a497dad0ca1ae9e24",
+    "blob_sha": "88067daa55e788cbbacab5a9a44ed17a757b7b57",
+    "lines": 871,
+    "coverage_match": true,
+    "prior_pipeline_receipt_match": true
+  },
+  "frozen_incoming": {
+    "sha256": "03b3226aa59f1cbccdc987bc5804131fcd67677e9b5e6d89b3b72e9576af4052",
+    "blob_sha": "ee724929f17791f07807c405e3416e015b848ca9",
+    "lines": 972,
+    "delta": {
+      "added_lines": 101,
+      "removed_lines": 0,
+      "current_added_ranges": [
+        [
+          287,
+          387
+        ]
+      ],
+      "unchanged_mappings": [
+        {
+          "baseline": [
+            1,
+            286
+          ],
+          "current": [
+            1,
+            286
+          ]
+        },
+        {
+          "baseline": [
+            287,
+            871
+          ],
+          "current": [
+            388,
+            972
+          ]
+        }
+      ]
+    },
+    "all37_baseline_test_AST_unchanged": true,
+    "test_count": 40
+  },
+  "authored_current": {
+    "sha256": "4235c3b834687bb1a4ebf47e911dbe9403eddb8c6995e18eb85ec95ad26dc964",
+    "blob_sha": "bb75960de30cf4097e1a351774bef82cef34a15f",
+    "lines": 1091,
+    "test_count": 43,
+    "all37_baseline_test_AST_unchanged": true,
+    "removed_baseline_methods": [],
+    "changed_baseline_methods": [],
+    "added_vs_baseline": [
+      "RuntimeCoverageTests.test_forecast_monitor_rechecks_source_age_after_slow_status_probe",
+      "RuntimeCoverageTests.test_forecast_monitor_rejects_invalid_current_frame_fields",
+      "RuntimeCoverageTests.test_forecast_monitor_requires_current_actual_direction_and_price",
+      "RuntimeCoverageTests.test_forecast_monitor_requires_finite_current_source_timestamps",
+      "RuntimeCoverageTests.test_forecast_probe_uses_return_time_for_freshness",
+      "RuntimeCoverageTests.test_healthy_original_workers_cannot_mask_a_failed_live_forecast"
+    ],
+    "execution": "Not executed. Root must perform guarded RED before releasing source author, then GREEN."
+  },
+  "read_evidence": {
+    "actual_frozen_current_ranges": [
+      [
+        1,
+        220
+      ],
+      [
+        219,
+        425
+      ],
+      [
+        426,
+        625
+      ],
+      [
+        626,
+        805
+      ],
+      [
+        804,
+        972
+      ]
+    ],
+    "complete_frozen_current_read": true,
+    "baseline_inherited_credit": "coverage.json scripts/test_oraclebot_ops.py complete row and pipeline-pr241-ui-current.json exact871line/blob/SHA identity; prior operations-incoming-current.json records original291line read plus deltas. Hashes establish identity, not reads. Current972line file was additionally read in full here.",
+    "actual_producer_context_ranges": {
+      "scripts/oraclebot_ops.py": [
+        [
+          145,
+          310
+        ],
+        [
+          340,
+          560
+        ],
+        [
+          573,
+          680
+        ]
+      ],
+      "ecosystem/forecast.py": [
+        [
+          570,
+          625
+        ]
+      ]
+    },
+    "frozen_incoming_delta_read": "Full unified12 diff read in tool output; sole insertion current287..387.",
+    "authored_delta": "Exact authored patch read during apply_patch; no source write outside assigned test module."
+  },
+  "activated_skills": [
+    {
+      "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+      "version": "1.17.1",
+      "why": "Parent requested full bounded CDO per-file audit."
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/lang-python/SKILL.md",
+      "why": "Python unittest/mock fixtures."
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/lang-python/references/python-testing.md",
+      "why": "Fixture scope, mock cleanup and meaningful assertions."
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+      "why": "Baseline review and security checklist."
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md",
+      "why": "M1 readability/naming/fixture standards."
+    }
+  ],
+  "passes": {
+    "C1": {
+      "state": "ran",
+      "detail": "Read every current frozen line and all101 incoming lines. New positive/retained/stale/None/NaN/missing-config assertions and ninth-component tick failure correctly address observer readiness. Later authored refusal matrices are unexecuted and require root RED/GREEN."
+    },
+    "C2": {
+      "state": "ran",
+      "detail": "Compared test fixtures with probe_forecast, runtime_health, reports and tick contracts. Observed forecast ready/state/reason values and canonical source loader. Authored tick fixture now uses actual live_forecast_not_current reason."
+    },
+    "C3": {
+      "state": "ran",
+      "detail": "Static counterexample: deleting source_current/instrument/direction/cadence guards would preserve all three frozen incoming tests. Return-clock issued1009 succeeds at1010 after caller1000; issued990 fails at1010 despite passing caller1000 age bound. No reproduction test executed by this worker."
+    },
+    "S1": {
+      "state": "ran",
+      "detail": "Stage0.5 applied before source review. Full972line frozen test file contained no reviewer-directed hostile instruction. Synthetic token/paths only; new probes mocked; no real secrets, network, provider or service touched."
+    },
+    "S2": {
+      "state": "ran",
+      "detail": "New patches are context-managed and restore after each helper/subtest. New tick test owns a temporary database/home and registers close cleanup. No shared mutable fixture hoisting or new unbounded I/O."
+    },
+    "S3": {
+      "state": "ran",
+      "detail": "Checked current/retained, age, actual finite positive price, canonical instrument/direction/cadence contracts. Frozen source-clock and provenance rejection coverage gap recorded as T1-1. Authored source predicates are strictly0..15s inclusive, distinct from frame future tolerance."
+    },
+    "S4": {
+      "state": "ran",
+      "detail": "Stdlib unittest/mock/tempfile/json only. Added tests use existing supported Python constructs and no dependencies or OS-specific service action. No runtime import/test execution in review."
+    },
+    "S5": {
+      "state": "ran",
+      "detail": "Frozen new assertions check ready/overall/component readiness but omit refusal state/reason. Authored matrices assert exact up/available versus down/live_forecast_not_current outcomes. Test assertions never echo private/provider values."
+    },
+    "P1": {
+      "state": "ran",
+      "detail": "Fixed-size synthetic fixtures and bounded subtest tables only. No inference, empirical optimization, services or paid acquisition."
+    },
+    "P2": {
+      "state": "ran",
+      "detail": "No new async/thread machinery. Patches and local frame objects remain test-local; helper returns a fresh nested dict. Existing loopback/thread test is retained unchanged."
+    },
+    "M1": {
+      "state": "ran",
+      "detail": "Existing unittest structure preserved. New fields are explicit source clocks. Authored forecast_frame helper removes repeated valid fixtures and mutable source cases restore from a fresh valid frame."
+    },
+    "M2": {
+      "state": "ran",
+      "detail": "No runtime predicate copied into tests. Expected source ages and refusal values are independently authored. Helper shares fixture construction only; every distinct assertion remains."
+    },
+    "M3": {
+      "state": "na",
+      "reason": "Repository-scope architecture/settings pass belongs to root TASK-1540."
+    },
+    "M4": {
+      "state": "ran",
+      "detail": "Frozen test name claims actual direction coverage but never exercises direction rejection; included in T1-1 rather than separate severity. Receipt distinguishes inherited baseline review, full current reads, static AST retention and unexecuted authored tests."
+    },
+    "T1": {
+      "state": "ran",
+      "detail": "Found T1-1 Medium in frozen incoming tests. All37 baseline methods AST-identical; frozen40 methods present. Per root authorization, authored3 additional methods plus helper/source clocks, retaining all37 baseline methods. Root owns guarded RED/GREEN and full291 outcome."
+    },
+    "T2": {
+      "state": "na",
+      "reason": "Repository-scope dependency/supply-chain pass belongs to root TASK-1540; no dependency change."
+    },
+    "T3": {
+      "state": "na",
+      "reason": "Repository-scope tooling pass belongs to root TASK-1540; no lint/test command run here."
+    },
+    "T4": {
+      "state": "ran",
+      "detail": "No added sleep, real timer wait, network or process. Frozen return-clock cases use patched clock. Authored refusal matrix uses isolated fresh dicts and does not merge/remove distinct original assertions. Existing shared-global/thread tests were not parallelized."
+    },
+    "M5": {
+      "state": "na",
+      "reason": "Test module only; unchanged unittest.main entrypoint is not a new public owner tool."
+    }
+  },
+  "findings": [
+    {
+      "id": "T1-1",
+      "pass": "T1",
+      "severity": "Medium",
+      "file": "scripts/test_oraclebot_ops.py",
+      "line": 315,
+      "end_line": 326,
+      "finding": "Frozen forecast test never rejects invalid actual direction, false source provenance, foreign instrument or mismatched cadence; deleting observer guards at scripts/oraclebot_ops.py272-279 leaves all frozen new tests passing. New source timestamp contract also needs independently invalid/stale/future source cases.",
+      "impact": "A regression could label a fresh-looking forecast ready without actual valid direction/current source/canonical cadence while the observer tests pass.",
+      "fix": "Restore-from-valid refusal matrix for current predicate fields, exact finite/nonbool source timestamps and0..15s return-clock bounds; include300s frame issued1000/source1000/age_seconds14/source_currentTrue returning1016. Assert truthful state/reason.",
+      "status": "Tests authored in assigned file per root request; not verified. Root owns RED/source fix/GREEN."
+    }
+  ],
+  "severity_table": [
+    {
+      "iteration": "frozen incoming delta",
+      "Critical": 0,
+      "High": 0,
+      "Medium": 1,
+      "Low": 0,
+      "Nit": 0
+    }
+  ],
+  "verify_gate": [
+    {
+      "command": "root-owned guarded canonical Operations tests",
+      "baseline": "Root brief states frozen40Ops passed guarded0. Not independently rerun here.",
+      "after_authored_tests": "PENDING root guarded RED then GREEN",
+      "verdict": "NOT RUN BY THIS WORKER"
+    },
+    {
+      "command": "root-owned full291 frozen gate",
+      "baseline": "Running per root brief",
+      "after_authored_tests": "Root owns final state",
+      "verdict": "NO CLAIM"
+    }
+  ],
+  "blind_reaudit": "N/A: bounded per-file review with Medium finding and pending verification; root owns loop.",
+  "limits": [
+    "No tests, lint, imports of target, Git mutation, network, service, install, subprocesses of product, agent spawning or inference by this worker. Read-only git identity/show/diff and AST parsing only.",
+    "No live-monitor/current installed observer claim.",
+    "Only assigned scripts/test_oraclebot_ops.py edited after explicit root authorization; root owns Git, workflow records, source fixes and delivery."
+  ],
+  "summary": "1 bounded audit iteration;15of18 file-level passes active plus conditionalM5 N/A; frozen C/H/M0/0/1; remediation tests authored; verification pending root; no convergence claim.",
+  "rollback": "Root owns any rollback; worker made only assigned test edits. No snapshot or source reset performed.",
+  "memory_central": "No separate memory-central rows used by this bounded worker; inherited exact review receipts and full current source read are the review evidence."
+}

@@ -230,6 +230,20 @@ class RuntimeCoverageTests(unittest.TestCase):
             "oracle": {"SOL": {"market": "available", "received_at": 999}},
         }
 
+    def forecast_frame(self, issued_at=1000):
+        return {
+            "status": "fresh",
+            "instrument": "SOL/USD",
+            "refresh_seconds": 10,
+            "horizon_seconds": 10,
+            "issued_at": issued_at,
+            "selected": {"direction": 1, "predicted_price": 100.5},
+            "source_current": True,
+            "source_observed_at": issued_at,
+            "source_sampled_at": issued_at,
+            "settings": {"seconds": 10},
+        }
+
     def test_failed_workers_are_not_masked_by_running_control_server(self):
         data = self.data()
         data["supervisor_running"] = False
@@ -258,27 +272,48 @@ class RuntimeCoverageTests(unittest.TestCase):
         rows = ops.probe_runtime({}, 1001)
         self.assertFalse(any(row["ready"] for row in rows.values()))
 
-    def test_forecast_monitor_requires_current_actual_direction_and_price(self):
-        frame = {
-            "status": "fresh",
-            "instrument": "SOL/USD",
-            "refresh_seconds": 10,
-            "horizon_seconds": 10,
-            "issued_at": 1000,
-            "selected": {"direction": 1, "predicted_price": 100.5},
-            "source_current": True,
-            "settings": {"seconds": 10},
+    def test_probe_uses_return_time_for_fresh_runtime_heartbeat(self):
+        data = {
+            "phase": "forward",
+            "supervisor_running": True,
+            "heartbeat_at": 1009,
+            "runtime_controls_observed": {
+                "batch_enabled": True,
+                "oracle_enabled": True,
+            },
+            "batch": {"running": True, "phase": "forward"},
+            "oracle": {"SOL": {"market": "available", "received_at": 1009}},
         }
+        with (
+            patch.object(
+                ops, "probe_output", return_value=json.dumps({"ok": True, "data": data})
+            ),
+            patch.object(ops.time, "time", return_value=1010),
+        ):
+            rows = ops.probe_runtime(
+                {
+                    "pipeline_python": "/synthetic/python",
+                    "pipeline_home": "/synthetic/home",
+                },
+                1000,
+            )
+        self.assertTrue(rows["paper_pipeline"]["ready"], rows)
+
+    def test_forecast_monitor_requires_current_actual_direction_and_price(self):
+        frame = self.forecast_frame()
         config = {
             "forecast_python": "/fixture/python",
             "pipeline_home": "/fixture/home",
         }
 
         def probe():
-            with patch.object(
-                ops,
-                "probe_output",
-                return_value=json.dumps({"ok": True, "data": frame}),
+            with (
+                patch.object(
+                    ops,
+                    "probe_output",
+                    return_value=json.dumps({"ok": True, "data": frame}),
+                ),
+                patch.object(ops.time, "time", return_value=1001),
             ):
                 return ops.probe_forecast(config, 1001)
 
@@ -294,6 +329,149 @@ class RuntimeCoverageTests(unittest.TestCase):
         frame["selected"]["predicted_price"] = float("nan")
         self.assertFalse(probe()["ready"])
         self.assertFalse(ops.probe_forecast({}, 1001)["ready"])
+
+    def test_forecast_probe_uses_return_time_for_freshness(self):
+        frame = self.forecast_frame(1009)
+        config = {
+            "forecast_python": "/fixture/python",
+            "pipeline_home": "/fixture/home",
+        }
+        for issued_at, expected in ((1009, True), (990, False)):
+            with self.subTest(issued_at=issued_at):
+                frame["issued_at"] = issued_at
+                with (
+                    patch.object(
+                        ops,
+                        "probe_output",
+                        return_value=json.dumps({"ok": True, "data": frame}),
+                    ),
+                    patch.object(ops.time, "time", return_value=1010),
+                ):
+                    result = ops.probe_forecast(config, 1000)
+                self.assertEqual(result["ready"], expected, result)
+
+    def test_forecast_monitor_rejects_invalid_current_frame_fields(self):
+        cases = (
+            (("instrument",), "BTC/USD"),
+            (("refresh_seconds",), 9),
+            (("horizon_seconds",), 9),
+            (("settings", "seconds"), 4),
+            (("settings", "seconds"), 301),
+            (("settings", "seconds"), True),
+            (("settings", "seconds"), 10.0),
+            (("source_current",), False),
+            (("source_current",), 1),
+            (("selected", "direction"), True),
+            (("selected", "direction"), 1.0),
+            (("selected", "direction"), 2),
+            (("selected", "direction"), None),
+            (("selected", "predicted_price"), True),
+            (("selected", "predicted_price"), 0),
+            (("selected", "predicted_price"), -1),
+            (("selected", "predicted_price"), float("inf")),
+            (("issued_at",), True),
+            (("issued_at",), float("nan")),
+            (("issued_at",), float("inf")),
+            (("issued_at",), 985.999),
+            (("issued_at",), 1002.001),
+        )
+        config = {
+            "forecast_python": "/fixture/python",
+            "pipeline_home": "/fixture/home",
+        }
+        for path, value in cases:
+            with self.subTest(path=path, value=value):
+                frame = self.forecast_frame()
+                target = frame
+                for key in path[:-1]:
+                    target = target[key]
+                target[path[-1]] = value
+                with (
+                    patch.object(
+                        ops,
+                        "probe_output",
+                        return_value=json.dumps({"ok": True, "data": frame}),
+                    ),
+                    patch.object(ops.time, "time", return_value=1001),
+                ):
+                    result = ops.probe_forecast(config, 1000)
+                self.assertEqual(
+                    result,
+                    {
+                        "ready": False,
+                        "state": "down",
+                        "reason": "live_forecast_not_current",
+                    },
+                )
+
+    def test_forecast_monitor_requires_finite_current_source_timestamps(self):
+        config = {
+            "forecast_python": "/fixture/python",
+            "pipeline_home": "/fixture/home",
+        }
+        cases = (
+            (986, True),
+            (1001, True),
+            (985.999, False),
+            (1001.001, False),
+            (None, False),
+            (True, False),
+            (False, False),
+            ("1000", False),
+            (float("nan"), False),
+            (float("inf"), False),
+            (float("-inf"), False),
+        )
+        for field in ("source_observed_at", "source_sampled_at"):
+            for value, expected in (*cases, ("missing", False)):
+                with self.subTest(field=field, value=value):
+                    frame = self.forecast_frame()
+                    if value == "missing":
+                        frame.pop(field)
+                    else:
+                        frame[field] = value
+                    with (
+                        patch.object(
+                            ops,
+                            "probe_output",
+                            return_value=json.dumps({"ok": True, "data": frame}),
+                        ),
+                        patch.object(ops.time, "time", return_value=1001),
+                    ):
+                        result = ops.probe_forecast(config, 1000)
+                    self.assertEqual(
+                        result,
+                        {
+                            "ready": expected,
+                            "state": "up" if expected else "down",
+                            "reason": "available"
+                            if expected
+                            else "live_forecast_not_current",
+                        },
+                    )
+
+    def test_forecast_monitor_rechecks_source_age_after_slow_status_probe(self):
+        frame = self.forecast_frame()
+        frame.update(refresh_seconds=300, horizon_seconds=300, age_seconds=14)
+        frame["settings"]["seconds"] = 300
+        config = {
+            "forecast_python": "/fixture/python",
+            "pipeline_home": "/fixture/home",
+        }
+        # The child computed source_current at 1014 and returned two seconds later.
+        with (
+            patch.object(
+                ops,
+                "probe_output",
+                return_value=json.dumps({"ok": True, "data": frame}),
+            ),
+            patch.object(ops.time, "time", return_value=1016),
+        ):
+            result = ops.probe_forecast(config, 1000)
+        self.assertEqual(
+            result,
+            {"ready": False, "state": "down", "reason": "live_forecast_not_current"},
+        )
 
     def test_healthy_original_workers_cannot_mask_a_failed_live_forecast(self):
         with tempfile.TemporaryDirectory() as root:
@@ -313,7 +491,7 @@ class RuntimeCoverageTests(unittest.TestCase):
                     return_value={
                         "ready": False,
                         "state": "down",
-                        "reason": "retained",
+                        "reason": "live_forecast_not_current",
                     },
                 ),
                 patch.object(ops, "deliver", return_value={"pending": 0}),

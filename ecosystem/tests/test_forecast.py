@@ -4,12 +4,14 @@ import gzip
 import hashlib
 import json
 import tempfile
+import threading
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 
-from ecosystem import forecast
+from ecosystem import forecast, forecast_preferences
 from ecosystem.forecast_preferences import set_seconds, settings
 
 
@@ -87,6 +89,12 @@ class ForecastTests(unittest.TestCase):
                 db.execute(
                     "SELECT count(*) FROM calls WHERE settled=1040 AND hit IS NULL"
                 ).fetchone()[0]
+            )
+            self.assertEqual(
+                db.execute(
+                    "SELECT count(*) FROM calls WHERE settled=1040 AND hit IS NOT NULL"
+                ).fetchone()[0],
+                0,
             )
 
     def test_outage_restart_and_warmup_preserve_exact_last_selected_forecast(self):
@@ -213,7 +221,8 @@ class ForecastTests(unittest.TestCase):
         self,
     ):
         set_seconds(self.home, "SOL/USD", 300, 0)
-        self.worker.evaluate(self.variable_seed(), 1000)
+        with patch("ecosystem.forecast.os.getpid", return_value=12345):
+            self.worker.evaluate(self.variable_seed(), 1000)
         (self.prices / "latest.json").write_text(
             json.dumps({"t": 1200, "q": {"SOL-USD": [120, 120, 120, 1, 1, 1200]}})
         )
@@ -223,11 +232,16 @@ class ForecastTests(unittest.TestCase):
         self.assertEqual(current["status"], "fresh")
         self.assertEqual(current["issued_at"], 1000)
         self.assertTrue(current["source_current"])
+        self.assertEqual(current["source_observed_at"], 1200)
+        self.assertEqual(current["source_sampled_at"], 1200)
         self.assertEqual(current["owner_pid"], 45678)
+        self.assertEqual(current["issuer_pid"], 12345)
         self.assertNotEqual(current["issuer_pid"], 45678)
         retained = forecast.report(self.home, "SOL/USD", horizon=300, now=1220)
         self.assertEqual(retained["status"], "retained")
         self.assertIsNone(retained["owner_pid"])
+        self.assertEqual(retained["source_observed_at"], 1200)
+        self.assertEqual(retained["source_sampled_at"], 1200)
         self.assertEqual(
             retained["selected"]["predicted_price"],
             current["selected"]["predicted_price"],
@@ -238,6 +252,110 @@ class ForecastTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 set_seconds(self.home, "SOL/USD", value, 0)
         self.assertFalse((self.home / "forecast-preferences.sqlite3").exists())
+
+    def test_rejected_first_preference_revision_does_not_create_a_store(self):
+        with self.assertRaisesRegex(ValueError, "revision_conflict"):
+            set_seconds(self.home, "SOL/USD", 17, 1)
+        self.assertFalse(forecast_preferences.path(self.home).exists())
+        self.assertEqual(settings(self.home, "SOL/USD")["revision"], 0)
+
+    def test_initial_preference_publication_never_exposes_an_empty_store(self):
+        original = forecast_preferences.sqlite3.connect
+        observed = []
+
+        def connect(*args, **kwargs):
+            db = original(*args, **kwargs)
+            if not observed:
+                observed.append(None)
+                try:
+                    observed[0] = settings(self.home, "SOL/USD")
+                except BaseException:
+                    db.close()
+                    raise
+            return db
+
+        with patch.object(forecast_preferences.sqlite3, "connect", side_effect=connect):
+            self.assertEqual(set_seconds(self.home, "SOL/USD", 17, 0)["revision"], 1)
+        self.assertEqual(observed[0]["revision"], 0)
+        self.assertEqual(settings(self.home, "SOL/USD")["seconds"], 17)
+
+    def test_concurrent_first_preference_writers_keep_one_cas_winner(self):
+        original = forecast_preferences.os.link
+        ready = threading.Barrier(2)
+
+        def publish(*args, **kwargs):
+            ready.wait(timeout=5)
+            return original(*args, **kwargs)
+
+        def write(seconds):
+            try:
+                return set_seconds(self.home, "SOL/USD", seconds, 0)
+            except ValueError as error:
+                return str(error)
+
+        with (
+            patch.object(forecast_preferences.os, "link", side_effect=publish),
+            ThreadPoolExecutor(max_workers=2) as pool,
+        ):
+            results = list(pool.map(write, (17, 23)))
+        winners = [result for result in results if isinstance(result, dict)]
+        self.assertEqual(len(winners), 1)
+        self.assertIn("forecast_preferences_revision_conflict", results)
+        self.assertEqual(settings(self.home, "SOL/USD"), winners[0])
+        self.assertEqual(list(self.home.glob(".forecast-preferences-*")), [])
+
+    def test_snapshot_midpoint_stays_positive_for_subnormal_quotes(self):
+        tiny = float.fromhex("0x0.0000000000001p-1022")
+        result = forecast.snapshot(
+            {"t": 1000, "q": {"SOL-USD": [tiny, tiny, tiny, 1, 1, 1000]}},
+            1000,
+        )
+        self.assertEqual(result["SOL/USD"]["price"], tiny)
+
+    def test_snapshot_bounds_absolute_observation_age(self):
+        self.assertEqual(
+            forecast.snapshot(
+                {"t": 985, "q": {"SOL-USD": [99, 101, 100, 1, 1, 970]}}, 1000
+            ),
+            {},
+        )
+        self.assertIn(
+            "SOL/USD",
+            forecast.snapshot(
+                {"t": 985, "q": {"SOL-USD": [99, 101, 100, 1, 1, 985]}}, 1000
+            ),
+        )
+
+    def test_source_failures_and_recovery_emit_private_transition_diagnostics(self):
+        source = self.prices / "latest.json"
+        source.write_text("private-diagnostic-canary")
+        with self.assertLogs("ecosystem.forecast", level="INFO") as captured:
+            self.assertEqual(self.worker.sample(1000), {})
+            self.assertEqual(self.worker.sample(1000), {})
+            with patch.object(forecast.json, "loads", side_effect=RecursionError):
+                self.assertEqual(self.worker.sample(1000), {})
+            source.write_text(
+                json.dumps({"t": 1000, "q": {"SOL-USD": [99, 101, 100, 1, 1, 1000]}})
+            )
+            self.assertIn("SOL/USD", self.worker.sample(1000))
+        events = [json.loads(record.getMessage()) for record in captured.records]
+        self.assertEqual(
+            events,
+            [
+                {"event": "oraclebot.forecast_source", "state": "invalid_json"},
+                {"event": "oraclebot.forecast_source", "state": "current_quotes"},
+            ],
+        )
+        self.assertEqual([record.levelname for record in captured.records], ["WARNING", "INFO"])
+        self.assertNotIn("private-diagnostic-canary", " ".join(captured.output))
+        self.assertNotIn(str(self.prices), " ".join(captured.output))
+        with patch.object(forecast.LOGGER, "log", side_effect=RuntimeError("sink failed")):
+            source.write_text("invalid JSON")
+            self.assertEqual(self.worker.sample(1000), {})
+            source.write_text(
+                json.dumps({"t": 1000, "q": {"SOL-USD": [99, 101, 100, 1, 1, 1000]}})
+            )
+            self.assertIn("SOL/USD", self.worker.sample(1000))
 
     def test_snapshot_rejects_stale_future_crossed_and_nonfinite_inputs(self):
         raw = {"t": 1000, "q": {"SOL-USD": [99, 101, 100, 1, 1, 1000]}}

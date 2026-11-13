@@ -13,6 +13,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+import logging
 import math
 import os
 import signal
@@ -23,7 +24,7 @@ import threading
 import time
 import zlib
 from collections import defaultdict
-from contextlib import closing
+from contextlib import closing, suppress
 from datetime import UTC, datetime, timedelta
 from functools import lru_cache
 from pathlib import Path
@@ -38,6 +39,8 @@ REFRESH_SECONDS = 10
 HORIZONS = (10, 60)
 MAX_AGE = 15
 APP_ID = 0x46524331
+MAX_SNAPSHOT_BYTES = 1_048_576
+LOGGER = logging.getLogger(__name__)
 METHOD = "strategy_direction_times_recent_median_absolute_log_horizon_move"
 
 
@@ -92,12 +95,16 @@ def snapshot(raw, now):
         bid, ask, observed = quote[0], quote[1], quote[5]
         if not all(finite(x) for x in (bid, ask, observed)):
             continue
-        if not 0 < bid <= ask or not 0 <= stamp - observed <= MAX_AGE:
+        if (
+            not 0 < bid <= ask
+            or not 0 <= stamp - observed <= MAX_AGE
+            or not 0 <= now - observed <= MAX_AGE
+        ):
             continue
         result[instrument] = {
             "at": stamp,
             "observed_at": observed,
-            "price": bid / 2 + ask / 2,
+            "price": bid + (ask - bid) / 2,
         }
     return result
 
@@ -207,6 +214,7 @@ def connect(path, *, readonly=False):
 class Worker:
     def __init__(self, home, prices, *, strategies=None):
         self.home, self.prices = Path(home).expanduser().absolute(), Path(prices)
+        self._source_state = None
         self.root = directory(home)
         if (
             self.home.is_symlink()
@@ -259,10 +267,25 @@ class Worker:
     def sample(self, now):
         try:
             with (self.prices / "latest.json").open("rb") as source:
-                raw = source.read(1_048_577)
-            quotes = snapshot(json.loads(raw), now) if len(raw) <= 1_048_576 else {}
-        except (OSError, ValueError):
-            quotes = {}
+                raw = source.read(MAX_SNAPSHOT_BYTES + 1)
+            if len(raw) > MAX_SNAPSHOT_BYTES:
+                quotes, source_state = {}, "oversized"
+            else:
+                quotes = snapshot(json.loads(raw), now)
+                source_state = "current_quotes" if quotes else "no_current_quotes"
+        except OSError:
+            quotes, source_state = {}, "read_error"
+        except (ValueError, RecursionError):
+            quotes, source_state = {}, "invalid_json"
+        if source_state != self._source_state:
+            self._source_state = source_state
+            level = logging.INFO if source_state == "current_quotes" else logging.WARNING
+            # A failing diagnostic sink cannot change source eligibility or evaluation.
+            with suppress(Exception):
+                LOGGER.log(
+                    level,
+                    json.dumps({"event": "oraclebot.forecast_source", "state": source_state}),
+                )
         for instrument, quote in quotes.items():
             self.bars.add(instrument, quote)
         with closing(connect(self.path)) as db, db:
@@ -579,6 +602,8 @@ def report(home, instrument, *, horizon=10, strategy="published", now=None):
             "requested_strategy": strategy,
             "available_instruments": available,
             "source_current": source_current,
+            "source_observed_at": source[0] if source else None,
+            "source_sampled_at": source[1] if source else None,
             "owner_pid": source[2] if source_current else None,
             "settings": preference,
         }

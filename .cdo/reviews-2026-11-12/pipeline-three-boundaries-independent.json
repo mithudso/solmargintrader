@@ -1,0 +1,38 @@
+{
+  "agent": "/root/guarded_soltui_final",
+  "definition_version": "1.0.0",
+  "status": "complete",
+  "observed_at": "2026-11-13T00:56:21.825962+00:00",
+  "scope": "Independent static three-file authored-delta review against immutable PR241 incoming snapshots; no reviewer runtime execution/import/host query or source mutation",
+  "source_sha256": {
+    "ecosystem/runner.py": "a5e51323e122d21fafac985a494bd897122e65157b8bc16d56f6557a38f53a17",
+    "ecosystem/pipeline_service.py": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da",
+    "scripts/oraclebot_ops.py": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6"
+  },
+  "findings": [],
+  "acceptance": "No Medium-or-higher finding in the exact three bounded corrections. Short independent generation-intent flock orders automatic claim/start/stop without acquiring lifetime supervisor lease from stop. Automatic claim refuses busy; explicit intent waits at most five seconds. Validated owned regular-file/no-follow lock and unchanged supervisor lock ordering. Temporary and known worktree prefix rejection occurs before launchd lookup/mutation; stable normal installed prefix positive remains. Runtime freshness uses response-return wallclock.",
+  "evidence": [
+    {
+      "source": "/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/oraclebot-ops-guarded-state-7tukwlvc/result.json",
+      "supported_claim": "Author-recorded50cases/1.833305249994737s pass,zero forbidden,zero admitted subprocesses,source stable; reviewer read receipt only."
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_runner.py",
+      "supported_claim": "Concurrent claim/acknowledged-stop regression; temporary install refusal and stable normal install positive; prior stop ownership guards retained."
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py",
+      "supported_claim": "Response heartbeat newer than tick-start accepted using return-time; stale-health and explicit-pause guards retained."
+    }
+  ],
+  "limits": [
+    "No installed ecosystem0.4.8 or observer1.1.0 operation, owner-state probe or activation.",
+    "Process spawning/service behavior in author50casegate mocked; independent source review does not establish installed acceptance.",
+    "Prefix refusal covers configured temporary roots and explicit known worktree path patterns; it is not a generic Git-worktree detector."
+  ],
+  "changes": [],
+  "remaining": [
+    "Root handles metadata/delivery and installed acceptance.",
+    "Complete fresh guarded SolTUI gate still pending fixed-head authorization."
+  ]
+}

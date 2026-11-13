@@ -1,7 +1,9 @@
 # Security model
 
-This repository contains software that can move real money. Two assets matter: **signing keys** and
-the **Jupiter API key**.
+This repository contains software that can move real money. Protect signing keys
+and venue credentials. The public website also holds wallet-account identities,
+server session records and payment-provider references. Each component has its
+own authentication and execution boundary.
 
 ## Threat model
 
@@ -152,3 +154,53 @@ cryptographic signing is not permission to sign arbitrary server-built funding
 transactions. KILL, stale-signal and final account checks run before submission.
 Each leg is committed before one send; a timeout or absent history entry cannot
 authorize a retry. See [the ZEC execution contract](JUPITER-ZEC-WEBHOOK.md).
+
+## Hosted wallet accounts and subscription boundary
+
+The Cloudflare website is a separate multi-user boundary. Ed25519 authentication
+uses a server-stored, expiring, single-use message bound to the canonical origin.
+D1 stores a hash of the opaque session token; the browser gets a Secure,
+HttpOnly, SameSite cookie. Cookie mutation routes require the exact Origin. Account and
+bot queries use the authenticated tenant, never a browser-supplied owner ID.
+
+The server allowlists the three plan Prices and owns each customer binding. Webhook HMAC validation
+uses the exact raw body and a bounded timestamp. The handler reconciles current
+provider state before granting entitlement. Checkout expiry and its server lock
+align, and pending Checkout prevents account deletion. A redirect or client-side
+success flag cannot grant a trial. Deletion retains only the hashed trial-use
+record needed to prevent recycling a free trial.
+
+The hosted MCP uses public-client authorization-code PKCE S256 with exact
+registered redirect and resource binding. Every MCP POST requires its own
+bearer token; a browser cookie cannot substitute. Access tokens, refresh tokens
+and codes are stored as hashes. Refresh rotation detects replay and revokes the
+grant family. Active grants remain visible ahead of bounded inactive history,
+so older authority remains reachable for revocation.
+
+Trading requires a separate wallet signature over an agent-specific finite
+policy, nonce, audience and expiry. A login signature cannot approve it. This
+preauthorization removes repeated wallet prompts, and the user can revoke it
+immediately. Tool schemas reject wallet, account, signer and endpoint overrides.
+Financial writes atomically recheck the current known subscription plan, grant,
+scope, policy and cumulative budget. Missing or ambiguous authority fails closed.
+Unknown submissions keep their reservation and never retry automatically.
+Deletion cannot erase submitting, submitted or unknown intents.
+
+The consent UI freezes policy controls while signing, verifies the provider
+wallet before and after signing and invalidates held work as sign-out begins.
+Account transitions serialize; delayed responses cannot restore the old account's
+consent. Remote agent text uses text nodes. Credentials and signatures never
+enter rendered content or browser storage.
+
+The Worker stores Stripe and analysis credentials as server secrets. It must not
+receive a customer’s wallet private key or reuse the owner’s local exchange
+credentials. Wallet login grants no spend permission. No customer executor or
+delegated signer is provisioned, and `LIVE_EXECUTION_ENABLED` defaults false.
+Successful executor tests use explicit mocks. Saved configurations have no live
+execution path. The Python gateway exposes allow-listed public-analysis
+operations under a separate server bearer; it never tunnels the owner UI.
+
+The API, OAuth, MCP, trade and integration suites verify account isolation,
+signed consent, replay, revocation and atomic financial boundaries. Browser
+content and research text remain untrusted data. Source tests alone cannot prove
+a configured provider account, an authenticated payment or a verified trade.

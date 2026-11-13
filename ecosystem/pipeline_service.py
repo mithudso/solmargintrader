@@ -65,8 +65,19 @@ def operate(action, home):
         raise ValueError("paper_plan_required")
     python = Path(sys.executable).absolute()
     module = Path(__file__).resolve()
-    if "site-packages" not in module.parts or not module.is_relative_to(
-        Path(sys.prefix).resolve()
+    prefix = Path(sys.prefix).resolve()
+    if (
+        "site-packages" not in module.parts
+        or not module.is_relative_to(prefix)
+        or any(
+            part in {"worktrees", ".worktrees"}
+            or part.startswith("solmargintrader-wt-")
+            for part in prefix.parts
+        )
+        or prefix.is_relative_to(Path("/tmp"))
+        or prefix.is_relative_to(Path("/private/tmp"))
+        or prefix.is_relative_to(Path("/var/folders"))
+        or prefix.is_relative_to(Path("/private/var/folders"))
     ):
         raise ValueError("stable_installed_pipeline_required")
     path = Path.home() / "Library/LaunchAgents" / (label(home) + ".plist")

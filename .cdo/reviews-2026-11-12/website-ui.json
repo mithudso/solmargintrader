@@ -1,0 +1,165 @@
+{
+  "reviewer": "root",
+  "date": "2026-11-12T08:44:36.627833+00:00",
+  "scope": "Assigned UI slice only, not whole repository",
+  "source_read_evidence": {
+    "website/public/app.js": {
+      "baseline_ranges": [
+        [
+          1,
+          190
+        ],
+        [
+          191,
+          411
+        ]
+      ],
+      "final_change_review": "Every task diff hunk reviewed; added error-state/retry, strict billing check and exact-form guard"
+    },
+    "website/public/evidence.js": {
+      "ranges": [
+        [
+          1,
+          6
+        ]
+      ]
+    },
+    "website/public/index.html": {
+      "baseline_ranges": [
+        [
+          1,
+          46
+        ]
+      ],
+      "final_change_review": "Sidebar action trial to pricing"
+    },
+    "website/test/evidence.test.js": {
+      "ranges": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    "website/test/ui-browser.mjs": {
+      "method": "Authored and reviewed complete file"
+    }
+  },
+  "files": {
+    "website/public/app.js": {
+      "lines": 419,
+      "sha256": "0f428e562bbf8ee054b60ab339bc143975ac26bdca6d67fe285818c6c15daac4",
+      "blob": "59c21124aeed7eca7ba98587d81cd08d008bfe36"
+    },
+    "website/public/evidence.js": {
+      "lines": 6,
+      "sha256": "601aa5a159f2b7a163713cc50ed4485c266c8158242d082537c7cf62ec8e6496",
+      "blob": "5f53eae377b9a03e500991041da45e9c43f155dd"
+    },
+    "website/public/index.html": {
+      "lines": 46,
+      "sha256": "95f3cdb74a6be8e3755123fcf3a0270391855ca5d39573b557af9819b133a689",
+      "blob": "68b41ba797f78f27c818716b98c26bd8f5afcfc4"
+    },
+    "website/test/evidence.test.js": {
+      "lines": 11,
+      "sha256": "2c319c909cf2f2ee9a42ec82b8c243c623776206ee5254c9f72353bc918e9951",
+      "blob": "d8f37be07c584fb68d5e6bfab75daf1b2caa4e66"
+    },
+    "website/test/ui-browser.mjs": {
+      "lines": 100,
+      "sha256": "10ba0eb5531491721e0ee72efffc959f7bb39c5f4963c244f5ebdd946e509b76",
+      "blob": "11eabbabee90189bfcf17f49c46e103468446015"
+    }
+  },
+  "passes": {
+    "C1": "ran: UI state transitions, visible empty/error states and finite evidence guards reviewed; fixed false trial affordance and archived-only blank view",
+    "C2": "ran: Worker shapes and canonical engine response renderer match; DOM text creates untrusted content safely; no API shape changed",
+    "C3": "ran: real Chrome reproduced enabled unavailable trial and stale detached-form result (exit1); failed bot read reproduced as false empty state (exit1); final behavioral suite exit0",
+    "S1": "ran: source instruction gate no directive found; research DOM renderer uses text nodes and http(s) links, body paths are allowlisted; Stripe redirects restrict https exact hosts; no wallet keys logged",
+    "S2": "ran: API timeout/abort cleanup and wallet dialog errors reviewed; failed bot read now visible with explicit retry instead of swallowing into empty state",
+    "S3": "ran: oracle numeric expiry and direction validation, backtest form input/coercion plus backend authority, research shard path allowlist and untrusted text reviewed",
+    "S4": "ran: browser ESM, WebCrypto wallet APIs, dialog, AbortController and DOM builtins; Node syntax and actual Chrome runtime passed; no runtime dependency added",
+    "S5": "ran: client errors normally reach form/toast/unavailable states; bot read gap now explicit; server diagnostics remain own boundary and do not expose raw errors in client logging",
+    "P1": "ran: catalog filtering and lazy cached shards are bounded by static publication; chart consumes bounded engine series; no measured optimization justified",
+    "P2": "ran: oracle request sequence prevents stale coin responses; fixed stale backtest response by checking exact connected submitted form; browser barrier regression verifies new experiment unaffected",
+    "M1": "ran: small edits retain existing DOM helpers/event delegation; no generalized framework or speculative abstraction added",
+    "M2": "ran: reuse existing DOM/api/busy helpers and canonical evidence helper; no new production library needed",
+    "M3": "repo scope parent",
+    "M4": "ran: sidebar Explore membership now navigates to pricing; unavailable trial label and docs accurately describe configuration; browser fixture/CI setup documented",
+    "T1": "ran: permanent real browser suite covers false/unknown/truthy config, available trial, membership navigation, stale/current backtests, failed bot read and retry, archived-only state; existing evidence test covers exact expiry",
+    "T2": "repo scope parent; Playwright1.65.0 pinned devonly, npm audit0vulns",
+    "T3": "repo scope parent; website CI invokes browser regression in addition to Node/Python checks",
+    "T4": "N/A for app/evidence production source; tests use deterministic request barriers instead of fixed sleeps, isolated per-loop reload and local fixtures; mutable server state intentionally sequential",
+    "M5": "N/A production browser module; test entrypoint uses npm script and declared pinned devdependency"
+  },
+  "findings": [
+    {
+      "id": "UI1",
+      "severity": "Medium",
+      "file": "website/public/app.js",
+      "finding": "Unconfigured billing rendered enabled Start free trial; fix visibly disables with unavailable label and membership sidebar stays navigation",
+      "status": "fixed, browser red/green"
+    },
+    {
+      "id": "UI2",
+      "severity": "Medium",
+      "file": "website/public/app.js",
+      "finding": "Late response from detached backtest form overwrote replacement experiment",
+      "status": "fixed, browser red/green"
+    },
+    {
+      "id": "UI3",
+      "severity": "Medium",
+      "file": "website/public/app.js",
+      "finding": "Failed bot read was silently rendered as empty workspace",
+      "status": "fixed, browser red/green"
+    },
+    {
+      "id": "UI4",
+      "severity": "Low",
+      "file": "website/public/app.js",
+      "finding": "Archived-only list bypassed empty-state renderer and displayed blank list",
+      "status": "fixed, browser regression green"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node /tmp/oraclebot-ui-audit-probe.mjs",
+      "exit_code": 1,
+      "result": "both original trial and backtest counterexamples failed"
+    },
+    {
+      "command": "CHROME=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome npm run test:browser (before bot state fix)",
+      "exit_code": 1,
+      "result": "failed bot read falsely rendered empty"
+    },
+    {
+      "command": "CHROME=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome npm run test:browser",
+      "exit_code": 0,
+      "result": "all four browser checks passed"
+    },
+    {
+      "command": "npm test",
+      "exit_code": 0,
+      "result": "36pass0fail"
+    },
+    {
+      "command": "npm run check",
+      "exit_code": 0
+    },
+    {
+      "command": "node --check website/test/ui-browser.mjs",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "snapshot": "/Users/mitch/.claude/skill-consolidation/backups/oraclebot-ui-review-20261112",
+  "limitations": [
+    "Local fixtures only; no live payment or trading order tested",
+    "Full repository audit and independent final acceptance remain pending"
+  ]
+}

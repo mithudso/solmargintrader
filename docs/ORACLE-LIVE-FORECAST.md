@@ -1,7 +1,7 @@
 # Continuous Oracle strategy forecasts
 
-Version: 1.0.0
-Delta: Add a continuously visible strategy price projection with editable seconds.
+Version: 1.0.1
+Delta: v1.0.0 to v1.0.1; preserve retained horizons, isolate native qualification and harden preference/source/owner boundaries.
 
 The Oracle shows a direction, indicative target price, strategy, evaluation time
 and target time. The default predicts the next **10 seconds** and produces a new
@@ -72,7 +72,7 @@ do not replace the immutable historical research or Oracle archives.
 existing ensemble evidence plus a separate `live_forecast` object. It includes
 the exact instrument, selected strategy/version/parameters, price target,
 `issued_at`, `target_at`, `horizon_seconds`, `refresh_seconds`, source heartbeat,
-`input_trace_id`, and current preference revision. Status is `fresh`, `retained`
+`input_trace_id`, actual `source_observed_at`/`source_sampled_at`, and current preference revision. Monitoring recomputes both source ages against its probe-return clock, even for long-horizon frames. Status is `fresh`, `retained`
 or `waiting`. Reads never create the evaluator or preferences.
 
 The existing same-origin/CSRF-protected durable action registry accepts
@@ -87,8 +87,10 @@ The separate `ecosystem.forecast_service` installer requires an owned macOS
 home and an immutable installed environment. It refuses a conflicting service
 definition. Uninstall verifies release and retains the display data.
 
-Observer 1.2.0 includes `live_price_forecast` as a ninth required component. It
+Observer 1.2.1 includes `live_price_forecast` as a ninth required component. It
 checks the primary instrument's actual configured cadence, current source and
 numeric projection. Reports exclude older samples without that coverage.
 Existing Alertlane/native/GitHub transports and their delivery limits remain
 as documented in `docs/ORACLEBOT-OPERATIONS.md`.
+
+Initial preference creation publishes a fully initialized private SQLite inode atomically without replacing a concurrent winner. Stale first revisions do not create a database. Existing incompatible stores remain refused. Recorder failures and recovery emit only deduplicated fixed diagnostic states, without source content or paths. Native ensemble evidence keeps its own interval identity; a ten-second provisional projection cannot qualify minute evidence. Persistent service installation requires a stable environment, canonical owner home and confirmed launchd registration.

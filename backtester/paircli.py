@@ -19,8 +19,10 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
+from numpy.linalg import LinAlgError
+
 from .core.cointegration import engle_granger
-from .core.data import CsvLoader, frame_to_arrays
+from .core.data import CsvLoader, describe_data_error, frame_to_arrays
 from .core.engine import EngineConfig, run_backtest
 from .core.metrics import compute_metrics
 from .core.pairs import PeerSpreadReversion, align_peer
@@ -54,6 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog=(
+            "Example: python -m backtester.paircli --asset SOL --peer BTC --interval 1d --split 0.7\n"
             "Fetch both legs first:\n"
             "  python -m backtester.core.fetch --asset SOL --interval 1d "
             "--start 2021-06-17\n"
@@ -119,7 +122,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 1
         except Exception as exc:
-            print(f"error loading {path}: {exc}", file=sys.stderr)
+            print(f"error loading {path}: {describe_data_error(exc)}", file=sys.stderr)
             return 1
 
     base = frame_to_arrays(frames[args.asset])
@@ -130,10 +133,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 
-    costs = CostConfig(fee_bps=args.fee_bps, slippage_bps=args.slippage_bps)
-    cfg = EngineConfig(
-        initial_capital=args.capital, interval=args.interval, costs=costs
-    )
+    try:
+        costs = CostConfig(fee_bps=args.fee_bps, slippage_bps=args.slippage_bps)
+        cfg = EngineConfig(initial_capital=args.capital, interval=args.interval, costs=costs)
+    except ValueError as exc:
+        print(f"error: invalid pair execution settings: {exc}", file=sys.stderr)
+        return 2
 
     def make() -> PeerSpreadReversion:
         return PeerSpreadReversion(
@@ -156,7 +161,11 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     # Full-sample cointegration, reported for context rather than used to trade —
     # the strategy re-fits per bar on trailing data only.
-    whole = engle_granger(base["close"], peer_closes)
+    try:
+        whole = engle_granger(base["close"], peer_closes)
+    except (ValueError, LinAlgError) as exc:
+        print(f"error: full-sample pair diagnostic unavailable ({type(exc).__name__}); check nondegenerate history", file=sys.stderr)
+        return 1
 
     payload: dict[str, Any] = {
         "asset": args.asset.upper(),
@@ -178,6 +187,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         n = base["close"].size
         k = int(n * args.split)
         warm = make().warmup_bars()
+        if k <= warm or k >= n:
+            print("error: pair split has insufficient bars for the configured warmup", file=sys.stderr)
+            return 1
         is_arrays = {key: v[:k] for key, v in base.items()}
         oos_start = max(0, k - warm)
         oos_arrays = {key: v[oos_start:] for key, v in base.items()}
@@ -194,8 +206,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             stop_z=args.stop_z, adf_max_p=args.adf_max_p,
             require_cointegration=not args.no_cointegration_gate,
         )
-        in_sample = run_backtest(is_strategy, is_arrays, cfg)
-        oos = run_backtest(oos_strategy, oos_arrays, cfg)
+        try:
+            in_sample = run_backtest(is_strategy, is_arrays, cfg)
+            oos = run_backtest(oos_strategy, oos_arrays, cfg)
+        except (ValueError, LinAlgError) as exc:
+            print(f"error: pair split unavailable ({type(exc).__name__}); check history and warmup", file=sys.stderr)
+            return 1
         skip = k - oos_start
         trades = [t for t in oos.trades if t.bar_index >= skip]
         oos_metrics = compute_metrics(

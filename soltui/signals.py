@@ -22,7 +22,9 @@ enforces, so a bad value fails in the Signals form rather than at sweep time.
 
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass, fields
+from numbers import Integral, Real
 from typing import Any
 
 
@@ -231,6 +233,18 @@ def validate(defaults: SignalDefaults) -> SignalDefaults:
     Signals form is the place a bad value is caught.
     """
     d = defaults
+    for spec in fields(SignalDefaults):
+        value = getattr(d, spec.name)
+        if isinstance(spec.default, int):
+            valid = isinstance(value, Integral) and not isinstance(value, bool)
+        else:
+            try:
+                valid = isinstance(value, Real) and not isinstance(value, bool) and math.isfinite(value)
+            except OverflowError:
+                valid = False
+        if not valid:
+            kind = "an integer" if isinstance(spec.default, int) else "a finite number"
+            raise SignalError(f"{spec.name} must be {kind}")
     positive_ints = [
         "sma_fast", "sma_slow", "regime_window", "macd_fast", "macd_slow",
         "macd_signal", "rsi_period", "stoch_k", "stoch_d", "bollinger_window",
@@ -359,8 +373,12 @@ def coerce(name: str, raw: str, defaults: SignalDefaults) -> Any:
 
 def from_dict(raw: dict[str, Any]) -> SignalDefaults:
     """Rebuild from `to_dict()`, ignoring unknown keys and validating the result."""
+    if raw is None:
+        raw = {}
+    if not isinstance(raw, dict):
+        raise SignalError("signal defaults must be an object")
     known = set(field_names())
-    return validate(SignalDefaults(**{k: v for k, v in (raw or {}).items() if k in known}))
+    return validate(SignalDefaults(**{k: v for k, v in raw.items() if k in known}))
 
 
 def mapped_strategies() -> list[str]:

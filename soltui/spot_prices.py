@@ -10,6 +10,8 @@ from __future__ import annotations
 import math
 from typing import Any, Callable
 
+from .market_diagnostics import market_operation
+
 COINBASE_SPOT = "https://api.coinbase.com/v2/prices/{symbol}-USD/spot"
 
 
@@ -21,7 +23,8 @@ def spot_prices(fetch: Callable[..., Any], symbols: list[str]) -> tuple[dict[str
     errors: list[str] = []
     for sym in dict.fromkeys(symbols):
         try:
-            reply = fetch(COINBASE_SPOT.format(symbol=sym))
+            with market_operation("coinbase.spot_request"):
+                reply = fetch(COINBASE_SPOT.format(symbol=sym))
         except WalletHttpError as exc:
             # 404 is Coinbase saying it does not list the symbol: unknown, not an outage.
             if exc.status != 404:

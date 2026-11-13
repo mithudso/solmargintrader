@@ -22,6 +22,10 @@ from backtester.core.types import BarWindow, INTERVAL_SECONDS, validate_bar_arra
 
 from . import compound, config, simulation
 from .research_admission import admit_read, participating
+from .source_epoch import SourceEpoch
+
+_SOURCE_ROOT = Path(__file__).resolve().parents[1]
+_SOURCE_EPOCH = SourceEpoch.capture(_SOURCE_ROOT)
 
 HORIZONS = (1, 5, 10, 30)
 HISTORY = 600
@@ -32,6 +36,12 @@ Spec = list[dict[str, Any]]
 
 def revision() -> str:
     """Partition evidence if strategy code or the forecast/scoring contract changes."""
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
+    return _disk_revision()
+
+
+def _disk_revision() -> str:
+    """Hash source bytes only; this does not attest loaded or historical code."""
     core = Path(scorecard.__file__).parent
     files = [Path(__file__), Path(compound.__file__), Path(simulation.__file__), *sorted(core.glob("*.py")),
              *sorted((core / "strategies").glob("*.py"))]
@@ -363,6 +373,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     setting that tested superior on paired calls, and that setting is saved as the trial's
     default (`save_default`). Without it settings stay fixed; calls are still recorded and scored.
     """
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     profile = simulation.Execution(**execution) if execution else None
     fetch = fetch or compound.fetch_closed_candles
     stop = stop if stop is not None else Event()
@@ -401,6 +412,8 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 ("ts", "open", "high", "low", "close", "volume")), strict=True)]
     # Existing valid observations stay immutable. A malformed legacy row can
     # be replaced only by a newly validated candle for that exact asset/time.
+    retained = []
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     with closing(_db(db_path)) as db, db:
         for row in rows:
             old = db.execute("SELECT open,high,low,close,volume FROM candle WHERE asset=? AND ts=?",
@@ -411,9 +424,17 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                          and min(o, h, low, c) > 0 and v >= 0
                          and h >= low and h >= max(o, c) - 1e-9 and low <= min(o, c) + 1e-9)
                 if valid:
+                    retained.append((row[1], *old))
                     continue
                 db.execute("DELETE FROM candle WHERE asset=? AND ts=?", row[:2])
             db.execute("INSERT INTO candle VALUES (?,?,?,?,?,?,?)", row)
+            retained.append(row[1:])
+    # Forecasts and directional settlement must use the same immutable snapshot
+    # that paper execution later reads, even if a provider revises an old candle.
+    raw = {name: np.asarray([row[index] for row in retained],
+                           dtype="int64" if name == "ts" else "float64")
+           for index, name in enumerate(("ts", "open", "high", "low", "close", "volume"))}
+    ts = raw["ts"]
     # Keep gaps visible for settlement. The signal itself sees only the latest contiguous segment.
     candles = {int(t): (float(o), float(c)) for t, o, c in zip(ts, raw["open"], raw["close"], strict=True)
                if math.isfinite(o) and math.isfinite(c) and o > 0 and c > 0}
@@ -443,6 +464,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     staged = []
     active_keys = {}
     defaults = load_defaults()
+    _SOURCE_EPOCH.verify(_SOURCE_ROOT)
     with closing(_db(db_path)) as db, db:
         db.execute("BEGIN IMMEDIATE")
         for trial in trials:
@@ -451,7 +473,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                 # The key stays the configured seed; a saved default only sets where a new trial starts.
                 trial_cost = (profile.round_trip_bps + max(profile.borrow_long_bps_hour,
                               profile.borrow_short_bps_hour) * h / 60) if profile else cost
-                identity = [code, asset, label, h, trial_cost, mode, seed]
+                # A period counts signal bars. Minute and five-minute inputs
+                # cannot share a track record even when the label/settings match.
+                identity = [code, asset, label, h, trial_cost, mode, seed, signal_interval]
                 if execution:
                     identity.append(execution)
                 key = hashlib.sha256(_json(identity).encode()).hexdigest()
@@ -467,6 +491,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
 
             def adopt(spec: Spec, previous: Spec, probability: float, samples: int,
                       label: str = label, h: int = h) -> None:
+                _SOURCE_EPOCH.verify(_SOURCE_ROOT)
                 save_default(asset, label, h, spec, previous, probability=probability, samples=samples, bar=bar)
 
             active, gen = _resolve(db, key, gen, json.loads(raw_spec), moved, trial_cost, candles, bar,
@@ -509,6 +534,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                                confidence, traded))
             db.execute("UPDATE trial SET note=? WHERE id=?", (note, key))
         check_stop()
+        _SOURCE_EPOCH.verify(_SOURCE_ROOT)
         issued = clock()
         fresh = bar + 60 <= observed < start and issued < start - 1
         if fresh:

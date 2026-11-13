@@ -66,7 +66,9 @@ class MachineHealthTests(unittest.TestCase):
             },
         )
         path.chmod(0o644)
-        with self.assertRaises(ManagerError):
+        with patch.dict(os.environ), self.assertRaises(ManagerError):
+            # Exercise saved config permissions rather than an explicit override.
+            os.environ.pop("SOLBOT_ECOSYSTEM_HOME", None)
             health.homes(self.home)
         path.chmod(0o600)
         path.unlink()

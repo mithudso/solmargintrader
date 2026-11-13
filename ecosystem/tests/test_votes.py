@@ -101,6 +101,34 @@ class VoteSelectionTests(unittest.TestCase):
         self.assertEqual(saved, votes.settings(self.home, "SOL/USD"))
         self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
 
+    def test_ten_second_live_view_cannot_qualify_native_minute_ensemble(self):
+        path, _ = self.archive()
+        before = hashlib.sha256(path.read_bytes()).hexdigest()
+        saved = votes.settings(self.home, "SOL/USD")
+        native = votes.report(self.home, "SOL/USD", now=1001, interval="1m")
+        self.assertEqual(native["status"], "available")
+        self.assertEqual(native["signal"], "Strong Buy")
+        self.assertEqual(native["display"]["available_intervals"], ["1m"])
+        self.assertTrue(native["graph"]["ticks"])
+
+        requested = votes.report(self.home, "SOL/USD", now=1001, interval="10s")
+        self.assertEqual(requested["display"]["interval"], "10s")
+        self.assertEqual(requested["status"], "unavailable")
+        self.assertEqual(requested["reason"], "requested_interval_unavailable_no_native_forecasts")
+        self.assertIsNone(requested["signal"])
+        self.assertIsNone(requested["balance_percent"])
+        self.assertEqual(requested["aggregate"]["status"], "unavailable")
+        self.assertIsNone(requested["aggregate"]["signal"])
+        self.assertIsNone(requested["aggregate"]["balance_percent"])
+        self.assertEqual(requested["aggregate"]["included"], [])
+        self.assertEqual(requested["graph"]["ticks"], [])
+        self.assertEqual(requested["live_forecast"]["status"], "waiting")
+        self.assertEqual(requested["live_forecast"]["instrument"], "SOL/USD")
+        self.assertEqual(requested["live_forecast"]["horizon_seconds"], 10)
+        self.assertEqual(requested["live_forecast"]["refresh_seconds"], 10)
+        self.assertEqual(saved, votes.settings(self.home, "SOL/USD"))
+        self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
+
     def test_selection_is_versioned_and_cannot_overwrite_history(self):
         card = votes.catalog()[0]["strategy_id"]
         first = votes.set_voters(self.home, "SOL/USD", [card], 0)

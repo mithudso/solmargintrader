@@ -1,0 +1,904 @@
+{
+  "schema": "cdo-bound-source-delta-v1",
+  "observed_at": "2026-11-13T04:55:45.681266+00:00",
+  "status": "DELTA_REVIEW_COMPLETE_T1_FIX_AUTHORED_ROOT_VERIFICATION_PENDING",
+  "scope": {
+    "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/web.py",
+    "review_mode": "Inherited complete semantic baseline plus entire exact current delta and needed context; not a new whole-file semantic audit.",
+    "baseline_commit": "a5053e9c859505a895935702a51180830b69b89f",
+    "root_task": "TASK-1540",
+    "operations": "Read-only production source/Git inspection plus explicitly assigned test-only addition in ecosystem/tests/test_web.py and this /tmp receipt. No tests, Git mutations, network/service actions, installs, agents or inference."
+  },
+  "baseline": {
+    "coverage_file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/coverage.json",
+    "coverage_row": {
+      "path": "ecosystem/web.py",
+      "blob_sha": "632eda0a62951ea6252037ad1969af4fc0607db3",
+      "lines": 585,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+      "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    "blob_sha": "632eda0a62951ea6252037ad1969af4fc0607db3",
+    "sha256": "df5168291f08d8f967e818b857cd077171a07805dbc647dccc00ead3a10dab7e",
+    "lines": 585,
+    "coverage_row_matches_git": true,
+    "archived_final_blob_matches_git": true,
+    "archived_sha256_matches_git_bytes": true,
+    "inherited_original_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/ecosystem.json",
+    "inherited_original_receipt": {
+      "path": "ecosystem/web.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/web.py",
+      "review_mode": "new_full_semantic",
+      "new_review_count": 1,
+      "original_blob": "032b5f8848e7b54760b1b30730a3dcd00e7280b7",
+      "final_blob": "632eda0a62951ea6252037ad1969af4fc0607db3",
+      "sha256": "df5168291f08d8f967e818b857cd077171a07805dbc647dccc00ead3a10dab7e",
+      "original_lines": 557,
+      "final_lines": 585,
+      "read_ranges_original": [
+        [
+          1,
+          210
+        ],
+        [
+          211,
+          420
+        ],
+        [
+          421,
+          557
+        ]
+      ],
+      "semantic_focus": "Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+      "safety_focus": "Loopback/origin/nonce and framing remain intact; structured warnings carry only fixed operation, event and error class, never exception text/headers/nonces.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Adverse cases and assertions inspected against component synthetic tests. Duplicate Host/Origin, strict body framing, request deadlines, safe route/query validation and fixed owner errors.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Duplicate Host/Origin, strict body framing, request deadlines, safe route/query validation and fixed owner errors.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Duplicate Host/Origin, strict body framing, request deadlines, safe route/query validation and fixed owner errors.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Duplicate Host/Origin, strict body framing, request deadlines, safe route/query validation and fixed owner errors.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Python 3.13/POSIX on supported macOS or existing browser/Node language features; no cross-platform acceptance claimed.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Structured WARNING event ecosystem_owner_unavailable with fixed read_owner_data/submit_control_action operations and exception class; GET/POST tests assert level/payload and private canary/nonce omission.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bounded input/output, repeated work, page/array scans and fixture setup inspected. Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Duplicate Host/Origin, strict body framing, request deadlines, safe route/query validation and fixed owner errors.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Loopback paper control HTTP routes, CSP, owner DTO redaction, action framing and CSRF.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "Adverse cases and assertions inspected against component synthetic tests. Duplicate Host/Origin, strict body framing, request deadlines, safe route/query validation and fixed owner errors.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Production source; suite timing and fixture isolation are reviewed on test-file rows.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        },
+        {
+          "id": "M5",
+          "state": "reviewed",
+          "reason": "Canonical isolated environment/operating guide preserved. Current-source --help now has its own example; real subprocess regression red4 before changes then green, creates no owner home. Active forward owner imports bind regular dedicated-environment files per parent evidence. Current help changes affect future source identities only.",
+          "findings": [
+            "9",
+            "13"
+          ]
+        }
+      ],
+      "changed": true,
+      "final_review": "Complete original bounded source read plus every changed hunk reread, followed by final code-focused self-review. Independent blind review remains parent-owned."
+    },
+    "inheritance_basis": "Archive records complete original bounded reads plus every prior changed hunk reread and final code-focused self-review. Exact archived final blob and sha256 match HEAD; hashes bind identity rather than establish read coverage."
+  },
+  "current": {
+    "blob_sha": "d7ffd21f3b453337313590d5b4ff369f6955901b",
+    "sha256": "2b6468d6eb5dca218dc90f366a0488098d41812e6b67ad33fbaf569cb295c53d",
+    "lines": 586,
+    "changed_lines_new": [
+      [
+        374,
+        374
+      ]
+    ],
+    "direct_read_ranges_current": [
+      [
+        1,
+        220
+      ],
+      [
+        217,
+        450
+      ],
+      [
+        450,
+        525
+      ],
+      [
+        520,
+        586
+      ]
+    ],
+    "delta_complete": true,
+    "delta_text": "diff --git a/ecosystem/web.py b/ecosystem/web.py\nindex 632eda0a..d7ffd21f 100644\n--- a/ecosystem/web.py\n+++ b/ecosystem/web.py\n@@ -366,16 +366,17 @@ def do_GET(self):\n                     )\n                     self._json(\n                         200,\n                         report(\n                             controls.experiment_home(values.get(\"run_id\")),\n                             values.get(\"instrument\", \"SOL/USD\"),\n                             interval=values.get(\"interval\"),\n                             strategy=values.get(\"strategy\"),\n+                            forecast_home=controls.home,\n                         ),\n                     )\n                 elif target.path in {\"/api/wiki\", \"/api/wiki/page\"}:\n                     from . import wiki\n \n                     values = self._query(\n                         query,\n                         {\"id\"}\n",
+    "source_hash_stable_after_review": true,
+    "fresh_review_claim": "Only the new one-line delta is newly commissioned; complete listed context reads support the named passes without replacing the inherited audit."
+  },
+  "context_reads": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/votes.py",
+      "ranges": [
+        [
+          330,
+          425
+        ]
+      ],
+      "purpose": "forecast_home call contract and independent forecast horizon/settings binding"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/control.py",
+      "ranges": [
+        [
+          610,
+          650
+        ]
+      ],
+      "purpose": "selected experiment resolution and confinement"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+      "ranges": [
+        [
+          400,
+          620
+        ]
+      ],
+      "purpose": "frame identity, scope binding, read-only database, stale/fresh state and 5..300 horizon validation"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_preferences.py",
+      "ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "purpose": "bounded cadence and owner path"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_web.py",
+      "ranges": [
+        [
+          1,
+          245
+        ]
+      ],
+      "purpose": "actual loopback authorization, query, route and failure/redaction test assertions"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_votes.py",
+      "ranges": [
+        [
+          1,
+          125
+        ]
+      ],
+      "purpose": "display interval and current-home coverage"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_control_http.py",
+      "ranges": [
+        [
+          160,
+          250
+        ]
+      ],
+      "purpose": "nonce action path and selected-research setter coverage"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast.py",
+      "ranges": [
+        [
+          90,
+          130
+        ],
+        [
+          160,
+          245
+        ]
+      ],
+      "purpose": "source binding, missing-store read-only and retained/stale state assertions"
+    }
+  ],
+  "injection_gate": {
+    "state": "pass",
+    "target_treated_as": "untrusted data",
+    "reviewer_directed_directives_found": 0,
+    "hostile_halt_trigger_found": false
+  },
+  "activated_skills": [
+    {
+      "skill": "code-deep-optimizer",
+      "version": "1.17.1",
+      "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+      "reason": "Parent-commissioned bounded full CDO delta review"
+    },
+    {
+      "skill": "lang-python",
+      "path": "/Users/mitch/.agents/skills/lang-python/SKILL.md",
+      "reason": "Python Path, keyword contract and exception behavior"
+    },
+    {
+      "skill": "software-engineering-patterns references/code-reviewer.md and references/coding-standards.md",
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+      "reason": "Baseline review, contract and meaningful regression coverage"
+    },
+    {
+      "skill": "security-review references/security-reviewer.md",
+      "path": "/Users/mitch/.agents/skills/security-review/references/security-reviewer.md",
+      "reason": "Loopback authorization, trust boundary and data redaction"
+    },
+    {
+      "skill": "lang-python references/python-logging-observability.md",
+      "path": "/Users/mitch/.agents/skills/lang-python/references/python-logging-observability.md",
+      "reason": "Preserve fixed structured owner-failure metadata"
+    }
+  ],
+  "passes": [
+    {
+      "id": "C1",
+      "state": "reviewed",
+      "reason": "Read exact added keyword and report call. controls.experiment_home(run_id) continues to select ensemble/archive data; controls.home selects the independent forecast owner. No changed runtime correctness defect substantiated.",
+      "findings": []
+    },
+    {
+      "id": "C2",
+      "state": "reviewed",
+      "reason": "votes.report accepts keyword-only forecast_home. It passes the same primary home to forecast_settings and forecast_report, while the original positional home continues through _report. Existing report return envelope is unchanged.",
+      "findings": []
+    },
+    {
+      "id": "C3",
+      "state": "reviewed",
+      "reason": "Constructed static counterexamples for registered non-current run, unknown run, forged forecast_home query, repeated interval, 4s/301s horizons, missing frame and stale primary source. Unknown/duplicate/forged parameters reject; forecasts remain bounds checked and retained/waiting state remains explicit. Missing distinct-home GET regression is T1.",
+      "findings": []
+    },
+    {
+      "id": "S1",
+      "state": "reviewed",
+      "reason": "Stage 0.5 repeated before source inspection; no reviewer-directed directive or hostile halt trigger found. Added owner home is server-owned, not user-supplied. Loopback/Host/Origin/CSP gates remain intact before report execution; response redaction remains in _json.",
+      "findings": []
+    },
+    {
+      "id": "S2",
+      "state": "reviewed",
+      "reason": "No new resource ownership or exception handling added. Forecast read uses a closing read-only SQLite connection; route retains fixed JSON 400/503 boundaries and structured owner-failure logging. Missing or invalid source frames cannot become a fresh result.",
+      "findings": []
+    },
+    {
+      "id": "S3",
+      "state": "reviewed",
+      "reason": "_query accepts only instrument, run_id, interval and strategy, with exactly one value per key. Registered experiment validation remains in experiment_home. Forecast horizon is integer 5..300 through valid_seconds; no request can choose forecast_home or a path.",
+      "findings": []
+    },
+    {
+      "id": "S4",
+      "state": "reviewed",
+      "reason": "New keyword argument uses supported Python syntax and standard Path ownership already established at make_server. No platform, dependency or CLI compatibility change introduced.",
+      "findings": []
+    },
+    {
+      "id": "S5",
+      "state": "reviewed",
+      "reason": "Previously audited _owner_failure still emits only fixed event, operation and exception class. GET failures still return fixed owner_data_unavailable JSON without exception text, request targets, headers or nonce. The delta adds no external call or hidden operational action.",
+      "findings": []
+    },
+    {
+      "id": "P1",
+      "state": "reviewed",
+      "reason": "Added argument reads an existing attribute. Bounded settings/frame reads already occur in votes.report; no duplicated operation or new scan introduced by the line.",
+      "findings": []
+    },
+    {
+      "id": "P2",
+      "state": "reviewed",
+      "reason": "controls.home is fixed when the control plane is constructed. Per-request selected home remains local. The delta adds no mutable state, worker/service start, lock or retry.",
+      "findings": []
+    },
+    {
+      "id": "M1",
+      "state": "reviewed",
+      "reason": "The explicit forecast_home keyword makes the two owner scopes readable and introduces no magic value or new configurable parameter.",
+      "findings": []
+    },
+    {
+      "id": "M2",
+      "state": "reviewed",
+      "reason": "The route delegates through the existing report implementation. No duplicate forecast reader, configuration logic or reusable utility added.",
+      "findings": []
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository-scope pass owned by root; this bounded file delta does not establish repository coverage.",
+      "findings": []
+    },
+    {
+      "id": "M4",
+      "state": "reviewed",
+      "reason": "Inspected make_server and module docstrings plus report docstring. GET remains an owner-derived local read, with independent live projection scope in the returned display metadata. No documentation contradicted by the one-line delta.",
+      "findings": []
+    },
+    {
+      "id": "T1",
+      "state": "reviewed",
+      "reason": "Inspected meaningful selected-run HTTP regression authored at ecosystem/tests/test_web.py:210. WEB-FORECAST-T1-1 is fixed in source pending parent qualified execution; no unrelated test or source altered.",
+      "findings": [
+        "WEB-FORECAST-T1-1"
+      ]
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repository-scope pass owned by root; this bounded file delta does not establish repository coverage.",
+      "findings": []
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repository-scope pass owned by root; this bounded file delta does not establish repository coverage.",
+      "findings": []
+    },
+    {
+      "id": "T4",
+      "state": "na",
+      "reason": "Non-test production source; suite performance remains root/test-file scope.",
+      "findings": []
+    },
+    {
+      "id": "M5",
+      "state": "reviewed",
+      "reason": "Conditional active: module ships main entrypoint. Inspected argparse own-module example, required home, safe port default and fixed owner-unavailable exit. One keyword in the GET route changes no entrypoint/environment/preflight behavior; inherited M5 resolution retained. No subprocess or live entrypoint verification performed.",
+      "findings": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "WEB-FORECAST-T1-1",
+      "pass": "T1",
+      "severity": "Medium",
+      "state": "authored_root_verification_pending",
+      "location": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/web.py:374",
+      "context_locations": [
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_web.py:190",
+        "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_control_http.py:191"
+      ],
+      "finding": "The changed split between the selected experiment home and primary forecast owner has no GET regression with two distinct homes. The only /api/oracle route assertion has no run_id, so both homes are self.home. The selected-research HTTP test covers the POST setting action only.",
+      "impact": "Changing forecast_home to controls.experiment_home(run_id) would still satisfy the current GET test and silently read absent or divergent forecast preferences and frames when the user selects a research run. The current production line is correct; this is a regression-coverage gap on the behavior it fixes.",
+      "criterion": "T1: missing meaningful coverage for the important changed owner-binding path; Medium robustness gap.",
+      "prescribed_fix": "Register a synthetic research experiment with a home different from the control owner. GET /api/oracle?run_id=<registered id>&instrument=SOL%2FUSD and assert the report receives selected_home positionally and forecast_home=primary_home. Prefer an additional votes/report assertion with differing primary and selected-home cadence/frame fixtures, preserving ensemble selection while returning the primary live forecast.",
+      "repro_kind": "Static counterexample; no tests run under source freeze",
+      "production_bug_claim": false,
+      "fix_location": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_web.py:210",
+      "fix": "Added registered selected research run HTTP GET asserting two distinct owner homes and exact instrument/strategy/17s interval. No production code changed by this reviewer."
+    }
+  ],
+  "counts": {
+    "fixed_track_reviewed": 14,
+    "fixed_track_na": 4,
+    "conditional_m5_reviewed": 1,
+    "critical": 0,
+    "high": 0,
+    "medium": 1,
+    "runtime_medium_plus_substantiated": 0,
+    "open_medium_source_findings": 0,
+    "medium_fixed_in_source_pending_verification": 1
+  },
+  "verification": {
+    "tests": "Not run. Root owns source-frozen qualified full suite after all child deltas. T1 source fix is awaiting that gate.",
+    "source_whitespace": {
+      "command": "git diff --check HEAD -- ecosystem/web.py",
+      "exit_code": 0
+    },
+    "baseline_and_current_identity": "Verified by git rev-parse/git show/git hash-object and SHA-256; no source import or execution.",
+    "blind_reaudit": "Root owned; this bounded review makes no CLEAN/convergence claim.",
+    "empirical_mode": "No inference, execution or champion persistence permitted."
+  },
+  "memory_central": {
+    "lessons_consulted": 2,
+    "conventions_consulted": 10,
+    "regression_checks_fired": 0,
+    "new_lessons_written": false,
+    "files": [
+      "/Users/mitch/.llms/solmargintrader_lessons_llms.md",
+      "/Users/mitch/.llms/solmargintrader_conventions_llms.md"
+    ],
+    "effect": "No relevant forecast-owner lesson found; current repository instructions and archived review used."
+  },
+  "limits": [
+    "No claim that source tests, installed behavior or deployed owner state passed in this child review.",
+    "Root owns fixes, tests, repository M3/T2/T3, blind review, convergence, ledger updates, Git delivery and tracker lifecycle.",
+    "No current production defect substantiated in one-line web.py delta. T1 coverage fix authored in assigned test file; parent qualified execution required before claiming verified closure."
+  ],
+  "index": "skipped (root-owned bounded offline review)",
+  "snapshot_and_rollback": "Production source unchanged by child. Test snapshot at /tmp/oraclebot-pr241-review-20261112/test_web.before-forecast-web-delta.py preserves all preexisting peer changes; restore only the child method hunk if needed, never blanket-overwrite peers.",
+  "test_extension": {
+    "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_web.py",
+    "ownership": "Only authored added test method; preserved preexisting current-home forecast_home assertion and all peer edits. Root explicitly assigned this test file after initial read-only review.",
+    "baseline": {
+      "blob_sha": "7e7b7cae029f31fd711384fcbc490bb94d2c1b83",
+      "sha256": "5863b6ed7f4a2548744c3db102bbe7086a1e2835736970021ac24c33fdaa385c",
+      "lines": 263,
+      "coverage_row": {
+        "path": "ecosystem/tests/test_web.py",
+        "blob_sha": "7e7b7cae029f31fd711384fcbc490bb94d2c1b83",
+        "lines": 263,
+        "semantic_review": "complete",
+        "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+        "baseline_python_ast_covered": true,
+        "unbound_js_syntax_check_observed": false
+      },
+      "coverage_row_matches_git": true,
+      "inherited_original_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/ecosystem.json",
+      "inherited_original_receipt": {
+        "path": "ecosystem/tests/test_web.py",
+        "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_web.py",
+        "review_mode": "new_full_semantic",
+        "new_review_count": 1,
+        "original_blob": "f22d14a262513955a4743a1578b35e59d0e6a0f1",
+        "final_blob": "7e7b7cae029f31fd711384fcbc490bb94d2c1b83",
+        "sha256": "5863b6ed7f4a2548744c3db102bbe7086a1e2835736970021ac24c33fdaa385c",
+        "original_lines": 234,
+        "final_lines": 263,
+        "read_ranges_original": [
+          [
+            1,
+            135
+          ],
+          [
+            136,
+            234
+          ]
+        ],
+        "semantic_focus": "Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+        "safety_focus": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+        "passes": [
+          {
+            "id": "C1",
+            "state": "reviewed",
+            "reason": "Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "C2",
+            "state": "reviewed",
+            "reason": "Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "C3",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "S1",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "S2",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "S3",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "S4",
+            "state": "reviewed",
+            "reason": "Python 3.13/POSIX on supported macOS or existing browser/Node language features; no cross-platform acceptance claimed.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "S5",
+            "state": "reviewed",
+            "reason": "Assertions target observable state/results rather than coverage-only execution; private canaries validate redaction where applicable.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "P1",
+            "state": "reviewed",
+            "reason": "Bounded input/output, repeated work, page/array scans and fixture setup inspected. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "P2",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "M1",
+            "state": "reviewed",
+            "reason": "Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "M2",
+            "state": "reviewed",
+            "reason": "Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "M3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "M4",
+            "state": "reviewed",
+            "reason": "Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "T1",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real ephemeral HTTP bind/security/routes/DTO redaction/headers/query boundaries; added fixed structured warning assertion without raw secret leakage.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "T2",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T4",
+            "state": "reviewed",
+            "reason": "Mutable SQLite/Git fixtures remain per-test; bounded joins and teardown assertions retained. Four real loopback fixtures reduce only idle shutdown polling0.5\u21920.01s; complete suite249 passed8.089s versus246/24.256s; one-run comparison.",
+            "findings": [
+              "12"
+            ]
+          },
+          {
+            "id": "M5",
+            "state": "na",
+            "reason": "Library/browser module or test file has no owner-facing application entrypoint.",
+            "findings": [
+              "12"
+            ]
+          }
+        ],
+        "changed": true,
+        "final_review": "Complete original bounded source read plus every changed hunk reread, followed by final code-focused self-review. Independent blind review remains parent-owned."
+      },
+      "inherited_proof": "Archived complete original bounded ranges plus prior changed hunks; final blob and SHA-256 match HEAD exactly."
+    },
+    "before_authored_change": {
+      "snapshot_path": "/tmp/oraclebot-pr241-review-20261112/test_web.before-forecast-web-delta.py",
+      "sha256": "6f57d3fb66dd3da92afe531c933cc3a75347d6377f2b468a4138b9471eddf2b9",
+      "lines": 267,
+      "preexisting_delta_from_head": "--- ecosystem/tests/test_web.py@before\n+++ ecosystem/tests/test_web.py@after\n@@ -193,17 +193,21 @@\n         ) as owner:\n             self.assertEqual(\n                 self.body(\n                     \"/api/oracle?instrument=ZEC%2FUSDT&interval=1h&strategy=macd\"\n                 )[0],\n                 200,\n             )\n             owner.assert_called_once_with(\n-                self.home, \"ZEC/USDT\", interval=\"1h\", strategy=\"macd\"\n+                self.home,\n+                \"ZEC/USDT\",\n+                interval=\"1h\",\n+                strategy=\"macd\",\n+                forecast_home=self.home,\n             )\n         self.assertEqual(self.body(\"/api/oracle?interval=1m&interval=1h\")[0], 400)\n         self.assertEqual(self.body(\"/api/oracle?strategy=rsi&unknown=x\")[0], 400)\n \n     def test_passes_registration_and_event_cursors_to_existing_owners(self):\n         cursor = \"00000000-0000-0000-0000-000000000001\"\n         with patch(\n             \"ecosystem.web.registration.read_registrations\", return_value={\"bots\": []}\n"
+    },
+    "current": {
+      "blob_sha": "3e74a07aea9f5c23ed8ed92ebfc705e14c309ba7",
+      "sha256": "3ff24f783a5a34f805bef221e92fbd93a0da2cc4a48df186e74afcf538cddb16",
+      "lines": 298,
+      "authored_new_ranges": [
+        [
+          210,
+          240
+        ]
+      ],
+      "read_ranges_before": [
+        [
+          1,
+          245
+        ],
+        [
+          245,
+          267
+        ]
+      ],
+      "read_ranges_after": [
+        [
+          185,
+          255
+        ]
+      ],
+      "entire_authored_delta": "--- ecosystem/tests/test_web.py@before\n+++ ecosystem/tests/test_web.py@after\n@@ -201,16 +201,47 @@\n                 self.home,\n                 \"ZEC/USDT\",\n                 interval=\"1h\",\n                 strategy=\"macd\",\n                 forecast_home=self.home,\n             )\n         self.assertEqual(self.body(\"/api/oracle?interval=1m&interval=1h\")[0], 400)\n         self.assertEqual(self.body(\"/api/oracle?strategy=rsi&unknown=x\")[0], 400)\n+\n+    def test_selected_research_oracle_keeps_primary_forecast_owner(self):\n+        from ecosystem.control import database\n+\n+        run_id = \"selected-research\"\n+        selected_home = self.home / \"research\" / run_id\n+        selected_home.mkdir(parents=True)\n+        with database(self.home) as db:\n+            db.execute(\n+                \"INSERT INTO experiment VALUES(?,?,?,?)\",\n+                (run_id, \"Selected research fixture\", str(selected_home), 1000),\n+            )\n+        self.assertEqual(self.server.controls.experiment_home(run_id), selected_home)\n+        self.assertNotEqual(selected_home, self.server.controls.home)\n+\n+        with patch(\n+            \"ecosystem.votes.report\", return_value={\"status\": \"unavailable\"}\n+        ) as owner:\n+            status, _, body = self.body(\n+                f\"/api/oracle?run_id={run_id}&instrument=ZEC%2FUSDT\"\n+                \"&interval=17s&strategy=macd\"\n+            )\n+            self.assertEqual(status, 200)\n+            self.assertTrue(body[\"ok\"])\n+            owner.assert_called_once_with(\n+                selected_home,\n+                \"ZEC/USDT\",\n+                interval=\"17s\",\n+                strategy=\"macd\",\n+                forecast_home=self.home,\n+            )\n \n     def test_passes_registration_and_event_cursors_to_existing_owners(self):\n         cursor = \"00000000-0000-0000-0000-000000000001\"\n         with patch(\n             \"ecosystem.web.registration.read_registrations\", return_value={\"bots\": []}\n         ) as owner:\n             self.assertEqual(\n                 self.body(f\"/api/registrations?limit=17&after={cursor}\")[0], 200\n",
+      "entire_delta_from_head": "--- ecosystem/tests/test_web.py@before\n+++ ecosystem/tests/test_web.py@after\n@@ -193,20 +193,55 @@\n         ) as owner:\n             self.assertEqual(\n                 self.body(\n                     \"/api/oracle?instrument=ZEC%2FUSDT&interval=1h&strategy=macd\"\n                 )[0],\n                 200,\n             )\n             owner.assert_called_once_with(\n-                self.home, \"ZEC/USDT\", interval=\"1h\", strategy=\"macd\"\n+                self.home,\n+                \"ZEC/USDT\",\n+                interval=\"1h\",\n+                strategy=\"macd\",\n+                forecast_home=self.home,\n             )\n         self.assertEqual(self.body(\"/api/oracle?interval=1m&interval=1h\")[0], 400)\n         self.assertEqual(self.body(\"/api/oracle?strategy=rsi&unknown=x\")[0], 400)\n+\n+    def test_selected_research_oracle_keeps_primary_forecast_owner(self):\n+        from ecosystem.control import database\n+\n+        run_id = \"selected-research\"\n+        selected_home = self.home / \"research\" / run_id\n+        selected_home.mkdir(parents=True)\n+        with database(self.home) as db:\n+            db.execute(\n+                \"INSERT INTO experiment VALUES(?,?,?,?)\",\n+                (run_id, \"Selected research fixture\", str(selected_home), 1000),\n+            )\n+        self.assertEqual(self.server.controls.experiment_home(run_id), selected_home)\n+        self.assertNotEqual(selected_home, self.server.controls.home)\n+\n+        with patch(\n+            \"ecosystem.votes.report\", return_value={\"status\": \"unavailable\"}\n+        ) as owner:\n+            status, _, body = self.body(\n+                f\"/api/oracle?run_id={run_id}&instrument=ZEC%2FUSDT\"\n+                \"&interval=17s&strategy=macd\"\n+            )\n+            self.assertEqual(status, 200)\n+            self.assertTrue(body[\"ok\"])\n+            owner.assert_called_once_with(\n+                selected_home,\n+                \"ZEC/USDT\",\n+                interval=\"17s\",\n+                strategy=\"macd\",\n+                forecast_home=self.home,\n+            )\n \n     def test_passes_registration_and_event_cursors_to_existing_owners(self):\n         cursor = \"00000000-0000-0000-0000-000000000001\"\n         with patch(\n             \"ecosystem.web.registration.read_registrations\", return_value={\"bots\": []}\n         ) as owner:\n             self.assertEqual(\n                 self.body(f\"/api/registrations?limit=17&after={cursor}\")[0], 200\n",
+      "all_authored_lines_read_back": true
+    },
+    "passes": [
+      {
+        "id": "C1",
+        "state": "reviewed",
+        "reason": "Registered experiment row commits before HTTP request. Query resolves to a real selected research home. Assertions prove HTTP success, selected ensemble home, distinct primary forecast home and exact instrument/strategy/17s interval.",
+        "findings": []
+      },
+      {
+        "id": "C2",
+        "state": "reviewed",
+        "reason": "assert_called_once_with matches votes.report keyword-only forecast_home and existing interval/strategy API. Test uses existing body helper and public ControlPlane experiment_home contract.",
+        "findings": []
+      },
+      {
+        "id": "C3",
+        "state": "reviewed",
+        "reason": "Counterexample replacing forecast_home with selected_home fails the new assertion because selected_home != controls.home; routing the ensemble to primary home also fails. Explicit run_id exercises the formerly untested selected-home branch.",
+        "findings": []
+      },
+      {
+        "id": "S1",
+        "state": "reviewed",
+        "reason": "Injection gate repeated for authored test data; fixture labels and query are inert. Only temporary registered homes used; no secrets or live owner reads. votes.report mocked at the route owner boundary.",
+        "findings": []
+      },
+      {
+        "id": "S2",
+        "state": "reviewed",
+        "reason": "Existing per-test server/temp cleanup remains intact. database context closes/commits before GET. No new threads, subprocesses, network beyond qualified loopback test fixture, sleeps or external resources added.",
+        "findings": []
+      },
+      {
+        "id": "S3",
+        "state": "reviewed",
+        "reason": "Valid registered run_id and percent-encoded instrument pass through actual GET parsing. Assertions retain exact ZEC/USDT instrument, macd strategy and 17s horizon selector.",
+        "findings": []
+      },
+      {
+        "id": "S4",
+        "state": "reviewed",
+        "reason": "Stdlib unittest/Path and existing control.database context used; no platform-specific fixture or dependency added.",
+        "findings": []
+      },
+      {
+        "id": "S5",
+        "state": "reviewed",
+        "reason": "New success route is checked through JSON envelope ok plus exact owner call. Existing fixed failure metadata, redaction and WARNING assertions unchanged.",
+        "findings": []
+      },
+      {
+        "id": "P1",
+        "state": "reviewed",
+        "reason": "One constant-sized synthetic experiment row and one request; no corpus scan or unnecessary fixture duplication.",
+        "findings": []
+      },
+      {
+        "id": "P2",
+        "state": "reviewed",
+        "reason": "Fixture database commits before server thread reads it; mock encloses request lifecycle. Test uses existing per-test independent homes and server teardown.",
+        "findings": []
+      },
+      {
+        "id": "M1",
+        "state": "reviewed",
+        "reason": "Descriptive test name identifies the primary forecast owner invariant. Literal fixture values are deterministic test inputs, not production settings.",
+        "findings": []
+      },
+      {
+        "id": "M2",
+        "state": "reviewed",
+        "reason": "Reuses WebTests setup/body and existing control.database helper; no new request/server utility.",
+        "findings": []
+      },
+      {
+        "id": "M3",
+        "state": "na",
+        "reason": "Repository-scope pass owned by root.",
+        "findings": []
+      },
+      {
+        "id": "M4",
+        "state": "reviewed",
+        "reason": "Existing module description remains accurate. Test name and assertions document the two-home boundary without changing public usage.",
+        "findings": []
+      },
+      {
+        "id": "T1",
+        "state": "reviewed",
+        "reason": "New real HTTP selected-run regression closes WEB-FORECAST-T1-1 at source level and catches either owner being swapped, lost/mutated selectors or unsuccessful route. Parent guarded execution remains pending.",
+        "findings": []
+      },
+      {
+        "id": "T2",
+        "state": "na",
+        "reason": "Repository-scope pass owned by root.",
+        "findings": []
+      },
+      {
+        "id": "T3",
+        "state": "na",
+        "reason": "Repository-scope pass owned by root.",
+        "findings": []
+      },
+      {
+        "id": "T4",
+        "state": "reviewed",
+        "reason": "Added test reuses existing 0.01-second fixture shutdown polling and performs no sleep/poll loop. Mutating SQLite fixture stays per test; no timing configuration or isolation weakened.",
+        "findings": []
+      },
+      {
+        "id": "M5",
+        "state": "na",
+        "reason": "Test module; no owner-facing application entrypoint changed.",
+        "findings": []
+      }
+    ],
+    "verification": "Not run. Root owns the qualified guarded full suite and test execution. No pass/fail result inferred.",
+    "source_editing_stopped": true
+  }
+}

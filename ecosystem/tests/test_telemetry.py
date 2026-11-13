@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import plistlib
 import sqlite3
 import tempfile
+import threading
 import unittest
 from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 from uuid import uuid4
 
+from ecosystem import telemetry
 from ecosystem.telemetry import report, sanitize, sync
 
 
@@ -247,6 +251,49 @@ class TelemetryTests(unittest.TestCase):
         self.assertFalse(result["logs"]["raw_content_mirrored"])
         self.assertNotIn(secret, json.dumps(result))
         self.assertIn("OMITTED_PRIVATE_LOG_TEXT", json.dumps(result))
+
+    def test_fifo_log_sink_cannot_block_telemetry(self):
+        log = self.manager / "supervisor-fifo"
+        os.mkfifo(log, 0o600)
+        definition = self.root / "fifo-service.plist"
+        definition.write_bytes(plistlib.dumps({"StandardOutPath": str(log)}))
+        state = {"definition_present": True, "plist_path": str(definition)}
+        done = threading.Event()
+        results = []
+
+        def inspect():
+            try:
+                results.append(telemetry._logs(self.manager))
+            finally:
+                done.set()
+
+        with patch("botmanager.service.service", return_value=state):
+            thread = threading.Thread(target=inspect, daemon=True)
+            thread.start()
+            finished = done.wait(0.2)
+            if not finished:
+                writer = os.open(log, os.O_WRONLY | os.O_NONBLOCK)
+                os.close(writer)
+            thread.join(timeout=2)
+        self.assertFalse(thread.is_alive())
+        self.assertTrue(
+            finished, "telemetry blocked while opening a non-regular log sink"
+        )
+        self.assertFalse(
+            any(row["status"] == "available" for row in results[0]["files"])
+        )
+
+    def test_missing_configured_log_sink_is_unavailable(self):
+        definition = self.root / "missing-log-service.plist"
+        definition.write_bytes(
+            plistlib.dumps({"StandardOutPath": str(self.manager / "absent.log")})
+        )
+        state = {"definition_present": True, "plist_path": str(definition)}
+        with patch("botmanager.service.service", return_value=state):
+            result = telemetry._logs(self.manager)
+        self.assertEqual(result["status"], "unavailable")
+        self.assertTrue(result["files"])
+        self.assertEqual(result["files"][0]["status"], "unavailable")
 
     def test_manager_status_uses_owner_api_and_preserves_unknown_financials(self):
         from botmanager.registry import dispatch

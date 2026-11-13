@@ -14,5 +14,10 @@ import tempfile
 _ROOT = tempfile.mkdtemp(prefix="soltui-tests-")
 atexit.register(shutil.rmtree, _ROOT, ignore_errors=True)
 for _name, _sub in (("SOLTUI_CONFIG_DIR", "config"), ("SOLTUI_LOG_DIR", "logs"),
-                    ("SOLTUI_SUPPORT_DIR", "support")):
-    os.environ.setdefault(_name, os.path.join(_ROOT, _sub))
+                    ("SOLTUI_SUPPORT_DIR", "support"), ("SOLMARGINTRADER_STORAGE", "manual-storage"),
+                    ("SOLBOT_HOME", "manager"), ("SOLBOT_ECOSYSTEM_HOME", "ecosystem"),
+                    ("AERO_LP_HOME", "liquidity"), ("SOLMT_DATA_DIR", "market-data"),
+                    ("SOLTUI_KEY_DIR", "keys")):
+    # Inherited settings may be the real owner environment. Tests always own a
+    # fresh root; individual fixtures can explicitly patch their own subpaths.
+    os.environ[_name] = os.path.join(_ROOT, _sub)

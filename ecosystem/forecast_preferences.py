@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import sqlite3
+import tempfile
 import time
 from contextlib import closing
 from pathlib import Path
@@ -47,6 +48,29 @@ def settings(home, instrument):
     return result
 
 
+def _publish_initialized_store(source):
+    # Readers must see either no store or a committed schema, never an empty DB.
+    fd, name = tempfile.mkstemp(prefix=".forecast-preferences-", dir=source.parent)
+    os.close(fd)
+    staging = Path(name)
+    try:
+        with closing(sqlite3.connect(staging, timeout=3)) as db, db:
+            db.execute(
+                "CREATE TABLE settings(instrument TEXT,seconds INTEGER,revision INTEGER,created REAL,PRIMARY KEY(instrument,revision))"
+            )
+            db.execute(f"PRAGMA application_id={APP_ID}")
+            for operation in ("UPDATE", "DELETE"):
+                db.execute(
+                    f"CREATE TRIGGER immutable_{operation} BEFORE {operation} ON settings BEGIN SELECT RAISE(ABORT,'immutable display preference history'); END"
+                )
+        try:
+            os.link(staging, source)
+        except FileExistsError:
+            pass  # A concurrent creator won; its revision still needs the CAS below.
+    finally:
+        staging.unlink()
+
+
 def set_seconds(home, instrument, seconds, expected_revision):
     instrument = validate_instrument(instrument)
     if (
@@ -56,6 +80,8 @@ def set_seconds(home, instrument, seconds, expected_revision):
     ):
         raise ValueError("invalid_forecast_seconds")
     source = path(home)
+    if not source.exists() and expected_revision != 0:
+        raise ValueError("forecast_preferences_revision_conflict")
     source.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     if (
         source.parent.is_symlink()
@@ -64,23 +90,11 @@ def set_seconds(home, instrument, seconds, expected_revision):
         and not source.is_file()
     ):
         raise ValueError("forecast_preferences_unavailable")
-    fd = os.open(source, os.O_CREAT | os.O_RDWR, 0o600)
-    os.close(fd)
+    if not source.exists():
+        _publish_initialized_store(source)
     with closing(sqlite3.connect(source, timeout=3)) as db, db:
         db.execute("BEGIN IMMEDIATE")
-        objects = db.execute(
-            "SELECT name FROM sqlite_master WHERE type='table'"
-        ).fetchall()
-        if not objects:
-            db.execute(
-                "CREATE TABLE settings(instrument TEXT,seconds INTEGER,revision INTEGER,created REAL,PRIMARY KEY(instrument,revision))"
-            )
-            db.execute(f"PRAGMA application_id={APP_ID}")
-            for operation in ("UPDATE", "DELETE"):
-                db.execute(
-                    f"CREATE TRIGGER immutable_{operation} BEFORE {operation} ON settings BEGIN SELECT RAISE(ABORT,'immutable display preference history'); END"
-                )
-        elif db.execute("PRAGMA application_id").fetchone()[0] != APP_ID:
+        if db.execute("PRAGMA application_id").fetchone()[0] != APP_ID:
             raise ValueError("forecast_preferences_incompatible")
         row = db.execute(
             "SELECT revision FROM settings WHERE instrument=? ORDER BY revision DESC LIMIT 1",

@@ -24,12 +24,15 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Sequence
+
+from .market_diagnostics import market_request
 
 PRICE_URL = "https://lite-api.jup.ag/price/v3?ids={ids}"
 
@@ -49,6 +52,18 @@ class ArchiveError(RuntimeError):
     """Raised when a price could not be read or the file could not be appended."""
 
 
+def _validated_price(value: object) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ArchiveError("price must be a finite positive number")
+    try:
+        price = float(value)
+    except OverflowError as exc:
+        raise ArchiveError("price must be a finite positive number") from exc
+    if not math.isfinite(price) or price <= 0:
+        raise ArchiveError("price must be a finite positive number")
+    return price
+
+
 def fetch_spot(mint: str, *, timeout: float = 10.0) -> float:
     """Current USD price for `mint`, or raise.
 
@@ -59,22 +74,22 @@ def fetch_spot(mint: str, *, timeout: float = 10.0) -> float:
     url = PRICE_URL.format(ids=mint)
     req = urllib.request.Request(url, headers={"User-Agent": "sol-backtester/0.1 (research)"})
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with market_request("spot_archive"), urllib.request.urlopen(req, timeout=timeout) as resp:
             payload = json.loads(resp.read().decode())
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise ArchiveError(f"could not read a price for {mint}: {exc}") from exc
 
+    if not isinstance(payload, dict):
+        raise ArchiveError("price response must be an object")
     entry = payload.get(mint)
     if not isinstance(entry, dict):
-        raise ArchiveError(f"response carried no entry for {mint}: {list(payload)[:3]}")
-    price = entry.get("usdPrice")
-    if not isinstance(price, (int, float)) or not price > 0:
-        raise ArchiveError(f"{mint} returned an unusable price: {price!r}")
-    return float(price)
+        raise ArchiveError(f"response carried no price entry for {mint}")
+    return _validated_price(entry.get("usdPrice"))
 
 
 def append_observation(path: Path, mint: str, price: float, *, when: datetime | None = None) -> None:
     """Append one row, writing the header if the file is new."""
+    price = _validated_price(price)
     when = when or datetime.now(timezone.utc)
     path.parent.mkdir(parents=True, exist_ok=True)
     new = not path.exists()
@@ -105,6 +120,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog=(
+            "Example: python -m backtester.core.archive_price --mint JLP --dry-run\n"
             "This accumulates history going forward; it cannot recover the past.\n"
             "Schedule it (cron / launchd) if you want a usable series.\n"
         ),

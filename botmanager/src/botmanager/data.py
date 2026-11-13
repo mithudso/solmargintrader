@@ -7,6 +7,7 @@ provenance. Preserve that uncertainty instead of inferring it from quote age.
 
 from __future__ import annotations
 
+import copy
 import gzip
 import hashlib
 import io
@@ -27,7 +28,7 @@ MAX_SCAN_BYTES = 256 * 1024 * 1024
 
 
 @lru_cache(maxsize=8)
-def engine_identity(strategy_id: str = "grid") -> dict[str, Any]:
+def _cached_engine_identity(strategy_id: str = "grid") -> dict[str, Any]:
     import numpy
 
     import backtester
@@ -67,6 +68,12 @@ def engine_identity(strategy_id: str = "grid") -> dict[str, Any]:
             for module in modules
         },
     }
+
+
+def engine_identity(strategy_id: str = "grid") -> dict[str, Any]:
+    # Snapshots expose mutable dictionaries. Their readers must not be able to
+    # change the loaded-code identity used to validate the next snapshot.
+    return copy.deepcopy(_cached_engine_identity(strategy_id))
 
 
 def _number(value: Any, *, positive: bool = False) -> float:

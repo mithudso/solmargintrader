@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "reviewer": "cdo_test_trades",
+  "task": "TASK-2079 root-owned CDO loop",
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1"
+  },
+  "reviewed_at_utc": "2026-11-13T04:29:56.135241+00:00",
+  "file": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/trades.test.js",
+  "scope": "Full bounded per-file static review only; no source changes, tests, Git mutations, network, services, installs, inference or child agents.",
+  "identity": {
+    "bytes": 26428,
+    "lines": 326,
+    "sha256": "fe5a99736e3803af36fa90f955dfb61b9b398ca8e27b465bf6b1c952055b7656",
+    "computed_git_blob_sha1": "2699140c7f899be8237f42f8a9d3c264779400e1",
+    "blob_method": "SHA-1 of UTF-8 blob <byte_length> NUL prefix followed by exact file bytes; no Git command used"
+  },
+  "coverage": {
+    "complete": true,
+    "bounded_read_ranges": [
+      [
+        1,
+        90
+      ],
+      [
+        91,
+        180
+      ],
+      [
+        181,
+        260
+      ],
+      [
+        261,
+        326
+      ]
+    ],
+    "unread_ranges": [],
+    "truncated_range_recovery": "An earlier aggregate 1-170 view was truncated; complete separate bounded reads above replaced it."
+  },
+  "injection_gate": {
+    "state": "ran",
+    "hostile_content": false,
+    "reviewer_directives": [],
+    "target_treated_as_data": true
+  },
+  "activated_reviewers": [
+    {
+      "path": "/Users/mitch/.agents/skills/lang-js-ts/SKILL.md",
+      "why": "JavaScript ESM/Node test module"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/lang-js-ts/references/nodejs-concurrency-internals.md",
+      "why": "Concurrent reservation, idempotency and submission tests"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/security-review/references/security-reviewer.md",
+      "why": "Authorization, trust-boundary and privacy assertions"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+      "why": "Baseline review discipline"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md",
+      "why": "M1/M2 baseline"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/testing-and-vitest-expert.md",
+      "why": "Framework-neutral fixture isolation/assertion/performance guidance only; target uses node:test, so Vitest-specific APIs were not imposed"
+    }
+  ],
+  "passes": [
+    {
+      "id": "C1",
+      "state": "ran",
+      "reason": "Reviewed fixture construction, awaited test control flow, rejection assertions, amount/reservation assertions, result-shape checks and injected failure paths. No confirmed Medium+ test-logic defect within this file."
+    },
+    {
+      "id": "C2",
+      "state": "ran",
+      "reason": "Request and response mocks exercise trade identifiers, wallet, policy/payload hashes, quote/delegation bindings, strict emitted-event fields and null fill semantics. Production call-site contracts were not inspected in this bounded review."
+    },
+    {
+      "id": "C3",
+      "state": "ran",
+      "reason": "Statically challenged sub-cent/overprecision amounts, concurrent final-slot and idempotent requests, repeated/concurrent submits, corrupted preparation, revoked grants, post-entitlement plan changes and ambiguous receipts. No counterexample was established from this test file alone; no tests were executed."
+    },
+    {
+      "id": "S1",
+      "state": "ran",
+      "reason": "Injection gate completed before pass review. No reviewer-directed or hostile directive found. Secrets are explicit test markers. Assertions reject wallet/user overrides and exclude provider/account identifiers from captured event payloads and selected results."
+    },
+    {
+      "id": "S2",
+      "state": "ran",
+      "reason": "Async calls are awaited or joined. Timeout/unavailable/provider-body, receipt-validation and receipt-storage failures have assertions on failure/unknown states. No unbounded waits or open service handles appear in the assigned file; helper resource implementation is outside scope."
+    },
+    {
+      "id": "S3",
+      "state": "ran",
+      "reason": "Coverage includes invalid monetary precision/types, unknown trade fields including own __proto__, unsupported trade shape, missing scope and quote/delegation/connection failures. Fixture options use || defaults; current callers do not rely on zero values, so no existing false-positive test was established."
+    },
+    {
+      "id": "S4",
+      "state": "ran",
+      "reason": "Reviewed modern Node ESM/test APIs, Buffer, Web Crypto, Response and DOMException use for internal consistency. Runtime/version and helper support are owned by root; no incompatible use was demonstrated from this file alone."
+    },
+    {
+      "id": "S5",
+      "state": "ran",
+      "reason": "captureEvents validates exact four-field structured events, category/outcome allowlists and selected transition sequences. Success, preparation, submission, refusal and storage-failure paths assert redaction. Capture is limited to console.info/warn, so this receipt does not certify every possible logging sink."
+    },
+    {
+      "id": "P1",
+      "state": "ran",
+      "reason": "Fixture/test loops are small and bounded; no expensive real network operation or redundant hot-path computation is present. Hashing and SQLite setup support per-case isolation."
+    },
+    {
+      "id": "P2",
+      "state": "ran",
+      "reason": "Promise.all/Promise.allSettled explicitly exercise contention and assert one reservation/submit. Each test/loop case creates an independent environment where state differs; console mocks use each test context and tests do not request within-file concurrency. Production D1 concurrency semantics remain outside this mock/static review."
+    },
+    {
+      "id": "M1",
+      "state": "ran",
+      "reason": "Reviewed names, helpers, SQL mutation intent and constants. Fixture quote values intentionally define test data. No readability/configuration issue reaching Medium was confirmed."
+    },
+    {
+      "id": "M2",
+      "state": "ran",
+      "reason": "Input, digest, fixture, preparation-response and event-capture helpers already consolidate repetition. Remaining default mock preparation variants intentionally differ in expiry binding; no Medium+ reusable-library or duplication defect was established."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository architecture and centralized configuration are root-owned repo-scope passes."
+    },
+    {
+      "id": "M4",
+      "state": "ran",
+      "reason": "Test names and local comments were checked against assertions. Mock execution is explicitly named. The revoked-while-preparing title is broader than its single revoked case; this is a bounded coverage limitation, not demonstrated production behavior or a Medium+ documentation defect."
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "reason": "Conditional tool-ergonomics pass: this is a test module, not a shipped end-user runnable entrypoint."
+    },
+    {
+      "id": "T1",
+      "state": "ran",
+      "reason": "Tests assert effects rather than line execution: reservations, adapter call counts, state, identifiers, filled=null, emitted-event schema and redaction. Important visible amount, authorization, CAS, idempotency, unknown-budget and binding cases are meaningful. This file alone does not establish complete production branch coverage or actual customer execution."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Dependency/supply-chain inventory is root-owned repo scope."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Tooling/CI/configuration inventory is root-owned repo scope."
+    },
+    {
+      "id": "T4",
+      "state": "ran",
+      "reason": "No real sleep/timer fixture or safe setup-hoist opportunity identified. Every environment is mutated by reservation, submission, grant, subscription or corruption paths; sharing fixture environments would change isolation/behavior. No performance rewrite proposed because equivalence is not established."
+    }
+  ],
+  "focus_evidence": {
+    "cent_bounds_and_exact_reservations": [
+      [
+        60,
+        85
+      ],
+      [
+        292,
+        297
+      ]
+    ],
+    "policy_and_grant_authorization": [
+      [
+        193,
+        206
+      ],
+      [
+        274,
+        290
+      ],
+      [
+        298,
+        301
+      ]
+    ],
+    "plan_compare_and_set": [
+      [
+        304,
+        326
+      ]
+    ],
+    "concurrent_policy_limit": [
+      [
+        208,
+        214
+      ]
+    ],
+    "idempotency_and_changed_payload": [
+      [
+        215,
+        221
+      ]
+    ],
+    "delegation_and_quote_times": [
+      [
+        255,
+        272
+      ]
+    ],
+    "fee_presence_zero_and_precision": [
+      [
+        68,
+        78
+      ],
+      [
+        111,
+        111
+      ],
+      [
+        261,
+        263
+      ]
+    ],
+    "receipt_binding": [
+      [
+        246,
+        253
+      ]
+    ],
+    "unknown_budget_retention_and_no_retry": [
+      [
+        128,
+        145
+      ],
+      [
+        165,
+        180
+      ],
+      [
+        223,
+        244
+      ]
+    ],
+    "privacy_assertions": [
+      [
+        45,
+        57
+      ],
+      [
+        88,
+        126
+      ],
+      [
+        128,
+        180
+      ],
+      [
+        244,
+        252
+      ]
+    ]
+  },
+  "findings": [],
+  "severity_counts": {
+    "Critical": 0,
+    "High": 0,
+    "Medium": 0
+  },
+  "qualified_result": "No confirmed Medium+ findings in the exact assigned test file after all 15 applicable file passes. This is not a universal CLEAN verdict or empirical verification.",
+  "limitations": [
+    "No tests, syntax checks, production source or helper implementations were inspected/executed by this reviewer. Root owns the final verify gate, cross-file conclusions and convergence decision.",
+    "The executor is an in-process mock service binding. These assertions do not establish working real customer connections, current venue delegation or venue orders/fills.",
+    "The assigned file checks expired delegation during prepare and revoked grant/subscription/quote mutation before submit. It does not itself demonstrate a delegation or quote becoming expired after preparation, or future-dated quotedAt refusal.",
+    "No source-derived requirement or failing counterexample established those coverage limits as an actual Medium+ defect; root should combine this receipt with the production-source review.",
+    "Root should revalidate the exact SHA-256/blob before consuming this receipt if the file changes concurrently."
+  ],
+  "verification": {
+    "state": "not_run",
+    "reason": "Explicit root prohibition; root already owns the full Node gate."
+  },
+  "source_edits": [],
+  "git_mutations": [],
+  "status": "NO_CHANGE"
+}

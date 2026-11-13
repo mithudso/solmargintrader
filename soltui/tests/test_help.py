@@ -29,6 +29,8 @@ from soltui.tui import GlossaryTable, SolTuiApp
 
 class HelpTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self) -> None:
+        from soltui.tests.test_tui import offline_console_reads
+        self.enterContext(offline_console_reads())
         self.tmp = TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.app = SolTuiApp(Settings(data_dir=self.tmp.name, poll_interval_seconds=60))
@@ -68,11 +70,18 @@ class HelpTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("file classification", column_help("kind", "docs-table"))
         self.assertIn("action", column_help("kind", "liq-actions"))
 
+    def test_parameterized_strategy_row_preserves_its_mechanism_help(self) -> None:
+        self.assertEqual(row_help(" GRID (levels=4) "), row_help("grid"))
+        self.assertIsNone(row_help("unknown_strategy (x=1)"))
+
     async def test_real_cell_hover_explains_value_and_clears_on_leave(self) -> None:
         async with self.app.run_test(size=(150, 45)) as pilot:
             table = self.app.query_one("#results-table", GlossaryTable)
             table.add_row("grid", "mean-reversion", "+0.2", "0.4", "60%", "backtest +2%", "12")
             await pilot.pause()
+            table.scroll_visible(immediate=True)
+            await pilot.pause()
+            self.assertIs(self.app.get_widget_at(table.region.x + 2, table.region.y + 1)[0], table)
             await pilot.hover(table, offset=(2, 1))
             await pilot.pause()
             self.assertIn("exposure", str(table.tooltip))

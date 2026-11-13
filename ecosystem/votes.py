@@ -400,7 +400,7 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
                "live_forecast_seconds_range": [5, 300]}
     if explicit and requested not in {row["id"] for row in strategies}:
         view = _unavailable_display(view, "requested_strategy_unavailable_for_instrument")
-    elif interval is not None and interval != "10s" and native != interval:
+    elif interval is not None and native != interval:
         view = _unavailable_display(view, "requested_interval_unavailable_no_native_forecasts")
     elif explicit and not selected_study:
         view["strategies"] = [row for row in view.get("strategies", []) if row["strategy_id"] == requested]

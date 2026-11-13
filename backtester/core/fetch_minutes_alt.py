@@ -35,7 +35,9 @@ it reaches `--years` back, or when several consecutive pages come back empty (be
 from __future__ import annotations
 
 import argparse
+from functools import wraps
 import json
+import math
 import sys
 import threading
 import time
@@ -48,6 +50,7 @@ from pathlib import Path
 import pandas as pd
 
 from .fetch_minutes import DATA, MANIFEST, coverage, load_minutes, minute_path, render_coverage, write_manifest
+from .market_diagnostics import market_request
 from .types import BAR_COLUMNS
 
 USER_AGENT = "solmargintrader-research/1.0 (read-only)"
@@ -73,35 +76,57 @@ class Venue:
     rows: Callable[[object], list[list[float]]]  # payload -> [[ts_s, o, h, l, c, v], ...]
 
 
+def _parser_boundary(name: str):
+    def decorate(parse):
+        @wraps(parse)
+        def guarded(payload):
+            try:
+                return parse(payload)
+            except (ValueError, TypeError, IndexError, KeyError, OverflowError) as exc:
+                raise AltFetchError(f"{name}: malformed candle schema") from exc
+        return guarded
+    return decorate
+
+
+def _provider_rows(payload: object, venue: str, expected: str | bool, *, field: str = "data") -> list:
+    key = "success" if field == "result" else "code"
+    valid_status = (payload.get(key) is True if field == "result" else str(payload.get(key)) == expected) if isinstance(payload, dict) else False
+    if not valid_status or not isinstance(payload.get(field), list):
+        raise AltFetchError(f"{venue}: provider refused or returned malformed candle payload")
+    if any(not isinstance(row, (list, tuple)) or len(row) < 6 for row in payload[field]):
+        raise AltFetchError(f"{venue}: malformed candle schema")
+    return payload[field]
+
+
+@_parser_boundary("okx")
 def _okx_rows(payload: object) -> list[list[float]]:
-    if not isinstance(payload, dict) or str(payload.get("code")) != "0":
-        raise AltFetchError(f"okx: {str(payload)[:160]}")
+    rows = _provider_rows(payload, "okx", "0")
     # [ts_ms, o, h, l, c, vol(base), volCcy, volCcyQuote, confirm]
-    return [[int(r[0]) // 1000, *(float(x) for x in r[1:6])] for r in payload.get("data") or []
+    return [[int(r[0]) // 1000, *(float(x) for x in r[1:6])] for r in rows
             if str(r[8]) == "1"]  # confirm == 1: the candle has closed
 
 
+@_parser_boundary("kucoin")
 def _kucoin_rows(payload: object) -> list[list[float]]:
-    if not isinstance(payload, dict) or str(payload.get("code")) != "200000":
-        raise AltFetchError(f"kucoin: {str(payload)[:160]}")
+    rows = _provider_rows(payload, "kucoin", "200000")
     # [time_s, open, CLOSE, high, low, volume(base), turnover] -- note close before high.
     return [[int(r[0]), float(r[1]), float(r[3]), float(r[4]), float(r[2]), float(r[5])]
-            for r in payload.get("data") or []]
+            for r in rows]
 
 
+@_parser_boundary("bitget")
 def _bitget_rows(payload: object) -> list[list[float]]:
-    if not isinstance(payload, dict) or str(payload.get("code")) != "00000":
-        raise AltFetchError(f"bitget: {str(payload)[:160]}")
+    rows = _provider_rows(payload, "bitget", "00000")
     # [ts_ms, open, high, low, close, baseVol, usdtVol, quoteVol]
-    return [[int(r[0]) // 1000, *(float(x) for x in r[1:6])] for r in payload.get("data") or []]
+    return [[int(r[0]) // 1000, *(float(x) for x in r[1:6])] for r in rows]
 
 
+@_parser_boundary("whitebit")
 def _whitebit_rows(payload: object) -> list[list[float]]:
-    if not isinstance(payload, dict) or not payload.get("success"):
-        raise AltFetchError(f"whitebit: {str(payload)[:160]}")
+    rows = _provider_rows(payload, "whitebit", True, field="result")
     # [time_s, open, CLOSE, high, low, volume(stock), volume(money)] -- close before high.
     return [[int(r[0]), float(r[1]), float(r[3]), float(r[4]), float(r[2]), float(r[5])]
-            for r in payload.get("result") or []]
+            for r in rows]
 
 
 VENUES: dict[str, Venue] = {
@@ -128,7 +153,7 @@ ASSET_VENUE: dict[str, str] = {
 
 def http_json(url: str) -> object:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=20) as resp:  # noqa: S310 - fixed public hosts
+    with market_request("alternate_candles"), urllib.request.urlopen(req, timeout=20) as resp:  # noqa: S310 - fixed public hosts
         return json.loads(resp.read().decode())
 
 
@@ -153,8 +178,15 @@ def sane(rows: Sequence[Sequence[float]]) -> tuple[list[list[float]], int]:
     """Rows whose OHLC is internally consistent, and how many were not."""
     good, bad = [], 0
     for r in rows:
-        _, o, h, low, c, v = r
-        if min(o, h, low, c) > 0 and v >= 0 and h + 1e-12 >= max(o, c) and low - 1e-12 <= min(o, c):
+        try:
+            ts, o, h, low, c, v = r
+            valid = (all(not isinstance(x, bool) and math.isfinite(x) for x in r)
+                     and 0 <= ts <= 10_000_000_000 and ts % 60 == 0
+                     and min(o, h, low, c) > 0 and v >= 0
+                     and h + 1e-12 >= max(o, c) and low - 1e-12 <= min(o, c))
+        except (ValueError, TypeError, OverflowError):
+            valid = False
+        if valid:
             good.append(list(r))
         else:
             bad += 1
@@ -267,7 +299,8 @@ def finalise(asset: str) -> pd.DataFrame:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0],
+                                 epilog="Example: python -m backtester.core.fetch_minutes_alt --plan")
     ap.add_argument("--assets", default=",".join(ASSET_VENUE), help="comma list (default: every mapped coin)")
     ap.add_argument("--years", type=float, default=7.0)
     ap.add_argument("--plan", action="store_true", help="print the coin -> venue plan and exit")
@@ -294,9 +327,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                                          log=lambda s: print(s, flush=True))
                 finalise(a)
                 print(f"{a} ({v}): done, {results[a]['rows']:,} rows, {results[a]['rejected']} rejected", flush=True)
-            except AltFetchError as exc:
-                errors[a] = str(exc)
-                print(f"{a} ({v}): FAILED {exc}", flush=True)
+            except Exception as exc:
+                # A failed worker must reach the CLI result; exception text may
+                # contain provider bytes or private local configuration.
+                errors[a] = f"collection failed ({type(exc).__name__}); inspect the cache and --help"
+                print(f"{a} ({v}): FAILED {errors[a]}", flush=True)
 
     threads = [threading.Thread(target=run_venue, args=(v, c)) for v, c in by_venue.items()]
     for th in threads:

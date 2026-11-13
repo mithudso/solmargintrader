@@ -1,0 +1,359 @@
+{
+  "schema": "oraclebot-full-source-review/v1",
+  "reviewer": "root",
+  "status": "FILE_PASSES_AND_LOCAL_VERIFICATION_COMPLETED_IN_SCOPE",
+  "created_at": "2026-11-12T17:57:26.407619+00:00",
+  "files": [
+    {
+      "path": "soltui/tests/test_learning_owner.py",
+      "sha256": "b882822295b2a48c757be7f7022c0fa0ae01e92a301d76b82db5548b3732f2b2",
+      "blob_sha": "cb3706a0b01f24baf764165cfec32d64d94758fc",
+      "lines": 664,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "b882822295b2a48c757be7f7022c0fa0ae01e92a301d76b82db5548b3732f2b2",
+            "start": 1,
+            "end": 240,
+            "lines": 664
+          },
+          {
+            "sha256": "b882822295b2a48c757be7f7022c0fa0ae01e92a301d76b82db5548b3732f2b2",
+            "start": 241,
+            "end": 460,
+            "lines": 664
+          },
+          {
+            "sha256": "b882822295b2a48c757be7f7022c0fa0ae01e92a301d76b82db5548b3732f2b2",
+            "start": 461,
+            "end": 664,
+            "lines": 664
+          }
+        ]
+      },
+      "semantic_note": "Full664lines. Per-test temp manager/authority/archive and explicit fixture clocks test 300labels/30trades/7actualdays, delayed-source exclusion, quota/cooldown, idempotent promotion/rollback and account preservation across crash. Actual Oracle fixture resolutions preserve correct and wrong ineligible forecast provenance; no mocked clock certifies elapsed production time.",
+      "passes": {
+        "C1": "ran: Full664lines. Per-test temp manager/authority/archive and explicit fixture clocks test 300labels/30trades/7actualdays, delayed-source exclusion, quota/cooldown, idempotent promotion/rollback and account preservation across crash. Actual Oracle fixture resolutions preserve correct and wrong ineligible forecast provenance; no mocked clock certifies elapsed production time.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_research_owner.py",
+      "sha256": "0e67d36e128cccdada929b7a8348720ffbca9202b61efcc9e49d2374b68fcb7b",
+      "blob_sha": "39b5d1d68bbaa47ab361e2087b31f7ac30dc2582",
+      "lines": 741,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "0e67d36e128cccdada929b7a8348720ffbca9202b61efcc9e49d2374b68fcb7b",
+            "start": 1,
+            "end": 230,
+            "lines": 741
+          },
+          {
+            "sha256": "0e67d36e128cccdada929b7a8348720ffbca9202b61efcc9e49d2374b68fcb7b",
+            "start": 231,
+            "end": 470,
+            "lines": 741
+          },
+          {
+            "sha256": "0e67d36e128cccdada929b7a8348720ffbca9202b61efcc9e49d2374b68fcb7b",
+            "start": 471,
+            "end": 741,
+            "lines": 741
+          }
+        ]
+      },
+      "semantic_note": "Full741lines. Exact protocol shape, inert describe/status, canonical registry binding, pre-read/optimizer fences, import exposure and receipt authenticity are tested with temporary SQLite/CSV roots. Public stdio subprocesses have30s deadlines. Explicit active participation and observed flock block freshness; these tests do not establish observed activity must stay sticky after lock release.",
+      "passes": {
+        "C1": "ran: Full741lines. Exact protocol shape, inert describe/status, canonical registry binding, pre-read/optimizer fences, import exposure and receipt authenticity are tested with temporary SQLite/CSV roots. Public stdio subprocesses have30s deadlines. Explicit active participation and observed flock block freshness; these tests do not establish observed activity must stay sticky after lock release.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_manager_evidence.py",
+      "sha256": "a2dd32e15a748f8d40ee94d9b89fffdb407d147786d83b168ca4a748f925a17c",
+      "blob_sha": "3206f3e9a0c5d246c14be93e1c7138cab6db2547",
+      "lines": 251,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "a2dd32e15a748f8d40ee94d9b89fffdb407d147786d83b168ca4a748f925a17c",
+            "start": 1,
+            "end": 251,
+            "lines": 251
+          }
+        ]
+      },
+      "semantic_note": "Full251lines. Both fresh import orders, shared canonical store identity, ordinal/trial accounting, immutable history and concurrent protected final reservations are asserted. Fresh import subprocess uses fixed source argv; its missing timeout is a low test robustness opportunity, not an observed production hang.",
+      "passes": {
+        "C1": "ran: Full251lines. Both fresh import orders, shared canonical store identity, ordinal/trial accounting, immutable history and concurrent protected final reservations are asserted. Fresh import subprocess uses fixed source argv; its missing timeout is a low test robustness opportunity, not an observed production hang.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_manager_controls.py",
+      "sha256": "51030d8dae234c46c9d80e5f859df196309f5f93c90b1f53c46f3cfb70bd1a66",
+      "blob_sha": "7eefdba24022040c1c5513eb55de118cd160bd81",
+      "lines": 472,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "51030d8dae234c46c9d80e5f859df196309f5f93c90b1f53c46f3cfb70bd1a66",
+            "start": 251,
+            "end": 472,
+            "lines": 472
+          },
+          {
+            "sha256": "51030d8dae234c46c9d80e5f859df196309f5f93c90b1f53c46f3cfb70bd1a66",
+            "start": 1,
+            "end": 250,
+            "lines": 472
+          }
+        ]
+      },
+      "semantic_note": "Full472lines. Saved incompatible state/journal bytes remain untouched, config/session/cost identities and request IDs fence controls, ambiguous pending requests cannot retry. Actual spawn-process and thread races yield one acknowledged start; ephemeral loopback API fixture preserves reply contract. Owned children/queues are cleaned in finally.",
+      "passes": {
+        "C1": "ran: Full472lines. Saved incompatible state/journal bytes remain untouched, config/session/cost identities and request IDs fence controls, ambiguous pending requests cannot retry. Actual spawn-process and thread races yield one acknowledged start; ephemeral loopback API fixture preserves reply contract. Owned children/queues are cleaned in finally.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_experiment_runner.py",
+      "sha256": "e253989dc4f27934fd2fd47ecf21139c2bde70a3cd801c9295c074887744d565",
+      "blob_sha": "903b35ad390bdcb37d91fbbcc98b1fbcf3080bf4",
+      "lines": 509,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "e253989dc4f27934fd2fd47ecf21139c2bde70a3cd801c9295c074887744d565",
+            "start": 261,
+            "end": 509,
+            "lines": 509
+          },
+          {
+            "sha256": "e253989dc4f27934fd2fd47ecf21139c2bde70a3cd801c9295c074887744d565",
+            "start": 1,
+            "end": 260,
+            "lines": 509
+          }
+        ]
+      },
+      "semantic_note": "Full509lines. Pure synthetic local bars, controlled simulator and fixed code fingerprint isolate lifecycle contracts. Runtime/cost/byte identity changes refuse reuse, final evidence is frozen/sealed, protected dates cannot be reclassified, cancellation/pause wins adoption, crash-after-save recovers one receipt. Actual killed child releases flock and preserves only committed cells; no paper result certifies venue execution.",
+      "passes": {
+        "C1": "ran: Full509lines. Pure synthetic local bars, controlled simulator and fixed code fingerprint isolate lifecycle contracts. Runtime/cost/byte identity changes refuse reuse, final evidence is frozen/sealed, protected dates cannot be reclassified, cancellation/pause wins adoption, crash-after-save recovers one receipt. Actual killed child releases flock and preserves only committed cells; no paper result certifies venue execution.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_experiment_interface.py",
+      "sha256": "7f7b0a81a01505b9df3e4d3e00de6b9c374a14f66e7bd65f8090b86854d83cf1",
+      "blob_sha": "c3a6e993ec2f86288a048755e3e0e32834eb967f",
+      "lines": 363,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "7f7b0a81a01505b9df3e4d3e00de6b9c374a14f66e7bd65f8090b86854d83cf1",
+            "start": 281,
+            "end": 363,
+            "lines": 363
+          },
+          {
+            "sha256": "7f7b0a81a01505b9df3e4d3e00de6b9c374a14f66e7bd65f8090b86854d83cf1",
+            "start": 1,
+            "end": 280,
+            "lines": 363
+          }
+        ]
+      },
+      "semantic_note": "Full363lines. Temporary stores and bounded fake local children verify pause/cancel durability, stderr/reaper recovery, lease/freshness and racing control boundaries, imported-result refusal and responsive headless Textual interface. Normal paths reap their owned processes. Failure-before-control cleanup is a low fixture robustness opportunity; no runtime hang or medium defect was demonstrated.",
+      "passes": {
+        "C1": "ran: Full363lines. Temporary stores and bounded fake local children verify pause/cancel durability, stderr/reaper recovery, lease/freshness and racing control boundaries, imported-result refusal and responsive headless Textual interface. Normal paths reap their owned processes. Failure-before-control cleanup is a low fixture robustness opportunity; no runtime hang or medium defect was demonstrated.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    },
+    {
+      "path": "soltui/tests/test_experiments.py",
+      "sha256": "807eea5a9db4ae54898de8f0d71a2a67cff4265caa8e4d65db0e8d7c4b219e57",
+      "blob_sha": "94e5d875838ce6b10a5ea52e9fee79f12fbc851a",
+      "lines": 496,
+      "read_evidence": {
+        "method": "full displayed unchanged source",
+        "ranges": [
+          {
+            "sha256": "807eea5a9db4ae54898de8f0d71a2a67cff4265caa8e4d65db0e8d7c4b219e57",
+            "start": 1,
+            "end": 280,
+            "lines": 496
+          },
+          {
+            "sha256": "807eea5a9db4ae54898de8f0d71a2a67cff4265caa8e4d65db0e8d7c4b219e57",
+            "start": 281,
+            "end": 496,
+            "lines": 496
+          }
+        ]
+      },
+      "semantic_note": "Full496lines. Temporary store tests immutable cells/artifacts, exploration/holdout reservation, sealing and spent-date chronology, one-time adoption and rollback lifecycle, sparse heatmaps, bounded search and strict import parsing. TradingView units, original values, bound dates, common context and native negative drawdown normalization remain explicit.",
+      "passes": {
+        "C1": "ran: Full496lines. Temporary store tests immutable cells/artifacts, exploration/holdout reservation, sealing and spent-date chronology, one-time adoption and rollback lifecycle, sparse heatmaps, bounded search and strict import parsing. TradingView units, original values, bound dates, common context and native negative drawdown normalization remain explicit.",
+        "C2": "ran: meaningful assertions, exact command/receipt/store contracts, unavailable versus zero and fixture-to-production boundaries reviewed for this file.",
+        "C3": "ran: failure paths and negative cases inspected. No medium-or-higher test defect demonstrated; low fixture robustness opportunities are stated in the semantic note.",
+        "S1": "ran: fixed argv and local fixture paths, temporary authority/manager ownership, SQL parameterization and no actual signing/orders/provider credentials considered where present.",
+        "S2": "ran: child/thread/SQLite/file lifetimes, deadlines and finally cleanup inspected. Missing deadline or failure cleanup opportunities remain explicitly qualified as low in applicable semantic notes.",
+        "S3": "ran: input shape, nonfinite/bool checks, evidence/code/runtime identity and malformed-state assertions inspected where present; no new scalar validator implemented in tests.",
+        "S4": "ran: actual current macOS/Python3.13 and Textual test APIs considered. Spawn fixtures passed locally; they do not certify another OS or installed service.",
+        "S5": "ran: tests distinguish status, refusals and sanitized errors from raw provider payloads. Synthetic canaries remain test literals, and temporary journals remain observable.",
+        "P1": "ran: fixed fixture sizes, candidate/window work and explicit waits inspected. No unbounded production workload or new benchmark was introduced.",
+        "P2": "ran: existing race/replay/reservation/control assertions inspected. Where present, real temp-process locks remain actual OS fixtures rather than weaker mocks.",
+        "M1": "ran: test names, helper scope, source labels and assertion intent inspected. No test source edits or formatting changes made in this cohort.",
+        "M2": "ran: existing research_fixtures, temporary stores, shared data writers and explicit simulator injection reused. No duplicate production implementation added.",
+        "M3": "N/A per file: whole-repository architecture/central-settings assessment belongs to full_repo_health.",
+        "M4": "ran: fixture comments and source-certification limits inspected. Historical fixture times are not production evidence.",
+        "T1": "ran: all file assertions and error paths read. Qualified seven-module batch144tests19.194s exits0 with0outbound attempts and0skips; source parses and fatal Ruff checks pass.",
+        "T2": "N/A per file: package pins and dependency/supply-chain review is whole-repository scope.",
+        "T3": "ran: current file passes fatal Ruff selection E9,F63,F7,F82 and ASTparse. General inherited style and repository CI are assessed separately.",
+        "T4": "ran: fixture costs inspected. Actual contention, process death, lock release and headless responsiveness waits remain meaningful. Mutable fixture databases stay per-test, while bounded pure fixture setup remains local.",
+        "M5": "N/A: test module. Actual stdio/headless CLI calls are test coverage; production CLI ergonomic assessment belongs to its source owner."
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "7explicitmodules using main-guarded private harness with qualified source PYTHONPATH and outboundconnectguard",
+      "tests": 144,
+      "seconds": 19.194,
+      "exit_code": 0,
+      "outbound_attempts": 0,
+      "skips": 0,
+      "log": "/tmp/oraclebot-soltui-root-batch2-final.log"
+    },
+    {
+      "command": "Ruff E9,F63,F7,F82 over exact7files and ASTparse",
+      "exit_code": 0
+    },
+    {
+      "command": "initial private harness attempt",
+      "exit_code": 1,
+      "tests": 144,
+      "error": "multiprocessing spawn recursively re-executed unguarded main test runner; corrected private harness only",
+      "log": "/tmp/oraclebot-soltui-root-batch2-initial.log",
+      "counted_as_passing": false
+    }
+  ],
+  "limits": [
+    "No test or production source changed in this cohort. Two low fixture robustness opportunities remain in notes.",
+    "Currentprocess outboundconnectguard refuses AF_INET/6 exceptloopback; fresh child protocol/spawn tests inherit temporary owner roots and use fixed local source fixtures. This is not global OS network isolation.",
+    "Backtester CAGR overflow warning surfaced in synthetic learningfixtures; production owner notified for final math classification.",
+    "No actual owner install/service/arm state changed, no signing/orders/provider market requests/inference/embeddings.",
+    "Final production source freeze and integrated suite remain outstanding."
+  ]
+}

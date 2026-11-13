@@ -24,21 +24,25 @@ printjson(
 
 print("\n=== what reproduces the run: the cost and execution settings ===");
 const run = db.backtest_runs.findOne();
-printjson({
-  run: run._id,
-  bars: run.manifest.bar_count,
-  fill_delay: run.manifest.fill_delay,
-  leverage: run.manifest.leverage,
-  costs: run.manifest.costs,
-  data_checksum: run.manifest.data_checksum,
-  periods_per_year: run.manifest.periods_per_year,
-  sharpe_convention: run.manifest.sharpe_convention,
-});
+if (run) {
+  printjson({
+    run: run._id,
+    bars: run.manifest.bar_count,
+    fill_delay: run.manifest.fill_delay,
+    leverage: run.manifest.leverage,
+    costs: run.manifest.costs,
+    data_checksum: run.manifest.data_checksum,
+    periods_per_year: run.manifest.periods_per_year,
+    sharpe_convention: run.manifest.sharpe_convention,
+  });
 
-print("\n=== per-strategy results, buy-and-hold included on purpose ===");
-// A strategy that cannot beat buy-and-hold has not earned anything, so the
-// baseline stays in the table rather than being filtered out of the comparison.
-printjson(run.results);
+  print("\n=== per-strategy results, buy-and-hold included on purpose ===");
+  // A strategy that cannot beat buy-and-hold has not earned anything, so the
+  // baseline stays in the table rather than being filtered out of the comparison.
+  printjson(run.results);
+} else {
+  print("No backtest run is loaded.");
+}
 
 print("\n=== equity: start, end and worst drawdown per curve ===");
 // $setWindowFields with an unbounded preceding window gives the running peak,

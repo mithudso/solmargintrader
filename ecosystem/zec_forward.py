@@ -570,7 +570,11 @@ def install_service(home, python=sys.executable):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Example: python -m ecosystem.zec_forward "
+        "--home /path/to/existing-cohort status (read-only).",
+    )
     parser.add_argument("--home", type=Path, required=True)
     commands = parser.add_subparsers(dest="command", required=True)
     init = commands.add_parser("init")

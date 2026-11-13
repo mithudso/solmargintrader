@@ -1,0 +1,879 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "schema_version": 1,
+  "observed_at": "2026-11-12T20:48:29.795454+00:00",
+  "repository": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "stage": "read_only_final_repo_scope_disposition_supplement",
+  "status": "partial",
+  "disposition_supplement_complete": true,
+  "repository_health": "PARTIAL_WITH_PRESERVED_MEDIUM_RESIDUALS_AND_PENDING_FINAL_INTEGRATION_GATES",
+  "source_receipt_bindings": [
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+      "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+      "bytes": 43625,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": "2026-11-12T18:50:43.614101+00:00",
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+      "bytes": 4461,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": null,
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+      "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+      "bytes": 26377,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": "2026-11-12T18:58:01.014801+00:00",
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/jsonalias-notice-receipt.json",
+      "receipt_sha256": "0112097e14c09e197fc84692eff380ac61debf44a4cfe095cf7e903ce326ec94",
+      "bytes": 469,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": null,
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/operation-inventory-generator.json",
+      "receipt_sha256": "4d9ed974a9a1dac84a6092c72a9cfad707687017f39c87fa5422bac3dbe4329a",
+      "bytes": 9483,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": null,
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "receipt_sha256": "4ff58af8626e12f7125020deaf71e27b759ed6e242f916e8e62cea057e2ca0db",
+      "bytes": 7527,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": "2026-11-12T19:35:22.539927+00:00",
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    },
+    {
+      "source": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "receipt_sha256": "0dd6186aa949efe470966541ca33ab500d070b058ef8ae862e0dbd31e25a7177",
+      "bytes": 29609,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "receipt_observed_at": "2026-11-12T19:29:06.776258+00:00",
+      "inspection": "read-only JSON parse and exact byte hash; no source review or check execution credit"
+    }
+  ],
+  "passes": [
+    {
+      "pass": "M3",
+      "final_status": "ASSESSED_WITH_OPEN_MEDIUM_ARCHITECTURE_RESIDUALS",
+      "highest_unresolved_severity": "Medium",
+      "final_disposition": "The static operation/tool inventories now exist and their constrained metadata/parser behavior has independent accepted evidence. That resolves the missing-documentation portion of the earlier operations finding. It does not implement a common runtime configuration/error/remediation/sink architecture.",
+      "stale_status_resolutions": [
+        {
+          "id": "M3-OPERATIONS-STANDARDS",
+          "previous": "Both operation/tool inventory documents absent; common operations/error standards incomplete.",
+          "final": "PARTIALLY_RESOLVED: missing-docs/static inventory gap closed at current bound bytes; common runtime portions remain open.",
+          "resolved_scope": {
+            "operations": 221,
+            "tools": 31,
+            "bound_sources": 28,
+            "inventory_scope": "Three authoritative command registries, declared Python entrypoints, explicit source tools and existing npm scripts."
+          },
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/operation-inventory-generator.json",
+              "receipt_sha256": "4d9ed974a9a1dac84a6092c72a9cfad707687017f39c87fa5422bac3dbe4329a",
+              "json_pointer": "/outputs",
+              "supported_claim": "Generated bounded docs inventory counts and scope."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+              "receipt_sha256": "4ff58af8626e12f7125020deaf71e27b759ed6e242f916e8e62cea057e2ca0db",
+              "json_pointer": "/checks",
+              "supported_claim": "Six immutable refusal controls and11permanent tests passed, initial failures preserved; source/output identity and no-write check controls passed."
+            }
+          ]
+        }
+      ],
+      "unresolved_findings": [
+        {
+          "id": "M3-CENTRAL-SETTINGS",
+          "severity": "Medium",
+          "status": "OPEN_DESIGN_BACKLOG",
+          "detail": "Deployment/read-tuning settings remain spread across components rather than consistently exported through typed component settings boundaries. Preserve code-enforced financial/security caps rather than making them freely editable.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/passes/0/findings/0",
+              "supported_claim": "Original centralized-settings residual and concrete component examples remain unclosed by later inventory/toolchain receipts."
+            }
+          ]
+        },
+        {
+          "id": "M3-OPERATIONS-STANDARDS",
+          "severity": "Medium",
+          "status": "OPEN_RUNTIME_ARCHITECTURE_BACKLOG_AFTER_DOCS_MITIGATION",
+          "unresolved_dimensions": [
+            "Shared runtime error schema and operation-to-error metadata",
+            "Common remediation map with operation-specific safe human actions",
+            "Common runtime diagnostic/error sink and its integration proof"
+          ],
+          "detail": "Static navigation/help/gate metadata is not shared runtime dispatch, error handling, remediation or sink implementation. No generic automatic retry is justified for ambiguous financial submissions. The common-sink requirement is carried forward per parent scope; the named receipts supply no implementation/acceptance proof and this supplement makes no new exhaustive absence claim.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/passes/0/findings/1",
+              "supported_claim": "Original common operations/error/remediation architecture finding."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/operation-inventory-generator.json",
+              "receipt_sha256": "4d9ed974a9a1dac84a6092c72a9cfad707687017f39c87fa5422bac3dbe4329a",
+              "json_pointer": "/limits/0",
+              "supported_claim": "Explicitly excludes runtime financial dispatch, shared error schema, retry and remediation."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+              "receipt_sha256": "4ff58af8626e12f7125020deaf71e27b759ed6e242f916e8e62cea057e2ca0db",
+              "json_pointer": "/limits",
+              "supported_claim": "Accepts only constrained docs generator/test/parser metadata behavior. No runtime/live handler or exhaustive external-call proof."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        "No new import-graph/cycle/dead-module analysis or code review was performed.",
+        "Inventory coverage is bounded, not an exhaustive internal/external operation call graph.",
+        "Source/help/gate references do not establish loaded installation, signing, production readiness or hosted/local parity."
+      ]
+    },
+    {
+      "pass": "T2",
+      "final_status": "PARTIAL_SUPPLY_CHAIN_VERIFICATION_WITH_EXPLICIT_RESIDUALS",
+      "highest_unresolved_severity": "Medium",
+      "final_disposition": "The mutable supervisor reference, ambiguous historical root freeze and native lock-consistency gaps are resolved within their metadata scopes. Current advisory results and attribution mitigation improve evidence but do not provide universal supply-chain or legal clearance.",
+      "stale_status_resolutions": [
+        {
+          "id": "T2-MUTABLE-GIT",
+          "previous": "OPEN: private supervisor requirement follows mutable GitHEAD.",
+          "final": "RESOLVED_IMMUTABLE_REFERENCE_ONLY",
+          "detail": "Current SolTUI requirement pins macos-launchd-supervisor to6379b2299cf01a17d57a01a9cdd5e3788ad2837e. Prior bounded remote/reference/project metadata checks completed exit0; no package install or loaded/native acceptance claimed.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/supervisor_pin",
+              "supported_claim": "Verified immutable supervisor project/ref, successful completed metadata checks, explicit no-install/native-acceptance limit."
+            }
+          ]
+        },
+        {
+          "id": "T2-SCOPE-OF-ROOT-FREEZE",
+          "previous": "NEEDS_INTENT_AND_DOCUMENTATION: broad root freeze conflicts with supported component ranges if used as installer.",
+          "final": "RESOLVED_BY_HISTORICAL_EXPORT_CLASSIFICATION",
+          "detail": "Current root requirements explicitly says historical environment export, retained for provenance rather than supported installation/resolution, with component-scoped installation and native lock guidance. Old version differences remain historical data; they do not establish an active installed incompatibility.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/files/1",
+              "supported_claim": "Root historical-export metadata fix at current matching SHA256."
+            }
+          ]
+        },
+        {
+          "id": "T2-LIQUIDITY-LOCK-ENFORCEMENT",
+          "previous": "OPEN: LiquidityCI may silently re-resolve dependencies.",
+          "final": "RESOLVED_SUPPORTED_LOCK_CONSISTENCY_SCOPE",
+          "detail": "Both nativeCI jobs now use uv --locked enforcement. Executor and Liquidity offline lock checks completed exit0 after first-party-version-only changes; all third-party lock records were unchanged. Do not demand a literal --frozen token when --locked supplies the recorded refusal contract.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/locks",
+              "supported_claim": "Executor17package and Liquidity52package lock refreshes changed only first-party project versions; offline checks0 and no environment sync/install."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/checks",
+              "supported_claim": "TOML/YAML parse, third-party lock equality and both completed offline lock checks passed."
+            }
+          ]
+        },
+        {
+          "id": "T2-ADVISORY-UNUSED-LICENSE-COVERAGE",
+          "previous": "Broad NOT_FULLY_VERIFIED group without later use/license/advisory refinement.",
+          "final": "REFINED_PARTIAL_COVERAGE",
+          "detail": "All declared direct dependencies in seven supported component manifests have mechanical import-presence evidence; no broad dependency deletion is justified. Liquidity now has a completed isolated audit in addition to shared Python, website and newroot-devgraph checks. Remaining scopes stay explicit.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+              "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+              "json_pointer": "/dependency_use",
+              "supported_claim": "Seven supported components have direct dependency import-presence evidence with mechanical-analysis limits."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+              "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+              "json_pointer": "/liquidity_advisory_check",
+              "supported_claim": "Actual completed exit0 for50distributions/49public audit entries/0listed vulnerabilities; one local aero-lp skipped."
+            }
+          ]
+        },
+        {
+          "id": "T2-JSONALIAS-NOTICE-PROVENANCE",
+          "previous": "UPSTREAM_LICENSE_IDENTIFIED_ARTIFACT_NOTICE_GAP_REMAINS.",
+          "final": "LOCAL_ATTRIBUTION_MITIGATED_UPSTREAM_ARTIFACT_GAP_REMAINS",
+          "detail": "Current third-party notice includes the exact upstream MIT text with preserved SHA256002c2696d92b5c8cf956c11072baa58eaf9f6ade995c031ea635c6a1ee342ad1. Installed jsonalias0.1.1 source was byte-identical to immutable MIT-licensed upstream source, but upstream added the license after the0.1.1wheel. This does not retroactively rewrite that artifact or provide blanket legal clearance. Exact solders->jsonalias pin remains unchanged.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+              "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+              "json_pointer": "/jsonalias",
+              "supported_claim": "Immutable upstream source/license identity and packaging chronology; no incompatible license established."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/jsonalias-notice-receipt.json",
+              "receipt_sha256": "0112097e14c09e197fc84692eff380ac61debf44a4cfe095cf7e903ce326ec94",
+              "json_pointer": "",
+              "supported_claim": "Exact local license preservation and unchanged dependency constraints; current notice byte hash matches."
+            }
+          ]
+        }
+      ],
+      "completed_advisory_evidence": [
+        {
+          "scope": "shared isolated Python environment",
+          "completed_exit": 0,
+          "distributions": 85,
+          "publicly_auditable": 79,
+          "listed_vulnerabilities": 0,
+          "first_party_skips": 6,
+          "evidence": {
+            "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+            "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+            "json_pointer": "/passes/1/current_advisory_result/python",
+            "supported_claim": "Previously completed pip-audit result; not rerun by this supplement."
+          }
+        },
+        {
+          "scope": "website npm lock graph",
+          "completed_exit": 0,
+          "dependencies": 93,
+          "listed_vulnerabilities": 0,
+          "evidence": {
+            "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+            "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+            "json_pointer": "/passes/1/current_advisory_result/website",
+            "supported_claim": "Previously completed website npm audit result."
+          }
+        },
+        {
+          "scope": "isolated Liquidity environment",
+          "completed_exit": 0,
+          "distributions": 50,
+          "publicly_auditable": 49,
+          "listed_vulnerabilities": 0,
+          "first_party_skips": 1,
+          "evidence": {
+            "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+            "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+            "json_pointer": "/liquidity_advisory_check",
+            "supported_claim": "Completed separate Liquidity advisory check and retired/deployed-state limit."
+          }
+        },
+        {
+          "scope": "new root development graph",
+          "completed_exit": 0,
+          "dependencies": 108,
+          "listed_vulnerabilities": 0,
+          "evidence": {
+            "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+            "receipt_sha256": "0dd6186aa949efe470966541ca33ab500d070b058ef8ae862e0dbd31e25a7177",
+            "json_pointer": "/checks/1",
+            "supported_claim": "Completed patched root dev dependency audit; earlier vulnerable graph retained as failed attempt."
+          }
+        },
+        {
+          "scope": "extension npm audit attempt",
+          "completed_exit": 1,
+          "error": "ENOLOCK",
+          "credited_as_pass": false,
+          "applicability": "Extension has no npm runtime/dev/optional dependency graph; do not create an artificial graph to hide the nonzero attempt.",
+          "evidence": {
+            "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+            "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+            "json_pointer": "/passes/1/current_advisory_result/extension",
+            "supported_claim": "Original nonzero attempt remains explicit."
+          }
+        }
+      ],
+      "unresolved_findings": [
+        {
+          "id": "T2-ADVISORY-UNUSED-LICENSE-COVERAGE",
+          "severity": "Medium",
+          "status": "NOT_UNIVERSALLY_VERIFIED",
+          "detail": "First-party/private packages skipped by public advisory lookup require their separate source review. Mechanical direct-import evidence does not establish every optional/test/build/CLI/transitive dependency use. Transitive license obligations, native deployed resolution and complete latest-version coverage remain unqualified.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+              "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+              "json_pointer": "/license_metadata",
+              "supported_claim": "Five first-party missing-metadata entries and one public omission are not evidence of incompatible licensing; transitive obligations not certified."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/dependency-supplement.json",
+              "receipt_sha256": "1155db632586879ea17e358bdfea21120f3e582d91ed4f6e7d61636a05ddd673",
+              "json_pointer": "/bounded_current_release_metadata",
+              "supported_claim": "Only10direct public packages checked; newer mcp/solders releases exceed deliberate supported constraints and are not automatic upgrade/security findings."
+            }
+          ]
+        },
+        {
+          "id": "T2-JSONALIAS-NOTICE-PROVENANCE",
+          "severity": "Medium",
+          "status": "UPSTREAM_ARTIFACT_PACKAGING_AND_REDISTRIBUTION_QUALIFICATION_REMAINS",
+          "detail": "Repository notice mitigation is complete; upstream0.1.1artifact notice/provenance and context-specific redistribution obligations remain explicit. No independent jsonalias upgrade against the solders exact pin or frozen environment mutation is authorized.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/jsonalias-notice-receipt.json",
+              "receipt_sha256": "0112097e14c09e197fc84692eff380ac61debf44a4cfe095cf7e903ce326ec94",
+              "json_pointer": "/limits",
+              "supported_claim": "Explicit artifact packaging/provenance/legal limit after local attribution mitigation."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        "Advisories are as-of their recorded executions, not a new network/advisory query.",
+        "No new package install, resolver, upgrade, environment sync, native/loaded acceptance or legal opinion occurred.",
+        "No named dependency was established as vulnerable merely because a constrained newer version or missing license metadata exists."
+      ]
+    },
+    {
+      "pass": "T3",
+      "final_status": "TOOLING_SCAFFOLD_RESOLVED_WITH_SCOPE_AND_CI_LIMITS",
+      "highest_unresolved_severity": "Medium",
+      "final_disposition": "The earlier absent/deterministic Ruff and JavaScript lint/type-scaffold findings are superseded by completed bounded metadata/local-tool checks. The scoped checker is incremental, remoteCI and hook activation remain separate, and universal immutable dependency resolution is not established.",
+      "stale_status_resolutions": [
+        {
+          "id": "T3-DETERMINISTIC-LINT-CONFIG",
+          "previous": "OPEN: nonnativePython lint depends on tool defaults/unpinned Ruff.",
+          "final": "RESOLVED_EXPLICIT_BASELINE_SCAFFOLD",
+          "detail": "Current committed ruff.toml preserves an explicit407-rule py311 baseline; affectedCI installs ruff==0.17.4. Before/final lint checks completed exit0/0diagnostics. Failed generic E/F and py313 intermediate policies were discarded without source churn; stricter native component policies stay separate.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/checks/0",
+              "supported_claim": "Recorded before/final lint0,0diagnostics,407exact enabled codes."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/failed_intermediate_attempts",
+              "supported_claim": "Discarded policies and stale-lock failed checks preserved."
+            }
+          ]
+        },
+        {
+          "id": "T3-JS-TYPE-CHECKING",
+          "previous": "OPEN_TOOLING_GAP: no committed JS linter/type checker identified.",
+          "final": "RESOLVED_BOUNDED_LINT_AND_INCREMENTAL_STRICT_CHECKJS_SCAFFOLD",
+          "detail": "Root locked devtools pin ESLint9.39.5, globals17.14.0 and TypeScript7.0.2. Explicit correctness lint and strict/noEmit/checkJs cover the named forecast helper and compile-only typed callers, not all JavaScript. Locked install/check0; intentional undefined-binding/type-negative probes exit1 as expected; annotation runtimeAST equality0.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+              "receipt_sha256": "0dd6186aa949efe470966541ca33ab500d070b058ef8ae862e0dbd31e25a7177",
+              "json_pointer": "/checks",
+              "supported_claim": "Completed local locked install/lint/typecheck and real negative/equivalence controls."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+              "receipt_sha256": "0dd6186aa949efe470966541ca33ab500d070b058ef8ae862e0dbd31e25a7177",
+              "json_pointer": "/metadata",
+              "supported_claim": "Pinned devgraph/config/workflow metadata; one later docs binding is explicitly uncredited below."
+            }
+          ]
+        },
+        {
+          "id": "T3-PINNING",
+          "previous": "CROSS_REFERENCE_T2: mutable supervisor and nonlocked Liquidity plus broader reproducibility limits.",
+          "final": "PARTIALLY_RESOLVED_REMAINING_BROAD_RUNTIME_POLICY",
+          "detail": "Supervisor Git pin and native lock consistency closed by the bounded toolchain receipt. Broad supported dependency ranges and remaining mutable deployment/runtime labels still prevent a universal reproducibility claim.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/supervisor_pin",
+              "supported_claim": "Immutable supervisor pin closure."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+              "receipt_sha256": "5d5a96511c09a4998501598df0f7af610fd445e2745986dab0a748e65c7850d6",
+              "json_pointer": "/locks",
+              "supported_claim": "Bounded native lock closure."
+            },
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/passes/2/findings/2",
+              "supported_claim": "Original broader version-floor and mutable mongo:8-tag limitation remains unless separately qualified."
+            }
+          ]
+        }
+      ],
+      "unresolved_findings": [
+        {
+          "id": "T3-PINNING",
+          "severity": "Medium",
+          "status": "PARTIAL_REPRODUCIBILITY_SCOPE",
+          "detail": "A deliberate supported component floor/range is not an immutable aggregate environment. Mutable deployment labels such as the carried mongo:8CI image and unqualified resolutions remain outside the bounded fixes. No new vulnerability or automatic update requirement is inferred.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/passes/2/findings/2",
+              "supported_claim": "Carried broader reproducibility residual, refined by resolved pin/lock subsets."
+            }
+          ]
+        },
+        {
+          "id": "T3-PRECOMMIT-ACTIVATION",
+          "severity": "Info",
+          "status": "UNPROVEN_FROM_SUPPLIED_RECEIPTS",
+          "detail": "The original current-worktree core.hooksPath query exited1 without a setting. No later supplied receipt establishes activation. Parent may use explicit required gates for delivery; this task did not activate or execute hooks.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/checks_performed_this_task/0",
+              "supported_claim": "Original read-only hook-setting observation; not a new current query."
+            }
+          ]
+        },
+        {
+          "id": "T3-REMOTE-CI-ACCEPTANCE",
+          "severity": "Info",
+          "status": "PENDING_MERGED_FINAL_TIP",
+          "detail": "LocalNode26.13.0 checks do not establish workflowNode22 behavior. Required remoteCI and installed/deployed acceptance remain parent/root gates after final integration.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+              "receipt_sha256": "0dd6186aa949efe470966541ca33ab500d070b058ef8ae862e0dbd31e25a7177",
+              "json_pointer": "/limits/1",
+              "supported_claim": "Explicit local-versus-workflow Node runtime limit."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        "No whole-repository lint/type/security clearance or formatter adoption is inferred from bounded scaffold checks.",
+        "Existing normal-PR changed-path policy and opt-in four-runner full SolTUI policy are intentional documented coverage boundaries.",
+        "The current docs/TESTING.md hash differs from the JavaScript receipt metadata binding; later doc bytes receive no inherited source/document review credit from that receipt. Tool/config/source hashes and inventory outputs checked here otherwise match their stated records."
+      ]
+    },
+    {
+      "pass": "T4",
+      "final_status": "BLOCKED (ambiguous intent)",
+      "highest_unresolved_severity": "Medium",
+      "final_disposition": "Universal thread-parallel execution or mutable setup hoisting remains blocked because behavioral equivalence is unproved. Preserve process-separated shards, per-case mutable fixtures and real process/cancellation acceptance. Later compile-only checks and a one-case owned process-pool gate do not close the general equivalence requirement.",
+      "stale_status_resolutions": [
+        {
+          "id": "T4-FIXTURE-POOL-LOCAL-BOUNDARY",
+          "previous": "Initial fixture could attempt outbound DNS despite functional assertions.",
+          "final": "RESOLVED_WITHIN_EXACT_ONE_CASE_SCOPE_ONLY",
+          "detail": "The source-bound fixture still uses actual Textual capture and a two-worker ProcessPoolExecutor; shared offline read fixtures replaced live readers. Recorded owned-listener guard gate:1test,5.348seconds,exit0,zero blocked boundaries,4inherited child processes,zero leftover children. InitialRED remains preserved.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+              "receipt_sha256": "0dd6186aa949efe470966541ca33ab500d070b058ef8ae862e0dbd31e25a7177",
+              "json_pointer": "/checks/5",
+              "supported_claim": "Exact bounded completed pool/child-lifecycle acceptance; not a full-suite or performance equivalence result."
+            }
+          ]
+        }
+      ],
+      "unresolved_findings": [
+        {
+          "id": "T4-UNIVERSAL-PARALLEL-EQUIVALENCE",
+          "severity": "Medium",
+          "status": "BLOCKED (ambiguous intent)",
+          "detail": "UI/lifecycle tests mutate module settings, environments, registry/client mocks, process leases and asynchronous state. Neither blind thread parallelization nor setup hoisting is proven equivalent. No tests/assertions may be removed/merged to manufacture speed.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/passes/3/findings/0",
+              "supported_claim": "Original concrete mutable-fixture equivalence barrier and safe process-separated sharding guidance."
+            }
+          ]
+        },
+        {
+          "id": "T4-LATENCY-OPTIMIZATION",
+          "severity": "Info",
+          "status": "PROFILED_CANDIDATES_ONLY",
+          "detail": "Historical unequal-scope durations identify candidates, not an equal-coverage speedup. No new performance benchmark or temporal equivalence run occurred.",
+          "evidence": [
+            {
+              "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/repo-scope-assessment.json",
+              "receipt_sha256": "cdac4f8d96f77b351490a714a6912dd8e69b040cae400c809f790e24f87b5f79",
+              "json_pointer": "/passes/3/findings/1",
+              "supported_claim": "Historical timing evidence with unequal scopes and explicit equivalence limits."
+            }
+          ]
+        }
+      ],
+      "limits": [
+        "No new test, timer, mock, fixture or runner was modified or executed in this supplement.",
+        "The historic1477case baseline and guarded diagnostic runs are not final merged-source acceptance or a zero-owner-operation proof.",
+        "The held1120backtester/193Oracle/249ecosystem suites have not been started by this task. A stale receipt saying the full SolTUI suite is actively running is not a final pass.",
+        "No equal-coverage performance improvement, universal parallel safety, final full-suite pass or repository-wide convergence is claimed."
+      ]
+    }
+  ],
+  "current_byte_binding_checks": [
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.github/workflows/ci.yml",
+      "recorded_sha256": "db3ad82ad9bab8611ff248bbf5099cd5e2004f33934525cfc6a56f27458300f7",
+      "current_sha256": "db3ad82ad9bab8611ff248bbf5099cd5e2004f33934525cfc6a56f27458300f7",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/requirements.txt",
+      "recorded_sha256": "e2ca6687ef1e90401901f5993efa58a7cb17b01f2f9de9e29f6a273b15a9682e",
+      "current_sha256": "e2ca6687ef1e90401901f5993efa58a7cb17b01f2f9de9e29f6a273b15a9682e",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/requirements.txt",
+      "recorded_sha256": "5773547bd1bcdccbfd75b134f99ae603c19e71da90e91797d97162142bedfb57",
+      "current_sha256": "5773547bd1bcdccbfd75b134f99ae603c19e71da90e91797d97162142bedfb57",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/uv.lock",
+      "recorded_sha256": "54de485130e6adac5fbf5572e84224bd95bd1a105f6dc8e3ab9ce84f0e909903",
+      "current_sha256": "54de485130e6adac5fbf5572e84224bd95bd1a105f6dc8e3ab9ce84f0e909903",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/uv.lock",
+      "recorded_sha256": "ccd81b5d8d70300f2353d72724fd1ce924ca4f94bd7a995dbc3082aa2fa9f4f7",
+      "current_sha256": "ccd81b5d8d70300f2353d72724fd1ce924ca4f94bd7a995dbc3082aa2fa9f4f7",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/final-toolchain-fixes.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ruff.toml",
+      "recorded_sha256": "67bdded7dc8514e6c2d65dedca5af629e95327284057b00c18e1228bbc91b6a0",
+      "current_sha256": "67bdded7dc8514e6c2d65dedca5af629e95327284057b00c18e1228bbc91b6a0",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/eslint.config.mjs",
+      "recorded_sha256": "be4fd528212479fa9d6b77075fd5cac60d109652005577f69735d070bc3a8e28",
+      "current_sha256": "be4fd528212479fa9d6b77075fd5cac60d109652005577f69735d070bc3a8e28",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/typecheck/evidence-contract.ts",
+      "recorded_sha256": "bdb6c901400f3c2b378060cab4691a724983a29d67fbeee87863599e16e1b793",
+      "current_sha256": "bdb6c901400f3c2b378060cab4691a724983a29d67fbeee87863599e16e1b793",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/website/public/evidence.js",
+      "recorded_sha256": "971e90750213ef5b71127f5f1ed9e799e3db443a16677890ae38905035a07a80",
+      "current_sha256": "971e90750213ef5b71127f5f1ed9e799e3db443a16677890ae38905035a07a80",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/storage/fileStore.js",
+      "recorded_sha256": "66202ae5760e9f67f1ae497f51fcb4c934edc458cb9d7bfd5346adde27db2408",
+      "current_sha256": "66202ae5760e9f67f1ae497f51fcb4c934edc458cb9d7bfd5346adde27db2408",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/tests/test_compound_pool_capture.py",
+      "recorded_sha256": "08ade87b9aa9eb1e4be757443818c392e0ca205c0e0f875b4d4226c65f0525dc",
+      "current_sha256": "08ade87b9aa9eb1e4be757443818c392e0ca205c0e0f875b4d4226c65f0525dc",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/package.json",
+      "recorded_sha256": "59275dedc85df665d7ec27fc47d7c42c3fa956342219e667a0a7a8b20cca8882",
+      "current_sha256": "59275dedc85df665d7ec27fc47d7c42c3fa956342219e667a0a7a8b20cca8882",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/package-lock.json",
+      "recorded_sha256": "c386d5dcc1a5dd144e9f41e302d90bac437071e350651180aaf09984bbc790f1",
+      "current_sha256": "c386d5dcc1a5dd144e9f41e302d90bac437071e350651180aaf09984bbc790f1",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/tsconfig.checkjs.json",
+      "recorded_sha256": "a146541027f053de4c29622738ae556ee93be3451731283d64ee225d4c498565",
+      "current_sha256": "a146541027f053de4c29622738ae556ee93be3451731283d64ee225d4c498565",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.github/workflows/javascript-quality.yml",
+      "recorded_sha256": "fe3467d4170b63e34c19321640ad30db74eec839a95c1a869e64cf435b4e3dd3",
+      "current_sha256": "fe3467d4170b63e34c19321640ad30db74eec839a95c1a869e64cf435b4e3dd3",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/TESTING.md",
+      "recorded_sha256": "395afda40f5bcc4ef53791b92b262bdd8ee714e1b4439d8b3ce21996230a9254",
+      "current_sha256": "ab8f6a675d42264208613f4f27114cd20a0735039f2d18b4e0a61e575c162682",
+      "match": false,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/build_operation_inventories.py",
+      "recorded_sha256": "5594594c6f425718fcc3d971e8b93a7219cf43f8b5116a854d57159c0993c669",
+      "current_sha256": "5594594c6f425718fcc3d971e8b93a7219cf43f8b5116a854d57159c0993c669",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/tests/test_operation_inventories.py",
+      "recorded_sha256": "0b8da9d4f13cd7b8a3ca0890940fa067c02f050d2ae5284d69e5d31973a57ec7",
+      "current_sha256": "0b8da9d4f13cd7b8a3ca0890940fa067c02f050d2ae5284d69e5d31973a57ec7",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/extension/src/core/commands.js",
+      "recorded_sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107",
+      "current_sha256": "2478c2930e280ef4b4bcb9b4632e2e38540c077bb587659ef0f551b7ef757107",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/commands.py",
+      "recorded_sha256": "dc5220b287146966856f85e653472d5ac3290109d81333dddc37205935233b1d",
+      "current_sha256": "dc5220b287146966856f85e653472d5ac3290109d81333dddc37205935233b1d",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/src/executor/registry.py",
+      "recorded_sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c",
+      "current_sha256": "c5c5506adcf712b6780d2676b81f078e93f13e278acef4257f22348450ca333c",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/pyproject.toml",
+      "recorded_sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4",
+      "current_sha256": "d5f9d3b02e49ea4821a93c4b11a60eed0c646363ab18204e9af0ef215ee2a2b4",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/oracle/pyproject.toml",
+      "recorded_sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec",
+      "current_sha256": "4e226e4cd773e9d47e0817d98197415ca58038de8a54809aa1cbf2a3b87a5dec",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/botmanager/pyproject.toml",
+      "recorded_sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6",
+      "current_sha256": "28295b3411159982e4f4b19dbd8369f1e70068ad9094fc5dae5ac674179ef2e6",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/soltui/pyproject.toml",
+      "recorded_sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e",
+      "current_sha256": "d279ca16788c58e113a15996827db5d78cfd94eed87005a0daa647f787de0d0e",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pyproject.toml",
+      "recorded_sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2",
+      "current_sha256": "9a39f94b3f53e9bc401e08b4cc737de12e505e89c174a3923ffa99b889a54af2",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/liquidity/pyproject.toml",
+      "recorded_sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5",
+      "current_sha256": "41942bab72fca03d8837a2a109d9cf6db1c88140bf7fdbb0dffac4f7048377c5",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/executor/pyproject.toml",
+      "recorded_sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47",
+      "current_sha256": "18ca9761e7d2191d08412f431bdffb9471c18e79c4a1a63f38bc5383154c6e47",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/operations-registry.json",
+      "recorded_sha256": "b245a4ad4b804e26f4cc5ab42c7d6a033fa2812d663345128681c87b79ba1a1e",
+      "current_sha256": "b245a4ad4b804e26f4cc5ab42c7d6a033fa2812d663345128681c87b79ba1a1e",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/inventory-independent-final.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/tool-inventory.json",
+      "recorded_sha256": "72fcd179917665a80d9167caae4d44b2a5e39214f389647a28dbc63c782bbaaa",
+      "current_sha256": "72fcd179917665a80d9167caae4d44b2a5e39214f389647a28dbc63c782bbaaa",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    },
+    {
+      "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/jsonalias-notice-receipt.json",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/THIRD-PARTY-NOTICES.md",
+      "recorded_sha256": "48bfbf66742e72f5e9949e685bc7a828088143f28332f5a7c48eab9c5e231660",
+      "current_sha256": "48bfbf66742e72f5e9949e685bc7a828088143f28332f5a7c48eab9c5e231660",
+      "match": true,
+      "observed_at": "2026-11-12T20:48:29.795454+00:00",
+      "credit": "byte identity only; no fresh semantic review"
+    }
+  ],
+  "binding_summary": {
+    "checked": 31,
+    "matching": 30,
+    "mismatches": [
+      {
+        "receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/javascript-tooling-and-pool-fixture.json",
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/TESTING.md",
+        "recorded_sha256": "395afda40f5bcc4ef53791b92b262bdd8ee714e1b4439d8b3ce21996230a9254",
+        "current_sha256": "ab8f6a675d42264208613f4f27114cd20a0735039f2d18b4e0a61e575c162682",
+        "match": false,
+        "observed_at": "2026-11-12T20:48:29.795454+00:00",
+        "credit": "byte identity only; no fresh semantic review"
+      }
+    ]
+  },
+  "execution_contract": {
+    "repository_edits": [],
+    "private_artifacts_written": [
+      "/tmp/oraclebot-repo-scope-final-dispositions-20261112.json"
+    ],
+    "package_installs": false,
+    "tests_or_service_or_research_runs": false,
+    "held_suites_started": false,
+    "new_code_source_review_credit": 0,
+    "new_per_file_ledger_credit": 0,
+    "new_completed_test_credit": 0,
+    "receipt_checks": "Read existing completed receipts and metadata; hash current referenced bytes only. This is not a new execution of the cited checks."
+  },
+  "remaining": [
+    "Parent/root integrate the incoming source and bounded fixes, then authorize and complete final source-dependent gates.",
+    "M3centralized settings and shared runtime error/remediation/sink residuals remain open.",
+    "T2artifact/provenance/transitive-use/advisory/private-package/legal scope remains partial.",
+    "T3broader reproducibility, current hook activation proof and final remote/runtimeCI remain separate.",
+    "T4universal parallel/setup-hoist equivalence remains canonically blocked."
+  ],
+  "evidence_policy": [
+    "Every pass cites exact named source-receipt SHA256 and JSON pointer.",
+    "Prior receipt/file hashes are distinguished; jsonalias-notice-receipt.json raw SHA256 differs from its embedded NOTICE output SHA256.",
+    "No author label CLEAN is promoted to whole-repository convergence.",
+    "No guarded diagnostic, subset, skipped/failed attempt, queued merge or running job is treated as final acceptance.",
+    "M3common sink requirement is preserved per parent scope and absence of implementation proof; no new exhaustive runtime/source absence audit is claimed."
+  ],
+  "later_pipeline_UI_followup": {
+    "observed_at": "2026-11-13T01:32:27.449925+00:00",
+    "receipt": "pipeline-pr241-ui-current.json",
+    "source_semantic_coverage": 823,
+    "raw_helper_files": 828,
+    "data_classifications": 5,
+    "supplementary_assets": 22,
+    "full_ecosystem_tests": 255,
+    "guarded_exit": 0,
+    "zero_forbidden_events": true,
+    "M3": "Medium architecture settings/common runtime error/remediation/sink residuals unchanged; docs-only static inventory one additional tuple.",
+    "M5": "Four fresh parsing gates0/2/0/2;41older qualification limits preserved at exact matching source hashes.",
+    "T4": "Universal parallelism/equivalence remains BLOCKED; bounded fixture readiness repairs preserve every original assertion.",
+    "integration": "Actual prior1015complete1563full and877CI assertions failed and remain failures; seven readiness cases0 and independent3boundary static acceptance do not replace pending fresh fullshards/finalCI/delivery."
+  }
+}

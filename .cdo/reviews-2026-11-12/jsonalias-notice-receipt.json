@@ -1,0 +1,9 @@
+{
+  "path": "docs/THIRD-PARTY-NOTICES.md",
+  "sha256": "48bfbf66742e72f5e9949e685bc7a828088143f28332f5a7c48eab9c5e231660",
+  "license_text_exactly_preserved": true,
+  "license_sha256": "002c2696d92b5c8cf956c11072baa58eaf9f6ade995c031ea635c6a1ee342ad1",
+  "dependency_constraints_changed": false,
+  "version": "0.1.0",
+  "limits": "Upstream artifact packaging/provenance gap remains; bounded repository attribution mitigation supplied, not universal legal clearance."
+}

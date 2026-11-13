@@ -53,6 +53,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import re
 import tempfile
@@ -233,7 +234,10 @@ class JobResult:
         Two gates, not one: the engine must have judged the path evaluable at
         all, AND the trade count must clear the evidence floor.
         """
-        return self.evaluable and self.trades >= MIN_TRADES
+        return (self.evaluable is True and type(self.trades) is int
+                and self.trades >= MIN_TRADES
+                and all(_finite_number(value) for value in (
+                    self.median_sharpe, self.iqr, self.frac_positive, self.median_return)))
 
     def to_json(self) -> str:
         """One line of `results.jsonl`."""
@@ -251,6 +255,8 @@ class JobResult:
         """
         known = {f for f in cls.__dataclass_fields__}  # noqa: SLF001 - dataclass API
         clean = {k: v for k, v in data.items() if k in known}
+        valid_metrics = all(_finite_number(data.get(name)) for name in (
+            "median_sharpe", "iqr", "frac_positive", "median_return", "trades"))
         for name in ("median_sharpe", "iqr", "frac_positive", "median_return", "seconds",
                      "finished_at"):
             if name in clean:
@@ -259,7 +265,9 @@ class JobResult:
             if name in clean:
                 clean[name] = _as_int(clean[name])
         if "evaluable" in clean:
-            clean["evaluable"] = bool(clean["evaluable"])
+            # A malformed or nonfinite measurement is unavailable evidence.
+            # Keep the diagnostic row without turning it into a zero-valued score.
+            clean["evaluable"] = clean["evaluable"] is True and valid_metrics
         return cls(**clean)
 
 
@@ -297,22 +305,31 @@ class QueueState:
 # -- building the queue ----------------------------------------------------
 
 
+def _finite_number(value: Any) -> bool:
+    if isinstance(value, bool):
+        return False
+    try:
+        return math.isfinite(float(value))
+    except (TypeError, ValueError, OverflowError):
+        return False
+
+
 def _as_float(value: Any, default: float = 0.0) -> float:
     """Coerce a value read off disk to a float, defaulting when it cannot be."""
     try:
         out = float(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return default
     # NaN would propagate silently through a sort and a median; a corrupt row
     # should read as uninformative, not as a value that poisons comparisons.
-    return default if out != out else out
+    return out if math.isfinite(out) else default
 
 
 def _as_int(value: Any, default: int = 0) -> int:
     """Coerce a value read off disk to an int, defaulting when it cannot be."""
     try:
         return int(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return default
 
 

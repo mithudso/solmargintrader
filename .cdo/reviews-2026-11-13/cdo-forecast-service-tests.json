@@ -1,0 +1,602 @@
+{
+  "schema_version": 1,
+  "task": "TASK-1540 per-file static CDO; root owns loop, fixes, verification and delivery",
+  "generated_at_utc": "2026-11-13T05:06:07.737134+00:00",
+  "target": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast_service_audit.py",
+  "review_mode": "Full per-file static review; no source edits, tests, Git mutations, network, services, installations, agents or inference services",
+  "status": "STATIC_AUDIT_COMPLETE",
+  "identity": {
+    "bytes": 10430,
+    "line_count": 256,
+    "sha256": "970ea320deb4d6d3cbac9c61c4e9ea551074f9d21dcb2dde47bec6feb2217377",
+    "computed_git_blob_sha1": "4c80c7aa617e82c9187e8b57387a1a976b9a549b",
+    "git_blob_computation": "SHA-1 of ASCII blob, space, decimal byte length, NUL, and exact file bytes; no Git mutation",
+    "identity_rechecked_before_report": true
+  },
+  "file_read_coverage": {
+    "complete": true,
+    "bounded_reads": [
+      {
+        "range": [
+          1,
+          130
+        ],
+        "command": "nl -ba /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast_service_audit.py | sed -n '1,130p'",
+        "truncated": false
+      },
+      {
+        "range": [
+          131,
+          256
+        ],
+        "command": "nl -ba /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast_service_audit.py | sed -n '131,256p'",
+        "truncated": false
+      }
+    ],
+    "covered_ranges": [
+      [
+        1,
+        256
+      ]
+    ],
+    "unread_ranges": [],
+    "ast_parse": "successful; static parse only, no imports or test execution"
+  },
+  "injection_gate": {
+    "completed_before_passes": true,
+    "whole_target_treated_as_untrusted_data": true,
+    "reviewer_directives_found": [],
+    "hostile_content_halt": false,
+    "note": "The line-1 docstring states test isolation intent; it does not address the reviewer or redefine this audit."
+  },
+  "instructions_consulted": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/CLAUDE.md",
+    "/Users/mitch/.codex/indexes/claude-skill-consolidation/SKILLS-INDEX.md (targeted routing rows)",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md (1-240 and 241-end)",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/references/report-format.md",
+    "/Users/mitch/.agents/skills/code-deep-optimizer/references/tool-ergonomics.md"
+  ],
+  "activated_skills": [
+    {
+      "skill": "/Users/mitch/.agents/skills/lang-python/SKILL.md",
+      "references": [
+        "/Users/mitch/.agents/skills/lang-python/references/python-testing.md"
+      ],
+      "reason": "Python unittest/mock fixture lifecycle, patch lookup sites, isolation and test quality"
+    },
+    {
+      "skill": "/Users/mitch/.agents/skills/software-engineering-patterns/SKILL.md",
+      "references": [
+        "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+        "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md"
+      ],
+      "reason": "Always-on review and maintainability baseline"
+    }
+  ],
+  "context_only_reads": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_service.py",
+      "lines": [
+        [
+          1,
+          192
+        ]
+      ],
+      "reason": "Check target mocks against actual registered/subprocess lookups and filesystem path construction; no separate findings issued for this dependency"
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/__init__.py",
+      "lines": [
+        [
+          1,
+          3
+        ]
+      ],
+      "reason": "Check package initializer is metadata only"
+    }
+  ],
+  "memory_central": {
+    "lessons_consulted": 2,
+    "conventions_consulted": 10,
+    "paths": [
+      "/Users/mitch/.llms/solmargintrader_lessons_llms.md",
+      "/Users/mitch/.llms/solmargintrader_conventions_llms.md"
+    ],
+    "matched_regressions": 0,
+    "effect": "No row matches this forecast lifecycle test file or changes a finding. Current worktree CLAUDE.md remains the authoritative convention source."
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          79
+        ],
+        [
+          81,
+          252
+        ]
+      ],
+      "conclusion": "Fixture setup, stdout JSON decoding, alias iteration, expected six registered calls and assertions are internally consistent. Each test creates its own state; no unreachable assertion or incorrect success/failure expectation was identified.",
+      "findings": []
+    },
+    {
+      "id": "C2",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          34,
+          65
+        ],
+        [
+          67,
+          79
+        ],
+        [
+          145,
+          180
+        ],
+        [
+          204,
+          252
+        ]
+      ],
+      "conclusion": "Mocks replace the names forecast_service actually looks up. Helpers pass Path-compatible CLI values and validate the structured main result, error reasons and subprocess contract; no signature or return-shape mismatch found.",
+      "findings": []
+    },
+    {
+      "id": "C3",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          81,
+          143
+        ],
+        [
+          145,
+          202
+        ],
+        [
+          222,
+          252
+        ]
+      ],
+      "conclusion": "Adversarial static probes covered temporary/worktree prefixes, out-of-prefix module, parent/symlink aliases, final-component symlink, unconfirmed start, conflicting existing plist, non-macOS platform, unknown ValueError, OSError, CalledProcessError and missing launchctl. No violating path found in the assigned file; no counterexample test was executed or written.",
+      "findings": []
+    },
+    {
+      "id": "S1",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          1,
+          1
+        ],
+        [
+          21,
+          65
+        ],
+        [
+          182,
+          193
+        ],
+        [
+          222,
+          243
+        ]
+      ],
+      "conclusion": "No reviewer-directed prompt injection, embedded credential or command injection. Error content is explicitly synthetic. Every service subprocess is mocked and owned plist writes are redirected to the protected temporary root.",
+      "findings": []
+    },
+    {
+      "id": "S2",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          65
+        ],
+        [
+          67,
+          73
+        ],
+        [
+          121,
+          134
+        ],
+        [
+          204,
+          252
+        ]
+      ],
+      "conclusion": "TemporaryDirectory cleanup is registered before stack.close, so unittest LIFO cleanup restores all global patches before removing the directory. Both cleanups are registered before test operations and also run after assertion/setup failures. Context-managed inner patches restore each subcase.",
+      "findings": []
+    },
+    {
+      "id": "S3",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          67,
+          73
+        ],
+        [
+          81,
+          119
+        ],
+        [
+          136,
+          143
+        ],
+        [
+          204,
+          252
+        ]
+      ],
+      "conclusion": "Inputs are fixture-owned paths and explicit synthetic failures. Tests check refusal before service lookup, preserve conflicting file bytes, and assert sanitized output envelopes without interpolating data into shell commands.",
+      "findings": []
+    },
+    {
+      "id": "S4",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          65
+        ],
+        [
+          121,
+          143
+        ],
+        [
+          153,
+          163
+        ],
+        [
+          195,
+          202
+        ]
+      ],
+      "conclusion": "macOS lifecycle assumptions are explicit and sys.platform, sys.prefix, sys.executable, module path and Path.home are controlled. The repository targets Python 3.13/macOS; stdlib unittest, symlinks and os.getuid usage match that supported environment.",
+      "findings": []
+    },
+    {
+      "id": "S5",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          145,
+          171
+        ],
+        [
+          182,
+          202
+        ],
+        [
+          204,
+          252
+        ]
+      ],
+      "conclusion": "Tests assert observable success/failure results, safe exact known-error envelopes, required remediation text and secret-free unknown/subprocess error diagnostics. The test harness itself has no production logging responsibility.",
+      "findings": []
+    },
+    {
+      "id": "P1",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          79
+        ],
+        [
+          81,
+          107
+        ],
+        [
+          121,
+          134
+        ],
+        [
+          204,
+          243
+        ]
+      ],
+      "conclusion": "Only small temporary fixtures, bounded seven-prefix/error-map loops, tiny plist I/O and synchronous mocks are used. No real sleeps, external calls, oversized fixture rebuild or material redundant computation found.",
+      "findings": []
+    },
+    {
+      "id": "P2",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          65
+        ],
+        [
+          91,
+          98
+        ],
+        [
+          127,
+          134
+        ],
+        [
+          204,
+          243
+        ]
+      ],
+      "conclusion": "All operations are synchronous with per-test mocks and fixture state; no jobs, threads, async work or unjoined cleanup. sys/Path/subprocess patches are process-global, so same-process threaded execution would require isolation; the target uses ordinary serial unittest and does not introduce such execution.",
+      "findings": []
+    },
+    {
+      "id": "M1",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          20,
+          79
+        ],
+        [
+          81,
+          252
+        ]
+      ],
+      "conclusion": "Test names state observable behaviors and helper names match their purpose. Small functions keep setup/act/assert readable. Synthetic paths, exit codes, mode bits and timeout assertions are meaningful contract fixtures rather than scattered runtime configuration.",
+      "findings": []
+    },
+    {
+      "id": "M2",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          79
+        ],
+        [
+          81,
+          107
+        ],
+        [
+          204,
+          243
+        ]
+      ],
+      "conclusion": "Shared setup, invocation and definition-path helpers remove material duplication; subtests retain distinct boundary assertions. No reusable product implementation or needless local reimplementation appears in this test module.",
+      "findings": []
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "evidence_lines": [],
+      "conclusion": "Repository-scope architecture and centralized configuration are owned by root; not repeated for this single test file.",
+      "findings": []
+    },
+    {
+      "id": "M4",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          1,
+          1
+        ],
+        [
+          20,
+          79
+        ],
+        [
+          81,
+          252
+        ]
+      ],
+      "conclusion": "The isolation docstring matches the global mocks and temporary path routing. Behavioral test names match their assertions; no stale API documentation or public library usage guide obligation in this file.",
+      "findings": []
+    },
+    {
+      "id": "T1",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          81,
+          252
+        ]
+      ],
+      "conclusion": "All 12 methods assert outcomes or side effects. The changed lifecycle concerns have meaningful positive and negative checks: refusal before lookup/write, canonical identity, preserved/plist mode bytes, exact bootstrap flags, failed versus confirmed start, status read-only behavior and safe diagnostics. No numeric coverage claim is made.",
+      "findings": []
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "evidence_lines": [],
+      "conclusion": "Repository-scope dependency and supply-chain review is owned by root.",
+      "findings": []
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "evidence_lines": [],
+      "conclusion": "Repository-scope tooling-gap review and detected verification are owned by root.",
+      "findings": []
+    },
+    {
+      "id": "T4",
+      "state": "pass",
+      "evidence_lines": [
+        [
+          21,
+          65
+        ],
+        [
+          121,
+          134
+        ],
+        [
+          145,
+          193
+        ],
+        [
+          204,
+          243
+        ]
+      ],
+      "conclusion": "No real sleeps/timers or slow subprocesses remain to replace. Each test mutates mocks, filesystem state or patch values, so hoisting setup would alter isolation. Preserve per-test setup and all distinct assertions. Thread parallelism is not statically equivalent because patches affect global modules; process isolation is required before a separate repository-level parallelization change.",
+      "findings": []
+    }
+  ],
+  "conditional_m5": {
+    "state": "na",
+    "evidence_lines": [
+      [
+        255,
+        256
+      ]
+    ],
+    "reason": "This is a test-harness module. Its standard unittest.main guard is not a shipped operational tool/CLI; repository test environment and commands are root scope."
+  },
+  "test_methods": [
+    {
+      "name": "test_rejects_temporary_and_worktree_prefixes_before_service_lookup",
+      "lines": [
+        81,
+        107
+      ]
+    },
+    {
+      "name": "test_rejects_module_outside_installed_prefix",
+      "lines": [
+        109,
+        119
+      ]
+    },
+    {
+      "name": "test_parent_and_symlink_aliases_share_one_service_identity",
+      "lines": [
+        121,
+        134
+      ]
+    },
+    {
+      "name": "test_final_component_home_symlink_remains_refused",
+      "lines": [
+        136,
+        143
+      ]
+    },
+    {
+      "name": "test_unconfirmed_start_is_failure_and_retains_definition",
+      "lines": [
+        145,
+        163
+      ]
+    },
+    {
+      "name": "test_confirmed_start_reports_success",
+      "lines": [
+        165,
+        172
+      ]
+    },
+    {
+      "name": "test_status_does_not_bootstrap_or_write",
+      "lines": [
+        174,
+        180
+      ]
+    },
+    {
+      "name": "test_identity_conflict_diagnostic_preserves_existing_definition",
+      "lines": [
+        182,
+        193
+      ]
+    },
+    {
+      "name": "test_non_macos_diagnostic_precedes_launchctl",
+      "lines": [
+        195,
+        202
+      ]
+    },
+    {
+      "name": "test_known_failures_have_only_allowlisted_diagnostics",
+      "lines": [
+        204,
+        220
+      ]
+    },
+    {
+      "name": "test_unknown_and_subprocess_errors_do_not_leak_details",
+      "lines": [
+        222,
+        243
+      ]
+    },
+    {
+      "name": "test_missing_launchctl_has_safe_prerequisite_diagnostic",
+      "lines": [
+        245,
+        252
+      ]
+    }
+  ],
+  "fixture_isolation": {
+    "filesystem_root": "tempfile.TemporaryDirectory(prefix=forecast-service-audit-)",
+    "owned_directories": "root/user, root/user/state, root/user/prices; root is managed by TemporaryDirectory and test-created directories use mode 0700",
+    "owner_home_redirect": "Path.home patched to self.user before main/operate calls",
+    "subprocess_interception": "forecast_service.subprocess.run patched before all test invocations; registered patched separately",
+    "patches": [
+      "Path.home",
+      "forecast_service.sys.platform",
+      "forecast_service.sys.prefix",
+      "forecast_service.sys.executable",
+      "forecast_service.__file__",
+      "forecast_service.registered",
+      "forecast_service.subprocess.run"
+    ],
+    "restore_order": "ExitStack.close first, then TemporaryDirectory.cleanup under unittest.addCleanup LIFO semantics",
+    "assertion_examples": [
+      "registered and subprocess not called on refusal",
+      "single plist across canonical aliases",
+      "failed bootstrap confirmation retains a 0600 plist",
+      "status creates no Library directory",
+      "conflicting definition remains byte-identical",
+      "synthetic private error is absent from JSON diagnostics"
+    ],
+    "static_owner_operation_assessment": "No test execution path reaches a real launchctl subprocess or owner LaunchAgents directory under the current looked-up dependency paths."
+  },
+  "severity_counts": {
+    "Critical": 0,
+    "High": 0,
+    "Medium": 0,
+    "Low": 0,
+    "Nit": 0
+  },
+  "findings": [],
+  "fixes": [],
+  "verification": {
+    "state": "not_run_by_instruction",
+    "commands_run": [],
+    "root_owns_empirical_gate": true,
+    "note": "Only static reading, AST parsing and hashing were performed. Parent-reported earlier/final suite results were not independently executed or certified by this audit."
+  },
+  "pass_receipt": {
+    "fixed_passes_total": 18,
+    "active": 15,
+    "na": [
+      "M3",
+      "T2",
+      "T3"
+    ],
+    "partial": [],
+    "conditional_m5": "na"
+  },
+  "blind_reaudit": "Not separately dispatched; per-file static diagnostic only; root owns fresh-context gate and final CDO exit.",
+  "changes": {
+    "source_files_modified": [],
+    "report_written": "/tmp/oraclebot-pr241-review-20261112/cdo-forecast-service-tests.json"
+  },
+  "snapshot_and_rollback": "No source snapshot or rollback required because source was not edited.",
+  "index": "skipped; no indexer, watcher, embedding or inference was invoked",
+  "summary": "Full 256-line static audit; 15 of 18 fixed passes active plus conditional M5 N/A; no concrete Medium+ finding. Empirical verification and final convergence remain root-owned."
+}

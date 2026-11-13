@@ -30,6 +30,7 @@ carries counts and balances only.
 
 from __future__ import annotations
 
+import math
 import time
 from dataclasses import dataclass
 from typing import Any, Callable
@@ -57,6 +58,12 @@ class AddrStat:
 def _int(value: Any) -> int:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise WalletHttpError(0, "explorer reply had a non-numeric field")
+    try:
+        valid = math.isfinite(value) and value >= 0 and int(value) == value
+    except OverflowError:
+        valid = False
+    if not valid:
+        raise WalletHttpError(0, "explorer reply had an invalid integer field")
     return int(value)
 
 
@@ -118,8 +125,8 @@ class BlockCypherBackend:
             rows = reply if isinstance(reply, list) else [reply]
             by_addr = {r.get("address"): r for r in rows if isinstance(r, dict)}
             if len(by_addr) != len(chunk) or any(a not in by_addr for a in chunk):
-                msg = (rows[0].get("error") if rows and isinstance(rows[0], dict) else None) or "address mismatch"
-                raise WalletHttpError(0, f"blockcypher: {str(msg)[:120]}")
+                # Provider messages may echo the derived wallet addresses.
+                raise WalletHttpError(0, "blockcypher sent an unexpected address response")
             for a in chunk:
                 r = by_addr[a]
                 out.append(AddrStat(_int(r.get("final_balance")), _int(r.get("final_n_tx")), 0))

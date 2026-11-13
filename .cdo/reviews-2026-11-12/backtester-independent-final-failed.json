@@ -1,0 +1,575 @@
+{
+  "agent": "backtester_blind_acceptance",
+  "definition_version": "2.0.0",
+  "stage": "one_allowed_final_independent_gate",
+  "status": "partial",
+  "acceptance": "failed_due_to_introduced_integration_regression",
+  "observed_at": "2026-11-12T18:42:29.243841+00:00",
+  "root": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+  "initial_receipt": "/tmp/oraclebot-backtester-independent-review-20261112.json",
+  "per_file": [
+    {
+      "repo_relative_path": "backtester/core/engine.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/engine.py",
+      "sha256": "88d4967c839ebae911317e1f2625d3b2eea3a70a89a6e5d518cfe6bcf9ac9e57",
+      "initial_sha256": "24a88843c0366bbd5797543024be191a9ace706b04e70150ad67b7f425c25705",
+      "line_count": 979,
+      "initial_full_read_ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          490
+        ],
+        [
+          488,
+          740
+        ],
+        [
+          741,
+          973
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/gridsim.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/gridsim.py",
+      "sha256": "868aca15de0d3f47719b498282e93e7e5d9a84631c8645ea853c908b01126c09",
+      "initial_sha256": "c20ea5bba916301d3f9ab442c84f90cd4186c0a2df68f225faa46ff931f7bab8",
+      "line_count": 946,
+      "initial_full_read_ranges": [
+        [
+          1,
+          260
+        ],
+        [
+          261,
+          520
+        ],
+        [
+          521,
+          760
+        ],
+        [
+          337,
+          368
+        ],
+        [
+          761,
+          945
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/dcasim.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/dcasim.py",
+      "sha256": "47d35a1c7ab329cf96524e9201eb4d8ec96c93e6b7fef16eeabeeb1043211c87",
+      "initial_sha256": "8dc4b68ed27692e07dc830c8ca7fadb6db185e47844af99d88be0ff8742b64d3",
+      "line_count": 552,
+      "initial_full_read_ranges": [
+        [
+          1,
+          280
+        ],
+        [
+          281,
+          551
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/pairs.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/pairs.py",
+      "sha256": "5747e3b36e20abba8c5c50898a7fc7206dd58fea86c69e428d3e28c04799839a",
+      "initial_sha256": "5747e3b36e20abba8c5c50898a7fc7206dd58fea86c69e428d3e28c04799839a",
+      "line_count": 187,
+      "initial_full_read_ranges": [
+        [
+          1,
+          187
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/zec_ensemble.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/zec_ensemble.py",
+      "sha256": "3ee5d03678c70db202586ebe36ab980db9025ab9cc638a5ae455927b9e5c5f4c",
+      "initial_sha256": "24634e3a69495f90908c5349cf423acd4fa05f1ee04f78840c324809d8b0f6c7",
+      "line_count": 459,
+      "initial_full_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          421
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/metrics.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/metrics.py",
+      "sha256": "cf229ed2c31ab1fb2a2ae1a8235006451340f3a0b9b1faecdad580ef0bc0db4f",
+      "initial_sha256": "cf229ed2c31ab1fb2a2ae1a8235006451340f3a0b9b1faecdad580ef0bc0db4f",
+      "line_count": 274,
+      "initial_full_read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          274
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/cpcv.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/cpcv.py",
+      "sha256": "b9a35a17e9a64de812ae14ffd9a0a86e46851b9402227ae0ab3bdb66b5f0231f",
+      "initial_sha256": "b63e0d84793df57de1f0a504ceb2405281e9dd0683daf61e18e66f8a16460326",
+      "line_count": 358,
+      "initial_full_read_ranges": [
+        [
+          1,
+          190
+        ],
+        [
+          191,
+          352
+        ]
+      ],
+      "final_read": "unchanged bytes retain original full review; changed production diff and new changed ranges read independently; no author tests or reports read"
+    },
+    {
+      "repo_relative_path": "backtester/core/continuation.py",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/continuation.py",
+      "sha256": "7c543441b7d0a780f4c6e395256887314f6c4b74f53cb5bb47059d8059b14a84",
+      "line_count": 53,
+      "read_ranges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "read_complete": true
+    }
+  ],
+  "findings_resolved": [
+    {
+      "id": "BA-1",
+      "status": "verified_resolved",
+      "initial_severity": "High"
+    },
+    {
+      "id": "BA-2",
+      "status": "verified_resolved",
+      "initial_severity": "Medium"
+    },
+    {
+      "id": "BA-3",
+      "status": "verified_resolved",
+      "initial_severity": "Medium"
+    },
+    {
+      "id": "BA-4",
+      "status": "verified_resolved",
+      "initial_severity": "Medium"
+    }
+  ],
+  "residual_findings": [
+    {
+      "id": "BA-5",
+      "severity": "Medium",
+      "file": "backtester/core/engine.py",
+      "lines": [
+        974,
+        974
+      ],
+      "title": "Flat signal rebind still emits the legacy binding rejected by the updated engine",
+      "passes": [
+        "C1",
+        "S2",
+        "S3"
+      ],
+      "evidence": "signal_rebind_binding: first flat prefix3 passes; rebind_signal_state returns repr tuple binding; run_backtest continuation on next3 same-config bars raises configuration changed, explicit acceptance assertion fails.",
+      "actual_binding_prefix": "('independent_flat',",
+      "required_binding_prefix": "config-v2:",
+      "scope_reason": "Necessary integration control for the newly changed continuation identity; no broader hypothesis discovery."
+    }
+  ],
+  "synthetic_probes": [
+    {
+      "probe": "basic_engine",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "equity": [
+          998.801438274071,
+          998.801438274071,
+          998.801438274071,
+          998.801438274071,
+          998.801438274071,
+          997.602876548142
+        ],
+        "final": 997.602876548142,
+        "trade_count": 1
+      }
+    },
+    {
+      "probe": "engine_causal",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "first_fill": {
+          "ts": 1800003600,
+          "bar_index": 1,
+          "side": "long",
+          "price": 101.0,
+          "units": 9.893075638499102,
+          "notional": 999.2006394884094,
+          "fee": 0.5995203836930456,
+          "slippage": 0.19984012789768188,
+          "borrow_fee_settled": 0.0,
+          "realized_pnl": 0.0,
+          "equity_after": 999.2006394884093,
+          "reason": "open"
+        },
+        "prefix_equity": [
+          1000.0,
+          999.2006394884093,
+          1009.0937151269083,
+          1018.9867907654074
+        ]
+      }
+    },
+    {
+      "probe": "engine_continue",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": [
+        {
+          "mode": "spot",
+          "delay": 0,
+          "fills": 18,
+          "final": 993.4512345374644
+        },
+        {
+          "mode": "spot",
+          "delay": 1,
+          "fills": 18,
+          "final": 973.3603277244156
+        },
+        {
+          "mode": "spot",
+          "delay": 3,
+          "fills": 16,
+          "final": 972.2469349627622
+        },
+        {
+          "mode": "perp",
+          "delay": 0,
+          "fills": 23,
+          "final": 975.5561243618151
+        },
+        {
+          "mode": "perp",
+          "delay": 1,
+          "fills": 22,
+          "final": 901.3709329819297
+        },
+        {
+          "mode": "perp",
+          "delay": 3,
+          "fills": 20,
+          "final": 900.9815272251489
+        }
+      ]
+    },
+    {
+      "probe": "engine_invalid",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "refusals": 8
+      }
+    },
+    {
+      "probe": "dca_known",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "final": 1006.811,
+        "expected": 1006.811,
+        "trades": [
+          {
+            "ts": 1800003600,
+            "bar_index": 1,
+            "side": "buy",
+            "price": 101.0,
+            "units": 0.9900990099009901,
+            "notional": 100,
+            "fee": 1.0,
+            "slippage": 0.9900990099009901,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 0.0,
+            "equity_after": 998.009900990099,
+            "reason": "open"
+          },
+          {
+            "ts": 1800007200,
+            "bar_index": 2,
+            "side": "sell",
+            "price": 109.989,
+            "units": 0.9900990099009901,
+            "notional": 108.9,
+            "fee": 1.0890000000000002,
+            "slippage": 1.100000000000004,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 6.811000000000007,
+            "equity_after": 1006.811,
+            "reason": "dca_take_profit"
+          }
+        ]
+      }
+    },
+    {
+      "probe": "dca_no_open",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "missing_open_refused": true
+      }
+    },
+    {
+      "probe": "grid_known",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "final": 1010.8577799999999,
+        "expected": 1010.85778,
+        "trades": [
+          {
+            "ts": 1800003600,
+            "bar_index": 1,
+            "side": "buy",
+            "price": 90.018,
+            "units": 1.1111111111111112,
+            "notional": 100.02000000000001,
+            "fee": 0.10002,
+            "slippage": 0.02000000000000076,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 0.0,
+            "equity_after": 999.8999799999999,
+            "reason": "grid_entry"
+          },
+          {
+            "ts": 1800007200,
+            "bar_index": 2,
+            "side": "sell",
+            "price": 99.98,
+            "units": -1.1111111111111112,
+            "notional": 111.0888888888889,
+            "fee": 0.11108888888888892,
+            "slippage": 0.022222222222217803,
+            "borrow_fee_settled": 0.0,
+            "realized_pnl": 10.857780000000002,
+            "equity_after": 1010.8577799999999,
+            "reason": "grid_exit"
+          }
+        ]
+      }
+    },
+    {
+      "probe": "ladders_continue",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": [
+        {
+          "kind": "grid",
+          "fills": 15,
+          "final": 1011.0407677323581
+        },
+        {
+          "kind": "dca",
+          "fills": 23,
+          "final": 893.5436617214666
+        }
+      ]
+    },
+    {
+      "probe": "pair_alignment",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "exact_reindex": [
+          2,
+          1,
+          3
+        ],
+        "malformed_refusals": 5
+      }
+    },
+    {
+      "probe": "metrics_known",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "total_return": -0.020000000000000018,
+        "max_drawdown": -0.02,
+        "returns": [
+          -0.01,
+          -0.010101010101010055
+        ]
+      }
+    },
+    {
+      "probe": "pbo_combinations",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "pbo": 0.0,
+        "n_splits": 6.0,
+        "n_configs": 2.0
+      }
+    },
+    {
+      "probe": "pbo_ties",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "pbo": 0.0,
+        "n_splits": 6.0,
+        "n_configs": 3.0
+      }
+    },
+    {
+      "probe": "ensemble_ids",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "id": "739aac1fcb6d280d48c9b03b",
+        "canonical_weights": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "probe": "ensemble_continue",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "continued": true
+      }
+    },
+    {
+      "probe": "intrabar_binding",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "same_object_continues": true,
+        "fresh_identical_data_continues": true,
+        "changed_fine_observation_refused": true,
+        "binding": "config-v2:72c23cd81b6107eec658e05bcbb384d6b546309e5d28b145848933f44cc74730",
+        "final": 997.6030663148593
+      }
+    },
+    {
+      "probe": "zec_retained_bound",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "retained_bars": 6513,
+        "bars": 6570,
+        "chunks": [
+          6518,
+          23,
+          29
+        ],
+        "fills": 6467,
+        "equity_max_absolute_delta": 0.0,
+        "final_cash": 381.8430873133646,
+        "altered_overlap_refused": true
+      }
+    },
+    {
+      "probe": "signal_rebind_binding",
+      "status": "fail",
+      "completed_exit": 1,
+      "exception": "AssertionError('flat signal rebind generated a continuation binding rejected by the engine')",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/oraclebot-backtester-final-recheck-20261112.py\", line 72, in signal_rebind_binding\n    try:continued=original.run_backtest(next_strategy,original.cut(a,3,6),cfg,continuation=rebound,close_at_end=False)\n                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/backtester/core/engine.py\", line 519, in run_backtest\n    raise ValueError(\"continuation configuration changed\")\nValueError: continuation configuration changed\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/tmp/oraclebot-backtester-final-recheck-20261112.py\", line 84, in <module>\n    detail=fn();record={'probe':name,'status':'pass','completed_exit':0,'detail':detail}\n  File \"/tmp/oraclebot-backtester-final-recheck-20261112.py\", line 75, in signal_rebind_binding\n    raise AssertionError('flat signal rebind generated a continuation binding rejected by the engine') from exc\nAssertionError: flat signal rebind generated a continuation binding rejected by the engine\n"
+    }
+  ],
+  "counts": {
+    "probes": 17,
+    "passed": 16,
+    "failed": 1
+  },
+  "completed_process_exit": 1,
+  "process_evidence": {
+    "tool_chunk": "574afa",
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=botmanager/src:.:executor/src INDEX_NO_AUTO=1 .venv/bin/python /tmp/oraclebot-backtester-final-recheck-20261112.py > /tmp/oraclebot-backtester-final-probes-20261112.log 2>&1",
+    "cwd": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112",
+    "stdout_stderr_log": "/tmp/oraclebot-backtester-final-probes-20261112.log",
+    "structured_results": "/tmp/oraclebot-backtester-final-probes-20261112.json"
+  },
+  "critical_controls": {
+    "zec_retained_bound": {
+      "probe": "zec_retained_bound",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "retained_bars": 6513,
+        "bars": 6570,
+        "chunks": [
+          6518,
+          23,
+          29
+        ],
+        "fills": 6467,
+        "equity_max_absolute_delta": 0.0,
+        "final_cash": 381.8430873133646,
+        "altered_overlap_refused": true
+      }
+    },
+    "intrabar_binding": {
+      "probe": "intrabar_binding",
+      "status": "pass",
+      "completed_exit": 0,
+      "detail": {
+        "same_object_continues": true,
+        "fresh_identical_data_continues": true,
+        "changed_fine_observation_refused": true,
+        "binding": "config-v2:72c23cd81b6107eec658e05bcbb384d6b546309e5d28b145848933f44cc74730",
+        "final": 997.6030663148593
+      }
+    }
+  },
+  "independence": {
+    "author_audit_reports_or_receipts_read": false,
+    "author_tests_read": false,
+    "repository_source_edits": false,
+    "private_data_or_real_orders_or_models_or_services": false
+  },
+  "limits": [
+    "Synthetic checks validate specified accounting and causal boundaries only. They do not establish strategy profitability or economic fitness.",
+    "Runtime-source epoch, CLI bootstrap, private datasets, live data, real orders, signing, owner homes, frozen venvs and repository-level architecture/supply-chain gates are outside this assignment.",
+    "T1 independently exercised changed/risky behavior through task-owned probes; this is not exhaustive branch or numeric coverage certification.",
+    "P1/P2 were inspected statically for this sequential simulation cohort; no representative performance benchmark ran.",
+    "The engine causal future-suffix control emitted an expected scalar CAGR overflow warning on a short synthetic high-return suffix. The earlier causal prefix stayed unchanged; no production economic claim was inferred."
+  ],
+  "remaining": [
+    "Parent remediates only the introduced flat signal rebind binding integration.",
+    "Parent authorized one focused postremediation delta check, original controls and flat rebind probe after final-byte notice."
+  ]
+}

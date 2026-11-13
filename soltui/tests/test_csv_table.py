@@ -17,6 +17,21 @@ class ExportApp(App):
 
 
 class ExportTests(unittest.IsolatedAsyncioTestCase):
+    async def test_exports_untrusted_formula_cells_as_text_and_preserves_numeric_losses(self):
+        with TemporaryDirectory() as directory:
+            async with ExportApp().run_test() as pilot:
+                table = pilot.app.query_one(ExportTable)
+                table.add_column("value")
+                values = ['=HYPERLINK("https://example.invalid","label")', '+SUM(1,2)',
+                          '-SUM(1,2)', '@SUM(1,2)', '\t=1+1', '-1.25', '-1,250.00', '+3.5%']
+                for value in values:
+                    table.add_row(Text(value))
+                path = export_table(table, Path(directory))
+                with path.open(newline="") as handle:
+                    rows = list(csv.reader(handle))
+                self.assertEqual(rows[1:6], [["'" + value] for value in values[:5]])
+                self.assertEqual(rows[6:], [[value] for value in values[5:]])
+
     async def test_exports_sorted_rows_and_never_overwrites(self):
         with TemporaryDirectory() as directory:
             async with ExportApp().run_test() as pilot:
@@ -54,10 +69,13 @@ class ExportTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(list(csv.reader(handle)), [["column"], ["value"]])
 
     async def test_main_screen_wraps_every_table(self):
+        from unittest.mock import patch
         from textual.widgets import DataTable
+        from soltui import pricefeed
         from soltui.tests.test_tui import make_settings
         from soltui.tui import SolTuiApp
 
+        self.enterContext(patch.object(pricefeed, "stream_products", return_value=["SOL-USD"]))
         app = SolTuiApp(settings=make_settings(), stream_prices=False)
         async with app.run_test(size=(180, 55)) as pilot:
             await pilot.pause()

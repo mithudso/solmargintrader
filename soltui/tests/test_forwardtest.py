@@ -12,6 +12,7 @@ from unittest.mock import patch
 import numpy as np
 from textual.widgets import Button, DataTable, Input, Static, TabbedContent
 
+from soltui.tests.test_tui import offline_console_reads
 from soltui import commands, config
 from soltui import forwardtest as ft
 from soltui.roster import Roster
@@ -265,6 +266,9 @@ class ForwardPlan(unittest.TestCase):
 
 
 class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.enterContext(offline_console_reads())
+
     async def test_space_adds_and_removes_and_bulk_add_keeps_custom_parameters(self) -> None:
         app = SolTuiApp(config.Settings(poll_interval_seconds=60))
         app.ctx.roster = Roster()
@@ -313,7 +317,8 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 app.query_one(TabbedContent).active = "tab-forwardtest"
                 await pilot.pause()
                 await pilot.click("#forward-stop")
-                self.assertNotIn("forwardtest running", app.sub_title)
+                self.assertIn("forwardtest running", app.sub_title)
+                self.assertIn("Stopping", str(app.query_one("#forward-status", Static).content))
                 released.set()
                 for _ in range(60):
                     await pilot.pause(0.05)
@@ -321,6 +326,7 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                     if not app.query_one("#forward-start").disabled:
                         break
                 self.assertFalse(app.query_one("#forward-start").disabled)
+                self.assertNotIn("forwardtest running", app.sub_title)
 
     async def test_autostart_uses_shared_producer_and_preserves_saved_scope(self) -> None:
         with TemporaryDirectory() as directory, patch.object(config, "CONFIG_DIR", Path(directory)):
@@ -342,7 +348,7 @@ class RosterForwardUI(unittest.IsolatedAsyncioTestCase):
                 if name == "forwardtest.ensure":
                     shared.update(running=True, can_start=False, message="Running")
                 elif name == "forwardtest.stop":
-                    shared.update(running=False, paused=True, can_start=True, message="Paused")
+                    shared.update(running=False, stopping=False, paused=True, can_start=True, message="Paused")
                 elif name not in ("forwardtest.health", "forwardtest.state"):
                     return original(name, params, **kw)
                 return {"ok": True, "result": dict(shared)}

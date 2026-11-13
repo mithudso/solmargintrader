@@ -19,11 +19,13 @@ from botmanager.registry import CommandContext, dispatch
 from botmanager.store import ManagerStore
 from botmanager.supervisor import Supervisor
 
+from tests import isolated_default_owner
 from tests.test_paper import grid, recording
 
 
 class DailyLearningJobTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(isolated_default_owner())
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.home = Path(self.temp.name).resolve()
@@ -137,12 +139,21 @@ class DailyLearningJobTests(unittest.TestCase):
         (self.home / "learning-job.json").unlink()
         with patch(
             "botmanager.learning_job.subprocess.Popen",
-            side_effect=self.spawn(output="x" * 300000),
+            side_effect=self.spawn(output="x" * 12000),
+        ), patch(
+            "botmanager.learning_job.OUTPUT_LIMIT", 8192
         ):
+            # Exercise the same byte-limit rail without requiring a platform's
+            # pipe to transfer 300 KB within this fixture's five-second deadline.
             job = DailyLearningJob(self.home)
+            self.addCleanup(job.close)
             job.step()
+            process = job.process
             self.finish(job)
             self.assertEqual(job.receipt["state"], "failed")
+            self.assertIsNotNone(process.poll())
+            self.assertTrue(process.stdout.closed)
+            self.assertTrue(process.stderr.closed)
             self.assertLess((self.home / "learning-job.json").stat().st_size, 2000)
 
     def test_supervisor_controls_and_status_remain_responsive(self):
