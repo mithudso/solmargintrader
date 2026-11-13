@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 519
+Version: 522
+Delta: v521 to v522; bind full Mongo artifact readback and local delivery gates.
+Delta: v520 to v521; record completed, independently audited ZEC captured-event matrix.
+Delta: v519 to v520; start isolated captured-event ZEC simulation and preserve the fixed source.
 Delta: v518 to v519; finish the fixed24hour ZEC capture and full MongoDB persistence audit.
 Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction.
 Delta: v516 to v517; preserve final f7e8 macOS CI failure and narrow Textual shutdown correction before renewed delivery.
@@ -1967,3 +1970,15 @@ The exactnewshutdowncase reproducesoldNoMatches withactualRED1/finalizer1 andzer
 - Original capture runtime/apps/certificate/URI2 configuration, data, sampled recorder and financial state unchanged. Frozen upload source remained1.0.1; this audit did not apply later source changes retroactively. Original user prompt remains preserved in prompts.md; this is its final continuation rather than a new commissioned study.
 - Combined Oraclebot local promotion TASK-2093 is complete independently, from PR234 merge0ccfdfb into /Users/mitch/.venvs/oraclebot-combined-ui-0.4.12, source fingerprint3cf126afad3f20412e829e6199c4681d6b07953f08b884a8edb551f9f3f42760. ActualUI http://127.0.0.1:50028; control88231/forecast88247/observer88391, observer1.2.1. Acceptance /Users/mitch/.local/state/oraclebot-combined-promotion-20261113/acceptance.json SHA744c0a4b0c9583e1899f3ae1fa1eabdea6d88ab427bf09e52a5d36dbb4ca6317 passes20gates including installedTUI shutdown. Originalpipeline56618/0.4.8 andrecorder1673/settings preserved. These process IDs are snapshots. This capture-doc update changes no packaged runtime source.
 - Final documentation source delivery is pending this checkpoint; read /Users/mitch/.local/state/solmargintrader/market-captures/zec-final-audit-20261113/delivery.json for actual merge/CI/default and cleanup. Do not infer delivery from the pre-merge continuation.
+
+## 2026-11-13 — Captured ZEC matrix in progress
+
+MILE-2097 owns preparation TASK-2098, execution TASK-2099, independent audit TASK-2100 and publication TASK-2101. Source master81e3dba is preserved. Worktree /Users/mitch/dev/solmargintrader-zec-granular-20261113. Inputs: fixed capture50dbd4f31de24c36a30d8c3786495ad5, 1459542 records, SHA256 eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31. Interpret intervals as closed UTC receive-time signal bars. Use trade events and displayed depth with explicit costs/latency. Preserve gaps and insufficient warmup as exclusions. No live orders, capture extension, runtime promotion or embedding/inference. Enumerate full registry plus finite ensemble and Volty catalogs before reporting. Remaining: implement causal adapter, tests, run matrix, independent audit, publish source/report and Mongo/graph artifacts.
+
+## 2026-11-13 — ZEC granular matrix verified
+
+Attempt03 completed exit0 in /Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/attempt-03.10576rows:4878completed/5670insufficient warmup/28unsupported.827spot templates +50Volty x4cadences x3fees,24cash/hold benchmarks.86352fresh book samples and allpositionsclosed. Independent auditor verified1459542rawrecords/all134746trades,100sorted-dict books,326173fills,21direct-math SMA/holdcases, allhashes.39targetedtests0, including22new. Exchange-message lag max13.266seconds means receive-time reference only. At60bps best active spot returns1m-1.0315%,5m+.2022%,10m+1.1127%,1h-1.2393%;hold-9.7879%.5m/10m bestcases onlyone roundtrip. Positive10m11aliases have6fillpaths. No70%accuracy or durableedge proved. Originalcapture andservices unchanged. Attempt01serializationfailed1;02completed0but over-invalidated same-connection silence and stale-marked positions;both preservedunqualified. KNOW-2104records correction. Shared archive /Users/mitch/dev/solmargintrader/research/zec-granular-20261113.llms/ and report /Users/mitch/dev/solmargintrader/research/ZEC-GRANULAR-BACKTESTS.md. Mongo run run:55f2cb71690fb0115c42324012967ff835eb3137e4a7f3cd6a80522a335123d0 stores empirical artifacts; nottrustedliterature qualification. Remaining: finish Mongo readback/artifact index, required docs/index/CI checks, merge and byteverify remote default; complete TASK-2101/MILE-2097.
+
+## ZEC final delivery checkpoint
+
+All14Mongo artifacts persisted through revision18. Reassembled all8compressedCSVparts from server and compared1904716bytes exactly, SHA2560cf84609dce34714c29730709bb717032c795cec5b3acd075dd433545db809b3. Final reportv1.0.1, frozen plan, audit, summary and runmanifest independently readback byte-identical. Public14-filefamily has archive-manifest.json; resultsCSVpreservesauditedCRLFbytes via specific.gitattributes rule. Required local targeted39tests,ruff,check_docs and deterministic index verification all exit0. Canonical literature concepts untouched; no paidresearch or embedding. Final task publication remains open only until push/PR/requiredCI/merge/contentreadback/ownworktreecleanup finish. Delivery receipt and exact mergedcommit belong in /Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/delivery.json and graph TASK-2101/MILE-2097.

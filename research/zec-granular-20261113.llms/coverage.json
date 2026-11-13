@@ -1,0 +1,34 @@
+{
+  "10m": {
+    "complete_utc_bars": 143,
+    "decisions_with_fresh_book": 143,
+    "excluded_bars": 8,
+    "longest_valid_segment": 61,
+    "trades_in_complete_bars": 133896,
+    "valid_bars": 135
+  },
+  "1h": {
+    "complete_utc_bars": 23,
+    "decisions_with_fresh_book": 23,
+    "excluded_bars": 6,
+    "longest_valid_segment": 10,
+    "trades_in_complete_bars": 122164,
+    "valid_bars": 17
+  },
+  "1m": {
+    "complete_utc_bars": 1439,
+    "decisions_with_fresh_book": 1439,
+    "excluded_bars": 8,
+    "longest_valid_segment": 617,
+    "trades_in_complete_bars": 134719,
+    "valid_bars": 1431
+  },
+  "5m": {
+    "complete_utc_bars": 287,
+    "decisions_with_fresh_book": 287,
+    "excluded_bars": 8,
+    "longest_valid_segment": 122,
+    "trades_in_complete_bars": 134420,
+    "valid_bars": 279
+  }
+}

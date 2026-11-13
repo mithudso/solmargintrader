@@ -1,0 +1,15 @@
+# ZEC captured-event backtests
+
+Version: 1.0.1
+Canonical shared empirical archive for captured Coinbase ZEC-USD at1m5m10m1h. One day; no validated accuracy or durable edge.
+
+- [Full report](llms-full.txt): methods, outcomes, exclusions, costs and limits.
+- [All results](results.csv):10576rows, keyed by actual interval, template candidate ID and fee.
+- [Summary](summary.json): coverage and descriptive maxima.
+- [Frozen plan](plan.json.gz): gzip JSON containing all827spot templates and50Volty configurations.
+- [Coverage](coverage.json): actual bars and warmup history.
+- [Implementation](identity.json): exact imported code and dependency versions.
+- [Original run manifest](manifest.json): hashes for complete private artifacts, including all fills and prepared tape.
+- [Independent audit](audit.json): readback and independent ledger results.
+
+Mongo research run: run:55f2cb71690fb0115c42324012967ff835eb3137e4a7f3cd6a80522a335123d0. Persistence is empirical evidence storage, not trusted literature qualification.
