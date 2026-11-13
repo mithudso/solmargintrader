@@ -2,7 +2,7 @@ import { freshStrategy } from './evidence.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
-const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, bots: [], botsUnavailable: false, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
 const coinSymbols = { SOL: '◎', BTC: '₿', ETH: 'Ξ', ZEC: 'Z' };
@@ -23,6 +23,8 @@ function errorText(error) {
     subscription_required: 'An active membership or Stripe trial is needed. Open Membership to get started.', entitlement_required: 'An active membership or Stripe trial is needed. Open Membership to get started.',
     billing_unavailable: 'Membership checkout is not available yet. You can still browse the research journal.', billing_not_configured: 'Membership checkout is not available yet. You can still browse the research journal.',
     engine_unavailable: 'The research engine is currently unavailable. No result has been estimated.', engine_not_configured: 'The research engine is not connected yet. No result has been estimated.',
+    invalid_plan: 'Choose one of the available membership plans.', bot_limit: 'Your configured bot slots are full. Pause or archive a configuration to free a slot.',
+    backtest_daily_limit: 'Your daily backtest allowance is used. It resets at 00:00 UTC.', backtest_in_progress: 'One backtest is already in progress. Wait for it to finish before starting another.',
     live_execution_unavailable: 'Live execution is unavailable. Save a paper configuration instead.', invalid_signature: 'The wallet signature could not be verified. Please try connecting again.',
     challenge_expired: 'The sign-in message expired. Please connect again.', rate_limited: 'Too many attempts. Please wait a moment and try again.'
   };
@@ -156,7 +158,9 @@ function botsView() {
     }
     main.append(list);
   }
+  if (state.botsNextPage !== null && !state.botsUnavailable) { const more = el('button', 'button button-outline', 'Load more configurations'); more.dataset.action = 'more-bots'; main.append(more); }
   const note = el('div', 'info-strip'); note.append(el('span', '', 'ⓘ'), el('span', '', 'Connecting a wallet does not authorize trading. Configurations do not move funds. Live execution requires separate venue authorization and verified risk controls.')); main.append(note);
+  const current = usagePanel(); if (current) main.append(current);
 }
 function populateSelects(root = document) {
   for (const select of $$('[data-coin-select]', root)) {
@@ -174,6 +178,7 @@ function backtestView() {
   const grid = el('div', 'backtest-grid');
   grid.innerHTML = '<section class="panel form-panel"><h3>Design your experiment.</h3><form id="backtest-form"><div class="form-grid"><label>Coin<select name="coin" data-coin-select></select></label><label>Bar interval<select name="interval"><option value="1h">1 hour</option><option value="1d">1 day</option><option value="1m">1 minute</option></select></label></div><label>Strategy<select name="strategy" data-strategy-select><option value="ema_crossover">Moving average crossover</option><option value="rsi">RSI</option><option value="bb_reversion">Bollinger reversion</option><option value="grid">Grid</option></select></label><div class="form-grid"><label>Starting capital (USD)<input type="number" name="capital" min="10" max="1000000" step="0.01" value="1000" required></label><label>Leverage<select name="leverage"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="5">5×</option></select></label></div><div class="inline-note">Historical, cached bars only. Fees, slippage and perpetual borrowing costs remain part of the engine model.</div><p id="backtest-message" class="form-message" role="status"></p><button type="submit" class="button button-dark button-full">Run backtest <span aria-hidden="true">↗</span></button></form></section><section class="panel backtest-output" id="backtest-output" aria-live="polite"><div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌁</span><h2>Every hypothesis deserves a test.</h2><p>Your costed simulation, performance metrics and available equity history will appear here. We never fill gaps with estimated results.</p><span class="tiny-label">SIMULATION ONLY</span></div></section>';
   main.append(grid); populateSelects(grid);
+  const current = usagePanel(); if (current) main.append(current);
 }
 function renderBacktest(result) {
   const output = $('#backtest-output'); if (!output) return;
@@ -278,10 +283,46 @@ async function articleView(slug) {
     body.replaceChildren(); markdown(content || 'The full text is not available yet.', body);
   } catch (error) { body.replaceChildren(el('p', 'form-message', errorText(error))); }
 }
+function usagePanel() {
+  const current = state.usage;
+  if (!current?.policy) return null;
+  const panel = el('section', 'panel usage-panel');
+  panel.setAttribute('aria-label', 'Membership usage');
+  appendText(panel, 'h3', '', `${current.policy.name} usage`);
+  const bots = current.policy.botLimit === null ? `${current.bots} configured · unlimited bot slots` : `${current.bots} of ${current.policy.botLimit} configured bot slots`;
+  const tests = current.policy.backtestsPerDay === null ? `${current.backtests} completed today · unlimited backtests` : `${current.backtests} of ${current.policy.backtestsPerDay} backtests completed today`;
+  appendText(panel, 'p', '', bots);
+  appendText(panel, 'p', '', `${tests}${current.reservedBacktests ? ` · ${current.reservedBacktests} in progress` : ''}. Resets at 00:00 UTC.`);
+  if (current.policy.botLimit !== null && current.bots > current.policy.botLimit) appendText(panel, 'p', 'fine-print', 'Your saved configurations exceed this plan’s slots. You can read, pause or archive them. Free a slot before creating another configuration.');
+  appendText(panel, 'p', 'fine-print', 'Configured bots reserve slots; execution is unavailable. Paused and archived configurations do not reserve slots. All plans keep per-run input, resource and concurrency limits.');
+  return panel;
+}
 function pricingView() {
-  main.innerHTML = heading('ROOM TO THINK. TOOLS TO TEST.', 'A more considered approach.', 'One membership for your research and strategy workspace. Start with a seven-day free trial when checkout opens.');
-  main.insertAdjacentHTML('beforeend', '<div class="pricing-grid"><section class="pricing-card"><p class="eyebrow">ORACLEBOT MEMBERSHIP</p><h2>Make research<br>part of your routine.</h2><p>The oracle, backtest lab and your own bot workspace.</p><div class="pricing-big">7 days <small>free to explore</small></div><p>Your renewal price and billing terms appear in Stripe Checkout before you subscribe.</p><button class="button button-lime button-full" data-action="trial">Start your free trial <span aria-hidden="true">↗</span></button><p class="fine-print">Cancel through the billing portal. A trial does not grant permission to trade with your wallet.</p></section><section class="benefits"><h3>Built for the curious.</h3><div class="benefit"><span aria-hidden="true">✓</span><div><strong>A strategy perspective for your coin</strong><p>The leading eligible strategy, its outlook and the evidence behind it.</p></div></div><div class="benefit"><span aria-hidden="true">✓</span><div><strong>Backtests that count the costs</strong><p>The canonical research engine, with fees and borrowing costs kept in view.</p></div></div><div class="benefit"><span aria-hidden="true">✓</span><div><strong>A workspace for your strategies</strong><p>Paper configurations for Coinbase spot and Jupiter leveraged positions.</p></div></div><div class="benefit"><span aria-hidden="true">✓</span><div><strong>Research you can read for yourself</strong><p>The original studies, experiments, assumptions and limitations.</p></div></div></section></div>');
-  if (state.config.billingConfigured !== true) { const trial = $('[data-action="trial"]', main); trial.disabled = true; trial.textContent = 'Trial signup unavailable'; const note = el('div', 'info-strip'); note.append(el('span', '', 'ⓘ'), el('span', '', 'Membership checkout is being configured. No payment is collected and no trial starts until you complete Stripe Checkout. The research journal is available to browse now.')); main.append(note); }
+  main.innerHTML = heading('ROOM TO THINK. TOOLS TO TEST.', 'A more considered approach.', 'Choose the room your research needs. Seven days free on your first eligible subscription; then billed monthly in USD.');
+  const grid = el('div', 'pricing-grid tier-grid');
+  const plans = Array.isArray(state.config.plans) ? state.config.plans : [];
+  for (const plan of plans) {
+    const card = el('section', 'pricing-card'); card.dataset.plan = plan.id;
+    appendText(card, 'p', 'eyebrow', 'ORACLEBOT MEMBERSHIP');
+    const title = appendText(card, 'h2', '', plan.name); title.id = `plan-${plan.id}`; card.setAttribute('aria-labelledby', title.id);
+    const price = appendText(card, 'div', 'pricing-big', currency(plan.monthlyUsd)); price.append(el('small', '', ' USD / month'));
+    const features = el('ul', 'plan-features');
+    features.append(el('li', '', plan.botLimit === null ? 'Unlimited bot slots' : `Up to ${plan.botLimit} configured bot slots`), el('li', '', plan.backtestsPerDay === null ? 'Unlimited backtests' : `${plan.backtestsPerDay} backtests per day (UTC)`), el('li', '', 'Research journal and strategy workspace'));
+    card.append(features);
+    appendText(card, 'p', '', 'Configured bots reserve slots; live execution is unavailable.');
+    const button = el('button', 'button button-lime button-full', state.config.billingConfigured === true ? 'Start your free trial' : 'Trial signup unavailable');
+    button.dataset.action = 'trial'; button.dataset.plan = plan.id; button.disabled = state.config.billingConfigured !== true;
+    button.setAttribute('aria-label', `${button.textContent} — ${plan.name}`); card.append(button);
+    appendText(card, 'p', 'fine-print', 'Seven-day trial for eligible first subscriptions. Review renewal terms in Stripe Checkout. Cancel through the billing portal.');
+    grid.append(card);
+  }
+  if (!plans.length) appendText(grid, 'p', '', 'Membership plans are unavailable. Please try again later.');
+  main.append(grid);
+  const current = usagePanel(); if (current) main.append(current);
+  const note = el('div', 'info-strip');
+  note.append(el('span', '', 'ⓘ'), el('span', '', state.config.billingConfigured === true ? 'All plans retain risk controls and bounded backtest resources. A membership does not authorize trading.' : 'Membership checkout is being configured. No payment is collected and no trial starts until you complete Stripe Checkout. The research journal is available to browse now.'));
+  main.append(note);
+  if (state.portalAvailable || state.subscription?.status) { const portal = el('button', 'button button-outline', 'Manage or cancel membership'); portal.dataset.action = 'portal'; main.append(portal); }
 }
 function settingsView() {
   main.innerHTML = heading('YOUR WORKSPACE, YOUR TERMS', 'The details that matter.', 'Manage your account, membership and permissions. Keep your keys in your wallet.');
@@ -291,10 +332,12 @@ function settingsView() {
   const accountButton = el('button', 'button button-outline', state.user ? 'Sign out' : 'Connect wallet'); accountButton.dataset.action = state.user ? 'logout' : 'wallet'; account.append(accountButton);
   if (state.user) { const remove = el('button', 'button button-outline', 'Delete account'); remove.dataset.action = 'delete-account'; account.append(remove); appendText(account, 'p', 'fine-print', 'Deletes your account and saved configurations. Cancel subscriptions and finish or expire pending checkout first. A hashed trial-use record prevents repeat free trials.'); }
   const billing = el('section', 'panel'); appendText(billing, 'h3', '', 'Membership & billing'); appendText(billing, 'p', '', state.subscription?.status ? `Subscription status: ${state.subscription.status}. Manage payment details and cancellation through Stripe.` : 'No active subscription is recorded. The seven-day trial starts only after successful Stripe Checkout.');
-  const billingButton = el('button', 'button button-outline', state.subscription?.status ? 'Manage or cancel membership' : 'Explore membership'); billingButton.dataset.action = state.subscription?.status ? 'portal' : 'pricing'; billing.append(billingButton);
+  const canManage = state.portalAvailable || state.subscription?.status;
+  const billingButton = el('button', 'button button-outline', canManage ? 'Manage or cancel membership' : 'Explore membership'); billingButton.dataset.action = canManage ? 'portal' : 'pricing'; billing.append(billingButton);
   const permissions = el('section', 'panel'); permissions.innerHTML = '<h3>Wallet & execution permissions</h3><p>Your sign-in signature only proves ownership of your wallet. It does not approve a transaction or grant spending permissions.</p><p>Bot configurations start in paper mode. Live Coinbase trading and Jupiter leveraged execution require separately provisioned, verified account connections.</p>';
   const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never send Oraclebot your private key or seed phrase.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
   grid.append(account, billing, permissions, risk); main.append(grid);
+  const current = usagePanel(); if (current) main.append(current);
 }
 function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
 function render() {
@@ -315,9 +358,9 @@ async function loadOracle(coin = state.coin) {
   finally { if (requestId === state.oracleRequest) { state.loadingOracle = false; if (state.view === 'overview' || state.view === 'oracle') render(); } }
 }
 async function refreshAccount() {
-  const result = await api('/api/me'); state.user = result.user; state.subscription = result.subscription;
+  const result = await api('/api/me'); state.user = result.user; state.subscription = result.subscription; state.usage = result.usage || null; state.portalAvailable = result.portalAvailable === true;
   state.botsUnavailable = false;
-  if (state.user) { try { state.bots = (await api('/api/bots')).bots || []; } catch { state.bots = []; state.botsUnavailable = true; } } else state.bots = [];
+  if (state.user) { try { const result = await api('/api/bots'); state.bots = result.bots || []; state.botsNextPage = result.nextPage ?? null; } catch { state.bots = []; state.botsNextPage = null; state.botsUnavailable = true; } } else { state.bots = []; state.botsNextPage = null; }
   updateAccountUI();
 }
 function openWallet() { $('#wallet-message').textContent = ''; $('#wallet-dialog').showModal(); }
@@ -342,7 +385,7 @@ async function billingAction(action, button) {
   if (!state.user) { openWallet(); toast('Connect your wallet first to manage your membership.'); return; }
   setBusy(button, true);
   try {
-    const result = await api(`/api/billing/${action}`, { method: 'POST', body: '{}' });
+    const result = await api(`/api/billing/${action}`, { method: 'POST', body: JSON.stringify(action === 'checkout' ? { plan: button.dataset.plan } : {}) });
     const url = new URL(result.url); if (url.protocol !== 'https:' || !(url.hostname === 'checkout.stripe.com' || url.hostname === 'billing.stripe.com')) throw new Error('The billing service returned an unsupported checkout address.');
     location.assign(url.href);
   } catch (error) { toast(errorText(error)); } finally { setBusy(button, false); }
@@ -361,6 +404,18 @@ document.addEventListener('click', async event => {
   const action = actionButton.dataset.action;
   if (action === 'wallet') { if (state.user) location.hash = 'settings'; else openWallet(); }
   if (action === 'new-bot') openBot();
+  if (action === 'more-bots' && state.botsNextPage !== null) {
+    const userId = state.user?.id; const rows = state.bots; const page = state.botsNextPage;
+    const current = () => state.user?.id === userId && state.bots === rows && state.botsNextPage === page;
+    setBusy(actionButton, true);
+    try {
+      const result = await api(`/api/bots?page=${page}`);
+      if (current()) {
+        state.bots = [...new Map([...rows, ...result.bots].map(bot => [bot.id, bot])).values()];
+        state.botsNextPage = result.nextPage ?? null; render();
+      }
+    } catch (error) { if (current()) toast(errorText(error)); } finally { setBusy(actionButton, false); }
+  }
   if (action === 'refresh-bots') { setBusy(actionButton, true); try { await refreshAccount(); render(); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
   if (action === 'trial') billingAction('checkout', actionButton);
   if (action === 'portal') billingAction('portal', actionButton);
@@ -368,10 +423,10 @@ document.addEventListener('click', async event => {
   if (action === 'delete-account') {
     if (!confirm('Delete your Oraclebot account and all saved configurations? This cannot be undone.')) return;
     setBusy(actionButton, true);
-    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; state.botsUnavailable = false; render(); toast('Your account and saved configurations were deleted.'); }
+    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; render(); toast('Your account and saved configurations were deleted.'); }
     catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); }
   }
-  if (action === 'logout') { setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.bots = []; state.botsUnavailable = false; render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
+  if (action === 'logout') { setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; render(); toast('You are signed out.'); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
 });
 document.addEventListener('submit', async event => {
   if (!['bot-form', 'backtest-form'].includes(event.target.id)) return;
@@ -382,7 +437,7 @@ document.addEventListener('submit', async event => {
   setBusy(button, true);
   try {
     if (isBot) { await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }); await refreshAccount(); $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
-    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (form.isConnected && $('#backtest-form') === form) renderBacktest(result); }
+    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (form.isConnected && $('#backtest-form') === form) renderBacktest(result); const account = await api('/api/me').catch(() => null); if (account) state.usage = account.usage || null; }
   } catch (error) { message.textContent = errorText(error); } finally { setBusy(button, false); }
 });
 document.addEventListener('input', event => { if (event.target.id === 'research-search') { state.search = event.target.value; filterResearch(); } });

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Oraclebot account and research API",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Same-origin API hosted on Cloudflare Workers with D1. Every browser mutation requires Origin to match APP_ORIGIN; the Stripe webhook instead requires a valid HMAC over its exact raw bytes. Wallet sign-in authenticates an account and never grants transaction authority. Live execution is unavailable. No artificial local trial grants paid access."
   },
   "servers": [
@@ -772,6 +772,18 @@
           {
             "session": []
           }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "100-record pages; follow nextPage until null. Configured and paused records sort before archived history."
+          }
         ]
       },
       "post": {
@@ -925,7 +937,8 @@
           {
             "session": []
           }
-        ]
+        ],
+        "description": "Starter: 3 configured bot slots. Advanced: 10. Unlimited: no subscription count cap. Paused and archived records do not reserve slots. Configured records remain inert paper definitions. Over-limit accounts retain reads, pause/archive and account deletion under existing cancellation rules. No activation/resume or live execution route exists."
       }
     },
     "/api/bots/{id}": {
@@ -1055,7 +1068,7 @@
     },
     "/api/billing/checkout": {
       "post": {
-        "summary": "Create Stripe Checkout with server-owned price and a first-wallet seven-day trial; repeated trials are denied",
+        "summary": "Create Checkout for a server-allowlisted plan only when the explicit billing launch gate is enabled",
         "responses": {
           "200": {
             "description": "Success",
@@ -1160,12 +1173,36 @@
             "session": []
           }
         ],
-        "description": "The pending checkout lock lasts 35 minutes and matches the Stripe session expires_at. An ambiguous create is not retried. Only completion of that exact session can clear its lock before expiry."
+        "description": "The pending checkout lock lasts 35 minutes and matches the Stripe session expires_at. An ambiguous create is not retried. Only completion of that exact session can clear its lock before expiry.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plan": {
+                    "type": "string",
+                    "enum": [
+                      "starter",
+                      "advanced",
+                      "unlimited"
+                    ]
+                  }
+                },
+                "required": [
+                  "plan"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
       }
     },
     "/api/billing/portal": {
       "post": {
-        "summary": "Open the account-owned Stripe customer portal to manage or cancel billing",
+        "summary": "Open the configured Stripe portal for payment and cancellation independently of new Checkout launch",
         "responses": {
           "200": {
             "description": "Success",
@@ -1370,7 +1407,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Verify the raw-body Stripe signature and reconcile the canonical subscription Price. Nonterminal events use an owned 30-second per-subscription D1 lease before fetching Stripe. Contention or lost ownership returns HTTP 503 without marking the event handled. Subscription, trial-use and receipt writes require the current unexpired owner. Cancellation events bypass the lease; existing terminal-state protection prevents stale updates restoring canceled access."
       }
     },
     "/api/oracle": {
@@ -1706,7 +1744,8 @@
           {
             "session": []
           }
-        ]
+        ],
+        "description": "Starter: 10 completed runs/day, reset 00:00 UTC. Advanced and Unlimited: no daily count cap. Every plan has one in-flight run/account. Atomic reservations prevent concurrency/quota races; engine failures release the reservation. Input and engine resource bounds apply to all plans."
       }
     }
   },

@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 232
+Version: 233
+Delta: v232 to v233; preserve owner Stripe credential locations and three subscription tiers.
 Delta: v231 to v232; preserve the upstream persistent Oraclebot monitoring request.
 Delta: v230 to v231; preserve upstream owner choice to retain Google Workspace.
 Delta: v229 to v230; preserve accepted upstream news and email workflow history during audit integration.
@@ -2078,4 +2079,18 @@ Keep Google Workspace
 
 ```text
 For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that as an always runhing service. 2) Setup monitoring, alerting, and reporting for it.
+```
+
+## 2026-11-12 — Oraclebot Stripe credential locations
+
+```text
+I stored the api keys and account num info in ~/.env as STRIPE_ORACLEBOT_ACCTNUM
+STRIPE_ORACLEBOT_PUB_KEY
+STRIPE_ORACLEBOT_SEC_KEY
+```
+
+## 2026-11-12 — Oraclebot three subscription tiers and portal
+
+```text
+I added the subscriptions to stripe, 9.99 for up to 3 bots and 10x backtests/day , 29.99 for unlimited backtests and 10x active bots, and 49.99 for unlimited everything. Also the portal ID for customers to be able to edit or stop their subscription is here: bpc_1Ub7dzQ3DZ8H91BKkxAaTqj9
 ```

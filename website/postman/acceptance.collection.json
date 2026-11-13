@@ -42,7 +42,9 @@
             "type": "text/javascript",
             "exec": [
               "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
-              "pm.test('Seven day trial',()=>pm.expect(pm.response.json().trialDays).to.eql(7));"
+              "pm.test('Seven day trial',()=>pm.expect(pm.response.json().trialDays).to.eql(7));",
+              "pm.test('Owner-defined plan policies',()=>pm.expect(pm.response.json().plans).to.deep.eql([{id:'starter',name:'Starter',monthlyUsd:9.99,botLimit:3,backtestsPerDay:10},{id:'advanced',name:'Advanced',monthlyUsd:29.99,botLimit:10,backtestsPerDay:null},{id:'unlimited',name:'Unlimited',monthlyUsd:49.99,botLimit:null,backtestsPerDay:null}]));",
+              "pm.test('Public Checkout stays closed',()=>pm.expect(pm.response.json().billingConfigured).to.eql(false));"
             ]
           }
         }
