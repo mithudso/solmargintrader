@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 236
+Version: 237
+Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
 Delta: v235 to v236; preserve both full user prompt histories while combining authenticated MCP and continuous forecast work.
 Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration.
 Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
@@ -2177,4 +2178,10 @@ The owner briefly selected the per-trade approval option, then explicitly correc
 
 ```text
 No I didn't mean to press that button, I want preauthorization so I don't have to approve every time
+```
+
+## 2026-11-13 — Dedicated live Stripe key
+
+```text
+I stored the new live key as STRIPE_ORACLEBOT_SEC_KEY in ~/.env
 ```

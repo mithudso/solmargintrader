@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 519
+Version: 520
+Delta: v519 to v520; verify dedicated live Stripe merchant, configure provider objects and bind Worker while preserving closed launch gates.
 Delta: v518 to v519; finish the fixed24hour ZEC capture and full MongoDB persistence audit.
 Delta: v517 to v518; bind actual shutdown RED/GREEN, full10-case module and independent reviewed lifecycle correction.
 Delta: v516 to v517; preserve final f7e8 macOS CI failure and narrow Textual shutdown correction before renewed delivery.
@@ -1967,3 +1968,48 @@ The exactnewshutdowncase reproducesoldNoMatches withactualRED1/finalizer1 andzer
 - Original capture runtime/apps/certificate/URI2 configuration, data, sampled recorder and financial state unchanged. Frozen upload source remained1.0.1; this audit did not apply later source changes retroactively. Original user prompt remains preserved in prompts.md; this is its final continuation rather than a new commissioned study.
 - Combined Oraclebot local promotion TASK-2093 is complete independently, from PR234 merge0ccfdfb into /Users/mitch/.venvs/oraclebot-combined-ui-0.4.12, source fingerprint3cf126afad3f20412e829e6199c4681d6b07953f08b884a8edb551f9f3f42760. ActualUI http://127.0.0.1:50028; control88231/forecast88247/observer88391, observer1.2.1. Acceptance /Users/mitch/.local/state/oraclebot-combined-promotion-20261113/acceptance.json SHA744c0a4b0c9583e1899f3ae1fa1eabdea6d88ab427bf09e52a5d36dbb4ca6317 passes20gates including installedTUI shutdown. Originalpipeline56618/0.4.8 andrecorder1673/settings preserved. These process IDs are snapshots. This capture-doc update changes no packaged runtime source.
 - Final documentation source delivery is pending this checkpoint; read /Users/mitch/.local/state/solmargintrader/market-captures/zec-final-audit-20261113/delivery.json for actual merge/CI/default and cleanup. Do not infer delivery from the pre-merge continuation.
+
+## 2026-11-13 — Live Stripe setup, public launch still gated
+
+Target: the owner supplied a replacement live STRIPE_ORACLEBOT_SEC_KEY in
+/Users/mitch/.env. The file remains0600; no credential value entered the repo.
+Stele tasks: live provider setup TASK-2105, Worker binding TASK-2107 and delivery
+TASK-2108. Broader hosted engine/customer execution work remains unfinished.
+
+Verified live merchant registered to https://oraclebot.io with charges/payouts
+enabled, card_payments active and no currently due requirements. Reused the
+owner's three exact live monthly999/2999/4999USD Prices. Created a dedicated live
+portal and four-event lifecycle webhook pinned2026-10-28.endive. Provider IDs
+and sanitized readbacks live outside Git under
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/. The signing secret is
+private0600; the live API key remains only in the owner's original file.
+
+Stripe rejects a same-product portal with three duplicate monthly intervals.
+Only the exact owned unused candidate product/three Prices were archived; the
+original catalog was preserved. The accepted three-product portal requests
+period-end lower-price changes and preserves trials, but actual downgrade timing
+remains unverified and must pass before launch. No customers, subscriptions,
+invoices, charges, Checkout sessions or trades were created.
+
+Wrangler secret bulk exited0 and deployed version
+07171eac-6e7b-4424-875b-140f80fe2d59 at100 percent. Its six Stripe bindings are
+secret_text. Both launch/execution flags stayfalse; no engine/executor binding
+was added. Source remains website0.3.0. Local129website tests and syntax checks
+exited0. Independent loaded-state acceptance passed73/73checks (exit0), including
+exact live object readbacks, unchanged Worker code/runtime/prior bindings, source
+asset matches and no-write correct/incorrect webhook signature refusals. Receipt:
+/Users/mitch/.local/state/oraclebot-live-billing-20261113/acceptance/receipt.json
+SHA2560f8b9e6ffdf8ea1a64a51edb2cce9f37c2b328a08e8a81bd15c766db60566881.
+The initial documentation gate exited1 because the UI-only environment omitted
+executor/solders imports. Reusing the archived full dependency environment with
+explicit current executor/src and repository PYTHONPATH passed the unchanged
+gate (exit0), discovering3224cases; none of those suites was rerun by discovery.
+No dependency was installed or running environment modified. PR delivery and final
+CI/merge receipts are recorded externally in the same state directory. Postman1.87.0 is initialized but signed out and
+reports behind skill assets; no cloud Postman resources were provisioned. Orbit
+public discovery returned HTTPError; provider documentation/Stripe connector
+search and Context7 supplied the API contract.
+
+Remaining: verify provider delivery and complete test trial/renewal/plan-change/
+cancellation lifecycle; build and qualify hosted canonical analysis and actual
+customer-owned execution/delegation. Keep public billing off meanwhile.
