@@ -1,6 +1,9 @@
 # Work continuation
 
-Version: 527
+Version: 530
+Delta: v529 to v530; complete native evidence readback and final report qualification.
+Delta: v528 to v529; bind completed expanded matrix and independent audit; preserve pending publication.
+Delta: v527 to v528; begin frozen expanded strategy/shape/frequency protocol.
 Delta: v526 to v527; bind verified25/15bps results, independent audit and Mongo readback.
 Delta: v525 to v526; freeze the owner-confirmed25/15bps ZEC fee-only rerun.
 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
@@ -2084,3 +2087,19 @@ MILE-2113 owns the confirmed0.25percent/0.15percent fee rerun. Use25/15bps perfi
 ## ZEC25/15bps results verified
 
 Freshattempt01 at /Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01 completed0:7060rows,3252complete/3780insufficient/28unsupported,allpositionsclosed.39targetedtests/Ruff0. Bestactivespot25bps:1m-.336329%,5m+1.082212%,10m+1.822955%,1h-.821624%;15bps:+.630761%,+1.893912%,+2.026802%,-.702009%.Only1of786active1mspottemplates positiveat15bps,18fills;noneat25bps. Independentauditorverifiedall217445fills,14directmathcases,all3516new25bpsrows exactlymatchprioracceptedbaseline,andoriginaltape/WAL/runtimehashes. Conditionalmaker-ratefees only: fillsstillcrossbook,spread/slippage/latencyunchanged,nomakerqueueproof.13immutableMongoartifacts run:80719ee0ab3841dcabf1d0723c982e16f8385d3b082f988d4641d55c97df0bfa revision16;full1271529byteCSVreadbacksha c8b4ba0dfd8dbb7f18fe4fe542f4bb0e095dedfdf6efec416f2dfbf81b539405 andall7otherartifacts byteequal. Sharedreport research/ZEC-GRANULAR-FEE-SENSITIVITY.md andfamily research/zec-fee-sensitivity-20261113.llms. KNOW-2126holdsresults. Remainingdelivery: generatedpublicresearch/index consistency,docs/CIchecks,merge,remotecontentreadbackandownedcleanup;finalstatusin /Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/delivery.json andMILE-2113. Priorbaselineisimmutableandnotreplaced.
+
+## Expanded ZEC study in progress
+
+MILE-2129 andTASK-2130/2131/2132/2133/2134 trackinventory,baseline,contexts,audit,delivery. Isolated /Users/mitch/dev/solmargintrader-zec-expanded-20261113. Preserveoriginalcapture/acceptedmatrices and25/15bpsfeeassumptions. Frequencyinterpretedaspricecycles,followingexistingzec_cycles. Causal48barshapeproxies,fixed64barcyclefit/16decisionforecastblocks,no-clocknulls,explicitwarmup/exclusions. Enumerateallactivecards/presets/backgroundparametergrid andspecialrunners;source-onlymechanismsarenotimplementedbyinference. No liveorders/services,embedding/inferenceorpaidresearch. Remaining:freezeinventory;implement/testcausaladapters;executeallthreepasses;independentaudit;persistMongo/sharedllms;gates/merge/remoteverification/cleanup.
+
+## Expanded ZEC outputs and audit accepted
+
+MILE-2129: TASK-2130/2131/2132 done; TASK-2133 independent audit has accepted artifact correctness. All 85,312 rows are present (38,664 completed, 46,648 insufficient). Frozen 1,707 spot templates (880 additions), 50 Volty and 20 grid/DCA reference configurations, six modes, four cadences, 25/15bps per fill. All 7,032 prior baseline comparisons match. All 1,563,853 fills reconcile, no positions remain open; 68 direct-control cases and all 200 null rows independently reproduce. Minimum Holm p=.84; no corrected spectral finding. Shapes help some paired cases but one-day selected maxima do not establish accuracy/edge. Hourly shapes/cycles unavailable. Original matrix OS exit receipt UNKNOWN; independent artifact gates and tests exited0; do not invent original exit0. Author preflight60 tests/Ruff0; auditor54-test different scope0.
+
+Private /Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01 remains immutable. Five audit-expanded-*.json receipts in its parent. Shared research/ZEC-EXPANDED-STRATEGIES.md and research/zec-expanded-20261113.llms hold exact tables/census/proof. Mongo run run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f has partial full-CSV fragments and full frozen-plan fragments/ledger; finish complete byte readback and evidence/report artifacts before claiming native publication. Artifact writes sometimes return generic errors without writes; reread run revision and use bounded fragments/ledger. Remaining: complete Mongo persistence/readback, archive manifest, docs/export/index gates, final PR checks/merge/remote bytes and owned cleanup. No source or dataset from accepted earlier studies changed; no live/paper runtime promotion, embedding, inference or paid research.
+
+## Expanded ZEC publication gate
+
+The final report and all23 archive file hashes passed independent review, including the exact24fragment CSV reconstruction. Native CSV readback is17637322bytes, SHA1ec8410c4f465de50d71d792c1c3fba0af6085dd1656f76dfce14f396d7b24ed. Full2630507byte frozen census and167645byte deduplicated native proof read back exactly; proof reconstructs actual plan/all1535source hashes and every fit/null/input/audit JSON. Seven incomplete redundant transport drafts remain explicitly unselected; no accepted research was overwritten. Native proof SHA0bdd4ddd317887ac1f7a26121a2236f16072197886ddde735ca1c6d7632068b5. KNOW-2141 records the expanded findings with the one-day/unknown-OS-exit limits. Corrected lifecycle wording distinguishes resting order crossings from market-style base/forced exits.
+
+Shared source/archive are ready for delivery; docs count gate and Ruff passed0. Delivery status, final source inventory, CI and merged-remote content verification are recorded in /Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/delivery.json and source-files.json. TASK-2134 closes only after actual merge/remote verification. Never interpret missing original OS telemetry as a successful process exit. Original capture and prior accepted studies remain immutable.

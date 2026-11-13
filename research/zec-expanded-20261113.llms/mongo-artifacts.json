@@ -1,0 +1,386 @@
+{
+  "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+  "run_revision_at_readback": 47,
+  "qualification": "Empirical draft records; not trusted literature qualification",
+  "csv": {
+    "full_csv_readback": true,
+    "bytes": 17637322,
+    "sha256": "1ec8410c4f465de50d71d792c1c3fba0af6085dd1656f76dfce14f396d7b24ed",
+    "encoded_chars": 2711016,
+    "transport_fragments": 24,
+    "rows": 85312,
+    "full_proof_readback": true,
+    "proof_bytes": 167645,
+    "proof_sha256": "0bdd4ddd317887ac1f7a26121a2236f16072197886ddde735ca1c6d7632068b5",
+    "full_frozen_plan_readback": true,
+    "frozen_plan_bytes": 2630507,
+    "frozen_plan_sha256": "64a162296edecf416afeaa77b8ae00a834e841af0cd10788811bd9883d8719dd",
+    "actual_plan_reconstructed_exact_json": true,
+    "identity_1535_hashes_reconstructed_exact": true,
+    "all_fits_nulls_coverage_input_audits_match": true,
+    "encoding": "Sortfragments bystart, removebase64whitespace, concatenate,base64decode,gzipdecompress",
+    "fragments": [
+      {
+        "start": 0,
+        "end": 100000,
+        "artifact_id": "art:000d2ab7f478f712191d413563940d83d6ec3dc48f00071aff58b2df0c4be6e2"
+      },
+      {
+        "start": 100000,
+        "end": 200000,
+        "artifact_id": "art:755cebc1b6bf6fd624ba77793c4f825d43a2974e163d50c55c11d3b2fcf8931d"
+      },
+      {
+        "start": 200000,
+        "end": 300000,
+        "artifact_id": "art:019f9a029b18f4d48a0628d96aba94fc45917430d30d8e2af92b93fd21592a5e"
+      },
+      {
+        "start": 300000,
+        "end": 400000,
+        "artifact_id": "art:97a275f51b342d450f52118f668833f5b66847f4b85e22b9051e06ba41731c3e"
+      },
+      {
+        "start": 400000,
+        "end": 500000,
+        "artifact_id": "art:6c232b817f0f5424d281121322c88bfe9fdb4eaeb39cbd7ec3b33eb623b38770"
+      },
+      {
+        "start": 500000,
+        "end": 1000000,
+        "artifact_id": "art:f7e3fde935409bc7054f418773d84884c815cabb4ea04e98bb20ea9813230246"
+      },
+      {
+        "start": 1000000,
+        "end": 1500000,
+        "artifact_id": "art:e8d9605954e1ba4d78cf7ed9594c6531958d5a0dc388ab5b6296fb14a971c711"
+      },
+      {
+        "start": 1500000,
+        "end": 1750000,
+        "artifact_id": "art:ead714ffb278b73def831b7af23d721676b6b6ae29433712f8b52ad9094fd8ff"
+      },
+      {
+        "start": 1750000,
+        "end": 2000000,
+        "artifact_id": "art:8d2e2a0ce0c9aa93f93cad3700200cabc7688dff78ce468dbfe7aa1d7e9dd625"
+      },
+      {
+        "start": 2000000,
+        "end": 2100000,
+        "artifact_id": "art:68e730746bc26465c66ad1ce165882c06fe936d2f80c0ace287791f833207f96"
+      },
+      {
+        "start": 2100000,
+        "end": 2200000,
+        "artifact_id": "art:cf537170ceadfe2b843f0b5adcda07c7f6b521671cc326817c22bcaf3963f783"
+      },
+      {
+        "start": 2200000,
+        "end": 2300000,
+        "artifact_id": "art:9bd542e21d5d62aa4d995c9f2c81e42a3db46e2548b635f96baaef39b3cf69e3"
+      },
+      {
+        "start": 2300000,
+        "end": 2400000,
+        "artifact_id": "art:f6803571899a1a2d4374f6cfd325d6cebc767d14c0900bd03cbb5326ea007788"
+      },
+      {
+        "start": 2400000,
+        "end": 2410000,
+        "ledger_key": "result-csv-2400000-2410000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2410000,
+        "end": 2450000,
+        "ledger_key": "result-csv-2410000-2450000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2450000,
+        "end": 2490000,
+        "ledger_key": "result-csv-2450000-2490000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2490000,
+        "end": 2530000,
+        "ledger_key": "result-csv-2490000-2530000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2530000,
+        "end": 2540000,
+        "ledger_key": "result-csv-2530000-2540000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2540000,
+        "end": 2550000,
+        "ledger_key": "result-csv-2540000-2550000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2550000,
+        "end": 2560000,
+        "ledger_key": "result-csv-2550000-2560000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2560000,
+        "end": 2570000,
+        "ledger_key": "result-csv-2560000-2570000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2570000,
+        "end": 2580000,
+        "ledger_key": "result-csv-2570000-2580000",
+        "ledger_revision": 1
+      },
+      {
+        "start": 2580000,
+        "end": 2640000,
+        "artifact_id": "art:62ce783524492c9e93fb077e6a3b1e6934b3aa898a26b9713841e520b92160e1"
+      },
+      {
+        "start": 2640000,
+        "end": 2711016,
+        "artifact_id": "art:cc3e21c1794e49311f05852de27e0b30e0bc1dfaa1aa41fcd7882f10e5f1f5f7"
+      }
+    ]
+  },
+  "frozen_plan": {
+    "encoding": "three ordered frozen-plan artifacts, then ordered frozen-plan ledger blobs; base64decode/gzipdecompress",
+    "artifacts": [
+      {
+        "_id": "art:848b9831392a0d6c1faf03d7e9c6e8389d59d903b567d1b272958f372c32fd45",
+        "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+        "name": "frozen-plan.json.gz.b64.part-1-of-6",
+        "kind": "empirical-frozen-census-and-protocol",
+        "body_utf8_sha256": "50174dcae0bd35f8a8011be5d788afb6a510c25017fc5cf9206559547fd38ddf",
+        "metadata": {
+          "encoding": "concatenate orderedparts,base64 decode,gzip decompress",
+          "candidates": 1707,
+          "cards": 1478,
+          "queue_jobs": 1059,
+          "expected_rows": 85312,
+          "not_literature_qualification": true
+        },
+        "trusted_provenance": false,
+        "managed_by": "research-library/v1",
+        "encoding": "utf-8",
+        "byte_count": 50000,
+        "chunks": [
+          "chunk:50174dcae0bd35f8a8011be5d788afb6a510c25017fc5cf9206559547fd38ddf"
+        ],
+        "created_at": "2026-11-13T18:22:02.392703+00:00",
+        "qualification": {
+          "status": "unverified",
+          "authority": "client",
+          "reason": "Orchestration records do not establish research qualification"
+        }
+      },
+      {
+        "_id": "art:c3df0f84ca2c5c4b4870981c21f5c7d899426087ef7ab0da3ff1190bf3458711",
+        "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+        "name": "frozen-plan.json.gz.b64.part-2-of-6",
+        "kind": "empirical-frozen-census-and-protocol",
+        "body_utf8_sha256": "b5336a7036f9fff2eaec2e6bfca91ee07b084e8f6f31e667d651b952be0949ea",
+        "metadata": {
+          "encoding": "concatenate orderedparts,base64 decode,gzip decompress",
+          "candidates": 1707,
+          "cards": 1478,
+          "queue_jobs": 1059,
+          "expected_rows": 85312,
+          "not_literature_qualification": true
+        },
+        "trusted_provenance": false,
+        "managed_by": "research-library/v1",
+        "encoding": "utf-8",
+        "byte_count": 50000,
+        "chunks": [
+          "chunk:b5336a7036f9fff2eaec2e6bfca91ee07b084e8f6f31e667d651b952be0949ea"
+        ],
+        "created_at": "2026-11-13T18:22:06.594685+00:00",
+        "qualification": {
+          "status": "unverified",
+          "authority": "client",
+          "reason": "Orchestration records do not establish research qualification"
+        }
+      },
+      {
+        "_id": "art:2211f0588757e86f1354686c809f75d3bfc118c4ebc29330c4ffca21b72f3c5b",
+        "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+        "name": "frozen-plan.json.gz.b64.part-3-of-6",
+        "kind": "empirical-frozen-census-and-protocol",
+        "body_utf8_sha256": "8e1eccae4d6699f643d73be086385389433ba37322ac885e85c0a06927408d7e",
+        "metadata": {
+          "encoding": "concatenate parts; whitespace-tolerant base64decode; gzipdecompress",
+          "candidates": 1707,
+          "cards": 1478,
+          "expected_rows": 85312
+        },
+        "trusted_provenance": false,
+        "managed_by": "research-library/v1",
+        "encoding": "utf-8",
+        "byte_count": 50657,
+        "chunks": [
+          "chunk:8e1eccae4d6699f643d73be086385389433ba37322ac885e85c0a06927408d7e"
+        ],
+        "created_at": "2026-11-13T18:25:40.309872+00:00",
+        "qualification": {
+          "status": "unverified",
+          "authority": "client",
+          "reason": "Orchestration records do not establish research qualification"
+        }
+      }
+    ],
+    "ledgers": [
+      {
+        "key": "frozen-plan-base64-150000-160000",
+        "revision": 1,
+        "start": 150000,
+        "end": 160000
+      },
+      {
+        "key": "frozen-plan-base64-160000-185000",
+        "revision": 1,
+        "start": 160000,
+        "end": 185000
+      },
+      {
+        "key": "frozen-plan-base64-185000-210000",
+        "revision": 1,
+        "start": 185000,
+        "end": 210000
+      },
+      {
+        "key": "frozen-plan-base64-210000-235000",
+        "revision": 1,
+        "start": 210000,
+        "end": 235000
+      },
+      {
+        "key": "frozen-plan-base64-235000-274988",
+        "revision": 1,
+        "start": 235000,
+        "end": 274988
+      }
+    ]
+  },
+  "native_proof": {
+    "_id": "art:d14a70a7405cddceaa2ca5edaff743f4d0e164f08d2c5516f43c4346eb889f24",
+    "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+    "name": "native-proof.json.gz.b64",
+    "kind": "empirical-evidence",
+    "body_utf8_sha256": "dffcadcb7dc795472a3cb6ebf821ce89b24d609692975a7e7e312855264155c6",
+    "metadata": {
+      "encoding": "gzip+base64-whitespace",
+      "decoded_bytes": 167645,
+      "decoded_sha256": "0bdd4ddd317887ac1f7a26121a2236f16072197886ddde735ca1c6d7632068b5",
+      "card_hashes_reference": "full frozen-plan.inventory.card_census",
+      "includes": "all100frozenfits/all200nulltests/all5auditreceipts/inputproof/coverage/57noncardhashes/fullplanreconstructiondelta"
+    },
+    "trusted_provenance": false,
+    "managed_by": "research-library/v1",
+    "encoding": "utf-8",
+    "byte_count": 43525,
+    "chunks": [
+      "chunk:dffcadcb7dc795472a3cb6ebf821ce89b24d609692975a7e7e312855264155c6"
+    ],
+    "created_at": "2026-11-13T19:22:02.250733+00:00",
+    "qualification": {
+      "status": "unverified",
+      "authority": "client",
+      "reason": "Orchestration records do not establish research qualification"
+    }
+  },
+  "report": {
+    "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+    "name": "ZEC-EXPANDED-STRATEGIES.md",
+    "kind": "empirical-report",
+    "body_utf8_sha256": "4912701c19054536ca0a6ba49d4726aa29e5e82fbd3e182b72e45fa85a0a5dd6",
+    "metadata": {
+      "rows": 85312,
+      "artifact_correctness": "independent audit accepted",
+      "original_run_os_exit_code": null,
+      "not_literature_qualification": true
+    },
+    "trusted_provenance": false,
+    "_id": "art:4981da29d9940376e957425ca2c1ddafada67f265146293c3428b55e036c3067",
+    "managed_by": "research-library/v1",
+    "encoding": "utf-8",
+    "byte_count": 12899,
+    "chunks": [
+      "chunk:4912701c19054536ca0a6ba49d4726aa29e5e82fbd3e182b72e45fa85a0a5dd6"
+    ],
+    "created_at": "2026-11-13T19:25:10.203205+00:00",
+    "qualification": {
+      "status": "unverified",
+      "authority": "client",
+      "reason": "Orchestration records do not establish research qualification"
+    }
+  },
+  "summary": {
+    "_id": "art:9a49bad2dd2e08a8d2628fad99d3acd0cf182c908e4a74e0f8dcf6f97b233ae3",
+    "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+    "name": "summary.json",
+    "kind": "empirical-summary",
+    "body_utf8_sha256": "58c3fb88e6bab35688d27eed56c468340f06580673a54761baf27d73137e61c7",
+    "metadata": {
+      "not_literature_qualification": true
+    },
+    "trusted_provenance": false,
+    "managed_by": "research-library/v1",
+    "encoding": "utf-8",
+    "byte_count": 916,
+    "chunks": [
+      "chunk:58c3fb88e6bab35688d27eed56c468340f06580673a54761baf27d73137e61c7"
+    ],
+    "created_at": "2026-11-13T19:13:16.684387+00:00",
+    "qualification": {
+      "status": "unverified",
+      "authority": "client",
+      "reason": "Orchestration records do not establish research qualification"
+    }
+  },
+  "unselected_draft_artifacts": [
+    {
+      "artifact_id": "art:10f60ced5fb824da39468eee5cefc8da5bc287ed56e136f8281bf7f80a4713bf",
+      "name": "compact-evidence.json.gz.b64.range-25000-37500",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    },
+    {
+      "artifact_id": "art:4539b29b03eabffd11dcc539770c72044bc67c1011522b0140c7310aca5caa86",
+      "name": "evidence-bundle.json.gz.b64.part-2-of-6",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    },
+    {
+      "artifact_id": "art:94364b32ea4279f4f4d005027dfdf114f767280a39e8e26a228ba5c643b6df81",
+      "name": "compact-evidence.json.gz.b64.range-0-12500",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    },
+    {
+      "artifact_id": "art:5d0e4026d3ba79495af2b75f9e02aefc50de95d495fad93a67fe7e3ff0df2d81",
+      "name": "evidence-bundle.json.gz.b64.part-1-of-6",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    },
+    {
+      "artifact_id": "art:ae97b5ba943ef670bdf14801f1c6c73ca04dff062bf4e83b72bae019d2bc1cd4",
+      "name": "compact-evidence.json.gz.b64.range-50000-75000",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    },
+    {
+      "artifact_id": "art:363bb33fc7888834cb96f949bf1dcac6b6b5925218020e934a450aa0ffe0087e",
+      "name": "compact-evidence.json.gz.b64.range-12500-25000",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    },
+    {
+      "artifact_id": "art:b4788d133fd49e2a9f5c9d9ab357e35f5cf88c933c0a6354f2df1568d008c966",
+      "name": "compact-evidence.json.gz.b64.range-37500-50000",
+      "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
+    }
+  ]
+}

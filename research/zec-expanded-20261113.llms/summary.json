@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "rows": 85312,
+  "status_counts": {
+    "completed": 38664,
+    "insufficient_contiguous_history": 46648
+  },
+  "run_id": "run:a45e0c626343173bade6f4696c6c885427a1ff274c8b2c4c857978b43857405f",
+  "row_key": [
+    "interval",
+    "candidate_id",
+    "mode",
+    "fee_bps"
+  ],
+  "fees_bps_per_fill": [
+    25,
+    15
+  ],
+  "intervals": [
+    "1m",
+    "5m",
+    "10m",
+    "1h"
+  ],
+  "spot_templates": 1707,
+  "additional_spot_templates": 880,
+  "volty_configs": 50,
+  "lifecycle_configs": 20,
+  "cycle_tests": 200,
+  "cycle_null_replicates": 4999,
+  "min_holm_p": 0.84,
+  "significant_cycle_tests": 0,
+  "run_os_exit_code": null,
+  "artifact_correctness": "independently accepted",
+  "raw_fill_ledger": "/Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-01/fills.jsonl.gz",
+  "source_wal_sha256": "eea4a026d1a093a2be996d32c552262358516ca27494f60df3091d54312f3d31"
+}

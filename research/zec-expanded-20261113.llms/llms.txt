@@ -1,0 +1,21 @@
+# Expanded ZEC strategy, shape and cycle evidence
+
+Version: 1.0.0
+
+Read in order:
+- ../ZEC-EXPANDED-STRATEGIES.md — methods, results, controls and limits.
+- summary.json — exact scope and status counts.
+- summary-statistics.json — active spot maxima and positive counts for all six modes.
+- paired-comparisons.json — same-configuration matched-control differences and replay-pair deduplication.
+- special-runner-summary.json — all grid/DCA/synthetic-Volty mode summaries, with exact best rows.
+- results.csv — all 85,312 rows; key interval,candidate_id,mode,fee_bps.
+- plan.json.gz — complete card/queue census, parameters, exclusions and frozen protocol.
+- coverage.json — actual histories and feature availability.
+- frequency-fits-*.json and cycle-null-tests.json — frozen earlier-only fits and search-aware nulls.
+- identity.json and input-provenance.json — source/runtime/input bindings.
+- manifest.json — immutable original private run outputs, including full-fill SHA256.
+- audit-expanded-*.json — five independent receipts; artifact correctness accepted, original OS exit unknown.
+- mongo-artifacts.json — native empirical run artifacts, exact reconstruction and readback proof.
+- archive-manifest.json — published archive byte hashes, excluding itself.
+
+One previously studied captured day; no calibrated forecast accuracy or out-of-sample edge. Fees are conditional 25/15bps per fill; crossing-book reference fills do not prove maker execution. Hourly shapes/cycles are unavailable. Source-only and missing-input mechanisms remain explicit census entries.

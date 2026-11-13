@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 239
+Version: 240
+Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
 Delta: v238 to v239; preserve corrected percent units for the ZEC fee rerun.
 Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
 Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
@@ -2201,3 +2202,7 @@ I stored the new live key as STRIPE_ORACLEBOT_SEC_KEY in ~/.env
 Owner clarification:
 
 > .25% and .15%
+
+## 2026-11-13 — Expanded ZEC strategies, shapes and frequency
+
+> Backtest all of the other strategies against ZEC in the same timeframes. Then do it again with the trading shapes as was done looking for macro graph patterns. And again looking for the frequency
