@@ -258,3 +258,7 @@ Deploy the previous Worker version using Cloudflare version rollback. Preserve
 D1 data; this initial schema is additive. Bot definitions cannot place orders,
 and no live executor is configured. Preserve the agent intent ledger during
 rollback; a future active executor can leave unresolved venue submissions.
+
+## Account response isolation
+
+Account transitions invalidate pending reads, consent and mutations before the request starts. Private browser requests carry the captured X-Oraclebot-Account identity. The Worker rejects mismatches with409 account_changed; this optional header never selects an account and cannot replace the verified cookie principal. Initial discovery omits it. Failed identity checks show an unknown state with retry rather than an empty signed-out workspace. Fixed-vocabulary diagnostics exclude customer identity and credentials; logging failure does not change service behavior.

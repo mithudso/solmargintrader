@@ -1,0 +1,415 @@
+{
+  "schema_version": 1,
+  "completed_at": "2026-11-13T04:31:32.657305+00:00",
+  "scope": "Full delegated per-file CDO static review plus parent-authorized isolated regression fix; no repository-wide clean verdict.",
+  "file": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/mcp.test.js",
+  "skill": {
+    "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+    "version": "1.17.1"
+  },
+  "reviewed_initial": {
+    "sha256": "757f0880550b6a120cbe56a08964d2c1dd88702baeab47ba0362899d32a188a4",
+    "git_blob_sha1": "00489102609d8b2f6027868fdc2ce55afeb90237",
+    "bytes": 21545,
+    "lines": 252
+  },
+  "reviewed_final": {
+    "sha256": "41ade79a2f746f0f467a91de327dbcc2911d206776605ced1821b2306f8ad57e",
+    "git_blob_sha1": "ca311529b24f94e62ebb6f67465f2813db369843",
+    "bytes": 21756,
+    "lines": 255
+  },
+  "sha256": "41ade79a2f746f0f467a91de327dbcc2911d206776605ced1821b2306f8ad57e",
+  "git_blob": "ca311529b24f94e62ebb6f67465f2813db369843",
+  "coverage": {
+    "complete": true,
+    "initial_bounded_ranges": [
+      [
+        1,
+        90
+      ],
+      [
+        91,
+        180
+      ],
+      [
+        181,
+        252
+      ]
+    ],
+    "final_bounded_ranges": [
+      [
+        1,
+        90
+      ],
+      [
+        91,
+        180
+      ],
+      [
+        181,
+        255
+      ]
+    ],
+    "truncated_ranges": [],
+    "unread_ranges": []
+  },
+  "injection_gate": {
+    "state": "complete",
+    "reviewer_directives_found": 0,
+    "halted": false
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "complete",
+      "reason": "Reviewed fixture seeding, awaited assertions, HTTP status paths and JSON-RPC result/error assumptions. The only confirmed logic defect was nested global mock restoration, fixed as MCP-TEST-1.",
+      "final_lines": [
+        [
+          7,
+          24
+        ],
+        [
+          39,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "C2",
+      "state": "complete",
+      "reason": "Checked invocation shapes, params/null handling, status/body assertions, tool names, identity fields and fixed protocol-version expectations. Deliberate per-case service substitutions keep the subject contract explicit.",
+      "final_lines": [
+        [
+          19,
+          24
+        ],
+        [
+          80,
+          142
+        ],
+        [
+          154,
+          219
+        ]
+      ]
+    },
+    {
+      "id": "C3",
+      "state": "complete",
+      "reason": "Traced malformed bearer, missing DB, thrown backend errors, foreign wallet intents, oversized payload, invalid schema and precision boundary counterexamples. Added a mock-restoration counterexample that failed before the fix and passed after it.",
+      "final_lines": [
+        [
+          47,
+          103
+        ],
+        [
+          154,
+          219
+        ],
+        [
+          222,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "S1",
+      "state": "complete",
+      "reason": "Injection gate found no reviewer-addressed directive. Credentials are fresh test tokens and literal private strings are sentinels. Checked unauthenticated cookies, cross-wallet isolation, principal overrides, fixed diagnostics and error redaction assertions.",
+      "final_lines": [
+        [
+          1,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "S2",
+      "state": "complete",
+      "reason": "All asynchronous operations are awaited. Authentication outage and unexpected backend classifications are asserted. Diagnostic sink failure snapshots preserve responses; explicit teardown now restores original methods.",
+      "final_lines": [
+        [
+          58,
+          95
+        ],
+        [
+          212,
+          242
+        ]
+      ]
+    },
+    {
+      "id": "S3",
+      "state": "complete",
+      "reason": "Trust-boundary cases cover foreign Origin, insufficient scopes, forbidden principal/signer/URL fields, malformed JSON-RPC, unsupported media and sub-cent budgets before dispatch.",
+      "final_lines": [
+        [
+          120,
+          161
+        ],
+        [
+          194,
+          210
+        ],
+        [
+          244,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "S4",
+      "state": "complete",
+      "reason": "File uses the existing Node ESM/node:test, Buffer, Fetch/Web Crypto and SQLite fixture environment. Verified targeted file under installed Node v26.13.0; broader runtime matrix remains root-owned.",
+      "final_lines": [
+        [
+          1,
+          24
+        ],
+        [
+          27,
+          36
+        ],
+        [
+          222,
+          242
+        ]
+      ]
+    },
+    {
+      "id": "S5",
+      "state": "complete",
+      "reason": "Fixed event names, levels and allowed key sets are asserted, with private sentinels excluded from serialized events and public errors. The repaired console leak restores observability for following cases.",
+      "final_lines": [
+        [
+          27,
+          36
+        ],
+        [
+          47,
+          95
+        ],
+        [
+          144,
+          152
+        ],
+        [
+          163,
+          192
+        ],
+        [
+          212,
+          242
+        ]
+      ]
+    },
+    {
+      "id": "P1",
+      "state": "complete",
+      "reason": "No unbounded work, real sleeps, external polling or large fixture rebuild was found. Bounded case loops and a 65537-character body exercise intentional limits.",
+      "final_lines": [
+        [
+          7,
+          24
+        ],
+        [
+          194,
+          210
+        ],
+        [
+          222,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "P2",
+      "state": "complete",
+      "reason": "Confirmed nested console method mocks leaked through FIFO tracker restoration. Reusing existing proxies with mockImplementation removes the second descriptor capture. A post-restore identity assertion guards both global methods. Current serial tests preserve isolation.",
+      "final_lines": [
+        [
+          25,
+          30
+        ],
+        [
+          222,
+          242
+        ]
+      ]
+    },
+    {
+      "id": "M1",
+      "state": "complete",
+      "reason": "Names identify behavior and error categories; fixture lifetimes and monetary bounds are test data rather than application settings. The new constant records the real module-initialization console identities before any case mocks them.",
+      "final_lines": [
+        [
+          7,
+          36
+        ],
+        [
+          39,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "M2",
+      "state": "complete",
+      "reason": "Fixture, diagnostics, event and privacy helpers remove repetition. Existing independent cases/assertions are retained. The change reuses each registered mock rather than stacking an equivalent second mock.",
+      "final_lines": [
+        [
+          7,
+          36
+        ],
+        [
+          222,
+          242
+        ]
+      ]
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository architecture and centralized configuration are root-owned; this assignment owns one test file only."
+    },
+    {
+      "id": "M4",
+      "state": "complete",
+      "reason": "Test titles agree with the assertions: explicit 2025-11-25 stateless profile, empty 202 notification, forbidden overrides, public error classification and USD precision. No public library API is introduced.",
+      "final_lines": [
+        [
+          39,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "reason": "Conditional tool ergonomics pass: this file is a test module, not a shipped end-user runnable entrypoint."
+    },
+    {
+      "id": "T1",
+      "state": "complete",
+      "reason": "All 18 tests have behavioral assertions. Added explicit restoration of both original console methods; regression guard produced one failed test before the fix and 18/18 after it. Existing response snapshots and privacy coverage were not removed or weakened.",
+      "final_lines": [
+        [
+          25,
+          36
+        ],
+        [
+          39,
+          255
+        ]
+      ]
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repository dependency and supply-chain review is root-owned; no package or lockfile changes are in this assignment."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repository tooling-gap review is root-owned; this assignment does not edit configuration or CI."
+    },
+    {
+      "id": "T4",
+      "state": "complete",
+      "reason": "No real timer or sleep exists to replace. Fixtures are mutated across cases and global console methods are mocked, so hoisting fixture setup or parallelizing these tests would not preserve isolation. All 18 tests, five sink-failure scenarios and original assertions remain.",
+      "final_lines": [
+        [
+          7,
+          36
+        ],
+        [
+          222,
+          255
+        ]
+      ]
+    }
+  ],
+  "active_fixed_track_passes": 15,
+  "fixed_track_total": 18,
+  "findings": [
+    {
+      "id": "MCP-TEST-1",
+      "passes": [
+        "P2",
+        "T1",
+        "S5"
+      ],
+      "severity": "Medium",
+      "status": "fixed",
+      "initial_lines": [
+        222,
+        237
+      ],
+      "final_lines": [
+        25,
+        238,
+        240,
+        241
+      ],
+      "title": "Nested diagnostic console mocks survive test teardown",
+      "trigger": "The sink-failure test called diagnostics(t), then registered second t.mock.method replacements for console.warn and console.error.",
+      "impact": "Node tracker restored the real descriptor first and the second mock descriptor afterward, leaving the first proxy installed. Later cases silently lost normal diagnostics and inherited global mutable state.",
+      "runtime_static_evidence": "Installed Node v26.13.0 internal/test_runner/mock/mock: method captures current descriptor at lines 541-559; restoreAll walks registrations forward at lines 788-793.",
+      "red_evidence": "Explicit t.mock.restoreAll plus original identity assertion failed: actual Proxy([Function: warn]), expected [Function: warn]. Exit 1; 17/18 tests passed.",
+      "fix": "Capture original warn/error once before tests. Change existing proxies via mock.mockImplementation. Explicitly restore and assert original identities before the sink-failure test ends.",
+      "green_evidence": "Same targeted command exited 0; 18/18 tests passed, including both method identity assertions.",
+      "severity_basis": "Confirmed degradation of test isolation and logging robustness; no production response or authorization behavior changed."
+    }
+  ],
+  "remaining_medium_plus": [],
+  "verification": [
+    {
+      "phase": "red",
+      "command": "node --test website/test/mcp.test.js",
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113",
+      "exit_code": 1,
+      "passed": 17,
+      "failed": 1,
+      "path": "/tmp/oraclebot-mcp-release-20261113/mcp-console-restore-red.log",
+      "sha256": "ee74f623b5cbf20fd1996b79654c40674fbbc78806e1feb7821dc21cab6d2029"
+    },
+    {
+      "phase": "green",
+      "command": "node --test website/test/mcp.test.js",
+      "cwd": "/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113",
+      "exit_code": 0,
+      "passed": 18,
+      "failed": 0,
+      "path": "/tmp/oraclebot-mcp-release-20261113/mcp-console-restore-green.log",
+      "sha256": "71ecf584315f085ac047d737165745bc1e1ad087f9d31869753666adf9ddd9e8"
+    }
+  ],
+  "backup": {
+    "path": "/tmp/oraclebot-mcp-release-20261113/mcp.test.before-console-restore.js",
+    "sha256": "757f0880550b6a120cbe56a08964d2c1dd88702baeab47ba0362899d32a188a4",
+    "git_blob_sha1": "00489102609d8b2f6027868fdc2ce55afeb90237",
+    "bytes": 21545,
+    "lines": 252
+  },
+  "restore_command": "cp /tmp/oraclebot-mcp-release-20261113/mcp.test.before-console-restore.js /Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113/website/test/mcp.test.js",
+  "behavior_preservation": "Preserved all existing tests, response comparisons, diagnostic classifications and privacy assertions. Added only restoration assertions and repaired the mock registration mechanism.",
+  "domain_checks": {
+    "transport_profile": "POST-only route, Allow header, absent Mcp-Session-Id, explicit 2025-11-25 initialize result, header mismatch/missing post-initialize version, and empty 202 notification are asserted. This is fixture evidence, not deployed transport acceptance.",
+    "origin_auth_scope": "Allowed redirect origin and refused foreign/null Origin; cookie-only and malformed bearer denial; real OAuth expiration/revocation/resource/scope checks; tool listing and insufficient-scope challenge.",
+    "schema_money": "Additional-properties refusal and principal/signer/URL/account overrides, null arguments, malformed JSON-RPC, overprecision budgets and accepted cent examples are asserted before unavailable execution.",
+    "error_secret_redaction": "401/403 denials are separated from 503 backend outages and HTTP200 tool errors. Public and diagnostic outputs exclude tested private sentinels.",
+    "mock_restoration": "Fixed and proven with red/green regression guard.",
+    "t4_equivalence": "No fixture hoisting, parallelization, timer replacement, test removal or assertion merging was applied."
+  },
+  "qualifications": [
+    "Only this test file was reviewed and changed; application source, peer files, Git, providers, services and network were not changed or contacted.",
+    "Root owns the repository-wide CDO loop, M3/T2/T3, final checks, workflow notes and Git delivery.",
+    "The targeted file uses test fixtures and substituted status/entitlement services. Passing tests do not prove deployed OAuth, live billing, provider readiness or trading execution.",
+    "No blanket test-concurrency optimization is safe while console globals are mocked.",
+    "No overall CLEAN or repository convergence verdict is claimed."
+  ],
+  "status": "delegated_file_review_complete_fix_verified",
+  "index": "not applicable to source outside skill corpus",
+  "memory_central": "Prior-knowledge intake and durable project records are root-owned; this delegated file audit did not read or modify memory stores."
+}

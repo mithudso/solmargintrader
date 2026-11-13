@@ -41,17 +41,48 @@ const hash = async value => [...new Uint8Array(await crypto.subtle.digest('SHA-2
 
 function failureOperation(request) {
   const path = new URL(request.url).pathname;
-  const known = ['/api/health', '/api/config', '/api/auth/challenge', '/api/auth/verify', '/api/me', '/api/auth/logout', '/api/billing/webhook', '/api/oracle', '/api/strategies', '/api/billing/checkout', '/api/billing/portal', '/api/bots', '/api/backtests'];
-  const route = known.includes(path) ? path : /^\/api\/bots\/[a-f0-9-]{36}$/.test(path) ? '/api/bots/:id' : '/api/unknown';
+  const known = ['/api/health', '/api/config', '/api/auth/challenge', '/api/auth/verify', '/api/me', '/api/auth/logout', '/api/billing/webhook', '/api/oracle', '/api/strategies', '/api/billing/checkout', '/api/billing/portal', '/api/bots', '/api/backtests',
+    '/mcp', '/oauth/register', '/oauth/authorize', '/oauth/token', '/oauth/revoke',
+    '/.well-known/oauth-protected-resource', '/.well-known/oauth-protected-resource/mcp', '/.well-known/oauth-authorization-server',
+    '/api/agent/authorization', '/api/agent/authorization/challenge', '/api/agent/grants'];
+  const route = known.includes(path) ? path : /^\/api\/bots\/[a-f0-9-]{36}$/.test(path) ? '/api/bots/:id' :
+    /^\/api\/agent\/grants\/[a-f0-9-]{36}\/revoke$/.test(path) ? '/api/agent/grants/:id/revoke' : '/api/unknown';
   const method = ['GET', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'].includes(request.method) ? request.method : 'OTHER';
   return `${method} ${route}`;
 }
 function reportFailure(request, response, code) {
   // Operation names and codes are fixed vocabulary; raw URLs, errors and account
   // data must never reach the runtime diagnostic sink.
-  const line = JSON.stringify({ event: 'oraclebot.request_failed', operation: failureOperation(request), code, status: response.status });
-  if (response.status >= 500) console.error(line);
-  else console.warn(line);
+  diagnostic(response.status >= 500 ? 'error' : 'warn', { event: 'oraclebot.request_failed', operation: failureOperation(request), code, status: response.status });
+}
+function diagnostic(level, value) {
+  // A failed diagnostic sink must never change an account or provider operation.
+  try { console[level](JSON.stringify(value)); } catch {}
+}
+async function observeUpstream(operation, run) {
+  const started = Date.now(); let status = 0; let outcome = 'failure';
+  diagnostic('info', { event: 'oraclebot.upstream', operation, phase: 'start' });
+  try {
+    const value = await run(responseStatus => { status = responseStatus; });
+    outcome = 'success';
+    return value;
+  } finally {
+    diagnostic(outcome === 'success' ? 'info' : 'warn', { event: 'oraclebot.upstream', operation, phase: 'outcome', outcome, status, durationMs: Math.max(0, Date.now() - started) });
+  }
+}
+function stripeOperation(path) {
+  if (path === 'customers') return 'stripe.customer_create';
+  if (path.startsWith('subscriptions?')) return 'stripe.subscription_list';
+  if (/^subscriptions\/sub_[A-Za-z0-9]+$/.test(path)) return 'stripe.subscription_get';
+  if (path === 'checkout/sessions') return 'stripe.checkout_create';
+  if (path === 'billing_portal/sessions') return 'stripe.portal_create';
+  return 'stripe.other';
+}
+function engineOperation(path) {
+  if (path.startsWith('/v1/oracle?')) return 'engine.oracle';
+  if (path === '/v1/strategies') return 'engine.strategies';
+  if (path === '/v1/backtests') return 'engine.backtests';
+  return 'engine.other';
 }
 
 async function boundedText(request, limit = MAX_BODY) {
@@ -103,6 +134,8 @@ async function account(request, env, required = true) {
     user = await query(env, 'SELECT u.* FROM users u JOIN sessions s ON s.user_id = u.id WHERE s.token_hash = ? AND s.expires_at > ?', await hash(token), now()).first();
   }
   if (!user && required) fail(401, 'authentication_required', 'Connect and sign in with your wallet first.');
+  const expected = request.headers.get('X-Oraclebot-Account');
+  if (expected !== null && expected !== user?.id) fail(409, 'account_changed', 'Your signed-in account changed. Reload your account before continuing.');
   return user;
 }
 function publicUser(user) { return user ? { id: user.id, wallet: user.wallet, createdAt: user.created_at } : null; }
@@ -160,8 +193,9 @@ async function verify(request, env) {
   if (!challenge) fail(401, 'challenge_expired_or_used');
   const key = await crypto.subtle.importKey('raw', base58Decode(challenge.wallet), { name: 'Ed25519' }, false, ['verify']);
   if (!await crypto.subtle.verify('Ed25519', key, bytes, enc.encode(challenge.message))) fail(401, 'invalid_signature');
-  const trial = await query(env, 'SELECT wallet_hash FROM trial_history WHERE wallet_hash = ?', await hash(challenge.wallet)).first();
-  await query(env, 'INSERT INTO users (id,wallet,created_at,trial_used) VALUES (?,?,?,?) ON CONFLICT(wallet) DO NOTHING', crypto.randomUUID(), challenge.wallet, now(), trial ? 1 : 0).run();
+  // Deletion can record a used trial while verification is in flight. Read that
+  // history inside the insert and only ever raise an existing account's flag.
+  await query(env, 'INSERT INTO users (id,wallet,created_at,trial_used) VALUES (?,?,?,EXISTS (SELECT 1 FROM trial_history WHERE wallet_hash = ?)) ON CONFLICT(wallet) DO UPDATE SET trial_used = MAX(users.trial_used,excluded.trial_used)', crypto.randomUUID(), challenge.wallet, now(), await hash(challenge.wallet)).run();
   const user = await query(env, 'SELECT * FROM users WHERE wallet = ?', challenge.wallet).first();
   const token = bytesToBase64(crypto.getRandomValues(new Uint8Array(32))).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
   await query(env, 'INSERT INTO sessions (token_hash,user_id,expires_at) VALUES (?,?,?)', await hash(token), user.id, now() + SESSION_SECONDS).run();
@@ -204,15 +238,18 @@ async function reserveBacktest(env, user, plan) {
 }
 async function stripe(env, path, fields = null, idempotencyKey = null) {
   if (!env.STRIPE_SECRET_KEY) fail(503, 'billing_unavailable', 'Stripe billing is not configured yet.');
-  const response = await fetch(`https://api.stripe.com/v1/${path}`, {
-    method: fields ? 'POST' : 'GET',
-    headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`, ...(fields ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}), ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}) },
-    body: fields ? new URLSearchParams(fields) : undefined,
-    signal: AbortSignal.timeout(10000),
-    redirect: 'error',
+  return observeUpstream(stripeOperation(path), async recordStatus => {
+    const response = await fetch(`https://api.stripe.com/v1/${path}`, {
+      method: fields ? 'POST' : 'GET',
+      headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`, ...(fields ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}), ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}) },
+      body: fields ? new URLSearchParams(fields) : undefined,
+      signal: AbortSignal.timeout(10000),
+      redirect: 'error',
+    });
+    recordStatus(response.status);
+    if (!response.ok) fail(502, 'billing_provider_error', 'Stripe could not complete this request. No access was granted.');
+    try { return JSON.parse(await boundedText(response, 256000)); } catch (error) { if (error instanceof ApiError) throw error; fail(502, 'billing_provider_error'); }
   });
-  if (!response.ok) fail(502, 'billing_provider_error', 'Stripe could not complete this request. No access was granted.');
-  try { return JSON.parse(await boundedText(response, 256000)); } catch (error) { if (error instanceof ApiError) throw error; fail(502, 'billing_provider_error'); }
 }
 async function checkout(request, env, user) {
   if (!checkoutEnabled(env)) fail(503, 'billing_unavailable', 'Membership checkout is not available yet.');
@@ -316,13 +353,16 @@ async function webhook(request, env) {
 
 async function engine(env, path, payload = null) {
   const base = requireEngine(env);
-  const response = await fetch(new URL(path, base), { method: payload ? 'POST' : 'GET', headers: { Authorization: `Bearer ${env.ENGINE_TOKEN}`, ...(payload ? { 'Content-Type': 'application/json' } : {}) }, body: payload ? JSON.stringify(payload) : undefined, signal: AbortSignal.timeout(20000), redirect: 'error' });
-  let value;
-  try { value = JSON.parse(await boundedText(response, 2000000)); } catch (error) { if (error instanceof ApiError) throw error; fail(502, 'engine_invalid_response'); }
-  if (!response.ok) fail(response.status === 400 ? 400 : 503, 'engine_unavailable', 'The research engine could not complete this request.');
-  if (!value || typeof value !== 'object' || Array.isArray(value)) fail(502, 'engine_invalid_response');
-  if (path === '/v1/backtests' && (value.status !== 'complete' || !value.metrics || typeof value.metrics !== 'object' || Array.isArray(value.metrics))) fail(502, 'engine_invalid_response');
-  return json(value);
+  return observeUpstream(engineOperation(path), async recordStatus => {
+    const response = await fetch(new URL(path, base), { method: payload ? 'POST' : 'GET', headers: { Authorization: `Bearer ${env.ENGINE_TOKEN}`, ...(payload ? { 'Content-Type': 'application/json' } : {}) }, body: payload ? JSON.stringify(payload) : undefined, signal: AbortSignal.timeout(20000), redirect: 'error' });
+    recordStatus(response.status);
+    let value;
+    try { value = JSON.parse(await boundedText(response, 2000000)); } catch (error) { if (error instanceof ApiError) throw error; fail(502, 'engine_invalid_response'); }
+    if (!response.ok) fail(response.status === 400 ? 400 : 503, 'engine_unavailable', 'The research engine could not complete this request.');
+    if (!value || typeof value !== 'object' || Array.isArray(value)) fail(502, 'engine_invalid_response');
+    if (path === '/v1/backtests' && (value.status !== 'complete' || !value.metrics || typeof value.metrics !== 'object' || Array.isArray(value.metrics))) fail(502, 'engine_invalid_response');
+    return json(value);
+  });
 }
 async function agentStatus(env, user) {
   const sub = await subscription(env, user);
@@ -363,6 +403,7 @@ async function route(request, env) {
     return json({ user: publicUser(user), subscription: publicSubscription(sub), usage: await usage(env, user, sub), portalAvailable: Boolean(user?.stripe_customer_id && env.STRIPE_SECRET_KEY && /^bpc_[A-Za-z0-9]+$/.test(env.STRIPE_PORTAL_CONFIGURATION_ID || '')) });
   }
   if (path === '/api/auth/logout' && request.method === 'POST') {
+    if (request.headers.has('X-Oraclebot-Account')) await account(request, env);
     const token = sessionToken(request);
     if (token) await query(env, 'DELETE FROM sessions WHERE token_hash = ?', await hash(token)).run();
     return json({ ok: true }, 200, { 'Set-Cookie': cookie('', 0) });
@@ -384,14 +425,19 @@ async function route(request, env) {
       usedTrial ||= prior.data.some(s => s.trial_start || s.trial_end);
     }
     const deleted = await requireDB(env).batch([
-      query(env, "DELETE FROM users WHERE id = ? AND (checkout_pending_at IS NULL OR checkout_pending_at < ?) AND NOT EXISTS (SELECT 1 FROM agent_trade_intents WHERE user_id = users.id AND state IN ('submitting','submitted','unknown')) RETURNING id", user.id, now() - CHECKOUT_SECONDS),
-      ...(usedTrial ? [query(env, 'INSERT OR IGNORE INTO trial_history (wallet_hash,used_at) SELECT ?,? WHERE NOT EXISTS (SELECT id FROM users WHERE id = ?)', await hash(user.wallet), now(), user.id)] : []),
+      // Capture current trial use before a cascade removes the account. Retaining
+      // this fact is safe even when a concurrent subscription blocks deletion.
+      query(env, 'INSERT OR IGNORE INTO trial_history (wallet_hash,used_at) SELECT ?,? WHERE ? = 1 OR EXISTS (SELECT 1 FROM users WHERE id = ? AND trial_used = 1)', await hash(user.wallet), now(), usedTrial ? 1 : 0, user.id),
+      query(env, "DELETE FROM users WHERE id = ? AND (checkout_pending_at IS NULL OR checkout_pending_at < ?) AND NOT EXISTS (SELECT 1 FROM agent_trade_intents WHERE user_id = users.id AND state IN ('submitting','submitted','unknown')) AND NOT EXISTS (SELECT 1 FROM subscriptions WHERE user_id = users.id AND COALESCE(status,'unknown') NOT IN ('canceled','incomplete_expired')) RETURNING id", user.id, now() - CHECKOUT_SECONDS),
       query(env, 'DELETE FROM challenges WHERE wallet = ? AND NOT EXISTS (SELECT id FROM users WHERE id = ?)', user.wallet, user.id),
     ]);
-    if (deleted[0].results?.length !== 1 || deleted[0].results[0].id !== user.id) {
+    if (deleted[1].results?.length !== 1 || deleted[1].results[0].id !== user.id) {
       if (await query(env, "SELECT id FROM agent_trade_intents WHERE user_id = ? AND state IN ('submitting','submitted','unknown') LIMIT 1", user.id).first()) fail(409, 'trade_reconciliation_required', 'A trade began while deletion was being checked. Reconcile it before deleting your account.');
+      const currentSub = await subscription(env, user);
+      if (currentSub && !['canceled', 'incomplete_expired'].includes(currentSub.status)) fail(409, 'cancel_subscription_first', 'Your subscription changed while deletion was being checked. Cancel it before deleting your account.');
       fail(409, 'checkout_pending', 'A Checkout session began while deletion was being checked. Finish it or wait until its expiration.');
     }
+    diagnostic('info', { event: 'oraclebot.account_deleted' });
     return json({ deleted: true }, 200, { 'Set-Cookie': cookie('', 0) });
   }
   if (path === '/api/billing/checkout' && request.method === 'POST') return checkout(request, env, user);

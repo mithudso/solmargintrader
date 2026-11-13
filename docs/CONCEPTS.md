@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T02:54:02+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T04:54:39+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -21,7 +21,7 @@ The ideas that decide whether a number in this repo means anything. Ordered by h
 
 ### Risk rails and dry-run safety
 
-`risk-rails` · **1903 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
+`risk-rails` · **1906 files** · matched on `dry_run`, `dryrun`, `risk`, `rails`, `kill`, `guard`, `confirm`, `fail-closed`
 
 The extension can place real orders. Dry-run is the default, rails live in code and fail closed, and a fresh install must never be able to trade.
 
@@ -36,7 +36,7 @@ Strongest files:
 - `.cdo/reviews-2026-11-12/ecosystem-full-final.json` (124 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
 
-Full list: `python3 index/search.py --concept risk-rails -n 1903`
+Full list: `python3 index/search.py --concept risk-rails -n 1906`
 
 ### Cross-asset and cross-timeframe transfer
 
@@ -97,7 +97,7 @@ Full list: `python3 index/search.py --concept lookahead -n 1479`
 
 ### On-chain execution reality
 
-`execution-onchain` · **889 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **890 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -112,11 +112,11 @@ Strongest files:
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
 - `memory.md` (175 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 889`
+Full list: `python3 index/search.py --concept execution-onchain -n 890`
 
 ### Grid trading
 
-`grid` · **837 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
+`grid` · **839 files** · matched on `grid`, `gridsim`, `ladder`, `recenter`, `anchor_window`, `levels`
 
 A resting grid converts a sustained trend into a maximum-size losing position; the re-centring gate fired once in 1,875 bars.
 
@@ -131,11 +131,11 @@ Strongest files:
 - `backtester/tests/test_gridsim.py` (167 hits)
 - `ecosystem/web/styles.css` (129 hits)
 
-Full list: `python3 index/search.py --concept grid -n 837`
+Full list: `python3 index/search.py --concept grid -n 839`
 
 ### Data integrity
 
-`data-integrity` · **744 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
+`data-integrity` · **750 files** · matched on `validate_bars`, `strict_gaps`, `allow_gaps`, `datavalidationerror`, `monotone`, `gap`
 
 Gaps refused rather than filled, columns resolved by name, timestamps monotone. A concatenated XRP series hides a 2.5-year join.
 
@@ -150,17 +150,17 @@ Strongest files:
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
 - `docs/TRADINGVIEW-CARD-READINESS.md` (77 hits)
 
-Full list: `python3 index/search.py --concept data-integrity -n 744`
+Full list: `python3 index/search.py --concept data-integrity -n 750`
 
 ### Buy-and-hold benchmark
 
-`benchmark` · **500 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
+`benchmark` · **503 files** · matched on `buy_and_hold`, `benchmark`, `baseline`
 
 Zero parameters, and it out-ranked all but one or two strategies on SOL and all five recommended configurations on ZEC.
 
 Strongest files:
 
-- `.cdo/reviews-2026-11-12/coverage.json` (830 hits)
+- `.cdo/reviews-2026-11-12/coverage.json` (844 hits)
 - `research/strategy_experiment/results/results.json` (560 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (424 hits)
 - `research/results/news_events_20261112_manifest.json` (280 hits)
@@ -169,11 +169,11 @@ Strongest files:
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 - `docs/FILES.md` (79 hits)
 
-Full list: `python3 index/search.py --concept benchmark -n 500`
+Full list: `python3 index/search.py --concept benchmark -n 503`
 
 ### Evidence floor
 
-`evidence-floor` · **350 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **352 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (39 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 350`
+Full list: `python3 index/search.py --concept evidence-floor -n 352`
 
 ### Combinatorial purged cross-validation
 
@@ -260,7 +260,7 @@ The families also carry a historical measured finding. Of the study's 25 strateg
 | `trend` | 860 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
 | `oscillator-reversion` | 536 | `rsi`, `stochastic`, `oscillator` |
 | `momentum` | 438 | `momentum`, `ts_momentum`, `dual_momentum` |
-| `baseline` | 432 | `buy_and_hold`, `baseline` |
+| `baseline` | 435 | `buy_and_hold`, `baseline` |
 | `regime-filter` | 373 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `breakout` | 287 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 158 | `obv`, `volume-flow` |

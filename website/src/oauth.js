@@ -21,6 +21,26 @@ const fail = (status, code, headers) => { throw new OAuthError(status, code, hea
 const response = (data, status = 200, headers = {}) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store', Pragma: 'no-cache', ...headers } });
 const cors = { 'Access-Control-Allow-Origin': '*' };
 
+const SECURITY_EVENTS = Object.freeze({
+  issued: ['info', 'grant_issued', 'succeeded', 'owner_consent'],
+  denied: ['info', 'grant_denied', 'denied', 'owner_denied'],
+  codeReplay: ['warn', 'code_replay', 'detected', 'already_used'],
+  refreshReplay: ['warn', 'refresh_replay', 'detected', 'already_used'],
+  codeConflict: ['warn', 'code_claim_conflict', 'denied', 'claim_unavailable'],
+  refreshConflict: ['warn', 'refresh_claim_conflict', 'denied', 'claim_unavailable'],
+  revokedCodeReplay: ['info', 'grant_revoked', 'succeeded', 'code_replay'],
+  revokedRefreshReplay: ['info', 'grant_revoked', 'succeeded', 'refresh_replay'],
+  revokedCodeConflict: ['info', 'grant_revoked', 'succeeded', 'code_claim_conflict'],
+  revokedRefreshConflict: ['info', 'grant_revoked', 'succeeded', 'refresh_claim_conflict'],
+  revokedOAuth: ['info', 'grant_revoked', 'succeeded', 'oauth_revocation'],
+  revokedOwner: ['info', 'grant_revoked', 'succeeded', 'owner_revocation'],
+});
+function securityEvent(key) {
+  const [level, operation, outcome, reason] = SECURITY_EVENTS[key];
+  try { console[level](JSON.stringify({ event: 'oraclebot.agent_security', operation, outcome, reason })); }
+  catch { /* An unavailable diagnostic sink must not interrupt authorization or revocation. */ }
+}
+
 function audience(request, env) {
   let configured;
   try { configured = new URL(env.APP_ORIGIN || new URL(request.url).origin); } catch { fail(503, 'server_error'); }
@@ -150,8 +170,9 @@ function consentMessage(row, user, registered, policy, policyHash, nonce, issued
   ].join('\n');
 }
 
-async function revokeGrant(env, grantId) {
-  await query(env, 'UPDATE agent_grants SET revoked_at=COALESCE(revoked_at,?) WHERE id=?', now(), grantId).run();
+async function revokeGrant(env, grantId, event) {
+  const row = await query(env, 'UPDATE agent_grants SET revoked_at=COALESCE(revoked_at,?) WHERE id=? RETURNING id', now(), grantId).first();
+  if (row) securityEvent(event);
 }
 
 async function activeGrant(env, grantId, resource) {
@@ -182,12 +203,12 @@ async function exchangeCode(body, env, resource) {
   const codeHash = await hash(body.code);
   const code = await query(env, 'SELECT * FROM agent_codes WHERE token_hash=?', codeHash).first();
   if (!code || code.client_id !== body.client_id || code.resource !== resource || body.resource !== resource || code.redirect_uri !== body.redirect_uri || code.code_challenge !== await challengeHash(body.code_verifier)) fail(400, 'invalid_grant');
-  if (code.used_at !== null) { await revokeGrant(env, code.grant_id); fail(400, 'invalid_grant'); }
+  if (code.used_at !== null) { securityEvent('codeReplay'); await revokeGrant(env, code.grant_id, 'revokedCodeReplay'); fail(400, 'invalid_grant'); }
   if (code.expires_at <= now()) fail(400, 'invalid_grant');
   const grant = await activeGrant(env, code.grant_id, resource);
   if (!grant || grant.user_id !== code.user_id) fail(400, 'invalid_grant');
   const claimed = await query(env, 'UPDATE agent_codes SET used_at=? WHERE token_hash=? AND used_at IS NULL AND expires_at>? RETURNING grant_id', now(), codeHash, now()).first();
-  if (!claimed) { await revokeGrant(env, code.grant_id); fail(400, 'invalid_grant'); }
+  if (!claimed) { securityEvent('codeConflict'); await revokeGrant(env, code.grant_id, 'revokedCodeConflict'); fail(400, 'invalid_grant'); }
   return issueTokens(env, grant, parseScope(grant.scope));
 }
 
@@ -199,14 +220,14 @@ async function refreshTokens(body, env, resource) {
   const token = await query(env, `SELECT t.*,g.client_id,g.resource FROM agent_refresh_tokens t
     JOIN agent_grants g ON g.id=t.grant_id WHERE t.token_hash=?`, tokenHash).first();
   if (!token || token.client_id !== body.client_id || token.resource !== resource) fail(400, 'invalid_grant');
-  if (token.used_at !== null) { await revokeGrant(env, token.grant_id); fail(400, 'invalid_grant'); }
+  if (token.used_at !== null) { securityEvent('refreshReplay'); await revokeGrant(env, token.grant_id, 'revokedRefreshReplay'); fail(400, 'invalid_grant'); }
   if (token.expires_at <= now()) fail(400, 'invalid_grant');
   const grant = await activeGrant(env, token.grant_id, resource);
   if (!grant || grant.user_id !== token.user_id) fail(400, 'invalid_grant');
   const scopes = body.scope === undefined ? parseScope(token.scope) : parseScope(body.scope);
   if (scopes.some(scope => !parseScope(token.scope).includes(scope))) fail(400, 'invalid_scope');
   const claimed = await query(env, 'UPDATE agent_refresh_tokens SET used_at=? WHERE token_hash=? AND used_at IS NULL AND expires_at>? RETURNING grant_id', now(), tokenHash, now()).first();
-  if (!claimed) { await revokeGrant(env, token.grant_id); fail(400, 'invalid_grant'); }
+  if (!claimed) { securityEvent('refreshConflict'); await revokeGrant(env, token.grant_id, 'revokedRefreshConflict'); fail(400, 'invalid_grant'); }
   return issueTokens(env, grant, scopes);
 }
 
@@ -310,7 +331,7 @@ async function routeOAuth(request, env, helpers) {
       const tokenHash = await hash(body.token);
       const row = await query(env, `SELECT g.id FROM agent_grants g WHERE g.client_id=? AND g.id IN (
         SELECT grant_id FROM agent_access_tokens WHERE token_hash=? UNION SELECT grant_id FROM agent_refresh_tokens WHERE token_hash=?)`, body.client_id, tokenHash, tokenHash).first();
-      if (row) await revokeGrant(env, row.id);
+      if (row) await revokeGrant(env, row.id, 'revokedOAuth');
     }
     return response({}, 200, cors);
   }
@@ -346,6 +367,7 @@ async function routeOAuth(request, env, helpers) {
     if (!body.approve) {
       const denied = await query(env, 'UPDATE agent_authorization_requests SET consumed_at=? WHERE id=? AND user_id=? AND consumed_at IS NULL AND expires_at>? RETURNING id', now(), row.id, user.id, now()).first();
       if (!denied) fail(409, 'authorization_consumed');
+      securityEvent('denied');
       return response(redirectResult(row, 'error', 'access_denied'));
     }
     let policyJSON = null; let policyHash = null; let grantExpiry = now() + 7 * 86400;
@@ -379,6 +401,7 @@ async function routeOAuth(request, env, helpers) {
         SELECT ?,id,user_id,client_id,resource,?,?,?,? FROM agent_grants WHERE id=? RETURNING grant_id`, await hash(code), row.redirect_uri, row.code_challenge, at, Math.min(at + 120, grantExpiry), id),
     ]);
     if (issued.some(result => result.results?.length !== 1)) fail(429, 'grant_limit_reached');
+    securityEvent('issued');
     return response(redirectResult(row, 'code', code));
   }
 
@@ -391,6 +414,7 @@ async function routeOAuth(request, env, helpers) {
     const id = path.split('/')[4]; if (!validId(id)) fail(404, 'grant_not_found');
     const row = await query(env, 'UPDATE agent_grants SET revoked_at=COALESCE(revoked_at,?) WHERE id=? AND user_id=? RETURNING id', now(), id, user.id).first();
     if (!row) fail(404, 'grant_not_found');
+    securityEvent('revokedOwner');
     return response({ revoked: true });
   }
   fail(405, 'method_not_allowed', { Allow: path === '/api/agent/grants' ? 'GET' : path === '/api/agent/authorization' ? 'GET, POST' : 'POST' });

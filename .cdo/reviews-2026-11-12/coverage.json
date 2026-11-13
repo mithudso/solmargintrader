@@ -1,17 +1,17 @@
 {
   "summary": {
     "version": 1,
-    "status": "source_inspection_complete_integration_pending",
+    "status": "website_delta_review_complete_global_convergence_partial",
     "baseline_files": 773,
-    "current_files": 828,
-    "semantically_complete": 823,
+    "current_files": 841,
+    "semantically_complete": 836,
     "pending": 0,
     "changed_after_review": 0,
-    "note": "Full current application-source semantic inspection complete; M3/M5/T4 convergence and final integration/delivery remain explicitly partial. Five bound HTML captures are data classifications, not semantic code reviews.",
-    "raw_helper_files": 828,
+    "note": "Inherited exact baseline reviews plus17 bound website/preauthorization source and fixture reviews. Original source-slice qualification is explicit in the linked delta receipt; no hash establishes a read. Global M3/M5/T4 convergence and final delivery/hosted acceptance remain partial.",
+    "raw_helper_files": 841,
     "bound_data_exclusions": 5,
-    "application_helper_files": 823,
-    "application_semantically_complete": 823,
+    "application_helper_files": 836,
+    "application_semantically_complete": 836,
     "application_still_unreviewed_or_changed": 0,
     "supplement_inventory_file": "runtime-source-supplement.json",
     "supplement_note": "Static HTML/CSS and extensionless scripts are tracked separately; no credit from their census.",
@@ -7234,12 +7234,15 @@
     },
     {
       "path": "soltui/tests/test_wallet_integration.py",
-      "blob_sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
-      "lines": 292,
+      "blob_sha": "aed3c3777a5c940738f7ae60cbd5504327a10a22",
+      "lines": 304,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+      "evidence": ".cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json",
       "baseline_python_ast_covered": true,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": false,
+      "original_blob_sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
+      "original_evidence": ".cdo/reviews-2026-11-12/soltui-worker.json",
+      "review_kind": "complete original read plus independently reviewed final delta"
     },
     {
       "path": "soltui/tests/test_wallet_settings.py",
@@ -7395,11 +7398,47 @@
       "unbound_js_syntax_check_observed": false
     },
     {
-      "path": "website/public/app.js",
-      "blob_sha": "59c21124aeed7eca7ba98587d81cd08d008bfe36",
-      "lines": 419,
+      "path": "website/migrations/0003_subscription_tiers.sql",
+      "blob_sha": "80390ed220739fc45b94f5b74285d94cf67a0eb9",
+      "lines": 18,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/website-ui.json",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/migrations/0004_agent_access.sql",
+      "blob_sha": "a09e934048c86ec77aabc4282b198ced3277bdd9",
+      "lines": 89,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/migrations/0005_agent_trades.sql",
+      "blob_sha": "5d7eee2e3742f721180fa54454eff08794e6c724",
+      "lines": 27,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/public/agent-access.js",
+      "blob_sha": "51acef30b2a1dfb60aa127b3a3f3f022c70b0a32",
+      "lines": 201,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/public/app.js",
+      "blob_sha": "22e279384d7d40169259c90fdf59a22750338061",
+      "lines": 576,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": true
     },
@@ -7431,20 +7470,56 @@
       "unbound_js_syntax_check_observed": true
     },
     {
-      "path": "website/src/worker.js",
-      "blob_sha": "599f252083c84c65f343b5d76b4874a1b2bb69d0",
-      "lines": 365,
+      "path": "website/src/mcp.js",
+      "blob_sha": "85f6cf39dd3d8dc89d4e8183cd79f86e83852d8e",
+      "lines": 183,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/website-worker.json",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/src/oauth.js",
+      "blob_sha": "e1c264d4ff961f01c541ca575876f3ae75920af5",
+      "lines": 446,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/src/trades.js",
+      "blob_sha": "abe59873176ca6f463a45c2c195df80c8aa14e48",
+      "lines": 297,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/src/worker.js",
+      "blob_sha": "d039abb5784a51ca5936c450cbe7c28817d6de62",
+      "lines": 527,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/test/agent-browser.mjs",
+      "blob_sha": "69d7643c6d30a7ebbc8685258110688d5a08c20a",
+      "lines": 239,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": true
     },
     {
       "path": "website/test/api.test.js",
-      "blob_sha": "b51f474e8d8d4b7bfd0f3e8e3c206676e402d7b6",
-      "lines": 453,
+      "blob_sha": "351c5daebe9dbd7659b7710b15ce4cc007ea45cc",
+      "lines": 967,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/website-worker.json",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": true
     },
@@ -7458,13 +7533,58 @@
       "unbound_js_syntax_check_observed": true
     },
     {
-      "path": "website/test/ui-browser.mjs",
-      "blob_sha": "11eabbabee90189bfcf17f49c46e103468446015",
-      "lines": 100,
+      "path": "website/test/helpers/d1.js",
+      "blob_sha": "653516dc8123fedd469ee92eb73002e427758cd2",
+      "lines": 79,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/website-ui.json",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
       "baseline_python_ast_covered": false,
-      "unbound_js_syntax_check_observed": false
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/test/mcp-integration.test.js",
+      "blob_sha": "bb97e329b827f0a434c9c68930c04674329f4346",
+      "lines": 147,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/test/mcp.test.js",
+      "blob_sha": "ca311529b24f94e62ebb6f67465f2813db369843",
+      "lines": 255,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/test/oauth.test.js",
+      "blob_sha": "821302e55abbe4938710e20f76ee425ffc01d216",
+      "lines": 446,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/test/trades.test.js",
+      "blob_sha": "2699140c7f899be8237f42f8a9d3c264779400e1",
+      "lines": 326,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
+    },
+    {
+      "path": "website/test/ui-browser.mjs",
+      "blob_sha": "bcb8e9d23197e8d66091ef84fc46e6cb21ebb95d",
+      "lines": 369,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/website-preauthorization-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": true
     },
     {
       "path": "website/typecheck/evidence-contract.ts",

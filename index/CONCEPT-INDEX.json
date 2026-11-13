@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T03:04:00+00:00",
+  "generatedAt": "2026-11-13T04:54:51+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1903,
+      "matchingFiles": 1906,
       "shown": 30,
       "files": [
         {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 87
+          "hits": 89
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 889,
+      "matchingFiles": 890,
       "shown": 30,
       "files": [
         {
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 837,
+      "matchingFiles": 839,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 744,
+      "matchingFiles": 750,
       "shown": 30,
       "files": [
         {
@@ -1260,12 +1260,12 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 500,
+      "matchingFiles": 503,
       "shown": 30,
       "files": [
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 830
+          "hits": 844
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -1529,12 +1529,12 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 432,
+      "matchingFiles": 435,
       "shown": 30,
       "files": [
         {
           "path": ".cdo/reviews-2026-11-12/coverage.json",
-          "hits": 830
+          "hits": 844
         },
         {
           "path": "research/strategy_experiment/results/results.json",
@@ -1804,7 +1804,7 @@
         "evidence floor",
         "rankable"
       ],
-      "matchingFiles": 350,
+      "matchingFiles": 352,
       "shown": 30,
       "files": [
         {

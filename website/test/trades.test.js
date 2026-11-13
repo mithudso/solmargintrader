@@ -42,6 +42,143 @@ function preparedResponse(body, change = {}) {
     delegation: { id: 'delegation-1', wallet: body.wallet, policyHash: body.policyHash, expiresAt: body.policy.expiresAt, verified: true },
     connection: { id: 'customer-1', wallet: body.wallet, venue: body.trade.venue, verified: true }, ...change });
 }
+function captureEvents(t) {
+  const events = [];
+  for (const level of ['info', 'warn']) t.mock.method(console, level, message => {
+    assert.equal(typeof message, 'string');
+    const event = JSON.parse(message);
+    assert.deepEqual(Object.keys(event).sort(), ['category', 'event', 'operation', 'outcome']);
+    assert.equal(event.event, 'customer_trade_execution');
+    assert.ok(['prepare', 'submit'].includes(event.operation));
+    assert.ok(['started', 'prepared', 'submitted', 'refused', 'failed', 'unknown'].includes(event.outcome));
+    assert.ok(['none', 'unavailable', 'timeout', 'response', 'binding', 'quote', 'delegation', 'connection', 'quote_hash', 'payload', 'receipt', 'authorization_changed', 'unknown'].includes(event.category));
+    events.push({ level, ...event });
+  });
+  return events;
+}
+
+test('positive sub-cent and overprecision budgets refuse before reservation or customer execution', async () => {
+  const { env, principal } = await fixture(); const calls = executor(env);
+  for (const budgetUsd of [1e-9, 0.001, 1.000000001, 0.29000000000000004]) {
+    await assert.rejects(requestTrade(env, principal, input('invalid-cent', budgetUsd), services), { code: 'invalid_trade' });
+    assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM agent_trade_intents').get().n, 0);
+    assert.equal(calls.length, 0);
+  }
+});
+test('decimal cent budgets and policies preserve exact reservations and explicit zero fees', async () => {
+  for (const [budgetUsd, expectedCents] of [[0.29, 29], [0.57, 57]]) {
+    const { env, principal } = await fixture({ maxTradeUsd: budgetUsd, maxTotalUsd: budgetUsd });
+    const calls = executor(env, { prepare: body => preparedResponse(body, {
+      quote: { id: 'cent-quote', priceUsd: budgetUsd, quantity: 1, feesUsd: 0, maxSpendUsd: budgetUsd, quotedAt: at(), expiresAt: at() + 60 },
+    }) });
+    const intent = await requestTrade(env, principal, input('exact-cent', budgetUsd), services);
+    assert.equal(intent.state, 'prepared'); assert.equal(intent.trade.budgetUsd, budgetUsd);
+    assert.equal(intent.quote.feesUsd, 0); assert.equal(intent.budgetCommittedUsd, budgetUsd);
+    assert.equal(env.sqlite.prepare('SELECT reservation_cents FROM agent_trade_intents WHERE id=?').get(intent.id).reservation_cents, expectedCents);
+    assert.equal(calls.length, 1); assert.equal(calls[0].body.trade.budgetUsd, budgetUsd);
+  }
+});
+test('signed policy monetary limits refuse sub-cent and overprecision values', async () => {
+  for (const options of [{ maxTradeUsd: 1e-9 }, { maxTradeUsd: 1.000000001 }, { maxTradeUsd: 1, maxTotalUsd: 1.000000001 }]) {
+    const { env, principal } = await fixture(options); const calls = executor(env);
+    await assert.rejects(requestTrade(env, principal, input('invalid-policy', 0.01), services), { code: 'policy_required' });
+    assert.equal(calls.length, 0); assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM agent_trade_intents').get().n, 0);
+  }
+});
+test('execution events report unavailable and successful transitions without account data', async t => {
+  const events = captureEvents(t); const { env, principal } = await fixture();
+  await assert.rejects(requestTrade(env, principal, input(), services), { code: 'execution_unavailable' });
+  const calls = executor(env); const intent = await requestTrade(env, principal, input(), services);
+  const submitted = await submitTrade(env, principal, { intentId: intent.id }, services);
+  assert.equal(submitted.state, 'submitted'); assert.equal(submitted.filled, null);
+  assert.deepEqual(events.map(({ level, operation, outcome, category }) => [level, operation, outcome, category]), [
+    ['warn', 'prepare', 'refused', 'unavailable'], ['info', 'prepare', 'started', 'none'], ['info', 'prepare', 'prepared', 'none'],
+    ['info', 'submit', 'started', 'none'], ['info', 'submit', 'submitted', 'none'],
+  ]);
+  const serialized = JSON.stringify(events);
+  for (const secret of [principal.user.id, principal.user.wallet, principal.grant.id, principal.grant.policy_hash, principal.client.id, intent.id, 'quote-1', 'order-1', 'delegation-1', 'customer-1']) assert.ok(!serialized.includes(secret));
+  assert.equal(calls.length, 2);
+});
+test('preparation failures emit only fixed categories and never raw provider errors or bodies', async t => {
+  const events = captureEvents(t); const secret = 'SECRET_EXECUTION_PAYLOAD';
+  const cases = [
+    ['timeout', () => { throw new DOMException(secret, 'TimeoutError'); }],
+    ['unavailable', () => { throw new Error(secret); }],
+    ['response', () => new Response(secret, { status: 503, headers: { 'Content-Type': 'application/json' } })],
+    ['response', () => new Response(secret, { headers: { 'Content-Type': 'application/json' } })],
+    ['binding', body => preparedResponse(body, { wallet: secret })],
+    ['quote', body => preparedResponse(body, { quote: { secret } })],
+    ['quote', body => preparedResponse(body, { quote: { id: 'q', priceUsd: 9, quantity: 1, feesUsd: 1e-9, maxSpendUsd: 10, quotedAt: at(), expiresAt: at() + 60 } })],
+    ['delegation', body => preparedResponse(body, { delegation: { secret } })],
+    ['connection', body => preparedResponse(body, { connection: { secret } })],
+    ['authorization_changed', (body, env) => {
+      env.sqlite.prepare('UPDATE agent_grants SET revoked_at=? WHERE id=?').run(at(), body.grantId);
+      return preparedResponse(body);
+    }],
+  ];
+  for (const [category, prepare] of cases) {
+    const { env, principal } = await fixture(); executor(env, { prepare: body => prepare(body, env) });
+    await assert.rejects(requestTrade(env, principal, input(), services), { code: 'preparation_unverified' });
+    assert.deepEqual(events.slice(-2).map(({ operation, outcome, category }) => [operation, outcome, category]), [['prepare', 'started', 'none'], ['prepare', 'failed', category]]);
+    assert.equal(env.sqlite.prepare('SELECT state FROM agent_trade_intents').get().state, 'failed');
+    assert.ok(!JSON.stringify(events).includes(principal.user.wallet));
+  }
+  assert.ok(!JSON.stringify(events).includes(secret));
+});
+test('submission failure events retain ambiguous commitments and redact provider exceptions', async t => {
+  const events = captureEvents(t); const secret = 'SECRET_SUBMISSION_PAYLOAD';
+  for (const [category, submit] of [
+    ['timeout', () => { throw new DOMException(secret, 'TimeoutError'); }],
+    ['unavailable', () => { throw new Error(secret); }],
+    ['receipt', () => Response.json({ secret })],
+  ]) {
+    const { env, principal } = await fixture({ maxTradeUsd: 10, maxTotalUsd: 10 }); const calls = executor(env, { submit });
+    const intent = await requestTrade(env, principal, input(), services);
+    const result = await submitTrade(env, principal, { intentId: intent.id }, services);
+    assert.equal(result.state, 'unknown'); assert.equal(result.filled, null);
+    assert.deepEqual(events.slice(-2).map(({ operation, outcome, category }) => [operation, outcome, category]), [['submit', 'started', 'none'], ['submit', 'unknown', category]]);
+    env.sqlite.prepare('UPDATE agent_trade_intents SET expires_at=? WHERE id=?').run(at() - 10, intent.id);
+    assert.equal((await submitTrade(env, principal, { intentId: intent.id }, services)).state, 'unknown');
+    await assert.rejects(requestTrade(env, principal, input('second'), services), { code: 'policy_limit' });
+    assert.equal(calls.length, 2); assert.ok(!JSON.stringify(events).includes(intent.id));
+  }
+  assert.ok(!JSON.stringify(events).includes(secret));
+});
+test('stored preparation refusals identify quote, hash and payload verification without an adapter retry', async t => {
+  const events = captureEvents(t);
+  for (const [category, corrupt] of [
+    ['quote', (env, id) => env.sqlite.prepare('UPDATE agent_trade_intents SET quote_json=? WHERE id=?').run('[SECRET_STORED_QUOTE', id)],
+    ['quote_hash', (env, id) => env.sqlite.prepare('UPDATE agent_trade_intents SET quote_hash=? WHERE id=?').run('SECRET_STORED_HASH', id)],
+    ['payload', (env, id) => {
+      const payload = JSON.parse(env.sqlite.prepare('SELECT payload_json FROM agent_trade_intents WHERE id=?').get(id).payload_json);
+      env.sqlite.prepare('UPDATE agent_trade_intents SET payload_json=? WHERE id=?').run(JSON.stringify({ ...payload, budgetUsd: 9 }), id);
+    }],
+  ]) {
+    const { env, principal } = await fixture(); const calls = executor(env);
+    const intent = await requestTrade(env, principal, input(), services); corrupt(env, intent.id);
+    await assert.rejects(submitTrade(env, principal, { intentId: intent.id }, services), { code: 'preparation_unverified' });
+    assert.deepEqual(events.at(-1), { level: 'warn', event: 'customer_trade_execution', operation: 'submit', outcome: 'refused', category });
+    assert.equal(calls.length, 1); assert.equal(env.sqlite.prepare('SELECT state FROM agent_trade_intents WHERE id=?').get(intent.id).state, 'prepared');
+  }
+  assert.doesNotMatch(JSON.stringify(events), /SECRET_STORED/);
+});
+test('an unexpected receipt-storage failure emits unknown and keeps the submitted commitment reserved', async t => {
+  const events = captureEvents(t); const { env, principal } = await fixture({ maxTradeUsd: 10, maxTotalUsd: 10 }); const calls = executor(env);
+  const intent = await requestTrade(env, principal, input(), services);
+  const prepare = env.DB.prepare.bind(env.DB);
+  t.mock.method(env.DB, 'prepare', sql => {
+    const statement = prepare(sql);
+    if (sql.includes("SET state='submitted'")) statement.run = async () => { throw new Error('SECRET_STORAGE_FAILURE'); };
+    return statement;
+  });
+  const result = await submitTrade(env, principal, { intentId: intent.id }, services);
+  assert.equal(result.state, 'unknown'); assert.equal(result.orderId, null); assert.equal(result.filled, null);
+  assert.deepEqual(events.at(-1), { level: 'warn', event: 'customer_trade_execution', operation: 'submit', outcome: 'unknown', category: 'unknown' });
+  env.sqlite.prepare('UPDATE agent_trade_intents SET expires_at=? WHERE id=?').run(at() - 10, intent.id);
+  assert.equal((await submitTrade(env, principal, { intentId: intent.id }, services)).state, 'unknown');
+  await assert.rejects(requestTrade(env, principal, input('second'), services), { code: 'policy_limit' });
+  assert.equal(calls.length, 2); assert.doesNotMatch(JSON.stringify(events), /SECRET_STORAGE_FAILURE/);
+});
 
 test('default refuses before reservation and cannot use an owner key or a truthy flag', async () => {
   const { env, principal } = await fixture();

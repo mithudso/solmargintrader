@@ -14,7 +14,7 @@ const deferred = () => { let resolve; const promise = new Promise(done => { reso
 let origin;
 let fixture;
 function reset(options = {}) {
-  fixture = { signedIn: true, trading: true, grants: [], challengeBodies: [], approvals: [], authorizationGets: 0, grantGets: 0, logoutPosts: 0, ...options };
+  fixture = { signedIn: true, trading: true, grants: [], challengeBodies: [], approvals: [], walletCalls: [], authorizationGets: 0, grantGets: 0, logoutPosts: 0, ...options };
 }
 async function body(request) { let text = ''; for await (const part of request) text += part; return JSON.parse(text || '{}'); }
 const json = (response, value, status = 200) => { response.writeHead(status, { 'Content-Type': 'application/json' }); response.end(JSON.stringify(value)); };
@@ -63,9 +63,14 @@ try {
   const page = await browser.newPage(); const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+  await page.exposeFunction('recordFixtureWalletCall', kind => {
+    assert.ok(kind === 'connect' || kind === 'sign'); fixture.walletCalls.push(kind);
+  });
   await page.addInitScript(fixtureWallet => {
     window.fixtureWallet = fixtureWallet; window.fixtureSignatures = []; window.fixtureConnects = 0; window.fixtureConnectReturned = 0; window.fixtureSignReturned = 0;
     window.fixtureFetchStarted = []; window.fixtureJsonReads = [];
+    window.fixtureUnhandledRejections = [];
+    window.addEventListener('unhandledrejection', () => window.fixtureUnhandledRejections.push(true));
     const originalFetch = window.fetch.bind(window);
     window.fetch = async (resource, options = {}) => {
       const descriptor = { path: new URL(resource, location.href).pathname, method: options.method || 'GET' };
@@ -76,8 +81,8 @@ try {
     };
     const provider = {
       publicKey: { toString: () => window.fixtureWallet },
-      async connect() { window.fixtureConnects++; await window.fixtureConnectGate; window.fixtureConnectReturned++; return { publicKey: this.publicKey }; },
-      async signMessage(bytes) { window.fixtureSignatures.push(new TextDecoder().decode(bytes)); await window.fixtureSignGate; if (window.fixtureAfterSignWallet) window.fixtureWallet = window.fixtureAfterSignWallet; window.fixtureSignReturned++; return { signature: new Uint8Array(64).fill(7) }; },
+      async connect() { await window.recordFixtureWalletCall('connect'); window.fixtureConnects++; await window.fixtureConnectGate; window.fixtureConnectReturned++; return { publicKey: this.publicKey }; },
+      async signMessage(bytes) { await window.recordFixtureWalletCall('sign'); window.fixtureSignatures.push(new TextDecoder().decode(bytes)); await window.fixtureSignGate; if (window.fixtureAfterSignWallet) window.fixtureWallet = window.fixtureAfterSignWallet; window.fixtureSignReturned++; return { signature: new Uint8Array(64).fill(7) }; },
     };
     window.phantom = { solana: provider }; window.solflare = provider;
   }, wallet);
@@ -103,6 +108,7 @@ try {
   await page.setViewportSize({ width: 1280, height: 800 });
   await submit(); await page.waitForURL('**/agent-callback?**');
   assert.equal(fixture.challengeBodies.length, 1); assert.equal(fixture.approvals.length, 1);
+  assert.deepEqual(fixture.walletCalls, ['connect', 'sign']);
   assert.deepEqual(fixture.challengeBodies[0].policy.venues, ['coinbase', 'jupiter']);
   assert.deepEqual(fixture.challengeBodies[0].policy.assets, ['SOL', 'BTC']);
   assert.equal(fixture.challengeBodies[0].policy.maxTradeUsd, 0.29); assert.equal(fixture.challengeBodies[0].policy.maxTotalUsd, 0.57);
@@ -112,7 +118,29 @@ try {
   await go({ trading: false });
   assert.equal(await page.locator('[name="maxTradeUsd"]').count(), 0); await submit(); await page.waitForURL('**/agent-callback?**');
   assert.equal(fixture.challengeBodies.length, 0); assert.deepEqual(fixture.approvals, [{ requestId, approve: true }]);
+  assert.deepEqual(fixture.walletCalls, []);
   console.log('PASS status-only consent grants no trading policy and needs no wallet signature');
+
+  for (const stage of ['connect', 'signMessage']) {
+    for (const rejectedValue of ['null', 'undefined']) {
+      await go();
+      await page.evaluate(({ stage, rejectedValue }) => {
+        window.phantom.solana[stage] = async () => { throw rejectedValue === 'null' ? null : undefined; };
+      }, { stage, rejectedValue });
+      await submit();
+      await page.waitForFunction(() => document.querySelector('#agent-consent-form').getAttribute('aria-busy') === 'false');
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const failure = page.locator('.agent-consent .form-message');
+      assert.equal(await failure.isVisible(), true);
+      assert.match(await failure.innerText(), /^Authorization could not be completed\./);
+      assert.equal(await page.locator('#agent-consent-form').locator('button,input,select,textarea').evaluateAll(controls => controls.every(control => !control.disabled)), true);
+      assert.equal(fixture.challengeBodies.length, stage === 'connect' ? 0 : 1);
+      assert.equal(fixture.approvals.length, 0);
+      assert.deepEqual(await page.evaluate(() => window.fixtureUnhandledRejections), []);
+      assert.deepEqual(errors, []);
+      console.log(`PASS ${stage} rejection with ${rejectedValue} shows a failure, restores controls and grants no access without an unhandled rejection`);
+    }
+  }
 
   await go(); await page.evaluate(() => { window.fixtureWallet = 'another-wallet'; }); await submit();
   await page.waitForFunction(() => document.querySelector('.agent-consent .form-message').textContent.includes('does not match'));

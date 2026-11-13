@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `1d49d5f7` (2026-11-13T02:54:02+00:00). 3548 tracked files, 89.5 MB.
+**Generated** from `index/INDEX.json` at commit `772a5cac` (2026-11-13T04:54:39+00:00). 3562 tracked files, 89.7 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2883 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (342 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2884 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 69/134 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (355 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -50,7 +50,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 117 files
+- [`.cdo`](#cdo) — 131 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1797 lines · 390,486 B · description: **extracted**
+`doc` · 1844 lines · 401,588 B · description: **extracted**
 
-**Purpose.** Version: 510 Delta: v509 to v510; integrate the frozen audit in the isolated MCP branch while preserving all parallel continuation history. Delta: v508 to v509; qualify wallet-backed OAuth/MCP, finite preauthorization UI and independent security regressions before delivery.
+**Purpose.** Version: 513 Delta: v512 to v513; qualify17website delta paths and current129Node/28Chrome gates before combined delivery. Delta: v511 to v512; integrate a505 wallet-render correction and preserve both candidate histories before final hosted delivery.
 
 **Use.** Read it.
 
@@ -855,9 +855,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/AUDIT-FILE-MANIFEST-2026-11-12.md`
 
-`doc` · 560 lines · 61,122 B · description: **extracted**
+`doc` · 563 lines · 61,534 B · description: **extracted**
 
-**Purpose.** Version: 0.1.2 Delta: include the combined pipeline, UI, readiness corrections and final current evidence. This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
+**Purpose.** Version: 0.1.3 Delta: include the wallet-render readiness correction and qualified private spawn-entry evidence. This inventory names every repository path changed by the audit branch relative to default-branch commit 240e617a0faba0c32ed2b8873d36480b8552752a. It includes earlier task-owned checkpoints and reviewed incoming pipeline/UI changes. The independently delivered UI is already on master.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34091 lines · 1,685,291 B · description: **extracted**
+`doc` · 34271 lines · 1,691,663 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1071,9 +1071,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-MCP-DELIVERY-2026-11-13.md`
 
-`doc` · 15 lines · 2,549 B · description: **extracted**
+`doc` · 17 lines · 3,507 B · description: **extracted**
 
-**Purpose.** Version: 0.1.0 Delta: Initial source qualification; hosted acceptance pending. Website0.3.0 adds wallet-bound OAuth and MCP access above the three subscription tiers. The owner corrected an accidental selection and chose finite preauthorization. A separate wallet-signed message grants an agent selected venues/assets, per-trade and cumulative USD limits, expiry and immediate revocation.
+**Purpose.** Version: 0.1.1 Delta: v0.1.0 to v0.1.1; qualify account-generation, repeat-trial, diagnostics and exact-cent corrections; hosted acceptance pending. Website0.3.0 adds wallet-bound OAuth and MCP access above the three subscription tiers. The owner corrected an accidental selection and chose finite preauthorization.
 
 **Use.** Read it.
 
@@ -1087,9 +1087,9 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 175 lines · 39,242 B · description: **extracted**
+`doc` · 182 lines · 40,602 B · description: **extracted**
 
-**Purpose.** Version: 0.1.9 Delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures. Complete combined Ecosystem255 and four fresh CLI parsing gates pass. Final SolTUI shards, pushed CI and delivery remain pending.
+**Purpose.** Version: 0.1.10 Delta: Preserve failed full/CI attempts, qualify private spawn-safe launcher and wallet-render readiness. Fresh full1563/final-headCI remain pending. Previous delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures.
 
 **Use.** Read it.
 
@@ -30395,7 +30395,7 @@ The local TUI, browser workspace and service interfaces. Coinbase order executio
 
 #### `soltui/tests/test_wallet_integration.py`
 
-`test` · 293 lines · 15,039 B · description: **extracted**
+`test` · 305 lines · 15,527 B · description: **extracted**
 
 **Purpose.** Wallet discovery wired into the console: Settings addresses, the key-source row, `portfolio.scan`, the Wallet tab, and the separate `wallet (live)` section of the P&L tab. The network is replaced by the recorded-fixture `Fake` from test_wallet; nothing here reads a key file.
 
@@ -30655,7 +30655,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/README.md`
 
-`doc` · 261 lines · 14,725 B · description: **extracted**
+`doc` · 265 lines · 15,326 B · description: **extracted**
 
 **Purpose.** Cloudflare-hosted wallet account and research workspace. This is a separate web surface over the existing research tools. It never exposes the owner's control room, trading accounts, wallet keys or signing services.
 
@@ -30697,7 +30697,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/api/openapi.json`
 
-`config` · 3037 lines · 82,626 B · description: **derived**
+`config` · 3103 lines · 84,429 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (openapi, info, servers, paths, components).
 
@@ -30707,9 +30707,9 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/docs/MCP-DESIGN.md`
 
-`doc` · 45 lines · 5,589 B · description: **extracted**
+`doc` · 51 lines · 6,550 B · description: **extracted**
 
-**Purpose.** Version: 0.1.1 Delta: v0.1.0 to v0.1.1; implement OAuth/MCP/intent ledgers and exact execution qualification limits. The owner explicitly chose preauthorized sessions. There is no per-trade wallet prompt requirement. Login proves wallet ownership; a separate, explicit consent grants an agent read access or a finite trading policy.
+**Purpose.** Version: 0.1.2 Delta: v0.1.1 to v0.1.2; bind browser account generations, exact cents and private diagnostics. The owner explicitly chose preauthorized sessions. There is no per-trade wallet prompt requirement. Login proves wallet ownership; a separate, explicit consent grants an agent read access or a finite trading policy.
 
 **Use.** Read it.
 
@@ -30825,7 +30825,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/public/agent-access.js`
 
-`code-js` · 202 lines · 17,070 B · description: **none**
+`code-js` · 202 lines · 17,071 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30835,11 +30835,11 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/public/app.js`
 
-`code-js` · 483 lines · 51,736 B · description: **none**
+`code-js` · 577 lines · 58,858 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `api`, `appendText`, `articleView`, `backtestView`, `billingAction`, `botsView`, `coinTabs`, `connectWallet`, `currency`, `displayNumber` and 30 more.
+**Contents.** Defines `TIMING`, `accountActionReady`, `accountContext`, `accountNotice`, `api`, `appendText`, `articleView`, `backtestView`, `beginAccountTransition`, `billingAction` and 30 more.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
@@ -30903,37 +30903,37 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/src/mcp.js`
 
-`code-js` · 156 lines · 14,084 B · description: **none**
+`code-js` · 184 lines · 15,398 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `MCP_PROTOCOL_VERSION`, `accountStatus`, `bodyJson`, `challenge`, `handleMcp`, `response`, `rpcError`, `toolResult`, `validOrigin`, `validate`.
+**Contents.** Defines `DIAGNOSTIC_EVENTS`, `MCP_PROTOCOL_VERSION`, `accountStatus`, `bodyJson`, `challenge`, `diagnostic`, `handleMcp`, `response`, `rpcError`, `toolResult` and 2 more.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
 #### `website/src/oauth.js`
 
-`code-js` · 423 lines · 30,461 B · description: **none**
+`code-js` · 447 lines · 32,132 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `ACCESS_TTL`, `MAX_BODY`, `MAX_GRANT_TTL`, `SCOPES`, `activeGrant`, `audience`, `authenticateAgent`, `boundedText`, `class OAuthError`, `cleanupAgentAccess` and 16 more.
+**Contents.** Defines `ACCESS_TTL`, `MAX_BODY`, `MAX_GRANT_TTL`, `SCOPES`, `SECURITY_EVENTS`, `activeGrant`, `audience`, `authenticateAgent`, `boundedText`, `class OAuthError` and 18 more.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
 #### `website/src/trades.js`
 
-`code-js` · 255 lines · 19,774 B · description: **extracted**
+`code-js` · 298 lines · 22,132 B · description: **extracted**
 
 **Purpose.** Customer-only execution boundary. A configured binding must implement the verified adapter contract; this module does not implement a venue or signer.
 
-**Contents.** Defines `ASSETS`, `MAX_USD`, `VENUES`, `adapter`, `cents`, `class TradeError`, `currentPolicy`, `entitled`, `exact`, `executionAvailable` and 13 more.
+**Contents.** Defines `ASSETS`, `EVENT_CATEGORIES`, `MAX_USD`, `VENUES`, `adapter`, `cents`, `class ExecutionFailure`, `class TradeError`, `currentPolicy`, `entitled` and 18 more.
 
 **Use.** See `website/README.md`; run the workspace with `npm --prefix website run dev`.
 
 #### `website/src/worker.js`
 
-`code-js` · 482 lines · 39,210 B · description: **none**
+`code-js` · 528 lines · 42,330 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -30945,7 +30945,7 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/test/agent-browser.mjs`
 
-`test` · 212 lines · 18,281 B · description: **extracted**
+`test` · 240 lines · 20,209 B · description: **extracted**
 
 **Purpose.** Real Chrome against isolated HTTP/wallet fixtures. No provider or real key calls.
 
@@ -30955,11 +30955,11 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/test/api.test.js`
 
-`test` · 780 lines · 64,062 B · description: **none**
+`test` · 968 lines · 78,166 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `ORIGIN`, `call`, `canonicalPlan`, `configuredEngine`, `deliver`, `deliverSubscription`, `environment`, `grant`, `keypair`, `login` and 2 more.
+**Contents.** Defines `ORIGIN`, `ORIGINAL_DIAGNOSTIC_METHODS`, `call`, `canonicalPlan`, `configuredEngine`, `deliver`, `deliverSubscription`, `environment`, `grant`, `keypair` and 3 more.
 
 **Use.** `node --test website/test/api.test.js`
 
@@ -30973,49 +30973,51 @@ The hosted wallet-account and subscription workspace. Stored bot definitions are
 
 #### `website/test/mcp-integration.test.js`
 
-`test` · 127 lines · 10,229 B · description: **none**
+`test` · 148 lines · 11,639 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `authorize`, `call`, `insertIntent`, `login`.
+**Contents.** Defines `accountAuthorizationRows`, `authorize`, `call`, `insertIntent`, `login`.
 
 **Use.** `node --test website/test/mcp-integration.test.js`
 
 #### `website/test/mcp.test.js`
 
-`test` · 146 lines · 13,601 B · description: **none**
+`test` · 256 lines · 21,756 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `fixture`.
+**Contents.** Defines `assertPrivate`, `diagnostics`, `fixture`.
 
 **Use.** `node --test website/test/mcp.test.js`
 
 #### `website/test/oauth.test.js`
 
-`test` · 355 lines · 30,389 B · description: **none**
+`test` · 447 lines · 37,246 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `account`, `approve`, `authorization`, `call`, `exchange`, `register`, `sameOrigin`, `session`, `sign`.
+**Contents.** Defines `account`, `approve`, `assertRedacted`, `authorization`, `call`, `exchange`, `register`, `sameOrigin`, `securityEvents`, `session` and 1 more.
 
 **Use.** `node --test website/test/oauth.test.js`
 
 #### `website/test/trades.test.js`
 
-`test` · 190 lines · 16,067 B · description: **none**
+`test` · 327 lines · 26,428 B · description: **none**
 
 **Purpose.** _No description available._
 
-**Contents.** Defines `executor`, `fixture`, `preparedResponse`.
+**Contents.** Defines `captureEvents`, `executor`, `fixture`, `preparedResponse`.
 
 **Use.** `node --test website/test/trades.test.js`
 
 #### `website/test/ui-browser.mjs`
 
-`test` · 157 lines · 10,774 B · description: **extracted**
+`test` · 370 lines · 26,668 B · description: **extracted**
 
 **Purpose.** Real browser regressions against local fixtures. No wallet, Stripe or venue calls.
+
+**Contents.** Defines `accountSnapshot`.
 
 **Use.** `npm --prefix website run test:browser`
 
@@ -31185,11 +31187,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-117 files.
+131 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 19930 lines · 307,159 B · description: **derived**
+`config` · 20383 lines · 314,861 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31343,7 +31345,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7480 lines · 281,732 B · description: **derived**
+`config` · 7600 lines · 286,656 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -31863,9 +31865,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/recorded.json`
 
-`config` · 826 lines · 66,901 B · description: **derived**
+`config` · 839 lines · 67,935 B · description: **derived**
 
-**Purpose.** Generated JSON object, 823 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
+**Purpose.** Generated JSON object, 836 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
 
 **Use.** Configuration; nothing to run.
 
@@ -32119,11 +32121,123 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ### `.cdo/reviews-2026-11-13/`
 
+#### `.cdo/reviews-2026-11-13/ledger-after-wallet-render-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json`
+
+`config` · 81 lines · 4,663 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (agent, definition_version, status, scope, observed_at, source_identity_observed...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json`
+
+`config` · 73 lines · 2,071 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (version, path, blob_sha, sha256, scope, original_blob_sha...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-13/website-mcp-independent.json`
 
 `config` · 66 lines · 2,864 B · description: **derived**
 
 **Purpose.** Generated JSON object, 7 keys (version, review, source_commit, files, findings_resolved, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-preauthorization-cdo.json`
+
+`config` · 646 lines · 32,919 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (schema, version, status, source_base_commit, files, checks...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-preauthorization-pass-receipt.md`
+
+`doc` · 30 lines · 1,099 B · description: **extracted**
+
+**Purpose.** Fix-track passes that ran: 18 of 18 (+1 conditional) Mode: incremental Status: SCOPED_REVIEW_GREEN_GLOBAL_CONVERGENCE_PARTIAL Files reviewed this run: 17
+
+**Use.** Read it.
+
+#### `.cdo/reviews-2026-11-13/website-preauthorization-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-agent-browser.json`
+
+`config` · 208 lines · 10,659 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (schema_version, created_at, root_task, skill, scope, mode...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-api.json`
+
+`config` · 168 lines · 8,811 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schemaVersion, reviewMode, status, target, skill, fileSHA256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-d1.json`
+
+`config` · 191 lines · 10,267 B · description: **derived**
+
+**Purpose.** Generated JSON object, 16 keys (reviewer, root_task, recorded_at_utc, skill, target, stage_0...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-integration.json`
+
+`config` · 219 lines · 11,193 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (schema_version, root_task, review_kind, scope, skill, reviewer_skills...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-mcp.json`
+
+`config` · 416 lines · 14,199 B · description: **derived**
+
+**Purpose.** Generated JSON object, 25 keys (schema_version, completed_at, scope, file, skill, reviewed_initial...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-oauth.json`
+
+`config` · 184 lines · 7,975 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (review_type, status, scope, file, sha256, git_blob...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-trades.json`
+
+`config` · 295 lines · 10,955 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema_version, reviewer, task, skill, reviewed_at_utc, file...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/website-test-ui-browser.json`
+
+`config` · 223 lines · 10,763 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (skill, skill_version, scope, file, status, severity_threshold...).
 
 **Use.** Configuration; nothing to run.
 

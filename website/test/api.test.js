@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import worker, { hasEntitlement, validateBot, verifyStripeSignature } from '../src/worker.js';
 import { base58Encode } from '../../extension/src/wallet/solana.js';
 
+const ORIGINAL_DIAGNOSTIC_METHODS = { fetch: globalThis.fetch, info: console.info, warn: console.warn, error: console.error };
 const ORIGIN = 'https://oraclebot.example';
 const at = () => Math.floor(Date.now() / 1000);
 function environment() {
@@ -48,8 +49,8 @@ async function keypair() {
   const wallet = base58Encode(new Uint8Array(await crypto.subtle.exportKey('raw', keys.publicKey)));
   return { keys, wallet };
 }
-async function login(env) {
-  const { keys, wallet } = await keypair();
+async function login(env, identity = null) {
+  const { keys, wallet } = identity || await keypair();
   const challenge = await call(env, '/api/auth/challenge', { method: 'POST', body: { wallet } });
   assert.equal(challenge.response.status, 200);
   const signature = Buffer.from(await crypto.subtle.sign('Ed25519', keys.privateKey, new TextEncoder().encode(challenge.data.message))).toString('base64');
@@ -214,8 +215,8 @@ test('account deletion clears owned data and sessions, requiring cancellation fi
   env.sqlite.prepare('UPDATE users SET trial_used=1').run();
   const result = await call(env, '/api/me', { method: 'DELETE', cookie: logged.cookie });
   assert.equal(result.data.deleted, true);
-  assert.ok(env.batches.at(-1)[0].meta.changes > 1, 'D1 change count includes cascaded sessions, bots and subscription');
-  assert.equal(env.batches.at(-1)[0].results[0].id, logged.user.id);
+  assert.ok(env.batches.at(-1)[1].meta.changes > 1, 'D1 change count includes cascaded sessions, bots and subscription');
+  assert.equal(env.batches.at(-1)[1].results[0].id, logged.user.id);
   for (const table of ['users', 'sessions', 'bots', 'subscriptions']) assert.equal(env.sqlite.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n, 0);
   const ledger = env.sqlite.prepare('SELECT * FROM trial_history').get();
   assert.equal(ledger.wallet_hash.length, 64); assert.notEqual(ledger.wallet_hash, logged.wallet);
@@ -776,4 +777,191 @@ test('webhook leases serialize each subscription independently and cleanup only 
   env.sqlite.prepare('INSERT INTO subscription_webhook_leases VALUES (?,?,unixepoch()+30)').run('active-hash-fixture', 'active-owner');
   await worker.scheduled({}, env);
   assert.deepEqual(env.sqlite.prepare('SELECT subscription_key FROM subscription_webhook_leases').all().map(row => row.subscription_key), ['active-hash-fixture']);
+});
+
+test('OAuth diagnostics classify protocol routes without request text or credentials', async t => {
+  const env = environment(); const emitted = []; const canary = 'private-oauth-diagnostic-marker';
+  t.mock.method(console, 'warn', text => emitted.push(JSON.parse(text)));
+  const result = await call(env, `/oauth/register?private=${canary}`, { method: 'POST', body: { client_name: canary, redirect_uris: [] } });
+  assert.equal(result.response.status, 400);
+  assert.deepEqual(emitted, [{ event: 'oraclebot.request_failed', operation: 'POST /oauth/register', code: 'invalid_redirect_uri', status: 400 }]);
+  assert.equal(JSON.stringify(emitted).includes(canary), false);
+});
+
+test('login racing deletion reads trial history atomically before recreating the wallet account', async t => {
+  const env = { ...environment(), ...billing }; const identity = await keypair();
+  const old = await login(env, identity);
+  env.sqlite.prepare('UPDATE users SET trial_used=1 WHERE id=?').run(old.user.id);
+  const challenge = await call(env, '/api/auth/challenge', { method: 'POST', body: { wallet: identity.wallet } });
+  const signature = Buffer.from(await crypto.subtle.sign('Ed25519', identity.keys.privateKey, new TextEncoder().encode(challenge.data.message))).toString('base64');
+  let entered; let release;
+  const started = new Promise(resolve => { entered = resolve; }); const held = new Promise(resolve => { release = resolve; });
+  const prepare = env.DB.prepare.bind(env.DB);
+  env.DB.prepare = sql => {
+    const statement = prepare(sql);
+    if (sql.startsWith('INSERT INTO users ')) {
+      const run = statement.run.bind(statement);
+      statement.run = async () => { entered(); await held; return run(); };
+    }
+    return statement;
+  };
+  const pending = call(env, '/api/auth/verify', { method: 'POST', body: { id: challenge.data.id, signature } });
+  await started;
+  assert.equal((await call(env, '/api/me', { method: 'DELETE', cookie: old.cookie })).response.status, 200);
+  release(); const recreated = await pending;
+  assert.equal(recreated.response.status, 200); assert.notEqual(recreated.data.user.id, old.user.id);
+  assert.equal(env.sqlite.prepare('SELECT trial_used FROM users WHERE wallet=?').get(identity.wallet).trial_used, 1);
+  let customers = 0;
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
+    if (url.endsWith('/customers')) { customers++; return Response.json({ id: 'cus_recreated' }); }
+    if (url.includes('/subscriptions?')) return Response.json({ data: [], has_more: false });
+    assert.equal(url, 'https://api.stripe.com/v1/checkout/sessions');
+    assert.equal(options.body.has('subscription_data[trial_period_days]'), false);
+    return Response.json({ url: 'https://checkout.stripe.com/c/pay/recreated' });
+  });
+  const cookie = recreated.response.headers.get('Set-Cookie').split(';')[0];
+  const result = await call(env, '/api/billing/checkout', { method: 'POST', cookie, body: { plan: 'starter' } });
+  assert.equal(result.response.status, 200); assert.equal(result.data.trialDays, 0); assert.equal(customers, 1);
+});
+
+test('login repairs a stale trial flag monotonically without replacing account identity or customer', async t => {
+  const env = environment(); const identity = await keypair(); const original = await login(env, identity);
+  const walletHash = Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(identity.wallet))).toString('hex');
+  env.sqlite.prepare('INSERT INTO trial_history VALUES (?,?)').run(walletHash, at());
+  env.sqlite.prepare('UPDATE users SET stripe_customer_id=? WHERE id=?').run('cus_preserved', original.user.id);
+  const before = env.sqlite.prepare('SELECT * FROM users').get();
+  let upstream = 0; t.mock.method(globalThis, 'fetch', async () => { upstream++; throw new Error('unexpected upstream'); });
+  assert.equal((await login(env, identity)).user.id, original.user.id);
+  assert.deepEqual({ ...env.sqlite.prepare('SELECT * FROM users').get() }, { ...before, trial_used: 1 });
+  env.sqlite.prepare('DELETE FROM trial_history').run();
+  assert.equal((await login(env, identity)).user.id, original.user.id);
+  assert.equal(env.sqlite.prepare('SELECT trial_used FROM users').get().trial_used, 1); assert.equal(upstream, 0);
+});
+
+test('deletion captures a trial flag that changes after its initial account read', async t => {
+  const env = environment(); const identity = await keypair(); const original = await login(env, identity);
+  const batch = env.DB.batch.bind(env.DB);
+  let entered; let release;
+  const started = new Promise(resolve => { entered = resolve; }); const held = new Promise(resolve => { release = resolve; });
+  env.DB.batch = async statements => { entered(); await held; return batch(statements); };
+  let upstream = 0; t.mock.method(globalThis, 'fetch', async () => { upstream++; throw new Error('unexpected upstream'); });
+  const pending = call(env, '/api/me', { method: 'DELETE', cookie: original.cookie });
+  await started;
+  env.sqlite.prepare('UPDATE users SET trial_used=1 WHERE id=?').run(original.user.id);
+  release(); assert.equal((await pending).response.status, 200);
+  const history = env.sqlite.prepare('SELECT * FROM trial_history').get(); assert.ok(history);
+  assert.notEqual(history.wallet_hash, identity.wallet);
+  assert.equal((await login(env, identity)).user.wallet, identity.wallet);
+  assert.equal(env.sqlite.prepare('SELECT trial_used FROM users').get().trial_used, 1); assert.equal(upstream, 0);
+});
+
+test('deletion refuses a newly active subscription and retains newly observed trial history', async t => {
+  const env = { ...environment(), ...billing }; const original = await login(env); grant(env, original.user, 'canceled');
+  const before = env.sqlite.prepare('SELECT * FROM users').get();
+  const batch = env.DB.batch.bind(env.DB);
+  let entered; let release;
+  const started = new Promise(resolve => { entered = resolve; }); const held = new Promise(resolve => { release = resolve; });
+  env.DB.batch = async statements => { entered(); await held; return batch(statements); };
+  const emitted = []; t.mock.method(console, 'info', text => emitted.push(JSON.parse(text)));
+  let upstream = 0; t.mock.method(globalThis, 'fetch', async () => { upstream++; throw new Error('unexpected upstream'); });
+  const pending = call(env, '/api/me', { method: 'DELETE', cookie: original.cookie });
+  await started;
+  env.sqlite.prepare("UPDATE subscriptions SET status='active'").run();
+  env.sqlite.prepare('UPDATE users SET trial_used=1 WHERE id=?').run(original.user.id);
+  release(); const result = await pending;
+  assert.equal(result.response.status, 409); assert.equal(result.data.error, 'cancel_subscription_first');
+  assert.deepEqual({ ...env.sqlite.prepare('SELECT * FROM users').get() }, { ...before, trial_used: 1 });
+  assert.equal(env.sqlite.prepare('SELECT status FROM subscriptions').get().status, 'active');
+  assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM sessions').get().n, 1);
+  const history = env.sqlite.prepare('SELECT * FROM trial_history').get(); assert.ok(history);
+  assert.equal(emitted.some(row => row.event === 'oraclebot.account_deleted'), false);
+  assert.equal((await call(env, '/api/billing/checkout', { method: 'POST', cookie: original.cookie, body: { plan: 'starter' } })).data.error, 'already_subscribed');
+  assert.deepEqual(env.sqlite.prepare('SELECT * FROM trial_history').get(), history); assert.equal(upstream, 0);
+});
+
+test('upstream diagnostics record static starts and outcomes without account or request data', async t => {
+  const env = { ...environment(), ...billing, ...configuredEngine() }; const logged = await login(env);
+  const emitted = []; const canary = 'private-upstream-diagnostic-marker';
+  t.mock.method(console, 'info', text => emitted.push(JSON.parse(text)));
+  t.mock.method(console, 'warn', text => emitted.push(JSON.parse(text)));
+  t.mock.method(console, 'error', text => emitted.push(JSON.parse(text)));
+  t.mock.method(globalThis, 'fetch', async url => {
+    const endpoint = String(url);
+    if (endpoint.endsWith('/customers')) return Response.json({ id: `cus_${canary}` });
+    if (endpoint.includes('/subscriptions?')) return Response.json({ data: [], has_more: false });
+    if (endpoint.endsWith('/checkout/sessions')) return Response.json({ url: `https://checkout.stripe.com/c/pay/${canary}` });
+    return Response.json({ unavailable: canary }, { status: 503 });
+  });
+  assert.equal((await call(env, '/api/billing/checkout', { method: 'POST', cookie: logged.cookie, body: { plan: 'starter' } })).response.status, 200);
+  assert.equal((await call(env, `/api/oracle?coin=SOL&private=${canary}`)).response.status, 503);
+  globalThis.fetch.mock.mockImplementation(async () => { throw new Error(`${canary} ${logged.wallet} ${env.ENGINE_TOKEN}`); });
+  assert.equal((await call(env, '/api/strategies')).response.status, 503);
+  const upstream = emitted.filter(row => row.event === 'oraclebot.upstream');
+  assert.deepEqual(upstream.map(({ operation, phase, outcome, status }) => ({ operation, phase, outcome, status })), [
+    { operation: 'stripe.customer_create', phase: 'start', outcome: undefined, status: undefined },
+    { operation: 'stripe.customer_create', phase: 'outcome', outcome: 'success', status: 200 },
+    { operation: 'stripe.subscription_list', phase: 'start', outcome: undefined, status: undefined },
+    { operation: 'stripe.subscription_list', phase: 'outcome', outcome: 'success', status: 200 },
+    { operation: 'stripe.checkout_create', phase: 'start', outcome: undefined, status: undefined },
+    { operation: 'stripe.checkout_create', phase: 'outcome', outcome: 'success', status: 200 },
+    { operation: 'engine.oracle', phase: 'start', outcome: undefined, status: undefined },
+    { operation: 'engine.oracle', phase: 'outcome', outcome: 'failure', status: 503 },
+    { operation: 'engine.strategies', phase: 'start', outcome: undefined, status: undefined },
+    { operation: 'engine.strategies', phase: 'outcome', outcome: 'failure', status: 0 },
+  ]);
+  for (const row of upstream) {
+    assert.deepEqual(Object.keys(row).sort(), (row.phase === 'start' ? ['event', 'operation', 'phase'] : ['durationMs', 'event', 'operation', 'outcome', 'phase', 'status']).sort());
+    if (row.phase === 'outcome') assert.ok(Number.isFinite(row.durationMs) && row.durationMs >= 0);
+  }
+  for (const secret of [canary, logged.wallet, logged.cookie, logged.user.id, env.STRIPE_SECRET_KEY, env.ENGINE_TOKEN]) assert.equal(JSON.stringify(emitted).includes(secret), false);
+  t.mock.restoreAll();
+  assert.equal(globalThis.fetch, ORIGINAL_DIAGNOSTIC_METHODS.fetch);
+  for (const level of ['info', 'warn', 'error']) assert.equal(console[level], ORIGINAL_DIAGNOSTIC_METHODS[level]);
+});
+
+test('account deletion emits success only after deletion and diagnostic sink failures never change responses', async t => {
+  const env = { ...environment(), ...configuredEngine() }; const logged = await login(env); const emitted = [];
+  t.mock.method(console, 'info', text => {
+    assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM users').get().n, 0);
+    emitted.push(JSON.parse(text));
+  });
+  assert.equal((await call(env, '/api/me', { method: 'DELETE', cookie: logged.cookie })).response.status, 200);
+  assert.deepEqual(emitted, [{ event: 'oraclebot.account_deleted' }]);
+  const failedSink = () => { throw new Error('diagnostic sink failed'); };
+  console.info.mock.mockImplementation(failedSink);
+  for (const level of ['warn', 'error']) t.mock.method(console, level, failedSink);
+  t.mock.method(globalThis, 'fetch', async () => Response.json({ strategies: [] }));
+  assert.equal((await call(env, '/api/strategies')).response.status, 200);
+  globalThis.fetch.mock.mockImplementation(async () => { throw new Error('private-network-error'); });
+  assert.equal((await call(env, '/api/strategies')).response.status, 503);
+  assert.equal((await call(env, '/api/me', { method: 'DELETE', cookie: logged.cookie })).response.status, 401);
+  const another = await login(env);
+  assert.equal((await call(env, '/api/me', { method: 'DELETE', cookie: another.cookie })).response.status, 200);
+  t.mock.restoreAll();
+  assert.equal(globalThis.fetch, ORIGINAL_DIAGNOSTIC_METHODS.fetch);
+  for (const level of ['info', 'warn', 'error']) assert.equal(console[level], ORIGINAL_DIAGNOSTIC_METHODS[level]);
+});
+
+test('expected-account header rejects a changed cookie owner before reads or mutations', async t => {
+  const env = { ...environment(), STRIPE_SECRET_KEY: 'sk_test_fixture', STRIPE_PORTAL_CONFIGURATION_ID: 'bpc_test' };
+  const a = await login(env); const b = await login(env);
+  env.sqlite.prepare('UPDATE users SET stripe_customer_id=? WHERE id=?').run('cus_fixture', b.user.id);
+  let upstream = 0;
+  t.mock.method(globalThis, 'fetch', () => { upstream++; assert.fail('mismatched identity must not reach a provider'); });
+  const headers = { 'X-Oraclebot-Account': a.user.id };
+  for (const [path, method, body] of [
+    ['/api/me', 'GET'], ['/api/bots', 'GET'], ['/api/agent/grants', 'GET'],
+    ['/api/bots', 'POST', bot], ['/api/backtests', 'POST', { coin: 'SOL', strategy: 'rsi' }],
+    ['/api/billing/checkout', 'POST', { plan: 'starter' }], ['/api/billing/portal', 'POST', {}],
+    ['/api/me', 'DELETE', {}], ['/api/auth/logout', 'POST', {}],
+  ]) {
+    const result = await call(env, path, { method, body, cookie: b.cookie, headers });
+    assert.equal(result.response.status, 409, path);
+    assert.equal(result.data.error, 'account_changed', path);
+  }
+  assert.equal(upstream, 0);
+  assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM bots').get().n, 0);
+  assert.equal((await call(env, '/api/me', { cookie: b.cookie })).data.user.id, b.user.id);
+  assert.equal((await call(env, '/api/me', { cookie: b.cookie, headers: { 'X-Oraclebot-Account': b.user.id } })).response.status, 200);
+  assert.equal((await call(env, '/api/bots', { headers })).response.status, 401);
 });

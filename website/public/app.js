@@ -3,7 +3,8 @@ import { createAgentAccess } from './agent-access.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const main = $('#main');
-const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
+const TIMING = Object.freeze({ requestTimeoutMs: 25000, toastMs: 6500, oraclePollMs: 15000, evidenceCheckMs: 1000 });
+const state = { config: { coins: ['SOL', 'BTC', 'ETH', 'ZEC'], trialDays: 7 }, user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false, accountStatus: 'loading', accountEpoch: 0, accountRequest: 0, accountTransition: false, navigationEpoch: 0, articles: [], strategies: [], coin: 'SOL', oracle: null, view: 'overview', search: '', category: 'all', loadingOracle: false, oracleRequest: 0 };
 const agentAccess = createAgentAccess({ api, getUser: () => state.accountTransition ? null : state.user, isSettings: () => state.view === 'settings', openWallet, toast });
 const views = { overview: 'Overview', oracle: 'The oracle', bots: 'My bots', backtest: 'Backtest lab', research: 'Research journal', pricing: 'Membership', settings: 'Settings & account' };
 const coinNames = { SOL: 'Solana', BTC: 'Bitcoin', ETH: 'Ethereum', ZEC: 'Zcash' };
@@ -21,7 +22,7 @@ function el(tag, className, value) {
 function appendText(parent, tag, className, value) { const item = el(tag, className, value); parent.append(item); return item; }
 function errorText(error) {
   const messages = {
-    unauthorized: 'Connect and sign in with your wallet to continue.', authentication_required: 'Connect and sign in with your wallet to continue.',
+    unauthorized: 'Connect and sign in with your wallet to continue.', authentication_required: 'Connect and sign in with your wallet to continue.', account_changed: 'Your account changed. Check your current account and try again.',
     subscription_required: 'An active membership or Stripe trial is needed. Open Membership to get started.', entitlement_required: 'An active membership or Stripe trial is needed. Open Membership to get started.',
     billing_unavailable: 'Membership checkout is not available yet. You can still browse the research journal.', billing_not_configured: 'Membership checkout is not available yet. You can still browse the research journal.',
     engine_unavailable: 'The research engine is currently unavailable. No result has been estimated.', engine_not_configured: 'The research engine is not connected yet. No result has been estimated.',
@@ -32,11 +33,12 @@ function errorText(error) {
   };
   return messages[error?.code] || error?.message || 'Something went wrong. Please try again.';
 }
-async function api(path, options = {}) {
+async function api(path, options = {}, expectedAccountId = state.user?.id) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 25000);
+  const timer = setTimeout(() => controller.abort(), TIMING.requestTimeoutMs);
+  const privatePath = /^\/api\/(?:me(?:[/?]|$)|bots(?:[/?]|$)|backtests(?:[/?]|$)|billing\/|agent\/|auth\/logout(?:[/?]|$))/.test(path);
   try {
-    const response = await fetch(path, { credentials: 'same-origin', ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers }, signal: controller.signal });
+    const response = await fetch(path, { credentials: 'same-origin', ...options, headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers, ...(privatePath && expectedAccountId ? { 'X-Oraclebot-Account': expectedAccountId } : {}) }, signal: controller.signal });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) {
       const code = typeof body.error === 'string' ? body.error : body.error?.code || body.code;
@@ -47,7 +49,7 @@ async function api(path, options = {}) {
     }
     return body;
   } catch (error) {
-    if (error.name === 'AbortError') throw new Error('This request is taking too long. No result has been estimated. Please try again later.');
+    if (error?.name === 'AbortError') throw new Error('This request is taking too long. No result has been estimated. Please try again later.');
     throw error;
   } finally { clearTimeout(timer); }
 }
@@ -55,13 +57,34 @@ function toast(message) {
   clearTimeout(toastTimer);
   $('#toast').textContent = message;
   $('#toast').hidden = false;
-  toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 6500);
+  toastTimer = setTimeout(() => { $('#toast').hidden = true; }, TIMING.toastMs);
 }
 function shortWallet(wallet) { return wallet ? `${wallet.slice(0, 4)}…${wallet.slice(-4)}` : 'Connect wallet'; }
 function formatDate(value) { const date = new Date(typeof value === 'number' && value < 1e12 ? value * 1000 : value); return Number.isNaN(date.getTime()) ? 'Not available' : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }); }
 function currency(value) { const number = Number(value); return Number.isFinite(number) ? new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(number) : '—'; }
 function displayNumber(value, digits = 2) { return typeof value === 'number' && Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: digits }) : '—'; }
 function setBusy(button, busy) { if (button) { button.disabled = busy; button.setAttribute('aria-busy', String(busy)); } }
+function accountContext() { return { epoch: state.accountEpoch, userId: state.user?.id ?? null }; }
+function currentAccount(context) { return !state.accountTransition && state.accountStatus === 'ready' && state.accountEpoch === context.epoch && (state.user?.id ?? null) === context.userId; }
+function clearAccount() { Object.assign(state, { user: null, subscription: null, usage: null, portalAvailable: false, bots: [], botsNextPage: null, botsUnavailable: false }); }
+function beginAccountTransition() {
+  const context = accountContext();
+  state.accountEpoch++; state.accountRequest++; state.accountTransition = true; state.accountStatus = 'loading';
+  agentAccess.invalidate(); clearAccount(); $('#bot-dialog').close(); $('#bot-form').reset(); $('#bot-message').textContent = ''; render();
+  return { ...context, epoch: state.accountEpoch };
+}
+function accountActionReady() {
+  if (state.accountTransition || state.accountStatus === 'loading') { toast('An account request is already in progress. Finish or cancel that request first.'); return false; }
+  if (state.accountStatus === 'unavailable') { toast('Your account could not be checked. Retry the account check before continuing.'); return false; }
+  return true;
+}
+function accountNotice() {
+  const notice = el('section', 'panel panel-pad account-notice'); notice.setAttribute('role', 'status');
+  appendText(notice, 'h2', '', state.accountStatus === 'unavailable' ? 'Your account could not be checked.' : 'Checking your account…');
+  appendText(notice, 'p', '', state.accountStatus === 'unavailable' ? 'Your sign-in and saved workspace are unknown. Retry before changing account data.' : 'Wait while your current wallet session is checked.');
+  if (state.accountStatus === 'unavailable') { const retry = el('button', 'button button-outline', 'Retry account check'); retry.dataset.action = 'refresh-account'; notice.append(retry); }
+  return notice;
+}
 function orbit() {
   return '<svg class="hero-orbit" viewBox="0 0 350 350" fill="none" aria-hidden="true"><circle cx="175" cy="175" r="105" stroke="currentColor" stroke-width=".7"/><circle cx="175" cy="175" r="132" stroke="currentColor" stroke-width=".5" stroke-dasharray="2 7"/><ellipse cx="175" cy="175" rx="155" ry="50" transform="rotate(-43 175 175)" stroke="currentColor" stroke-width="1"/><ellipse cx="175" cy="175" rx="121" ry="41" transform="rotate(44 175 175)" stroke="currentColor" stroke-width=".5"/><circle cx="175" cy="175" r="66" stroke="currentColor" stroke-width=".7"/><path d="M175 44v55m0 152v55M44 175h55m152 0h55" stroke="currentColor" stroke-width=".7"/><circle cx="175" cy="175" r="18" stroke="currentColor"/><circle cx="175" cy="175" r="5" fill="currentColor"/><circle cx="279" cy="136" r="5" fill="currentColor"/><path d="m277 139 11-10m-15 4 10 10" stroke="currentColor" stroke-width=".7"/></svg>';
 }
@@ -137,6 +160,7 @@ function oracleView() {
 }
 function botsView() {
   main.innerHTML = heading('IDEAS, GIVEN STRUCTURE', 'Build with intention.', 'Create a bot configuration for Coinbase spot or a leveraged Jupiter position. Start in paper mode.', '<button class="button button-dark" data-action="new-bot">Create a bot <span aria-hidden="true">＋</span></button>');
+  if (state.accountStatus !== 'ready') return;
   const visibleBots = state.bots.filter(item => item.status !== 'archived');
   if (state.botsUnavailable) {
     const failure = el('section', 'panel empty-state');
@@ -329,9 +353,9 @@ function pricingView() {
 function settingsView() {
   main.innerHTML = heading('YOUR WORKSPACE, YOUR TERMS', 'The details that matter.', 'Manage your account, membership and permissions. Keep your keys in your wallet.');
   const grid = el('div', 'settings-grid');
-  const account = el('section', 'panel'); appendText(account, 'h3', '', 'Your account'); appendText(account, 'p', '', state.user ? 'Signed in using a verified wallet signature.' : 'Connect a Solana wallet and sign a one-time message to access your account.');
+  const account = el('section', 'panel'); appendText(account, 'h3', '', 'Your account'); appendText(account, 'p', '', state.accountStatus !== 'ready' ? 'Your current wallet session has not been established.' : state.user ? 'Signed in using a verified wallet signature.' : 'Connect a Solana wallet and sign a one-time message to access your account.');
   if (state.user) appendText(account, 'span', 'settings-value', state.user.wallet);
-  const accountButton = el('button', 'button button-outline', state.user ? 'Sign out' : 'Connect wallet'); accountButton.dataset.action = state.user ? 'logout' : 'wallet'; account.append(accountButton);
+  const accountButton = el('button', 'button button-outline', state.accountStatus !== 'ready' ? 'Retry account check' : state.user ? 'Sign out' : 'Connect wallet'); accountButton.dataset.action = state.accountStatus !== 'ready' ? 'refresh-account' : state.user ? 'logout' : 'wallet'; accountButton.disabled = state.accountStatus === 'loading'; account.append(accountButton);
   if (state.user) { const remove = el('button', 'button button-outline', 'Delete account'); remove.dataset.action = 'delete-account'; account.append(remove); appendText(account, 'p', 'fine-print', 'Deletes your account and saved configurations. Cancel subscriptions and finish or expire pending checkout first. A hashed trial-use record prevents repeat free trials.'); }
   const billing = el('section', 'panel'); appendText(billing, 'h3', '', 'Membership & billing'); appendText(billing, 'p', '', state.subscription?.status ? `Subscription status: ${state.subscription.status}. Manage payment details and cancellation through Stripe.` : 'No active subscription is recorded. The seven-day trial starts only after successful Stripe Checkout.');
   const canManage = state.portalAvailable || state.subscription?.status;
@@ -339,10 +363,12 @@ function settingsView() {
   const permissions = el('section', 'panel'); permissions.innerHTML = '<h3>Wallet & execution permissions</h3><p>Your sign-in signature only proves ownership of your wallet. It does not approve a transaction or grant spending permissions.</p><p>Bot configurations start in paper mode. Live Coinbase trading and Jupiter leveraged execution require separately provisioned, verified account connections.</p>';
   const risk = el('section', 'panel'); risk.innerHTML = '<h3>Risk & privacy</h3><p>Trading can result in loss. Leverage increases losses and can lead to liquidation. Past or simulated performance does not predict future results.</p><p>Your account stores your public wallet address, sessions, bot configurations and subscription references. Payment details are handled by Stripe. Never send Oraclebot your private key or seed phrase.</p><p>Session cookies support sign-in. This workspace does not use advertising trackers.</p>';
   grid.append(account, billing, permissions, risk); main.append(grid);
-  const agents = el('div', 'agent-settings'); main.append(agents); agentAccess.mount(agents);
+  const agents = el('div', 'agent-settings'); main.append(agents);
+  if (state.accountStatus === 'ready' || state.accountTransition) agentAccess.mount(agents);
+  else appendText(agents, 'p', 'fine-print', 'Agent access becomes available after your account is checked.');
   const current = usagePanel(); if (current) main.append(current);
 }
-function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
+function updateAccountUI() { for (const label of $$('[data-wallet-label]')) label.textContent = state.accountStatus !== 'ready' ? 'Account unchecked' : shortWallet(state.user?.wallet); $('#nav-bot-count').textContent = state.accountStatus !== 'ready' || state.botsUnavailable ? '—' : state.bots.filter(item => item.status !== 'archived').length; }
 function render() {
   agentAccess.invalidate();
   const [rawView, ...rest] = location.hash.slice(1).split('/'); const view = views[rawView] ? rawView : 'overview'; state.view = view;
@@ -352,6 +378,7 @@ function render() {
   $('#sidebar').classList.remove('open'); $('#menu-button').setAttribute('aria-expanded', 'false');
   if (view === 'research' && rest.length) { let slug; try { slug = decodeURIComponent(rest.join('/')); } catch { slug = ''; } articleView(slug); }
   else ({ overview, oracle: oracleView, bots: botsView, backtest: backtestView, research: researchView, pricing: pricingView, settings: settingsView })[view]();
+  if (state.accountStatus !== 'ready') main.prepend(accountNotice());
   updateAccountUI();
 }
 async function loadOracle(coin = state.coin) {
@@ -361,18 +388,36 @@ async function loadOracle(coin = state.coin) {
   catch (error) { if (requestId === state.oracleRequest) state.oracle = { status: 'unavailable', message: errorText(error), topStrategy: null }; }
   finally { if (requestId === state.oracleRequest) { state.loadingOracle = false; if (state.view === 'overview' || state.view === 'oracle') render(); } }
 }
-async function refreshAccount() {
-  const result = await api('/api/me'); state.user = result.user; state.subscription = result.subscription; state.usage = result.usage || null; state.portalAvailable = result.portalAvailable === true;
-  state.botsUnavailable = false;
-  if (state.user) { try { const result = await api('/api/bots'); state.bots = result.bots || []; state.botsNextPage = result.nextPage ?? null; } catch { state.bots = []; state.botsNextPage = null; state.botsUnavailable = true; } } else { state.bots = []; state.botsNextPage = null; }
-  updateAccountUI();
+async function refreshAccount({ allowTransition = false } = {}) {
+  const context = accountContext(); const requestId = ++state.accountRequest; const previousStatus = state.accountStatus;
+  const current = () => state.accountEpoch === context.epoch && state.accountRequest === requestId && (state.user?.id ?? null) === context.userId && state.accountTransition === allowTransition;
+  try {
+    const result = await api('/api/me', {}, context.userId);
+    if (!current()) return false;
+    if (!result || !(result.user === null || typeof result.user?.id === 'string' && typeof result.user?.wallet === 'string')) throw new Error('The account service returned an invalid identity.');
+    if (context.userId && result.user && result.user.id !== context.userId) throw new Error('The account changed while it was being checked.');
+    let bots = []; let botsNextPage = null; let botsUnavailable = false;
+    if (result.user) {
+      try { const page = await api('/api/bots', {}, result.user.id); bots = page.bots || []; botsNextPage = page.nextPage ?? null; }
+      catch (error) { if (error?.code === 'account_changed') throw error; if (current()) { botsUnavailable = true; console.warn('Oraclebot bot list unavailable'); } }
+    }
+    if (!current()) return false;
+    const identityEnded = Boolean(context.userId && !result.user);
+    if (identityEnded) { state.accountEpoch++; agentAccess.invalidate(); }
+    Object.assign(state, { user: result.user, subscription: result.subscription, usage: result.usage || null, portalAvailable: result.portalAvailable === true, bots, botsNextPage, botsUnavailable, accountStatus: 'ready' });
+    updateAccountUI(); if (!allowTransition && (identityEnded || previousStatus !== 'ready')) render(); return true;
+  } catch {
+    if (!current()) return false;
+    state.accountEpoch++; agentAccess.invalidate(); clearAccount(); state.accountStatus = 'unavailable';
+    console.warn('Oraclebot account refresh unavailable'); render(); return false;
+  }
 }
 function openWallet() { $('#wallet-message').textContent = ''; $('#wallet-dialog').showModal(); }
 async function connectWallet(name, button) {
   if (state.accountTransition) return;
   const provider = name === 'phantom' ? window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null) : window.solflare;
   if (!provider) { $('#wallet-message').textContent = `No ${name === 'phantom' ? 'Phantom' : 'Solflare'} wallet was detected. Open this site in that wallet’s browser or install its browser extension, then try again.`; return; }
-  agentAccess.invalidate(); state.accountTransition = true;
+  const context = beginAccountTransition();
   setBusy(button, true); $('#wallet-message').textContent = 'Waiting for your wallet…';
   try {
     const connection = await provider.connect(); const wallet = (connection?.publicKey || provider.publicKey)?.toString();
@@ -382,21 +427,31 @@ async function connectWallet(name, button) {
     const signed = await provider.signMessage(new TextEncoder().encode(challenge.message), 'utf8');
     const bytes = signed.signature || signed; const signature = btoa(String.fromCharCode(...new Uint8Array(bytes)));
     await api('/api/auth/verify', { method: 'POST', body: JSON.stringify({ id: challenge.id, signature }) });
-    await refreshAccount(); state.accountTransition = false; $('#wallet-dialog').close(); render(); toast('Wallet verified. Welcome to your workspace.');
-  } catch (error) { $('#wallet-message').textContent = error.code === 4001 || /reject|cancel/i.test(error.message) ? 'Connection cancelled. You can try again whenever you are ready.' : errorText(error); }
+    if (state.accountEpoch !== context.epoch || !state.accountTransition) return;
+    const refreshed = await refreshAccount({ allowTransition: true });
+    if (!refreshed) return;
+    state.accountTransition = false; $('#wallet-dialog').close(); render(); toast('Wallet verified. Welcome to your workspace.');
+  } catch (error) {
+    if (state.accountEpoch === context.epoch && state.accountTransition) { state.accountStatus = 'unavailable'; $('#wallet-message').textContent = error?.code === 4001 || /reject|cancel/i.test(error?.message || '') ? 'Connection cancelled. You can try again whenever you are ready.' : errorText(error); }
+  }
   finally { if (state.accountTransition) { state.accountTransition = false; render(); } setBusy(button, false); }
 }
 async function billingAction(action, button) {
+  if (!accountActionReady()) return;
   if (action === 'checkout' && state.config.billingConfigured !== true) { location.hash = 'pricing'; toast('Stripe Checkout is not available yet. No payment or trial has started.'); return; }
   if (!state.user) { openWallet(); toast('Connect your wallet first to manage your membership.'); return; }
+  const context = accountContext(); const navigation = state.navigationEpoch;
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && button.isConnected;
   setBusy(button, true);
   try {
-    const result = await api(`/api/billing/${action}`, { method: 'POST', body: JSON.stringify(action === 'checkout' ? { plan: button.dataset.plan } : {}) });
+    const result = await api(`/api/billing/${action}`, { method: 'POST', body: JSON.stringify(action === 'checkout' ? { plan: button.dataset.plan } : {}) }, context.userId);
+    if (!current()) return;
     const url = new URL(result.url); if (url.protocol !== 'https:' || !(url.hostname === 'checkout.stripe.com' || url.hostname === 'billing.stripe.com')) throw new Error('The billing service returned an unsupported checkout address.');
     location.assign(url.href);
-  } catch (error) { toast(errorText(error)); } finally { setBusy(button, false); }
+  } catch (error) { if (current()) toast(errorText(error)); } finally { setBusy(button, false); }
 }
 function openBot() {
+  if (!accountActionReady()) return;
   if (!state.user) { openWallet(); toast('Connect your wallet to create a bot configuration.'); return; }
   $('#bot-message').textContent = ''; populateSelects($('#bot-dialog')); $('#bot-dialog').showModal();
 }
@@ -405,48 +460,82 @@ document.addEventListener('click', async event => {
   const provider = event.target.closest('[data-provider]'); if (provider) { connectWallet(provider.dataset.provider, provider); return; }
   const coin = event.target.closest('[data-coin]'); if (coin) { loadOracle(coin.dataset.coin); return; }
   const bot = event.target.closest('[data-bot-id]');
-  if (bot) { setBusy(bot, true); try { await api(`/api/bots/${encodeURIComponent(bot.dataset.botId)}`, { method: 'PATCH', body: JSON.stringify({ status: bot.dataset.botStatus }) }); await refreshAccount(); render(); toast(`Configuration ${bot.dataset.botStatus}.`); } catch (error) { toast(errorText(error)); } finally { setBusy(bot, false); } return; }
+  if (bot) {
+    if (!accountActionReady() || !state.user) return;
+    const context = accountContext(); const navigation = state.navigationEpoch;
+    const current = () => currentAccount(context) && state.navigationEpoch === navigation && bot.isConnected;
+    setBusy(bot, true);
+    try { await api(`/api/bots/${encodeURIComponent(bot.dataset.botId)}`, { method: 'PATCH', body: JSON.stringify({ status: bot.dataset.botStatus }) }, context.userId); if (currentAccount(context) && await refreshAccount() && current()) { render(); toast(`Configuration ${bot.dataset.botStatus}.`); } }
+    catch (error) { if (current()) toast(errorText(error)); } finally { setBusy(bot, false); } return;
+  }
   const actionButton = event.target.closest('[data-action]'); if (!actionButton) return;
   const action = actionButton.dataset.action;
-  if (action === 'wallet') { if (state.user) location.hash = 'settings'; else openWallet(); }
+  if (action === 'wallet') { if (state.accountTransition) { accountActionReady(); return; } if (state.user) location.hash = 'settings'; else openWallet(); }
+  if (action === 'refresh-account') {
+    if (state.accountTransition || state.accountStatus === 'loading') { accountActionReady(); return; }
+    const context = accountContext(); const navigation = state.navigationEpoch; setBusy(actionButton, true);
+    try { if (await refreshAccount() && state.accountEpoch === context.epoch && state.navigationEpoch === navigation) render(); } finally { setBusy(actionButton, false); }
+  }
   if (action === 'new-bot') openBot();
   if (action === 'more-bots' && state.botsNextPage !== null) {
+    if (!accountActionReady() || !state.user) return;
+    const context = accountContext(); const navigation = state.navigationEpoch;
     const userId = state.user?.id; const rows = state.bots; const page = state.botsNextPage;
-    const current = () => state.user?.id === userId && state.bots === rows && state.botsNextPage === page;
+    const current = () => currentAccount(context) && state.navigationEpoch === navigation && state.user?.id === userId && state.bots === rows && state.botsNextPage === page;
     setBusy(actionButton, true);
     try {
-      const result = await api(`/api/bots?page=${page}`);
+      const result = await api(`/api/bots?page=${page}`, {}, context.userId);
       if (current()) {
         state.bots = [...new Map([...rows, ...result.bots].map(bot => [bot.id, bot])).values()];
         state.botsNextPage = result.nextPage ?? null; render();
       }
     } catch (error) { if (current()) toast(errorText(error)); } finally { setBusy(actionButton, false); }
   }
-  if (action === 'refresh-bots') { setBusy(actionButton, true); try { await refreshAccount(); render(); } catch (error) { toast(errorText(error)); } finally { setBusy(actionButton, false); } }
+  if (action === 'refresh-bots') {
+    if (!accountActionReady()) return;
+    const context = accountContext(); const navigation = state.navigationEpoch; setBusy(actionButton, true);
+    try { if (await refreshAccount() && currentAccount(context) && state.navigationEpoch === navigation) render(); } finally { setBusy(actionButton, false); }
+  }
   if (action === 'trial') billingAction('checkout', actionButton);
   if (action === 'portal') billingAction('portal', actionButton);
   if (action === 'pricing') location.hash = 'pricing';
   if (action === 'delete-account') {
-    if (state.accountTransition) { toast('An account request is already in progress. Finish or cancel that request first.'); return; }
+    if (!accountActionReady() || !state.user) return;
     if (!confirm('Delete your Oraclebot account and all saved configurations? This cannot be undone.')) return;
-    agentAccess.invalidate(); state.accountTransition = true;
+    const context = beginAccountTransition();
     setBusy(actionButton, true);
-    try { await api('/api/me', { method: 'DELETE', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; state.accountTransition = false; render(); toast('Your account and saved configurations were deleted.'); }
-    catch (error) { state.accountTransition = false; render(); toast(errorText(error)); } finally { setBusy(actionButton, false); }
+    try { await api('/api/me', { method: 'DELETE', body: '{}' }, context.userId); if (state.accountEpoch === context.epoch) { state.accountTransition = false; state.accountStatus = 'ready'; render(); toast('Your account and saved configurations were deleted.'); } }
+    catch (error) { if (state.accountEpoch === context.epoch) { state.accountTransition = false; state.accountStatus = 'unavailable'; console.warn('Oraclebot account deletion unavailable'); render(); toast(errorText(error)); } } finally { setBusy(actionButton, false); }
   }
-  if (action === 'logout') { if (state.accountTransition) { toast('An account request is already in progress. Finish or cancel that request first.'); return; } agentAccess.invalidate(); state.accountTransition = true; setBusy(actionButton, true); try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); state.user = null; state.subscription = null; state.usage = null; state.portalAvailable = false; state.bots = []; state.botsNextPage = null; state.botsUnavailable = false; state.accountTransition = false; render(); toast('You are signed out.'); } catch (error) { state.accountTransition = false; render(); toast(errorText(error)); } finally { setBusy(actionButton, false); } }
+  if (action === 'logout') {
+    if (!accountActionReady() || !state.user) return;
+    const context = beginAccountTransition(); setBusy(actionButton, true);
+    try { await api('/api/auth/logout', { method: 'POST', body: '{}' }, context.userId); if (state.accountEpoch === context.epoch) { state.accountTransition = false; state.accountStatus = 'ready'; render(); toast('You are signed out.'); } }
+    catch (error) { if (state.accountEpoch === context.epoch) { state.accountTransition = false; state.accountStatus = 'unavailable'; console.warn('Oraclebot sign-out unavailable'); render(); toast(errorText(error)); } } finally { setBusy(actionButton, false); }
+  }
 });
 document.addEventListener('submit', async event => {
   if (!['bot-form', 'backtest-form'].includes(event.target.id)) return;
   event.preventDefault(); const form = event.target; const values = Object.fromEntries(new FormData(form)); const button = $('button[type="submit"]', form); const isBot = form.id === 'bot-form'; const message = $(isBot ? '#bot-message' : '#backtest-message'); message.textContent = '';
+  if (!accountActionReady()) return;
   if (!state.user) { openWallet(); message.textContent = 'Connect your wallet before starting this experiment.'; return; }
+  const context = accountContext(); const navigation = state.navigationEpoch;
+  const current = () => currentAccount(context) && state.navigationEpoch === navigation && form.isConnected && (isBot || $('#backtest-form') === form);
   values.leverage = Number(values.leverage || 1); if (isBot) { values.budget = Number(values.budget); values.mode = 'paper'; } else values.capital = Number(values.capital);
   if (isBot && values.venue === 'coinbase' && values.leverage !== 1) { message.textContent = 'Coinbase spot configurations use 1× leverage. Choose Jupiter for a leveraged configuration.'; return; }
   setBusy(button, true);
   try {
-    if (isBot) { await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }); await refreshAccount(); $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
-    else { const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }); if (form.isConnected && $('#backtest-form') === form) renderBacktest(result); const account = await api('/api/me').catch(() => null); if (account) state.usage = account.usage || null; }
-  } catch (error) { message.textContent = errorText(error); } finally { setBusy(button, false); }
+    if (isBot) {
+      await api('/api/bots', { method: 'POST', body: JSON.stringify(values) }, context.userId);
+      if (currentAccount(context) && await refreshAccount() && current()) { $('#bot-dialog').close(); location.hash = 'bots'; render(); toast('Paper configuration saved. No funds have moved.'); }
+    } else {
+      const result = await api('/api/backtests', { method: 'POST', body: JSON.stringify(values) }, context.userId);
+      if (!currentAccount(context)) return;
+      if (current()) renderBacktest(result);
+      const account = await api('/api/me', {}, context.userId).catch(() => null);
+      if (currentAccount(context) && account?.user?.id === context.userId) state.usage = account.usage || null;
+    }
+  } catch (error) { if (current()) message.textContent = errorText(error); } finally { setBusy(button, false); }
 });
 document.addEventListener('input', event => { if (event.target.id === 'research-search') { state.search = event.target.value; filterResearch(); } });
 document.addEventListener('change', event => {
@@ -456,18 +545,23 @@ document.addEventListener('change', event => {
 $('#menu-button').addEventListener('click', () => { const open = $('#sidebar').classList.toggle('open'); $('#menu-button').setAttribute('aria-expanded', String(open)); $('#menu-button').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') { $('#sidebar').classList.remove('open'); $('#menu-button').setAttribute('aria-expanded', 'false'); } });
 for (const dialog of $$('dialog')) dialog.addEventListener('click', event => { if (event.target !== dialog) return; const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); });
-window.addEventListener('hashchange', () => { render(); main.focus({ preventScroll: true }); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { state.navigationEpoch++; render(); main.focus({ preventScroll: true }); window.scrollTo(0, 0); });
 $('#year').textContent = new Date().getFullYear();
 render();
 async function initialize() {
+  const epoch = state.accountEpoch; const navigation = state.navigationEpoch;
   const results = await Promise.allSettled([api('/api/config'), api('/research/catalog.json'), api('/api/strategies').catch(() => api('/research/strategies.json')), refreshAccount()]);
   if (results[0].status === 'fulfilled') { state.config = { ...state.config, ...results[0].value }; if (!Array.isArray(state.config.coins) || !state.config.coins.length) state.config.coins = ['SOL', 'BTC', 'ETH', 'ZEC']; }
   if (results[1].status === 'fulfilled') state.articles = results[1].value.articles || [];
   if (results[2].status === 'fulfilled') state.strategies = results[2].value.strategies || [];
-  render(); loadOracle();
+  if (state.accountEpoch === epoch && state.navigationEpoch === navigation) {
+    if (state.accountStatus === 'ready' && ['settings', 'backtest'].includes(state.view)) populateSelects(main);
+    else render();
+  }
+  loadOracle();
 }
 initialize();
-setInterval(() => { if (document.visibilityState === 'visible' && ['overview', 'oracle'].includes(state.view) && !state.loadingOracle) loadOracle(); }, 15000);
+setInterval(() => { if (document.visibilityState === 'visible' && ['overview', 'oracle'].includes(state.view) && !state.loadingOracle) loadOracle(); }, TIMING.oraclePollMs);
 
 function refreshVisibleOracle() {
   if (document.visibilityState === 'visible' && ['overview', 'oracle'].includes(state.view)) loadOracle();
@@ -479,4 +573,4 @@ setInterval(() => {
     state.oracle = { ...state.oracle, status: 'unavailable', topStrategy: null, reason: 'The previous observation expired. Waiting for fresh evidence.' };
     if (['overview', 'oracle'].includes(state.view)) render();
   }
-}, 1000);
+}, TIMING.evidenceCheckMs);

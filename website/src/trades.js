@@ -3,6 +3,7 @@
 const ASSETS = new Set(['SOL', 'BTC', 'ETH', 'ZEC']);
 const VENUES = new Set(['coinbase', 'jupiter']);
 const MAX_USD = 1_000_000;
+const EVENT_CATEGORIES = new Set(['none', 'unavailable', 'timeout', 'response', 'binding', 'quote', 'delegation', 'connection', 'quote_hash', 'payload', 'receipt', 'authorization_changed', 'unknown']);
 const now = () => Math.floor(Date.now() / 1000);
 const db = (env, sql, ...args) => {
   if (!env.DB) throw new TradeError('storage_unavailable', 'Account storage is unavailable.');
@@ -10,6 +11,23 @@ const db = (env, sql, ...args) => {
 };
 export class TradeError extends Error {
   constructor(code, message, status = 400) { super(message); this.name = 'TradeError'; this.code = code; this.status = status; }
+}
+class ExecutionFailure extends Error {
+  constructor(category) { super('Customer execution could not be verified.'); this.category = category; }
+}
+function failureCategory(error) {
+  return error instanceof ExecutionFailure && EVENT_CATEGORIES.has(error.category) ? error.category : 'unknown';
+}
+function executionEvent(operation, outcome, category = 'none') {
+  // Only fixed vocabulary reaches telemetry. Logger failure must not change order state.
+  const level = ['refused', 'failed', 'unknown'].includes(outcome) ? 'warn' : 'info';
+  try {
+    console[level](JSON.stringify({ event: 'customer_trade_execution', operation, outcome,
+      category: EVENT_CATEGORIES.has(category) ? category : 'unknown' }));
+  } catch {}
+}
+function transportFailure(error) {
+  return new ExecutionFailure(['TimeoutError', 'AbortError'].includes(error?.name) ? 'timeout' : 'unavailable');
 }
 const reject = (code, message, status) => { throw new TradeError(code, message, status); };
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -21,9 +39,11 @@ const opaque = value => typeof value === 'string' && /^[A-Za-z0-9_.:-]{1,128}$/.
 const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
 function cents(value, allowZero = false) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || (!allowZero && value === 0) || value > MAX_USD) return null;
-  const rounded = Math.round(value * 100);
-  if (!Number.isSafeInteger(rounded) || Math.abs(value * 100 - rounded) > 0.000001) return null;
-  return rounded;
+  // Parse decimal digits so binary multiplication neither rejects 0.29 nor rounds sub-cents.
+  const decimal = /^(\d+)(?:\.(\d{1,2}))?$/.exec(String(value));
+  if (!decimal) return null;
+  const amount = Number(decimal[1]) * 100 + Number((decimal[2] || '').padEnd(2, '0'));
+  return Number.isSafeInteger(amount) && (allowZero || amount > 0) ? amount : null;
 }
 async function hash(value) {
   const bytes = new TextEncoder().encode(typeof value === 'string' ? value : JSON.stringify(value));
@@ -76,43 +96,55 @@ async function entitled(services, user) {
 export function executionAvailable(env) {
   return env.LIVE_EXECUTION_ENABLED === 'true' && typeof env.USER_TRADE_EXECUTOR?.fetch === 'function';
 }
-function requireExecutor(env) {
-  if (!executionAvailable(env)) reject('execution_unavailable', 'Customer wallet execution is not connected. No trade was placed.', 503);
+function requireExecutor(env, operation) {
+  if (!executionAvailable(env)) {
+    executionEvent(operation, 'refused', 'unavailable');
+    reject('execution_unavailable', 'Customer wallet execution is not connected. No trade was placed.', 503);
+  }
 }
 async function adapter(env, operation, payload) {
-  const response = await env.USER_TRADE_EXECUTOR.fetch(new Request(`https://customer-trade.internal/v1/trades/${operation}`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(10_000),
-  }));
-  if (!response.ok || !response.headers.get('Content-Type')?.toLowerCase().startsWith('application/json')) throw new Error('adapter_response');
+  executionEvent(operation, 'started');
+  let response;
+  try {
+    response = await env.USER_TRADE_EXECUTOR.fetch(new Request(`https://customer-trade.internal/v1/trades/${operation}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(10_000),
+    }));
+  } catch (error) { throw transportFailure(error); }
+  if (!response.ok || !response.headers.get('Content-Type')?.toLowerCase().startsWith('application/json')) throw new ExecutionFailure('response');
   const reader = response.body?.getReader();
-  if (!reader) throw new Error('adapter_response');
+  if (!reader) throw new ExecutionFailure('response');
   const chunks = []; let size = 0;
   try {
     while (true) {
       const { done, value } = await reader.read(); if (done) break;
-      size += value.length; if (size > 32_768) throw new Error('adapter_response'); chunks.push(value);
+      size += value.length; if (size > 32_768) throw new ExecutionFailure('response'); chunks.push(value);
     }
+  } catch (error) {
+    if (error instanceof ExecutionFailure) throw error;
+    throw transportFailure(error);
   } finally { await reader.cancel().catch(() => {}); }
   const bytes = new Uint8Array(size); let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
-  return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+  try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); }
+  catch { throw new ExecutionFailure('response'); }
 }
 function verifyPreparation(value, intent, policy) {
   if (!exact(value, ['intentId', 'wallet', 'policyHash', 'payloadHash', 'quote', 'delegation', 'connection']) ||
-      value.intentId !== intent.id || value.wallet !== intent.wallet || value.policyHash !== intent.policy_hash || value.payloadHash !== intent.payload_hash) throw new Error('binding');
+      value.intentId !== intent.id || value.wallet !== intent.wallet || value.policyHash !== intent.policy_hash || value.payloadHash !== intent.payload_hash) throw new ExecutionFailure('binding');
   const { quote, delegation, connection } = value;
   if (!exact(quote, ['id', 'priceUsd', 'quantity', 'feesUsd', 'maxSpendUsd', 'quotedAt', 'expiresAt']) || !opaque(quote.id) ||
       !positive(quote.priceUsd) || !positive(quote.quantity) || cents(quote.feesUsd, true) === null || cents(quote.maxSpendUsd) === null ||
       cents(quote.maxSpendUsd) > intent.reservation_cents || cents(quote.maxSpendUsd) > cents(policy.maxTradeUsd) ||
       quote.priceUsd * quote.quantity + quote.feesUsd > quote.maxSpendUsd + 0.000001 ||
       !Number.isSafeInteger(quote.quotedAt) || quote.quotedAt > now() + 5 || quote.quotedAt < now() - 60 ||
-      !Number.isSafeInteger(quote.expiresAt) || quote.expiresAt <= now() || quote.expiresAt > intent.expires_at || quote.expiresAt > quote.quotedAt + 300) throw new Error('quote');
+      !Number.isSafeInteger(quote.expiresAt) || quote.expiresAt <= now() || quote.expiresAt > intent.expires_at || quote.expiresAt > quote.quotedAt + 300) throw new ExecutionFailure('quote');
   if (!exact(delegation, ['id', 'wallet', 'policyHash', 'expiresAt', 'verified']) || !opaque(delegation.id) ||
       delegation.wallet !== intent.wallet || delegation.policyHash !== intent.policy_hash || delegation.verified !== true ||
-      !Number.isSafeInteger(delegation.expiresAt) || delegation.expiresAt < quote.expiresAt || delegation.expiresAt > policy.expiresAt) throw new Error('delegation');
-  const payload = JSON.parse(intent.payload_json);
+      !Number.isSafeInteger(delegation.expiresAt) || delegation.expiresAt < quote.expiresAt || delegation.expiresAt > policy.expiresAt) throw new ExecutionFailure('delegation');
+  let payload;
+  try { payload = JSON.parse(intent.payload_json); } catch { throw new ExecutionFailure('payload'); }
   if (!exact(connection, ['id', 'wallet', 'venue', 'verified']) || !opaque(connection.id) || connection.wallet !== intent.wallet ||
-      connection.venue !== payload.venue || connection.verified !== true) throw new Error('connection');
+      connection.venue !== payload.venue || connection.verified !== true) throw new ExecutionFailure('connection');
   return value;
 }
 function publicIntent(row) {
@@ -160,7 +192,7 @@ export async function requestTrade(env, principal, input, services) {
   const payloadHash = await hash(payload);
   const duplicate = await existing(env, principal, input.idempotencyKey, payloadHash);
   if (duplicate) return publicIntent(duplicate);
-  requireExecutor(env);
+  requireExecutor(env, 'prepare');
   const at = now(); const id = crypto.randomUUID(); const expiry = Math.min(grant.expires_at, policy.expiresAt, at + 300);
   const result = await db(env, `INSERT INTO agent_trade_intents
     (id,user_id,wallet,grant_id,resource,policy_hash,idempotency_key,payload_hash,payload_json,state,reservation_cents,expires_at,created_at,updated_at)
@@ -195,8 +227,10 @@ export async function requestTrade(env, principal, input, services) {
         AND g.user_id=? AND u.wallet=? AND g.resource=? AND g.policy_hash=? AND g.policy_json=? AND g.revoked_at IS NULL AND g.expires_at>?) RETURNING id`,
     prepared.quote.id, JSON.stringify(prepared), quoteHash, prepared.quote.expiresAt, prepared.quote.expiresAt, fresh,
     id, principal.user.id, fresh, principal.user.id, principal.user.wallet, grant.resource, grant.policy_hash, grant.policy_json, fresh).run();
-    if (!update.results?.length) throw new Error('authorization_changed');
-  } catch {
+    if (!update.results?.length) throw new ExecutionFailure('authorization_changed');
+    executionEvent('prepare', 'prepared');
+  } catch (error) {
+    executionEvent('prepare', 'failed', failureCategory(error));
     await db(env, "UPDATE agent_trade_intents SET state='failed',last_error='preparation_unverified',updated_at=? WHERE id=? AND user_id=? AND state='preparing'", now(), id, principal.user.id).run();
     reject('preparation_unverified', 'The customer connection, delegated authority or quote could not be verified. No order was submitted.', 503);
   }
@@ -210,15 +244,21 @@ export async function submitTrade(env, principal, input, services) {
   if (intent.grant_id !== grant.id || intent.policy_hash !== grant.policy_hash || intent.resource !== grant.resource) reject('authorization_changed', 'The intent belongs to a different wallet authorization.', 403);
   if (['submitting', 'submitted', 'unknown', 'failed', 'expired'].includes(intent.state)) return publicIntent(intent);
   await entitled(services, principal.user);
-  requireExecutor(env);
+  requireExecutor(env, 'submit');
   if (intent.state !== 'prepared' || intent.expires_at <= now() || intent.quote_expires_at <= now()) reject('intent_not_ready', 'The intent is not prepared or its quote has expired.', 409);
   let prepared;
   try {
-    prepared = verifyPreparation(JSON.parse(intent.quote_json), intent, policy);
-    if (await hash(prepared) !== intent.quote_hash) throw new Error('quote_hash');
-    const payload = normalizeInput({ ...JSON.parse(intent.payload_json), idempotencyKey: 'validate' });
-    if (await hash(payload) !== intent.payload_hash || !policy.assets.includes(payload.asset) || !policy.venues.includes(payload.venue) || intent.reservation_cents > cents(policy.maxTradeUsd)) throw new Error('payload');
-  } catch { reject('preparation_unverified', 'The stored quote or delegated authority could not be verified.', 409); }
+    try { prepared = JSON.parse(intent.quote_json); } catch { throw new ExecutionFailure('quote'); }
+    prepared = verifyPreparation(prepared, intent, policy);
+    if (await hash(prepared) !== intent.quote_hash) throw new ExecutionFailure('quote_hash');
+    let payload;
+    try { payload = normalizeInput({ ...JSON.parse(intent.payload_json), idempotencyKey: 'validate' }); }
+    catch { throw new ExecutionFailure('payload'); }
+    if (await hash(payload) !== intent.payload_hash || !policy.assets.includes(payload.asset) || !policy.venues.includes(payload.venue) || intent.reservation_cents > cents(policy.maxTradeUsd)) throw new ExecutionFailure('payload');
+  } catch (error) {
+    executionEvent('submit', 'refused', failureCategory(error));
+    reject('preparation_unverified', 'The stored quote or delegated authority could not be verified.', 409);
+  }
   const at = now();
   const won = await db(env, `UPDATE agent_trade_intents SET state='submitting',updated_at=?
     WHERE id=? AND user_id=? AND wallet=? AND grant_id=? AND resource=? AND state='prepared' AND expires_at>? AND quote_expires_at>?
@@ -235,6 +275,7 @@ export async function submitTrade(env, principal, input, services) {
   if (!won.results?.length) {
     const current = await owned(env, principal, intent.id);
     if (['submitting', 'submitted', 'unknown'].includes(current.state)) return publicIntent(current);
+    executionEvent('submit', 'refused', 'authorization_changed');
     reject('intent_not_ready', 'The intent or authorization changed before submission.', 409);
   }
   try {
@@ -245,9 +286,11 @@ export async function submitTrade(env, principal, input, services) {
     });
     if (!exact(receipt, ['intentId', 'wallet', 'policyHash', 'payloadHash', 'quoteId', 'delegationId', 'status', 'orderId']) ||
         receipt.intentId !== intent.id || receipt.wallet !== intent.wallet || receipt.policyHash !== intent.policy_hash || receipt.payloadHash !== intent.payload_hash ||
-        receipt.quoteId !== intent.quote_id || receipt.delegationId !== prepared.delegation.id || receipt.status !== 'submitted' || !opaque(receipt.orderId)) throw new Error('receipt');
+        receipt.quoteId !== intent.quote_id || receipt.delegationId !== prepared.delegation.id || receipt.status !== 'submitted' || !opaque(receipt.orderId)) throw new ExecutionFailure('receipt');
     await db(env, "UPDATE agent_trade_intents SET state='submitted',backend_order_id=?,submitted_at=?,updated_at=? WHERE id=? AND user_id=? AND state='submitting'", receipt.orderId, now(), now(), intent.id, principal.user.id).run();
-  } catch {
+    executionEvent('submit', 'submitted');
+  } catch (error) {
+    executionEvent('submit', 'unknown', failureCategory(error));
     await db(env, "UPDATE agent_trade_intents SET state='unknown',last_error='submission_unknown',updated_at=? WHERE id=? AND user_id=? AND state='submitting'", now(), intent.id, principal.user.id).run();
   }
   return publicIntent(await owned(env, principal, intent.id));

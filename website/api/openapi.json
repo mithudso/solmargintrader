@@ -511,7 +511,12 @@
             "session": []
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/me": {
       "get": {
@@ -681,7 +686,12 @@
             "session": []
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/bots": {
       "get": {
@@ -939,7 +949,12 @@
           }
         ],
         "description": "Starter: 3 configured bot slots. Advanced: 10. Unlimited: no subscription count cap. Paused and archived records do not reserve slots. Configured records remain inert paper definitions. Over-limit accounts retain reads, pause/archive and account deletion under existing cancellation rules. No activation/resume or live execution route exists."
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/bots/{id}": {
       "parameters": [
@@ -951,6 +966,9 @@
             "type": "string",
             "format": "uuid"
           }
+        },
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
         }
       ],
       "patch": {
@@ -1198,7 +1216,12 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/billing/portal": {
       "post": {
@@ -1300,7 +1323,12 @@
             "session": []
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/billing/webhook": {
       "post": {
@@ -1746,7 +1774,12 @@
           }
         ],
         "description": "Starter: 10 completed runs/day, reset 00:00 UTC. Advanced and Unlimited: no daily count cap. Every plan has one in-flight run/account. Atomic reservations prevent concurrency/quota races; engine failures release the reservation. Input and engine resource bounds apply to all plans."
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/.well-known/oauth-protected-resource/mcp": {
       "get": {
@@ -2466,7 +2499,12 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/agent/authorization/challenge": {
       "post": {
@@ -2552,7 +2590,12 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/agent/grants": {
       "get": {
@@ -2614,7 +2657,12 @@
             "session": []
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/api/agent/grants/{id}/revoke": {
       "post": {
@@ -2700,7 +2748,12 @@
             }
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExpectedAccount"
+        }
+      ]
     },
     "/mcp": {
       "post": {
@@ -3030,6 +3083,19 @@
           "method"
         ],
         "additionalProperties": false
+      }
+    },
+    "parameters": {
+      "ExpectedAccount": {
+        "name": "X-Oraclebot-Account",
+        "in": "header",
+        "required": false,
+        "description": "Optional browser account-generation fence. Set to the captured authenticated user ID. A mismatch with the cookie principal returns409 account_changed before reading or mutating account state. This header never selects an account or wallet and does not replace authentication. Omit it while discovering the initial session.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
       }
     }
   }

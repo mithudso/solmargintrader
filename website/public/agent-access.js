@@ -158,7 +158,7 @@ export function createAgentAccess({ api, getUser, isSettings, openWallet, toast 
           if (!current()) return;
           location.assign(approvedRedirect(result, details));
         } catch (error) {
-          if (current()) message.textContent = error.code === 4001 ? 'Authorization canceled. No access was granted.' : error instanceof ConsentError ? error.message : 'Authorization could not be completed. Reload this request or reconnect from your agent.';
+          if (current()) message.textContent = error?.code === 4001 ? 'Authorization canceled. No access was granted.' : error instanceof ConsentError ? error.message : 'Authorization could not be completed. Reload this request or reconnect from your agent.';
         } finally { inFlight = false; if (current()) busy(form, false); }
       }
     } catch {

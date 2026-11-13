@@ -1,6 +1,20 @@
 import { TradeError, executionAvailable, getTradeStatus, listTradeIntents, requestTrade, submitTrade } from './trades.js';
 
 export const MCP_PROTOCOL_VERSION = '2025-11-25';
+const DIAGNOSTIC_EVENTS = Object.freeze({
+  authDenied: ['warn', 'authenticate', 'denied', 'invalid_token'],
+  authUnavailable: ['error', 'authenticate', 'failed', 'service_unavailable'],
+  originDenied: ['warn', 'origin', 'denied', 'invalid_origin'],
+  scopeDenied: ['warn', 'authorize_tool', 'denied', 'insufficient_scope'],
+  toolRefused: ['warn', 'tool_call', 'refused', 'tool_error'],
+  toolUnavailable: ['error', 'tool_call', 'failed', 'service_unavailable'],
+});
+function diagnostic(key) {
+  const [level, operation, outcome, reason] = DIAGNOSTIC_EVENTS[key];
+  // Only fixed vocabulary reaches diagnostics; a failed sink cannot change a response.
+  try { console[level](JSON.stringify({ event: 'oraclebot.mcp', operation, outcome, reason })); }
+  catch {}
+}
 const scopes = { oraclebot_get_status: 'status:read', oraclebot_request_trade: 'trade:prepare', oraclebot_get_trade_status: 'status:read', oraclebot_submit_trade: 'trade:submit' };
 const emptySchema = { type: 'object', properties: {}, additionalProperties: false };
 const intentSchema = { type: 'object', properties: { intentId: { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z0-9_.:-]+$' } }, required: ['intentId'], additionalProperties: false };
@@ -61,7 +75,9 @@ function validate(schema, value) {
   if (['number', 'integer'].includes(schema.type)) {
     if (typeof value !== 'number' || !Number.isFinite(value) || (schema.type === 'integer' && !Number.isInteger(value)) ||
         (schema.exclusiveMinimum !== undefined && value <= schema.exclusiveMinimum) || (schema.minimum !== undefined && value < schema.minimum) ||
-        (schema.maximum !== undefined && value > schema.maximum) || (schema.multipleOf && Math.abs(value / schema.multipleOf - Math.round(value / schema.multipleOf)) > 0.000001)) return false;
+        (schema.maximum !== undefined && value > schema.maximum) || (schema.multipleOf === 0.01
+          ? !/^\d+(?:\.\d{1,2})?$/.test(String(value))
+          : schema.multipleOf && Math.abs(value / schema.multipleOf - Math.round(value / schema.multipleOf)) > 0.000001)) return false;
   }
   return !schema.enum || schema.enum.includes(value);
 }
@@ -89,10 +105,18 @@ export async function handleMcp(request, env, services) {
     if (!/^Bearer [A-Za-z0-9._~-]+$/i.test(request.headers.get('Authorization') || '')) throw { status: 401 };
     principal = await services.authenticateAgent(request, env);
   } catch (error) {
-    const status = error?.status === 403 ? 403 : 401;
+    if (![401, 403].includes(error?.status)) {
+      diagnostic('authUnavailable');
+      return response({ error: 'temporarily_unavailable', message: 'Agent authentication is temporarily unavailable.' }, 503);
+    }
+    diagnostic('authDenied');
+    const status = error.status;
     return response({ error: status === 403 ? 'access_denied' : 'invalid_token', message: 'A current Oraclebot agent bearer token is required.' }, status, challenge(request, env, 'invalid_token'));
   }
-  if (!validOrigin(request, env, principal)) return response({ error: 'invalid_origin', message: 'This origin is not registered for this agent.' }, 403);
+  if (!validOrigin(request, env, principal)) {
+    diagnostic('originDenied');
+    return response({ error: 'invalid_origin', message: 'This origin is not registered for this agent.' }, 403);
+  }
   const version = request.headers.get('MCP-Protocol-Version');
   if (version && version !== MCP_PROTOCOL_VERSION) return rpcError(null, -32600, 'Unsupported protocol version. This endpoint implements MCP 2025-11-25.', 400);
   if (!request.headers.get('Content-Type')?.toLowerCase().match(/^application\/json(?:\s*;|$)/)) return response({ error: 'unsupported_media_type', message: 'Use application/json.' }, 415);
@@ -136,7 +160,10 @@ export async function handleMcp(request, env, services) {
   const tool = tools.find(item => item.name === params.name);
   if (!tool) return rpcError(id, -32602, 'Unknown tool.');
   const requiredScope = scopes[tool.name];
-  if (!principal.scopes.has(requiredScope)) return response({ jsonrpc: '2.0', id, error: { code: -32001, message: 'Insufficient scope.', data: { scope: requiredScope } } }, 403, challenge(request, env, 'insufficient_scope', requiredScope));
+  if (!principal.scopes.has(requiredScope)) {
+    diagnostic('scopeDenied');
+    return response({ jsonrpc: '2.0', id, error: { code: -32001, message: 'Insufficient scope.', data: { scope: requiredScope } } }, 403, challenge(request, env, 'insufficient_scope', requiredScope));
+  }
   const args = Object.hasOwn(params, 'arguments') ? params.arguments : {};
   if (!validate(tool.inputSchema, args)) return rpcError(id, -32602, 'Invalid tool arguments. Wallet, account, signer and endpoint overrides are not accepted.');
   try {
@@ -150,6 +177,7 @@ export async function handleMcp(request, env, services) {
     const safe = error instanceof TradeError ? { code: error.code, message: error.message } :
       ['subscription_required', 'subscription_inactive', 'plan_required'].includes(error?.code) ? { code: 'subscription_required', message: 'A current subscription is required.' } :
         { code: 'service_unavailable', message: 'The requested account service is unavailable.' };
+    diagnostic(safe.code === 'service_unavailable' || (error instanceof TradeError && error.status >= 500) ? 'toolUnavailable' : 'toolRefused');
     return response({ jsonrpc: '2.0', id, result: toolResult(safe, true) });
   }
 }

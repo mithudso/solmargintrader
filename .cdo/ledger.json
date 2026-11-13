@@ -18602,7 +18602,7 @@
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_wallet_integration.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -18616,13 +18616,11 @@
     "P2",
     "S1",
     "S2",
-    "S3",
     "S4",
-    "S5",
     "T1",
     "T4"
    ],
-   "sha": "ab50742d2fcf90b9aca39353ca365b2ff60ff317",
+   "sha": "aed3c3777a5c940738f7ae60cbd5504327a10a22",
    "verdict": "REVIEWED-FIXED"
   },
   "soltui/tests/test_wallet_settings.py": {
@@ -19007,8 +19005,71 @@
    "sha": "092399bce0cd2756acb3a395e0f8a92ec71dcdca",
    "verdict": "CLEAN"
   },
-  "website/public/app.js": {
-   "date": "2026-11-12",
+  "website/migrations/0003_subscription_tiers.sql": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S3",
+    "S4",
+    "T1"
+   ],
+   "sha": "80390ed220739fc45b94f5b74285d94cf67a0eb9",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/migrations/0004_agent_access.sql": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S3",
+    "S4",
+    "T1"
+   ],
+   "sha": "a09e934048c86ec77aabc4282b198ced3277bdd9",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/migrations/0005_agent_trades.sql": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S3",
+    "S4",
+    "T1"
+   ],
+   "sha": "5d7eee2e3742f721180fa54454eff08794e6c724",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/public/agent-access.js": {
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -19027,8 +19088,31 @@
     "S5",
     "T1"
    ],
-   "sha": "59c21124aeed7eca7ba98587d81cd08d008bfe36",
-   "verdict": "CLEAN"
+   "sha": "51acef30b2a1dfb60aa127b3a3f3f022c70b0a32",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/public/app.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "22e279384d7d40169259c90fdf59a22750338061",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
   },
   "website/public/evidence.js": {
    "date": "2026-11-12",
@@ -19102,8 +19186,8 @@
    "sha": "617a8e2925cfaaf839443c87564a658e5ca3a91a",
    "verdict": "CLEAN"
   },
-  "website/src/worker.js": {
-   "date": "2026-11-12",
+  "website/src/mcp.js": {
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -19122,11 +19206,80 @@
     "S5",
     "T1"
    ],
-   "sha": "599f252083c84c65f343b5d76b4874a1b2bb69d0",
-   "verdict": "CLEAN"
+   "sha": "85f6cf39dd3d8dc89d4e8183cd79f86e83852d8e",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
   },
-  "website/test/api.test.js": {
-   "date": "2026-11-12",
+  "website/src/oauth.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "e1c264d4ff961f01c541ca575876f3ae75920af5",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/src/trades.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "abe59873176ca6f463a45c2c195df80c8aa14e48",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/src/worker.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "d039abb5784a51ca5936c450cbe7c28817d6de62",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/agent-browser.mjs": {
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -19146,8 +19299,32 @@
     "T1",
     "T4"
    ],
-   "sha": "b51f474e8d8d4b7bfd0f3e8e3c206676e402d7b6",
-   "verdict": "CLEAN"
+   "sha": "69d7643c6d30a7ebbc8685258110688d5a08c20a",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/api.test.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "351c5daebe9dbd7659b7710b15ce4cc007ea45cc",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
   },
   "website/test/evidence.test.js": {
    "date": "2026-11-12",
@@ -19173,8 +19350,8 @@
    "sha": "d8f37be07c584fb68d5e6bfab75daf1b2caa4e66",
    "verdict": "CLEAN"
   },
-  "website/test/ui-browser.mjs": {
-   "date": "2026-11-12",
+  "website/test/helpers/d1.js": {
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -19194,8 +19371,128 @@
     "T1",
     "T4"
    ],
-   "sha": "11eabbabee90189bfcf17f49c46e103468446015",
-   "verdict": "CLEAN"
+   "sha": "653516dc8123fedd469ee92eb73002e427758cd2",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/mcp-integration.test.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "bb97e329b827f0a434c9c68930c04674329f4346",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/mcp.test.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "ca311529b24f94e62ebb6f67465f2813db369843",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/oauth.test.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "821302e55abbe4938710e20f76ee425ffc01d216",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/trades.test.js": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "2699140c7f899be8237f42f8a9d3c264779400e1",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
+  },
+  "website/test/ui-browser.mjs": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "bcb8e9d23197e8d66091ef84fc46e6cb21ebb95d",
+   "verdict": "REVIEWED_SCOPED_WITH_QUALIFICATIONS"
   },
   "website/typecheck/evidence-contract.ts": {
    "date": "2026-11-12",
@@ -19923,6 +20220,162 @@
    "skipped_unchanged": 0,
    "started": "2026-11-13T01:29:08Z",
    "status": "FULL_SOURCE_INSPECTION_PIPELINE_UI_BOUNDARIES_GREEN_SOLTUI_SHARDS_AND_DELIVERY_PENDING"
+  },
+  {
+   "deferred": 0,
+   "finished": "abandoned",
+   "id": "2026-11-13T03:22:58Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M4": {
+     "files": 1,
+     "state": "ran"
+    },
+    "P1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 1,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "T4": {
+     "files": 1,
+     "state": "ran"
+    }
+   },
+   "reviewed": 1,
+   "skipped_unchanged": 0,
+   "started": "2026-11-13T03:22:58Z"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-13T04:48:08Z",
+   "id": "2026-11-13T04:48:07Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 17,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Existing parent architecture Medium remains; no whole-repository convergence claim.",
+     "state": "ran"
+    },
+    "M4": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 0,
+     "reason": "New targets are library/browser/migration/test modules; existing parent runnable-tool qualification limits remain.",
+     "state": "ran"
+    },
+    "P1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 14,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 14,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Reused parent pinned-dependency review; this delta adds no runtime dependency.",
+     "state": "ran"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Existing JS correctness lint/checked evidence contract and website CI; no new tool setup required.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 8,
+     "state": "ran"
+    }
+   },
+   "reviewed": 17,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-13T04:48:07Z",
+   "status": "SCOPED_REVIEW_GREEN_GLOBAL_CONVERGENCE_PARTIAL"
   }
  ],
  "version": 1

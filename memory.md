@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 511
+Version: 513
+Delta: v512 to v513; qualify17website delta paths and current129Node/28Chrome gates before combined delivery.
+Delta: v511 to v512; integrate a505 wallet-render correction and preserve both candidate histories before final hosted delivery.
 Delta: v510 to v511; preserve source delivery checks, failed full-harness spawn attempt and exact pending CI diagnosis before final release.
 Delta: v509 to v510; integrate the frozen audit in the isolated MCP branch while preserving all parallel continuation history.
 Delta: v508 to v509; qualify wallet-backed OAuth/MCP, finite preauthorization UI and independent security regressions before delivery.
@@ -10,6 +12,10 @@ Delta: v505 to v506; qualify atomic tier quotas, webhook plan reconciliation and
 Delta: v504 to v505; start isolated three-tier billing work without altering the frozen audit.
 
 Current worktree scope: /Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113 owns the website0.3.0 MCP feature above the three-tier checkpoint. The separate /Users/mitch/dev/worktrees/oraclebot-billing-tiers-20261112 remains its preserved parent source. The source/HEAD freeze applies to /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112, not this separate worktree.
+Parallel audit delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery.
+Parallel audit delta: v505 to v506; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
+Parallel audit delta: v504 to v505; preserve delivered upstream pipeline recovery and failed final audit gates.
+Parallel audit delta: v507 to v508; preserve failed full/CI gates and qualified spawn/render-readiness corrections before the next frozen candidate.
 Parallel audit delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery.
 Parallel audit delta: v505 to v506; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
 Parallel audit delta: v504 to v505; preserve delivered upstream pipeline recovery and failed final audit gates.
@@ -1749,6 +1755,19 @@ Tiercheckpoint7de865da has been committed/pushed separately after57Node/7Chrome/
 
 Newest owner scope adds authenticated wallet-bound MCP and explicitly corrects an accidental per-trade approval choice: use finite revocable preauthorization without prompts on every trade. This newcode is isolated in `/Users/mitch/dev/worktrees/oraclebot-authenticated-mcp-20261113` from tiercheckpoint7de; OAuth/MCP workers ownthatnewbranchonly, and it must not alter this audit candidate while gates run. Prompt/correction and continuation are recorded there beforecode. Stelecreate queued9641b6e0 awaits canonicalID/claim. Final end-of-turn captureID is governed by the mostrecent developerhook; do not use older pendingcaptureIDs.
 
+
+## Preserved audit render/spawn continuation
+
+## 2026-11-13 — Qualified final gate corrections
+
+Full four-shard92c75 completedFAILED1:1563IDs,1548success/14canonicalskips/1error/0assertionfailures. All31inherited+28nativechildren accounted, nativeexits0, noownedleftovers/source/harnessdrift/forbidden. Exact_queue.Empty at test_manager_controls.py:343 follows two 'mode must be qualification or full' messages. Independent source/stdlib review proves PRIVATE entry.py dispatched during multiprocessing.spawn __mp_main__ reimport. No production fix indicated. Failedaggregate31725bb4fe40987a253f4f4db350319d64306e47278ea0bb2d632cbab7f5fb7c stays immutable under /tmp/oraclebot-full-shards-20261113/groups/full-92c75a58468f.
+
+New /tmp/oraclebot-full-shards-20261113/spawnfix wraps entiredispatch/qualificationpatch/argvrewrite under guardedmain. Root inspected exactpatch5ebcb507250fef84b5f7f75885d0b883e4e7569d90714e81437bedf39a0bcc41. Fouractualspawnpositive/negative namespaces qualify0:28privatecases/4deliberateskips/16inherited+4nativechildren all0,zero forbidden/leftovers;13expected refusals pernamespace and11aggregationcorruption controls0. Readinessb5e06b3fe53fd3688759ac2819e8c2bfcbf2a88c493c750c1ad0bb623c049777/seal1f893906cbefb55b121e412d78e251132d93c022caf75acc4b234a42e90639a0 arepreparationonly. SteleKNOW-2087 linkslesson toTASK1540. Newfull remainsHOLD pending finalcleanpushedHEAD+rootGO.
+
+Separately92c75CI877failed1/2634.313sec on walletPnL summaryafterfixed2secondpause; exactlog /tmp/oraclebot-final-delivery-20261112/ci-92c75-failed.log. Onlysourcechange is test_wallet_integration.py: calloriginal_render thenEventset, patchenclosesrun_test/shutdown, awaitEventinsideasyncio.timeout10; originalwalletlabel/+10percent/rowassertsunchanged. Delayedrealregistry3seconds proves oldRED1/newGREEN0,zero forbidden. Oldcontrol'sfirsttracebacksourcefilename mismatchpreserved thenreboundtoexactoldprivateGit-snapshot and repeatedRED1. RuffinitialF401unusedStaticimport is preserved, deadimportremoved, Rufffinal0. Exactfinal23casewalletmodule0/noerrors/skips/forbidden/drift. Hash-boundindependent13methoddelta plusS3/S5NAs in .cdo/reviews-2026-11-13/wallet-pnl-render-readiness.json. Ledger/currentcoverage row updated; all823semantic/828raw andglobalM3/41M5/T4limitsretained.
+
+Rootmust finishderivedfixpoint/filemanifest, commit/pushnewcandidate, GO completefreshfour-shard1563withqualifiedspawn-safeharness, waitallactualexits/finalizers/newCI, thenactualPR234merge. Freezeallsource/docs/.cdo/records/HEADduringfullrun. SeparatewalletMCPfeature59140531/merge1d49d5f7/metadata772a5cac is pushed in draftPR243 https://github.com/mithudso/solmargintrader/pull/243 basedtemporarilyonthisauditbranch. Its106Node/17Chrome/independent49+17/sourcequality/dryrun/stockdocs0 arefixturechecks, not realproviderexecution. Afterauditmergeintegratemaster/retargetfeature/finalCI/merge/CFmigrations+deploy/hostedacceptance. ExistingtestmodeStripekey/livekeygap andhostedengine/customerdelegatedsigningengineeringremainopen.
+
 ## 2026-11-13 — Isolated three-tier billing implementation
 
 TASK-2028 is claimed under TASK-1488/TASK-1482. Parent audit source1015e703 remains immutable during its complete1563case SolTUI run. This separate branch feat/oraclebot-billing-tiers-20261112 starts from that source and owns website plan UI/API/quotas/migration/tests only. Root owns Git, prompts/memory, provider credentials and deployment. Preserve paper/inactive execution and all risk/tenant boundaries. No real payments, orders, owner services, key reads or provider mutations by workers. Reuse installed development dependencies; no package installation or watcher/indexer start.
@@ -1809,3 +1828,16 @@ The92c75GitHub targetedmacOSjob also completedFAILURE; exactfailedlog is being r
 The authenticatedCFbridge /tmp/oraclebot-mcp-release-20261113/release.mjs passedsyntax0/whoami0 for exactOraclebotaccount/Worker/D1. It keeps credentials in childenv/private0600logs, has nointeractivefallback and gates remote source/migrations by cleancommit/websiteTree/config/exactfive-migration hashes. No remote migration or deploy hasrun. The independent hosted probe is READY with28servedassets/64websitefiles; missingdeploymentcontrols exit2expected with0networkcalls, offlineguards4pass0. Its livegates await DEPLOYED plusrootversion/source/cleanupcoordination.
 
 A concurrent authorized owner thread is preparing a separate continuous10second/variable5–300second forecast and may promote its own verified preview UI/suite/observer from349d+itsdelta before publication. Root has no overlappinglocalhostpromotion, onlyCFandprivategates. That owner must preserve pipeline0.4.8/cohort/recorder and provide exact newsource/URL/acceptance before root calls itcurrent. AcceptedUI0.4.9 evidence remains historical and should not be re-probed without cause. Audit-firstpublication order stillagreed; finalfeaturebundle must rebuild againstactualmerged audit.
+
+## Current integrated feature checkpoint
+
+The Audit a5053e9c859505a895935702a51180830b69b89f is clean/pushed and its corrected complete four-way1563gate actually launched03:31:15Z under spawnfix/full-a5053e9c8595. Source/HEAD/harness there remain frozen. This feature merge carries the exact final wallet-test deadimport cleanup,23module0 and independent13method/NAs proof. All website bytes remain unchanged from59140531; current websiteTree d75dbf7ebbaeb2485bb728d4cf4da2ffc3cc0c63. Derived merge outputs are regenerated here only; no Audit writes.
+
+The other authorized owner has promoted a separate forecastpreview at http://127.0.0.1:51789 using /Users/mitch/.venvs/oraclebot-forecast-preview-0.4.11 and349d+itsdelta fingerprintd4a4b7df4d5b86c0af9b3fb9d63ca9ae0fd712ed17bd1cac4c3ce5a0d80938cb. Forecaster53645/observer1.2, pipeline56618/0.4.8 andrecorder1673 unchanged peritsreceipt. Its independentacceptance isstillrunning, so originalUI0.4.9 is acceptedhistoricalevidence ratherthanassumedcurrent. No localhostpromotionbythisfeature.
+
+
+## 2026-11-13 — Reviewed finite preauthorization candidate
+
+All17website delta paths now have scoped source/schema/test reviews. Sixproductionmodule conclusions and rootdelta review remain honestly qualified where original slice transcripts were not retained; eight complete per-file test receipts and three complete migration reads are bound in .cdo/reviews-2026-11-13/website-preauthorization-cdo.json. The prior independent59140531receipt is preserved, not rebound. Current helper841raw/836semantic includes five old data exclusions; globalM3/41M5/T4limits remain partial. Browseraccount generations/expected-accountheader, atomicrepeat-trial/delete races, exactcents, closedprivacydiagnostics and nullishwalletrejections are corrected. Tests additionally prove no nestedmockleaks, no attemptedstaleStriperedirect, all-console privacy, oneconnect+onesign fortradingconsent and zeroprovidercalls status-only, unchangedforeign-revokedgrant and atomicrefused-deletionrows. Latest129Node and28actualChrome groups, JSquality/syntax/dryrun all0; finalbrowsercount includes14UI+14consent groups. Allsuccess executorpaths use mocks, no realcustomeradapter/signing/venue path exists.
+
+Root will commit this recoverable isolated branch, then combine its owned complete feature into audit PR234 for one final integrated release (draftPR243 becomes superseded only after its reviewed content is present). Preserve allforecastsource/CAS/UI/observer and auditfixes; no owner service changed here. Current audit0.4.12 integration has five focused counterexamples reproducedRED1 withzero forbidden/drift; independent rootfixclosure and new289-case guardedGREEN are in progress. No final CI/merge/Cloudflare migrations or deployment has occurred yet. Production billing/live flags stay false, Stripe supplied credentials remain testmode, dedicatedlivekey remains required. Hosted CPython analysis/public evidence and actualcustomer connections/delegated signing remain engineering requirements.

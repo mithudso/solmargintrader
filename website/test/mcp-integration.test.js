@@ -92,7 +92,12 @@ test('preauthorized trade refuses missing customer executor and grant revocation
   const grants = await call(env, '/api/agent/grants', { cookie: owner.cookie });
   assert.equal(grants.data.grants.length, 1);
   const id = grants.data.grants[0].id;
+  const grantBeforeForeignRevoke = env.sqlite.prepare('SELECT * FROM agent_grants WHERE id=?').get(id);
   assert.equal((await call(env, `/api/agent/grants/${id}/revoke`, { method: 'POST', cookie: other.cookie, body: {} })).response.status, 404);
+  assert.deepEqual(env.sqlite.prepare('SELECT * FROM agent_grants WHERE id=?').get(id), grantBeforeForeignRevoke);
+  const stillAuthorized = await rpc(env, token, 'oraclebot_get_status');
+  assert.equal(stillAuthorized.response.status, 200);
+  assert.equal(stillAuthorized.data.result.structuredContent.wallet, owner.wallet);
   assert.equal((await call(env, `/api/agent/grants/${id}/revoke`, { method: 'POST', cookie: owner.cookie, body: {} })).response.status, 200);
   assert.equal((await rpc(env, token, 'oraclebot_get_status')).response.status, 401);
 });
@@ -103,19 +108,34 @@ function insertIntent(env, owner, state) {
   env.sqlite.prepare('INSERT INTO agent_trade_intents(id,user_id,wallet,grant_id,resource,policy_hash,idempotency_key,payload_hash,payload_json,state,reservation_cents,expires_at,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)').run(id, owner.user.id, owner.wallet, grant.id, grant.resource, grant.policy_hash, id, 'fixture-hash', '{}', state, 1000, at() - 1, at() - 60, at() - 60);
   return id;
 }
+function accountAuthorizationRows(env, userId) {
+  return {
+    users: env.sqlite.prepare('SELECT * FROM users WHERE id=?').all(userId),
+    sessions: env.sqlite.prepare('SELECT * FROM sessions WHERE user_id=? ORDER BY token_hash').all(userId),
+    grants: env.sqlite.prepare('SELECT * FROM agent_grants WHERE user_id=? ORDER BY id').all(userId),
+  };
+}
 test('cleanup expires only unsubmitted intents and deletion preserves unresolved submissions', async () => {
   const env = environment(); const owner = await login(env); await authorize(env, owner);
   const prepared = insertIntent(env, owner, 'prepared'); const unknown = insertIntent(env, owner, 'unknown');
   await worker.scheduled({}, env);
   assert.equal(env.sqlite.prepare('SELECT state FROM agent_trade_intents WHERE id=?').get(prepared).state, 'expired');
   assert.equal(env.sqlite.prepare('SELECT state FROM agent_trade_intents WHERE id=?').get(unknown).state, 'unknown');
+  const authorizationBeforeDeletion = accountAuthorizationRows(env, owner.user.id);
+  assert.equal(authorizationBeforeDeletion.users.length, 1);
+  assert.equal(authorizationBeforeDeletion.sessions.length, 1);
+  assert.equal(authorizationBeforeDeletion.grants.length, 1);
   const deleted = await call(env, '/api/me', { method: 'DELETE', cookie: owner.cookie, body: {} });
   assert.equal(deleted.response.status, 409); assert.equal(deleted.data.error, 'trade_reconciliation_required');
-  assert.equal(env.sqlite.prepare('SELECT COUNT(*) AS n FROM users WHERE id=?').get(owner.user.id).n, 1);
+  assert.deepEqual(accountAuthorizationRows(env, owner.user.id), authorizationBeforeDeletion);
 });
 test('deletion transaction rejects a submit that wins after its initial check', async () => {
   const env = environment(); const owner = await login(env); await authorize(env, owner);
   const intent = insertIntent(env, owner, 'prepared'); const batch = env.DB.batch;
+  const authorizationBeforeDeletion = accountAuthorizationRows(env, owner.user.id);
+  assert.equal(authorizationBeforeDeletion.users.length, 1);
+  assert.equal(authorizationBeforeDeletion.sessions.length, 1);
+  assert.equal(authorizationBeforeDeletion.grants.length, 1);
   env.DB.batch = async statements => {
     env.sqlite.prepare("UPDATE agent_trade_intents SET state='submitting' WHERE id=?").run(intent);
     return batch(statements);
@@ -123,4 +143,5 @@ test('deletion transaction rejects a submit that wins after its initial check', 
   const deleted = await call(env, '/api/me', { method: 'DELETE', cookie: owner.cookie, body: {} });
   assert.equal(deleted.response.status, 409); assert.equal(deleted.data.error, 'trade_reconciliation_required');
   assert.equal(env.sqlite.prepare('SELECT state FROM agent_trade_intents WHERE id=?').get(intent).state, 'submitting');
+  assert.deepEqual(accountAuthorizationRows(env, owner.user.id), authorizationBeforeDeletion);
 });

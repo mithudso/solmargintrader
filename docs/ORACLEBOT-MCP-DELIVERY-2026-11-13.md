@@ -1,7 +1,7 @@
 # Oraclebot authenticated agent access
 
-Version: 0.1.0
-Delta: Initial source qualification; hosted acceptance pending.
+Version: 0.1.1
+Delta: v0.1.0 to v0.1.1; qualify account-generation, repeat-trial, diagnostics and exact-cent corrections; hosted acceptance pending.
 
 Website0.3.0 adds wallet-bound OAuth and MCP access above the three subscription tiers. The owner corrected an accidental selection and chose finite preauthorization. A separate wallet-signed message grants an agent selected venues/assets, per-trade and cumulative USD limits, expiry and immediate revocation. Subsequent request and submit calls do not ask for individual wallet approvals. Login alone cannot authorize trading.
 
@@ -12,3 +12,5 @@ The scoped independent security review resolved current-plan and active-grant-hi
 No customer live execution adapter is provisioned. A login or policy message cannot sign an on-chain transaction. Financial intents refuse without a verified customer connection, delegated authority, fresh explicit fee-inclusive quote and the fixed private executor binding. Success fixture paths use mocks. A submit acknowledgement never claims a fill. Ambiguous results retain budget and cannot automatically retry; account deletion cannot erase unresolved submissions.
 
 Production deployment, additive migrations0003/0004/0005 and independent hosted wallet/MCP acceptance are pending. Public billing and execution remain off. The supplied Stripe credentials and existing three Prices/portal are test mode. A dedicated live merchant key is still required before live billing qualification. Hosted CPython analysis/parity, continuous public-market evidence and customer venue/signing implementations remain engineering work. These gaps cannot be solved by copying the owner's local keys or exposing the local control room.
+
+The subsequent full source delta review found account-switching and stale billing-navigation races, a concurrent delete/login trial-history race, nullish wallet-provider rejection, subcent input normalization and silent critical error paths. Corrections retain finite preauthorization and fail-closed execution. Latest complete website verification passed129Node cases and28actualChrome groups, syntax/JavaScript quality and Worker dry-run, all exit0. The initial final-dry-run command used the repository root and failed1 before packaging; the corrected command ran from the website package and passed0. Initial browser tooling failure without CHROME and old-source regression failures remain preserved. All success execution paths remain mock fixtures. The separate incoming forecast feature has no inherited full CDO credit; its source and behavioral proofs remain explicitly scoped.

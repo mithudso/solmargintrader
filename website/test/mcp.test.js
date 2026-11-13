@@ -22,7 +22,19 @@ async function fixture(options = {}) {
   };
   return { env, owner, grantId, token, services, send };
 }
+const originalConsoleMethods = { warn: console.warn, error: console.error };
 const trade = { idempotencyKey: 'my-trade', venue: 'jupiter', asset: 'SOL', side: 'buy', budgetUsd: 10 };
+function diagnostics(t) {
+  const events = [];
+  for (const level of ['warn', 'error']) t.mock.method(console, level, line => events.push({ level, ...JSON.parse(line) }));
+  return events;
+}
+const event = (level, operation, outcome, reason) => ({ level, event: 'oraclebot.mcp', operation, outcome, reason });
+function assertPrivate(events, secrets) {
+  for (const item of events) assert.deepEqual(Object.keys(item).sort(), ['event', 'level', 'operation', 'outcome', 'reason']);
+  const serialized = JSON.stringify(events);
+  for (const secret of secrets) assert.ok(!serialized.includes(secret), 'MCP diagnostics must exclude private request and account data');
+}
 
 test('MCP only handles its route and uses POST without SSE or server sessions', async () => {
   const { env, services } = await fixture();
@@ -32,13 +44,55 @@ test('MCP only handles its route and uses POST without SSE or server sessions', 
     assert.equal(response.status, 405); assert.equal(response.headers.get('Allow'), 'POST'); assert.equal(response.headers.get('Mcp-Session-Id'), null);
   }
 });
-test('every POST needs its own bearer credential; browser cookies are not MCP authority', async () => {
+test('every POST needs its own bearer credential; browser cookies are not MCP authority', async t => {
+  const events = diagnostics(t);
   const { env, owner, services, token } = await fixture();
   for (const authorization of [undefined, 'Bearer bad', 'Basic ignored', `Bearer ${token} trailing`]) {
     const response = await handleMcp(request('/mcp', { method: 'POST', cookie: owner.cookie, body: { jsonrpc: '2.0', id: 1, method: 'ping' }, headers: authorization ? { Authorization: authorization } : {} }), env, services);
     assert.equal(response.status, 401); assert.match(response.headers.get('WWW-Authenticate'), /Bearer resource_metadata="https:\/\/oraclebot\.example\/\.well-known\/oauth-protected-resource\/mcp"/);
     assert.doesNotMatch(await response.text(), new RegExp(owner.wallet));
   }
+  assert.deepEqual(events, Array.from({ length: 4 }, () => event('warn', 'authenticate', 'denied', 'invalid_token')));
+  assertPrivate(events, [token, owner.wallet, owner.cookie]);
+});
+test('authentication outages return 503 without an invalid-token challenge or private details', async t => {
+  const events = diagnostics(t); const f = await fixture();
+  const missingDB = { ...f.env }; delete missingDB.DB;
+  const secret = 'private-auth-backend-credential';
+  const requestUrl = `${ORIGIN}/mcp?private-auth-query=hidden`;
+  const rpcId = 'private-auth-rpc-id';
+  const cases = [
+    { env: missingDB, services: f.services },
+    { env: f.env, services: { ...f.services, authenticateAgent: async () => { throw Object.assign(new Error(secret), { status: 503 }); } } },
+    { env: f.env, services: { ...f.services, authenticateAgent: async () => { throw new Error(secret); } } },
+  ];
+  for (const item of cases) {
+    const response = await handleMcp(new Request(requestUrl, { method: 'POST', headers: { Authorization: `Bearer ${f.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: rpcId, method: 'ping' }) }), item.env, item.services);
+    assert.equal(response.status, 503); assert.equal(response.headers.get('WWW-Authenticate'), null);
+    assert.equal(response.headers.get('Cache-Control'), 'no-store');
+    const body = await response.json();
+    assert.deepEqual(body, { error: 'temporarily_unavailable', message: 'Agent authentication is temporarily unavailable.' });
+    for (const value of [secret, f.token, f.owner.wallet, requestUrl, rpcId]) assert.ok(!JSON.stringify(body).includes(value));
+  }
+  assert.deepEqual(events, cases.map(() => event('error', 'authenticate', 'failed', 'service_unavailable')));
+  assertPrivate(events, [secret, f.token, f.owner.wallet, f.owner.cookie, requestUrl, rpcId]);
+});
+test('known authentication denials retain 401 and 403 and malformed bearers never invoke the backend', async t => {
+  const events = diagnostics(t); const f = await fixture(); let calls = 0;
+  f.services.authenticateAgent = async () => { calls++; throw new Error('private-outage'); };
+  for (const authorization of [undefined, 'Basic private-credential', 'Bearer token trailing']) {
+    const response = await handleMcp(request('/mcp', { method: 'POST', headers: authorization ? { Authorization: authorization } : {}, body: {} }), f.env, f.services);
+    assert.equal(response.status, 401); assert.equal((await response.json()).error, 'invalid_token');
+  }
+  assert.equal(calls, 0);
+  for (const status of [401, 403]) {
+    f.services.authenticateAgent = async () => { throw Object.assign(new Error('private-denial'), { status }); };
+    const result = await f.send('ping');
+    assert.equal(result.response.status, status); assert.match(result.response.headers.get('WWW-Authenticate'), /error="invalid_token"/);
+    assert.equal(result.body.error, status === 403 ? 'access_denied' : 'invalid_token');
+    assert.doesNotMatch(JSON.stringify(result.body), /private-denial/);
+  }
+  assert.deepEqual(events, Array.from({ length: 5 }, () => event('warn', 'authenticate', 'denied', 'invalid_token')));
 });
 test('real OAuth authentication rejects expired, revoked, wrong-resource and invalid-scope tokens', async () => {
   for (const options of [{ tokenExpiresAt: at() - 1 }, { expiresAt: at() - 1 }, { resource: 'https://other.example/mcp' }, { scope: 'status:read', tokenScope: 'status:read trade:submit' }, { revoke: true }]) {
@@ -87,6 +141,16 @@ test('tool listing respects granted scopes and insufficient scope includes the r
   assert.equal(refused.response.status, 403); assert.equal(refused.body.error.code, -32001);
   assert.match(refused.response.headers.get('WWW-Authenticate'), /error="insufficient_scope", scope="trade:prepare"/);
 });
+test('origin and scope denials emit fixed diagnostics without private caller data', async t => {
+  const events = diagnostics(t); const f = await fixture({ scope: 'status:read' });
+  const privateOrigin = 'https://private-caller.example'; const privateKey = 'private-idempotency-key';
+  const deniedOrigin = await f.send('ping', {}, { origin: privateOrigin });
+  assert.equal(deniedOrigin.response.status, 403); assert.equal(deniedOrigin.body.error, 'invalid_origin');
+  const deniedScope = await f.send('tools/call', { name: 'oraclebot_request_trade', arguments: { ...trade, idempotencyKey: privateKey } });
+  assert.equal(deniedScope.response.status, 403); assert.equal(deniedScope.body.error.code, -32001);
+  assert.deepEqual(events, [event('warn', 'origin', 'denied', 'invalid_origin'), event('warn', 'authorize_tool', 'denied', 'insufficient_scope')]);
+  assertPrivate(events, [f.token, f.owner.wallet, f.owner.cookie, f.owner.id, f.grantId, privateOrigin, privateKey]);
+});
 test('tool argument schemas reject principal, signer, URL and account overrides', async () => {
   const { send } = await fixture();
   for (const field of ['wallet', 'userId', 'account', 'signer', 'url', 'connectionId']) {
@@ -96,7 +160,8 @@ test('tool argument schemas reject principal, signer, URL and account overrides'
   }
   for (const args of [{ ...trade, budgetUsd: 1.001 }, { ...trade, budgetUsd: '10' }, { ...trade, leverage: 1.5 }]) assert.equal((await send('tools/call', { name: 'oraclebot_request_trade', arguments: args })).body.error.code, -32602);
 });
-test('status shows only the authenticated wallet and truthfully reports absent customer execution', async () => {
+test('status shows only the authenticated wallet and truthfully reports absent customer execution', async t => {
+  const events = diagnostics(t);
   const f = await fixture(); const other = await fixture({ env: f.env });
   const status = (await f.send('tools/call', { name: 'oraclebot_get_status', arguments: {} })).body.result;
   assert.equal(status.isError, false); assert.equal(status.structuredContent.wallet, f.owner.wallet);
@@ -107,8 +172,12 @@ test('status shows only the authenticated wallet and truthfully reports absent c
   const tradeResult = (await f.send('tools/call', { name: 'oraclebot_request_trade', arguments: trade })).body.result;
   assert.equal(tradeResult.isError, true); assert.equal(tradeResult.structuredContent.code, 'execution_unavailable');
   assert.equal(f.env.sqlite.prepare('SELECT COUNT(*) AS n FROM agent_trade_intents').get().n, 0);
+  const mcpEvents = events.filter(item => item.event === 'oraclebot.mcp');
+  assert.deepEqual(mcpEvents, [event('error', 'tool_call', 'failed', 'service_unavailable')]);
+  assertPrivate(mcpEvents, [f.token, f.owner.wallet, other.owner.wallet, f.grantId]);
 });
-test('trade intent read and submit cannot cross from a second bearer wallet', async () => {
+test('trade intent read and submit cannot cross from a second bearer wallet', async t => {
+  const events = diagnostics(t);
   const f = await fixture(); const other = await fixture({ env: f.env }); const id = crypto.randomUUID();
   const grant = f.env.sqlite.prepare('SELECT * FROM agent_grants WHERE id=?').get(f.grantId);
   f.env.sqlite.prepare(`INSERT INTO agent_trade_intents(id,user_id,wallet,grant_id,resource,policy_hash,idempotency_key,payload_hash,payload_json,state,reservation_cents,expires_at,created_at,updated_at)
@@ -119,6 +188,8 @@ test('trade intent read and submit cannot cross from a second bearer wallet', as
     const result = (await other.send('tools/call', { name, arguments: { intentId: id } })).body.result;
     assert.equal(result.isError, true); assert.equal(result.structuredContent.code, 'intent_not_found'); assert.doesNotMatch(JSON.stringify(result), new RegExp(f.owner.wallet));
   }
+  assert.deepEqual(events, Array.from({ length: 2 }, () => event('warn', 'tool_call', 'refused', 'tool_error')));
+  assertPrivate(events, [f.token, other.token, f.owner.wallet, other.owner.wallet, f.grantId, id]);
 });
 test('strict JSON-RPC rejects malformed, oversized, batches, unknown methods and invalid schemas', async () => {
   const { env, token, services, send } = await fixture();
@@ -138,8 +209,47 @@ test('strict JSON-RPC rejects malformed, oversized, batches, unknown methods and
   const media = await handleMcp(new Request(`${ORIGIN}/mcp`, { method: 'POST', headers: { ...headers, 'Content-Type': 'text/plain' }, body: '{}' }), env, services);
   assert.equal(media.status, 415);
 });
-test('unexpected backend errors produce fixed public errors without leaking private text', async () => {
+test('unexpected backend errors produce fixed public errors and diagnostics without leaking private text', async t => {
+  const events = diagnostics(t);
   const f = await fixture(); f.services.getStatus = async () => { throw new Error('private backend credential text'); };
   const result = await f.send('tools/call', { name: 'oraclebot_get_status', arguments: {} });
+  assert.equal(result.response.status, 200);
   assert.equal(result.body.result.isError, true); assert.equal(result.body.result.structuredContent.code, 'service_unavailable'); assert.doesNotMatch(JSON.stringify(result.body), /private backend/);
+  assert.deepEqual(events, [event('error', 'tool_call', 'failed', 'service_unavailable')]);
+  assertPrivate(events, ['private backend credential text', f.token, f.owner.wallet, f.owner.cookie, f.owner.id, f.grantId]);
+});
+
+test('diagnostic sink failures preserve authentication, origin, scope and tool-error responses', async t => {
+  diagnostics(t); const f = await fixture({ scope: 'status:read' });
+  const backendFailure = async () => { throw new Error('private-failure'); };
+  const cases = [
+    { headers: { Authorization: 'Basic private-credential' } },
+    { services: { ...f.services, authenticateAgent: backendFailure } },
+    { origin: 'https://private-origin.example' },
+    { method: 'tools/call', params: { name: 'oraclebot_request_trade', arguments: trade } },
+    { method: 'tools/call', params: { name: 'oraclebot_get_status' }, services: { ...f.services, getStatus: backendFailure } },
+  ];
+  const snapshot = async item => {
+    const response = await handleMcp(request('/mcp?private-query=hidden', { method: 'POST', origin: item.origin, headers: { Authorization: `Bearer ${f.token}`, 'MCP-Protocol-Version': MCP_PROTOCOL_VERSION, ...item.headers }, body: { jsonrpc: '2.0', id: 'private-rpc-id', method: item.method || 'ping', params: item.params || {} } }), f.env, item.services || f.services);
+    return { status: response.status, headers: Object.fromEntries(response.headers), body: await response.json() };
+  };
+  const expected = [];
+  for (const item of cases) expected.push(await snapshot(item));
+  for (const level of ['warn', 'error']) console[level].mock.mockImplementation(() => { throw new Error('diagnostic sink unavailable'); });
+  for (const [index, item] of cases.entries()) assert.deepEqual(await snapshot(item), expected[index]);
+  t.mock.restoreAll();
+  for (const level of ['warn', 'error']) assert.equal(console[level], originalConsoleMethods[level]);
+});
+
+test('USD schema rejects sub-cent and overprecision budgets before trade dispatch', async () => {
+  const f = await fixture();
+  for (const budgetUsd of [1e-9, 0.001, 1.000000001, 0.299999999999]) {
+    const result = await f.send('tools/call', { name: 'oraclebot_request_trade', arguments: { ...trade, budgetUsd } });
+    assert.equal(result.body.error?.code, -32602);
+  }
+  for (const budgetUsd of [0.29, 0.57]) {
+    const result = await f.send('tools/call', { name: 'oraclebot_request_trade', arguments: { ...trade, budgetUsd } });
+    assert.equal(result.body.result.structuredContent.code, 'execution_unavailable');
+  }
+  assert.equal(f.env.sqlite.prepare('SELECT COUNT(*) AS n FROM agent_trade_intents').get().n, 0);
 });

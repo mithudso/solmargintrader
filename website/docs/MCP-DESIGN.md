@@ -1,7 +1,7 @@
 # Authenticated Oraclebot MCP design
 
-Version: 0.1.1
-Delta: v0.1.0 to v0.1.1; implement OAuth/MCP/intent ledgers and exact execution qualification limits.
+Version: 0.1.2
+Delta: v0.1.1 to v0.1.2; bind browser account generations, exact cents and private diagnostics.
 
 The owner explicitly chose preauthorized sessions. There is no per-trade wallet prompt requirement. Login proves wallet ownership; a separate, explicit consent grants an agent read access or a finite trading policy. OAuth authorization never supplies a blockchain signature or replaces a customer venue connection.
 
@@ -42,3 +42,9 @@ Website0.3.0 routes protocol requests before its single-page asset fallback. OAu
 The user requested preauthorization. Browser consent signs once per finite grant; trade request/submit calls do not ask for individual approval. Settings revocation is immediate. Successful execution module fixtures use an explicitly mocked private service binding. No customer Coinbase credential store, Solana delegated signing authority, venue reconciliation worker or live order was created. The default deployment keeps LIVE_EXECUTION_ENABLED=false and has no USER_TRADE_EXECUTOR binding.
 
 A future adapter must enforce customer authority and the signed policy itself. It must reconcile the venue before preparing an order and never retry an ambiguous submit. Its prepare response binds intentId, wallet, payloadHash, policyHash, verified customer connection and delegation, and an explicit fee-inclusive quote with quotedAt and expiresAt. Its submit acknowledgement binds the same intent, quote and delegation. submitted does not mean filled. The public output reports filled:null until authoritative reconciliation exists. Unknown/submitting/submitted reservations never age out in generic cleanup. Account deletion cannot erase those records.
+
+## Account transitions and diagnostics
+
+The browser invalidates account work before login, logout or deletion begins. It applies private responses only while the captured identity, request and account generation remain current. It sends optional X-Oraclebot-Account with the captured identity; the Worker rejects a different cookie principal with409 account_changed. The header cannot choose a wallet or authorize access. An unavailable session remains unknown and offers retry. Confirmed expiry clears the former private view immediately.
+
+USD amounts must be positive exact cents. Subcent and overprecision inputs fail before execution. Closed diagnostic vocabularies classify OAuth replay, MCP authentication outages, authorization refusal and execution failures. Events contain no credentials, wallet addresses, signatures, client URLs, request arguments or upstream bodies. A failed diagnostic sink cannot change authorization, execution or response semantics.
