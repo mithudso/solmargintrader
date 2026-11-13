@@ -1,9 +1,16 @@
 # Work continuation
 
-Version: 530
+Version: 532
+Delta: v531 to v532; verify integrated145-test gate and preserve native-publication blocker.
+Delta: integration to v531; preserve both local repair and expanded research, with exact historical source replay.
 Delta: v529 to v530; complete native evidence readback and final report qualification.
 Delta: v528 to v529; bind completed expanded matrix and independent audit; preserve pending publication.
 Delta: v527 to v528; begin frozen expanded strategy/shape/frequency protocol.
+
+Delta: v528 to v529; record the qualified immutable installation, guarded UI promotion and real backtest probe.
+Delta: v527 to v528; preserve both concurrent research and local repair records during integration.
+Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence.
+
 Delta: v526 to v527; bind verified25/15bps results, independent audit and Mongo readback.
 Delta: v525 to v526; freeze the owner-confirmed25/15bps ZEC fee-only rerun.
 Delta: v524 to v525; preserve the required-CI frozen SQLite reader watchdog correction and source manager0.7.4 identity.
@@ -2080,6 +2087,65 @@ WAL, while IMMEDIATE/EXCLUSIVE coincide under WAL.
 
 The verified reader-lock lesson is queued through Stele outbox 686aa42d.
 
+## 2026-11-13 — Local Oracle and forward readiness repair
+
+Owner authorized fixes after fresh read-only status. MILE-2120 owns diagnosis
+TASK-2121(completed), implementation TASK-2125(active) and delivery TASK-2127.
+Decision KNOW-2128 applies preserve-legacy rule KNOW-1215. Source base8f30b559.
+Fresh evidence: /Users/mitch/.local/state/oraclebot-status-20261113/local-receipt.json
+and /Users/mitch/.local/state/oraclebot-status-20261113/forward-diagnosis.json.
+Local9/9services up and independent SOL/ZEC10s projections advance, all0qualified.
+Main SOL schema2 archive valid but UI0.4.12 rejects original0.4.8 evaluator8d331176
+through oracle_policy_implementation_unavailable; ZEC native archive is absent,
+not an incompatible archive. Preserve exact original policyfe2e724d and producer.
+
+The one SOL/RSI1440minute paper call targets23:45UTCtoday; zero resolved is
+expected before that. A no-new-call-due path still computes a late-issuance warning.
+Fix status without forcing calls, overlapping windows, retiming or early outcomes.
+Two original failed RSI neighbours violate oversold<exit_level; retain those
+attempts and11successful variants/selectedperiod28. Validate future candidates.
+Never transplant current forwardtest.py into oldprefix: sourceepoch/candles and
+signal_interval trialidentity differ. Use preserved producer and compatible
+read-only status projection; install new UI/reader separately. Hosted analysis
+and customer execution remain separately unprovisioned; billing/livegates stayoff.
+
+Worktree /Users/mitch/dev/worktrees/oracle-forward-repair-20261113; runtime/evidence
+receipts belong under /Users/mitch/.local/state/oraclebot-local-repair-20261113/.
+Remaining: bounded source fixes/regressions, installed live acceptance, final
+source/derived docs checks, PR/CI/merge/default verification and owned cleanup.
+
+Implementation checks: Oracle197tests0; real oldSOLarchive is readable query-only
+without constructing engine/strategies, unchanged fileSHA. Forward52tests0 and
+strict touched-file Ruff0. Candidate171tests0, RSI13requested/11eligible/2excluded;
+zero introducedRuffdiagnostics relativeto53retainedbaselineissues. Root40HTTP/
+votes/timing tests0; initialrootHTTPmockpoint was wrong(moduleprivateimport),
+corrected withoutchangingbehavior. Independentreview caught a currentclock
+admissionboundaryP2; added bothclockguard and regression, now no openfindings.
+Source versions Oracle0.2.5/research-runtime0.4.2/manager0.7.5/ecosystem0.4.14
+with exact pins; original producer remains0.4.8 and pendingtarget23:45UTCtoday.
+
+Promotion must replace guarded suite/UI and rebind stableCLI/nativehost together,
+otherwise oldsuite can respawnoldUI. Keep pipeline/F5/recorder/forecast/observer
+services intact. Baseline/plan: /Users/mitch/.local/state/oraclebot-status-20261113/local-repair/promotion/.
+Newprefix must preserve forecastpolicy9492654016816127f256ab8631bbf7f8092bac6104b062e550519ec301c338af,
+including NumPy2.5.4. Constraints helper support passes26tests/strictRuff before final
+sourcefreeze/install. Newprovisionalprojection doesnotcreate missingZECnative
+history. Hostedanalysis/customerexecution and paidbilling activation remainopen.
+
+Rootscope corrections and finalsource tests: webAPIusesreadonlystatusprojection;
+missingnativearchivehasdistinctsymbolicreason; lockednativeDBleaveswarning
+unchangedwithtimeout0; independentreviewP2currentclockadmissionboundaryfixed.
+Root40tests0/strictRuff0. New setupconstraints26tests0 and fullRuff0. Exact
+accepted thirdpartyconstraints42packages SHA cf090f890dd4f898491c12c5493fe313a3cadb336384df7c1ff64e6d34dc015a,
+includingNumPy2.5.4; no global/privateprefixmutations yet. Docschecker counts
+1579committedSolTUIcases before the three new uncommitted timingtests are added;
+its documented census excludes uncommittednewfiles. Recount aftersourcecommit
+andupdatecountdocs/derivedartifacts beforepublishing. Discoveriesarenotexecuted
+suites. All source filepaths/actualexitlogs collectedinprivateevidencemanifest.
+
+Afterthecodecommit,newtimingtestmoduleenterscanonicalcensus:1582SolTUIcases/3242four-suite
+discoveries(expected,notfullrun). Finalcountsandderivedartifactsverifiedbeforepush.
+
 ## ZEC fee sensitivity in progress
 
 MILE-2113 owns the confirmed0.25percent/0.15percent fee rerun. Use25/15bps perfill for bothentriesandexits, never literal.25/.15bps. Preserve original attempt03 and827spot/50Volty catalog at1m5m10m1h. Reuse verified immutable tape, alter fees only; no new maker-fill claim because executions stillcross recorded depth. Isolatedworktree /Users/mitch/dev/solmargintrader-zec-fees25-15-20261113. No runtime/data/source-simulator changes planned. Remaining: run both scenarios, independently compare25bps toacceptedbaseline and audit15bps, persist complete evidence toMongo/sharedllms, thenverify/merge/cleanup.
@@ -2103,3 +2169,39 @@ Private /Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/attempt-
 The final report and all23 archive file hashes passed independent review, including the exact24fragment CSV reconstruction. Native CSV readback is17637322bytes, SHA1ec8410c4f465de50d71d792c1c3fba0af6085dd1656f76dfce14f396d7b24ed. Full2630507byte frozen census and167645byte deduplicated native proof read back exactly; proof reconstructs actual plan/all1535source hashes and every fit/null/input/audit JSON. Seven incomplete redundant transport drafts remain explicitly unselected; no accepted research was overwritten. Native proof SHA0bdd4ddd317887ac1f7a26121a2236f16072197886ddde735ca1c6d7632068b5. KNOW-2141 records the expanded findings with the one-day/unknown-OS-exit limits. Corrected lifecycle wording distinguishes resting order crossings from market-style base/forced exits.
 
 Shared source/archive are ready for delivery; docs count gate and Ruff passed0. Delivery status, final source inventory, CI and merged-remote content verification are recorded in /Users/mitch/.local/state/solmargintrader/zec-expanded-20261113/delivery.json and source-files.json. TASK-2134 closes only after actual merge/remote verification. Never interpret missing original OS telemetry as a successful process exit. Original capture and prior accepted studies remain immutable.
+
+## 2026-11-13 — Installed local repair and delivery receipt
+
+The immutable environment `/Users/mitch/.venvs/oraclebot-local-repair-0.4.14`
+passed installation health and source identity checks (exit0). Oracle0.2.5,
+research-runtime0.4.2, manager0.7.5 and ecosystem0.4.14 are installed with
+NumPy2.5.4. Forecast policy remains exactly
+`9492654016816127f256ab8631bbf7f8092bac6104b062e550519ec301c338af`.
+The guarded suite replacement passed0 and reports `http://127.0.0.1:63457`.
+The stable CLI symlink and native-host interpreter were updated with fresh
+identity checks and readback; the old prefix was preserved. Launchd initially
+reported an unconfirmed release; stopped/unregistered status preceded the
+successful idempotent uninstall. No owner guard or lock was bypassed.
+
+A separate installed backtest probe copied678 cached real SOL/USD daily bars.
+It completed11 actual evaluable results with0 failures after excluding2 invalid
+RSI variants from13 requested templates (exit0). The original data was unchanged.
+No acquisition, original-queue write, forward handoff or financial action occurred.
+Receipt: `/Users/mitch/.local/state/oraclebot-local-repair-20261113/backtest-probe/installed-execution.receipt.json`.
+
+PR: https://github.com/mithudso/solmargintrader/pull/251
+Final acceptance, exact merged revision, CI results, remaining limitations and
+complete absolute file inventory are recorded in
+`/Users/mitch/.local/state/oraclebot-local-repair-20261113/delivery.json` and
+`/Users/mitch/.local/state/oraclebot-local-repair-20261113/files.md`.
+Check those receipts for completion; this source record does not certify a
+future CI result. The hosted customer engine/executor and native ZEC archive
+remain separate gaps. Never relabel provisional forecasts as qualified evidence.
+
+## Expanded study integration preserves historical source
+
+Upstream PR251 (7228397) arrived during publication. Its queue validation schedules1011jobs and separately records50unique rejected proposals. Of these,48correspond to removed historical queue jobs;two rejected IDs were absent from the olddeduplicated1059job census. Validation records rejected job IDs before the old cross-horizon deduplication. The two extra IDs are medium-horizon aliases of rejected long-horizon cases; do not compare the simple sum to the old deduplicated census. All1707full executable candidate rows/configs/families/provenance are unchanged. The analysis CLI now retains both unique exclusions and raw exclusion records. Original historical source/card bytes are preserved in research/zec-expanded-20261113.llms/simulation-source.zip (1535files;SHAf57fff5a874051fefa2ce7f413dff47cfe21a430a460837fd2efe2f3d5ffdb5a). The archive matches every originalidentity hash. Only current research/zec_expanded.py (catalogue/main diagnostics/whitespace) and soltui/bgqueue.py differ; all numeric-model AST is unchanged. The new regression independently loads the archived generator and reproduces1059jobs/46invalid/30unsupported while the current generator yields the identical1707candidate rows. Do not overwrite the newer queue or imply current source hashes equal the historical experiment. Integration source proof and final test/CI receipts live in the private delivery root.
+
+Final post-integration gate:145focused research/queue tests passed0; updated docs count gate and Ruff passed0. All1535historical archive source hashes match; only catalogue/main diagnostics and whitespace differ in the delivered research module, with numeric-model AST unchanged. The historical and current complete1707candidate rows are equal. Final source snapshots and native manifests are finalized before the merge commit and remote CI gate.
+
+Native publication continuation: run revision50 remains readable with all numerical CSV/proof accepted. Final source-compatibility prose and delivery metadata writes fail through research_artifact_put, research_run_checkpoint and research_run_create with generic errors. Lease renewal/reacquisition succeeds; freshfence3 and unchangedcurrentrevision did notresolve it. No unsupported quota/auth diagnosis is asserted. Existing Mongo report retains correct numerical results; shared finalreport adds exactsourceZIP/currentqueue disclosure. Public mongo-artifacts.json explicitly marks the post-integration prose sync pending. A read-only service acceptance diagnostic is active; do not overwrite other repos or restart publishers blindly. Source/CI delivery proceeds independently and final native writes can resume without rerunning the matrix.

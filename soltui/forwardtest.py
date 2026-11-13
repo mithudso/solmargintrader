@@ -10,6 +10,7 @@ import sqlite3
 import time
 from collections.abc import Callable
 from contextlib import closing
+from itertools import pairwise
 from pathlib import Path
 from threading import Event
 from typing import Any
@@ -18,7 +19,7 @@ import numpy as np
 
 from backtester.core import scorecard
 from backtester.core.strategies import REGISTRY, build, build_composite
-from backtester.core.types import BarWindow, INTERVAL_SECONDS, validate_bar_arrays
+from backtester.core.types import INTERVAL_SECONDS, BarWindow, validate_bar_arrays
 
 from . import compound, config, simulation
 from .research_admission import admit_read, participating
@@ -81,33 +82,29 @@ def _db(path: Path | None = None) -> sqlite3.Connection:
         if _schema_current(db):
             return db
         db.execute("BEGIN IMMEDIATE")
-        for statement in """
+        for statement in ("""
         CREATE TABLE IF NOT EXISTS candle (
             asset TEXT, ts INTEGER, open REAL, high REAL, low REAL, close REAL, volume REAL,
             PRIMARY KEY(asset, ts)
-        );
-        CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY CHECK(id=1), plan TEXT NOT NULL);
-        CREATE TABLE IF NOT EXISTS trial (
+        )""", """
+        CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY CHECK(id=1), plan TEXT NOT NULL)
+        """, """CREATE TABLE IF NOT EXISTS trial (
             id TEXT PRIMARY KEY, asset TEXT, label TEXT, mode TEXT, minutes INTEGER,
             cost REAL, active TEXT, generation INTEGER DEFAULT 0, moved INTEGER DEFAULT 0,
             note TEXT DEFAULT ''
-        );
-        CREATE TABLE IF NOT EXISTS call (
+        )""", """CREATE TABLE IF NOT EXISTS call (
             trial TEXT, bar INTEGER, issued REAL, start INTEGER, finish INTEGER,
             generation INTEGER, guesses TEXT, prediction INTEGER, outcome INTEGER,
             bps REAL, expired INTEGER DEFAULT 0, PRIMARY KEY(trial, bar)
-        );
-        CREATE INDEX IF NOT EXISTS call_pending ON call(trial, finish)
-            WHERE outcome IS NULL AND expired = 0;
-        CREATE INDEX IF NOT EXISTS call_training ON call(trial, generation, bar)
-            WHERE outcome IS NOT NULL;
-        CREATE TABLE IF NOT EXISTS adoption (
+        )""", """CREATE INDEX IF NOT EXISTS call_pending ON call(trial, finish)
+            WHERE outcome IS NULL AND expired = 0
+        """, """CREATE INDEX IF NOT EXISTS call_training ON call(trial, generation, bar)
+            WHERE outcome IS NOT NULL
+        """, """CREATE TABLE IF NOT EXISTS adoption (
             trial TEXT, at INTEGER, previous TEXT, next TEXT, confidence REAL,
             samples INTEGER, PRIMARY KEY(trial, at)
-        );
-        """.split(";"):
-            if statement.strip():
-                db.execute(statement)
+        )"""):
+            db.execute(statement)
         # Recheck under the migration lock: another writer may have migrated
         # between the initial schema read and BEGIN IMMEDIATE.
         for table, columns in _MIGRATIONS.items():
@@ -334,7 +331,7 @@ def _resolve(db: sqlite3.Connection, key: str, generation: int, active: Spec, mo
                     raise ValueError("Missing retained OHLC candles for paper settlement")
                 result = simulation.settle(profile, prediction, prices)
             else:
-                result = dict(net_return=0.0, fees_bps=0.0, borrow_bps=0.0, slippage_bps=0.0, liquidated=0)
+                result = {"net_return": 0.0, "fees_bps": 0.0, "borrow_bps": 0.0, "slippage_bps": 0.0, "liquidated": 0}
             db.execute("""UPDATE call SET net_return=:net_return,fees_bps=:fees_bps,
                 borrow_bps=:borrow_bps,slippage_bps=:slippage_bps,liquidated=:liquidated
                 WHERE trial=:trial AND bar=:bar""", dict(result, trial=key, bar=origin))
@@ -405,7 +402,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     # outside the latest contiguous signal segment. Gaps remain real gaps.
     breaks = np.flatnonzero(np.diff(ts) != 60)
     boundaries = [0, *(int(i) + 1 for i in breaks), len(ts)]
-    for first, last in zip(boundaries[:-1], boundaries[1:], strict=True):
+    for first, last in pairwise(boundaries):
         validate_bar_arrays({k: v[first:last] for k, v in raw.items()}, "1m")
     rows = [(asset, int(t), float(o), float(h), float(l), float(c), float(v))
             for t, o, h, l, c, v in zip(*(raw[k] for k in
@@ -462,6 +459,8 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     start = bar + 120  # next minute that has not opened yet
     forecasts: dict[tuple, int | None] = {}
     staged = []
+    pending_windows = 0
+    due_trials = 0
     active_keys = {}
     defaults = load_defaults()
     _SOURCE_EPOCH.verify(_SOURCE_ROOT)
@@ -503,7 +502,9 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
                                   (key,)).fetchone()
             # One call per non-overlapping window. A 30m move is one observation, not 30.
             if previous and start < previous[0]:
+                pending_windows += 1
                 continue
+            due_trials += 1
             guesses = []
             note = ""
             for spec in (neighbours(active, mode) if tune else [active]):
@@ -536,7 +537,10 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
         check_stop()
         _SOURCE_EPOCH.verify(_SOURCE_ROOT)
         issued = clock()
-        fresh = bar + 60 <= observed < start and issued < start - 1
+        # The issuance deadline applies only to a calculated call. A poll that
+        # merely checks an existing long window can cross a minute boundary
+        # without missing any forecast opportunity.
+        fresh = bar + 60 <= observed < start and (not staged or issued < start - 1)
         if fresh:
             db.executemany("""INSERT OR IGNORE INTO call
                 (trial,bar,start,finish,generation,guesses,prediction,confidence,traded,issued) VALUES (?,?,?,?,?,?,?,?,?,?)""",
@@ -544,6 +548,7 @@ def tick(asset: str, trials: list[dict], horizons: tuple[int, ...], cost: float,
     return {"bar": bar if fresh else None, "recorded": len(staged) if fresh else 0,
             "message": ("Waiting for a fresh candle" if not bar + 60 <= observed < start
                         else "Forecast window elapsed during calculation" if not fresh
+                        else "Waiting for existing forecast window" if pending_windows and not due_trials
                         else "Checked the latest closed minute"),
             "rows": status(asset, db_path=db_path)}
 

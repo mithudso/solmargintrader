@@ -1,7 +1,13 @@
 """Expanded-universe coverage, causal contexts and new lifecycle accounting."""
 import copy
+import gzip
+import hashlib
+import importlib.util
+import json
+import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -31,15 +37,54 @@ def tape_for(a):
 
 class Expanded(unittest.TestCase):
     def test_complete_catalog_has_more_than_baseline_and_keeps_census(self):
-        c=e.catalogue(Path(__file__).resolve().parents[2])
+        root=Path(__file__).resolve().parents[2]
+        frozen=json.loads(gzip.decompress((root/"research/zec-expanded-20261113.llms/plan.json.gz").read_bytes()))["inventory"]
+        c=e.catalogue(root)
         self.assertEqual(len(c["candidates"]),1707)
-        self.assertEqual(len(c["queue_census"]),1059)
+        self.assertEqual(c["candidates"],frozen["candidates"])
+        self.assertEqual(len(c["queue_census"]),1011)
+        self.assertEqual(len(c["planning_exclusions"]),50)
+        self.assertEqual(len(c["planning_exclusion_records"]),50)
+        actual={row["job_id"] for row in c["queue_census"]}
+        excluded={row["job_id"] for row in c["planning_exclusions"]}
+        self.assertFalse(actual & excluded)
+        historical_ids={row["job_id"] for row in frozen["queue_census"]}
+        self.assertTrue(historical_ids <= actual | excluded)
+        self.assertEqual(len(historical_ids-actual),48)
+        self.assertEqual(len(excluded-historical_ids),2)
         self.assertEqual(len(c["card_census"]),1478)
         self.assertEqual(len({x["candidate_id"] for x in c["candidates"]}),1707)
         self.assertTrue(any(not x["executable"] for x in c["card_census"]))
         for row in c["candidates"]:
             for spec in row["config"]["members"]:
                 self.assertFalse(spec["strategy"].startswith("lev_"))
+
+    def test_historical_source_archive_and_original_queue_census(self):
+        root=Path(__file__).resolve().parents[2]
+        archive=root/"research/zec-expanded-20261113.llms"
+        frozen=json.loads(gzip.decompress((archive/"plan.json.gz").read_bytes()))["inventory"]
+        identity=json.loads((archive/"identity.json").read_text())["code_and_cards"]
+        with zipfile.ZipFile(archive/"simulation-source.zip") as source:
+            self.assertEqual(set(source.namelist()),set(identity))
+            for name,digest in identity.items():
+                self.assertEqual(hashlib.sha256(source.read(name)).hexdigest(),digest,name)
+            with tempfile.TemporaryDirectory() as temporary:
+                path=Path(temporary)/"archived_bgqueue.py"
+                path.write_bytes(source.read("soltui/bgqueue.py"))
+                spec=importlib.util.spec_from_file_location("soltui._zec_archived_bgqueue",path)
+                module=importlib.util.module_from_spec(spec)
+                with patch.dict(sys.modules,{module.__name__:module}):
+                    spec.loader.exec_module(module)
+                    def historical_queue(*args,**kwargs):
+                        kwargs.pop("exclusions",None)
+                        return module.build_queue(*args,**kwargs)
+                    with patch.object(e,"build_queue",side_effect=historical_queue):
+                        historical=e.catalogue(root)
+        self.assertEqual(len(historical["queue_census"]),1059)
+        self.assertEqual(len(historical["invalid_jobs"]),46)
+        self.assertEqual(sum(row["status"]=="unsupported_actual_perp_inputs" for row in historical["queue_census"]),30)
+        for name in ("candidates","queue_census","invalid_jobs","card_census"):
+            self.assertEqual(historical[name],frozen[name],name)
 
     def test_context_prefix_is_unchanged_when_future_prices_poisoned(self):
         a=bars();valid=np.ones(150,dtype=bool)

@@ -382,5 +382,59 @@
       "name": "compact-evidence.json.gz.b64.range-37500-50000",
       "reason": "incomplete redundant transport experiment; excluded from final reconstruction"
     }
-  ]
+  ],
+  "source_snapshot": {
+    "name": "simulation-source.zip",
+    "files": 1535,
+    "bytes": 3979986,
+    "sha256": "f57fff5a874051fefa2ce7f413dff47cfe21a430a460837fd2efe2f3d5ffdb5a",
+    "historical_base": "f67ded65d30c6b78026e1ad625dec70748923807",
+    "meaning": "Exact original experiment bytes; current diagnostics changed after experiment without changing the1707candidate rows or numeric model AST."
+  },
+  "post_run_source_compatibility": {
+    "source_archive_files": 1535,
+    "source_archive_all_hashes_match": true,
+    "current_source_differences": [
+      "research/zec_expanded.py",
+      "soltui/bgqueue.py"
+    ],
+    "all_numeric_model_ast_unchanged": true,
+    "allowed_research_changes": [
+      "catalogue diagnostics",
+      "main plan diagnostics",
+      "whitespace"
+    ],
+    "upstream": "7228397",
+    "historical_queue_jobs": 1059,
+    "scheduled_current_queue_jobs": 1011,
+    "distinct_current_exclusion_job_ids": 50,
+    "historical_jobs_now_excluded": 48,
+    "exclusion_aliases_previously_deduplicated": 2,
+    "all_1707_full_candidate_rows_equal": true,
+    "integration_tests": 145,
+    "integration_exit_code": 0,
+    "old_dedupe_key": [
+      "strategy",
+      "asset",
+      "interval",
+      "params"
+    ],
+    "job_id_includes_horizon": true
+  },
+  "shared_report": {
+    "name": "../ZEC-EXPANDED-STRATEGIES.md",
+    "bytes": 14301,
+    "sha256": "d1121f7892c1087c65c81211d64f67c2be39fbc36b2f0fd5b514692f6fb3e320"
+  },
+  "report_sync_status": "pending_post_integration_prose_and_delivery_metadata",
+  "report_scope": "Selected Mongo report contains accepted numerical results. Shared report adds post-run source snapshot and queue-compatibility disclosure; its final byte version is pending native write.",
+  "pending_native_publication": {
+    "errors": [
+      "Error executing tool research_artifact_put",
+      "Error executing tool research_run_checkpoint",
+      "Error executing tool research_run_create"
+    ],
+    "numeric_csv_and_full_native_proof_verified": true,
+    "no_new_numerical_computation_required": true
+  }
 }

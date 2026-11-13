@@ -12,11 +12,13 @@ from __future__ import annotations
 import json
 import os
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
+from backtester.core.strategies import build
 from backtester.core.strategy_cards import load_all
-
 from soltui import bgqueue as q
 
 
@@ -189,6 +191,135 @@ class TestBuildQueue(unittest.TestCase):
     def test_ids_are_unique(self) -> None:
         jobs = q.build_queue("SOL", max_tier=2)
         self.assertEqual(len({j.job_id for j in jobs}), len(jobs))
+
+
+class TestCandidateValidation(unittest.TestCase):
+    def test_rsi_neighbours_obey_the_constructor_without_clipping(self) -> None:
+        card = load_all()["rsi"]
+        expected_exclusions = {
+            "short": {"exit_level x0.5", "exit_level x2", "oversold x2"},
+            "medium": {"exit_level x0.5", "oversold x2"},
+            "long": {"exit_level x0.5", "exit_level x2", "oversold x2"},
+        }
+        for horizon, variations in expected_exclusions.items():
+            with self.subTest(horizon=horizon):
+                excluded = []
+                jobs = q.jobs_for_card(card, horizon, "SOL", exclusions=excluded)
+                self.assertEqual(len(jobs), 13 - len(variations))
+                self.assertEqual({e.job.variation for e in excluded}, variations)
+                self.assertEqual(len(excluded), len(variations))
+                preset = card.preset(horizon)
+                for job in jobs:
+                    build(job.strategy, **job.params)
+                    self.assertLess(job.params["oversold"], job.params["exit_level"])
+                    self.assertLessEqual(job.params["exit_level"], 100)
+                    if job.tier:
+                        changed, factor = job.variation.split(" x")
+                        expected = dict(preset)
+                        expected[changed] = q._perturb(preset[changed], float(factor))
+                        self.assertEqual(dict(job.params), q._canonical(expected))
+                for exclusion in excluded:
+                    with self.assertRaises(ValueError):
+                        build(exclusion.job.strategy, **exclusion.job.params)
+                    self.assertEqual(exclusion.reason, "invalid_parameters")
+                    self.assertEqual(exclusion.detail,
+                                     "ValueError: require 0 < oversold < exit_level <= 100")
+
+    def test_medium_rsi_exact_rejected_ids_and_selected_period_are_preserved(self) -> None:
+        excluded = []
+        jobs = q.build_queue("SOL", horizons=["medium"], strategies=["rsi"],
+                             exclusions=excluded)
+        self.assertEqual({e.job.job_id for e in excluded},
+                         {"cb9b5d612027b69d", "3873501191efbebb"})
+        self.assertEqual(len(jobs), 11)
+        selected = next(j for j in jobs if j.variation == "period x2")
+        self.assertEqual(dict(selected.params),
+                         {"period": 28, "oversold": 30, "exit_level": 50})
+        census = [e.to_dict() for e in excluded]
+        self.assertEqual(json.loads(json.dumps(census)), census)
+        self.assertEqual(census[0]["params"],
+                         {"period": 14, "oversold": 30, "exit_level": 25})
+
+    def test_all_generated_strategies_remain_buildable_and_presets_survive(self) -> None:
+        excluded = []
+        jobs = q.build_queue("SOL", exclusions=excluded)
+        self.assertTrue(excluded)
+        for job in jobs:
+            with self.subTest(strategy=job.strategy, variation=job.variation):
+                build(job.strategy, **job.params)
+        self.assertEqual({j.job_id for j in q.build_queue("SOL", max_tier=0)},
+                         {j.job_id for j in jobs if j.tier == 0})
+        self.assertTrue(any(e.job.strategy == "lev_low" and
+                            e.detail == "ValueError: leverage must exceed 1"
+                            for e in excluded))
+
+    def test_declared_card_bounds_apply_to_neighbours(self) -> None:
+        card = load_all()["rsi"]
+        params = {name: dict(spec) for name, spec in card.params.items()}
+        params["period"]["max"] = 20
+        bounded = replace(card, params=params)
+        excluded = []
+        jobs = q.jobs_for_card(bounded, "medium", "SOL", exclusions=excluded)
+        self.assertTrue(all(j.params["period"] <= 20 for j in jobs))
+        self.assertEqual({e.job.variation for e in excluded if "declared max" in e.detail},
+                         {"period x1.5", "period x2"})
+
+    def test_invalid_preset_stops_planning_instead_of_hiding_card_drift(self) -> None:
+        card = load_all()["rsi"]
+        invalid = replace(card, presets={"medium": {"oversold": 60, "exit_level": 50}})
+        with self.assertRaisesRegex(ValueError, "invalid preset.*rsi.*require 0 < oversold"):
+            q.jobs_for_card(invalid, "medium", "SOL", exclusions=[])
+
+    def test_unexpected_constructor_failure_is_not_an_exclusion(self) -> None:
+        card = load_all()["rsi"]
+        real_builder = build
+
+        def broken_neighbour(name, **params):
+            if params["period"] != 14:
+                raise RuntimeError("unrelated constructor regression")
+            return real_builder(name, **params)
+
+        with patch.object(q, "build_strategy", side_effect=broken_neighbour), \
+                self.assertRaisesRegex(RuntimeError, "unrelated constructor regression"):
+            q.jobs_for_card(card, "medium", "SOL", exclusions=[])
+
+    def test_historical_invalid_plan_jobs_and_attempt_rows_still_load_unchanged(self) -> None:
+        historical = [
+            q.Job("rsi", "medium", "SOL", "1d",
+                  {"period": 14, "oversold": 30, "exit_level": 25},
+                  tier=2, variation="exit_level x0.5"),
+            q.Job("rsi", "medium", "SOL", "1d",
+                  {"period": 14, "oversold": 60, "exit_level": 50},
+                  tier=2, variation="oversold x2"),
+        ]
+        self.assertEqual([j.job_id for j in historical],
+                         ["cb9b5d612027b69d", "3873501191efbebb"])
+        self.assertEqual(q.pending(historical, set()), historical)
+        reason = "ValueError: require 0 < oversold < exit_level <= 100"
+        original = "".join(_result(job_id=j.job_id, params=dict(j.params), tier=j.tier,
+                                   variation=j.variation, evaluable=False, reason=reason,
+                                   trades=0).to_json() + "\n" for j in historical)
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "results.jsonl"
+            path.write_text(original, encoding="utf-8")
+            rows = q.read_results(path)
+            self.assertEqual(path.read_text(encoding="utf-8"), original)
+        self.assertEqual([r.job_id for r in rows], [j.job_id for j in historical])
+        self.assertEqual([r.params for r in rows], [dict(j.params) for j in historical])
+        self.assertTrue(all(not r.evaluable and r.reason == reason for r in rows))
+        self.assertEqual(q.pending(historical, q.completed_ids(rows)), [])
+
+    def test_queue_status_reports_exclusions_without_a_failure(self) -> None:
+        state = q.QueueState(phase="done", candidates={"requested": 13, "eligible": 11, "excluded": 2})
+        text = q.summarise(state, [])
+        self.assertIn("2 invalid candidate(s) excluded before evaluation", text)
+        self.assertNotIn("error", text)
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "state.json"
+            q.write_state(state, path)
+            self.assertEqual(q.read_state(path).candidates, state.candidates)
+            path.write_text('{"phase":"done"}', encoding="utf-8")
+            self.assertIsNone(q.read_state(path).candidates)
 
 
 class TestPending(unittest.TestCase):

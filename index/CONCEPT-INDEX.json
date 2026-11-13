@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T19:35:43+00:00",
+  "generatedAt": "2026-11-13T20:06:28+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -22,7 +22,7 @@
         "confirm",
         "fail-closed"
       ],
-      "matchingFiles": 1933,
+      "matchingFiles": 1934,
       "shown": 30,
       "files": [
         {
@@ -71,7 +71,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 94
+          "hits": 95
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -161,9 +161,13 @@
         "universe",
         "top_coins"
       ],
-      "matchingFiles": 1627,
+      "matchingFiles": 1631,
       "shown": 30,
       "files": [
+        {
+          "path": "docs/FILES.md",
+          "hits": 196
+        },
         {
           "path": "research/coin-intelligence/zec-zcash.md",
           "hits": 196
@@ -173,12 +177,8 @@
           "hits": 183
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 181
-        },
-        {
           "path": "memory.md",
-          "hits": 159
+          "hits": 163
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -205,15 +205,15 @@
           "hits": 60
         },
         {
+          "path": "prompts.md",
+          "hits": 54
+        },
+        {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 54
         },
         {
           "path": ".cdo/reviews-2026-11-12/research-scripts.json",
-          "hits": 53
-        },
-        {
-          "path": "prompts.md",
           "hits": 53
         },
         {
@@ -300,7 +300,7 @@
         "borrow",
         "financing"
       ],
-      "matchingFiles": 1568,
+      "matchingFiles": 1569,
       "shown": 30,
       "files": [
         {
@@ -344,6 +344,10 @@
           "hits": 58
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 55
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 55
         },
@@ -354,10 +358,6 @@
         {
           "path": "soltui/bots.py",
           "hits": 54
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 50
         },
         {
           "path": "research/zec-fee-sensitivity-20261113.llms/summary.json",
@@ -578,7 +578,7 @@
         "perps",
         "solana"
       ],
-      "matchingFiles": 929,
+      "matchingFiles": 930,
       "shown": 30,
       "files": [
         {
@@ -595,7 +595,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 388
+          "hits": 390
         },
         {
           "path": "FILES.md",
@@ -611,7 +611,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 183
+          "hits": 187
         },
         {
           "path": "skills/trading-and-investing/references/jupiter-jlp-pool.md",
@@ -675,7 +675,7 @@
         },
         {
           "path": "prompts.md",
-          "hits": 93
+          "hits": 94
         },
         {
           "path": "archive/memory-2026-11-08.md",
@@ -714,7 +714,7 @@
         "macd",
         "ichimoku"
       ],
-      "matchingFiles": 881,
+      "matchingFiles": 883,
       "shown": 30,
       "files": [
         {
@@ -802,6 +802,10 @@
           "hits": 158
         },
         {
+          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
+          "hits": 146
+        },
+        {
           "path": "research/RANKED_LISTS.md",
           "hits": 132
         },
@@ -832,10 +836,6 @@
         {
           "path": "llms-sitemap.txt",
           "hits": 100
-        },
-        {
-          "path": "research/tradingview-strategy-understanding.json",
-          "hits": 100
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -852,7 +852,7 @@
         "anchor_window",
         "levels"
       ],
-      "matchingFiles": 866,
+      "matchingFiles": 867,
       "shown": 30,
       "files": [
         {
@@ -990,7 +990,7 @@
         "monotone",
         "gap"
       ],
-      "matchingFiles": 771,
+      "matchingFiles": 772,
       "shown": 30,
       "files": [
         {
@@ -1125,7 +1125,7 @@
         "stochastic",
         "oscillator"
       ],
-      "matchingFiles": 554,
+      "matchingFiles": 558,
       "shown": 30,
       "files": [
         {
@@ -1201,6 +1201,10 @@
           "hits": 232
         },
         {
+          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
+          "hits": 220
+        },
+        {
           "path": "TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 172
         },
@@ -1243,10 +1247,6 @@
         {
           "path": "research/zec-expanded-20261113.llms/identity.json",
           "hits": 110
-        },
-        {
-          "path": "research/zec-expanded-20261113.llms/manifest.json",
-          "hits": 110
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -1260,7 +1260,7 @@
         "benchmark",
         "baseline"
       ],
-      "matchingFiles": 543,
+      "matchingFiles": 545,
       "shown": 30,
       "files": [
         {
@@ -1394,7 +1394,7 @@
         "buy_and_hold",
         "baseline"
       ],
-      "matchingFiles": 471,
+      "matchingFiles": 473,
       "shown": 30,
       "files": [
         {
@@ -1529,7 +1529,7 @@
         "ts_momentum",
         "dual_momentum"
       ],
-      "matchingFiles": 441,
+      "matchingFiles": 442,
       "shown": 30,
       "files": [
         {
@@ -1641,15 +1641,15 @@
           "hits": 34
         },
         {
+          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
+          "hits": 34
+        },
+        {
           "path": "TRADINGVIEW-CARD-COVERAGE.md",
           "hits": 32
         },
         {
           "path": "docs/TRADINGVIEW-CARD-COVERAGE.md",
-          "hits": 32
-        },
-        {
-          "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 32
         }
       ],
@@ -1666,7 +1666,7 @@
         "hurst",
         "vol_regime"
       ],
-      "matchingFiles": 382,
+      "matchingFiles": 384,
       "shown": 30,
       "files": [
         {
@@ -1939,7 +1939,7 @@
         "bb_breakout",
         "keltner"
       ],
-      "matchingFiles": 294,
+      "matchingFiles": 295,
       "shown": 30,
       "files": [
         {
@@ -2031,6 +2031,10 @@
           "hits": 40
         },
         {
+          "path": "research/zec-expanded-20261113.llms/simulation-source.zip",
+          "hits": 36
+        },
+        {
           "path": "research/results/minute_sweep_x1_common.txt",
           "hits": 32
         },
@@ -2057,10 +2061,6 @@
         {
           "path": "research/STRATEGIES.md",
           "hits": 23
-        },
-        {
-          "path": "TRADINGVIEW-CARD-FILES.md",
-          "hits": 20
         }
       ],
       "source": "backtester/core/strategies/__init__.py FAMILY"
@@ -2077,7 +2077,7 @@
         "k_test",
         "path_sharpes"
       ],
-      "matchingFiles": 250,
+      "matchingFiles": 251,
       "shown": 30,
       "files": [
         {
@@ -2215,7 +2215,7 @@
         "anti-informative",
         "multiple-testing"
       ],
-      "matchingFiles": 190,
+      "matchingFiles": 191,
       "shown": 30,
       "files": [
         {
@@ -2404,6 +2404,10 @@
           "hits": 11
         },
         {
+          "path": "soltui/tests/test_bgqueue.py",
+          "hits": 10
+        },
+        {
           "path": "research/triggers.py",
           "hits": 10
         },
@@ -2413,10 +2417,6 @@
         },
         {
           "path": "research/results/perturb_all_singles_medium.txt",
-          "hits": 9
-        },
-        {
-          "path": "soltui/tests/test_bgqueue.py",
           "hits": 9
         },
         {
@@ -2486,7 +2486,7 @@
         "obv",
         "volume-flow"
       ],
-      "matchingFiles": 165,
+      "matchingFiles": 166,
       "shown": 30,
       "files": [
         {
@@ -2623,7 +2623,7 @@
         "vwap_reversion",
         "ou_reversion"
       ],
-      "matchingFiles": 150,
+      "matchingFiles": 151,
       "shown": 30,
       "files": [
         {
@@ -2759,7 +2759,7 @@
         "garch",
         "risk-overlay"
       ],
-      "matchingFiles": 70,
+      "matchingFiles": 71,
       "shown": 30,
       "files": [
         {

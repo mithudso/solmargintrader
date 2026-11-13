@@ -1854,13 +1854,20 @@ def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     asset = ctx.settings.asset
     if not names:
         return {"started": False, "scope": scope, "strategies": [], "jobs": 0,
+                "candidates": bgqueue.candidate_census([], []),
                 "message": "nothing to backtest: every strategy already has a recorded run"
                 + (" and enough testing" if scope == "undertested" else "")}
-    jobs = bgqueue.build_queue(asset, max_tier=max_tier, strategies=names)
+    exclusions: list[bgqueue.CandidateExclusion] = []
+    jobs = bgqueue.build_queue(asset, max_tier=max_tier, strategies=names,
+                               exclusions=exclusions)
+    candidates = bgqueue.candidate_census(jobs, exclusions)
+    if exclusions:
+        note += f"; {len(exclusions)} invalid candidate(s) excluded before evaluation"
     todo = bgqueue.pending(jobs, bgqueue.completed_ids(bgqueue.read_results()))
     if not todo:
         return {"started": False, "scope": scope, "strategies": names, "jobs": 0,
-                "message": f"already tested: all {len(jobs)} configuration(s) have recorded results"}
+                "candidates": candidates,
+                "message": f"already tested: all {len(jobs)} configuration(s) have recorded results{note}"}
     try:
         bgcontrol.start(asset, max_tier=max_tier, strategies=names)
     except RuntimeError as exc:
@@ -1869,6 +1876,7 @@ def queue_backtest(ctx: Context, p: dict[str, Any]) -> Any:
     except Exception as exc:  # noqa: BLE001
         raise CommandError("failed", f"{type(exc).__name__}: {exc}") from exc
     return {"started": True, "scope": scope, "strategies": names, "jobs": len(todo), "asset": asset,
+            "candidates": candidates,
             "message": f"started: {len(todo)} configuration(s) across {len(names)} strategy(ies){note}, "
                        "results appear in the table as they finish"}
 

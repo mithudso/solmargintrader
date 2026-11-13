@@ -87,7 +87,10 @@ def catalogue(root: Path):
 
     for row in g.frozen_catalog():
         add(row["config"], "existing-ensemble-catalog", {"prior_template_id": row["candidate_id"]})
-    queue = build_queue("ZEC", cards=cards, max_tier=2)
+    planning_exclusions = []
+    queue = build_queue("ZEC", cards=cards, max_tier=2, exclusions=planning_exclusions)
+    exclusion_records = [item.to_dict() for item in planning_exclusions]
+    unique_exclusions = {item["job_id"]: item for item in exclusion_records}
     for job in queue:
         record = {"job_id": job.job_id, "strategy": job.strategy, "params": dict(job.params),
                   "horizon": job.horizon, "variation": job.variation, "tier": job.tier}
@@ -103,7 +106,10 @@ def catalogue(root: Path):
                 invalid.append(record)
         jobs.append(record)
     return {"candidates": list(rows.values()), "card_census": census, "queue_census": jobs,
-            "invalid_jobs": invalid, "registry": sorted(REGISTRY),
+            "invalid_jobs": invalid,
+            "planning_exclusions": list(unique_exclusions.values()),
+            "planning_exclusion_records": exclusion_records,
+            "registry": sorted(REGISTRY),
             "special_runners": {"grid": "new event lifecycle reference adapter", "dca_safety": "new event lifecycle reference adapter",
                                 "volty": "observed-stop synthetic1x margin reference adapter",
                                 "triangle": "unsupported: other two legs absent",
@@ -433,7 +439,13 @@ def main():
     ap.add_argument("--plan",action="store_true")
     args=ap.parse_args()
     if args.plan:
-        value=catalogue(Path(__file__).resolve().parents[1]);print(json.dumps({"candidates":len(value["candidates"]),"cards":len(value["card_census"]),"queue_jobs":len(value["queue_census"]),"invalid_jobs":len(value["invalid_jobs"])},indent=2));return
+        value=catalogue(Path(__file__).resolve().parents[1])
+        excluded=len(value["planning_exclusions"])
+        print(json.dumps({"candidates":len(value["candidates"]),"cards":len(value["card_census"]),
+                          "queue_jobs":len(value["queue_census"]),"planning_exclusions":excluded,
+                          "planning_exclusion_records":len(value["planning_exclusion_records"]),
+                          "invalid_jobs":len(value["invalid_jobs"])},indent=2))
+        return
     if args.replicates<99:raise ValueError("at least99 null replicates required")
     run(args.parent,args.output,args.replicates)
 

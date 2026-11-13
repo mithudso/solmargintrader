@@ -1,7 +1,12 @@
 # Prompt history
 
-Version: 240
+Version: 241
+Delta: integration to v241; preserve concurrent local repair and expanded ZEC user requests.
 Delta: v239 to v240; record expanded ZEC strategies, shapes and frequency request.
+
+Delta: v239 to v240; preserve both concurrent local repairs and fee research requests.
+Delta: v238 to v239; preserve the live ecosystem status request and authorized local repairs.
+
 Delta: v238 to v239; preserve corrected percent units for the ZEC fee rerun.
 Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
 Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
@@ -2194,6 +2199,16 @@ I stored the new live key as STRIPE_ORACLEBOT_SEC_KEY in ~/.env
 ## 2026-11-13 — ZEC granular backtests
 
 > Run all of the backtests for ZEC using 1m 5m 10m and 1hr times against the more granular records recorded.
+
+## 2026-11-13 — Live ecosystem readiness and repairs
+
+```text
+Is the entire ecosystem up, live, running, oracle producing predictions, forward tests running, backtests are capable?
+```
+
+```text
+Can you fix those issues?
+```
 
 ## 2026-11-13 — ZEC maker-rate fee sensitivity
 

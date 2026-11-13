@@ -1,4 +1,4 @@
-# Solbot manager 0.7.4
+# Solbot manager 0.7.5
 
 The supervisor detects a frozen SQLite reader as well as a frozen writer. It
 defers only transient stopped-peer journal contention so its owned-process
@@ -706,8 +706,8 @@ https://github.com/jup-ag/docs/blob/main/guides/how-to-build-a-custom-swap-with-
 
 `backtest` and `research` use the existing headless SolTUI `ExperimentStore` through
 its registered `research.protocol` action. The manager never opens the owner's
-SQLite database. The coordinated source candidate pins manager 0.7.4, research-runtime 0.4.1,
-backtester 0.2.1 and Oracle 0.2.4. Installed acceptance remains a separate check. Textual is unnecessary.
+SQLite database. The coordinated source candidate pins manager 0.7.5, research-runtime 0.4.2,
+backtester 0.2.1 and Oracle 0.2.5. Installed acceptance remains a separate check. Textual is unnecessary.
 The CLI launches the explicitly selected interpreter with `-I`, a clean environment,
 a 120-second deadline and 1 MiB limits on each transport stream.
 

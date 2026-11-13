@@ -5,6 +5,7 @@ import json
 import os
 import sqlite3
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
@@ -157,6 +158,94 @@ class BatchTests(unittest.TestCase):
         self.assertEqual(assets, ["BTC", "DOGE", "SOL"])
         self.assertEqual(proof["eligible"], 3)
         self.assertEqual(len(proof["sha256"]), 64)
+
+
+class CandidatePlanTests(unittest.TestCase):
+    def setUp(self):
+        tmp = TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.root = Path(tmp.name)
+        self.settings = config.default_settings()
+        self.settings.data_dir = str(self.root)
+        self.enterContext(mock.patch.object(f5_batch, "_code_id", return_value="candidate-fixture"))
+
+    def plan(self, **kwargs):
+        return f5_batch.create(self.settings, ["SOL"], root=self.root, intervals=["1d"],
+                               strategies=["rsi"], horizons=["medium"], **kwargs)
+
+    def test_new_plan_freezes_exact_exclusions_and_evaluates_only_valid_neighbours(self):
+        (self.root / "SOL_1d.csv").write_text("fixture history")
+        plan = self.plan()
+        self.assertEqual(plan["candidates"], {"requested": 13, "eligible": 11, "excluded": 2})
+        before = f5_batch.proof(plan["run_id"], "SOL", "1d", root=self.root)["candidate_plans"]
+        self.assertEqual({e["job_id"] for e in before[0]["exclusions"]},
+                         {"cb9b5d612027b69d", "3873501191efbebb"})
+        self.assertTrue(all(e["reason"] == "invalid_parameters" for e in before[0]["exclusions"]))
+
+        def evaluate(job, arrays, engine, settings):
+            return replace(_ok(job, arrays, engine, settings), median_sharpe=float(job.params["period"]))
+
+        with mock.patch.object(bgqueue, "jobs_for_card", side_effect=AssertionError("must use frozen candidates")), \
+                mock.patch("backtester.core.types.validate_bar_arrays", return_value={}), \
+                mock.patch.object(f5_batch.bgworker, "ArrayCache", return_value=mock.Mock()), \
+                mock.patch.object(f5_batch.bgworker, "evaluate", side_effect=evaluate) as evaluator:
+            f5_batch.run(plan["run_id"], root=self.root, forward_cycles=1,
+                         tick=lambda *a, **k: {"recorded": 0, "message": "fixture"})
+        rows = f5_batch.cells(plan["run_id"], root=self.root)
+        self.assertEqual(rows[0]["state"], "completed")
+        self.assertIn("2 of 13 requested candidates excluded before evaluation", rows[0]["reason"])
+        self.assertEqual(rows[0]["selected"]["params"]["period"], 28)
+        self.assertEqual(rows[0]["candidates"]["excluded"], 2)
+        self.assertEqual(evaluator.call_count, 11)
+        attempts = f5_batch.attempts(plan["run_id"], rows[0]["id"], root=self.root)
+        self.assertEqual(len(attempts), 11)
+        self.assertTrue(all(a["state"] == "evaluated" for a in attempts))
+        self.assertEqual(f5_batch.status(plan["run_id"], root=self.root)["candidates"], plan["candidates"])
+        self.assertEqual(f5_batch.proof(plan["run_id"], "SOL", "1d", root=self.root)["candidate_plans"], before)
+
+    def test_universe_expansion_validates_once_per_template(self):
+        original = bgqueue.jobs_for_card
+        with mock.patch.object(bgqueue, "jobs_for_card", wraps=original) as generate:
+            plan = f5_batch.create(self.settings, ["SOL", "BTC"], root=self.root,
+                                   intervals=["1h", "1d"], strategies=["rsi"], horizons=["medium"])
+        self.assertEqual(generate.call_count, 1)
+        self.assertEqual(plan["candidates"], {"requested": 52, "eligible": 44, "excluded": 8})
+        rows = f5_batch.cells(plan["run_id"], root=self.root)
+        self.assertEqual(len(rows), 4)
+        self.assertEqual(len({e["job_id"] for row in rows for e in row["candidates"]["exclusions"]}), 8)
+
+    def test_proof_does_not_fabricate_candidates_for_an_unplanned_series(self):
+        plan = self.plan()
+        path = self.root / plan["run_id"] / "batch.sqlite3"
+        before = path.read_bytes()
+        for asset, interval in (("BTC", "1d"), ("SOL", "1h")):
+            with self.subTest(asset=asset, interval=interval):
+                proof = f5_batch.proof(plan["run_id"], asset, interval, root=self.root)
+                self.assertIsNone(proof["series"])
+                self.assertIsNone(proof["candidate_plans"])
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_legacy_readers_keep_original_partial_cell_selection_and_attempts(self):
+        plan = self.plan()
+        path = self.root / plan["run_id"] / "batch.sqlite3"
+        original = {"params": {"period": 14, "oversold": 30, "exit_level": 25},
+                    "reason": "ValueError: require 0 < oversold < exit_level <= 100"}
+        selected = {"name": "rsi", "params": {"period": 28, "oversold": 30, "exit_level": 50}}
+        with sqlite3.connect(path) as db:
+            db.execute("DELETE FROM meta WHERE key IN ('candidate_templates','candidate_counts')")
+            db.execute("UPDATE cell SET state='partial',reason='2 of 13 variants not evaluable',selected=?",
+                       (json.dumps(selected),))
+            db.execute("INSERT INTO attempt VALUES(1,?,'not_evaluable',?)",
+                       ("cb9b5d612027b69d", json.dumps(original)))
+        before = path.read_bytes()
+        self.assertIsNone(f5_batch.status(plan["run_id"], root=self.root)["candidates"])
+        cell = f5_batch.cells(plan["run_id"], root=self.root)[0]
+        self.assertEqual(cell["state"], "partial")
+        self.assertEqual(cell["selected"], selected)
+        self.assertIsNone(cell["candidates"])
+        self.assertEqual(f5_batch.attempts(plan["run_id"], 1, root=self.root)[0]["result"], original)
+        self.assertIsNone(f5_batch.proof(plan["run_id"], "SOL", "1d", root=self.root)["candidate_plans"])
+        self.assertEqual(path.read_bytes(), before)
 
 
 class GapWindowTests(unittest.TestCase):

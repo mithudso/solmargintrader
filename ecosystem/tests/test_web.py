@@ -79,6 +79,22 @@ class WebTests(unittest.TestCase):
         self.assertEqual(telemetry["data"]["status"], "unavailable")
         self.assertFalse(self.home.exists())
 
+    def test_status_route_uses_readonly_forward_timing_projection(self):
+        observation = {
+            "phase": "running",
+            "batch": {"forward_checks": [{
+                "message": "Waiting for existing forecast window",
+                "owner_message": "Forecast window elapsed during calculation",
+                "timing": {"state": "pending_not_due", "read_only_projection": True},
+            }]},
+        }
+        with patch("ecosystem.control.ControlPlane.pipeline_status", return_value=observation) as owner:
+            status, _, body = self.body("/api/status")
+        self.assertEqual(status, 200)
+        self.assertEqual(body["data"], observation)
+        owner.assert_called_once_with(None)
+        self.assertFalse(self.home.exists())
+
     def test_static_assets_are_local_and_have_no_operational_fixture_data(self):
         status, _, raw = self.request("/")
         self.assertEqual(status, 200)
@@ -162,7 +178,7 @@ class WebTests(unittest.TestCase):
             response.read()
 
     def test_mutating_methods_never_call_owners(self):
-        with patch("ecosystem.web.runner.status") as owner:
+        with patch("ecosystem.control.runner.status") as owner:
             for method in ("PUT", "PATCH", "DELETE", "OPTIONS"):
                 self.assertEqual(self.body("/api/status", method=method)[0], 405)
             self.assertEqual(self.body("/api/status", method="POST")[0], 404)
@@ -258,7 +274,7 @@ class WebTests(unittest.TestCase):
             "nested": [{"private_key": "test-private-value"}],
             "strategy": "<img src=x onerror=alert(1)>",
         }
-        with patch("ecosystem.web.runner.status", return_value=record):
+        with patch("ecosystem.control.runner.status", return_value=record):
             status, _, body = self.body("/api/status")
         self.assertEqual(status, 200)
         raw = json.dumps(body)
@@ -267,7 +283,7 @@ class WebTests(unittest.TestCase):
         self.assertEqual(body["data"]["strategy"], record["strategy"])
         with (
             patch(
-                "ecosystem.web.runner.status", side_effect=RuntimeError("secret error")
+                "ecosystem.control.runner.status", side_effect=RuntimeError("secret error")
             ),
             self.assertLogs("ecosystem.web", level="WARNING") as logged,
         ):

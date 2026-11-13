@@ -67,9 +67,14 @@
       "sha256": "5cc8942aa69aa91721ff0d303b7ab4f07c7c84c626f8826ede39e5e1c32b694c"
     },
     {
+      "name": "integration-source-proof.json",
+      "bytes": 782,
+      "sha256": "1a22949ca81472ed2e2766a33b9bcaa9eae013511778db5b897e8c5176a247e5"
+    },
+    {
       "name": "llms.txt",
-      "bytes": 1594,
-      "sha256": "7a5a53f7d48238ce165bdfb7d2f651a6aaeea55a5e3d299912a330edd272ef54"
+      "bytes": 1716,
+      "sha256": "15aabebe9abdad745b5fdf93df0a2d8698bba8944c1570038e0f214c3b975b35"
     },
     {
       "name": "manifest.json",
@@ -78,8 +83,8 @@
     },
     {
       "name": "mongo-artifacts.json",
-      "bytes": 14070,
-      "sha256": "db8b09864c6adbd02b37b2fbc5f0c9141d460023d0270e0a2422709b51a26960"
+      "bytes": 16140,
+      "sha256": "7b58dbe267cbe8cd8ba7cf05397a16ef5a24b974f1abc5041fca78a109edbd9f"
     },
     {
       "name": "mongo-readback-receipt.json",
@@ -102,6 +107,11 @@
       "sha256": "1ec8410c4f465de50d71d792c1c3fba0af6085dd1656f76dfce14f396d7b24ed"
     },
     {
+      "name": "simulation-source.zip",
+      "bytes": 3979986,
+      "sha256": "f57fff5a874051fefa2ce7f413dff47cfe21a430a460837fd2efe2f3d5ffdb5a"
+    },
+    {
       "name": "special-runner-summary.json",
       "bytes": 130612,
       "sha256": "782eaac5d1dddccb50a9edbe1337f169d86a63540ec890de6af288ab06bdf847"
@@ -119,8 +129,8 @@
   ],
   "report": {
     "name": "../ZEC-EXPANDED-STRATEGIES.md",
-    "bytes": 12899,
-    "sha256": "4912701c19054536ca0a6ba49d4726aa29e5e82fbd3e182b72e45fa85a0a5dd6"
+    "bytes": 14301,
+    "sha256": "d1121f7892c1087c65c81211d64f67c2be39fbc36b2f0fd5b514692f6fb3e320"
   },
   "run_rows": 85312
 }

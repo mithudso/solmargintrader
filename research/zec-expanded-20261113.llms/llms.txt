@@ -13,6 +13,7 @@ Read in order:
 - coverage.json — actual histories and feature availability.
 - frequency-fits-*.json and cycle-null-tests.json — frozen earlier-only fits and search-aware nulls.
 - identity.json and input-provenance.json — source/runtime/input bindings.
+- simulation-source.zip — all 1,535 exact experiment source/card bytes; use an isolated historical checkout for replay.
 - manifest.json — immutable original private run outputs, including full-fill SHA256.
 - audit-expanded-*.json — five independent receipts; artifact correctness accepted, original OS exit unknown.
 - mongo-artifacts.json — native empirical run artifacts, exact reconstruction and readback proof.

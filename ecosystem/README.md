@@ -1,6 +1,8 @@
-# Paper ecosystem control room 0.4.13
+# Paper ecosystem control room 0.4.14
 
-This source version pins Bot Manager0.7.4 for frozen SQLite reader recovery.
+This source version restores read-only access to the known legacy SOL Oracle
+archive and explains pending forward windows without changing the producer.
+It pins Bot Manager0.7.5, Oracle0.2.5 and research-runtime0.4.2.
 The metadata update does not promote or restart an existing owner environment.
 
 The Oracle also runs an independent selected-strategy price projection. It
@@ -92,3 +94,25 @@ See `/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-CONTROL-ROOM.md`,
 `/Users/mitch/dev/solmargintrader/docs/ECOSYSTEM-SWAPS.md` for operating contracts,
 limits, exact commands and evidence. The packaged wiki provides all component
 documentation with original file locations and content hashes.
+
+## Local repair0.4.14
+
+Oracle0.2.5 adds the exact reviewed read-only schema-2 compatibility needed by
+the original SOL producer. The old producer and its daily forward call keep
+their original policy, parameters, activation and target. UI status explains
+non-due pending windows without hiding a genuinely due or stale calculation.
+Research-runtime0.4.2 validates future candidate parameters and freezes explicit
+requested/eligible/excluded censuses. Original failed attempts remain original
+evidence. A new environment is required; do not replace code inside an active
+producer prefix or reopen its cohort under the new runtime.
+
+For an install-only UI qualification, call `ecosystem.installation.install_environment`
+with the frozen source and a new stable prefix. The bootstrap `start` command
+also starts the pipeline and is not an install-only shortcut. Use a private
+constraints file matching the accepted third-party dependencies when the existing
+forecast policy must remain unchanged. The installer binds that file's SHA256
+to its ownership/completion receipt and refuses drift; constraints never imply
+that unrelated packages should be installed. Actual promotion and loaded-state
+acceptance belong in the independent operational receipt:
+
+/Users/mitch/.local/state/oraclebot-local-repair-20261113/delivery.json

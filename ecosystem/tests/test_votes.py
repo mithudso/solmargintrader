@@ -74,9 +74,29 @@ class VoteSelectionTests(unittest.TestCase):
         absent = self.home / "absent"
         result = votes.report(absent, "SOL/USD", now=1000)
         self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["reason"], "oracle_archive_missing")
+        self.assertEqual(result["aggregate"]["reason"], "oracle_archive_missing")
+        self.assertEqual(result["graph"]["reason"], "oracle_archive_missing")
         self.assertEqual(len(result["catalog"]), 14)
         self.assertEqual(len(result["selected_ids"]), 14)
         self.assertFalse(absent.exists())
+
+    def test_existing_invalid_archive_is_not_reported_as_missing(self):
+        path = self.home / "oracle/ZEC/history.sqlite3"
+        path.parent.mkdir(parents=True)
+        path.write_bytes(b"invalid existing archive")
+        before = path.read_bytes()
+        result = votes.report(self.home, "ZEC/USD", now=1000)
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["reason"], "oracle_archive_unavailable_or_incompatible")
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_symlinked_parent_is_not_treated_as_missing_history(self):
+        target = self.home / "missing-target"
+        (self.home / "oracle").symlink_to(target, target_is_directory=True)
+        result = votes.report(self.home, "ZEC/USD", now=1000)
+        self.assertEqual(result["reason"], "oracle_archive_unavailable_or_incompatible")
+        self.assertFalse(target.exists())
 
     def test_display_strategy_native_frequency_is_readonly_and_drops_archived_aggregate(self):
         path, card = self.archive()
