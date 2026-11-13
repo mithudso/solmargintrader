@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `93312fd7` (2026-11-13T00:52:19+00:00). 3355 tracked files, 80.5 MB.
+**Generated** from `index/INDEX.json` at commit `0d7d8c9` (2026-11-13T03:36:34+00:00). 3360 tracked files, 80.5 MB.
 
 Regenerate with:
 
@@ -15,7 +15,7 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2821 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 544/638 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **extracted** (2825 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 547/642 Python modules and 66/120 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
 - **derived** (227 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 89 files
-- [`docs`](#docs) — 143 files
+- [`docs`](#docs) — 144 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1934 files
 - [`research`](#research) — 279 files
@@ -54,7 +54,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`coin-fit`](#coin-fit) — 6 files
 - [`design`](#design) — 32 files
 - [`dso-skill`](#dso-skill) — 3 files
-- [`ecosystem`](#ecosystem) — 62 files
+- [`ecosystem`](#ecosystem) — 66 files
 - [`executor`](#executor) — 47 files
 - [`liquidity`](#liquidity) — 60 files
 - [`llms`](#llms) — 5 files
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1334 lines · 255,965 B · description: **extracted**
+`doc` · 1375 lines · 265,655 B · description: **extracted**
 
-**Purpose.** Version: 485 Delta: v484 to v485; trace unavailable screenshot to owner scope, absent selection and immature prospective evidence. Delta: v483 to v484; correct foreground diagnostic PID exposed by independent crash acceptance.
+**Purpose.** Version: 489 Delta: v488 to v489; pass editable forecast gates and promote an independently bound preview. Delta: v487 to v488; implement editable per-coin forecast horizon and cadence with evidence traces.
 
 **Use.** Read it.
 
@@ -703,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2030 lines · 121,347 B · description: **extracted**
+`doc` · 2058 lines · 122,651 B · description: **extracted**
 
-**Purpose.** Version: 230 Delta: v229 to v230; record unavailable-values screenshot and evidence-specific dashboard repair. Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts.
+**Purpose.** Version: 233 Delta: v232 to v233; add editable forecast seconds beside the prediction. Delta: v231 to v232; preserve owner confirmation that the forecast target is the next ten seconds.
 
 **Use.** Read it.
 
@@ -795,7 +795,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-143 files.
+144 files.
 
 #### `docs/API.md`
 
@@ -911,7 +911,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 32567 lines · 1,628,585 B · description: **extracted**
+`doc` · 32615 lines · 1,630,442 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1005,11 +1005,19 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/ORACLE-LIVE-FORECAST.md`
+
+`doc` · 95 lines · 5,428 B · description: **extracted**
+
+**Purpose.** Version: 1.0.0 Delta: Add a continuously visible strategy price projection with editable seconds. The Oracle shows a direction, indicative target price, strategy, evaluation time
+
+**Use.** Read it.
+
 #### `docs/ORACLEBOT-OPERATIONS.md`
 
-`doc` · 165 lines · 9,844 B · description: **extracted**
+`doc` · 191 lines · 11,359 B · description: **extracted**
 
-**Purpose.** Version: 1.1.0 Delta: Supervise the actual paper pipeline, F5 worker and Oracle; preserve the failed historical cohort and require full runtime health. Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports.
+**Purpose.** Version: 1.2.0 Delta: Monitor the separate continuous price forecast at its saved per-coin interval. Delta: Supervise the actual paper pipeline, F5 worker and Oracle; preserve the failed historical cohort and require full runtime health.
 
 **Use.** Read it.
 
@@ -1287,7 +1295,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/high_signal_file_index.json`
 
-`doc` · 1907 lines · 57,733 B · description: **derived**
+`doc` · 1928 lines · 58,451 B · description: **derived**
 
 **Purpose.** Generated JSON object, 4 keys ($comment, repo, components, files).
 
@@ -28705,19 +28713,19 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## ecosystem
 
-62 files.
+66 files.
 
 #### `ecosystem/README.md`
 
-`doc` · 80 lines · 5,156 B · description: **extracted**
+`doc` · 87 lines · 5,623 B · description: **extracted**
 
-**Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
+**Purpose.** The Oracle also runs an independent selected-strategy price projection. It defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds beside the forecast to set a per-coin horizon/cadence from5through300seconds.
 
 **Use.** Read it.
 
 #### `ecosystem/__init__.py`
 
-`code-python` · 4 lines · 96 B · description: **extracted**
+`code-python` · 4 lines · 97 B · description: **extracted**
 
 **Purpose.** Resumable installation and paper-research lifecycle orchestration.
 
@@ -28745,7 +28753,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/control.py`
 
-`code-python` · 933 lines · 36,627 B · description: **extracted**
+`code-python` · 940 lines · 36,996 B · description: **extracted**
 
 **Purpose.** Durable, paper-only controls delegated to the established component owners.
 
@@ -28762,6 +28770,36 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `OWNER_UNIVERSE`, `ASSET_PATTERN`, `SOURCE`, `universe()`, `_symbol()`, `_epoch()`, `canonical()`, `file_sha256()`, `_closed_frame()`, `_publish()` and 2 more. Depends on `backtester`.
 
 **Use.** `import ecosystem.data`
+
+#### `ecosystem/forecast.py`
+
+`code-python` · 675 lines · 27,525 B · description: **extracted**
+
+**Purpose.** Continuous, provisional price projections. No orders or account mutations. The direction is the chosen price-only strategy's exposure sign on ten-second reference bars. The target distance is the recent median absolute reference move at the requested horizon. It is an indicative projection, not a fitted expected return or a calibrated probability.
+
+**Contents.** Defines `BAR_SECONDS`, `REFRESH_SECONDS`, `HORIZONS`, `MAX_AGE`, `APP_ID`, `METHOD`, `finite()`, `canonical()`, `policy_id()`, `directory()` and 11 more.
+
+**Use.** `python3 ecosystem/forecast.py --help`
+
+#### `ecosystem/forecast_preferences.py`
+
+`code-python` · 97 lines · 3,619 B · description: **extracted**
+
+**Purpose.** Versioned per-instrument display cadence, separate from research policies.
+
+**Contents.** Defines `APP_ID`, `path()`, `valid_seconds()`, `settings()`, `set_seconds()`.
+
+**Use.** `import ecosystem.forecast_preferences`
+
+#### `ecosystem/forecast_service.py`
+
+`code-python` · 124 lines · 4,119 B · description: **extracted**
+
+**Purpose.** Explicit launchd ownership for the independent ten-second display evaluator.
+
+**Contents.** Defines `definition()`, `operate()`, `main()`.
+
+**Use.** `python3 ecosystem/forecast_service.py --help`
 
 #### `ecosystem/installation.py`
 
@@ -28815,7 +28853,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/pyproject.toml`
 
-`config` · 23 lines · 728 B · description: **none**
+`config` · 23 lines · 729 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28903,7 +28941,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/votes.py`
 
-`code-python` · 416 lines · 17,553 B · description: **extracted**
+`code-python` · 426 lines · 18,137 B · description: **extracted**
 
 **Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
 
@@ -28913,7 +28951,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web.py`
 
-`code-python` · 558 lines · 22,791 B · description: **extracted**
+`code-python` · 559 lines · 22,848 B · description: **extracted**
 
 **Purpose.** Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
 
@@ -28993,7 +29031,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_control_http.py`
 
-`test` · 189 lines · 7,316 B · description: **none**
+`test` · 222 lines · 8,744 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29010,6 +29048,16 @@ Session handoff notes, newest first. Prose, not machine-read.
 **Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class DataTests`.
 
 **Use.** `python3 -m pytest ecosystem/tests/test_data.py -q`
+
+#### `ecosystem/tests/test_forecast.py`
+
+`test` · 285 lines · 12,742 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Strategies`, `class ForecastTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_forecast.py -q`
 
 #### `ecosystem/tests/test_machine_health_http.py`
 
@@ -29143,7 +29191,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_ui_contract.py`
 
-`test` · 382 lines · 29,219 B · description: **extracted**
+`test` · 437 lines · 34,799 B · description: **extracted**
 
 **Purpose.** Client safety checks; a VM DOM does not replace installed browser acceptance.
 
@@ -29173,7 +29221,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_votes.py`
 
-`test` · 218 lines · 10,051 B · description: **none**
+`test` · 221 lines · 10,289 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29183,7 +29231,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_web.py`
 
-`test` · 235 lines · 10,709 B · description: **extracted**
+`test` · 235 lines · 10,734 B · description: **extracted**
 
 **Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
 
@@ -29225,7 +29273,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/app.js`
 
-`code-js` · 1227 lines · 100,726 B · description: **none**
+`code-js` · 1299 lines · 108,098 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29235,7 +29283,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/index.html`
 
-`code-web` · 90 lines · 32,015 B · description: **none**
+`code-web` · 90 lines · 32,530 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29253,7 +29301,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/styles.css`
 
-`code-web` · 35 lines · 46,135 B · description: **none**
+`code-web` · 37 lines · 46,344 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -31229,11 +31277,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/oraclebot_ops.py`
 
-`code-python` · 738 lines · 27,677 B · description: **extracted**
+`code-python` · 809 lines · 30,115 B · description: **extracted**
 
 **Purpose.** Read-only Oraclebot operations observer; no trading or service repair commands. A separate launchd job samples the existing solbot owner. SQLite preserves incidents and delivery retries. Reports count observed samples, not uptime.
 
-**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `RUNTIME_COMPONENTS`, `runtime_health()` and 12 more.
+**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `PIPELINE_COMPONENTS`, `RUNTIME_COMPONENTS` and 14 more.
 
 **Use.** `python3 scripts/oraclebot_ops.py --help`
 
@@ -31327,7 +31375,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_oraclebot_ops.py`
 
-`test` · 845 lines · 31,931 B · description: **extracted**
+`test` · 914 lines · 34,582 B · description: **extracted**
 
 **Purpose.** Synthetic observer transitions, retry delivery and independent outage checks.
 

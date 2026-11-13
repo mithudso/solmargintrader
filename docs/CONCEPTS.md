@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T00:52:19+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T03:36:34+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -29,7 +29,7 @@ Strongest files:
 
 - `research/tradingview-card-coverage.json` (1724 hits)
 - `research/tradingview-script-understanding.json` (317 hits)
-- `docs/FILES.md` (165 hits)
+- `docs/FILES.md` (164 hits)
 - `FILES.md` (157 hits)
 - `research/tradingview-script-profiles/shard-a.jsonl` (126 hits)
 - `research/tradingview-script-profiles/shard-c.jsonl` (115 hits)
@@ -59,7 +59,7 @@ Full list: `python3 index/search.py --concept costs -n 1524`
 
 ### Cross-asset and cross-timeframe transfer
 
-`transfer` · **1519 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
+`transfer` · **1521 files** · matched on `cross_asset`, `cross-asset`, `transfer`, `doge`, `zec`, `universe`, `top_coins`
 
 The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The dataset has repeatedly explained more than the strategy.
 
@@ -74,11 +74,11 @@ Strongest files:
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
 
-Full list: `python3 index/search.py --concept transfer -n 1519`
+Full list: `python3 index/search.py --concept transfer -n 1521`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1458 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1459 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,11 +93,11 @@ Strongest files:
 - `TRADINGVIEW-REFERENCE.md` (31 hits)
 - `docs/TRADINGVIEW-REFERENCE.md` (31 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1458`
+Full list: `python3 index/search.py --concept lookahead -n 1459`
 
 ### On-chain execution reality
 
-`execution-onchain` · **799 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
+`execution-onchain` · **803 files** · matched on `jupiter`, `jlp`, `oracle`, `priority`, `slippage`, `perps`, `solana`
 
 Oracle-priced perps, priority fees as a product, per-account fee markets, dropped-versus-reverted. Decides whether a strategy is executable at all.
 
@@ -106,13 +106,13 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (381 hits)
+- `docs/FILES.md` (383 hits)
 - `FILES.md` (283 hits)
+- `memory.md` (166 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `memory.md` (160 hits)
 - `docs/archive/memory-2026-11-10.md` (141 hits)
 
-Full list: `python3 index/search.py --concept execution-onchain -n 799`
+Full list: `python3 index/search.py --concept execution-onchain -n 803`
 
 ### Grid trading
 
@@ -144,7 +144,7 @@ Strongest files:
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (272 hits)
 - `research/tradingview-card-coverage.json` (267 hits)
 - `research/tradingview-script-understanding.json` (144 hits)
-- `ecosystem/web/styles.css` (108 hits)
+- `ecosystem/web/styles.css` (109 hits)
 - `research/tradingview-card-readiness.json` (106 hits)
 - `docs/FILES.md` (78 hits)
 - `TRADINGVIEW-CARD-READINESS.md` (77 hits)
@@ -257,8 +257,8 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 
 | Family | Files | Matched on |
 |---|---|---|
-| `trend` | 843 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
-| `oscillator-reversion` | 521 | `rsi`, `stochastic`, `oscillator` |
+| `trend` | 844 | `trend`, `ma_crossover`, `macd`, `ichimoku` |
+| `oscillator-reversion` | 523 | `rsi`, `stochastic`, `oscillator` |
 | `momentum` | 432 | `momentum`, `ts_momentum`, `dual_momentum` |
 | `regime-filter` | 370 | `regime`, `sma_regime`, `adx_trend`, `hurst`, `vol_regime` |
 | `baseline` | 363 | `buy_and_hold`, `baseline` |

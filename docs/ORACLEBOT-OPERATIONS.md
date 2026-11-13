@@ -1,6 +1,7 @@
 # Oraclebot persistent operations
 
-Version: 1.1.0
+Version: 1.2.0
+Delta: Monitor the separate continuous price forecast at its saved per-coin interval.
 Delta: Supervise the actual paper pipeline, F5 worker and Oracle; preserve the failed historical cohort and require full runtime health.
 Delta: Document supervised ecosystem availability, durable alerts, independent heartbeat checks and daily reports.
 
@@ -162,3 +163,28 @@ Tests exercise persisted transitions, authentication and retry against a real
 loopback HTTP fixture, stale and malformed heartbeat refusal, report limits and
 owned-issue isolation. Installed launchd and actual GitHub workflow acceptance
 remain separate evidence.
+
+
+## Continuous price forecast
+
+The separate live-forecast owner keeps a chosen-strategy price projection visible
+even when the historical ensemble has no qualified votes. The seconds control
+beside it sets both horizon and cadence (default10; whole numbers5–300), with
+revisioned per-instrument display preferences. It never changes an account or
+historical research policy. See docs/ORACLE-LIVE-FORECAST.md for exact input
+trace bindings and the provisional method.
+
+Observer1.2.0 requires live_price_forecast as a ninth component. It reads the
+forecast from its immutable installed interpreter, checks the saved primary
+instrument interval and source heartbeat, and refuses retained/absent numeric
+projections as current readiness. A valid300-second prediction is not stale
+merely because15seconds elapsed. Earlier samples lacking this new coverage are
+excluded from current full-runtime report counts; historical reports remain
+version-labelled. The existing pipeline interpreter can remain separately
+pinned while the control room and forecast evaluator use a newer bundle.
+
+Installer configuration now additionally requires --forecast-python pointing
+at the immutable forecast bundle's bin/python. The original --pipeline-python
+and --pipeline-home continue to identify the existing worker being observed.
+Preserve incident/outbox state and verify exact launchd release before replacing
+an installed observer definition.

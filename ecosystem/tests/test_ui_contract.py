@@ -113,24 +113,79 @@ function seedResearch(context, selected = true) {
     assert.equal(read(context,'currentVoterDraft().dirty'),false);
   }
   {
-    const prefs = {instrument:'ZEC/USDT',interval:'1h',strategy:'candidate1'};
+    const prefs = {instrument:'ZEC/USD',interval:'10s',strategy:'rsi'};
     const {context,element} = await fixture(prefs);
-    assert.equal(read(context,'state.oracleInstrument'),'ZEC/USDT');
-    assert.equal(read(context,'state.oracleInterval'),'1h');
-    assert.equal(read(context,'state.oracleStrategy'),'candidate1');
+    assert.equal(read(context,'state.oracleInstrument'),'ZEC/USD');
+    assert.equal(read(context,'state.oracleInterval'),'10s');
+    assert.equal(read(context,'state.oracleStrategy'),'rsi');
     const saved = []; context.localStorage.setItem=(key,value)=>saved.push([key,JSON.parse(value)]);
     context.window.OracleChart={render:async graph=>{context.lastGraph=graph;}};
     read(context,"state.polling=true;state.oracle={signal:'Long'};setInstrument('SOL/USD')");
     assert.equal(read(context,'state.oracle'),null); assert.equal(context.lastGraph,undefined);
-    element('oracle-frequency').value='1m';element('oracle-frequency').dispatch('change');
+    read(context,"state.oracleInterval='17s';changeOracleDisplay()");
     element('oracle-strategy').value='rsi';element('oracle-strategy').dispatch('change');
-    assert.equal(saved.at(-1)[0],'solmargintrader.oracle.display.v1');
-    assert.equal(saved.at(-1)[1].instrument,'SOL/USD');assert.equal(saved.at(-1)[1].interval,'1m');assert.equal(saved.at(-1)[1].strategy,'rsi');
-    assert.match(read(context,'oracleDisplayPath()'),/interval=1m&strategy=rsi/);
+    assert.equal(saved.at(-1)[0],'solmargintrader.oracle.display.v2');
+    assert.equal(saved.at(-1)[1].instrument,'SOL/USD');assert.equal(saved.at(-1)[1].interval,'17s');assert.equal(saved.at(-1)[1].strategy,'rsi');
+    assert.match(read(context,'oracleDisplayPath()'),/interval=17s&strategy=rsi/);
     read(context,"state.oracle={instrument:'SOL/USD',status:'unavailable',display:{publication_instrument:'ZEC/USDT',available_intervals:['1m'],strategies:[]}};renderSelectedAggregate()");
     assert(tree(element('oracle-instrument-detail')).some(item=>item.value==='ZEC/USDT'));
   }
-  for (const changed of ["state.oracleInterval='1h'", "state.oracleStrategy='rsi'", "state.oracleInstrument='BTC/USD'"]) {
+  {
+    const {context} = await fixture({instrument:'ZEC/USDT',interval:'1h',strategy:'candidate1'});
+    assert.equal(read(context,'state.oracleInterval'),'10s');
+    assert.equal(read(context,'state.oracleStrategy'),'published');
+  }
+  {
+    const {context,element} = await fixture(); const now=Date.now()/1000;
+    context.live={instrument:'SOL/USD',status:'unavailable',live_forecast:{instrument:'SOL/USD',status:'fresh',horizon_seconds:10,refresh_seconds:10,input_bar_seconds:10,source:'coinbase_recorder',kind:'stream_snapshot_mid',issued_at:now-1,observed_at:now-1,target_at:now+9,reference_price:100,selected:{strategy_id:'ma_crossover',version:'a'.repeat(64),direction:1,predicted_price:100.125,resolved:0,hits:0,ranking_basis:'warm_start_catalog_order'}}};
+    read(context,'state.oracle=live;renderSelectedAggregate()');
+    assert.match(element('aggregate-signal').textContent,/UP.*100.125/);
+    assert.match(element('oracle-signal').textContent,/UP.*100.125/);
+    assert.match(element('oracle-reason').textContent,/Provisional live forecast/);
+    assert.match(element('oracle-reason').textContent,/ranking warming up/);
+    assert.match(element('aggregate-freshness').textContent,/recalculates every 10s/);
+    assert.equal(element('aggregate-meter').hidden,true);
+    read(context,'state.oracle=null;renderSelectedAggregate()');
+    assert.match(element('aggregate-signal').textContent,/100.125/);
+    assert.match(element('oracle-reason').textContent,/Last forecast retained/);
+    read(context,"state.oracleInstrument='ZEC/USD';renderSelectedAggregate()");
+    assert.equal(element('aggregate-signal').textContent,'Unavailable');
+    read(context,"state.oracleInstrument='SOL/USD';state.oracleStrategy='rsi';state.oracle=live;renderSelectedAggregate()");
+    assert.equal(element('aggregate-signal').textContent,'Unavailable');
+    read(context,"state.oracleStrategy='published';state.oracleInterval='1m';renderSelectedAggregate()");
+    assert.equal(element('aggregate-signal').textContent,'Unavailable');
+    read(context,"state.oracleInterval='10s';state.activeRun='other-run';renderSelectedAggregate()");
+    assert.match(element('aggregate-signal').textContent,/100.125/);
+    // Source requests also carry the run identity; once that response is absent,
+    // a different run's cache must not appear.
+    read(context,"state.oracle=null;state.activeRun='third-run';renderSelectedAggregate()");
+    assert.equal(element('aggregate-signal').textContent,'Unavailable');
+  }
+  {
+    const {context,element}=await fixture();const now=Date.now()/1000;const sent=[];
+    context.live={instrument:'SOL/USD',status:'unavailable',live_forecast:{instrument:'SOL/USD',status:'fresh',horizon_seconds:10,refresh_seconds:10,input_bar_seconds:10,source:'coinbase_recorder',kind:'stream_snapshot_mid',issued_at:now-1,observed_at:now-1,target_at:now+9,reference_price:100,settings:{instrument:'SOL/USD',seconds:10,revision:0},selected:{strategy_id:'ma_crossover',version:'a'.repeat(64),direction:1,predicted_price:100.125,resolved:0,hits:0,ranking_basis:'warm_start_catalog_order'}}};
+    context.fetch=async(path,options)=>{if(path!=='/api/actions')throw new Error('unexpected');sent.push(JSON.parse(options.body));return {ok:true,json:async()=>({schema_version:1,ok:true,data:{id:'forecast-action',state:'queued'}})};};
+    read(context,"state.polling=true;state.session={csrf_nonce:'fixture'};state.oracle=live;renderSelectedAggregate()");
+    element('forecast-seconds').value='17';element('forecast-seconds').dispatch('input');
+    read(context,'renderSelectedAggregate()');assert.equal(element('forecast-seconds').value,'17');
+    await read(context,"saveForecastSeconds(4,document.getElementById('forecast-seconds-save'))");assert.equal(sent.length,0);
+    await read(context,"saveForecastSeconds(17,document.getElementById('forecast-seconds-save'))");
+    assert.equal(sent.length,1);assert.equal(sent[0].action,'oracle.forecast.set');assert.equal(sent[0].params.seconds,17);assert.equal(sent[0].params.expected_revision,0);
+    assert.equal(read(context,'state.oracleInterval'),'17s');
+    assert.match(element('aggregate-signal').textContent,/100.125/);
+    assert.match(element('aggregate-reason').textContent,/Applying 17s.*previous 10s/);
+    context.updated=JSON.parse(JSON.stringify(context.live));context.updated.live_forecast.horizon_seconds=17;context.updated.live_forecast.refresh_seconds=17;context.updated.live_forecast.target_at=context.updated.live_forecast.issued_at+17;context.updated.live_forecast.settings={instrument:'SOL/USD',seconds:17,revision:1};
+    read(context,"state.oracle=updated;state.localActions.set('forecast-action',{id:'forecast-action',action:'oracle.forecast.set',state:'succeeded',result:{revision:1}});renderSelectedAggregate();renderActionLedger()");
+    assert.equal(read(context,"preferencePending('forecast',state.oracleInstrument)"),false);
+    assert.match(element('aggregate-freshness').textContent,/recalculates every 17s/);
+    assert.match(element('aggregate-balance').textContent,/17-second/);
+    assert.equal(read(context,'state.forecastDirty.size'),0);
+    context.updated.live_forecast.issued_at=now-200;context.updated.live_forecast.observed_at=now-200;context.updated.live_forecast.target_at=now+100;context.updated.live_forecast.horizon_seconds=300;context.updated.live_forecast.refresh_seconds=300;
+    read(context,"state.oracleInterval='300s';renderSelectedAggregate()");
+    assert.match(element('aggregate-reason').textContent,/Provisional live forecast/);
+    assert.match(element('aggregate-balance').textContent,/300-second/);
+  }
+  for (const changed of ["state.oracleInterval='1m'", "state.oracleStrategy='rsi'", "state.oracleInstrument='BTC/USD'"]) {
     const {context} = await fixture(); let release;
     context.fetch=async path=>{if(path.startsWith('/api/oracle?')) return new Promise(resolve=>{release=()=>resolve({ok:true,json:async()=>({schema_version:1,ok:true,data:{instrument:'SOL/USD',signal:'OLD'}})});});throw new Error('offline');};
     const pending=read(context,'refresh()');await new Promise(setImmediate);
@@ -364,7 +419,7 @@ class UiContractTests(unittest.TestCase):
         ):
             self.assertNotIn(sink, source)
         self.assertEqual(source.count("localStorage."), 2)
-        self.assertEqual(source.count('"solmargintrader.oracle.display.v1"'), 2)
+        self.assertEqual(source.count('"solmargintrader.oracle.display.v2"'), 2)
         self.assertNotIn("localStorage.clear", source)
 
     @unittest.skipUnless(

@@ -1,6 +1,9 @@
 # Prompt history
 
-Version: 230
+Version: 233
+Delta: v232 to v233; add editable forecast seconds beside the prediction.
+Delta: v231 to v232; preserve owner confirmation that the forecast target is the next ten seconds.
+Delta: v230 to v231; record continuous ten-second selected-strategy Oracle forecast request.
 Delta: v229 to v230; record unavailable-values screenshot and evidence-specific dashboard repair.
 Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts.
 Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request.
@@ -2027,3 +2030,28 @@ Everything is still showing as unavailable: [Image #1]
 ```
 
 Screenshot supplied in conversation: `/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/C857DC45-1D2C-4900-8910-93132590C618-742-0000022FDE03BBDA/pasted-image-20261112-193001-CA3C900E-3B33-45FA-A0C5-654CCB9D80E3.png`. It shows one SOL RSI registration, no selected bot, unavailable Oracle votes, manager paper capital and manager paper P&L.
+
+
+## 2026-11-12 — Continuous ten-second Oracle forecast
+
+```text
+The oracle in the oraclebot should never have nothing displayed. It should always have a price prediction from a top strategy showing no matter what. The interval that it uses cannot be an hour, I would like it to be every 10 seconds that it shows what the coin is going to do based on the strategy chosen.
+```
+
+
+## 2026-11-12 — Oracle horizon clarification
+
+```text
+Next 10 seconds
+```
+
+Owner answer to: Should each update predict the next10seconds, or refresh every10seconds while predicting the nextminute? The required default is a new next-ten-second forecast everytenseconds.
+
+
+## 2026-11-12 — Editable forecast seconds
+
+```text
+Have that numbert be variable, and can be changed on the site next to it.
+```
+
+The number is the seconds-ahead forecast target, default10. One adjacent editable control sets both the target horizon and evaluation cadence, remembers the per-coin setting, and retains the prior correctly labelled forecast while an update is applied.
