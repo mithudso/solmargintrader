@@ -1,7 +1,10 @@
 # Prompt history
 
-Version: 237
+Version: 238
+Delta: v237 to v238; preserve both concurrent Stripe and ZEC requests.
 Delta: v236 to v237; preserve the new dedicated live Stripe key provisioning request.
+
+Delta: v236 to v237; record the captured-event ZEC backtest request.
 Delta: v235 to v236; preserve both full user prompt histories while combining authenticated MCP and continuous forecast work.
 Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration.
 Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
@@ -2185,3 +2188,7 @@ No I didn't mean to press that button, I want preauthorization so I don't have t
 ```text
 I stored the new live key as STRIPE_ORACLEBOT_SEC_KEY in ~/.env
 ```
+
+## 2026-11-13 — ZEC granular backtests
+
+> Run all of the backtests for ZEC using 1m 5m 10m and 1hr times against the more granular records recorded.
