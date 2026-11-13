@@ -1,6 +1,7 @@
 # Prompt history
 
-Version: 229
+Version: 230
+Delta: v229 to v230; record unavailable-values screenshot and evidence-specific dashboard repair.
 Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts.
 Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request.
 Delta: v226 to v227; preserve owner choice to retain Google Workspace.
@@ -2017,3 +2018,12 @@ For the oraclebot, it's saying the ecosystem isn't up and running, 1) set that a
 ```
 
 The attached local control-room image shows control server running, paper pipeline failed, backtest/forward worker failed, and Oracle forecasts stopped. This continues the existing always-running ecosystem and monitoring request.
+
+
+## 2026-11-12 — Unavailable dashboard values
+
+```text
+Everything is still showing as unavailable: [Image #1]
+```
+
+Screenshot supplied in conversation: `/var/folders/hz/s7btlxx54c32yt375m03q0h40000gn/T/C857DC45-1D2C-4900-8910-93132590C618-742-0000022FDE03BBDA/pasted-image-20261112-193001-CA3C900E-3B33-45FA-A0C5-654CCB9D80E3.png`. It shows one SOL RSI registration, no selected bot, unavailable Oracle votes, manager paper capital and manager paper P&L.

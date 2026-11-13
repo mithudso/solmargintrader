@@ -1,6 +1,8 @@
 # Work continuation
 
-Version: 484
+Version: 486
+Delta: v485 to v486; qualify the selected research dashboard and preserve independent source review before delivery.
+Delta: v484 to v485; trace unavailable screenshot to owner scope, absent selection and immature prospective evidence.
 Delta: v483 to v484; correct foreground diagnostic PID exposed by independent crash acceptance.
 Delta: v482 to v483; verify full runtime recovery, persistent ownership and managed-suite conflict guard.
 Delta: v481 to v482; reopen TASK-2002 for actual pipeline, worker and forecast ownership.
@@ -1323,3 +1325,19 @@ Independent actual restart acceptance caught a stale diagnostic PID: prepare_for
 
 
 Final installed0.4.8 promotion completed with source fingerprintc2276d72e312ab66bd85a8c731749ef35e1826f03b9191e42ebaaafa9214fcdf and unchanged stored/current F5 evaluation fingerprint. All primary/native/observer bindings use this fixed bundle. Actual second crash recovery changed launchdPID56048 to56618 in4.4seconds without manualkickstart, and displayed supervisor_pid matched both actual owners. Same run/batch/config and fresh Oracle were retained. Receipt /Users/mitch/.local/state/oraclebot-pipeline-recovery-20261112/crash-recovery-0.4.8.json. Full238ecosystem tests, targeted manager20/observer36 tests, Ruff, JS syntax and docs/wiki gates pass with recorded exit0. Remaining delivery outcome is recorded externally in delivery.json rather than assuming a local source state proves publication.
+
+
+## 2026-11-12 — Unavailable control-room evidence — TASK-2034
+
+The owner reports the live dashboard still shows unavailable values after TASK-2002 service recovery. Root isolated this fix in `/Users/mitch/dev/worktrees/oraclebot-dashboard-evidence-20261112`, branch `fix/oraclebot-dashboard-evidence-20261112`, base `93312fd7b373352f8d25ad39fb1500866a2a3b2d`. Audit PR234 and billing-tier work remain separate and preserved. Read-only live checks at 00:33–00:35 UTC confirm the current control room at http://127.0.0.1:53420 has a healthy pipeline and fresh SOL source. Its SOL RSI daily medium registration has one call, zero resolved calls and a future target. The active plan and analytics report 10000 USD per independent paper trial. The summary instead aggregates two unrelated stopped Bot Manager grid bots; one lacks financial fields, so its all-or-nothing summary is unavailable. The client selects no bot by default, so it never requests this sole registration analytics until a click. The Oracle has no eligible selected votes; threshold and minimum-evidence rules must remain unchanged.
+
+Before source implementation, preserve these constraints: select the sole displayed research registration when there is no explicit selection; show source-labelled independent trial capital and pending settlement instead of unrelated portfolio metrics; never infer a shared allocation or zero P&L. Keep stale source, wrong-run and missing-economics states fail closed. Expose current strategy direction only if an actual fresh source field supports it and keep it distinct from a qualified aggregate. Use existing account data read-only; do not reset the cohort, edit its archived policy, start another worker, resume paused research, or sign/submit orders. Root owns Git delivery. Stele TASK-2034 claimed; link queued as outbox a1d46bb9, durable decision queued as d97e8cc0 after transport closed. Remaining: independent loaded DOM/data receipts, minimal code and regression tests, PR/CI/merge, immutable installed UI update with independent actual acceptance.
+
+
+## Source correction and local acceptance
+
+Ecosystem0.4.9 now automatically selects only a sole first-page F5 registration, uses matching batch/trial/source evidence for10000USD independent-trial capital and pending economics, and displays Awaiting first settlement with the latest recorded target. Manager summaries retain their separate scope. The inspector derives research worker liveness only from matching batch identity and fresh supervisor observations. The client binds async analytics to run, bot and selection revision. Stale/wrong-identity/missing-economics cases fail closed. Oracle retains every existing eligibility gate, explains0of14qualification and exposes a separately labelled actual fresh shadow leader only when source/instrument/catalog/version/expiry all match. No capital/PnL/economic/policy/archive value was invented or changed.
+
+Worker finalchecks `/tmp/oraclebot-dashboard-fix-20261112/final-checks.json` records actualexit0 for2UIcontractPythoncases with110Nodeassertions (57original retained,53added), JSsyntax, Ruffcheck/format and6interceptedChrome fixturegroups, noactualownerendpointcalls/POST/externalrequests/JSerrors. InitialRED1andwrongRuffpath127remain recorded. Root independently reviewed all6authoredsource/doc/testdiffs and retained no Medium-or-higher finding in this boundedUI scope. Source root `/Users/mitch/dev/worktrees/oraclebot-dashboard-evidence-20261112`; complete6fileevidence inventory `/tmp/oraclebot-dashboard-fix-20261112/manifest.json`. Prior live diagnosis receipt `/tmp/oraclebot-dashboard-unavailable-20261112/final-receipt.json` SHA42ff315680dc5686eb8b4715680845b2bf42b8b53f5d58199e9e594d375faffc.
+
+Remaining delivery: regenerate tracked metadata/wiki/index, required consistency/local and final-headCI checks, PR/merge/defaultmastercontentproof. Then create a new immutable UI0.4.9environment and migrate only the managed suite/control room; preserve the actual0.4.8pipeline LaunchAgent/interpreter/home/run/batch/Oraclepolicy and recorder. Independent verifier preparation `/tmp/oraclebot-dashboard-live-acceptance-20261112/preparation-receipt.json` is WAIT_UI_PROMOTED, not a live pass. Root must record the prepromotion pipeline identity, promote exact reviewed source, signal newURL/revision/installedpath, independently verify actual assets/data/DOM and unchanged pipeline, then finish installed workflow notes/tracker and cleanup.

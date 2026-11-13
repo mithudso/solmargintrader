@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T00:10:33+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T00:52:19+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -78,7 +78,7 @@ Full list: `python3 index/search.py --concept transfer -n 1519`
 
 ### Lookahead and fill timing
 
-`lookahead` · **1456 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
+`lookahead` · **1458 files** · matched on `lookahead`, `fill_delay`, `warmup`, `warmup_bars`, `displacement`, `centred`, `shift`
 
 A signal at bar t may use data only through t. Centred indicators, same-bar fills and displaced clouds are the recurring hazards.
 
@@ -93,7 +93,7 @@ Strongest files:
 - `TRADINGVIEW-REFERENCE.md` (31 hits)
 - `docs/TRADINGVIEW-REFERENCE.md` (31 hits)
 
-Full list: `python3 index/search.py --concept lookahead -n 1456`
+Full list: `python3 index/search.py --concept lookahead -n 1458`
 
 ### On-chain execution reality
 
@@ -109,7 +109,7 @@ Strongest files:
 - `docs/FILES.md` (381 hits)
 - `FILES.md` (283 hits)
 - `skills/trading-and-investing/references/jupiter-jlp-pool.md` (163 hits)
-- `memory.md` (159 hits)
+- `memory.md` (160 hits)
 - `docs/archive/memory-2026-11-10.md` (141 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 799`
@@ -173,7 +173,7 @@ Full list: `python3 index/search.py --concept benchmark -n 429`
 
 ### Evidence floor
 
-`evidence-floor` · **330 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
+`evidence-floor` · **331 files** · matched on `min_total_trades`, `min_rankable_trades`, `insufficient`, `dropped`, `evidence floor`, `rankable`
 
 Below a minimum trade count a result is not eligible to be reported as an improvement. cpcv_evaluate prints DROPPED but still returns paths, which is how a 6-trade Sharpe reached a headline.
 
@@ -188,7 +188,7 @@ Strongest files:
 - `research/strategy_experiment/audit_integrity.md` (54 hits)
 - `soltui/cumulative.py` (40 hits)
 
-Full list: `python3 index/search.py --concept evidence-floor -n 330`
+Full list: `python3 index/search.py --concept evidence-floor -n 331`
 
 ### Combinatorial purged cross-validation
 
@@ -264,7 +264,7 @@ The families also carry a measured finding. Of the 25 registered strategies run 
 | `baseline` | 363 | `buy_and_hold`, `baseline` |
 | `breakout` | 279 | `breakout`, `bb_breakout`, `keltner` |
 | `volume-flow` | 157 | `obv`, `volume-flow` |
-| `mean-reversion` | 142 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
+| `mean-reversion` | 143 | `mean-reversion`, `zscore`, `bb_reversion`, `vwap_reversion`, `ou_reversion` |
 | `risk-overlay` | 67 | `voltarget`, `atr_sized`, `garch`, `risk-overlay` |
 
 ---

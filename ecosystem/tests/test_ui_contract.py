@@ -65,6 +65,17 @@ async function fixture(preferences = null) {
 }
 const read = (context, code) => vm.runInContext(code, context);
 const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
+
+function seedResearch(context, selected = true) {
+  const now = Date.now()/1000;
+  const bot = {bot_id:'research-a',source:'f5_batch',owner:'soltui.f5_batch',batch_id:'batch-a',asset:'SOL',strategy_id:'rsi',interval:'1d',preset_horizon:'medium',quote_currency:'USD',mode:'paper',lifecycle:'forward',observed_state:'forecast_recorded',observed_at:now,registration_observation_stale:false,forward:{calls:1,resolved:0,last_target:now+86400,trial_id:'trial-a'}};
+  const forward = {status:'unavailable',calls:1,recorded:1,resolved:0,pending:1,excluded:0,missing_economics:0,expired:0,quote_currency:'USD',paper_capital_usd:10000,capital_semantics:'frozen_independent_virtual_trial_basis_not_shared_allocated_cash',trial_id:'trial-a',profit_assessment:'unknown_no_resolved_economics'};
+  const analytics = {status:'available',as_of:now,batch_id:'batch-a',source:{status:'available'},coins:[{bot_id:bot.bot_id,asset:'SOL',strategy_id:'rsi',interval:'1d',horizon:'medium',forward}]};
+  context.researchSample={bot,analytics,status:{batch_id:'batch-a',supervisor_running:true,heartbeat_at:now,batch:{run_id:'batch-a',running:true,counts:{partial:1},total:1}},registrations:{status:'available',total:1,next_after:null,bots:[bot]}};
+  read(context,`state.activeRun='run-a';state.status=researchSample.status;state.registrations=researchSample.registrations;state.selected=${selected ? 'researchSample.bot.bot_id' : 'null'};state.selectedRecord=${selected ? 'researchSample.bot' : 'null'};state.analytics=${selected ? 'researchSample.analytics' : 'null'}`);
+  read(context,"$('status-filter').value='all'");
+  return context.researchSample;
+}
 (async()=>{
   {
     const {context,element} = await fixture();
@@ -193,6 +204,140 @@ const tree = (element) => [element, ...(element.children || []).flatMap(tree)];
     await read(context,"submitAction('pipeline.start',{})");
     assert.equal(posts,1);
     assert.equal(read(context,"Array.from(state.localActions.values()).at(-1).state"),'unknown');
+  }
+
+  {
+    const {context,element}=await fixture();const sample=seedResearch(context,false);let requests=0;
+    context.fetch=async(path,options)=>{assert.equal(options?.method,undefined);assert.match(path,/bot_id=research-a&run_id=run-a/);requests++;return {ok:true,json:async()=>({schema_version:1,ok:true,data:sample.analytics})};};
+    await read(context,'selectSoleResearchBot()');
+    assert.equal(read(context,'state.selected'),'research-a');assert.equal(requests,1);
+    assert.equal(element('paper-capital-title').textContent,'Selected trial capital');
+    assert.equal(element('paper-capital').textContent,'$10,000.00');
+    assert.match(element('capital-note').textContent,/Independent virtual trial/);
+    assert.equal(element('paper-pnl').textContent,'Awaiting first settlement');
+    assert.match(element('pnl-note').textContent,/1 pending call/);
+    assert.match(element('pnl-note').textContent,/not a guaranteed settlement time/);
+    assert.equal(element('selected-name').textContent,'SOL · rsi');
+    assert(tree(element('overview-fields')).some(item=>item.textContent==='Running · research batch owner'));
+    assert.equal(element('equity-message').textContent,'Awaiting first settlement');
+    assert(tree(element('bot-rows')).some(item=>item.textContent==='Awaiting first settlement'));
+    assert.equal(sample.analytics.coins[0].forward.realized_pnl_usd,undefined);
+  }
+
+  {
+    const {context,element}=await fixture();const sample=seedResearch(context,false);let analytics=0;
+    const response=data=>({ok:true,json:async()=>({schema_version:1,ok:true,data})});
+    context.fetch=async(path,options)=>{
+      assert.equal(options?.method,undefined);
+      if(path.startsWith('/api/status'))return response(sample.status);
+      if(path.startsWith('/api/registrations'))return response(sample.registrations);
+      if(path.startsWith('/api/telemetry'))return response({next_after:0,events:[],has_more:false});
+      if(path.startsWith('/api/control'))return response({});
+      if(path.startsWith('/api/analytics')){analytics++;return response(sample.analytics);}
+      throw new Error('fixture endpoint unavailable');
+    };
+    await read(context,'refresh()');await new Promise(setImmediate);
+    assert.equal(read(context,'state.selected'),'research-a');assert.equal(analytics,1);
+    assert.equal(element('paper-capital').textContent,'$10,000.00');
+  }
+  for (const change of ["state.registrations.total=2", "state.page=1", "state.registrations.next_after='more'", "state.selected='explicit-manager';state.selectedRecord={bot_id:'explicit-manager',source:'manager'}"]) {
+    const {context}=await fixture();seedResearch(context,false);let requests=0;
+    context.fetch=async()=>{requests++;throw new Error('must not fetch');};read(context,change);
+    await read(context,'selectSoleResearchBot()');assert.equal(requests,0);
+    assert.equal(read(context,'state.selected'),change.includes('explicit-manager')?'explicit-manager':null);
+  }
+  {
+    const {context,element}=await fixture();const sample=seedResearch(context);
+    sample.analytics.coins[0].forward.realized_pnl_usd=0;
+    read(context,'renderSummary();renderInspector();renderAnalytics()');
+    assert.equal(element('paper-pnl').textContent,'Awaiting first settlement');
+    for (const [field,expected] of [['missing_economics','Missing economics'],['excluded','Recording gaps'],['expired','Expired outcomes']]) {
+      sample.analytics.coins[0].forward[field]=1;read(context,'renderSummary();renderAnalytics()');
+      assert.equal(element('paper-pnl').textContent,expected);assert.equal(element('equity-message').textContent,expected);
+      sample.analytics.coins[0].forward[field]=0;
+    }
+    sample.analytics.coins[0].forward.status='available';sample.analytics.coins[0].forward.resolved=1;sample.analytics.coins[0].forward.pending=0;sample.analytics.coins[0].forward.realized_pnl_usd=125;
+    read(context,'renderSummary();renderInspector()');assert.equal(element('paper-pnl').textContent,'$125.00');
+    assert(tree(element('overview-fields')).some(item=>item.textContent==='$125.00'));
+    sample.status.heartbeat_at-=31;read(context,'renderInspector()');
+    assert(!tree(element('overview-fields')).some(item=>item.textContent==='Running · research batch owner'));
+    sample.status.heartbeat_at=Date.now()/1000;sample.status.batch.run_id='other-batch';read(context,'renderInspector()');
+    assert(!tree(element('overview-fields')).some(item=>item.textContent==='Running · research batch owner'));
+  }
+  for(const change of ["state.analytics.as_of-=31", "state.analytics.as_of+=60", "state.analytics.source.status='unavailable'", "state.analytics.batch_id='other-batch'", "state.status.batch_id='other-batch'", "state.analytics.coins[0].forward.trial_id='other-trial'", "state.registrations.bots[0].registration_observation_stale=true"]) {
+    const {context,element}=await fixture();seedResearch(context);read(context,change+';renderSummary();renderInspector();renderAnalytics()');
+    assert.equal(element('paper-capital').textContent,'Unavailable');assert.equal(element('paper-pnl').textContent,'Evidence unavailable');
+    assert(!tree(element('overview-fields')).some(item=>item.textContent==='$10,000.00'));
+    assert.equal(element('coin-rows').children.length,0);
+  }
+  {
+    const {context,element}=await fixture();seedResearch(context);
+    read(context,"state.selected='manager-a';state.selectedRecord={bot_id:'manager-a',source:'manager'};state.telemetry={manager:{status:'available',bots:[{bot_id:'manager-a',mode:'paper',configured_virtual_capital:{value:500},financials:{realized_net_pnl_usd:{value:2},unrealized_net_pnl_usd:{value:3}}}]}};renderSummary()");
+    assert.equal(element('paper-capital-title').textContent,'Manager virtual capital');assert.equal(element('paper-capital').textContent,'$500.00');
+    assert.equal(element('paper-pnl').textContent,'$5.00');assert.equal(element('paper-pnl-title').textContent,'Manager paper P&L');
+  }
+  {
+    const {context,element}=await fixture();const sample=seedResearch(context);let releaseOld;
+    const other={...sample.bot,bot_id:'research-b',asset:'BTC',forward:{...sample.bot.forward,trial_id:'trial-b'}};
+    sample.registrations.bots.push(other);sample.registrations.total=2;
+    const newer={...sample.analytics,coins:[{...sample.analytics.coins[0],bot_id:other.bot_id,asset:'BTC',forward:{...sample.analytics.coins[0].forward,paper_capital_usd:20000,trial_id:'trial-b'}}]};
+    context.otherBot=other;
+    const response=data=>({ok:true,json:async()=>({schema_version:1,ok:true,data})});
+    context.fetch=async path=>{
+      if(path.startsWith('/api/analytics?bot_id=research-a'))return new Promise(resolve=>{releaseOld=()=>resolve(response(sample.analytics));});
+      if(path.startsWith('/api/analytics?bot_id=research-b'))return response(newer);
+      if(path.startsWith('/api/status'))return response(sample.status);
+      if(path.startsWith('/api/registrations'))return response(sample.registrations);
+      if(path.startsWith('/api/telemetry'))return response({next_after:0,has_more:false,events:[]});
+      if(path.startsWith('/api/control'))return response({});
+      throw new Error('fixture endpoint unavailable');
+    };
+    const pending=read(context,'refresh()');await new Promise(setImmediate);await read(context,'selectBot(otherBot)');
+    assert.equal(element('paper-capital').textContent,'$20,000.00');releaseOld();await pending;
+    assert.equal(read(context,'state.analytics.coins[0].bot_id'),'research-b');assert.equal(element('paper-capital').textContent,'$20,000.00');
+  }
+
+  {
+    const {context,element}=await fixture();const sample=seedResearch(context);
+    sample.analytics.coins[0].forward.calls=0;sample.analytics.coins[0].forward.recorded=0;sample.analytics.coins[0].forward.pending=0;
+    read(context,'renderSummary()');assert.equal(element('paper-pnl').textContent,'Awaiting first call');
+    context.fetch=async()=>{throw new Error('fixture failed');};await read(context,'selectBot(researchSample.bot)');
+    assert.equal(element('paper-pnl').textContent,'Evidence unavailable');assert.equal(element('pnl-note').textContent,'Research owner unavailable');
+  }
+  {
+    const {context}=await fixture();const sample=seedResearch(context);let oldRelease;let calls=0;
+    const latest={...sample.analytics,coins:[{...sample.analytics.coins[0],forward:{...sample.analytics.coins[0].forward,paper_capital_usd:25000}}]};
+    context.fetch=async()=>{
+      calls++;if(calls===1)return new Promise(resolve=>{oldRelease=()=>resolve({ok:true,json:async()=>({schema_version:1,ok:true,data:sample.analytics})});});
+      return {ok:true,json:async()=>({schema_version:1,ok:true,data:latest})};
+    };
+    const older=read(context,'selectBot(researchSample.bot)');await new Promise(setImmediate);
+    await read(context,'selectBot(researchSample.bot)');oldRelease();await older;
+    assert.equal(read(context,'state.analytics.coins[0].forward.paper_capital_usd'),25000);
+  }
+  {
+    const {context}=await fixture();const sample=seedResearch(context);let release;
+    context.fetch=async()=>new Promise(resolve=>{release=()=>resolve({ok:true,json:async()=>({schema_version:1,ok:true,data:sample.analytics})});});
+    const pending=read(context,'selectBot(researchSample.bot)');await new Promise(setImmediate);
+    read(context,"state.activeRun='run-b';state.analytics=null");release();await pending;assert.equal(read(context,'state.analytics'),null);
+  }
+  {
+    const {context,element}=await fixture();const now=Date.now()/1000;
+    context.qualifyingSample={instrument:'SOL/USD',status:'unavailable',as_of:now,horizon_seconds:60,market:{status:'available',observation:{instrument:'SOL/USD',observed_at:now,received_at:now,source:'fixture',kind:'reference'}},selection:{instrument:'SOL/USD',selected_ids:['bb_reversion','rsi','macd']},aggregate:{reason:'insufficient_current_voting_evidence',included:[],excluded:[{strategy_id:'bb_reversion',reason:'accuracy_at_or_below_threshold'},{strategy_id:'rsi',reason:'insufficient_evidence'},{strategy_id:'macd',reason:'warmup_required'}]},catalog:[{strategy_id:'bb_reversion',version:'v1'},{strategy_id:'rsi'},{strategy_id:'macd'}],strategies:[{strategy_id:'bb_reversion',version:'v1',instrument:'SOL/USD',source:'fixture',kind:'reference',issued_at:now-1,expires_at:now+30,horizon_seconds:60,direction:1,hits:8,resolved:29,confidence_percent:100*8/29,selected:true}]};
+    read(context,'state.oracle=qualifyingSample;renderSelectedAggregate()');
+    assert.equal(element('aggregate-signal').textContent,'Unavailable');assert.equal(element('aggregate-meter').hidden,true);
+    assert.match(element('aggregate-reason').textContent,/0 of 3 selected strategies qualify/);
+    assert.match(element('aggregate-reason').textContent,/1 warming up/);
+    assert.match(element('oracle-shadow-leader').textContent,/bb reversion · UP/);
+    assert.match(element('oracle-shadow-leader').textContent,/8\/29/);
+    assert.match(element('oracle-shadow-leader').textContent,/Unqualified shadow/);
+    const row=context.qualifyingSample.strategies[0];
+    for(const [key,value] of [['expires_at',now-1],['instrument','BTC/USD'],['source','other'],['version','old'],['resolved',0]]) {
+      const previous=row[key];row[key]=value;read(context,'renderSelectedAggregate()');
+      assert.equal(element('oracle-shadow-leader').hidden,true);row[key]=previous;
+    }
+    context.qualifyingSample.market.observation.observed_at=now-16;read(context,'renderSelectedAggregate()');
+    assert.equal(element('oracle-shadow-leader').hidden,true);
   }
   console.log('UI behavior: stale/pair gates, voter isolation, legacy guards, native input routing, hostile Markdown, run capture and no automatic mutation retry passed');
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `240e617` (2026-11-13T00:10:33+00:00). 3355 tracked files, 80.4 MB.
+**Generated** from `index/INDEX.json` at commit `93312fd7` (2026-11-13T00:52:19+00:00). 3355 tracked files, 80.5 MB.
 
 Regenerate with:
 
@@ -639,9 +639,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1326 lines · 253,777 B · description: **extracted**
+`doc` · 1334 lines · 255,965 B · description: **extracted**
 
-**Purpose.** Version: 484 Delta: v483 to v484; correct foreground diagnostic PID exposed by independent crash acceptance. Delta: v482 to v483; verify full runtime recovery, persistent ownership and managed-suite conflict guard.
+**Purpose.** Version: 485 Delta: v484 to v485; trace unavailable screenshot to owner scope, absent selection and immature prospective evidence. Delta: v483 to v484; correct foreground diagnostic PID exposed by independent crash acceptance.
 
 **Use.** Read it.
 
@@ -703,9 +703,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2020 lines · 120,791 B · description: **extracted**
+`doc` · 2030 lines · 121,347 B · description: **extracted**
 
-**Purpose.** Version: 229 Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts. Delta: v227 to v228; capture persistent Oraclebot ecosystem and operational monitoring request.
+**Purpose.** Version: 230 Delta: v229 to v230; record unavailable-values screenshot and evidence-specific dashboard repair. Delta: v228 to v229; record screenshot correction showing failed pipeline and stopped forecasts.
 
 **Use.** Read it.
 
@@ -28709,7 +28709,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/README.md`
 
-`doc` · 59 lines · 3,778 B · description: **extracted**
+`doc` · 80 lines · 5,156 B · description: **extracted**
 
 **Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
 
@@ -29143,7 +29143,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/tests/test_ui_contract.py`
 
-`test` · 237 lines · 16,026 B · description: **extracted**
+`test` · 382 lines · 29,219 B · description: **extracted**
 
 **Purpose.** Client safety checks; a VM DOM does not replace installed browser acceptance.
 
@@ -29225,7 +29225,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/app.js`
 
-`code-js` · 1125 lines · 90,360 B · description: **none**
+`code-js` · 1227 lines · 100,726 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -29235,7 +29235,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `ecosystem/web/index.html`
 
-`code-web` · 90 lines · 31,895 B · description: **none**
+`code-web` · 90 lines · 32,015 B · description: **none**
 
 **Purpose.** _No description available._
 
