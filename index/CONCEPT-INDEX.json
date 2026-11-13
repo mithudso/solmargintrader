@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T22:37:33+00:00",
+  "generatedAt": "2026-11-13T22:44:01+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -178,7 +178,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 169
+          "hits": 170
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -606,11 +606,11 @@
           "hits": 271
         },
         {
-          "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
-          "hits": 187
+          "path": "memory.md",
+          "hits": 188
         },
         {
-          "path": "memory.md",
+          "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
           "hits": 187
         },
         {

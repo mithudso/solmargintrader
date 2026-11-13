@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 539
+Version: 540
+Delta: v539 to v540; regenerate packaged wiki after CI detected documentation drift.
 Delta: v538 to v539; compact complete keyword index to satisfy remote size limit.
 Delta: v537 to v538; freeze live cycle fits across revised input candles.
 Delta: v536 to v537; verify streaming implementation and causal recovery regressions.
@@ -2242,3 +2243,7 @@ Added a per-interval frozen cycle fit keyed to each16-bar decision boundary, inc
 ## Final research gate and keyword index transport
 
 The completed combinedresearch suite is113tests, allpassed0 (the prior115estimate was incorrect). Finaldocscheck0 with explicitbotmanager/src. Requiredkeywordindex rebuild produced104857845bytes,245overGitHub100MiBhardlimit. Textwriter nowusescompactJSON withthesameschema/allpostings; noentry/tokencoverageisremoved. This necessarydeliveryfix is format-only. VerifyparsedJSONequivalenceandrerunofflineindexgate plus existingindex tests beforecommit. Semanticembeddingsremainpaused. Finalnativeprosepublicationblocker TASK-2152isunchanged.
+
+## Streaming delivery CI documentation correction
+
+PR255 initialreview7fae747 passedbacktester/docs/Oracle and311ecosystem tests, but packagedwiki --check correctlyreportedstale because its source documentation changed. Rebuilt ecosystem/wiki_content/pages.json andmanifest.json offline (1875pages), wiki/current andoperationinventorieschecks0; no installedservicechanged. Finalsource requiresnewCI andcanonicalacceptance afterthisdocumentation-onlyfollowup. DurableSteleoutboxids for thisrequest: c3f94b00(decision),31c42b5a(2158complete),e68d289f(2159claim),3138cc17(2159complete;finalsuitecountcorrectedhere113),2bf3b0f4(2160claim). MCPtransportremainsclosed; taskcompletionwillbequeuedwithactualmergedsource/acceptancereceipt. /Users/mitch/.local/state/solmargintrader/zec-winner-stream-20261113/delivery.json is the finaldeliveryreceipt location.
