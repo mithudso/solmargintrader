@@ -1,4 +1,11 @@
-# Paper ecosystem control room 0.4.10
+# Paper ecosystem control room 0.4.12
+
+The Oracle also runs an independent selected-strategy price projection. It
+defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds
+beside the forecast to set a per-coin horizon/cadence from 5 through 300 seconds.
+The last matching forecast stays visible with its age during source outages.
+See [continuous Oracle forecasts](../docs/ORACLE-LIVE-FORECAST.md) for the
+provisional method, exact input traces, preferences and separate service owner.
 
 The headless service coordinates the existing F5 Backtester, prospective forward
 trials, per-instrument Oracle archives and Bot Manager. Its independent local

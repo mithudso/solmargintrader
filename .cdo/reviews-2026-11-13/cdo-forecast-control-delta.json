@@ -1,0 +1,915 @@
+{
+  "schema": "cdo-bound-source-delta-v1",
+  "observed_at": "2026-11-13T04:45:59.874346+00:00",
+  "status": "DELTA_REVIEW_COMPLETE_T1_HARDENING_AUTHORED_ROOT_VERIFICATION_PENDING",
+  "scope": {
+    "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/control.py",
+    "review_mode": "inherited complete semantic baseline plus complete current delta; not a fresh full-file review",
+    "baseline_commit": "a5053e9c859505a895935702a51180830b69b89f",
+    "root_task": "TASK-1540",
+    "operations": "Read-only source/Git inspection plus root-released test-only addition in ecosystem/tests/test_control_http.py and this assigned receipt. No tests, network, service actions, installs, inference, or Git mutation."
+  },
+  "baseline": {
+    "blob_sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
+    "sha256": "d53936531ebabaf7acd2ec19a05431afd67253aff85c89a614c8608355bfddc6",
+    "lines": 932,
+    "coverage_row": {
+      "path": "ecosystem/control.py",
+      "blob_sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
+      "lines": 932,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    "coverage_row_matches_git": true,
+    "inherited_current_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+    "inherited_current_receipt": {
+      "path": "ecosystem/control.py",
+      "sha256": "d53936531ebabaf7acd2ec19a05431afd67253aff85c89a614c8608355bfddc6",
+      "blob_sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
+      "lines": 932,
+      "read_evidence": {
+        "method": "Complete existing semantic read plus complete incoming and authored final deltas, or complete new139line source plus final11line delta; current hashes bind those reads, not a fresh review inferred from hashing.",
+        "prior_evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+        "incoming_review": "pipeline-pr241-incoming-review.json",
+        "incoming_commit": "93312fd7b373352f8d25ad39fb1500866a2a3b2d",
+        "incoming_sha256": "d53936531ebabaf7acd2ec19a05431afd67253aff85c89a614c8608355bfddc6",
+        "incoming_blob_sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
+        "incoming_to_final_delta": [],
+        "original_to_current_delta": [
+          "--- ecosystem/control.py@prior",
+          "+++ ecosystem/control.py@current",
+          "@@ -786,7 +786,9 @@",
+          "             {",
+          "                 \"id\": \"manager\",",
+          "                 \"label\": \"Bot Manager\",",
+          "-                \"owner\": \"botmanager.service\",",
+          "+                \"owner\": \"botmanager.suite\"",
+          "+                if service.get(\"suite_owner_lock_held\")",
+          "+                else \"botmanager.service\",",
+          "                 \"state\": \"running\"",
+          "                 if service.get(\"supervisor_lock_held\")",
+          "                 else \"stopped\",",
+          "@@ -796,8 +798,11 @@",
+          "                     {",
+          "                         \"action\": \"manager.service\",",
+          "                         \"label\": \"Install / start manager\",",
+          "-                        \"enabled\": service.get(\"platform\") == \"darwin\",",
+          "-                        \"reason\": None",
+          "+                        \"enabled\": service.get(\"platform\") == \"darwin\"",
+          "+                        and not service.get(\"managed_by_suite\"),",
+          "+                        \"reason\": \"managed_by_suite\"",
+          "+                        if service.get(\"managed_by_suite\")",
+          "+                        else None",
+          "                         if service.get(\"platform\") == \"darwin\"",
+          "                         else \"macos_service_required\",",
+          "                         \"params\": {\"action\": \"install\"},",
+          "@@ -805,8 +810,11 @@",
+          "                     {",
+          "                         \"action\": \"manager.service\",",
+          "                         \"label\": \"Uninstall / stop manager\",",
+          "-                        \"enabled\": bool(service.get(\"definition_present\")),",
+          "-                        \"reason\": None",
+          "+                        \"enabled\": bool(service.get(\"definition_present\"))",
+          "+                        and not service.get(\"managed_by_suite\"),",
+          "+                        \"reason\": \"managed_by_suite\"",
+          "+                        if service.get(\"managed_by_suite\")",
+          "+                        else None",
+          "                         if service.get(\"definition_present\")",
+          "                         else \"service_not_installed\",",
+          "                         \"params\": {\"action\": \"uninstall\"},"
+        ],
+        "final_delta_reviewed": true,
+        "baseline_commit": "1015e703089998ecc278b0304ae3f9cbe050d81e",
+        "baseline_sha256": "0196405cfd68ffba38d31c4e9a7b679818b2f804c72f348c573706eac34a5074",
+        "baseline_blob_sha": "dfea0429a74c5622f24738defd6f72dca833ceef",
+        "semantic_focus": "Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action."
+      },
+      "passes": {
+        "C1": "ran: Displays suite ownership and disables legacy manager install/uninstall actions when managed_by_suite. Backend refusal remains authoritative; no new command, signing or economic mutation.; Final bound delta: Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action.",
+        "C2": "ran: public caller and prior full-review contracts inspected; owner/paper/evidence identity boundaries preserved. New run/service interfaces remain explicit.; Final bound delta: Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action.",
+        "C3": "ran: no research parameter/scoring/financial algorithm change. Input fixtures updated only for explicit full-runtime coverage; old safety assertions remain.",
+        "S1": "ran: immutable upstream source/diffs treated as data. No package/provider/service/notification/owner operation run by audit; credentials remain private.",
+        "S2": "ran: lock/subprocess/HTTP/file lifecycle and narrow new branches inspected. Future3boundary fixes have mocked/ownedtemp gates; installed/native execution explicitly not qualified.; Final bound delta: Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action.",
+        "S3": "ran: ownership, stop, strict readiness/type/clock and safe failure boundaries traced. New temp-prefix/stop/freshness gaps were reproduced before future correction.; Final bound delta: Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action.",
+        "S4": "ran: supported stdlib/source/package constraints inspected. Root preserves higher coherent0.4.10/newer dependency pins while installed0.4.8 remains frozen.",
+        "S5": "ran: public failures retain fixed safe codes, private metadata not echoed; observer retains truthful remote-superseded vs delivered distinction.",
+        "P1": "ran: finite registry/health/status work; no empirical study/optimization/new data acquisition. Existing pipeline orchestration paths retain archives and skip paused work.",
+        "P2": "ran: short intent lease separated from lifetime supervisor lock. No generic parallelism/setup-hoisting rewrite; live/frozen owner processes not touched.",
+        "M1": "ran: existing module structure retained; standalone source-hashed observer deliberately stays one installation artifact. New native-owner module is bounded139baseline lines.",
+        "M2": "ran: reuses existing runner/control/F5/Oracle primitives; no copied economic engine or unrelated framework.",
+        "M3": "N/A per-file: repository settings/error/sink architecture residuals remain partial; static tool inventory is documentation only.",
+        "M4": "ran: immutable commit/diff/read provenance and installed-vs-source/historical-result limits recorded. Oldlegacyplist22:29:23 is another owner observation with causeunproven.; Final bound delta: Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action.",
+        "T1": "ran: relevant future canonical37Ops+13Runner=50cases0, BotMservice5cases0, and freshCLI4/negative/readiness gates are bound separately. Existing component/fullfailed receipts not relabeled.; Final bound delta: Managed suite ownership disables competing legacy service controls; complete upstream delta reviewed; owned mock/full255suite0, no live service action.",
+        "T2": "N/A per-file: root owns coherent version/pin reconciliation and existing advisory/license limits; no dependency/native installation by this audit.",
+        "T3": "ran: new/changed relevant Python sources parse; qualified runtime/test subset Ruff0.17.4check0. JS one-line label scope and pendingUI merge are separated, not a new full browser acceptance claim.",
+        "T4": "N/A: production module, no suite parallelism change.",
+        "M5": "N/A: library/service-dispatch implementation, not a new standalone CLI entrypoint; installed caller qualifications remain separate."
+      },
+      "verdict": "REVIEWED-FIXED",
+      "findings": []
+    },
+    "inherited_original_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/ecosystem.json",
+    "inherited_original_receipt": {
+      "path": "ecosystem/control.py",
+      "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/control.py",
+      "review_mode": "new_full_semantic",
+      "new_review_count": 1,
+      "original_blob": "dfea0429a74c5622f24738defd6f72dca833ceef",
+      "final_blob": "dfea0429a74c5622f24738defd6f72dca833ceef",
+      "sha256": "0196405cfd68ffba38d31c4e9a7b679818b2f804c72f348c573706eac34a5074",
+      "original_lines": 924,
+      "final_lines": 924,
+      "read_ranges_original": [
+        [
+          1,
+          230
+        ],
+        [
+          231,
+          460
+        ],
+        [
+          461,
+          690
+        ],
+        [
+          691,
+          924
+        ]
+      ],
+      "semantic_focus": "Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+      "safety_focus": "Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+      "passes": [
+        {
+          "id": "C1",
+          "state": "reviewed",
+          "reason": "Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+          "findings": []
+        },
+        {
+          "id": "C2",
+          "state": "reviewed",
+          "reason": "Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+          "findings": []
+        },
+        {
+          "id": "C3",
+          "state": "reviewed",
+          "reason": "Adverse cases and assertions inspected against component synthetic tests. Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+          "findings": []
+        },
+        {
+          "id": "S1",
+          "state": "reviewed",
+          "reason": "Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+          "findings": []
+        },
+        {
+          "id": "S2",
+          "state": "reviewed",
+          "reason": "Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+          "findings": []
+        },
+        {
+          "id": "S3",
+          "state": "reviewed",
+          "reason": "Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+          "findings": []
+        },
+        {
+          "id": "S4",
+          "state": "reviewed",
+          "reason": "Python 3.13/POSIX on supported macOS or existing browser/Node language features; no cross-platform acceptance claimed.",
+          "findings": []
+        },
+        {
+          "id": "S5",
+          "state": "reviewed",
+          "reason": "Action journals expose queued/running/succeeded/failed/interrupted states and fixed public error codes. Legacy projection preferences are deliberately allowed; broad guard candidate RETRACTED.",
+          "findings": []
+        },
+        {
+          "id": "P1",
+          "state": "reviewed",
+          "reason": "Bounded input/output, repeated work, page/array scans and fixture setup inspected. Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+          "findings": []
+        },
+        {
+          "id": "P2",
+          "state": "reviewed",
+          "reason": "Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+          "findings": []
+        },
+        {
+          "id": "M1",
+          "state": "reviewed",
+          "reason": "Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+          "findings": []
+        },
+        {
+          "id": "M2",
+          "state": "reviewed",
+          "reason": "Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+          "findings": []
+        },
+        {
+          "id": "M3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+          "findings": []
+        },
+        {
+          "id": "M4",
+          "state": "reviewed",
+          "reason": "Durable finite action queue, request digest reuse and run-scoped owner dispatch.",
+          "findings": []
+        },
+        {
+          "id": "T1",
+          "state": "reviewed",
+          "reason": "Adverse cases and assertions inspected against component synthetic tests. Nonce-independent durable action idempotency; ambiguous running actions become interrupted rather than replaying.",
+          "findings": []
+        },
+        {
+          "id": "T2",
+          "state": "na",
+          "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+          "findings": []
+        },
+        {
+          "id": "T3",
+          "state": "na",
+          "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+          "findings": []
+        },
+        {
+          "id": "T4",
+          "state": "na",
+          "reason": "Production source; suite timing and fixture isolation are reviewed on test-file rows.",
+          "findings": []
+        },
+        {
+          "id": "M5",
+          "state": "na",
+          "reason": "Library/browser module or test file has no owner-facing application entrypoint.",
+          "findings": []
+        }
+      ],
+      "changed": false,
+      "final_review": "Complete original bounded source read plus every changed hunk reread, followed by final code-focused self-review. Independent blind review remains parent-owned."
+    }
+  },
+  "current": {
+    "blob_sha": "532cc6e90fd340814ac75779c9cd6d80e3f51ca6",
+    "sha256": "31ff5361ecca187cf53fe09f75bb845ead135f8d7b1f24bc4456a94a9fe504d6",
+    "lines": 939,
+    "changed_lines_new": [
+      [
+        49,
+        49
+      ],
+      [
+        473,
+        478
+      ]
+    ],
+    "direct_read_ranges_current": [
+      [
+        1,
+        100
+      ],
+      [
+        100,
+        270
+      ],
+      [
+        270,
+        430
+      ],
+      [
+        430,
+        610
+      ],
+      [
+        609,
+        660
+      ]
+    ],
+    "delta_complete": true,
+    "delta_text": [
+      "--- ecosystem/control.py@a505\n",
+      "+++ ecosystem/control.py@reviewed-current\n",
+      "@@ -41,16 +41,17 @@\n",
+      "     \"oracle.start\",",
+      "     \"oracle.stop\",",
+      "     \"oracle.restart\",",
+      "     \"recorder.start\",",
+      "     \"recorder.stop\",",
+      "     \"research.launch\",",
+      "     \"pnl.recording.set\",",
+      "     \"oracle.voters.set\",",
+      "+    \"oracle.forecast.set\",",
+      "     *(\"manager.\" + command for command in MANAGER_ACTIONS),",
+      " }",
+      " SENSITIVE = re.compile(",
+      "     r\"secret|password|private.?key|api.?key|credential|authorization|token|signer|wallet|mnemonic|seed.?phrase\",",
+      "     re.IGNORECASE,",
+      " )",
+      " ",
+      " ",
+      "@@ -464,16 +465,22 @@\n",
+      "                 raise ValueError(\"invalid_action_parameters\")",
+      "             return set_recording(home, **params)",
+      "         if action == \"oracle.voters.set\":",
+      "             from .votes import set_voters",
+      " ",
+      "             if set(params) != {\"instrument\", \"ids\", \"expected_revision\"}:",
+      "                 raise ValueError(\"invalid_action_parameters\")",
+      "             return set_voters(home, **params)",
+      "+        if action == \"oracle.forecast.set\":",
+      "+            from .forecast_preferences import set_seconds",
+      "+",
+      "+            if set(params) != {\"instrument\", \"seconds\", \"expected_revision\"}:",
+      "+                raise ValueError(\"invalid_action_parameters\")",
+      "+            return {**set_seconds(self.home, **params), \"scope\": \"shared_primary_market_forecast\"}",
+      "         if home != self.home and home == self.home.parent / \"ecosystem-paper-v1\":",
+      "             raise ValueError(\"legacy_source_read_only\")",
+      "         if action.startswith(\"recorder.\"):",
+      "             if action == \"recorder.stop\":",
+      "                 if params != {\"acknowledge_shared\": True}:",
+      "                     raise ValueError(\"shared_recorder_acknowledgment_required\")",
+      "                 self._runtime(self.home, recorder_enabled=False)",
+      "                 self._runtime("
+    ]
+  },
+  "passes": [
+    {
+      "id": "C1",
+      "state": "reviewed",
+      "reason": "Finite action registry reaches new branch before generic oracle lifecycle handler; no order/runtime toggle path added. Lines 49,435-478,500-541.",
+      "findings": []
+    },
+    {
+      "id": "C2",
+      "state": "reviewed",
+      "reason": "Exact parameter keys are enforced after run_id removal; result preserves set_seconds contract with explicit shared_primary_market_forecast scope. Lines 438-439,473-478.",
+      "findings": []
+    },
+    {
+      "id": "C3",
+      "state": "reviewed",
+      "reason": "Statically traced missing/extra keys, invalid instrument/types/bounds, stale revision, duplicate request_id and selected-run home. No execution by this reviewer. Lines 260-299,435-478,621-641; helper context.",
+      "findings": []
+    },
+    {
+      "id": "S1",
+      "state": "reviewed",
+      "reason": "Stage 0.5 found no reviewer directive in fresh delta/context. HTTP caller requires same-origin nonce before durable submit; owner home rather than submitted path controls preference destination. Lines 260-299,473-478; web.py:473-516.",
+      "findings": []
+    },
+    {
+      "id": "S2",
+      "state": "reviewed",
+      "reason": "Preference errors flow through existing failed-action public error sanitization; result is recorded after helper returns committed state. Ambiguous interrupted mutations are not retried. Lines 301-352,473-478.",
+      "findings": []
+    },
+    {
+      "id": "S3",
+      "state": "reviewed",
+      "reason": "Exact keys plus helper strict int bounds 5..300, nonnegative exact-int revision and canonical instrument validation reject malformed inputs; run_id resolves only owned experiment entries. Lines 132-160,438-439,476-478,621-641.",
+      "findings": []
+    },
+    {
+      "id": "S4",
+      "state": "reviewed",
+      "reason": "Delta uses existing Python dict unpacking/module import/stdlib API surface; inherited Python 3.13/POSIX contract retained.",
+      "findings": []
+    },
+    {
+      "id": "S5",
+      "state": "reviewed",
+      "reason": "Existing durable action journal exposes queued/running/succeeded/failed/interrupted and fixed credential-free errors; successful forecast action adds explicit shared scope. Lines 198-207,283-299,301-346,478.",
+      "findings": []
+    },
+    {
+      "id": "P1",
+      "state": "reviewed",
+      "reason": "Only constant-size registry entry and synchronous bounded helper call added to existing serialized worker; no unbounded allocation introduced.",
+      "findings": []
+    },
+    {
+      "id": "P2",
+      "state": "reviewed",
+      "reason": "Existing owner flock serializes durable actions. Helper transaction uses BEGIN IMMEDIATE and revision CAS; stale writes fail rather than retry. Lines 301-352 and forecast_preferences.py:50-96 as read context.",
+      "findings": []
+    },
+    {
+      "id": "M1",
+      "state": "reviewed",
+      "reason": "Small dispatch branch follows adjacent voter/recording action pattern. Long return expression is style only, not Medium.",
+      "findings": []
+    },
+    {
+      "id": "M2",
+      "state": "reviewed",
+      "reason": "Validation/storage reuse forecast_preferences.set_seconds; no copied forecast algorithm or financial model.",
+      "findings": []
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repository-scope architecture/configuration remains root-owned.",
+      "findings": []
+    },
+    {
+      "id": "M4",
+      "state": "reviewed",
+      "reason": "Paper-only module contract and explicit shared result scope agree with owner-home write. No strategy/forecast model claim changed.",
+      "findings": []
+    },
+    {
+      "id": "T1",
+      "state": "addressed_verification_pending",
+      "reason": "Missing selected-run owner-home boundary test authored at ecosystem/tests/test_control_http.py:191-241 and entire authored delta reread. Root owns guarded execution; no pass result claimed.",
+      "findings": [
+        "CONTROL-T1-OWNER-HOME"
+      ]
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repository-scope dependency/supply-chain review remains root-owned.",
+      "findings": []
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repository-scope tooling review remains root-owned.",
+      "findings": []
+    },
+    {
+      "id": "T4",
+      "state": "na",
+      "reason": "Production module, not a test source; suite timing/fixture isolation is not in this file.",
+      "findings": []
+    },
+    {
+      "id": "M5",
+      "state": "na",
+      "reason": "Library dispatch module has no owner-facing runnable entrypoint.",
+      "findings": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "CONTROL-T1-OWNER-HOME",
+      "pass": "T1",
+      "severity": "Medium",
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/control.py",
+      "line": 478,
+      "test_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_control_http.py",
+      "test_line": 158,
+      "finding": "No regression test distinguishes the selected research run from the control owner home for the new shared forecast preference mutation.",
+      "impact": "Replacing self.home with the selected home would pass the current HTTP test and silently route a durable shared preference into a run-specific store.",
+      "prescribed_fix": "Add an isolated registered research selection test that submits authenticated oracle.forecast.set with run_id, observes its persisted success/scope, verifies primary home settings, and verifies selected preference store absence.",
+      "status": "test hardening authored; root guarded verification pending",
+      "remediation": {
+        "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_control_http.py",
+        "lines": [
+          191,
+          241
+        ],
+        "test": "test_selected_research_forecast_seconds_persist_only_in_control_owner_home",
+        "source_changed": false
+      }
+    }
+  ],
+  "limits": [
+    "Root-owned 270+40 guarded checks were not run or inferred as semantic proof.",
+    "No fresh whole-file semantic read claimed; unchanged ranges inherit the exact matching archived receipts.",
+    "Root owns verification, repository passes, blind review, convergence, Git delivery and tracker lifecycle."
+  ],
+  "memory_central": {
+    "lessons_consulted": 2,
+    "conventions_consulted": 10,
+    "regression_checks_fired": 0,
+    "new_lessons_written": false
+  },
+  "memory_citation": {
+    "path": "MEMORY.md",
+    "line_start": 791,
+    "line_end": 809,
+    "rollout_id": "01a1be31-bd21-7db0-9314-d5bb08b7f42f",
+    "used_for": "Bounded coverage policy; verified against installed skill."
+  },
+  "test_extension": {
+    "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_control_http.py",
+    "ownership": "Only authored test method addition; preserve concurrent authors. Parent explicitly released writes after focused RED gate.",
+    "baseline": {
+      "blob_sha": "901292343c6b29e2657a7eacbbb682301ebd5d18",
+      "sha256": "3c1956da25ba4afb99be91cd482ca56b7181c0aff61ff5cf7230ee739bf55b72",
+      "lines": 213,
+      "coverage_row": {
+        "path": "ecosystem/tests/test_control_http.py",
+        "blob_sha": "901292343c6b29e2657a7eacbbb682301ebd5d18",
+        "lines": 213,
+        "semantic_review": "complete",
+        "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
+        "baseline_python_ast_covered": true,
+        "unbound_js_syntax_check_observed": false
+      },
+      "coverage_row_matches_git": true,
+      "inherited_original_receipt_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/ecosystem.json",
+      "inherited_original_receipt": {
+        "path": "ecosystem/tests/test_control_http.py",
+        "absolute_path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_control_http.py",
+        "review_mode": "new_full_semantic",
+        "new_review_count": 1,
+        "original_blob": "f7da1007b7708a73cbd88506ad034f914fe7b771",
+        "final_blob": "901292343c6b29e2657a7eacbbb682301ebd5d18",
+        "sha256": "3c1956da25ba4afb99be91cd482ca56b7181c0aff61ff5cf7230ee739bf55b72",
+        "original_lines": 188,
+        "final_lines": 213,
+        "read_ranges_original": [
+          [
+            1,
+            188
+          ]
+        ],
+        "semantic_focus": "Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+        "safety_focus": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+        "passes": [
+          {
+            "id": "C1",
+            "state": "reviewed",
+            "reason": "Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "C2",
+            "state": "reviewed",
+            "reason": "Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "C3",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "S1",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "S2",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "S3",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "S4",
+            "state": "reviewed",
+            "reason": "Python 3.13/POSIX on supported macOS or existing browser/Node language features; no cross-platform acceptance claimed.",
+            "findings": []
+          },
+          {
+            "id": "S5",
+            "state": "reviewed",
+            "reason": "Assertions target observable state/results rather than coverage-only execution; private canaries validate redaction where applicable.",
+            "findings": []
+          },
+          {
+            "id": "P1",
+            "state": "reviewed",
+            "reason": "Bounded input/output, repeated work, page/array scans and fixture setup inspected. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "P2",
+            "state": "reviewed",
+            "reason": "All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "M1",
+            "state": "reviewed",
+            "reason": "Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "M2",
+            "state": "reviewed",
+            "reason": "Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "M3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "M4",
+            "state": "reviewed",
+            "reason": "Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "T1",
+            "state": "reviewed",
+            "reason": "Adverse cases and assertions inspected against component synthetic tests. All state is temporary fixture state; native service/provider/process operations mocked or loopback-only. Real loopback nonce/origin/body gates, durable mutation receipt reuse and store-error log redaction.",
+            "findings": []
+          },
+          {
+            "id": "T2",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T3",
+            "state": "na",
+            "reason": "Repository-scope pass owned by parent; file-level audit does not claim repository architecture/dependency/tooling coverage.",
+            "findings": []
+          },
+          {
+            "id": "T4",
+            "state": "reviewed",
+            "reason": "Mutable SQLite/Git fixtures remain per-test; bounded joins and teardown assertions retained. Four real loopback fixtures reduce only idle shutdown polling0.5\u21920.01s; complete suite249 passed8.089s versus246/24.256s; one-run comparison.",
+            "findings": []
+          },
+          {
+            "id": "M5",
+            "state": "na",
+            "reason": "Library/browser module or test file has no owner-facing application entrypoint.",
+            "findings": []
+          }
+        ],
+        "changed": true,
+        "final_review": "Complete original bounded source read plus every changed hunk reread, followed by final code-focused self-review. Independent blind review remains parent-owned."
+      }
+    },
+    "pre_author_current": {
+      "blob_sha": "84150f3510f1e1837cd84209974df765d578a9bc",
+      "sha256": "02e8e933ab2036a885c22fd59defc0af03560bb77924eb35428ae9e0601fb5b0",
+      "lines": 246,
+      "read_ranges": [
+        [
+          1,
+          90
+        ],
+        [
+          90,
+          158
+        ],
+        [
+          150,
+          225
+        ],
+        [
+          225,
+          246
+        ]
+      ],
+      "reading_note": "Complete pre-author current test file read in these bounded slices; no range inferred from hashes."
+    },
+    "current": {
+      "blob_sha": "c422567e468ab91b4bd9b9c565d460a3d104fe1c",
+      "sha256": "efb3092e3bf1233d099fb7cbcba81e484ccb7faff817a2716edcec7d68fa9789",
+      "lines": 298,
+      "authored_lines": [
+        191,
+        242
+      ],
+      "direct_reread_ranges": [
+        [
+          150,
+          255
+        ]
+      ],
+      "complete_a505_to_current_delta_read": true,
+      "complete_authored_delta_read": true,
+      "review_mode": "Inherited complete original semantic read plus all a505-to-current test deltas; complete pre-author current read plus current authored delta. Not a fresh full-file claim inferred from hash.",
+      "a505_to_current_delta": [
+        "--- ecosystem/tests/test_control_http.py@a505\n",
+        "+++ ecosystem/tests/test_control_http.py@reviewed-current\n",
+        "@@ -150,16 +150,101 @@\n",
+        "         self.assertEqual(record[\"operation\"], \"submit_control_action\")",
+        "         self.assertEqual(record[\"error_type\"], \"OSError\")",
+        "         self.assertNotIn(",
+        "             \"private-store-canary\", json.dumps(body) + \" \".join(logged.output)",
+        "         )",
+        "         self.assertNotIn(self.nonce, \" \".join(logged.output))",
+        "         self.assertFalse((self.home / \"control.sqlite3\").exists())",
+        " ",
+        "+    def test_forecast_seconds_are_authenticated_versioned_and_separate_from_research(",
+        "+        self,",
+        "+    ):",
+        "+        from ecosystem.forecast_preferences import settings",
+        "+",
+        "+        identity = str(uuid4())",
+        "+        params = {\"instrument\": \"SOL/USD\", \"seconds\": 17, \"expected_revision\": 0}",
+        "+        denied, _ = self.action(",
+        "+            action=\"oracle.forecast.set\", params=params, headers={\"X-Sol-CSRF\": \"wrong\"}",
+        "+        )",
+        "+        self.assertEqual(denied, 403)",
+        "+        self.assertFalse((self.home / \"forecast-preferences.sqlite3\").exists())",
+        "+        status, _ = self.action(",
+        "+            action=\"oracle.forecast.set\", params=params, identity=identity",
+        "+        )",
+        "+        self.assertEqual(status, 202)",
+        "+        final = None",
+        "+        deadline = time.monotonic() + 3",
+        "+        while time.monotonic() < deadline:",
+        "+            _, value = self.request(f\"/api/actions?id={identity}\")",
+        "+            final = value[\"data\"][\"action\"]",
+        "+            if final[\"state\"] in (\"succeeded\", \"failed\"):",
+        "+                break",
+        "+            time.sleep(0.02)",
+        "+        self.assertEqual(final[\"state\"], \"succeeded\", final)",
+        "+        self.assertEqual(",
+        "+            settings(self.home, \"SOL/USD\"),",
+        "+            {\"instrument\": \"SOL/USD\", \"seconds\": 17, \"revision\": 1},",
+        "+        )",
+        "+        self.assertEqual(final[\"result\"][\"scope\"], \"shared_primary_market_forecast\")",
+        "+        self.assertFalse((self.home / \"state.json\").exists())",
+        "+        self.assertFalse((self.home / \"oracle\").exists())",
+        "+",
+        "+    def test_selected_research_forecast_seconds_persist_only_in_control_owner_home(self):",
+        "+        from ecosystem.control import database",
+        "+        from ecosystem.forecast_preferences import path, settings",
+        "+",
+        "+        run_id = \"selected-research\"",
+        "+        selected_home = self.home / \"research\" / run_id",
+        "+        selected_home.mkdir(parents=True)",
+        "+        with database(self.home) as db:",
+        "+            db.execute(",
+        "+                \"INSERT INTO experiment VALUES(?,?,?,?)\",",
+        "+                (run_id, \"Selected research fixture\", str(selected_home), time.time()),",
+        "+            )",
+        "+        self.assertEqual(self.server.controls.experiment_home(run_id), selected_home)",
+        "+",
+        "+        identity = str(uuid4())",
+        "+        status, _ = self.action(",
+        "+            action=\"oracle.forecast.set\",",
+        "+            identity=identity,",
+        "+            params={",
+        "+                \"run_id\": run_id,",
+        "+                \"instrument\": \"SOL/USD\",",
+        "+                \"seconds\": 17,",
+        "+                \"expected_revision\": 0,",
+        "+            },",
+        "+        )",
+        "+        self.assertEqual(status, 202)",
+        "+        final = None",
+        "+        deadline = time.monotonic() + 3",
+        "+        while time.monotonic() < deadline:",
+        "+            _, value = self.request(f\"/api/actions?id={identity}\")",
+        "+            final = value[\"data\"][\"action\"]",
+        "+            if final[\"state\"] in (\"succeeded\", \"failed\"):",
+        "+                break",
+        "+            time.sleep(0.02)",
+        "+        self.assertIsNotNone(final)",
+        "+        self.assertEqual(final[\"state\"], \"succeeded\", final)",
+        "+        self.assertEqual(",
+        "+            final[\"result\"],",
+        "+            {",
+        "+                \"instrument\": \"SOL/USD\",",
+        "+                \"seconds\": 17,",
+        "+                \"revision\": 1,",
+        "+                \"scope\": \"shared_primary_market_forecast\",",
+        "+            },",
+        "+        )",
+        "+        self.assertEqual(",
+        "+            settings(self.home, \"SOL/USD\"),",
+        "+            {\"instrument\": \"SOL/USD\", \"seconds\": 17, \"revision\": 1},",
+        "+        )",
+        "+        self.assertFalse(path(selected_home).exists())",
+        "+        self.assertEqual(settings(selected_home, \"SOL/USD\")[\"revision\"], 0)",
+        "+",
+        "     def test_unknown_order_paths_and_actions_are_not_available(self):",
+        "         status, data = self.request(\"/api/order\", method=\"POST\", body=\"{}\")",
+        "         self.assertEqual(status, 404)",
+        "         self.assertFalse(data[\"ok\"])",
+        "         self.assertEqual(self.action(action=\"orders.submit\", params={})[0], 400)",
+        "         self.assertEqual(",
+        "             self.action(action=\"manager.create\", params={\"mode\": \"live\"})[0], 400",
+        "         )"
+      ],
+      "authored_delta": [
+        "--- ecosystem/tests/test_control_http.py@pre-author\n",
+        "+++ ecosystem/tests/test_control_http.py@reviewed-current\n",
+        "@@ -183,16 +183,68 @@\n",
+        "         self.assertEqual(",
+        "             settings(self.home, \"SOL/USD\"),",
+        "             {\"instrument\": \"SOL/USD\", \"seconds\": 17, \"revision\": 1},",
+        "         )",
+        "         self.assertEqual(final[\"result\"][\"scope\"], \"shared_primary_market_forecast\")",
+        "         self.assertFalse((self.home / \"state.json\").exists())",
+        "         self.assertFalse((self.home / \"oracle\").exists())",
+        " ",
+        "+    def test_selected_research_forecast_seconds_persist_only_in_control_owner_home(self):",
+        "+        from ecosystem.control import database",
+        "+        from ecosystem.forecast_preferences import path, settings",
+        "+",
+        "+        run_id = \"selected-research\"",
+        "+        selected_home = self.home / \"research\" / run_id",
+        "+        selected_home.mkdir(parents=True)",
+        "+        with database(self.home) as db:",
+        "+            db.execute(",
+        "+                \"INSERT INTO experiment VALUES(?,?,?,?)\",",
+        "+                (run_id, \"Selected research fixture\", str(selected_home), time.time()),",
+        "+            )",
+        "+        self.assertEqual(self.server.controls.experiment_home(run_id), selected_home)",
+        "+",
+        "+        identity = str(uuid4())",
+        "+        status, _ = self.action(",
+        "+            action=\"oracle.forecast.set\",",
+        "+            identity=identity,",
+        "+            params={",
+        "+                \"run_id\": run_id,",
+        "+                \"instrument\": \"SOL/USD\",",
+        "+                \"seconds\": 17,",
+        "+                \"expected_revision\": 0,",
+        "+            },",
+        "+        )",
+        "+        self.assertEqual(status, 202)",
+        "+        final = None",
+        "+        deadline = time.monotonic() + 3",
+        "+        while time.monotonic() < deadline:",
+        "+            _, value = self.request(f\"/api/actions?id={identity}\")",
+        "+            final = value[\"data\"][\"action\"]",
+        "+            if final[\"state\"] in (\"succeeded\", \"failed\"):",
+        "+                break",
+        "+            time.sleep(0.02)",
+        "+        self.assertIsNotNone(final)",
+        "+        self.assertEqual(final[\"state\"], \"succeeded\", final)",
+        "+        self.assertEqual(",
+        "+            final[\"result\"],",
+        "+            {",
+        "+                \"instrument\": \"SOL/USD\",",
+        "+                \"seconds\": 17,",
+        "+                \"revision\": 1,",
+        "+                \"scope\": \"shared_primary_market_forecast\",",
+        "+            },",
+        "+        )",
+        "+        self.assertEqual(",
+        "+            settings(self.home, \"SOL/USD\"),",
+        "+            {\"instrument\": \"SOL/USD\", \"seconds\": 17, \"revision\": 1},",
+        "+        )",
+        "+        self.assertFalse(path(selected_home).exists())",
+        "+        self.assertEqual(settings(selected_home, \"SOL/USD\")[\"revision\"], 0)",
+        "+",
+        "     def test_unknown_order_paths_and_actions_are_not_available(self):",
+        "         status, data = self.request(\"/api/order\", method=\"POST\", body=\"{}\")",
+        "         self.assertEqual(status, 404)",
+        "         self.assertFalse(data[\"ok\"])",
+        "         self.assertEqual(self.action(action=\"orders.submit\", params={})[0], 400)",
+        "         self.assertEqual(",
+        "             self.action(action=\"manager.create\", params={\"mode\": \"live\"})[0], 400",
+        "         )"
+      ]
+    },
+    "injection_gate": "No reviewer-directed directive or hostile content found in complete fresh test delta.",
+    "passes": {
+      "C1": "reviewed: registered research path must satisfy experiment_home before real queued dispatch; result and primary/selected stores distinguish binding.",
+      "C2": "reviewed: authenticated action JSON includes exact declared keys plus existing run_id envelope; expected result scope/revision are asserted.",
+      "C3": "reviewed: test would fail if self.home were replaced by selected home; nonexistence and default selected revision both assert absent mutation.",
+      "S1": "reviewed: temporary fixture only; same-origin/nonce action helper retained; no external provider or live owner operation invoked by test body.",
+      "S2": "reviewed: existing fixture cleanup closes server/worker; monotonic deadline bounds asynchronous receipt polling.",
+      "S3": "reviewed: finite fixed instrument/seconds/revision/run_id fixture; DB insertion is parameterized and validates path fixture through public resolver.",
+      "S4": "reviewed: existing unittest/stdlib/loopback integration conventions retained.",
+      "S5": "reviewed: asserts persisted action state/result and primary/selected storage effects; no sensitive content logged.",
+      "P1": "reviewed: one small fixture registration and bounded polling; no generated payloads or broad scans.",
+      "P2": "reviewed: fixture registration commits before action submit; durable worker serialization remains real; no live service/process invocation.",
+      "M1": "reviewed: explicit behavior-focused test name and straightforward fixture/action/assertions; adjacent test preserved.",
+      "M2": "reviewed: uses existing action/request helpers and control/preferences APIs; no model logic copied.",
+      "M3": "N/A: root-owned repository architecture pass.",
+      "M4": "reviewed: test name and assertions agree with shared owner scope.",
+      "T1": "reviewed: adds missing ownership boundary regression assertions; root guarded execution remains pending.",
+      "T2": "N/A: root-owned repository dependency pass.",
+      "T3": "N/A: root-owned repository tooling pass.",
+      "T4": "reviewed: real short poll is necessary for genuine asynchronous loopback integration; bounded existing monotonic pattern retained, no fake-timer rewrite or fixture hoist.",
+      "M5": "N/A: test file has no owner-facing standalone entrypoint."
+    },
+    "tests_executed_by_reviewer": false,
+    "runtime_findings": []
+  },
+  "unresolved_runtime_medium_plus": [],
+  "verification": {
+    "state": "pending_root_guarded_gate",
+    "commands_executed_by_reviewer": [],
+    "note": "No test/parse/lint result claimed by this reviewer. Parent must bind final guarded checks to these bytes before convergence/delivery."
+  }
+}

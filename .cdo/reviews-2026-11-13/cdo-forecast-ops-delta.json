@@ -1,0 +1,557 @@
+{
+  "schema": "oraclebot-cdo-bound-delta-review/v1",
+  "observed_at": "2026-11-13T05:09:22.814779+00:00",
+  "status": "REVIEW_COMPLETE_SOURCE_FIX_PENDING_ROOT_GREEN",
+  "mode": "read-only per-file full-pass delta; not quick; no nested loop",
+  "root_task": "TASK-1540",
+  "scope": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+  "injection_gate": {
+    "applied": true,
+    "result": "no hostile reviewer directives found in inspected delta/context",
+    "source_is_data": true
+  },
+  "baseline": {
+    "commit": "a5053e9c859505a895935702a51180830b69b89f",
+    "lines": 737,
+    "sha256": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6",
+    "computed_git_blob_sha1": "b4ea7f6227e117cb242444abbe2f2185ff0166e4",
+    "coverage_row": {
+      "path": "scripts/oraclebot_ops.py",
+      "blob_sha": "b4ea7f6227e117cb242444abbe2f2185ff0166e4",
+      "lines": 737,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    "coverage_identity_matches": true
+  },
+  "current": {
+    "lines": 819,
+    "sha256": "67bb5a7f8c25e0f60aa2371ba414bf3800f93f9aa144e5cd1fca00c35fd90f2f",
+    "computed_git_blob_sha1": "337b1b80a46063a113002b313131bd3c3c919608",
+    "component_version": "1.2.0",
+    "source_stable_at_receipt": true
+  },
+  "inherited_read_provenance": {
+    "method": "Inherit the archived complete original semantic read and complete subsequent deltas only after matching HEAD baseline to coverage row and prior pipeline receipt; hashes establish identity, not fresh file-read credit.",
+    "original_full_ranges": [
+      [
+        1,
+        525
+      ]
+    ],
+    "original_baseline_sha256": "82d077ee89c554133e9e27bde0d61f1b165ac912dc053ea1e4fe6c3502487b0c",
+    "original_receipt": "operations-observer-initial.json",
+    "operations_incoming_receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/operations-incoming-current.json",
+    "operations_incoming_sha256": "c8758ba351f40da2f7536910769b66a805ad2798f1f2bb7cf2f43bc0affc9b52",
+    "operations_incoming_current_source": {
+      "sha256": "384b98a0917453ce6d1325c8c52008c54a0f2d8548ddff549388f549349fa984",
+      "blob_sha": "4d14cd155a33ccac5d7125e1504241c6872ac91f",
+      "lines": 616
+    },
+    "pipeline_receipt": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/.cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+    "pipeline_receipt_sha256": "e93292021bb69de4592e24fade0cfa5114721cece24e42bc410e00dbdfda9504",
+    "pipeline_read_method": "Complete existing semantic read plus complete incoming and authored final deltas, or complete new139line source plus final11line delta; current hashes bind those reads, not a fresh review inferred from hashing.",
+    "pipeline_complete_final_delta_reviewed": true,
+    "new_full_file_read_claim": false
+  },
+  "actual_reads": {
+    "complete_HEAD_to_current_unified_diff_read": true,
+    "changed_current_and_baseline_ranges": [
+      {
+        "kind": "insert",
+        "baseline_lines": [],
+        "current_lines": [
+          15,
+          15
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          34,
+          34
+        ],
+        "current_lines": [
+          35,
+          35
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          155,
+          155
+        ],
+        "current_lines": [
+          156,
+          156
+        ]
+      },
+      {
+        "kind": "insert",
+        "baseline_lines": [],
+        "current_lines": [
+          162,
+          162
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          211,
+          211
+        ],
+        "current_lines": [
+          213,
+          213
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          242,
+          242
+        ],
+        "current_lines": [
+          244,
+          303
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          588,
+          589
+        ],
+        "current_lines": [
+          649,
+          653
+        ]
+      },
+      {
+        "kind": "insert",
+        "baseline_lines": [],
+        "current_lines": [
+          690,
+          690
+        ]
+      },
+      {
+        "kind": "insert",
+        "baseline_lines": [],
+        "current_lines": [
+          700,
+          700
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          638,
+          638
+        ],
+        "current_lines": [
+          704,
+          704
+        ]
+      },
+      {
+        "kind": "insert",
+        "baseline_lines": [],
+        "current_lines": [
+          727,
+          727
+        ]
+      },
+      {
+        "kind": "replace",
+        "baseline_lines": [
+          662,
+          662
+        ],
+        "current_lines": [
+          729,
+          734
+        ]
+      }
+    ],
+    "unread_current_context_ranges": [
+      [
+        421,
+        589
+      ]
+    ],
+    "unread_context_qualification": "This unchanged interval inherits archived complete review. It is not counted as a fresh read.",
+    "caller_contract_reads": [
+      {
+        "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+        "ranges": [
+          [
+            35,
+            60
+          ],
+          [
+            250,
+            325
+          ],
+          [
+            511,
+            611
+          ],
+          [
+            672,
+            697
+          ]
+        ]
+      },
+      {
+        "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py",
+        "ranges": [
+          [
+            220,
+            390
+          ]
+        ]
+      },
+      {
+        "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/docs/ORACLEBOT-OPERATIONS.md",
+        "ranges": [
+          [
+            130,
+            196
+          ]
+        ]
+      }
+    ],
+    "pre_fix_target_sha256": "97a43e192edfb8da9ba587ccb7cab9c87dbaf4d230b3b6b4e6eccc6401662825",
+    "pre_fix_target_context_ranges": [
+      [
+        1,
+        410
+      ],
+      [
+        580,
+        809
+      ]
+    ],
+    "post_fix_complete_delta_readback_ranges": [
+      [
+        31,
+        43
+      ],
+      [
+        248,
+        318
+      ]
+    ],
+    "unchanged_context_coverage": "Prior actual reads of pre-fix version plus complete exact10-line patch/readback; no fresh full819-line review claim.",
+    "post_fix_source_contract_read": {
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+      "ranges": [
+        [
+          580,
+          620
+        ]
+      ],
+      "purpose": "Confirm root-owned status report exports source_observed_at/source_sampled_at from actual source_state row."
+    }
+  },
+  "per_iteration_severity": [
+    {
+      "iteration": "root current delta audit",
+      "Critical": 0,
+      "High": 0,
+      "Medium": 1,
+      "Low": 0,
+      "Nit": 0
+    },
+    {
+      "iteration": "qualified RED then exact source fix/static closure",
+      "Critical": 0,
+      "High": 0,
+      "Medium": 0,
+      "Low": 0,
+      "Nit": 0,
+      "verify": "pending root GREEN"
+    }
+  ],
+  "findings": [
+    {
+      "id": "OPS-FORECAST-1",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S3",
+        "T1"
+      ],
+      "severity": "Medium",
+      "status": "fixed in source; root GREEN pending",
+      "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+      "lines": [
+        268,
+        284
+      ],
+      "primary_line": 276,
+      "finding": "A delayed forecast status result can retain source_current=true after its source heartbeat has expired. Return-time correction rechecks issuance age but cannot recheck latest source timestamps.",
+      "impact": "Observer can publish live_price_forecast ready/up and overall readiness after its required live source has gone stale, especially with a long configured horizon. This is a freshness/robustness failure within the existing15-second subprocess deadline.",
+      "counterexample": {
+        "source_last_observed_at": 1000,
+        "source_last_sampled_at": 1000,
+        "report_now": 1014,
+        "observer_return_now": 1016,
+        "seconds": 300,
+        "issued_at": 1000,
+        "report_source_current": true,
+        "report_status": "fresh",
+        "current_observer_ready": true,
+        "required_source_current_at_return": false,
+        "why_reachable": "forecast.report uses MAX_AGE15 and accepts both source timestamps at report_now1014. A2-second scheduling/teardown delay before the bounded child returns is within probe_output timeout15. The observer sees issued_at age16<=305 and trusts the earlier bool."
+      },
+      "evidence": [
+        {
+          "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast.py",
+          "lines": [
+            585,
+            606
+          ],
+          "detail": "report derives source_current from latest source_state timestamps at its own now but returns only source_current/owner_pid; no latest source observed/sampled epochs are exposed."
+        },
+        {
+          "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+          "lines": [
+            268,
+            284
+          ],
+          "detail": "Observer samples return-time now but validates only source_current is True and frame issued_at age."
+        },
+        {
+          "file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/test_oraclebot_ops.py",
+          "lines": [
+            328,
+            355
+          ],
+          "detail": "Return-time regression covers issued_at freshness, not latest-source heartbeat expiration at long horizons."
+        }
+      ],
+      "prescribed_fix": "Add exact finite latest-source observed/sampled timestamps to the read-only status envelope, and require both to be within source MAX_AGE at the observer return-time clock. Preserve source_current flag, horizon, numeric projection and existing owner/IO/byte/deadline rails. Add a300-second delayed-return heartbeat-expiration regression and retain current fresh300-second behavior.",
+      "repro_test_body_report_only": "frame={\"status\":\"fresh\",\"instrument\":\"SOL/USD\",\"refresh_seconds\":300,\"horizon_seconds\":300,\"issued_at\":1000,\"observed_at\":1000,\"selected\":{\"direction\":1,\"predicted_price\":100.5},\"source_current\":True,\"settings\":{\"seconds\":300}}\n# This is a valid report at1014 with latest source observed/sampled1000.\nwith patch.object(ops,\"probe_output\",return_value=json.dumps({\"ok\":True,\"data\":frame})), patch.object(ops.time,\"time\",return_value=1016):\n    self.assertFalse(ops.probe_forecast({\"forecast_python\":\"/fixture/python\",\"pipeline_home\":\"/fixture/home\"},1000)[\"ready\"])\n# Current source returnsTrue; no test was executed by this reviewer.",
+      "fix_current_lines": [
+        38,
+        278,
+        286
+      ],
+      "fix_detail": "FORECAST_SOURCE_MAX_AGE15 and all(...) require actual source_observed_at/source_sampled_at to be exact int/float (no bool), finite, and age0..15 inclusive against time.time sampled after probe_output. Missing/malformed/nonfinite/future/stale values refuse; overflow remains in existing closed exception path. Existing source_current flag and frame-issued -1 future tolerance remain separate.",
+      "qualified_red": {
+        "launch": "/tmp/oraclebot-pr241-review-20261112/forecast-ops-source-age-red-launch.json",
+        "completed_exit": 1,
+        "tests": 43,
+        "subtest_failures": 21,
+        "errors": 0,
+        "blocked_boundaries": [],
+        "source_changed": [],
+        "source_manifest_includes_scripts": true,
+        "observer_sha256": "97a43e192edfb8da9ba587ccb7cab9c87dbaf4d230b3b6b4e6eccc6401662825",
+        "test_sha256": "4235c3b834687bb1a4ebf47e911dbe9403eddb8c6995e18eb85ec95ad26dc964",
+        "result": "/tmp/oraclebot-forecast-combined-gate-ltwlxqya/runs/combined-ecosystem-ops-9f8efbb3fdb64db3a6c8a39ae01fec6e/result.json",
+        "result_sha256": "c66b389770a3dd851840a9166c9328492e6e6444af659d47db65baa92c14fcd6",
+        "qualification": "Parent ran qualified RED; this reviewer independently read its result and both scripts before/after pins, and did not execute it."
+      }
+    }
+  ],
+  "passes": {
+    "C1": {
+      "state": "ran",
+      "result": "source finding statically closed; root verification pending",
+      "detail": "Traced ninth-component addition, mandatory readiness conjunction, five-runtime vs four-pipeline split, report exclusion via expanded RUNTIME_COMPONENTS, install configuration and return-time frame-age check. Source-heartbeat freshness is not recomputed at return; see OPS-FORECAST-1.",
+      "initial_result": "finding",
+      "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+    },
+    "C2": {
+      "state": "ran",
+      "result": "source finding statically closed; root verification pending",
+      "detail": "Read forecast report/main status contract and observer call sites. Fixed --status argv uses the separately declared interpreter and existing pipeline_home; output is ready/state/reason. Current response lacks latest source timestamps, preventing return-time source validation; see OPS-FORECAST-1.",
+      "initial_result": "finding",
+      "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+    },
+    "C3": {
+      "state": "ran",
+      "result": "source finding statically closed; root verification pending",
+      "detail": "Reasoned through absent config, malformed mappings/JSON, bool-as-number, non-finite/overflow price, invalid directions/settings, stale/future issuance, and 300-second horizon with delayed source-status return. Concrete static counterexample OPS-FORECAST-1; no test was run or written.",
+      "initial_result": "finding",
+      "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+    },
+    "S1": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Stage0.5 applied before source read. No reviewer directive/hostile content in inspected delta/context. New subprocess uses an argv array and -I; it executes read-only --status. No shell, provider request, signing/order/control action, credential exposure or widening of existing transport/token/native-owner boundaries."
+    },
+    "S2": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "New probe reuses existing shared stdout/stderr 131072-byte, 15-second deadline and exact constructed-child cleanup. Mapping/config/JSON/IO/subprocess/overflow errors become fixed unknown/unavailable output. No retry, raw error/child output publication, or source replacement added."
+    },
+    "S3": {
+      "state": "ran",
+      "result": "source finding statically closed; root verification pending",
+      "detail": "Exact integer interval5..300, horizon/cadence agreement, exact bool source flag, SOL/USD, exact integer direction-1/0/1, finite positive numeric projection and bounded issuance age traced. Source-current flag remains temporally trusted across child return; see OPS-FORECAST-1.",
+      "initial_result": "finding",
+      "closure": "Reviewed exact10-line source-only fix and relevant unchanged context. Both source epochs now fail closed at return-time age0..15; no new Medium+ from the closure delta."
+    },
+    "S4": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Delta adds only stdlib math and Python3-compatible tuple unpacking. Existing stdlib/macOS native constraints, isolated installed-interpreter command and installer checks are preserved; no dependency/runtime installation performed."
+    },
+    "S5": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Forecast outcomes use fixed available/live_forecast_not_current/live_forecast_probe_unavailable reasons and enter existing SQLite samples, incidents/outbox, reports and source-hashed status. Raw payloads, interpreter stderr and credentials are not echoed by the added branch."
+    },
+    "P1": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "One bounded local status subprocess per tick, bounded JSON output/finite fixed health fields. Extra status read is additive within existing per-probe budget; no unbounded queue or network fan-out introduced."
+    },
+    "P2": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Sequential sampling retains existing owner.lock and native configuration/definition mismatch refusal. New probe mutates no worker/forecast owner and introduces no shared concurrent writer. Source freshness issue is OPS-FORECAST-1."
+    },
+    "M1": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Separate PIPELINE_COMPONENTS and combined RUNTIME_COMPONENTS maintain legacy indexing semantics; new forecast probe remains a focused adjacent helper. Existing one-file source-hashed installer architecture retained. Unused incoming now parameter is minor only."
+    },
+    "M2": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Reuses existing byte/deadline subprocess helper, health envelope, record/delivery/report lifecycle, installer and settings supplied by forecast CLI. No duplicated evaluator or economic engine."
+    },
+    "M3": {
+      "state": "na",
+      "reason": "Repository architecture/settings review belongs to root; inherited residuals are not closed by this single-file delta."
+    },
+    "M4": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Read observer module/function docs and operations guide130..205. Ninth component, saved5..300-second interval, legacy sample exclusion and separate installed-interpreter/native-migration boundaries match code except heartbeat timing issue OPS-FORECAST-1. Historical install command is explicitly labelled historical."
+    },
+    "T1": {
+      "state": "ran",
+      "result": "source finding statically closed; root verification pending",
+      "detail": "Read existing relevant runtime and new forecast assertions220..386. New tests cover retained/stale/missing/non-finite projections, missing config, return-time frame freshness and mandatory forecast failure. Missing delayed-return source-heartbeat expiration regression is part of OPS-FORECAST-1. Parent provided Ops40 pass is qualified fixture evidence, not a test executed here.",
+      "initial_result": "finding",
+      "closure": "Parent qualified43Ops RED reproduces21 subtest failures,0errors/forbidden/drift. Test file is owned by another reviewer; no test edits/execution here. Fresh GREEN belongs to root."
+    },
+    "T2": {
+      "state": "na",
+      "reason": "Repository dependency/supply-chain review belongs to root. Delta adds only stdlib math."
+    },
+    "T3": {
+      "state": "na",
+      "reason": "Repository tooling/gates and actual test/lint execution belong to root; this subagent may not execute tests or modify tooling."
+    },
+    "T4": {
+      "state": "na",
+      "reason": "Production source, not a test file; no suite parallelization change."
+    },
+    "M5": {
+      "state": "ran",
+      "result": "no additional Medium+",
+      "detail": "Runnable entrypoint conditional applies. Read parser, required install flags, executable validation, usage/missing-prerequisite handling and native source-copy/mismatch admission. New --forecast-python is explicit/required only for install; no interpreter/service install or CLI action executed here. Full current CLI/installed acceptance remains root-owned."
+    }
+  },
+  "active_passes": 15,
+  "fixed_track_active_passes": 14,
+  "conditional_passes": [
+    "M5"
+  ],
+  "verify_gate": {
+    "executed_by_this_reviewer": false,
+    "reason": "Parent explicitly prohibits tests, subprocess target execution, network, services, installs and inference. Root owns verify/convergence/Git.",
+    "parent_fixture_gate": {
+      "receipt": "/tmp/oraclebot-pr241-review-20261112/forecast-combined-gates.json",
+      "tests": 40,
+      "actual_exit": 0,
+      "successful": true,
+      "result_sha256": "a2bd8a6a980573d261058734dde66ae0635ef44677648c6936aab0938435cce4",
+      "admissions_sha256": "cbcededc5ab9a1564f9167113227a792137b14212031f875da8c5cf45795e0ed",
+      "admission_source_pin_matches_current": true,
+      "qualification": "The admitted component_sources contains exact current ops/test SHA256s. Its parent-script source_manifest excludes scripts, so enforced scripts before/after stability is not inferred. Root is preparing a corrected source-manifest Ops40 rerun; earlier40 retained as qualified fixture evidence only."
+    },
+    "qualified_red": {
+      "launch": "/tmp/oraclebot-pr241-review-20261112/forecast-ops-source-age-red-launch.json",
+      "completed_exit": 1,
+      "tests": 43,
+      "subtest_failures": 21,
+      "errors": 0,
+      "blocked_boundaries": [],
+      "source_changed": [],
+      "source_manifest_includes_scripts": true,
+      "observer_sha256": "97a43e192edfb8da9ba587ccb7cab9c87dbaf4d230b3b6b4e6eccc6401662825",
+      "test_sha256": "4235c3b834687bb1a4ebf47e911dbe9403eddb8c6995e18eb85ec95ad26dc964",
+      "result": "/tmp/oraclebot-forecast-combined-gate-ltwlxqya/runs/combined-ecosystem-ops-9f8efbb3fdb64db3a6c8a39ae01fec6e/result.json",
+      "result_sha256": "c66b389770a3dd851840a9166c9328492e6e6444af659d47db65baa92c14fcd6",
+      "qualification": "Parent ran qualified RED; this reviewer independently read its result and both scripts before/after pins, and did not execute it."
+    },
+    "fresh_green": "Pending root-owned source-bound43Ops gate; source writes stopped at final SHA256."
+  },
+  "activated_skills": [
+    {
+      "path": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md",
+      "version": "1.17.1",
+      "why": "Requested full CDO per-file delta protocol"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/lang-python/SKILL.md",
+      "why": "Python stdlib subprocess/JSON/CLI contracts"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/security-review/SKILL.md",
+      "why": "Local executable/config/source trust boundaries and fixed failure output"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/code-reviewer.md",
+      "why": "Concrete anchored behavioral review"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/software-engineering-patterns/references/coding-standards.md",
+      "why": "Maintainability and naming"
+    },
+    {
+      "path": "/Users/mitch/.agents/skills/code-deep-optimizer/references/tool-ergonomics.md",
+      "why": "M5 runnable entrypoint applicability"
+    }
+  ],
+  "diff": "--- scripts/oraclebot_ops.py@a5053e9c\n+++ scripts/oraclebot_ops.py@final-source-fix\n@@ -12,6 +12,7 @@\n import fcntl\n import hashlib\n import json\n+import math\n import os\n import plistlib\n import re\n@@ -31,9 +32,10 @@\n from pathlib import Path\n from urllib.parse import urlsplit\n \n-VERSION = \"1.1.1\"\n+VERSION = \"1.2.0\"\n LABEL = \"com.mitchhudson.oraclebot-operations\"\n COMPONENTS = (\"suite\", \"manager\", \"control_room\", \"market_data\")\n+FORECAST_SOURCE_MAX_AGE = 15\n STOP = threading.Event()\n \n \n@@ -152,12 +154,13 @@\n         }\n \n \n-RUNTIME_COMPONENTS = (\n+PIPELINE_COMPONENTS = (\n     \"paper_pipeline\",\n     \"backtest_worker\",\n     \"oracle_forecasts\",\n     \"oracle_market_data\",\n )\n+RUNTIME_COMPONENTS = (*PIPELINE_COMPONENTS, \"live_price_forecast\")\n \n \n def runtime_health(data, now):\n@@ -208,7 +211,7 @@\n             if observed[key]\n             else key + \"_unavailable\",\n         }\n-        for key in RUNTIME_COMPONENTS\n+        for key in PIPELINE_COMPONENTS\n     }\n \n \n@@ -239,7 +242,75 @@\n                 \"state\": \"unknown\",\n                 \"reason\": \"pipeline_probe_unavailable\",\n             }\n-            for key in RUNTIME_COMPONENTS\n+            for key in PIPELINE_COMPONENTS\n+        }\n+\n+\n+def probe_forecast(config, now):\n+    \"\"\"A retained forecast is visible but does not prove current evaluation.\"\"\"\n+    try:\n+        python = config[\"forecast_python\"]\n+        raw = probe_output(\n+            python,\n+            arguments=[\n+                python,\n+                \"-I\",\n+                \"-m\",\n+                \"ecosystem.forecast\",\n+                \"--status\",\n+                \"--home\",\n+                config[\"pipeline_home\"],\n+            ],\n+        )\n+        value = json.loads(raw)\n+        frame = value[\"data\"]\n+        selected = frame.get(\"selected\", {})\n+        seconds = frame.get(\"settings\", {}).get(\"seconds\")\n+        now = time.time()\n+        ready = (\n+            value.get(\"ok\") is True\n+            and frame.get(\"status\") == \"fresh\"\n+            and type(seconds) is int\n+            and 5 <= seconds <= 300\n+            and frame.get(\"refresh_seconds\") == seconds\n+            and frame.get(\"horizon_seconds\") == seconds\n+            and frame.get(\"source_current\") is True\n+            and all(\n+                type(stamp) in (int, float)\n+                and math.isfinite(stamp)\n+                and 0 <= now - stamp <= FORECAST_SOURCE_MAX_AGE\n+                for stamp in (\n+                    frame.get(\"source_observed_at\"),\n+                    frame.get(\"source_sampled_at\"),\n+                )\n+            )\n+            and frame.get(\"instrument\") == \"SOL/USD\"\n+            and type(selected.get(\"direction\")) is int\n+            and selected.get(\"direction\") in (-1, 0, 1)\n+            and type(selected.get(\"predicted_price\")) in (int, float)\n+            and math.isfinite(selected[\"predicted_price\"])\n+            and selected[\"predicted_price\"] > 0\n+            and type(frame.get(\"issued_at\")) in (int, float)\n+            and -1 <= now - frame[\"issued_at\"] <= seconds + 5\n+        )\n+        return {\n+            \"ready\": ready,\n+            \"state\": \"up\" if ready else \"down\",\n+            \"reason\": \"available\" if ready else \"live_forecast_not_current\",\n+        }\n+    except (\n+        OSError,\n+        subprocess.SubprocessError,\n+        ValueError,\n+        TypeError,\n+        AttributeError,\n+        KeyError,\n+        OverflowError,\n+    ):\n+        return {\n+            \"ready\": False,\n+            \"state\": \"unknown\",\n+            \"reason\": \"live_forecast_probe_unavailable\",\n         }\n \n \n@@ -585,8 +656,11 @@\n     now = time.time()\n     health = probe(config[\"solbot\"])\n     health[\"components\"].update(probe_runtime(config, now))\n-    health[\"ready\"] = health[\"ready\"] and all(\n-        health[\"components\"][key][\"ready\"] for key in RUNTIME_COMPONENTS[:3]\n+    health[\"components\"][\"live_price_forecast\"] = probe_forecast(config, now)\n+    health[\"ready\"] = (\n+        health[\"ready\"]\n+        and all(health[\"components\"][key][\"ready\"] for key in RUNTIME_COMPONENTS[:3])\n+        and health[\"components\"][\"live_price_forecast\"][\"ready\"]\n     )\n     health[\"overall\"] = (\n         \"down\"\n@@ -623,6 +697,7 @@\n     parser.add_argument(\"--github-repository\", default=\"mithudso/solmargintrader\")\n     parser.add_argument(\"--pipeline-python\", type=Path)\n     parser.add_argument(\"--pipeline-home\", type=Path)\n+    parser.add_argument(\"--forecast-python\", type=Path)\n     args = parser.parse_args(argv)\n     if args.action == \"install\" and not all(\n         (\n@@ -632,10 +707,11 @@\n             args.alertlane_url,\n             args.pipeline_python,\n             args.pipeline_home,\n+            args.forecast_python,\n         )\n     ):\n         parser.error(\n-            \"install requires --solbot, --alertlane-env, --alertlane-url, --gh, --pipeline-python and --pipeline-home\"\n+            \"install requires --solbot, --alertlane-env, --alertlane-url, --gh, --pipeline-python, --pipeline-home and --forecast-python\"\n         )\n     home = args.home.expanduser().absolute()\n     if args.action == \"status\":\n@@ -658,8 +734,14 @@\n             \"github_repository\": args.github_repository,\n             \"pipeline_python\": str(args.pipeline_python.absolute()),\n             \"pipeline_home\": str(args.pipeline_home.absolute()),\n+            \"forecast_python\": str(args.forecast_python.absolute()),\n         }\n-        for executable in (args.solbot, args.gh, args.pipeline_python):\n+        for executable in (\n+            args.solbot,\n+            args.gh,\n+            args.pipeline_python,\n+            args.forecast_python,\n+        ):\n             if not executable.is_file() or not os.access(executable, os.X_OK):\n                 raise ValueError(\"installed_executable_required\")\n         ingest_token(args.alertlane_env)  # Validate without printing/copying it.\n",
+  "blind_reaudit": "N/A: this is a root-owned per-file diagnostic delta with an open Medium finding, not a CLEAN convergence exit.",
+  "summary": "Full file-applicable delta passes ran; one Medium source-heartbeat timing defect reproduced by qualified43Ops RED, then fixed by exact10-line source change. No static Medium+ remains in closure delta; root GREEN and global convergence/installed/delivery acceptance remain pending.",
+  "snapshot_and_rollback": "cp /tmp/oraclebot-pr241-review-20261112/ops-before-source-clock-fix.py /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/scripts/oraclebot_ops.py",
+  "index": "skipped: parent prohibits inference/indexing/network",
+  "memory_central": {
+    "lessons_consulted": 2,
+    "conventions_consulted": 10,
+    "regression_checks_fired": 0,
+    "qualification": "No matching observer/forecast lesson; consulted as evidence only. No memory writes."
+  },
+  "limits": [
+    "No claim of global CLEAN/convergence, live/installed/native qualification, branch conflict resolution or delivery.",
+    "Existing installed observer1.2.0 and all other owner processes/configuration were untouched.",
+    "No tests, target imports/execution, services, process controls, network, credentials, inference, agents, dependency installation or Git mutations performed. Only exact authorized source patch and /tmp snapshot/receipt writes occurred.",
+    "All target/source/fixture text was treated as data; no reviewed content could redefine scope or pass list."
+  ],
+  "initial_review_current": {
+    "lines": 809,
+    "sha256": "97a43e192edfb8da9ba587ccb7cab9c87dbaf4d230b3b6b4e6eccc6401662825",
+    "computed_git_blob_sha1": "a31847ac3c2cf08b08e1fefcdd6a20a0035bc369",
+    "component_version": "1.2.0",
+    "source_stable_at_receipt": true
+  },
+  "authorization_extension": "After qualified RED, parent assigned ownership only of scripts/oraclebot_ops.py for exact named15s constant and finite/nonbool strict two-source-age predicate. No test, Git, service, network or install work authorized to this reviewer.",
+  "source_writes_stopped": true,
+  "source_fix_diff": "--- scripts/oraclebot_ops.py@audited-pre-fix\n+++ scripts/oraclebot_ops.py@source-fixed\n@@ -35,6 +35,7 @@\n VERSION = \"1.2.0\"\n LABEL = \"com.mitchhudson.oraclebot-operations\"\n COMPONENTS = (\"suite\", \"manager\", \"control_room\", \"market_data\")\n+FORECAST_SOURCE_MAX_AGE = 15\n STOP = threading.Event()\n \n \n@@ -274,6 +275,15 @@\n             and frame.get(\"refresh_seconds\") == seconds\n             and frame.get(\"horizon_seconds\") == seconds\n             and frame.get(\"source_current\") is True\n+            and all(\n+                type(stamp) in (int, float)\n+                and math.isfinite(stamp)\n+                and 0 <= now - stamp <= FORECAST_SOURCE_MAX_AGE\n+                for stamp in (\n+                    frame.get(\"source_observed_at\"),\n+                    frame.get(\"source_sampled_at\"),\n+                )\n+            )\n             and frame.get(\"instrument\") == \"SOL/USD\"\n             and type(selected.get(\"direction\")) is int\n             and selected.get(\"direction\") in (-1, 0, 1)\n",
+  "source_fix_diff_asserted_exact": true
+}

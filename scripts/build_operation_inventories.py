@@ -32,6 +32,8 @@ MANUAL_TOOLS = (
     ("oraclebot-operations", "scripts/oraclebot_ops.py", "python3 scripts/oraclebot_ops.py --help"),
     ("oraclebot-watchdog", "scripts/oraclebot_watchdog.py", "python3 scripts/oraclebot_watchdog.py --help"),
     ("ecosystem-pipeline-service", "ecosystem/pipeline_service.py", "python3 -m ecosystem.pipeline_service --help"),
+    ("ecosystem-forecast", "ecosystem/forecast.py", "python3 -m ecosystem.forecast --help"),
+    ("ecosystem-forecast-service", "ecosystem/forecast_service.py", "python3 -m ecosystem.forecast_service --help"),
 )
 
 

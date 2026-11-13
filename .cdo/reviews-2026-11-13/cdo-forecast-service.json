@@ -1,0 +1,452 @@
+{
+  "schema_version": 1,
+  "skill": {
+    "name": "code-deep-optimizer",
+    "version": "1.17.1",
+    "source": "/Users/mitch/.agents/skills/code-deep-optimizer/SKILL.md"
+  },
+  "mode": "Parent extended ownership to forecast_service.py and NEW test_forecast_service_audit.py only. Static review and scoped fixes; parent owns loop, empirical verification, Git and installed owner.",
+  "target": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_service.py",
+  "identity": {
+    "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_service.py",
+    "bytes": 7106,
+    "lines": 192,
+    "sha256": "cacbce9d6f12df6da63601bf6596648647e4376cc22a35135952fe1a91f126a7",
+    "computed_git_blob_sha1": "9b856469ac011ec230f5d93b896cab02bcd1d069"
+  },
+  "coverage": {
+    "complete": true,
+    "bounded_reads": [
+      [
+        1,
+        100
+      ],
+      [
+        101,
+        192
+      ]
+    ],
+    "truncated_target_reads": false,
+    "new_test_complete_bounded_reads": [
+      [
+        1,
+        90
+      ],
+      [
+        91,
+        180
+      ],
+      [
+        181,
+        256
+      ]
+    ],
+    "comparator_reads": {
+      "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pipeline_service.py": [
+        [
+          1,
+          80
+        ],
+        [
+          81,
+          150
+        ]
+      ]
+    }
+  },
+  "injection_gate": {
+    "state": "reviewed",
+    "result": "No reviewer-directed or hostile instructions found in target. Target source treated as data."
+  },
+  "activated_skills": [
+    {
+      "skill": "lang-python",
+      "references": [
+        "references/python-cli-tui.md",
+        "references/python-logging-observability.md"
+      ],
+      "reason": "stdlib Python CLI, filesystem and subprocess lifecycle"
+    },
+    {
+      "skill": "software-engineering-patterns",
+      "references": [
+        "references/code-reviewer.md",
+        "references/coding-standards.md"
+      ],
+      "reason": "baseline correctness, contracts, maintainability"
+    },
+    {
+      "skill": "security-review",
+      "references": [
+        "references/security-reviewer.md"
+      ],
+      "reason": "persistent user service, installed-code and filesystem trust boundaries"
+    }
+  ],
+  "findings": [
+    {
+      "id": "FS1",
+      "passes": [
+        "S3",
+        "S4",
+        "C3"
+      ],
+      "severity": "Medium",
+      "line": 51,
+      "end_line": 54,
+      "title": "Temporary and worktree installations pass the persistent-service preflight",
+      "evidence": "The only installation checks are a site-packages path component and containment in sys.prefix. The persistent definition then uses sys.executable with RunAtLoad and KeepAlive.",
+      "counterexample": "An installed package under /tmp/review-venv/lib/python3.13/site-packages or /Users/mitch/dev/worktrees/review/.venv/lib/python3.13/site-packages passes both checks. Removing that temporary environment leaves the launch agent pointing at a deleted interpreter/package.",
+      "impact": "A review environment can become the persistent service owner and break after ordinary temporary-worktree cleanup. This reduces installation robustness.",
+      "prescribed_fix": "Apply the stable installed-prefix guard already present in ecosystem/pipeline_service.py:69-82 before any install/status mutation. Keep system interpreter symlink handling compatible with an owned venv.",
+      "test_prescription": "Mock __file__ and sys.prefix to site-packages under /tmp, /private/tmp, /var/folders, worktrees and .worktrees; install must refuse before registered(), plist creation or launchctl bootstrap.",
+      "status": "Applied; empirical verification pending parent guarded test run",
+      "fixed_line_ranges": [
+        87,
+        101
+      ]
+    },
+    {
+      "id": "FS2",
+      "passes": [
+        "C1",
+        "C2",
+        "C3",
+        "S2"
+      ],
+      "severity": "Medium",
+      "line": 98,
+      "end_line": 102,
+      "title": "Unconfirmed installation returns CLI success",
+      "evidence": "operate returns {installed: registered(target)} without raising when false. main lines 118-119 always emits ok:true and returns 0 for that result.",
+      "counterexample": "First registered(target) is false, bootstrap returns success, and final registered(target) is false. The resulting CLI response is ok:true with installed:false and exit status 0.",
+      "impact": "Automation accepts a failed/unconfirmed install as success and may continue while the requested display service is absent.",
+      "prescribed_fix": "Require final registered(target) to be true and raise a stable forecast_start_unconfirmed error otherwise, matching ecosystem/pipeline_service.py:125-126.",
+      "test_prescription": "Mock the registration sequence [False, False] with successful bootstrap. Assert install returns nonzero and ok:false; retain the owned plist for recoverable diagnosis.",
+      "status": "Applied; empirical verification pending parent guarded test run",
+      "fixed_line_ranges": [
+        145,
+        148
+      ]
+    },
+    {
+      "id": "FS3",
+      "passes": [
+        "C1",
+        "C3",
+        "S3",
+        "P2"
+      ],
+      "severity": "Medium",
+      "line": 42,
+      "end_line": 42,
+      "title": "Different spellings of the same home produce duplicate service identities",
+      "evidence": "Path.absolute() preserves parent traversal and symlink aliases. definition line 19 hashes the uncanonicalized home through pipeline_label.",
+      "counterexample": "For an owned existing /Users/mitch/.oraclebot-state directory, --home /Users/mitch/.oraclebot-state and --home /Users/mitch/.oraclebot-state/../.oraclebot-state pass validation but hash to different labels and plist paths.",
+      "impact": "Two KeepAlive evaluators can operate on the same state directory because the ownership key is the path spelling rather than directory identity. No corruption claim is made without reviewing the evaluator.",
+      "prescribed_fix": "Reject a symlink supplied as the final home component, then canonicalize the owned home before generating its label and definition. Preserve a clear conflict/migration path for any existing noncanonical definition.",
+      "test_prescription": "Assert canonical and parent-traversal aliases resolve to one forecast label and cannot bootstrap a second owner; separately assert a final-component symlink remains refused.",
+      "status": "Applied; empirical verification pending parent guarded test run",
+      "fixed_line_ranges": [
+        79,
+        85
+      ]
+    },
+    {
+      "id": "FS5",
+      "passes": [
+        "S5",
+        "M5"
+      ],
+      "severity": "Medium",
+      "line": 115,
+      "end_line": 117,
+      "title": "Preflight and launchctl failure reasons are discarded",
+      "evidence": "All OSError, ValueError and subprocess.SubprocessError branches are reduced to the same forecast_service_unavailable string. Specific safe ValueError codes and failing launchctl operation are lost.",
+      "counterexample": "owned_macos_home_required, immutable_installed_evaluator_required, forecast_service_identity_conflict and a missing launchctl executable all produce indistinguishable output and no diagnostic channel.",
+      "impact": "The owner cannot identify the exact missing prerequisite or repair a definition conflict from CLI output. This fails M5 E5 and removes the only observable failure cause from these service lifecycle paths.",
+      "prescribed_fix": "Map known preflight failures and lifecycle operations to bounded safe public error codes with actionable remediation. Keep raw subprocess output, sensitive paths and exception text out of the response.",
+      "test_prescription": "Assert distinct safe diagnostics for invalid home, unstable install, definition conflict and launchctl absence/failure; ensure stderr/stdout/exception strings containing synthetic secrets are not echoed.",
+      "status": "Applied; empirical verification pending parent guarded test run",
+      "fixed_line_ranges": [
+        16,
+        48,
+        164,
+        186
+      ]
+    }
+  ],
+  "passes": [
+    {
+      "id": "C1",
+      "state": "reviewed",
+      "result": "FS2 and FS3; other action dispatch/control flow reviewed.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "C2",
+      "state": "reviewed",
+      "result": "FS2; argparse action contract and JSON response contract checked.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "C3",
+      "state": "reviewed",
+      "result": "Static adversarial counterexamples for temporary prefix, absent post-bootstrap registration, canonical-home aliases, and existing logs. Proposed tests recorded only.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "S1",
+      "state": "reviewed",
+      "result": "FS4; no injection directives, literal secrets, shell invocation or network calls in target.",
+      "post_fix_result": "No secret literals, reviewer directives, shell=True, or raw exception/subprocess output disclosure introduced. Original log-mode candidate is qualified/excluded."
+    },
+    {
+      "id": "S2",
+      "state": "reviewed",
+      "result": "FS2; finite subprocess timeouts, context-managed plist write, conservative bootout confirmation checked.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "S3",
+      "state": "reviewed",
+      "result": "FS1, FS3, FS4; owned home, module containment and plist identity checks inspected.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "S4",
+      "state": "reviewed",
+      "result": "FS1; macOS restriction and Python 3.13 repository contract inspected.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "S5",
+      "state": "reviewed",
+      "result": "FS5; lifecycle subprocess failure and preflight diagnostics inspected.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "P1",
+      "state": "reviewed",
+      "result": "No concrete Medium+ performance issue in bounded CLI paths."
+    },
+    {
+      "id": "P2",
+      "state": "reviewed",
+      "result": "FS3 duplicate owners; exclusive plist creation and recheck-before-unlink inspected. No unsupported same-user race/security claim added.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "M1",
+      "state": "reviewed",
+      "result": "No standalone Medium+ readability/constants issue established for 123-line service module."
+    },
+    {
+      "id": "M2",
+      "state": "reviewed",
+      "result": "No intra-file Medium+ duplication. Cross-file comparison limited to explicitly permitted pipeline service and used for FS1/FS2."
+    },
+    {
+      "id": "M3",
+      "state": "na",
+      "reason": "Repo-scope architecture/configuration pass belongs to parent."
+    },
+    {
+      "id": "M4",
+      "state": "reviewed",
+      "result": "Module description and emitted fields inspected; no concrete misleading target documentation beyond recorded behavior gaps."
+    },
+    {
+      "id": "M5",
+      "state": "reviewed",
+      "result": "E1 one module entrypoint; E2/E3 argparse usage and invalid choices; E4 installed-environment preflight; E5 fails via FS1/FS5; E6 --help exists, no example (low only). Public README/packaging outside authorized source scope.",
+      "post_fix_result": "Accepted linked findings patched; final source statically reread. See fixed_line_ranges and test_summary; empirical verification belongs to parent."
+    },
+    {
+      "id": "T1",
+      "state": "reviewed",
+      "result": "Source-risk and testability review completed; behavioral regression prescriptions recorded for FS1-FS5. Test-file coverage not established or credited because source-only scope and no test execution were authorized.",
+      "post_fix_result": "12 new assertion-bearing isolated regression tests statically reviewed in full; none executed here. No blanket coverage or prior-suite credit."
+    },
+    {
+      "id": "T2",
+      "state": "na",
+      "reason": "Repo-scope dependency/supply-chain pass belongs to parent."
+    },
+    {
+      "id": "T3",
+      "state": "na",
+      "reason": "Repo-scope tooling pass belongs to parent."
+    },
+    {
+      "id": "T4",
+      "state": "na",
+      "reason": "Assigned target is non-test source.",
+      "new_test_result": "New test file reviewed for suite performance: no sleeps/timers, no network or real subprocesses. Temporary fixture setup cannot be hoisted because tests mutate definitions and mock state."
+    }
+  ],
+  "verification": {
+    "ast_parse": "PASS for both final files",
+    "tests": "NOT EXECUTED by this agent",
+    "reason": "Parent requires new tests and full suite under its qualified frozen guard. No raw unittest, launchctl, services, installs, inference or Git commands executed. PR244 and the independent installed 0.4.11 owner receive no audit/runtime credit."
+  },
+  "severity_counts": {
+    "critical": 0,
+    "high": 0,
+    "medium": 4,
+    "basis": "confirmed baseline findings; all four patched"
+  },
+  "parent_gate": "Ready for parent final guarded verification. Exact current identities bound after parent formatting. Tests unexecuted by this agent; no CLEAN claim.",
+  "mutations": [
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_service.py",
+    "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast_service_audit.py",
+    "/tmp/oraclebot-pr241-review-20261112/forecast_service.py.before",
+    "/tmp/oraclebot-pr241-review-20261112/cdo-forecast-service.json"
+  ],
+  "memory_central": "2 legacy solmargintrader lesson rows and 10 convention rows consulted; no forecast-service regression match and none used to establish a finding. oraclebot.io-specific category files absent.",
+  "index": "n/a (read-only report; no source changes)",
+  "snapshot_and_rollback": {
+    "source_snapshot": "/tmp/oraclebot-pr241-review-20261112/forecast_service.py.before",
+    "source_snapshot_sha256": "c578701f04ebe7abb17b2e0f22135a6c4649247a3b642e20c5083caffb2442aa",
+    "restore_command": "cp /tmp/oraclebot-pr241-review-20261112/forecast_service.py.before /Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_service.py",
+    "new_file": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast_service_audit.py",
+    "qualification": "Only parent should perform rollback while peers are active."
+  },
+  "scope_limits": [
+    "No target execution or tests",
+    "No examination or mutation of the independent installed 0.4.11 owner",
+    "No network, services, inference, agent spawning or Git commands",
+    "Parent owns repository loop, repairs, delivery and final runtime acceptance"
+  ],
+  "baseline_identity": {
+    "bytes": 4119,
+    "lines": 123,
+    "sha256": "c578701f04ebe7abb17b2e0f22135a6c4649247a3b642e20c5083caffb2442aa",
+    "computed_git_blob_sha1": "958dd07ee4a4f403581f67072e47b8cf90f1ef51"
+  },
+  "baseline_coverage": {
+    "complete": true,
+    "bounded_reads": [
+      [
+        1,
+        70
+      ],
+      [
+        71,
+        123
+      ]
+    ],
+    "truncated_target_reads": false,
+    "comparator_reads": {
+      "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/pipeline_service.py": [
+        [
+          1,
+          80
+        ],
+        [
+          81,
+          150
+        ]
+      ]
+    }
+  },
+  "final_files": [
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/forecast_service.py",
+      "bytes": 7106,
+      "lines": 192,
+      "sha256": "cacbce9d6f12df6da63601bf6596648647e4376cc22a35135952fe1a91f126a7",
+      "computed_git_blob_sha1": "9b856469ac011ec230f5d93b896cab02bcd1d069",
+      "complete_bounded_read_ranges": [
+        [
+          1,
+          100
+        ],
+        [
+          101,
+          192
+        ]
+      ],
+      "ast_parse": "PASS",
+      "test_methods": 0
+    },
+    {
+      "path": "/Users/mitch/dev/worktrees/oraclebot-health-hooks-20261112/ecosystem/tests/test_forecast_service_audit.py",
+      "bytes": 10430,
+      "lines": 256,
+      "sha256": "970ea320deb4d6d3cbac9c61c4e9ea551074f9d21dcb2dde47bec6feb2217377",
+      "computed_git_blob_sha1": "4c80c7aa617e82c9187e8b57387a1a976b9a549b",
+      "complete_bounded_read_ranges": [
+        [
+          1,
+          90
+        ],
+        [
+          91,
+          180
+        ],
+        [
+          181,
+          256
+        ]
+      ],
+      "ast_parse": "PASS",
+      "test_methods": 12
+    }
+  ],
+  "excluded_candidates": [
+    {
+      "id": "FS4",
+      "passes": [
+        "S1",
+        "S3"
+      ],
+      "severity": "Medium",
+      "line": 33,
+      "end_line": 37,
+      "title": "Launchd log paths are not checked or made private",
+      "evidence": "Umask is the only log protection. The home guard only checks owner/type; no path checks, ownership checks or chmod are applied to forecast-service.stdout.log or forecast-service.stderr.log before launchctl bootstrap.",
+      "counterexample": "Use an owned mode-0755 home containing pre-existing mode-0644 forecast-service.stdout.log and forecast-service.stderr.log. Installation accepts them, and Umask does not change modes of existing files.",
+      "impact": "Subsequent service output remains readable to other local users despite the private-log intent. Existing log symlinks and nonregular files are also accepted; no additional output-content or arbitrary-write claim is made.",
+      "prescribed_fix": "Before bootstrap, create or validate each log as an owned regular nonsymlink file and enforce mode 0600; reject conflicts rather than following them. Do not silently chmod files not owned by the user.",
+      "test_prescription": "Precreate owned 0644 logs and verify corrected private modes, then provide a symlink, FIFO and foreign-owned fixture and verify refusal before bootstrap.",
+      "status": "Not raised as a confirmed finding; no change authorized",
+      "qualification": "Preexisting 0644 log modes are a concrete configuration trigger, but this source-only audit did not establish private output content or a repository requirement that makes it a Medium-impact defect. Parent authorized only the other four fixes. No log permission or secret-leak claim is made."
+    }
+  ],
+  "post_fix_static_severity_counts": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "qualification": "for the four accepted findings; not a CLEAN or empirical-convergence claim"
+  },
+  "fix_summary": [
+    "Reject sys.prefix paths under temporary and worktree directories using the existing pipeline predicate.",
+    "Canonicalize valid nonsymlink owned homes before hashing the service label.",
+    "Raise forecast_start_unconfirmed if final registration is false; preserve definition.",
+    "Preserve forecast_service_unavailable envelope and expose only allowlisted reason/remediation or sanitized exception categories."
+  ],
+  "test_summary": {
+    "count": 12,
+    "execution": "not executed",
+    "isolation": "Path.home points at private temporary directory; registered and subprocess.run mocked; platform, prefix, executable and module path patched. No test invokes launchctl.",
+    "coverage": [
+      "temporary/worktree prefix rejection",
+      "outside-prefix module rejection",
+      "parent traversal and parent symlink aliases share identity",
+      "final-component symlink rejection",
+      "unconfirmed install fails and retains definition",
+      "confirmed install succeeds",
+      "status has no filesystem/service mutation",
+      "definition conflicts preserve bytes",
+      "unsupported platform preflight",
+      "all known failures expose safe codes",
+      "unknown/OS/subprocess error detail redaction",
+      "missing launchctl prerequisite diagnostic"
+    ]
+  },
+  "known_compatibility_limit": "Canonicalization prevents future alias duplicates but does not discover/migrate a preexisting alias-keyed LaunchAgent from older code. Parent explicitly accepted this qualification because the current accepted owner uses a canonical home. No legacy migration or current-owner operation authorized.",
+  "final_format_change": "Parent confirmed Ruff I001 removed only one extra blank line after imports. Current 192-line source fully reread in bounded slices and rebound by exact hash.",
+  "parent_reported_checks": "Parent reported Ruff exit 0 for all six affected source/test files. This agent did not execute Ruff or adopt that report as an independently executed check.",
+  "receipt_state": "FINAL; source and new test unchanged after final hash binding"
+}

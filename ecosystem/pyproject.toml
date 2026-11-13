@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solmargintrader-ecosystem"
-version = "0.4.10"
+version = "0.4.12"
 description = "Resumable headless paper-research bootstrap"
 readme = "README.md"
 requires-python = ">=3.13"

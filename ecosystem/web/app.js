@@ -4,16 +4,16 @@
 const $ = (id) => document.getElementById(id);
 function savedOracleDisplay() {
   try {
-    const value = JSON.parse(localStorage.getItem("solmargintrader.oracle.display.v1"));
+    const value = JSON.parse(localStorage.getItem("solmargintrader.oracle.display.v2"));
     return value && /^[A-Z][A-Z0-9]{0,15}\/[A-Z][A-Z0-9]{0,15}$/.test(value.instrument) &&
-      /^(published|[1-9][0-9]{0,5}[smhd])$/.test(value.interval) && /^[A-Za-z0-9_-]{1,120}$/.test(value.strategy) ? value : null;
+      (value.interval === "1m" || /^[0-9]+s$/.test(value.interval) && Number(value.interval.slice(0,-1)) >= 5 && Number(value.interval.slice(0,-1)) <= 300) && /^[A-Za-z0-9_-]{1,120}$/.test(value.strategy) ? value : null;
   } catch { return null; }
 }
 const oracleSaved = savedOracleDisplay();
 const state = { status: null, registrations: null, telemetry: null, selected: null,
   cursors: [""], page: 0, next: null, polling: false, eventCursor: 0,
   events: [], droppedEvents: 0, receivedAt: null, control: null, analytics: null, analyticsError: null, selectionRevision: 0,
-  oracle: null, oracleInstrument: oracleSaved?.instrument || "SOL/USD", oracleInterval: oracleSaved?.interval || "published", oracleStrategy: oracleSaved?.strategy || "published", oraclePublicationChosen: Boolean(oracleSaved), oracleStudyInstrument: null, oracleDisplayOptions: null, selectedRecord: null, session: null,
+  oracle: null, liveForecasts: new Map(), forecastHolding: null, forecastDirty: new Set(), forecastPreferenceScopes: new Set(), forecastSaving: new Set(), oracleInstrument: oracleSaved?.instrument || "SOL/USD", oracleInterval: oracleSaved?.interval || "10s", oracleStrategy: oracleSaved?.strategy || "published", oraclePublicationChosen: true, oracleStudyInstrument: null, oracleDisplayOptions: null, selectedRecord: null, session: null,
   busy: new Set(), localActions: new Map(), voterDrafts: new Map(), managerDrafts: new Map(), managerInputModes: new Map(), pendingPrefs: new Map(),
   wikiCatalog: null, wikiPage: null, wikiKnownPages: new Map(), wikiRequest: 0, wikiPageRequest: 0,
   launchCatalogKey: null, managerCatalogKey: null, instrumentCatalogKey: null,
@@ -167,6 +167,13 @@ async function refresh() {
       if (key === "analytics") state.analyticsError = results[index].status === "rejected" ? "Research owner unavailable" : null;
       state[key] = key === "oracle" && requestedOracleView !== oracleViewKey() ? null : results[index].status === "fulfilled" ? results[index].value : null;
     });
+    const preferenceScope = JSON.stringify([state.activeRun,state.oracleInstrument]);
+    const forecastPreference = state.oracle?.live_forecast?.settings;
+    if (forecastPreference?.instrument === state.oracleInstrument && Number.isSafeInteger(forecastPreference.seconds) && forecastPreference.seconds >= 5 && forecastPreference.seconds <= 300 && !state.forecastSaving.has(preferenceScope) && !preferencePending("forecast", state.oracleInstrument)) {
+      state.forecastPreferenceScopes.add(preferenceScope);
+      const interval = `${forecastPreference.seconds}s`;
+      if (state.oracleInterval !== interval) { state.oracleInterval = interval; state.oracle = null; }
+    }
     const publication = state.oracle?.selected_experiment;
     if (!state.oraclePublicationChosen && publication?.instrument) {
       state.oraclePublicationChosen = true;
@@ -429,7 +436,7 @@ function sourceReadOnly(run = state.activeRun) {
   return observed?.read_only_source === true || observed?.mutation_allowed === false;
 }
 function actionBlocked(action, params = {}) {
-  return action !== "oracle.voters.set" && /^(pipeline|backtest|oracle|recorder)\./.test(action) && sourceReadOnly(actionRun(action, params));
+  return !["oracle.voters.set", "oracle.forecast.set"].includes(action) && /^(pipeline|backtest|oracle|recorder)\./.test(action) && sourceReadOnly(actionRun(action, params));
 }
 function actionKey(action, params) { return `${actionRun(action, params) || "primary"}:${action}:${params.identity || params.instrument || "owner"}`; }
 function voterKey(instrument = state.oracleInstrument, run = state.activeRun) { return `${run || "primary"}:${instrument}`; }
@@ -789,12 +796,18 @@ function renderActionLedger() {
     const record = records.get(id);
     if (["failed", "interrupted"].includes(record?.state)) {
       state.pendingPrefs.delete(id);
+      if (effect.kind === "forecast" && effect.run === state.activeRun && effect.instrument === state.oracleInstrument) {
+        state.oracleInterval = effect.previousInterval; state.forecastHolding = null;
+      }
       announce(`${human(record.action)} ${human(record.state)}. Your unsaved choice is retained; inspect the action record.`);
+    } else if (record?.state === "succeeded" && effect.kind === "forecast" && (effect.run !== state.activeRun || effect.instrument !== state.oracleInstrument)) {
+      state.pendingPrefs.delete(id);
     } else if (record?.state === "succeeded" && effect.run === state.activeRun) {
       const expected = record.result?.revision;
-      const actual = effect.kind === "recording" ? state.control?.recording?.revision : state.oracle?.selection?.revision;
+      const actual = effect.kind === "recording" ? state.control?.recording?.revision : effect.kind === "forecast" ? state.oracle?.live_forecast?.settings?.revision : state.oracle?.selection?.revision;
       if (Number.isSafeInteger(expected) && Number.isSafeInteger(actual) && actual >= expected) {
         if (effect.kind === "recording") state.recordingDirty = false;
+        else if (effect.kind === "forecast") state.forecastDirty.clear();
         else state.voterDrafts.delete(voterKey(effect.instrument, effect.run));
         state.pendingPrefs.delete(id);
         announce(`${human(record.action)} completed · saved revision ${expected}.`);
@@ -865,6 +878,36 @@ function currentVoterDraft() {
   }
   return draft;
 }
+function renderLiveForecast(value) {
+  const now = Date.now() / 1000; const key = oracleViewKey();
+  const incoming = value?.live_forecast; const row = incoming?.selected;
+  const requestedSeconds = forecastSeconds();
+  const valid = incoming && ["fresh", "retained"].includes(incoming.status) && incoming.instrument === state.oracleInstrument && incoming.horizon_seconds === requestedSeconds && incoming.refresh_seconds === requestedSeconds && incoming.input_bar_seconds === 10 && incoming.source === "coinbase_recorder" && incoming.kind === "stream_snapshot_mid" && finite(incoming.issued_at) && incoming.issued_at <= now && finite(incoming.observed_at) && incoming.observed_at <= incoming.issued_at && finite(incoming.target_at) && Math.abs(incoming.target_at - incoming.issued_at - requestedSeconds) < 0.001 && finite(incoming.reference_price) && incoming.reference_price > 0 && row && [-1,0,1].includes(row.direction) && finite(row.predicted_price) && row.predicted_price > 0 && /^[a-f0-9]{64}$/.test(row.version) && (state.oracleStrategy === "published" || row.strategy_id === state.oracleStrategy);
+  const cached = state.liveForecasts.get(key);
+  if (valid && (!cached || incoming.issued_at >= cached.issued_at)) state.liveForecasts.set(key, incoming);
+  const holding = state.forecastHolding;
+  const held = holding?.scope === JSON.stringify([state.activeRun,state.oracleInstrument,state.oracleStrategy]) ? holding.frame : null;
+  const frame = state.liveForecasts.get(key) || held;
+  if (!frame) return;
+  if (valid) state.forecastHolding = null;
+  const horizon = frame.horizon_seconds;
+  const chosen = frame.selected; const age = Math.max(0, now - frame.issued_at);
+  const fresh = valid && incoming.issued_at === frame.issued_at && incoming.status === "fresh" && age <= horizon + 5 && now <= frame.target_at;
+  const quote = frame.instrument.split("/")[1];
+  const price = (number) => quote === "USD" ? new Intl.NumberFormat("en-US", {style:"currency",currency:"USD",maximumFractionDigits:6}).format(number) : `${number.toPrecision(8)} ${quote}`;
+  const direction = chosen.direction > 0 ? "UP" : chosen.direction < 0 ? "DOWN" : "FLAT";
+  const ranking = chosen.ranking_basis === "warm_start_catalog_order" ? "reference strategy · ranking warming up" : `${chosen.hits}/${chosen.resolved} recent resolved calls · uncalibrated`;
+  const title = `${direction} · ${price(chosen.predicted_price)}`;
+  ["aggregate-signal", "oracle-signal"].forEach((id) => text(id, title));
+  ["aggregate-balance", "oracle-balance"].forEach((id) => text(id, `${human(chosen.strategy_id)} · ${horizon}-second price projection`));
+  const reason = `${held && !valid ? `${preferencePending("forecast", state.oracleInstrument) ? "Applying" : "Waiting for"} ${requestedSeconds}s · showing the previous ${horizon}s forecast` : fresh ? "Provisional live forecast" : "Last forecast retained · update delayed"} · ${ranking}. ${qualificationSummary(value, true) || "Qualified ensemble evidence is reported separately."}`;
+  ["aggregate-reason", "oracle-reason"].forEach((id) => text(id, reason));
+  text("aggregate-freshness", `Evaluated ${timestamp(frame.issued_at)} · target ${timestamp(frame.target_at)} · age ${age.toFixed(0)}s · recalculates every ${horizon}s`);
+  text("oracle-explanation", `Observed ${price(frame.reference_price)} from ${frame.instrument} Coinbase recorder at ${timestamp(frame.observed_at)}. Direction comes from the chosen strategy on 10-second bars. Target distance uses recent median absolute moves at this horizon; it is an indicative projection, not a fitted expected return, executable quote or probability of profit.`);
+  $("aggregate-meter").hidden = true;
+  $("aggregate-meter").closest(".aggregate-reading").dataset.direction = chosen.direction > 0 ? "buy" : chosen.direction < 0 ? "sell" : "flat";
+  $("oracle-signal").className = chosen.direction > 0 ? "positive" : chosen.direction < 0 ? "negative" : "";
+}
 function qualificationSummary(value, fresh) {
   if (!fresh || value?.instrument !== state.oracleInstrument || !recent(value.as_of) || value.selection?.instrument !== value.instrument || value.selected_experiment?.selected || state.oracleStrategy !== "published") return null;
   const selected = new Set(array(value.selection?.selected_ids));
@@ -913,8 +956,9 @@ function renderSelectedAggregate() {
   $("voter-form").hidden = studySelected || state.oracleStrategy !== "published";
   renderZecStudy(value?.selected_experiment);
   renderOracleSelectors(value);
-  const instruments = array(state.control?.catalog?.coins).map((coin) => `${coin}/USD`);
-  if (state.oracleStudyInstrument && !instruments.includes(state.oracleStudyInstrument)) instruments.push(state.oracleStudyInstrument);
+  const liveInstruments = array(value?.live_forecast?.available_instruments);
+  const instruments = liveInstruments.length ? [...liveInstruments] : array(state.control?.catalog?.coins).map((coin) => `${coin}/USD`);
+  if (!liveInstruments.length && state.oracleStudyInstrument && !instruments.includes(state.oracleStudyInstrument)) instruments.push(state.oracleStudyInstrument);
   if (!instruments.includes(state.oracleInstrument)) instruments.push(state.oracleInstrument);
   fillSelect("oracle-instrument", instruments, state.oracleInstrument); fillSelect("oracle-instrument-detail", instruments, state.oracleInstrument);
   $("oracle-instrument").value = state.oracleInstrument; $("oracle-instrument-detail").value = state.oracleInstrument;
@@ -942,6 +986,7 @@ function renderSelectedAggregate() {
   $("voter-options").replaceChildren(fragment);
   if (focused) Array.from($("voter-options").querySelectorAll("input")).find((input) => input.dataset.strategyId === focused)?.focus();
   renderVoterStatus();
+  renderLiveForecast(value);
 }
 function renderZecStudy(study) {
   const panel = $("zec-study-panel"); panel.hidden = !study;
@@ -1096,6 +1141,34 @@ $("recording-form").addEventListener("submit", async (event) => {
 function oracleViewKey() {
   return JSON.stringify([state.activeRun, state.oracleInstrument, state.oracleInterval, state.oracleStrategy]);
 }
+function forecastSeconds() {
+  return state.oracleInterval === "1m" ? 60 : Number(state.oracleInterval.replace(/s$/, ""));
+}
+async function saveForecastSeconds(seconds, button) {
+  if (!Number.isSafeInteger(seconds) || seconds < 5 || seconds > 300) { announce("Choose a whole number from 5 to 300 seconds."); return; }
+  const policy = state.oracle?.live_forecast?.settings;
+  if (policy?.instrument !== state.oracleInstrument || !Number.isSafeInteger(policy.revision) || preferencePending("forecast", state.oracleInstrument)) return;
+  const run = state.activeRun, instrument = state.oracleInstrument, previousInterval = state.oracleInterval, strategy = state.oracleStrategy;
+  const savingScope = JSON.stringify([run,instrument]);
+  if (state.forecastSaving.has(savingScope)) return;
+  state.forecastSaving.add(savingScope);
+  renderOracleSelectors(state.oracle);
+  const holding = state.liveForecasts.get(oracleViewKey());
+  let result;
+  try { result = await submitAction("oracle.forecast.set", {instrument, seconds, expected_revision:policy.revision}, button); }
+  finally { state.forecastSaving.delete(savingScope); }
+  if (!result) { renderOracleSelectors(state.oracle); return; }
+  state.pendingPrefs.set(result.id, {kind:"forecast", run, instrument, previousInterval, seconds});
+  if (run === state.activeRun && instrument === state.oracleInstrument) {
+    state.forecastHolding = holding && strategy === state.oracleStrategy ? {scope:JSON.stringify([run,instrument,strategy]),frame:holding} : null;
+    state.oracleInterval = `${seconds}s`; changeOracleDisplay();
+  }
+}
+for (const [inputId, buttonId] of [["forecast-seconds","forecast-seconds-save"],["oracle-frequency","oracle-frequency-save"]]) {
+  $(inputId).addEventListener("input", () => state.forecastDirty.add(inputId));
+  $(buttonId).addEventListener("click", () => saveForecastSeconds(Number($(inputId).value), $(buttonId)));
+  $(inputId).addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); void saveForecastSeconds(Number($(inputId).value), $(buttonId)); } });
+}
 function oracleDisplayPath() {
   return `/api/oracle?instrument=${encodeURIComponent(state.oracleInstrument)}` +
     (state.oracleInterval !== "published" ? `&interval=${encodeURIComponent(state.oracleInterval)}` : "") +
@@ -1105,20 +1178,20 @@ function renderOracleSelectors(value) {
   if (value?.display) state.oracleDisplayOptions = value.display;
   if (value?.display?.publication_instrument) state.oracleStudyInstrument = value.display.publication_instrument;
   const display = state.oracleDisplayOptions;
-  const intervals = [...new Set(["1m", "1h", ...array(display?.available_intervals)])];
-  fillSelect("oracle-frequency", [{ id: "published", label: "Published / native frequency" }, ...intervals.map((id) => ({ id, label: id }))], state.oracleInterval);
-  if (!intervals.includes(state.oracleInterval) && state.oracleInterval !== "published") {
-    fillSelect("oracle-frequency", [{id:"published",label:"Published / native frequency"}, ...[...intervals, state.oracleInterval].map((id) => ({id,label:id}))], state.oracleInterval);
+  for (const [inputId, buttonId] of [["forecast-seconds","forecast-seconds-save"],["oracle-frequency","oracle-frequency-save"]]) {
+    if (!state.forecastDirty.has(inputId)) $(inputId).value = String(forecastSeconds());
+    $(buttonId).disabled = value?.live_forecast?.settings?.instrument !== state.oracleInstrument || preferencePending("forecast", state.oracleInstrument) || state.forecastSaving.has(JSON.stringify([state.activeRun,state.oracleInstrument]));
   }
-  const strategies = [{ id: "published", label: "Published / saved aggregate" }, ...array(display?.strategies)];
+  const live = array(value?.live_forecast?.strategies).map((row) => ({id:row.strategy_id,label:human(row.strategy_id)}));
+  const strategies = [{ id: "published", label: "Auto · top available strategy" }, ...(live.length ? live : array(display?.strategies))];
   if (!strategies.some((row) => row.id === state.oracleStrategy)) strategies.push({ id: state.oracleStrategy, label: `${state.oracleStrategy} · unavailable for this coin` });
   fillSelect("oracle-strategy", strategies, state.oracleStrategy);
-  $("oracle-frequency").value = state.oracleInterval; $("oracle-strategy").value = state.oracleStrategy;
-  text("oracle-display-status", value ? `${value.instrument} · native frequencies: ${array(value.display?.available_intervals).join(", ") || "unavailable"}. Display only; saved voters, paper accounts and the published winner are unchanged.${value.status !== "available" ? ` ${human(value.reason || "forecast_unavailable")}.` : ""}` : "Loading the selected coin, frequency and strategy; earlier values are cleared.");
+  $("oracle-strategy").value = state.oracleStrategy;
+  text("oracle-display-status", `${state.oracleInstrument} · next ${forecastSeconds()} seconds, evaluated every ${forecastSeconds()} seconds. Edit the seconds value beside the prediction and apply it. Paper accounts and historical study settings stay separate.`);
 }
 function changeOracleDisplay() {
   state.oraclePublicationChosen = true;
-  try { localStorage.setItem("solmargintrader.oracle.display.v1", JSON.stringify({ instrument: state.oracleInstrument, interval: state.oracleInterval, strategy: state.oracleStrategy })); } catch { /* A private browser may disable local storage. */ }
+  try { localStorage.setItem("solmargintrader.oracle.display.v2", JSON.stringify({ instrument: state.oracleInstrument, interval: state.oracleInterval, strategy: state.oracleStrategy })); } catch { /* A private browser may disable local storage. */ }
   state.oracle = null; state.oracleDisplayOptions = null;
   renderSelectedAggregate(); renderOracle(); refresh();
 }
@@ -1126,7 +1199,6 @@ function setInstrument(instrument) {
   state.oracleInstrument = instrument; changeOracleDisplay();
 }
 ["oracle-instrument", "oracle-instrument-detail"].forEach((id) => $(id).addEventListener("change", (event) => setInstrument(event.target.value)));
-$("oracle-frequency").addEventListener("change", (event) => { state.oracleInterval = event.target.value; changeOracleDisplay(); });
 $("oracle-strategy").addEventListener("change", (event) => { state.oracleStrategy = event.target.value; changeOracleDisplay(); });
 $("voter-form").addEventListener("submit", async (event) => {
   event.preventDefault(); const draft = currentVoterDraft(); if (!draft) return;

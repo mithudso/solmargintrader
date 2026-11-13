@@ -369,7 +369,7 @@ def _unavailable_display(view, reason):
             "graph": {"status": "unavailable", "reason": reason, "instrument": view["instrument"], "ticks": []}}
 
 
-def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None):
+def report(home, instrument: str, selected_ids=None, *, now=None, interval=None, strategy=None, forecast_home=None):
     """Display filters never change saved voters, worker policy, or native cadence."""
     if interval is not None and (not isinstance(interval, str) or not re.fullmatch(r"[1-9][0-9]{0,5}[smhd]", interval)):
         raise ValueError("invalid_oracle_display_interval")
@@ -396,7 +396,8 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
                "strategy": requested, "available_intervals": available, "strategies": strategies,
                "publication_instrument": study.get("instrument") if study else None,
                "published_strategy": study.get("accounts", [{}])[0].get("id") if selected_study else "published",
-               "scope": "read_only_display_native_forecasts_no_resampling"}
+               "scope": "read_only_ensemble_and_independent_live_projection",
+               "live_forecast_seconds_range": [5, 300]}
     if explicit and requested not in {row["id"] for row in strategies}:
         view = _unavailable_display(view, "requested_strategy_unavailable_for_instrument")
     elif interval is not None and native != interval:
@@ -412,4 +413,13 @@ def report(home, instrument: str, selected_ids=None, *, now=None, interval=None,
     view["display"] = display
     if "graph" in view:
         view["graph"]["view_key"] = view["instrument"] + ":" + str(display["interval"]) + ":" + requested
+    from .forecast import report as forecast_report
+    from .forecast_preferences import settings as forecast_settings
+
+    seconds = int(interval[:-1]) if interval and interval.endswith("s") else 60 if interval == "1m" else forecast_settings(forecast_home or home, instrument)["seconds"]
+    display["live_refresh_seconds"] = seconds
+    view["live_forecast"] = forecast_report(
+        forecast_home or home, instrument, horizon=seconds,
+        strategy=requested, now=now,
+    )
     return view

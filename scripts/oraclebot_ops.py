@@ -12,6 +12,7 @@ import datetime as dt
 import fcntl
 import hashlib
 import json
+import math
 import os
 import plistlib
 import re
@@ -31,9 +32,10 @@ from itertools import pairwise
 from pathlib import Path
 from urllib.parse import urlsplit
 
-VERSION = "1.1.1"
+VERSION = "1.2.1"
 LABEL = "com.mitchhudson.oraclebot-operations"
 COMPONENTS = ("suite", "manager", "control_room", "market_data")
+FORECAST_SOURCE_MAX_AGE = 15
 STOP = threading.Event()
 
 
@@ -152,12 +154,13 @@ def probe(solbot):
         }
 
 
-RUNTIME_COMPONENTS = (
+PIPELINE_COMPONENTS = (
     "paper_pipeline",
     "backtest_worker",
     "oracle_forecasts",
     "oracle_market_data",
 )
+RUNTIME_COMPONENTS = (*PIPELINE_COMPONENTS, "live_price_forecast")
 
 
 def runtime_health(data, now):
@@ -208,7 +211,7 @@ def runtime_health(data, now):
             if observed[key]
             else key + "_unavailable",
         }
-        for key in RUNTIME_COMPONENTS
+        for key in PIPELINE_COMPONENTS
     }
 
 
@@ -239,7 +242,75 @@ def probe_runtime(config, now):
                 "state": "unknown",
                 "reason": "pipeline_probe_unavailable",
             }
-            for key in RUNTIME_COMPONENTS
+            for key in PIPELINE_COMPONENTS
+        }
+
+
+def probe_forecast(config, now):
+    """A retained forecast is visible but does not prove current evaluation."""
+    try:
+        python = config["forecast_python"]
+        raw = probe_output(
+            python,
+            arguments=[
+                python,
+                "-I",
+                "-m",
+                "ecosystem.forecast",
+                "--status",
+                "--home",
+                config["pipeline_home"],
+            ],
+        )
+        value = json.loads(raw)
+        frame = value["data"]
+        selected = frame.get("selected", {})
+        seconds = frame.get("settings", {}).get("seconds")
+        now = time.time()
+        ready = (
+            value.get("ok") is True
+            and frame.get("status") == "fresh"
+            and type(seconds) is int
+            and 5 <= seconds <= 300
+            and frame.get("refresh_seconds") == seconds
+            and frame.get("horizon_seconds") == seconds
+            and frame.get("source_current") is True
+            and all(
+                type(stamp) in (int, float)
+                and math.isfinite(stamp)
+                and 0 <= now - stamp <= FORECAST_SOURCE_MAX_AGE
+                for stamp in (
+                    frame.get("source_observed_at"),
+                    frame.get("source_sampled_at"),
+                )
+            )
+            and frame.get("instrument") == "SOL/USD"
+            and type(selected.get("direction")) is int
+            and selected.get("direction") in (-1, 0, 1)
+            and type(selected.get("predicted_price")) in (int, float)
+            and math.isfinite(selected["predicted_price"])
+            and selected["predicted_price"] > 0
+            and type(frame.get("issued_at")) in (int, float)
+            and -1 <= now - frame["issued_at"] <= seconds + 5
+        )
+        return {
+            "ready": ready,
+            "state": "up" if ready else "down",
+            "reason": "available" if ready else "live_forecast_not_current",
+        }
+    except (
+        OSError,
+        subprocess.SubprocessError,
+        ValueError,
+        TypeError,
+        AttributeError,
+        KeyError,
+        OverflowError,
+    ):
+        return {
+            "ready": False,
+            "state": "unknown",
+            "reason": "live_forecast_probe_unavailable",
         }
 
 
@@ -585,8 +656,11 @@ def tick(home, config, db):
     now = time.time()
     health = probe(config["solbot"])
     health["components"].update(probe_runtime(config, now))
-    health["ready"] = health["ready"] and all(
-        health["components"][key]["ready"] for key in RUNTIME_COMPONENTS[:3]
+    health["components"]["live_price_forecast"] = probe_forecast(config, now)
+    health["ready"] = (
+        health["ready"]
+        and all(health["components"][key]["ready"] for key in RUNTIME_COMPONENTS[:3])
+        and health["components"]["live_price_forecast"]["ready"]
     )
     health["overall"] = (
         "down"
@@ -623,6 +697,7 @@ def _main(argv=None):
     parser.add_argument("--github-repository", default="mithudso/solmargintrader")
     parser.add_argument("--pipeline-python", type=Path)
     parser.add_argument("--pipeline-home", type=Path)
+    parser.add_argument("--forecast-python", type=Path)
     args = parser.parse_args(argv)
     if args.action == "install" and not all(
         (
@@ -632,10 +707,11 @@ def _main(argv=None):
             args.alertlane_url,
             args.pipeline_python,
             args.pipeline_home,
+            args.forecast_python,
         )
     ):
         parser.error(
-            "install requires --solbot, --alertlane-env, --alertlane-url, --gh, --pipeline-python and --pipeline-home"
+            "install requires --solbot, --alertlane-env, --alertlane-url, --gh, --pipeline-python, --pipeline-home and --forecast-python"
         )
     home = args.home.expanduser().absolute()
     if args.action == "status":
@@ -658,8 +734,14 @@ def _main(argv=None):
             "github_repository": args.github_repository,
             "pipeline_python": str(args.pipeline_python.absolute()),
             "pipeline_home": str(args.pipeline_home.absolute()),
+            "forecast_python": str(args.forecast_python.absolute()),
         }
-        for executable in (args.solbot, args.gh, args.pipeline_python):
+        for executable in (
+            args.solbot,
+            args.gh,
+            args.pipeline_python,
+            args.forecast_python,
+        ):
             if not executable.is_file() or not os.access(executable, os.X_OK):
                 raise ValueError("installed_executable_required")
         ingest_token(args.alertlane_env)  # Validate without printing/copying it.

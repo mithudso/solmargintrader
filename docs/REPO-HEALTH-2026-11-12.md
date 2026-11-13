@@ -1,16 +1,17 @@
 # Oraclebot repository health audit — 2026-11-12
 
-Version: 0.1.10
-Delta: Preserve failed full/CI attempts, qualify private spawn-safe launcher and wallet-render readiness. Fresh full1563/final-headCI remain pending.
-Previous delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures. Complete combined Ecosystem255 and four fresh CLI parsing gates pass. Final SolTUI shards, pushed CI and delivery remain pending.
+Version: 0.1.11
+Delta: Bind successful full1563/a505 CI and complete forecast source review with final291core/43observer/8CLI gates. Consolidated delivery remains pending.
+
+This is a source-qualification checkpoint. Historical attempts below retain their exact source bindings. Current delivery and deployment state will be recorded in `/Users/mitch/.local/state/oraclebot-final-delivery-20261113/delivery.json`; its eventual receipt supersedes pre-publication pending statements here.
 
 ## Result and scope
 
-**Full source inspection is complete. Repository convergence and delivery remain partial.** The current helper census contains 828 paths: 823 application source/test files have complete, current, hash-bound semantic review receipts; five captured GitHub HTML pages with `.ts` filenames are separately classified data. All 22 supplementary HTML/CSS/extensionless runtime assets also have bound semantic inspections. This is a full review, not a sampled or capped run. Hashes bind the inspected bytes; they do not substitute for the recorded reads.
+**Full source inspection is complete. Repository convergence and delivery remain partial.** The current helper census contains 833 paths: 828 application source/test files have complete, current, hash-bound semantic review receipts; five captured GitHub HTML pages with `.ts` filenames are separately classified data. All 22 supplementary HTML/CSS/extensionless runtime assets also have bound semantic inspections. This is a full review, not a sampled or capped run. Hashes bind the inspected bytes; they do not substitute for the recorded reads.
 
 The run used the default repository profile in full mode. It applied the repo-bootstrapper checklist and all 18 code-deep-optimizer pass dispositions, plus conditional tool ergonomics. Repository-level M3/T2/T3 and test-specific T4 applicability are recorded separately. The requested Claude model was unavailable in this harness; reviewers used the inherited available model. Finite agent concurrency required bounded component/file batches. The per-file receipts distinguish complete original reads, reviewed final deltas, new authored source, explicit exclusions and inapplicable passes.
 
-This report does **not** claim a CLEAN or CONVERGED repository exit. M3 retains the Medium architecture findings below;41 per-file M5 qualification limits remain explicitly partial, and T4 retains a blocked equivalence assessment. The complete guarded SolTUI run at1015 failed one assertion; its three UI readiness fixtures now pass seven focused cases under bounded worker deadlines. Earlier diagnostic and CI failures remain preserved. Backtester, Bot Manager and Oracle full gates retain their exact earlier source bindings. Complete current combined Ecosystem255 passes; final fresh SolTUI shards, pushed CI and delivery remain pending. No final merge, production deployment, live trading activation or successful customer trial is claimed here.
+This report does **not** claim a CLEAN or CONVERGED repository exit. M3 retains the Medium architecture findings below;41 per-file M5 qualification limits remain explicit, and T4 retains a blocked equivalence assessment. All833 current helper paths are reconciled:828 semantic source/test reviews and five bound data exclusions. The final a505 full SolTUI gate passed1563 cases (1549successes/14canonicalskips), with no failures/errors/forbidden events/drift and all children accounted. Its final CI completed15successes/3intendedskips. Seventeen incoming forecast/version/inventory paths have exact inherited full reads plus complete deltas or new complete reads. Current source0.4.12/observer1.2.1 passes291core+43observer cases, eight freshCLI parse gates and JS/Ruff checks. Source-only proofs do not establish installed or financial execution. Final combined CI/merge, new immutable installed acceptance and hosted deployment remain pending at this checkpoint.
 
 The828-path census describes the merged candidate, including three availability-supervision helpers from upstream PR238/240, the PR241 foreground pipeline module and PR242 UI changes. The three PR241 boundaries have bounded fixes and independent static acceptance. Root separately verified the installed UI release; source-only audit checks do not claim that native acceptance. Master integration preserved the three incoming NEWS helpers and all eight published research artifacts. The two corroborated NEWS source findings now have bounded fixes,22 passing focused author tests and independent source/delta acceptance. Their original966-line inspection and exact final deltas are bound separately; no real study or report was rerun.
 
@@ -77,6 +78,15 @@ The following groups summarize source changes. Per-file receipts retain the prec
 | Research/data capture | Incoming NEWS seven-day groups now use normalized UTC instants while retaining the original epoch anchor; equivalent offsets cannot split one instant into two blocks. Statistical/report dependencies are checked before outputs, with stdlib CLI parsing and mocked own-environment/reexec qualification. Source/window/product checkpoint bindings and nonprogress/truncation refusal were tightened. No paused collector was started, no economic parameter search was run, and no historical source identity was rewritten. |
 
 A previously suggested change to finite out-of-range target clamping was retracted after checking the documented contract. That behavior remains intentional; the retraction is preserved in the audit evidence.
+
+## Latest accepted source gates
+
+- Baseline full1563: `.cdo/reviews-2026-11-13/soltui-full-a505-completion.json` and independent receipt; exact a505 commit,1549successes/14canonicalskips, all test/finalizer/launcher exits0. Final CI15successes/3skips is separately preserved.
+- Combined source0.4.12 and observer1.2.1: `.cdo/reviews-2026-11-13/forecast-integrated-0.4.12-ops1.2.1-gates.json` binds final291core/43observer actual exits0, zero failures/errors/skips/forbidden/drift,121children accounted and no owned survivors. Scripts are included in stability manifests. Eight fresh CLI help/invalid cases return0/2 with40refusal controls and no side effects.
+- Full/delta semantic receipts: `.cdo/reviews-2026-11-13/forecast-integration-cdo.json` covers17 paths. First-use preference publication, midpoint positivity, absolute source freshness, source diagnostics, service ownership, native-interval qualification, legacy preference controls, retained horizon and probe-return source ages are corrected with meaningful regressions. Historical failed289fixture,5caseRED, two UIRED and43Ops/21subtestRED evidence remain preserved.
+- The separate reviewed website0.3.0 feature checkpoint002b4f666727049b6ddf58e598ddf62caf127195 has129Node/28Chrome groups and quality/syntax/dryrun/derived gates0. It is not yet merged into this833-path audit census. Public billing/live flags remain off; customer execution adapter remains unprovisioned.
+
+The earlier table below preserves prior exact checkpoints; the latest gates above supersede their pending final-run statements.
 
 ## Verification status
 
@@ -158,7 +168,7 @@ Full inspection and partial convergence are separate outcomes. No remaining arch
 | Oracle |0.2.4 |
 | Bot Manager |0.7.3 |
 | Research runtime/SolTUI package |0.4.1 |
-| Ecosystem |0.4.10 |
+| Ecosystem |0.4.12 |
 | Executor |0.2.1 |
 | Liquidity |0.1.1 |
 
@@ -174,7 +184,7 @@ These are coordinated future source/package identities. Frozen installed paper c
 4. Commit only owned source/docs/receipts, push the final branch tip, wait for required CI, merge only after passing gates, and verify the intended changes on the remote default branch. Installation/deployment requires its own loaded-state acceptance.
 5. For hosted activation, use [Oraclebot launch readiness](ORACLEBOT-LAUNCH-READINESS.md). Billing account/price/webhook configuration, durable engine hosting, per-user execution authority and actual hosted parity remain separate product work. No audit gate authorizes live financial execution or proves strategy profitability.
 
-## Final render and spawn-launcher qualification
+## Historical render and spawn-launcher qualification
 
 Full1563on92c75 failed with1548successes/14canonicalskips/oneprivate-harnesserror. Unguarded entry dispatch exited during multiprocessing.spawn re-import; the parent queue timed out. All children were accounted, source/harness fixed and no forbidden boundary occurred. This remains failed evidence. The corrected private launcher passed actualspawnpositive/negative andcleanup qualification in allfour namespaces; see [qualification](../.cdo/reviews-2026-11-13/soltui-spawn-harness-qualified.json). It is not a fresh full pass.
 

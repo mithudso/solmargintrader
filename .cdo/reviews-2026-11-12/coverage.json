@@ -1,17 +1,17 @@
 {
   "summary": {
     "version": 1,
-    "status": "source_inspection_complete_integration_pending",
+    "status": "source_inspection_complete_final_delivery_pending",
     "baseline_files": 773,
-    "current_files": 828,
-    "semantically_complete": 823,
+    "current_files": 833,
+    "semantically_complete": 828,
     "pending": 0,
     "changed_after_review": 0,
-    "note": "Full current application-source semantic inspection complete; M3/M5/T4 convergence and final integration/delivery remain explicitly partial. Five bound HTML captures are data classifications, not semantic code reviews.",
-    "raw_helper_files": 828,
+    "note": "Full original semantic reviews plus17 bound forecast/version/inventory source deltas, including complete new files. Five HTML captures remain data exclusions. Global M3/M5/T4 convergence and delivery/installed acceptance remain partial.",
+    "raw_helper_files": 833,
     "bound_data_exclusions": 5,
-    "application_helper_files": 823,
-    "application_semantically_complete": 823,
+    "application_helper_files": 828,
+    "application_semantically_complete": 828,
     "application_still_unreviewed_or_changed": 0,
     "supplement_inventory_file": "runtime-source-supplement.json",
     "supplement_note": "Static HTML/CSS and extensionless scripts are tracked separately; no credit from their census.",
@@ -1982,11 +1982,11 @@
     },
     {
       "path": "ecosystem/__init__.py",
-      "blob_sha": "e263f60a6f9e0caf1c80b25c9d928cde41fbdd84",
+      "blob_sha": "6a423094ac762da631ab4002ad8d6bb041bcddf0",
       "lines": 3,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2009,11 +2009,11 @@
     },
     {
       "path": "ecosystem/control.py",
-      "blob_sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
-      "lines": 932,
+      "blob_sha": "532cc6e90fd340814ac75779c9cd6d80e3f51ca6",
+      "lines": 939,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2023,6 +2023,33 @@
       "semantic_review": "complete",
       "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
       "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "ecosystem/forecast.py",
+      "blob_sha": "ae4508fd4105081ad871df1d590cd9fb003cca05",
+      "lines": 699,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "ecosystem/forecast_preferences.py",
+      "blob_sha": "d26d83c36520e7eed27c311e0d22888cd4d96a6c",
+      "lines": 110,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "ecosystem/forecast_service.py",
+      "blob_sha": "9b856469ac011ec230f5d93b896cab02bcd1d069",
+      "lines": 192,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2162,11 +2189,11 @@
     },
     {
       "path": "ecosystem/tests/test_control_http.py",
-      "blob_sha": "901292343c6b29e2657a7eacbbb682301ebd5d18",
-      "lines": 213,
+      "blob_sha": "c422567e468ab91b4bd9b9c565d460a3d104fe1c",
+      "lines": 298,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2176,6 +2203,24 @@
       "semantic_review": "complete",
       "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
       "baseline_python_ast_covered": true,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "ecosystem/tests/test_forecast.py",
+      "blob_sha": "e6ad284d93836c89704bef21e2489c10a60e518c",
+      "lines": 402,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
+      "unbound_js_syntax_check_observed": false
+    },
+    {
+      "path": "ecosystem/tests/test_forecast_service_audit.py",
+      "blob_sha": "4c80c7aa617e82c9187e8b57387a1a976b9a549b",
+      "lines": 256,
+      "semantic_review": "complete",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2297,11 +2342,11 @@
     },
     {
       "path": "ecosystem/tests/test_ui_contract.py",
-      "blob_sha": "5c4a33044626a09c7f9d7a676072496c1131a403",
-      "lines": 423,
+      "blob_sha": "49898d083c249d546bfa0511e5b8d6c2f098eb66",
+      "lines": 521,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2324,20 +2369,20 @@
     },
     {
       "path": "ecosystem/tests/test_votes.py",
-      "blob_sha": "3eba128aef6f47398b579053a188eecb121575b7",
-      "lines": 217,
+      "blob_sha": "43c3cd77f330e474a5b9f578f0fb38fba0246b7b",
+      "lines": 248,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
       "path": "ecosystem/tests/test_web.py",
-      "blob_sha": "7e7b7cae029f31fd711384fcbc490bb94d2c1b83",
-      "lines": 263,
+      "blob_sha": "3e74a07aea9f5c23ed8ed92ebfc705e14c309ba7",
+      "lines": 298,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
@@ -2387,28 +2432,28 @@
     },
     {
       "path": "ecosystem/votes.py",
-      "blob_sha": "7e67161a4be832ac09d31171cbf9f2b87e9b9c61",
-      "lines": 415,
+      "blob_sha": "d56e2d528a6aaa2d276cb43fca59d704c46b2a80",
+      "lines": 425,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
       "path": "ecosystem/web.py",
-      "blob_sha": "632eda0a62951ea6252037ad1969af4fc0607db3",
-      "lines": 585,
+      "blob_sha": "d7ffd21f3b453337313590d5b4ff369f6955901b",
+      "lines": 586,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/ecosystem.json",
-      "baseline_python_ast_covered": true,
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
+      "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
     {
       "path": "ecosystem/web/app.js",
-      "blob_sha": "177e01d57ee183358e9b1bd5900d71cd88c1fe02",
-      "lines": 1226,
+      "blob_sha": "ee8549383740eea8b153b32a5dd6ac5e9df23ed6",
+      "lines": 1298,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": true
     },
@@ -5438,10 +5483,10 @@
     },
     {
       "path": "scripts/build_operation_inventories.py",
-      "blob_sha": "c17e61f6d6a4912460b6dcf50c5276875a24133a",
-      "lines": 324,
+      "blob_sha": "60c7af028c0f34752776d487fd433569b2289c22",
+      "lines": 326,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -5519,10 +5564,10 @@
     },
     {
       "path": "scripts/oraclebot_ops.py",
-      "blob_sha": "b4ea7f6227e117cb242444abbe2f2185ff0166e4",
-      "lines": 737,
+      "blob_sha": "b487dd650173e2d22ab552e0799c5c616ec6cb29",
+      "lines": 819,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },
@@ -5650,10 +5695,10 @@
     },
     {
       "path": "scripts/test_oraclebot_ops.py",
-      "blob_sha": "88067daa55e788cbbacab5a9a44ed17a757b7b57",
-      "lines": 871,
+      "blob_sha": "bb75960de30cf4097e1a351774bef82cef34a15f",
+      "lines": 1091,
       "semantic_review": "complete",
-      "evidence": ".cdo/reviews-2026-11-12/pipeline-pr241-ui-current.json",
+      "evidence": ".cdo/reviews-2026-11-13/forecast-integration-cdo.json",
       "baseline_python_ast_covered": false,
       "unbound_js_syntax_check_observed": false
     },

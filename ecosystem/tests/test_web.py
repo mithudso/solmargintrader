@@ -198,10 +198,45 @@ class WebTests(unittest.TestCase):
                 200,
             )
             owner.assert_called_once_with(
-                self.home, "ZEC/USDT", interval="1h", strategy="macd"
+                self.home,
+                "ZEC/USDT",
+                interval="1h",
+                strategy="macd",
+                forecast_home=self.home,
             )
         self.assertEqual(self.body("/api/oracle?interval=1m&interval=1h")[0], 400)
         self.assertEqual(self.body("/api/oracle?strategy=rsi&unknown=x")[0], 400)
+
+    def test_selected_research_oracle_keeps_primary_forecast_owner(self):
+        from ecosystem.control import database
+
+        run_id = "selected-research"
+        selected_home = self.home / "research" / run_id
+        selected_home.mkdir(parents=True)
+        with database(self.home) as db:
+            db.execute(
+                "INSERT INTO experiment VALUES(?,?,?,?)",
+                (run_id, "Selected research fixture", str(selected_home), 1000),
+            )
+        self.assertEqual(self.server.controls.experiment_home(run_id), selected_home)
+        self.assertNotEqual(selected_home, self.server.controls.home)
+
+        with patch(
+            "ecosystem.votes.report", return_value={"status": "unavailable"}
+        ) as owner:
+            status, _, body = self.body(
+                f"/api/oracle?run_id={run_id}&instrument=ZEC%2FUSDT"
+                "&interval=17s&strategy=macd"
+            )
+            self.assertEqual(status, 200)
+            self.assertTrue(body["ok"])
+            owner.assert_called_once_with(
+                selected_home,
+                "ZEC/USDT",
+                interval="17s",
+                strategy="macd",
+                forecast_home=self.home,
+            )
 
     def test_passes_registration_and_event_cursors_to_existing_owners(self):
         cursor = "00000000-0000-0000-0000-000000000001"

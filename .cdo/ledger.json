@@ -5007,19 +5007,12 @@
     "C2",
     "C3",
     "M1",
-    "M2",
     "M4",
-    "P1",
-    "P2",
     "S1",
-    "S2",
-    "S3",
-    "S4",
-    "S5",
-    "T1"
+    "S4"
    ],
-   "sha": "e263f60a6f9e0caf1c80b25c9d928cde41fbdd84",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "6a423094ac762da631ab4002ad8d6bb041bcddf0",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/backtests.py": {
    "date": "2026-11-12",
@@ -5085,11 +5078,10 @@
     "S2",
     "S3",
     "S4",
-    "S5",
-    "T1"
+    "S5"
    ],
-   "sha": "c5b78e5ae2c5a1f3a43a9cb031b83c6728b49060",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "532cc6e90fd340814ac75779c9cd6d80e3f51ca6",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/data.py": {
    "date": "2026-11-12",
@@ -5113,6 +5105,77 @@
    ],
    "sha": "4ced143ac1cf04060daa003ad0e747c71687e3b4",
    "verdict": "CLEAN"
+  },
+  "ecosystem/forecast.py": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "ae4508fd4105081ad871df1d590cd9fb003cca05",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+  },
+  "ecosystem/forecast_preferences.py": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "d26d83c36520e7eed27c311e0d22888cd4d96a6c",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+  },
+  "ecosystem/forecast_service.py": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "M5",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1"
+   ],
+   "sha": "9b856469ac011ec230f5d93b896cab02bcd1d069",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/installation.py": {
    "date": "2026-11-12",
@@ -5466,7 +5529,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/tests/test_control_http.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5486,8 +5549,8 @@
     "T1",
     "T4"
    ],
-   "sha": "901292343c6b29e2657a7eacbbb682301ebd5d18",
-   "verdict": "CLEAN"
+   "sha": "c422567e468ab91b4bd9b9c565d460a3d104fe1c",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/tests/test_data.py": {
    "date": "2026-11-12",
@@ -5512,6 +5575,54 @@
    ],
    "sha": "9b554a4432bfb7b2a3045aadb8a32a15cd44b2c8",
    "verdict": "CLEAN"
+  },
+  "ecosystem/tests/test_forecast.py": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "e6ad284d93836c89704bef21e2489c10a60e518c",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
+  },
+  "ecosystem/tests/test_forecast_service_audit.py": {
+   "date": "2026-11-13",
+   "findings": 0,
+   "mode": "full",
+   "passes": [
+    "C1",
+    "C2",
+    "C3",
+    "M1",
+    "M2",
+    "M4",
+    "P1",
+    "P2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "T1",
+    "T4"
+   ],
+   "sha": "4c80c7aa617e82c9187e8b57387a1a976b9a549b",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/tests/test_machine_health_http.py": {
    "date": "2026-11-12",
@@ -5846,8 +5957,8 @@
     "T1",
     "T4"
    ],
-   "sha": "5c4a33044626a09c7f9d7a676072496c1131a403",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "49898d083c249d546bfa0511e5b8d6c2f098eb66",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/tests/test_ui_service.py": {
    "date": "2026-11-12",
@@ -5898,7 +6009,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/tests/test_votes.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5918,11 +6029,11 @@
     "T1",
     "T4"
    ],
-   "sha": "3eba128aef6f47398b579053a188eecb121575b7",
-   "verdict": "CLEAN"
+   "sha": "43c3cd77f330e474a5b9f578f0fb38fba0246b7b",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/tests/test_web.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -5942,8 +6053,8 @@
     "T1",
     "T4"
    ],
-   "sha": "7e7b7cae029f31fd711384fcbc490bb94d2c1b83",
-   "verdict": "CLEAN"
+   "sha": "3e74a07aea9f5c23ed8ed92ebfc705e14c309ba7",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/tests/test_wiki.py": {
    "date": "2026-11-12",
@@ -6065,7 +6176,7 @@
    "verdict": "CLEAN"
   },
   "ecosystem/votes.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -6084,11 +6195,11 @@
     "S5",
     "T1"
    ],
-   "sha": "7e67161a4be832ac09d31171cbf9f2b87e9b9c61",
-   "verdict": "CLEAN"
+   "sha": "d56e2d528a6aaa2d276cb43fca59d704c46b2a80",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/web.py": {
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "findings": 0,
    "mode": "full",
    "passes": [
@@ -6108,8 +6219,8 @@
     "S5",
     "T1"
    ],
-   "sha": "632eda0a62951ea6252037ad1969af4fc0607db3",
-   "verdict": "CLEAN"
+   "sha": "d7ffd21f3b453337313590d5b4ff369f6955901b",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/web/app.js": {
    "date": "2026-11-13",
@@ -6131,8 +6242,8 @@
     "S5",
     "T1"
    ],
-   "sha": "177e01d57ee183358e9b1bd5900d71cd88c1fe02",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "ee8549383740eea8b153b32a5dd6ac5e9df23ed6",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "ecosystem/web/oracle-chart.js": {
    "date": "2026-11-12",
@@ -13978,17 +14089,14 @@
     "M1",
     "M2",
     "M4",
-    "M5",
     "P1",
     "S1",
     "S2",
     "S3",
-    "S4",
-    "S5",
-    "T1"
+    "S4"
    ],
-   "sha": "c17e61f6d6a4912460b6dcf50c5276875a24133a",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "60c7af028c0f34752776d487fd433569b2289c22",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "scripts/build_tradingview_script_profiles.py": {
    "date": "2026-11-12",
@@ -14199,8 +14307,8 @@
     "S5",
     "T1"
    ],
-   "sha": "b4ea7f6227e117cb242444abbe2f2185ff0166e4",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "b487dd650173e2d22ab552e0799c5c616ec6cb29",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "scripts/oraclebot_watchdog.py": {
    "date": "2026-11-13",
@@ -14470,8 +14578,8 @@
     "T1",
     "T4"
    ],
-   "sha": "88067daa55e788cbbacab5a9a44ed17a757b7b57",
-   "verdict": "REVIEWED-FIXED"
+   "sha": "bb75960de30cf4097e1a351774bef82cef34a15f",
+   "verdict": "REVIEWED_SCOPED_GLOBAL_CONVERGENCE_PARTIAL"
   },
   "scripts/test_research_backfill.py": {
    "date": "2026-11-12",
@@ -19223,101 +19331,6 @@
  "runs": [
   {
    "deferred": 0,
-   "finished": "2026-11-10T18:14:11Z",
-   "id": "2026-11-10T18:08:26Z",
-   "mode": "incremental",
-   "passes": {
-    "C1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "C2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "C3": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M3": {
-     "files": 0,
-     "reason": "Scoped manager/UI ownership and import boundaries inspected; no architecture redesign.",
-     "state": "ran"
-    },
-    "M4": {
-     "files": 6,
-     "state": "ran"
-    },
-    "M5": {
-     "files": 0,
-     "reason": "Reviewed suite/main and registered CLI entry points, installed-environment refusal and bounded startup usage.",
-     "state": "ran"
-    },
-    "P1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "P2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S2": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S3": {
-     "files": 6,
-     "state": "ran"
-    },
-    "S4": {
-     "files": 0,
-     "reason": "No cryptographic operation in the six audited files; existing authenticated peer and identity checks reviewed under S1-S3.",
-     "state": "na"
-    },
-    "S5": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T1": {
-     "files": 6,
-     "state": "ran"
-    },
-    "T2": {
-     "files": 0,
-     "reason": "No third-party dependency change; current vulnerability lookup unavailable and no supply-chain safety claim made.",
-     "state": "na"
-    },
-    "T3": {
-     "files": 0,
-     "reason": "Detected existing unittest, Ruff and CI gates; no missing harness introduced.",
-     "state": "ran"
-    },
-    "T4": {
-     "files": 0,
-     "reason": "Reviewed timeout-isolated FIFO regression cases; timeout is the behavior under test, not replaceable sleep.",
-     "state": "ran"
-    }
-   },
-   "reviewed": 6,
-   "silent_drops": [],
-   "skipped_unchanged": 0,
-   "started": "2026-11-10T18:08:26Z",
-   "status": "CAPPED"
-  },
-  {
-   "deferred": 0,
    "finished": "2026-11-10T18:15:00Z",
    "id": "2026-11-10T18:15:00Z",
    "mode": "incremental",
@@ -19924,7 +19937,7 @@
   },
   {
    "deferred": 0,
-   "finished": null,
+   "finished": "abandoned",
    "id": "2026-11-13T03:22:58Z",
    "mode": "incremental",
    "passes": {
@@ -19984,6 +19997,172 @@
    "reviewed": 1,
    "skipped_unchanged": 0,
    "started": "2026-11-13T03:22:58Z"
+  },
+  {
+   "deferred": 0,
+   "finished": "2026-11-13T05:26:56Z",
+   "id": "2026-11-13T05:26:55Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 17,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 16,
+     "state": "ran"
+    },
+    "M3": {
+     "files": 0,
+     "reason": "Existing Medium architecture disposition remains outside this bounded source integration.",
+     "state": "blocked"
+    },
+    "M4": {
+     "files": 17,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 4,
+     "reason": "Eight fresh help/invalid parse gates pass; original41 tool/native qualification limits remain explicit.",
+     "state": "blocked"
+    },
+    "P1": {
+     "files": 16,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 15,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 16,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 16,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 17,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 15,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 14,
+     "state": "ran"
+    },
+    "T2": {
+     "files": 0,
+     "reason": "Inherited current pinned dependency review; incoming forecast uses no new runtime package.",
+     "state": "ran"
+    },
+    "T3": {
+     "files": 0,
+     "reason": "Existing repo-bootstrapper setup, JS correctness lint/checking and CI remain configured.",
+     "state": "ran"
+    },
+    "T4": {
+     "files": 7,
+     "reason": "Per-file tests reviewed; existing global equivalent-suite optimization remains unproved.",
+     "state": "blocked"
+    }
+   },
+   "reviewed": 17,
+   "silent_drops": [],
+   "skipped_unchanged": 0,
+   "started": "2026-11-13T05:26:55Z",
+   "status": "SOURCE_REVIEW_COMPLETE_GLOBAL_CONVERGENCE_PARTIAL"
+  },
+  {
+   "deferred": 0,
+   "finished": null,
+   "id": "2026-11-13T05:40:43Z",
+   "mode": "incremental",
+   "passes": {
+    "C1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "C2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "C3": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M4": {
+     "files": 1,
+     "state": "ran"
+    },
+    "M5": {
+     "files": 1,
+     "reason": "Final8parse gates pass; original41tool/native qualification limits remain explicit.",
+     "state": "blocked"
+    },
+    "P1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "P2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S1": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S2": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S3": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S4": {
+     "files": 1,
+     "state": "ran"
+    },
+    "S5": {
+     "files": 1,
+     "state": "ran"
+    },
+    "T1": {
+     "files": 1,
+     "state": "ran"
+    }
+   },
+   "reviewed": 1,
+   "skipped_unchanged": 0,
+   "started": "2026-11-13T05:40:43Z"
   }
  ],
  "version": 1

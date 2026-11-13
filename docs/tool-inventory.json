@@ -39,16 +39,24 @@
       "sha256": "c3ba6af0b972ab64698f85a823f5c6b7041b33dd6163276c89f419e83947b867"
     },
     {
+      "path": "ecosystem/forecast.py",
+      "sha256": "2d8ea6635c276fc8886a707b241fa3c4ac2dd39d2ed384b9134218aa12879963"
+    },
+    {
+      "path": "ecosystem/forecast_service.py",
+      "sha256": "cacbce9d6f12df6da63601bf6596648647e4376cc22a35135952fe1a91f126a7"
+    },
+    {
       "path": "ecosystem/pipeline_service.py",
       "sha256": "991627624dd238bad156689b37924072fffde2d3d3350cf49479f17c1b5025da"
     },
     {
       "path": "ecosystem/pyproject.toml",
-      "sha256": "b96fdca25bb65ad3d8accf432c6d4e0d35b6034eb92c32e9de3889e35919c11b"
+      "sha256": "f6ffe4ab3fee2741c61a9bd36a77019679b67c5651e332317c092779355bea51"
     },
     {
       "path": "ecosystem/web.py",
-      "sha256": "df5168291f08d8f967e818b857cd077171a07805dbc647dccc00ead3a10dab7e"
+      "sha256": "2b6468d6eb5dca218dc90f366a0488098d41812e6b67ad33fbaf569cb295c53d"
     },
     {
       "path": "executor/pyproject.toml",
@@ -100,11 +108,11 @@
     },
     {
       "path": "scripts/build_operation_inventories.py",
-      "sha256": "8556ba35492dcdaf5e9ca49c422782af46a0639a41a00401b9e183420e2d9cd6"
+      "sha256": "c7285f8d7aa0e30084863786e7f3f8603ed2066b49b76a865664ef69956a3785"
     },
     {
       "path": "scripts/oraclebot_ops.py",
-      "sha256": "cf657b082afe1416acfcd359cc1a91b189976d600fe49520deb98833dda223e6"
+      "sha256": "67e95016b9a56f2c21f3968563eb93122b9a6fd2595175851ac83f57e84f4a2b"
     },
     {
       "path": "scripts/oraclebot_watchdog.py",
@@ -392,6 +400,32 @@
       "source": "design/soltui-v2/mockup.py",
       "symbol": "main or documented script entry",
       "help_command": "python3 design/soltui-v2/mockup.py --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:ecosystem-forecast",
+      "kind": "explicit-source-tool",
+      "source": "ecosystem/forecast.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 -m ecosystem.forecast --help",
+      "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
+      "signing": "not inferred; this inventory never invokes the tool",
+      "ambiguity": "no financial retry inferred",
+      "gate_refs": [
+        ".cdo/reviews-2026-11-12/coverage.json"
+      ]
+    },
+    {
+      "id": "tool:ecosystem-forecast-service",
+      "kind": "explicit-source-tool",
+      "source": "ecosystem/forecast_service.py",
+      "symbol": "main or documented script entry",
+      "help_command": "python3 -m ecosystem.forecast_service --help",
       "side_effects": "tool-specific; service/build tools can mutate local state when explicitly invoked",
       "signing": "not inferred; this inventory never invokes the tool",
       "ambiguity": "no financial retry inferred",

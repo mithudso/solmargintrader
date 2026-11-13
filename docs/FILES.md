@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `92c75a58` (2026-11-13T03:24:01+00:00). 3535 tracked files, 89.2 MB.
+**Generated** from `index/INDEX.json` at commit `a5053e9c` (2026-11-13T05:42:32+00:00). 3567 tracked files, 90.1 MB.
 
 Regenerate with:
 
@@ -15,8 +15,8 @@ python3 index/build.py --check      # fail if the index is stale
 Every entry marks where its description came from, because a generated one-liner and a considered one should not look alike:
 
 - **curated** (42 files) — hand-written purpose and usage, in the `CURATED` table of `index/make_files_doc.py`. Used where extraction cannot give a reader what they need: the engine, the research drivers, the order-placing path, and the files with no prose of their own.
-- **extracted** (2879 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 586/678 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
-- **derived** (344 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
+- **extracted** (2884 files) — the file's own module docstring, JSDoc header, or frontmatter `summary`. Trustworthy here because 590/683 Python modules and 68/125 JS files carry a substantial one. (These counts are computed at generation time, not hardcoded — an earlier revision asserted a frozen ratio and it was wrong within a day as the repo grew.)
+- **derived** (370 files) — shape only, for generated artifacts: a CSV's header and row count, a JSON's keys. Prose for a result file would be invented.
 
 *How to use* is curated where it matters and otherwise inferred from the file's kind — a test gets its runner, a CLI gets `--help`, a module gets its import path.
 
@@ -34,7 +34,7 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 ## Contents
 
 - [`(root)`](#root) — 94 files
-- [`docs`](#docs) — 153 files
+- [`docs`](#docs) — 154 files
 - [`index`](#index) — 7 files
 - [`backtester`](#backtester) — 1956 files
 - [`research`](#research) — 280 files
@@ -43,14 +43,14 @@ To *search* rather than browse: `python3 index/search.py "your question"`.
 - [`executor`](#executor) — 48 files
 - [`liquidity`](#liquidity) — 61 files
 - [`botmanager`](#botmanager) — 91 files
-- [`ecosystem`](#ecosystem) — 62 files
+- [`ecosystem`](#ecosystem) — 67 files
 - [`soltui`](#soltui) — 191 files
 - [`mongo`](#mongo) — 20 files
 - [`website`](#website) — 28 files
 - [`.github`](#github) — 12 files
 - [`tradingskilllist`](#tradingskilllist) — 1 files
 - [`.remember`](#remember) — 1 files
-- [`.cdo`](#cdo) — 119 files
+- [`.cdo`](#cdo) — 145 files
 - [`.claude`](#claude) — 2 files
 - [`.githooks`](#githooks) — 2 files
 - [`.postman`](#postman) — 1 files
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 1750 lines · 378,336 B · description: **extracted**
+`doc` · 1833 lines · 396,753 B · description: **extracted**
 
-**Purpose.** Version: 508 Delta: v507 to v508; preserve failed full/CI gates and qualified spawn/render-readiness corrections before the next frozen candidate. Delta: v506 to v507; close actual UI delivery and combine all source gates before final four-process discovery.
+**Purpose.** Version: 511 Delta: v510 to v511; assign observer1.2.1 and final coherent source gate identities. Delta: v509 to v510; bind complete incoming forecast reviews, proved safety corrections and actual291/43/8CLI gates before one combined release.
 
 **Use.** Read it.
 
@@ -727,9 +727,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `prompts.md`
 
-`doc` · 2110 lines · 124,161 B · description: **extracted**
+`doc` · 2145 lines · 126,102 B · description: **extracted**
 
-**Purpose.** Version: 234 Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification. Delta: v232 to v233; preserve delivered upstream pipeline recovery and failed final audit gates.
+**Purpose.** Version: 235 Delta: v234 to v235; preserve both complete owner prompt histories during forecast and audit integration. Delta: v233 to v234; preserve merged UI0.4.9 and verified trial evidence before final audit0.4.10 qualification.
 
 **Use.** Read it.
 
@@ -835,7 +835,7 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is the coverage contract, `SECURITY.md` covers the order-placing surface, and this file indexes everything.
 
-153 files.
+154 files.
 
 #### `docs/API.md`
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34091 lines · 1,685,291 B · description: **extracted**
+`doc` · 34117 lines · 1,686,233 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 
@@ -1061,6 +1061,14 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 **Use.** Read it.
 
+#### `docs/ORACLE-LIVE-FORECAST.md`
+
+`doc` · 97 lines · 6,205 B · description: **extracted**
+
+**Purpose.** Version: 1.0.1 Delta: v1.0.0 to v1.0.1; preserve retained horizons, isolate native qualification and harden preference/source/owner boundaries. The Oracle shows a direction, indicative target price, strategy, evaluation time
+
+**Use.** Read it.
+
 #### `docs/ORACLEBOT-LAUNCH-READINESS.md`
 
 `doc` · 177 lines · 10,436 B · description: **extracted**
@@ -1071,17 +1079,17 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/ORACLEBOT-OPERATIONS.md`
 
-`doc` · 169 lines · 10,263 B · description: **extracted**
+`doc` · 197 lines · 11,926 B · description: **extracted**
 
-**Purpose.** Version: 1.1.1 Delta: Evaluate monitored runtime freshness after the bounded probe returns. Delta: Preserve audited bounded input/output and prerequisite fixes in the separately installed full-runtime observer.
+**Purpose.** Version: 1.2.0 Delta: Monitor the separate continuous price forecast at its saved per-coin interval. Delta: Evaluate monitored runtime and forecast freshness after each bounded probe returns.
 
 **Use.** Read it.
 
 #### `docs/REPO-HEALTH-2026-11-12.md`
 
-`doc` · 182 lines · 40,602 B · description: **extracted**
+`doc` · 192 lines · 42,349 B · description: **extracted**
 
-**Purpose.** Version: 0.1.10 Delta: Preserve failed full/CI attempts, qualify private spawn-safe launcher and wallet-render readiness. Fresh full1563/final-headCI remain pending. Previous delta: Bind the incoming foreground pipeline and independently shipped UI deltas, correct stop-generation/persistent-prefix/probe-clock boundaries, and retain bounded readiness repairs for three asynchronous UI fixtures.
+**Purpose.** Version: 0.1.11 Delta: Bind successful full1563/a505 CI and complete forecast source review with final291core/43observer/8CLI gates. Consolidated delivery remains pending. This is a source-qualification checkpoint. Historical attempts below retain their exact source bindings.
 
 **Use.** Read it.
 
@@ -1439,7 +1447,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/operations-registry.json`
 
-`doc` · 4520 lines · 222,892 B · description: **derived**
+`doc` · 4528 lines · 223,170 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -1551,7 +1559,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/tool-inventory.json`
 
-`doc` · 606 lines · 22,652 B · description: **derived**
+`doc` · 640 lines · 24,054 B · description: **derived**
 
 **Purpose.** Generated JSON object, 8 keys (schema_version, version, delta, generator, scope, limits...).
 
@@ -27931,13 +27939,13 @@ Isolated bot-owner management, health journals and managed-suite supervision.
 
 The local control room, pipeline supervision, telemetry and embedded documentation.
 
-62 files.
+67 files.
 
 #### `ecosystem/README.md`
 
-`doc` · 85 lines · 5,451 B · description: **extracted**
+`doc` · 92 lines · 5,921 B · description: **extracted**
 
-**Purpose.** The headless service coordinates the existing F5 Backtester, prospective forward trials, per-instrument Oracle archives and Bot Manager. Its independent local control room remains available when a pipeline stops. It provides scoped action
+**Purpose.** The Oracle also runs an independent selected-strategy price projection. It defaults to the next ten seconds, refreshed every ten seconds. Edit the seconds beside the forecast to set a per-coin horizon/cadence from 5 through 300 seconds.
 
 **Use.** Read it.
 
@@ -27971,7 +27979,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/control.py`
 
-`code-python` · 933 lines · 36,627 B · description: **extracted**
+`code-python` · 940 lines · 36,996 B · description: **extracted**
 
 **Purpose.** Durable, paper-only controls delegated to the established component owners.
 
@@ -27988,6 +27996,36 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 **Contents.** Defines `OWNER_UNIVERSE`, `ASSET_PATTERN`, `SOURCE`, `universe()`, `_symbol()`, `_epoch()`, `canonical()`, `file_sha256()`, `_closed_frame()`, `_publish()` and 2 more. Depends on `backtester`.
 
 **Use.** `import ecosystem.data`
+
+#### `ecosystem/forecast.py`
+
+`code-python` · 700 lines · 28,647 B · description: **extracted**
+
+**Purpose.** Continuous, provisional price projections. No orders or account mutations. The direction is the chosen price-only strategy's exposure sign on ten-second reference bars. The target distance is the recent median absolute reference move at the requested horizon. It is an indicative projection, not a fitted expected return or a calibrated probability.
+
+**Contents.** Defines `BAR_SECONDS`, `REFRESH_SECONDS`, `HORIZONS`, `MAX_AGE`, `APP_ID`, `MAX_SNAPSHOT_BYTES`, `LOGGER`, `METHOD`, `finite()`, `canonical()` and 13 more.
+
+**Use.** `python3 ecosystem/forecast.py --help`
+
+#### `ecosystem/forecast_preferences.py`
+
+`code-python` · 111 lines · 4,147 B · description: **extracted**
+
+**Purpose.** Versioned per-instrument display cadence, separate from research policies.
+
+**Contents.** Defines `APP_ID`, `path()`, `valid_seconds()`, `settings()`, `_publish_initialized_store()`, `set_seconds()`.
+
+**Use.** `import ecosystem.forecast_preferences`
+
+#### `ecosystem/forecast_service.py`
+
+`code-python` · 193 lines · 7,106 B · description: **extracted**
+
+**Purpose.** Explicit launchd ownership for the independent ten-second display evaluator.
+
+**Contents.** Defines `_FAILURE_REMEDIATION`, `definition()`, `operate()`, `main()`.
+
+**Use.** `python3 ecosystem/forecast_service.py --help`
 
 #### `ecosystem/installation.py`
 
@@ -28129,7 +28167,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/votes.py`
 
-`code-python` · 416 lines · 17,553 B · description: **extracted**
+`code-python` · 426 lines · 18,115 B · description: **extracted**
 
 **Purpose.** Versioned operator voter selection over unchanged prospective Oracle evidence.
 
@@ -28139,7 +28177,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web.py`
 
-`code-python` · 586 lines · 23,570 B · description: **extracted**
+`code-python` · 587 lines · 23,627 B · description: **extracted**
 
 **Purpose.** Local paper controls and observability over the established ecosystem owners. ``make_server`` binds before returning. The caller owns serving and shutdown, so the supervisor can publish the actual ephemeral port without claiming liveness before bind succeeds. This module never starts a recorder, worker, or order path.
 
@@ -28221,7 +28259,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_control_http.py`
 
-`test` · 214 lines · 8,402 B · description: **none**
+`test` · 299 lines · 11,806 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28238,6 +28276,26 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 **Contents.** Defines `START`, `END`, `EPOCH`, `frame()`, `class DataTests`.
 
 **Use.** `python3 -m pytest ecosystem/tests/test_data.py -q`
+
+#### `ecosystem/tests/test_forecast.py`
+
+`test` · 403 lines · 18,044 B · description: **none**
+
+**Purpose.** _No description available._
+
+**Contents.** Defines `class Strategies`, `class ForecastTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_forecast.py -q`
+
+#### `ecosystem/tests/test_forecast_service_audit.py`
+
+`test` · 257 lines · 10,430 B · description: **extracted**
+
+**Purpose.** Isolated lifecycle regressions; no test may call the owner's launchd service.
+
+**Contents.** Defines `class ForecastServiceAuditTests`.
+
+**Use.** `python3 -m pytest ecosystem/tests/test_forecast_service_audit.py -q`
 
 #### `ecosystem/tests/test_machine_health_http.py`
 
@@ -28371,7 +28429,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_ui_contract.py`
 
-`test` · 424 lines · 31,901 B · description: **extracted**
+`test` · 522 lines · 42,473 B · description: **extracted**
 
 **Purpose.** Client safety checks; a VM DOM does not replace installed browser acceptance.
 
@@ -28401,7 +28459,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_votes.py`
 
-`test` · 218 lines · 10,051 B · description: **none**
+`test` · 249 lines · 12,025 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28411,7 +28469,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/tests/test_web.py`
 
-`test` · 264 lines · 11,495 B · description: **extracted**
+`test` · 299 lines · 12,808 B · description: **extracted**
 
 **Purpose.** Actual loopback HTTP checks; synthetic owner records are test fixtures only.
 
@@ -28453,7 +28511,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web/app.js`
 
-`code-js` · 1227 lines · 100,726 B · description: **none**
+`code-js` · 1299 lines · 108,150 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28463,7 +28521,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web/index.html`
 
-`code-web` · 90 lines · 32,015 B · description: **none**
+`code-web` · 90 lines · 32,530 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -28481,7 +28539,7 @@ The local control room, pipeline supervision, telemetry and embedded documentati
 
 #### `ecosystem/web/styles.css`
 
-`code-web` · 35 lines · 46,135 B · description: **none**
+`code-web` · 37 lines · 46,344 B · description: **none**
 
 **Purpose.** _No description available._
 
@@ -31041,11 +31099,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ## .cdo
 
-119 files.
+145 files.
 
 #### `.cdo/ledger.json`
 
-`config` · 19991 lines · 308,076 B · description: **derived**
+`config` · 20170 lines · 311,347 B · description: **derived**
 
 **Purpose.** Generated JSON object, 3 keys (files, runs, version).
 
@@ -31199,7 +31257,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/coverage.json`
 
-`config` · 7483 lines · 281,977 B · description: **derived**
+`config` · 7528 lines · 283,821 B · description: **derived**
 
 **Purpose.** Generated JSON object, 2 keys (summary, files).
 
@@ -31719,9 +31777,9 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/recorded.json`
 
-`config` · 826 lines · 66,901 B · description: **derived**
+`config` · 831 lines · 67,312 B · description: **derived**
 
-**Purpose.** Generated JSON object, 823 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
+**Purpose.** Generated JSON object, 828 keys (backtester/__init__.py, backtester/botcli.py, backtester/cli.py, backtester/core/__init__.py, backtester/core/archive_price.py, backtester/core/assets.py...).
 
 **Use.** Configuration; nothing to run.
 
@@ -31775,7 +31833,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `.cdo/reviews-2026-11-12/runtime-supplement-coverage.json`
 
-`config` · 364 lines · 17,548 B · description: **derived**
+`config` · 362 lines · 16,793 B · description: **derived**
 
 **Purpose.** Generated JSON object, 6 keys (status, original_inventory_candidates, complete, raw_helper_coverage_separate, note, files).
 
@@ -31975,11 +32033,219 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 ### `.cdo/reviews-2026-11-13/`
 
+#### `.cdo/reviews-2026-11-13/cdo-forecast-app-delta.json`
+
+`config` · 2515 lines · 210,670 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema, mode, path, absolute_path, baseline_commit, baseline_identity...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-control-delta.json`
+
+`config` · 916 lines · 46,872 B · description: **derived**
+
+**Purpose.** Generated JSON object, 14 keys (schema, observed_at, status, scope, baseline, current...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-inventory-delta.json`
+
+`config` · 360 lines · 24,992 B · description: **derived**
+
+**Purpose.** Generated JSON object, 17 keys (schema, observed_at, status, owner_task, mode, stage_0...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-main-closure.json`
+
+`config` · 162 lines · 6,729 B · description: **derived**
+
+**Purpose.** Generated JSON object, 18 keys (schema_version, created_at, reviewer, parent_task, mode, skill_version...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-main.json`
+
+`config` · 329 lines · 13,423 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (schema_version, task_owner, parent_task, created_at, mode, skill...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-ops-delta.json`
+
+`config` · 558 lines · 32,743 B · description: **derived**
+
+**Purpose.** Generated JSON object, 31 keys (schema, observed_at, status, mode, root_task, scope...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-ops-tests-delta.json`
+
+`config` · 273 lines · 12,422 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (schema, observed_at, task, status, path, absolute_path...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-preferences-closure.json`
+
+`config` · 206 lines · 10,798 B · description: **derived**
+
+**Purpose.** Generated JSON object, 24 keys (active_fix_track_passes, authored_diff_review, boundaries, conditional_M5, created_at, fixed_track_total...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-preferences.json`
+
+`config` · 201 lines · 12,457 B · description: **derived**
+
+**Purpose.** Generated JSON object, 21 keys (activated_skills, active_fix_track_passes, boundaries, conditional_M5, created_at, file...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-service-tests.json`
+
+`config` · 603 lines · 17,827 B · description: **derived**
+
+**Purpose.** Generated JSON object, 27 keys (schema_version, task, generated_at_utc, target, review_mode, status...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-service.json`
+
+`config` · 453 lines · 21,679 B · description: **derived**
+
+**Purpose.** Generated JSON object, 29 keys (schema_version, skill, mode, target, identity, coverage...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-tests.json`
+
+`config` · 259 lines · 9,702 B · description: **derived**
+
+**Purpose.** Generated JSON object, 37 keys (schema_version, task, reviewer, created_at, target, relative_path...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-version.json`
+
+`config` · 209 lines · 9,802 B · description: **derived**
+
+**Purpose.** Generated JSON object, 23 keys (schema, version, delta, created_at, reviewer, parent_task...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-votes-delta.json`
+
+`config` · 893 lines · 46,638 B · description: **derived**
+
+**Purpose.** Generated JSON object, 19 keys (schema, observed_at, status, scope, injection_gate, activated_skills...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/cdo-forecast-web-delta.json`
+
+`config` · 905 lines · 44,926 B · description: **derived**
+
+**Purpose.** Generated JSON object, 18 keys (schema, observed_at, status, scope, baseline, current...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/ci-a505-completed.json`
+
+`config` · 2 lines · 5,481 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (headRefOid, state, statusCheckRollup).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-after-review-plan.json`
+
+`config` · 8 lines · 104 B · description: **derived**
+
+**Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integrated-0.4.12-ops1.2.1-gates.json`
+
+`config` · 80 lines · 3,790 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, version, status, rows, fresh_cli_receipt, fresh_cli_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integrated-final-gates.json`
+
+`config` · 79 lines · 3,677 B · description: **derived**
+
+**Purpose.** Generated JSON object, 9 keys (schema, version, status, rows, fresh_cli_receipt, fresh_cli_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integration-cdo.initial.json`
+
+`config` · 2308 lines · 109,474 B · description: **derived**
+
+**Purpose.** Generated JSON object, 8 keys (schema, version, status, baseline_commit, incoming_commit, files...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-integration-cdo.json`
+
+`config` · 2310 lines · 109,697 B · description: **derived**
+
+**Purpose.** Generated JSON object, 10 keys (schema, version, status, baseline_commit, incoming_commit, files...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/forecast-supplement-delta.json`
+
+`config` · 31 lines · 17,723 B · description: **derived**
+
+**Purpose.** Generated JSON object, 3 keys (schema, files, limits).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/fresh-cli-forecast-final.json`
+
+`config` · 232 lines · 12,253 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, status, cases, guard_sha256, manifest, manifest_sha256...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/fresh-cli-forecast-ops1.2.1-final.json`
+
+`config` · 232 lines · 12,253 B · description: **derived**
+
+**Purpose.** Generated JSON object, 7 keys (observed_at, status, cases, guard_sha256, manifest, manifest_sha256...).
+
+**Use.** Configuration; nothing to run.
+
 #### `.cdo/reviews-2026-11-13/ledger-after-wallet-render-plan.json`
 
 `config` · 8 lines · 104 B · description: **derived**
 
 **Purpose.** Generated JSON object, 5 keys (review, deferred, unchanged_skipped, removed_from_disk, full).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-full-a505-completion.json`
+
+`config` · 209 lines · 8,455 B · description: **derived**
+
+**Purpose.** Generated JSON object, 33 keys (agent, definition_version, status, observed_at, head, actual_launcher_exit...).
+
+**Use.** Configuration; nothing to run.
+
+#### `.cdo/reviews-2026-11-13/soltui-full-a505-independent.json`
+
+`config` · 108 lines · 4,784 B · description: **derived**
+
+**Purpose.** Generated JSON object, 11 keys (agent, definition_version, status, observed_at, scope, evidence...).
 
 **Use.** Configuration; nothing to run.
 
@@ -32927,7 +33193,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/build_operation_inventories.py`
 
-`code-python` · 325 lines · 17,934 B · description: **extracted**
+`code-python` · 327 lines · 18,144 B · description: **extracted**
 
 **Purpose.** Generate docs-only operation/tool inventories from authoritative source metadata. Run ``python3 scripts/build_operation_inventories.py --check`` in CI. This stdlib-only tool parses source; it never imports an application, executes a handler, starts a service, signs an order or installs a dependency.
 
@@ -33017,11 +33283,11 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/oraclebot_ops.py`
 
-`code-python` · 738 lines · 27,685 B · description: **extracted**
+`code-python` · 820 lines · 30,516 B · description: **extracted**
 
 **Purpose.** Read-only Oraclebot operations observer; no trading or service repair commands. A separate launchd job samples the existing solbot owner. SQLite preserves incidents and delivery retries. Reports count observed samples, not uptime.
 
-**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `RUNTIME_COMPONENTS`, `runtime_health()` and 12 more.
+**Contents.** Defines `VERSION`, `LABEL`, `COMPONENTS`, `FORECAST_SOURCE_MAX_AGE`, `STOP`, `write_json()`, `database()`, `probe_output()`, `probe()`, `PIPELINE_COMPONENTS` and 15 more.
 
 **Use.** `python3 scripts/oraclebot_ops.py --help`
 
@@ -33115,7 +33381,7 @@ Session handoff notes, newest first. Prose, not machine-read.
 
 #### `scripts/test_oraclebot_ops.py`
 
-`test` · 872 lines · 32,919 B · description: **extracted**
+`test` · 1092 lines · 41,551 B · description: **extracted**
 
 **Purpose.** Synthetic observer transitions, retry delivery and independent outage checks.
 
