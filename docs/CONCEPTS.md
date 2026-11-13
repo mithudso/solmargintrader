@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T16:35:29+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T16:39:50+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -48,9 +48,9 @@ Strongest files:
 
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
-- `docs/FILES.md` (159 hits)
+- `docs/FILES.md` (182 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
-- `memory.md` (144 hits)
+- `memory.md` (145 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
 - `FILES.md` (78 hits)
@@ -106,7 +106,7 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (387 hits)
+- `docs/FILES.md` (388 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
@@ -166,7 +166,7 @@ Strongest files:
 - `research/results/news_events_20261112_manifest.json` (280 hits)
 - `research/strategy_experiment/audit_realism.json` (178 hits)
 - `research/tradingview-card-coverage.json` (112 hits)
-- `docs/FILES.md` (86 hits)
+- `docs/FILES.md` (87 hits)
 - `.cdo/reviews-2026-11-12/research-scripts.json` (81 hits)
 
 Full list: `python3 index/search.py --concept benchmark -n 525`

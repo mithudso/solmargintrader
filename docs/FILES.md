@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `1057afda` (2026-11-13T16:35:29+00:00). 3614 tracked files, 92.8 MB.
+**Generated** from `index/INDEX.json` at commit `7df22b53` (2026-11-13T16:39:50+00:00). 3614 tracked files, 92.8 MB.
 
 Regenerate with:
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2032 lines · 435,481 B · description: **extracted**
+`doc` · 2042 lines · 436,231 B · description: **extracted**
 
-**Purpose.** Version: 523 Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning. Parallel billing delta: v519 to v520; verify dedicated live Stripe merchant, configure provider objects and bind Worker while preserving closed launch gates.
+**Purpose.** Version: 524 Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI. Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34657 lines · 1,705,300 B · description: **extracted**
+`doc` · 34793 lines · 1,710,632 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 

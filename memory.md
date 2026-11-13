@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 523
+Version: 524
+Delta: v523 to v524; preserve concurrent records and refresh stale public research/wiki derivatives exposed by final CI.
 Delta: v522 to v523; preserve concurrent ZEC research records and verified live Stripe provisioning.
 Parallel billing delta: v519 to v520; verify dedicated live Stripe merchant, configure provider objects and bind Worker while preserving closed launch gates.
 Delta: v521 to v522; bind full Mongo artifact readback and local delivery gates.
@@ -2029,3 +2030,12 @@ Attempt03 completed exit0 in /Users/mitch/.local/state/solmargintrader/zec-granu
 ## ZEC final delivery checkpoint
 
 All14Mongo artifacts persisted through revision18. Reassembled all8compressedCSVparts from server and compared1904716bytes exactly, SHA2560cf84609dce34714c29730709bb717032c795cec5b3acd075dd433545db809b3. Final reportv1.0.1, frozen plan, audit, summary and runmanifest independently readback byte-identical. Public14-filefamily has archive-manifest.json; resultsCSVpreservesauditedCRLFbytes via specific.gitattributes rule. Required local targeted39tests,ruff,check_docs and deterministic index verification all exit0. Canonical literature concepts untouched; no paidresearch or embedding. Final task publication remains open only until push/PR/requiredCI/merge/contentreadback/ownworktreecleanup finish. Delivery receipt and exact mergedcommit belong in /Users/mitch/.local/state/solmargintrader/zec-granular-backtests-20261113/delivery.json and graph TASK-2101/MILE-2097.
+
+The first combined final CI at7df22b53failed website public research export and
+ecosystem packaged wiki freshness; ecosystem291tests themselves passed. The
+concurrent merged ZEC report and changed readiness/website documentation require
+deterministic derivative refreshes. Refresh the public research bundle, packaged
+wiki/operation inventories and offline indexes using existing builders; preserve
+failed CI receipts. These are compiled public content, not new research or an
+engine/execution change. Publish the refreshed public assets only after final
+passing checks; then repeat bounded independent loaded-state acceptance.
