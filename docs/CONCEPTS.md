@@ -1,6 +1,6 @@
 # Conceptual index
 
-**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T18:18:23+00:00). 21 concepts.
+**Generated** from `index/CONCEPT-INDEX.json` (2026-11-13T18:23:57+00:00). 21 concepts.
 
 ```bash
 python3 index/build.py all              # refresh
@@ -46,10 +46,10 @@ The same 25 strategies score 25/25 on BTC daily and 0/25 on SOL hourly. The data
 
 Strongest files:
 
+- `docs/FILES.md` (196 hits)
 - `research/coin-intelligence/zec-zcash.md` (196 hits)
 - `research/results/coinbase50_20261111_summary.json` (183 hits)
-- `docs/FILES.md` (181 hits)
-- `memory.md` (152 hits)
+- `memory.md` (153 hits)
 - `research/coin-intelligence/doge-dogecoin.md` (147 hits)
 - `research/results/shape_spot_20261111_manifest.json` (97 hits)
 - `research/tradingview-card-coverage.json` (90 hits)
@@ -106,11 +106,11 @@ Strongest files:
 - `research/strategy_experiment/results/results.json` (544 hits)
 - `llms/jupsol-llms.txt` (427 hits)
 - `research/strategy_experiment/results/initial-gapped-run/results.json` (408 hits)
-- `docs/FILES.md` (390 hits)
+- `docs/FILES.md` (391 hits)
 - `FILES.md` (283 hits)
 - `.cdo/reviews-2026-11-12/oracle.json` (271 hits)
-- `memory.md` (188 hits)
 - `.cdo/reviews-2026-11-12/ecosystem-combined-full-final.json` (187 hits)
+- `memory.md` (187 hits)
 
 Full list: `python3 index/search.py --concept execution-onchain -n 921`
 

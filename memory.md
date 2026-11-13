@@ -1,6 +1,7 @@
 # Work continuation
 
-Version: 528
+Version: 529
+Delta: v528 to v529; record the qualified immutable installation, guarded UI promotion and real backtest probe.
 Delta: v527 to v528; preserve both concurrent research and local repair records during integration.
 Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence.
 
@@ -2146,3 +2147,32 @@ MILE-2113 owns the confirmed0.25percent/0.15percent fee rerun. Use25/15bps perfi
 ## ZEC25/15bps results verified
 
 Freshattempt01 at /Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/attempt-01 completed0:7060rows,3252complete/3780insufficient/28unsupported,allpositionsclosed.39targetedtests/Ruff0. Bestactivespot25bps:1m-.336329%,5m+1.082212%,10m+1.822955%,1h-.821624%;15bps:+.630761%,+1.893912%,+2.026802%,-.702009%.Only1of786active1mspottemplates positiveat15bps,18fills;noneat25bps. Independentauditorverifiedall217445fills,14directmathcases,all3516new25bpsrows exactlymatchprioracceptedbaseline,andoriginaltape/WAL/runtimehashes. Conditionalmaker-ratefees only: fillsstillcrossbook,spread/slippage/latencyunchanged,nomakerqueueproof.13immutableMongoartifacts run:80719ee0ab3841dcabf1d0723c982e16f8385d3b082f988d4641d55c97df0bfa revision16;full1271529byteCSVreadbacksha c8b4ba0dfd8dbb7f18fe4fe542f4bb0e095dedfdf6efec416f2dfbf81b539405 andall7otherartifacts byteequal. Sharedreport research/ZEC-GRANULAR-FEE-SENSITIVITY.md andfamily research/zec-fee-sensitivity-20261113.llms. KNOW-2126holdsresults. Remainingdelivery: generatedpublicresearch/index consistency,docs/CIchecks,merge,remotecontentreadbackandownedcleanup;finalstatusin /Users/mitch/.local/state/solmargintrader/zec-fee-sensitivity-20261113/delivery.json andMILE-2113. Priorbaselineisimmutableandnotreplaced.
+
+
+## 2026-11-13 — Installed local repair and delivery receipt
+
+The immutable environment `/Users/mitch/.venvs/oraclebot-local-repair-0.4.14`
+passed installation health and source identity checks (exit0). Oracle0.2.5,
+research-runtime0.4.2, manager0.7.5 and ecosystem0.4.14 are installed with
+NumPy2.5.4. Forecast policy remains exactly
+`9492654016816127f256ab8631bbf7f8092bac6104b062e550519ec301c338af`.
+The guarded suite replacement passed0 and reports `http://127.0.0.1:63457`.
+The stable CLI symlink and native-host interpreter were updated with fresh
+identity checks and readback; the old prefix was preserved. Launchd initially
+reported an unconfirmed release; stopped/unregistered status preceded the
+successful idempotent uninstall. No owner guard or lock was bypassed.
+
+A separate installed backtest probe copied678 cached real SOL/USD daily bars.
+It completed11 actual evaluable results with0 failures after excluding2 invalid
+RSI variants from13 requested templates (exit0). The original data was unchanged.
+No acquisition, original-queue write, forward handoff or financial action occurred.
+Receipt: `/Users/mitch/.local/state/oraclebot-local-repair-20261113/backtest-probe/installed-execution.receipt.json`.
+
+PR: https://github.com/mithudso/solmargintrader/pull/251
+Final acceptance, exact merged revision, CI results, remaining limitations and
+complete absolute file inventory are recorded in
+`/Users/mitch/.local/state/oraclebot-local-repair-20261113/delivery.json` and
+`/Users/mitch/.local/state/oraclebot-local-repair-20261113/files.md`.
+Check those receipts for completion; this source record does not certify a
+future CI result. The hosted customer engine/executor and native ZEC archive
+remain separate gaps. Never relabel provisional forecasts as qualified evidence.

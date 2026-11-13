@@ -1,6 +1,6 @@
 # Every file in this repository
 
-**Generated** from `index/INDEX.json` at commit `7b57ba2c` (2026-11-13T18:18:23+00:00). 3630 tracked files, 94.2 MB.
+**Generated** from `index/INDEX.json` at commit `1c544fc1` (2026-11-13T18:23:57+00:00). 3630 tracked files, 94.2 MB.
 
 Regenerate with:
 
@@ -647,9 +647,9 @@ Repository-level entry points and agent instructions. `AGENTS.md` and `CLAUDE.md
 
 #### `memory.md`
 
-`doc` · 2149 lines · 445,282 B · description: **extracted**
+`doc` · 2179 lines · 447,183 B · description: **extracted**
 
-**Purpose.** Version: 528 Delta: v527 to v528; preserve both concurrent research and local repair records during integration. Delta: v525 to v526; diagnose and repair local Oracle archive compatibility and misleading forward/candidate statuses while preserving frozen evidence.
+**Purpose.** Version: 529 Delta: v528 to v529; record the qualified immutable installation, guarded UI promotion and real backtest probe. Delta: v527 to v528; preserve both concurrent research and local repair records during integration.
 
 **Use.** Read it.
 
@@ -959,7 +959,7 @@ Curated prose. `ARCHITECTURE.md` explains how the pieces fit, `TESTING.md` is th
 
 #### `docs/FILES.md`
 
-`doc` · 34813 lines · 1,711,457 B · description: **extracted**
+`doc` · 34929 lines · 1,715,767 B · description: **extracted**
 
 **Purpose.** Regenerate with: python3 index/build.py all # refresh the index python3 index/make_files_doc.py # rewrite this file
 

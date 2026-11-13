@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T18:18:23+00:00",
+  "generatedAt": "2026-11-13T18:23:57+00:00",
   "schemaVersion": 1,
   "note": "Concepts are derived from the repo's own vocabulary \u2014 the FAMILY dict, strategy-card frontmatter, docs/trading-signals-concept-family.md, and terms verified to recur in the corpus. A concept matching no file is dropped, not kept.",
   "counts": {
@@ -67,7 +67,7 @@
         },
         {
           "path": "memory.md",
-          "hits": 94
+          "hits": 95
         },
         {
           "path": ".cdo/reviews-2026-11-12/soltui-worker.json",
@@ -165,6 +165,10 @@
       "shown": 30,
       "files": [
         {
+          "path": "docs/FILES.md",
+          "hits": 196
+        },
+        {
           "path": "research/coin-intelligence/zec-zcash.md",
           "hits": 196
         },
@@ -173,12 +177,8 @@
           "hits": 183
         },
         {
-          "path": "docs/FILES.md",
-          "hits": 181
-        },
-        {
           "path": "memory.md",
-          "hits": 152
+          "hits": 153
         },
         {
           "path": "research/coin-intelligence/doge-dogecoin.md",
@@ -340,6 +340,10 @@
           "hits": 58
         },
         {
+          "path": "docs/FILES.md",
+          "hits": 55
+        },
+        {
           "path": "research/tradingview-card-coverage.json",
           "hits": 55
         },
@@ -350,10 +354,6 @@
         {
           "path": "soltui/bots.py",
           "hits": 54
-        },
-        {
-          "path": "docs/FILES.md",
-          "hits": 50
         },
         {
           "path": "research/zec-fee-sensitivity-20261113.llms/summary.json",
@@ -595,7 +595,7 @@
         },
         {
           "path": "docs/FILES.md",
-          "hits": 390
+          "hits": 391
         },
         {
           "path": "FILES.md",
@@ -606,11 +606,11 @@
           "hits": 271
         },
         {
-          "path": "memory.md",
-          "hits": 188
+          "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
+          "hits": 187
         },
         {
-          "path": ".cdo/reviews-2026-11-12/ecosystem-combined-full-final.json",
+          "path": "memory.md",
           "hits": 187
         },
         {
